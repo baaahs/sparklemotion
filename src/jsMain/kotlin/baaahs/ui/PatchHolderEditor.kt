@@ -1,6 +1,5 @@
 package baaahs.ui
 
-import baaahs.Logger
 import baaahs.app.ui.appContext
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
@@ -14,11 +13,12 @@ import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
 import materialui.*
+import materialui.components.avatar.avatar
 import materialui.components.breadcrumbs.breadcrumbs
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.card.card
-import materialui.components.cardcontent.cardContent
+import materialui.components.cardheader.cardHeader
 import materialui.components.container.container
 import materialui.components.dialogactions.dialogActions
 import materialui.components.dialogcontent.dialogContent
@@ -39,10 +39,11 @@ import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
 import materialui.components.listsubheader.listSubheader
 import materialui.components.menuitem.menuItem
+import materialui.components.paper.enums.PaperStyle
 import materialui.components.portal.portal
 import materialui.components.select.select
-import materialui.components.tab.tab
 import materialui.components.textfield.textField
+import materialui.components.typography.enums.TypographyColor
 import materialui.components.typography.enums.TypographyDisplay
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
@@ -80,9 +81,10 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
     var visiblePanel by state { 0 }
 
     val x = this
+    val styles = PatchHolderEditorStyles
     val patchNavPanel = Panel(selectedPatch?.surfaces?.name ?: "Surfaces", Apps) {
-        div(+PatchHolderEditorStyles.panel and PatchHolderEditorStyles.columns) {
-            list(PatchHolderEditorStyles.patchList on ListStyle.root) {
+        div(+styles.panel and styles.columns) {
+            list(styles.patchList on ListStyle.root) {
                 listSubheader { +"Fixtures" }
 
                 props.mutablePatchHolder.patches.forEachIndexed { index, mutablePatch ->
@@ -109,7 +111,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                 }
             }
 
-            div(+PatchHolderEditorStyles.patchOverview) {
+            div(+styles.patchOverview) {
                 val mutablePatch = selectedPatch
                 if (mutablePatch == null) {
                     typographyH6 { +"No patch selected." }
@@ -117,29 +119,31 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                     mutablePatch.mutableShaderInstances.forEachIndexed { index, mutableShaderInstance ->
                         val shader = mutableShaderInstance.mutableShader
 
-                        card {
+                        card(+styles.shaderCard on PaperStyle.root) {
                             attrs.onClickFunction = x.eventHandler("handleShaderInstanceClick-$index") {
                                 selectedShaderInstance = selectedPatch!!.mutableShaderInstances[index]
                                 visiblePanel = 1
                             }
 
-                            cardContent {
-                                shaderPreview {
-                                    attrs.mutableShaderInstance = mutableShaderInstance
-                                    attrs.width = 125.px
-                                    attrs.height = 125.px
+                            cardHeader {
+                                attrs.avatar {
+                                    avatar { icon(Icons.forShader(shader.type)) }
                                 }
+                                attrs.title { +shader.title }
+//                                attrs.subheader { +"${shader.type.name} Shader" }
+                            }
 
+                            shaderPreview {
+                                attrs.mutableShaderInstance = mutableShaderInstance
+                                attrs.width = styles.cardWidth
+                                attrs.height = styles.cardWidth
+                            }
+
+                            div(+styles.shaderCardContent) {
                                 typography {
                                     attrs.display = TypographyDisplay.block
-                                    attrs.variant = TypographyVariant.subtitle1
-                                    +mutableShaderInstance.mutableShader.title
-                                }
-
-                                typography {
-                                    attrs.display = TypographyDisplay.block
-                                    attrs.variant = TypographyVariant.caption
-                                    icon(Icons.forShader(shader.type)) { attrs.fontSize = "small" }
+                                    attrs.variant = TypographyVariant.body2
+                                    attrs.color = TypographyColor.textSecondary
                                     +"${shader.type.name} Shader"
                                 }
                             }
@@ -199,12 +203,13 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                 forceRender()
             }
 
-        Panel(shader.title, SettingsInputComponent) {
+        Panel(shader.title, Icons.forShader(shader.type)) {
             styledDiv {
-                css.display = Display.flex
-                css.flexDirection = FlexDirection.row
+                css.display = Display.grid
+                css.gridTemplateColumns = GridTemplateColumns("auto min-content auto")
+                css.gap = Gap(1.em.toString())
 
-                container {
+                div {
                     linksEditor {
                         attrs.mutablePatch = selectedPatch!!
                         attrs.showBuilder = showBuilder
@@ -214,7 +219,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                     }
                 }
 
-                container {
+                div {
                     shaderPreview {
                         attrs.mutableShaderInstance = shaderInstance
                         attrs.width = 250.px
@@ -222,7 +227,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                     }
                 }
 
-                container {
+                div {
                     typographyH6 { +"Meta and gadgets and stuff!" }
 
                     div(+Styles.shaderMeta) {
@@ -291,7 +296,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
 
     portal {
         form {
-            drawer(PatchHolderEditorStyles.drawer on DrawerStyle.paper) {
+            drawer(styles.drawer on DrawerStyle.paper) {
                 attrs.anchor = DrawerAnchor.bottom
                 attrs.variant = DrawerVariant.temporary
                 attrs.elevation
@@ -327,10 +332,11 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                     button { attrs.onClickFunction = { visiblePanel = 2 }; +"3" }
                 }
 
-                dialogContent(+PatchHolderEditorStyles.dialogContent) {
+                dialogContent(+styles.dialogContent) {
                     slidePanel {
                         attrs.panels = panels.map { it.content }
                         attrs.index = visiblePanel
+                        attrs.margins = 24.px
                     }
                 }
 
@@ -360,6 +366,8 @@ private class Panel(
 )
 
 object PatchHolderEditorStyles : StyleSheet("ui-PatchHolderEditor", isStatic = true) {
+    val cardWidth = 175.px
+
     val drawer by css {
         margin(horizontal = 5.em)
         minHeight = 85.vh
@@ -389,18 +397,20 @@ object PatchHolderEditorStyles : StyleSheet("ui-PatchHolderEditor", isStatic = t
     }
     val patchOverview by css {
         flex(2.0, flexBasis = FlexBasis.zero)
+        backgroundColor = StuffThatShouldComeFromTheTheme.lightBackgroundColor
+        display = Display.grid
+        gridTemplateColumns = GridTemplateColumns.repeat("auto-fit, minmax(175px, 1fr)")
+        gap = Gap(1.em.toString())
+        padding(1.em)
         marginLeft = 2.em
-        backgroundColor = Color("#f5f5f5")
-
-        children {
-            display = Display.inlineBlock
-            margin(1.em)
-        }
     }
 
     val shaderCard by css {
-        margin(1.em)
-        padding(1.em)
+        maxWidth = cardWidth
+    }
+
+    val shaderCardContent by css {
+        padding(8.px, 16.px)
     }
 }
 

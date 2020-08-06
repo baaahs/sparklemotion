@@ -40,12 +40,17 @@ abstract class MutablePatchHolder(
             Surfaces.AllSurfaces
         )
         mutablePatch.block()
-        patches.add(mutablePatch)
+        addPatch(mutablePatch)
         return this
     }
 
     fun addPatch(mutablePatch: MutablePatch): MutablePatchHolder {
-        patches.add(mutablePatch)
+        val existingPatch = patches.find { it.surfaces == mutablePatch.surfaces }
+        if (existingPatch != null) {
+            existingPatch.mutableShaderInstances.addAll(mutablePatch.mutableShaderInstances)
+        } else {
+            patches.add(mutablePatch)
+        }
         return this
     }
 

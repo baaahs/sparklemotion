@@ -12,8 +12,8 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
 
-object ShowEditorSpec : Spek({
-    describe("Show Editor") {
+object MutableShowSpec : Spek({
+    describe("MutableShow") {
         val autoWirer by value { AutoWirer(Plugins.safe()) }
 
         val shader1a by value { autoWirer.testPatch("shader 1a") }
@@ -77,7 +77,7 @@ object ShowEditorSpec : Spek({
                 }
             }
 
-            it("collects shader fragments") {
+            it("collects shaders") {
                 expect(
                     setOf("Cylindrical Projection", "shader 1a", "shader 2a", "shader 2b", "shader 2c")
                 ) { show.shaders.values.map { it.title }.toSet() }
@@ -108,7 +108,7 @@ object ShowEditorSpec : Spek({
                         addPatchSet("patchset 3a") { addPatch(autoWirer.testPatch("shader 3a")) }
                     }
                 }
-                
+
                 mutableShow.moveScene(fromIndex, toIndex)
             }
 
@@ -185,6 +185,29 @@ object ShowEditorSpec : Spek({
                 override(baseShowState) { baseShow.showState().selectPatchSet(0) }
                 it("doesn't update show state") {
                     expect(ShowState(1, listOf(0, 0))) { showState }
+                }
+            }
+        }
+
+        context("editing MutablePatchHolders") {
+            it("adds to existing patch for the given surface, if it exists") {
+                mutableShow.addPatch(autoWirer.testPatch("show shader 1a"))
+                mutableShow.addPatch(autoWirer.testPatch("show shader 1b"))
+
+                expect(
+                    mapOf(Surfaces.AllSurfaces to listOf(
+                        "Cylindrical Projection", "show shader 1a",
+                        "Cylindrical Projection", "show shader 1b"
+                    ))
+                ) {
+                    show.patches.map { patch ->
+                        patch.surfaces to
+                                patch.shaderInstanceIds.map {
+                                    show.shaderInstances[it]?.shaderId?.let { shaderId ->
+                                        show.shaders[shaderId]?.title
+                                    } ?: "?!?"
+                                }
+                    }.associate { it }
                 }
             }
         }
