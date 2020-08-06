@@ -4,11 +4,11 @@ import baaahs.show.Shader
 import baaahs.show.ShaderOutPortRef
 import baaahs.show.ShaderType
 
-abstract class ColorShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader, glslCode) {
-    override val shaderType: ShaderType = ShaderType.Color
+abstract class PaintShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader, glslCode) {
+    override val shaderType: ShaderType = ShaderType.Paint
 }
 
-class ShaderToyColorShader(shader: Shader, glslCode: GlslCode) : ColorShader(shader, glslCode) {
+class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(shader, glslCode) {
     companion object {
         val magicUniforms = listOf(
 //              uniform vec3      iResolution;           // viewport resolution (in pixels)
@@ -89,7 +89,7 @@ class ShaderToyColorShader(shader: Shader, glslCode: GlslCode) : ColorShader(sha
     }
 }
 
-class GenericColorShader(shader: Shader, glslCode: GlslCode) : ColorShader(shader, glslCode) {
+class GenericPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(shader, glslCode) {
     companion object {
         val wellKnownInputPorts = listOf(
             InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinate),

@@ -192,7 +192,7 @@ object ShowEditorSpec : Spek({
 })
 
 private fun AutoWirer.testPatch(title: String) =
-    autoWire(cylindricalUvMapper, ShaderFactory.colorShader(title))
+    autoWire(cylindricalUvMapper, ShaderFactory.paintShader(title))
         .acceptSymbolicChannelLinks()
         .resolve()
 

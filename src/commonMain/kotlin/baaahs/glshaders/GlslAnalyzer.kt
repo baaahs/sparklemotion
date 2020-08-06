@@ -10,7 +10,7 @@ class GlslAnalyzer {
     fun import(src: String, defaultTitle: String? = null): Shader {
         val glslCode = analyze(src)
         val type = ShaderType.values().firstOrNull { it.matches(glslCode) }
-            ?: ShaderType.Color // Reasonable guess?
+            ?: ShaderType.Paint // Reasonable guess?
 
         val title = Regex("^// (.*)").find(src)?.groupValues?.get(1)
 
@@ -41,7 +41,7 @@ class GlslAnalyzer {
         return when (shader.type) {
             ShaderType.Projection -> OpenShader.tryUvTranslatorShader(shader, glslObj)
             ShaderType.Distortion -> TODO()
-            ShaderType.Color -> OpenShader.tryColorShader(shader, glslObj)
+            ShaderType.Paint -> OpenShader.tryPaintShader(shader, glslObj)
             ShaderType.Filter -> OpenShader.tryFilterShader(shader, glslObj)
         } ?: throw AnalysisException("Can't open purported ${shader.type} shader \"${shader.title}\"")
     }

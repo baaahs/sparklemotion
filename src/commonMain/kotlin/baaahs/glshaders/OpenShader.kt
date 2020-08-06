@@ -83,13 +83,13 @@ interface OpenShader : RefCounted {
     }
 
     companion object {
-        fun tryColorShader(shader: Shader, glslCode: GlslCode): ColorShader? {
+        fun tryPaintShader(shader: Shader, glslCode: GlslCode): PaintShader? {
             return when {
                 glslCode.functionNames.contains("main") ->
-                    GenericColorShader(shader, glslCode)
+                    GenericPaintShader(shader, glslCode)
 
                 glslCode.functionNames.contains("mainImage") ->
-                    ShaderToyColorShader(shader, glslCode)
+                    ShaderToyPaintShader(shader, glslCode)
 
                 else -> null
             }
