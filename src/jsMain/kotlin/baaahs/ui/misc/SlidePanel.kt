@@ -1,8 +1,11 @@
 package baaahs.ui.misc
 
-import baaahs.ui.*
+import baaahs.jsx.useResizeListener
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import kotlinx.css.*
-import kotlinx.css.properties.*
+import kotlinx.css.properties.s
+import kotlinx.css.properties.transition
 import org.w3c.dom.HTMLDivElement
 import react.*
 import react.dom.div
@@ -17,15 +20,12 @@ val SlidePanel = xComponent<SlidePanelProps>("SlidePanel") { props ->
     val panelEls = (0..10).map { ref<HTMLDivElement?>() }
 
     onMount(props.panels) {
-        props.panels.forEachIndexed { index, _ ->
-            val div = panelEls[index].current!!
-            val rootDiv = rootEl.current!!
-            div.style.width = rootDiv.clientWidth.px.toString()
-            div.style.height = rootDiv.clientHeight.px.toString()
-        }
+        resize(props, rootEl, panelEls)
     }
+    useResizeListener(rootEl) { resize(props, rootEl, panelEls) }
 
     val visiblePanelIndex = min(props.index ?: 0, props.panels.size)
+    val marginWidth = props.margins ?: 0.px
 
     div(+SlidePanelStyles.root) {
         ref = rootEl
@@ -33,19 +33,32 @@ val SlidePanel = xComponent<SlidePanelProps>("SlidePanel") { props ->
         styledDiv {
             ref = sliderEl
             css { +SlidePanelStyles.slideContainer }
-            css.left = -100.pct.times(visiblePanelIndex)
+            css.left = -(100.pct + marginWidth) * visiblePanelIndex
 
             props.panels.forEachIndexed { index, panel ->
                 styledDiv {
                     ref = panelEls[index]
 
                     css { +SlidePanelStyles.slidePanel }
-                    css.left = 100.pct.times(index)
+                    css.left = (100.pct + marginWidth) * index
 
                     panel()
                 }
             }
         }
+    }
+}
+
+private fun resize(
+    props: SlidePanelProps,
+    rootEl: RMutableRef<HTMLDivElement?>,
+    panelEls: List<RMutableRef<HTMLDivElement?>>
+) {
+    props.panels.forEachIndexed { index, _ ->
+        val div = panelEls[index].current!!
+        val rootDiv = rootEl.current!!
+        div.style.width = rootDiv.clientWidth.px.toString()
+        div.style.height = rootDiv.clientHeight.px.toString()
     }
 }
 
@@ -73,6 +86,7 @@ object SlidePanelStyles : StyleSheet("ui-misc-SlidePanel", isStatic = true) {
 external interface SlidePanelProps : RProps {
     var panels: List<RBuilder.() -> Unit>
     var index: Int?
+    var margins: LinearDimension?
 }
 
 fun RBuilder.slidePanel(handler: RHandler<SlidePanelProps>) =

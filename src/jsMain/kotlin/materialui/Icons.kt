@@ -19,6 +19,7 @@ external val DragIndicator: Icon
 external val DragHandle: Icon
 external val Edit: Icon
 external val Error: Icon
+external val ErrorOutline: Icon
 external val ExpandMore: Icon
 external val FileCopy: Icon
 external val FilterBAndW: Icon
