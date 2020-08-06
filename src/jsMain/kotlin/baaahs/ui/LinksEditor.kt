@@ -83,7 +83,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                                     when(value) {
                                         "__new__" -> {} // TODO
                                         "__none__" -> incomingLinks.remove(inputPort.id)
-                                        else -> incomingLinks[inputPort.id] = sourcePortOptions[value[1].toInt()].portEditor
+                                        else -> incomingLinks[inputPort.id] = sourcePortOptions[value.toInt()].portEditor
                                     }
                                     props.onChange()
                                     this@xComponent.forceRender()
