@@ -231,71 +231,13 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     div(+Styles.shaderEditor) {
         ref = rootEl
 
-        styledDiv {
-            css { +Styles.previewBar }
-
-            patchPreview {
-                attrs.patch = curPatch
-                attrs.onSuccess = handlePatchPreviewSuccess
-                attrs.onGadgetsChange = handleGadgetsChange
-                attrs.width = 300.px
-                attrs.height = 180.px
-                attrs.onError = handleGlslErrors
-            }
-            styledDiv { css { +Styles.status }; ref = statusContainerEl }
-            styledDiv {
-                css { +Styles.controls }
-                showControls { attrs.gadgets = activeShader.current?.gadgets ?: emptyArray() }
-            }
-        }
-
-        div(+Styles.shaderMeta) {
-            formControl {
-                textField {
-                    attrs.autoFocus = false
-                    attrs.fullWidth = true
-                    attrs.value = activeShader.current?.mutableShader?.title ?: ""
-                    attrs.onChangeFunction = handleTitleChange
-                }
-                formHelperText { +"Shader Name" }
-            }
-
-            formControl {
-                select {
-                    attrs.value(activeShader.current?.mutableShaderInstance?.shaderChannel?.id ?: "")
-                    attrs.onChangeFunction = handleChannelChange
-                    props.shaderChannels.sortedBy { it.id }.forEach { shaderChannel ->
-                        menuItem {
-                            attrs["value"] = shaderChannel.id
-                            +shaderChannel.id
-                        }
-                    }
-
-                    divider {}
-                    menuItem {
-                        attrs["value"] = ""
-                        +"None"
-                    }
-                }
-                formHelperText { +"Channel" }
-            }
-
-            formControl {
-                textField {
-                    attrs.value = activeShader.current?.mutableShaderInstance?.priority ?: 0f
-                    attrs.onChangeFunction = handlePriorityChange
-                }
-                formHelperText { +"Priority" }
-            }
-        }
-
         reactAce {
             ref = aceEditor
             attrs {
                 mode = "glsl"
                 theme = "tomorrow_night_bright"
                 width = "100%"
-                height = "60vh"
+                height = "100%"
                 showGutter = true
                 this.onChange = handleCodeChange
                 this.onCursorChange = onCursorChange

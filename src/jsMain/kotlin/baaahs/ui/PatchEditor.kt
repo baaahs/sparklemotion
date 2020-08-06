@@ -42,12 +42,12 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchEditor") { props ->
     tableRow {
         attrs.key = mutablePatch.id
 
-        tdCell(PatchHolderStyles.patchTableSurfacesColumn on TableCellStyle.root) {
+        tdCell(/*PatchHolderStyles.patchTableSurfacesColumn on TableCellStyle.root*/) {
             attrs.key = "Surfaces"
             +mutablePatch.surfaces.name
         }
 
-        tdCell(PatchHolderStyles.patchTableShadersColumn on TableCellStyle.root) {
+        tdCell(/*PatchHolderStyles.patchTableShadersColumn on TableCellStyle.root*/) {
             attrs.key = "Shaders"
 
             tabs {

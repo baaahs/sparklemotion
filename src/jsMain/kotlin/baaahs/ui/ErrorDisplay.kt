@@ -2,20 +2,43 @@ package baaahs.ui
 
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.role
+import materialui.NotificationImportant
 import materialui.components.button.button
+import materialui.components.button.enums.ButtonColor
+import materialui.components.button.enums.ButtonVariant
+import materialui.components.container.container
+import materialui.components.paper.paper
+import materialui.icon
 import react.RProps
-import react.dom.div
-import react.dom.p
-import react.dom.pre
+import react.dom.*
 import react.functionalComponent
 
 val ErrorDisplay = functionalComponent<ErrorDisplayProps> { props ->
-    div {
+    paper {
         attrs.role = "alert"
-        p { +"Something went wrong:" }
-        pre { +(props.error.message ?: "Unknown error") }
-        pre { +props.componentStack }
-        button { attrs.onClickFunction = { props.resetErrorBoundary() } }
+
+        container {
+            icon(NotificationImportant)
+
+            h2 { +"Something went wrong:" }
+
+            button {
+                attrs.variant = ButtonVariant.outlined
+                attrs.color = ButtonColor.primary
+                attrs.onClickFunction = { props.resetErrorBoundary() }
+                +"Retry"
+            }
+
+            pre { +(props.error.message ?: "Unknown error") }
+
+            props.error.cause?.let {
+                h6 { +"Cause" }
+                pre { +(it.toString()) }
+            }
+
+            h6 { +"Component Stack" }
+            pre { +props.componentStack }
+        }
     }
 }
 
