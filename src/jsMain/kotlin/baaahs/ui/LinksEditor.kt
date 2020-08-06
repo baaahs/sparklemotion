@@ -8,6 +8,7 @@ import baaahs.show.ShaderChannel
 import baaahs.show.mutable.*
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.style
 import materialui.AddCircleOutline
 import materialui.components.container.container
 import materialui.components.divider.divider
@@ -57,7 +58,9 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     val inputPorts = openShader?.inputPorts?.sortedBy { it.title }
     val incomingLinks = props.mutableShaderInstance.incomingLinks
 
-    table {
+    table() {
+        attrs["size"] = "small"
+
         tableHead {
             tableRow {
                 thCell { +"From" }
@@ -119,24 +122,6 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                     tdCell {
                         b { +inputPort.title }
                         code { +" (${inputPort.dataType})" }
-                    }
-                }
-            }
-
-            tableRow {
-                tdCell {
-                    attrs.colSpan = "2"
-
-                    container {
-                        iconButton {
-                            icon(AddCircleOutline)
-                            typography { +"New Link…" }
-
-                            attrs.onClickFunction = { _: Event ->
-//                        shaderInstanceEditor.incomingLinks.put(LinkEditor(null, null))
-                                props.onChange()
-                            }
-                        }
                     }
                 }
             }

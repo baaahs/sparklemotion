@@ -15,13 +15,17 @@ actual fun getTimeMillis(): Long = System.currentTimeMillis()
 actual fun decodeBase64(s: String): ByteArray = Base64.getDecoder().decode(s)
 
 actual fun log(id: String, level: String, message: String, exception: Throwable?) {
-    val logger = LoggerFactory.getLogger(id)
-    when (level) {
-        "ERROR" -> logger.error(message, exception)
-        "WARN" -> logger.warn(message, exception)
-        "INFO" -> logger.info(message, exception)
-        "DEBUG" -> logger.debug(message, exception)
-        else -> logger.info(message, exception)
+    try {
+        val logger = LoggerFactory.getLogger(id)
+        when (level) {
+            "ERROR" -> logger.error(message, exception)
+            "WARN" -> logger.warn(message, exception)
+            "INFO" -> logger.info(message, exception)
+            "DEBUG" -> logger.debug(message, exception)
+            else -> logger.info(message, exception)
+        }
+    } catch (t: Throwable) {
+        println("!!! Logger bailing")
     }
 }
 

@@ -20,7 +20,7 @@ abstract class MutablePatchHolder(
 
     var title = basePatchHolder.title
 
-    val patchMappings by lazy {
+    val patches by lazy {
         basePatchHolder.patches.map { MutablePatch(it, mutableShow) }.toMutableList()
     }
     val eventBindings = basePatchHolder.eventBindings.toMutableList()
@@ -40,30 +40,30 @@ abstract class MutablePatchHolder(
             Surfaces.AllSurfaces
         )
         mutablePatch.block()
-        patchMappings.add(mutablePatch)
+        patches.add(mutablePatch)
         return this
     }
 
     fun addPatch(mutablePatch: MutablePatch): MutablePatchHolder {
-        patchMappings.add(mutablePatch)
+        patches.add(mutablePatch)
         return this
     }
 
     fun editPatch(index: Int, block: MutablePatch.() -> Unit): MutablePatchHolder {
-        patchMappings[index].block()
+        patches[index].block()
         return this
     }
 
     fun findDataSources(): Set<DataSource> =
         (
             findControlDataSources() +
-                patchMappings.flatMap { it.findDataSources() } +
+                patches.flatMap { it.findDataSources() } +
                 descendents.flatMap { it.findDataSources() }
         ).toSet()
 
     fun findShaderInstances(): Set<MutableShaderInstance> =
         (
-            patchMappings.flatMap { it.findShaderInstances() } +
+            patches.flatMap { it.findShaderInstances() } +
                 descendents.flatMap { it.findShaderInstances() }
         ).toSet()
 
@@ -72,7 +72,7 @@ abstract class MutablePatchHolder(
 
     protected fun collectShaderChannels(): Set<ShaderChannel> =
         (
-            patchMappings.flatMap { it.findShaderChannels() } +
+            patches.flatMap { it.findShaderChannels() } +
                 descendents.flatMap { it.collectShaderChannels() }
         ).toSet()
 
@@ -102,7 +102,9 @@ abstract class MutablePatchHolder(
 
     open fun isChanged(): Boolean {
         return title != basePatchHolder.title
-                || patchMappings != basePatchHolder.patches
+                || patches != basePatchHolder.patches
+                || eventBindings != basePatchHolder.eventBindings
+                || controlLayout != basePatchHolder.controlLayout
     }
 
     abstract fun getShow(): Show
@@ -186,7 +188,7 @@ class MutableShow(
     fun build(showBuilder: ShowBuilder): Show {
         return Show(
             title,
-            patches = patchMappings.map { it.build(showBuilder) },
+            patches = patches.map { it.build(showBuilder) },
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder),
             scenes = scenes.map { it.build(showBuilder) },
@@ -259,7 +261,7 @@ class MutableShow(
         fun build(showBuilder: ShowBuilder): Scene {
             return Scene(
                 title,
-                patches = patchMappings.map { it.build(showBuilder) },
+                patches = patches.map { it.build(showBuilder) },
                 eventBindings = eventBindings,
                 controlLayout = buildControlLayout(showBuilder),
                 patchSets = patchSets.map { it.build(showBuilder) }
@@ -280,7 +282,7 @@ class MutableShow(
             fun build(showBuilder: ShowBuilder): PatchSet {
                 return PatchSet(
                     title,
-                    patches = patchMappings.map { it.build(showBuilder) },
+                    patches = patches.map { it.build(showBuilder) },
                     eventBindings = eventBindings,
                     controlLayout = buildControlLayout(showBuilder)
                 )

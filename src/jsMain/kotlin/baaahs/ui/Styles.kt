@@ -72,8 +72,9 @@ object Styles : StyleSheet("ui", isStatic = true) {
 
     val shaderEditor by css {
         width = 100.pct
+        height = 100.pct
         display = Display.flex
-        flexDirection = FlexDirection.column
+        flexDirection = FlexDirection.row
     }
 
     val shaderMeta by css {

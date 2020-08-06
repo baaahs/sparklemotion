@@ -50,6 +50,7 @@ import materialui.styles.muitheme.options.palette
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.options.type
 import materialui.styles.themeprovider.themeProvider
+import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.b
@@ -59,6 +60,7 @@ import react.dom.p
 import styled.css
 import styled.injectGlobal
 import styled.styledDiv
+import kotlin.browser.window
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     injectGlobal(Styles.global.toString())
@@ -241,6 +243,27 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val show = webClient.show
     val showState = webClient.showState
+
+    onMount {
+        window.onkeydown = { event ->
+            when (event.target) {
+                is HTMLButtonElement,
+                is HTMLInputElement,
+                is HTMLSelectElement,
+                is HTMLOptionElement,
+                is HTMLTextAreaElement -> {
+                    // Ignore.
+                }
+                else -> {
+                    when (event.key) {
+                        "d" -> editMode = !editMode
+                    }
+                }
+            }
+            true
+        }
+        withCleanup { window.onkeydown = null }
+    }
 
     appContext.Provider {
         attrs.value = myAppContext
