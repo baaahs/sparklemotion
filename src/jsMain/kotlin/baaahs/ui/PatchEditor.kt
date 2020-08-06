@@ -2,6 +2,7 @@ package baaahs.ui
 
 import baaahs.Logger
 import baaahs.app.ui.appContext
+import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
@@ -36,16 +37,17 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchEditor") { props ->
         selectedShaderIndex = tabIndex
     }
     val shaderInstances = props.mutablePatch.mutableShaderInstances
+    val shaderChannels = props.mutablePatchHolder.findShaderChannels() + ShaderChannel.Main
 
     tableRow {
         attrs.key = mutablePatch.id
 
-        tdCell(PatchHolderStyles.patchTableSurfacesColumn on TableCellStyle.root) {
+        tdCell(/*PatchHolderStyles.patchTableSurfacesColumn on TableCellStyle.root*/) {
             attrs.key = "Surfaces"
             +mutablePatch.surfaces.name
         }
 
-        tdCell(PatchHolderStyles.patchTableShadersColumn on TableCellStyle.root) {
+        tdCell(/*PatchHolderStyles.patchTableShadersColumn on TableCellStyle.root*/) {
             attrs.key = "Shaders"
 
             tabs {
@@ -71,7 +73,7 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchEditor") { props ->
                                     val linkedPatch = openShader?.let {
                                         try {
                                             val previewPatch = appContext.autoWirer.autoWire(openShader)
-                                            previewPatch.resolve().openForPreview(appContext.autoWirer)
+                                            previewPatch.resolve().openForPreview(appContext.autoWirer, shader.type)
                                         } catch (e: Exception) {
                                             Logger("PatchEditor").error("failed to build patch for preview", e)
                                             null
@@ -128,10 +130,11 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchEditor") { props ->
             }
 
             if (selectedShaderIndex != -1) {
-                val selectedShader = shaderInstances[selectedShaderIndex]
                 val mutableShaderInstance = shaderInstances[selectedShaderIndex]
 
                 expansionPanel {
+                    attrs.expanded = true
+
                     expansionPanelSummary {
                         attrs.expandIcon { icon(ExpandMore) }
                         +"Links"
@@ -142,13 +145,15 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchEditor") { props ->
                             attrs.mutablePatch = mutablePatch
                             attrs.showBuilder = showBuilder
                             attrs.mutableShaderInstance = mutableShaderInstance
-                            attrs.shaderChannels = props.mutablePatchHolder.findShaderChannels()
+                            attrs.shaderChannels = shaderChannels
                             attrs.onChange = props.onChange
                         }
                     }
                 }
 
                 expansionPanel {
+                    attrs.expanded = true
+
                     expansionPanelSummary {
                         attrs.expandIcon { icon(ExpandMore) }
                         +"Code"
@@ -156,7 +161,8 @@ val PatchEditor = xComponent<PatchEditorProps>("PatchEditor") { props ->
 
                     expansionPanelDetails {
                         shaderEditor {
-                            attrs.mutableShader = selectedShader.mutableShader
+                            attrs.mutableShaderInstance = mutableShaderInstance
+                            attrs.shaderChannels = shaderChannels
                             attrs.onChange = props.onChange
                         }
                     }

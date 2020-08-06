@@ -55,7 +55,7 @@ class LinkedPatch(
 //            shaderInstance.shaderChannel?.let { componentsByChannel[it] = component }
             instanceNode.liveShaderInstance to component
         }.associate { it }
-        componentsByChannel[ShaderChannel.Main]?.redirectOutputTo("sm_pixelColor")
+        componentsByChannel[ShaderChannel.Main]?.redirectOutputTo("sm_result")
     }
 
 
@@ -168,7 +168,7 @@ class LinkedPatch(
         buf.append("\n")
         buf.append("// SparkleMotion-generated GLSL\n")
         buf.append("\n")
-        buf.append("layout(location = 0) out vec4 sm_pixelColor;\n")
+        buf.append("layout(location = 0) out ${shaderInstance.shader.outputPort.dataType} sm_result;\n")
         buf.append("\n")
 
         components.forEach { component ->
@@ -190,7 +190,7 @@ class LinkedPatch(
         components.forEach { component ->
             buf.append("  ", component.invokeAndSetResultGlsl(), "; // ${component.title}\n")
         }
-        buf.append("  sm_pixelColor = ", components.last().outputVar, ";\n")
+        buf.append("  sm_result = ", components.last().outputVar, ";\n")
         buf.append("}\n")
         return buf.toString()
     }

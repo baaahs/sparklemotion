@@ -34,7 +34,11 @@ actual fun decodeBase64(s: String): ByteArray {
 }
 
 actual fun log(id: String, level: String, message: String, exception: Throwable?) {
-    logMessage(level, "${Logger.ts()} [] $level  $id - $message", exception)
+    try {
+        logMessage(level, "${Logger.ts()} [] $level  $id - $message", exception)
+    } catch (t: Throwable) {
+        println("!!! Logger bailing")
+    }
 }
 
 private fun logMessage(level: String, message: String, exception: Throwable?) {

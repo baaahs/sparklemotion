@@ -8,12 +8,14 @@ import baaahs.show.ShaderChannel
 import baaahs.show.mutable.*
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.style
 import materialui.AddCircleOutline
 import materialui.components.container.container
 import materialui.components.divider.divider
 import materialui.components.formcontrol.formControl
 import materialui.components.iconbutton.iconButton
 import materialui.components.inputlabel.inputLabel
+import materialui.components.listsubheader.listSubheader
 import materialui.components.menuitem.menuItem
 import materialui.components.select.select
 import materialui.components.table.table
@@ -56,7 +58,9 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     val inputPorts = openShader?.inputPorts?.sortedBy { it.title }
     val incomingLinks = props.mutableShaderInstance.incomingLinks
 
-    table {
+    table() {
+        attrs["size"] = "small"
+
         tableHead {
             tableRow {
                 thCell { +"From" }
@@ -89,6 +93,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                                 sourcePortOptions.forEachIndexed { index, option ->
                                     if (dividerGroup != option.groupName) {
                                         divider {}
+                                        listSubheader { +option.groupName }
                                         dividerGroup = option.groupName
                                     }
 
@@ -120,24 +125,6 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                     }
                 }
             }
-
-            tableRow {
-                tdCell {
-                    attrs.colSpan = "2"
-
-                    container {
-                        iconButton {
-                            icon(AddCircleOutline)
-                            typography { +"New Link…" }
-
-                            attrs.onClickFunction = { _: Event ->
-//                        shaderInstanceEditor.incomingLinks.put(LinkEditor(null, null))
-                                props.onChange()
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }
@@ -156,7 +143,7 @@ class DataSourceOption(val dataSource: DataSource): SourcePortOption {
     override val portEditor: MutableLink.Port get() = MutableDataSource(
         dataSource
     )
-    override val groupName: String get() = "dataSource"
+    override val groupName: String get() = "Data Sources"
 
     override fun matches(otherPort: MutableLink.Port): Boolean {
         return otherPort is MutableDataSource && otherPort.dataSource == dataSource
@@ -172,7 +159,7 @@ class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOption {
     override val portEditor: MutableLink.Port get() = MutableShaderChannel(
         shaderChannel
     )
-    override val groupName: String get() = "shaderChannel"
+    override val groupName: String get() = "Shader Channels"
 
     override fun matches(otherPort: MutableLink.Port): Boolean {
         return otherPort is MutableShaderChannel && otherPort.shaderChannel == shaderChannel
@@ -189,7 +176,7 @@ class ShaderOption(val mutableShaderInstance: MutableShaderInstance, val outputP
         mutableShaderInstance,
         outputPort.id
     )
-    override val groupName: String get() = "shaderPort"
+    override val groupName: String get() = "Shader Ports"
 
     override fun matches(otherPort: MutableLink.Port): Boolean {
         return otherPort is MutableShaderOutPort &&

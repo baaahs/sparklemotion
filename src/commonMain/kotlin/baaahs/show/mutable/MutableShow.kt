@@ -20,7 +20,7 @@ abstract class MutablePatchHolder(
 
     var title = basePatchHolder.title
 
-    val patchMappings by lazy {
+    val patches by lazy {
         basePatchHolder.patches.map { MutablePatch(it, mutableShow) }.toMutableList()
     }
     val eventBindings = basePatchHolder.eventBindings.toMutableList()
@@ -40,30 +40,30 @@ abstract class MutablePatchHolder(
             Surfaces.AllSurfaces
         )
         mutablePatch.block()
-        patchMappings.add(mutablePatch)
+        patches.add(mutablePatch)
         return this
     }
 
     fun addPatch(mutablePatch: MutablePatch): MutablePatchHolder {
-        patchMappings.add(mutablePatch)
+        patches.add(mutablePatch)
         return this
     }
 
     fun editPatch(index: Int, block: MutablePatch.() -> Unit): MutablePatchHolder {
-        patchMappings[index].block()
+        patches[index].block()
         return this
     }
 
     fun findDataSources(): Set<DataSource> =
         (
             findControlDataSources() +
-                patchMappings.flatMap { it.findDataSources() } +
+                patches.flatMap { it.findDataSources() } +
                 descendents.flatMap { it.findDataSources() }
         ).toSet()
 
     fun findShaderInstances(): Set<MutableShaderInstance> =
         (
-            patchMappings.flatMap { it.findShaderInstances() } +
+            patches.flatMap { it.findShaderInstances() } +
                 descendents.flatMap { it.findShaderInstances() }
         ).toSet()
 
@@ -72,7 +72,7 @@ abstract class MutablePatchHolder(
 
     protected fun collectShaderChannels(): Set<ShaderChannel> =
         (
-            patchMappings.flatMap { it.findShaderChannels() } +
+            patches.flatMap { it.findShaderChannels() } +
                 descendents.flatMap { it.collectShaderChannels() }
         ).toSet()
 
@@ -102,7 +102,9 @@ abstract class MutablePatchHolder(
 
     open fun isChanged(): Boolean {
         return title != basePatchHolder.title
-                || patchMappings != basePatchHolder.patches
+                || patches != basePatchHolder.patches
+                || eventBindings != basePatchHolder.eventBindings
+                || controlLayout != basePatchHolder.controlLayout
     }
 
     abstract fun getShow(): Show
@@ -129,7 +131,8 @@ class MutableShow(
             MutableShaderInstance(
                 findShader(shaderInstance.shaderId),
                 hashMapOf(),
-                shaderInstance.shaderChannel
+                shaderInstance.shaderChannel,
+                shaderInstance.priority
             )
         }.toMutableMap()
     init {
@@ -185,7 +188,7 @@ class MutableShow(
     fun build(showBuilder: ShowBuilder): Show {
         return Show(
             title,
-            patches = patchMappings.map { it.build(showBuilder) },
+            patches = patches.map { it.build(showBuilder) },
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder),
             scenes = scenes.map { it.build(showBuilder) },
@@ -258,7 +261,7 @@ class MutableShow(
         fun build(showBuilder: ShowBuilder): Scene {
             return Scene(
                 title,
-                patches = patchMappings.map { it.build(showBuilder) },
+                patches = patches.map { it.build(showBuilder) },
                 eventBindings = eventBindings,
                 controlLayout = buildControlLayout(showBuilder),
                 patchSets = patchSets.map { it.build(showBuilder) }
@@ -279,7 +282,7 @@ class MutableShow(
             fun build(showBuilder: ShowBuilder): PatchSet {
                 return PatchSet(
                     title,
-                    patches = patchMappings.map { it.build(showBuilder) },
+                    patches = patches.map { it.build(showBuilder) },
                     eventBindings = eventBindings,
                     controlLayout = buildControlLayout(showBuilder)
                 )
@@ -359,7 +362,7 @@ class MutablePatch {
         Patch.from(this, showBuilder)
 
     /** Build a [LinkedPatch] independent of an [baaahs.OpenShow]. */
-    fun openForPreview(autoWirer: AutoWirer): LinkedPatch? {
+    fun openForPreview(autoWirer: AutoWirer, shaderType: ShaderType): LinkedPatch? {
         val showBuilder = ShowBuilder()
         build(showBuilder)
 
@@ -371,8 +374,8 @@ class MutablePatch {
                 .getResolvedShaderInstances()
         val openPatch = OpenPatch(resolvedShaderInstances.values.toList(), surfaces)
 
-        val merge = autoWirer.merge(mapOf(surfaces to listOf(openPatch)))
-        return merge[surfaces]
+        val portDiagram = autoWirer.buildPortDiagram(openPatch)
+        return portDiagram.resolvePatch(ShaderChannel.Main, shaderType.resultContentType)
     }
 
     fun addShaderInstance(mutableShaderInstance: MutableShaderInstance): MutablePatch {
@@ -382,7 +385,7 @@ class MutablePatch {
 
     fun addShaderInstance(shader: Shader, block: MutableShaderInstance.() -> Unit): MutablePatch {
         val mutableShaderInstance = MutableShaderInstance(
-            MutableShader(shader), hashMapOf()
+            MutableShader(shader), hashMapOf(), null, 0f
         )
         mutableShaderInstance.block()
         mutableShaderInstances.add(mutableShaderInstance)
@@ -450,7 +453,8 @@ data class MutableShader(
 data class MutableShaderInstance(
     val mutableShader: MutableShader,
     val incomingLinks: MutableMap<String, MutableLink.Port> = hashMapOf(),
-    var shaderChannel: ShaderChannel? = null
+    var shaderChannel: ShaderChannel? = null,
+    var priority: Float = 0f
 ) {
     fun findDataSources(): List<DataSource> {
         return incomingLinks.mapNotNull { (_, from) ->
@@ -478,7 +482,8 @@ data class MutableShaderInstance(
             incomingLinks.mapValues { (_, portRef) ->
                 portRef.toRef(showBuilder)
             },
-            shaderChannel
+            shaderChannel,
+            priority
         )
     }
 }

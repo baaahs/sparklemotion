@@ -7,10 +7,11 @@ import baaahs.show.mutable.MutableShader
 enum class ShaderType(
     val priority: Int,
     val defaultUpstreams: Map<ContentType, ShaderChannel>,
+    val resultContentType: ContentType,
     /**language=glsl*/
     val template: String
 ) {
-    Projection(0, emptyMap(), """
+    Projection(0, emptyMap(), ContentType.UvCoordinate, """
             uniform sampler2D pixelCoordsTexture;
             
             struct ModelInfo {
@@ -38,7 +39,7 @@ enum class ShaderType(
         }
     },
 
-    Distortion(1, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), """
+    Distortion(1, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.UvCoordinate, """
         // ... TODO
     """.trimIndent()) {
         override fun matches(glslCode: GlslCode): Boolean {
@@ -46,7 +47,7 @@ enum class ShaderType(
         }
     },
 
-    Color(0, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), """
+    Color(0, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.Color, """
         uniform vec2 resolution;
         uniform float time;
 
@@ -61,7 +62,7 @@ enum class ShaderType(
         }
     },
 
-    Filter(1, mapOf(ContentType.Color to ShaderChannel.Main), """
+    Filter(1, mapOf(ContentType.Color to ShaderChannel.Main), ContentType.Color, """
         vec4 filterImage(vec4 inColor) {
             return inColor;
         }

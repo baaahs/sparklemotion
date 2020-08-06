@@ -155,7 +155,7 @@ class GlslProgram(
     companion object {
         private val logger = Logger("GlslProgram")
 
-        val PixelColor = OutputPortRef("sm_pixelColor")
+        val PixelColor = OutputPortRef("sm_result")
     }
 }
 
