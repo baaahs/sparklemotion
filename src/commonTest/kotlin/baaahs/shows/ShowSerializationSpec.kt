@@ -184,6 +184,7 @@ private fun jsonFor(shaderInstance: ShaderInstance) = json {
     "shaderId" to shaderInstance.shaderId
     "incomingLinks" to shaderInstance.incomingLinks.jsonMap { jsonFor(it) }
     "shaderChannel" to shaderInstance.shaderChannel?.id
+    "priority" to shaderInstance.priority
 }
 
 fun expectJson(expected: JsonElement, block: () -> JsonElement) {

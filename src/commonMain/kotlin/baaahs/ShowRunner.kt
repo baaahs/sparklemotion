@@ -1,8 +1,9 @@
 package baaahs
 
 import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.Plugins
+import baaahs.glshaders.ContentType
 import baaahs.glsl.GlslRenderer
+import baaahs.show.ShaderChannel
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
 import baaahs.show.live.OpenShow.OpenScene.OpenPatchSet
@@ -16,7 +17,8 @@ class ShowRunner(
 //    private val movingHeadManager: MovingHeadManager,
     internal val clock: Clock,
     private val glslRenderer: GlslRenderer,
-    private val surfaceManager: SurfaceManager
+    private val surfaceManager: SurfaceManager,
+    private val autoWirer: AutoWirer
 ) {
     private var showState: ShowState = initialShowState ?: show.defaultShowState()
     private var nextPatchSet: OpenPatchSet? = showState.findPatchSet(openShow)
@@ -101,14 +103,14 @@ class ShowRunner(
     }
 
     private fun prepare(newPatchSet: OpenPatchSet): RenderPlan {
-        val autoWirer = AutoWirer(Plugins.findAll())
-
         val activePatches = newPatchSet.activePatches()
-        val entryPoints = autoWirer.merge(*activePatches.toTypedArray())
+        val linkedPatches = autoWirer.merge(*activePatches.toTypedArray()).mapValues { (_, portDiagram) ->
+            portDiagram.resolvePatch(ShaderChannel.Main, ContentType.Color)
+        }
         val glslContext = glslRenderer.gl
         val activeDataSources = mutableSetOf<String>()
-        val programs = entryPoints.map { (_, liveShaderInstance) ->
-            liveShaderInstance to liveShaderInstance.createProgram(glslContext, openShow.dataFeeds)
+        val programs = linkedPatches.mapNotNull { (_, linkedPatch) ->
+            linkedPatch?.let { it to it.createProgram(glslContext, openShow.dataFeeds) }
         }
         return RenderPlan(programs)
     }

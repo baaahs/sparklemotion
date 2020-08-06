@@ -57,7 +57,8 @@ object AutoWirerSpec : Spek({
                                     ShaderChannel.Main
                                 )
                             ),
-                            shaderChannel = ShaderChannel.Main
+                            shaderChannel = ShaderChannel.Main,
+                            priority = 0f
                         )
                     )
                 ) { patch.mutableShaderInstances }

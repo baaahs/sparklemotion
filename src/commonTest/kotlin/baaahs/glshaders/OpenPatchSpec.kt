@@ -51,7 +51,7 @@ object OpenPatchSpec : Spek({
                             link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
                             shaderChannel = ShaderChannel.Main
                         }
-                    }.openForPreview(autoWirer)!!
+                    }.openForPreview(autoWirer, shader.type)!!
                 }
                 val glsl by value {
                     linkedPatch.toGlsl().trim()
@@ -66,7 +66,7 @@ object OpenPatchSpec : Spek({
                         
                         // SparkleMotion-generated GLSL
 
-                        layout(location = 0) out vec4 sm_pixelColor;
+                        layout(location = 0) out vec4 sm_result;
 
                         uniform float in_bluenessSlider;
                         uniform vec2 in_resolution;
@@ -97,7 +97,7 @@ object OpenPatchSpec : Spek({
                         #line -1
                         void main() {
                           p0_main(); // This Shader's Name
-                          sm_pixelColor = p0_gl_FragColor;
+                          sm_result = p0_gl_FragColor;
                         }
                         """.trimIndent()
                     ) { glsl }
@@ -124,7 +124,7 @@ object OpenPatchSpec : Spek({
                                 link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
                                 shaderChannel = ShaderChannel.Main
                             }
-                        }.openForPreview(autoWirer)!!
+                        }.openForPreview(autoWirer, shader.type)!!
                     }
 
                     it("generates GLSL") {
@@ -137,7 +137,7 @@ object OpenPatchSpec : Spek({
 
                                 // SparkleMotion-generated GLSL
 
-                                layout(location = 0) out vec4 sm_pixelColor;
+                                layout(location = 0) out vec4 sm_result;
 
                                 struct ModelInfo {
                                     vec3 center;
@@ -203,7 +203,7 @@ object OpenPatchSpec : Spek({
                                 void main() {
                                   p0i_result = p0_mainUvFromRaster(gl_FragCoord.xy); // Cylindrical Projection
                                   p1_main(); // This Shader's Name
-                                  sm_pixelColor = p1_gl_FragColor;
+                                  sm_result = p1_gl_FragColor;
                                 }
                             """.trimIndent()
                         ) { glsl }

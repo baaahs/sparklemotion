@@ -72,8 +72,20 @@ object Styles : StyleSheet("ui", isStatic = true) {
 
     val shaderEditor by css {
         width = 100.pct
+        height = 100.pct
         display = Display.flex
-        flexDirection = FlexDirection.column
+        flexDirection = FlexDirection.row
+    }
+
+    val shaderMeta by css {
+        display = Display.flex
+        flexDirection = FlexDirection.row
+
+        child("*") {
+            flex(1.0)
+            padding(1.em)
+        }
+        firstChild { flex(3.0) }
     }
 
     val glslNumber by css {
