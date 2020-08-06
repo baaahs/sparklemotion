@@ -25,11 +25,11 @@ object PatchLayeringSpec : Spek({
 
         val uvShader = Shaders.cylindricalUvMapper.shader
         val blackShader by value {
-            Shader("Black Shader", ShaderType.Color,
+            Shader("Black Shader", ShaderType.Paint,
                 "void main() {\n  gl_FragColor = vec4(0.);\n}")
         }
         val orangeShader by value {
-            Shader("Orange Shader", ShaderType.Color,
+            Shader("Orange Shader", ShaderType.Paint,
                 "void main() {\n  gl_FragColor = vec4(1., .5, 0., gl_FragCoord.x);\n}")
         }
         val brightnessFilter by value {

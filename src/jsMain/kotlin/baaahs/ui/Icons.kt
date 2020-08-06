@@ -8,7 +8,7 @@ object Icons {
         return when (shaderType) {
             ShaderType.Projection -> materialui.CastConnected
             ShaderType.Distortion -> materialui.Map
-            ShaderType.Color -> materialui.Image
+            ShaderType.Paint -> materialui.Image
             ShaderType.Filter ->materialui.FilterBAndW
         }
     }
