@@ -53,6 +53,7 @@ baaahs.shows
 baaahs.sim
 baaahs.sim.ui
 baaahs.ui
+baaahs.ui.misc
 baaahs.util
 baaahs.visualizer
 baaahs.visualizer.ui
