@@ -100,4 +100,9 @@ object Styles : StyleSheet("ui", isStatic = true) {
         overflowY = Overflow.scroll
         border = "1px groove"
     }
+
+    val helpInline by css {
+        display = Display.inline
+        padding(0.em, .5.em)
+    }
 }

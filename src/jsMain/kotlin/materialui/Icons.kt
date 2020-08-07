@@ -25,6 +25,8 @@ external val FileCopy: Icon
 external val FilterBAndW: Icon
 external val FilterList: Icon
 external val Folder: Icon
+external val Help: Icon
+external val HelpOutline: Icon
 external val Image: Icon
 external val InsertDriveFile: Icon
 external val Map: Icon

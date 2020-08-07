@@ -210,6 +210,7 @@ kotlin {
                 implementation(npm("resize-observer-polyfill", "^1.5.1"))
                 implementation(npm("react-ace", "^9.0.0"))
                 implementation(npm("ace-builds", "^1.4.11"))
+                implementation(npm("markdown-it", "~11.0.0"))
                 implementation(npm("normalize.css", "^7.0.0"))
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))

@@ -1,5 +1,6 @@
 package baaahs.ui
 
+import baaahs.app.ui.PatchHolderEditorHelpText
 import baaahs.app.ui.appContext
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
@@ -37,7 +38,6 @@ import materialui.components.list.list
 import materialui.components.listitem.listItem
 import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
-import materialui.components.listsubheader.listSubheader
 import materialui.components.menuitem.menuItem
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.portal.portal
@@ -54,6 +54,7 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 import react.dom.form
+import react.dom.header
 import styled.StyleSheet
 import styled.styledDiv
 
@@ -84,107 +85,125 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
     val styles = PatchHolderEditorStyles
     val patchNavPanel = Panel(selectedPatch?.surfaces?.name ?: "Surfaces", Apps) {
         div(+styles.panel and styles.columns) {
-            list(styles.patchList on ListStyle.root) {
-                listSubheader { +"Fixtures" }
-
-                props.mutablePatchHolder.patches.forEachIndexed { index, mutablePatch ->
-                    listItem {
-                        attrs.button = true
-                        attrs.selected = mutablePatch == selectedPatch
-                        attrs.onClickFunction = x.eventHandler("handlePatchNavClick-$index") {
-                            selectedPatch = props.mutablePatchHolder.patches[index]
-                        }
-
-                        listItemIcon { icon(FilterList) }
-                        listItemText { +mutablePatch.surfaces.name }
+            div(+styles.fixturesListCol) {
+                header {
+                    +"Fixtures"
+                    help {
+                        attrs.divClass = Styles.helpInline.name
+                        attrs.inject(PatchHolderEditorHelpText.fixtures)
                     }
                 }
 
-                listItem {
-                    listItemIcon { icon(AddCircleOutline) }
-                    listItemText { +"New…" }
+                list(styles.fixturesList on ListStyle.root) {
+                    props.mutablePatchHolder.patches.forEachIndexed { index, mutablePatch ->
+                        listItem {
+                            attrs.button = true
+                            attrs.selected = mutablePatch == selectedPatch
+                            attrs.onClickFunction = x.eventHandler("handlePatchNavClick-$index") {
+                                selectedPatch = props.mutablePatchHolder.patches[index]
+                            }
 
-                    attrs.onClickFunction = x.eventHandler("handleNewPatchClick") {
-                        props.mutablePatchHolder.patches.add(MutablePatch())
-                        this@xComponent.forceRender()
+                            listItemIcon { icon(FilterList) }
+                            listItemText { +mutablePatch.surfaces.name }
+                        }
+                    }
+
+                    listItem {
+                        listItemIcon { icon(AddCircleOutline) }
+                        listItemText { +"New…" }
+
+                        attrs.onClickFunction = x.eventHandler("handleNewPatchClick") {
+                            props.mutablePatchHolder.patches.add(MutablePatch())
+                            this@xComponent.forceRender()
+                        }
                     }
                 }
             }
 
-            div(+styles.patchOverview) {
-                val mutablePatch = selectedPatch
-                if (mutablePatch == null) {
-                    typographyH6 { +"No patch selected." }
-                } else {
-                    mutablePatch.mutableShaderInstances.forEachIndexed { index, mutableShaderInstance ->
-                        val shader = mutableShaderInstance.mutableShader
+            div(+styles.patchOverviewCol) {
+                header {
+                    +"Patch Overview"
+                    help {
+                        attrs.divClass = Styles.helpInline.name
+                        attrs.inject(PatchHolderEditorHelpText.patchOverview)
+                    }
+                }
 
-                        card(+styles.shaderCard on PaperStyle.root) {
-                            attrs.onClickFunction = x.eventHandler("handleShaderInstanceClick-$index") {
-                                selectedShaderInstance = selectedPatch!!.mutableShaderInstances[index]
-                                visiblePanel = 1
-                            }
+                div(+styles.patchOverview) {
+                    val mutablePatch = selectedPatch
+                    if (mutablePatch == null) {
+                        typographyH6 { +"No patch selected." }
+                    } else {
+                        mutablePatch.mutableShaderInstances.forEachIndexed { index, mutableShaderInstance ->
+                            val shader = mutableShaderInstance.mutableShader
 
-                            cardHeader {
-                                attrs.avatar {
-                                    avatar { icon(Icons.forShader(shader.type)) }
+                            card(+styles.shaderCard on PaperStyle.root) {
+                                attrs.onClickFunction = x.eventHandler("handleShaderInstanceClick-$index") {
+                                    selectedShaderInstance = selectedPatch!!.mutableShaderInstances[index]
+                                    visiblePanel = 1
                                 }
-                                attrs.title { +shader.title }
+
+                                cardHeader {
+                                    attrs.avatar {
+                                        avatar { icon(Icons.forShader(shader.type)) }
+                                    }
+                                    attrs.title { +shader.title }
 //                                attrs.subheader { +"${shader.type.name} Shader" }
-                            }
-
-                            shaderPreview {
-                                attrs.mutableShaderInstance = mutableShaderInstance
-                                attrs.width = styles.cardWidth
-                                attrs.height = styles.cardWidth
-                            }
-
-                            div(+styles.shaderCardContent) {
-                                typography {
-                                    attrs.display = TypographyDisplay.block
-                                    attrs.variant = TypographyVariant.body2
-                                    attrs.color = TypographyColor.textSecondary
-                                    +"${shader.type.name} Shader"
                                 }
-                            }
+
+                                shaderPreview {
+                                    attrs.mutableShaderInstance = mutableShaderInstance
+                                    attrs.width = styles.cardWidth
+                                    attrs.height = styles.cardWidth
+                                }
+
+                                div(+styles.shaderCardContent) {
+                                    typography {
+                                        attrs.display = TypographyDisplay.block
+                                        attrs.variant = TypographyVariant.body2
+                                        attrs.color = TypographyColor.textSecondary
+                                        +"${shader.type.name} Shader"
+                                    }
+                                }
 //                            cardActions {
 //                                button { +"Edit" }
 //                            }
+                            }
                         }
-                    }
 
-                    card {
-                        menuButton {
-                            attrs.icon = AddCircleOutline
-                            attrs.label = "New Shader…"
+                        card {
+                            menuButton {
+                                attrs.icon = AddCircleOutline
+                                attrs.label = "New Shader…"
 
-                            attrs.items = ShaderType.values().map { type ->
-                                MenuItem("New ${type.name} Shader…") {
-                                    val newShader = type.shaderFromTemplate().build()
-                                    val contextShaders =
-                                        mutablePatch.mutableShaderInstances.map { it.mutableShader.build() } + newShader
-                                    val unresolvedPatch = appContext.autoWirer.autoWire(
-                                        *contextShaders.toTypedArray(),
-                                        focus = newShader
-                                    )
-                                    mutablePatch.addShaderInstance(newShader) {
-                                        // TODO: Something better than this.
-                                        val resolved = unresolvedPatch
-                                            .acceptSymbolicChannelLinks()
-                                            .resolve()
-                                            .mutableShaderInstances[0]
-                                        incomingLinks.putAll(resolved.incomingLinks)
-                                        shaderChannel = resolved.shaderChannel
+                                attrs.items = ShaderType.values().map { type ->
+                                    MenuItem("New ${type.name} Shader…") {
+                                        val newShader = type.shaderFromTemplate().build()
+                                        val contextShaders =
+                                            mutablePatch.mutableShaderInstances.map { it.mutableShader.build() } + newShader
+                                        val unresolvedPatch = appContext.autoWirer.autoWire(
+                                            *contextShaders.toTypedArray(),
+                                            focus = newShader
+                                        )
+                                        mutablePatch.addShaderInstance(newShader) {
+                                            // TODO: Something better than this.
+                                            val resolved = unresolvedPatch
+                                                .acceptSymbolicChannelLinks()
+                                                .resolve()
+                                                .mutableShaderInstances[0]
+                                            incomingLinks.putAll(resolved.incomingLinks)
+                                            shaderChannel = resolved.shaderChannel
+                                        }
+                                        this@xComponent.forceRender()
                                     }
-                                    this@xComponent.forceRender()
-                                }
-                            } + MenuItem("Import…") { }
-                        }
+                                } + MenuItem("Import…") { }
+                            }
 
-                        typography {
-                            attrs.display = TypographyDisplay.block
-                            attrs.variant = TypographyVariant.subtitle1
-                            +"New Shader…"
+                            typography {
+                                attrs.display = TypographyDisplay.block
+                                attrs.variant = TypographyVariant.subtitle1
+                                +"New Shader…"
+                            }
                         }
                     }
                 }
@@ -392,17 +411,23 @@ object PatchHolderEditorStyles : StyleSheet("ui-PatchHolderEditor", isStatic = t
     val columns by css {
         flexDirection = FlexDirection.row
     }
-    val patchList by css {
+
+    val fixturesListCol by css {
         flex(1.0, flexBasis = FlexBasis.zero)
     }
-    val patchOverview by css {
+    val fixturesList by css {
+    }
+
+    val patchOverviewCol by css {
         flex(2.0, flexBasis = FlexBasis.zero)
+        marginLeft = 2.em
+    }
+    val patchOverview by css {
         backgroundColor = StuffThatShouldComeFromTheTheme.lightBackgroundColor
         display = Display.grid
         gridTemplateColumns = GridTemplateColumns.repeat("auto-fit, minmax(175px, 1fr)")
         gap = Gap(1.em.toString())
         padding(1.em)
-        marginLeft = 2.em
     }
 
     val shaderCard by css {
