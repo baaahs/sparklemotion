@@ -110,14 +110,6 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer") { props ->
             listItem {
                 attrs.button = true
                 attrs.disabled = !props.editMode
-                attrs.onClickFunction = props.onShaderEditorDrawerToggle
-                listItemIcon { icon(Code) }
-                listItemText { attrs.primary { +"Shader Editor" } }
-            }
-
-            listItem {
-                attrs.button = true
-                attrs.disabled = !props.editMode
                 attrs.onClickFunction = props.onLayoutEditorDialogToggle
                 listItemIcon { icon(Dashboard) }
                 listItemText { attrs.primary { +"Layout Editor" } }
@@ -152,7 +144,6 @@ external interface AppDrawerProps : RProps {
     var showUnsaved: Boolean
     var onEditModeChange: (Event) -> Unit
 
-    var onShaderEditorDrawerToggle: (Event) -> Unit
     var onLayoutEditorDialogToggle: (Event) -> Unit
 
     var darkMode: Boolean

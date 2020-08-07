@@ -69,6 +69,18 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val webClient = props.webClient
     observe(webClient)
 
+    var editMode by state { false }
+    val handleEditModeChange = useCallback(editMode) { _: Event -> editMode = !editMode }
+
+    var darkMode by state { false }
+    val handleDarkModeChange = useCallback(darkMode) { _: Event -> darkMode = !darkMode }
+
+    val theme = createMuiTheme {
+        palette {
+            type = if (darkMode) PaletteType.dark else PaletteType.light
+        }
+    }
+
     val dragNDrop by state { DragNDrop() }
     val myAppContext by state {
         jsObject<AppContext> {
@@ -77,8 +89,12 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.webClient = webClient
             this.plugins = webClient.plugins
             this.autoWirer = AutoWirer(webClient.plugins)
+            this.allStyles = AllStyles(theme)
         }
     }
+
+    val themeStyles = myAppContext.allStyles.appUi
+    injectGlobal(themeStyles.global.toString())
 
     var appDrawerOpen by state { false }
     var shaderEditorDrawerOpen by state { false }
@@ -88,10 +104,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val handleAppDrawerToggle =
         useCallback(appDrawerOpen) { appDrawerOpen = !appDrawerOpen }
-
-    val handleShaderEditorDrawerToggle =
-        useCallback(shaderEditorDrawerOpen) { _: Event -> shaderEditorDrawerOpen = !shaderEditorDrawerOpen }
-    val handleShaderEditorDrawerClose = useCallback { _: Event -> shaderEditorDrawerOpen = false }
 
     val handleLayoutEditorDialogToggle =
         useCallback(layoutEditorDialogOpen) { _: Event -> layoutEditorDialogOpen = !layoutEditorDialogOpen }
@@ -135,13 +147,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handleShowStateChange = useCallback { newShowState: ShowState ->
         webClient.onShowStateChange(newShowState)
     }
-
-    var editMode by state { false }
-    val handleEditModeChange = useCallback(editMode) { _: Event -> editMode = !editMode }
-
-    var darkMode by state { false }
-    val handleDarkModeChange = useCallback(darkMode) { _: Event -> darkMode = !darkMode }
-
 
     var fileDialogOpen by state { false }
     var fileDialogIsSaveAs by state { false }
@@ -225,12 +230,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     }
 
 
-    val theme = createMuiTheme {
-        palette {
-            type = if (darkMode) PaletteType.dark else PaletteType.light
-        }
-    }
-    val themeStyles = ThemeStyles(theme)
     val renderAppDrawerOpen = appDrawerOpen || (webClient.isLoaded && webClient.show == null)
 
     val appDrawerStateStyle = if (renderAppDrawerOpen)
@@ -348,6 +347,11 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                     attrs.label { typographyH6 { +"Design Mode" } }
                                 }
                             }
+
+                            help {
+                                attrs.divClass = themeStyles.appToolbarHelpIcon.name
+                                attrs.inject(HelpText.appToolbar)
+                            }
                         }
                     }
                 }
@@ -360,7 +364,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     attrs.editMode = editMode
                     attrs.showUnsaved = webClient.showIsModified
                     attrs.onEditModeChange = handleEditModeChange
-                    attrs.onShaderEditorDrawerToggle = handleShaderEditorDrawerToggle
                     attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
                     attrs.darkMode = darkMode
                     attrs.onDarkModeChange = handleDarkModeChange
