@@ -37,7 +37,22 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
         val newEditingShader = EditingShader(shaderInstance, appContext.autoWirer)
         editingShader.current = newEditingShader
 
-        val observer = newEditingShader.addObserver { forceRender() }
+        val observer = newEditingShader.addObserver {
+            if (it.state == EditingShader.State.Success) {
+                val shader = it.previewShaderBuilder.shader
+                val wiringGuess = appContext.autoWirer.autoWire(shader, focus = shader)
+                    .acceptSymbolicChannelLinks()
+                    .resolve()
+                // TODO Improve on this.
+                val editingIncomingLinks = props.mutableShaderInstance.incomingLinks
+                val guessIncomingLinks = wiringGuess.mutableShaderInstances.first().incomingLinks
+
+                editingIncomingLinks.clear()
+                editingIncomingLinks.putAll(guessIncomingLinks)
+
+            }
+            forceRender()
+        }
         withCleanup { observer.remove() }
     }
 

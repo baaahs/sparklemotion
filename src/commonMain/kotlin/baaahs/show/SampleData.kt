@@ -64,7 +64,7 @@ object SampleData {
 
             vec4 filterImage(vec4 inColor) {
                 vec4 clampedColor = clamp(inColor, 0., 1.);
-                return clampedColor * brightness;
+                return vec4(clampedColor.rgb * brightness, clampedColor.a);
             }
         """.trimIndent()
     ))

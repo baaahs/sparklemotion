@@ -14,23 +14,26 @@ class AutoWirer(
 ) {
     fun autoWire(
         vararg shaders: Shader,
-        focus: Shader? = null
+        focus: Shader? = null,
+        overrides: Map<ContentType, MutableLink.Port> = emptyMap()
     ): UnresolvedPatch {
         val openShaders = shaders.associate { it to glslAnalyzer.openShader(it) }
-        return autoWire(openShaders.values, focus?.let { openShaders[it] })
+        return autoWire(openShaders.values, focus?.let { openShaders[it] }, overrides = overrides)
     }
 
     fun autoWire(
         vararg shaders: OpenShader,
-        focus: OpenShader? = null
+        focus: OpenShader? = null,
+        overrides: Map<ContentType, MutableLink.Port> = emptyMap()
     ): UnresolvedPatch {
-        return autoWire(shaders.toList(), focus)
+        return autoWire(shaders.toList(), focus, overrides = overrides)
     }
 
     fun autoWire(
         shaders: Collection<OpenShader>,
         focus: OpenShader? = null,
-        shaderChannel: ShaderChannel = ShaderChannel.Main
+        shaderChannel: ShaderChannel = ShaderChannel.Main,
+        overrides: Map<ContentType, MutableLink.Port> = emptyMap()
     ): UnresolvedPatch {
         val locallyAvailable: MutableMap<ContentType, MutableSet<MutableLink.Port>> = mutableMapOf()
 
@@ -52,6 +55,10 @@ class AutoWirer(
             }
 
             openShader to unresolvedShaderInstance
+        }
+
+        overrides.forEach { (contentType, port) ->
+            locallyAvailable[contentType] = hashSetOf(port)
         }
 
         // Second pass: link datasources/output ports to input ports.

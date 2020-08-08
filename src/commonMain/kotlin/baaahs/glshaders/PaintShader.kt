@@ -85,7 +85,7 @@ class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(sha
         portMap: Map<String, String>
     ): String {
         return namespace.qualify(entryPoint.name) +
-                "(${resultVar}, ${portMap["sm_FragCoord"] ?: "gl_FragCoord"}.xy)"
+                "(${resultVar}, ${portMap["sm_FragCoord"] ?: "sm_FragCoord"}.xy)"
     }
 }
 

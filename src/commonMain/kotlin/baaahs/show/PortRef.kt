@@ -43,3 +43,9 @@ data class OutputPortRef(val portId: String) : PortRef() {
     override fun dereference(mutableShow: MutableShow): MutableLink.Port =
         MutableOutputPort(portId)
 }
+
+@Serializable @SerialName("const")
+data class ConstPortRef(val glsl: String) : PortRef() {
+    override fun dereference(mutableShow: MutableShow): MutableLink.Port =
+        MutableConstPort(glsl)
+}
