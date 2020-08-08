@@ -7,8 +7,7 @@ import baaahs.glsl.GlslContext
 import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
-import baaahs.show.live.LiveShaderInstance.DataSourceLink
-import baaahs.show.live.LiveShaderInstance.ShaderOutLink
+import baaahs.show.live.LiveShaderInstance.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -98,7 +97,10 @@ class LinkedPatch(
                             fromLink.dataSource.getVarName(fromLink.varName)
                         }
                     }
-                    else -> logger.warn { "Unexpected incoming link $fromLink for $toPortId" }
+                    is ShaderChannelLink -> {
+                        logger.warn { "Unexpected unresolved $fromLink for $toPortId" }
+                    }
+                    is NoOpLink -> {}
                 }
             }
 
@@ -193,6 +195,10 @@ class LinkedPatch(
         buf.append("  sm_result = ", components.last().outputVar, ";\n")
         buf.append("}\n")
         return buf.toString()
+    }
+
+    fun toFullGlsl(glslVersion: String): String {
+        return "#version ${glslVersion}\n\n${toGlsl()}\n"
     }
 
     fun compile(glslContext: GlslContext, resolver: Resolver): GlslProgram =

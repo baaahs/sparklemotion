@@ -1,55 +1,33 @@
 package baaahs.ui
 
 import ReactAce.Ace.reactAce
-import acex.AceEditor
-import acex.Annotation
-import acex.Point
-import acex.Range
-import baaahs.GadgetData
+import acex.*
 import baaahs.JsClock
 import baaahs.Time
-import baaahs.app.ui.appContext
 import baaahs.boundedBy
-import baaahs.glshaders.LinkedPatch
-import baaahs.glsl.GlslError
-import baaahs.glsl.GlslException
-import baaahs.io.Fs
 import baaahs.jsx.ShowControls
 import baaahs.jsx.ShowControlsProps
 import baaahs.jsx.useResizeListener
-import baaahs.show.Shader
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShader
-import baaahs.show.mutable.MutableShaderInstance
 import kotlinext.js.jsObject
-import kotlinx.css.px
-import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
-import materialui.components.divider.divider
-import materialui.components.formcontrol.formControl
-import materialui.components.formhelpertext.formHelperText
-import materialui.components.menuitem.menuItem
-import materialui.components.select.select
-import materialui.components.textfield.textField
+import materialui.styles.palette.PaletteType
+import materialui.styles.palette.type
+import materialui.useTheme
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
-import styled.css
-import styled.styledDiv
 import kotlin.browser.window
 
 val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
-    val appContext = useContext(appContext)
-
     val rootEl = useRef<Element>()
     val aceEditor = useRef<AceEditor?>()
-    val statusContainerEl = useRef<Element>()
-    val activeShader = useRef<EditingShader?>(null)
 
-    var curPatch by state<LinkedPatch?> { null }
+    val src = ref { "" }
+    val srcLastChangedAt = ref<Time?> { null }
+
     var extractionCandidate by state<ExtractionCandidate?> { null }
     var glslNumberMarker by state<Number?> { null }
 
@@ -57,100 +35,57 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         aceEditor.current?.editor?.resize()
     }
 
-    val showGlslErrors = useCallback(aceEditor.current) { glslErrors: Array<GlslError> ->
-        val editor = aceEditor.current?.editor ?: return@useCallback
-        val lineCount = editor.getSession().getLength().toInt()
-        editor.getSession().setAnnotations(
-            glslErrors.map { error ->
-                jsObject<Annotation> {
-                    row = (error.row).boundedBy(0 until lineCount)
-                    column = 0
-                    text = error.message
-                    type = "error"
+    onMount(props.editingShader, aceEditor.current) {
+        val editor = aceEditor.current?.editor ?: return@onMount
+        val editingShader = props.editingShader
+
+        val compilationObserver = editingShader.addObserver {
+            fun setAnnotations(list: List<Annotation>) {
+                editor.getSession().setAnnotations(list.toTypedArray())
+            }
+            when (editingShader.state) {
+                EditingShader.State.Changed,
+                EditingShader.State.Building,
+                EditingShader.State.Success -> setAnnotations(emptyList())
+
+                EditingShader.State.Errors -> {
+                    val lineCount = editor.getSession().getLength().toInt()
+                    setAnnotations(editingShader.previewShaderBuilder.glslErrors.map { error ->
+                        jsObject<Annotation> {
+                            row = (error.row).boundedBy(0 until lineCount)
+                            column = 0
+                            text = error.message
+                            type = "error"
+                        }
+                    })
                 }
-            }.toTypedArray()
-        )
+            }
+        }
+        withCleanup { compilationObserver.remove() }
     }
 
-    val maybeUpdatePatch = useCallback(showGlslErrors) {
-        val selectedShader = activeShader.current
-            ?: return@useCallback
-        val needsUpdate = selectedShader.mutablePatch == null
-        val notActivelyEditing = selectedShader.lastModified < clock.now() - .25
-        val alreadyFoundErrors = selectedShader.glslErrors.isNotEmpty()
-        if (needsUpdate && notActivelyEditing && !alreadyFoundErrors) {
-            try {
-                selectedShader.mutablePatch =
-                    appContext.autoWirer
-                        .autoWire(selectedShader.build())
-                        .resolve()
-            } catch (e: GlslException) {
-                selectedShader.glslErrors = e.errors.toTypedArray()
-                showGlslErrors(selectedShader.glslErrors)
-            } catch (e: Exception) {
-                logger.warn(e) { "Failed to analyze shader." }
-                selectedShader.glslErrors = arrayOf(GlslError(e.message ?: e.toString()))
-                showGlslErrors(selectedShader.glslErrors)
+    val applySrcChangesDebounced = useCallback(props.editingShader) {
+        // Changed since we last passed on updates?
+        srcLastChangedAt.current?.let { lastChange ->
+            // Changed within .25 seconds?
+            if (lastChange < clock.now() - .25) {
+                srcLastChangedAt.current = null
+
+                // Update [EditingShader].
+                props.editingShader.updateSrc(src.current)
             }
-            curPatch = selectedShader.mutablePatch?.openForPreview(
-                appContext.autoWirer, selectedShader.mutableShader.type)
         }
     }
 
     onMount {
-        val interval = window.setInterval(maybeUpdatePatch, 100)
+        val interval = window.setInterval(applySrcChangesDebounced, 100)
         withCleanup { window.clearInterval(interval) }
     }
 
-    onChange("different shader being edited", props.mutableShaderInstance, aceEditor.current) {
-        activeShader.current?.lastCursorPosition = aceEditor.current?.editor?.getCursorPosition()
-
-        val selectedShader = props.mutableShaderInstance?.let { EditingShader(it) }
-        activeShader.current = selectedShader
-
-        if (selectedShader == null) {
-            curPatch = null
-            return@onChange
-        }
-        val editor = aceEditor.current?.editor ?: return@onChange
-
-        selectedShader.lastCursorPosition?.let { editor.moveCursorToPosition(it) }
-        selectedShader.lastCursorPosition = null
-        showGlslErrors(selectedShader.glslErrors)
-    }
-
-    val handleUpdate = useCallback() { block: MutableShaderInstance.() -> Unit ->
-        activeShader.current?.apply {
-            mutableShaderInstance.block()
-            isModified = true
-            lastModified = clock.now()
-            mutablePatch = null
-            gadgets = null
-            glslErrors = emptyArray()
-        }
-    }
-
-    val handleTitleChange: (Event) -> Unit = useCallback(props.onChange) { event: Event ->
-        val str = event.target!!.asDynamic().value as String
-        handleUpdate { mutableShader.title = str }
-        props.onChange()
-    }
-
-    val handleCodeChange: (String, Any) -> Unit = useCallback(props.onChange) { newSrc: String, _: Any ->
-        handleUpdate { mutableShader.src = newSrc }
-        props.onChange()
-    }
-
-    val handleChannelChange: (Event) -> Unit = useCallback(props.onChange) { event: Event ->
-        val channelId = event.target!!.asDynamic().value as String
-        handleUpdate { shaderChannel = if (channelId.isNotBlank()) ShaderChannel(channelId) else null }
-        props.onChange()
-    }
-
-    val handlePriorityChange: (Event) -> Unit = useCallback(props.onChange) { event: Event ->
-        val priorityStr = event.target!!.asDynamic().value as String
-        handleUpdate { priority = priorityStr.toFloat() }
-        props.onChange()
+    val handleCodeChange: (String, Any) -> Unit = useCallback { newSrc: String, _: Any ->
+        // Change will get picked up soon by [applySrcChangesDebounced].
+        src.current = newSrc
+        srcLastChangedAt.current = clock.now()
     }
 
     val glslNumberRegex = Regex("[0-9.]")
@@ -213,20 +148,11 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         session.markUndoGroup()
     }
 
-    val handleGlslErrors = useCallback { glslErrors: Array<GlslError> ->
-        activeShader.current?.glslErrors = glslErrors
-        showGlslErrors(glslErrors)
+    val editorMode = Modes.glsl
+    val editorTheme = when (useTheme().palette.type) {
+        PaletteType.light -> Themes.github
+        PaletteType.dark -> Themes.tomorrowNightBright
     }
-
-    val handlePatchPreviewSuccess = useCallback {
-        handleGlslErrors(emptyArray())
-    }
-
-    val handleGadgetsChange = useCallback { newGadgets: Array<GadgetData> ->
-        activeShader.current?.gadgets = newGadgets
-        forceRender()
-    }
-
 
     div(+Styles.shaderEditor) {
         ref = rootEl
@@ -234,14 +160,14 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         reactAce {
             ref = aceEditor
             attrs {
-                mode = "glsl"
-                theme = "tomorrow_night_bright"
+                mode = editorMode.id
+                theme = editorTheme.id
                 width = "100%"
                 height = "100%"
                 showGutter = true
                 this.onChange = handleCodeChange
                 this.onCursorChange = onCursorChange
-                value = activeShader.current?.mutableShader?.src ?: ""
+                value = props.editingShader.mutableShader.src
                 name = "ShaderEditor"
                 focus = true
                 setOptions = jsObject {
@@ -249,7 +175,6 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
                 }
                 editorProps = jsObject {
                     `$blockScrolling` = true
-                    readOnly = activeShader.current == null
                 }
             }
         }
@@ -272,23 +197,6 @@ data class ExtractionCandidate(
     val text: String
 )
 
-data class EditingShader(
-    val mutableShaderInstance: MutableShaderInstance,
-    var isModified: Boolean = false,
-    val file: Fs.File? = null
-) {
-    val mutableShader: MutableShader get() = mutableShaderInstance.mutableShader
-    val title: String get() = mutableShader.title
-
-    var lastCursorPosition: Point? = null
-    var lastModified: Time = clock.now()
-    var mutablePatch: MutablePatch? = null
-    var gadgets: Array<GadgetData>? = null
-    var glslErrors: Array<GlslError> = emptyArray()
-
-    fun build(): Shader = mutableShader.build()
-}
-
 
 private fun point(row: Number, column: Number): Point =
     jsObject { this.row = row; this.column = column }
@@ -297,9 +205,8 @@ private val glslNumberClassName = Styles.glslNumber.name
 private val clock = JsClock()
 
 external interface ShaderEditorProps : RProps {
-    var mutableShaderInstance: MutableShaderInstance?
+    var editingShader: EditingShader
     var shaderChannels: Set<ShaderChannel>
-    var onChange: () -> Unit
 }
 
 fun RBuilder.shaderEditor(handler: RHandler<ShaderEditorProps>) =

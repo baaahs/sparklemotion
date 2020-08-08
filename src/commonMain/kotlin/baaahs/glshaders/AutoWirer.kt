@@ -270,8 +270,7 @@ class AutoWirer(
                             ?: error(unknown("shader instance editor", fromShader, shaderInstances.keys))
                         shaderInstance.incomingLinks[toPortId] =
                             MutableShaderOutPort(
-                                fromShaderInstance,
-                                fromPort.portId
+                                fromShaderInstance
                             )
                     }
                 }

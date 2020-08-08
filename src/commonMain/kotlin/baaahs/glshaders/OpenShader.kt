@@ -14,7 +14,6 @@ interface OpenShader : RefCounted {
     val src: String get() = glslCode.src
     val glslCode: GlslCode
     val title: String
-    val description: String?
     val shaderType: ShaderType
     val entryPoint: GlslFunction
     val inputPorts: List<InputPort>
@@ -33,8 +32,7 @@ interface OpenShader : RefCounted {
         final override val shader: Shader,
         final override val glslCode: GlslCode
     ) : OpenShader, RefCounted by RefCounter() {
-        override val title: String = shader.title
-        override val description: String? = null
+        override val title: String get() = shader.title
 
         protected fun toInputPort(it: GlslCode.GlslVar): InputPort {
             return InputPort(
