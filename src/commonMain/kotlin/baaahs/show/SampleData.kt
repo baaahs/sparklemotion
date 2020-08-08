@@ -45,7 +45,7 @@ object SampleData {
 
     private val showDefaultPaint = autoWirer.autoWire(Shader(
         "Darkness",
-        ShaderType.Color,
+        ShaderType.Paint,
         /**language=glsl*/
         """
             void main(void) {
@@ -64,7 +64,7 @@ object SampleData {
 
             vec4 filterImage(vec4 inColor) {
                 vec4 clampedColor = clamp(inColor, 0., 1.);
-                return clampedColor * brightness;
+                return vec4(clampedColor.rgb * brightness, clampedColor.a);
             }
         """.trimIndent()
     ))
@@ -112,7 +112,7 @@ object SampleData {
 
     private val redYellowGreenPatch = autoWirer.autoWire(Shader(
         "GLSL Hue Test Pattern",
-        ShaderType.Color,
+        ShaderType.Paint,
         /**language=glsl*/
         """
             uniform vec2 resolution;
@@ -124,7 +124,7 @@ object SampleData {
 
     private val blueAquaGreenPatch = autoWirer.autoWire(Shader(
         "Another GLSL Hue Test Pattern",
-        ShaderType.Color,
+        ShaderType.Paint,
         /**language=glsl*/
         """
             uniform vec2 resolution;

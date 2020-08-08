@@ -38,15 +38,15 @@ object AutoWirerSpec : Spek({
                 }
                 """.trimIndent()
             }
-            val colorShader by value { autoWirer.glslAnalyzer.import(shaderText) }
-            val shaders by value { arrayOf(colorShader) }
+            val paintShader by value { autoWirer.glslAnalyzer.import(shaderText) }
+            val shaders by value { arrayOf(paintShader) }
             val patch by value { autoWirer.autoWire(*shaders).acceptSymbolicChannelLinks().resolve() }
 
             it("creates a reasonable guess patch") {
                 expect(
                     listOf(
                         MutableShaderInstance(
-                            MutableShader(colorShader),
+                            MutableShader(paintShader),
                             hashMapOf(
                                 "time" to MutableDataSource(CorePlugin.Time()),
                                 "blueness" to MutableDataSource(
@@ -72,13 +72,13 @@ object AutoWirerSpec : Spek({
                     )
                 }
 
-                override(shaders) { arrayOf(colorShader, uvShader) }
+                override(shaders) { arrayOf(paintShader, uvShader) }
 
                 it("creates a reasonable guess patch") {
                     expects(
                         listOf(
                             MutableShaderInstance(
-                                MutableShader(colorShader),
+                                MutableShader(paintShader),
                                 hashMapOf(
                                     "time" to MutableDataSource(CorePlugin.Time()),
                                     "resolution" to MutableDataSource(CorePlugin.Resolution()),

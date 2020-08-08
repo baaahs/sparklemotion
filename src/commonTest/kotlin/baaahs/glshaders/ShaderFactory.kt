@@ -1,7 +1,7 @@
 package baaahs.glshaders
 
 object ShaderFactory {
-    fun colorShader(title: String): ColorShader {
+    fun paintShader(title: String): PaintShader {
         return GlslAnalyzer().openShader("""
             // $title
             uniform float time;
@@ -17,6 +17,6 @@ object ShaderFactory {
                 someGlobalVar = anotherFunc(someConstVar);
                 gl_FragColor = vec4(uv.xy, blueness, 1.);
             }
-        """.trimIndent()) as ColorShader
+        """.trimIndent()) as PaintShader
     }
 }

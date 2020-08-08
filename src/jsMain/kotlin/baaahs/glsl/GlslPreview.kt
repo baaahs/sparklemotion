@@ -8,7 +8,8 @@ import kotlin.browser.window
 class GlslPreview(
     private val gl: GlslContext,
     private var width: Int,
-    private var height: Int
+    private var height: Int,
+    private val preRenderCallback: (() -> Unit)? = null
 ) {
     private var running = false
     private var scene: Scene? = null
@@ -36,6 +37,8 @@ class GlslPreview(
 
     fun render() {
         if (!running) return
+
+        preRenderCallback?.invoke()
         scene?.render()
         window.requestAnimationFrame { render() }
     }

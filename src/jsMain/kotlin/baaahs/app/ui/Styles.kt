@@ -5,9 +5,15 @@ import kotlinx.css.*
 import kotlinx.css.properties.*
 import materialui.styles.mixins.toolbar
 import materialui.styles.muitheme.MuiTheme
+import materialui.styles.palette.contrastText
+import materialui.styles.palette.dark
 import materialui.styles.transitions.create
 import materialui.styles.transitions.sharp
 import styled.StyleSheet
+
+class AllStyles(val theme: MuiTheme) {
+    val appUi by lazy { ThemeStyles(theme) }
+}
 
 private fun linearRepeating(
     color1: Color,
@@ -29,6 +35,34 @@ private fun linearRepeating(
 
 class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = true) {
     private val drawerWidth = 260.px
+
+    val help by css {
+
+    }
+
+    val global = CSSBuilder().apply {
+        "header" {
+            color = theme.palette.primary.contrastText
+            backgroundColor = theme.palette.primary.dark
+            fontSize = 0.875.rem
+            fontWeight = FontWeight.w600
+            lineHeight = LineHeight("48px")
+            paddingLeft = 16.px
+            paddingRight = 16.px
+            position = Position.relative
+
+            child(help) {
+                fontSize = 1.rem
+                position = Position.absolute
+                top = .5.em
+                right = 1.em
+
+                child("a") {
+                    color = theme.palette.primary.contrastText
+                }
+            }
+        }
+    }
 
     private val drawerClosedShift = partial {
         transform { translateX(0.px) }
@@ -79,6 +113,10 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
         top = 0.5.em
         right = 0.5.em
         fontSize = 0.6.rem
+    }
+
+    val appToolbarHelpIcon by css {
+        transform.translateY(1.em)
     }
 
     val appContent by css {

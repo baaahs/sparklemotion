@@ -1,5 +1,6 @@
 package baaahs.glshaders
 
+import baaahs.glsl.LinkException
 import baaahs.show.Shader
 import baaahs.show.ShaderOutPortRef
 import baaahs.show.ShaderType
@@ -38,6 +39,7 @@ class FilterShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader,
         resultVar: String,
         portMap: Map<String, String>
     ): String {
-        return resultVar + " = " + namespace.qualify(entryPoint.name) + "(${portMap["gl_FragColor"]})"
+        val inVar = portMap["gl_FragColor"] ?: throw LinkException("No input for shader \"$title\"")
+        return resultVar + " = " + namespace.qualify(entryPoint.name) + "($inVar)"
     }
 }

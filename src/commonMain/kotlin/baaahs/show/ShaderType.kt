@@ -47,7 +47,7 @@ enum class ShaderType(
         }
     },
 
-    Color(0, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.Color, """
+    Paint(0, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.Color, """
         uniform vec2 resolution;
         uniform float time;
 
