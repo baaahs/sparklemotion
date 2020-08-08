@@ -1,8 +1,10 @@
 package baaahs.ui
 
 import baaahs.Logger
+import external.react.memo
 import org.w3c.dom.events.Event
 import react.RMutableRef
+import react.RProps
 import kotlin.browser.window
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -12,6 +14,7 @@ import kotlin.reflect.KProperty
  */
 fun <P : react.RProps> xComponent(
     name: String,
+    isPure: Boolean = false,
     func: XBuilder.(props: P) -> Unit
 ): react.FunctionalComponent<P> {
     val logger = Logger(name)
@@ -24,8 +27,20 @@ fun <P : react.RProps> xComponent(
         }
     }
     component.asDynamic().displayName = name
-    return component
+    return if (isPure)
+        memo(component) { a, b ->
+            val keys = hashSetOf(*a.keys).also {
+                it.addAll(b.keys)
+            }
+            keys.all { key -> a[key] == b[key]}
+        }
+    else
+        component
 }
+
+private val RProps.keys get() = jsObj.keys(this).unsafeCast<Array<String>>()
+private operator fun RProps.get(key: String): Any? = asDynamic()[key]
+private val jsObj = js("Object")
 
 private class CounterIncr {
     private var i: Int = 0
@@ -167,13 +182,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
 
     private fun areSame(currentWatchValues: Array<out Any?>, priorWatchValues: Array<out Any?>): Boolean {
         return currentWatchValues.zip(priorWatchValues).all { (a, b) ->
-            if (a is String && b is String) {
-                a == b
-            } else if (a is Number && b is Number) {
-                a == b
-            } else {
-                a === b
-            }
+            a == b
         }
     }
 
