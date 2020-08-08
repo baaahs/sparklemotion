@@ -37,11 +37,11 @@ class LiveShaderInstance(
             inputPort: InputPort,
             resolver: AutoWirer.PortDiagram.Resolver
         ): Link {
-            val contentType = inputPort.contentType ?: return NoOpLink()
+            val contentType = inputPort.contentType ?: return NoOpLink
             val resolved = resolver.resolve(shaderChannel, contentType)
-            return if (resolved != null) ShaderOutLink(resolved) else NoOpLink() }
+            return if (resolved != null) ShaderOutLink(resolved) else NoOpLink }
     }
-    class NoOpLink : Link
+    object NoOpLink : Link
 }
 
 class ShowOpener(private val show: Show, private val showPlayer: ShowPlayer) {

@@ -1,9 +1,11 @@
 package baaahs.ui
 
+import baaahs.app.ui.appContext
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.ShowBuilder
+import baaahs.ui.preview.gadgetsPreview
 import kotlinx.css.*
 import kotlinx.html.js.onChangeFunction
 import materialui.components.divider.divider
@@ -14,22 +16,30 @@ import materialui.components.select.select
 import materialui.components.textfield.textField
 import materialui.components.typography.typographyH6
 import org.w3c.dom.events.Event
-import react.RBuilder
-import react.RHandler
-import react.RProps
-import react.child
+import react.*
 import react.dom.div
 import styled.styledDiv
 
 val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstanceEditor") { props ->
+    val appContext = useContext(appContext)
+
     val selectedPatch = props.mutablePatch
     val shaderInstance = props.mutableShaderInstance
-    val shader = shaderInstance.mutableShader.build()
+
     val handleUpdate =
         handler("handleShaderUpdate", shaderInstance) { block: MutableShaderInstance.() -> Unit ->
             shaderInstance.block()
             forceRender()
         }
+
+    val editingShader = ref<EditingShader> { nuffin() }
+    onChange("shaderInstance", props.mutableShaderInstance) {
+        val newEditingShader = EditingShader(shaderInstance, appContext.autoWirer)
+        editingShader.current = newEditingShader
+
+        val observer = newEditingShader.addObserver { forceRender() }
+        withCleanup { observer.remove() }
+    }
 
     styledDiv {
         css.display = Display.grid
@@ -48,7 +58,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
         div {
             shaderPreview {
-                attrs.mutableShaderInstance = shaderInstance
+                attrs.previewShaderBuilder = editingShader.current.previewShaderBuilder
                 attrs.width = 250.px
                 attrs.height = 250.px
             }
@@ -56,6 +66,10 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
         div {
             typographyH6 { +"Meta and gadgets and stuff!" }
+
+            gadgetsPreview {
+                attrs.editingShader = editingShader.current
+            }
 
             div(+Styles.shaderMeta) {
                 formControl {
@@ -112,9 +126,8 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
     }
 
     shaderEditor {
-        attrs.mutableShaderInstance = shaderInstance
+        attrs.editingShader = editingShader.current
         attrs.shaderChannels = props.shaderChannels
-        attrs.onChange = props.onChange
     }
 }
 

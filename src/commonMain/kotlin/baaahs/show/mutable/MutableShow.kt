@@ -366,7 +366,7 @@ class MutablePatch {
     fun build(showBuilder: ShowBuilder): Patch =
         Patch.from(this, showBuilder)
 
-    /** Build a [LinkedPatch] independent of an [baaahs.OpenShow]. */
+    /** Build a [LinkedPatch] independent of an [baaahs.show.live.OpenShow]. */
     fun openForPreview(autoWirer: AutoWirer, shaderType: ShaderType): LinkedPatch? {
         val showBuilder = ShowBuilder()
         build(showBuilder)
@@ -461,6 +461,8 @@ data class MutableShaderInstance(
     var shaderChannel: ShaderChannel? = null,
     var priority: Float = 0f
 ) {
+    val id = randomId("MutableShaderInstance")
+
     fun findDataSources(): List<DataSource> {
         return incomingLinks.mapNotNull { (_, from) ->
             (from as? MutableDataSource)?.dataSource
@@ -493,14 +495,14 @@ data class MutableShaderInstance(
     }
 }
 
-data class MutableShaderOutPort(var mutableShaderInstance: MutableShaderInstance, var portId: String) :
+data class MutableShaderOutPort(var mutableShaderInstance: MutableShaderInstance) :
     MutableLink.Port {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
-        ShaderOutPortRef(showBuilder.idFor(mutableShaderInstance.build(showBuilder)), portId)
+        ShaderOutPortRef(showBuilder.idFor(mutableShaderInstance.build(showBuilder)))
 
-    override fun displayName(): String = "Shader \"${mutableShaderInstance.mutableShader.title}\" port \"$portId\""
+    override fun displayName(): String = "Shader \"${mutableShaderInstance.mutableShader.title}\" output"
 
-    override fun toString(): String = "ShaderOutPortEditor(shader=${mutableShaderInstance.mutableShader.title} port=$portId)"
+    override fun toString(): String = "ShaderOutPortEditor(shader=${mutableShaderInstance.mutableShader.title})"
 }
 
 data class MutableOutputPort(private val portId: String) : MutableLink.Port {

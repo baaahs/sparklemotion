@@ -2,18 +2,12 @@ package baaahs.ui
 
 import baaahs.app.ui.appContext
 import baaahs.glshaders.InputPort
-import baaahs.glshaders.OutputPort
 import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.*
 import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.style
-import materialui.AddCircleOutline
-import materialui.components.container.container
 import materialui.components.divider.divider
 import materialui.components.formcontrol.formControl
-import materialui.components.iconbutton.iconButton
 import materialui.components.inputlabel.inputLabel
 import materialui.components.listsubheader.listSubheader
 import materialui.components.menuitem.menuItem
@@ -24,9 +18,6 @@ import materialui.components.tablecell.tdCell
 import materialui.components.tablecell.thCell
 import materialui.components.tablehead.tableHead
 import materialui.components.tablerow.tableRow
-import materialui.components.typography.typography
-import materialui.icon
-import org.w3c.dom.events.Event
 import react.*
 import react.dom.b
 import react.dom.code
@@ -41,10 +32,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     val shaderOptions = props.mutablePatch.mutableShaderInstances
         .minus(props.mutableShaderInstance)
         .sortedBy { it.mutableShader.title }
-        .mapNotNull { editor ->
-            val openShader = appContext.showPlayer.openShaderOrNull(editor.mutableShader.build())
-            openShader?.let { ShaderOption(editor, it.outputPort) }
-        }
+        .map { editor -> ShaderOption(editor) }
 
     val dataSourceOptions = appContext.showPlayer.dataSources.sortedBy { it.dataSourceName }.mapIndexed { index, dataSource ->
         DataSourceOption(dataSource)
@@ -170,18 +158,14 @@ class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOption {
     }
 }
 
-class ShaderOption(val mutableShaderInstance: MutableShaderInstance, val outputPort: OutputPort): SourcePortOption {
+class ShaderOption(val mutableShaderInstance: MutableShaderInstance): SourcePortOption {
     override val title: String get() = "${mutableShaderInstance.mutableShader.title} output"
-    override val portEditor: MutableLink.Port get() = MutableShaderOutPort(
-        mutableShaderInstance,
-        outputPort.id
-    )
+    override val portEditor: MutableLink.Port get() = MutableShaderOutPort(mutableShaderInstance)
     override val groupName: String get() = "Shader Ports"
 
     override fun matches(otherPort: MutableLink.Port): Boolean {
         return otherPort is MutableShaderOutPort &&
-                otherPort.mutableShaderInstance == mutableShaderInstance &&
-                otherPort.portId == outputPort.id
+                otherPort.mutableShaderInstance == mutableShaderInstance
     }
 
     override fun isAppropriateFor(inputPort: InputPort): Boolean {

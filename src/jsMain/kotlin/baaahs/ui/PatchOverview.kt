@@ -15,6 +15,7 @@ import materialui.components.typography.enums.TypographyDisplay
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.icon
+import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 
@@ -24,14 +25,22 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
 
     val mutablePatch = props.mutablePatch
 
+
+    val sortedShaderInstances = memo(props.mutablePatch) {
+        props.mutablePatch.mutableShaderInstances
+            .sortedBy { it.mutableShader.type.priority }.map {
+                it to { _: Event -> props.onSelectShaderInstance(it) }
+            }
+    }
+
     val x = this
-    mutablePatch.mutableShaderInstances.forEachIndexed { index, mutableShaderInstance ->
-        val shader = mutableShaderInstance.mutableShader
+    sortedShaderInstances.forEachIndexed { index, (mutableShaderInstance, handleClick) ->
+        val shader = mutableShaderInstance.mutableShader.build()
 
         card(+styles.shaderCard on PaperStyle.root) {
-            attrs.onClickFunction = x.eventHandler("handleShaderInstanceClick-$index") {
-                props.onSelectShaderInstance(mutablePatch.mutableShaderInstances[index])
-            }
+            key = mutableShaderInstance.id
+
+            attrs.onClickFunction = handleClick
 
             cardHeader {
                 attrs.avatar {
@@ -42,7 +51,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
             }
 
             shaderPreview {
-                attrs.mutableShaderInstance = mutableShaderInstance
+                attrs.shader = shader
                 attrs.width = styles.cardWidth
                 attrs.height = styles.cardWidth
             }
@@ -61,7 +70,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         }
     }
 
-    card {
+    card(+styles.shaderCard on PaperStyle.root) {
         menuButton {
             attrs.icon = AddCircleOutline
             attrs.label = "New Shader…"

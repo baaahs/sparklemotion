@@ -2,7 +2,6 @@ package baaahs.glshaders
 
 import baaahs.glsl.Shaders.cylindricalUvMapper
 import baaahs.show.ShaderChannel
-import baaahs.show.ShaderOutPortRef
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderOutPort
 import baaahs.toBeSpecified
@@ -116,7 +115,7 @@ object OpenPatchSpec : Spek({
                                 link(
                                     "gl_FragCoord",
                                     MutableShaderOutPort(
-                                        findShaderInstanceFor(cylindricalUvMapper.shader), ShaderOutPortRef.ReturnValue
+                                        findShaderInstanceFor(cylindricalUvMapper.shader)
                                     )
                                 )
                                 link("resolution", CorePlugin.Resolution())

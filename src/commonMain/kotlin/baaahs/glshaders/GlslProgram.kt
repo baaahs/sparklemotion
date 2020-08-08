@@ -40,9 +40,7 @@ class GlslProgram(
         )
 
     internal val fragShader =
-        gl.createFragmentShader(
-            "#version ${gl.glslVersion}\n\n${linkedPatch.toGlsl()}\n"
-        )
+        gl.createFragmentShader(linkedPatch.toFullGlsl(gl.glslVersion))
 
     private val bindings: List<Binding>
 

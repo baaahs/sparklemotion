@@ -160,7 +160,6 @@ private fun jsonFor(portRef: PortRef): JsonObject {
         is ShaderOutPortRef -> json {
             "type" to "shader-out"
             "shaderInstanceId" to portRef.shaderInstanceId
-            "portId" to portRef.portId
         }
         is ShaderChannelRef -> json {
             "type" to "shader-channel"

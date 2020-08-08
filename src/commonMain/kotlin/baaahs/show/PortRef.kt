@@ -21,16 +21,11 @@ interface ShaderPortRef {
 }
 
 @Serializable @SerialName("shader-out")
-data class ShaderOutPortRef(val shaderInstanceId: String, val portId: String = ReturnValue) : PortRef() {
-    fun isReturnValue() = portId == ReturnValue
+data class ShaderOutPortRef(val shaderInstanceId: String) : PortRef() {
 
     override fun dereference(mutableShow: MutableShow): MutableLink.Port =
         MutableShaderOutPort(
-            mutableShow.shaderInstances.getBang(
-                shaderInstanceId,
-                "shader instance"
-            ), portId
-        )
+            mutableShow.shaderInstances.getBang(shaderInstanceId, "shader instance"))
 
     companion object {
         const val ReturnValue = "_"
