@@ -30,7 +30,7 @@
 <h4><a href="-editing-shader/index.html">EditingShader</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">EditingShader</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">EditingShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-observable/index.html"><span class="identifier">Observable</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -69,6 +69,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-help-props/index.html">HelpProps</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">HelpProps</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-icons/index.html">Icons</a></h4>
 </td>
 <td>
@@ -87,6 +94,20 @@
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">LinksEditorProps</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-markdown-props/index.html">MarkdownProps</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MarkdownProps</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="material-props/index.html">materialProps</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">materialProps</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.properties/-read-write-property/index.html"><span class="identifier">ReadWriteProperty</span></a><span class="symbol">&lt;</span><a href="-help-props/index.html"><span class="identifier">HelpProps</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">?</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -118,13 +139,6 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-patch-editor-props/index.html">PatchEditorProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">PatchEditorProps</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-patch-holder-editor-props/index.html">PatchHolderEditorProps</a></h4>
 </td>
 <td>
@@ -139,10 +153,24 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-patch-preview-props/index.html">PatchPreviewProps</a></h4>
+<h4><a href="-patch-overview-props/index.html">PatchOverviewProps</a></h4>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">PatchPreviewProps</span></code></td>
+<code><span class="keyword">interface </span><span class="identifier">PatchOverviewProps</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-preview-shader-builder/index.html">PreviewShaderBuilder</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PreviewShaderBuilder</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-observable/index.html"><span class="identifier">Observable</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-removable-observer/index.html">RemovableObserver</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">RemovableObserver</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-observable/index.html"><span class="identifier">Observable</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-observer/index.html"><span class="identifier">Observer</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -160,6 +188,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-shader-instance-editor-props/index.html">ShaderInstanceEditorProps</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ShaderInstanceEditorProps</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-shader-option/index.html">ShaderOption</a></h4>
 </td>
 <td>
@@ -174,6 +209,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-shader-preview-styles/index.html">ShaderPreviewStyles</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">ShaderPreviewStyles</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-simulator-styles/index.html">SimulatorStyles</a></h4>
 </td>
 <td>
@@ -185,6 +227,13 @@
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">SourcePortOption</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-stuff-that-should-come-from-the-theme/index.html">StuffThatShouldComeFromTheTheme</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">StuffThatShouldComeFromTheTheme</span></code></td>
 </tr>
 <tr>
 <td>
@@ -254,6 +303,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-help.html">Help</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">Help</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-layout-editor-dialog.html">LayoutEditorDialog</a></h4>
 </td>
 <td>
@@ -268,17 +324,17 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-markdown.html">Markdown</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">Markdown</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="name.html">name</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-patch-editor.html">PatchEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">PatchEditor</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -289,10 +345,10 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-patch-preview.html">PatchPreview</a></h4>
+<h4><a href="-patch-overview.html">PatchOverview</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">PatchPreview</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">PatchOverview</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -310,16 +366,37 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-shader-instance-editor.html">ShaderInstanceEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">ShaderInstanceEditor</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-shader-preview.html">ShaderPreview</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">ShaderPreview</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="title.html">title</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><a href="-help-props/index.html"><span class="identifier">HelpProps</span></a><span class="symbol">.</span><span class="identifier">title</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">?</span></code></td>
 </tr>
 </tbody>
 </table>
 <h3>Functions</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="add-observer.html">addObserver</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-observable/index.html"><span class="identifier">Observable</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">addObserver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-removable-observer/index.html"><span class="identifier">RemovableObserver</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="and.html">and</a></h4>
@@ -332,6 +409,7 @@
 <h4><a href="child.html">child</a></h4>
 </td>
 <td>
+<code><span class="keyword">fun </span><a href="-help-props/index.html"><span class="identifier">HelpProps</span></a><span class="symbol">.</span><span class="identifier">child</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$child(baaahs.ui.HelpProps, kotlin.Function1((, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
 <code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">child</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$child(, , )/ruleSet">ruleSet</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.ui$child(, , )/block">block</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
 </tr>
 <tr>
@@ -354,6 +432,27 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">fileDialog</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$fileDialog(, ((baaahs.ui.FileDialogProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-file-dialog-props/index.html"><span class="identifier">FileDialogProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="help.html">help</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">help</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$help(, ((baaahs.ui.HelpProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-help-props/index.html"><span class="identifier">HelpProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="helper.html">helper</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">helper</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$helper(kotlin.Function1((baaahs.ui.HelpProps, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<a href="-help-props/index.html"><span class="identifier">HelpProps</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-help-props/index.html"><span class="identifier">HelpProps</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="inject.html">inject</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><a href="-help-props/index.html"><span class="identifier">HelpProps</span></a><span class="symbol">.</span><span class="identifier">inject</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$inject(baaahs.ui.HelpProps, kotlin.Function1((baaahs.ui.HelpProps, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<a href="-help-props/index.html"><span class="identifier">HelpProps</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -382,6 +481,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">linksEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$linksEditor(, ((baaahs.ui.LinksEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-links-editor-props/index.html"><span class="identifier">LinksEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="markdown.html">markdown</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">markdown</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$markdown(, ((baaahs.ui.MarkdownProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-markdown-props/index.html"><span class="identifier">MarkdownProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -420,13 +526,6 @@
 </tr>
 <tr>
 <td>
-<h4><a href="patch-editor.html">patchEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">patchEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$patchEditor(, ((baaahs.ui.PatchEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-patch-editor-props/index.html"><span class="identifier">PatchEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="patch-holder-editor.html">patchHolderEditor</a></h4>
 </td>
 <td>
@@ -434,10 +533,10 @@
 </tr>
 <tr>
 <td>
-<h4><a href="patch-preview.html">patchPreview</a></h4>
+<h4><a href="patch-overview.html">patchOverview</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">patchPreview</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$patchPreview(, ((baaahs.ui.PatchPreviewProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-patch-preview-props/index.html"><span class="identifier">PatchPreviewProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">patchOverview</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$patchOverview(, ((baaahs.ui.PatchOverviewProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-patch-overview-props/index.html"><span class="identifier">PatchOverviewProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -445,6 +544,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">shaderEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$shaderEditor(, ((baaahs.ui.ShaderEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-shader-editor-props/index.html"><span class="identifier">ShaderEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shader-instance-editor.html">shaderInstanceEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">shaderInstanceEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$shaderInstanceEditor(, ((baaahs.ui.ShaderInstanceEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-shader-instance-editor-props/index.html"><span class="identifier">ShaderInstanceEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -459,6 +565,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">showControls</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$showControls(, ((baaahs.jsx.ShowControlsProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="../baaahs.jsx/-show-controls-props/index.html"><span class="identifier">ShowControlsProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="title.html">title</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><a href="-help-props/index.html"><span class="identifier">HelpProps</span></a><span class="symbol">.</span><span class="identifier">title</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$title(baaahs.ui.HelpProps, kotlin.Function1((, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>

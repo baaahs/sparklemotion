@@ -54,10 +54,12 @@ baaahs.sim
 baaahs.sim.ui
 baaahs.ui
 baaahs.ui.misc
+baaahs.ui.preview
 baaahs.util
 baaahs.visualizer
 baaahs.visualizer.ui
 external
+external.markdownit
 external.mosaic
 external.react_draggable
 materialui

@@ -1,0 +1,143 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>PreviewShaderBuilder - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.ui</a>&nbsp;/&nbsp;<a href="./index.html">PreviewShaderBuilder</a><br/>
+<br/>
+<h1>PreviewShaderBuilder</h1>
+<code><span class="keyword">class </span><span class="identifier">PreviewShaderBuilder</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-observable/index.html"><span class="identifier">Observable</span></a></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-state/index.html">State</a></h4>
+</td>
+<td>
+<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">State</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">PreviewShaderBuilder</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.PreviewShaderBuilder$<init>(baaahs.show.Shader, baaahs.glshaders.AutoWirer)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ui.PreviewShaderBuilder$<init>(baaahs.show.Shader, baaahs.glshaders.AutoWirer)/autoWirer">autoWirer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glshaders/-auto-wirer/index.html"><span class="identifier">AutoWirer</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="gadgets.html">gadgets</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">gadgets</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs/-gadget-data/index.html"><span class="identifier">GadgetData</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="glsl-errors.html">glslErrors</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">glslErrors</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.glsl/-glsl-error/index.html"><span class="identifier">GlslError</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="glsl-program.html">glslProgram</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">glslProgram</span><span class="symbol">: </span><a href="../../baaahs.glshaders/-glsl-program/index.html"><span class="identifier">GlslProgram</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="linked-patch.html">linkedPatch</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">linkedPatch</span><span class="symbol">: </span><a href="../../baaahs.glshaders/-linked-patch/index.html"><span class="identifier">LinkedPatch</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="preview-patch.html">previewPatch</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">previewPatch</span><span class="symbol">: </span><a href="../../baaahs.show.mutable/-mutable-patch/index.html"><span class="identifier">MutablePatch</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shader.html">shader</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">shader</span><span class="symbol">: </span><a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="state.html">state</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">state</span><span class="symbol">: </span><span class="identifier">State</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="adjust-gadgets.html">adjustGadgets</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">adjustGadgets</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="compile.html">compile</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">compile</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.PreviewShaderBuilder$compile(baaahs.glsl.GlslContext, kotlin.Function2((kotlin.String, baaahs.show.DataSource, baaahs.glshaders.GlslProgram.DataFeed)))/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-glsl-context/index.html"><span class="identifier">GlslContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ui.PreviewShaderBuilder$compile(baaahs.glsl.GlslContext, kotlin.Function2((kotlin.String, baaahs.show.DataSource, baaahs.glshaders.GlslProgram.DataFeed)))/resolver">resolver</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glshaders/-resolver.html"><span class="identifier">Resolver</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="link.html">link</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">link</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="start-building.html">startBuilding</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">startBuilding</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="start-compile.html">startCompile</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">startCompile</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.PreviewShaderBuilder$startCompile(baaahs.glsl.GlslContext)/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-glsl-context/index.html"><span class="identifier">GlslContext</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Extension Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../add-observer.html">addObserver</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-observable/index.html"><span class="identifier">Observable</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">addObserver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-removable-observer/index.html"><span class="identifier">RemovableObserver</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
