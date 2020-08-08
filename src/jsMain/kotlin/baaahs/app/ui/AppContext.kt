@@ -14,4 +14,5 @@ external interface AppContext {
     var webClient: WebClient.Facade
     var plugins: Plugins
     var autoWirer: AutoWirer
+    var allStyles: AllStyles
 }

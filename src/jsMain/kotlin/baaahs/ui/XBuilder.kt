@@ -77,13 +77,8 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
 
     fun observe(item: Observable) {
         onChange("observe", item) {
-            val observer = object : Observer {
-                override fun notifyChanged() = forceRender()
-            }
-            item.addObserver(observer)
-            withCleanup {
-                item.removeObserver(observer)
-            }
+            val observer = item.addObserver { forceRender() }
+            withCleanup { observer.remove() }
         }
     }
 

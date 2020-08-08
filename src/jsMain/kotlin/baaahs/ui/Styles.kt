@@ -75,6 +75,7 @@ object Styles : StyleSheet("ui", isStatic = true) {
         height = 100.pct
         display = Display.flex
         flexDirection = FlexDirection.row
+        marginTop = .5.em
     }
 
     val shaderMeta by css {
@@ -99,5 +100,10 @@ object Styles : StyleSheet("ui", isStatic = true) {
         height = 50.vh
         overflowY = Overflow.scroll
         border = "1px groove"
+    }
+
+    val helpInline by css {
+        display = Display.inline
+        padding(0.em, .5.em)
     }
 }
