@@ -10,6 +10,7 @@ import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.show.Shader
 import baaahs.show.ShaderType
+import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderInstance
@@ -119,7 +120,8 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
         }
 
         try {
-            previewPatch = autoWirer.autoWire(*shaders)
+            val overrides = mapOf(ContentType.UvCoordinate to MutableConstPort("gl_FragCoord"))
+            previewPatch = autoWirer.autoWire(*shaders, overrides = overrides)
                 .acceptSymbolicChannelLinks()
                 .resolve()
             linkedPatch = previewPatch?.openForPreview(autoWirer, shader.type)

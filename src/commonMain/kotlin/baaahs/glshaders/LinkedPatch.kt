@@ -100,6 +100,11 @@ class LinkedPatch(
                     is ShaderChannelLink -> {
                         logger.warn { "Unexpected unresolved $fromLink for $toPortId" }
                     }
+                    is ConstLink -> {
+                        tmpPortMap[toPortId] = lazy {
+                            "(" + fromLink.glsl + ")"
+                        }
+                    }
                     is NoOpLink -> {}
                 }
             }

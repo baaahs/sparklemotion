@@ -512,6 +512,13 @@ data class MutableOutputPort(private val portId: String) : MutableLink.Port {
     override fun displayName(): String = "$portId Output"
 }
 
+data class MutableConstPort(private val glsl: String) : MutableLink.Port {
+    override fun toRef(showBuilder: ShowBuilder): PortRef =
+        ConstPortRef(glsl)
+
+    override fun displayName(): String = "const($glsl)"
+}
+
 class ShowBuilder {
     private val dataSourceIds = UniqueIds<DataSource>()
     private val shaderIds = UniqueIds<Shader>()
