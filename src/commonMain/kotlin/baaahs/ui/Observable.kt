@@ -24,7 +24,7 @@ fun <T : Observable> T.addObserver(callback: (T) -> Unit): RemovableObserver<T> 
 }
 
 class RemovableObserver<T : Observable>(
-    private val observable: T,
+    val observable: T,
     private val callback: (T) -> Unit
 ) : Observer {
     override fun notifyChanged() = callback.invoke(observable)

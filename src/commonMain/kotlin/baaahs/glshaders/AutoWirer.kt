@@ -15,7 +15,7 @@ class AutoWirer(
     fun autoWire(
         vararg shaders: Shader,
         focus: Shader? = null,
-        overrides: Map<ContentType, MutableLink.Port> = emptyMap()
+        overrides: Map<ContentType, MutablePort> = emptyMap()
     ): UnresolvedPatch {
         val openShaders = shaders.associate { it to glslAnalyzer.openShader(it) }
         return autoWire(openShaders.values, focus?.let { openShaders[it] }, overrides = overrides)
@@ -24,7 +24,7 @@ class AutoWirer(
     fun autoWire(
         vararg shaders: OpenShader,
         focus: OpenShader? = null,
-        overrides: Map<ContentType, MutableLink.Port> = emptyMap()
+        overrides: Map<ContentType, MutablePort> = emptyMap()
     ): UnresolvedPatch {
         return autoWire(shaders.toList(), focus, overrides = overrides)
     }
@@ -33,15 +33,15 @@ class AutoWirer(
         shaders: Collection<OpenShader>,
         focus: OpenShader? = null,
         shaderChannel: ShaderChannel = ShaderChannel.Main,
-        overrides: Map<ContentType, MutableLink.Port> = emptyMap()
+        overrides: Map<ContentType, MutablePort> = emptyMap()
     ): UnresolvedPatch {
-        val locallyAvailable: MutableMap<ContentType, MutableSet<MutableLink.Port>> = mutableMapOf()
+        val locallyAvailable: MutableMap<ContentType, MutableSet<MutablePort>> = mutableMapOf()
 
         // First pass: gather shader output ports.
         val shaderInstances = shaders.associate { openShader ->
             val unresolvedShaderInstance = UnresolvedShaderInstance(
                 MutableShader(openShader.shader),
-                openShader.inputPorts.map { it.id }.associateWith { hashSetOf<MutableLink.Port>() },
+                openShader.inputPorts.map { it.id }.associateWith { hashSetOf<MutablePort>() },
                 shaderChannel,
                 0f
             )
@@ -51,7 +51,7 @@ class AutoWirer(
 
             openShader.shaderType.defaultUpstreams.forEach { (contentType, shaderChannel) ->
                 locallyAvailable.getOrPut(contentType) { mutableSetOf() }
-                    .add(MutableShaderChannel(shaderChannel))
+                    .add(MutableShaderChannelPort(shaderChannel))
             }
 
             openShader to unresolvedShaderInstance
@@ -71,10 +71,10 @@ class AutoWirer(
         val dataSources = hashSetOf<DataSource>()
         val unresolvedShaderInstances = shaderInstancesOfInterest.map { (openShader, unresolvedShaderInstance) ->
             openShader.inputPorts.forEach { inputPort ->
-                val localSuggestions: Set<MutableLink.Port>? = locallyAvailable[inputPort.contentType]
+                val localSuggestions: Set<MutablePort>? = locallyAvailable[inputPort.contentType]
                 val suggestions = localSuggestions ?: plugins.suggestDataSources(inputPort).map {
                     dataSources.add(it)
-                    MutableDataSource(it)
+                    MutableDataSourcePort(it)
                 }
                 unresolvedShaderInstance.incomingLinksOptions[inputPort.id]!!.addAll(suggestions)
             }
@@ -86,14 +86,14 @@ class AutoWirer(
     data class UnresolvedShaderOutPort(
         val unresolvedShaderInstance: UnresolvedShaderInstance,
         val portId: String
-    ) : MutableLink.Port {
+    ) : MutablePort {
         override fun toRef(showBuilder: ShowBuilder): PortRef = TODO("not implemented")
         override fun displayName(): String = "Shader ${unresolvedShaderInstance.mutableShader.title} port $portId"
     }
 
     data class UnresolvedShaderInstance(
         val mutableShader: MutableShader,
-        val incomingLinksOptions: Map<String, MutableSet<MutableLink.Port>>,
+        val incomingLinksOptions: Map<String, MutableSet<MutablePort>>,
         var shaderChannel: ShaderChannel? = null,
         var priority: Float
     ) {
@@ -110,7 +110,7 @@ class AutoWirer(
 
         fun acceptSymbolicChannelLinks() {
             incomingLinksOptions.values.forEach { options ->
-                val shaderChannelOptions = options.filterIsInstance<MutableShaderChannel>()
+                val shaderChannelOptions = options.filterIsInstance<MutableShaderChannelPort>()
                 if (options.size > 1 && shaderChannelOptions.size == 1) {
                     options.clear()
                     options.add(shaderChannelOptions.first())

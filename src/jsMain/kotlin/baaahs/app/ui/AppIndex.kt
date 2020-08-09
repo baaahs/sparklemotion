@@ -12,6 +12,7 @@ import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.util.UndoStack
+import external.ErrorBoundary
 import kotlinext.js.jsObject
 import kotlinx.css.opacity
 import kotlinx.css.properties.Timing

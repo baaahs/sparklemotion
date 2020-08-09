@@ -9,7 +9,7 @@ import baaahs.getBang
 import baaahs.show.Control
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.MutableControl
+import baaahs.show.mutable.MutableControlPort
 import baaahs.show.mutable.MutablePatchHolder
 
 class ControlDisplay(
@@ -159,7 +159,7 @@ class ControlDisplay(
                 mutablePatchHolder!!
                 draggable as PlaceableControl
                 val mutableControls = mutablePatchHolder.editControlLayout(panelTitle)
-                mutableControls.add(index, draggable.mutableControl)
+                mutableControls.add(index, draggable.mutableControlPort)
             }
 
             override fun removeDraggable(draggable: Draggable) {
@@ -168,7 +168,7 @@ class ControlDisplay(
             }
 
             inner class PlacedControl(val control: Control, val index: Int) : PlaceableControl {
-                override lateinit var mutableControl: MutableControl
+                override lateinit var mutableControlPort: MutableControlPort
 
                 override fun onMove() {
                     commitEdit()
@@ -176,7 +176,7 @@ class ControlDisplay(
 
                 override fun remove() {
                     mutablePatchHolder!!
-                    mutableControl = mutablePatchHolder.removeControl(panelTitle, index)
+                    mutableControlPort = mutablePatchHolder.removeControl(panelTitle, index)
                 }
             }
         }
@@ -207,8 +207,8 @@ class ControlDisplay(
     }
 
     inner class UnplacedControl(val index: Int) : PlaceableControl {
-        override val mutableControl: MutableControl
-            get() = MutableControl(unplacedControls[index])
+        override val mutableControlPort: MutableControlPort
+            get() = MutableControlPort(unplacedControls[index])
 
         override fun remove() {
             // No-op.
@@ -220,7 +220,7 @@ class ControlDisplay(
     }
 
     interface PlaceableControl : Draggable {
-        val mutableControl: MutableControl
+        val mutableControlPort: MutableControlPort
 
         fun remove()
     }

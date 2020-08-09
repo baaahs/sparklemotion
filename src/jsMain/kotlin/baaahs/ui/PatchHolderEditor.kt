@@ -31,7 +31,6 @@ import materialui.components.list.list
 import materialui.components.listitem.listItem
 import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
-import materialui.components.portal.portal
 import materialui.components.textfield.textField
 import materialui.components.typography.typographyH1
 import materialui.components.typography.typographyH6
@@ -47,24 +46,23 @@ import styled.StyleSheet
 fun <T> Event.targetEl(): T = target as T
 
 val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") { props ->
-    val appContext = useContext(appContext)
+    val mutablePatchHolder = props.mutablePatchHolder
+    observe(mutablePatchHolder)
+
     val showBuilder by state { ShowBuilder() }
 
-    val changed = props.mutablePatchHolder.isChanged()
+    val changed = mutablePatchHolder.isChanged()
 
-    val handleTitleChange = useCallback(props.mutablePatchHolder) { event: Event ->
-        props.mutablePatchHolder.title = event.targetEl<HTMLInputElement>().value
-        forceRender()
+    val handleTitleChange = useCallback(mutablePatchHolder) { event: Event ->
+        with (mutablePatchHolder) {
+            title = event.targetEl<HTMLInputElement>().value
+            notifyChanged()
+        }
     }
-
-    val handleDrawerClose = eventHandler("handleDrawerClose", props.onCancel) {
-        props.onCancel()
-    }
-    val handleChange = useCallback { forceRender() }
 
     var visiblePanel by state { 0 }
 
-    var selectedPatch by state { props.mutablePatchHolder.patches.firstOrNull() }
+    var selectedPatch by state { mutablePatchHolder.patches.firstOrNull() }
     var selectedShaderInstance by state<MutableShaderInstance?> { null }
     val handleSelectShader = useCallback { selected: MutableShaderInstance ->
         selectedShaderInstance = selected
@@ -85,12 +83,14 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                 }
 
                 list(styles.fixturesList on ListStyle.root) {
-                    props.mutablePatchHolder.patches.forEachIndexed { index, mutablePatch ->
+                    mutablePatchHolder.patches.forEachIndexed { index, mutablePatch ->
+                        x.observe(mutablePatch)
+
                         listItem {
                             attrs.button = true
                             attrs.selected = mutablePatch == selectedPatch
                             attrs.onClickFunction = x.eventHandler("handlePatchNavClick-$index") {
-                                selectedPatch = props.mutablePatchHolder.patches[index]
+                                selectedPatch = mutablePatchHolder.patches[index]
                             }
 
                             listItemIcon { icon(FilterList) }
@@ -103,8 +103,10 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                         listItemText { +"New…" }
 
                         attrs.onClickFunction = x.eventHandler("handleNewPatchClick") {
-                            props.mutablePatchHolder.patches.add(MutablePatch())
-                            this@xComponent.forceRender()
+                            with (mutablePatchHolder) {
+                                patches.add(MutablePatch())
+                                notifyChanged()
+                            }
                         }
                     }
                 }
@@ -137,81 +139,76 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
 
     val shaderPanel = selectedShaderInstance?.let { shaderInstance ->
         val shader = shaderInstance.mutableShader
-        val shaderChannels = props.mutablePatchHolder.findShaderChannels() + ShaderChannel.Main
+        val shaderChannels = mutablePatchHolder.findShaderChannels() + ShaderChannel.Main
         Panel(shader.title, Icons.forShader(shader.type)) {
             shaderInstanceEditor {
                 attrs.mutablePatch = selectedPatch!!
                 attrs.mutableShaderInstance = shaderInstance
                 attrs.shaderChannels = shaderChannels
                 attrs.showBuilder = showBuilder
-                attrs.onChange = handleChange
             }
         }
     }
     shaderPanel?.let { panels.add(it) }
 
-    val secondPanel = Panel("All Surfaces", AccountTree) { container { typographyH1 { +"Page 2" } } }
-    val thirdPanel = Panel("Shader", SettingsInputComponent) { container { typographyH1 { +"Page 3" } } }
 
-    portal {
-        form {
-            drawer(styles.drawer on DrawerStyle.paper) {
-                attrs.anchor = DrawerAnchor.bottom
-                attrs.variant = DrawerVariant.temporary
-                attrs.elevation
-                attrs.open = true
-                attrs.onClose = handleDrawerClose
+    form {
+        drawer(styles.drawer on DrawerStyle.paper) {
+            attrs.anchor = DrawerAnchor.bottom
+            attrs.variant = DrawerVariant.temporary
+            attrs.elevation
+            attrs.open = true
+            attrs.onClose = props.onCancel.withEvent()
 
-                attrs.onSubmitFunction = x.handler("onSubmit", changed, props.onApply) { event: Event ->
-                    if (changed) props.onApply()
-                    event.preventDefault()
+            attrs.onSubmitFunction = x.handler("onSubmit", changed, props.onApply) { event: Event ->
+                if (changed) props.onApply()
+                event.preventDefault()
+            }
+
+            dialogTitle {
+                +"${mutablePatchHolder.displayType}:"
+
+                textField {
+                    attrs.autoFocus = true
+                    attrs.variant = FormControlVariant.outlined
+                    attrs.label = "${mutablePatchHolder.displayType} Title".asTextNode()
+                    attrs.value = mutablePatchHolder.title
+                    attrs.onChangeFunction = handleTitleChange
                 }
+            }
 
-                dialogTitle {
-                    +"${props.mutablePatchHolder.displayType}:"
-
-                    textField {
-                        attrs.autoFocus = true
-                        attrs.variant = FormControlVariant.outlined
-                        attrs.label = "${props.mutablePatchHolder.displayType} Title".asTextNode()
-                        attrs.value = props.mutablePatchHolder.title
-                        attrs.onChangeFunction = handleTitleChange
-                    }
-                }
-
-                breadcrumbs {
-                    panels.forEachIndexed { index, panel ->
-                        link {
-                            attrs.onClickFunction = { visiblePanel = index }
-                            panel.icon?.let { icon(it) }
-                            +panel.title
-                        }
-                    }
-                    button { attrs.onClickFunction = { visiblePanel = 1 }; +"2" }
-                    button { attrs.onClickFunction = { visiblePanel = 2 }; +"3" }
-                }
-
-                dialogContent(+styles.dialogContent) {
-                    slidePanel {
-                        attrs.panels = panels.map { it.content }
-                        attrs.index = visiblePanel
-                        attrs.margins = 24.px
+            breadcrumbs {
+                panels.forEachIndexed { index, panel ->
+                    link {
+                        attrs.onClickFunction = { visiblePanel = index }
+                        panel.icon?.let { icon(it) }
+                        +panel.title
                     }
                 }
+                button { attrs.onClickFunction = { visiblePanel = 1 }; +"2" }
+                button { attrs.onClickFunction = { visiblePanel = 2 }; +"3" }
+            }
 
-                dialogActions {
-                    button {
-                        +"Revert"
-                        attrs.color = ButtonColor.secondary
-                        attrs.onClickFunction = x.eventHandler(props.onCancel)
-                    }
+            dialogContent(+styles.dialogContent) {
+                slidePanel {
+                    attrs.panels = panels.map { it.content }
+                    attrs.index = visiblePanel
+                    attrs.margins = 24.px
+                }
+            }
 
-                    button {
-                        +"Apply"
-                        attrs.disabled = !changed
-                        attrs.color = ButtonColor.primary
-                        attrs.onClickFunction = x.eventHandler(props.onApply)
-                    }
+            dialogActions {
+                button {
+                    +"Revert"
+                    attrs.color = ButtonColor.secondary
+                    attrs.onClickFunction = x.eventHandler(props.onCancel)
+                }
+
+                button {
+                    +"Apply"
+                    attrs.disabled = !changed
+                    attrs.color = ButtonColor.primary
+                    attrs.onClickFunction = x.eventHandler(props.onApply)
                 }
             }
         }

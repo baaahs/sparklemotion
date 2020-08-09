@@ -27,6 +27,8 @@ import kotlin.collections.set
 import kotlin.collections.sortedBy
 
 val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
+    observe(props.mutableShaderInstance, *props.siblingMutableShaderInstances.toTypedArray())
+
     val appContext = useContext(appContext)
 
     val shaderChannelOptions = props.shaderChannels
@@ -54,17 +56,15 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     val inputPorts = openShader?.inputPorts
         ?.sortedBy { it.title }
         ?.associateWith { inputPort ->
-            handler(
-                "change to ${inputPort.id}", props.mutableShaderInstance, props.onChange
-            ) { sourcePortOption: SourcePortOption? ->
-                val incomingLinks = props.mutableShaderInstance.incomingLinks
-                if (sourcePortOption == null) {
-                    incomingLinks.remove(inputPort.id)
-                } else {
-                    incomingLinks[inputPort.id] = sourcePortOption.portEditor
+            handler("change to ${inputPort.id}", props.mutableShaderInstance) { sourcePortOption: SourcePortOption? ->
+                with(props.mutableShaderInstance) {
+                    if (sourcePortOption == null) {
+                        incomingLinks.remove(inputPort.id)
+                    } else {
+                        incomingLinks[inputPort.id] = sourcePortOption.portEditor
+                    }
+                    notifyChanged()
                 }
-                props.onChange()
-                this@xComponent.forceRender()
             }
         }
 
@@ -105,21 +105,22 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
 
 interface SourcePortOption {
     val title: String
-    val portEditor: MutableLink.Port
+    val portEditor: MutablePort
     val groupName: String
-    fun matches(otherPort: MutableLink.Port): Boolean
+    fun matches(otherPort: MutablePort): Boolean
     fun isAppropriateFor(inputPort: InputPort): Boolean
 }
 
 data class DataSourceOption(val dataSource: DataSource): SourcePortOption {
     override val title: String get() = dataSource.dataSourceName
-    override val portEditor: MutableLink.Port get() = MutableDataSource(
+    override val portEditor: MutablePort
+        get() = MutableDataSourcePort(
         dataSource
     )
     override val groupName: String get() = "Data Sources"
 
-    override fun matches(otherPort: MutableLink.Port): Boolean {
-        return otherPort is MutableDataSource && otherPort.dataSource == dataSource
+    override fun matches(otherPort: MutablePort): Boolean {
+        return otherPort is MutableDataSourcePort && otherPort.dataSource == dataSource
     }
 
     override fun isAppropriateFor(inputPort: InputPort): Boolean {
@@ -129,13 +130,14 @@ data class DataSourceOption(val dataSource: DataSource): SourcePortOption {
 
 data class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOption {
     override val title: String get() = "${shaderChannel.id} shader channel"
-    override val portEditor: MutableLink.Port get() = MutableShaderChannel(
+    override val portEditor: MutablePort
+        get() = MutableShaderChannelPort(
         shaderChannel
     )
     override val groupName: String get() = "Shader Channels"
 
-    override fun matches(otherPort: MutableLink.Port): Boolean {
-        return otherPort is MutableShaderChannel && otherPort.shaderChannel == shaderChannel
+    override fun matches(otherPort: MutablePort): Boolean {
+        return otherPort is MutableShaderChannelPort && otherPort.shaderChannel == shaderChannel
     }
 
     override fun isAppropriateFor(inputPort: InputPort): Boolean {
@@ -145,10 +147,10 @@ data class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOpti
 
 data class ShaderOption(val mutableShaderInstance: MutableShaderInstance): SourcePortOption {
     override val title: String get() = "${mutableShaderInstance.mutableShader.title} output"
-    override val portEditor: MutableLink.Port get() = MutableShaderOutPort(mutableShaderInstance)
+    override val portEditor: MutablePort get() = MutableShaderOutPort(mutableShaderInstance)
     override val groupName: String get() = "Shader Ports"
 
-    override fun matches(otherPort: MutableLink.Port): Boolean {
+    override fun matches(otherPort: MutablePort): Boolean {
         return otherPort is MutableShaderOutPort &&
                 otherPort.mutableShaderInstance == mutableShaderInstance
     }
@@ -164,7 +166,6 @@ external interface LinksEditorProps : RProps {
     var mutableShaderInstance: MutableShaderInstance
     var siblingMutableShaderInstances: List<MutableShaderInstance>
     var shaderChannels: Set<ShaderChannel>
-    var onChange: () -> Unit
 }
 
 fun RBuilder.linksEditor(handler: RHandler<LinksEditorProps>): ReactElement =

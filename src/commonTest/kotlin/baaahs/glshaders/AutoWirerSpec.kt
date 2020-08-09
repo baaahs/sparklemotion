@@ -4,9 +4,9 @@ import baaahs.glsl.Shaders.cylindricalUvMapper
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
-import baaahs.show.mutable.MutableDataSource
+import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutableShader
-import baaahs.show.mutable.MutableShaderChannel
+import baaahs.show.mutable.MutableShaderChannelPort
 import baaahs.show.mutable.MutableShaderInstance
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -48,12 +48,12 @@ object AutoWirerSpec : Spek({
                         MutableShaderInstance(
                             MutableShader(paintShader),
                             hashMapOf(
-                                "time" to MutableDataSource(CorePlugin.Time()),
-                                "blueness" to MutableDataSource(
+                                "time" to MutableDataSourcePort(CorePlugin.Time()),
+                                "blueness" to MutableDataSourcePort(
                                     CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
                                 ),
-                                "resolution" to MutableDataSource(CorePlugin.Resolution()),
-                                "gl_FragCoord" to MutableShaderChannel(
+                                "resolution" to MutableDataSourcePort(CorePlugin.Resolution()),
+                                "gl_FragCoord" to MutableShaderChannelPort(
                                     ShaderChannel.Main
                                 )
                             ),
@@ -80,12 +80,12 @@ object AutoWirerSpec : Spek({
                             MutableShaderInstance(
                                 MutableShader(paintShader),
                                 hashMapOf(
-                                    "time" to MutableDataSource(CorePlugin.Time()),
-                                    "resolution" to MutableDataSource(CorePlugin.Resolution()),
-                                    "blueness" to MutableDataSource(
+                                    "time" to MutableDataSourcePort(CorePlugin.Time()),
+                                    "resolution" to MutableDataSourcePort(CorePlugin.Resolution()),
+                                    "blueness" to MutableDataSourcePort(
                                         CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
                                     ),
-                                    "gl_FragCoord" to MutableShaderChannel(
+                                    "gl_FragCoord" to MutableShaderChannelPort(
                                         ShaderChannel.Main
                                     )
                                 ),
@@ -93,10 +93,10 @@ object AutoWirerSpec : Spek({
                             ),
                             uvShaderInst.apply {
                                 incomingLinks.putAll(mapOf(
-                                    "pixelCoordsTexture" to MutableDataSource(
+                                    "pixelCoordsTexture" to MutableDataSourcePort(
                                         CorePlugin.PixelCoordsTexture()
                                     ),
-                                    "modelInfo" to MutableDataSource(
+                                    "modelInfo" to MutableDataSourcePort(
                                         CorePlugin.ModelInfoDataSource(
                                             "ModelInfo"
                                         )
@@ -128,10 +128,10 @@ object AutoWirerSpec : Spek({
                             MutableShaderInstance(
                                 MutableShader(filterShader),
                                 hashMapOf(
-                                    "brightness" to MutableDataSource(
+                                    "brightness" to MutableDataSourcePort(
                                         CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f, null)
                                     ),
-                                    "gl_FragColor" to MutableShaderChannel(
+                                    "gl_FragColor" to MutableShaderChannelPort(
                                         ShaderChannel.Main
                                     )
                                 ),

@@ -61,9 +61,17 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     private val counter = react.useState { counterIncr.first.next() }
     private var inRender = true
     private var stateHasChanged = false
+    private val observed = mutableMapOf<Observable, RemovableObserver<*>>()
 
     init {
+        logger.info { "render, instance=${context.xBuilderInstance} renderCount=${context.renderCount}" }
+
         react.useEffectWithCleanup(emptyList()) {
+            observed.values.forEach {
+                logger.info { "instance=${context.xBuilderInstance} unobserving ${it.observable::class.simpleName}" }
+                it.remove()
+            }
+
             return@useEffectWithCleanup {
                 context.sideEffects.forEach { it.runCleanups() }
             }
@@ -81,7 +89,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     fun <T> state(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
         @Suppress("UNREACHABLE_CODE")
         return if (firstTime) {
-            val data = Data(logger, valueInitializer()) { forceRender() }
+            val data = Data(logger, valueInitializer()) { forceRender("state change on ${it.name}") }
             context.data.add(data)
             return data
         } else {
@@ -90,10 +98,17 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         }
     }
 
-    fun observe(item: Observable) {
-        onChange("observe", item) {
-            val observer = item.addObserver { forceRender() }
-            withCleanup { observer.remove() }
+    /** Component will re-render whenever any of the items is notified. */
+    fun observe(vararg items: Observable) {
+        onChange("observe", *items) {
+            items.forEach { item ->
+                observed.getOrPut(item) {
+                    logger.info { "instance=${context.xBuilderInstance} observing ${item::class.simpleName}" }
+                    item.addObserver {
+                        forceRender("instance=${context.xBuilderInstance} observed ${item::class.simpleName} changed")
+                    }
+                }
+            }
         }
     }
 
@@ -157,7 +172,8 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         window.setTimeout(block, 0)
     }
 
-    fun forceRender() {
+    fun forceRender(why: String = "explicity") {
+        logger.info { ("instance=${context.xBuilderInstance} forceRender() because $why") }
         if (inRender) {
             stateHasChanged = true
         } else {
@@ -176,6 +192,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
 
     internal fun renderFinished() {
         firstTime = false
+        context.renderCount++
         if (stateHasChanged) forceRenderNow(!inRender)
         inRender = false
     }
@@ -187,9 +204,15 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     private class Context {
+        val xBuilderInstance = nextInstance++
+        var renderCount = 0
         val data: MutableList<Data<*>> = mutableListOf()
         val sideEffects: MutableList<SideEffect> = mutableListOf()
         val handlers: MutableMap<String, Handler> = mutableMapOf()
+
+        companion object {
+            var nextInstance = 0
+        }
     }
 
     private class Handler(
@@ -197,7 +220,11 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         var block: Function<*>
     )
 
-    private class Data<T>(private val logger: Logger, initialValue: T, private val onChange: () -> Unit): ReadWriteProperty<Any?, T> {
+    private class Data<T>(
+        private val logger: Logger,
+        initialValue: T,
+        private val onChange: (KProperty<*>) -> Unit
+    ): ReadWriteProperty<Any?, T> {
         var value: T = initialValue
 
         override operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
@@ -208,7 +235,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
             if (this.value != value) {
 //                logger.info { "${property.name} := ${value?.toString()?.truncate(12)}" }
                 this.value = value
-                onChange()
+                onChange(property)
             }
         }
     }

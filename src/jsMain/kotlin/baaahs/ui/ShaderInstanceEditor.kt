@@ -23,18 +23,15 @@ import styled.styledDiv
 val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstanceEditor") { props ->
     val appContext = useContext(appContext)
 
-    val selectedPatch = props.mutablePatch
-    val shaderInstance = props.mutableShaderInstance
-
-    val handleUpdate =
-        handler("handleShaderUpdate", shaderInstance) { block: MutableShaderInstance.() -> Unit ->
-            shaderInstance.block()
+    val updateShaderInstance =
+        handler("updateShaderInstance", props.mutableShaderInstance) { block: MutableShaderInstance.() -> Unit ->
+            props.mutableShaderInstance.block()
             forceRender()
         }
 
     val editingShader = ref<EditingShader> { nuffin() }
     onChange("shaderInstance", props.mutableShaderInstance) {
-        val newEditingShader = EditingShader(shaderInstance, appContext.autoWirer)
+        val newEditingShader = EditingShader(props.mutableShaderInstance, appContext.autoWirer)
         editingShader.current = newEditingShader
 
         val observer = newEditingShader.addObserver {
@@ -63,11 +60,10 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
         div {
             linksEditor {
-                attrs.siblingMutableShaderInstances = selectedPatch.mutableShaderInstances
+                attrs.siblingMutableShaderInstances = props.mutablePatch.mutableShaderInstances
                 attrs.showBuilder = props.showBuilder
-                attrs.mutableShaderInstance = shaderInstance
+                attrs.mutableShaderInstance = props.mutableShaderInstance
                 attrs.shaderChannels = props.shaderChannels
-                attrs.onChange = props.onChange
             }
         }
 
@@ -91,10 +87,10 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                     textField {
                         attrs.autoFocus = false
                         attrs.fullWidth = true
-                        attrs.value = shaderInstance.mutableShader.title
+                        attrs.value = props.mutableShaderInstance.mutableShader.title
                         attrs.onChangeFunction = { event: Event ->
                             val str = event.target!!.asDynamic().value as String
-                            handleUpdate { mutableShader.title = str }
+                            updateShaderInstance { mutableShader.title = str }
                         }
                     }
                     formHelperText { +"Shader Name" }
@@ -102,10 +98,10 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
                 formControl {
                     select {
-                        attrs.value(shaderInstance.shaderChannel?.id ?: "")
+                        attrs.value(props.mutableShaderInstance.shaderChannel?.id ?: "")
                         attrs.onChangeFunction = { event: Event ->
                             val channelId = event.target!!.asDynamic().value as String
-                            handleUpdate {
+                            updateShaderInstance {
                                 shaderChannel = if (channelId.isNotBlank()) ShaderChannel(channelId) else null
                             }
                         }
@@ -127,10 +123,10 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
                 formControl {
                     textField {
-                        attrs.value = shaderInstance.priority
+                        attrs.value = props.mutableShaderInstance.priority
                         attrs.onChangeFunction = { event: Event ->
                             val priorityStr = event.target!!.asDynamic().value as String
-                            handleUpdate { priority = priorityStr.toFloat() }
+                            updateShaderInstance { priority = priorityStr.toFloat() }
                         }
                     }
                     formHelperText { +"Priority" }
@@ -151,7 +147,6 @@ external interface ShaderInstanceEditorProps : RProps {
     var mutableShaderInstance: MutableShaderInstance
     var shaderChannels: Set<ShaderChannel>
     var showBuilder: ShowBuilder
-    var onChange: () -> Unit
 }
 
 fun RBuilder.shaderInstanceEditor(handler: RHandler<ShaderInstanceEditorProps>) =

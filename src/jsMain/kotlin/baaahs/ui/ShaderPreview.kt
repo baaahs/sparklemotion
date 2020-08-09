@@ -10,6 +10,8 @@ import external.IntersectionObserver
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import materialui.Warning
+import materialui.components.circularprogress.circularProgress
+import materialui.components.circularprogress.enums.CircularProgressVariant
 import materialui.components.divider.divider
 import materialui.components.popover.enums.PopoverStyle
 import materialui.components.popover.popover
@@ -65,7 +67,18 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         gl?.let { gl ->
             props.previewShaderBuilder
                 ?: PreviewShaderBuilder(props.shader!!, appContext.autoWirer)
+        }?.also {
+            observe(it)
         }
+    }
+
+    val lastState = ref<PreviewShaderBuilder.State?> { null }
+    val state = builder?.state
+    console.log("Render shaderPreview(${builder?.shader?.title}) at", canvas.current, " is $state")
+    if (lastState.current == state) {
+        console.log("same state!")
+    } else {
+        lastState.current = state
     }
 
     onChange("different builder", gl, glslPreview, builder) {
@@ -75,23 +88,11 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
         preRenderHook.current = { builder.adjustGadgets() }
 
-        val observer = builder.addObserver {
-            when (it.state) {
-                PreviewShaderBuilder.State.Linked -> {
-                    it.startCompile(gl!!)
-                }
-                PreviewShaderBuilder.State.Success -> {
-                    glslPreview!!.setProgram(it.glslProgram!!)
-                }
-                else -> {
-                }
-            }
-            forceRender()
-        }
-        withCleanup { observer.remove() }
-
-        if (builder.state == PreviewShaderBuilder.State.Unbuilt) {
-            builder.startBuilding()
+        when (builder.state) {
+            PreviewShaderBuilder.State.Unbuilt -> builder.startBuilding()
+            PreviewShaderBuilder.State.Linked -> builder.startCompile(gl!!)
+            PreviewShaderBuilder.State.Success -> glslPreview!!.setProgram(builder.glslProgram!!)
+            else -> {}
         }
     }
 
@@ -112,13 +113,16 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
             attrs.height = height.toString()
         }
 
-        println("${builder?.shader?.title} is ${builder?.state}")
-        when (builder?.state ?: PreviewShaderBuilder.State.Unbuilt) {
+        when (state ?: PreviewShaderBuilder.State.Unbuilt) {
             PreviewShaderBuilder.State.Unbuilt,
             PreviewShaderBuilder.State.Linking,
             PreviewShaderBuilder.State.Linked,
             PreviewShaderBuilder.State.Compiling -> {
-                div { +"Building..." }
+                circularProgress {}
+                typography {
+                    attrs.display = TypographyDisplay.block
+                    +"Building…"
+                }
             }
 
             PreviewShaderBuilder.State.Success -> {

@@ -20,38 +20,40 @@ import react.*
 import react.dom.div
 
 val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
+    val mutablePatch = props.mutablePatch
+
+    observe(mutablePatch)
+
     val appContext = useContext(appContext)
     val styles = PatchHolderEditorStyles
 
-    val mutablePatch = props.mutablePatch
+    val sortedShaderInstances =
+        mutablePatch.mutableShaderInstances.sortedBy { it.mutableShader.type.priority }
 
-
-    val sortedShaderInstances = memo(props.mutablePatch) {
-        props.mutablePatch.mutableShaderInstances
-            .sortedBy { it.mutableShader.type.priority }.map {
-                it to { _: Event -> props.onSelectShaderInstance(it) }
-            }
-    }
+    val handleSelects by state { hashMapOf<MutableShaderInstance, (Event) -> Unit>() }
 
     val x = this
-    sortedShaderInstances.forEachIndexed { index, (mutableShaderInstance, handleClick) ->
-        val shader = mutableShaderInstance.mutableShader.build()
+    sortedShaderInstances.forEach { mutableShaderInstance ->
+        val mutableShader = mutableShaderInstance.mutableShader
+
+        observe(mutableShaderInstance, mutableShader)
 
         card(+styles.shaderCard on PaperStyle.root) {
             key = mutableShaderInstance.id
 
-            attrs.onClickFunction = handleClick
+            attrs.onClickFunction = handleSelects.getOrPut(mutableShaderInstance) {
+                { props.onSelectShaderInstance(mutableShaderInstance) }
+            }
 
             cardHeader {
                 attrs.avatar {
-                    avatar { icon(Icons.forShader(shader.type)) }
+                    avatar { icon(Icons.forShader(mutableShader.type)) }
                 }
-                attrs.title { +shader.title }
-//                                attrs.subheader { +"${shader.type.name} Shader" }
+                attrs.title { +mutableShader.title }
             }
 
             shaderPreview {
-                attrs.shader = shader
+                attrs.shader = mutableShader.build()
                 attrs.width = styles.cardWidth
                 attrs.height = styles.cardWidth
             }
@@ -61,12 +63,9 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
                     attrs.display = TypographyDisplay.block
                     attrs.variant = TypographyVariant.body2
                     attrs.color = TypographyColor.textSecondary
-                    +"${shader.type.name} Shader"
+                    +"${mutableShader.type.name} Shader"
                 }
             }
-//                            cardActions {
-//                                button { +"Edit" }
-//                            }
         }
     }
 
