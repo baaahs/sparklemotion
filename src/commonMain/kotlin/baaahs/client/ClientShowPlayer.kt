@@ -8,7 +8,7 @@ import kotlinx.serialization.json.JsonElement
 
 class ClientShowPlayer(
     plugins: Plugins,
-    val glContext: GlContext,
+    override val glContext: GlContext,
     private val pubSub: PubSub.Client,
     modelInfo: ModelInfo
 ) : BaseShowPlayer(plugins, modelInfo) {
