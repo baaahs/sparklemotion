@@ -1,8 +1,12 @@
 package baaahs.glshaders
 
+import baaahs.show.Shader
+import baaahs.show.ShaderType
+
 object ShaderFactory {
-    fun paintShader(title: String): PaintShader {
-        return GlslAnalyzer().openShader("""
+    fun paintShader(title: String): Shader {
+        return Shader(
+            title, ShaderType.Paint, """
             // $title
             uniform float time;
             uniform vec2  resolution;
@@ -17,6 +21,7 @@ object ShaderFactory {
                 someGlobalVar = anotherFunc(someConstVar);
                 gl_FragColor = vec4(uv.xy, blueness, 1.);
             }
-        """.trimIndent()) as PaintShader
+        """.trimIndent()
+        )
     }
 }

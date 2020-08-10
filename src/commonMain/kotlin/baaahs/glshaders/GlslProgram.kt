@@ -163,6 +163,7 @@ val dataSourceProviderModule = SerializersModule {
     polymorphic(DataSource::class) {
 //        CorePlugin.NoOp::class with CorePlugin.NoOp.serializer()
         CorePlugin.Resolution::class with CorePlugin.Resolution.serializer()
+        CorePlugin.PreviewResolution::class with CorePlugin.PreviewResolution.serializer()
         CorePlugin.Time::class with CorePlugin.Time.serializer()
         CorePlugin.PixelCoordsTexture::class with CorePlugin.PixelCoordsTexture.serializer()
         CorePlugin.ModelInfoDataSource::class with CorePlugin.ModelInfoDataSource.serializer()

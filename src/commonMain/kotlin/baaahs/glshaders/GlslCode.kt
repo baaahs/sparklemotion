@@ -1,6 +1,8 @@
 package baaahs.glshaders
 
 import baaahs.Logger
+import baaahs.glsl.AnalysisException
+import baaahs.unknown
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.json
 
@@ -26,6 +28,11 @@ class GlslCode(
     val uniforms: Collection<GlslVar> get() = globalVars.filter { it.isUniform }
     val functions: Collection<GlslFunction> get() = statements.filterIsInstance<GlslFunction>()
     val structs: Collection<GlslStruct> get() = statements.filterIsInstance<GlslStruct>()
+
+    fun findFunctionOrNull(name: String) =
+        functions.find { it.name == name}
+    fun findFunction(name: String) =
+        findFunctionOrNull(name) ?: error(unknown("function", name, functions.map { it.name }))
 
     companion object {
         private val logger = Logger("GlslCode")
@@ -110,7 +117,7 @@ class GlslCode(
         val hint: Hint? by lazy {
             val commentString = comments.joinToString(" ") { it.trim() }
             if (commentString.startsWith("@@")) {
-                Hint(commentString.trimStart('@').trim())
+                Hint(commentString.trimStart('@').trim(), lineNumber)
             } else {
                 null
             }
@@ -118,9 +125,15 @@ class GlslCode(
 //            if (parts.isNotEmpty() && parts.first().startsWith("@@")) {
 //            } else null
         }
+
+        fun displayName(): String {
+            return Regex("([A-Z](?=[a-z]+)|[A-Z]+(?![a-z]))").replace(name) {
+                " " + it.value
+            }.capitalize()
+        }
     }
 
-    class Hint(string: String) {
+    class Hint(string: String, lineNumber: Int?) {
         val pluginRef: PluginRef
         val config: JsonObject
 
@@ -132,7 +145,7 @@ class GlslCode(
                 PluginRef(
                     "${pluginPackage.ifEmpty { "baaahs." }}${pluginClass.ifEmpty { "Core" }}",
                     resourceName)
-            } ?: error("don't understand hint: $string")
+            } ?: throw AnalysisException("don't understand hint: $string", lineNumber ?: -1)
 
             config = json {
                 parts.subList(1, parts.size).forEach { s ->

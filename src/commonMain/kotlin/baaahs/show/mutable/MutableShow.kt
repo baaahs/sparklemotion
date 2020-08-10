@@ -3,6 +3,7 @@ package baaahs.show.mutable
 import baaahs.ShowState
 import baaahs.getBang
 import baaahs.glshaders.AutoWirer
+import baaahs.glshaders.ContentType
 import baaahs.glshaders.LinkedPatch
 import baaahs.randomId
 import baaahs.show.*
@@ -367,7 +368,7 @@ class MutablePatch {
         Patch.from(this, showBuilder)
 
     /** Build a [LinkedPatch] independent of an [baaahs.show.live.OpenShow]. */
-    fun openForPreview(autoWirer: AutoWirer, shaderType: ShaderType): LinkedPatch? {
+    fun openForPreview(autoWirer: AutoWirer): LinkedPatch? {
         val showBuilder = ShowBuilder()
         build(showBuilder)
 
@@ -380,7 +381,7 @@ class MutablePatch {
         val openPatch = OpenPatch(resolvedShaderInstances.values.toList(), surfaces)
 
         val portDiagram = autoWirer.buildPortDiagram(openPatch)
-        return portDiagram.resolvePatch(ShaderChannel.Main, shaderType.resultContentType)
+        return portDiagram.resolvePatch(ShaderChannel.Main, ContentType.Color)
     }
 
     fun addShaderInstance(mutableShaderInstance: MutableShaderInstance): MutablePatch {

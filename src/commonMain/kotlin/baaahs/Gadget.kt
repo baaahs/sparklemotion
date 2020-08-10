@@ -59,16 +59,20 @@ open class Gadget {
     }
 
     @JsName("withoutTriggering")
-    fun withoutTriggering(gadgetListener: GadgetListener, fn: () -> Unit) {
-        val listener = listeners.find { it.callback == gadgetListener }
-            ?: throw IllegalStateException("$gadgetListener isn't listening to $this")
-
-        val priorEnabled = listener.enabled
-        listener.enabled = false
-        try {
+    fun withoutTriggering(gadgetListener: GadgetListener?, fn: () -> Unit) {
+        if (gadgetListener == null) {
             fn()
-        } finally {
-            listener.enabled = priorEnabled
+        } else {
+            val listener = listeners.find { it.callback == gadgetListener }
+                ?: throw IllegalStateException("$gadgetListener isn't listening to $this")
+
+            val priorEnabled = listener.enabled
+            listener.enabled = false
+            try {
+                fn()
+            } finally {
+                listener.enabled = priorEnabled
+            }
         }
     }
 
