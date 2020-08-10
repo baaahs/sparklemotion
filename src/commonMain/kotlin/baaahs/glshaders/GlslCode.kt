@@ -125,6 +125,12 @@ class GlslCode(
 //            if (parts.isNotEmpty() && parts.first().startsWith("@@")) {
 //            } else null
         }
+
+        fun displayName(): String {
+            return Regex("([A-Z](?=[a-z]+)|[A-Z]+(?![a-z]))").replace(name) {
+                " " + it.value
+            }.capitalize()
+        }
     }
 
     class Hint(string: String, lineNumber: Int?) {
