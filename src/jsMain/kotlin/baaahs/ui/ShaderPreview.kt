@@ -3,7 +3,7 @@ package baaahs.ui
 import baaahs.app.ui.appContext
 import baaahs.gl.GlBase
 import baaahs.gl.GlContext
-import baaahs.gl.render.GlslPreview
+import baaahs.gl.render.QuadPreview
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
 import external.IntersectionObserver
@@ -28,7 +28,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
     val canvas = ref<HTMLCanvasElement?> { null }
     var gl by state<GlContext?> { null }
-    var glslPreview by state<GlslPreview?> { null }
+    var glslPreview by state<QuadPreview?> { null }
     var errorPopupAnchor by state<EventTarget?> { null }
     val preRenderHook = ref { {} }
 
@@ -40,7 +40,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         val glslContext = GlBase.jsManager.createContext(canvasEl)
         gl = glslContext
 
-        val preview = GlslPreview(glslContext, canvasEl.width, canvasEl.height) {
+        val preview = QuadPreview(glslContext, canvasEl.width, canvasEl.height) {
             preRenderHook.current()
         }
 
