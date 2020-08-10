@@ -7,7 +7,7 @@ import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.GlslAnalyzer
 import baaahs.glshaders.GlslProgram
 import baaahs.glshaders.Plugins
-import baaahs.glsl.Shaders.cylindricalUvMapper
+import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.io.ByteArrayWriter
 import baaahs.model.ModelInfo
 import baaahs.shows.FakeShowPlayer
@@ -252,9 +252,9 @@ class GlslRendererTest {
         val autoWirer = AutoWirer(Plugins.safe())
         val shader = GlslAnalyzer().import(program)
         return autoWirer
-            .autoWire(cylindricalUvMapper.shader, shader)
+            .autoWire(cylindricalProjection, shader)
             .resolve()
-            .openForPreview(autoWirer, shader.type)!!
+            .openForPreview(autoWirer)!!
             .compile(glslContext) { id, dataSource ->
             dataSource.createFeed(fakeShowPlayer, id)
         }

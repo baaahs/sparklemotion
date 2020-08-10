@@ -81,8 +81,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
                     val contextShaders =
                         mutablePatch.mutableShaderInstances.map { it.mutableShader.build() } + newShader
                     val unresolvedPatch = appContext.autoWirer.autoWire(
-                        *contextShaders.toTypedArray(),
-                        focus = newShader
+                        *contextShaders.toTypedArray()
                     )
                     mutablePatch.addShaderInstance(newShader) {
                         // TODO: Something better than this.

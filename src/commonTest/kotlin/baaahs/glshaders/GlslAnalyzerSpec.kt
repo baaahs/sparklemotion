@@ -304,17 +304,17 @@ object GlslAnalyzerSpec : Spek({
                 }
 
                 context("with U/V translation shader") {
-                    override(shaderText) { Shaders.cylindricalUvMapper.src }
+                    override(shaderText) { Shaders.cylindricalProjection.src }
 
                     it("identifies mainImage() as the entry point") {
-                        expect("mainUvFromRaster") { shader.entryPoint.name }
+                        expect("mainProjection") { shader.entryPoint.name }
                     }
 
                     it("creates inputs for implicit uniforms") {
                         expect(
                             listOf(
                                 InputPort("pixelCoordsTexture", "sampler2D", "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
-                                InputPort("modelInfo", "ModelInfo", "ModelInfo", null)
+                                InputPort("modelInfo", "ModelInfo", "Model Info", null)
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
@@ -367,6 +367,12 @@ object GlslAnalyzerSpec : Spek({
                 it("defaults to baaahs.Core") {
                     expect(PluginRef("baaahs.FooPlugin", "Thing")) { glslVar.hint!!.pluginRef }
                 }
+            }
+        }
+
+        it("englishizes camel case names") {
+            expect("A Man A Plan AAARGH Panama I Say") {
+                GlslStatement("vec3 aManAPlanAAARGHPanamaISay;\n").asVarOrNull()!!.displayName()
             }
         }
     }

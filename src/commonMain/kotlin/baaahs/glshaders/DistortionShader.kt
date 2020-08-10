@@ -5,7 +5,7 @@ import baaahs.show.Shader
 import baaahs.show.ShaderOutPortRef
 import baaahs.show.ShaderType
 
-class FilterShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader, glslCode) {
+class DistortionShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader, glslCode) {
     companion object {
         val wellKnownInputPorts = listOf(
             InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinate),
@@ -18,27 +18,27 @@ class FilterShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader,
     }
 
     override val shaderType: ShaderType
-        get() = ShaderType.Filter
+        get() = ShaderType.Distortion
 
-    override val entryPointName: String get() = "mainFilter"
+    override val entryPointName: String get() = "mainDistortion"
 
     override val inputPorts: List<InputPort> by lazy {
-        listOf(InputPort("gl_FragColor", "vec4", "Input Color", ContentType.Color, varName = "<arg0>")) +
+        listOf(InputPort("gl_FragCoord", "vec2", "U/V Coordinatess", ContentType.UvCoordinate)) +
                 glslCode.uniforms.map {
                     wellKnownInputPorts[it.name]?.copy(dataType = it.dataType, glslVar = it)
                         ?: toInputPort(it)
                 }
     }
 
-    override val outputPort: OutputPort
-        get() = OutputPort(GlslType.Vec4, ShaderOutPortRef.ReturnValue, "Output Color", ContentType.Color)
+    override val outputPort: OutputPort =
+        OutputPort(GlslType.Vec2, ShaderOutPortRef.ReturnValue, "U/V Coordinate", ContentType.UvCoordinate)
 
     override fun invocationGlsl(
         namespace: GlslCode.Namespace,
         resultVar: String,
         portMap: Map<String, String>
     ): String {
-        val inVar = portMap["gl_FragColor"] ?: throw LinkException("No input for shader \"$title\"")
-        return resultVar + " = " + namespace.qualify(entryPoint.name) + "($inVar)"
+        val inVar = portMap["gl_FragCoord"] ?: throw LinkException("No input for shader \"$title\"")
+        return resultVar + " = " + namespace.qualify(entryPoint.name) + "($inVar.xy)"
     }
 }

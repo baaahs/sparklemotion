@@ -156,7 +156,9 @@ class LinkedPatch(
 
             if (!resultRedirected) {
                 buf.append("\n")
-                buf.append("${openShader.outputPort.dataType} $resultVar;\n")
+                with (openShader.outputPort) {
+                    buf.append("${dataType.glslLiteral} $resultVar = ${contentType.initializer(dataType)};\n")
+                }
             }
 
             buf.append(openShader.toGlsl(namespace, resolvedPortMap), "\n")
@@ -175,7 +177,9 @@ class LinkedPatch(
         buf.append("\n")
         buf.append("// SparkleMotion-generated GLSL\n")
         buf.append("\n")
-        buf.append("layout(location = 0) out ${shaderInstance.shader.outputPort.dataType} sm_result;\n")
+        with (shaderInstance.shader.outputPort) {
+            buf.append("layout(location = 0) out ${dataType.glslLiteral} sm_result;\n")
+        }
         buf.append("\n")
 
         components.forEach { component ->

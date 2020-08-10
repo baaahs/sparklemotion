@@ -1,6 +1,6 @@
 package baaahs.glshaders
 
-import baaahs.glsl.Shaders.cylindricalUvMapper
+import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
@@ -53,9 +53,7 @@ object AutoWirerSpec : Spek({
                                     CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
                                 ),
                                 "resolution" to MutableDataSource(CorePlugin.Resolution()),
-                                "gl_FragCoord" to MutableShaderChannel(
-                                    ShaderChannel.Main
-                                )
+                                "gl_FragCoord" to MutableShaderChannel(ShaderChannel.Main)
                             ),
                             shaderChannel = ShaderChannel.Main,
                             priority = 0f
@@ -65,7 +63,7 @@ object AutoWirerSpec : Spek({
             }
 
             context("with a UV projection shader") {
-                val uvShader = cylindricalUvMapper.shader
+                val uvShader = cylindricalProjection
                 val uvShaderInst by value {
                     MutableShaderInstance(
                         MutableShader(uvShader)
@@ -85,9 +83,7 @@ object AutoWirerSpec : Spek({
                                     "blueness" to MutableDataSource(
                                         CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
                                     ),
-                                    "gl_FragCoord" to MutableShaderChannel(
-                                        ShaderChannel.Main
-                                    )
+                                    "gl_FragCoord" to MutableShaderChannel(ShaderChannel.Main)
                                 ),
                                 shaderChannel = ShaderChannel.Main
                             ),
@@ -97,9 +93,7 @@ object AutoWirerSpec : Spek({
                                         CorePlugin.PixelCoordsTexture()
                                     ),
                                     "modelInfo" to MutableDataSource(
-                                        CorePlugin.ModelInfoDataSource(
-                                            "ModelInfo"
-                                        )
+                                        CorePlugin.ModelInfoDataSource("ModelInfo")
                                     )
                                 ))
                                 shaderChannel = ShaderChannel.Main
@@ -115,7 +109,7 @@ object AutoWirerSpec : Spek({
                     ShaderType.Filter,
                     """
                         uniform float brightness; // @@Slider min=0 max=1 default=1
-                        vec4 filterImage(vec4 colorIn) {
+                        vec4 mainFilter(vec4 colorIn) {
                           colorOut = colorIn * brightness;
                         }
                     """.trimIndent())
@@ -131,9 +125,35 @@ object AutoWirerSpec : Spek({
                                     "brightness" to MutableDataSource(
                                         CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f, null)
                                     ),
-                                    "gl_FragColor" to MutableShaderChannel(
-                                        ShaderChannel.Main
-                                    )
+                                    "gl_FragColor" to MutableShaderChannel(ShaderChannel.Main)
+                                ),
+                                shaderChannel = ShaderChannel.Main
+                            )
+                        )
+                    ) { patch.mutableShaderInstances }
+                }
+            }
+
+            context("with a distortion shader") {
+                val filterShader = Shader(
+                    "Flip Y",
+                    ShaderType.Distortion,
+                    """
+                        vec2 mainDistortion(vec2 uvIn) {
+                          return vec2(uvIn.x, 1.0 - uvIn.y);
+                        }
+                    """.trimIndent())
+
+
+                override(shaders) { arrayOf(filterShader) }
+
+                it("creates a reasonable guess patch") {
+                    expects(
+                        listOf(
+                            MutableShaderInstance(
+                                MutableShader(filterShader),
+                                hashMapOf(
+                                    "gl_FragCoord" to MutableShaderChannel(ShaderChannel.Main)
                                 ),
                                 shaderChannel = ShaderChannel.Main
                             )

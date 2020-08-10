@@ -43,7 +43,7 @@ object ShowRunnerSpec : Spek({
         val model by value { TestModel() }
         val patch by value {
             AutoWirer(Plugins.safe()).autoWire(
-                Shaders.cylindricalUvMapper.shader, Shader("Untitled", ShaderType.Paint, shaderSrc)
+                Shaders.cylindricalProjection, Shader("Untitled", ShaderType.Paint, shaderSrc)
             ).acceptSymbolicChannelLinks().resolve()
         }
         val surfaces by value { listOf(FakeSurface(100)) }
