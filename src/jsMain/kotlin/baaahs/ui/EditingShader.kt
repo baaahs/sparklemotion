@@ -10,7 +10,6 @@ import baaahs.gl.glsl.Resolver
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
-import baaahs.glshaders.*
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
