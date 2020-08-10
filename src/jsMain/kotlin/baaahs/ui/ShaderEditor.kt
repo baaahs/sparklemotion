@@ -1,42 +1,32 @@
 package baaahs.ui
 
-import ReactAce.Ace.reactAce
 import acex.*
-import baaahs.JsClock
-import baaahs.Time
 import baaahs.boundedBy
 import baaahs.jsx.ShowControls
 import baaahs.jsx.ShowControlsProps
-import baaahs.jsx.useResizeListener
 import baaahs.show.ShaderChannel
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
-import materialui.styles.palette.PaletteType
-import materialui.styles.palette.type
-import materialui.useTheme
-import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 import kotlin.browser.window
 
 val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
-    val rootEl = useRef<Element>()
-    val aceEditor = useRef<AceEditor?>()
+    var aceEditor by state<AceEditor?> { null }
 
-    val src = ref { "" }
-    val srcLastChangedAt = ref<Time?> { null }
+    val shaderEditorCalls: ArrayList<Any> = window.asDynamic().shaderEditorCalls
+        ?: arrayListOf<Any>().also { window.asDynamic().shaderEditorCalls = it }
+    shaderEditorCalls.add(props)
 
     var extractionCandidate by state<ExtractionCandidate?> { null }
-    var glslNumberMarker by state<Number?> { null }
+    val glslNumberMarker = ref<Number?> { null }
+    val glslDoc = memo(props.editingShader) { Document(props.editingShader.mutableShader.src) }
 
-    useResizeListener(rootEl) {
-        aceEditor.current?.editor?.resize()
-    }
+    onChange("AceEditor", props.editingShader, aceEditor) {
+        val editor = aceEditor?.editor ?: return@onChange
 
-    onMount(props.editingShader, aceEditor.current) {
-        val editor = aceEditor.current?.editor ?: return@onMount
         val editingShader = props.editingShader
 
         val compilationObserver = editingShader.addObserver {
@@ -64,38 +54,18 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         withCleanup { compilationObserver.remove() }
     }
 
-    val applySrcChangesDebounced = useCallback(props.editingShader) {
-        // Changed since we last passed on updates?
-        srcLastChangedAt.current?.let { lastChange ->
-            // Changed within .25 seconds?
-            if (lastChange < clock.now() - .25) {
-                srcLastChangedAt.current = null
-
-                // Update [EditingShader].
-                props.editingShader.updateSrc(src.current)
-            }
-        }
-    }
-
-    onMount {
-        val interval = window.setInterval(applySrcChangesDebounced, 100)
-        withCleanup { window.clearInterval(interval) }
-    }
-
-    val handleCodeChange: (String, Any) -> Unit = useCallback { newSrc: String, _: Any ->
-        // Change will get picked up soon by [applySrcChangesDebounced].
-        src.current = newSrc
-        srcLastChangedAt.current = clock.now()
+    val handleSrcChange = useCallback(props.editingShader) { incoming: String ->
+        // Update [EditingShader].
+        props.editingShader.updateSrc(incoming)
     }
 
     val glslNumberRegex = Regex("[0-9.]")
     val glslIllegalRegex = Regex("[A-Za-z_]")
     val glslFloatOrIntRegex = Regex("^([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+|[0-9]+)$")
-    val onCursorChange = useCallback { value: Any, _: Any ->
+    val handleCursorChange = useCallback { value: Any, _: Any ->
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         val selection = value as acex.Selection
         val session = selection.session
-        glslNumberMarker?.let { session.removeMarker(it) }
 
         val cursor = selection.getCursor()
         val line = session.getDocument().getLine(cursor.row)
@@ -109,17 +79,29 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         val looksLikeFloatOrInt = glslFloatOrIntRegex.matches(candidate)
         if (badCharBefore || badCharAfter || !looksLikeFloatOrInt) {
             extractionCandidate = null
+            glslNumberMarker.current?.let { session.removeMarker(it) }
         } else {
-            val range = Range(cursor.row, start, cursor.row, end)
-            glslNumberMarker = session.addMarker(range, glslNumberClassName, "text", false)
-            extractionCandidate = ExtractionCandidate(range, candidate)
+            val prevRange = extractionCandidate?.range
+            if (prevRange == null ||
+                cursor.row != prevRange.start.row ||
+                start != prevRange.start.column ||
+                cursor.row != prevRange.end.row ||
+                end != prevRange.end.column ||
+                extractionCandidate?.text != candidate
+            ) {
+                val range = Range(cursor.row, start, cursor.row, end)
+                glslNumberMarker.current = session.addMarker(range, glslNumberClassName, "text", false)
+
+                extractionCandidate = ExtractionCandidate(range, candidate)
+            }
         }
+        Unit
     }
 
     val extractUniform = useCallback { _: Event ->
         val extraction = extractionCandidate ?: return@useCallback
 
-        val editor = aceEditor.current?.editor ?: return@useCallback
+        val editor = aceEditor?.editor?: return@useCallback
         val session = editor.getSession()
 
         val originalText = extraction.text
@@ -148,35 +130,17 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         session.markUndoGroup()
     }
 
-    val editorMode = Modes.glsl
-    val editorTheme = when (useTheme().palette.type) {
-        PaletteType.light -> Themes.github
-        PaletteType.dark -> Themes.tomorrowNightBright
-    }
+    val x = this
 
     div(+Styles.shaderEditor) {
-        ref = rootEl
+        textEditor {
 
-        reactAce {
-            ref = aceEditor
-            attrs {
-                mode = editorMode.id
-                theme = editorTheme.id
-                width = "100%"
-                height = "100%"
-                showGutter = true
-                this.onChange = handleCodeChange
-                this.onCursorChange = onCursorChange
-                value = props.editingShader.mutableShader.src
-                name = "ShaderEditor"
-                focus = true
-                setOptions = jsObject {
-                    autoScrollEditorIntoView = true
-                }
-                editorProps = jsObject {
-                    `$blockScrolling` = true
-                }
-            }
+            attrs.document = glslDoc
+            attrs.mode = Modes.glsl
+            attrs.onAceEditor = x.handler("onAceEditor") { incoming: AceEditor -> aceEditor = incoming }
+            attrs.debounceSeconds = 0.25f
+            attrs.onChange = handleSrcChange
+            attrs.onCursorChange = handleCursorChange
         }
 
         extractionCandidate?.let { extraction ->
@@ -202,7 +166,6 @@ private fun point(row: Number, column: Number): Point =
     jsObject { this.row = row; this.column = column }
 
 private val glslNumberClassName = Styles.glslNumber.name
-private val clock = JsClock()
 
 external interface ShaderEditorProps : RProps {
     var editingShader: EditingShader

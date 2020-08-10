@@ -5,13 +5,6 @@ import baaahs.glshaders.InputPort
 import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.*
-import kotlinx.html.js.onChangeFunction
-import materialui.components.divider.divider
-import materialui.components.formcontrol.formControl
-import materialui.components.inputlabel.inputLabel
-import materialui.components.listsubheader.listSubheader
-import materialui.components.menuitem.menuItem
-import materialui.components.select.select
 import materialui.components.table.table
 import materialui.components.tablebody.tableBody
 import materialui.components.tablecell.tdCell
@@ -21,6 +14,17 @@ import materialui.components.tablerow.tableRow
 import react.*
 import react.dom.b
 import react.dom.code
+import kotlin.collections.List
+import kotlin.collections.Set
+import kotlin.collections.associateWith
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.forEach
+import kotlin.collections.map
+import kotlin.collections.minus
+import kotlin.collections.plus
+import kotlin.collections.set
+import kotlin.collections.sortedBy
 
 val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     val appContext = useContext(appContext)
@@ -29,24 +33,42 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
         .sortedBy { it.id }
         .map { shaderChannel -> ShaderChannelOption(shaderChannel) }
 
-    val shaderOptions = props.mutablePatch.mutableShaderInstances
-        .minus(props.mutableShaderInstance)
-        .sortedBy { it.mutableShader.title }
-        .map { editor -> ShaderOption(editor) }
+    val shaderOptions =
+        props.siblingMutableShaderInstances
+            .minus(props.mutableShaderInstance)
+            .sortedBy { it.mutableShader.title }
+            .map { instance -> ShaderOption(instance) }
 
-    val dataSourceOptions = appContext.showPlayer.dataSources.sortedBy { it.dataSourceName }.mapIndexed { index, dataSource ->
-        DataSourceOption(dataSource)
-    }
+    val dataSourceOptions =
+        appContext.showPlayer.dataSources
+            .sortedBy { it.dataSourceName }.map { dataSource -> DataSourceOption(dataSource) }
 
-    val sourcePortOptions = shaderChannelOptions + shaderOptions + dataSourceOptions
+    val sourcePortOptions =
+        memo(props.siblingMutableShaderInstances, props.mutableShaderInstance, appContext.showPlayer.dataSources) {
+            shaderChannelOptions + shaderOptions + dataSourceOptions
+        }
 
     val shaderInstance = props.mutableShaderInstance
     val shader = shaderInstance.mutableShader
     val openShader = appContext.showPlayer.openShaderOrNull(shader.build())
-    val inputPorts = openShader?.inputPorts?.sortedBy { it.title }
-    val incomingLinks = props.mutableShaderInstance.incomingLinks
+    val inputPorts = openShader?.inputPorts
+        ?.sortedBy { it.title }
+        ?.associateWith { inputPort ->
+            handler(
+                "change to ${inputPort.id}", props.mutableShaderInstance, props.onChange
+            ) { sourcePortOption: SourcePortOption? ->
+                val incomingLinks = props.mutableShaderInstance.incomingLinks
+                if (sourcePortOption == null) {
+                    incomingLinks.remove(inputPort.id)
+                } else {
+                    incomingLinks[inputPort.id] = sourcePortOption.portEditor
+                }
+                props.onChange()
+                this@xComponent.forceRender()
+            }
+        }
 
-    table() {
+    table {
         attrs["size"] = "small"
 
         tableHead {
@@ -57,53 +79,16 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
         }
 
         tableBody {
-            inputPorts?.forEach { inputPort ->
+            inputPorts?.forEach { (inputPort, handleSourceChange) ->
                 val currentSourcePort = shaderInstance.incomingLinks[inputPort.id]
 
                 tableRow {
                     tdCell {
-                        formControl {
-                            inputLabel { +"Source" }
-
-                            select {
-                                attrs.onChangeFunction = { event ->
-                                    val value = event.target.asDynamic().value as String
-                                    when(value) {
-                                        "__new__" -> {} // TODO
-                                        "__none__" -> incomingLinks.remove(inputPort.id)
-                                        else -> incomingLinks[inputPort.id] = sourcePortOptions[value.toInt()].portEditor
-                                    }
-                                    props.onChange()
-                                    this@xComponent.forceRender()
-                                }
-
-                                var dividerGroup = sourcePortOptions.firstOrNull()?.groupName
-                                sourcePortOptions.forEachIndexed { index, option ->
-                                    if (dividerGroup != option.groupName) {
-                                        divider {}
-                                        listSubheader { +option.groupName }
-                                        dividerGroup = option.groupName
-                                    }
-
-                                    if (currentSourcePort != null && option.matches(currentSourcePort)) {
-                                        attrs.value(index.toString())
-                                    }
-
-                                    if (option.isAppropriateFor(inputPort)) {
-                                        menuItem {
-                                            attrs["value"] = index.toString()
-                                            +option.title
-                                        }
-                                    }
-                                }
-
-                                if (dividerGroup != null) { divider {} }
-
-                                menuItem {
-                                    attrs["value"] = "__new__"
-                                    +"Create New…"
-                                }
-                            }
+                        linkSourceEditor {
+                            attrs.inputPort = inputPort
+                            attrs.currentSourcePort = currentSourcePort
+                            attrs.sourcePortOptions = sourcePortOptions
+                            attrs.onChange = handleSourceChange
                         }
                     }
 
@@ -126,7 +111,7 @@ interface SourcePortOption {
     fun isAppropriateFor(inputPort: InputPort): Boolean
 }
 
-class DataSourceOption(val dataSource: DataSource): SourcePortOption {
+data class DataSourceOption(val dataSource: DataSource): SourcePortOption {
     override val title: String get() = dataSource.dataSourceName
     override val portEditor: MutableLink.Port get() = MutableDataSource(
         dataSource
@@ -142,7 +127,7 @@ class DataSourceOption(val dataSource: DataSource): SourcePortOption {
     }
 }
 
-class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOption {
+data class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOption {
     override val title: String get() = "${shaderChannel.id} shader channel"
     override val portEditor: MutableLink.Port get() = MutableShaderChannel(
         shaderChannel
@@ -158,7 +143,7 @@ class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOption {
     }
 }
 
-class ShaderOption(val mutableShaderInstance: MutableShaderInstance): SourcePortOption {
+data class ShaderOption(val mutableShaderInstance: MutableShaderInstance): SourcePortOption {
     override val title: String get() = "${mutableShaderInstance.mutableShader.title} output"
     override val portEditor: MutableLink.Port get() = MutableShaderOutPort(mutableShaderInstance)
     override val groupName: String get() = "Shader Ports"
@@ -175,9 +160,9 @@ class ShaderOption(val mutableShaderInstance: MutableShaderInstance): SourcePort
 
 
 external interface LinksEditorProps : RProps {
-    var mutablePatch: MutablePatch
     var showBuilder: ShowBuilder
     var mutableShaderInstance: MutableShaderInstance
+    var siblingMutableShaderInstances: List<MutableShaderInstance>
     var shaderChannels: Set<ShaderChannel>
     var onChange: () -> Unit
 }

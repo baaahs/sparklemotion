@@ -63,7 +63,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
         div {
             linksEditor {
-                attrs.mutablePatch = selectedPatch
+                attrs.siblingMutableShaderInstances = selectedPatch.mutableShaderInstances
                 attrs.showBuilder = props.showBuilder
                 attrs.mutableShaderInstance = shaderInstance
                 attrs.shaderChannels = props.shaderChannels
