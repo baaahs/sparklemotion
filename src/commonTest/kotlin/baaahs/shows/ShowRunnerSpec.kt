@@ -4,8 +4,8 @@ import baaahs.geom.Vector3F
 import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
-import baaahs.gl.render.GlslRenderer
-import baaahs.gl.render.GlslRendererTest
+import baaahs.gl.render.ModelRenderer
+import baaahs.gl.render.ModelRendererTest
 import baaahs.glsl.Shaders
 import baaahs.glsl.UvTranslator
 import baaahs.mapper.Storage
@@ -57,7 +57,7 @@ object ShowRunnerSpec : Spek({
             }.build(ShowBuilder())
         }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0)) }
-        val glslRenderer by value { GlslRenderer(fakeGlslContext, ModelInfo.Empty) }
+        val glslRenderer by value { ModelRenderer(fakeGlslContext, ModelInfo.Empty) }
         val surfaceManager by value { SurfaceManager(glslRenderer) }
         val stageManager by value {
             val fs = FakeFs()
@@ -128,7 +128,7 @@ class TestModel : Model<Model.Surface>() {
     override val movingHeads: List<MovingHead> = emptyList()
     override val allSurfaces: List<Surface> = emptyList()
     override val geomVertices: List<Vector3F> = emptyList()
-    override val defaultUvTranslator: UvTranslator = GlslRendererTest.UvTranslatorForTest
+    override val defaultUvTranslator: UvTranslator = ModelRendererTest.UvTranslatorForTest
 }
 
 @Synonym(SynonymType.GROUP)

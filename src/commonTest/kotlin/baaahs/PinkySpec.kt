@@ -2,7 +2,7 @@ package baaahs
 
 import baaahs.geom.Matrix4
 import baaahs.gl.override
-import baaahs.gl.render.GlslRenderer
+import baaahs.gl.render.ModelRenderer
 import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.model.Model
@@ -44,7 +44,7 @@ object PinkySpec : Spek({
                 fakeFs,
                 PermissiveFirmwareDaddy(),
                 StubSoundAnalyzer(),
-                glslRenderer = GlslRenderer(fakeGlslContext, ModelInfo.Empty)
+                modelRenderer = ModelRenderer(fakeGlslContext, ModelInfo.Empty)
             )
         }
         val pinkyLink by value { network.links.only() }

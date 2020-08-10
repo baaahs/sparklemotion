@@ -4,7 +4,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.render.GlslRenderer
+import baaahs.gl.render.ModelRenderer
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsServerBackend
@@ -24,7 +24,7 @@ import kotlinx.serialization.modules.SerializersModule
 
 class StageManager(
     plugins: Plugins,
-    private val glslRenderer: GlslRenderer,
+    private val modelRenderer: ModelRenderer,
     private val pubSub: PubSub.Server,
     private val storage: Storage,
     private val surfaceManager: SurfaceManager,
@@ -36,7 +36,7 @@ class StageManager(
     val facade = Facade()
     private val autoWirer = AutoWirer(Plugins.findAll())
     override val glContext: GlContext
-        get() = glslRenderer.gl
+        get() = modelRenderer.gl
     private val showStateChannel = pubSub.publish(Topics.showState, null) { showState ->
         if (showState != null) showRunner?.switchTo(showState)
     }
@@ -90,7 +90,7 @@ class StageManager(
         isUnsaved: Boolean = file == null
     ) {
         val newShowRunner = newShow?.let {
-            ShowRunner(newShow, newShowState, openShow(newShow), clock, glslRenderer, surfaceManager, autoWirer)
+            ShowRunner(newShow, newShowState, openShow(newShow), clock, modelRenderer, surfaceManager, autoWirer)
         }
 
         showRunner?.release()
@@ -246,8 +246,8 @@ class RefCounter : RefCounted {
 }
 
 class RenderPlan(val programs: List<Pair<LinkedPatch, GlslProgram>>) {
-    fun render(glslRenderer: GlslRenderer) {
-        glslRenderer.draw()
+    fun render(modelRenderer: ModelRenderer) {
+        modelRenderer.draw()
     }
 }
 

@@ -2,7 +2,7 @@ package baaahs
 
 import baaahs.ShowRunner.SurfaceReceiver
 import baaahs.gadgets.Slider
-import baaahs.gl.render.GlslRenderer
+import baaahs.gl.render.ModelRenderer
 import baaahs.gl.render.RenderSurface
 import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
@@ -47,7 +47,7 @@ class ShowRunnerTest {
         fakeGlslContext = FakeGlContext()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
-        val glslRenderer = GlslRenderer(fakeGlslContext, ModelInfo.Empty)
+        val glslRenderer = ModelRenderer(fakeGlslContext, ModelInfo.Empty)
         surfaceManager = SurfaceManager(glslRenderer)
         stageManager = StageManager(
             Plugins.safe(), glslRenderer, server, Storage(fs, Plugins.safe()), surfaceManager,

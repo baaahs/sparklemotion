@@ -1,7 +1,7 @@
 package baaahs
 
 import baaahs.gl.LwjglGlManager
-import baaahs.gl.render.GlslRendererTest
+import baaahs.gl.render.ModelRendererTest
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.launcher.LauncherDiscoveryRequest
@@ -13,7 +13,7 @@ import org.junit.platform.launcher.listeners.SummaryGeneratingListener
 import java.io.PrintWriter
 
 val testsRequiringOpenGL = listOf(
-    GlslRendererTest::class
+    ModelRendererTest::class
 )
 
 fun main() {
