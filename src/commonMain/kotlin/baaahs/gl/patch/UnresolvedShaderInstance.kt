@@ -5,7 +5,7 @@ import baaahs.show.mutable.MutableLink
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderChannel
 
-data class UnresolvedShaderInstance(
+class UnresolvedShaderInstance(
     val mutableShader: MutableShader,
     val incomingLinksOptions: Map<String, MutableSet<MutableLink.Port>>,
     var shaderChannel: ShaderChannel? = null,
@@ -30,5 +30,9 @@ data class UnresolvedShaderInstance(
                 options.add(shaderChannelOptions.first())
             }
         }
+    }
+
+    override fun toString(): String {
+        return "UnresolvedShaderInstance(shader=${mutableShader.title})"
     }
 }

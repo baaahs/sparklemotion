@@ -4,7 +4,7 @@ import baaahs.show.PortRef
 import baaahs.show.mutable.MutableLink
 import baaahs.show.mutable.ShowBuilder
 
-data class UnresolvedShaderOutPort(
+class UnresolvedShaderOutPort(
     val unresolvedShaderInstance: UnresolvedShaderInstance,
     val portId: String
 ) : MutableLink.Port {
