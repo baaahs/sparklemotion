@@ -369,5 +369,11 @@ object GlslAnalyzerSpec : Spek({
                 }
             }
         }
+
+        it("englishizes camel case names") {
+            expect("A Man A Plan AAARGH Panama I Say") {
+                GlslStatement("vec3 aManAPlanAAARGHPanamaISay;\n").asVarOrNull()!!.displayName()
+            }
+        }
     }
 })

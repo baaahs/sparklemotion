@@ -17,24 +17,21 @@ class AutoWirer(
 ) {
     fun autoWire(
         vararg shaders: Shader,
-        focus: Shader? = null,
         defaultPorts: Map<ContentType, MutableLink.Port> = emptyMap()
     ): UnresolvedPatch {
         val openShaders = shaders.associate { it to glslAnalyzer.openShader(it) }
-        return autoWire(openShaders.values, focus?.let { openShaders[it] }, defaultPorts = defaultPorts)
+        return autoWire(openShaders.values, defaultPorts = defaultPorts)
     }
 
     fun autoWire(
         vararg shaders: OpenShader,
-        focus: OpenShader? = null,
         defaultPorts: Map<ContentType, MutableLink.Port> = emptyMap()
     ): UnresolvedPatch {
-        return autoWire(shaders.toList(), focus, defaultPorts = defaultPorts)
+        return autoWire(shaders.toList(), defaultPorts = defaultPorts)
     }
 
     fun autoWire(
         shaders: Collection<OpenShader>,
-        focus: OpenShader? = null,
         shaderChannel: ShaderChannel = ShaderChannel.Main,
         defaultPorts: Map<ContentType, MutableLink.Port> = emptyMap()
     ): UnresolvedPatch {
@@ -45,24 +42,27 @@ class AutoWirer(
         }
 
         // First pass: gather shader output ports.
-        val shaderInstances = shaders.associate { openShader ->
-            val unresolvedShaderInstance = UnresolvedShaderInstance(
-                MutableShader(openShader.shader),
-                openShader.inputPorts.map { it.id }.associateWith { hashSetOf<MutableLink.Port>() },
-                shaderChannel,
-                0f
-            )
+        val shaderInstances =
+            shaders.associateWith { openShader ->
+                val unresolvedShaderInstance = UnresolvedShaderInstance(
+                    MutableShader(openShader.shader),
+                    openShader.inputPorts
+                        .map { it.id }
+                        .associateWith { hashSetOf<MutableLink.Port>() },
+                    shaderChannel,
+                    0f
+                )
 
-            locallyAvailable.getOrPut(openShader.outputPort.contentType) { mutableSetOf() }
-                .add(UnresolvedShaderOutPort(unresolvedShaderInstance, openShader.outputPort.id))
+                locallyAvailable.getOrPut(openShader.outputPort.contentType) { mutableSetOf() }
+                    .add(UnresolvedShaderOutPort(unresolvedShaderInstance, openShader.outputPort.id))
 
-            openShader.shaderType.defaultUpstreams.forEach { (contentType, shaderChannel) ->
-                locallyAvailable.getOrPut(contentType) { mutableSetOf() }
-                    .add(MutableShaderChannel(shaderChannel))
+                openShader.shaderType.defaultUpstreams.forEach { (contentType, shaderChannel) ->
+                    locallyAvailable.getOrPut(contentType) { mutableSetOf() }
+                        .add(MutableShaderChannel(shaderChannel))
+                }
+
+                unresolvedShaderInstance
             }
-
-            openShader to unresolvedShaderInstance
-        }
 
         // Second pass: link datasources/output ports to input ports.
         val unresolvedShaderInstances = shaderInstances.map { (openShader, unresolvedShaderInstance) ->
@@ -240,6 +240,11 @@ class AutoWirer(
     }
 
     data class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShaderInstance>) {
+        fun editShader(shader: Shader): UnresolvedShaderInstance {
+            return unresolvedShaderInstances.find { it.mutableShader.build() == shader }
+                ?: error("Couldn't find shader \"${shader.title}\"")
+        }
+
         fun isAmbiguous() = unresolvedShaderInstances.any { it.isAmbiguous() }
 
         fun resolve(): MutablePatch {

@@ -40,7 +40,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
         val observer = newEditingShader.addObserver {
             if (it.state == EditingShader.State.Success) {
                 val shader = it.previewShaderBuilder.shader
-                val wiringGuess = appContext.autoWirer.autoWire(shader, focus = shader)
+                val wiringGuess = appContext.autoWirer.autoWire(shader)
                     .acceptSymbolicChannelLinks()
                     .resolve()
                 // TODO Improve on this.

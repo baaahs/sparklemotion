@@ -39,7 +39,7 @@ interface OpenShader : RefCounted {
 
         protected fun toInputPort(it: GlslCode.GlslVar): InputPort {
             return InputPort(
-                it.name, it.dataType, it.name.capitalize(),
+                it.name, it.dataType, it.displayName(),
                 pluginRef = it.hint?.pluginRef,
                 pluginConfig = it.hint?.config,
                 glslVar = it
