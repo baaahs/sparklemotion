@@ -1,4 +1,4 @@
-package baaahs.glsl
+package baaahs.gl
 
 import baaahs.Logger
 import com.danielgergely.kgl.*

@@ -3,10 +3,10 @@ package baaahs.gl.patch
 import baaahs.Logger
 import baaahs.Surface
 import baaahs.getBang
+import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.Resolver
-import baaahs.glsl.GlslContext
 import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
@@ -217,14 +217,14 @@ class LinkedPatch(
         return "#version ${glslVersion}\n\n${toGlsl()}\n"
     }
 
-    fun compile(glslContext: GlslContext, resolver: Resolver): GlslProgram =
-        GlslProgram(glslContext, this, resolver)
+    fun compile(glContext: GlContext, resolver: Resolver): GlslProgram =
+        GlslProgram(glContext, this, resolver)
 
     fun createProgram(
-        glslContext: GlslContext,
+        glContext: GlContext,
         dataFeeds: Map<String, GlslProgram.DataFeed>
     ): GlslProgram {
-        return compile(glslContext) { id, dataSource -> dataFeeds.getBang(id, "data feed") }
+        return compile(glContext) { id, dataSource -> dataFeeds.getBang(id, "data feed") }
     }
 
     fun matches(surface: Surface): Boolean = this.surfaces.matches(surface)

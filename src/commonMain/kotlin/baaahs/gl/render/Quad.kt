@@ -1,9 +1,9 @@
 package baaahs.gl.render
 
-import baaahs.glsl.GlslContext
+import baaahs.gl.GlContext
 import com.danielgergely.kgl.*
 
-class Quad(private val gl: GlslContext, rects: List<Rect>) {
+class Quad(private val gl: GlContext, rects: List<Rect>) {
     private val vertices = rects.flatMap { rect ->
         listOf(
             // First triangle:

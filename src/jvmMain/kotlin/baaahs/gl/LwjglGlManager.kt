@@ -1,4 +1,4 @@
-package baaahs.glsl
+package baaahs.gl
 
 import baaahs.Logger
 import com.danielgergely.kgl.Kgl
@@ -6,7 +6,7 @@ import com.danielgergely.kgl.KglLwjgl
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GLCapabilities
 
-class LwjglGlslManager : GlslManager() {
+class LwjglGlManager : GlManager() {
     private val window: Long
 
     init {
@@ -16,16 +16,16 @@ class LwjglGlslManager : GlslManager() {
     override val available: Boolean
         get() = window != 0L
 
-    override fun createContext(): GlslContext {
+    override fun createContext(): GlContext {
         if (!available) throw RuntimeException("GLSL not available")
         GLFW.glfwMakeContextCurrent(window)
         checkCapabilities()
         GLFW.glfwMakeContextCurrent(0)
 
-        return LwjglGlslContext(KglLwjgl())
+        return LwjglGlContext(KglLwjgl())
     }
 
-    inner class LwjglGlslContext(kgl: Kgl) : GlslContext(kgl, "330 core") {
+    inner class LwjglGlContext(kgl: Kgl) : GlContext(kgl, "330 core") {
         var nestLevel = 0
         override fun <T> runInContext(fn: () -> T): T {
             if (++nestLevel == 1) {

@@ -2,9 +2,9 @@ package baaahs.gl.glsl
 
 import baaahs.Logger
 import baaahs.RefCounted
+import baaahs.gl.GlContext
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.GlslRenderer
-import baaahs.glsl.GlslContext
 import baaahs.glsl.Uniform
 import baaahs.plugin.CorePlugin
 import baaahs.show.DataSource
@@ -14,7 +14,7 @@ import com.danielgergely.kgl.GL_TRUE
 import kotlinx.serialization.modules.SerializersModule
 
 class GlslProgram(
-    internal val gl: GlslContext,
+    internal val gl: GlContext,
     private val linkedPatch: LinkedPatch,
     resolver: Resolver
 ) {

@@ -1,10 +1,10 @@
 package baaahs.shows
 
 import baaahs.getBang
-import baaahs.glsl.GlslContext
+import baaahs.gl.GlContext
 import com.danielgergely.kgl.*
 
-class FakeGlslContext(private val kgl: FakeKgl = FakeKgl()) : GlslContext(kgl, "1234") {
+class FakeGlContext(private val kgl: FakeKgl = FakeKgl()) : GlContext(kgl, "1234") {
     val programs: List<FakeKgl.FakeProgram>
         get() = kgl.programs
 

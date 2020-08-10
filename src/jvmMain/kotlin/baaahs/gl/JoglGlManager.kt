@@ -1,20 +1,20 @@
-package baaahs.glsl
+package baaahs.gl
 
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglJogl
 import com.jogamp.newt.opengl.GLWindow
 import com.jogamp.opengl.*
 
-class JoglGlslManager : GlslManager() {
+class JoglGlManager : GlManager() {
     override val available: Boolean
         get() = true
 
-    override fun createContext(): GlslContext {
+    override fun createContext(): GlContext {
         val gl = createGLContext()
-        return JoglGlslContext(KglJogl(gl as GL3ES3), gl)
+        return JoglGlContext(KglJogl(gl as GL3ES3), gl)
     }
 
-    class JoglGlslContext(kgl: Kgl, gl: GL4) : GlslContext(kgl, "330 core") {
+    class JoglGlContext(kgl: Kgl, gl: GL4) : GlContext(kgl, "330 core") {
         private val context = gl.context
         override fun <T> runInContext(fn: () -> T): T {
             context.makeCurrent()

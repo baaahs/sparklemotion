@@ -14,7 +14,7 @@ import baaahs.plugin.Plugins
 import baaahs.proto.BrainHelloMessage
 import baaahs.proto.Type
 import baaahs.show.SampleData
-import baaahs.shows.FakeGlslContext
+import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -25,7 +25,7 @@ import kotlin.test.expect
 @InternalCoroutinesApi
 object PinkySpec : Spek({
     describe("Pinky") {
-        val fakeGlslContext by value { FakeGlslContext() }
+        val fakeGlslContext by value { FakeGlContext() }
         val network by value { TestNetwork(1_000_000) }
         val clientAddress by value { TestNetwork.Address("client") }
         val clientPort = 1234
