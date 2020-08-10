@@ -314,7 +314,7 @@ object GlslAnalyzerSpec : Spek({
                         expect(
                             listOf(
                                 InputPort("pixelCoordsTexture", "sampler2D", "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
-                                InputPort("modelInfo", "ModelInfo", "ModelInfo", null)
+                                InputPort("modelInfo", "ModelInfo", "Model Info", null)
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
