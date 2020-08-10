@@ -7,7 +7,7 @@ import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.MutableShaderOutPort
 import baaahs.unknown
 
-data class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShaderInstance>) {
+class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShaderInstance>) {
     fun editShader(shader: Shader): UnresolvedShaderInstance {
         return unresolvedShaderInstances.find { it.mutableShader.build() == shader }
             ?: error("Couldn't find shader \"${shader.title}\"")
@@ -42,25 +42,14 @@ data class UnresolvedPatch(private val unresolvedShaderInstances: List<Unresolve
                 if (fromPort is UnresolvedShaderOutPort) {
                     val fromShader = fromPort.unresolvedShaderInstance.mutableShader.build()
                     val fromShaderInstance = shaderInstances[fromShader]
-                        ?: error(
-                            unknown(
-                                "shader instance editor",
-                                fromShader,
-                                shaderInstances.keys
-                            )
-                        )
+                        ?: error(unknown("shader instance editor", fromShader, shaderInstances.keys))
                     shaderInstance.incomingLinks[toPortId] =
-                        MutableShaderOutPort(
-                            fromShaderInstance
-                        )
+                        MutableShaderOutPort(fromShaderInstance)
                 }
             }
         }
 
-        return MutablePatch(
-            shaderInstances.values.toList(),
-            Surfaces.AllSurfaces
-        )
+        return MutablePatch(shaderInstances.values.toList(), Surfaces.AllSurfaces)
     }
 
     fun acceptSymbolicChannelLinks(): UnresolvedPatch {
