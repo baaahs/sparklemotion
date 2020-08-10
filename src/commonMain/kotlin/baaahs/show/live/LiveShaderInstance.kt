@@ -2,7 +2,7 @@ package baaahs.show.live
 
 import baaahs.ShowPlayer
 import baaahs.getBang
-import baaahs.gl.patch.AutoWirer
+import baaahs.gl.patch.PortDiagram
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.show.*
@@ -27,7 +27,7 @@ class LiveShaderInstance(
 
 
     interface Link {
-        fun finalResolve(inputPort: InputPort, resolver: AutoWirer.PortDiagram.Resolver): Link = this
+        fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): Link = this
     }
 
     data class ShaderOutLink(val shaderInstance: LiveShaderInstance) : Link
@@ -35,7 +35,7 @@ class LiveShaderInstance(
     data class ShaderChannelLink(val shaderChannel: ShaderChannel) : Link {
         override fun finalResolve(
             inputPort: InputPort,
-            resolver: AutoWirer.PortDiagram.Resolver
+            resolver: PortDiagram.Resolver
         ): Link {
             val contentType = inputPort.contentType ?: return NoOpLink
             val resolved = resolver.resolve(shaderChannel, contentType)
