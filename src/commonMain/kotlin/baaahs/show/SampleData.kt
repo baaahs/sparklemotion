@@ -7,8 +7,8 @@ import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.show.mutable.MutableDataSource
-import baaahs.show.mutable.MutableLink
 import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShow
 import kotlinx.serialization.json.json
 
@@ -221,7 +221,7 @@ object SampleData {
         addControl("More Controls", saturationControl)
     }.getShow()
 
-    private fun wireUp(shader: Shader, ports: Map<String, MutableLink.Port> = emptyMap()): MutablePatch {
+    private fun wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {
         val unresolvedPatch = autoWirer.autoWire(shader)
         unresolvedPatch.editShader(shader).apply {
             ports.forEach { (portId, port) ->
