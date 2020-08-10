@@ -2,12 +2,18 @@ package baaahs.ui
 
 import baaahs.*
 import baaahs.gadgets.Slider
+import baaahs.gl.glsl.GlslError
+import baaahs.gl.glsl.GlslException
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.glsl.Resolver
+import baaahs.gl.patch.AutoWirer
+import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.LinkedPatch
 import baaahs.glshaders.*
 import baaahs.glsl.GlslContext
-import baaahs.glsl.GlslError
-import baaahs.glsl.GlslException
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
+import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableConstPort
@@ -16,6 +22,17 @@ import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderInstance
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlin.collections.List
+import kotlin.collections.MutableMap
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.emptyList
+import kotlin.collections.forEachIndexed
+import kotlin.collections.hashMapOf
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.mapOf
+import kotlin.collections.set
 
 class EditingShader(
     val mutableShaderInstance: MutableShaderInstance,

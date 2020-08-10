@@ -4,13 +4,13 @@ import baaahs.Gadget
 import baaahs.ShowPlayer
 import baaahs.Surface
 import baaahs.getBang
-import baaahs.glshaders.GlslAnalyzer
-import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.OpenShader
-import baaahs.glshaders.Plugins
+import baaahs.gl.glsl.GlslAnalyzer
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.render.RenderSurface
+import baaahs.gl.shader.OpenShader
 import baaahs.glsl.GlslContext
-import baaahs.glsl.RenderSurface
 import baaahs.model.ModelInfo
+import baaahs.plugin.Plugins
 import baaahs.show.DataSource
 import baaahs.show.Shader
 

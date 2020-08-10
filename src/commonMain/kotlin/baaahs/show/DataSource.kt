@@ -2,9 +2,9 @@ package baaahs.show
 
 import baaahs.ShowPlayer
 import baaahs.camelize
-import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.InputPort
-import baaahs.glshaders.Plugins
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.shader.InputPort
+import baaahs.plugin.Plugins
 import baaahs.show.mutable.ShowBuilder
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.MapSerializer

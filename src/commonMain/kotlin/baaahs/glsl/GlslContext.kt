@@ -1,7 +1,8 @@
 package baaahs.glsl
 
 import baaahs.Logger
-import baaahs.glshaders.GlslProgram
+import baaahs.gl.glsl.CompiledShader
+import baaahs.gl.glsl.GlslProgram
 import com.danielgergely.kgl.*
 
 abstract class GlslContext(

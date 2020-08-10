@@ -1,6 +1,8 @@
 package baaahs.show
 
-import baaahs.glshaders.*
+import baaahs.gl.glsl.GlslCode
+import baaahs.gl.patch.ContentType
+import baaahs.gl.shader.*
 import baaahs.show.mutable.MutableShader
 
 enum class ShaderType(

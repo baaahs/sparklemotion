@@ -2,9 +2,9 @@ package baaahs.show.mutable
 
 import baaahs.ShowState
 import baaahs.getBang
-import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.ContentType
-import baaahs.glshaders.LinkedPatch
+import baaahs.gl.patch.AutoWirer
+import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.LinkedPatch
 import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.live.OpenPatch

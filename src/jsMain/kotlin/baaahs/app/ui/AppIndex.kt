@@ -4,7 +4,7 @@ import baaahs.ShowEditorState
 import baaahs.ShowPlayer
 import baaahs.ShowState
 import baaahs.client.WebClient
-import baaahs.glshaders.AutoWirer
+import baaahs.gl.patch.AutoWirer
 import baaahs.io.Fs
 import baaahs.show.SampleData
 import baaahs.show.Show

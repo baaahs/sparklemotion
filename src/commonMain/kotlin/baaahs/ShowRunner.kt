@@ -1,8 +1,8 @@
 package baaahs
 
-import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.ContentType
-import baaahs.glsl.GlslRenderer
+import baaahs.gl.patch.AutoWirer
+import baaahs.gl.patch.ContentType
+import baaahs.gl.render.GlslRenderer
 import baaahs.show.ShaderChannel
 import baaahs.show.Show
 import baaahs.show.live.OpenShow

@@ -1,17 +1,17 @@
 package baaahs
 
-import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.LinkedPatch
-import baaahs.glshaders.Plugins
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.patch.AutoWirer
+import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.render.GlslRenderer
 import baaahs.glsl.GlslContext
-import baaahs.glsl.GlslRenderer
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
+import baaahs.plugin.Plugins
 import baaahs.show.Show
 import baaahs.show.Surfaces
 import baaahs.show.buildEmptyShow

@@ -1,6 +1,6 @@
 package baaahs.ui
 
-import baaahs.glshaders.InputPort
+import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.MutableLink
 import kotlinx.html.js.onChangeFunction
 import materialui.components.divider.divider

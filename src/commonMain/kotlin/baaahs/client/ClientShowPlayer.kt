@@ -1,9 +1,9 @@
 package baaahs.client
 
 import baaahs.*
-import baaahs.glshaders.Plugins
 import baaahs.glsl.GlslContext
 import baaahs.model.ModelInfo
+import baaahs.plugin.Plugins
 import kotlinx.serialization.json.JsonElement
 
 class ClientShowPlayer(
