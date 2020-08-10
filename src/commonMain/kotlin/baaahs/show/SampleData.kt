@@ -2,10 +2,10 @@ package baaahs.show
 
 import baaahs.Color
 import baaahs.getBang
-import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.CorePlugin
-import baaahs.glshaders.Plugins
+import baaahs.gl.patch.AutoWirer
 import baaahs.glsl.Shaders
+import baaahs.plugin.CorePlugin
+import baaahs.plugin.Plugins
 import baaahs.show.mutable.MutableDataSource
 import baaahs.show.mutable.MutableLink
 import baaahs.show.mutable.MutablePatch

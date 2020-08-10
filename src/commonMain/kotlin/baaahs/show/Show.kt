@@ -3,7 +3,7 @@ package baaahs.show
 import baaahs.ShowState
 import baaahs.Surface
 import baaahs.camelize
-import baaahs.glshaders.Plugins
+import baaahs.plugin.Plugins
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.MutableShow

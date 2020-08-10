@@ -1,9 +1,9 @@
 package baaahs
 
-import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.LinkedPatch
-import baaahs.glsl.GlslRenderer
-import baaahs.glsl.RenderSurface
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.render.GlslRenderer
+import baaahs.gl.render.RenderSurface
 
 class SurfaceManager(
     private val glslRenderer: GlslRenderer

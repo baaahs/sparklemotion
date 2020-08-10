@@ -2,9 +2,9 @@ package baaahs.mapper;
 
 import baaahs.Logger
 import baaahs.PinkyConfig
-import baaahs.glshaders.Plugins
 import baaahs.io.Fs
 import baaahs.model.Model
+import baaahs.plugin.Plugins
 import baaahs.show.Show
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime

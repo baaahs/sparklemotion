@@ -1,24 +1,24 @@
 import baaahs.*
 import baaahs.gadgets.ColorPicker
 import baaahs.geom.Vector3F
-import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.Plugins
-import baaahs.glshaders.override
-import baaahs.glsl.GlslContext.Companion.GL_RGB32F
-import baaahs.glsl.GlslRenderer
-import baaahs.glsl.GlslRendererTest
+import baaahs.gl.GlContext.Companion.GL_RGB32F
+import baaahs.gl.override
+import baaahs.gl.patch.AutoWirer
+import baaahs.gl.render.GlslRenderer
+import baaahs.gl.render.GlslRendererTest
 import baaahs.glsl.Shaders
 import baaahs.glsl.UvTranslator
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.model.ModelInfo
 import baaahs.model.MovingHead
+import baaahs.plugin.Plugins
 import baaahs.shaders.FakeSurface
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.shows.FakeGlslContext
+import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
@@ -39,7 +39,7 @@ object ShowRunnerSpec : Spek({
             "void main() { gl_FragColor = vec4(gl_FragCoord, 0., 1.); }"
         }
 
-        val fakeGlslContext by value { FakeGlslContext() }
+        val fakeGlslContext by value { FakeGlContext() }
         val model by value { TestModel() }
         val patch by value {
             AutoWirer(Plugins.safe()).autoWire(

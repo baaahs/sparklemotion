@@ -3,16 +3,15 @@ package baaahs
 import baaahs.client.WebClient
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
-import baaahs.glshaders.Plugins
-import baaahs.glsl.GlslBase
-import baaahs.glsl.GlslRenderer
+import baaahs.gl.GlBase
+import baaahs.gl.render.GlslRenderer
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.net.Network
+import baaahs.plugin.Plugins
 import baaahs.proto.Ports
-import baaahs.show.SampleData
 import baaahs.shows.BakedInShaders
 import baaahs.sim.*
 import baaahs.visualizer.SurfaceGeometry
@@ -25,6 +24,7 @@ import kotlinx.coroutines.*
 import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
+
 class SheepSimulator {
     @Suppress("unused")
     val facade = Facade()
@@ -57,7 +57,7 @@ class SheepSimulator {
         }
     }
 
-    val glslContext = GlslBase.manager.createContext()
+    val glslContext = GlBase.manager.createContext()
     val clock = JsClock()
     val plugins = Plugins.findAll()
     private val pinky = Pinky(

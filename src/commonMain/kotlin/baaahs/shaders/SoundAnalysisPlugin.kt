@@ -1,7 +1,7 @@
 package baaahs.shaders
 
 import baaahs.SoundAnalyzer
-import baaahs.glshaders.GlslProgram
+import baaahs.gl.glsl.GlslProgram
 import baaahs.glsl.Uniform
 import com.danielgergely.kgl.FloatBuffer
 import com.danielgergely.kgl.Kgl
