@@ -1,10 +1,10 @@
 package baaahs
 
+import baaahs.gl.GlContext
 import baaahs.gl.glsl.AnalysisException
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.shader.OpenShader
-import baaahs.glsl.GlslContext
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
 import baaahs.show.DataSource
@@ -15,7 +15,7 @@ import baaahs.show.live.ShowOpener
 
 interface ShowPlayer {
     val plugins: Plugins
-    val glslContext: GlslContext
+    val glContext: GlContext
     val modelInfo: ModelInfo
     val dataSources: List<DataSource>
 

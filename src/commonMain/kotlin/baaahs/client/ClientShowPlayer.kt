@@ -1,14 +1,14 @@
 package baaahs.client
 
 import baaahs.*
-import baaahs.glsl.GlslContext
+import baaahs.gl.GlContext
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
 import kotlinx.serialization.json.JsonElement
 
 class ClientShowPlayer(
     plugins: Plugins,
-    override val glslContext: GlslContext,
+    val glContext: GlContext,
     private val pubSub: PubSub.Client,
     modelInfo: ModelInfo
 ) : BaseShowPlayer(plugins, modelInfo) {

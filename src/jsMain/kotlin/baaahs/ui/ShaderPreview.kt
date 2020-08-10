@@ -1,9 +1,9 @@
 package baaahs.ui
 
 import baaahs.app.ui.appContext
-import baaahs.glsl.GlslBase
-import baaahs.glsl.GlslContext
-import baaahs.glsl.GlslPreview
+import baaahs.gl.GlBase
+import baaahs.gl.GlContext
+import baaahs.gl.render.GlslPreview
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
 import external.IntersectionObserver
@@ -27,7 +27,7 @@ import styled.styledDiv
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
     val canvas = ref<HTMLCanvasElement?> { null }
-    var gl by state<GlslContext?> { null }
+    var gl by state<GlContext?> { null }
     var glslPreview by state<GlslPreview?> { null }
     var errorPopupAnchor by state<EventTarget?> { null }
     val preRenderHook = ref { {} }
@@ -37,7 +37,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
     onMount(canvas.current) {
         val canvasEl = canvas.current ?: return@onMount
-        val glslContext = GlslBase.jsManager.createContext(canvasEl)
+        val glslContext = GlBase.jsManager.createContext(canvasEl)
         gl = glslContext
 
         val preview = GlslPreview(glslContext, canvasEl.width, canvasEl.height) {

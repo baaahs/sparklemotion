@@ -3,11 +3,11 @@ package baaahs.gl.render
 import baaahs.*
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
+import baaahs.gl.GlBase
+import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
-import baaahs.glsl.GlslBase
-import baaahs.glsl.GlslContext
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.glsl.UvTranslator
 import baaahs.io.ByteArrayWriter
@@ -25,30 +25,30 @@ class GlslRendererTest {
 //    fun verifyGlslAvailable() = assumeTrue(GlslBase.manager.available)
 
     fun glslAvailable(): Boolean {
-        val available = GlslBase.manager.available
+        val available = GlBase.manager.available
         if (!available) {
             println("WARNING: OpenGL not available, skipping test!")
         }
         return available
     }
 
-    private lateinit var glslContext: GlslContext
+    private lateinit var glContext: GlContext
     private lateinit var glslRenderer: GlslRenderer
     private lateinit var fakeShowPlayer: FakeShowPlayer
 
     @BeforeTest
     fun setUp() {
         if (glslAvailable()) {
-            glslContext = GlslBase.manager.createContext()
-            glslRenderer = GlslRenderer(glslContext, ModelInfoForTest)
-            fakeShowPlayer = FakeShowPlayer(glslContext)
+            glContext = GlBase.manager.createContext()
+            glslRenderer = GlslRenderer(glContext, ModelInfoForTest)
+            fakeShowPlayer = FakeShowPlayer(glContext)
         }
     }
 
     @AfterTest
     fun tearDown() {
         if (glslAvailable()) {
-            glslContext.release()
+            glContext.release()
             glslRenderer.release()
         }
     }
@@ -258,7 +258,7 @@ class GlslRendererTest {
             .autoWire(cylindricalProjection, shader)
             .resolve()
             .openForPreview(autoWirer)!!
-            .compile(glslContext) { id, dataSource ->
+            .compile(glContext) { id, dataSource ->
             dataSource.createFeed(fakeShowPlayer, id)
         }
     }

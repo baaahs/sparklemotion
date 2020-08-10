@@ -1,13 +1,13 @@
 package baaahs.gl.glsl
 
 import baaahs.Logger
-import baaahs.glsl.GlslContext
+import baaahs.gl.GlContext
 import com.danielgergely.kgl.GL_COMPILE_STATUS
 import com.danielgergely.kgl.GL_TRUE
 import com.danielgergely.kgl.Shader
 
 class CompiledShader(
-    private val gl: GlslContext,
+    private val gl: GlContext,
     type: Int,
     internal val source: String
 ) {

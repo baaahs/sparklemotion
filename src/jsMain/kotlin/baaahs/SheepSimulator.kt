@@ -3,8 +3,8 @@ package baaahs
 import baaahs.client.WebClient
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
+import baaahs.gl.GlBase
 import baaahs.gl.render.GlslRenderer
-import baaahs.glsl.GlslBase
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
@@ -57,7 +57,7 @@ class SheepSimulator {
         }
     }
 
-    val glslContext = GlslBase.manager.createContext()
+    val glslContext = GlBase.manager.createContext()
     val clock = JsClock()
     val plugins = Plugins.findAll()
     private val pinky = Pinky(

@@ -1,8 +1,8 @@
 package baaahs
 
 import baaahs.dmx.DmxDevice
+import baaahs.gl.GlBase
 import baaahs.gl.render.GlslRenderer
-import baaahs.glsl.GlslBase
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
@@ -37,7 +37,7 @@ class PinkyMain(private val args: Args) {
     fun run() {
         logger.info { "Are you pondering what I'm pondering?" }
 
-        GlslBase.manager // Need to wake up OpenGL on the main thread.
+        GlBase.manager // Need to wake up OpenGL on the main thread.
 
         val model = Pluggables.loadModel(args.modelName)
 
@@ -62,7 +62,7 @@ class PinkyMain(private val args: Args) {
         val soundAnalyzer = JvmSoundAnalyzer()
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
-        val glslContext = GlslBase.manager.createContext()
+        val glslContext = GlBase.manager.createContext()
         val glslRenderer = GlslRenderer(glslContext, model)
         val pinky = Pinky(
             model, network, dmxUniverse, beatSource, SystemClock(), fs,

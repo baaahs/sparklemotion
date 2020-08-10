@@ -3,8 +3,8 @@ package baaahs.gl.render
 import baaahs.Color
 import baaahs.Logger
 import baaahs.Surface
+import baaahs.gl.GlContext
 import baaahs.gl.render.GlslRenderer.GlConst.GL_RGBA8
-import baaahs.glsl.GlslContext
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.model.ModelInfo
 import baaahs.timeSync
@@ -13,7 +13,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 open class GlslRenderer(
-    val gl: GlslContext,
+    val gl: GlContext,
     private val modelInfo: ModelInfo
 ) {
     private val surfacesToAdd: MutableList<RenderSurface> = mutableListOf()

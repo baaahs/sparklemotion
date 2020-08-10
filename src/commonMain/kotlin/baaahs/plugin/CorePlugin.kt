@@ -4,12 +4,12 @@ import baaahs.*
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.RadioButtonStrip
 import baaahs.gadgets.Slider
+import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslProgram.DataFeed
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.GlslRenderer
 import baaahs.gl.shader.InputPort
-import baaahs.glsl.GlslContext.Companion.GL_RGB32F
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
@@ -154,7 +154,7 @@ class CorePlugin : Plugin {
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, GlslRenderer.ArrangementListener, RefCounted by RefCounter() {
-                private val gl = showPlayer.glslContext
+                private val gl = showPlayer.glContext
                 private val uvCoordTextureUnit = gl.getTextureUnit(PixelCoordsTexture::class)
                 private val uvCoordTexture = gl.check { createTexture() }
 

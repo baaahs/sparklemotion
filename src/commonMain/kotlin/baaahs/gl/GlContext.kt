@@ -1,11 +1,12 @@
-package baaahs.glsl
+package baaahs.gl
 
 import baaahs.Logger
 import baaahs.gl.glsl.CompiledShader
 import baaahs.gl.glsl.GlslProgram
+import baaahs.glsl.Uniform
 import com.danielgergely.kgl.*
 
-abstract class GlslContext(
+abstract class GlContext(
     private val kgl: Kgl,
     val glslVersion: String,
     var checkForErrors: Boolean = false

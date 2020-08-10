@@ -10,7 +10,7 @@ import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.shows.FakeGlslContext
+import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -44,7 +44,7 @@ object PatchLayeringSpec : Spek({
         val mutableShow by value { MutableShow("test show") }
         val show by value {
             val show = mutableShow.build(ShowBuilder())
-            ShowOpener(show, FakeShowPlayer(FakeGlslContext())).openShow()
+            ShowOpener(show, FakeShowPlayer(FakeGlContext())).openShow()
         }
 
         context("with a show, scene, and patchset patch") {

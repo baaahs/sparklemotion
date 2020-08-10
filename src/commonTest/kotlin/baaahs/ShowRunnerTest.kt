@@ -10,7 +10,7 @@ import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
 import baaahs.plugin.Plugins
 import baaahs.show.SampleData
-import baaahs.shows.FakeGlslContext
+import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -35,7 +35,7 @@ class ShowRunnerTest {
     private val surface2Messages = mutableListOf<Pixels>()
     private val surface2Receiver =
         FakeSurfaceReceiver(IdentifiedSurface(SheepModel.Panel("surface 2"), 1)) { buffer -> surface2Messages.add(buffer) }
-    private lateinit var fakeGlslContext: FakeGlslContext
+    private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
     private val sheepModel = SheepModel().apply { panels = emptyList() }
@@ -44,7 +44,7 @@ class ShowRunnerTest {
 
     @BeforeTest
     fun setUp() {
-        fakeGlslContext = FakeGlslContext()
+        fakeGlslContext = FakeGlContext()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
         val glslRenderer = GlslRenderer(fakeGlslContext, ModelInfo.Empty)

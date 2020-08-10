@@ -1,13 +1,13 @@
-package baaahs.glsl
+package baaahs.gl.render
 
+import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.render.Quad
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import kotlin.browser.window
 
 class GlslPreview(
-    private val gl: GlslContext,
+    private val gl: GlContext,
     private var width: Int,
     private var height: Int,
     private val preRenderCallback: (() -> Unit)? = null

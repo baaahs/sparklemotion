@@ -2,6 +2,7 @@ package baaahs.ui
 
 import baaahs.*
 import baaahs.gadgets.Slider
+import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslException
 import baaahs.gl.glsl.GlslProgram
@@ -10,7 +11,6 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.glshaders.*
-import baaahs.glsl.GlslContext
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
@@ -22,16 +22,8 @@ import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderInstance
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.collections.List
-import kotlin.collections.MutableMap
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.emptyList
-import kotlin.collections.forEachIndexed
-import kotlin.collections.hashMapOf
-import kotlin.collections.listOf
-import kotlin.collections.map
-import kotlin.collections.mapOf
 import kotlin.collections.set
 
 class EditingShader(
@@ -113,7 +105,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
         }
     }
 
-    fun startCompile(gl: GlslContext) {
+    fun startCompile(gl: GlContext) {
         state = State.Compiling
         notifyChanged()
 
@@ -165,7 +157,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
         notifyChanged()
     }
 
-    fun compile(gl: GlslContext, resolver: Resolver) {
+    fun compile(gl: GlContext, resolver: Resolver) {
         try {
             glslProgram = linkedPatch?.compile(gl, resolver)
             state = State.Success
@@ -227,7 +219,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
 
 private class PreviewShowPlayer(
     plugins: Plugins,
-    override val glslContext: GlslContext
+    override val glContext: GlContext
 ) : BaseShowPlayer(plugins, ModelInfo.Empty) {
     val gadgets: MutableMap<String, Gadget> = hashMapOf()
 
