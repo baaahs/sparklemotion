@@ -64,6 +64,10 @@ class CorePlugin : Plugin {
 //        }
 //    }
 
+    /**
+     * Sparkle Motion always uses a resolution of (1, 1), except for previews, which
+     * use [PreviewResolution] instead.
+     */
     @Serializable
     data class Resolution(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<Resolution> {
@@ -75,12 +79,31 @@ class CorePlugin : Plugin {
         override fun getType(): String = "vec2"
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
+            object : DataFeed, RefCounted by RefCounter() {
+                override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
+                    GlslProgram.SingleUniformBinding(glslProgram, this@Resolution, id, this) { uniform ->
+                        uniform.set(1f, 1f)
+                    }
+            }
+    }
+
+    @Serializable
+    data class PreviewResolution(@Transient val `_`: Boolean = true) : DataSource {
+        companion object : DataSourceBuilder<PreviewResolution> {
+            override val resourceName: String get() = "Preview Resolution"
+            override fun build(inputPort: InputPort): PreviewResolution = PreviewResolution()
+        }
+
+        override val dataSourceName: String get() = "PreviewResolution"
+        override fun getType(): String = "vec2"
+
+        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, GlslProgram.ResolutionListener, RefCounted by RefCounter() {
                 var x = 1f
                 var y = 1f
 
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(glslProgram, this@Resolution, id, this) { uniform ->
+                    GlslProgram.SingleUniformBinding(glslProgram, this@PreviewResolution, id, this) { uniform ->
                         uniform.set(x, y)
                     }
 
@@ -455,6 +478,7 @@ class CorePlugin : Plugin {
             ContentType.Color to ColorPickerProvider,
             ContentType.Time to Time,
             ContentType.Resolution to Resolution,
+            ContentType.PreviewResolution to PreviewResolution,
             ContentType.Float to SliderDataSource
 //            Int,
 //            Unknown

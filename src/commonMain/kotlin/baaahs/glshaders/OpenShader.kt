@@ -15,7 +15,10 @@ interface OpenShader : RefCounted {
     val glslCode: GlslCode
     val title: String
     val shaderType: ShaderType
+    val entryPointName: String
     val entryPoint: GlslFunction
+        get() = glslCode.findFunction(entryPointName)
+
     val inputPorts: List<InputPort>
     val outputPort: OutputPort
 //    TODO val inputDefaults: Map<String, InputDefault>
@@ -78,37 +81,5 @@ interface OpenShader : RefCounted {
 
         override fun hashCode(): Int =
             src.hashCode()
-    }
-
-    companion object {
-        fun tryPaintShader(shader: Shader, glslCode: GlslCode): PaintShader? {
-            return when {
-                glslCode.functionNames.contains("main") ->
-                    GenericPaintShader(shader, glslCode)
-
-                glslCode.functionNames.contains("mainImage") ->
-                    ShaderToyPaintShader(shader, glslCode)
-
-                else -> null
-            }
-        }
-
-        fun tryFilterShader(shader: Shader, glslCode: GlslCode): FilterShader? {
-            return when {
-                glslCode.functionNames.contains("filterImage") ->
-                    FilterShader(shader, glslCode)
-
-                else -> null
-            }
-        }
-
-        fun tryUvTranslatorShader(shader: Shader, glslCode: GlslCode): UvShader? {
-            return when {
-                glslCode.functionNames.contains("mainUvFromRaster") ->
-                    UvShader(shader, glslCode)
-
-                else -> null
-            }
-        }
     }
 }

@@ -1,6 +1,6 @@
 package baaahs.glshaders
 
-import baaahs.glsl.Shaders.cylindricalUvMapper
+import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderOutPort
@@ -50,7 +50,7 @@ object OpenPatchSpec : Spek({
                             link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
                             shaderChannel = ShaderChannel.Main
                         }
-                    }.openForPreview(autoWirer, shader.type)!!
+                    }.openForPreview(autoWirer)!!
                 }
                 val glsl by value {
                     linkedPatch.toGlsl().trim()
@@ -74,7 +74,7 @@ object OpenPatchSpec : Spek({
                         // Shader: This Shader's Name; namespace: p0
                         // This Shader's Name
 
-                        vec4 p0_gl_FragColor;
+                        vec4 p0_gl_FragColor = vec4(0., 0., 0., 1.);
 
                         #line 7
                         int p0_someGlobalVar;
@@ -105,7 +105,7 @@ object OpenPatchSpec : Spek({
                 context("with UV translation shader") {
                     override(linkedPatch) {
                         MutablePatch {
-                            addShaderInstance(cylindricalUvMapper.shader) {
+                            addShaderInstance(cylindricalProjection) {
                                 link("pixelCoordsTexture", CorePlugin.PixelCoordsTexture())
                                 link("modelInfo", CorePlugin.ModelInfoDataSource("ModelInfo"))
                                 shaderChannel = ShaderChannel.Main
@@ -115,7 +115,7 @@ object OpenPatchSpec : Spek({
                                 link(
                                     "gl_FragCoord",
                                     MutableShaderOutPort(
-                                        findShaderInstanceFor(cylindricalUvMapper.shader)
+                                        findShaderInstanceFor(cylindricalProjection)
                                     )
                                 )
                                 link("resolution", CorePlugin.Resolution())
@@ -123,7 +123,7 @@ object OpenPatchSpec : Spek({
                                 link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
                                 shaderChannel = ShaderChannel.Main
                             }
-                        }.openForPreview(autoWirer, shader.type)!!
+                        }.openForPreview(autoWirer)!!
                     }
 
                     it("generates GLSL") {
@@ -151,7 +151,7 @@ object OpenPatchSpec : Spek({
                                 // Shader: Cylindrical Projection; namespace: p0
                                 // Cylindrical Projection
 
-                                vec2 p0i_result;
+                                vec2 p0i_result = vec2(0.);
 
                                 #line 12
                                 const float p0_PI = 3.141592654;
@@ -168,7 +168,7 @@ object OpenPatchSpec : Spek({
                                 }
 
                                 #line 24
-                                vec2 p0_mainUvFromRaster(vec2 rasterCoord) {
+                                vec2 p0_mainProjection(vec2 rasterCoord) {
                                     int rasterX = int(rasterCoord.x);
                                     int rasterY = int(rasterCoord.y);
                                     
@@ -179,7 +179,7 @@ object OpenPatchSpec : Spek({
                                 // Shader: This Shader's Name; namespace: p1
                                 // This Shader's Name
                                 
-                                vec4 p1_gl_FragColor;
+                                vec4 p1_gl_FragColor = vec4(0., 0., 0., 1.);
 
                                 #line 7
                                 int p1_someGlobalVar;
@@ -200,7 +200,7 @@ object OpenPatchSpec : Spek({
 
                                 #line -1
                                 void main() {
-                                  p0i_result = p0_mainUvFromRaster(gl_FragCoord.xy); // Cylindrical Projection
+                                  p0i_result = p0_mainProjection(gl_FragCoord.xy); // Cylindrical Projection
                                   p1_main(); // This Shader's Name
                                   sm_result = p1_gl_FragColor;
                                 }

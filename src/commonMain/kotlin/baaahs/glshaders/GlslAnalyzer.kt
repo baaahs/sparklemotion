@@ -37,13 +37,7 @@ class GlslAnalyzer {
 
     fun openShader(shader: Shader): OpenShader {
         val glslObj = analyze(shader.src)
-
-        return when (shader.type) {
-            ShaderType.Projection -> OpenShader.tryUvTranslatorShader(shader, glslObj)
-            ShaderType.Distortion -> TODO()
-            ShaderType.Paint -> OpenShader.tryPaintShader(shader, glslObj)
-            ShaderType.Filter -> OpenShader.tryFilterShader(shader, glslObj)
-        } ?: throw AnalysisException("Can't open purported ${shader.type} shader \"${shader.title}\"")
+        return shader.type.open(shader, glslObj)
     }
 
     private class Context {
