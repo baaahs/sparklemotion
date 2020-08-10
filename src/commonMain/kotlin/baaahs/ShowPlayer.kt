@@ -1,12 +1,12 @@
 package baaahs
 
-import baaahs.glshaders.GlslAnalyzer
-import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.OpenShader
-import baaahs.glshaders.Plugins
-import baaahs.glsl.AnalysisException
+import baaahs.gl.glsl.AnalysisException
+import baaahs.gl.glsl.GlslAnalyzer
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.shader.OpenShader
 import baaahs.glsl.GlslContext
 import baaahs.model.ModelInfo
+import baaahs.plugin.Plugins
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.Show

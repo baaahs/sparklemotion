@@ -1,7 +1,7 @@
 package baaahs.ui
 
 import baaahs.app.ui.appContext
-import baaahs.glshaders.InputPort
+import baaahs.gl.shader.InputPort
 import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.*

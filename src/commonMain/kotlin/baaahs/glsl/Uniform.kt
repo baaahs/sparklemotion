@@ -1,7 +1,7 @@
 package baaahs.glsl
 
 import baaahs.geom.Vector3F
-import baaahs.glshaders.GlslProgram
+import baaahs.gl.glsl.GlslProgram
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.UniformLocation
 

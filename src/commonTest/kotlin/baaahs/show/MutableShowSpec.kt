@@ -1,11 +1,11 @@
 package baaahs.show
 
 import baaahs.ShowState
-import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.Plugins
-import baaahs.glshaders.ShaderFactory
-import baaahs.glshaders.override
+import baaahs.gl.override
+import baaahs.gl.patch.AutoWirer
 import baaahs.glsl.Shaders.cylindricalProjection
+import baaahs.plugin.Plugins
+import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import org.spekframework.spek2.Spek
@@ -214,10 +214,30 @@ object MutableShowSpec : Spek({
     }
 })
 
-private fun AutoWirer.testPatch(title: String) =
-    autoWire(cylindricalProjection, ShaderFactory.paintShader(title))
+private fun AutoWirer.testPatch(title: String): MutablePatch {
+    val shader = Shader(
+        title, ShaderType.Paint, """
+            // $title
+            uniform float time;
+            uniform vec2  resolution;
+            uniform float blueness;
+            int someGlobalVar;
+            const int someConstVar = 123;
+            
+            int anotherFunc(int i) { return i; }
+            
+            void main( void ) {
+                vec2 uv = gl_FragCoord.xy / resolution.xy;
+                someGlobalVar = anotherFunc(someConstVar);
+                gl_FragColor = vec4(uv.xy, blueness, 1.);
+            }
+        """.trimIndent()
+    )
+
+    return autoWire(cylindricalProjection, shader)
         .acceptSymbolicChannelLinks()
         .resolve()
+}
 
 private fun Show.desc(): List<String> =
     scenes.map { "${it.title} (${it.patchSets.joinToString(", ") { it.title }})" }

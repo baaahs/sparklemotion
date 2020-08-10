@@ -1,6 +1,6 @@
 package baaahs
 
-import baaahs.glsl.GlslRendererTest
+import baaahs.gl.render.GlslRendererTest
 import baaahs.glsl.LwjglGlslManager
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass

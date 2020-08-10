@@ -3,8 +3,7 @@ package baaahs
 import baaahs.api.ws.WebSocketRouter
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
-import baaahs.glshaders.Plugins
-import baaahs.glsl.GlslRenderer
+import baaahs.gl.render.GlslRenderer
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
@@ -14,6 +13,7 @@ import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
+import baaahs.plugin.Plugins
 import baaahs.proto.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.show.Show

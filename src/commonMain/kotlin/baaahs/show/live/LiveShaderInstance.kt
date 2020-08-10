@@ -2,9 +2,9 @@ package baaahs.show.live
 
 import baaahs.ShowPlayer
 import baaahs.getBang
-import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.InputPort
-import baaahs.glshaders.OpenShader
+import baaahs.gl.patch.AutoWirer
+import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.OpenShader
 import baaahs.show.*
 
 class LiveShaderInstance(

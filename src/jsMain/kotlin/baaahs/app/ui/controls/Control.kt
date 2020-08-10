@@ -1,8 +1,8 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
-import baaahs.glshaders.CorePlugin
 import baaahs.jsx.RangeSlider
+import baaahs.plugin.CorePlugin
 import baaahs.show.Control
 import baaahs.show.DataSource
 import baaahs.show.SpecialControl

@@ -2,13 +2,13 @@ package baaahs
 
 import baaahs.ShowRunner.SurfaceReceiver
 import baaahs.gadgets.Slider
-import baaahs.glshaders.Plugins
-import baaahs.glsl.GlslRenderer
-import baaahs.glsl.RenderSurface
+import baaahs.gl.render.GlslRenderer
+import baaahs.gl.render.RenderSurface
 import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
 import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
+import baaahs.plugin.Plugins
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlslContext
 import baaahs.sim.FakeDmxUniverse

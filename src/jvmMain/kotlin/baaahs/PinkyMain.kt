@@ -1,12 +1,11 @@
 package baaahs
 
 import baaahs.dmx.DmxDevice
+import baaahs.gl.render.GlslRenderer
 import baaahs.glsl.GlslBase
-import baaahs.glsl.GlslRenderer
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
-import baaahs.show.SampleData
 import baaahs.sim.FakeDmxUniverse
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default

@@ -1,6 +1,7 @@
 package baaahs.glsl
 
-import baaahs.glshaders.GlslProgram
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.render.Quad
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import kotlin.browser.window

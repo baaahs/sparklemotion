@@ -1,7 +1,7 @@
 package baaahs.show
 
 import baaahs.getBang
-import baaahs.glshaders.PluginRef
+import baaahs.plugin.PluginRef
 import baaahs.show.mutable.ShowBuilder
 import kotlinx.serialization.Serializable
 

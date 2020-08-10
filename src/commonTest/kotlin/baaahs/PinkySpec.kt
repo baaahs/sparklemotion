@@ -1,9 +1,8 @@
 package baaahs
 
 import baaahs.geom.Matrix4
-import baaahs.glshaders.Plugins
-import baaahs.glshaders.override
-import baaahs.glsl.GlslRenderer
+import baaahs.gl.override
+import baaahs.gl.render.GlslRenderer
 import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.model.Model
@@ -11,6 +10,7 @@ import baaahs.model.ModelInfo
 import baaahs.models.SheepModel
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.TestNetwork
+import baaahs.plugin.Plugins
 import baaahs.proto.BrainHelloMessage
 import baaahs.proto.Type
 import baaahs.show.SampleData

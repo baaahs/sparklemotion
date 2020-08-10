@@ -1,7 +1,7 @@
 package baaahs.shows
 
-import baaahs.glshaders.CorePlugin
-import baaahs.glshaders.Plugins
+import baaahs.plugin.CorePlugin
+import baaahs.plugin.Plugins
 import baaahs.show.*
 import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
@@ -102,7 +102,7 @@ fun jsonFor(dataSource: DataSource): JsonElement {
     return when (dataSource) {
         is CorePlugin.SliderDataSource -> {
             json {
-                "type" to "baaahs.glshaders.CorePlugin.SliderDataSource"
+                "type" to "baaahs.plugin.CorePlugin.SliderDataSource"
                 "title" to dataSource.title
                 "initialValue" to dataSource.initialValue
                 "minValue" to dataSource.minValue
@@ -112,29 +112,29 @@ fun jsonFor(dataSource: DataSource): JsonElement {
         }
         is CorePlugin.ColorPickerProvider -> {
             json {
-                "type" to "baaahs.glshaders.CorePlugin.ColorPickerProvider"
+                "type" to "baaahs.plugin.CorePlugin.ColorPickerProvider"
                 "title" to dataSource.title
                 "initialValue" to dataSource.initialValue.toInt()
             }
         }
         is CorePlugin.Resolution -> {
             json {
-                "type" to "baaahs.glshaders.CorePlugin.Resolution"
+                "type" to "baaahs.plugin.CorePlugin.Resolution"
             }
         }
         is CorePlugin.Time -> {
             json {
-                "type" to "baaahs.glshaders.CorePlugin.Time"
+                "type" to "baaahs.plugin.CorePlugin.Time"
             }
         }
         is CorePlugin.PixelCoordsTexture -> {
             json {
-                "type" to "baaahs.glshaders.CorePlugin.PixelCoordsTexture"
+                "type" to "baaahs.plugin.CorePlugin.PixelCoordsTexture"
             }
         }
         is CorePlugin.ModelInfoDataSource -> {
             json {
-                "type" to "baaahs.glshaders.CorePlugin.ModelInfoDataSource"
+                "type" to "baaahs.plugin.CorePlugin.ModelInfoDataSource"
                 "structType" to dataSource.structType
             }
         }
