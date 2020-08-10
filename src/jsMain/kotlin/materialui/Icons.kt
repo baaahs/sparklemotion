@@ -13,6 +13,7 @@ external val Close: Icon
 external val CloudDownload: Icon
 external val CloudUpload: Icon
 external val Code: Icon
+external val Delete: Icon
 external val Dashboard: Icon
 external val DeveloperMode: Icon
 external val DragIndicator: Icon

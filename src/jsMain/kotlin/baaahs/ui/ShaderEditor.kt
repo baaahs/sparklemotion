@@ -4,25 +4,21 @@ import acex.*
 import baaahs.boundedBy
 import baaahs.jsx.ShowControls
 import baaahs.jsx.ShowControlsProps
-import baaahs.show.ShaderChannel
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
-import kotlin.browser.window
 
 val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     var aceEditor by state<AceEditor?> { null }
 
-    val shaderEditorCalls: ArrayList<Any> = window.asDynamic().shaderEditorCalls
-        ?: arrayListOf<Any>().also { window.asDynamic().shaderEditorCalls = it }
-    shaderEditorCalls.add(props)
-
     var extractionCandidate by state<ExtractionCandidate?> { null }
     val glslNumberMarker = ref<Number?> { null }
-    val glslDoc = memo(props.editingShader) { Document(props.editingShader.mutableShader.src) }
+    val glslDoc = memo(props.editingShader) {
+        Document(props.editingShader.id, props.editingShader.mutableShader.src)
+    }
 
     onChange("AceEditor", props.editingShader, aceEditor) {
         val editor = aceEditor?.editor ?: return@onChange
@@ -54,9 +50,11 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         withCleanup { compilationObserver.remove() }
     }
 
-    val handleSrcChange = useCallback(props.editingShader) { incoming: String ->
-        // Update [EditingShader].
-        props.editingShader.updateSrc(incoming)
+    val handleSrcChange = memo(props.editingShader) {
+        { incoming: String ->
+            // Update [EditingShader].
+            props.editingShader.updateSrc(incoming)
+        }
     }
 
     val glslNumberRegex = Regex("[0-9.]")
@@ -101,7 +99,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     val extractUniform = useCallback { _: Event ->
         val extraction = extractionCandidate ?: return@useCallback
 
-        val editor = aceEditor?.editor?: return@useCallback
+        val editor = aceEditor?.editor ?: return@useCallback
         val session = editor.getSession()
 
         val originalText = extraction.text
@@ -169,7 +167,6 @@ private val glslNumberClassName = Styles.glslNumber.name
 
 external interface ShaderEditorProps : RProps {
     var editingShader: EditingShader
-    var shaderChannels: Set<ShaderChannel>
 }
 
 fun RBuilder.shaderEditor(handler: RHandler<ShaderEditorProps>) =
