@@ -3,7 +3,7 @@ package baaahs
 import baaahs.api.ws.WebSocketRouter
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
-import baaahs.gl.render.GlslRenderer
+import baaahs.gl.render.ModelRenderer
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
@@ -32,7 +32,7 @@ class Pinky(
     soundAnalyzer: SoundAnalyzer,
     private val switchShowAfterIdleSeconds: Int? = 600,
     private val adjustShowAfterIdleSeconds: Int? = null,
-    glslRenderer: GlslRenderer,
+    modelRenderer: ModelRenderer,
     val plugins: Plugins = Plugins.findAll()
 ) : Network.UdpListener {
     val facade = Facade()
@@ -49,9 +49,9 @@ class Pinky(
     private val pubSub: PubSub.Server = PubSub.Server(httpServer)
 //    private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    internal val surfaceManager = SurfaceManager(glslRenderer)
+    internal val surfaceManager = SurfaceManager(modelRenderer)
     var stageManager: StageManager = StageManager(
-        plugins, glslRenderer, pubSub, storage, surfaceManager, dmxUniverse, movingHeadManager, clock, model
+        plugins, modelRenderer, pubSub, storage, surfaceManager, dmxUniverse, movingHeadManager, clock, model
     )
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {

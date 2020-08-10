@@ -4,7 +4,7 @@ import baaahs.Color
 import baaahs.Logger
 import baaahs.Surface
 import baaahs.gl.GlContext
-import baaahs.gl.render.GlslRenderer.GlConst.GL_RGBA8
+import baaahs.gl.render.ModelRenderer.GlConst.GL_RGBA8
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.model.ModelInfo
 import baaahs.timeSync
@@ -12,7 +12,7 @@ import com.danielgergely.kgl.*
 import kotlin.math.max
 import kotlin.math.min
 
-open class GlslRenderer(
+open class ModelRenderer(
     val gl: GlContext,
     private val modelInfo: ModelInfo
 ) {
