@@ -14,17 +14,9 @@ import materialui.components.tablerow.tableRow
 import react.*
 import react.dom.b
 import react.dom.code
-import kotlin.collections.List
-import kotlin.collections.Set
-import kotlin.collections.associateWith
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.forEach
-import kotlin.collections.map
-import kotlin.collections.minus
-import kotlin.collections.plus
 import kotlin.collections.set
-import kotlin.collections.sortedBy
 
 val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     val appContext = useContext(appContext)
@@ -105,20 +97,18 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
 
 interface SourcePortOption {
     val title: String
-    val portEditor: MutableLink.Port
+    val portEditor: MutablePort
     val groupName: String
-    fun matches(otherPort: MutableLink.Port): Boolean
+    fun matches(otherPort: MutablePort): Boolean
     fun isAppropriateFor(inputPort: InputPort): Boolean
 }
 
-data class DataSourceOption(val dataSource: DataSource): SourcePortOption {
+data class DataSourceOption(val dataSource: DataSource) : SourcePortOption {
     override val title: String get() = dataSource.dataSourceName
-    override val portEditor: MutableLink.Port get() = MutableDataSource(
-        dataSource
-    )
+    override val portEditor: MutablePort get() = MutableDataSource(dataSource)
     override val groupName: String get() = "Data Sources"
 
-    override fun matches(otherPort: MutableLink.Port): Boolean {
+    override fun matches(otherPort: MutablePort): Boolean {
         return otherPort is MutableDataSource && otherPort.dataSource == dataSource
     }
 
@@ -127,14 +117,12 @@ data class DataSourceOption(val dataSource: DataSource): SourcePortOption {
     }
 }
 
-data class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOption {
+data class ShaderChannelOption(val shaderChannel: ShaderChannel) : SourcePortOption {
     override val title: String get() = "${shaderChannel.id} shader channel"
-    override val portEditor: MutableLink.Port get() = MutableShaderChannel(
-        shaderChannel
-    )
+    override val portEditor: MutablePort get() = MutableShaderChannel(shaderChannel)
     override val groupName: String get() = "Shader Channels"
 
-    override fun matches(otherPort: MutableLink.Port): Boolean {
+    override fun matches(otherPort: MutablePort): Boolean {
         return otherPort is MutableShaderChannel && otherPort.shaderChannel == shaderChannel
     }
 
@@ -143,12 +131,12 @@ data class ShaderChannelOption(val shaderChannel: ShaderChannel): SourcePortOpti
     }
 }
 
-data class ShaderOption(val mutableShaderInstance: MutableShaderInstance): SourcePortOption {
+data class ShaderOption(val mutableShaderInstance: MutableShaderInstance) : SourcePortOption {
     override val title: String get() = "${mutableShaderInstance.mutableShader.title} output"
-    override val portEditor: MutableLink.Port get() = MutableShaderOutPort(mutableShaderInstance)
+    override val portEditor: MutablePort get() = MutableShaderOutPort(mutableShaderInstance)
     override val groupName: String get() = "Shader Ports"
 
-    override fun matches(otherPort: MutableLink.Port): Boolean {
+    override fun matches(otherPort: MutablePort): Boolean {
         return otherPort is MutableShaderOutPort &&
                 otherPort.mutableShaderInstance == mutableShaderInstance
     }

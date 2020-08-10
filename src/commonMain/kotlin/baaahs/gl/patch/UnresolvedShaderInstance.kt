@@ -1,13 +1,13 @@
 package baaahs.gl.patch
 
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.MutableLink
+import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderChannel
 
 class UnresolvedShaderInstance(
     val mutableShader: MutableShader,
-    val incomingLinksOptions: Map<String, MutableSet<MutableLink.Port>>,
+    val incomingLinksOptions: Map<String, MutableSet<MutablePort>>,
     var shaderChannel: ShaderChannel? = null,
     var priority: Float
 ) {

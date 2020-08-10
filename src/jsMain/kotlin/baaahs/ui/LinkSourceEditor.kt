@@ -1,7 +1,7 @@
 package baaahs.ui
 
 import baaahs.gl.shader.InputPort
-import baaahs.show.mutable.MutableLink
+import baaahs.show.mutable.MutablePort
 import kotlinx.html.js.onChangeFunction
 import materialui.components.divider.divider
 import materialui.components.formcontrol.formControl
@@ -71,7 +71,7 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isP
 
 external interface LinkSourceEditorProps : RProps {
     var inputPort: InputPort
-    var currentSourcePort: MutableLink.Port?
+    var currentSourcePort: MutablePort?
     var sourcePortOptions: List<SourcePortOption>
     var onChange: (SourcePortOption?) -> Unit
 }

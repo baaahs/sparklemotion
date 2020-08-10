@@ -10,7 +10,7 @@ import baaahs.show.Surfaces
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.OpenPatchHolder
 import baaahs.show.mutable.MutableDataSource
-import baaahs.show.mutable.MutableLink
+import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderChannel
 
@@ -20,7 +20,7 @@ class AutoWirer(
 ) {
     fun autoWire(
         vararg shaders: Shader,
-        defaultPorts: Map<ContentType, MutableLink.Port> = emptyMap()
+        defaultPorts: Map<ContentType, MutablePort> = emptyMap()
     ): UnresolvedPatch {
         val openShaders = shaders.associate { it to glslAnalyzer.openShader(it) }
         return autoWire(openShaders.values, defaultPorts = defaultPorts)
@@ -28,7 +28,7 @@ class AutoWirer(
 
     fun autoWire(
         vararg shaders: OpenShader,
-        defaultPorts: Map<ContentType, MutableLink.Port> = emptyMap()
+        defaultPorts: Map<ContentType, MutablePort> = emptyMap()
     ): UnresolvedPatch {
         return autoWire(shaders.toList(), defaultPorts = defaultPorts)
     }
@@ -36,9 +36,9 @@ class AutoWirer(
     fun autoWire(
         shaders: Collection<OpenShader>,
         shaderChannel: ShaderChannel = ShaderChannel.Main,
-        defaultPorts: Map<ContentType, MutableLink.Port> = emptyMap()
+        defaultPorts: Map<ContentType, MutablePort> = emptyMap()
     ): UnresolvedPatch {
-        val locallyAvailable: MutableMap<ContentType, MutableSet<MutableLink.Port>> = mutableMapOf()
+        val locallyAvailable: MutableMap<ContentType, MutableSet<MutablePort>> = mutableMapOf()
 
         defaultPorts.forEach { (contentType, port) ->
             locallyAvailable[contentType] = hashSetOf(port)
@@ -51,7 +51,7 @@ class AutoWirer(
                     MutableShader(openShader.shader),
                     openShader.inputPorts
                         .map { it.id }
-                        .associateWith { hashSetOf<MutableLink.Port>() },
+                        .associateWith { hashSetOf<MutablePort>() },
                     shaderChannel,
                     0f
                 )
@@ -75,7 +75,7 @@ class AutoWirer(
         // Second pass: link datasources/output ports to input ports.
         val unresolvedShaderInstances = shaderInstances.map { (openShader, unresolvedShaderInstance) ->
             openShader.inputPorts.forEach { inputPort ->
-                val localSuggestions: Set<MutableLink.Port>? = locallyAvailable[inputPort.contentType]
+                val localSuggestions: Set<MutablePort>? = locallyAvailable[inputPort.contentType]
                 val suggestions = localSuggestions
                     ?: plugins.suggestDataSources(inputPort).map { MutableDataSource(it) }
                 val portLinkOptions = unresolvedShaderInstance.incomingLinksOptions[inputPort.id]
