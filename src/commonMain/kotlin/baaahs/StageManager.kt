@@ -1,17 +1,17 @@
 package baaahs
 
-import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.GlslProgram
-import baaahs.glshaders.LinkedPatch
-import baaahs.glshaders.Plugins
-import baaahs.glsl.GlslContext
-import baaahs.glsl.GlslRenderer
+import baaahs.gl.GlContext
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.patch.AutoWirer
+import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.render.GlslRenderer
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
+import baaahs.plugin.Plugins
 import baaahs.show.Show
 import baaahs.show.Surfaces
 import baaahs.show.buildEmptyShow
@@ -35,7 +35,7 @@ class StageManager(
 ) : BaseShowPlayer(plugins, modelInfo) {
     val facade = Facade()
     private val autoWirer = AutoWirer(Plugins.findAll())
-    override val glslContext: GlslContext
+    override val glContext: GlContext
         get() = glslRenderer.gl
     private val showStateChannel = pubSub.publish(Topics.showState, null) { showState ->
         if (showState != null) showRunner?.switchTo(showState)

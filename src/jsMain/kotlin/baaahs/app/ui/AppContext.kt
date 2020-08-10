@@ -2,8 +2,8 @@ package baaahs.app.ui
 
 import baaahs.ShowPlayer
 import baaahs.client.WebClient
-import baaahs.glshaders.AutoWirer
-import baaahs.glshaders.Plugins
+import baaahs.gl.patch.AutoWirer
+import baaahs.plugin.Plugins
 import react.createContext
 
 val appContext = createContext<AppContext>()

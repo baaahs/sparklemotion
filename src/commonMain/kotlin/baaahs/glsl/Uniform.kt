@@ -1,7 +1,8 @@
 package baaahs.glsl
 
 import baaahs.geom.Vector3F
-import baaahs.glshaders.GlslProgram
+import baaahs.gl.GlContext
+import baaahs.gl.glsl.GlslProgram
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.UniformLocation
 
@@ -19,7 +20,7 @@ class Uniform internal constructor(
 
     fun set(vector3F: Vector3F) = set(vector3F.x, vector3F.y, vector3F.z)
 
-    fun set(textureUnit: GlslContext.TextureUnit) = textureUnit.setUniform(this)
+    fun set(textureUnit: GlContext.TextureUnit) = textureUnit.setUniform(this)
 
     private fun <T> withProgram(fn: Kgl.() -> T): T {
         glslProgram.gl.useProgram(glslProgram)

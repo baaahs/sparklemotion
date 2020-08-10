@@ -1,7 +1,7 @@
 package baaahs
 
-import baaahs.glsl.GlslRendererTest
-import baaahs.glsl.LwjglGlslManager
+import baaahs.gl.LwjglGlManager
+import baaahs.gl.render.GlslRendererTest
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 import org.junit.platform.launcher.LauncherDiscoveryRequest
@@ -17,7 +17,7 @@ val testsRequiringOpenGL = listOf(
 )
 
 fun main() {
-    LwjglGlslManager().available
+    LwjglGlManager().available
 
     val request: LauncherDiscoveryRequest =
         LauncherDiscoveryRequestBuilder.request()

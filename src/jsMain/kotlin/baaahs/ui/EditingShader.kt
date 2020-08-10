@@ -2,12 +2,17 @@ package baaahs.ui
 
 import baaahs.*
 import baaahs.gadgets.Slider
-import baaahs.glshaders.*
-import baaahs.glsl.GlslContext
-import baaahs.glsl.GlslError
-import baaahs.glsl.GlslException
+import baaahs.gl.GlContext
+import baaahs.gl.glsl.GlslError
+import baaahs.gl.glsl.GlslException
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.glsl.Resolver
+import baaahs.gl.patch.AutoWirer
+import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.LinkedPatch
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
+import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableConstPort
@@ -16,6 +21,9 @@ import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderInstance
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.set
 
 class EditingShader(
     val mutableShaderInstance: MutableShaderInstance,
@@ -96,7 +104,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
         }
     }
 
-    fun startCompile(gl: GlslContext) {
+    fun startCompile(gl: GlContext) {
         state = State.Compiling
         notifyChanged()
 
@@ -148,7 +156,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
         notifyChanged()
     }
 
-    fun compile(gl: GlslContext, resolver: Resolver) {
+    fun compile(gl: GlContext, resolver: Resolver) {
         try {
             glslProgram = linkedPatch?.compile(gl, resolver)
             state = State.Success
@@ -210,7 +218,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
 
 private class PreviewShowPlayer(
     plugins: Plugins,
-    override val glslContext: GlslContext
+    override val glContext: GlContext
 ) : BaseShowPlayer(plugins, ModelInfo.Empty) {
     val gadgets: MutableMap<String, Gadget> = hashMapOf()
 

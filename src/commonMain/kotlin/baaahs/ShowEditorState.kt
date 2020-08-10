@@ -1,8 +1,8 @@
 package baaahs
 
-import baaahs.glshaders.Plugins
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
+import baaahs.plugin.Plugins
 import baaahs.show.Show
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.nullable

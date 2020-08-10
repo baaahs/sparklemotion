@@ -3,11 +3,11 @@ package baaahs.client
 import baaahs.*
 import baaahs.app.ui.AppIndex
 import baaahs.app.ui.AppIndexProps
-import baaahs.glshaders.Plugins
-import baaahs.glsl.GlslBase
+import baaahs.gl.GlBase
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.net.Network
+import baaahs.plugin.Plugins
 import baaahs.proto.Ports
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
@@ -32,7 +32,7 @@ class WebClient(
         pubSub.addStateChangeListener(pubSubListener)
     }
 
-    private val glslContext = GlslBase.jsManager.createContext()
+    private val glslContext = GlBase.jsManager.createContext()
     private val model = Pluggables.getModel()
 
     private var show: Show? = null
