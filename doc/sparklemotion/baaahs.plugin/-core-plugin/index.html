@@ -1,0 +1,187 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>CorePlugin - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.plugin</a>&nbsp;/&nbsp;<a href="./index.html">CorePlugin</a><br/>
+<br/>
+<h1>CorePlugin</h1>
+<code><span class="keyword">class </span><span class="identifier">CorePlugin</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-plugin/index.html"><span class="identifier">Plugin</span></a></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-color-picker-provider/index.html">ColorPickerProvider</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ColorPickerProvider</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">GadgetDataSource</span><span class="symbol">&lt;</span><a href="../../baaahs.gadgets/-color-picker/index.html"><span class="identifier">ColorPicker</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-gadget-data-feed/index.html">GadgetDataFeed</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">GadgetDataFeed</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">DataFeed</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-gadget-data-source/index.html">GadgetDataSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">GadgetDataSource</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-image-source/index.html">ImageSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ImageSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-model-info-data-source/index.html">ModelInfoDataSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ModelInfoDataSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pixel-coords-texture/index.html">PixelCoordsTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PixelCoordsTexture</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-preview-resolution/index.html">PreviewResolution</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PreviewResolution</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-radio-button-strip-provider/index.html">RadioButtonStripProvider</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">RadioButtonStripProvider</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">GadgetDataSource</span><span class="symbol">&lt;</span><a href="../../baaahs.gadgets/-radio-button-strip/index.html"><span class="identifier">RadioButtonStrip</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-resolution/index.html">Resolution</a></h4>
+</td>
+<td>
+<p>Sparkle Motion always uses a resolution of (1, 1), except for previews, which
+use <a href="-preview-resolution/index.html">PreviewResolution</a> instead.</p>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Resolution</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-screen-uv-coord/index.html">ScreenUvCoord</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ScreenUvCoord</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-slider-data-source/index.html">SliderDataSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">SliderDataSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">GadgetDataSource</span><span class="symbol">&lt;</span><a href="../../baaahs.gadgets/-slider/index.html"><span class="identifier">Slider</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-time/index.html">Time</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Time</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-xy-pad/index.html">XyPad</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">XyPad</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">CorePlugin</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="package-name.html">packageName</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">packageName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="title.html">title</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="find-data-source.html">findDataSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findDataSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.CorePlugin$findDataSource(kotlin.String, baaahs.gl.shader.InputPort)/resourceName">resourceName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.CorePlugin$findDataSource(kotlin.String, baaahs.gl.shader.InputPort)/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="suggest-data-sources.html">suggestDataSources</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">suggestDataSources</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.CorePlugin$suggestDataSources(baaahs.gl.shader.InputPort)/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="data-source-builders-by-name.html">dataSourceBuildersByName</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">dataSourceBuildersByName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-data-source-builder/index.html"><span class="identifier">DataSourceBuilder</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="id.html">id</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="supported-content-types.html">supportedContentTypes</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">supportedContentTypes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-data-source-builder/index.html"><span class="identifier">DataSourceBuilder</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -34,7 +34,11 @@ baaahs.client
 baaahs.dmx
 baaahs.gadgets
 baaahs.geom
-baaahs.glshaders
+baaahs.gl
+baaahs.gl.glsl
+baaahs.gl.patch
+baaahs.gl.render
+baaahs.gl.shader
 baaahs.glsl
 baaahs.imaging
 baaahs.io
@@ -44,6 +48,7 @@ baaahs.mapper
 baaahs.model
 baaahs.models
 baaahs.net
+baaahs.plugin
 baaahs.proto
 baaahs.shaders
 baaahs.show

@@ -1,0 +1,164 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>GlContext - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gl</a>&nbsp;/&nbsp;<a href="./index.html">GlContext</a><br/>
+<br/>
+<h1>GlContext</h1>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">GlContext</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-render-buffer/index.html">RenderBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">RenderBuffer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-stats/index.html">Stats</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Stats</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-texture-unit/index.html">TextureUnit</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">TextureUnit</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">GlContext</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext$<init>(com.danielgergely.kgl.Kgl, kotlin.String, kotlin.Boolean)/kgl">kgl</span><span class="symbol">:</span>&nbsp;<span class="identifier">Kgl</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext$<init>(com.danielgergely.kgl.Kgl, kotlin.String, kotlin.Boolean)/glslVersion">glslVersion</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext$<init>(com.danielgergely.kgl.Kgl, kotlin.String, kotlin.Boolean)/checkForErrors">checkForErrors</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="check-for-errors.html">checkForErrors</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">checkForErrors</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="glsl-version.html">glslVersion</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">glslVersion</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stats.html">stats</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">stats</span><span class="symbol">: </span><span class="identifier">Stats</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="check.html">check</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">check</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext$check(kotlin.Function1((com.danielgergely.kgl.Kgl, baaahs.gl.GlContext.check.T)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="identifier">Kgl</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-fragment-shader.html">createFragmentShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createFragmentShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext$createFragmentShader(kotlin.String)/source">source</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.glsl/-compiled-shader/index.html"><span class="identifier">CompiledShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-render-buffer.html">createRenderBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createRenderBuffer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">RenderBuffer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-vertex-shader.html">createVertexShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createVertexShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext$createVertexShader(kotlin.String)/source">source</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.glsl/-compiled-shader/index.html"><span class="identifier">CompiledShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-texture-unit.html">getTextureUnit</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getTextureUnit</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext$getTextureUnit(kotlin.Any)/key">key</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">TextureUnit</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="no-check.html">noCheck</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">noCheck</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext$noCheck(kotlin.Function1((com.danielgergely.kgl.Kgl, baaahs.gl.GlContext.noCheck.T)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="identifier">Kgl</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="release.html">release</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">release</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="run-in-context.html">runInContext</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">runInContext</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext$runInContext(kotlin.Function0((baaahs.gl.GlContext.runInContext.T)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-viewport.html">setViewport</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setViewport</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext$setViewport(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext$setViewport(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext$setViewport(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext$setViewport(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="use-program.html">useProgram</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">useProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext$useProgram(baaahs.gl.glsl.GlslProgram)/glslProgram">glslProgram</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-glsl-program/index.html"><span class="identifier">GlslProgram</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-g-l_-r-g-b32-f.html">GL_RGB32F</a></h4>
+</td>
+<td>
+<code><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">GL_RGB32F</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

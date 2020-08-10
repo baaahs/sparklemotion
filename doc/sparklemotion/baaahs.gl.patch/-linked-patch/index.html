@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>LinkedPatch - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gl.patch</a>&nbsp;/&nbsp;<a href="./index.html">LinkedPatch</a><br/>
+<br/>
+<h1>LinkedPatch</h1>
+<code><span class="keyword">class </span><span class="identifier">LinkedPatch</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-component/index.html">Component</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Component</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-instance-node/index.html">InstanceNode</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">InstanceNode</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">LinkedPatch</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.LinkedPatch$<init>(baaahs.show.live.LiveShaderInstance, baaahs.show.Surfaces)/shaderInstance">shaderInstance</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-live-shader-instance/index.html"><span class="identifier">LiveShaderInstance</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.LinkedPatch$<init>(baaahs.show.live.LiveShaderInstance, baaahs.show.Surfaces)/surfaces">surfaces</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-surfaces/index.html"><span class="identifier">Surfaces</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="shader-instance.html">shaderInstance</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">shaderInstance</span><span class="symbol">: </span><a href="../../baaahs.show.live/-live-shader-instance/index.html"><span class="identifier">LiveShaderInstance</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="surfaces.html">surfaces</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">surfaces</span><span class="symbol">: </span><a href="../../baaahs.show/-surfaces/index.html"><span class="identifier">Surfaces</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="bind.html">bind</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.LinkedPatch$bind(baaahs.gl.glsl.GlslProgram, kotlin.Function2((kotlin.String, baaahs.show.DataSource, baaahs.gl.glsl.GlslProgram.DataFeed)))/glslProgram">glslProgram</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-glsl-program/index.html"><span class="identifier">GlslProgram</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.LinkedPatch$bind(baaahs.gl.glsl.GlslProgram, kotlin.Function2((kotlin.String, baaahs.show.DataSource, baaahs.gl.glsl.GlslProgram.DataFeed)))/resolver">resolver</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-resolver.html"><span class="identifier">Resolver</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Binding</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="compile.html">compile</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">compile</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.LinkedPatch$compile(baaahs.gl.GlContext, kotlin.Function2((kotlin.String, baaahs.show.DataSource, baaahs.gl.glsl.GlslProgram.DataFeed)))/glContext">glContext</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl/-gl-context/index.html"><span class="identifier">GlContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.LinkedPatch$compile(baaahs.gl.GlContext, kotlin.Function2((kotlin.String, baaahs.show.DataSource, baaahs.gl.glsl.GlslProgram.DataFeed)))/resolver">resolver</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-resolver.html"><span class="identifier">Resolver</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.glsl/-glsl-program/index.html"><span class="identifier">GlslProgram</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-program.html">createProgram</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.LinkedPatch$createProgram(baaahs.gl.GlContext, kotlin.collections.Map((kotlin.String, baaahs.gl.glsl.GlslProgram.DataFeed)))/glContext">glContext</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl/-gl-context/index.html"><span class="identifier">GlContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.LinkedPatch$createProgram(baaahs.gl.GlContext, kotlin.collections.Map((kotlin.String, baaahs.gl.glsl.GlslProgram.DataFeed)))/dataFeeds">dataFeeds</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">DataFeed</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.glsl/-glsl-program/index.html"><span class="identifier">GlslProgram</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="matches.html">matches</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">matches</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.LinkedPatch$matches(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="to-full-glsl.html">toFullGlsl</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toFullGlsl</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.LinkedPatch$toFullGlsl(kotlin.String)/glslVersion">glslVersion</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="to-glsl.html">toGlsl</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toGlsl</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

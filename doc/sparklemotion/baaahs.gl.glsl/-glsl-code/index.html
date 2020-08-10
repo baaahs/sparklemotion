@@ -1,0 +1,164 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>GlslCode - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gl.glsl</a>&nbsp;/&nbsp;<a href="./index.html">GlslCode</a><br/>
+<br/>
+<h1>GlslCode</h1>
+<code><span class="keyword">class </span><span class="identifier">GlslCode</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-glsl-function/index.html">GlslFunction</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslFunction</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Statement</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-glsl-other/index.html">GlslOther</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslOther</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Statement</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-glsl-struct/index.html">GlslStruct</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslStruct</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Statement</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-glsl-var/index.html">GlslVar</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslVar</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Statement</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-hint/index.html">Hint</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Hint</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-namespace/index.html">Namespace</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Namespace</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-statement/index.html">Statement</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Statement</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">GlslCode</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode$<init>(kotlin.String, kotlin.collections.List((baaahs.gl.glsl.GlslAnalyzer.GlslStatement)))/src">src</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode$<init>(kotlin.String, kotlin.collections.List((baaahs.gl.glsl.GlslAnalyzer.GlslStatement)))/glslStatements">glslStatements</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">GlslStatement</span><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="functions.html">functions</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">functions</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><span class="identifier">GlslFunction</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="global-vars.html">globalVars</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">globalVars</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><span class="identifier">GlslVar</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="src.html">src</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">src</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="statements.html">statements</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">statements</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Statement</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="structs.html">structs</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">structs</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><span class="identifier">GlslStruct</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="symbol-names.html">symbolNames</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">symbolNames</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uniforms.html">uniforms</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">uniforms</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><span class="identifier">GlslVar</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="find-function.html">findFunction</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findFunction</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode$findFunction(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">GlslFunction</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="find-function-or-null.html">findFunctionOrNull</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findFunctionOrNull</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode$findFunctionOrNull(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">GlslFunction</span><span class="symbol">?</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="replace-code-words.html">replaceCodeWords</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">replaceCodeWords</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Companion$replaceCodeWords(kotlin.String, kotlin.Function1((kotlin.String, )))/originalText">originalText</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Companion$replaceCodeWords(kotlin.String, kotlin.Function1((kotlin.String, )))/replaceFn">replaceFn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

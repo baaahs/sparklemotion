@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>GlContext.TextureUnit - sparklemotion</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.gl</a>&nbsp;/&nbsp;<a href="../index.html">GlContext</a>&nbsp;/&nbsp;<a href="./index.html">TextureUnit</a><br/>
+<br/>
+<h1>TextureUnit</h1>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">TextureUnit</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">TextureUnit</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$<init>(kotlin.Int)/unitNumber">unitNumber</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="bound-texture.html">boundTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">boundTexture</span><span class="symbol">: </span><span class="identifier">Texture</span><span class="symbol">?</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="bind-texture.html">bindTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bindTexture</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$bindTexture(kotlin.Int)/texture">texture</span><span class="symbol">:</span>&nbsp;<span class="identifier">Texture</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="configure.html">configure</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">configure</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$configure(kotlin.Int, kotlin.Int)/minFilter">minFilter</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;GL_LINEAR<span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$configure(kotlin.Int, kotlin.Int)/maxFilter">maxFilter</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;GL_LINEAR<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-uniform.html">setUniform</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setUniform</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$setUniform(baaahs.glsl.Uniform)/uniform">uniform</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.glsl/-uniform/index.html"><span class="identifier">Uniform</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="upload-texture.html">uploadTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uploadTexture</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$uploadTexture(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$uploadTexture(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/internalFormat">internalFormat</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$uploadTexture(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$uploadTexture(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$uploadTexture(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/border">border</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$uploadTexture(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/format">format</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$uploadTexture(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$uploadTexture(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.TextureUnit$uploadTexture(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

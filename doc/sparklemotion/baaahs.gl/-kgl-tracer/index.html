@@ -1,0 +1,507 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>KglTracer - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gl</a>&nbsp;/&nbsp;<a href="./index.html">KglTracer</a><br/>
+<br/>
+<h1>KglTracer</h1>
+<code><span class="keyword">class </span><span class="identifier">KglTracer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Kgl</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">KglTracer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$<init>(com.danielgergely.kgl.Kgl)/kgl">kgl</span><span class="symbol">:</span>&nbsp;<span class="identifier">Kgl</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="active-texture.html">activeTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">activeTexture</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$activeTexture(kotlin.Int)/texture">texture</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="attach-shader.html">attachShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">attachShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$attachShader(kotlin.Int, kotlin.Int)/programId">programId</span><span class="symbol">:</span>&nbsp;<span class="identifier">Program</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$attachShader(kotlin.Int, kotlin.Int)/shaderId">shaderId</span><span class="symbol">:</span>&nbsp;<span class="identifier">Shader</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="bind-attrib-location.html">bindAttribLocation</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bindAttribLocation</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$bindAttribLocation(kotlin.Int, kotlin.Int, kotlin.String)/programId">programId</span><span class="symbol">:</span>&nbsp;<span class="identifier">Program</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$bindAttribLocation(kotlin.Int, kotlin.Int, kotlin.String)/index">index</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$bindAttribLocation(kotlin.Int, kotlin.Int, kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="bind-buffer.html">bindBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bindBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$bindBuffer(kotlin.Int, kotlin.Int)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$bindBuffer(kotlin.Int, kotlin.Int)/bufferId">bufferId</span><span class="symbol">:</span>&nbsp;<span class="identifier">GlBuffer</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="bind-framebuffer.html">bindFramebuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bindFramebuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$bindFramebuffer(kotlin.Int, kotlin.Int)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$bindFramebuffer(kotlin.Int, kotlin.Int)/framebuffer">framebuffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Framebuffer</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="bind-renderbuffer.html">bindRenderbuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bindRenderbuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$bindRenderbuffer(kotlin.Int, kotlin.Int)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$bindRenderbuffer(kotlin.Int, kotlin.Int)/renderbuffer">renderbuffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Renderbuffer</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="bind-texture.html">bindTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bindTexture</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$bindTexture(kotlin.Int, kotlin.Int)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$bindTexture(kotlin.Int, kotlin.Int)/texture">texture</span><span class="symbol">:</span>&nbsp;<span class="identifier">Texture</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="bind-vertex-array.html">bindVertexArray</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bindVertexArray</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$bindVertexArray(kotlin.Int)/vertexArrayObject">vertexArrayObject</span><span class="symbol">:</span>&nbsp;<span class="identifier">VertexArrayObject</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="blend-func.html">blendFunc</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">blendFunc</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$blendFunc(kotlin.Int, kotlin.Int)/sFactor">sFactor</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$blendFunc(kotlin.Int, kotlin.Int)/dFactor">dFactor</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="buffer-data.html">bufferData</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bufferData</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$bufferData(kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int, kotlin.Int, kotlin.Int)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$bufferData(kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int, kotlin.Int, kotlin.Int)/sourceData">sourceData</span><span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$bufferData(kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int, kotlin.Int, kotlin.Int)/size">size</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$bufferData(kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int, kotlin.Int, kotlin.Int)/usage">usage</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$bufferData(kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int, kotlin.Int, kotlin.Int)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="check-framebuffer-status.html">checkFramebufferStatus</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">checkFramebufferStatus</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$checkFramebufferStatus(kotlin.Int)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clear.html">clear</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">clear</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$clear(kotlin.Int)/mask">mask</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clear-color.html">clearColor</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">clearColor</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$clearColor(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/r">r</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$clearColor(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/g">g</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$clearColor(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/b">b</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$clearColor(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/a">a</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="compile-shader.html">compileShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">compileShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$compileShader(kotlin.Int)/shaderId">shaderId</span><span class="symbol">:</span>&nbsp;<span class="identifier">Shader</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-buffer.html">createBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createBuffer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">GlBuffer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-buffers.html">createBuffers</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createBuffers</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$createBuffers(kotlin.Int)/count">count</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><span class="identifier">GlBuffer</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-framebuffer.html">createFramebuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createFramebuffer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Framebuffer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-program.html">createProgram</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createProgram</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Program</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-renderbuffer.html">createRenderbuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createRenderbuffer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Renderbuffer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-shader.html">createShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$createShader(kotlin.Int)/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Shader</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-texture.html">createTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createTexture</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Texture</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-textures.html">createTextures</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createTextures</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$createTextures(kotlin.Int)/n">n</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><span class="identifier">Texture</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-vertex-array.html">createVertexArray</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createVertexArray</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">VertexArrayObject</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="cull-face.html">cullFace</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">cullFace</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$cullFace(kotlin.Int)/mode">mode</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="delete-buffer.html">deleteBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">deleteBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$deleteBuffer(kotlin.Int)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">GlBuffer</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="delete-framebuffer.html">deleteFramebuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">deleteFramebuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$deleteFramebuffer(kotlin.Int)/framebuffer">framebuffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Framebuffer</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="delete-renderbuffer.html">deleteRenderbuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">deleteRenderbuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$deleteRenderbuffer(kotlin.Int)/renderbuffer">renderbuffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Renderbuffer</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="delete-shader.html">deleteShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">deleteShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$deleteShader(kotlin.Int)/shaderId">shaderId</span><span class="symbol">:</span>&nbsp;<span class="identifier">Shader</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="delete-texture.html">deleteTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">deleteTexture</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$deleteTexture(kotlin.Int)/texture">texture</span><span class="symbol">:</span>&nbsp;<span class="identifier">Texture</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="delete-vertex-array.html">deleteVertexArray</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">deleteVertexArray</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$deleteVertexArray(kotlin.Int)/vertexArrayObject">vertexArrayObject</span><span class="symbol">:</span>&nbsp;<span class="identifier">VertexArrayObject</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="disable.html">disable</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">disable</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$disable(kotlin.Int)/cap">cap</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="disable-vertex-attrib-array.html">disableVertexAttribArray</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">disableVertexAttribArray</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$disableVertexAttribArray(kotlin.Int)/location">location</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="draw-arrays.html">drawArrays</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">drawArrays</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$drawArrays(kotlin.Int, kotlin.Int, kotlin.Int)/mode">mode</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$drawArrays(kotlin.Int, kotlin.Int, kotlin.Int)/first">first</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$drawArrays(kotlin.Int, kotlin.Int, kotlin.Int)/count">count</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="enable.html">enable</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">enable</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$enable(kotlin.Int)/cap">cap</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="enable-vertex-attrib-array.html">enableVertexAttribArray</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">enableVertexAttribArray</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$enableVertexAttribArray(kotlin.Int)/location">location</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="finish.html">finish</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">finish</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="framebuffer-renderbuffer.html">framebufferRenderbuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">framebufferRenderbuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$framebufferRenderbuffer(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$framebufferRenderbuffer(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/attachment">attachment</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$framebufferRenderbuffer(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/renderbuffertarget">renderbuffertarget</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$framebufferRenderbuffer(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/renderbuffer">renderbuffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Renderbuffer</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="framebuffer-texture2-d.html">framebufferTexture2D</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">framebufferTexture2D</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$framebufferTexture2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$framebufferTexture2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/attachment">attachment</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$framebufferTexture2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/textarget">textarget</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$framebufferTexture2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/texture">texture</span><span class="symbol">:</span>&nbsp;<span class="identifier">Texture</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$framebufferTexture2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="generate-mipmap.html">generateMipmap</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">generateMipmap</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$generateMipmap(kotlin.Int)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-attrib-location.html">getAttribLocation</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getAttribLocation</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$getAttribLocation(kotlin.Int, kotlin.String)/programId">programId</span><span class="symbol">:</span>&nbsp;<span class="identifier">Program</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$getAttribLocation(kotlin.Int, kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-error.html">getError</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getError</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-program-info-log.html">getProgramInfoLog</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getProgramInfoLog</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$getProgramInfoLog(kotlin.Int)/program">program</span><span class="symbol">:</span>&nbsp;<span class="identifier">Program</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-program-parameter.html">getProgramParameter</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getProgramParameter</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$getProgramParameter(kotlin.Int, kotlin.Int)/program">program</span><span class="symbol">:</span>&nbsp;<span class="identifier">Program</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$getProgramParameter(kotlin.Int, kotlin.Int)/pname">pname</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-shader-info-log.html">getShaderInfoLog</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getShaderInfoLog</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$getShaderInfoLog(kotlin.Int)/shaderId">shaderId</span><span class="symbol">:</span>&nbsp;<span class="identifier">Shader</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-shader-parameter.html">getShaderParameter</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getShaderParameter</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$getShaderParameter(kotlin.Int, kotlin.Int)/shader">shader</span><span class="symbol">:</span>&nbsp;<span class="identifier">Shader</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$getShaderParameter(kotlin.Int, kotlin.Int)/pname">pname</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-uniform-location.html">getUniformLocation</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getUniformLocation</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$getUniformLocation(kotlin.Int, kotlin.String)/programId">programId</span><span class="symbol">:</span>&nbsp;<span class="identifier">Program</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$getUniformLocation(kotlin.Int, kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">UniformLocation</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-framebuffer.html">isFramebuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">isFramebuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$isFramebuffer(kotlin.Int)/framebuffer">framebuffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Framebuffer</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-renderbuffer.html">isRenderbuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">isRenderbuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$isRenderbuffer(kotlin.Int)/renderbuffer">renderbuffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Renderbuffer</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="link-program.html">linkProgram</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">linkProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$linkProgram(kotlin.Int)/programId">programId</span><span class="symbol">:</span>&nbsp;<span class="identifier">Program</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="read-pixels.html">readPixels</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">readPixels</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/format">format</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="renderbuffer-storage.html">renderbufferStorage</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">renderbufferStorage</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$renderbufferStorage(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$renderbufferStorage(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/internalformat">internalformat</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$renderbufferStorage(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$renderbufferStorage(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shader-source.html">shaderSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">shaderSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$shaderSource(kotlin.Int, kotlin.String)/shaderId">shaderId</span><span class="symbol">:</span>&nbsp;<span class="identifier">Shader</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$shaderSource(kotlin.Int, kotlin.String)/source">source</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="tex-image2-d.html">texImage2D</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">texImage2D</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.TextureResource)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.TextureResource)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.TextureResource)/internalFormat">internalFormat</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.TextureResource)/border">border</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.TextureResource)/resource">resource</span><span class="symbol">:</span>&nbsp;<span class="identifier">TextureResource</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">texImage2D</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/internalFormat">internalFormat</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/border">border</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/format">format</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texImage2D(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="tex-parameteri.html">texParameteri</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">texParameteri</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$texParameteri(kotlin.Int, kotlin.Int, kotlin.Int)/target">target</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texParameteri(kotlin.Int, kotlin.Int, kotlin.Int)/pname">pname</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$texParameteri(kotlin.Int, kotlin.Int, kotlin.Int)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uniform1f.html">uniform1f</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uniform1f</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$uniform1f(kotlin.Int, kotlin.Float)/location">location</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformLocation</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform1f(kotlin.Int, kotlin.Float)/f">f</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uniform1i.html">uniform1i</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uniform1i</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$uniform1i(kotlin.Int, kotlin.Int)/location">location</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformLocation</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform1i(kotlin.Int, kotlin.Int)/i">i</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uniform2f.html">uniform2f</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uniform2f</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$uniform2f(kotlin.Int, kotlin.Float, kotlin.Float)/location">location</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformLocation</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform2f(kotlin.Int, kotlin.Float, kotlin.Float)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform2f(kotlin.Int, kotlin.Float, kotlin.Float)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uniform2i.html">uniform2i</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uniform2i</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$uniform2i(kotlin.Int, kotlin.Int, kotlin.Int)/location">location</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformLocation</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform2i(kotlin.Int, kotlin.Int, kotlin.Int)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform2i(kotlin.Int, kotlin.Int, kotlin.Int)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uniform3f.html">uniform3f</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uniform3f</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$uniform3f(kotlin.Int, kotlin.Float, kotlin.Float, kotlin.Float)/location">location</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformLocation</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform3f(kotlin.Int, kotlin.Float, kotlin.Float, kotlin.Float)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform3f(kotlin.Int, kotlin.Float, kotlin.Float, kotlin.Float)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform3f(kotlin.Int, kotlin.Float, kotlin.Float, kotlin.Float)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uniform3fv.html">uniform3fv</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uniform3fv</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$uniform3fv(kotlin.Int, kotlin.FloatArray)/location">location</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformLocation</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform3fv(kotlin.Int, kotlin.FloatArray)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float-array/index.html"><span class="identifier">FloatArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uniform3i.html">uniform3i</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uniform3i</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$uniform3i(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/location">location</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformLocation</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform3i(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform3i(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform3i(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uniform4f.html">uniform4f</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uniform4f</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$uniform4f(kotlin.Int, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/location">location</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformLocation</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform4f(kotlin.Int, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform4f(kotlin.Int, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform4f(kotlin.Int, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform4f(kotlin.Int, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/w">w</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uniform4i.html">uniform4i</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uniform4i</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$uniform4i(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/location">location</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformLocation</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform4i(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform4i(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform4i(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniform4i(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/w">w</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uniform-matrix3fv.html">uniformMatrix3fv</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uniformMatrix3fv</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$uniformMatrix3fv(kotlin.Int, kotlin.Boolean, kotlin.FloatArray)/location">location</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformLocation</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniformMatrix3fv(kotlin.Int, kotlin.Boolean, kotlin.FloatArray)/transpose">transpose</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniformMatrix3fv(kotlin.Int, kotlin.Boolean, kotlin.FloatArray)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float-array/index.html"><span class="identifier">FloatArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uniform-matrix4fv.html">uniformMatrix4fv</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uniformMatrix4fv</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$uniformMatrix4fv(kotlin.Int, kotlin.Boolean, kotlin.FloatArray)/location">location</span><span class="symbol">:</span>&nbsp;<span class="identifier">UniformLocation</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniformMatrix4fv(kotlin.Int, kotlin.Boolean, kotlin.FloatArray)/transpose">transpose</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$uniformMatrix4fv(kotlin.Int, kotlin.Boolean, kotlin.FloatArray)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float-array/index.html"><span class="identifier">FloatArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="use-program.html">useProgram</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">useProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$useProgram(kotlin.Int)/programId">programId</span><span class="symbol">:</span>&nbsp;<span class="identifier">Program</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="vertex-attrib-pointer.html">vertexAttribPointer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">vertexAttribPointer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$vertexAttribPointer(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Boolean, kotlin.Int, kotlin.Int)/location">location</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$vertexAttribPointer(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Boolean, kotlin.Int, kotlin.Int)/size">size</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$vertexAttribPointer(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Boolean, kotlin.Int, kotlin.Int)/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$vertexAttribPointer(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Boolean, kotlin.Int, kotlin.Int)/normalized">normalized</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$vertexAttribPointer(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Boolean, kotlin.Int, kotlin.Int)/stride">stride</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$vertexAttribPointer(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Boolean, kotlin.Int, kotlin.Int)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="viewport.html">viewport</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">viewport</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.KglTracer$viewport(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$viewport(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$viewport(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.KglTracer$viewport(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
