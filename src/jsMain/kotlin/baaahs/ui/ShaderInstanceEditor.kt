@@ -14,7 +14,6 @@ import materialui.components.formhelpertext.formHelperText
 import materialui.components.menuitem.menuItem
 import materialui.components.select.select
 import materialui.components.textfield.textField
-import materialui.components.typography.typographyH6
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
@@ -23,19 +22,15 @@ import styled.styledDiv
 val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstanceEditor") { props ->
     val appContext = useContext(appContext)
 
-    val selectedPatch = props.mutablePatch
-    val shaderInstance = props.mutableShaderInstance
-
+    logger.info { "Rendering for ${props.mutableShaderInstance.mutableShader.title}..." }
     val handleUpdate =
-        handler("handleShaderUpdate", shaderInstance) { block: MutableShaderInstance.() -> Unit ->
-            shaderInstance.block()
+        handler("handleShaderUpdate", props.mutableShaderInstance) { block: MutableShaderInstance.() -> Unit ->
+            props.mutableShaderInstance.block()
             forceRender()
         }
 
-    val editingShader = ref<EditingShader> { nuffin() }
-    onChange("shaderInstance", props.mutableShaderInstance) {
-        val newEditingShader = EditingShader(shaderInstance, appContext.autoWirer)
-        editingShader.current = newEditingShader
+    val editingShader = memo(props.mutableShaderInstance) {
+        val newEditingShader = EditingShader(props.mutableShaderInstance, appContext.autoWirer)
 
         val observer = newEditingShader.addObserver {
             if (it.state == EditingShader.State.Success) {
@@ -54,7 +49,12 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
             forceRender()
         }
         withCleanup { observer.remove() }
+
+        newEditingShader
     }
+
+    val selectedPatch = props.mutablePatch
+    val shaderInstance = props.mutableShaderInstance
 
     styledDiv {
         css.display = Display.grid
@@ -73,17 +73,15 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
         div {
             shaderPreview {
-                attrs.previewShaderBuilder = editingShader.current.previewShaderBuilder
+                attrs.previewShaderBuilder = editingShader.previewShaderBuilder
                 attrs.width = 250.px
                 attrs.height = 250.px
             }
         }
 
         div {
-            typographyH6 { +"Meta and gadgets and stuff!" }
-
             gadgetsPreview {
-                attrs.editingShader = editingShader.current
+                attrs.editingShader = editingShader
             }
 
             div(+Styles.shaderMeta) {
@@ -141,8 +139,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
     }
 
     shaderEditor {
-        attrs.editingShader = editingShader.current
-        attrs.shaderChannels = props.shaderChannels
+        attrs.editingShader = editingShader
     }
 }
 

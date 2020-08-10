@@ -389,18 +389,22 @@ class MutablePatch {
         return this
     }
 
-    fun addShaderInstance(shader: Shader, block: MutableShaderInstance.() -> Unit): MutablePatch {
+    fun addShaderInstance(shader: Shader, block: MutableShaderInstance.() -> Unit): MutableShaderInstance {
         val mutableShaderInstance = MutableShaderInstance(
             MutableShader(shader), hashMapOf(), null, 0f
         )
         mutableShaderInstance.block()
         mutableShaderInstances.add(mutableShaderInstance)
-        return this
+        return mutableShaderInstance
     }
 
     fun findShaderInstanceFor(shader: Shader): MutableShaderInstance {
         return mutableShaderInstances.find { it.mutableShader.build() == shader }
             ?: error("No shader instance for ${shader.title}.")
+    }
+
+    fun remove(mutableShaderInstance: MutableShaderInstance) {
+        mutableShaderInstances.remove(mutableShaderInstance)
     }
 }
 
