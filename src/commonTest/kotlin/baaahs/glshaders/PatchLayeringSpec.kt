@@ -23,7 +23,7 @@ object PatchLayeringSpec : Spek({
             return autoWirer.autoWire(*shaders).acceptSymbolicChannelLinks().resolve()
         }
 
-        val uvShader = Shaders.cylindricalUvMapper.shader
+        val uvShader = Shaders.cylindricalProjection
         val blackShader by value {
             Shader("Black Shader", ShaderType.Paint,
                 "void main() {\n  gl_FragColor = vec4(0.);\n}")
@@ -34,11 +34,11 @@ object PatchLayeringSpec : Spek({
         }
         val brightnessFilter by value {
             Shader("Brightness Filter", ShaderType.Filter,
-                "uniform float brightness; // @@Slider min=0 max=1 default=1\nvec4 filterImage(vec4 colorIn) {\n  return colorIn * brightness;\n}")
+                "uniform float brightness; // @@Slider min=0 max=1 default=1\nvec4 mainFilter(vec4 colorIn) {\n  return colorIn * brightness;\n}")
         }
         val saturationFilter by value {
             Shader("Saturation Filter", ShaderType.Filter,
-                "vec4 filterImage(vec4 colorIn) { return colorIn; }")
+                "vec4 mainFilter(vec4 colorIn) { return colorIn; }")
         }
         val mutableShow by value { MutableShow("test show") }
         val show by value {
@@ -88,7 +88,7 @@ object PatchLayeringSpec : Spek({
                         // Shader: Cylindrical Projection; namespace: p0
                         // Cylindrical Projection
 
-                        vec2 p0i_result;
+                        vec2 p0i_result = vec2(0.);
 
                         #line 12
                         const float p0_PI = 3.141592654;
@@ -105,7 +105,7 @@ object PatchLayeringSpec : Spek({
                         }
 
                         #line 24
-                        vec2 p0_mainUvFromRaster(vec2 rasterCoord) {
+                        vec2 p0_mainProjection(vec2 rasterCoord) {
                             int rasterX = int(rasterCoord.x);
                             int rasterY = int(rasterCoord.y);
                             
@@ -116,7 +116,7 @@ object PatchLayeringSpec : Spek({
                         // Shader: Orange Shader; namespace: p1
                         // Orange Shader
 
-                        vec4 p1_gl_FragColor;
+                        vec4 p1_gl_FragColor = vec4(0., 0., 0., 1.);
 
                         #line 1
                         void p1_main() {
@@ -126,19 +126,19 @@ object PatchLayeringSpec : Spek({
                         // Shader: Brightness Filter; namespace: p2
                         // Brightness Filter
 
-                        vec4 p2i_result;
+                        vec4 p2i_result = vec4(0., 0., 0., 1.);
                         
                         #line 1
-                         vec4 p2_filterImage(vec4 colorIn) {
+                         vec4 p2_mainFilter(vec4 colorIn) {
                           return colorIn * in_brightnessSlider;
                         }
                         
                         
                         #line -1
                         void main() {
-                          p0i_result = p0_mainUvFromRaster(gl_FragCoord.xy); // Cylindrical Projection
+                          p0i_result = p0_mainProjection(gl_FragCoord.xy); // Cylindrical Projection
                           p1_main(); // Orange Shader
-                          p2i_result = p2_filterImage(p1_gl_FragColor); // Brightness Filter
+                          p2i_result = p2_mainFilter(p1_gl_FragColor); // Brightness Filter
                           sm_result = p2i_result;
                         }
                         

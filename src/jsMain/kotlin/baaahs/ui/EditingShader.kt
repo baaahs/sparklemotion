@@ -112,19 +112,30 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
     }
 
     fun link() {
+        val screenCoordsProjection by lazy {
+            Shader(
+                "Screen Coords", ShaderType.Projection, """
+            uniform vec2 previewResolution;
+            
+            vec2 mainProjection(vec2 fragCoords) {
+              return fragCoords / previewResolution;
+            }
+        """.trimIndent()
+            )
+        }
         val shaders: Array<Shader> = when (shader.type) {
             ShaderType.Projection -> arrayOf(shader, Shaders.smpteColorBars)
-            ShaderType.Distortion -> arrayOf(shader, Shaders.smpteColorBars)
-            ShaderType.Paint -> arrayOf(shader)
-            ShaderType.Filter -> arrayOf(shader, Shaders.smpteColorBars)
+            ShaderType.Distortion -> arrayOf(screenCoordsProjection, shader, Shaders.smpteColorBars)
+            ShaderType.Paint -> arrayOf(screenCoordsProjection, shader)
+            ShaderType.Filter -> arrayOf(screenCoordsProjection, shader, Shaders.smpteColorBars)
         }
 
         try {
-            val overrides = mapOf(ContentType.UvCoordinate to MutableConstPort("gl_FragCoord"))
-            previewPatch = autoWirer.autoWire(*shaders, overrides = overrides)
+            val defaultPorts = mapOf(ContentType.UvCoordinate to MutableConstPort("gl_FragCoord"))
+            previewPatch = autoWirer.autoWire(*shaders, defaultPorts = defaultPorts)
                 .acceptSymbolicChannelLinks()
                 .resolve()
-            linkedPatch = previewPatch?.openForPreview(autoWirer, shader.type)
+            linkedPatch = previewPatch?.openForPreview(autoWirer)
             state = State.Linked
         } catch (e: GlslException) {
             glslErrors = e.errors

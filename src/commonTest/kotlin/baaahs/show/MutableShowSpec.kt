@@ -5,7 +5,7 @@ import baaahs.glshaders.AutoWirer
 import baaahs.glshaders.Plugins
 import baaahs.glshaders.ShaderFactory
 import baaahs.glshaders.override
-import baaahs.glsl.Shaders.cylindricalUvMapper
+import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import org.spekframework.spek2.Spek
@@ -215,7 +215,7 @@ object MutableShowSpec : Spek({
 })
 
 private fun AutoWirer.testPatch(title: String) =
-    autoWire(cylindricalUvMapper, ShaderFactory.paintShader(title))
+    autoWire(cylindricalProjection, ShaderFactory.paintShader(title))
         .acceptSymbolicChannelLinks()
         .resolve()
 

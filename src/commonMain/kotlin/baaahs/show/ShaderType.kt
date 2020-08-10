@@ -1,14 +1,12 @@
 package baaahs.show
 
-import baaahs.glshaders.ContentType
-import baaahs.glshaders.GlslCode
+import baaahs.glshaders.*
 import baaahs.show.mutable.MutableShader
 
 enum class ShaderType(
     val priority: Int,
     val defaultUpstreams: Map<ContentType, ShaderChannel>,
     val resultContentType: ContentType,
-    /**language=glsl*/
     val template: String
 ) {
     Projection(0, emptyMap(), ContentType.UvCoordinate, """
@@ -26,7 +24,7 @@ enum class ShaderType(
                 return rel.xy;
             }
             
-            vec2 mainUvFromRaster(vec2 rasterCoord) {
+            vec2 mainProjection(vec2 rasterCoord) {
                 int rasterX = int(rasterCoord.x);
                 int rasterY = int(rasterCoord.y);
                 
@@ -34,17 +32,21 @@ enum class ShaderType(
                 return project(pixelCoord);
             }
     """.trimIndent()) {
-        override fun matches(glslCode: GlslCode): Boolean {
-            return glslCode.functionNames.contains("mainUvFromRaster")
-        }
+        override fun matches(glslCode: GlslCode) =
+            glslCode.functionNames.contains("mainProjection")
+
+        override fun open(shader: Shader, glslCode: GlslCode) =
+            ProjectionShader(shader, glslCode)
     },
 
     Distortion(1, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.UvCoordinate, """
         // ... TODO
     """.trimIndent()) {
-        override fun matches(glslCode: GlslCode): Boolean {
-            return false // TODO
-        }
+        override fun matches(glslCode: GlslCode) =
+            glslCode.functionNames.contains("mainDistortion")
+
+        override fun open(shader: Shader, glslCode: GlslCode) =
+            DistortionShader(shader, glslCode)
     },
 
     Paint(0, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.Color, """
@@ -60,19 +62,32 @@ enum class ShaderType(
             return glslCode.functionNames.contains("main") ||
                     glslCode.functionNames.contains("mainImage")
         }
+
+        override fun open(shader: Shader, glslCode: GlslCode): PaintShader {
+            if (glslCode.functionNames.contains("main")) {
+                return GenericPaintShader(shader, glslCode)
+            } else if (glslCode.functionNames.contains("mainImage")) {
+                return ShaderToyPaintShader(shader, glslCode)
+            } else
+                error("Can't identify paint shader type.")
+        }
     },
 
     Filter(1, mapOf(ContentType.Color to ShaderChannel.Main), ContentType.Color, """
-        vec4 filterImage(vec4 inColor) {
+        vec4 mainFilter(vec4 inColor) {
             return inColor;
         }
     """.trimIndent()) {
         override fun matches(glslCode: GlslCode): Boolean {
-            return glslCode.functionNames.contains("filterImage")
+            return glslCode.functionNames.contains("mainFilter")
         }
+
+        override fun open(shader: Shader, glslCode: GlslCode) =
+            FilterShader(shader, glslCode)
     };
 
     abstract fun matches(glslCode: GlslCode): Boolean
+    abstract fun open(shader: Shader, glslCode: GlslCode): OpenShader
 
     fun shaderFromTemplate(): MutableShader {
         return MutableShader("Untitled ${name} Shader", this, template)

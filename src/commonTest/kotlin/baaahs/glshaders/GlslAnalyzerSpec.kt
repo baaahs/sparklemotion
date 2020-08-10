@@ -304,10 +304,10 @@ object GlslAnalyzerSpec : Spek({
                 }
 
                 context("with U/V translation shader") {
-                    override(shaderText) { Shaders.cylindricalUvMapper.src }
+                    override(shaderText) { Shaders.cylindricalProjection.src }
 
                     it("identifies mainImage() as the entry point") {
-                        expect("mainUvFromRaster") { shader.entryPoint.name }
+                        expect("mainProjection") { shader.entryPoint.name }
                     }
 
                     it("creates inputs for implicit uniforms") {

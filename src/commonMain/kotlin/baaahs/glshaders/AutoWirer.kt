@@ -1,7 +1,10 @@
 package baaahs.glshaders
 
 import baaahs.Logger
-import baaahs.show.*
+import baaahs.show.PortRef
+import baaahs.show.Shader
+import baaahs.show.ShaderChannel
+import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.OpenPatchHolder
@@ -15,27 +18,31 @@ class AutoWirer(
     fun autoWire(
         vararg shaders: Shader,
         focus: Shader? = null,
-        overrides: Map<ContentType, MutableLink.Port> = emptyMap()
+        defaultPorts: Map<ContentType, MutableLink.Port> = emptyMap()
     ): UnresolvedPatch {
         val openShaders = shaders.associate { it to glslAnalyzer.openShader(it) }
-        return autoWire(openShaders.values, focus?.let { openShaders[it] }, overrides = overrides)
+        return autoWire(openShaders.values, focus?.let { openShaders[it] }, defaultPorts = defaultPorts)
     }
 
     fun autoWire(
         vararg shaders: OpenShader,
         focus: OpenShader? = null,
-        overrides: Map<ContentType, MutableLink.Port> = emptyMap()
+        defaultPorts: Map<ContentType, MutableLink.Port> = emptyMap()
     ): UnresolvedPatch {
-        return autoWire(shaders.toList(), focus, overrides = overrides)
+        return autoWire(shaders.toList(), focus, defaultPorts = defaultPorts)
     }
 
     fun autoWire(
         shaders: Collection<OpenShader>,
         focus: OpenShader? = null,
         shaderChannel: ShaderChannel = ShaderChannel.Main,
-        overrides: Map<ContentType, MutableLink.Port> = emptyMap()
+        defaultPorts: Map<ContentType, MutableLink.Port> = emptyMap()
     ): UnresolvedPatch {
         val locallyAvailable: MutableMap<ContentType, MutableSet<MutableLink.Port>> = mutableMapOf()
+
+        defaultPorts.forEach { (contentType, port) ->
+            locallyAvailable[contentType] = hashSetOf(port)
+        }
 
         // First pass: gather shader output ports.
         val shaderInstances = shaders.associate { openShader ->
@@ -57,30 +64,21 @@ class AutoWirer(
             openShader to unresolvedShaderInstance
         }
 
-        overrides.forEach { (contentType, port) ->
-            locallyAvailable[contentType] = hashSetOf(port)
-        }
-
         // Second pass: link datasources/output ports to input ports.
-        val shaderInstancesOfInterest = if (focus == null) {
-            shaderInstances
-        } else {
-            mapOf(focus to (shaderInstances[focus] ?: error("missing shader editor?")))
-        }
-
-        val dataSources = hashSetOf<DataSource>()
-        val unresolvedShaderInstances = shaderInstancesOfInterest.map { (openShader, unresolvedShaderInstance) ->
+        val unresolvedShaderInstances = shaderInstances.map { (openShader, unresolvedShaderInstance) ->
             openShader.inputPorts.forEach { inputPort ->
                 val localSuggestions: Set<MutableLink.Port>? = locallyAvailable[inputPort.contentType]
-                val suggestions = localSuggestions ?: plugins.suggestDataSources(inputPort).map {
-                    dataSources.add(it)
-                    MutableDataSource(it)
-                }
-                unresolvedShaderInstance.incomingLinksOptions[inputPort.id]!!.addAll(suggestions)
+                val suggestions = localSuggestions
+                    ?: plugins.suggestDataSources(inputPort).map { MutableDataSource(it) }
+                val portLinkOptions = unresolvedShaderInstance.incomingLinksOptions[inputPort.id]
+                portLinkOptions!!.addAll(suggestions.filter {
+                    // Don't suggest linking back to ourself.
+                    !(it is UnresolvedShaderOutPort && it.unresolvedShaderInstance === unresolvedShaderInstance)
+                })
             }
             unresolvedShaderInstance
         }
-        return UnresolvedPatch(unresolvedShaderInstances, dataSources.toList())
+        return UnresolvedPatch(unresolvedShaderInstances)
     }
 
     data class UnresolvedShaderOutPort(
@@ -241,10 +239,7 @@ class AutoWirer(
         }
     }
 
-    data class UnresolvedPatch(
-        private val unresolvedShaderInstances: List<UnresolvedShaderInstance>,
-        private val dataSources: List<DataSource>
-    ) {
+    data class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShaderInstance>) {
         fun isAmbiguous() = unresolvedShaderInstances.any { it.isAmbiguous() }
 
         fun resolve(): MutablePatch {

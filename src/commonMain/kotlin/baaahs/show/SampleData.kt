@@ -40,8 +40,7 @@ object SampleData {
     private val plugins = Plugins.findAll()
     private val autoWirer = AutoWirer(plugins)
 
-    private val uvShader = autoWirer.autoWire(Shaders.cylindricalUvMapper)
-        .acceptSymbolicChannelLinks().resolve()
+    private val uvShader = wireUp(Shaders.cylindricalProjection)
 
     private val showDefaultPaint = autoWirer.autoWire(Shader(
         "Darkness",
@@ -62,7 +61,7 @@ object SampleData {
         """
             uniform float brightness; // @@Slider min=0 max=1.25 default=1
 
-            vec4 filterImage(vec4 inColor) {
+            vec4 mainFilter(vec4 inColor) {
                 vec4 clampedColor = clamp(inColor, 0., 1.);
                 return vec4(clampedColor.rgb * brightness, clampedColor.a);
             }
@@ -98,7 +97,7 @@ object SampleData {
                 return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
             }
             
-            vec4 filterImage(vec4 inColor) {
+            vec4 mainFilter(vec4 inColor) {
                 if (saturation == 1.) return inColor;
 
                 vec4 clampedColor = clamp(inColor, 0., 1.);
@@ -191,4 +190,7 @@ object SampleData {
         addControl("More Controls", brightnessControl)
         addControl("More Controls", saturationControl)
     }.getShow()
+
+    private fun wireUp(shader: Shader) =
+        autoWirer.autoWire(shader).acceptSymbolicChannelLinks().resolve()
 }

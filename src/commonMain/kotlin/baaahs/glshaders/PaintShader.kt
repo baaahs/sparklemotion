@@ -55,8 +55,7 @@ class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(sha
         val uvCoordPort = InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinate)
     }
 
-    override val entryPoint: GlslCode.GlslFunction =
-        glslCode.functions.find { it.name == "mainImage" }!!
+    override val entryPointName: String get() = "mainImage"
 
     override val inputPorts: List<InputPort> by lazy {
         // ShaderToy shaders have a set of uniforms that are automatically declared;
@@ -77,7 +76,7 @@ class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(sha
     }
 
     override val outputPort: OutputPort =
-        OutputPort("vec4", ShaderOutPortRef.ReturnValue, "Output Color", ContentType.Color)
+        OutputPort(GlslType.Vec4, ShaderOutPortRef.ReturnValue, "Output Color", ContentType.Color)
 
     override fun invocationGlsl(
         namespace: GlslCode.Namespace,
@@ -102,8 +101,7 @@ class GenericPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(shade
         val uvCoordPort = InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinate)
     }
 
-    override val entryPoint: GlslCode.GlslFunction =
-        glslCode.functions.find { it.name == "main" }!!
+    override val entryPointName: String get() = "main"
 
     override val inputPorts: List<InputPort> by lazy {
         glslCode.uniforms.map {
@@ -115,7 +113,7 @@ class GenericPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(shade
 //    it.hint?.plugin ?: contentType.pluginId, it.hint?.map ?: emptyMap()
 
     override val outputPort: OutputPort =
-        OutputPort("vec4", "gl_FragColor", "Output Color", ContentType.Color)
+        OutputPort(GlslType.Vec4, "gl_FragColor", "Output Color", ContentType.Color)
 
     override fun invocationGlsl(
         namespace: GlslCode.Namespace,
