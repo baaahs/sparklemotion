@@ -1,10 +1,14 @@
 package baaahs.ui
 
 import baaahs.app.ui.appContext
+import baaahs.englishize
 import baaahs.gl.shader.InputPort
 import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.*
+import materialui.Icon
+import materialui.Input
+import materialui.PowerInput
 import materialui.components.table.table
 import materialui.components.tablebody.tableBody
 import materialui.components.tablecell.tdCell
@@ -28,7 +32,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     val shaderOptions =
         props.siblingMutableShaderInstances
             .minus(props.mutableShaderInstance)
-            .sortedBy { it.mutableShader.title }
+            .sortedWith(MutableShaderInstance.defaultOrder)
             .map { instance -> ShaderOption(instance) }
 
     val dataSourceOptions =
@@ -98,17 +102,19 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
 interface SourcePortOption {
     val title: String
     val portEditor: MutablePort
-    val groupName: String
-    fun matches(otherPort: MutablePort): Boolean
+    val groupName: String?
+    val icon: Icon
+    fun matches(otherPort: MutablePort?): Boolean
     fun isAppropriateFor(inputPort: InputPort): Boolean
 }
 
 data class DataSourceOption(val dataSource: DataSource) : SourcePortOption {
     override val title: String get() = dataSource.dataSourceName
     override val portEditor: MutablePort get() = MutableDataSource(dataSource)
-    override val groupName: String get() = "Data Sources"
+    override val groupName: String? get() = "Data Source:"
+    override val icon: Icon get() = Input
 
-    override fun matches(otherPort: MutablePort): Boolean {
+    override fun matches(otherPort: MutablePort?): Boolean {
         return otherPort is MutableDataSource && otherPort.dataSource == dataSource
     }
 
@@ -118,11 +124,12 @@ data class DataSourceOption(val dataSource: DataSource) : SourcePortOption {
 }
 
 data class ShaderChannelOption(val shaderChannel: ShaderChannel) : SourcePortOption {
-    override val title: String get() = "${shaderChannel.id} shader channel"
+    override val title: String get() = shaderChannel.id.englishize()
     override val portEditor: MutablePort get() = MutableShaderChannel(shaderChannel)
-    override val groupName: String get() = "Shader Channels"
+    override val groupName: String? get() = "Channel:"
+    override val icon: Icon get() = PowerInput
 
-    override fun matches(otherPort: MutablePort): Boolean {
+    override fun matches(otherPort: MutablePort?): Boolean {
         return otherPort is MutableShaderChannel && otherPort.shaderChannel == shaderChannel
     }
 
@@ -132,17 +139,19 @@ data class ShaderChannelOption(val shaderChannel: ShaderChannel) : SourcePortOpt
 }
 
 data class ShaderOption(val mutableShaderInstance: MutableShaderInstance) : SourcePortOption {
-    override val title: String get() = "${mutableShaderInstance.mutableShader.title} output"
+    override val title: String get() = mutableShaderInstance.mutableShader.title
     override val portEditor: MutablePort get() = MutableShaderOutPort(mutableShaderInstance)
-    override val groupName: String get() = "Shader Ports"
+    override val groupName: String? get() = "Shader output from:"
+    override val icon: Icon get() = Icons.forShader(mutableShaderInstance.mutableShader.type)
 
-    override fun matches(otherPort: MutablePort): Boolean {
+    override fun matches(otherPort: MutablePort?): Boolean {
         return otherPort is MutableShaderOutPort &&
                 otherPort.mutableShaderInstance == mutableShaderInstance
     }
 
     override fun isAppropriateFor(inputPort: InputPort): Boolean {
-        return true // TODO port.dataType == inputPort.dataType
+        return inputPort.dataType ==
+                mutableShaderInstance.mutableShader.type.resultContentType.glslType
     }
 }
 

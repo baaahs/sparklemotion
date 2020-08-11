@@ -1,6 +1,7 @@
 package baaahs.gl.glsl
 
 import baaahs.Logger
+import baaahs.englishize
 import baaahs.plugin.PluginRef
 import baaahs.unknown
 import kotlinx.serialization.json.JsonObject
@@ -126,11 +127,7 @@ class GlslCode(
 //            } else null
         }
 
-        fun displayName(): String {
-            return Regex("([A-Z](?=[a-z]+)|[A-Z]+(?![a-z]))").replace(name) {
-                " " + it.value
-            }.capitalize()
-        }
+        fun displayName() = name.englishize()
     }
 
     class Hint(string: String, lineNumber: Int?) {

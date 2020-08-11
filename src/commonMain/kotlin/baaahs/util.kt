@@ -124,6 +124,12 @@ fun String.camelize(): String =
         .joinToString("")
         .decapitalize()
 
+fun String.englishize(): String {
+    return Regex("([A-Z](?=[a-z]+)|[A-Z]+(?![a-z]))").replace(this) {
+        " " + it.value
+    }.capitalize()
+}
+
 
 fun randomId(prefix: String): String {
     return prefix +
