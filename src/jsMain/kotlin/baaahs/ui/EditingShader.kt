@@ -29,6 +29,7 @@ class EditingShader(
     val mutableShaderInstance: MutableShaderInstance,
     private val autoWirer: AutoWirer
 ): Observable() {
+    val id = randomId("EditingShader")
     var state = State.Changed
 
     val mutableShader: MutableShader get() = mutableShaderInstance.mutableShader
@@ -55,8 +56,8 @@ class EditingShader(
     }
 
     private fun startBuilding() {
-        val newPatchBuilder = PreviewShaderBuilder(build(), autoWirer)
-        newPatchBuilder.addObserver {
+        val newPreviewShaderBuilder = PreviewShaderBuilder(build(), autoWirer)
+        newPreviewShaderBuilder.addObserver {
             val newState = when (it.state) {
                 PreviewShaderBuilder.State.Success -> State.Success
                 PreviewShaderBuilder.State.Errors -> State.Errors
@@ -65,8 +66,9 @@ class EditingShader(
 
             maybeNotifyStateChanging(newState)
         }
-        previewShaderBuilder = newPatchBuilder
-        newPatchBuilder.startBuilding()
+        previewShaderBuilder = newPreviewShaderBuilder
+        newPreviewShaderBuilder.startBuilding()
+        state = State.Building
         notifyChanged()
     }
 

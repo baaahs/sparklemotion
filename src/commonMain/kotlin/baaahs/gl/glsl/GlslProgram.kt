@@ -4,7 +4,7 @@ import baaahs.Logger
 import baaahs.RefCounted
 import baaahs.gl.GlContext
 import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.render.GlslRenderer
+import baaahs.gl.render.ModelRenderer
 import baaahs.glsl.Uniform
 import baaahs.plugin.CorePlugin
 import baaahs.show.DataSource
@@ -76,7 +76,7 @@ class GlslProgram(
             .filterIsInstance<T>()
     }
 
-    val arrangementListeners: List<GlslRenderer.ArrangementListener>
+    val arrangementListeners: List<ModelRenderer.ArrangementListener>
         get() = bindingsOf()
 
     val resolutionListeners: List<ResolutionListener>

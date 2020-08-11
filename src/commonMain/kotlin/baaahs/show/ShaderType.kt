@@ -42,7 +42,11 @@ enum class ShaderType(
     },
 
     Distortion(1, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.UvCoordinate, """
-        // ... TODO
+        uniform float size; // @@Slider min=0.75 max=1.25 default=1
+
+        vec2 mainDistortion(vec2 uvIn) {
+          return (uvIn - .5)  * size + .5;
+        }
     """.trimIndent()) {
         override fun matches(glslCode: GlslCode) =
             glslCode.functionNames.contains("mainDistortion")
@@ -51,13 +55,11 @@ enum class ShaderType(
             DistortionShader(shader, glslCode)
     },
 
-    Paint(0, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.Color, """
-        uniform vec2 resolution;
+    Paint(3, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.Color, """
         uniform float time;
 
         void main(void) {
-            vec2 position = gl_FragCoord.xy / resolution.xy;
-            gl_FragColor = vec4(position.xy, mod(time, 1.), 1.);
+            gl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, mod(time, 1.), 1.);
         }
     """.trimIndent()) {
         override fun matches(glslCode: GlslCode): Boolean {
@@ -75,7 +77,7 @@ enum class ShaderType(
         }
     },
 
-    Filter(1, mapOf(ContentType.Color to ShaderChannel.Main), ContentType.Color, """
+    Filter(4, mapOf(ContentType.Color to ShaderChannel.Main), ContentType.Color, """
         vec4 mainFilter(vec4 inColor) {
             return inColor;
         }
@@ -92,6 +94,6 @@ enum class ShaderType(
     abstract fun open(shader: Shader, glslCode: GlslCode): OpenShader
 
     fun shaderFromTemplate(): MutableShader {
-        return MutableShader("Untitled ${name} Shader", this, template)
+        return MutableShader("Untitled $name Shader", this, template)
     }
 }

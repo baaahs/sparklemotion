@@ -97,7 +97,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     injectGlobal(themeStyles.global.toString())
 
     var appDrawerOpen by state { false }
-    var shaderEditorDrawerOpen by state { false }
     var layoutEditorDialogOpen by state { false }
     var renderDialog by state<(RBuilder.() -> Unit)?> { null }
     var mutablePatchHolder by state<MutablePatchHolder?> { null }
@@ -454,6 +453,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 patchHolderEditor {
                     attrs.mutablePatchHolder = editor
                     attrs.onApply = handlePatchHolderEdit
+                    // TODO: This doesn't actually revert the change, it just closes the editor.
                     attrs.onCancel = handlePatchHolderClose
                 }
             }

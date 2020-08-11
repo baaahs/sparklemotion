@@ -23,6 +23,7 @@ import react.dom.div
 import kotlin.browser.window
 
 val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { props ->
+    logger.info { "Rendering for ${props.document.content}" }
     val rootEl = useRef<Element>()
     val aceEditor = useRef<AceEditor?>()
 
@@ -35,7 +36,9 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
         aceEditor.current?.editor?.resize()
     }
 
-    val handleChangeDebounced = useCallback { value: String, event: Any ->
+    val handleChangeDebounced = useCallback(
+        props.document, props.debounceSeconds, props.onChange
+    ) { value: String, event: Any ->
         props.document.content = value
 
         val debounceSeconds = props.debounceSeconds ?: defaultDebounceSeconds
@@ -53,7 +56,7 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
     val setOptions = memo { jsObject<IAceOptions> { autoScrollEditorIntoView = true } }
     val editorProps = memo { jsObject<IEditorProps> { `$blockScrolling` = true } }
 
-    onMount {
+    onChange("debouncer", props.onChange, props.debounceSeconds) {
         val interval = window.setInterval({
             val debounceSeconds = props.debounceSeconds ?: defaultDebounceSeconds
 
@@ -80,6 +83,7 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
 
         reactAce {
             ref = aceEditor
+            key = props.document.key
 
             attrs.mode = props.mode?.id ?: error("no mode specified")
             attrs.theme = theme.id
@@ -97,7 +101,7 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
     }
 }
 
-class Document(var content: String)
+class Document(val key: String, var content: String)
 
 private val clock = JsClock()
 

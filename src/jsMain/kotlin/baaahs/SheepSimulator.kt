@@ -4,7 +4,7 @@ import baaahs.client.WebClient
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
-import baaahs.gl.render.GlslRenderer
+import baaahs.gl.render.ModelRenderer
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
@@ -69,7 +69,7 @@ class SheepSimulator {
         fs,
         PermissiveFirmwareDaddy(),
         bridgeClient.soundAnalyzer,
-        glslRenderer = GlslRenderer(glslContext, model),
+        modelRenderer = ModelRenderer(glslContext, model),
         plugins = plugins
     )
     private val brains: MutableList<Brain> = mutableListOf()
