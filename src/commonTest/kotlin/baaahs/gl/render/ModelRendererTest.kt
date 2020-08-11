@@ -18,7 +18,7 @@ import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.test.*
 
-class GlslRendererTest {
+class ModelRendererTest {
     // assumeTrue() doesn't work in js runners; instead, bail manually.
     // TODO: Do something better.
 //    @BeforeTest
@@ -33,14 +33,14 @@ class GlslRendererTest {
     }
 
     private lateinit var glContext: GlContext
-    private lateinit var glslRenderer: GlslRenderer
+    private lateinit var modelRenderer: ModelRenderer
     private lateinit var fakeShowPlayer: FakeShowPlayer
 
     @BeforeTest
     fun setUp() {
         if (glslAvailable()) {
             glContext = GlBase.manager.createContext()
-            glslRenderer = GlslRenderer(glContext, ModelInfoForTest)
+            modelRenderer = ModelRenderer(glContext, ModelInfoForTest)
             fakeShowPlayer = FakeShowPlayer(glContext)
         }
     }
@@ -49,7 +49,7 @@ class GlslRendererTest {
     fun tearDown() {
         if (glslAvailable()) {
             glContext.release()
-            glslRenderer.release()
+            modelRenderer.release()
         }
     }
 
@@ -67,9 +67,9 @@ class GlslRendererTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val renderSurface = glslRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val renderSurface = modelRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
-        glslRenderer.draw()
+        modelRenderer.draw()
 
         expectColor(listOf(
             Color(0f, .1f, .5f),
@@ -96,7 +96,7 @@ class GlslRendererTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val renderSurface = glslRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val renderSurface = modelRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
         fakeShowPlayer.getGadget<Slider>("glsl_in_blue").value = .1f
         fakeShowPlayer.drawFrame()
@@ -132,11 +132,11 @@ class GlslRendererTest {
 
         val glslProgram = compileAndBind(program)
 
-        val renderSurface1 = glslRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
-        val renderSurface2 = glslRenderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
-        val renderSurface3 = glslRenderer.addSurface(anonymousSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val renderSurface1 = modelRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val renderSurface2 = modelRenderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val renderSurface3 = modelRenderer.addSurface(anonymousSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
 
-        glslRenderer.draw()
+        modelRenderer.draw()
 
         expectColor(listOf(
             Color(0f, .1f, .5f),
@@ -178,14 +178,14 @@ class GlslRendererTest {
 
         val glslProgram = compileAndBind(program)
 
-        val renderSurface1 = glslRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
-        val renderSurface2 = glslRenderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val renderSurface1 = modelRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val renderSurface2 = modelRenderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
 
         // TODO: yuck, let's not do this [first part]
 //        renderSurface1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
 //        renderSurface2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
 
-        glslRenderer.draw()
+        modelRenderer.draw()
 
         expectColor(listOf(
             Color(0f, .1f, .2f),
@@ -208,7 +208,7 @@ class GlslRendererTest {
         // xxx.
         expect(listOf(
             Quad.Rect(1f, 0f, 2f, 3f)
-        )) { GlslRenderer.mapSurfaceToRects(4, 4, createSurface("A", 3)) }
+        )) { ModelRenderer.mapSurfaceToRects(4, 4, createSurface("A", 3)) }
 
         // ...x
         // xxxx
@@ -217,7 +217,7 @@ class GlslRendererTest {
             Quad.Rect(0f, 3f, 1f, 4f),
             Quad.Rect(1f, 0f, 2f, 4f),
             Quad.Rect(2f, 0f, 3f, 2f)
-        )) { GlslRenderer.mapSurfaceToRects(3, 4, createSurface("A", 7)) }
+        )) { ModelRenderer.mapSurfaceToRects(3, 4, createSurface("A", 7)) }
     }
 
     private fun surfaceWithThreePixels(): IdentifiedSurface {

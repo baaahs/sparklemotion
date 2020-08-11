@@ -13,6 +13,7 @@ external val Close: Icon
 external val CloudDownload: Icon
 external val CloudUpload: Icon
 external val Code: Icon
+external val Delete: Icon
 external val Dashboard: Icon
 external val DeveloperMode: Icon
 external val DragIndicator: Icon
@@ -28,12 +29,15 @@ external val Folder: Icon
 external val Help: Icon
 external val HelpOutline: Icon
 external val Image: Icon
+external val Input: Icon
 external val InsertDriveFile: Icon
 external val Map: Icon
 external val Menu: Icon
+external val NotInterested: Icon
 external val NotificationImportant: Icon
 external val OpenInBrowser: Icon
 external val Palette: Icon
+external val PowerInput: Icon
 external val Redo: Icon
 external val Save: Icon
 external val SettingsInputComponent: Icon

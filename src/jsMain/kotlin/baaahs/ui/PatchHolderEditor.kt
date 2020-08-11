@@ -275,7 +275,16 @@ object PatchHolderEditorStyles : StyleSheet("ui-PatchHolderEditor", isStatic = t
     }
 
     val shaderCardContent by css {
-        padding(8.px, 16.px)
+    }
+    val shaderCardActions by css {
+        child(shaderCardContent) {
+            flex(1.0)
+        }
+
+        child("button") {
+            flex(0.0)
+            padding(0.px)
+        }
     }
 }
 

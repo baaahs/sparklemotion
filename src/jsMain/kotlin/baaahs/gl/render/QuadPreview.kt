@@ -6,7 +6,7 @@ import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import kotlin.browser.window
 
-class GlslPreview(
+class QuadPreview(
     private val gl: GlContext,
     private var width: Int,
     private var height: Int,

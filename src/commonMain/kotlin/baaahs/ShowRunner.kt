@@ -2,7 +2,7 @@ package baaahs
 
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
-import baaahs.gl.render.GlslRenderer
+import baaahs.gl.render.ModelRenderer
 import baaahs.show.ShaderChannel
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
@@ -16,7 +16,7 @@ class ShowRunner(
 //    private val dmxUniverse: Dmx.Universe,
 //    private val movingHeadManager: MovingHeadManager,
     internal val clock: Clock,
-    private val glslRenderer: GlslRenderer,
+    private val modelRenderer: ModelRenderer,
     private val surfaceManager: SurfaceManager,
     private val autoWirer: AutoWirer
 ) {
@@ -75,7 +75,7 @@ class ShowRunner(
     /** @return `true` if a frame was rendered and should be sent to fixtures. */
     fun renderNextFrame(): Boolean {
         val renderPlan = currentRenderPlan
-        renderPlan?.render(glslRenderer)
+        renderPlan?.render(modelRenderer)
         return renderPlan != null
     }
 
@@ -107,7 +107,7 @@ class ShowRunner(
         val linkedPatches = autoWirer.merge(*activePatches.toTypedArray()).mapValues { (_, portDiagram) ->
             portDiagram.resolvePatch(ShaderChannel.Main, ContentType.Color)
         }
-        val glslContext = glslRenderer.gl
+        val glslContext = modelRenderer.gl
         val activeDataSources = mutableSetOf<String>()
         val programs = linkedPatches.mapNotNull { (_, linkedPatch) ->
             linkedPatch?.let { it to it.createProgram(glslContext, openShow.dataFeeds) }

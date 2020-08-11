@@ -2,7 +2,7 @@ package baaahs
 
 import baaahs.dmx.DmxDevice
 import baaahs.gl.GlBase
-import baaahs.gl.render.GlslRenderer
+import baaahs.gl.render.ModelRenderer
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
 import baaahs.proto.Ports
@@ -63,12 +63,12 @@ class PinkyMain(private val args: Args) {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
         val glslContext = GlBase.manager.createContext()
-        val glslRenderer = GlslRenderer(glslContext, model)
+        val glslRenderer = ModelRenderer(glslContext, model)
         val pinky = Pinky(
             model, network, dmxUniverse, beatSource, SystemClock(), fs,
             daddy, soundAnalyzer, switchShowAfterIdleSeconds = args.switchShowAfter,
             adjustShowAfterIdleSeconds = args.adjustShowAfter,
-            glslRenderer = glslRenderer
+            modelRenderer = glslRenderer
         )
 
         val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)

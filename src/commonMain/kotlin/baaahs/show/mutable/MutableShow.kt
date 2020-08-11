@@ -389,41 +389,31 @@ class MutablePatch {
         return this
     }
 
-    fun addShaderInstance(shader: Shader, block: MutableShaderInstance.() -> Unit): MutablePatch {
+    fun addShaderInstance(shader: Shader, block: MutableShaderInstance.() -> Unit): MutableShaderInstance {
         val mutableShaderInstance = MutableShaderInstance(
             MutableShader(shader), hashMapOf(), null, 0f
         )
         mutableShaderInstance.block()
         mutableShaderInstances.add(mutableShaderInstance)
-        return this
+        return mutableShaderInstance
     }
 
     fun findShaderInstanceFor(shader: Shader): MutableShaderInstance {
         return mutableShaderInstances.find { it.mutableShader.build() == shader }
             ?: error("No shader instance for ${shader.title}.")
     }
-}
 
-data class MutableLink(
-    var from: Port?,
-    var to: Port?
-) {
-    constructor(from: PortRef, to: PortRef, show: MutableShow) :
-            this(from.dereference(show), to.dereference(show))
-
-    interface Port {
-        fun toRef(showBuilder: ShowBuilder): PortRef
-        fun displayName(): String
-
-        infix fun linkTo(other: Port): MutableLink =
-            MutableLink(this, other)
+    fun remove(mutableShaderInstance: MutableShaderInstance) {
+        mutableShaderInstances.remove(mutableShaderInstance)
     }
 }
 
-fun DataSource.editor() = MutableDataSource(this)
+interface MutablePort {
+    fun toRef(showBuilder: ShowBuilder): PortRef
+    fun displayName(): String
+}
 
-data class MutableShaderChannel(val shaderChannel: ShaderChannel) :
-    MutableLink.Port {
+data class MutableShaderChannel(val shaderChannel: ShaderChannel) : MutablePort {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         ShaderChannelRef(shaderChannel)
 
@@ -431,13 +421,13 @@ data class MutableShaderChannel(val shaderChannel: ShaderChannel) :
         "channel(${shaderChannel.id})"
 }
 
-data class MutableDataSource(val dataSource: DataSource) :
-    MutableLink.Port {
+data class MutableDataSource(val dataSource: DataSource) : MutablePort {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         DataSourceRef(showBuilder.idFor(dataSource))
 
     override fun displayName(): String = dataSource.dataSourceName
 }
+fun DataSource.editor() = MutableDataSource(this)
 
 data class MutableControl(val control: Control) {
     fun toRef(showBuilder: ShowBuilder): ControlRef = control.toControlRef(showBuilder)
@@ -458,7 +448,7 @@ data class MutableShader(
 
 data class MutableShaderInstance(
     val mutableShader: MutableShader,
-    val incomingLinks: MutableMap<String, MutableLink.Port> = hashMapOf(),
+    val incomingLinks: MutableMap<String, MutablePort> = hashMapOf(),
     var shaderChannel: ShaderChannel? = null,
     var priority: Float = 0f
 ) {
@@ -480,7 +470,7 @@ data class MutableShaderInstance(
         incomingLinks[portId] = toPort.editor()
     }
 
-    fun link(portId: String, toPort: MutableLink.Port) {
+    fun link(portId: String, toPort: MutablePort) {
         incomingLinks[portId] = toPort
     }
 
@@ -494,10 +484,16 @@ data class MutableShaderInstance(
             priority
         )
     }
+
+    companion object {
+        val defaultOrder = compareBy<MutableShaderInstance>(
+            { it.mutableShader.type.priority },
+            { it.mutableShader.title }
+        )
+    }
 }
 
-data class MutableShaderOutPort(var mutableShaderInstance: MutableShaderInstance) :
-    MutableLink.Port {
+data class MutableShaderOutPort(var mutableShaderInstance: MutableShaderInstance) : MutablePort {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         ShaderOutPortRef(showBuilder.idFor(mutableShaderInstance.build(showBuilder)))
 
@@ -506,14 +502,14 @@ data class MutableShaderOutPort(var mutableShaderInstance: MutableShaderInstance
     override fun toString(): String = "ShaderOutPortEditor(shader=${mutableShaderInstance.mutableShader.title})"
 }
 
-data class MutableOutputPort(private val portId: String) : MutableLink.Port {
+data class MutableOutputPort(private val portId: String) : MutablePort {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         OutputPortRef(portId)
 
     override fun displayName(): String = "$portId Output"
 }
 
-data class MutableConstPort(private val glsl: String) : MutableLink.Port {
+data class MutableConstPort(private val glsl: String) : MutablePort {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         ConstPortRef(glsl)
 

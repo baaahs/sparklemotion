@@ -2,11 +2,11 @@ package baaahs
 
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.render.GlslRenderer
+import baaahs.gl.render.ModelRenderer
 import baaahs.gl.render.RenderSurface
 
 class SurfaceManager(
-    private val glslRenderer: GlslRenderer
+    private val modelRenderer: ModelRenderer
 ) {
     private val changedSurfaces = mutableListOf<ShowRunner.SurfacesChanges>()
     internal val renderSurfaces: MutableMap<Surface, RenderSurface> = hashMapOf()
@@ -69,7 +69,7 @@ class SurfaceManager(
     private fun addReceiver(receiver: ShowRunner.SurfaceReceiver) {
         val surface = receiver.surface
         val renderSurface = renderSurfaces.getOrPut(surface) {
-            glslRenderer.addSurface(surface)
+            modelRenderer.addSurface(surface)
         }
         renderSurface.receivers.add(receiver)
 
@@ -86,7 +86,7 @@ class SurfaceManager(
         }
 
         if (renderSurface.receivers.isEmpty()) {
-            glslRenderer.removeSurface(renderSurface)
+            modelRenderer.removeSurface(renderSurface)
             renderSurface.release()
             renderSurfaces.remove(surface)
         }
