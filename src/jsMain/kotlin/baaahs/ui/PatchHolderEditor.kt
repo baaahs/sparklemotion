@@ -276,6 +276,16 @@ object PatchHolderEditorStyles : StyleSheet("ui-PatchHolderEditor", isStatic = t
 
     val shaderCardContent by css {
     }
+    val shaderCardActions by css {
+        child(shaderCardContent) {
+            flex(1.0)
+        }
+
+        child("button") {
+            flex(0.0)
+            padding(0.px)
+        }
+    }
 }
 
 external interface PatchHolderEditorProps : RProps {
