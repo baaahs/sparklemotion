@@ -9,53 +9,6 @@
 <br/>
 <h1>AutoWirer</h1>
 <code><span class="keyword">class </span><span class="identifier">AutoWirer</span></code>
-<h3>Types</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-channel-entry/index.html">ChannelEntry</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">ChannelEntry</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-port-diagram/index.html">PortDiagram</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">PortDiagram</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-port-ref-candidates/index.html">PortRefCandidates</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">PortRefCandidates</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-unresolved-patch/index.html">UnresolvedPatch</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">UnresolvedPatch</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-unresolved-shader-instance/index.html">UnresolvedShaderInstance</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">UnresolvedShaderInstance</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-unresolved-shader-out-port/index.html">UnresolvedShaderOutPort</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">UnresolvedShaderOutPort</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Port</span></code></td>
-</tr>
-</tbody>
-</table>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -95,23 +48,23 @@
 <h4><a href="auto-wire.html">autoWire</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.Array((baaahs.show.Shader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutableLink.Port)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.Array((baaahs.show.Shader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutableLink.Port)))/defaultPorts">defaultPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">Port</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">UnresolvedPatch</span></code><br/>
-<code><span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.Array((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutableLink.Port)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.Array((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutableLink.Port)))/defaultPorts">defaultPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">Port</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">UnresolvedPatch</span></code><br/>
-<code><span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.collections.Collection((baaahs.gl.shader.OpenShader)), baaahs.show.ShaderChannel, kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutableLink.Port)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.collections.Collection((baaahs.gl.shader.OpenShader)), baaahs.show.ShaderChannel, kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutableLink.Port)))/shaderChannel">shaderChannel</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a>&nbsp;<span class="symbol">=</span>&nbsp;ShaderChannel.Main<span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.collections.Collection((baaahs.gl.shader.OpenShader)), baaahs.show.ShaderChannel, kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutableLink.Port)))/defaultPorts">defaultPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">Port</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">UnresolvedPatch</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.Array((baaahs.show.Shader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.Array((baaahs.show.Shader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)))/defaultPorts">defaultPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-port/index.html"><span class="identifier">MutablePort</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span><span class="symbol">: </span><a href="../-unresolved-patch/index.html"><span class="identifier">UnresolvedPatch</span></a></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.Array((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.Array((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)))/defaultPorts">defaultPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-port/index.html"><span class="identifier">MutablePort</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span><span class="symbol">: </span><a href="../-unresolved-patch/index.html"><span class="identifier">UnresolvedPatch</span></a></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.collections.Collection((baaahs.gl.shader.OpenShader)), baaahs.show.ShaderChannel, kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.collections.Collection((baaahs.gl.shader.OpenShader)), baaahs.show.ShaderChannel, kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)))/shaderChannel">shaderChannel</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a>&nbsp;<span class="symbol">=</span>&nbsp;ShaderChannel.Main<span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.AutoWirer$autoWire(kotlin.collections.Collection((baaahs.gl.shader.OpenShader)), baaahs.show.ShaderChannel, kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)))/defaultPorts">defaultPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-port/index.html"><span class="identifier">MutablePort</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span><span class="symbol">: </span><a href="../-unresolved-patch/index.html"><span class="identifier">UnresolvedPatch</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="build-port-diagram.html">buildPortDiagram</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">buildPortDiagram</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.gl.patch.AutoWirer$buildPortDiagram(kotlin.Array((baaahs.show.live.OpenPatch)))/patches">patches</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-open-patch/index.html"><span class="identifier">OpenPatch</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">PortDiagram</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">buildPortDiagram</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.gl.patch.AutoWirer$buildPortDiagram(kotlin.Array((baaahs.show.live.OpenPatch)))/patches">patches</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-open-patch/index.html"><span class="identifier">OpenPatch</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-port-diagram/index.html"><span class="identifier">PortDiagram</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="merge.html">merge</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">merge</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.gl.patch.AutoWirer$merge(kotlin.Array((baaahs.show.live.OpenPatchHolder)))/patchHolders">patchHolders</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-open-patch-holder/index.html"><span class="identifier">OpenPatchHolder</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-surfaces/index.html"><span class="identifier">Surfaces</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">PortDiagram</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">merge</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.gl.patch.AutoWirer$merge(kotlin.Array((baaahs.show.live.OpenPatchHolder)))/patchHolders">patchHolders</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-open-patch-holder/index.html"><span class="identifier">OpenPatchHolder</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-surfaces/index.html"><span class="identifier">Surfaces</span></a><span class="symbol">,</span>&nbsp;<a href="../-port-diagram/index.html"><span class="identifier">PortDiagram</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
