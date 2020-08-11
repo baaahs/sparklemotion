@@ -484,6 +484,13 @@ data class MutableShaderInstance(
             priority
         )
     }
+
+    companion object {
+        val defaultOrder = compareBy<MutableShaderInstance>(
+            { it.mutableShader.type.priority },
+            { it.mutableShader.title }
+        )
+    }
 }
 
 data class MutableShaderOutPort(var mutableShaderInstance: MutableShaderInstance) : MutablePort {

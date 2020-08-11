@@ -1,36 +1,35 @@
 package baaahs.gl.patch
 
 import baaahs.gl.glsl.GlslType
-import kotlinx.serialization.Serializable
 
-@Serializable
-data class ContentType(
+class ContentType(
     val description: String,
+    val glslType: String,
     private val defaultInitializer: ((GlslType) -> String)? = null
 ) {
     fun initializer(dataType: GlslType): String =
         defaultInitializer?.invoke(dataType) ?: dataType.defaultInitializer()
 
     companion object {
-        val PixelCoordinatesTexture = ContentType("Pixel Coordinates Texture")
-        val RasterCoordinate = ContentType("Raster Coordinate")
-        val UvCoordinate = ContentType("U/V Coordinate")
-        val XyCoordinate = ContentType("X/Y Coordinate")
-        val ModelInfo = ContentType("Model Info")
+        val PixelCoordinatesTexture = ContentType("Pixel Coordinates Texture", "sampler2D")
+        val RasterCoordinate = ContentType("Raster Coordinate", "vec2")
+        val UvCoordinate = ContentType("U/V Coordinate", "vec2")
+        val XyCoordinate = ContentType("X/Y Coordinate", "vec2")
+        val ModelInfo = ContentType("Model Info", "struct")
 
-        val Mouse = ContentType("Mouse")
-        val XyzCoordinate = ContentType("X/Y/Z Coordinate")
+        val Mouse = ContentType("Mouse", "vec2")
+        val XyzCoordinate = ContentType("X/Y/Z Coordinate", "vec3")
 
-        val Color = ContentType("Color") { type ->
+        val Color = ContentType("Color", "vec4") { type ->
             if (type == GlslType.Vec4) "vec4(0., 0., 0., 1.)" else type.defaultInitializer()
         }
 
-        val Time = ContentType("Time")
-        val Resolution = ContentType("Resolution")
-        val PreviewResolution = ContentType("Preview Resolution")
-        val Float = ContentType("Float")
-        val Int = ContentType("Integer")
-        val Media = ContentType("Media")
-        val Unknown = ContentType("Unknown")
+        val Time = ContentType("Time", "float")
+        val Resolution = ContentType("Resolution", "vec2")
+        val PreviewResolution = ContentType("Preview Resolution", "vec2")
+        val Float = ContentType("Float", "float")
+        val Int = ContentType("Integer", "int")
+        val Media = ContentType("Media", "sampler2D")
+        val Unknown = ContentType("Unknown", "void")
     }
 }

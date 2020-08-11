@@ -55,7 +55,7 @@ enum class ShaderType(
             DistortionShader(shader, glslCode)
     },
 
-    Paint(0, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.Color, """
+    Paint(3, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.Color, """
         uniform float time;
 
         void main(void) {
@@ -77,7 +77,7 @@ enum class ShaderType(
         }
     },
 
-    Filter(1, mapOf(ContentType.Color to ShaderChannel.Main), ContentType.Color, """
+    Filter(4, mapOf(ContentType.Color to ShaderChannel.Main), ContentType.Color, """
         vec4 mainFilter(vec4 inColor) {
             return inColor;
         }

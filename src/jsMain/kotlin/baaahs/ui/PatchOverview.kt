@@ -63,7 +63,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         }
 
     props.mutablePatch.mutableShaderInstances
-        .sortedBy { it.mutableShader.type.priority }
+        .sortedWith(MutableShaderInstance.defaultOrder)
         .forEach { mutableShaderInstance ->
             shaderCard {
                 key = mutableShaderInstance.id
