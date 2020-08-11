@@ -6,6 +6,7 @@ import materialui.Delete
 import materialui.components.avatar.avatar
 import materialui.components.card.card
 import materialui.components.cardactions.cardActions
+import materialui.components.cardactions.enums.CardActionsStyle
 import materialui.components.cardheader.cardHeader
 import materialui.components.iconbutton.iconButton
 import materialui.components.paper.enums.PaperStyle
@@ -54,7 +55,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
             attrs.height = styles.cardWidth
         }
 
-        cardActions {
+        cardActions(styles.shaderCardActions on CardActionsStyle.root) {
             typography(styles.shaderCardContent on TypographyStyle.root) {
                 attrs.display = TypographyDisplay.block
                 attrs.variant = TypographyVariant.body2
