@@ -7,21 +7,14 @@ import baaahs.show.mutable.MutableShaderInstance
 import kotlinx.html.js.onClickFunction
 import materialui.AddCircleOutline
 import materialui.CloudDownload
-import materialui.Delete
-import materialui.components.avatar.avatar
 import materialui.components.card.card
-import materialui.components.cardactions.cardActions
 import materialui.components.cardcontent.cardContent
-import materialui.components.cardheader.cardHeader
-import materialui.components.iconbutton.iconButton
 import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
 import materialui.components.menu.menu
 import materialui.components.menuitem.menuItem
 import materialui.components.paper.enums.PaperStyle
-import materialui.components.typography.enums.TypographyColor
 import materialui.components.typography.enums.TypographyDisplay
-import materialui.components.typography.enums.TypographyStyle
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.icon
@@ -34,12 +27,11 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
     val appContext = useContext(appContext)
     val styles = PatchHolderEditorStyles
 
-    val handleShaderInstanceClicks: CacheBuilder<MutableShaderInstance, (Event) -> Unit> =
-        CacheBuilder { { _: Event -> props.onSelectShaderInstance(it) } }
-    val handleShaderDeleteClicks: CacheBuilder<MutableShaderInstance, (Event) -> Unit> =
-        CacheBuilder { { e: Event ->
+    val handleShaderSelect: CacheBuilder<MutableShaderInstance, () -> Unit> =
+        CacheBuilder { { props.onSelectShaderInstance(it) } }
+    val handleShaderDelete: CacheBuilder<MutableShaderInstance, () -> Unit> =
+        CacheBuilder { {
             props.mutablePatch.remove(it)
-            e.stopPropagation()
             forceRender()
         } }
 
@@ -73,41 +65,11 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
     props.mutablePatch.mutableShaderInstances
         .sortedBy { it.mutableShader.type.priority }
         .forEach { mutableShaderInstance ->
-            val shader = mutableShaderInstance.mutableShader.build()
-
-            card(+styles.shaderCard on PaperStyle.root) {
+            shaderCard {
                 key = mutableShaderInstance.id
-
-                attrs.onClickFunction = handleShaderInstanceClicks[mutableShaderInstance]
-
-                cardHeader {
-                    attrs.avatar {
-                        avatar { icon(Icons.forShader(shader.type)) }
-                    }
-                    attrs.title { +shader.title }
-//                                attrs.subheader { +"${shader.type.name} Shader" }
-                }
-
-                shaderPreview {
-                    attrs.shader = shader
-                    attrs.width = styles.cardWidth
-                    attrs.height = styles.cardWidth
-                }
-
-                cardActions {
-                    typography(styles.shaderCardContent on TypographyStyle.root) {
-                        attrs.display = TypographyDisplay.block
-                        attrs.variant = TypographyVariant.body2
-                        attrs.color = TypographyColor.textSecondary
-                        +"${shader.type.name} Shader"
-                    }
-
-                    iconButton {
-                        attrs.onClickFunction = handleShaderDeleteClicks[mutableShaderInstance]
-
-                        icon(Delete)
-                    }
-                }
+                attrs.mutableShaderInstance = mutableShaderInstance
+                attrs.onSelect = handleShaderSelect[mutableShaderInstance]
+                attrs.onDelete = handleShaderDelete[mutableShaderInstance]
             }
         }
 
