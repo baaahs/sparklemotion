@@ -66,7 +66,7 @@ object PatchLayeringSpec : Spek({
                 val portDiagrams =
                     autoWirer.merge(show, show.scenes[0], show.scenes[0].patchSets[0])
                 val portDiagram = portDiagrams[Surfaces.AllSurfaces]!!
-                val linkedPatch = portDiagram.resolvePatch(ShaderChannel.Main, ContentType.Color)!!
+                val linkedPatch = portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)!!
                 expect(
                     /** language=glsl */
                     """
@@ -89,58 +89,58 @@ object PatchLayeringSpec : Spek({
                         // Shader: Cylindrical Projection; namespace: p0
                         // Cylindrical Projection
 
-                        vec2 p0i_result = vec2(0.);
+                        vec2 p0_cylindricalProjectioni_result = vec2(0.);
 
                         #line 12
-                        const float p0_PI = 3.141592654;
+                        const float p0_cylindricalProjection_PI = 3.141592654;
 
                         #line 14
-                        vec2 p0_project(vec3 pixelLocation) {
+                        vec2 p0_cylindricalProjection_project(vec3 pixelLocation) {
                             vec3 pixelOffset = pixelLocation - in_modelInfo.center;
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
-                            if (theta < 0.0) theta += (2.0f * p0_PI);                 // theta in range [0,2π)
-                            float u = theta / (2.0f * p0_PI);                         // u in range [0,1)
+                            if (theta < 0.0) theta += (2.0f * p0_cylindricalProjection_PI);                 // theta in range [0,2π)
+                            float u = theta / (2.0f * p0_cylindricalProjection_PI);                         // u in range [0,1)
                             float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
                             return vec2(u, v);
                         }
 
                         #line 24
-                        vec2 p0_mainProjection(vec2 rasterCoord) {
+                        vec2 p0_cylindricalProjection_mainProjection(vec2 rasterCoord) {
                             int rasterX = int(rasterCoord.x);
                             int rasterY = int(rasterCoord.y);
                             
                             vec3 pixelCoord = texelFetch(in_pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
-                            return p0_project(pixelCoord);
+                            return p0_cylindricalProjection_project(pixelCoord);
                         }
 
                         // Shader: Orange Shader; namespace: p1
                         // Orange Shader
 
-                        vec4 p1_gl_FragColor = vec4(0., 0., 0., 1.);
+                        vec4 p1_orangeShader_gl_FragColor = vec4(0., 0., 0., 1.);
 
                         #line 1
-                        void p1_main() {
-                          p1_gl_FragColor = vec4(1., .5, 0., p0i_result.x);
+                        void p1_orangeShader_main() {
+                          p1_orangeShader_gl_FragColor = vec4(1., .5, 0., p0_cylindricalProjectioni_result.x);
                         }
 
                         // Shader: Brightness Filter; namespace: p2
                         // Brightness Filter
 
-                        vec4 p2i_result = vec4(0., 0., 0., 1.);
-                        
+                        vec4 p2_brightnessFilteri_result = vec4(0., 0., 0., 1.);
+
                         #line 1
-                         vec4 p2_mainFilter(vec4 colorIn) {
+                         vec4 p2_brightnessFilter_mainFilter(vec4 colorIn) {
                           return colorIn * in_brightnessSlider;
                         }
-                        
-                        
+
+
                         #line -1
                         void main() {
-                          p0i_result = p0_mainProjection(gl_FragCoord.xy); // Cylindrical Projection
-                          p1_main(); // Orange Shader
-                          p2i_result = p2_mainFilter(p1_gl_FragColor); // Brightness Filter
-                          sm_result = p2i_result;
+                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy); // Cylindrical Projection
+                          p1_orangeShader_main(); // Orange Shader
+                          p2_brightnessFilteri_result = p2_brightnessFilter_mainFilter(p1_orangeShader_gl_FragColor); // Brightness Filter
+                          sm_result = p2_brightnessFilteri_result;
                         }
                         
                     """.trimIndent()

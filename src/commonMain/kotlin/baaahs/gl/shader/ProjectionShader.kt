@@ -48,7 +48,7 @@ class ProjectionShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(sha
             GlslType.Vec2,
             ShaderOutPortRef.ReturnValue,
             "U/V Coordinate",
-            ContentType.UvCoordinate
+            ContentType.UvCoordinateStream
         )
 
     override fun invocationGlsl(

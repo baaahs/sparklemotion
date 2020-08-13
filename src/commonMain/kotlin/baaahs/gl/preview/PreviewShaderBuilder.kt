@@ -89,7 +89,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
 
         try {
             val defaultPorts = mapOf(
-                ContentType.UvCoordinate to MutableConstPort(
+                ContentType.UvCoordinateStream to MutableConstPort(
                     "gl_FragCoord"
                 )
             )

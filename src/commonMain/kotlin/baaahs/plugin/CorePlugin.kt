@@ -480,7 +480,7 @@ class CorePlugin : Plugin {
 
         val supportedContentTypes = mapOf(
             ContentType.PixelCoordinatesTexture to PixelCoordsTexture,
-            ContentType.UvCoordinate to ScreenUvCoord,
+            ContentType.UvCoordinateStream to ScreenUvCoord,
             ContentType.ModelInfo to ModelInfoDataSource,
 //            UvCoordinate,
             ContentType.Mouse to XyPad,

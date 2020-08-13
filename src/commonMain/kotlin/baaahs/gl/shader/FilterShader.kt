@@ -15,7 +15,7 @@ class FilterShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader,
                 "gl_FragCoord",
                 "vec4",
                 "Coordinates",
-                ContentType.UvCoordinate
+                ContentType.UvCoordinateStream
             ),
             InputPort(
                 "intensity",
@@ -56,7 +56,7 @@ class FilterShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader,
                 "gl_FragColor",
                 "vec4",
                 "Input Color",
-                ContentType.Color,
+                ContentType.ColorStream,
                 varName = "<arg0>"
             )
         ) +
@@ -71,7 +71,7 @@ class FilterShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader,
             GlslType.Vec4,
             ShaderOutPortRef.ReturnValue,
             "Output Color",
-            ContentType.Color
+            ContentType.ColorStream
         )
 
     override fun invocationGlsl(
