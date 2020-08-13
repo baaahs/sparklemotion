@@ -2,6 +2,7 @@ package baaahs.ui
 
 import baaahs.app.ui.appContext
 import baaahs.show.ShaderChannel
+import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.ShowBuilder

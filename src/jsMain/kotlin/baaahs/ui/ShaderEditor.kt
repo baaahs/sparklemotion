@@ -4,6 +4,7 @@ import acex.*
 import baaahs.boundedBy
 import baaahs.jsx.ShowControls
 import baaahs.jsx.ShowControlsProps
+import baaahs.show.mutable.EditingShader
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
