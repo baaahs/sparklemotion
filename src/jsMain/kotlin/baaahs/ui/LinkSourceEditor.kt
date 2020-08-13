@@ -45,8 +45,11 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isP
                 it.title.asTextNode()
             }
             attrs.onChangeFunction = handleChange
-            attrs.value = sourcePortOptions.find { it.matches(props.currentSourcePort) }
-                ?: error("Huh? None of the SourcePortOptions are active?")
+            val selected = sourcePortOptions.find { it.matches(props.currentSourcePort) }
+            attrs.value = selected
+            if (selected == null) {
+                this@xComponent.logger.warn { "Huh? None of the SourcePortOptions are active for ${props.inputPort.id}?" }
+            }
 
             var dividerGroup: String? = null
             sourcePortOptions.forEach { option ->

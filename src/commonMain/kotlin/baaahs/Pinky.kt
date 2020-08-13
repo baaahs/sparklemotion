@@ -3,6 +3,7 @@ package baaahs
 import baaahs.api.ws.WebSocketRouter
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
+import baaahs.gl.glsl.CompilationException
 import baaahs.gl.render.ModelRenderer
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
@@ -115,6 +116,9 @@ class Pinky(
                     stageManager.renderAndSendNextFrame()
                 } catch (e: Exception) {
                     logger.error("Error rendering frame for ${stageManager.facade.currentShow?.title}", e)
+                    if (e is CompilationException) {
+                        e.source?.let { logger.info { it } }
+                    }
                     delay(1000)
 //                  TODO  switchToShow(GuruMeditationErrorShow)
                 }

@@ -4,6 +4,7 @@ import baaahs.ShowPlayer
 import baaahs.client.WebClient
 import baaahs.gl.patch.AutoWirer
 import baaahs.plugin.Plugins
+import baaahs.ui.Prompt
 import react.createContext
 
 val appContext = createContext<AppContext>()
@@ -15,4 +16,5 @@ external interface AppContext {
     var plugins: Plugins
     var autoWirer: AutoWirer
     var allStyles: AllStyles
+    var prompt: (prompt: Prompt) -> Unit
 }

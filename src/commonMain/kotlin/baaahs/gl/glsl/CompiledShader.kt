@@ -30,7 +30,7 @@ class CompiledShader(
         gl.runInContext {
             if (gl.check { getShaderParameter(shaderId, GL_COMPILE_STATUS) } != GL_TRUE) {
                 val infoLog = gl.check { getShaderInfoLog(shaderId) }
-                throw CompilationException(infoLog ?: "huh?")
+                throw CompilationException(infoLog ?: "huh?", source)
             }
         }
     }

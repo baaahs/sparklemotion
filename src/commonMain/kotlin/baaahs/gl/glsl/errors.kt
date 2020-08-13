@@ -17,7 +17,8 @@ class AnalysisException(
 }
 
 class CompilationException(
-    errorMessage: String
+    errorMessage: String,
+    val source: String? = null
 ) : GlslException("GLSL compilation error: $errorMessage") {
     override val errors = errorMessage.trimEnd().split("\n").map { line ->
         pattern.matchEntire(line)?.groupValues?.let { match ->

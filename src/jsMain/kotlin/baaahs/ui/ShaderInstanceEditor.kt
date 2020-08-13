@@ -55,6 +55,11 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
     val selectedPatch = props.mutablePatch
     val shaderInstance = props.mutableShaderInstance
+    val shaderChannels = if (shaderInstance.shaderChannel == null) {
+        props.shaderChannels
+    } else {
+        props.shaderChannels + shaderInstance.shaderChannel!!
+    }
 
     styledDiv {
         css.display = Display.grid
@@ -66,7 +71,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                 attrs.siblingMutableShaderInstances = selectedPatch.mutableShaderInstances
                 attrs.showBuilder = props.showBuilder
                 attrs.mutableShaderInstance = shaderInstance
-                attrs.shaderChannels = props.shaderChannels
+                attrs.shaderChannels = shaderChannels
                 attrs.onChange = props.onChange
             }
         }
@@ -103,11 +108,26 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                         attrs.value(shaderInstance.shaderChannel?.id ?: "")
                         attrs.onChangeFunction = { event: Event ->
                             val channelId = event.target!!.asDynamic().value as String
-                            handleUpdate {
-                                shaderChannel = if (channelId.isNotBlank()) ShaderChannel(channelId) else null
+                            if (channelId == "__new__") {
+                                appContext.prompt(Prompt(
+                                    "Create A New Channel",
+                                    "Enter the name of the new channel.",
+                                    fieldLabel = "Channel Name",
+                                    cancelButtonLabel = "Cancel",
+                                    submitButtonLabel = "Create",
+                                    onSubmit = { name ->
+                                        handleUpdate {
+                                            shaderChannel = if (name.isNotBlank()) ShaderChannel(name) else null
+                                        }
+                                    }
+                                ))
+                            } else {
+                                handleUpdate {
+                                    shaderChannel = if (channelId.isNotBlank()) ShaderChannel(channelId) else null
+                                }
                             }
                         }
-                        props.shaderChannels.sortedBy { it.id }.forEach { shaderChannel ->
+                        shaderChannels.sortedBy { it.id }.forEach { shaderChannel ->
                             menuItem {
                                 attrs["value"] = shaderChannel.id
                                 +shaderChannel.id
@@ -118,6 +138,10 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                         menuItem {
                             attrs["value"] = ""
                             +"None"
+                        }
+                        menuItem {
+                            attrs["value"] = "__new__"
+                            +"New Channel…"
                         }
                     }
                     formHelperText { +"Channel" }
