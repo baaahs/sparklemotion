@@ -11,6 +11,7 @@ import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.LiveShaderInstance.*
+import baaahs.show.mutable.ShowBuilder
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -25,14 +26,13 @@ class LinkedPatch(
 
     init {
         val instanceNodes = hashMapOf<LiveShaderInstance, InstanceNode>()
+        val showBuilder = ShowBuilder()
 
         fun traverseLinks(liveShaderInstance: LiveShaderInstance, depth: Int = 0): Set<DataSourceLink> {
             instanceNodes.getOrPut(liveShaderInstance) {
-                InstanceNode(
-                    liveShaderInstance
-                )
-            }
-                .atDepth(depth)
+                val shaderShortName = showBuilder.idFor(liveShaderInstance.shader.shader)
+                InstanceNode(liveShaderInstance, shaderShortName)
+            }.atDepth(depth)
 
             val dataSourceLinks = hashSetOf<DataSourceLink>()
             liveShaderInstance.incomingLinks.forEach { (_, link) ->
@@ -46,26 +46,22 @@ class LinkedPatch(
         }
 
         dataSourceLinks = traverseLinks(shaderInstance)
-//        println("instanceNodes:\n  " +
-//                instanceNodes
-//                    .entries
-//                    .sortedByDescending { (_, v) -> v.maxDepth }
-//                    .map { (k, v) -> "${k}(${v.maxDepth})" }
-//                    .joinToString("\n  ")
-//        )
 
         val componentsByChannel = hashMapOf<ShaderChannel, Component>()
         componentLookup = instanceNodes.values.sortedByDescending { it.maxDepth }.mapIndexed { index, instanceNode ->
             val component = Component(index, instanceNode)
             components.add(component)
-//            shaderInstance.shaderChannel?.let { componentsByChannel[it] = component }
             instanceNode.liveShaderInstance to component
         }.associate { it }
         componentsByChannel[ShaderChannel.Main]?.redirectOutputTo("sm_result")
     }
 
 
-    class InstanceNode(val liveShaderInstance: LiveShaderInstance, var maxDepth: Int = 0) {
+    class InstanceNode(
+        val liveShaderInstance: LiveShaderInstance,
+        val shaderShortName: String,
+        var maxDepth: Int = 0
+    ) {
         fun atDepth(depth: Int) {
             if (depth > maxDepth) maxDepth = depth
         }
@@ -78,7 +74,7 @@ class LinkedPatch(
         private val shaderInstance = instanceNode.liveShaderInstance
         val title: String get() = shaderInstance.shader.title
         private val prefix = "p$index"
-        private val namespace = GlslCode.Namespace(prefix)
+        private val namespace = GlslCode.Namespace(prefix + "_" + instanceNode.shaderShortName)
         private val portMap: Map<String, Lazy<String>>
         private val resultInReturnValue: Boolean
         private var resultVar: String
@@ -112,7 +108,8 @@ class LinkedPatch(
                             "(" + fromLink.glsl + ")"
                         }
                     }
-                    is NoOpLink -> {}
+                    is NoOpLink -> {
+                    }
                 }
             }
 
@@ -163,7 +160,7 @@ class LinkedPatch(
 
             if (!resultRedirected) {
                 buf.append("\n")
-                with (openShader.outputPort) {
+                with(openShader.outputPort) {
                     buf.append("${dataType.glslLiteral} $resultVar = ${contentType.initializer(dataType)};\n")
                 }
             }
@@ -184,7 +181,7 @@ class LinkedPatch(
         buf.append("\n")
         buf.append("// SparkleMotion-generated GLSL\n")
         buf.append("\n")
-        with (shaderInstance.shader.outputPort) {
+        with(shaderInstance.shader.outputPort) {
             buf.append("layout(location = 0) out ${dataType.glslLiteral} sm_result;\n")
         }
         buf.append("\n")

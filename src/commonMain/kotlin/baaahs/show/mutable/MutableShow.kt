@@ -384,7 +384,7 @@ class MutablePatch {
         val openPatch = OpenPatch(resolvedShaderInstances.values.toList(), surfaces)
 
         val portDiagram = autoWirer.buildPortDiagram(openPatch)
-        return portDiagram.resolvePatch(ShaderChannel.Main, ContentType.Color)
+        return portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
     }
 
     fun addShaderInstance(mutableShaderInstance: MutableShaderInstance): MutablePatch {

@@ -9,7 +9,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
 
-object PaintShaderSpec : Spek({
+object FilterShaderSpec : Spek({
     describe("PaintShader") {
         val shaderText by value<String> { toBeSpecified() }
         val shader by value { GlslAnalyzer().openShader(shaderText) as PaintShader }

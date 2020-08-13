@@ -70,45 +70,45 @@ object OpenPatchSpec : Spek({
                 it("generates GLSL") {
                     expect(
                         """
-                        #ifdef GL_ES
-                        precision mediump float;
-                        #endif
-                        
-                        // SparkleMotion-generated GLSL
+                            #ifdef GL_ES
+                            precision mediump float;
+                            #endif
 
-                        layout(location = 0) out vec4 sm_result;
+                            // SparkleMotion-generated GLSL
 
-                        uniform float in_bluenessSlider;
-                        uniform vec2 in_resolution;
-                        uniform float in_time;
-                        
-                        // Shader: This Shader's Name; namespace: p0
-                        // This Shader's Name
+                            layout(location = 0) out vec4 sm_result;
 
-                        vec4 p0_gl_FragColor = vec4(0., 0., 0., 1.);
+                            uniform float in_bluenessSlider;
+                            uniform vec2 in_resolution;
+                            uniform float in_time;
 
-                        #line 7
-                        int p0_someGlobalVar;
-                        
-                        #line 8
-                        const int p0_someConstVar = 123;
-                        
-                        #line 10
-                        int p0_anotherFunc(int i) { return i; }
-                        
-                        #line 12
-                        void p0_main( void ) {
-                            vec2 uv = gl_FragCoord.xy / in_resolution.xy;
-                            p0_someGlobalVar = p0_anotherFunc(p0_someConstVar);
-                            p0_gl_FragColor = vec4(uv.xy, in_bluenessSlider, 1.);
-                        }
+                            // Shader: This Shader's Name; namespace: p0
+                            // This Shader's Name
+
+                            vec4 p0_thisShaderSName_gl_FragColor = vec4(0., 0., 0., 1.);
+
+                            #line 7
+                            int p0_thisShaderSName_someGlobalVar;
+
+                            #line 8
+                            const int p0_thisShaderSName_someConstVar = 123;
+
+                            #line 10
+                            int p0_thisShaderSName_anotherFunc(int i) { return i; }
+
+                            #line 12
+                            void p0_thisShaderSName_main( void ) {
+                                vec2 uv = gl_FragCoord.xy / in_resolution.xy;
+                                p0_thisShaderSName_someGlobalVar = p0_thisShaderSName_anotherFunc(p0_thisShaderSName_someConstVar);
+                                p0_thisShaderSName_gl_FragColor = vec4(uv.xy, in_bluenessSlider, 1.);
+                            }
 
 
-                        #line -1
-                        void main() {
-                          p0_main(); // This Shader's Name
-                          sm_result = p0_gl_FragColor;
-                        }
+                            #line -1
+                            void main() {
+                              p0_thisShaderSName_main(); // This Shader's Name
+                              sm_result = p0_thisShaderSName_gl_FragColor;
+                            }
                         """.trimIndent()
                     ) { glsl }
                 }
@@ -174,58 +174,58 @@ object OpenPatchSpec : Spek({
                                 // Shader: Cylindrical Projection; namespace: p0
                                 // Cylindrical Projection
 
-                                vec2 p0i_result = vec2(0.);
+                                vec2 p0_cylindricalProjectioni_result = vec2(0.);
 
                                 #line 12
-                                const float p0_PI = 3.141592654;
+                                const float p0_cylindricalProjection_PI = 3.141592654;
 
                                 #line 14
-                                vec2 p0_project(vec3 pixelLocation) {
+                                vec2 p0_cylindricalProjection_project(vec3 pixelLocation) {
                                     vec3 pixelOffset = pixelLocation - in_modelInfo.center;
                                     vec3 normalDelta = normalize(pixelOffset);
                                     float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
-                                    if (theta < 0.0) theta += (2.0f * p0_PI);                 // theta in range [0,2π)
-                                    float u = theta / (2.0f * p0_PI);                         // u in range [0,1)
+                                    if (theta < 0.0) theta += (2.0f * p0_cylindricalProjection_PI);                 // theta in range [0,2π)
+                                    float u = theta / (2.0f * p0_cylindricalProjection_PI);                         // u in range [0,1)
                                     float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
                                     return vec2(u, v);
                                 }
 
                                 #line 24
-                                vec2 p0_mainProjection(vec2 rasterCoord) {
+                                vec2 p0_cylindricalProjection_mainProjection(vec2 rasterCoord) {
                                     int rasterX = int(rasterCoord.x);
                                     int rasterY = int(rasterCoord.y);
                                     
                                     vec3 pixelCoord = texelFetch(in_pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
-                                    return p0_project(pixelCoord);
+                                    return p0_cylindricalProjection_project(pixelCoord);
                                 }
 
                                 // Shader: This Shader's Name; namespace: p1
                                 // This Shader's Name
-                                
-                                vec4 p1_gl_FragColor = vec4(0., 0., 0., 1.);
+
+                                vec4 p1_thisShaderSName_gl_FragColor = vec4(0., 0., 0., 1.);
 
                                 #line 7
-                                int p1_someGlobalVar;
+                                int p1_thisShaderSName_someGlobalVar;
 
                                 #line 8
-                                const int p1_someConstVar = 123;
+                                const int p1_thisShaderSName_someConstVar = 123;
 
                                 #line 10
-                                int p1_anotherFunc(int i) { return i; }
+                                int p1_thisShaderSName_anotherFunc(int i) { return i; }
 
                                 #line 12
-                                void p1_main( void ) {
-                                    vec2 uv = p0i_result.xy / in_resolution.xy;
-                                    p1_someGlobalVar = p1_anotherFunc(p1_someConstVar);
-                                    p1_gl_FragColor = vec4(uv.xy, in_bluenessSlider, 1.);
+                                void p1_thisShaderSName_main( void ) {
+                                    vec2 uv = p0_cylindricalProjectioni_result.xy / in_resolution.xy;
+                                    p1_thisShaderSName_someGlobalVar = p1_thisShaderSName_anotherFunc(p1_thisShaderSName_someConstVar);
+                                    p1_thisShaderSName_gl_FragColor = vec4(uv.xy, in_bluenessSlider, 1.);
                                 }
 
 
                                 #line -1
                                 void main() {
-                                  p0i_result = p0_mainProjection(gl_FragCoord.xy); // Cylindrical Projection
-                                  p1_main(); // This Shader's Name
-                                  sm_result = p1_gl_FragColor;
+                                  p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy); // Cylindrical Projection
+                                  p1_thisShaderSName_main(); // This Shader's Name
+                                  sm_result = p1_thisShaderSName_gl_FragColor;
                                 }
                             """.trimIndent()
                         ) { glsl }

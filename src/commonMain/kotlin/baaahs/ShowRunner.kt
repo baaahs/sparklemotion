@@ -105,7 +105,7 @@ class ShowRunner(
     private fun prepare(newPatchSet: OpenPatchSet): RenderPlan {
         val activePatches = newPatchSet.activePatches()
         val linkedPatches = autoWirer.merge(*activePatches.toTypedArray()).mapValues { (_, portDiagram) ->
-            portDiagram.resolvePatch(ShaderChannel.Main, ContentType.Color)
+            portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
         }
         val glslContext = modelRenderer.gl
         val activeDataSources = mutableSetOf<String>()

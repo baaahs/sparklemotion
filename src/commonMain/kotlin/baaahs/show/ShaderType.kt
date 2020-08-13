@@ -11,7 +11,8 @@ enum class ShaderType(
     val resultContentType: ContentType,
     val template: String
 ) {
-    Projection(0, emptyMap(), ContentType.UvCoordinate, """
+    Projection(
+        0, emptyMap(), ContentType.UvCoordinateStream, """
             uniform sampler2D pixelCoordsTexture;
             
             struct ModelInfo {
@@ -33,7 +34,8 @@ enum class ShaderType(
                 vec3 pixelCoord = texelFetch(pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
                 return project(pixelCoord);
             }
-    """.trimIndent()) {
+    """.trimIndent()
+    ) {
         override fun matches(glslCode: GlslCode) =
             glslCode.functionNames.contains("mainProjection")
 
@@ -41,13 +43,17 @@ enum class ShaderType(
             ProjectionShader(shader, glslCode)
     },
 
-    Distortion(1, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.UvCoordinate, """
-        uniform float size; // @@Slider min=0.75 max=1.25 default=1
-
-        vec2 mainDistortion(vec2 uvIn) {
-          return (uvIn - .5)  * size + .5;
-        }
-    """.trimIndent()) {
+    Distortion(
+        1,
+        mapOf(ContentType.UvCoordinateStream to ShaderChannel.Main),
+        ContentType.UvCoordinateStream, """
+            uniform float size; // @@Slider min=0.75 max=1.25 default=1
+    
+            vec2 mainDistortion(vec2 uvIn) {
+              return (uvIn - .5)  * size + .5;
+            }
+        """.trimIndent()
+    ) {
         override fun matches(glslCode: GlslCode) =
             glslCode.functionNames.contains("mainDistortion")
 
@@ -55,13 +61,17 @@ enum class ShaderType(
             DistortionShader(shader, glslCode)
     },
 
-    Paint(3, mapOf(ContentType.UvCoordinate to ShaderChannel.Main), ContentType.Color, """
-        uniform float time;
-
-        void main(void) {
-            gl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, mod(time, 1.), 1.);
-        }
-    """.trimIndent()) {
+    Paint(
+        3,
+        mapOf(ContentType.UvCoordinateStream to ShaderChannel.Main),
+        ContentType.ColorStream, """
+            uniform float time;
+    
+            void main(void) {
+                gl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, mod(time, 1.), 1.);
+            }
+        """.trimIndent()
+    ) {
         override fun matches(glslCode: GlslCode): Boolean {
             return glslCode.functionNames.contains("main") ||
                     glslCode.functionNames.contains("mainImage")
@@ -77,11 +87,13 @@ enum class ShaderType(
         }
     },
 
-    Filter(4, mapOf(ContentType.Color to ShaderChannel.Main), ContentType.Color, """
+    Filter(
+        4, mapOf(ContentType.ColorStream to ShaderChannel.Main), ContentType.ColorStream, """
         vec4 mainFilter(vec4 inColor) {
             return inColor;
         }
-    """.trimIndent()) {
+    """.trimIndent()
+    ) {
         override fun matches(glslCode: GlslCode): Boolean {
             return glslCode.functionNames.contains("mainFilter")
         }

@@ -99,7 +99,7 @@ class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(sha
             "sm_FragCoord",
             "vec2",
             "Coordinates",
-            ContentType.UvCoordinate
+            ContentType.UvCoordinateStream
         )
     }
 
@@ -128,7 +128,7 @@ class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(sha
             GlslType.Vec4,
             ShaderOutPortRef.ReturnValue,
             "Output Color",
-            ContentType.Color
+            ContentType.ColorStream
         )
 
     override fun invocationGlsl(
@@ -148,7 +148,7 @@ class GenericPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(shade
                 "gl_FragCoord",
                 "vec4",
                 "Coordinates",
-                ContentType.UvCoordinate
+                ContentType.UvCoordinateStream
             ),
             InputPort(
                 "resolution",
@@ -175,7 +175,7 @@ class GenericPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(shade
             "gl_FragCoord",
             "vec4",
             "Coordinates",
-            ContentType.UvCoordinate
+            ContentType.UvCoordinateStream
         )
     }
 
@@ -195,7 +195,7 @@ class GenericPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(shade
             GlslType.Vec4,
             "gl_FragColor",
             "Output Color",
-            ContentType.Color
+            ContentType.ColorStream
         )
 
     override fun invocationGlsl(

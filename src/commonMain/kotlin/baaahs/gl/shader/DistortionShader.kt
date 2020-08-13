@@ -15,7 +15,7 @@ class DistortionShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(sha
                 "gl_FragCoord",
                 "vec4",
                 "Coordinates",
-                ContentType.UvCoordinate
+                ContentType.UvCoordinateStream
             ),
             InputPort(
                 "intensity",
@@ -56,7 +56,7 @@ class DistortionShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(sha
                 "gl_FragCoord",
                 "vec2",
                 "U/V Coordinatess",
-                ContentType.UvCoordinate
+                ContentType.UvCoordinateStream
             )
         ) +
                 glslCode.uniforms.map {
@@ -70,7 +70,7 @@ class DistortionShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(sha
             GlslType.Vec2,
             ShaderOutPortRef.ReturnValue,
             "U/V Coordinate",
-            ContentType.UvCoordinate
+            ContentType.UvCoordinateStream
         )
 
     override fun invocationGlsl(

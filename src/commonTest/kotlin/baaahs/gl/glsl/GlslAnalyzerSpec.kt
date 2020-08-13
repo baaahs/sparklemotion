@@ -285,7 +285,7 @@ object GlslAnalyzerSpec : Spek({
                                     "gl_FragCoord",
                                     "vec4",
                                     "Coordinates",
-                                    ContentType.UvCoordinate
+                                    ContentType.UvCoordinateStream
                                 )
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
@@ -333,7 +333,7 @@ object GlslAnalyzerSpec : Spek({
                                     "sm_FragCoord",
                                     "vec2",
                                     "Coordinates",
-                                    ContentType.UvCoordinate
+                                    ContentType.UvCoordinateStream
                                 )
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
