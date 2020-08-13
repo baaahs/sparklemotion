@@ -40,21 +40,11 @@ object FilterShaderSpec : Spek({
 
             it("finds magic uniforms") {
                 expect(listOf(
+                    InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinateStream),
                     InputPort("time", "float", "Time", ContentType.Time),
-                    InputPort(
-                        "resolution",
-                        "vec2",
-                        "Resolution",
-                        ContentType.Resolution
-                    ),
+                    InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
                     InputPort("mouse", "vec2", "Mouse", ContentType.Mouse),
-                    InputPort("blueness", "float", "Blueness"),
-                    InputPort(
-                        "gl_FragCoord",
-                        "vec4",
-                        "Coordinates",
-                        ContentType.UvCoordinateStream
-                    )
+                    InputPort("blueness", "float", "Blueness")
                 )) { shader.inputPorts.map { it.copy(glslVar = null) } }
             }
 
@@ -116,20 +106,10 @@ object FilterShaderSpec : Spek({
                 it("finds magic uniforms") {
                     expect(listOf(
                         InputPort("blueness", "float", "Blueness"),
-                        InputPort(
-                            "iResolution",
-                            "vec3",
-                            "Resolution",
-                            ContentType.Resolution
-                        ),
+                        InputPort("iResolution", "vec3", "Resolution", ContentType.Resolution),
                         InputPort("iTime", "float", "Time", ContentType.Time),
                         InputPort("iMouse", "vec2", "Mouse", ContentType.Mouse),
-                        InputPort(
-                            "sm_FragCoord",
-                            "vec2",
-                            "Coordinates",
-                            ContentType.UvCoordinateStream
-                        )
+                        InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinateStream)
                     )) { shader.inputPorts.map { it.copy(glslVar = null) } }
                 }
             }

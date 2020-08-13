@@ -10,39 +10,21 @@ import baaahs.show.ShaderType
 
 class DistortionShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader, glslCode) {
     companion object {
+        val proFormaInputPorts = listOf(
+            InputPort("gl_FragCoord", "vec2", "U/V Coordinatess", ContentType.UvCoordinateStream)
+        )
+
         val wellKnownInputPorts = listOf(
-            InputPort(
-                "gl_FragCoord",
-                "vec4",
-                "Coordinates",
-                ContentType.UvCoordinateStream
-            ),
-            InputPort(
-                "intensity",
-                "float",
-                "Intensity",
-                ContentType.Float
-            ), // TODO: ContentType.ZeroToOne
-            InputPort(
-                "time",
-                "float",
-                "Time",
-                ContentType.Time
-            ),
-            InputPort(
-                "startTime",
-                "float",
-                "Activated Time",
-                ContentType.Time
-            ),
-            InputPort(
-                "endTime",
-                "float",
-                "Deactivated Time",
-                ContentType.Time
-            )
+            InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinateStream),
+            InputPort("intensity", "float", "Intensity", ContentType.Float), // TODO: ContentType.ZeroToOne
+            InputPort("time", "float", "Time", ContentType.Time),
+            InputPort("startTime", "float", "Activated Time", ContentType.Time),
+            InputPort("endTime", "float", "Deactivated Time", ContentType.Time)
 //                        varying vec2 surfacePosition; TODO
         ).associateBy { it.id }
+
+        val outputPort: OutputPort =
+            OutputPort(GlslType.Vec2, ShaderOutPortRef.ReturnValue, "U/V Coordinate", ContentType.UvCoordinateStream)
     }
 
     override val shaderType: ShaderType
@@ -50,28 +32,12 @@ class DistortionShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(sha
 
     override val entryPointName: String get() = "mainDistortion"
 
-    override val inputPorts: List<InputPort> by lazy {
-        listOf(
-            InputPort(
-                "gl_FragCoord",
-                "vec2",
-                "U/V Coordinatess",
-                ContentType.UvCoordinateStream
-            )
-        ) +
-                glslCode.uniforms.map {
-                    wellKnownInputPorts[it.name]?.copy(dataType = it.dataType, glslVar = it)
-                        ?: toInputPort(it)
-                }
-    }
-
-    override val outputPort: OutputPort =
-        OutputPort(
-            GlslType.Vec2,
-            ShaderOutPortRef.ReturnValue,
-            "U/V Coordinate",
-            ContentType.UvCoordinateStream
-        )
+    override val proFormaInputPorts
+        get() = DistortionShader.proFormaInputPorts
+    override val wellKnownInputPorts
+        get() = DistortionShader.wellKnownInputPorts
+    override val outputPort: OutputPort
+        get() = DistortionShader.outputPort
 
     override fun invocationGlsl(
         namespace: GlslCode.Namespace,

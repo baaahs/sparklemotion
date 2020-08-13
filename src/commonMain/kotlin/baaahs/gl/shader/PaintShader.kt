@@ -13,7 +13,11 @@ abstract class PaintShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base
 
 class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(shader, glslCode) {
     companion object {
-        val magicUniforms = listOf(
+        val proFormaInputPorts = listOf(
+            InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinateStream)
+        )
+
+        val wellKnownInputPorts = listOf(
 //              uniform vec3      iResolution;           // viewport resolution (in pixels)
 //              uniform float     iTime;                 // shader playback time (in seconds)
 //              uniform float     iTimeDelta;            // render time (in seconds)
@@ -25,26 +29,11 @@ class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(sha
 //              uniform vec4      iDate;                 // (year, month, day, time in seconds)
 //              uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 
-            InputPort(
-                "iResolution",
-                "vec3",
-                "Resolution",
-                ContentType.Resolution
-            ),
+            InputPort("iResolution", "vec3", "Resolution", ContentType.Resolution),
 
 //          float iTime (or iGlobalTime ) : seconds(+fracs) since the shader (re)started.
-            InputPort(
-                "iTime",
-                "float",
-                "Time",
-                ContentType.Time
-            ),
-            InputPort(
-                "iGlobalTime",
-                "float",
-                "Global Time",
-                ContentType.Time
-            ),
+            InputPort("iTime", "float", "Time", ContentType.Time),
+            InputPort("iGlobalTime", "float", "Global Time", ContentType.Time),
 
 //          float iTimeDelta: duration since the previous frame.
             InputPort("iTimeDelta", "float", "Time Delta"),
@@ -56,12 +45,7 @@ class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(sha
 
 //          float iChannelTime[4] : current time in video or sound.
             InputPort("iChannelTime", "float[4]", "Channel Time"),
-            InputPort(
-                "iMouse",
-                "vec2",
-                "Mouse",
-                ContentType.Mouse
-            ),
+            InputPort("iMouse", "vec2", "Mouse", ContentType.Mouse),
 
 //          vec4 iDate: year-1, month-1, day, seconds(+fracs) since midnight.
             InputPort("iDate", "vec4", "Date"),
@@ -69,67 +53,42 @@ class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(sha
             InputPort("iChannelResolution", "vec3[4]", "Channel Resolution"),
 
 //          uniform samplerXX iChanneli;
-            InputPort(
-                "iChannel0",
-                "sampler2D",
-                "Channel 0",
-                ContentType.Media
-            ),
-            InputPort(
-                "iChannel1",
-                "sampler2D",
-                "Channel 1",
-                ContentType.Media
-            ),
-            InputPort(
-                "iChannel2",
-                "sampler2D",
-                "Channel 2",
-                ContentType.Media
-            ),
-            InputPort(
-                "iChannel3",
-                "sampler2D",
-                "Channel 3",
-                ContentType.Media
-            )
+            InputPort("iChannel0", "sampler2D", "Channel 0", ContentType.Media),
+            InputPort("iChannel1", "sampler2D", "Channel 1", ContentType.Media),
+            InputPort("iChannel2", "sampler2D", "Channel 2", ContentType.Media),
+            InputPort("iChannel3", "sampler2D", "Channel 3", ContentType.Media)
         ).associateBy { it.id }
 
-        val uvCoordPort = InputPort(
-            "sm_FragCoord",
-            "vec2",
-            "Coordinates",
-            ContentType.UvCoordinateStream
-        )
+        val outputPort: OutputPort =
+            OutputPort(GlslType.Vec4, ShaderOutPortRef.ReturnValue, "Output Color", ContentType.ColorStream)
     }
 
-    override val entryPointName: String get() = "mainImage"
+    override val entryPointName: String
+        get() = "mainImage"
+    override val proFormaInputPorts: List<InputPort>
+        get() = ShaderToyPaintShader.proFormaInputPorts
+    override val wellKnownInputPorts: Map<String, InputPort>
+        get() = ShaderToyPaintShader.wellKnownInputPorts
+    override val outputPort: OutputPort
+        get() = ShaderToyPaintShader.outputPort
 
     override val inputPorts: List<InputPort> by lazy {
         // ShaderToy shaders have a set of uniforms that are automatically declared;
         // see if we're using any of them.
         val iVars = glslCode.functions.flatMap { glslFunction ->
             Regex("\\w+").findAll(glslFunction.fullText).map { it.value }.filter { word ->
-                magicUniforms.containsKey(word)
+                wellKnownInputPorts.containsKey(word)
             }.toList()
         }.toSet()
 
-        val implicitUniforms = magicUniforms.mapNotNull { (k, v) ->
+        val implicitUniforms = wellKnownInputPorts.mapNotNull { (k, v) ->
             if (iVars.contains(k)) v else null
         }
 
         val explicitUniforms = glslCode.uniforms.map { toInputPort(it) }
 
-        explicitUniforms + implicitUniforms + uvCoordPort
+        explicitUniforms + implicitUniforms + proFormaInputPorts
     }
-
-    override val outputPort: OutputPort =
-        OutputPort(
-            GlslType.Vec4,
-            ShaderOutPortRef.ReturnValue,
-            "Output Color",
-            ContentType.ColorStream
-        )
 
     override fun invocationGlsl(
         namespace: GlslCode.Namespace,
@@ -143,60 +102,29 @@ class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(sha
 
 class GenericPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(shader, glslCode) {
     companion object {
+        val proFormaInputPorts = listOf(
+            InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinateStream)
+        )
+
         val wellKnownInputPorts = listOf(
-            InputPort(
-                "gl_FragCoord",
-                "vec4",
-                "Coordinates",
-                ContentType.UvCoordinateStream
-            ),
-            InputPort(
-                "resolution",
-                "vec2",
-                "Resolution",
-                ContentType.Resolution
-            ),
-            InputPort(
-                "mouse",
-                "vec2",
-                "Mouse",
-                ContentType.Mouse
-            ),
-            InputPort(
-                "time",
-                "float",
-                "Time",
-                ContentType.Time
-            )
+            InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
+            InputPort("mouse", "vec2", "Mouse", ContentType.Mouse),
+            InputPort("time", "float", "Time", ContentType.Time)
 //                        varying vec2 surfacePosition; TODO
         ).associateBy { it.id }
 
-        val uvCoordPort = InputPort(
-            "gl_FragCoord",
-            "vec4",
-            "Coordinates",
-            ContentType.UvCoordinateStream
-        )
+        val outputPort =
+            OutputPort(GlslType.Vec4, "gl_FragColor", "Output Color", ContentType.ColorStream)
     }
+
+    override val proFormaInputPorts: List<InputPort>
+        get() = GenericPaintShader.proFormaInputPorts
+    override val wellKnownInputPorts: Map<String, InputPort>
+        get() = GenericPaintShader.wellKnownInputPorts
+    override val outputPort: OutputPort
+        get() = GenericPaintShader.outputPort
 
     override val entryPointName: String get() = "main"
-
-    override val inputPorts: List<InputPort> by lazy {
-        glslCode.uniforms.map {
-            wellKnownInputPorts[it.name]?.copy(dataType = it.dataType, glslVar = it)
-                ?: toInputPort(it)
-        } + uvCoordPort
-    }
-//    it.type, it.name, title, contentType,
-//    it.hint?.plugin ?: contentType.pluginId, it.hint?.map ?: emptyMap()
-
-    override val outputPort: OutputPort =
-        OutputPort(
-            GlslType.Vec4,
-            "gl_FragColor",
-            "Output Color",
-            ContentType.ColorStream
-        )
 
     override fun invocationGlsl(
         namespace: GlslCode.Namespace,

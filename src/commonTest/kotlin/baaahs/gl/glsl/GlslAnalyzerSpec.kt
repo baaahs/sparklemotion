@@ -268,25 +268,10 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(
                             listOf(
-                                InputPort(
-                                    "time",
-                                    "float",
-                                    "Time",
-                                    ContentType.Time
-                                ),
-                                InputPort(
-                                    "resolution",
-                                    "vec2",
-                                    "Resolution",
-                                    ContentType.Resolution
-                                ),
-                                InputPort("blueness", "float", "Blueness"),
-                                InputPort(
-                                    "gl_FragCoord",
-                                    "vec4",
-                                    "Coordinates",
-                                    ContentType.UvCoordinateStream
-                                )
+                                InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinateStream),
+                                InputPort("time", "float", "Time", ContentType.Time),
+                                InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
+                                InputPort("blueness", "float", "Blueness")
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
@@ -317,24 +302,9 @@ object GlslAnalyzerSpec : Spek({
                         expect(
                             listOf(
                                 InputPort("blueness", "float", "Blueness"),
-                                InputPort(
-                                    "iResolution",
-                                    "vec3",
-                                    "Resolution",
-                                    ContentType.Resolution
-                                ),
-                                InputPort(
-                                    "iTime",
-                                    "float",
-                                    "Time",
-                                    ContentType.Time
-                                ),
-                                InputPort(
-                                    "sm_FragCoord",
-                                    "vec2",
-                                    "Coordinates",
-                                    ContentType.UvCoordinateStream
-                                )
+                                InputPort("iResolution", "vec3", "Resolution", ContentType.Resolution),
+                                InputPort("iTime", "float", "Time", ContentType.Time),
+                                InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinateStream)
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
@@ -350,18 +320,8 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(
                             listOf(
-                                InputPort(
-                                    "pixelCoordsTexture",
-                                    "sampler2D",
-                                    "U/V Coordinates Texture",
-                                    ContentType.PixelCoordinatesTexture
-                                ),
-                                InputPort(
-                                    "modelInfo",
-                                    "ModelInfo",
-                                    "Model Info",
-                                    null
-                                )
+                                InputPort("pixelCoordsTexture", "sampler2D", "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
+                                InputPort("modelInfo", "ModelInfo", "Model Info", null)
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
