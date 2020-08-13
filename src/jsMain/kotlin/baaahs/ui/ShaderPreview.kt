@@ -3,6 +3,8 @@ package baaahs.ui
 import baaahs.app.ui.appContext
 import baaahs.gl.GlBase
 import baaahs.gl.GlContext
+import baaahs.gl.preview.GadgetAdjuster
+import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.render.QuadPreview
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
@@ -23,9 +25,6 @@ import react.dom.*
 import styled.StyleSheet
 import styled.css
 import styled.styledDiv
-import kotlin.collections.any
-import kotlin.collections.forEach
-import kotlin.collections.joinToString
 import kotlin.collections.set
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
@@ -83,7 +82,8 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                     it.startCompile(gl!!)
                 }
                 PreviewShaderBuilder.State.Success -> {
-                    val gadgetAdjuster = GadgetAdjuster(builder.gadgets, appContext.clock)
+                    val gadgetAdjuster =
+                        GadgetAdjuster(builder.gadgets, appContext.clock)
                     preRenderHook.current = { gadgetAdjuster.adjustGadgets() }
 
                     glslPreview!!.setProgram(it.glslProgram!!)
