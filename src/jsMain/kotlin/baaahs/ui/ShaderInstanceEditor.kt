@@ -30,7 +30,8 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
         }
 
     val editingShader = memo(props.mutableShaderInstance) {
-        val newEditingShader = EditingShader(props.mutableShaderInstance, appContext.autoWirer)
+        val newEditingShader =
+            EditingShader(props.mutableShaderInstance, appContext.autoWirer)
 
         val observer = newEditingShader.addObserver {
             if (it.state == EditingShader.State.Success) {
