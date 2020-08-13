@@ -141,6 +141,7 @@ class MutableShow(
                 shaderInstance.priority
             )
         }.toMutableMap()
+
     init {
         // Second pass required here since they might refer to each other.
         baseShow.shaderInstances.values.zip(shaderInstances.values).forEach { (shaderInstance, editor) ->
@@ -329,6 +330,7 @@ class MutablePatch {
 
     val mutableShaderInstances: MutableList<MutableShaderInstance>
     var surfaces: Surfaces
+
     constructor(
         mutableShaderInstances: List<MutableShaderInstance> = emptyList(),
         surfaces: Surfaces = Surfaces.AllSurfaces
@@ -373,7 +375,8 @@ class MutablePatch {
         build(showBuilder)
 
         val openShaders = showBuilder.getShaders().mapValues { (_, shader) ->
-            autoWirer.glslAnalyzer.openShader(shader.src) }
+            autoWirer.glslAnalyzer.openShader(shader.src)
+        }
 
         val resolvedShaderInstances =
             ShaderInstanceResolver(openShaders, showBuilder.getShaderInstances(), showBuilder.getDataSources())
@@ -427,6 +430,7 @@ data class MutableDataSource(val dataSource: DataSource) : MutablePort {
 
     override fun displayName(): String = dataSource.dataSourceName
 }
+
 fun DataSource.editor() = MutableDataSource(this)
 
 data class MutableControl(val control: Control) {
@@ -439,7 +443,7 @@ data class MutableShader(
     /**language=glsl*/
     var src: String
 ) {
-    constructor(shader: Shader): this(shader.title, shader.type, shader.src)
+    constructor(shader: Shader) : this(shader.title, shader.type, shader.src)
 
     fun build(): Shader {
         return Shader(title, type, src)
@@ -461,9 +465,9 @@ data class MutableShaderInstance(
     }
 
     fun findShaderChannels(): List<ShaderChannel> {
-        return incomingLinks.values.mapNotNull { link ->
+        return (incomingLinks.values.map { link ->
             if (link is MutableShaderChannel) link.shaderChannel else null
-        }
+        } + shaderChannel).filterNotNull()
     }
 
     fun link(portId: String, toPort: DataSource) {

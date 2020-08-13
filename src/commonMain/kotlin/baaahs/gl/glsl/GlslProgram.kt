@@ -55,7 +55,7 @@ class GlslProgram(
                 fragShader.validate()
 
                 val infoLog = gl.check { getProgramInfoLog(id) }
-                throw CompilationException(infoLog ?: "huh?")
+                throw CompilationException(infoLog ?: "Huh? Program error?")
             }
         }
 

@@ -82,6 +82,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     }
 
     val dragNDrop by state { DragNDrop() }
+    var prompt by state<Prompt?> { null }
+
     val myAppContext by state {
         jsObject<AppContext> {
             this.showPlayer = props.showPlayer
@@ -90,6 +92,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.plugins = webClient.plugins
             this.autoWirer = AutoWirer(webClient.plugins)
             this.allStyles = AllStyles(theme)
+            this.prompt = { prompt = it }
         }
     }
 
@@ -228,6 +231,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         Unit
     }
 
+    val handlePromptClose = useCallback { prompt = null }
 
     val renderAppDrawerOpen = appDrawerOpen || (webClient.isLoaded && webClient.show == null)
 
@@ -455,6 +459,13 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     attrs.onApply = handlePatchHolderEdit
                     // TODO: This doesn't actually revert the change, it just closes the editor.
                     attrs.onCancel = handlePatchHolderClose
+                }
+            }
+
+            prompt?.let {
+                promptDialog {
+                    attrs.prompt = it
+                    attrs.onClose = handlePromptClose
                 }
             }
         }
