@@ -1,5 +1,6 @@
 package baaahs.app.ui
 
+import baaahs.JsClock
 import baaahs.ShowEditorState
 import baaahs.ShowPlayer
 import baaahs.ShowState
@@ -93,6 +94,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.autoWirer = AutoWirer(webClient.plugins)
             this.allStyles = AllStyles(theme)
             this.prompt = { prompt = it }
+            this.clock = JsClock()
         }
     }
 

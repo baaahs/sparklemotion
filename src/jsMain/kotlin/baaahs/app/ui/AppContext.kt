@@ -1,5 +1,6 @@
 package baaahs.app.ui
 
+import baaahs.Clock
 import baaahs.ShowPlayer
 import baaahs.client.WebClient
 import baaahs.gl.patch.AutoWirer
@@ -17,4 +18,5 @@ external interface AppContext {
     var autoWirer: AutoWirer
     var allStyles: AllStyles
     var prompt: (prompt: Prompt) -> Unit
+    var clock: Clock
 }

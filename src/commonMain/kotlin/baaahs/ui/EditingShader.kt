@@ -173,6 +173,21 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
         notifyChanged()
     }
 
+    enum class State {
+        Unbuilt,
+        Linking,
+        Linked,
+        Compiling,
+        Success,
+        Errors
+    }
+
+    companion object {
+        private val logger = Logger("ShaderEditor")
+    }
+}
+
+class GadgetAdjuster(val gadgets: List<GadgetData>, val clock: Clock) {
     fun adjustGadgets() {
         val now = clock.now() / 2
         val count = gadgets.size
@@ -201,20 +216,6 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
 
             mask = mask.shl(1)
         }
-    }
-
-    enum class State {
-        Unbuilt,
-        Linking,
-        Linked,
-        Compiling,
-        Success,
-        Errors
-    }
-
-    companion object {
-        private val logger = Logger("ShaderEditor")
-        private val clock = JsClock()
     }
 }
 

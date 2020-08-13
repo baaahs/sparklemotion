@@ -7,23 +7,21 @@ import acex.AceEditor
 import acex.Mode
 import acex.Theme
 import acex.Themes
-import baaahs.JsClock
 import baaahs.Time
+import baaahs.app.ui.appContext
 import baaahs.jsx.useResizeListener
 import kotlinext.js.jsObject
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.type
 import materialui.useTheme
 import org.w3c.dom.Element
-import react.RBuilder
-import react.RHandler
-import react.RProps
-import react.child
+import react.*
 import react.dom.div
 import kotlin.browser.window
 
 val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { props ->
-    logger.info { "Rendering for ${props.document.content}" }
+    val appContext = useContext(appContext)
+
     val rootEl = useRef<Element>()
     val aceEditor = useRef<AceEditor?>()
 
@@ -47,7 +45,7 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
         } else {
             // Change will get picked up soon by [applySrcChangesDebounced].
             src.current = value
-            srcLastChangedAt.current = clock.now()
+            srcLastChangedAt.current = appContext.clock.now()
         }
 
         Unit
@@ -63,7 +61,7 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
             // Changed since we last passed on updates?
             srcLastChangedAt.current?.let { lastChange ->
                 // Changed within .25 seconds?
-                if (lastChange < clock.now() - debounceSeconds) {
+                if (lastChange < appContext.clock.now() - debounceSeconds) {
                     srcLastChangedAt.current = null
                     props.onChange?.invoke(src.current)
                 }
@@ -102,8 +100,6 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
 }
 
 class Document(val key: String, var content: String)
-
-private val clock = JsClock()
 
 
 external interface TextEditorProps : RProps {

@@ -23,6 +23,10 @@ import react.dom.*
 import styled.StyleSheet
 import styled.css
 import styled.styledDiv
+import kotlin.collections.any
+import kotlin.collections.forEach
+import kotlin.collections.joinToString
+import kotlin.collections.set
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
@@ -73,14 +77,15 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         if (glslPreview == null) return@onChange
         if (builder == null) return@onChange
 
-        preRenderHook.current = { builder.adjustGadgets() }
-
         val observer = builder.addObserver {
             when (it.state) {
                 PreviewShaderBuilder.State.Linked -> {
                     it.startCompile(gl!!)
                 }
                 PreviewShaderBuilder.State.Success -> {
+                    val gadgetAdjuster = GadgetAdjuster(builder.gadgets, appContext.clock)
+                    preRenderHook.current = { gadgetAdjuster.adjustGadgets() }
+
                     glslPreview!!.setProgram(it.glslProgram!!)
                 }
                 else -> {
