@@ -9,47 +9,30 @@ import baaahs.show.ShaderType
 
 class ProjectionShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader, glslCode) {
     companion object {
-        val pixelCoordsTextureInputPort = InputPort(
-            "pixelCoordsTexture",
-            "sampler2D",
-            "U/V Coordinates Texture",
-            ContentType.PixelCoordinatesTexture
-        )
-        val magicUniforms = listOf(
-            pixelCoordsTextureInputPort,
-            InputPort(
-                "resolution",
-                "vec2",
-                "Resolution",
-                ContentType.Resolution
-            ),
-            InputPort(
-                "previewResolution",
-                "vec2",
-                "Preview Resolution",
-                ContentType.PreviewResolution
-            )
+        val proFormaInputPorts = listOf<InputPort>()
+
+        val wellKnownInputPorts = listOf(
+            InputPort("pixelCoordsTexture", "sampler2D", "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
+            InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
+            InputPort("previewResolution", "vec2", "Preview Resolution", ContentType.PreviewResolution)
         ).associateBy { it.id }
+
+        val outputPort =
+            OutputPort(GlslType.Vec2, ShaderOutPortRef.ReturnValue, "U/V Coordinate", ContentType.UvCoordinateStream)
+
     }
 
     override val shaderType: ShaderType = ShaderType.Projection
 
-    override val entryPointName: String get() = "mainProjection"
+    override val entryPointName: String
+        get() = "mainProjection"
+    override val proFormaInputPorts: List<InputPort>
+        get() = ProjectionShader.proFormaInputPorts
+    override val wellKnownInputPorts: Map<String, InputPort>
+        get() = ProjectionShader.wellKnownInputPorts
+    override val outputPort: OutputPort
+        get() = ProjectionShader.outputPort
 
-    override val inputPorts: List<InputPort> by lazy {
-        glslCode.uniforms.map {
-            magicUniforms[it.name]?.copy(dataType = it.dataType, glslVar = it)
-                ?: toInputPort(it)
-        }
-    }
-
-    override val outputPort: OutputPort =
-        OutputPort(
-            GlslType.Vec2,
-            ShaderOutPortRef.ReturnValue,
-            "U/V Coordinate",
-            ContentType.UvCoordinateStream
-        )
 
     override fun invocationGlsl(
         namespace: GlslCode.Namespace,

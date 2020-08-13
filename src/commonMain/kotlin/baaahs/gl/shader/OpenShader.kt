@@ -38,6 +38,18 @@ interface OpenShader : RefCounted {
     ) : OpenShader, RefCounted by RefCounter() {
         override val title: String get() = shader.title
 
+        abstract val proFormaInputPorts: List<InputPort>
+        abstract val wellKnownInputPorts: Map<String, InputPort>
+
+        override val inputPorts: List<InputPort> by lazy {
+            proFormaInputPorts +
+                    glslCode.uniforms.map {
+                        wellKnownInputPorts[it.name]
+                            ?.copy(dataType = it.dataType, glslVar = it)
+                            ?: toInputPort(it)
+                    }
+        }
+
         protected fun toInputPort(it: GlslCode.GlslVar): InputPort {
             return InputPort(
                 it.name, it.dataType, it.displayName(),

@@ -40,21 +40,11 @@ object PaintShaderSpec : Spek({
 
             it("finds magic uniforms") {
                 expect(listOf(
+                    InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinateStream),
                     InputPort("time", "float", "Time", ContentType.Time),
-                    InputPort(
-                        "resolution",
-                        "vec2",
-                        "Resolution",
-                        ContentType.Resolution
-                    ),
+                    InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
                     InputPort("mouse", "vec2", "Mouse", ContentType.Mouse),
-                    InputPort("blueness", "float", "Blueness"),
-                    InputPort(
-                        "gl_FragCoord",
-                        "vec4",
-                        "Coordinates",
-                        ContentType.UvCoordinateStream
-                    )
+                    InputPort("blueness", "float", "Blueness")
                 )) { shader.inputPorts.map { it.copy(glslVar = null) } }
             }
 
