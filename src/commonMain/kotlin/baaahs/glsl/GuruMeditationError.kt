@@ -34,12 +34,6 @@ object GuruMeditationError {
         """.trimIndent()
     )
 
-    private val fakeShowPlayer = object : BaseShowPlayer(Plugins.safe(), ModelInfo.Empty) {
-        override val glContext: GlContext get() = error("not implemented")
-        override fun <T : Gadget> createdGadget(id: String, gadget: T): Unit = error("not implemented")
-        override fun <T : Gadget> useGadget(id: String): T = error("not implemented")
-    }
-
     private val linkedPatch: LinkedPatch?
     private val dataFeeds: Map<String, GlslProgram.DataFeed>
 
@@ -67,4 +61,10 @@ object GuruMeditationError {
             )
         )
     }
+}
+
+private val fakeShowPlayer = object : BaseShowPlayer(Plugins.safe(), ModelInfo.Empty) {
+    override val glContext: GlContext get() = error("not implemented")
+    override fun <T : Gadget> createdGadget(id: String, gadget: T): Unit = error("not implemented")
+    override fun <T : Gadget> useGadget(id: String): T = error("not implemented")
 }
