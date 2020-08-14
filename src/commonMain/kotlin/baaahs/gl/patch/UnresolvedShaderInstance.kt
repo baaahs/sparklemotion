@@ -8,7 +8,7 @@ import baaahs.show.mutable.MutableShaderChannel
 class UnresolvedShaderInstance(
     val mutableShader: MutableShader,
     val incomingLinksOptions: Map<String, MutableSet<MutablePort>>,
-    var shaderChannel: ShaderChannel? = null,
+    var shaderChannel: ShaderChannel = ShaderChannel.Main,
     var priority: Float
 ) {
     fun isAmbiguous() = incomingLinksOptions.values.any { it.size > 1 }

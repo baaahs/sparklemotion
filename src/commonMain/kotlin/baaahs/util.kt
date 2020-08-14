@@ -138,3 +138,8 @@ fun randomId(prefix: String): String {
             "-" +
             Random.nextInt(0, Int.MAX_VALUE).toString(16)
 }
+
+// Workaround for https://youtrack.jetbrains.com/issue/KT-38501.
+fun debugger() {
+    println("Debugger breakpoint")
+}

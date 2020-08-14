@@ -150,6 +150,8 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
     }
 
     companion object {
+        fun previewShowPlayer(glContext: GlContext): ShowPlayer = PreviewShowPlayer(Plugins.safe(), glContext)
+
         private val logger = Logger("ShaderEditor")
     }
 }

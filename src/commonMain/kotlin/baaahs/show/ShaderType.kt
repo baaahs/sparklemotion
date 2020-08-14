@@ -3,6 +3,7 @@ package baaahs.show
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.*
+import baaahs.plugin.Plugins
 import baaahs.show.mutable.MutableShader
 
 enum class ShaderType(
@@ -39,8 +40,8 @@ enum class ShaderType(
         override fun matches(glslCode: GlslCode) =
             glslCode.functionNames.contains("mainProjection")
 
-        override fun open(shader: Shader, glslCode: GlslCode) =
-            ProjectionShader(shader, glslCode)
+        override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins) =
+            ProjectionShader(shader, glslCode, plugins)
     },
 
     Distortion(
@@ -57,8 +58,8 @@ enum class ShaderType(
         override fun matches(glslCode: GlslCode) =
             glslCode.functionNames.contains("mainDistortion")
 
-        override fun open(shader: Shader, glslCode: GlslCode) =
-            DistortionShader(shader, glslCode)
+        override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins) =
+            DistortionShader(shader, glslCode, plugins)
     },
 
     Paint(
@@ -77,11 +78,11 @@ enum class ShaderType(
                     glslCode.functionNames.contains("mainImage")
         }
 
-        override fun open(shader: Shader, glslCode: GlslCode): PaintShader {
+        override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins): PaintShader {
             if (glslCode.functionNames.contains("main")) {
-                return GenericPaintShader(shader, glslCode)
+                return GenericPaintShader(shader, glslCode, plugins)
             } else if (glslCode.functionNames.contains("mainImage")) {
-                return ShaderToyPaintShader(shader, glslCode)
+                return ShaderToyPaintShader(shader, glslCode, plugins)
             } else
                 error("Can't identify paint shader type.")
         }
@@ -98,12 +99,12 @@ enum class ShaderType(
             return glslCode.functionNames.contains("mainFilter")
         }
 
-        override fun open(shader: Shader, glslCode: GlslCode) =
-            FilterShader(shader, glslCode)
+        override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins) =
+            FilterShader(shader, glslCode, plugins)
     };
 
     abstract fun matches(glslCode: GlslCode): Boolean
-    abstract fun open(shader: Shader, glslCode: GlslCode): OpenShader
+    abstract fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins): OpenShader
 
     fun shaderFromTemplate(): MutableShader {
         return MutableShader("Untitled $name Shader", this, template)

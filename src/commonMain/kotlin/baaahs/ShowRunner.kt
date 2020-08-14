@@ -1,8 +1,11 @@
 package baaahs
 
+import baaahs.gl.glsl.CompilationException
+import baaahs.gl.glsl.GlslException
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.ModelRenderer
+import baaahs.glsl.GuruMeditationError
 import baaahs.show.ShaderChannel
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
@@ -103,17 +106,26 @@ class ShowRunner(
     }
 
     private fun prepare(newPatchSet: OpenPatchSet): RenderPlan {
-        val activePatches = newPatchSet.activePatches()
-        val linkedPatches = autoWirer.merge(*activePatches.toTypedArray()).mapValues { (_, portDiagram) ->
-            portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
+        try {
+            val activePatches = newPatchSet.activePatches()
+            val linkedPatches = autoWirer.merge(*activePatches.toTypedArray()).mapValues { (_, portDiagram) ->
+                portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
+            }
+            val glslContext = modelRenderer.gl
+            val activeDataSources = mutableSetOf<String>()
+            val programs = linkedPatches.mapNotNull { (_, linkedPatch) ->
+                linkedPatch?.let { it to it.createProgram(glslContext, openShow.dataFeeds) }
+            }
+            return RenderPlan(programs)
+        } catch (e: GlslException) {
+            logger.error("Error preparing program", e)
+            if (e is CompilationException) {
+                e.source?.let { logger.info { it } }
+            }
+            return GuruMeditationError.createRenderPlan(modelRenderer.gl)
         }
-        val glslContext = modelRenderer.gl
-        val activeDataSources = mutableSetOf<String>()
-        val programs = linkedPatches.mapNotNull { (_, linkedPatch) ->
-            linkedPatch?.let { it to it.createProgram(glslContext, openShow.dataFeeds) }
-        }
-        return RenderPlan(programs)
     }
+
 
     fun shutDown() {
         // TODO gadgetManager.clear()

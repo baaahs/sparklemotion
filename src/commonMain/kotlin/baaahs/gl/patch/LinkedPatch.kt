@@ -48,11 +48,16 @@ class LinkedPatch(
         dataSourceLinks = traverseLinks(shaderInstance)
 
         val componentsByChannel = hashMapOf<ShaderChannel, Component>()
-        componentLookup = instanceNodes.values.sortedByDescending { it.maxDepth }.mapIndexed { index, instanceNode ->
-            val component = Component(index, instanceNode)
-            components.add(component)
-            instanceNode.liveShaderInstance to component
-        }.associate { it }
+        componentLookup = instanceNodes.values
+            .sortedWith(
+                compareByDescending<InstanceNode> { it.maxDepth }
+                    .thenBy { it.shaderShortName}
+            )
+            .mapIndexed { index, instanceNode ->
+                val component = Component(index, instanceNode)
+                components.add(component)
+                instanceNode.liveShaderInstance to component
+            }.associate { it }
         componentsByChannel[ShaderChannel.Main]?.redirectOutputTo("sm_result")
     }
 

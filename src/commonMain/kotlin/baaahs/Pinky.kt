@@ -120,7 +120,6 @@ class Pinky(
                         e.source?.let { logger.info { it } }
                     }
                     delay(1000)
-//                  TODO  switchToShow(GuruMeditationErrorShow)
                 }
             }
             facade.notifyChanged()

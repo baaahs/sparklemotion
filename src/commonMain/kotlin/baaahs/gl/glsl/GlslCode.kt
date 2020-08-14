@@ -26,6 +26,7 @@ class GlslCode(
     }
     val symbolNames = globalVarNames + functionNames + structNames
     val globalVars: Collection<GlslVar> get() = statements.filterIsInstance<GlslVar>()
+    val globalInputVars: Collection<GlslVar> get() = globalVars.filter { it.isUniform || it.isVarying }
     val uniforms: Collection<GlslVar> get() = globalVars.filter { it.isUniform }
     val functions: Collection<GlslFunction> get() = statements.filterIsInstance<GlslFunction>()
     val structs: Collection<GlslStruct> get() = statements.filterIsInstance<GlslStruct>()
@@ -110,49 +111,69 @@ class GlslCode(
         override val fullText: String = "",
         val isConst: Boolean = false,
         val isUniform: Boolean = false,
+        val isVarying: Boolean = false,
         override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList()
     ) : Statement {
         override fun stripSource() = copy(fullText = "", lineNumber = null)
 
-        val hint: Hint? by lazy {
-            val commentString = comments.joinToString(" ") { it.trim() }
-            if (commentString.startsWith("@@")) {
-                Hint(commentString.trimStart('@').trim(), lineNumber)
-            } else {
-                null
-            }
-//            val parts = commentString.split(" ")
-//            if (parts.isNotEmpty() && parts.first().startsWith("@@")) {
-//            } else null
-        }
+        val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
 
         fun displayName() = name.englishize()
     }
 
-    class Hint(string: String, lineNumber: Int?) {
-        val pluginRef: PluginRef
-        val config: JsonObject
+    class Hint(
+        val pluginRef: PluginRef?,
+        val config: JsonObject?,
+        val tags: Map<String, String>
+    ) {
+        fun tag(name: String) = tags[name]
 
-        init {
-            val parts = string.split(" ")
-            val type = parts.first()
-            pluginRef = Regex("(?:([\\w.]+\\.)?([A-Z]\\w+):)?(\\w+)").matchEntire(type)?.let {
-                val (pluginPackage, pluginClass, resourceName) = it.destructured
-                PluginRef(
-                    "${pluginPackage.ifEmpty { "baaahs." }}${pluginClass.ifEmpty { "Core" }}",
-                    resourceName
-                )
-            } ?: throw AnalysisException(
-                "don't understand hint: $string",
-                lineNumber ?: -1
-            )
+        companion object {
+            fun parse(commentString: String, lineNumber: Int?): Hint? {
+                var pluginRef: PluginRef? = null
+                var config: JsonObject? = null
+                val tags = mutableMapOf<String, String>()
 
-            config = json {
-                parts.subList(1, parts.size).forEach { s ->
-                    val kv = s.split("=")
-                    kv.first() to kv.subList(1, kv.size).joinToString("=")
+                Regex("@(@?[^@]+)").findAll(commentString).forEach { match ->
+                    val tag = match.groupValues[1].trim()
+
+                    if (tag.startsWith("@")) {
+                        val string = commentString.trimStart('@').trim()
+
+                        val parts = string.split(" ")
+                        val type = parts.first()
+                        pluginRef = Regex("(?:([\\w.]+\\.)?([A-Z]\\w+):)?(\\w+)").matchEntire(type)?.let {
+                            val (pluginPackage, pluginClass, resourceName) = it.destructured
+                            PluginRef(
+                                "${pluginPackage.ifEmpty { "baaahs." }}${pluginClass.ifEmpty { "Core" }}",
+                                resourceName
+                            )
+                        } ?: throw AnalysisException(
+                            "don't understand hint: $string",
+                            lineNumber ?: -1
+                        )
+
+                        config = json {
+                            parts.subList(1, parts.size).forEach { s ->
+                                val kv = s.split("=")
+                                kv.first() to kv.subList(1, kv.size).joinToString("=")
+                            }
+                        }
+
+                    } else {
+                        val parts = tag.split(Regex("\\s"), limit = 2)
+                        when (parts.size) {
+                            0 -> {} // No-op.
+                            1 -> tags[parts[0]] = parts[0]
+                            2 -> tags[parts[0]] = parts[1].trim()
+                        }
+                    }
                 }
+
+                return if (pluginRef != null || config != null || tags.isNotEmpty()) {
+                    Hint(pluginRef, config, tags)
+                } else null
             }
         }
     }

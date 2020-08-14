@@ -74,11 +74,7 @@ object AutoWirerSpec : Spek({
 
             context("with a UV projection shader") {
                 val uvShader = cylindricalProjection
-                val uvShaderInst by value {
-                    MutableShaderInstance(
-                        MutableShader(uvShader)
-                    )
-                }
+                val uvShaderInst by value { MutableShaderInstance(MutableShader(uvShader)) }
 
                 override(shaders) { arrayOf(paintShader, uvShader) }
 

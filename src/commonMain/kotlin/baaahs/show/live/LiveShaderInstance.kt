@@ -37,9 +37,14 @@ class LiveShaderInstance(
             inputPort: InputPort,
             resolver: PortDiagram.Resolver
         ): Link {
-            val contentType = inputPort.contentType ?: return NoOpLink
+            val contentType = inputPort.contentType
+                ?: return NoOpLink
             val resolved = resolver.resolve(shaderChannel, contentType)
-            return if (resolved != null) ShaderOutLink(resolved) else NoOpLink }
+            return if (resolved != null)
+                ShaderOutLink(resolved)
+            else
+                NoOpLink
+        }
     }
     data class ConstLink(val glsl: String) : Link
     object NoOpLink : Link

@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.Logger
 import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
@@ -53,6 +54,7 @@ class PortDiagram {
 
         fun resolve(shaderChannel: ShaderChannel, contentType: ContentType): LiveShaderInstance? {
             return resolveNext(shaderChannel, contentType).also {
+                logger.debug { "Resolved $shaderChannel/$contentType to $it"}
                 if (it != null) resolved[shaderChannel to contentType] = it
             }
         }
@@ -95,5 +97,9 @@ class PortDiagram {
         override fun toString(): String {
             return "ChannelEntry(shaderInstance=${shaderInstance.shader.title}, priority=$priority, level=$level)"
         }
+    }
+
+    companion object {
+        private val logger = Logger("PortDiagram")
     }
 }

@@ -4,11 +4,12 @@ import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.glsl.LinkException
 import baaahs.gl.patch.ContentType
+import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderOutPortRef
 import baaahs.show.ShaderType
 
-class DistortionShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader, glslCode) {
+class DistortionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
     companion object {
         val proFormaInputPorts = listOf(
             InputPort("gl_FragCoord", "vec2", "U/V Coordinatess", ContentType.UvCoordinateStream)

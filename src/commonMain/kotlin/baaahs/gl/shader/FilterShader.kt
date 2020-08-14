@@ -4,14 +4,15 @@ import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.glsl.LinkException
 import baaahs.gl.patch.ContentType
+import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderOutPortRef
 import baaahs.show.ShaderType
 
-class FilterShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader, glslCode) {
+class FilterShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
     companion object {
         val proFormaInputPorts = listOf(
-            InputPort("gl_FragColor", "vec4", "Input Color", ContentType.ColorStream, varName = "<arg0>")
+            InputPort("gl_FragColor", "vec4", "Input Color", ContentType.ColorStream)
         )
 
         val wellKnownInputPorts = listOf(
@@ -44,7 +45,8 @@ class FilterShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader,
         resultVar: String,
         portMap: Map<String, String>
     ): String {
-        val inVar = portMap["gl_FragColor"] ?: throw LinkException("No input for shader \"$title\"")
+        val inVar = portMap["gl_FragColor"]
+            ?: throw LinkException("No gl_FragColor input for shader \"$title\"")
         return resultVar + " = " + namespace.qualify(entryPoint.name) + "($inVar)"
     }
 }

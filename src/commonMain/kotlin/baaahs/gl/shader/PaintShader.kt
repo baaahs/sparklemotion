@@ -3,15 +3,24 @@ package baaahs.gl.shader
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderOutPortRef
 import baaahs.show.ShaderType
 
-abstract class PaintShader(shader: Shader, glslCode: GlslCode) : OpenShader.Base(shader, glslCode) {
+abstract class PaintShader(
+    shader: Shader,
+    glslCode: GlslCode,
+    plugins: Plugins
+) : OpenShader.Base(shader, glslCode, plugins) {
     override val shaderType: ShaderType = ShaderType.Paint
 }
 
-class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(shader, glslCode) {
+class ShaderToyPaintShader(
+    shader: Shader,
+    glslCode: GlslCode,
+    plugins: Plugins
+) : PaintShader(shader, glslCode, plugins) {
     companion object {
         val proFormaInputPorts = listOf(
             InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinateStream)
@@ -100,7 +109,11 @@ class ShaderToyPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(sha
     }
 }
 
-class GenericPaintShader(shader: Shader, glslCode: GlslCode) : PaintShader(shader, glslCode) {
+class GenericPaintShader(
+    shader: Shader,
+    glslCode: GlslCode,
+    plugins: Plugins
+) : PaintShader(shader, glslCode, plugins) {
     companion object {
         val proFormaInputPorts = listOf(
             InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinateStream)

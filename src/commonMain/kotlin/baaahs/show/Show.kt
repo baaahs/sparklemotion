@@ -132,8 +132,8 @@ data class Shader(
 data class ShaderInstance(
     val shaderId: String,
     val incomingLinks: Map<String, PortRef>,
-    val shaderChannel: ShaderChannel?,
-    val priority: Float
+    val shaderChannel: ShaderChannel = ShaderChannel.Main,
+    val priority: Float = 0f
 ) {
 
     fun findDataSourceRefs(): List<DataSourceRef> {
