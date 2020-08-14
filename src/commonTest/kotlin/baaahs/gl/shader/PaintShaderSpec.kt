@@ -4,6 +4,7 @@ import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
+import baaahs.plugin.Plugins
 import baaahs.toBeSpecified
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -12,7 +13,7 @@ import kotlin.test.expect
 object PaintShaderSpec : Spek({
     describe("PaintShader") {
         val shaderText by value<String> { toBeSpecified() }
-        val shader by value { GlslAnalyzer().openShader(shaderText) as PaintShader }
+        val shader by value { GlslAnalyzer(Plugins.safe()).openShader(shaderText) as PaintShader }
         val namespace by value { GlslCode.Namespace("p0") }
 
         context("generic shaders") {

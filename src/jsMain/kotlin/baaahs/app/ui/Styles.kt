@@ -209,6 +209,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         zIndex = 100
         opacity = 0
         transition(StyledElement::opacity, duration = 1.s)
+        pointerEvents = PointerEvents.none
 
         hover {
             descendants(dragHandle) {
@@ -306,6 +307,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     val global = CSSBuilder().apply {
         ".${editModeOn.name}.${unplacedControlsPalette.name}" {
             opacity = 1
+            pointerEvents = PointerEvents.auto
         }
     }
 }

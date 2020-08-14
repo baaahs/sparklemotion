@@ -375,7 +375,7 @@ class MutablePatch {
         build(showBuilder)
 
         val openShaders = showBuilder.getShaders().mapValues { (_, shader) ->
-            autoWirer.glslAnalyzer.openShader(shader.src)
+            autoWirer.glslAnalyzer.openShader(shader)
         }
 
         val resolvedShaderInstances =
@@ -393,9 +393,7 @@ class MutablePatch {
     }
 
     fun addShaderInstance(shader: Shader, block: MutableShaderInstance.() -> Unit): MutableShaderInstance {
-        val mutableShaderInstance = MutableShaderInstance(
-            MutableShader(shader), hashMapOf(), null, 0f
-        )
+        val mutableShaderInstance = MutableShaderInstance(MutableShader(shader))
         mutableShaderInstance.block()
         mutableShaderInstances.add(mutableShaderInstance)
         return mutableShaderInstance
@@ -453,7 +451,7 @@ data class MutableShader(
 data class MutableShaderInstance(
     val mutableShader: MutableShader,
     val incomingLinks: MutableMap<String, MutablePort> = hashMapOf(),
-    var shaderChannel: ShaderChannel? = null,
+    var shaderChannel: ShaderChannel = ShaderChannel.Main,
     var priority: Float = 0f
 ) {
     val id = randomId("MutableShaderInstance")

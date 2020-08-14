@@ -7,6 +7,7 @@ import baaahs.gadgets.Slider
 import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslProgram.DataFeed
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.ModelRenderer
 import baaahs.gl.shader.InputPort
@@ -25,18 +26,39 @@ class CorePlugin : Plugin {
     override val packageName: String = id
     override val title: String = "SparkleMotion Core"
 
-    override fun suggestDataSources(inputPort: InputPort): List<DataSource> {
-        val explicit = inputPort.pluginRef?.let {
-            val dataSourceBuilder = dataSourceBuildersByName[inputPort.pluginRef.resourceName]
-                ?: error("unknown resource \"${inputPort.pluginRef.resourceName}\"")
-            dataSourceBuilder.build(inputPort)
+    override fun resolveDataSource(inputPort: InputPort): DataSource {
+        val pluginRef = inputPort.pluginRef!!
+        val dataSourceBuilder = dataSourceBuildersByName[pluginRef.resourceName]
+            ?: error("unknown resource \"${pluginRef.resourceName}\"")
+        return dataSourceBuilder.build(inputPort)
+    }
+
+    override fun suggestContentTypes(inputPort: InputPort): Collection<ContentType> {
+        val glslType = inputPort.dataType
+        val isStream = inputPort.glslVar?.isVarying ?: false
+        return contentTypesByGlslType[glslType to isStream] ?: emptyList()
+    }
+
+    override fun resolveContentType(type: String): ContentType? {
+        return when (type) {
+            "color-stream" -> ContentType.ColorStream
+            else -> null
         }
+    }
 
-        val suggestion = explicit
-            ?: inputPort.contentType?.let { supportedContentTypes[it]?.build(inputPort) }
+    override fun suggestDataSources(
+        inputPort: InputPort,
+        suggestedContentTypes: Set<ContentType>
+    ): List<DataSource> {
+        val suggestions = (setOf(inputPort.contentType) + suggestedContentTypes).map {
+            supportedContentTypes[it]?.build(inputPort)
+        }.filterNotNull()
 
-        return suggestion?.let { listOf(it) }
-            ?: supportedContentTypes.values.map { it.suggestDataSources(inputPort) }.flatten()
+        return if (suggestions.isNotEmpty()) {
+            suggestions
+        } else {
+            supportedContentTypes.values.map { it.suggestDataSources(inputPort) }.flatten()
+        }
     }
 
     override fun findDataSource(
@@ -303,7 +325,7 @@ class CorePlugin : Plugin {
             override val resourceName: String get() = "Slider"
 
             override fun looksValid(inputPort: InputPort): Boolean =
-                inputPort.dataType == "float"
+                inputPort.dataTypeIs(GlslType.Float)
 
             override fun build(inputPort: InputPort): SliderDataSource {
                 val config = inputPort.pluginConfig
@@ -339,7 +361,7 @@ class CorePlugin : Plugin {
             override val resourceName: String get() = "XyPad"
 
             override fun looksValid(inputPort: InputPort): Boolean =
-                inputPort.dataType == "vec2"
+                inputPort.dataTypeIs(GlslType.Vec2)
 
             override fun build(inputPort: InputPort): XyPad =
                 XyPad(inputPort.title, inputPort.suggestVarName())
@@ -381,7 +403,7 @@ class CorePlugin : Plugin {
             override val resourceName: String get() = "ColorPicker"
 
             override fun looksValid(inputPort: InputPort): Boolean =
-                inputPort.dataType == "vec4"
+                inputPort.dataTypeIs(GlslType.Vec4)
 
             override fun build(inputPort: InputPort): ColorPickerProvider {
                 val default = inputPort.pluginConfig?.get("default")?.primitive?.contentOrNull
@@ -420,7 +442,7 @@ class CorePlugin : Plugin {
             override val resourceName: String get() = "Radio Button Strip"
 
             override fun looksValid(inputPort: InputPort): Boolean =
-                inputPort.dataType == "int"
+                inputPort.dataTypeIs(GlslType.Int)
 
             override fun build(inputPort: InputPort): RadioButtonStripProvider {
                 val config = inputPort.pluginConfig
@@ -457,7 +479,7 @@ class CorePlugin : Plugin {
         companion object : DataSourceBuilder<ImageSource> {
             override val resourceName: String get() = "Image"
             override fun looksValid(inputPort: InputPort): Boolean =
-                inputPort.dataType == "sampler2D"
+                inputPort.dataTypeIs(GlslType.sampler2D)
             override fun build(inputPort: InputPort): ImageSource =
                 ImageSource(inputPort.title, inputPort.dataType)
         }
@@ -477,6 +499,9 @@ class CorePlugin : Plugin {
 
     companion object {
         val id = "baaahs.Core"
+
+        val contentTypesByGlslType =
+            ContentType.coreTypes.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })
 
         val supportedContentTypes = mapOf(
             ContentType.PixelCoordinatesTexture to PixelCoordsTexture,

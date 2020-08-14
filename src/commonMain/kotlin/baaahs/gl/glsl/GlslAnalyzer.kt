@@ -3,10 +3,11 @@ package baaahs.gl.glsl
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.GlslVar
 import baaahs.gl.shader.OpenShader
+import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 
-class GlslAnalyzer {
+class GlslAnalyzer(private val plugins: Plugins) {
     fun import(src: String, defaultTitle: String? = null): Shader {
         val glslCode = analyze(src)
         val type = ShaderType.values().firstOrNull { it.matches(glslCode) }
@@ -37,7 +38,7 @@ class GlslAnalyzer {
 
     fun openShader(shader: Shader): OpenShader {
         val glslObj = analyze(shader.src)
-        return shader.type.open(shader, glslObj)
+        return shader.type.open(shader, glslObj, plugins)
     }
 
     private class Context {
@@ -448,15 +449,16 @@ class GlslAnalyzer {
             // If there are curly braces it must be a function.
             if (text.contains("{")) return null
 
-            return Regex("(?:(uniform|const)\\s+)?(\\w+)\\s+(\\w+)(\\s*=.*)?;", RegexOption.MULTILINE)
+            return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(\\s*=.*)?;", RegexOption.MULTILINE)
                 .find(text.trim())?.let {
                     val (qualifier, type, name, constValue) = it.destructured
-                    var (isConst, isUniform) = (false to false)
+                    var (isConst, isUniform, isVarying) = arrayOf(false, false, false)
                     when (qualifier) {
                         "const" -> isConst = true
                         "uniform" -> isUniform = true
+                        "varying" -> isVarying = true
                     }
-                    GlslVar(type, name, text, isConst, isUniform, lineNumber, comments)
+                    GlslVar(type, name, text, isConst, isUniform, isVarying, lineNumber, comments)
                 }
         }
 

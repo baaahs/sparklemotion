@@ -66,6 +66,18 @@ object Shaders {
         }
     """.trimIndent())
 
+    val red = Shader("Solid Red", ShaderType.Paint, """
+        void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+            fragColor = (1., 0., 0., 1.);
+        }
+    """.trimIndent())
+
+    val blue = Shader("Solid Blue", ShaderType.Paint, """
+        void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+            fragColor = (0., 0., 1., 1.);
+        }
+    """.trimIndent())
+
     val checkerboard = Shader("Checkerboard", ShaderType.Paint, """
         uniform float checkerboardSize = 10.0; // @@Slider min=.001 max=1 default=.1
 

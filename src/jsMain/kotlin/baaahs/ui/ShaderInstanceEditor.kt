@@ -57,11 +57,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
     val selectedPatch = props.mutablePatch
     val shaderInstance = props.mutableShaderInstance
-    val shaderChannels = if (shaderInstance.shaderChannel == null) {
-        props.shaderChannels
-    } else {
-        props.shaderChannels + shaderInstance.shaderChannel!!
-    }
+    val shaderChannels = props.shaderChannels + shaderInstance.shaderChannel!!
 
     styledDiv {
         css.display = Display.grid
@@ -107,7 +103,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
                 formControl {
                     select {
-                        attrs.value(shaderInstance.shaderChannel?.id ?: "")
+                        attrs.value(shaderInstance.shaderChannel.id)
                         attrs.onChangeFunction = { event: Event ->
                             val channelId = event.target!!.asDynamic().value as String
                             if (channelId == "__new__") {
@@ -119,13 +115,13 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                                     submitButtonLabel = "Create",
                                     onSubmit = { name ->
                                         handleUpdate {
-                                            shaderChannel = if (name.isNotBlank()) ShaderChannel(name) else null
+                                            shaderChannel = if (name.isNotBlank()) ShaderChannel(name) else ShaderChannel.Main
                                         }
                                     }
                                 ))
                             } else {
                                 handleUpdate {
-                                    shaderChannel = if (channelId.isNotBlank()) ShaderChannel(channelId) else null
+                                    shaderChannel = if (channelId.isNotBlank()) ShaderChannel(channelId) else ShaderChannel.Main
                                 }
                             }
                         }

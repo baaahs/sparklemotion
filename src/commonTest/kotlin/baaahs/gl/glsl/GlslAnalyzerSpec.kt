@@ -8,6 +8,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.glsl.Shaders
 import baaahs.only
 import baaahs.plugin.PluginRef
+import baaahs.plugin.Plugins
 import baaahs.toBeSpecified
 import kotlinx.serialization.json.json
 import org.spekframework.spek2.Spek
@@ -18,7 +19,7 @@ object GlslAnalyzerSpec : Spek({
     describe("ShaderFragment") {
         context("given some GLSL code") {
             val shaderText by value<String> { toBeSpecified() }
-            val glslAnalyzer by value { GlslAnalyzer() }
+            val glslAnalyzer by value { GlslAnalyzer(Plugins.safe()) }
             val importedShader by value { glslAnalyzer.import(shaderText) }
             val glslCode by value { glslAnalyzer.analyze(importedShader.src) }
 

@@ -41,7 +41,7 @@ abstract class BaseShowPlayer(
     final override val plugins: Plugins,
     final override val modelInfo: ModelInfo
 ) : ShowPlayer {
-    private val glslAnalyzer = GlslAnalyzer()
+    private val glslAnalyzer = GlslAnalyzer(plugins)
 
     private val dataFeeds = mutableMapOf<DataSource, GlslProgram.DataFeed>()
     private val shaders = mutableMapOf<Shader, OpenShader>()

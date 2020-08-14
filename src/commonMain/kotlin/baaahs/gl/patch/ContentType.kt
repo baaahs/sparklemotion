@@ -6,6 +6,8 @@ class ContentType(
     val description: String,
     val glslType: String,
     val isStream: Boolean = false,
+    /** If false, this content type won't be suggested for matching GLSL types, it must be explicitly specified. */
+    val suggest: Boolean = true,
     private val defaultInitializer: ((GlslType) -> String)? = null
 ) {
     fun initializer(dataType: GlslType): String =
@@ -17,7 +19,7 @@ class ContentType(
      */
     fun stream(): ContentType {
         if (isStream) error("Already a stream!")
-        return ContentType("$description Stream", glslType, true, defaultInitializer)
+        return ContentType("$description Stream", glslType, true, suggest, defaultInitializer)
     }
 
     override fun toString(): String = "ContentType($description [$glslType])"
@@ -42,27 +44,46 @@ class ContentType(
 
 
     companion object {
-        val PixelCoordinatesTexture = ContentType("Pixel Coordinates Texture", "sampler2D")
-        val RasterCoordinate = ContentType("Raster Coordinate", "vec2")
+        val PixelCoordinatesTexture = ContentType("Pixel Coordinates Texture", "sampler2D", suggest = true)
+        val PreviewResolution = ContentType("Preview Resolution", "vec2", suggest = false)
+        val RasterCoordinate = ContentType("Raster Coordinate", "vec2", suggest = false)
+        val Resolution = ContentType("Resolution", "vec2", suggest = false)
+        val Unknown = ContentType("Unknown", "void", suggest = false)
+
         val UvCoordinate = ContentType("U/V Coordinate", "vec2")
         val UvCoordinateStream = UvCoordinate.stream()
         val XyCoordinate = ContentType("X/Y Coordinate", "vec2")
-        val ModelInfo = ContentType("Model Info", "struct")
-
+        val ModelInfo = ContentType("Model Info", "ModelInfo")
         val Mouse = ContentType("Mouse", "vec2")
         val XyzCoordinate = ContentType("X/Y/Z Coordinate", "vec3")
-
         val Color = ContentType("Color", "vec4") { type ->
             if (type == GlslType.Vec4) "vec4(0., 0., 0., 1.)" else type.defaultInitializer()
         }
         val ColorStream = Color.stream()
-
         val Time = ContentType("Time", "float")
-        val Resolution = ContentType("Resolution", "vec2")
-        val PreviewResolution = ContentType("Preview Resolution", "vec2")
         val Float = ContentType("Float", "float")
         val Int = ContentType("Integer", "int")
         val Media = ContentType("Media", "sampler2D")
-        val Unknown = ContentType("Unknown", "void")
+
+        val coreTypes = listOf(
+            PixelCoordinatesTexture,
+            PreviewResolution,
+            RasterCoordinate,
+            Resolution,
+            Unknown,
+
+            UvCoordinate,
+            UvCoordinateStream,
+            XyCoordinate,
+            ModelInfo,
+            Mouse,
+            XyzCoordinate,
+            Color,
+            ColorStream,
+            Time,
+            Float,
+            Int,
+            Media
+        )
     }
 }

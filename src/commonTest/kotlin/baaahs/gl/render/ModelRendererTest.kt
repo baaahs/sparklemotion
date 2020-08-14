@@ -253,7 +253,7 @@ class ModelRendererTest {
 
     private fun compileAndBind(program: String): GlslProgram {
         val autoWirer = AutoWirer(Plugins.safe())
-        val shader = GlslAnalyzer().import(program)
+        val shader = GlslAnalyzer(Plugins.safe()).import(program)
         return autoWirer
             .autoWire(cylindricalProjection, shader)
             .resolve()

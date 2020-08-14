@@ -1,7 +1,9 @@
 package baaahs.plugin
 
+import baaahs.Logger
 import baaahs.gadgetModule
 import baaahs.gl.glsl.dataSourceProviderModule
+import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.show.DataSource
 import kotlinx.serialization.Serializable
@@ -45,12 +47,26 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
             ?: error("unknown plugin \"${pluginRef.pluginId}\"")
     }
 
-    fun suggestDataSources(inputPort: InputPort): List<DataSource> {
-        return if (inputPort.pluginRef != null) {
-            findPlugin(inputPort.pluginRef).suggestDataSources(inputPort)
-        } else {
-            byPackage.values.map { plugin -> plugin.suggestDataSources(inputPort) }.flatten()
+    fun resolveContentType(name: String): ContentType? {
+        val pluginRef = PluginRef.from(name)
+        return try {
+            findPlugin(pluginRef).resolveContentType(name)
+        } catch (e: Exception) {
+            logger.debug { "Failed to resolve content type $name: ${e.message}" }
+            null
         }
+    }
+
+    fun suggestContentTypes(inputPort: InputPort): Set<ContentType> {
+        return byPackage.values.map { plugin -> plugin.suggestContentTypes(inputPort) }.flatten().toSet()
+    }
+
+    fun resolveDataSource(inputPort: InputPort): DataSource {
+        return findPlugin(inputPort.pluginRef ?: error("no plugin specified")).resolveDataSource(inputPort)
+    }
+
+    fun suggestDataSources(inputPort: InputPort, suggestedContentTypes: Set<ContentType> = emptySet()): List<DataSource> {
+        return byPackage.values.map { plugin -> plugin.suggestDataSources(inputPort, suggestedContentTypes) }.flatten()
     }
 
     // name would be in form:
@@ -109,5 +125,7 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
         fun findAll(): Plugins {
             return plugins
         }
+
+        private val logger = Logger("Plugins")
     }
 }

@@ -3,69 +3,58 @@ package baaahs.gl.shader
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.override
+import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
+import baaahs.glsl.Shaders
+import baaahs.plugin.Plugins
+import baaahs.show.ShaderChannel
+import baaahs.show.mutable.MutableConstPort
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderChannel
+import baaahs.show.mutable.MutableShaderOutPort
 import baaahs.toBeSpecified
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
 
 object FilterShaderSpec : Spek({
-    describe("PaintShader") {
+    describe("FilterShader") {
         val shaderText by value<String> { toBeSpecified() }
-        val shader by value { GlslAnalyzer().openShader(shaderText) as PaintShader }
+        val shader by value { GlslAnalyzer(Plugins.safe()).openShader(shaderText) as FilterShader }
         val namespace by value { GlslCode.Namespace("p0") }
 
-        context("generic shaders") {
+        context("cross-fade between shaders") {
             override(shaderText) {
                 /**language=glsl*/
                 """
-                        // This Shader's Name
-                        // Other stuff.
-                        
-                        uniform float time;
-                        uniform vec2  resolution;
-                        uniform vec2  mouse;
-                        uniform float blueness;
-                        int someGlobalVar;
-                        const int someConstVar = 123;
-                        
-                        float identity(float value) { return value; }
-    
-                        void main( void ) {
-                            vec2 uv = gl_FragCoord.xy / resolution.xy;
-                            gl_FragColor = vec4(uv.xy, identity(blueness), 1.);
-                        }
-                        """.trimIndent()
+                    // Fade Filter
+                    
+                    uniform float fade;
+                    varying vec4 otherColorStream; // @type color-stream
+
+                    vec4 mainFilter(vec4 colorIn) {
+                        return mix(colorIn, otherColorStream, fade);
+                    }
+                """.trimIndent()
             }
 
             it("finds magic uniforms") {
                 expect(listOf(
-                    InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinateStream),
-                    InputPort("time", "float", "Time", ContentType.Time),
-                    InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
-                    InputPort("mouse", "vec2", "Mouse", ContentType.Mouse),
-                    InputPort("blueness", "float", "Blueness")
+                    InputPort("gl_FragColor", "vec4", "Input Color", ContentType.ColorStream),
+                    InputPort("fade", "float", "Fade"),
+                    InputPort("otherColorStream", "vec4", "Other Color Stream", ContentType.ColorStream)
                 )) { shader.inputPorts.map { it.copy(glslVar = null) } }
             }
 
             it("generates function declarations") {
                 expect(
                     """
-                        #line 8
-                        int p0_someGlobalVar;
-                        
-                        #line 9
-                        const int p0_someConstVar = 123;
-                        
-                        #line 11
-                        float p0_identity(float value) { return value; }
-                        
-                        #line 13
-                        void p0_main( void ) {
-                            vec2 uv = gl_FragCoord.xy / in_resolution.xy;
-                            sm_result = vec4(uv.xy, p0_identity(aquamarinity), 1.);
+                        #line 4
+                         
+                        vec4 p0_mainFilter(vec4 colorIn) {
+                            return mix(colorIn, p0_otherColorStream, p0_fade);
                         }
-                        """.trimIndent()
+                    """.trimIndent()
                 ) {
                     shader.toGlsl(
                         namespace, mapOf(
@@ -77,74 +66,87 @@ object FilterShaderSpec : Spek({
                 }
             }
 
-            it("generates invocation GLSL") {
-                expect("p0_main()") { shader.invocationGlsl(namespace, "resultVar") }
-            }
-        }
+            context("in a patch using a shader channel") {
+                val autoWirer by value { AutoWirer(Plugins.safe()) }
+                val otherChannel by value { ShaderChannel("other") }
+                val linkedPatch by value {
+                    MutablePatch {
+                        val redInstance =
+                            addShaderInstance(Shaders.red) {}
 
-        context("ShaderToy shaders") {
-            override(shaderText) {
-                /**language=glsl*/
-                """
-                        // This Shader's Name
-                        // Other stuff.
-                        
-                        uniform float blueness;
-                        int someGlobalVar;
-                        const int someConstVar = 123;
-
-                        float identity(float value) { return value; }
-    
-                        void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-                            vec2 uv = fragCoord.xy / iResolution.xy * iTime;
-                            fragColor = vec4(uv.xy / iMouse, identity(blueness), 1.);
+                        addShaderInstance(Shaders.blue) {
+                            shaderChannel = otherChannel
                         }
-                        """.trimIndent()
-            }
 
-            describe("#inputPorts") {
-                it("finds magic uniforms") {
-                    expect(listOf(
-                        InputPort("blueness", "float", "Blueness"),
-                        InputPort("iResolution", "vec3", "Resolution", ContentType.Resolution),
-                        InputPort("iTime", "float", "Time", ContentType.Time),
-                        InputPort("iMouse", "vec2", "Mouse", ContentType.Mouse),
-                        InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinateStream)
-                    )) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                        addShaderInstance(shader.shader) {
+                            link("gl_FragColor", MutableShaderOutPort(redInstance))
+                            link("otherColorStream", MutableShaderChannel(otherChannel))
+                            link("fade", MutableConstPort(".5"))
+                        }
+                    }.openForPreview(autoWirer)
+                }
+
+                it("accepts color streams from multiple shaders") {
+                    expect("""
+                        #version *
+
+                        #ifdef GL_ES
+                        precision mediump float;
+                        #endif
+
+                        // SparkleMotion-generated GLSL
+
+                        layout(location = 0) out vec4 sm_result;
+
+
+                        // Shader: Solid Blue; namespace: p0
+                        // Solid Blue
+
+                        vec4 p0_solidBluei_result = vec4(0., 0., 0., 1.);
+
+                        #line 1
+                        void p0_solidBlue_mainImage(out vec4 fragColor, in vec2 fragCoord) {
+                            fragColor = (0., 0., 1., 1.);
+                        }
+
+                        // Shader: Solid Red; namespace: p1
+                        // Solid Red
+
+                        vec4 p1_solidRedi_result = vec4(0., 0., 0., 1.);
+
+                        #line 1
+                        void p1_solidRed_mainImage(out vec4 fragColor, in vec2 fragCoord) {
+                            fragColor = (1., 0., 0., 1.);
+                        }
+
+                        // Shader: Fade Filter; namespace: p2
+                        // Fade Filter
+
+                        vec4 p2_fadeFilteri_result = vec4(0., 0., 0., 1.);
+
+                        #line 4
+                         
+                        vec4 p2_fadeFilter_mainFilter(vec4 colorIn) {
+                            return mix(colorIn, p0_solidBluei_result, (.5));
+                        }
+
+
+                        #line -1
+                        void main() {
+                          p0_solidBlue_mainImage(p0_solidBluei_result, sm_FragCoord.xy); // Solid Blue
+                          p1_solidRed_mainImage(p1_solidRedi_result, sm_FragCoord.xy); // Solid Red
+                          p2_fadeFilteri_result = p2_fadeFilter_mainFilter(p1_solidRedi_result); // Fade Filter
+                          sm_result = p2_fadeFilteri_result;
+                        }
+
+
+                    """.trimIndent()) { linkedPatch!!.toFullGlsl("*") }
                 }
             }
 
-            it("generates function declarations") {
-                expect(
-                    """
-                        #line 5
-                        int p0_someGlobalVar;
-                        
-                        #line 6
-                        const int p0_someConstVar = 123;
-                        
-                        #line 8
-                        float p0_identity(float value) { return value; }
-                        
-                        #line 10
-                        void p0_mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-                            vec2 uv = fragCoord.xy / in_resolution.xy * in_time;
-                            fragColor = vec4(uv.xy / in_mouse, p0_identity(aquamarinity), 1.);
-                        }
-                        """.trimIndent()
-                ) { shader.toGlsl(
-                    namespace, mapOf(
-                        "iResolution" to "in_resolution",
-                        "iMouse" to "in_mouse",
-                        "iTime" to "in_time",
-                        "blueness" to "aquamarinity",
-                        "identity" to "p0_identity"
-                    )).trim() }
-            }
-
             it("generates invocation GLSL") {
-                expect("p0_mainImage(resultVar, sm_FragCoord.xy)") {
-                    shader.invocationGlsl(namespace, "resultVar")
+                expect("resultVar = p0_mainFilter(boof)") {
+                    shader.invocationGlsl(namespace, "resultVar", mapOf("gl_FragColor" to "boof"))
                 }
             }
         }

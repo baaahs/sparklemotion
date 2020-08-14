@@ -5,6 +5,7 @@ import baaahs.RefCounter
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
+import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.unknown
@@ -34,7 +35,8 @@ interface OpenShader : RefCounted {
 
     abstract class Base(
         final override val shader: Shader,
-        final override val glslCode: GlslCode
+        final override val glslCode: GlslCode,
+        private val plugins: Plugins
     ) : OpenShader, RefCounted by RefCounter() {
         override val title: String get() = shader.title
 
@@ -43,7 +45,7 @@ interface OpenShader : RefCounted {
 
         override val inputPorts: List<InputPort> by lazy {
             proFormaInputPorts +
-                    glslCode.uniforms.map {
+                    glslCode.globalInputVars.map {
                         wellKnownInputPorts[it.name]
                             ?.copy(dataType = it.dataType, glslVar = it)
                             ?: toInputPort(it)
@@ -55,6 +57,7 @@ interface OpenShader : RefCounted {
                 it.name, it.dataType, it.displayName(),
                 pluginRef = it.hint?.pluginRef,
                 pluginConfig = it.hint?.config,
+                contentType = it.hint?.tag("type")?.let { plugins.resolveContentType(it) },
                 glslVar = it
             )
         }
@@ -69,7 +72,7 @@ interface OpenShader : RefCounted {
 
             val nonUniformGlobalsMap = hashMapOf<String, String>()
             glslCode.globalVars.forEach { glslVar ->
-                if (!glslVar.isUniform) {
+                if (!glslVar.isUniform && !glslVar.isVarying) {
                     nonUniformGlobalsMap[glslVar.name] = namespace.qualify(glslVar.name)
                     buf.append(glslVar.toGlsl(namespace, glslCode.symbolNames, emptyMap()))
                     buf.append("\n")
