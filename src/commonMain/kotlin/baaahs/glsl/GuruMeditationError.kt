@@ -45,7 +45,7 @@ object GuruMeditationError {
         }.build(showBuilder)
 
         @Suppress("CAST_NEVER_SUCCEEDS")
-        val openShow = ShowOpener(show, fakeShowPlayer).openShow()
+        val openShow = ShowOpener(show, FakeShowPlayer).openShow()
         dataFeeds = openShow.dataFeeds
         val openPatch = openShow.patches.only("patch")
         linkedPatch = autoWirer.buildPortDiagram(openPatch)
@@ -63,7 +63,7 @@ object GuruMeditationError {
     }
 }
 
-private val fakeShowPlayer = object : BaseShowPlayer(Plugins.safe(), ModelInfo.Empty) {
+private object FakeShowPlayer : BaseShowPlayer(Plugins.safe(), ModelInfo.Empty) {
     override val glContext: GlContext get() = error("not implemented")
     override fun <T : Gadget> createdGadget(id: String, gadget: T): Unit = error("not implemented")
     override fun <T : Gadget> useGadget(id: String): T = error("not implemented")
