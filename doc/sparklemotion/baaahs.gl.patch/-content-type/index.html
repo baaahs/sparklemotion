@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">ContentType</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.ContentType$<init>(kotlin.String, kotlin.String, kotlin.Function1((baaahs.gl.glsl.GlslType, kotlin.String)))/description">description</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.ContentType$<init>(kotlin.String, kotlin.String, kotlin.Function1((baaahs.gl.glsl.GlslType, kotlin.String)))/glslType">glslType</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.ContentType$<init>(kotlin.String, kotlin.String, kotlin.Function1((baaahs.gl.glsl.GlslType, kotlin.String)))/defaultInitializer">defaultInitializer</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">(</span><a href="../../baaahs.gl.glsl/-glsl-type/index.html"><span class="identifier">GlslType</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
+<code><span class="identifier">ContentType</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.ContentType$<init>(kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Function1((baaahs.gl.glsl.GlslType, kotlin.String)))/description">description</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.ContentType$<init>(kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Function1((baaahs.gl.glsl.GlslType, kotlin.String)))/glslType">glslType</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.ContentType$<init>(kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Function1((baaahs.gl.glsl.GlslType, kotlin.String)))/isStream">isStream</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.ContentType$<init>(kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Function1((baaahs.gl.glsl.GlslType, kotlin.String)))/suggest">suggest</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;true<span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.ContentType$<init>(kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Function1((baaahs.gl.glsl.GlslType, kotlin.String)))/defaultInitializer">defaultInitializer</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">(</span><a href="../../baaahs.gl.glsl/-glsl-type/index.html"><span class="identifier">GlslType</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -38,6 +38,21 @@
 <td>
 <code><span class="keyword">val </span><span class="identifier">glslType</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
+<tr>
+<td>
+<h4><a href="is-stream.html">isStream</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">isStream</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="suggest.html">suggest</a></h4>
+</td>
+<td>
+<p>If false, this content type won't be suggested for matching GLSL types, it must be explicitly specified.</p>
+<code><span class="keyword">val </span><span class="identifier">suggest</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
 </tbody>
 </table>
 <h3>Functions</h3>
@@ -45,10 +60,40 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="equals.html">equals</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">equals</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.ContentType$equals(kotlin.Any)/other">other</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="hash-code.html">hashCode</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">hashCode</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="initializer.html">initializer</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">initializer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.ContentType$initializer(baaahs.gl.glsl.GlslType)/dataType">dataType</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-glsl-type/index.html"><span class="identifier">GlslType</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stream.html">stream</a></h4>
+</td>
+<td>
+<p>ContentTypes where <a href="is-stream.html">isStream</a> is <code>true</code> describe content whose value is determined by,
+and may be different for, every pixel.</p>
+<code><span class="keyword">fun </span><span class="identifier">stream</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ContentType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="to-string.html">toString</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toString</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -61,6 +106,20 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">Color</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ContentType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-color-stream.html">ColorStream</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">ColorStream</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ContentType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="core-types.html">coreTypes</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">coreTypes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="./index.html"><span class="identifier">ContentType</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -145,6 +204,13 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">UvCoordinate</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ContentType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-uv-coordinate-stream.html">UvCoordinateStream</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">UvCoordinateStream</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ContentType</span></a></code></td>
 </tr>
 <tr>
 <td>

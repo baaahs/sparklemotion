@@ -38,6 +38,7 @@ baaahs.geom
 baaahs.gl
 baaahs.gl.glsl
 baaahs.gl.patch
+baaahs.gl.preview
 baaahs.gl.render
 baaahs.gl.shader
 baaahs.glsl

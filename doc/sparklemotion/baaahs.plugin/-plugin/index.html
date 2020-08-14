@@ -40,10 +40,31 @@
 </tr>
 <tr>
 <td>
+<h4><a href="resolve-content-type.html">resolveContentType</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">resolveContentType</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.Plugin$resolveContentType(kotlin.String)/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="resolve-data-source.html">resolveDataSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">resolveDataSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.Plugin$resolveDataSource(baaahs.gl.shader.InputPort)/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="suggest-content-types.html">suggestContentTypes</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">suggestContentTypes</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.Plugin$suggestContentTypes(baaahs.gl.shader.InputPort)/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="suggest-data-sources.html">suggestDataSources</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">suggestDataSources</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.Plugin$suggestDataSources(baaahs.gl.shader.InputPort)/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">suggestDataSources</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.Plugin$suggestDataSources(baaahs.gl.shader.InputPort, kotlin.collections.Set((baaahs.gl.patch.ContentType)))/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.Plugin$suggestDataSources(baaahs.gl.shader.InputPort, kotlin.collections.Set((baaahs.gl.patch.ContentType)))/suggestedContentTypes">suggestedContentTypes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>

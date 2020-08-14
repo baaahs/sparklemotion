@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">ProjectionShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.ProjectionShader$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.ProjectionShader$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">ProjectionShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.ProjectionShader$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.plugin.Plugins)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.ProjectionShader$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.plugin.Plugins)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.ProjectionShader$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.plugin.Plugins)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -33,13 +33,6 @@
 </tr>
 <tr>
 <td>
-<h4><a href="input-ports.html">inputPorts</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">inputPorts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="output-port.html">outputPort</a></h4>
 </td>
 <td>
@@ -47,10 +40,24 @@
 </tr>
 <tr>
 <td>
+<h4><a href="pro-forma-input-ports.html">proFormaInputPorts</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">proFormaInputPorts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="shader-type.html">shaderType</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">shaderType</span><span class="symbol">: </span><a href="../../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="well-known-input-ports.html">wellKnownInputPorts</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">wellKnownInputPorts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -71,17 +78,24 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="magic-uniforms.html">magicUniforms</a></h4>
+<h4><a href="output-port.html">outputPort</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">magicUniforms</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">outputPort</span><span class="symbol">: </span><a href="../-output-port/index.html"><span class="identifier">OutputPort</span></a></code></td>
 </tr>
 <tr>
 <td>
-<h4><a href="pixel-coords-texture-input-port.html">pixelCoordsTextureInputPort</a></h4>
+<h4><a href="pro-forma-input-ports.html">proFormaInputPorts</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">pixelCoordsTextureInputPort</span><span class="symbol">: </span><a href="../-input-port/index.html"><span class="identifier">InputPort</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">proFormaInputPorts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="well-known-input-ports.html">wellKnownInputPorts</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">wellKnownInputPorts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
