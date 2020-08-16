@@ -90,7 +90,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
 
                     tdCell {
                         b { +inputPort.title }
-                        code { +" (${inputPort.dataType})" }
+                        code { +" (${inputPort.type})" }
                     }
                 }
             }
@@ -119,7 +119,7 @@ data class DataSourceOption(val dataSource: DataSource) : SourcePortOption {
     }
 
     override fun isAppropriateFor(inputPort: InputPort): Boolean {
-        return dataSource.getType() == inputPort.dataType
+        return dataSource.getType() == inputPort.type
     }
 }
 
@@ -150,7 +150,7 @@ data class ShaderOption(val mutableShaderInstance: MutableShaderInstance) : Sour
     }
 
     override fun isAppropriateFor(inputPort: InputPort): Boolean {
-        return inputPort.dataType ==
+        return inputPort.type ==
                 mutableShaderInstance.mutableShader.type.resultContentType.glslType
     }
 }

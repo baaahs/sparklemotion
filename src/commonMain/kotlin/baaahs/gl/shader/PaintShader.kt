@@ -23,7 +23,7 @@ class ShaderToyPaintShader(
 ) : PaintShader(shader, glslCode, plugins) {
     companion object {
         val proFormaInputPorts = listOf(
-            InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinateStream)
+            InputPort("sm_FragCoord", GlslType.Vec2, "Coordinates", ContentType.UvCoordinateStream)
         )
 
         val wellKnownInputPorts = listOf(
@@ -38,34 +38,34 @@ class ShaderToyPaintShader(
 //              uniform vec4      iDate;                 // (year, month, day, time in seconds)
 //              uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 
-            InputPort("iResolution", "vec3", "Resolution", ContentType.Resolution),
+            InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution),
 
 //          float iTime (or iGlobalTime ) : seconds(+fracs) since the shader (re)started.
-            InputPort("iTime", "float", "Time", ContentType.Time),
-            InputPort("iGlobalTime", "float", "Global Time", ContentType.Time),
+            InputPort("iTime", GlslType.Float, "Time", ContentType.Time),
+            InputPort("iGlobalTime", GlslType.Float, "Global Time", ContentType.Time),
 
 //          float iTimeDelta: duration since the previous frame.
-            InputPort("iTimeDelta", "float", "Time Delta"),
+            InputPort("iTimeDelta", GlslType.Float, "Time Delta"),
 
 //          int iFrame: frames since the shader (re)started.
-            InputPort("iFrame", "float", "Frame"),
+            InputPort("iFrame", GlslType.Float, "Frame"),
 //          float iFrameRate: average FPS.
-            InputPort("iFrameRate", "float", "Frame Rate"),
+            InputPort("iFrameRate", GlslType.Float, "Frame Rate"),
 
 //          float iChannelTime[4] : current time in video or sound.
-            InputPort("iChannelTime", "float[4]", "Channel Time"),
-            InputPort("iMouse", "vec2", "Mouse", ContentType.Mouse),
+            InputPort("iChannelTime", GlslType.from("float[4]"), "Channel Time"),
+            InputPort("iMouse", GlslType.Vec2, "Mouse", ContentType.Mouse),
 
 //          vec4 iDate: year-1, month-1, day, seconds(+fracs) since midnight.
-            InputPort("iDate", "vec4", "Date"),
-            InputPort("iSampleRate", "float", "Sample Rate"),
-            InputPort("iChannelResolution", "vec3[4]", "Channel Resolution"),
+            InputPort("iDate", GlslType.Vec4, "Date"),
+            InputPort("iSampleRate", GlslType.Float, "Sample Rate"),
+            InputPort("iChannelResolution", GlslType.from("vec3[4]"), "Channel Resolution"),
 
 //          uniform samplerXX iChanneli;
-            InputPort("iChannel0", "sampler2D", "Channel 0", ContentType.Media),
-            InputPort("iChannel1", "sampler2D", "Channel 1", ContentType.Media),
-            InputPort("iChannel2", "sampler2D", "Channel 2", ContentType.Media),
-            InputPort("iChannel3", "sampler2D", "Channel 3", ContentType.Media)
+            InputPort("iChannel0", GlslType.Sampler2D, "Channel 0", ContentType.Media),
+            InputPort("iChannel1", GlslType.Sampler2D, "Channel 1", ContentType.Media),
+            InputPort("iChannel2", GlslType.Sampler2D, "Channel 2", ContentType.Media),
+            InputPort("iChannel3", GlslType.Sampler2D, "Channel 3", ContentType.Media)
         ).associateBy { it.id }
 
         val outputPort: OutputPort =
@@ -116,13 +116,13 @@ class GenericPaintShader(
 ) : PaintShader(shader, glslCode, plugins) {
     companion object {
         val proFormaInputPorts = listOf(
-            InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinateStream)
+            InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream)
         )
 
         val wellKnownInputPorts = listOf(
-            InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
-            InputPort("mouse", "vec2", "Mouse", ContentType.Mouse),
-            InputPort("time", "float", "Time", ContentType.Time)
+            InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
+            InputPort("mouse", GlslType.Vec2, "Mouse", ContentType.Mouse),
+            InputPort("time", GlslType.Float, "Time", ContentType.Time)
 //                        varying vec2 surfacePosition; TODO
         ).associateBy { it.id }
 

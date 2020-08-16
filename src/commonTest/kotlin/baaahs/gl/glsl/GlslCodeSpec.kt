@@ -18,23 +18,23 @@ object GlslCodeSpec : Spek({
 
             context("unqualified") {
                 override(text) { "int i;" }
-                expectValue(GlslCode.GlslVar("int", "i", "int i;")) { variable }
+                expectValue(GlslCode.GlslVar(GlslType.Int, "i", "int i;")) { variable }
             }
 
             context("const") {
                 override(text) { "const int i = 3;" }
-                expectValue(GlslCode.GlslVar("int", "i", "const int i = 3;", isConst = true)) { variable }
+                expectValue(GlslCode.GlslVar(GlslType.Int, "i", "const int i = 3;", isConst = true)) { variable }
             }
 
             context("uniform") {
                 override(text) { "uniform vec3 vector;" }
-                expectValue(GlslCode.GlslVar("vec3", "vector", "uniform vec3 vector;", isUniform = true)) { variable }
+                expectValue(GlslCode.GlslVar(GlslType.Vec3, "vector", "uniform vec3 vector;", isUniform = true)) { variable }
             }
 
             // For now, `varying` on a global var indicates that it's a streamed content type. Maybe worth reconsidering.
             context("varying") {
                 override(text) { "varying vec4 otherColor;" }
-                expectValue(GlslCode.GlslVar("vec4", "otherColor", "varying vec4 otherColor;", isVarying = true)) { variable }
+                expectValue(GlslCode.GlslVar(GlslType.Vec4, "otherColor", "varying vec4 otherColor;", isVarying = true)) { variable }
             }
 
             context("hints") {
@@ -55,7 +55,7 @@ object GlslCodeSpec : Spek({
                 override(text) { "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }" }
                 expectValue(
                     GlslCode.GlslFunction(
-                        "float", "rand", "vec2 uv",
+                        GlslType.Float, "rand", "vec2 uv",
                         "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }"
                     )
                 ) { function }

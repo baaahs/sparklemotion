@@ -158,9 +158,9 @@ kotlin {
                 implementation("com.danielgergely.kgl:kgl-js:${Versions.kgl}")
 
                 // kotlin react:
-                implementation("org.jetbrains:kotlin-react:16.13.1-pre.104-kotlin-1.3.72")
-                implementation("org.jetbrains:kotlin-react-dom:16.13.1-pre.104-kotlin-1.3.72")
-                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.104-kotlin-1.3.72")
+                implementation("org.jetbrains:kotlin-react:16.13.1-pre.110-kotlin-1.3.72")
+                implementation("org.jetbrains:kotlin-react-dom:16.13.1-pre.110-kotlin-1.3.72")
+                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.110-kotlin-1.3.72")
                 implementation(npm("styled-components", "^4.4.1"))
                 implementation(npm("inline-style-prefixer"))
 
@@ -176,13 +176,9 @@ kotlin {
                 implementation(npm("chroma-js", "^2.0.3"))
                 implementation(npm("css-loader", "^2.1.1"))
 
-                implementation("subroh0508.net.kotlinmaterialui:core:0.4.2")
-                implementation("subroh0508.net.kotlinmaterialui:lab:0.4.2")
-                implementation("org.jetbrains:kotlin-css-js") {
-                    // pre.104 is required by subroh0508.net.kotlinmaterialui:core:0.4.2
-                    version { strictly("1.0.0-pre.104-kotlin-1.3.72") }
-                }
-                implementation(npm("@material-ui/core", "~4.8"))
+                implementation("subroh0508.net.kotlinmaterialui:core:0.4.5")
+                implementation("subroh0508.net.kotlinmaterialui:lab:0.4.5")
+                implementation(npm("@material-ui/core", "~4.11"))
                 implementation(npm("@material-ui/icons", "~4.9"))
 
                 implementation(npm("node-sass", "^4.12.0"))

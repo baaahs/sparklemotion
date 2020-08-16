@@ -121,7 +121,7 @@ object OpenPatchSpec : Spek({
                                     CorePlugin.PixelCoordsTexture()
                                 )
                                 link("modelInfo",
-                                    CorePlugin.ModelInfoDataSource("ModelInfo")
+                                    CorePlugin.ModelInfoDataSource()
                                 )
                                 shaderChannel = ShaderChannel.Main
                             }

@@ -5,12 +5,14 @@ import external.DroppableProvided
 import external.copyFrom
 import kotlinx.css.CSSBuilder
 import kotlinx.css.RuleSet
+import kotlinx.css.StyledElement
 import org.w3c.dom.events.Event
 import react.RMutableRef
 import react.RProps
 import react.ReactElement
 import react.dom.RDOMBuilder
 import styled.StyleSheet
+import kotlin.reflect.KProperty
 
 @Suppress("UNCHECKED_CAST")
 fun <T> nuffin(): T = null as T
@@ -82,6 +84,10 @@ fun CSSBuilder.mixIn(mixin: CSSBuilder) = declarations.putAll(mixin.declarations
 
 fun StyleSheet.partial(block: CSSBuilder.() -> Unit): CSSBuilder {
     return CSSBuilder().apply { block() }
+}
+
+fun <T> StyledElement.important(property: KProperty<T>, value: T) {
+    put(property.name, "$value !important")
 }
 
 fun RDOMBuilder<*>.install(droppableProvided: DroppableProvided) {

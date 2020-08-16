@@ -135,7 +135,6 @@ fun jsonFor(dataSource: DataSource): JsonElement {
         is CorePlugin.ModelInfoDataSource -> {
             json {
                 "type" to "baaahs.plugin.CorePlugin.ModelInfoDataSource"
-                "structType" to dataSource.structType
             }
         }
         else -> json { "type" to "unknown" }
