@@ -34,7 +34,7 @@ class CorePlugin : Plugin {
     }
 
     override fun suggestContentTypes(inputPort: InputPort): Collection<ContentType> {
-        val glslType = inputPort.dataType
+        val glslType = inputPort.type
         val isStream = inputPort.glslVar?.isVarying ?: false
         return contentTypesByGlslType[glslType to isStream] ?: emptyList()
     }
@@ -102,7 +102,7 @@ class CorePlugin : Plugin {
         }
 
         override val dataSourceName: String get() = "Resolution"
-        override fun getType(): String = "vec2"
+        override fun getType(): GlslType = GlslType.Vec2
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, RefCounted by RefCounter() {
@@ -122,7 +122,7 @@ class CorePlugin : Plugin {
         }
 
         override val dataSourceName: String get() = "PreviewResolution"
-        override fun getType(): String = "vec2"
+        override fun getType(): GlslType = GlslType.Vec2
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, GlslProgram.ResolutionListener, RefCounted by RefCounter() {
@@ -150,7 +150,7 @@ class CorePlugin : Plugin {
         }
 
         override val dataSourceName: String get() = "Time"
-        override fun getType(): String = "float"
+        override fun getType(): GlslType = GlslType.Float
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, RefCounted by RefCounter() {
@@ -171,7 +171,7 @@ class CorePlugin : Plugin {
         }
 
         override val dataSourceName: String get() = "Pixel Coordinates Texture"
-        override fun getType(): String = "sampler2D"
+        override fun getType(): GlslType = GlslType.Sampler2D
         override fun suggestId(): String = "pixelCoordsTexture"
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
@@ -214,7 +214,7 @@ class CorePlugin : Plugin {
         }
 
         override val dataSourceName: String get() = "U/V Coordinate"
-        override fun getType(): String = "vec2"
+        override fun getType(): GlslType = GlslType.Vec2
         override fun isImplicit(): Boolean = true
         override fun getVarName(id: String): String = "gl_FragCoord"
 
@@ -240,20 +240,21 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
-    data class ModelInfoDataSource(val structType: String) : DataSource {
+    data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<ModelInfoDataSource> {
             override val resourceName: String get() = "Model Info"
+            private val modelInfoType = ContentType.ModelInfo.glslType
 
             // TODO: dataType should be something like "{vec3,vec3}" probably.
             override fun looksValid(inputPort: InputPort): Boolean =
-                    inputPort.dataType == "ModelInfo" || inputPort.contentType == ContentType.ModelInfo
+                    inputPort.type == modelInfoType || inputPort.contentType == ContentType.ModelInfo
 
             override fun build(inputPort: InputPort): ModelInfoDataSource =
-                ModelInfoDataSource(inputPort.dataType)
+                ModelInfoDataSource()
         }
 
         override val dataSourceName: String get() = "Model Info"
-        override fun getType(): String = structType
+        override fun getType(): GlslType = modelInfoType
         override fun getRenderType(): String? = null
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed {
@@ -340,7 +341,7 @@ class CorePlugin : Plugin {
         }
 
         override val dataSourceName: String get() = "$title $resourceName"
-        override fun getType(): String = "float"
+        override fun getType(): GlslType = GlslType.Float
         override fun getRenderType(): String? = "Slider"
         override fun suggestId(): String = "$title Slider".camelize()
 
@@ -368,7 +369,7 @@ class CorePlugin : Plugin {
         }
 
         override val dataSourceName: String get() = "XY Pad"
-        override fun getType(): String = "vec2"
+        override fun getType(): GlslType = GlslType.Vec2
         override fun suggestId(): String = "$title XY Pad".camelize()
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed {
@@ -416,7 +417,7 @@ class CorePlugin : Plugin {
         }
 
         override val dataSourceName: String get() = "$title ${SliderDataSource.resourceName}"
-        override fun getType(): String = "vec4"
+        override fun getType(): GlslType = GlslType.Vec4
         override fun getRenderType(): String? = "ColorPicker"
         override fun suggestId(): String = "$title Color Picker".camelize()
 
@@ -425,8 +426,8 @@ class CorePlugin : Plugin {
         override fun set(gadget: ColorPicker, uniform: Uniform) {
             val color = gadget.color
 //            when (inputPortRef.type) {
-//                "vec3" -> uniform.set(color.redF, color.greenF, color.blueF)
-//                "vec4" ->
+//                GlslType.Vec3 -> uniform.set(color.redF, color.greenF, color.blueF)
+//                GlslType.Vec4 ->
             uniform.set(color.redF, color.greenF, color.blueF, color.alphaF)
 //            }
         }
@@ -463,7 +464,7 @@ class CorePlugin : Plugin {
         }
 
         override val dataSourceName: String get() = resourceName
-        override fun getType(): String = "int"
+        override fun getType(): GlslType = GlslType.Int
 
         override fun createGadget(): RadioButtonStrip {
             return RadioButtonStrip(title, options, initialSelectionIndex)
@@ -475,17 +476,17 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
-    data class ImageSource(val title: String, val dataType: String) : DataSource {
+    data class ImageSource(val title: String) : DataSource {
         companion object : DataSourceBuilder<ImageSource> {
             override val resourceName: String get() = "Image"
             override fun looksValid(inputPort: InputPort): Boolean =
-                inputPort.dataTypeIs(GlslType.sampler2D)
+                inputPort.dataTypeIs(GlslType.Sampler2D)
             override fun build(inputPort: InputPort): ImageSource =
-                ImageSource(inputPort.title, inputPort.dataType)
+                ImageSource(inputPort.title)
         }
 
         override val dataSourceName: String get() = "Image"
-        override fun getType(): String = "sampler2D"
+        override fun getType(): GlslType = GlslType.Sampler2D
         override fun suggestId(): String = "$title Image".camelize()
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =

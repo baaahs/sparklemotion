@@ -3,6 +3,7 @@ package baaahs.show
 import baaahs.ShowPlayer
 import baaahs.camelize
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.Plugins
 import baaahs.show.mutable.ShowBuilder
@@ -27,7 +28,7 @@ interface DataSourceBuilder<T : DataSource> {
 interface DataSource : Control {
     val dataSourceName: String
     fun isImplicit(): Boolean = false
-    fun getType(): String
+    fun getType(): GlslType
     fun getVarName(id: String): String = "in_$id"
 
     fun getRenderType(): String? = null

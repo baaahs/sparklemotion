@@ -2,6 +2,7 @@ package baaahs.gl.shader
 
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
@@ -40,9 +41,9 @@ object FilterShaderSpec : Spek({
 
             it("finds magic uniforms") {
                 expect(listOf(
-                    InputPort("gl_FragColor", "vec4", "Input Color", ContentType.ColorStream),
-                    InputPort("fade", "float", "Fade"),
-                    InputPort("otherColorStream", "vec4", "Other Color Stream", ContentType.ColorStream)
+                    InputPort("gl_FragColor", GlslType.Vec4, "Input Color", ContentType.ColorStream),
+                    InputPort("fade", GlslType.Float, "Fade"),
+                    InputPort("otherColorStream", GlslType.Vec4, "Other Color Stream", ContentType.ColorStream)
                 )) { shader.inputPorts.map { it.copy(glslVar = null) } }
             }
 

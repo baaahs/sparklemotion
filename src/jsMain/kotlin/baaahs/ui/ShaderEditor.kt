@@ -2,6 +2,7 @@ package baaahs.ui
 
 import acex.*
 import baaahs.boundedBy
+import baaahs.gl.glsl.GlslType
 import baaahs.jsx.ShowControls
 import baaahs.jsx.ShowControlsProps
 import baaahs.show.mutable.EditingShader
@@ -104,8 +105,8 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         val session = editor.getSession()
 
         val originalText = extraction.text
-        val type = if (originalText.indexOf('.') > -1) "float" else "int"
-        val prefix = "${type}Uniform"
+        val type = if (originalText.indexOf('.') > -1) GlslType.Float else GlslType.Int
+        val prefix = "${type.glslLiteral}Uniform"
         var num = 0
         while (session.getDocument().getValue().indexOf("${prefix}${num}") > -1) num++
         val uniformName = "${prefix}${num}"

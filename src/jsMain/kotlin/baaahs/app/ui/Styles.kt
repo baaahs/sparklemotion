@@ -304,6 +304,21 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         }
     }
 
+    val serverNoticeBackdrop by css {
+        important(::position, Position.relative)
+        width = 100.pct
+        height = 100.pct
+        important(::zIndex, 2000)
+
+        child("div") {
+            maxWidth = 80.pct
+        }
+
+        descendants("code") {
+            whiteSpace = WhiteSpace.preWrap
+        }
+    }
+
     val global = CSSBuilder().apply {
         ".${editModeOn.name}.${unplacedControlsPalette.name}" {
             opacity = 1

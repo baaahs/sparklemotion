@@ -66,6 +66,14 @@ class WebClient(
             facade.notifyChanged()
         }
 
+    private val serverNotices = arrayListOf<Pinky.ServerNotice>()
+    private val serverNoticesChannel =
+        pubSub.subscribe(Topics.serverNotices) {
+            serverNotices.clear()
+            serverNotices.addAll(it)
+            facade.notifyChanged()
+        }
+
 
     private val undoStack = UndoStack<ShowEditorState>()
 
@@ -124,6 +132,12 @@ class WebClient(
         pubSub.removeStateChangeListener(pubSubListener)
     }
 
+    private fun confirmServerNotice(id: String) {
+        serverNotices.removeAll { it.id == id }
+        serverNoticesChannel.onChange(this@WebClient.serverNotices)
+        facade.notifyChanged()
+    }
+
     inner class Facade : baaahs.ui.Facade() {
         val plugins: Plugins
             get() = this@WebClient.plugins
@@ -151,6 +165,9 @@ class WebClient(
 
         val openShow: OpenShow?
             get() = this@WebClient.openShow
+
+        val serverNotices : List<Pinky.ServerNotice>
+            get() = this@WebClient.serverNotices
 
         fun onShowEdit(show: Show, showState: ShowState): ShowEditorState {
             val isUnsaved = savedShow?.equals(show) != true
@@ -185,6 +202,10 @@ class WebClient(
 
         fun onCloseShow() {
             serverCommands.switchToShow(SwitchToShowCommand(null))
+        }
+
+        fun confirmServerNotice(id: String) {
+            this@WebClient.confirmServerNotice(id)
         }
     }
 }

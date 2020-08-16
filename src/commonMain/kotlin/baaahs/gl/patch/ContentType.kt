@@ -4,7 +4,7 @@ import baaahs.gl.glsl.GlslType
 
 class ContentType(
     val description: String,
-    val glslType: String,
+    val glslType: GlslType,
     val isStream: Boolean = false,
     /** If false, this content type won't be suggested for matching GLSL types, it must be explicitly specified. */
     val suggest: Boolean = true,
@@ -44,26 +44,26 @@ class ContentType(
 
 
     companion object {
-        val PixelCoordinatesTexture = ContentType("Pixel Coordinates Texture", "sampler2D", suggest = true)
-        val PreviewResolution = ContentType("Preview Resolution", "vec2", suggest = false)
-        val RasterCoordinate = ContentType("Raster Coordinate", "vec2", suggest = false)
-        val Resolution = ContentType("Resolution", "vec2", suggest = false)
-        val Unknown = ContentType("Unknown", "void", suggest = false)
+        val PixelCoordinatesTexture = ContentType("Pixel Coordinates Texture", GlslType.Sampler2D, suggest = true)
+        val PreviewResolution = ContentType("Preview Resolution", GlslType.Vec2, suggest = false)
+        val RasterCoordinate = ContentType("Raster Coordinate", GlslType.Vec2, suggest = false)
+        val Resolution = ContentType("Resolution", GlslType.Vec2, suggest = false)
+        val Unknown = ContentType("Unknown", GlslType.Void, suggest = false)
 
-        val UvCoordinate = ContentType("U/V Coordinate", "vec2")
+        val UvCoordinate = ContentType("U/V Coordinate", GlslType.Vec2)
         val UvCoordinateStream = UvCoordinate.stream()
-        val XyCoordinate = ContentType("X/Y Coordinate", "vec2")
-        val ModelInfo = ContentType("Model Info", "ModelInfo")
-        val Mouse = ContentType("Mouse", "vec2")
-        val XyzCoordinate = ContentType("X/Y/Z Coordinate", "vec3")
-        val Color = ContentType("Color", "vec4") { type ->
+        val XyCoordinate = ContentType("X/Y Coordinate", GlslType.Vec2)
+        val ModelInfo = ContentType("Model Info", GlslType.from("ModelInfo"))
+        val Mouse = ContentType("Mouse", GlslType.Vec2)
+        val XyzCoordinate = ContentType("X/Y/Z Coordinate", GlslType.Vec3)
+        val Color = ContentType("Color", GlslType.Vec4) { type ->
             if (type == GlslType.Vec4) "vec4(0., 0., 0., 1.)" else type.defaultInitializer()
         }
         val ColorStream = Color.stream()
-        val Time = ContentType("Time", "float")
-        val Float = ContentType("Float", "float")
-        val Int = ContentType("Integer", "int")
-        val Media = ContentType("Media", "sampler2D")
+        val Time = ContentType("Time", GlslType.Float)
+        val Float = ContentType("Float", GlslType.Float)
+        val Int = ContentType("Integer", GlslType.Int)
+        val Media = ContentType("Media", GlslType.Sampler2D)
 
         val coreTypes = listOf(
             PixelCoordinatesTexture,
