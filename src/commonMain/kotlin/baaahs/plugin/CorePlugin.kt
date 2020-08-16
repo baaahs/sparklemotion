@@ -18,6 +18,7 @@ import com.danielgergely.kgl.FloatBuffer
 import com.danielgergely.kgl.GL_FLOAT
 import com.danielgergely.kgl.GL_NEAREST
 import com.danielgergely.kgl.GL_RGB
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.float
@@ -70,30 +71,13 @@ class CorePlugin : Plugin {
         return dataSourceBuilder.build(inputPort)
     }
 
-//    @Serializable
-//    class NoOp : DataSource, DataFeed {
-//        constructor(inputPortRef: InputPortRef) {
-//            this.id = inputPortRef.id
-//            this.supportedTypes = listOf(inputPortRef.type)
-//        }
-//
-//        override val id: String
-//        override val dataSourceName: String
-//            get() =
-//        override val supportedTypes: List<String>
-//
-//        override fun create(showPlayer: ShowPlayer): DataFeed = this
-//
-//        override fun set(uniform: Uniform) {
-//            // no-op
-//        }
-//    }
 
     /**
      * Sparkle Motion always uses a resolution of (1, 1), except for previews, which
      * use [PreviewResolution] instead.
      */
     @Serializable
+    @SerialName("baaahs.Core:Resolution")
     data class Resolution(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<Resolution> {
             override val resourceName: String get() = "Resolution"
@@ -114,6 +98,7 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
+    @SerialName("baaahs.Core:PreviewResolution")
     data class PreviewResolution(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<PreviewResolution> {
             override val resourceName: String get() = "Preview Resolution"
@@ -142,6 +127,7 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
+    @SerialName("baaahs.Core:Time")
     data class Time(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<Time> {
             override val resourceName: String get() = "Time"
@@ -163,6 +149,7 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
+    @SerialName("baaahs.Core:PixelCoordsTexture")
     data class PixelCoordsTexture(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<PixelCoordsTexture> {
             override val resourceName: String get() = "PixelCoords"
@@ -206,6 +193,7 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
+    @SerialName("baaahs.Core:ScreenUvCoord")
     data class ScreenUvCoord(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<ScreenUvCoord> {
             override val resourceName: String get() = "U/V Coordinate"
@@ -240,6 +228,7 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
+    @SerialName("baaahs.Core:ModelInfo")
     data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<ModelInfoDataSource> {
             override val resourceName: String get() = "Model Info"
@@ -247,7 +236,7 @@ class CorePlugin : Plugin {
 
             // TODO: dataType should be something like "{vec3,vec3}" probably.
             override fun looksValid(inputPort: InputPort): Boolean =
-                    inputPort.type == modelInfoType || inputPort.contentType == ContentType.ModelInfo
+                inputPort.type == modelInfoType || inputPort.contentType == ContentType.ModelInfo
 
             override fun build(inputPort: InputPort): ModelInfoDataSource =
                 ModelInfoDataSource()
@@ -315,6 +304,7 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
+    @SerialName("baaahs.Core:Slider")
     data class SliderDataSource(
         override val title: String,
         val initialValue: Float,
@@ -354,6 +344,7 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
+    @SerialName("baaahs.Core:XyPad")
     data class XyPad(
         val title: String,
         val varPrefix: String
@@ -387,7 +378,7 @@ class CorePlugin : Plugin {
                             get() = false
 
                         override fun setOnProgram() {
-                //                            uniform.set(xControl.value, yControl.value)
+                            //                            uniform.set(xControl.value, yControl.value)
                         }
                     }
                 }
@@ -396,6 +387,7 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
+    @SerialName("baaahs.Core:ColorPicker")
     data class ColorPickerProvider(
         override val title: String,
         val initialValue: Color
@@ -434,6 +426,7 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
+    @SerialName("baaahs.Core:RadioButtonStrip")
     data class RadioButtonStripProvider(
         override val title: String,
         val options: List<String>,
@@ -476,11 +469,13 @@ class CorePlugin : Plugin {
     }
 
     @Serializable
+    @SerialName("baaahs.Core:Image")
     data class ImageSource(val title: String) : DataSource {
         companion object : DataSourceBuilder<ImageSource> {
             override val resourceName: String get() = "Image"
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Sampler2D)
+
             override fun build(inputPort: InputPort): ImageSource =
                 ImageSource(inputPort.title)
         }
