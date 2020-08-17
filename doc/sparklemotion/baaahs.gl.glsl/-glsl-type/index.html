@@ -8,8 +8,8 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gl.glsl</a>&nbsp;/&nbsp;<a href="./index.html">GlslType</a><br/>
 <br/>
 <h1>GlslType</h1>
-<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">GlslType</span></code>
-<h3>Enum Values</h3>
+<code><span class="keyword">sealed</span> <span class="keyword">class </span><span class="identifier">GlslType</span></code>
+<h3>Types</h3>
 <table>
 <tbody>
 <tr>
@@ -17,42 +17,56 @@
 <h4><a href="-float.html">Float</a></h4>
 </td>
 <td>
-</td>
-</tr>
-<tr>
-<td>
-<h4><a href="-vec2.html">Vec2</a></h4>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td>
-<h4><a href="-vec3.html">Vec3</a></h4>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td>
-<h4><a href="-vec4.html">Vec4</a></h4>
-</td>
-<td>
-</td>
+<code><span class="keyword">object </span><span class="identifier">Float</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslType</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="-int.html">Int</a></h4>
 </td>
 <td>
-</td>
+<code><span class="keyword">object </span><span class="identifier">Int</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslType</span></a></code></td>
 </tr>
 <tr>
 <td>
-<h4><a href="sampler2-d.html">sampler2D</a></h4>
+<h4><a href="-other-glsl-type/index.html">OtherGlslType</a></h4>
 </td>
 <td>
+<code><span class="keyword">class </span><span class="identifier">OtherGlslType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-sampler2-d.html">Sampler2D</a></h4>
 </td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Sampler2D</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-vec2.html">Vec2</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Vec2</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-vec3.html">Vec3</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Vec3</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-vec4.html">Vec4</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Vec4</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-void.html">Void</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Void</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">GlslType</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -76,7 +90,38 @@
 <h4><a href="default-initializer.html">defaultInitializer</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">defaultInitializer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">defaultInitializer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="to-string.html">toString</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">toString</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="types.html">types</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">types</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="./index.html"><span class="identifier">GlslType</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="from.html">from</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">from</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslType.Companion$from(kotlin.String)/glsl">glsl</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">GlslType</span></a></code></td>
 </tr>
 </tbody>
 </table>
