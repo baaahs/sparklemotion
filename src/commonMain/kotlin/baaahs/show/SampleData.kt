@@ -157,7 +157,7 @@ object SampleData {
         mapOf("default" to defaultLayout)
     )
 
-    val colorControl = CorePlugin.ColorPickerProvider("Color", Color.WHITE)
+    val colorControl = CorePlugin.ColorPickerDataSource("Color", Color.WHITE)
     val brightnessControl = CorePlugin.SliderDataSource(
         "Brightness", 1f, 0f, 1.25f, null)
     val saturationControl = CorePlugin.SliderDataSource(

@@ -52,7 +52,7 @@ object AutoWirerSpec : Spek({
                         MutableShaderInstance(
                             MutableShader(paintShader),
                             hashMapOf(
-                                "time" to MutableDataSource(CorePlugin.Time()),
+                                "time" to MutableDataSource(CorePlugin.TimeDataSource()),
                                 "blueness" to MutableDataSource(
                                     CorePlugin.SliderDataSource(
                                         "Blueness",
@@ -62,7 +62,7 @@ object AutoWirerSpec : Spek({
                                         null
                                     )
                                 ),
-                                "resolution" to MutableDataSource(CorePlugin.Resolution()),
+                                "resolution" to MutableDataSource(CorePlugin.ResolutionDataSource()),
                                 "gl_FragCoord" to MutableShaderChannel(ShaderChannel.Main)
                             ),
                             shaderChannel = ShaderChannel.Main,
@@ -84,8 +84,8 @@ object AutoWirerSpec : Spek({
                             MutableShaderInstance(
                                 MutableShader(paintShader),
                                 hashMapOf(
-                                    "time" to MutableDataSource(CorePlugin.Time()),
-                                    "resolution" to MutableDataSource(CorePlugin.Resolution()),
+                                    "time" to MutableDataSource(CorePlugin.TimeDataSource()),
+                                    "resolution" to MutableDataSource(CorePlugin.ResolutionDataSource()),
                                     "blueness" to MutableDataSource(
                                         CorePlugin.SliderDataSource(
                                             "Blueness",
@@ -103,7 +103,7 @@ object AutoWirerSpec : Spek({
                                 incomingLinks.putAll(
                                     mapOf(
                                         "pixelCoordsTexture" to MutableDataSource(
-                                            CorePlugin.PixelCoordsTexture()
+                                            CorePlugin.PixelCoordsTextureDataSource()
                                         ),
                                         "modelInfo" to MutableDataSource(
                                             CorePlugin.ModelInfoDataSource()

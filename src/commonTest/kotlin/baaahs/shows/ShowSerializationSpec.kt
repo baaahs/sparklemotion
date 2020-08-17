@@ -110,24 +110,24 @@ fun jsonFor(dataSource: DataSource): JsonElement {
                 "stepValue" to dataSource.stepValue
             }
         }
-        is CorePlugin.ColorPickerProvider -> {
+        is CorePlugin.ColorPickerDataSource -> {
             json {
                 "type" to "baaahs.Core:ColorPicker"
                 "title" to dataSource.title
                 "initialValue" to dataSource.initialValue.toInt()
             }
         }
-        is CorePlugin.Resolution -> {
+        is CorePlugin.ResolutionDataSource -> {
             json {
                 "type" to "baaahs.Core:Resolution"
             }
         }
-        is CorePlugin.Time -> {
+        is CorePlugin.TimeDataSource -> {
             json {
                 "type" to "baaahs.Core:Time"
             }
         }
-        is CorePlugin.PixelCoordsTexture -> {
+        is CorePlugin.PixelCoordsTextureDataSource -> {
             json {
                 "type" to "baaahs.Core:PixelCoordsTexture"
             }
