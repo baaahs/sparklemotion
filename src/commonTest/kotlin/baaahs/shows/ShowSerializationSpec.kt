@@ -102,7 +102,7 @@ fun jsonFor(dataSource: DataSource): JsonElement {
     return when (dataSource) {
         is CorePlugin.SliderDataSource -> {
             json {
-                "type" to "baaahs.plugin.CorePlugin.SliderDataSource"
+                "type" to "baaahs.Core:Slider"
                 "title" to dataSource.title
                 "initialValue" to dataSource.initialValue
                 "minValue" to dataSource.minValue
@@ -112,29 +112,29 @@ fun jsonFor(dataSource: DataSource): JsonElement {
         }
         is CorePlugin.ColorPickerProvider -> {
             json {
-                "type" to "baaahs.plugin.CorePlugin.ColorPickerProvider"
+                "type" to "baaahs.Core:ColorPicker"
                 "title" to dataSource.title
                 "initialValue" to dataSource.initialValue.toInt()
             }
         }
         is CorePlugin.Resolution -> {
             json {
-                "type" to "baaahs.plugin.CorePlugin.Resolution"
+                "type" to "baaahs.Core:Resolution"
             }
         }
         is CorePlugin.Time -> {
             json {
-                "type" to "baaahs.plugin.CorePlugin.Time"
+                "type" to "baaahs.Core:Time"
             }
         }
         is CorePlugin.PixelCoordsTexture -> {
             json {
-                "type" to "baaahs.plugin.CorePlugin.PixelCoordsTexture"
+                "type" to "baaahs.Core:PixelCoordsTexture"
             }
         }
         is CorePlugin.ModelInfoDataSource -> {
             json {
-                "type" to "baaahs.plugin.CorePlugin.ModelInfoDataSource"
+                "type" to "baaahs.Core:ModelInfo"
             }
         }
         else -> json { "type" to "unknown" }
