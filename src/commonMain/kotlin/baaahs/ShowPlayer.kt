@@ -20,7 +20,7 @@ interface ShowPlayer {
     val dataSources: List<DataSource>
 
     fun <T : Gadget> createdGadget(id: String, gadget: T)
-    fun <T : Gadget> useGadget(id: String): T
+    fun <T : Gadget> useGadget(id: String): T = error("override me?")
 
     fun openShader(shader: Shader, addToCache: Boolean = false): OpenShader
     fun openShaderOrNull(shader: Shader, addToCache: Boolean = false): OpenShader? {

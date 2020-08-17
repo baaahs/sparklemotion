@@ -45,8 +45,9 @@ object PatchHolderEditorHelpText {
 
         child {
             markdown {
-                """
-            
+                +"""
+                    **Patches** are collections of one or more shaders, plus wiring information for
+                    connecting the shaders with input sources and each other.
                 """.trimIndent()
             }
         }

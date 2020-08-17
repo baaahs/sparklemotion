@@ -1,6 +1,9 @@
 package baaahs.gl.preview
 
-import baaahs.*
+import baaahs.BaseShowPlayer
+import baaahs.Gadget
+import baaahs.GadgetData
+import baaahs.Logger
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslException
@@ -11,7 +14,6 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
-import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableConstPort
@@ -32,8 +34,9 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
     var glslProgram: GlslProgram? = null
         private set
 
-    var gadgets: List<GadgetData> = emptyList()
-        private set
+    val gadgets: List<GadgetData> get() = mutableGadgets
+    private val mutableGadgets: MutableList<GadgetData> = arrayListOf()
+
     var glslErrors: List<GlslError> = emptyList()
         private set
 
@@ -52,12 +55,15 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
         notifyChanged()
 
         GlobalScope.launch {
-            val showPlayer = PreviewShowPlayer(autoWirer.plugins, gl)
+            val showPlayer = object : BaseShowPlayer(autoWirer.plugins, ModelInfo.Empty) {
+                override val glContext: GlContext get() = gl
+
+                override fun <T : Gadget> createdGadget(id: String, gadget: T) {
+                    mutableGadgets.add(GadgetData(id, gadget, "/preview/gadgets/$id"))
+                }
+            }
             compile(gl) { id, dataSource ->
                 dataSource.createFeed(showPlayer, id)
-            }
-            gadgets = showPlayer.gadgets.map { (id, gadget) ->
-                GadgetData(id, gadget, "/preview/gadgets/$id")
             }
         }
     }
@@ -133,25 +139,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
         Errors
     }
 
-    private class PreviewShowPlayer(
-        plugins: Plugins,
-        override val glContext: GlContext
-    ) : BaseShowPlayer(plugins, ModelInfo.Empty) {
-        val gadgets: MutableMap<String, Gadget> = hashMapOf()
-
-        override fun <T : Gadget> createdGadget(id: String, gadget: T) {
-            gadgets[id] = gadget
-        }
-
-        override fun <T : Gadget> useGadget(id: String): T {
-            @Suppress("UNCHECKED_CAST")
-            return gadgets.getBang(id, "gadget") as T
-        }
-    }
-
     companion object {
-        fun previewShowPlayer(glContext: GlContext): ShowPlayer = PreviewShowPlayer(Plugins.safe(), glContext)
-
         private val logger = Logger("ShaderEditor")
     }
 }
