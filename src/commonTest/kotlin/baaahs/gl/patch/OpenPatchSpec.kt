@@ -47,9 +47,9 @@ object OpenPatchSpec : Spek({
                 val linkedPatch by value {
                     MutablePatch {
                         addShaderInstance(shader) {
-                            link("gl_FragCoord", CorePlugin.ScreenUvCoord())
-                            link("resolution", CorePlugin.Resolution())
-                            link("time", CorePlugin.Time())
+                            link("gl_FragCoord", CorePlugin.ScreenUvCoordDataSource())
+                            link("resolution", CorePlugin.ResolutionDataSource())
+                            link("time", CorePlugin.TimeDataSource())
                             link("blueness",
                                 CorePlugin.SliderDataSource(
                                     "Blueness",
@@ -118,7 +118,7 @@ object OpenPatchSpec : Spek({
                         MutablePatch {
                             addShaderInstance(cylindricalProjection) {
                                 link("pixelCoordsTexture",
-                                    CorePlugin.PixelCoordsTexture()
+                                    CorePlugin.PixelCoordsTextureDataSource()
                                 )
                                 link("modelInfo",
                                     CorePlugin.ModelInfoDataSource()
@@ -133,8 +133,8 @@ object OpenPatchSpec : Spek({
                                         findShaderInstanceFor(cylindricalProjection)
                                     )
                                 )
-                                link("resolution", CorePlugin.Resolution())
-                                link("time", CorePlugin.Time())
+                                link("resolution", CorePlugin.ResolutionDataSource())
+                                link("time", CorePlugin.TimeDataSource())
                                 link("blueness",
                                     CorePlugin.SliderDataSource(
                                         "Blueness",

@@ -163,16 +163,16 @@ typealias Resolver = (String, DataSource) -> GlslProgram.DataFeed?
 val dataSourceProviderModule = SerializersModule {
     polymorphic(DataSource::class) {
 //        CorePlugin.NoOp::class with CorePlugin.NoOp.serializer()
-        CorePlugin.Resolution::class with CorePlugin.Resolution.serializer()
-        CorePlugin.PreviewResolution::class with CorePlugin.PreviewResolution.serializer()
-        CorePlugin.Time::class with CorePlugin.Time.serializer()
-        CorePlugin.PixelCoordsTexture::class with CorePlugin.PixelCoordsTexture.serializer()
+        CorePlugin.ResolutionDataSource::class with CorePlugin.ResolutionDataSource.serializer()
+        CorePlugin.PreviewResolutionDataSource::class with CorePlugin.PreviewResolutionDataSource.serializer()
+        CorePlugin.TimeDataSource::class with CorePlugin.TimeDataSource.serializer()
+        CorePlugin.PixelCoordsTextureDataSource::class with CorePlugin.PixelCoordsTextureDataSource.serializer()
         CorePlugin.ModelInfoDataSource::class with CorePlugin.ModelInfoDataSource.serializer()
         CorePlugin.SliderDataSource::class with CorePlugin.SliderDataSource.serializer()
-        CorePlugin.ColorPickerProvider::class with CorePlugin.ColorPickerProvider.serializer()
-        CorePlugin.ColorPickerProvider::class with CorePlugin.ColorPickerProvider.serializer()
-        CorePlugin.RadioButtonStripProvider::class with CorePlugin.RadioButtonStripProvider.serializer()
-        CorePlugin.XyPad::class with CorePlugin.XyPad.serializer()
+        CorePlugin.ColorPickerDataSource::class with CorePlugin.ColorPickerDataSource.serializer()
+        CorePlugin.ColorPickerDataSource::class with CorePlugin.ColorPickerDataSource.serializer()
+        CorePlugin.RadioButtonStripDataSource::class with CorePlugin.RadioButtonStripDataSource.serializer()
+        CorePlugin.XyPadDataSource::class with CorePlugin.XyPadDataSource.serializer()
     }
 
 //    polymorphic(ControlRef::class) {
