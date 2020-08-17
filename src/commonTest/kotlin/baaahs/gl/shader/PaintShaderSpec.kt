@@ -2,6 +2,7 @@ package baaahs.gl.shader
 
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
@@ -41,11 +42,11 @@ object PaintShaderSpec : Spek({
 
             it("finds magic uniforms") {
                 expect(listOf(
-                    InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinateStream),
-                    InputPort("time", "float", "Time", ContentType.Time),
-                    InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
-                    InputPort("mouse", "vec2", "Mouse", ContentType.Mouse),
-                    InputPort("blueness", "float", "Blueness")
+                    InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream),
+                    InputPort("time", GlslType.Float, "Time", ContentType.Time),
+                    InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
+                    InputPort("mouse", GlslType.Vec2, "Mouse", ContentType.Mouse),
+                    InputPort("blueness", GlslType.Float, "Blueness")
                 )) { shader.inputPorts.map { it.copy(glslVar = null) } }
             }
 
@@ -106,18 +107,18 @@ object PaintShaderSpec : Spek({
             describe("#inputPorts") {
                 it("finds magic uniforms") {
                     expect(listOf(
-                        InputPort("blueness", "float", "Blueness"),
+                        InputPort("blueness", GlslType.Float, "Blueness"),
                         InputPort(
                             "iResolution",
-                            "vec3",
+                            GlslType.Vec3,
                             "Resolution",
                             ContentType.Resolution
                         ),
-                        InputPort("iTime", "float", "Time", ContentType.Time),
-                        InputPort("iMouse", "vec2", "Mouse", ContentType.Mouse),
+                        InputPort("iTime", GlslType.Float, "Time", ContentType.Time),
+                        InputPort("iMouse", GlslType.Vec2, "Mouse", ContentType.Mouse),
                         InputPort(
                             "sm_FragCoord",
-                            "vec2",
+                            GlslType.Vec2,
                             "Coordinates",
                             ContentType.UvCoordinateStream
                         )

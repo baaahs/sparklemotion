@@ -25,6 +25,7 @@ import materialui.components.appbar.appBar
 import materialui.components.appbar.enums.AppBarPosition
 import materialui.components.appbar.enums.AppBarStyle
 import materialui.components.backdrop.backdrop
+import materialui.components.backdrop.enum.BackdropStyle
 import materialui.components.button.enums.ButtonColor
 import materialui.components.circularprogress.circularProgress
 import materialui.components.container.container
@@ -46,6 +47,9 @@ import materialui.components.switches.switch
 import materialui.components.toolbar.toolbar
 import materialui.components.typography.enums.TypographyStyle
 import materialui.components.typography.typographyH6
+import materialui.lab.components.alert.alert
+import materialui.lab.components.alert.enums.AlertColor
+import materialui.lab.components.alerttitle.alertTitle
 import materialui.styles.createMuiTheme
 import materialui.styles.muitheme.options.palette
 import materialui.styles.palette.PaletteType
@@ -54,10 +58,7 @@ import materialui.styles.themeprovider.themeProvider
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.b
-import react.dom.div
-import react.dom.i
-import react.dom.p
+import react.dom.*
 import styled.css
 import styled.injectGlobal
 import styled.styledDiv
@@ -468,6 +469,28 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 promptDialog {
                     attrs.prompt = it
                     attrs.onClose = handlePromptClose
+                }
+            }
+
+            webClient.serverNotices.let { serverNotices ->
+                if (serverNotices.isNotEmpty()) {
+                    backdrop(Styles.serverNoticeBackdrop on BackdropStyle.root) {
+                        attrs { open = true }
+
+                        div {
+                            serverNotices.forEach { serverNotice ->
+                                alert {
+                                    attrs.color = AlertColor.error
+                                    attrs.onClose = { webClient.confirmServerNotice(serverNotice.id) }
+
+                                    alertTitle {
+                                        +serverNotice.title
+                                    }
+                                    serverNotice.message?.let { code { +it } }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

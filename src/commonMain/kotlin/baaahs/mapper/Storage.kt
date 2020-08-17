@@ -6,6 +6,7 @@ import baaahs.io.Fs
 import baaahs.model.Model
 import baaahs.plugin.Plugins
 import baaahs.show.Show
+import baaahs.show.ShowMigrator
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.KSerializer
@@ -35,7 +36,8 @@ class Storage(val fs: Fs, val plugins: Plugins) {
         val file =
             fs.resolve(
                 "mapping-sessions",
-                "${formatDateTime(mappingSession.startedAtDateTime)}-v${mappingSession.version}.json")
+                "${formatDateTime(mappingSession.startedAtDateTime)}-v${mappingSession.version}.json"
+            )
         fs.saveFile(file, json.stringify(MappingSession.serializer(), mappingSession))
         return file
     }
@@ -79,11 +81,12 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun loadShow(file: Fs.File): Show? {
-        return loadJson(file, Show.serializer())
+        return loadJson(file, ShowMigrator)
     }
 
     suspend fun saveShow(file: Fs.File, show: Show) {
         file.write(plugins.json.stringify(Show.serializer(), show), true)
     }
+
     fun resolve(path: String): Fs.File = fs.resolve(path)
 }

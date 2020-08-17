@@ -106,7 +106,7 @@ object AutoWirerSpec : Spek({
                                             CorePlugin.PixelCoordsTexture()
                                         ),
                                         "modelInfo" to MutableDataSource(
-                                            CorePlugin.ModelInfoDataSource("ModelInfo")
+                                            CorePlugin.ModelInfoDataSource()
                                         )
                                     )
                                 )

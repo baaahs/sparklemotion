@@ -13,9 +13,9 @@ class ProjectionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : O
         val proFormaInputPorts = listOf<InputPort>()
 
         val wellKnownInputPorts = listOf(
-            InputPort("pixelCoordsTexture", "sampler2D", "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
-            InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
-            InputPort("previewResolution", "vec2", "Preview Resolution", ContentType.PreviewResolution)
+            InputPort("pixelCoordsTexture", GlslType.Sampler2D, "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
+            InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
+            InputPort("previewResolution", GlslType.Vec2, "Preview Resolution", ContentType.PreviewResolution)
         ).associateBy { it.id }
 
         val outputPort =

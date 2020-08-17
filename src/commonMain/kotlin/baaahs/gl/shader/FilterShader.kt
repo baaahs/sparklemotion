@@ -12,15 +12,15 @@ import baaahs.show.ShaderType
 class FilterShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
     companion object {
         val proFormaInputPorts = listOf(
-            InputPort("gl_FragColor", "vec4", "Input Color", ContentType.ColorStream)
+            InputPort("gl_FragColor", GlslType.Vec4, "Input Color", ContentType.ColorStream)
         )
 
         val wellKnownInputPorts = listOf(
-            InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinateStream),
-            InputPort("intensity", "float", "Intensity", ContentType.Float), // TODO: ContentType.ZeroToOne
-            InputPort("time", "float", "Time", ContentType.Time),
-            InputPort("startTime", "float", "Activated Time", ContentType.Time),
-            InputPort("endTime", "float", "Deactivated Time", ContentType.Time)
+            InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream),
+            InputPort("intensity", GlslType.Float, "Intensity", ContentType.Float), // TODO: ContentType.ZeroToOne
+            InputPort("time", GlslType.Float, "Time", ContentType.Time),
+            InputPort("startTime", GlslType.Float, "Activated Time", ContentType.Time),
+            InputPort("endTime", GlslType.Float, "Deactivated Time", ContentType.Time)
 //                        varying vec2 surfacePosition; TODO
         ).associateBy { it.id }
 

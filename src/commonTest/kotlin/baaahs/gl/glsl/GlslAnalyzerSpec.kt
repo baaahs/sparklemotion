@@ -100,12 +100,12 @@ object GlslAnalyzerSpec : Spek({
                     expect(
                         listOf(
                             GlslCode.GlslVar(
-                                "float", "time",
+                                GlslType.Float, "time",
                                 fullText = "uniform float time;", isUniform = true, lineNumber = 5,
                                 comments = listOf(" trailing comment")
                             ),
                             GlslCode.GlslVar(
-                                "vec2", "resolution",
+                                GlslType.Vec2, "resolution",
                                 fullText = " \n\n\n\nuniform vec2  resolution;", isUniform = true, lineNumber = 5,
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
                             )
@@ -119,7 +119,7 @@ object GlslAnalyzerSpec : Spek({
                             "void mainFunc( out vec4 fragColor, in vec2 fragCoord )",
                             "void main()"
                         )
-                    ) { glslCode.functions.map { "${it.returnType} ${it.name}(${it.params})" } }
+                    ) { glslCode.functions.map { "${it.returnType.glslLiteral} ${it.name}(${it.params})" } }
                 }
 
                 it("finds the structs") {
@@ -167,11 +167,11 @@ object GlslAnalyzerSpec : Spek({
                         expect(
                             listOf(
                                 GlslCode.GlslVar(
-                                    "float", "shouldBeDefined",
+                                    GlslType.Float, "shouldBeDefined",
                                     fullText = "\n\n\nuniform float shouldBeDefined;", isUniform = true, lineNumber = 5
                                 ),
                                 GlslCode.GlslVar(
-                                    "vec2", "shouldBeThis",
+                                    GlslType.Vec2, "shouldBeThis",
                                     fullText = "\n\n\n\n\nuniform vec2 shouldBeThis;", isUniform = true, lineNumber = 9
                                 )
                             )
@@ -184,7 +184,7 @@ object GlslAnalyzerSpec : Spek({
                                 "void mainFunc(out vec4 fragColor, in vec2 fragCoord)",
                                 "void main()"
                             )
-                        ) { glslCode.functions.map { "${it.returnType} ${it.name}(${it.params})" } }
+                        ) { glslCode.functions.map { "${it.returnType.glslLiteral} ${it.name}(${it.params})" } }
                     }
 
                     context("with defines") {
@@ -236,7 +236,7 @@ object GlslAnalyzerSpec : Spek({
                                 "vec3 mod289(vec3 x)",
                                 "vec4 mod289(vec4 x)"
                             )
-                        ) { glslCode.functions.map { "${it.returnType} ${it.name}(${it.params})" } }
+                        ) { glslCode.functions.map { "${it.returnType.glslLiteral} ${it.name}(${it.params})" } }
                     }
                 }
             }
@@ -269,10 +269,10 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(
                             listOf(
-                                InputPort("gl_FragCoord", "vec4", "Coordinates", ContentType.UvCoordinateStream),
-                                InputPort("time", "float", "Time", ContentType.Time),
-                                InputPort("resolution", "vec2", "Resolution", ContentType.Resolution),
-                                InputPort("blueness", "float", "Blueness")
+                                InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream),
+                                InputPort("time", GlslType.Float, "Time", ContentType.Time),
+                                InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
+                                InputPort("blueness", GlslType.Float, "Blueness")
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
@@ -302,10 +302,10 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(
                             listOf(
-                                InputPort("blueness", "float", "Blueness"),
-                                InputPort("iResolution", "vec3", "Resolution", ContentType.Resolution),
-                                InputPort("iTime", "float", "Time", ContentType.Time),
-                                InputPort("sm_FragCoord", "vec2", "Coordinates", ContentType.UvCoordinateStream)
+                                InputPort("blueness", GlslType.Float, "Blueness"),
+                                InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution),
+                                InputPort("iTime", GlslType.Float, "Time", ContentType.Time),
+                                InputPort("sm_FragCoord", GlslType.Vec2, "Coordinates", ContentType.UvCoordinateStream)
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
@@ -321,8 +321,8 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(
                             listOf(
-                                InputPort("pixelCoordsTexture", "sampler2D", "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
-                                InputPort("modelInfo", "ModelInfo", "Model Info", null)
+                                InputPort("pixelCoordsTexture", GlslType.Sampler2D, "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
+                                InputPort("modelInfo", ContentType.ModelInfo.glslType, "Model Info", null)
                             )
                         ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
@@ -335,7 +335,7 @@ object GlslAnalyzerSpec : Spek({
         it("handles const initializers") {
             expect(
                 GlslCode.GlslVar(
-                    "vec3", "baseColor", "const vec3 baseColor = vec3(0.0,0.09,0.18);\n",
+                    GlslType.Vec3, "baseColor", "const vec3 baseColor = vec3(0.0,0.09,0.18);\n",
                     isConst = true
                 )
             ) {
@@ -353,7 +353,7 @@ object GlslAnalyzerSpec : Spek({
             val hintClassStr by value { "whatever.package.Plugin:Thing" }
             val glslVar by value {
                 GlslCode.GlslVar(
-                    "float", "varName", isUniform = true,
+                    GlslType.Float, "varName", isUniform = true,
                     comments = listOf(" @@$hintClassStr", "  key=value", "  key2=value2")
                 )
             }

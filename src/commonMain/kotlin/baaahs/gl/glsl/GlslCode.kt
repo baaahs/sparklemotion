@@ -106,7 +106,7 @@ class GlslCode(
     }
 
     data class GlslVar(
-        val dataType: String,
+        val type: GlslType,
         override val name: String,
         override val fullText: String = "",
         val isConst: Boolean = false,
@@ -179,7 +179,7 @@ class GlslCode(
     }
 
     data class GlslFunction(
-        val returnType: String,
+        val returnType: GlslType,
         override val name: String,
         val params: String,
         override val fullText: String,
