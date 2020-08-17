@@ -197,7 +197,7 @@ class LinkedPatch(
 
         dataSourceLinks.sortedBy { it.varName }.forEach { (dataSource, varName) ->
             if (!dataSource.isImplicit())
-                buf.append("uniform ${dataSource.getType()} ${dataSource.getVarName(varName)};\n")
+                buf.append("uniform ${dataSource.getType().glslLiteral} ${dataSource.getVarName(varName)};\n")
         }
         buf.append("\n")
 

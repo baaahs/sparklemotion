@@ -73,6 +73,12 @@ class Pinky(
 
     private val listeningVisualizers = hashSetOf<ListeningVisualizer>()
 
+    private val serverNotices = arrayListOf<ServerNotice>()
+    private val serverNoticesChannel = pubSub.publish(Topics.serverNotices, serverNotices) {
+        serverNotices.clear()
+        serverNotices.addAll(it)
+    }
+
     init {
         httpServer.listenWebSocket("/ws/api") {
             WebSocketRouter { PinkyMapperHandlers(storage).register(this) }
@@ -407,14 +413,31 @@ class Pinky(
         val config = storage.loadConfig()
         config?.runningShowPath?.let { lastRunningShowPath ->
             val lastRunningShowFile = storage.resolve(lastRunningShowPath)
-            val show = storage.loadShow(lastRunningShowFile)
-            if (show == null) {
-                logger.warn { "No show found at $lastRunningShowPath" }
-            } else {
-                switchTo(show, file = lastRunningShowFile)
+            try {
+                val show = storage.loadShow(lastRunningShowFile)
+                if (show == null) {
+                    logger.warn { "No show found at $lastRunningShowPath" }
+                } else {
+                    switchTo(show, file = lastRunningShowFile)
+                }
+            } catch (e: Exception) {
+                reportError("Failed to load show at $lastRunningShowPath", e)
             }
         }
     }
+
+    private fun reportError(message: String, e: Exception) {
+        logger.error(e) { message }
+        serverNotices.add(ServerNotice(message, e.message))
+        serverNoticesChannel.onChange(serverNotices)
+    }
+
+    @Serializable
+    data class ServerNotice(
+        val title: String,
+        val message: String?,
+        val id: String = randomId("error")
+    )
 
     companion object {
         val logger = Logger("Pinky")

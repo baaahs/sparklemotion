@@ -47,14 +47,14 @@ interface OpenShader : RefCounted {
             proFormaInputPorts +
                     glslCode.globalInputVars.map {
                         wellKnownInputPorts[it.name]
-                            ?.copy(dataType = it.dataType, glslVar = it)
+                            ?.copy(type = it.type, glslVar = it)
                             ?: toInputPort(it)
                     }
         }
 
         protected fun toInputPort(it: GlslCode.GlslVar): InputPort {
             return InputPort(
-                it.name, it.dataType, it.displayName(),
+                it.name, it.type, it.displayName(),
                 pluginRef = it.hint?.pluginRef,
                 pluginConfig = it.hint?.config,
                 contentType = it.hint?.tag("type")?.let { plugins.resolveContentType(it) },

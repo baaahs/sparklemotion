@@ -458,7 +458,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
                         "uniform" -> isUniform = true
                         "varying" -> isVarying = true
                     }
-                    GlslVar(type, name, text, isConst, isUniform, isVarying, lineNumber, comments)
+                    GlslVar(GlslType.from(type), name, text, isConst, isUniform, isVarying, lineNumber, comments)
                 }
         }
 
@@ -466,7 +466,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
             return Regex("(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})", RegexOption.MULTILINE)
                 .find(text.trim())?.let {
                     val (returnType, name, params, body) = it.destructured
-                    GlslFunction(returnType, name, params, text, lineNumber, globalVars, comments)
+                    GlslFunction(GlslType.from(returnType), name, params, text, lineNumber, globalVars, comments)
                 }
         }
     }

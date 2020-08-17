@@ -8,7 +8,7 @@ import kotlinx.serialization.json.JsonObject
 
 data class InputPort(
     val id: String,
-    val dataType: String,
+    val type: GlslType,
     val title: String,
     val contentType: ContentType? = null,
     val pluginRef: PluginRef? = null,
@@ -20,12 +20,12 @@ data class InputPort(
     fun hasPluginRef() = pluginRef != null
 
     fun suggestVarName(): String {
-        val postfix = pluginRef?.resourceName ?: dataType
+        val postfix = pluginRef?.resourceName ?: type.glslLiteral
         return id.decapitalize() + postfix.capitalize()
     }
 
     fun dataTypeIs(glslType: GlslType, isStreaming: Boolean = false): Boolean {
-        return dataType == glslType.glslLiteral
+        return type == glslType
                 && (glslVar?.isVarying ?: false) == isStreaming
     }
 }
