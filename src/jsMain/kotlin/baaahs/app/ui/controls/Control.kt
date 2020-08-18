@@ -1,11 +1,11 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
-import baaahs.getBang
 import baaahs.jsx.RangeSlider
 import baaahs.plugin.CorePlugin
-import baaahs.show.ButtonGroupControl
-import baaahs.show.GadgetControl
+import baaahs.show.live.OpenButtonGroupControl
+import baaahs.show.live.OpenControl
+import baaahs.show.live.OpenGadgetControl
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.DraggableProvided
@@ -39,7 +39,7 @@ val Control = xComponent<ControlProps>("Control") { props ->
         }
 
         when (control) {
-            is ButtonGroupControl -> {
+            is OpenButtonGroupControl -> {
                 val title = control.title
                 val component = when (title) {
                     "Scenes" -> SceneList
@@ -49,9 +49,9 @@ val Control = xComponent<ControlProps>("Control") { props ->
                 child(component, specialControlProps)
             }
 
-            is GadgetControl -> {
+            is OpenGadgetControl -> {
                 val appContext = useContext(appContext)
-                val dataSource = props.specialControlProps.show.allDataSources.getBang(control.controlledDataSourceId, "data source")
+                val dataSource = control.controlledDataSource
                 val dataFeed = appContext.showPlayer.useDataFeed(dataSource)
                 val title = control.gadget.title
                 when (dataSource.getRenderType()) {
@@ -72,7 +72,7 @@ val Control = xComponent<ControlProps>("Control") { props ->
 }
 
 external interface ControlProps : RProps {
-    var control: baaahs.show.Control
+    var control: OpenControl
     var specialControlProps: SpecialControlProps
     var draggableProvided: DraggableProvided
 }

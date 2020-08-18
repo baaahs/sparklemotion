@@ -7,6 +7,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.Resolver
+import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
@@ -224,9 +225,9 @@ class LinkedPatch(
 
     fun createProgram(
         glContext: GlContext,
-        dataFeeds: Map<String, GlslProgram.DataFeed>
+        dataFeeds: Map<DataSource, GlslProgram.DataFeed>
     ): GlslProgram {
-        return compile(glContext) { id, dataSource -> dataFeeds.getBang(id, "data feed") }
+        return compile(glContext) { _, dataSource -> dataFeeds.getBang(dataSource, "data feed") }
     }
 
     fun matches(surface: Surface): Boolean = this.surfaces.matches(surface)

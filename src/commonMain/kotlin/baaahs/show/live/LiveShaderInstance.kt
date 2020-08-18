@@ -1,6 +1,5 @@
 package baaahs.show.live
 
-import baaahs.ShowPlayer
 import baaahs.getBang
 import baaahs.gl.patch.PortDiagram
 import baaahs.gl.shader.InputPort
@@ -48,21 +47,6 @@ class LiveShaderInstance(
     }
     data class ConstLink(val glsl: String) : Link
     object NoOpLink : Link
-}
-
-class ShowOpener(private val show: Show, private val showPlayer: ShowPlayer) {
-    private val openShaders = show.shaders.mapValues { (_, shader) ->
-        showPlayer.openShader(shader, addToCache = true)
-    }
-    private val resolver = ShaderInstanceResolver(
-        openShaders,
-        show.shaderInstances,
-        show.dataSources
-    )
-
-    fun openShow(): OpenShow {
-        return OpenShow(show, showPlayer, resolver.getResolvedShaderInstances())
-    }
 }
 
 class ShaderInstanceResolver(

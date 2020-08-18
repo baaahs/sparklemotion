@@ -56,7 +56,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                             install(droppableProvided)
 
                             props.controlDisplay.renderUnplacedControls { index, unplacedControl ->
-                                val draggableId = "unplaced_${showBuilder.idFor(unplacedControl)}"
+                                val draggableId = unplacedControl.id
                                 draggable({
                                     this.key = draggableId
                                     this.draggableId = draggableId
