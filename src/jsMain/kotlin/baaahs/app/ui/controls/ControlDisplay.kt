@@ -6,8 +6,7 @@ import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
 import baaahs.camelize
 import baaahs.getBang
-import baaahs.show.Control
-import baaahs.show.GadgetControl
+import baaahs.show.live.OpenControl
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableControl
@@ -22,7 +21,7 @@ class ControlDisplay(
 ) {
     private val allPanelBuckets: Map<String, PanelBuckets>
     private val mutableShow = if (editMode) show.edit(showState) else null
-    private val placedControls = hashSetOf<Control>()
+    private val placedControls = hashSetOf<OpenControl>()
     private var unplacedControlsDropTarget = UnplacedControlsDropTarget()
     val unplacedControlsDropTargetId = dragNDrop.addDropTarget(unplacedControlsDropTarget)
 
@@ -42,19 +41,16 @@ class ControlDisplay(
         patchSet?.let { addControlsToBuckets(patchSet.controlLayout, Section.Patch) }
     }
 
-    private val allDataSources = show.allDataSources
-    private val suggestedControls: List<Control>
+    private val suggestedControls: List<OpenControl>
     init {
-        val dataSourcesWithoutControls = allDataSources.values -
-                show.allControls.values
-                    .filterIsInstance<GadgetControl>()
-                    .map { allDataSources.getBang(it.controlledDataSourceId, "data source") }.toSet()
-        suggestedControls = dataSourcesWithoutControls.mapNotNull { it.buildControl()?.build(allDataSources) }
+        val dataSourcesWithoutControls = show.allDataSources.values -
+                show.allControls.flatMap { it.controlledDataSources() }
+        suggestedControls = dataSourcesWithoutControls.mapNotNull { it.buildControl()?.open() }
     }
-    private val unplacedControls = show.allControls.values.filter { !placedControls.contains(it) }
+    private val unplacedControls = show.allControls.filter { !placedControls.contains(it) }
 
     private fun addControlsToBuckets(
-        layoutControls: Map<String, List<Control>>,
+        layoutControls: Map<String, List<OpenControl>>,
         section: Section
     ) {
         layoutControls.forEach { (panelName, controls) ->
@@ -71,14 +67,12 @@ class ControlDisplay(
         panelBuckets.render(renderBucket)
     }
 
-    fun renderUnplacedControls(block: (index: Int, control: Control) -> Unit) {
-        unplacedControls.forEachIndexed { index, dataSource ->
-            block(index, dataSource)
-        }
+    fun renderUnplacedControls(block: (index: Int, control: OpenControl) -> Unit) {
+        unplacedControls.forEachIndexed { index, control -> block(index, control) }
     }
 
-    fun allPlacedControls(): Set<Control> {
-        return placedControls.toSet()
+    fun allPlacedControls(): Set<OpenControl> {
+        return placedControls
     }
 
     private fun commitEdit() {
@@ -102,7 +96,7 @@ class ControlDisplay(
         val sceneBucket = PanelBucket(Section.Scene, scenePatchHolder)
         val patchBucket = PanelBucket(Section.Patch, mutablePatchHolder)
 
-        fun add(section: Section, control: Control) {
+        fun add(section: Section, control: OpenControl) {
             section.getBucket(this).add(control)
         }
 
@@ -131,7 +125,7 @@ class ControlDisplay(
 
             private val dropTargetId = dragNDrop.addDropTarget(this)
 
-            fun add(control: Control) {
+            fun add(control: OpenControl) {
                 val nextIndex = controls.size
                 controls.add(PlacedControl(control, nextIndex))
             }
@@ -177,7 +171,7 @@ class ControlDisplay(
                 draggable.remove()
             }
 
-            inner class PlacedControl(val control: Control, val index: Int) : PlaceableControl {
+            inner class PlacedControl(val control: OpenControl, val index: Int) : PlaceableControl {
                 override lateinit var mutableControl: MutableControl
 
                 override fun onMove() {
@@ -218,7 +212,7 @@ class ControlDisplay(
 
     inner class UnplacedControl(val index: Int) : PlaceableControl {
         override val mutableControl: MutableControl
-            get() = unplacedControls[index].toMutable(allDataSources)
+            get() = unplacedControls[index].edit()
 
         override fun remove() {
             // No-op.

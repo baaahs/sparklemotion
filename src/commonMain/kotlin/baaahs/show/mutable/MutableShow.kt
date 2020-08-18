@@ -1,10 +1,15 @@
 package baaahs.show.mutable
 
-import baaahs.*
+import baaahs.Gadget
+import baaahs.ShowState
+import baaahs.getBang
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
+import baaahs.randomId
 import baaahs.show.*
+import baaahs.show.live.OpenControl
+import baaahs.show.live.OpenGadgetControl
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.ShaderInstanceResolver
 import baaahs.util.UniqueIds
@@ -457,10 +462,8 @@ data class MutableGadgetControl(
         return GadgetControl(gadget, showBuilder.idFor(controlledDataSource))
     }
 
-    fun build(dataSources: Map<String, DataSource>): Control {
-        val dataSourceId = dataSources.entries.find { (_, v) -> v == controlledDataSource }?.key
-            ?: error(unknown("data source", controlledDataSource, dataSources.values))
-        return GadgetControl(gadget, dataSourceId)
+    fun open(): OpenControl {
+        return OpenGadgetControl(gadget, controlledDataSource)
     }
 }
 

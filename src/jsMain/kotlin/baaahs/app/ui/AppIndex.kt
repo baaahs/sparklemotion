@@ -41,7 +41,6 @@ import materialui.components.listitem.listItem
 import materialui.components.listitemtext.listItemText
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
-import materialui.components.portal.portal
 import materialui.components.switches.switch
 import materialui.components.toolbar.toolbar
 import materialui.components.typography.enums.TypographyStyle
@@ -409,7 +408,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             attrs.editPatchHolder = handleEditPatchHolder
                         }
 
-                        portal {
+                        if (layoutEditorDialogOpen) {
                             // Layout Editor dialog
                             layoutEditorDialog {
                                 attrs.open = layoutEditorDialogOpen
@@ -427,27 +426,23 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 }
             }
 
-            portal {
-                if (fileDialogOpen) {
-                    fileDialog {
-                        attrs.isOpen = fileDialogOpen
-                        attrs.title = if (fileDialogIsSaveAs) "Save Show As…" else "Open Show…"
-                        attrs.isSaveAs = fileDialogIsSaveAs
-                        attrs.fileDisplayCallback = { file, fileDisplay ->
-                            if (file.isDirectory == false) {
-                                fileDisplay.isSelectable = file.name.endsWith(".sparkle")
-                            }
+            if (fileDialogOpen) {
+                fileDialog {
+                    attrs.isOpen = fileDialogOpen
+                    attrs.title = if (fileDialogIsSaveAs) "Save Show As…" else "Open Show…"
+                    attrs.isSaveAs = fileDialogIsSaveAs
+                    attrs.fileDisplayCallback = { file, fileDisplay ->
+                        if (file.isDirectory == false) {
+                            fileDisplay.isSelectable = file.name.endsWith(".sparkle")
                         }
-                        attrs.onSelect = handleFileSelected
-                        attrs.onCancel = handleFileDialogCancel
-                        attrs.defaultTarget = webClient.showFile
                     }
+                    attrs.onSelect = handleFileSelected
+                    attrs.onCancel = handleFileDialogCancel
+                    attrs.defaultTarget = webClient.showFile
                 }
             }
 
-            portal {
-                renderDialog?.invoke(this)
-            }
+            renderDialog?.invoke(this)
 
             mutablePatchHolder?.let { editor ->
                 patchHolderEditor {
