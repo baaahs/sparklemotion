@@ -10,11 +10,14 @@ class OpenShow(
     private val show: Show,
     private val showPlayer: ShowPlayer,
     private val allShaderInstances: Map<String, LiveShaderInstance>
-) : RefCounted by RefCounter(), OpenPatchHolder(show, allShaderInstances, show.dataSources) {
+) : RefCounted by RefCounter(), OpenPatchHolder(
+    show, allShaderInstances, show.controls
+) {
     val id = randomId("show")
     val layouts get() = show.layouts
 
     val allDataSources = show.dataSources
+    val allControls = show.controls
 
     val dataFeeds = show.dataSources.entries.associate { (id, dataSource) ->
         val dataFeed = showPlayer.openDataFeed(id, dataSource)
@@ -30,11 +33,11 @@ class OpenShow(
         dataFeeds.values.forEach { it.release() }
     }
 
-    inner class OpenScene(scene: Scene) : OpenPatchHolder(scene, allShaderInstances, show.dataSources) {
+    inner class OpenScene(scene: Scene) : OpenPatchHolder(scene, allShaderInstances, show.controls) {
         val id = randomId("scene")
         val patchSets = scene.patchSets.map { OpenPatchSet(it) }
 
-        inner class OpenPatchSet(patchSet: PatchSet) : OpenPatchHolder(patchSet, allShaderInstances, show.dataSources) {
+        inner class OpenPatchSet(patchSet: PatchSet) : OpenPatchHolder(patchSet, allShaderInstances, show.controls) {
             val id = randomId("patchset")
 
             fun activePatches(): List<OpenPatchHolder> {

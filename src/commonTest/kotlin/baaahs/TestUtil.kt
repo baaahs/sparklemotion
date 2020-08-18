@@ -20,7 +20,7 @@ fun MutableList<String>.assertContents(vararg s: String) {
     this.clear()
 }
 
-var json = Json(JsonConfiguration.Stable, gadgetModule)
+var json = Json(JsonConfiguration.Stable, Gadget.serialModule)
 
 fun <T> serializationRoundTrip(serializer: KSerializer<T>, obj: T): T {
     val jsonString = json.stringify(serializer, obj)

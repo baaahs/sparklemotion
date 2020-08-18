@@ -1,5 +1,8 @@
 package baaahs.shows
 
+import baaahs.Gadget
+import baaahs.gadgets.ColorPicker
+import baaahs.gadgets.Slider
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.show.*
@@ -13,9 +16,8 @@ object ShowSerializationSpec : Spek({
         val plugins by value { Plugins.safe() }
         val jsonPrettyPrint by value {
             Json(
-                JsonConfiguration.Stable.copy(
-                    prettyPrint = true
-                )
+                JsonConfiguration.Stable.copy(prettyPrint = true),
+                plugins.serialModule
             )
         }
         val origShow by value { SampleData.sampleShow }
@@ -44,7 +46,7 @@ private fun JsonObjectBuilder.addPatchHolder(patchHolder: PatchHolder) {
     "title" to patchHolder.title
     "patches" to patchHolder.patches.jsonMap { jsonFor(it) }
     "eventBindings" to patchHolder.eventBindings.jsonMap { jsonFor(it) }
-    "controlLayout" to patchHolder.controlLayout.jsonMap { it.jsonMap { jsonFor(it) } }
+    "controlLayout" to patchHolder.controlLayout.jsonMap { it.jsonMap { JsonPrimitive(it) } }
 }
 
 private fun <V> Map<String, V>.jsonMap(block: JsonObjectBuilder.(V) -> JsonElement): JsonObject {
@@ -67,6 +69,7 @@ private fun forJson(show: Show): JsonObject {
         }
         "shaders" to show.shaders.jsonMap { jsonFor(it) }
         "shaderInstances" to show.shaderInstances.jsonMap { jsonFor(it) }
+        "controls" to show.controls.jsonMap { jsonFor(it) }
         "dataSources" to show.dataSources.jsonMap { jsonFor(it) }
     }
 }
@@ -91,11 +94,39 @@ fun jsonFor(patchSet: PatchSet): JsonElement {
 
 private fun jsonFor(eventBinding: EventBinding) = json { }
 
-fun jsonFor(controlRef: ControlRef): JsonElement {
-    return json {
-        "type" to controlRef.type.name
-        "id" to controlRef.id
+fun jsonFor(control: Control): JsonElement {
+    return when (control) {
+        is GadgetControl -> json {
+            "type" to "baaahs.Core:Gadget"
+            "gadget" to jsonFor(control.gadget)
+            "controlledDataSourceId" to control.controlledDataSourceId
+        }
+        is ButtonGroupControl -> json {
+            "type" to "baaahs.Core:ButtonGroup"
+            "title" to control.title
+        }
+        else -> json { "type" to "unknown" }
     }
+}
+
+fun jsonFor(gadget: Gadget): JsonElement {
+    return when (gadget) {
+        is Slider -> json {
+            "type" to "baaahs.Core:Slider"
+            "title" to gadget.title
+            "initialValue" to gadget.initialValue
+            "minValue" to gadget.minValue
+            "maxValue" to gadget.maxValue
+            "stepValue" to gadget.stepValue
+        }
+        is ColorPicker -> json {
+            "type" to "baaahs.Core:ColorPicker"
+            "title" to gadget.title
+            "initialValue" to gadget.initialValue.toInt()
+        }
+        else -> json { "type" to "unknown" }
+    }
+
 }
 
 fun jsonFor(dataSource: DataSource): JsonElement {
@@ -181,12 +212,12 @@ private fun jsonFor(shader: Shader) = json {
 private fun jsonFor(shaderInstance: ShaderInstance) = json {
     "shaderId" to shaderInstance.shaderId
     "incomingLinks" to shaderInstance.incomingLinks.jsonMap { jsonFor(it) }
-    "shaderChannel" to shaderInstance.shaderChannel?.id
+    "shaderChannel" to shaderInstance.shaderChannel.id
     "priority" to shaderInstance.priority
 }
 
 fun expectJson(expected: JsonElement, block: () -> JsonElement) {
-    val json = Json(JsonConfiguration.Stable.copy(prettyPrint = true))
+    val json = Json(JsonConfiguration.Stable.copy(prettyPrint = true), Plugins.safe().serialModule)
     fun JsonElement.toStr() = json.stringify(JsonElementSerializer, this)
     kotlin.test.expect(expected.toStr()) { block().toStr() }
 }

@@ -19,7 +19,7 @@ object Topics {
         PubSub.Topic("serverNotices", Pinky.ServerNotice.serializer().list)
 
     val activeGadgets =
-        PubSub.Topic("activeGadgets", GadgetData.serializer().list, gadgetModule)
+        PubSub.Topic("activeGadgets", GadgetData.serializer().list, Gadget.serialModule)
 
     val movingHeads =
         PubSub.Topic("movingHeads", MovingHead.serializer().list)

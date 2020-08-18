@@ -93,7 +93,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                 div(+Styles.controlPanelHelpText) { +section.title }
                                 controls.forEach { placedControl ->
                                     val control = placedControl.control
-                                    val draggableId = "control_${control.toControlRef(showBuilder).toShortString()}"
+                                    val draggableId = "control_${showBuilder.idFor(control)}"
 
                                     draggable({
                                         this.key = draggableId

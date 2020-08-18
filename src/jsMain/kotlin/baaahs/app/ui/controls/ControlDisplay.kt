@@ -7,6 +7,7 @@ import baaahs.app.ui.DropTarget
 import baaahs.camelize
 import baaahs.getBang
 import baaahs.show.Control
+import baaahs.show.GadgetControl
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableControl
@@ -41,7 +42,16 @@ class ControlDisplay(
         patchSet?.let { addControlsToBuckets(patchSet.controlLayout, Section.Patch) }
     }
 
-    private val unplacedControls = show.allDataSources.values.filter { !placedControls.contains(it) }
+    private val allDataSources = show.allDataSources
+    private val suggestedControls: List<Control>
+    init {
+        val dataSourcesWithoutControls = allDataSources.values -
+                show.allControls.values
+                    .filterIsInstance<GadgetControl>()
+                    .map { allDataSources.getBang(it.controlledDataSourceId, "data source") }.toSet()
+        suggestedControls = dataSourcesWithoutControls.mapNotNull { it.buildControl()?.build(allDataSources) }
+    }
+    private val unplacedControls = show.allControls.values.filter { !placedControls.contains(it) }
 
     private fun addControlsToBuckets(
         layoutControls: Map<String, List<Control>>,
@@ -208,7 +218,7 @@ class ControlDisplay(
 
     inner class UnplacedControl(val index: Int) : PlaceableControl {
         override val mutableControl: MutableControl
-            get() = MutableControl(unplacedControls[index])
+            get() = unplacedControls[index].toMutable(allDataSources)
 
         override fun remove() {
             // No-op.

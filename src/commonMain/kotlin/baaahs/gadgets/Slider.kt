@@ -2,6 +2,7 @@ package baaahs.gadgets
 
 import baaahs.Gadget
 import baaahs.constrain
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 import kotlin.js.JsName
@@ -9,9 +10,10 @@ import kotlin.random.Random
 
 /** A gadget for adjusting a scalar numeric value using a slider. */
 @Serializable
+@SerialName("baaahs.Core:Slider")
 data class Slider(
     /** The name for this slider. */
-    val title: String,
+    override val title: String,
 
     /** The initial value for this slider. */
     val initialValue: Float = 1f,

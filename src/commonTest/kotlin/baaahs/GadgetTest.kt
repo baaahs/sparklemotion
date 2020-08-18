@@ -90,6 +90,8 @@ class GadgetTest {
     }
 
     class SomeGadget(initialValue: Int) : Gadget() {
+        override val title: String get() = TODO("not implemented")
+
         var value: Int by updatable("value", initialValue, Int.serializer())
     }
 }
