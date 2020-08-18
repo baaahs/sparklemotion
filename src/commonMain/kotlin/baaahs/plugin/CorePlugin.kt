@@ -14,6 +14,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.mutable.MutableGadgetControl
 import com.danielgergely.kgl.FloatBuffer
 import com.danielgergely.kgl.GL_FLOAT
 import com.danielgergely.kgl.GL_NEAREST
@@ -277,6 +278,10 @@ class CorePlugin : Plugin {
 
     interface GadgetDataSource<T : Gadget> : DataSource {
         val title: String
+
+        override fun buildControl(): MutableGadgetControl? {
+            return MutableGadgetControl(createGadget(), this)
+        }
 
         fun createGadget(): T
 

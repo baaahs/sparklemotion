@@ -1,11 +1,9 @@
 package baaahs.show.mutable
 
-import baaahs.ShowState
-import baaahs.getBang
+import baaahs.*
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
-import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.ShaderInstanceResolver
@@ -13,6 +11,7 @@ import baaahs.util.UniqueIds
 
 abstract class MutablePatchHolder(
     private val basePatchHolder: PatchHolder,
+    controls: Map<String, Control>,
     dataSources: Map<String, DataSource>
 ) {
     abstract val displayType: String
@@ -30,7 +29,7 @@ abstract class MutablePatchHolder(
         basePatchHolder.controlLayout
             .mapValues { (_, v) ->
                 v.map {
-                    MutableControl(it.dereference(dataSources))
+                    controls.getBang(it, "control").toMutable(dataSources)
                 }.toMutableList()
             }.toMutableMap()
     }
@@ -82,8 +81,8 @@ abstract class MutablePatchHolder(
                 descendents.flatMap { it.collectShaderChannels() }
         ).toSet()
 
-    fun addControl(panel: String, control: Control) {
-        controlLayout.getOrPut(panel) { arrayListOf() }.add(MutableControl(control))
+    fun addControl(panel: String, control: MutableControl) {
+        controlLayout.getOrPut(panel) { arrayListOf() }.add(control)
     }
 
     fun removeControl(panel: String, index: Int): MutableControl {
@@ -100,9 +99,9 @@ abstract class MutablePatchHolder(
         return controlLayout.getOrPut(panelName) { mutableListOf() }
     }
 
-    internal fun buildControlLayout(showBuilder: ShowBuilder): Map<String, List<ControlRef>> {
+    internal fun buildControlLayout(showBuilder: ShowBuilder): Map<String, List<String>> {
         return controlLayout.mapValues { (_, v) ->
-            v.map { it.toRef(showBuilder) }
+            v.map { showBuilder.idFor(it.build(showBuilder)) }
         }
     }
 
@@ -119,7 +118,7 @@ abstract class MutablePatchHolder(
 
 class MutableShow(
     private val baseShow: Show, baseShowState: ShowState = ShowState.Empty
-) : MutablePatchHolder(baseShow, baseShow.dataSources) {
+) : MutablePatchHolder(baseShow, baseShow.controls, baseShow.dataSources) {
     override val displayType: String get() = "Show"
     override val mutableShow: MutableShow get() = this
     override val descendents: List<MutablePatchHolder> get() = scenes
@@ -202,7 +201,8 @@ class MutableShow(
             layouts = mutableLayouts.build(),
             shaders = showBuilder.getShaders(),
             shaderInstances = showBuilder.getShaderInstances(),
-            dataSources = showBuilder.getDataSources()
+            dataSources = showBuilder.getDataSources(),
+            controls = showBuilder.getControls()
         )
     }
 
@@ -216,7 +216,9 @@ class MutableShow(
         shaderInstances.getBang(id, "shader instance")
 
 
-    inner class MutableScene(baseScene: Scene) : MutablePatchHolder(baseScene, baseShow.dataSources) {
+    inner class MutableScene(baseScene: Scene) : MutablePatchHolder(
+        baseScene, baseShow.controls, baseShow.dataSources
+    ) {
         override val displayType: String get() = "Scene"
         override val mutableShow: MutableShow get() = this@MutableShow
         override val descendents: List<MutablePatchHolder> get() = patchSets
@@ -279,8 +281,7 @@ class MutableShow(
         override fun getShowState() = this@MutableShow.getShowState()
 
         inner class MutablePatchSet(basePatchSet: PatchSet) : MutablePatchHolder(
-            basePatchSet,
-            baseShow.dataSources
+            basePatchSet, baseShow.controls, baseShow.dataSources
         ) {
             override val displayType: String get() = "Patch"
             override val mutableShow: MutableShow get() = this@MutableShow
@@ -431,8 +432,31 @@ data class MutableDataSource(val dataSource: DataSource) : MutablePort {
 
 fun DataSource.editor() = MutableDataSource(this)
 
-data class MutableControl(val control: Control) {
-    fun toRef(showBuilder: ShowBuilder): ControlRef = control.toControlRef(showBuilder)
+interface MutableControl {
+    fun build(showBuilder: ShowBuilder): Control
+}
+
+data class MutableButtonGroupControl(
+    var title: String
+) : MutableControl {
+    override fun build(showBuilder: ShowBuilder): Control {
+        return ButtonGroupControl(title)
+    }
+}
+
+data class MutableGadgetControl(
+    var gadget: Gadget,
+    val controlledDataSource: DataSource
+) : MutableControl {
+    override fun build(showBuilder: ShowBuilder): Control {
+        return GadgetControl(gadget, showBuilder.idFor(controlledDataSource))
+    }
+
+    fun build(dataSources: Map<String, DataSource>): Control {
+        val dataSourceId = dataSources.entries.find { (_, v) -> v == controlledDataSource }?.key
+            ?: error(unknown("data source", controlledDataSource, dataSources.values))
+        return GadgetControl(gadget, dataSourceId)
+    }
 }
 
 data class MutableShader(
@@ -519,9 +543,14 @@ data class MutableConstPort(private val glsl: String) : MutablePort {
 }
 
 class ShowBuilder {
+    private val controlIds = UniqueIds<Control>()
     private val dataSourceIds = UniqueIds<DataSource>()
     private val shaderIds = UniqueIds<Shader>()
     private val shaderInstanceIds = UniqueIds<ShaderInstance>()
+
+    fun idFor(control: Control): String {
+        return controlIds.idFor(control) { control.suggestId() }
+    }
 
     fun idFor(dataSource: DataSource): String {
         return dataSourceIds.idFor(dataSource) { dataSource.suggestId() }
@@ -535,6 +564,7 @@ class ShowBuilder {
         return shaderInstanceIds.idFor(shaderInstance) { "${shaderInstance.shaderId}-inst" }
     }
 
+    fun getControls(): Map<String, Control> = controlIds.all()
     fun getDataSources(): Map<String, DataSource> = dataSourceIds.all()
     fun getShaders(): Map<String, Shader> = shaderIds.all()
     fun getShaderInstances(): Map<String, ShaderInstance> = shaderInstanceIds.all()

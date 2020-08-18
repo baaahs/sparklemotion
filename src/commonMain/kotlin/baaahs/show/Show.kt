@@ -4,10 +4,7 @@ import baaahs.ShowState
 import baaahs.Surface
 import baaahs.camelize
 import baaahs.plugin.Plugins
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderInstance
-import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.ShowBuilder
+import baaahs.show.mutable.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -22,11 +19,12 @@ data class Show(
     override val title: String,
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
-    override val controlLayout: Map<String, List<ControlRef>> = emptyMap(),
+    override val controlLayout: Map<String, List<String>> = emptyMap(),
     val scenes: List<Scene> = emptyList(),
     val layouts: Layouts = Layouts(),
     val shaders: Map<String, Shader> = emptyMap(),
     val shaderInstances: Map<String, ShaderInstance> = emptyMap(),
+    val controls: Map<String, Control>  = emptyMap(),
     val dataSources: Map<String, DataSource> = emptyMap()
 ) : PatchHolder {
     fun toJson(plugins: Plugins): JsonElement {
@@ -60,7 +58,7 @@ data class Scene(
     override val title: String,
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
-    override val controlLayout: Map<String, List<ControlRef>> = emptyMap(),
+    override val controlLayout: Map<String, List<String>> = emptyMap(),
     val patchSets: List<PatchSet> = emptyList()
 ) : PatchHolder
 
@@ -69,7 +67,7 @@ data class PatchSet(
     override val title: String,
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
-    override val controlLayout: Map<String, List<ControlRef>> = emptyMap()
+    override val controlLayout: Map<String, List<String>> = emptyMap()
 ) : PatchHolder
 
 @Serializable
@@ -177,8 +175,8 @@ fun buildEmptyShow(): Show {
             addPatchSet("All Dark") {
             }
         }
-        addControl("Scenes", SpecialControl("baaahs.Core:Scenes"))
-        addControl("Patches", SpecialControl("baaahs.Core:Patches"))
+        addControl("Scenes", MutableButtonGroupControl("Scenes"))
+        addControl("Patches", MutableButtonGroupControl("Patches"))
 
         editLayouts {
             copyFrom(

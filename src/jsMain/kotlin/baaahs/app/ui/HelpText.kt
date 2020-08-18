@@ -29,7 +29,7 @@ object PatchHolderEditorHelpText {
                     
                     > Right now Sparkle Motion only knows about **Pixel Arrays**, like the BAAAHS panels.
                     > In the future we'll support **Moving Heads**, and potentially other devices
-                    > like flat screens, projectors, etc.
+                    > like flat screens, projectors, holodecks, etc.
                     
                     This column shows to which fixtures the patch on the right is applied.
                     
