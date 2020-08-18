@@ -8,8 +8,8 @@ import baaahs.camelize
 import baaahs.getBang
 import baaahs.show.Control
 import baaahs.show.GadgetControl
-import baaahs.show.Show
 import baaahs.show.live.OpenShow
+import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutablePatchHolder
 
@@ -17,7 +17,7 @@ class ControlDisplay(
     show: OpenShow,
     showState: ShowState,
     editMode: Boolean,
-    private val onEdit: (Show, ShowState) -> Unit,
+    private val editHandler: EditHandler,
     private val dragNDrop: DragNDrop
 ) {
     private val allPanelBuckets: Map<String, PanelBuckets>
@@ -83,7 +83,7 @@ class ControlDisplay(
 
     private fun commitEdit() {
         mutableShow!!
-        onEdit(mutableShow.getShow(), mutableShow.getShowState())
+        editHandler.onShowEdit(mutableShow)
     }
 
     fun release() {

@@ -45,8 +45,7 @@ class DragNDrop {
     }
 
     fun addDropTarget(dropTarget: DropTarget): String {
-        val idFor = dropTargets.idFor(dropTarget) { dropTarget.suggestId() }
-        return idFor
+        return dropTargets.idFor(dropTarget) { dropTarget.suggestId() }
     }
 
     fun removeDropTarget(dropTarget: DropTarget) {
