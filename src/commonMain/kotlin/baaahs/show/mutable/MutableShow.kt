@@ -9,6 +9,11 @@ import baaahs.show.live.OpenPatch
 import baaahs.show.live.ShaderInstanceResolver
 import baaahs.util.UniqueIds
 
+interface EditHandler {
+    fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean = true)
+    fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean = true)
+}
+
 abstract class MutablePatchHolder(
     private val basePatchHolder: PatchHolder,
     controls: Map<String, Control>,

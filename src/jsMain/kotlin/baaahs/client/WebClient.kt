@@ -11,6 +11,8 @@ import baaahs.plugin.Plugins
 import baaahs.proto.Ports
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
+import baaahs.show.mutable.EditHandler
+import baaahs.show.mutable.MutableShow
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
 import kotlinx.serialization.modules.SerializersModule
@@ -138,7 +140,7 @@ class WebClient(
         facade.notifyChanged()
     }
 
-    inner class Facade : baaahs.ui.Facade() {
+    inner class Facade : baaahs.ui.Facade(), EditHandler {
         val plugins: Plugins
             get() = this@WebClient.plugins
 
@@ -169,13 +171,21 @@ class WebClient(
         val serverNotices : List<Pinky.ServerNotice>
             get() = this@WebClient.serverNotices
 
-        fun onShowEdit(show: Show, showState: ShowState): ShowEditorState {
+        override fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
+            onShowEdit(mutableShow.getShow(), mutableShow.getShowState(), pushToUndoStack)
+        }
+
+        override fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean) {
             val isUnsaved = savedShow?.equals(show) != true
             val showEditState = show.withState(showState, isUnsaved, showFile)
             showEditStateChannel.onChange(showEditState)
             switchTo(showEditState)
+
+            if (pushToUndoStack) {
+                undoStack.changed(showEditState)
+            }
+
             facade.notifyChanged()
-            return showEditState
         }
 
         fun onShowStateChange(showState: ShowState) {

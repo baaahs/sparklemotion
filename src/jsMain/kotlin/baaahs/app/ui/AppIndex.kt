@@ -8,7 +8,6 @@ import baaahs.client.WebClient
 import baaahs.gl.patch.AutoWirer
 import baaahs.io.Fs
 import baaahs.show.SampleData
-import baaahs.show.Show
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
@@ -117,30 +116,25 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val undoStack = props.undoStack
     val handleUndo = handler("handleUndo", undoStack) { _: Event ->
         undoStack.undo().also { (show, showState) ->
-            webClient.onShowEdit(show, showState)
+            webClient.onShowEdit(show, showState, pushToUndoStack = false)
         }
         Unit
     }
 
     val handleRedo = handler("handleRedo", undoStack) { _: Event ->
         undoStack.redo().also { (show, showState) ->
-            webClient.onShowEdit(show, showState)
+            webClient.onShowEdit(show, showState, pushToUndoStack = false)
         }
         Unit
-    }
-
-    val handleShowEdit = useCallback { newShow: Show, newShowState: ShowState ->
-        val newState = webClient.onShowEdit(newShow, newShowState)
-        undoStack.changed(newState)
     }
 
     val handleEditPatchHolder = useCallback { forEdit: MutablePatchHolder ->
         mutablePatchHolder = forEdit
     }
 
-    val handlePatchHolderEdit = useCallback(handleShowEdit) {
+    val handlePatchHolderEdit = useCallback {
         mutablePatchHolder?.let {
-            handleShowEdit(it.getShow(), it.getShowState())
+            webClient.onShowEdit(it.getShow(), it.getShowState())
         }
         mutablePatchHolder = null
     }
@@ -413,7 +407,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             attrs.onShowStateChange = handleShowStateChange
                             attrs.editMode = editMode
                             attrs.editPatchHolder = handleEditPatchHolder
-                            attrs.onEdit = handleShowEdit
                         }
 
                         portal {
@@ -425,7 +418,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                     val mutableShow = MutableShow(show, showState).editLayouts {
                                         copyFrom(newLayouts)
                                     }
-                                    handleShowEdit(mutableShow.getShow(), mutableShow.getShowState())
+                                    myAppContext.webClient.onShowEdit(mutableShow)
                                 }
                                 attrs.onClose = handleLayoutEditorDialogClose
                             }

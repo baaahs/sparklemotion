@@ -4,8 +4,8 @@ import baaahs.ShowState
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
-import baaahs.show.Show
 import baaahs.show.live.OpenShow
+import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import external.Direction
@@ -27,7 +27,7 @@ class DraggablePatch(
     private val editor: MutableShow,
     private val sceneIndex: Int,
     private val patchSetIndex: Int,
-    private val onChange: (Show, ShowState) -> Unit
+    private val onEdit: () -> Unit
 ) : Draggable {
     lateinit var mutablePatchSet: MutableShow.MutableScene.MutablePatchSet
 
@@ -52,14 +52,15 @@ class DraggablePatch(
     }
 
     override fun onMove() {
-        onChange(editor.getShow(), editor.getShowState())
+        onEdit()
     }
 }
 
 val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
     val appContext = useContext(appContext)
     val dropTarget =
-        PatchSetListDropTarget(props.show, props.showState, props.onEdit)
+        PatchSetListDropTarget(props.show, props.showState, appContext.webClient)
+
     val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
     onChange("unregister drop target") {
         withCleanup {
@@ -153,7 +154,7 @@ val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
 private class PatchSetListDropTarget(
     private val show: OpenShow,
     private val showState: ShowState,
-    private val onChange: (Show, ShowState) -> Unit
+    private val editHandler: EditHandler
 ) : DropTarget {
     override val type: String get() = "PatchList"
 
@@ -163,7 +164,7 @@ private class PatchSetListDropTarget(
                 movePatchSet(fromIndex, toIndex)
             }
         }.also { editor ->
-            onChange(editor.getShow(), editor.getShowState())
+            editHandler.onShowEdit(editor)
         }
     }
 
@@ -172,12 +173,10 @@ private class PatchSetListDropTarget(
     }
 
     override fun getDraggable(index: Int): Draggable {
-        return DraggablePatch(
-            show.edit(showState),
-            showState.selectedScene,
-            index,
-            onChange
-        )
+        val editor = show.edit(showState)
+        return DraggablePatch(editor, showState.selectedScene, index) {
+            editHandler.onShowEdit(editor)
+        }
     }
 
     override fun insertDraggable(draggable: Draggable, index: Int) {

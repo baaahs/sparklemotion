@@ -1,7 +1,6 @@
 package baaahs.app.ui
 
 import baaahs.ShowState
-import baaahs.show.Show
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.ui.xComponent
@@ -27,7 +26,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
             attrs.layout = currentLayout
             attrs.editMode = props.editMode
             attrs.editPatchHolder = props.editPatchHolder
-            attrs.onEdit = props.onEdit
         }
     }
 }
@@ -37,7 +35,6 @@ external interface ShowUiProps : RProps {
     var showState: ShowState
     var editMode: Boolean
     var editPatchHolder: (MutablePatchHolder) -> Unit
-    var onEdit: (Show, ShowState) -> Unit
     var onShowStateChange: (ShowState) -> Unit
 }
 
