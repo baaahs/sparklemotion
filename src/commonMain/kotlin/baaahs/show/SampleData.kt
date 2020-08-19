@@ -6,10 +6,7 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
-import baaahs.show.mutable.MutableDataSource
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutablePort
-import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.*
 import kotlinx.serialization.json.json
 
 object SampleData {
@@ -157,14 +154,14 @@ object SampleData {
         mapOf("default" to defaultLayout)
     )
 
-    val colorControl = CorePlugin.ColorPickerProvider("Color", Color.WHITE)
-    val brightnessControl = CorePlugin.SliderDataSource(
+    val color = CorePlugin.ColorPickerDataSource("Color", Color.WHITE)
+    val brightness = CorePlugin.SliderDataSource(
         "Brightness", 1f, 0f, 1.25f, null)
-    val saturationControl = CorePlugin.SliderDataSource(
+    val saturation = CorePlugin.SliderDataSource(
         "Saturation", 1f, 0f, 1.25f, null)
-    val intensityControl = CorePlugin.SliderDataSource(
+    val intensity = CorePlugin.SliderDataSource(
         "Intensity", 1f, 0f, 1f, null)
-    val checkerboardSizeControl = CorePlugin.SliderDataSource(
+    val checkerboardSize = CorePlugin.SliderDataSource(
         "Checkerboard Size", .1f, .001f, 1f, null)
 
     val sampleShow = MutableShow("Sample Show").apply {
@@ -184,20 +181,20 @@ object SampleData {
             }
             addPatchSet("Fire") {
                 addPatch(fireBallPatch)
-                addControl("Patches", intensityControl)
+                addControl("Patches", intensity.buildControl()!!)
             }
             addPatchSet("Checkerboard") {
                 addPatch(wireUp(Shaders.checkerboard, mapOf(
-                    "checkerboardSize" to MutableDataSource(checkerboardSizeControl)
+                    "checkerboardSize" to MutableDataSource(checkerboardSize)
                 )))
-                addControl("Patches", checkerboardSizeControl)
+                addControl("Patches", checkerboardSize.buildControl()!!)
             }
             addPatchSet("Wobbly Checkerboard") {
                 addPatch(wireUp(Shaders.checkerboard, mapOf(
-                    "checkerboardSize" to MutableDataSource(checkerboardSizeControl)
+                    "checkerboardSize" to MutableDataSource(checkerboardSize)
                 )))
                 addPatch(wireUp(Shaders.ripple))
-                addControl("Patches", checkerboardSizeControl)
+                addControl("Patches", checkerboardSize.buildControl()!!)
             }
         }
         addScene("Holocene") {
@@ -214,11 +211,11 @@ object SampleData {
             }
         }
 
-        addControl("Scenes", scenesControl)
-        addControl("Patches", patchesControl)
-        addControl("More Controls", colorControl)
-        addControl("More Controls", brightnessControl)
-        addControl("More Controls", saturationControl)
+        addControl("Scenes", MutableButtonGroupControl("Scenes"))
+        addControl("Patches", MutableButtonGroupControl("Patches"))
+        addControl("More Controls", color.buildControl()!!)
+        addControl("More Controls", brightness.buildControl()!!)
+        addControl("More Controls", saturation.buildControl()!!)
     }.getShow()
 
     private fun wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {

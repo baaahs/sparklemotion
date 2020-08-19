@@ -1,10 +1,10 @@
 package baaahs.plugin
 
+import baaahs.Gadget
 import baaahs.Logger
-import baaahs.gadgetModule
-import baaahs.gl.glsl.dataSourceProviderModule
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.show.Control
 import baaahs.show.DataSource
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -34,9 +34,10 @@ data class PluginRef(
 
 class Plugins(private val byPackage: Map<String, Plugin>) {
     val serialModule = SerializersModule {
-        include(gadgetModule)
+        include(Gadget.serialModule)
 //        include(portRefModule)
-        include(dataSourceProviderModule)
+        include(Control.serialModule)
+        include(DataSource.serialModule)
 //            contextual(DataSource::class, DataSourceSerializer(this@Plugins))
     }
 

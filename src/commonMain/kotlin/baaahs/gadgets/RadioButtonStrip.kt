@@ -1,14 +1,16 @@
 package baaahs.gadgets
 
 import baaahs.Gadget
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
 import kotlin.js.JsName
 import kotlin.random.Random
 
 @Serializable
+@SerialName("baaahs.Core:RadioButtonStrip")
 data class RadioButtonStrip(
-    val name: String,
+    override val title: String,
     val buttonTitles: List<String>,
     val initialSelectionIndex: Int
 ) : Gadget() {

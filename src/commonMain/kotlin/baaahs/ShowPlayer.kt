@@ -32,7 +32,7 @@ interface ShowPlayer {
     }
     fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed
     fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed
-    fun openShow(show: Show): OpenShow = ShowOpener(show, this).openShow()
+    fun openShow(show: Show): OpenShow = ShowOpener(GlslAnalyzer(plugins), show, this).openShow()
 
     fun releaseUnused()
 }

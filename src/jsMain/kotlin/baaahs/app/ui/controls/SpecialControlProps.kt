@@ -1,7 +1,6 @@
 package baaahs.app.ui.controls
 
 import baaahs.ShowState
-import baaahs.show.Show
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutablePatchHolder
 import react.RProps
@@ -12,5 +11,4 @@ external interface SpecialControlProps : RProps {
     var onShowStateChange: (ShowState) -> Unit
     var editMode: Boolean
     var editPatchHolder: (MutablePatchHolder) -> Unit
-    var onEdit: (Show, ShowState) -> Unit
 }

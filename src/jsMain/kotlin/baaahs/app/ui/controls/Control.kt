@@ -3,9 +3,9 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.jsx.RangeSlider
 import baaahs.plugin.CorePlugin
-import baaahs.show.Control
-import baaahs.show.DataSource
-import baaahs.show.SpecialControl
+import baaahs.show.live.OpenButtonGroupControl
+import baaahs.show.live.OpenControl
+import baaahs.show.live.OpenGadgetControl
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.DraggableProvided
@@ -39,21 +39,22 @@ val Control = xComponent<ControlProps>("Control") { props ->
         }
 
         when (control) {
-            is SpecialControl -> {
-                val specialControlName = control.pluginRef.resourceName
-                val component = when (specialControlName) {
+            is OpenButtonGroupControl -> {
+                val title = control.title
+                val component = when (title) {
                     "Scenes" -> SceneList
                     "Patches" -> PatchSetList
-                    else -> error("unsupported special control $specialControlName")
+                    else -> error("unsupported special control $title")
                 }
                 child(component, specialControlProps)
             }
 
-            is DataSource -> {
+            is OpenGadgetControl -> {
                 val appContext = useContext(appContext)
-                val dataFeed = appContext.showPlayer.useDataFeed(control)
-                val title = (control as? CorePlugin.GadgetDataSource<*>)?.title ?: control.dataSourceName
-                when (control.getRenderType()) {
+                val dataSource = control.controlledDataSource
+                val dataFeed = appContext.showPlayer.useDataFeed(dataSource)
+                val title = control.gadget.title
+                when (dataSource.getRenderType()) {
                     "Slider" -> {
                         RangeSlider {
                             attrs.gadget = (dataFeed as CorePlugin.GadgetDataFeed).gadget
@@ -71,7 +72,7 @@ val Control = xComponent<ControlProps>("Control") { props ->
 }
 
 external interface ControlProps : RProps {
-    var control: Control
+    var control: OpenControl
     var specialControlProps: SpecialControlProps
     var draggableProvided: DraggableProvided
 }

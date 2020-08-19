@@ -10,6 +10,12 @@ import react.createContext
 
 val appContext = createContext<AppContext>()
 
+/**
+ * The application context.
+ *
+ * Object identities here are guaranteed to not change over the lifetime of the application.
+ * No need to include them in React watch lists.
+ */
 external interface AppContext {
     var showPlayer: ShowPlayer
     var dragNDrop: DragNDrop

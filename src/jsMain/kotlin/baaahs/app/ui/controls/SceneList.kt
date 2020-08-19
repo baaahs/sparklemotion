@@ -4,8 +4,8 @@ import baaahs.ShowState
 import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
-import baaahs.show.Show
 import baaahs.show.live.OpenShow
+import baaahs.show.mutable.EditHandler
 import baaahs.ui.*
 import external.Direction
 import external.copyFrom
@@ -23,8 +23,7 @@ import react.useContext
 
 val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
     val appContext = useContext(appContext)
-    val dropTarget =
-        SceneListDropTarget(props.show, props.showState, props.onEdit)
+    val dropTarget = SceneListDropTarget(props.show, props.showState, appContext.webClient)
     val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
     onChange("unregister drop target") {
         withCleanup {
@@ -139,7 +138,7 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
 private class SceneListDropTarget(
     private val show: OpenShow,
     private val showState: ShowState,
-    private val onChange: (Show, ShowState) -> Unit
+    private val editHandler: EditHandler
 ) : DropTarget {
     override val type: String get() = "SceneList"
     private val myDraggable = object : Draggable {}
@@ -148,7 +147,7 @@ private class SceneListDropTarget(
         show.edit(showState) {
             moveScene(fromIndex, toIndex)
         }.also { editor ->
-            onChange(editor.getShow(), editor.getShowState())
+            editHandler.onShowEdit(editor)
         }
     }
 
