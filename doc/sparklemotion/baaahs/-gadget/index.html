@@ -8,7 +8,7 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">Gadget</a><br/>
 <br/>
 <h1>Gadget</h1>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Gadget</span></code>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Gadget</span></code>
 <p>Base class for user input gadgets.</p>
 <p>Mutable values in a gadget should be declared like this:</p>
 <pre><code class="lang-kotlin">    var value: Float by updatable("value", initialValue, Float.serializer())
@@ -36,6 +36,13 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">state</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="title.html">title</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -84,6 +91,18 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">withoutTriggering</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$withoutTriggering(kotlin.Function1((baaahs.Gadget, kotlin.Unit)), kotlin.Function0((kotlin.Unit)))/gadgetListener">gadgetListener</span><span class="symbol">:</span>&nbsp;<a href="../-gadget-listener.html"><span class="identifier">GadgetListener</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.Gadget$withoutTriggering(kotlin.Function1((baaahs.Gadget, kotlin.Unit)), kotlin.Function0((kotlin.Unit)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="serial-module.html">serialModule</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">serialModule</span><span class="symbol">: </span><span class="identifier">SerialModule</span></code></td>
 </tr>
 </tbody>
 </table>

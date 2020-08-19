@@ -8,7 +8,7 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.show</a>&nbsp;/&nbsp;<a href="./index.html">DataSource</a><br/>
 <br/>
 <h1>DataSource</h1>
-<code><span class="keyword">interface </span><span class="identifier">DataSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-control/index.html"><span class="identifier">Control</span></a></code>
+<code><span class="keyword">interface </span><span class="identifier">DataSource</span></code>
 <h3>Properties</h3>
 <table>
 <tbody>
@@ -24,6 +24,13 @@
 <h3>Functions</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="build-control.html">buildControl</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">buildControl</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show.mutable/-mutable-gadget-control/index.html"><span class="identifier">MutableGadgetControl</span></a><span class="symbol">?</span></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="create-feed.html">createFeed</a></h4>
@@ -66,12 +73,17 @@
 <td>
 <code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">suggestId</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
 <tr>
 <td>
-<h4><a href="to-control-ref.html">toControlRef</a></h4>
+<h4><a href="serial-module.html">serialModule</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">toControlRef</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.DataSource$toControlRef(baaahs.show.mutable.ShowBuilder)/showBuilder">showBuilder</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.mutable/-show-builder/index.html"><span class="identifier">ShowBuilder</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-control-ref/index.html"><span class="identifier">ControlRef</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">serialModule</span><span class="symbol">: </span><span class="identifier">SerialModule</span></code></td>
 </tr>
 </tbody>
 </table>

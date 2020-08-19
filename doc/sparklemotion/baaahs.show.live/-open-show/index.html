@@ -8,7 +8,7 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.show.live</a>&nbsp;/&nbsp;<a href="./index.html">OpenShow</a><br/>
 <br/>
 <h1>OpenShow</h1>
-<code><span class="keyword">class </span><span class="identifier">OpenShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs/-ref-counted/index.html"><span class="identifier">RefCounted</span></a><span class="symbol">, </span><a href="../-open-patch-holder/index.html"><span class="identifier">OpenPatchHolder</span></a></code>
+<code><span class="keyword">class </span><span class="identifier">OpenShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-open-patch-holder/index.html"><span class="identifier">OpenPatchHolder</span></a><span class="symbol">, </span><a href="../../baaahs/-ref-counted/index.html"><span class="identifier">RefCounted</span></a></code>
 <h3>Types</h3>
 <table>
 <tbody>
@@ -29,13 +29,20 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">OpenShow</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.OpenShow$<init>(baaahs.show.Show, baaahs.ShowPlayer, kotlin.collections.Map((kotlin.String, baaahs.show.live.LiveShaderInstance)))/show">show</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.OpenShow$<init>(baaahs.show.Show, baaahs.ShowPlayer, kotlin.collections.Map((kotlin.String, baaahs.show.live.LiveShaderInstance)))/showPlayer">showPlayer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-player/index.html"><span class="identifier">ShowPlayer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.OpenShow$<init>(baaahs.show.Show, baaahs.ShowPlayer, kotlin.collections.Map((kotlin.String, baaahs.show.live.LiveShaderInstance)))/allShaderInstances">allShaderInstances</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-live-shader-instance/index.html"><span class="identifier">LiveShaderInstance</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">OpenShow</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.OpenShow$<init>(baaahs.show.Show, baaahs.ShowPlayer, baaahs.show.live.OpenContext)/show">show</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.OpenShow$<init>(baaahs.show.Show, baaahs.ShowPlayer, baaahs.show.live.OpenContext)/showPlayer">showPlayer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-player/index.html"><span class="identifier">ShowPlayer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.OpenShow$<init>(baaahs.show.Show, baaahs.ShowPlayer, baaahs.show.live.OpenContext)/openContext">openContext</span><span class="symbol">:</span>&nbsp;<a href="../-open-context/index.html"><span class="identifier">OpenContext</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
 <h3>Properties</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="all-controls.html">allControls</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">allControls</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-open-control/index.html"><span class="identifier">OpenControl</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="all-data-sources.html">allDataSources</a></h4>
@@ -48,7 +55,7 @@
 <h4><a href="data-feeds.html">dataFeeds</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">dataFeeds</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">DataFeed</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">dataFeeds</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">DataFeed</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
