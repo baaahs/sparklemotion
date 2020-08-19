@@ -8,7 +8,6 @@ import baaahs.client.WebClient
 import baaahs.gl.patch.AutoWirer
 import baaahs.io.Fs
 import baaahs.show.SampleData
-import baaahs.show.Show
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
@@ -42,7 +41,6 @@ import materialui.components.listitem.listItem
 import materialui.components.listitemtext.listItemText
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
-import materialui.components.portal.portal
 import materialui.components.switches.switch
 import materialui.components.toolbar.toolbar
 import materialui.components.typography.enums.TypographyStyle
@@ -117,30 +115,25 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val undoStack = props.undoStack
     val handleUndo = handler("handleUndo", undoStack) { _: Event ->
         undoStack.undo().also { (show, showState) ->
-            webClient.onShowEdit(show, showState)
+            webClient.onShowEdit(show, showState, pushToUndoStack = false)
         }
         Unit
     }
 
     val handleRedo = handler("handleRedo", undoStack) { _: Event ->
         undoStack.redo().also { (show, showState) ->
-            webClient.onShowEdit(show, showState)
+            webClient.onShowEdit(show, showState, pushToUndoStack = false)
         }
         Unit
-    }
-
-    val handleShowEdit = useCallback { newShow: Show, newShowState: ShowState ->
-        val newState = webClient.onShowEdit(newShow, newShowState)
-        undoStack.changed(newState)
     }
 
     val handleEditPatchHolder = useCallback { forEdit: MutablePatchHolder ->
         mutablePatchHolder = forEdit
     }
 
-    val handlePatchHolderEdit = useCallback(handleShowEdit) {
+    val handlePatchHolderEdit = useCallback {
         mutablePatchHolder?.let {
-            handleShowEdit(it.getShow(), it.getShowState())
+            webClient.onShowEdit(it.getShow(), it.getShowState())
         }
         mutablePatchHolder = null
     }
@@ -413,10 +406,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             attrs.onShowStateChange = handleShowStateChange
                             attrs.editMode = editMode
                             attrs.editPatchHolder = handleEditPatchHolder
-                            attrs.onEdit = handleShowEdit
                         }
 
-                        portal {
+                        if (layoutEditorDialogOpen) {
                             // Layout Editor dialog
                             layoutEditorDialog {
                                 attrs.open = layoutEditorDialogOpen
@@ -425,7 +417,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                     val mutableShow = MutableShow(show, showState).editLayouts {
                                         copyFrom(newLayouts)
                                     }
-                                    handleShowEdit(mutableShow.getShow(), mutableShow.getShowState())
+                                    myAppContext.webClient.onShowEdit(mutableShow)
                                 }
                                 attrs.onClose = handleLayoutEditorDialogClose
                             }
@@ -434,27 +426,23 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 }
             }
 
-            portal {
-                if (fileDialogOpen) {
-                    fileDialog {
-                        attrs.isOpen = fileDialogOpen
-                        attrs.title = if (fileDialogIsSaveAs) "Save Show As…" else "Open Show…"
-                        attrs.isSaveAs = fileDialogIsSaveAs
-                        attrs.fileDisplayCallback = { file, fileDisplay ->
-                            if (file.isDirectory == false) {
-                                fileDisplay.isSelectable = file.name.endsWith(".sparkle")
-                            }
+            if (fileDialogOpen) {
+                fileDialog {
+                    attrs.isOpen = fileDialogOpen
+                    attrs.title = if (fileDialogIsSaveAs) "Save Show As…" else "Open Show…"
+                    attrs.isSaveAs = fileDialogIsSaveAs
+                    attrs.fileDisplayCallback = { file, fileDisplay ->
+                        if (file.isDirectory == false) {
+                            fileDisplay.isSelectable = file.name.endsWith(".sparkle")
                         }
-                        attrs.onSelect = handleFileSelected
-                        attrs.onCancel = handleFileDialogCancel
-                        attrs.defaultTarget = webClient.showFile
                     }
+                    attrs.onSelect = handleFileSelected
+                    attrs.onCancel = handleFileDialogCancel
+                    attrs.defaultTarget = webClient.showFile
                 }
             }
 
-            portal {
-                renderDialog?.invoke(this)
-            }
+            renderDialog?.invoke(this)
 
             mutablePatchHolder?.let { editor ->
                 patchHolderEditor {

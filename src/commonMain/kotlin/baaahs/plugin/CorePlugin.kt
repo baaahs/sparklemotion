@@ -14,6 +14,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.mutable.MutableGadgetControl
 import com.danielgergely.kgl.FloatBuffer
 import com.danielgergely.kgl.GL_FLOAT
 import com.danielgergely.kgl.GL_NEAREST
@@ -74,15 +75,15 @@ class CorePlugin : Plugin {
 
     /**
      * Sparkle Motion always uses a resolution of (1, 1), except for previews, which
-     * use [PreviewResolution] instead.
+     * use [PreviewResolutionDataSource] instead.
      */
     @Serializable
     @SerialName("baaahs.Core:Resolution")
-    data class Resolution(@Transient val `_`: Boolean = true) : DataSource {
-        companion object : DataSourceBuilder<Resolution> {
+    data class ResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource {
+        companion object : DataSourceBuilder<ResolutionDataSource> {
             override val resourceName: String get() = "Resolution"
-            override fun build(inputPort: InputPort): Resolution =
-                Resolution()
+            override fun build(inputPort: InputPort): ResolutionDataSource =
+                ResolutionDataSource()
         }
 
         override val dataSourceName: String get() = "Resolution"
@@ -91,7 +92,7 @@ class CorePlugin : Plugin {
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, RefCounted by RefCounter() {
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(glslProgram, this@Resolution, id, this) { uniform ->
+                    GlslProgram.SingleUniformBinding(glslProgram, this@ResolutionDataSource, id, this) { uniform ->
                         uniform.set(1f, 1f)
                     }
             }
@@ -99,11 +100,11 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:PreviewResolution")
-    data class PreviewResolution(@Transient val `_`: Boolean = true) : DataSource {
-        companion object : DataSourceBuilder<PreviewResolution> {
+    data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource {
+        companion object : DataSourceBuilder<PreviewResolutionDataSource> {
             override val resourceName: String get() = "Preview Resolution"
-            override fun build(inputPort: InputPort): PreviewResolution =
-                PreviewResolution()
+            override fun build(inputPort: InputPort): PreviewResolutionDataSource =
+                PreviewResolutionDataSource()
         }
 
         override val dataSourceName: String get() = "PreviewResolution"
@@ -115,7 +116,7 @@ class CorePlugin : Plugin {
                 var y = 1f
 
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(glslProgram, this@PreviewResolution, id, this) { uniform ->
+                    GlslProgram.SingleUniformBinding(glslProgram, this@PreviewResolutionDataSource, id, this) { uniform ->
                         uniform.set(x, y)
                     }
 
@@ -128,11 +129,11 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:Time")
-    data class Time(@Transient val `_`: Boolean = true) : DataSource {
-        companion object : DataSourceBuilder<Time> {
+    data class TimeDataSource(@Transient val `_`: Boolean = true) : DataSource {
+        companion object : DataSourceBuilder<TimeDataSource> {
             override val resourceName: String get() = "Time"
-            override fun build(inputPort: InputPort): Time =
-                Time()
+            override fun build(inputPort: InputPort): TimeDataSource =
+                TimeDataSource()
         }
 
         override val dataSourceName: String get() = "Time"
@@ -141,7 +142,7 @@ class CorePlugin : Plugin {
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, RefCounted by RefCounter() {
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(glslProgram, this@Time, id, this) { uniform ->
+                    GlslProgram.SingleUniformBinding(glslProgram, this@TimeDataSource, id, this) { uniform ->
                         val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
                         uniform.set(thisTime)
                     }
@@ -150,11 +151,11 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:PixelCoordsTexture")
-    data class PixelCoordsTexture(@Transient val `_`: Boolean = true) : DataSource {
-        companion object : DataSourceBuilder<PixelCoordsTexture> {
+    data class PixelCoordsTextureDataSource(@Transient val `_`: Boolean = true) : DataSource {
+        companion object : DataSourceBuilder<PixelCoordsTextureDataSource> {
             override val resourceName: String get() = "PixelCoords"
-            override fun build(inputPort: InputPort): PixelCoordsTexture =
-                PixelCoordsTexture()
+            override fun build(inputPort: InputPort): PixelCoordsTextureDataSource =
+                PixelCoordsTextureDataSource()
         }
 
         override val dataSourceName: String get() = "Pixel Coordinates Texture"
@@ -164,7 +165,7 @@ class CorePlugin : Plugin {
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, ModelRenderer.ArrangementListener, RefCounted by RefCounter() {
                 private val gl = showPlayer.glContext
-                private val uvCoordTextureUnit = gl.getTextureUnit(PixelCoordsTexture::class)
+                private val uvCoordTextureUnit = gl.getTextureUnit(PixelCoordsTextureDataSource::class)
                 private val uvCoordTexture = gl.check { createTexture() }
 
                 override fun onArrangementChange(arrangement: ModelRenderer.Arrangement) {
@@ -182,7 +183,7 @@ class CorePlugin : Plugin {
                 }
 
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(glslProgram, this@PixelCoordsTexture, id, this) { uniform ->
+                    GlslProgram.SingleUniformBinding(glslProgram, this@PixelCoordsTextureDataSource, id, this) { uniform ->
                         uniform.set(uvCoordTextureUnit)
                     }
 
@@ -194,11 +195,11 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:ScreenUvCoord")
-    data class ScreenUvCoord(@Transient val `_`: Boolean = true) : DataSource {
-        companion object : DataSourceBuilder<ScreenUvCoord> {
+    data class ScreenUvCoordDataSource(@Transient val `_`: Boolean = true) : DataSource {
+        companion object : DataSourceBuilder<ScreenUvCoordDataSource> {
             override val resourceName: String get() = "U/V Coordinate"
-            override fun build(inputPort: InputPort): ScreenUvCoord =
-                ScreenUvCoord()
+            override fun build(inputPort: InputPort): ScreenUvCoordDataSource =
+                ScreenUvCoordDataSource()
         }
 
         override val dataSourceName: String get() = "U/V Coordinate"
@@ -278,6 +279,10 @@ class CorePlugin : Plugin {
     interface GadgetDataSource<T : Gadget> : DataSource {
         val title: String
 
+        override fun buildControl(): MutableGadgetControl? {
+            return MutableGadgetControl(createGadget(), this)
+        }
+
         fun createGadget(): T
 
         fun set(gadget: T, uniform: Uniform)
@@ -345,18 +350,18 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:XyPad")
-    data class XyPad(
+    data class XyPadDataSource(
         val title: String,
         val varPrefix: String
     ) : DataSource {
-        companion object : DataSourceBuilder<XyPad> {
+        companion object : DataSourceBuilder<XyPadDataSource> {
             override val resourceName: String get() = "XyPad"
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Vec2)
 
-            override fun build(inputPort: InputPort): XyPad =
-                XyPad(inputPort.title, inputPort.suggestVarName())
+            override fun build(inputPort: InputPort): XyPadDataSource =
+                XyPadDataSource(inputPort.title, inputPort.suggestVarName())
         }
 
         override val dataSourceName: String get() = "XY Pad"
@@ -388,20 +393,20 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:ColorPicker")
-    data class ColorPickerProvider(
+    data class ColorPickerDataSource(
         override val title: String,
         val initialValue: Color
     ) : GadgetDataSource<ColorPicker> {
-        companion object : DataSourceBuilder<ColorPickerProvider> {
+        companion object : DataSourceBuilder<ColorPickerDataSource> {
             override val resourceName: String get() = "ColorPicker"
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Vec4)
 
-            override fun build(inputPort: InputPort): ColorPickerProvider {
+            override fun build(inputPort: InputPort): ColorPickerDataSource {
                 val default = inputPort.pluginConfig?.get("default")?.primitive?.contentOrNull
 
-                return ColorPickerProvider(
+                return ColorPickerDataSource(
                     inputPort.title,
                     initialValue = default?.let { Color.from(it) } ?: Color.WHITE
                 )
@@ -427,18 +432,18 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:RadioButtonStrip")
-    data class RadioButtonStripProvider(
+    data class RadioButtonStripDataSource(
         override val title: String,
         val options: List<String>,
         val initialSelectionIndex: Int
     ) : GadgetDataSource<RadioButtonStrip> {
-        companion object : DataSourceBuilder<RadioButtonStripProvider> {
+        companion object : DataSourceBuilder<RadioButtonStripDataSource> {
             override val resourceName: String get() = "Radio Button Strip"
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Int)
 
-            override fun build(inputPort: InputPort): RadioButtonStripProvider {
+            override fun build(inputPort: InputPort): RadioButtonStripDataSource {
                 val config = inputPort.pluginConfig
 
                 val initialSelectionIndex = config?.getPrimitive("default")?.int ?: 0
@@ -448,7 +453,7 @@ class CorePlugin : Plugin {
                     ?.map { it.primitive.content }
                     ?: error("no options given")
 
-                return RadioButtonStripProvider(
+                return RadioButtonStripDataSource(
                     inputPort.title,
                     options,
                     initialSelectionIndex
@@ -470,14 +475,14 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:Image")
-    data class ImageSource(val title: String) : DataSource {
-        companion object : DataSourceBuilder<ImageSource> {
+    data class ImageDataSource(val title: String) : DataSource {
+        companion object : DataSourceBuilder<ImageDataSource> {
             override val resourceName: String get() = "Image"
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Sampler2D)
 
-            override fun build(inputPort: InputPort): ImageSource =
-                ImageSource(inputPort.title)
+            override fun build(inputPort: InputPort): ImageDataSource =
+                ImageDataSource(inputPort.title)
         }
 
         override val dataSourceName: String get() = "Image"
@@ -487,7 +492,7 @@ class CorePlugin : Plugin {
         override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
             object : DataFeed, RefCounted by RefCounter() {
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(glslProgram, this@ImageSource, id, this) { uniform ->
+                    GlslProgram.SingleUniformBinding(glslProgram, this@ImageDataSource, id, this) { uniform ->
                         // no-op
                     }
             }
@@ -500,16 +505,16 @@ class CorePlugin : Plugin {
             ContentType.coreTypes.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })
 
         val supportedContentTypes = mapOf(
-            ContentType.PixelCoordinatesTexture to PixelCoordsTexture,
-            ContentType.UvCoordinateStream to ScreenUvCoord,
+            ContentType.PixelCoordinatesTexture to PixelCoordsTextureDataSource,
+            ContentType.UvCoordinateStream to ScreenUvCoordDataSource,
             ContentType.ModelInfo to ModelInfoDataSource,
 //            UvCoordinate,
-            ContentType.Mouse to XyPad,
+            ContentType.Mouse to XyPadDataSource,
 //            XyzCoordinate,
-            ContentType.Color to ColorPickerProvider,
-            ContentType.Time to Time,
-            ContentType.Resolution to Resolution,
-            ContentType.PreviewResolution to PreviewResolution,
+            ContentType.Color to ColorPickerDataSource,
+            ContentType.Time to TimeDataSource,
+            ContentType.Resolution to ResolutionDataSource,
+            ContentType.PreviewResolution to PreviewResolutionDataSource,
             ContentType.Float to SliderDataSource
 //            Int,
 //            Unknown

@@ -11,6 +11,7 @@ import baaahs.gl.patch.LinkedPatch
 import baaahs.model.ModelInfo
 import baaahs.only
 import baaahs.plugin.Plugins
+import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
@@ -35,7 +36,7 @@ object GuruMeditationError {
     )
 
     private val linkedPatch: LinkedPatch?
-    private val dataFeeds: Map<String, GlslProgram.DataFeed>
+    private val dataFeeds: Map<DataSource, GlslProgram.DataFeed>
 
     init {
         val autoWirer = AutoWirer(Plugins.safe())
@@ -45,7 +46,7 @@ object GuruMeditationError {
         }.build(showBuilder)
 
         @Suppress("CAST_NEVER_SUCCEEDS")
-        val openShow = ShowOpener(show, FakeShowPlayer).openShow()
+        val openShow = ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer).openShow()
         dataFeeds = openShow.dataFeeds
         val openPatch = openShow.patches.only("patch")
         linkedPatch = autoWirer.buildPortDiagram(openPatch)

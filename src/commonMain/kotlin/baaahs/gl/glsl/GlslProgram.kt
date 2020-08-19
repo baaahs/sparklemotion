@@ -6,12 +6,10 @@ import baaahs.gl.GlContext
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.ModelRenderer
 import baaahs.glsl.Uniform
-import baaahs.plugin.CorePlugin
 import baaahs.show.DataSource
 import baaahs.show.OutputPortRef
 import com.danielgergely.kgl.GL_LINK_STATUS
 import com.danielgergely.kgl.GL_TRUE
-import kotlinx.serialization.modules.SerializersModule
 
 class GlslProgram(
     internal val gl: GlContext,
@@ -159,24 +157,3 @@ class GlslProgram(
 }
 
 typealias Resolver = (String, DataSource) -> GlslProgram.DataFeed?
-
-val dataSourceProviderModule = SerializersModule {
-    polymorphic(DataSource::class) {
-//        CorePlugin.NoOp::class with CorePlugin.NoOp.serializer()
-        CorePlugin.Resolution::class with CorePlugin.Resolution.serializer()
-        CorePlugin.PreviewResolution::class with CorePlugin.PreviewResolution.serializer()
-        CorePlugin.Time::class with CorePlugin.Time.serializer()
-        CorePlugin.PixelCoordsTexture::class with CorePlugin.PixelCoordsTexture.serializer()
-        CorePlugin.ModelInfoDataSource::class with CorePlugin.ModelInfoDataSource.serializer()
-        CorePlugin.SliderDataSource::class with CorePlugin.SliderDataSource.serializer()
-        CorePlugin.ColorPickerProvider::class with CorePlugin.ColorPickerProvider.serializer()
-        CorePlugin.ColorPickerProvider::class with CorePlugin.ColorPickerProvider.serializer()
-        CorePlugin.RadioButtonStripProvider::class with CorePlugin.RadioButtonStripProvider.serializer()
-        CorePlugin.XyPad::class with CorePlugin.XyPad.serializer()
-    }
-
-//    polymorphic(ControlRef::class) {
-//        SpecialControlRef::class with SpecialControlRef.serializer()
-//        DataSourceRef::class with DataSourceRef.serializer()
-//    }
-}

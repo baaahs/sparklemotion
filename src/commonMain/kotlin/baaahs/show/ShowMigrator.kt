@@ -3,7 +3,8 @@ package baaahs.show
 import kotlinx.serialization.json.*
 
 object ShowMigrator : JsonTransformingSerializer<Show>(
-    Show.serializer(), "Show Migrator") {
+    Show.serializer(), "Show Migrator"
+) {
     private const val currentVersion = 1
     private const val versionKey = "version"
 

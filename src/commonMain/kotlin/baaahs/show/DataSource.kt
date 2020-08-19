@@ -5,13 +5,15 @@ import baaahs.camelize
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.shader.InputPort
+import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
-import baaahs.show.mutable.ShowBuilder
+import baaahs.show.mutable.MutableGadgetControl
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObjectSerializer
+import kotlinx.serialization.modules.SerializersModule
 
 
 interface DataSourceBuilder<T : DataSource> {
@@ -25,7 +27,7 @@ interface DataSourceBuilder<T : DataSource> {
     fun build(inputPort: InputPort): T
 }
 
-interface DataSource : Control {
+interface DataSource {
     val dataSourceName: String
     fun isImplicit(): Boolean = false
     fun getType(): GlslType
@@ -35,8 +37,29 @@ interface DataSource : Control {
     fun createFeed(showPlayer: ShowPlayer, id: String): GlslProgram.DataFeed
     fun suggestId(): String = dataSourceName.camelize()
 
-    override fun toControlRef(showBuilder: ShowBuilder): ControlRef {
-        return ControlRef(ControlRef.Type.DataSource, showBuilder.idFor(this))
+    fun buildControl(): MutableGadgetControl? = null
+
+    companion object {
+        val serialModule = SerializersModule {
+            polymorphic(DataSource::class) {
+//        CorePlugin.NoOp::class with CorePlugin.NoOp.serializer()
+                CorePlugin.ResolutionDataSource::class with CorePlugin.ResolutionDataSource.serializer()
+                CorePlugin.PreviewResolutionDataSource::class with CorePlugin.PreviewResolutionDataSource.serializer()
+                CorePlugin.TimeDataSource::class with CorePlugin.TimeDataSource.serializer()
+                CorePlugin.PixelCoordsTextureDataSource::class with CorePlugin.PixelCoordsTextureDataSource.serializer()
+                CorePlugin.ModelInfoDataSource::class with CorePlugin.ModelInfoDataSource.serializer()
+                CorePlugin.SliderDataSource::class with CorePlugin.SliderDataSource.serializer()
+                CorePlugin.ColorPickerDataSource::class with CorePlugin.ColorPickerDataSource.serializer()
+                CorePlugin.ColorPickerDataSource::class with CorePlugin.ColorPickerDataSource.serializer()
+                CorePlugin.RadioButtonStripDataSource::class with CorePlugin.RadioButtonStripDataSource.serializer()
+                CorePlugin.XyPadDataSource::class with CorePlugin.XyPadDataSource.serializer()
+            }
+
+//    polymorphic(ControlRef::class) {
+//        SpecialControlRef::class with SpecialControlRef.serializer()
+//        DataSourceRef::class with DataSourceRef.serializer()
+//    }
+        }
     }
 }
 

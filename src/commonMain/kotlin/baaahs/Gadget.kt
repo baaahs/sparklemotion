@@ -31,7 +31,11 @@ import kotlin.reflect.KProperty
  *
  * Mutable values _should not_ be included in tests for equality.
  */
-open class Gadget {
+@Serializable
+@Polymorphic
+abstract class Gadget {
+    abstract val title: String
+
     @Transient
     private val listeners = arrayListOf<Listener>()
 
@@ -85,9 +89,20 @@ open class Gadget {
     open fun adjustALittleBit() {
     }
 
+    @Transient
     val state: MutableMap<String, JsonElement> = hashMapOf()
 
     private class Listener(val callback: GadgetListener, var enabled: Boolean = true)
+
+    companion object {
+        val serialModule = SerializersModule {
+            polymorphic(Gadget::class) {
+                ColorPicker::class with ColorPicker.serializer()
+                PalettePicker::class with PalettePicker.serializer()
+                Slider::class with Slider.serializer()
+            }
+        }
+    }
 }
 
 typealias GadgetListener = (Gadget) -> Unit
@@ -145,7 +160,7 @@ class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>)
                 gadget.listen(listener)
 
                 channels[topicName] =
-                    pubSub.subscribe(PubSub.Topic(topicName, GadgetDataSerializer, gadgetModule)) { json ->
+                    pubSub.subscribe(PubSub.Topic(topicName, GadgetDataSerializer, Gadget.serialModule)) { json ->
                         gadget.apply {
                             withoutTriggering(listener) {
                                 gadget.state.putAll(json)
@@ -163,14 +178,6 @@ class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>)
 
     fun unsubscribe() {
         gadgetsChannel.unsubscribe()
-    }
-}
-
-val gadgetModule = SerializersModule {
-    polymorphic(Gadget::class) {
-        ColorPicker::class with ColorPicker.serializer()
-        PalettePicker::class with PalettePicker.serializer()
-        Slider::class with Slider.serializer()
     }
 }
 

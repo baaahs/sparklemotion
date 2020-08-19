@@ -5,7 +5,6 @@ import baaahs.app.ui.controls.ControlDisplay
 import baaahs.app.ui.controls.SpecialControlProps
 import baaahs.app.ui.controls.control
 import baaahs.show.Layout
-import baaahs.show.Show
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.ShowBuilder
@@ -35,8 +34,10 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
         if (props.editMode) Styles.editModeOn else Styles.editModeOff
 
     var controlDisplay by state<ControlDisplay> { nuffin() }
-    onChange("show/state", props.show, props.showState, props.editMode, props.onEdit, appContext.dragNDrop) {
-        controlDisplay = ControlDisplay(props.show, props.showState, props.editMode, props.onEdit, appContext.dragNDrop)
+    onChange("show/state", props.show, props.showState, props.editMode, appContext.dragNDrop) {
+        controlDisplay = ControlDisplay(
+            props.show, props.showState, props.editMode, appContext.webClient, appContext.dragNDrop
+        )
 
         withCleanup {
             controlDisplay.release()
@@ -51,7 +52,6 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
         this.onShowStateChange = props.onShowStateChange
         this.editMode = props.editMode
         this.editPatchHolder = props.editPatchHolder
-        this.onEdit = props.onEdit
     }
 
 //    <MosiacMenuBar />
@@ -93,7 +93,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                 div(+Styles.controlPanelHelpText) { +section.title }
                                 controls.forEach { placedControl ->
                                     val control = placedControl.control
-                                    val draggableId = "control_${control.toControlRef(showBuilder).toShortString()}"
+                                    val draggableId = control.id
 
                                     draggable({
                                         this.key = draggableId
@@ -146,7 +146,6 @@ external interface ShowLayoutProps : RProps {
     var layout: Layout
     var editMode: Boolean
     var editPatchHolder: (MutablePatchHolder) -> Unit
-    var onEdit: (Show, ShowState) -> Unit
 }
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>): ReactElement =

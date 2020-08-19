@@ -5,6 +5,7 @@ import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.Plugins
+import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
@@ -29,7 +30,7 @@ object MutableShowSpec : Spek({
                     addPatchSet("patchset 2b") { addPatch(autoWirer.testPatch("shader 2b")) }
                     addPatchSet("patchset 2c") { addPatch(autoWirer.testPatch("shader 2c")) }
                 }
-                addControl("Scenes", scenesControl)
+                addControl("Scenes", MutableButtonGroupControl("Scenes"))
             }
         }
         val baseShow by value { baseMutableShow.build(ShowBuilder()) }
