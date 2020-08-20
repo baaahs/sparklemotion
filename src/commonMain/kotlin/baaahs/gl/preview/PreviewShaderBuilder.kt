@@ -63,7 +63,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
                 }
             }
             compile(gl) { id, dataSource ->
-                dataSource.createFeed(showPlayer, id)
+                dataSource.createFeed(showPlayer, autoWirer.plugins.find(dataSource.pluginPackage), id)
             }
         }
     }
@@ -101,6 +101,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
             )
             previewPatch = autoWirer.autoWire(*shaders, defaultPorts = defaultPorts)
                 .acceptSymbolicChannelLinks()
+                .takeFirstIfAmbiguous()
                 .resolve()
             linkedPatch = previewPatch?.openForPreview(autoWirer)
             state = State.Linked

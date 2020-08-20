@@ -48,6 +48,7 @@ object PinkySpec : Spek({
                 PermissiveFirmwareDaddy(),
                 StubSoundAnalyzer(),
                 modelRenderer = ModelRenderer(fakeGlslContext, ModelInfo.Empty),
+                plugins = Plugins.safe(),
                 pinkyMainDispatcher = object : CoroutineDispatcher() {
                     override fun dispatch(context: CoroutineContext, block: Runnable) {
                         block.run()

@@ -5,7 +5,9 @@ import baaahs.camelize
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.shader.InputPort
+import baaahs.plugin.BeatLinkPlugin
 import baaahs.plugin.CorePlugin
+import baaahs.plugin.Plugin
 import baaahs.plugin.Plugins
 import baaahs.show.mutable.MutableGadgetControl
 import kotlinx.serialization.*
@@ -28,13 +30,14 @@ interface DataSourceBuilder<T : DataSource> {
 }
 
 interface DataSource {
+    val pluginPackage: String
     val dataSourceName: String
     fun isImplicit(): Boolean = false
     fun getType(): GlslType
     fun getVarName(id: String): String = "in_$id"
 
     fun getRenderType(): String? = null
-    fun createFeed(showPlayer: ShowPlayer, id: String): GlslProgram.DataFeed
+    fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): GlslProgram.DataFeed
     fun suggestId(): String = dataSourceName.camelize()
 
     fun buildControl(): MutableGadgetControl? = null
@@ -53,6 +56,8 @@ interface DataSource {
                 CorePlugin.ColorPickerDataSource::class with CorePlugin.ColorPickerDataSource.serializer()
                 CorePlugin.RadioButtonStripDataSource::class with CorePlugin.RadioButtonStripDataSource.serializer()
                 CorePlugin.XyPadDataSource::class with CorePlugin.XyPadDataSource.serializer()
+
+                BeatLinkPlugin.BeatLinkDataSource::class with BeatLinkPlugin.BeatLinkDataSource.serializer()
             }
 
 //    polymorphic(ControlRef::class) {

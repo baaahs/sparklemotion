@@ -36,7 +36,7 @@ class Pinky(
     private val switchShowAfterIdleSeconds: Int? = 600,
     private val adjustShowAfterIdleSeconds: Int? = null,
     modelRenderer: ModelRenderer,
-    val plugins: Plugins = Plugins.findAll(),
+    val plugins: Plugins,
     val pinkyMainDispatcher: CoroutineDispatcher
 ) : CoroutineScope, Network.UdpListener {
     val facade = Facade()

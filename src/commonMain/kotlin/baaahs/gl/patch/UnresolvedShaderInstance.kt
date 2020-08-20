@@ -35,4 +35,16 @@ class UnresolvedShaderInstance(
     override fun toString(): String {
         return "UnresolvedShaderInstance(shader=${mutableShader.title})"
     }
+
+    fun takeFirstIfAmbiguous() {
+        if (isAmbiguous()) {
+            incomingLinksOptions.values.forEach { options ->
+                if (options.size > 1) {
+                    val first = options.first()
+                    options.clear()
+                    options.add(first)
+                }
+            }
+        }
+    }
 }
