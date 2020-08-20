@@ -86,10 +86,11 @@ class CorePlugin : Plugin {
                 ResolutionDataSource()
         }
 
+        override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "Resolution"
         override fun getType(): GlslType = GlslType.Vec2
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
             object : DataFeed, RefCounted by RefCounter() {
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
                     GlslProgram.SingleUniformBinding(glslProgram, this@ResolutionDataSource, id, this) { uniform ->
@@ -107,16 +108,22 @@ class CorePlugin : Plugin {
                 PreviewResolutionDataSource()
         }
 
+        override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "PreviewResolution"
         override fun getType(): GlslType = GlslType.Vec2
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
             object : DataFeed, GlslProgram.ResolutionListener, RefCounted by RefCounter() {
                 var x = 1f
                 var y = 1f
 
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(glslProgram, this@PreviewResolutionDataSource, id, this) { uniform ->
+                    GlslProgram.SingleUniformBinding(
+                        glslProgram,
+                        this@PreviewResolutionDataSource,
+                        id,
+                        this
+                    ) { uniform ->
                         uniform.set(x, y)
                     }
 
@@ -136,10 +143,11 @@ class CorePlugin : Plugin {
                 TimeDataSource()
         }
 
+        override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "Time"
         override fun getType(): GlslType = GlslType.Float
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
             object : DataFeed, RefCounted by RefCounter() {
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
                     GlslProgram.SingleUniformBinding(glslProgram, this@TimeDataSource, id, this) { uniform ->
@@ -158,11 +166,12 @@ class CorePlugin : Plugin {
                 PixelCoordsTextureDataSource()
         }
 
+        override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "Pixel Coordinates Texture"
         override fun getType(): GlslType = GlslType.Sampler2D
         override fun suggestId(): String = "pixelCoordsTexture"
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
             object : DataFeed, ModelRenderer.ArrangementListener, RefCounted by RefCounter() {
                 private val gl = showPlayer.glContext
                 private val uvCoordTextureUnit = gl.getTextureUnit(PixelCoordsTextureDataSource::class)
@@ -202,6 +211,7 @@ class CorePlugin : Plugin {
                 ScreenUvCoordDataSource()
         }
 
+        override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "U/V Coordinate"
         override fun getType(): GlslType = GlslType.Vec2
         override fun isImplicit(): Boolean = true
@@ -209,7 +219,7 @@ class CorePlugin : Plugin {
 
         override fun getRenderType(): String? = null
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed {
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
             return object : DataFeed, RefCounted by RefCounter() {
 
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding {
@@ -243,11 +253,12 @@ class CorePlugin : Plugin {
                 ModelInfoDataSource()
         }
 
+        override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "Model Info"
         override fun getType(): GlslType = modelInfoType
         override fun getRenderType(): String? = null
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed {
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
             return object : DataFeed, RefCounted by RefCounter() {
                 private val varPrefix = getVarName(id)
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding {
@@ -287,7 +298,7 @@ class CorePlugin : Plugin {
 
         fun set(gadget: T, uniform: Uniform)
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed {
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
             val gadget = createGadget()
             showPlayer.createdGadget(id, gadget)
             return object : GadgetDataFeed, RefCounted by RefCounter() {
@@ -335,6 +346,7 @@ class CorePlugin : Plugin {
             }
         }
 
+        override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "$title $resourceName"
         override fun getType(): GlslType = GlslType.Float
         override fun getRenderType(): String? = "Slider"
@@ -364,11 +376,12 @@ class CorePlugin : Plugin {
                 XyPadDataSource(inputPort.title, inputPort.suggestVarName())
         }
 
+        override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "XY Pad"
         override fun getType(): GlslType = GlslType.Vec2
         override fun suggestId(): String = "$title XY Pad".camelize()
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed {
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
             return object : DataFeed, RefCounted by RefCounter() {
 //                val xControl = showPlayer.useGadget<Slider>("${varPrefix}_x")
 //                val yControl = showPlayer.useGadget<Slider>("${varPrefix}_y")
@@ -413,6 +426,7 @@ class CorePlugin : Plugin {
             }
         }
 
+        override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "$title ${SliderDataSource.resourceName}"
         override fun getType(): GlslType = GlslType.Vec4
         override fun getRenderType(): String? = "ColorPicker"
@@ -461,6 +475,7 @@ class CorePlugin : Plugin {
             }
         }
 
+        override val pluginPackage: String get() = id
         override val dataSourceName: String get() = resourceName
         override fun getType(): GlslType = GlslType.Int
 
@@ -485,11 +500,12 @@ class CorePlugin : Plugin {
                 ImageDataSource(inputPort.title)
         }
 
+        override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "Image"
         override fun getType(): GlslType = GlslType.Sampler2D
         override fun suggestId(): String = "$title Image".camelize()
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): DataFeed =
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
             object : DataFeed, RefCounted by RefCounter() {
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
                     GlslProgram.SingleUniformBinding(glslProgram, this@ImageDataSource, id, this) { uniform ->

@@ -1,6 +1,8 @@
 package baaahs.ui
 
+import baaahs.app.ui.appContext
 import baaahs.gl.shader.InputPort
+import baaahs.plugin.BeatLinkPlugin
 import baaahs.show.mutable.MutablePort
 import kotlinx.html.js.onChangeFunction
 import materialui.AddCircleOutline
@@ -15,12 +17,15 @@ import materialui.components.listsubheader.listSubheader
 import materialui.components.menuitem.menuItem
 import materialui.components.select.select
 import materialui.icon
-import react.RBuilder
-import react.RHandler
-import react.RProps
-import react.child
+import react.*
 
 val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isPure = true) { props ->
+    val appContext = useContext(appContext)
+
+    val suggestedDataSources = appContext.plugins.suggestDataSources(
+        props.inputPort, setOf(BeatLinkPlugin.beatDataContentType)
+    )
+
     val handleChange =
         eventHandler("change to ${props.inputPort.id}", props.onChange) { event ->
             val value = event.target.asDynamic().value as SourcePortOption?
@@ -34,7 +39,7 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isP
             this@xComponent.forceRender()
         }
 
-    val sourcePortOptions = props.sourcePortOptions +
+    val sourcePortOptions = props.sourcePortOptions + suggestedDataSources.map { DataSourceOption(it) } +
             NoSourcePortOption + NewSourcePortOption
 
     formControl {

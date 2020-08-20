@@ -10,6 +10,7 @@ import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.net.Network
+import baaahs.plugin.BeatLinkPlugin
 import baaahs.plugin.Plugins
 import baaahs.proto.Ports
 import baaahs.shows.BakedInShaders
@@ -58,7 +59,8 @@ class SheepSimulator(val model: Model<*>) {
 
     val glslContext = GlBase.manager.createContext()
     val clock = JsClock()
-    val plugins = Plugins.findAll()
+
+    val plugins = Plugins.safe() + BeatLinkPlugin(bridgeClient.beatSource, clock)
     private val pinky = Pinky(
         model,
         network,
@@ -69,8 +71,8 @@ class SheepSimulator(val model: Model<*>) {
         PermissiveFirmwareDaddy(),
         bridgeClient.soundAnalyzer,
         modelRenderer = ModelRenderer(glslContext, model),
-        plugins = plugins,
-        pinkyMainDispatcher = Dispatchers.Main
+        pinkyMainDispatcher = Dispatchers.Main,
+        plugins = plugins
     )
     private val brains: MutableList<Brain> = mutableListOf()
 
@@ -142,7 +144,8 @@ class SheepSimulator(val model: Model<*>) {
         doRunBlocking {
             val mappingSessionPath = Storage(mapperFs, plugins).saveSession(
                 MappingSession(clock.now(), simSurfaces.map { simSurface ->
-                    MappingSession.SurfaceData(simSurface.brainId.uuid, simSurface.surface.name,
+                    MappingSession.SurfaceData(
+                        simSurface.brainId.uuid, simSurface.surface.name,
                         simSurface.pixelPositions.map {
                             PixelData(Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat()), null, null)
                         }, null, null, null
