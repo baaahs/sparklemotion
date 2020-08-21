@@ -53,6 +53,8 @@ class ModelRendererTest {
         }
     }
 
+    // TODO: Need to swap out uvShader for simpler test version to get this passing.
+
     @Test
     fun testSimpleRendering() {
         if (!glslAvailable()) return
@@ -256,6 +258,7 @@ class ModelRendererTest {
         val shader = GlslAnalyzer(Plugins.safe()).import(program)
         return autoWirer
             .autoWire(cylindricalProjection, shader)
+            .acceptSymbolicChannelLinks()
             .resolve()
             .openForPreview(autoWirer)!!
             .compile(glContext) { id, dataSource ->
@@ -271,7 +274,7 @@ class ModelRendererTest {
             (diff.redI <= 1 && diff.greenI <= 1 && diff.blueI <= 1)
         }.all { it }
         if (!nearlyEqual) {
-            kotlin.test.expect(expected, actualFn)
+            expect(expected, actualFn)
         }
     }
 

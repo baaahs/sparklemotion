@@ -17,9 +17,12 @@ import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Runnable
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
+import kotlin.coroutines.CoroutineContext
 import kotlin.test.expect
 
 @InternalCoroutinesApi
@@ -44,7 +47,12 @@ object PinkySpec : Spek({
                 fakeFs,
                 PermissiveFirmwareDaddy(),
                 StubSoundAnalyzer(),
-                modelRenderer = ModelRenderer(fakeGlslContext, ModelInfo.Empty)
+                modelRenderer = ModelRenderer(fakeGlslContext, ModelInfo.Empty),
+                pinkyMainDispatcher = object : CoroutineDispatcher() {
+                    override fun dispatch(context: CoroutineContext, block: Runnable) {
+                        block.run()
+                    }
+                }
             )
         }
         val pinkyLink by value { network.links.only() }

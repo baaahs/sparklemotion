@@ -135,7 +135,7 @@ object PatchLayeringSpec : Spek({
                         }
 
 
-                        #line -1
+                        #line 10001
                         void main() {
                           p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy); // Cylindrical Projection
                           p1_orangeShader_main(); // Orange Shader
