@@ -1,8 +1,7 @@
 package baaahs.io
 
 import baaahs.PubSub
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Polymorphic
@@ -18,7 +17,6 @@ class PubSubRemoteFsClientBackend(
     override val backend: RemoteFsBackend
         get() = this
 
-    private val scope = CoroutineScope(Dispatchers.Main)
     private var nextRequestId = 0
     private val responseChannels = hashMapOf<Int, Channel<RemoteFsOp.Response>>()
     private val commandPort = createCommandPort()
@@ -26,7 +24,7 @@ class PubSubRemoteFsClientBackend(
     private val pubSubChannel =
         pubSub.openCommandChannel(commandPort) { response ->
             val responseChannel = responseChannels.remove(response.requestId)!!
-            scope.launch {
+            GlobalScope.launch {
                 responseChannel.send(response)
             }
         }
@@ -146,12 +144,9 @@ class PubSubRemoteFsServerBackend(
     serializer: RemoteFsSerializer
 ) {
     init {
-        val scope = CoroutineScope(Dispatchers.Main)
         val commandPort = serializer.createCommandPort()
         pubSub.listenOnCommandChannel(commandPort) { command, reply ->
-            scope.launch {
-                reply(command.perform())
-            }
+            reply(command.perform())
         }
     }
 }

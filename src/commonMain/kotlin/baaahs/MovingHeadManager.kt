@@ -2,7 +2,6 @@ package baaahs
 
 import baaahs.io.Fs
 import baaahs.model.MovingHead
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -34,7 +33,7 @@ class MovingHeadManager(private val fs: Fs, private val pubSub: PubSub.Server, m
                 "Disco Balls" to MovingHead.MovingHeadPosition(123, 200)
             )
         ) { map ->
-            GlobalScope.launch(Dispatchers.Main) {
+            GlobalScope.launch {
                 fs.saveFile(presetsFileName, json.stringify(Topics.movingHeadPresets.serializer, map), true)
                 println("Saved $map to disk!")
             }

@@ -70,7 +70,8 @@ class SheepSimulator {
         PermissiveFirmwareDaddy(),
         bridgeClient.soundAnalyzer,
         modelRenderer = ModelRenderer(glslContext, model),
-        plugins = plugins
+        plugins = plugins,
+        pinkyMainDispatcher = Dispatchers.Main
     )
     private val brains: MutableList<Brain> = mutableListOf()
 
@@ -82,7 +83,7 @@ class SheepSimulator {
     fun start() = doRunBlocking {
         val simSurfaces = prepareSurfaces()
 
-        pinky.start()
+        pinky.startAndRun()
 
         val launcher = Launcher(document.getElementById("launcher")!!)
         launcher.add("Web UI") {

@@ -169,6 +169,15 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 object Styles : StyleSheet("app-ui", isStatic = true) {
     val root by css {
         display = Display.flex
+
+        top = 0.px
+        left = 0.px
+        width = 100.pct
+        height = 100.pct
+        position = Position.absolute
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        overflow = Overflow.hidden
     }
 
     val layoutPanel by css {

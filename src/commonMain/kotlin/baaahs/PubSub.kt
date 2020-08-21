@@ -15,6 +15,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonElementSerializer
 import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.SerializersModule
+import kotlin.coroutines.CoroutineContext
 import kotlin.js.JsName
 import kotlin.jvm.Synchronized
 import kotlin.properties.ReadWriteProperty
@@ -25,8 +26,8 @@ abstract class PubSub {
     companion object {
         val verbose = true
 
-        fun listen(httpServer: Network.HttpServer): Server {
-            return Server(httpServer)
+        fun listen(httpServer: Network.HttpServer, coroutineContext: CoroutineContext): Server {
+            return Server(httpServer, coroutineContext)
         }
 
         fun connect(networkLink: Network.Link, address: Network.Address, port: Int): Client {
@@ -364,7 +365,7 @@ abstract class PubSub {
         }
     }
 
-    class Server(httpServer: Network.HttpServer) : Endpoint() {
+    class Server(httpServer: Network.HttpServer, private val handlerContext: CoroutineContext) : Endpoint() {
         private val publisher = Origin("Server")
         private val topics: Topics = Topics()
         private val commandChannels = CommandChannels()
@@ -381,7 +382,9 @@ abstract class PubSub {
 
             @Suppress("UNCHECKED_CAST")
             val topicInfo = topics.getOrPut(topicName) { TopicInfo(topic) } as TopicInfo<T>
-            val listener = PublisherListener(topicInfo, publisher, onUpdate)
+            val listener = PublisherListener(topicInfo, publisher) {
+                CoroutineScope(handlerContext).launch { onUpdate(it) }
+            }
             topicInfo.addListener(listener)
             topicInfo.notify(data, publisher)
 
@@ -402,11 +405,15 @@ abstract class PubSub {
 
         fun <C, R> listenOnCommandChannel(
             commandPort: CommandPort<C, R>,
-            callback: (command: C, reply: (R) -> Unit) -> Unit
+            callback: suspend (command: C, reply: (R) -> Unit) -> Unit
         ) {
             val name = commandPort.name
             if (commandChannels.hasServerChannel(name)) error("Command channel $name already exists.")
-            commandChannels.putServerChannel(name, ServerCommandChannel(commandPort, callback))
+            commandChannels.putServerChannel(name, ServerCommandChannel(commandPort) { command, reply ->
+                CoroutineScope(handlerContext).launch {
+                    callback(command, reply)
+                }
+            })
         }
 
         fun <T> state(topic: Topic<T>, initialValue: T, callback: (T) -> Unit = {}): ReadWriteProperty<Any, T> {
