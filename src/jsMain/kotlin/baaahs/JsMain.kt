@@ -8,6 +8,7 @@ import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
 import baaahs.sim.ui.WebClientWindow
+import decodeQueryParams
 import kotlinext.js.jsObject
 import org.w3c.dom.get
 import react.createElement
@@ -26,9 +27,12 @@ fun main(args: Array<String>) {
     val network = BrowserNetwork(pinkyAddress, baaahs.proto.Ports.PINKY)
     val contentDiv = document.getElementById("content")
 
+    val queryParams = decodeQueryParams(document.location!!)
+    val model = Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
+
     when (mode) {
         "Simulator" -> {
-            val simulator = SheepSimulator()
+            val simulator = SheepSimulator(model)
             val props = jsObject<MosaicApp.Props> {
                 this.simulator = simulator
                 this.webClientWindow = WebClientWindow
@@ -38,13 +42,11 @@ fun main(args: Array<String>) {
         }
 
         "Admin" -> {
-            val adminApp = AdminUi(network, pinkyAddress)
+            val adminApp = AdminUi(network, pinkyAddress, model)
             render(adminApp.render(), contentDiv)
         }
 
         "Mapper" -> {
-
-            val model = Pluggables.getModel() // todo: not this
             (model as? ObjModel)?.load()
 
             val mapperUi = JsMapperUi();

@@ -41,7 +41,7 @@ class PinkyMain(private val args: Args) {
 
         GlBase.manager // Need to wake up OpenGL on the main thread.
 
-        val model = Pluggables.loadModel(args.modelName)
+        val model = Pluggables.loadModel(args.model)
 
         val network = JvmNetwork()
         val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
@@ -165,7 +165,7 @@ class PinkyMain(private val args: Args) {
     }
 
     class Args(parser: ArgParser) {
-        val modelName by parser.storing("model").default(Pluggables.defaultModel)
+        val model by parser.storing("model").default(Pluggables.defaultModel)
 
         val showName by parser.storing("show").default<String?>(null)
 

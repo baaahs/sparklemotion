@@ -25,14 +25,13 @@ import kotlin.browser.document
 import kotlin.browser.window
 import kotlin.js.Date
 
-class SheepSimulator {
+class SheepSimulator(val model: Model<*>) {
     @Suppress("unused")
     val facade = Facade()
 
     private val queryParams = decodeQueryParams(document.location!!)
     val network = FakeNetwork()
     private val dmxUniverse = FakeDmxUniverse()
-    private val model = selectModel()
     val visualizer = Visualizer(model)
     private val mapperFs = FakeFs("Temporary Mapping Files")
     private val fs = MergedFs(BrowserSandboxFs("Browser Data"), mapperFs, "Browser Data")
@@ -75,9 +74,6 @@ class SheepSimulator {
     )
     private val brains: MutableList<Brain> = mutableListOf()
 
-    private fun selectModel(): Model<*> =
-        Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
-
     val pinkyAddress: Network.Address get() = pinky.address
 
     fun start() = doRunBlocking {
@@ -100,7 +96,7 @@ class SheepSimulator {
         }
 
         launcher.add("Admin UI") {
-            AdminUi(network, pinky.address)
+            AdminUi(network, pinky.address, model)
         }
 
         simSurfaces.forEach { simSurface ->
@@ -116,10 +112,6 @@ class SheepSimulator {
 
         model.movingHeads.forEach { movingHead ->
             visualizer.addMovingHead(movingHead, dmxUniverse)
-        }
-
-        queryParams["show"]?.let { showName ->
-//      TODO      shows.find { it.name == showName }?.let { show -> pinky.switchToShow(show) }
         }
 
 //        val users = storage.users.transaction { store -> store.getAll() }
