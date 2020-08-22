@@ -3,18 +3,22 @@ package baaahs.api.ws
 import baaahs.Logger
 import baaahs.net.Network
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.*
+import kotlin.coroutines.CoroutineContext
 
-class WebSocketRouter(handlers: HandlerBuilder.() -> Unit) : Network.WebSocketListener {
+class WebSocketRouter(
+    val coroutineContext: CoroutineContext,
+    handlers: HandlerBuilder.() -> Unit
+) : Network.WebSocketListener {
+    private val handlerScope = CoroutineScope(coroutineContext)
+
     companion object {
         val json = Json(JsonConfiguration.Stable)
-        val handlerScope = CoroutineScope(Dispatchers.Main)
         val logger = Logger("WebSocketEndpoint")
     }
 
-    val handlerMap = HandlerBuilder(json).apply { handlers() }.handlerMap.toMap()
+    private val handlerMap = HandlerBuilder(json).apply { handlers() }.handlerMap.toMap()
 
     override fun connected(tcpConnection: Network.TcpConnection) {
         logger.info { "Received connection from ${tcpConnection.fromAddress}" }

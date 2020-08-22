@@ -29,7 +29,9 @@ class RealFs(
 
     override suspend fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
         val destPath = resolve(file)
-        Files.createDirectories(destPath.parent)
+        if (!Files.exists(destPath.parent)) {
+            Files.createDirectories(destPath.parent)
+        }
         Files.write(
             destPath,
             content,

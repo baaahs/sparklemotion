@@ -3,6 +3,7 @@ package baaahs.net
 import baaahs.Logger
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import kotlin.jvm.Synchronized
 import kotlin.math.min
 
 class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
@@ -37,6 +38,7 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
         return FragmentingUdpSocket(wrappedLink.listenUdp(port, object : Network.UdpListener {
             private var incompleteCount = 0
 
+            @Synchronized
             override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
                 // reassemble fragmented payloads...
                 val reader = ByteArrayReader(bytes)
@@ -103,6 +105,7 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
         }))
     }
 
+    @Synchronized
     private fun removeMessageId(messageId: Short): List<Fragment> {
         val myFragments = arrayListOf<Fragment>()
 

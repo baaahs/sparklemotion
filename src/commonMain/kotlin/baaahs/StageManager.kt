@@ -16,8 +16,7 @@ import baaahs.show.Show
 import baaahs.show.Surfaces
 import baaahs.show.buildEmptyShow
 import com.soywiz.klock.DateTime
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
@@ -107,7 +106,7 @@ class StageManager(
     }
 
     private fun updateRunningShowPath(file: Fs.File?) {
-        CoroutineScope(Dispatchers.Main).launch {
+        GlobalScope.launch {
             storage.updateConfig {
                 copy(runningShowPath = file?.fullPath)
             }
@@ -166,38 +165,34 @@ class StageManager(
             }
         }
 
-        private fun handleNewShow(command: NewShowCommand) {
+        private suspend fun handleNewShow(command: NewShowCommand) {
             switchTo(command.template ?: buildEmptyShow())
         }
 
-        private fun handleSwitchToShow(file: Fs.File?) {
-            CoroutineScope(Dispatchers.Main).launch {
-                if (file != null) {
-                    switchTo(storage.loadShow(file), file = file, isUnsaved = false)
-                } else {
-                    switchTo(null, null, null)
-                }
-                notifyOfShowChanges()
+        private suspend fun handleSwitchToShow(file: Fs.File?) {
+            if (file != null) {
+                switchTo(storage.loadShow(file), file = file, isUnsaved = false)
+            } else {
+                switchTo(null, null, null)
             }
+            notifyOfShowChanges()
         }
 
-        private fun handleSaveShow() {
+        private suspend fun handleSaveShow() {
             showFile?.let { showFile ->
                 show?.let { show -> saveShow(showFile, show) }
             }
         }
 
-        private fun handleSaveAsShow(showAsFile: Fs.File) {
+        private suspend fun handleSaveAsShow(showAsFile: Fs.File) {
             show?.let { show -> saveShow(showAsFile, show) }
         }
 
-        private fun saveShow(file: Fs.File, show: Show) {
-            CoroutineScope(Dispatchers.Main).launch {
-                storage.saveShow(file, show)
-                showFile = file
-                showIsUnsaved = false
-                notifyOfShowChanges()
-            }
+        private suspend fun saveShow(file: Fs.File, show: Show) {
+            storage.saveShow(file, show)
+            showFile = file
+            showIsUnsaved = false
+            notifyOfShowChanges()
         }
 
         fun getShowEditState(): ShowEditorState? {

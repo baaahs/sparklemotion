@@ -206,7 +206,7 @@ class LinkedPatch(
             component.appendDeclaratoryLines(buf)
         }
 
-        buf.append("\n#line -1\n")
+        buf.append("\n#line 10001\n")
         buf.append("void main() {\n")
         components.forEach { component ->
             buf.append("  ", component.invokeAndSetResultGlsl(), "; // ${component.title}\n")

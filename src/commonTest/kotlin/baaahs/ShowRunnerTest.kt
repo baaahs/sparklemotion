@@ -13,6 +13,7 @@ import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
+import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
@@ -21,9 +22,10 @@ import kotlin.test.expect
 
 @InternalCoroutinesApi
 class ShowRunnerTest {
+    private val testCoroutineContext = TestCoroutineContext("network")
     private val network = TestNetwork(0)
     private val serverNetwork = network.link("test")
-    private val server = PubSub.listen(serverNetwork.startHttpServer(1234))
+    private val server = PubSub.listen(serverNetwork.startHttpServer(1234), testCoroutineContext)
 
     private val fs = FakeFs()
     private val movingHeadManager = MovingHeadManager(fs, server, emptyList())

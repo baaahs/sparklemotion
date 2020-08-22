@@ -3,6 +3,8 @@ package baaahs
 import baaahs.gadgets.Slider
 import baaahs.net.Network
 import baaahs.net.TestNetwork
+import ext.TestCoroutineContext
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.json
@@ -11,17 +13,20 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.expect
 
+@InternalCoroutinesApi
 class GadgetManagerTest {
     lateinit var httpServer: Network.HttpServer
+    private lateinit var testCoroutineContext: TestCoroutineContext
 
     @BeforeTest
     fun setUp() {
         httpServer = TestNetwork().link("test").startHttpServer(1234)
+        testCoroutineContext = TestCoroutineContext("network")
     }
 
     @Test
     fun forInitialGadgets_sync_shouldSyncGadgetsAndState() {
-        val pubSub = PubSub.Server(httpServer)
+        val pubSub = PubSub.Server(httpServer, testCoroutineContext)
         val gadgetManager = GadgetManager(pubSub)
 
         val first = Slider("first")
@@ -47,7 +52,7 @@ class GadgetManagerTest {
 
     @Test
     fun forDifferentGadgets_sync_shouldSyncGadgetsAndState() {
-        val pubSub = PubSub.Server(httpServer)
+        val pubSub = PubSub.Server(httpServer, testCoroutineContext)
         val gadgetManager = GadgetManager(pubSub)
 
         val firstA = Slider("first")
@@ -80,7 +85,7 @@ class GadgetManagerTest {
 
     @Test
     fun forSameGadgetsWithDifferentState_sync_shouldSyncOnlyGadgetState() {
-        val pubSub = PubSub.Server(httpServer)
+        val pubSub = PubSub.Server(httpServer, testCoroutineContext)
         val gadgetManager = GadgetManager(pubSub)
 
         val firstA = Slider("first")
