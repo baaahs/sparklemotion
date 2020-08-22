@@ -49,7 +49,9 @@ abstract class BaseShowPlayer(
     override val dataSources: List<DataSource> get() = dataFeeds.keys.toList()
 
     override fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed {
-        return dataFeeds.getOrPut(dataSource) { dataSource.createFeed(this, id) }
+        return dataFeeds.getOrPut(dataSource) {
+            dataSource.createFeed(this, plugins, id)
+        }
     }
 
     override fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed {

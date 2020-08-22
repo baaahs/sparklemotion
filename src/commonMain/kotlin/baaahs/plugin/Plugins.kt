@@ -2,6 +2,7 @@ package baaahs.plugin
 
 import baaahs.Gadget
 import baaahs.Logger
+import baaahs.getBang
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.show.Control
@@ -66,8 +67,13 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
         return findPlugin(inputPort.pluginRef ?: error("no plugin specified")).resolveDataSource(inputPort)
     }
 
-    fun suggestDataSources(inputPort: InputPort, suggestedContentTypes: Set<ContentType> = emptySet()): List<DataSource> {
-        return byPackage.values.map { plugin -> plugin.suggestDataSources(inputPort, suggestedContentTypes) }.flatten()
+    fun suggestDataSources(
+        inputPort: InputPort,
+        suggestedContentTypes: Set<ContentType> = emptySet()
+    ): List<DataSource> {
+        return byPackage.values.map { plugin ->
+            plugin.suggestDataSources(inputPort, suggestedContentTypes)
+        }.flatten()
     }
 
     // name would be in form:
@@ -112,6 +118,14 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
         TODO("not implemented")
     }
 
+    operator fun plus(plugin: Plugin): Plugins {
+        return Plugins(byPackage + (plugin.packageName to plugin))
+    }
+
+    fun find(packageName: String): Plugin {
+        return byPackage.getBang(packageName, "package")
+    }
+
     companion object {
         val default = "baaahs.Core"
         private val plugins = Plugins(
@@ -121,10 +135,6 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
 
         fun safe(): Plugins {
             return Plugins(mapOf(default to CorePlugin()))
-        }
-
-        fun findAll(): Plugins {
-            return plugins
         }
 
         private val logger = Logger("Plugins")

@@ -11,7 +11,7 @@ import react.useContext
 val WebClientWindow = xComponent<AppIndexProps>("WebClientWindow") { props_DO_NOT_USE ->
     val contextState = useContext(store).state
     val simulator = contextState.simulator
-    val webClient = memo() {
+    val webClient = memo {
         with(simulator) {
             WebClient(network, pinkyAddress, plugins)
         }
