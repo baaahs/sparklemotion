@@ -90,7 +90,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
 
                     tdCell {
                         b { +inputPort.title }
-                        code { +" (${inputPort.type})" }
+                        code { +" (${inputPort.type.glslLiteral})" }
                     }
                 }
             }
