@@ -33,7 +33,7 @@ class StageManager(
     modelInfo: ModelInfo
 ) : BaseShowPlayer(plugins, modelInfo) {
     val facade = Facade()
-    private val autoWirer = AutoWirer(Plugins.findAll())
+    private val autoWirer = AutoWirer(plugins)
     override val glContext: GlContext
         get() = modelRenderer.gl
     private val showStateChannel = pubSub.publish(Topics.showState, null) { showState ->

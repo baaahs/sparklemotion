@@ -56,4 +56,9 @@ class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShad
         unresolvedShaderInstances.forEach { it.acceptSymbolicChannelLinks() }
         return this
     }
+
+    fun takeFirstIfAmbiguous(): UnresolvedPatch {
+        unresolvedShaderInstances.forEach { it.takeFirstIfAmbiguous() }
+        return this
+    }
 }

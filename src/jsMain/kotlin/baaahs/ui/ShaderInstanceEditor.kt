@@ -39,6 +39,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                 val shader = it.previewShaderBuilder.shader
                 val wiringGuess = appContext.autoWirer.autoWire(shader)
                     .acceptSymbolicChannelLinks()
+                    .takeFirstIfAmbiguous()
                     .resolve()
                 // TODO Improve on this.
                 val editingIncomingLinks = props.mutableShaderInstance.incomingLinks
@@ -57,7 +58,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
     val selectedPatch = props.mutablePatch
     val shaderInstance = props.mutableShaderInstance
-    val shaderChannels = props.shaderChannels + shaderInstance.shaderChannel!!
+    val shaderChannels = props.shaderChannels + shaderInstance.shaderChannel
 
     styledDiv {
         css.display = Display.grid

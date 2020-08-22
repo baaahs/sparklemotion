@@ -262,7 +262,7 @@ class ModelRendererTest {
             .resolve()
             .openForPreview(autoWirer)!!
             .compile(glContext) { id, dataSource ->
-            dataSource.createFeed(fakeShowPlayer, id)
+            dataSource.createFeed(fakeShowPlayer, autoWirer.plugins, id)
         }
     }
 

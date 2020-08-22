@@ -7,6 +7,7 @@ import baaahs.gl.GlBase
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.net.Network
+import baaahs.plugin.BeatLinkPlugin
 import baaahs.plugin.Plugins
 import baaahs.proto.Ports
 import baaahs.show.Show
@@ -22,7 +23,7 @@ import react.createElement
 class WebClient(
     network: Network,
     pinkyAddress: Network.Address,
-    private val plugins: Plugins = Plugins.findAll()
+    private val plugins: Plugins = Plugins.safe() + BeatLinkPlugin(BeatSource.None, JsClock())
 ) : HostedWebApp {
     private val facade = Facade()
 
