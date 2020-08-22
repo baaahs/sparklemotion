@@ -81,7 +81,7 @@ class Pinky(
 
     private val serverNotices = arrayListOf<ServerNotice>()
     private val serverNoticesChannel = pubSub.publish(Topics.serverNotices, serverNotices) {
-        CoroutineScope(pinkyJob).launch {
+        launch {
             serverNotices.clear()
             serverNotices.addAll(it)
         }
@@ -104,7 +104,6 @@ class Pinky(
             val daemonJobs = launchDaemonJobs()
 
             startupJobs.join()
-            isStartedUp = true
 
             if (simulateBrains) addSimulatedBrains()
 
@@ -157,10 +156,14 @@ class Pinky(
 
     internal suspend fun launchStartupJobs(): Job {
         return CoroutineScope(coroutineContext).launch {
-            launch { firmwareDaddy.start() }
-            launch { movingHeadManager.start() }
-            launch { mappingResults = storage.loadMappingData(model) }
-            launch { loadConfig() }
+            CoroutineScope(coroutineContext).launch {
+                launch { firmwareDaddy.start() }
+                launch { movingHeadManager.start() }
+                launch { mappingResults = storage.loadMappingData(model) }
+                launch { loadConfig() }
+            }.join()
+
+            isStartedUp = true
         }
     }
 
