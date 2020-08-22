@@ -10,6 +10,7 @@ import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
 import baaahs.mapper.MappingResults
 import baaahs.mapper.PinkyMapperHandlers
+import baaahs.mapper.SessionMappingResults
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.net.FragmentingUdpLink
@@ -21,6 +22,7 @@ import baaahs.show.Show
 import baaahs.util.Framerate
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
+import kotlin.coroutines.CoroutineContext
 
 class Pinky(
     val model: Model<*>,
@@ -34,11 +36,10 @@ class Pinky(
     private val switchShowAfterIdleSeconds: Int? = 600,
     private val adjustShowAfterIdleSeconds: Int? = null,
     modelRenderer: ModelRenderer,
-    val plugins: Plugins = Plugins.findAll()
-) : Network.UdpListener {
+    val plugins: Plugins = Plugins.findAll(),
+    val pinkyMainDispatcher: CoroutineDispatcher
+) : CoroutineScope, Network.UdpListener {
     val facade = Facade()
-    private val scope = CoroutineScope(Job() + Dispatchers.Main)
-
     private val storage = Storage(fs, plugins)
     private lateinit var mappingResults: MappingResults
 
@@ -47,10 +48,15 @@ class Pinky(
 
     private val beatDisplayer = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
-    private val pubSub: PubSub.Server = PubSub.Server(httpServer)
+
+    private val pinkyJob = SupervisorJob()
+    override val coroutineContext: CoroutineContext = pinkyMainDispatcher + pinkyJob
+
+    private val pubSub: PubSub.Server = PubSub.Server(httpServer, coroutineContext)
 //    private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
     internal val surfaceManager = SurfaceManager(modelRenderer)
+
     var stageManager: StageManager = StageManager(
         plugins, modelRenderer, pubSub, storage, surfaceManager, dmxUniverse, movingHeadManager, clock, model
     )
@@ -75,39 +81,50 @@ class Pinky(
 
     private val serverNotices = arrayListOf<ServerNotice>()
     private val serverNoticesChannel = pubSub.publish(Topics.serverNotices, serverNotices) {
-        serverNotices.clear()
-        serverNotices.addAll(it)
+        launch {
+            serverNotices.clear()
+            serverNotices.addAll(it)
+        }
     }
 
     init {
         httpServer.listenWebSocket("/ws/api") {
-            WebSocketRouter { PinkyMapperHandlers(storage).register(this) }
+            WebSocketRouter(coroutineContext) { PinkyMapperHandlers(storage).register(this) }
         }
 
         httpServer.listenWebSocket("/ws/visualizer") { ListeningVisualizer() }
     }
 
-    suspend fun start() {
-        val startupJobs = launchStartupJobs()
-        scope.launch { beatDisplayer.run() }
-        scope.launch {
-            while (true) {
-                if (mapperIsRunning) {
-                    logger.info { "Mapping ${brainInfos.size} brains..." }
-                } else {
-                    logger.info { "Sending to ${brainInfos.size} brains..." }
-                }
-                delay(10000)
-            }
+    private var isStartedUp = false
+    private var keepRunning = true
+
+    suspend fun startAndRun(simulateBrains: Boolean = false) {
+        withContext(coroutineContext) {
+            val startupJobs = launchStartupJobs()
+            val daemonJobs = launchDaemonJobs()
+
+            startupJobs.join()
+
+            if (simulateBrains) addSimulatedBrains()
+
+            run()
+            daemonJobs.cancelAndJoin()
         }
+    }
 
-        startupJobs.join()
-
-        scope.launch { run() }
+    fun addSimulatedBrains() {
+        val fakeAddress = object : Network.Address {}
+        val mappingInfos = (mappingResults as SessionMappingResults).brainData
+        mappingInfos.forEach { (brainId, info) ->
+            foundBrain(
+                fakeAddress, BrainHelloMessage(brainId.uuid, info.surface.name, null, null),
+                isSimulatedBrain = true
+            )
+        }
     }
 
     private suspend fun run() {
-        while (true) {
+        while (keepRunning) {
             if (mapperIsRunning) {
                 disableDmx()
                 delay(50)
@@ -138,11 +155,32 @@ class Pinky(
     }
 
     internal suspend fun launchStartupJobs(): Job {
-        return coroutineScope {
-            launch { firmwareDaddy.start() }
-            launch { movingHeadManager.start() }
-            launch { mappingResults = storage.loadMappingData(model) }
-            launch { loadConfig() }
+        return CoroutineScope(coroutineContext).launch {
+            CoroutineScope(coroutineContext).launch {
+                launch { firmwareDaddy.start() }
+                launch { movingHeadManager.start() }
+                launch { mappingResults = storage.loadMappingData(model) }
+                launch { loadConfig() }
+            }.join()
+
+            isStartedUp = true
+        }
+    }
+
+    private suspend fun launchDaemonJobs(): Job {
+        return CoroutineScope(coroutineContext).launch {
+            launch { beatDisplayer.run() }
+
+            launch {
+                while (true) {
+                    if (mapperIsRunning) {
+                        logger.info { "Mapping ${brainInfos.size} brains..." }
+                    } else {
+                        logger.info { "Sending to ${brainInfos.size} brains..." }
+                    }
+                    delay(10000)
+                }
+            }
         }
     }
 
@@ -206,6 +244,8 @@ class Pinky(
     }
 
     override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+        if (!isStartedUp) return
+
         val message = parse(bytes)
         when (message) {
             is BrainHelloMessage -> foundBrain(fromAddress, message)
@@ -219,7 +259,8 @@ class Pinky(
 
     private fun foundBrain(
         brainAddress: Network.Address,
-        msg: BrainHelloMessage
+        msg: BrainHelloMessage,
+        isSimulatedBrain: Boolean = false
     ) {
         val brainId = BrainId(msg.brainId)
         val surfaceName = msg.surfaceName
@@ -283,7 +324,8 @@ class Pinky(
         val sendFn: (BrainShader.Buffer) -> Unit = { shaderBuffer ->
             val message = BrainShaderMessage(shaderBuffer.brainShader, shaderBuffer).toBytes()
             try {
-                udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
+                if (!isSimulatedBrain)
+                    udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
             } catch (e: Exception) {
                 // Couldn't send to Brain? Schedule to remove it.
                 val brainInfo = brainInfos[brainId]!!
@@ -307,6 +349,8 @@ class Pinky(
                     pixelBuffer.colors[i] = pixels[i]
                 }
                 sendFn(pixelBuffer)
+
+                updateListeningVisualizers(surface, pixelBuffer.colors)
             }
         }
 
@@ -401,7 +445,7 @@ class Pinky(
         }
     }
 
-    private fun updateListeningVisualizers(surface: Surface, colors: MutableList<Color>) {
+    private fun updateListeningVisualizers(surface: Surface, colors: List<Color>) {
         if (listeningVisualizers.isNotEmpty()) {
             listeningVisualizers.forEach {
                 it.sendFrame(surface, colors)

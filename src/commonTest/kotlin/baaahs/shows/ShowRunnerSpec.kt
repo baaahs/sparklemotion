@@ -23,6 +23,8 @@ import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
 import com.danielgergely.kgl.*
+import ext.TestCoroutineContext
+import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.dsl.GroupBody
 import org.spekframework.spek2.dsl.Skip
@@ -31,6 +33,7 @@ import org.spekframework.spek2.style.specification.Suite
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
 
+@InternalCoroutinesApi
 @Suppress("unused")
 object ShowRunnerSpec : Spek({
     describe<ShowRunner> {
@@ -56,7 +59,8 @@ object ShowRunnerSpec : Spek({
                 }
             }.build(ShowBuilder())
         }
-        val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0)) }
+        val testCoroutineContext by value { TestCoroutineContext("Test") }
+        val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0), testCoroutineContext) }
         val glslRenderer by value { ModelRenderer(fakeGlslContext, ModelInfo.Empty) }
         val surfaceManager by value { SurfaceManager(glslRenderer) }
         val stageManager by value {

@@ -3,8 +3,7 @@ package baaahs.ui
 import baaahs.app.ui.appContext
 import baaahs.io.Fs
 import baaahs.ui.Styles.fileDialogFileList
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -40,7 +39,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
     val fsRoot = appContext.webClient.fsRoot
         ?: return@xComponent // Too early to render, so bail.
 
-    val scope = memo { CoroutineScope(Dispatchers.Main) }
+    val scope = memo { GlobalScope }
     val dialogEl = useRef(null)
     var currentDir by state { fsRoot }
     var filesInDir by state { emptyList<Fs.File>() }
@@ -48,7 +47,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
 
     onChange("default target", props.defaultTarget) {
         props.defaultTarget?.let {
-            val job = CoroutineScope(Dispatchers.Main).launch {
+            val job = scope.launch {
                 currentDir = if (it.isDir()) it else it.parent!!
             }
             withCleanup {

@@ -132,7 +132,7 @@ object FilterShaderSpec : Spek({
                         }
 
 
-                        #line -1
+                        #line 10001
                         void main() {
                           p0_solidBlue_mainImage(p0_solidBluei_result, sm_FragCoord.xy); // Solid Blue
                           p1_solidRed_mainImage(p1_solidRedi_result, sm_FragCoord.xy); // Solid Red

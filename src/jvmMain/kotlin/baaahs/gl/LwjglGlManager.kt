@@ -36,7 +36,6 @@ class LwjglGlManager : GlManager() {
                 return fn()
             } finally {
                 if (--nestLevel == 0) {
-                    logger.info { "CONTEXT OUT $this" }
                     GLFW.glfwMakeContextCurrent(0)
                 }
             }

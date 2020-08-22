@@ -10,14 +10,13 @@ import baaahs.sim.FakeDmxUniverse
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
-import io.ktor.application.install
-import io.ktor.features.CallLogging
+import io.ktor.application.*
+import io.ktor.features.*
 import io.ktor.http.content.*
-import io.ktor.routing.route
-import io.ktor.routing.routing
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import io.ktor.routing.*
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.FileNotFoundException
 import java.nio.file.FileSystems
@@ -25,14 +24,17 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
+@ObsoleteCoroutinesApi
 fun main(args: Array<String>) {
     mainBody(PinkyMain::class.simpleName) {
         PinkyMain(ArgParser(args).parseInto(PinkyMain::Args)).run()
     }
 }
 
+@ObsoleteCoroutinesApi
 class PinkyMain(private val args: Args) {
     private val logger = Logger("PinkyMain")
+    private val pinkyMainDispatcher = newSingleThreadContext("Pinky Main")
 
     fun run() {
         logger.info { "Are you pondering what I'm pondering?" }
@@ -62,14 +64,17 @@ class PinkyMain(private val args: Args) {
         val soundAnalyzer = JvmSoundAnalyzer()
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
-        val glslContext = GlBase.manager.createContext()
-        val glslRenderer = ModelRenderer(glslContext, model)
-        val pinky = Pinky(
-            model, network, dmxUniverse, beatSource, SystemClock(), fs,
-            daddy, soundAnalyzer, switchShowAfterIdleSeconds = args.switchShowAfter,
-            adjustShowAfterIdleSeconds = args.adjustShowAfter,
-            modelRenderer = glslRenderer
-        )
+        val pinky = runBlocking(pinkyMainDispatcher) {
+            val glslContext = GlBase.manager.createContext()
+            val glslRenderer = ModelRenderer(glslContext, model)
+            Pinky(
+                model, network, dmxUniverse, beatSource, SystemClock(), fs,
+                daddy, soundAnalyzer, switchShowAfterIdleSeconds = args.switchShowAfter,
+                adjustShowAfterIdleSeconds = args.adjustShowAfter,
+                modelRenderer = glslRenderer,
+                pinkyMainDispatcher = pinkyMainDispatcher
+            )
+        }
 
         val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
         val resource = Pinky::class.java.classLoader.getResource("baaahs")!!
@@ -117,10 +122,6 @@ class PinkyMain(private val args: Args) {
             }
         }
 
-        GlobalScope.launch {
-            pinky.start()
-        }
-
         val responses = listOf(
             "I think so, Brain, but Lederhosen won't stretch that far.",
             "Yeah, but I thought Madonna already had a steady bloke!",
@@ -130,8 +131,8 @@ class PinkyMain(private val args: Args) {
         )
         logger.info { responses.random() }
 
-        doRunBlocking {
-            delay(200000L)
+        runBlocking(pinkyMainDispatcher) {
+            pinky.startAndRun(simulateBrains = args.simulateBrains)
         }
     }
 
@@ -179,5 +180,7 @@ class PinkyMain(private val args: Args) {
             .default<Int?>(null)
 
         val enableBeatLink by parser.flagging("Enable beat detection").default(true)
+
+        val simulateBrains by parser.flagging("Simulate connected brains").default(false)
     }
 }

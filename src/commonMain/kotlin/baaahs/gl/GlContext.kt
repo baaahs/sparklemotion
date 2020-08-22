@@ -11,6 +11,7 @@ abstract class GlContext(
     val glslVersion: String,
     var checkForErrors: Boolean = false
 ) {
+    init { logger.debug { "Created ${this::class.simpleName}" } }
     abstract fun <T> runInContext(fn: () -> T): T
 
     private var viewport: List<Int> = emptyList()

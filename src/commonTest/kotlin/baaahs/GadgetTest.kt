@@ -38,7 +38,7 @@ class GadgetTest {
 
     @Test
     fun testClientServerIntegration() {
-        val pubSubServer = PubSub.listen(serverLink.startHttpServer(1234))
+        val pubSubServer = PubSub.listen(serverLink.startHttpServer(1234), testCoroutineContext)
         val gadgetManager = GadgetManager(pubSubServer)
         val serverSlider = Slider("fader", .1234f)
         gadgetManager.sync(listOf("fader" to serverSlider))

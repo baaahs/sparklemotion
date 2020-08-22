@@ -15,7 +15,9 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonElementSerializer
 import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.SerializersModule
+import kotlin.coroutines.CoroutineContext
 import kotlin.js.JsName
+import kotlin.jvm.Synchronized
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -24,8 +26,8 @@ abstract class PubSub {
     companion object {
         val verbose = true
 
-        fun listen(httpServer: Network.HttpServer): Server {
-            return Server(httpServer)
+        fun listen(httpServer: Network.HttpServer, coroutineContext: CoroutineContext): Server {
+            return Server(httpServer, coroutineContext)
         }
 
         fun connect(networkLink: Network.Link, address: Network.Address, port: Int): Client {
@@ -84,7 +86,7 @@ abstract class PubSub {
 
     class TopicInfo<T>(private val topic: Topic<T>) {
         val name: String get() = topic.name
-        lateinit var jsonValue: JsonElement private set
+        internal lateinit var jsonValue: JsonElement private set
 
         private val listeners: MutableList<Listener> = mutableListOf()
         internal val listeners_TEST_ONLY: MutableList<Listener> get() = listeners
@@ -102,9 +104,18 @@ abstract class PubSub {
         fun notify(s: String, origin: Origin) = notify(json.parseJson(s), origin)
 
         private fun notify(newData: JsonElement, origin: Origin) {
-            if (!this::jsonValue.isInitialized || newData != jsonValue) {
+            maybeUpdateValueAndGetListeners(newData).forEach { listener ->
+                listener.onUpdate(newData, origin)
+            }
+        }
+
+        @Synchronized
+        private fun maybeUpdateValueAndGetListeners(newData: JsonElement): List<Listener> {
+            return if (!this::jsonValue.isInitialized || newData != jsonValue) {
                 jsonValue = newData
-                listeners.forEach { listener -> listener.onUpdate(newData, origin) }
+                listeners.toList()
+            } else {
+                emptyList()
             }
         }
 
@@ -119,6 +130,7 @@ abstract class PubSub {
 
         fun stringify(jsonElement: JsonElement): String = json.stringify(JsonElementSerializer, jsonElement)
 
+        @Synchronized
         fun addListener(listener: Listener) {
             listeners.add(listener)
             if (this::jsonValue.isInitialized) {
@@ -126,13 +138,16 @@ abstract class PubSub {
             }
         }
 
+        @Synchronized
         fun removeListener(listener: Listener) {
             listeners.remove(listener)
         }
 
         // If only the server listener remains, effectively no listeners.
+        @Synchronized
         fun noRemainingListeners(): Boolean = listeners.all { it.isServerListener }
 
+        @Synchronized
         fun removeListeners(block: (Listener) -> Boolean) {
             listeners.removeAll(block)
         }
@@ -142,19 +157,51 @@ abstract class PubSub {
         fun send(command: C)
     }
 
-    class Topics : MutableMap<String, TopicInfo<*>> by hashMapOf()
+    class Topics {
+        private val map = hashMapOf<String, TopicInfo<*>>()
+
+        @Synchronized
+        operator fun get(topicName: String): TopicInfo<*>? = map[topicName]
+
+        @Synchronized
+        fun find(topicName: String): TopicInfo<*> = map.getBang(topicName, "topic")
+
+        @Synchronized
+        fun <T> getOrPut(topicName: String, function: () -> TopicInfo<T>): TopicInfo<*> {
+            return map.getOrPut(topicName, function)
+        }
+
+        @Synchronized
+        private fun values() = map.values.toList()
+
+        fun forEach(function: (TopicInfo<*>) -> Unit) {
+            values().forEach(function)
+        }
+    }
+
     class CommandChannels {
         private val serverChannels: MutableMap<String, Server.ServerCommandChannel<*, *>> = hashMapOf()
         private val clientChannels: MutableMap<String, Client.ClientCommandChannel<*, *>> = hashMapOf()
 
+        @Synchronized
         fun hasServerChannel(name: String) = serverChannels.containsKey(name)
+
+        @Synchronized
         fun getServerChannel(name: String) = serverChannels.getBang(name, "command channel")
+
+        @Synchronized
         fun putServerChannel(name: String, channel: Server.ServerCommandChannel<*, *>) {
             serverChannels[name] = channel
         }
 
+
+        @Synchronized
         fun hasClientChannel(name: String) = clientChannels.containsKey(name)
+
+        @Synchronized
         fun getClientChannel(name: String) = clientChannels.getBang(name, "command channel")
+
+        @Synchronized
         fun putClientChannel(name: String, channel: Client.ClientCommandChannel<*, *>) {
             clientChannels[name] = channel
         }
@@ -168,7 +215,7 @@ abstract class PubSub {
         var isConnected: Boolean = false
 
         private var connection: Network.TcpConnection? = null
-        private val cleanup: MutableList<() -> Unit> = mutableListOf()
+        private val cleanups = Cleanups()
 
         override fun connected(tcpConnection: Network.TcpConnection) {
             debug("connection $name established")
@@ -188,25 +235,25 @@ abstract class PubSub {
             when (val command = reader.readString()) {
                 "sub" -> {
                     val topicName = reader.readString()
-                    val topicInfo = topics[topicName] ?: throw IllegalArgumentException("Unknown topic $topicName")
+                    val topicInfo = topics.find(topicName)
 
                     val listener = ClientListener(topicInfo, tcpConnection)
                     topicInfo.addListener(listener)
-                    cleanup.add {
-                        topicInfo.removeListener(listener)
-                    }
+                    cleanups.add { topicInfo.removeListener(listener) }
                 }
 
                 "unsub" -> {
                     val topicName = reader.readString()
-                    val topicInfo = getTopic(topicName)
+                    val topicInfo = topics.find(topicName)
 
                     topicInfo.removeListeners { it is ClientListener && it.tcpConnection === tcpConnection }
                 }
 
                 "update" -> {
                     val topicName = reader.readString()
-                    getTopic(topicName).notify(reader.readString(), this)
+                    val topicInfo = topics.find(topicName)
+
+                    topicInfo.notify(reader.readString(), this)
                 }
 
                 "command" -> {
@@ -226,8 +273,6 @@ abstract class PubSub {
                 }
             }
         }
-
-        private fun getTopic(topicName: String) = topics.getBang(topicName, "topic")
 
         fun sendTopicUpdate(topicInfo: TopicInfo<*>, data: JsonElement) {
             if (isConnected) {
@@ -300,7 +345,7 @@ abstract class PubSub {
         override fun reset(tcpConnection: Network.TcpConnection) {
             logger.info { "PubSub client $name disconnected." }
             isConnected = false
-            cleanup.forEach { it.invoke() }
+            cleanups.invokeAll()
         }
 
         private fun sendMessage(bytes: ByteArray) {
@@ -320,7 +365,7 @@ abstract class PubSub {
         }
     }
 
-    class Server(httpServer: Network.HttpServer) : Endpoint() {
+    class Server(httpServer: Network.HttpServer, private val handlerContext: CoroutineContext) : Endpoint() {
         private val publisher = Origin("Server")
         private val topics: Topics = Topics()
         private val commandChannels = CommandChannels()
@@ -337,7 +382,9 @@ abstract class PubSub {
 
             @Suppress("UNCHECKED_CAST")
             val topicInfo = topics.getOrPut(topicName) { TopicInfo(topic) } as TopicInfo<T>
-            val listener = PublisherListener(topicInfo, publisher, onUpdate)
+            val listener = PublisherListener(topicInfo, publisher) {
+                CoroutineScope(handlerContext).launch { onUpdate(it) }
+            }
             topicInfo.addListener(listener)
             topicInfo.notify(data, publisher)
 
@@ -358,11 +405,15 @@ abstract class PubSub {
 
         fun <C, R> listenOnCommandChannel(
             commandPort: CommandPort<C, R>,
-            callback: (command: C, reply: (R) -> Unit) -> Unit
+            callback: suspend (command: C, reply: (R) -> Unit) -> Unit
         ) {
             val name = commandPort.name
             if (commandChannels.hasServerChannel(name)) error("Command channel $name already exists.")
-            commandChannels.putServerChannel(name, ServerCommandChannel(commandPort, callback))
+            commandChannels.putServerChannel(name, ServerCommandChannel(commandPort) { command, reply ->
+                CoroutineScope(handlerContext).launch {
+                    callback(command, reply)
+                }
+            })
         }
 
         fun <T> state(topic: Topic<T>, initialValue: T, callback: (T) -> Unit = {}): ReadWriteProperty<Any, T> {
@@ -429,7 +480,7 @@ abstract class PubSub {
                     super.connected(tcpConnection)
 
                     // If any topics were subscribed to before this connection was established, send the sub command now.
-                    topics.values.forEach { topicInfo -> sendTopicSub(topicInfo) }
+                    topics.forEach { topicInfo -> sendTopicSub(topicInfo) }
 
                     notifyChangeListeners()
                 }
@@ -561,6 +612,19 @@ abstract class PubSub {
             fun receiveReply(replyJson: String) {
                 replyCallback.invoke(commandPort.replyFromJson(replyJson))
             }
+        }
+    }
+
+    private class Cleanups {
+        private val cleanups = mutableListOf<() -> Unit>()
+
+        @Synchronized
+        fun add(cleanup: () -> Unit) { cleanups.add(cleanup) }
+
+        @Synchronized
+        fun invokeAll() {
+            cleanups.forEach { it.invoke() }
+            cleanups.clear()
         }
     }
 }
