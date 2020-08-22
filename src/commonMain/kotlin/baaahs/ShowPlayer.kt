@@ -50,7 +50,7 @@ abstract class BaseShowPlayer(
 
     override fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed {
         return dataFeeds.getOrPut(dataSource) {
-            dataSource.createFeed(this, plugins.find(dataSource.pluginPackage), id)
+            dataSource.createFeed(this, plugins, id)
         }
     }
 
