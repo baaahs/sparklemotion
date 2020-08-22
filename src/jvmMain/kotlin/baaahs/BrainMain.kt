@@ -25,7 +25,7 @@ fun main(args: Array<String>) {
 
 class BrainMain(private val args: Args) {
     fun run() {
-        val model = Pluggables.loadModel(args.modelName)
+        val model = Pluggables.loadModel(args.model)
 
         val network = JvmNetwork()
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
@@ -50,7 +50,7 @@ class BrainMain(private val args: Args) {
     }
 
     class Args(parser: ArgParser) {
-        val modelName by parser.storing("model").default(Pluggables.defaultModel)
+        val model by parser.storing("model").default(Pluggables.defaultModel)
         val brainId by parser.storing("brain ID").default<String?>(null)
         val surfaceName by parser.storing("surface name").default<String?>(null)
         val anonymous by parser.flagging("anonymous surface").default(false)
