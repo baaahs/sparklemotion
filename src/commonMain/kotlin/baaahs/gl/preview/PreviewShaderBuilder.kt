@@ -63,7 +63,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
                 }
             }
             compile(gl) { id, dataSource ->
-                dataSource.createFeed(showPlayer, autoWirer.plugins.find(dataSource.pluginPackage), id)
+                dataSource.createFeed(showPlayer, autoWirer.plugins, id)
             }
         }
     }

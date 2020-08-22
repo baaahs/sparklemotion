@@ -35,7 +35,7 @@ class FakeShowPlayer(
     }
 
     override fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed =
-        dataFeeds.getOrPut(dataSource) { dataSource.createFeed(this, plugins.find(dataSource.pluginPackage), id) }
+        dataFeeds.getOrPut(dataSource) { dataSource.createFeed(this, plugins, id) }
 
     override fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed =
         dataFeeds.getBang(dataSource, "datafeed")
