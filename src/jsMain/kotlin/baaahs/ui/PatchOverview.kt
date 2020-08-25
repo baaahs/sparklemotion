@@ -53,6 +53,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
                     // TODO: Something better than this.
                     val resolved = unresolvedPatch
                         .acceptSymbolicChannelLinks()
+                        .takeFirstIfAmbiguous()
                         .resolve()
                         .mutableShaderInstances[0]
                     incomingLinks.putAll(resolved.incomingLinks)
