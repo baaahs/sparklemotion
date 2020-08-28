@@ -1,13 +1,15 @@
 package baaahs.gl.patch
 
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.MutablePort
+import baaahs.show.ShaderChannelSourcePort
+import baaahs.show.SourcePort
 import baaahs.show.mutable.MutableShader
-import baaahs.show.mutable.MutableShaderChannel
+import baaahs.show.mutable.MutableShaderChannelSourcePort
+import baaahs.show.mutable.MutableSourcePort
 
 class UnresolvedShaderInstance(
     val mutableShader: MutableShader,
-    val incomingLinksOptions: Map<String, MutableSet<MutablePort>>,
+    val incomingLinksOptions: Map<String, MutableSet<SourcePortOption>>,
     var shaderChannel: ShaderChannel = ShaderChannel.Main,
     var priority: Float
 ) {
@@ -24,7 +26,9 @@ class UnresolvedShaderInstance(
 
     fun acceptSymbolicChannelLinks() {
         incomingLinksOptions.values.forEach { options ->
-            val shaderChannelOptions = options.filterIsInstance<MutableShaderChannel>()
+            val shaderChannelOptions = options.filter {
+                it is ResolvedSourcePortOption && it.sourcePort is MutableShaderChannelSourcePort
+            }
             if (options.size > 1 && shaderChannelOptions.size == 1) {
                 options.clear()
                 options.add(shaderChannelOptions.first())
@@ -47,4 +51,31 @@ class UnresolvedShaderInstance(
             }
         }
     }
+}
+
+interface SourcePortOption {
+    val origin: Origin
+    fun displayName(): String
+
+    companion object {
+        val defaultOrder = compareByDescending<SourcePortOption> { it.origin.priority }
+    }
+
+    enum class Origin(val priority: Float) {
+        HUH(1f)
+    }
+}
+
+class ResolvedSourcePortOption(val sourcePort: MutableSourcePort) : SourcePortOption {
+    override val origin: SourcePortOption.Origin
+        get() = SourcePortOption.Origin.HUH
+
+    override fun displayName() = sourcePort.displayName()
+}
+
+class UnresolvedInstanceSourcePortOption(val unresolvedShaderInstance: UnresolvedShaderInstance) : SourcePortOption {
+    override val origin: SourcePortOption.Origin
+        get() = SourcePortOption.Origin.HUH
+
+    override fun displayName() = unresolvedShaderInstance.mutableShader.title
 }

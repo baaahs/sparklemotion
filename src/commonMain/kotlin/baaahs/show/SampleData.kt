@@ -3,6 +3,7 @@ package baaahs.show
 import baaahs.Color
 import baaahs.getBang
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.patch.ResolvedSourcePortOption
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
@@ -185,13 +186,13 @@ object SampleData {
             }
             addPatchSet("Checkerboard") {
                 addPatch(wireUp(Shaders.checkerboard, mapOf(
-                    "checkerboardSize" to MutableDataSource(checkerboardSize)
+                    "checkerboardSize" to MutableDataSourceSourcePort(checkerboardSize)
                 )))
                 addControl("Patches", checkerboardSize.buildControl()!!)
             }
             addPatchSet("Wobbly Checkerboard") {
                 addPatch(wireUp(Shaders.checkerboard, mapOf(
-                    "checkerboardSize" to MutableDataSource(checkerboardSize)
+                    "checkerboardSize" to MutableDataSourceSourcePort(checkerboardSize)
                 )))
                 addPatch(wireUp(Shaders.ripple))
                 addControl("Patches", checkerboardSize.buildControl()!!)
@@ -218,13 +219,13 @@ object SampleData {
         addControl("More Controls", saturation.buildControl()!!)
     }.getShow()
 
-    private fun wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {
+    private fun wireUp(shader: Shader, ports: Map<String, MutableSourcePort> = emptyMap()): MutablePatch {
         val unresolvedPatch = autoWirer.autoWire(shader)
         unresolvedPatch.editShader(shader).apply {
             ports.forEach { (portId, port) ->
                 incomingLinksOptions.getBang(portId, "port").apply {
                     clear()
-                    add(port)
+                    add(ResolvedSourcePortOption(port))
                 }
             }
         }

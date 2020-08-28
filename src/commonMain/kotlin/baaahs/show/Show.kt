@@ -1,3 +1,10 @@
+@file:ContextualSerialization(
+    Control::class,
+    DataSource::class,
+    Shader::class,
+    ShaderInstance::class
+)
+
 package baaahs.show
 
 import baaahs.ShowState
@@ -5,51 +12,48 @@ import baaahs.Surface
 import baaahs.camelize
 import baaahs.plugin.Plugins
 import baaahs.show.mutable.*
+import baaahs.util.CanonicalizeReferables
+import baaahs.util.CanonicalizeReferables.*
+import baaahs.util.ReferableWithIdImpl
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.modules.SerialModule
-import kotlinx.serialization.modules.SerialModuleCollector
-import kotlin.reflect.KClass
 
 @Serializable
 data class Show(
     override val title: String,
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
-    override val controlLayout: Map<String, List<String>> = emptyMap(),
+    override val controlLayout: Map<String, List<Control>> = emptyMap(),
     val scenes: List<Scene> = emptyList(),
-    val layouts: Layouts = Layouts(),
-    val shaders: Map<String, Shader> = emptyMap(),
-    val shaderInstances: Map<String, ShaderInstance> = emptyMap(),
-    val controls: Map<String, Control>  = emptyMap(),
-    val dataSources: Map<String, DataSource> = emptyMap()
+    val layouts: Layouts = Layouts() //,
+//    val shaders: Map<String, Shader> = emptyMap(),
+//    val shaderInstances: Map<String, ShaderInstance> = emptyMap(),
+//    val controls: Map<String, Control>  = emptyMap(),
+//    val dataSources: Map<String, DataSource> = emptyMap()
 ) : PatchHolder {
     fun toJson(plugins: Plugins): JsonElement {
-        return plugins.json.toJson(serializer(), this)
+        return plugins.json.toJson(canonicalizingSerializer, this)
     }
 
     fun defaultShowState() = ShowState.forShow(this)
 
     companion object {
+        val canonicalizingSerializer = CanonicalizeReferables(
+            serializer(), "Canonicalize Show", listOf(
+                ReferenceType("shaders", Shader::class, Shader.serializer()),
+                ReferenceType("shaderInstances", ShaderInstance::class, ShaderInstance.serializer()),
+                ReferenceType("controls", Control::class, Control.serialModule),
+                ReferenceType("dataSources", DataSource::class, DataSource.serialModule)
+            )
+        )
+
         fun fromJson(plugins: Plugins, s: String): Show {
-            val json = Json(JsonConfiguration.Stable, context = ShowSerialModule(plugins.serialModule))
-            return json.parse(serializer(), s)
+            val json = Json(JsonConfiguration.Stable)
+            return json.parse(canonicalizingSerializer, s)
         }
-    }
-}
-
-class ShowSerialModule(private val delegate: SerialModule) : SerialModule by delegate {
-    override fun dumpTo(collector: SerialModuleCollector) {
-        println("dumpTo($collector)")
-        delegate.dumpTo(collector)
-    }
-
-    override fun <T : Any> getContextual(kclass: KClass<T>): KSerializer<T>? {
-        println("getContextual($kclass)")
-        return delegate.getContextual(kclass)
     }
 }
 
@@ -58,7 +62,7 @@ data class Scene(
     override val title: String,
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
-    override val controlLayout: Map<String, List<String>> = emptyMap(),
+    override val controlLayout: Map<String, List<Control>> = emptyMap(),
     val patchSets: List<PatchSet> = emptyList()
 ) : PatchHolder
 
@@ -67,29 +71,20 @@ data class PatchSet(
     override val title: String,
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
-    override val controlLayout: Map<String, List<String>> = emptyMap()
+    override val controlLayout: Map<String, List<Control>> = emptyMap()
 ) : PatchHolder
 
 @Serializable
 data class Patch(
-    val shaderInstanceIds: List<String>,
+    val shaderInstances: List<ShaderInstance>,
     val surfaces: Surfaces
-) {
-    companion object {
-        fun from(mutablePatch: MutablePatch, showBuilder: ShowBuilder): Patch {
-            return Patch(
-                mutablePatch.mutableShaderInstances.map { showBuilder.idFor(it.build(showBuilder)) },
-                mutablePatch.surfaces
-            )
-        }
-    }
-}
+)
 
 @Serializable
 data class EventBinding(
     val inputType: String,
     val inputData: JsonElement,
-    val target: DataSourceRef
+    val target: DataSourceSourcePort
 )
 
 @Serializable
@@ -122,26 +117,27 @@ data class Shader(
     val type: ShaderType,
     /**language=glsl*/
     val src: String
-) {
-    fun suggestId(): String = title.camelize()
+) : ReferableWithIdImpl() {
+    override fun suggestId(): String = title.camelize()
 }
 
 @Serializable
 data class ShaderInstance(
-    val shaderId: String,
-    val incomingLinks: Map<String, PortRef>,
+    val shader: Shader,
+    val incomingLinks: Map<String, SourcePort>,
     val shaderChannel: ShaderChannel = ShaderChannel.Main,
     val priority: Float = 0f
-) {
+) : ReferableWithIdImpl() {
 
-    fun findDataSourceRefs(): List<DataSourceRef> {
-        return incomingLinks.values.filterIsInstance<DataSourceRef>()
+    fun findDataSourceRefs(): List<DataSourceSourcePort> {
+        return incomingLinks.values.filterIsInstance<DataSourceSourcePort>()
     }
 
     companion object {
-        fun from(mutableShaderInstance: MutableShaderInstance, showBuilder: ShowBuilder): ShaderInstance {
-            return mutableShaderInstance.build(showBuilder)
-        }
+        val defaultOrder = compareBy<ShaderInstance>(
+            { it.shader.type.priority },
+            { it.shader.title }
+        )
     }
 }
 

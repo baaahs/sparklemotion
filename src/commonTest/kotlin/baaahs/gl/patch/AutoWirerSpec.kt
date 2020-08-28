@@ -8,9 +8,9 @@ import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
-import baaahs.show.mutable.MutableDataSource
+import baaahs.show.mutable.MutableDataSourceSourcePort
 import baaahs.show.mutable.MutableShader
-import baaahs.show.mutable.MutableShaderChannel
+import baaahs.show.mutable.MutableShaderChannelSourcePort
 import baaahs.show.mutable.MutableShaderInstance
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -52,18 +52,12 @@ object AutoWirerSpec : Spek({
                         MutableShaderInstance(
                             MutableShader(paintShader),
                             hashMapOf(
-                                "time" to MutableDataSource(CorePlugin.TimeDataSource()),
-                                "blueness" to MutableDataSource(
-                                    CorePlugin.SliderDataSource(
-                                        "Blueness",
-                                        1f,
-                                        0f,
-                                        1f,
-                                        null
-                                    )
+                                "time" to MutableDataSourceSourcePort(CorePlugin.TimeDataSource()),
+                                "blueness" to MutableDataSourceSourcePort(
+                                    CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
                                 ),
-                                "resolution" to MutableDataSource(CorePlugin.ResolutionDataSource()),
-                                "gl_FragCoord" to MutableShaderChannel(ShaderChannel.Main)
+                                "resolution" to MutableDataSourceSourcePort(CorePlugin.ResolutionDataSource()),
+                                "gl_FragCoord" to MutableShaderChannelSourcePort(ShaderChannel.Main)
                             ),
                             shaderChannel = ShaderChannel.Main,
                             priority = 0f
@@ -84,28 +78,22 @@ object AutoWirerSpec : Spek({
                             MutableShaderInstance(
                                 MutableShader(paintShader),
                                 hashMapOf(
-                                    "time" to MutableDataSource(CorePlugin.TimeDataSource()),
-                                    "resolution" to MutableDataSource(CorePlugin.ResolutionDataSource()),
-                                    "blueness" to MutableDataSource(
-                                        CorePlugin.SliderDataSource(
-                                            "Blueness",
-                                            1f,
-                                            0f,
-                                            1f,
-                                            null
-                                        )
+                                    "time" to MutableDataSourceSourcePort(CorePlugin.TimeDataSource()),
+                                    "resolution" to MutableDataSourceSourcePort(CorePlugin.ResolutionDataSource()),
+                                    "blueness" to MutableDataSourceSourcePort(
+                                        CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
                                     ),
-                                    "gl_FragCoord" to MutableShaderChannel(ShaderChannel.Main)
+                                    "gl_FragCoord" to MutableShaderChannelSourcePort(ShaderChannel.Main)
                                 ),
                                 shaderChannel = ShaderChannel.Main
                             ),
                             uvShaderInst.apply {
                                 incomingLinks.putAll(
                                     mapOf(
-                                        "pixelCoordsTexture" to MutableDataSource(
+                                        "pixelCoordsTexture" to MutableDataSourceSourcePort(
                                             CorePlugin.PixelCoordsTextureDataSource()
                                         ),
-                                        "modelInfo" to MutableDataSource(
+                                        "modelInfo" to MutableDataSourceSourcePort(
                                             CorePlugin.ModelInfoDataSource()
                                         )
                                     )
@@ -136,7 +124,7 @@ object AutoWirerSpec : Spek({
                             MutableShaderInstance(
                                 MutableShader(filterShader),
                                 hashMapOf(
-                                    "brightness" to MutableDataSource(
+                                    "brightness" to MutableDataSourceSourcePort(
                                         CorePlugin.SliderDataSource(
                                             "Brightness",
                                             1f,
@@ -145,7 +133,7 @@ object AutoWirerSpec : Spek({
                                             null
                                         )
                                     ),
-                                    "gl_FragColor" to MutableShaderChannel(ShaderChannel.Main)
+                                    "gl_FragColor" to MutableShaderChannelSourcePort(ShaderChannel.Main)
                                 ),
                                 shaderChannel = ShaderChannel.Main
                             )
@@ -173,7 +161,7 @@ object AutoWirerSpec : Spek({
                             MutableShaderInstance(
                                 MutableShader(filterShader),
                                 hashMapOf(
-                                    "gl_FragCoord" to MutableShaderChannel(ShaderChannel.Main)
+                                    "gl_FragCoord" to MutableShaderChannelSourcePort(ShaderChannel.Main)
                                 ),
                                 shaderChannel = ShaderChannel.Main
                             )

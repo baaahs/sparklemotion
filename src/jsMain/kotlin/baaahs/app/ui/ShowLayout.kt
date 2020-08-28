@@ -7,7 +7,6 @@ import baaahs.app.ui.controls.control
 import baaahs.show.Layout
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutablePatchHolder
-import baaahs.show.mutable.ShowBuilder
 import baaahs.ui.*
 import external.Direction
 import external.draggable
@@ -43,8 +42,6 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
             controlDisplay.release()
         }
     }
-
-    val showBuilder = ShowBuilder()
 
     val specialControlProps = jsObject<SpecialControlProps> {
         this.show = props.show

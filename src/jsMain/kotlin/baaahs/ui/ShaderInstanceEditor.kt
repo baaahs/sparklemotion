@@ -5,7 +5,6 @@ import baaahs.show.ShaderChannel
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
-import baaahs.show.mutable.ShowBuilder
 import baaahs.ui.preview.gadgetsPreview
 import kotlinx.css.*
 import kotlinx.html.js.onChangeFunction
@@ -67,8 +66,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
         div {
             linksEditor {
-                attrs.siblingMutableShaderInstances = selectedPatch.mutableShaderInstances
-                attrs.showBuilder = props.showBuilder
+                attrs.siblingShaderInstances = selectedPatch.mutableShaderInstances
                 attrs.mutableShaderInstance = shaderInstance
                 attrs.shaderChannels = shaderChannels
                 attrs.onChange = props.onChange
@@ -170,7 +168,6 @@ external interface ShaderInstanceEditorProps : RProps {
     var mutablePatch: MutablePatch
     var mutableShaderInstance: MutableShaderInstance
     var shaderChannels: Set<ShaderChannel>
-    var showBuilder: ShowBuilder
     var onChange: () -> Unit
 }
 

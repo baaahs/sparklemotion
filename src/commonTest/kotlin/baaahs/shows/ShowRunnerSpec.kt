@@ -14,14 +14,16 @@ import baaahs.model.ModelInfo
 import baaahs.model.MovingHead
 import baaahs.plugin.Plugins
 import baaahs.shaders.FakeSurface
+import baaahs.show.*
 import baaahs.show.Shader
-import baaahs.show.ShaderType
+import baaahs.show.live.ShowVisitor
+import baaahs.show.mutable.BuildContext
 import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
+import baaahs.util.UniqueIds
 import com.danielgergely.kgl.*
 import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -57,7 +59,7 @@ object ShowRunnerSpec : Spek({
                         addPatch(patch)
                     }
                 }
-            }.build(ShowBuilder())
+            }.build(BuildContext())
         }
         val testCoroutineContext by value { TestCoroutineContext("Test") }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0), testCoroutineContext) }
@@ -74,6 +76,7 @@ object ShowRunnerSpec : Spek({
         val fakeProgram by value { fakeGlslContext.programs[1] }
 
         beforeEachTest {
+            giveNiceNamesTo(show)
             stageManager.switchTo(show)
             surfaceManager.surfacesChanged(surfaces.map { FakeSurfaceReceiver(it) {} }, emptyList())
             stageManager.renderAndSendNextFrame()
@@ -96,8 +99,8 @@ object ShowRunnerSpec : Spek({
                 override(shaderSrc) {
                     /**language=glsl*/
                     """
-                    uniform vec4 color;
-                    void main() { gl_FragColor = color; }
+                        uniform vec4 color;
+                        void main() { gl_FragColor = color; }
                     """.trimIndent()
                 }
 
@@ -126,6 +129,9 @@ object ShowRunnerSpec : Spek({
         }
     }
 })
+
+fun giveNiceNamesTo(show: Show) {
+}
 
 class TestModel : Model<Model.Surface>() {
     override val name: String = "Test Model"

@@ -1,6 +1,7 @@
 package baaahs.util
 
 import baaahs.getBang
+import baaahs.randomId
 import kotlinx.serialization.Decoder
 import kotlinx.serialization.Encoder
 import kotlinx.serialization.KSerializer
@@ -12,6 +13,28 @@ import kotlin.reflect.KClass
 
 interface Referable {
     fun suggestId(): String? = null
+}
+
+interface ReferableWithId : Referable {
+    val id: String
+
+    fun setId(id: String)
+}
+
+open class ReferableWithIdImpl : ReferableWithId {
+    override val id: String
+        get() = if (::idInternal.isInitialized) {
+            idInternal
+        } else {
+            idInternal = randomId(suggestId() ?: "unknown")
+            idInternal
+        }
+
+    lateinit var idInternal: String
+
+    override fun setId(id: String) {
+        idInternal = id
+    }
 }
 
 class CanonicalizeReferables<T : Any>(
@@ -147,7 +170,11 @@ class CanonicalizeReferables<T : Any>(
         ) {
             @Suppress("UNCHECKED_CAST")
             val dictionary = getDictionary(dictionaries) as Dictionary<R>
-            dictionary.add(id, json.fromJson(serializer, jsonElement))
+            val referable = json.fromJson(serializer, jsonElement)
+            if (referable is ReferableWithId) {
+                referable.setId(id)
+            }
+            dictionary.add(id, referable)
         }
 
         private fun getDictionary(dictionaries: Map<String, Dictionary<*>>) =

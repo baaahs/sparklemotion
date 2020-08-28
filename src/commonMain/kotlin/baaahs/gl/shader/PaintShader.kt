@@ -5,7 +5,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
-import baaahs.show.ShaderOutPortRef
+import baaahs.show.ShaderOutSourcePort
 import baaahs.show.ShaderType
 
 abstract class PaintShader(
@@ -69,7 +69,7 @@ class ShaderToyPaintShader(
         ).associateBy { it.id }
 
         val outputPort: OutputPort =
-            OutputPort(GlslType.Vec4, ShaderOutPortRef.ReturnValue, "Output Color", ContentType.ColorStream)
+            OutputPort(GlslType.Vec4, ShaderOutSourcePort.ReturnValue, "Output Color", ContentType.ColorStream)
     }
 
     override val entryPointName: String

@@ -1,7 +1,9 @@
 package baaahs
 
+import baaahs.show.PatchHolder
+import baaahs.show.PatchSet
+import baaahs.show.Scene
 import baaahs.show.Show
-import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableShow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -16,7 +18,7 @@ data class ShowState(
     val selectedPatchSet: Int =
         if (selectedScene == -1) -1 else patchSetSelections[selectedScene]
 
-    fun findScene(show: OpenShow): OpenShow.OpenScene? {
+    fun findScene(show: Show): Scene? {
         if (selectedScene == -1) return null
 
         if (selectedScene >= show.scenes.size) {
@@ -31,7 +33,7 @@ data class ShowState(
         return mutableShow?.getMutableScene(selectedScene)
     }
 
-    fun findPatchSet(show: OpenShow): OpenShow.OpenScene.OpenPatchSet? {
+    fun findPatchSet(show: Show): PatchSet? {
         if (selectedPatchSet == -1) return null
 
         val scene = findScene(show) ?: return null
@@ -74,6 +76,13 @@ data class ShowState(
                 )
             }
         )
+    }
+
+    fun getActivePatchHolders(show: Show): List<PatchHolder> {
+        val patchHolders = arrayListOf<PatchHolder>(show)
+        findScene(show)?.let { patchHolders.add(it) }
+        findPatchSet(show)?.let { patchHolders.add(it) }
+        return patchHolders
     }
 
     companion object {

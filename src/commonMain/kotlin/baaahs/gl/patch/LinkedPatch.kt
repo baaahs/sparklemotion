@@ -1,46 +1,44 @@
 package baaahs.gl.patch
 
 import baaahs.Logger
+import baaahs.ShowPlayer
 import baaahs.Surface
 import baaahs.getBang
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.Resolver
-import baaahs.show.DataSource
-import baaahs.show.ShaderChannel
-import baaahs.show.Surfaces
-import baaahs.show.live.LiveShaderInstance
-import baaahs.show.live.LiveShaderInstance.*
-import baaahs.show.mutable.ShowBuilder
+import baaahs.gl.shader.OpenShader
+import baaahs.show.*
+import baaahs.show.live.OpenShaders
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 
 class LinkedPatch(
-    val shaderInstance: LiveShaderInstance,
-    val surfaces: Surfaces
+    shaderInstance: ShaderInstance,
+    val surfaces: Surfaces,
+    openShaders: OpenShaders
 ) {
-    private val dataSourceLinks: Set<DataSourceLink>
-    private val componentLookup: Map<LiveShaderInstance, Component>
+    private val dataSourceLinks: Set<DataSourceSourcePort>
+    private val componentLookup: Map<ShaderInstance, Component>
     private val components = arrayListOf<Component>()
 
     init {
-        val instanceNodes = hashMapOf<LiveShaderInstance, InstanceNode>()
-        val showBuilder = ShowBuilder()
-
-        fun traverseLinks(liveShaderInstance: LiveShaderInstance, depth: Int = 0): Set<DataSourceLink> {
-            instanceNodes.getOrPut(liveShaderInstance) {
-                val shaderShortName = showBuilder.idFor(liveShaderInstance.shader.shader)
-                InstanceNode(liveShaderInstance, shaderShortName)
+        val instanceNodes = hashMapOf<ShaderInstance, InstanceNode>()
+        fun traverseLinks(curShaderInstance: ShaderInstance, depth: Int = 0): Set<DataSourceSourcePort> {
+            instanceNodes.getOrPut(curShaderInstance) {
+                val shaderShortName = curShaderInstance.shader.id
+                InstanceNode(curShaderInstance, shaderShortName, openShaders.getOpenShader(curShaderInstance.shader))
             }.atDepth(depth)
 
-            val dataSourceLinks = hashSetOf<DataSourceLink>()
-            liveShaderInstance.incomingLinks.forEach { (_, link) ->
+            val dataSourceLinks = hashSetOf<DataSourceSourcePort>()
+            curShaderInstance.incomingLinks.forEach { (_, link) ->
                 when (link) {
-                    is DataSourceLink -> dataSourceLinks.add(link)
-                    is ShaderOutLink -> traverseLinks(link.shaderInstance, depth + 1)
+                    is DataSourceSourcePort -> dataSourceLinks.add(link)
+                    is ShaderOutSourcePort -> traverseLinks(link.shaderInstance, depth + 1)
                         .also { dataSourceLinks.addAll(it) }
+                    else -> {} // nothing
                 }
             }
             return dataSourceLinks
@@ -57,15 +55,17 @@ class LinkedPatch(
             .mapIndexed { index, instanceNode ->
                 val component = Component(index, instanceNode)
                 components.add(component)
-                instanceNode.liveShaderInstance to component
+                instanceNode.shaderInstance to component
             }.associate { it }
         componentsByChannel[ShaderChannel.Main]?.redirectOutputTo("sm_result")
     }
+    val rootNodeOpenShader = openShaders.getOpenShader(shaderInstance.shader)
 
 
     class InstanceNode(
-        val liveShaderInstance: LiveShaderInstance,
+        val shaderInstance: ShaderInstance,
         val shaderShortName: String,
+        val openShader: OpenShader,
         var maxDepth: Int = 0
     ) {
         fun atDepth(depth: Int) {
@@ -77,7 +77,8 @@ class LinkedPatch(
         val index: Int,
         val instanceNode: InstanceNode
     ) {
-        private val shaderInstance = instanceNode.liveShaderInstance
+        private val shaderInstance get() = instanceNode.shaderInstance
+        private val openShader get() = instanceNode.openShader
         val title: String get() = shaderInstance.shader.title
         private val prefix = "p$index"
         private val namespace = GlslCode.Namespace(prefix + "_" + instanceNode.shaderShortName)
@@ -90,10 +91,10 @@ class LinkedPatch(
 
             shaderInstance.incomingLinks.forEach { (toPortId, fromLink) ->
                 when (fromLink) {
-                    is ShaderOutLink -> {
+                    is ShaderOutSourcePort -> {
                         tmpPortMap[toPortId] = lazy {
                             val fromComponent = componentLookup.getBang(fromLink.shaderInstance, "shader")
-                            val outputPort = fromLink.shaderInstance.shader.outputPort
+                            val outputPort = fromComponent.openShader.outputPort
                             if (outputPort.isReturnValue()) {
                                 fromComponent.resultVar
                             } else {
@@ -101,26 +102,25 @@ class LinkedPatch(
                             }
                         }
                     }
-                    is DataSourceLink -> {
+                    is DataSourceSourcePort -> {
                         tmpPortMap[toPortId] = lazy {
-                            fromLink.dataSource.getVarName(fromLink.varName)
+                            fromLink.dataSource.getVarName(fromLink.dataSource.id)
                         }
                     }
-                    is ShaderChannelLink -> {
+                    is ShaderChannelSourcePort -> {
                         logger.warn { "Unexpected unresolved $fromLink for $toPortId" }
                     }
-                    is ConstLink -> {
+                    is ConstSourcePort -> {
                         tmpPortMap[toPortId] = lazy {
                             "(" + fromLink.glsl + ")"
                         }
                     }
-                    is NoOpLink -> {
-                    }
+                    is NoOpSourcePort -> {} // No-op.
                 }
             }
 
             var usesReturnValue = false
-            val outputPort = shaderInstance.shader.outputPort
+            val outputPort = openShader.outputPort
             if (outputPort.isReturnValue()) {
                 usesReturnValue = true
                 resultVar = namespace.internalQualify("result")
@@ -138,7 +138,7 @@ class LinkedPatch(
 
         private val resolvedPortMap by lazy {
             portMap.mapValues { (_, v) -> v.value } +
-                    mapOf(shaderInstance.shader.outputPort.id to outputVar)
+                    mapOf(openShader.outputPort.id to outputVar)
         }
 
         fun redirectOutputTo(varName: String) {
@@ -147,7 +147,7 @@ class LinkedPatch(
         }
 
         fun appendStructs(buf: StringBuilder) {
-            shaderInstance.shader.glslCode.structs.forEach { struct ->
+            openShader.glslCode.structs.forEach { struct ->
                 // TODO: we really ought to namespace structs, but that's not straightforward because
                 // multiple shaders might share a uniform input (e.g. ModelInfo).
 
@@ -159,8 +159,6 @@ class LinkedPatch(
         }
 
         fun appendDeclaratoryLines(buf: StringBuilder) {
-            val openShader = shaderInstance.shader
-
             buf.append("// Shader: ", openShader.title, "; namespace: ", prefix, "\n")
             buf.append("// ", openShader.title, "\n")
 
@@ -175,7 +173,7 @@ class LinkedPatch(
         }
 
         fun invokeAndSetResultGlsl(): String {
-            return shaderInstance.shader.invocationGlsl(namespace, resultVar, resolvedPortMap)
+            return openShader.invocationGlsl(namespace, resultVar, resolvedPortMap)
         }
     }
 
@@ -187,8 +185,8 @@ class LinkedPatch(
         buf.append("\n")
         buf.append("// SparkleMotion-generated GLSL\n")
         buf.append("\n")
-        with(shaderInstance.shader.outputPort) {
-            buf.append("layout(location = 0) out ${dataType.glslLiteral} sm_result;\n")
+        with(rootNodeOpenShader) {
+            buf.append("layout(location = 0) out ${outputPort.dataType.glslLiteral} sm_result;\n")
         }
         buf.append("\n")
 
@@ -196,9 +194,9 @@ class LinkedPatch(
             component.appendStructs(buf)
         }
 
-        dataSourceLinks.sortedBy { it.varName }.forEach { (dataSource, varName) ->
+        dataSourceLinks.sortedBy { it.dataSource.id }.forEach { (dataSource) ->
             if (!dataSource.isImplicit())
-                buf.append("uniform ${dataSource.getType().glslLiteral} ${dataSource.getVarName(varName)};\n")
+                buf.append("uniform ${dataSource.getType().glslLiteral} ${dataSource.getVarName(dataSource.id)};\n")
         }
         buf.append("\n")
 
@@ -223,19 +221,16 @@ class LinkedPatch(
     fun compile(glContext: GlContext, resolver: Resolver): GlslProgram =
         GlslProgram(glContext, this, resolver)
 
-    fun createProgram(
-        glContext: GlContext,
-        dataFeeds: Map<DataSource, GlslProgram.DataFeed>
-    ): GlslProgram {
-        return compile(glContext) { _, dataSource -> dataFeeds.getBang(dataSource, "data feed") }
+    fun createProgram(glContext: GlContext, showPlayer: ShowPlayer): GlslProgram {
+        return compile(glContext) { _, dataSource -> showPlayer.useDataFeed(dataSource) }
     }
 
     fun matches(surface: Surface): Boolean = this.surfaces.matches(surface)
 
     fun bind(glslProgram: GlslProgram, resolver: Resolver): List<GlslProgram.Binding> {
-        return dataSourceLinks.mapNotNull { (dataSource, id) ->
+        return dataSourceLinks.mapNotNull { (dataSource) ->
             if (dataSource.isImplicit()) return@mapNotNull null
-            val dataFeed = resolver.invoke(id, dataSource)
+            val dataFeed = resolver.invoke(dataSource.id, dataSource)
 
             if (dataFeed != null) {
                 val binding = dataFeed.bind(glslProgram)

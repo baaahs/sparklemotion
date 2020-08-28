@@ -1,11 +1,13 @@
 package baaahs.gl.patch
 
+import baaahs.getBang
 import baaahs.show.Shader
+import baaahs.show.ShaderOutSourcePort
 import baaahs.show.Surfaces
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
-import baaahs.show.mutable.MutableShaderOutPort
-import baaahs.unknown
+import baaahs.show.mutable.MutableShaderOutSourcePort
+import baaahs.show.mutable.MutableSourcePort
 
 class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShaderInstance>) {
     fun editShader(shader: Shader): UnresolvedShaderInstance {
@@ -25,31 +27,27 @@ class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShad
         }
 
         // First pass: create a shader instance editor for each shader.
-        val shaderInstances = unresolvedShaderInstances.associate {
-            it.mutableShader.build() to MutableShaderInstance(
-                it.mutableShader,
-                it.incomingLinksOptions.mapValues { (_, fromPortOptions) ->
-                    fromPortOptions.first()
-                }.toMutableMap(),
-                it.shaderChannel,
-                it.priority
-            )
+        val mutableShaderInstances = unresolvedShaderInstances.associate {
+            it to MutableShaderInstance(it.mutableShader, hashMapOf(), it.shaderChannel, it.priority)
         }
 
         // Second pass: resolve references between shaders to the correct instance editor.
-        shaderInstances.values.forEach { shaderInstance ->
-            shaderInstance.incomingLinks.forEach { (toPortId, fromPort) ->
-                if (fromPort is UnresolvedShaderOutPort) {
-                    val fromShader = fromPort.unresolvedShaderInstance.mutableShader.build()
-                    val fromShaderInstance = shaderInstances[fromShader]
-                        ?: error(unknown("shader instance editor", fromShader, shaderInstances.keys))
-                    shaderInstance.incomingLinks[toPortId] =
-                        MutableShaderOutPort(fromShaderInstance)
+        mutableShaderInstances.forEach { (unresolved, mutable) ->
+            unresolved.incomingLinksOptions.forEach { (toPortId, sourcePortOptions) ->
+                val sourcePortOption = sourcePortOptions.sortedWith(SourcePortOption.defaultOrder).first()
+                when (sourcePortOption) {
+                    is UnresolvedInstanceSourcePortOption -> {
+                        val otherShaderInstance = mutableShaderInstances.getBang(sourcePortOption.unresolvedShaderInstance, "shader instance")
+                        mutable.incomingLinks[toPortId] = MutableShaderOutSourcePort(otherShaderInstance)
+                    }
+                    is ResolvedSourcePortOption -> {
+                        mutable.incomingLinks[toPortId] = sourcePortOption.sourcePort
+                    }
                 }
             }
         }
 
-        return MutablePatch(shaderInstances.values.toList(), Surfaces.AllSurfaces)
+        return MutablePatch(mutableShaderInstances.values.toList(), Surfaces.AllSurfaces)
     }
 
     fun acceptSymbolicChannelLinks(): UnresolvedPatch {

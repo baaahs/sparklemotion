@@ -63,14 +63,14 @@ class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: ba
      */
     @Serializable
     @SerialName("baaahs.BeatLink:BeatLink")
-    data class BeatLinkDataSource(@Transient val `_`: Boolean = true) : DataSource {
+    data class BeatLinkDataSource(@Transient val `_`: Boolean = true) : CorePlugin.BaseDataSource() {
         companion object : DataSourceBuilder<BeatLinkDataSource> {
             override val resourceName: String get() = "BeatLink"
             override fun build(inputPort: InputPort): BeatLinkDataSource =
                 BeatLinkDataSource()
         }
 
-        override val pluginPackage: String get() = id
+        override val pluginPackage: String get() = BeatLinkPlugin.id
         override val dataSourceName: String get() = "BeatLink"
         override fun getType(): GlslType = GlslType.Float
 

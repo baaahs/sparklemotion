@@ -15,6 +15,7 @@ import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.mutable.MutableGadgetControl
+import baaahs.util.ReferableWithIdImpl
 import com.danielgergely.kgl.FloatBuffer
 import com.danielgergely.kgl.GL_FLOAT
 import com.danielgergely.kgl.GL_NEAREST
@@ -73,20 +74,22 @@ class CorePlugin : Plugin {
     }
 
 
+    abstract class BaseDataSource : DataSource, ReferableWithIdImpl()
+
     /**
      * Sparkle Motion always uses a resolution of (1, 1), except for previews, which
      * use [PreviewResolutionDataSource] instead.
      */
     @Serializable
     @SerialName("baaahs.Core:Resolution")
-    data class ResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource {
+    data class ResolutionDataSource(@Transient val `_`: Boolean = true) : BaseDataSource() {
         companion object : DataSourceBuilder<ResolutionDataSource> {
             override val resourceName: String get() = "Resolution"
             override fun build(inputPort: InputPort): ResolutionDataSource =
                 ResolutionDataSource()
         }
 
-        override val pluginPackage: String get() = id
+        override val pluginPackage: String get() = CorePlugin.id
         override val dataSourceName: String get() = "Resolution"
         override fun getType(): GlslType = GlslType.Vec2
 
@@ -101,14 +104,14 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:PreviewResolution")
-    data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource {
+    data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : BaseDataSource() {
         companion object : DataSourceBuilder<PreviewResolutionDataSource> {
             override val resourceName: String get() = "Preview Resolution"
             override fun build(inputPort: InputPort): PreviewResolutionDataSource =
                 PreviewResolutionDataSource()
         }
 
-        override val pluginPackage: String get() = id
+        override val pluginPackage: String get() = CorePlugin.id
         override val dataSourceName: String get() = "PreviewResolution"
         override fun getType(): GlslType = GlslType.Vec2
 
@@ -136,14 +139,14 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:Time")
-    data class TimeDataSource(@Transient val `_`: Boolean = true) : DataSource {
+    data class TimeDataSource(@Transient val `_`: Boolean = true) : BaseDataSource() {
         companion object : DataSourceBuilder<TimeDataSource> {
             override val resourceName: String get() = "Time"
             override fun build(inputPort: InputPort): TimeDataSource =
                 TimeDataSource()
         }
 
-        override val pluginPackage: String get() = id
+        override val pluginPackage: String get() = CorePlugin.id
         override val dataSourceName: String get() = "Time"
         override fun getType(): GlslType = GlslType.Float
 
@@ -159,14 +162,14 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:PixelCoordsTexture")
-    data class PixelCoordsTextureDataSource(@Transient val `_`: Boolean = true) : DataSource {
+    data class PixelCoordsTextureDataSource(@Transient val `_`: Boolean = true) : BaseDataSource() {
         companion object : DataSourceBuilder<PixelCoordsTextureDataSource> {
             override val resourceName: String get() = "PixelCoords"
             override fun build(inputPort: InputPort): PixelCoordsTextureDataSource =
                 PixelCoordsTextureDataSource()
         }
 
-        override val pluginPackage: String get() = id
+        override val pluginPackage: String get() = CorePlugin.id
         override val dataSourceName: String get() = "Pixel Coordinates Texture"
         override fun getType(): GlslType = GlslType.Sampler2D
         override fun suggestId(): String = "pixelCoordsTexture"
@@ -204,14 +207,14 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:ScreenUvCoord")
-    data class ScreenUvCoordDataSource(@Transient val `_`: Boolean = true) : DataSource {
+    data class ScreenUvCoordDataSource(@Transient val `_`: Boolean = true) : BaseDataSource() {
         companion object : DataSourceBuilder<ScreenUvCoordDataSource> {
             override val resourceName: String get() = "U/V Coordinate"
             override fun build(inputPort: InputPort): ScreenUvCoordDataSource =
                 ScreenUvCoordDataSource()
         }
 
-        override val pluginPackage: String get() = id
+        override val pluginPackage: String get() = CorePlugin.id
         override val dataSourceName: String get() = "U/V Coordinate"
         override fun getType(): GlslType = GlslType.Vec2
         override fun isImplicit(): Boolean = true
@@ -240,7 +243,7 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:ModelInfo")
-    data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource {
+    data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : BaseDataSource() {
         companion object : DataSourceBuilder<ModelInfoDataSource> {
             override val resourceName: String get() = "Model Info"
             private val modelInfoType = ContentType.ModelInfo.glslType
@@ -253,7 +256,7 @@ class CorePlugin : Plugin {
                 ModelInfoDataSource()
         }
 
-        override val pluginPackage: String get() = id
+        override val pluginPackage: String get() = CorePlugin.id
         override val dataSourceName: String get() = "Model Info"
         override fun getType(): GlslType = modelInfoType
         override fun getRenderType(): String? = null
@@ -327,7 +330,7 @@ class CorePlugin : Plugin {
         val minValue: Float,
         val maxValue: Float,
         val stepValue: Float?
-    ) : GadgetDataSource<Slider> {
+    ) : BaseDataSource(), GadgetDataSource<Slider> {
         companion object : DataSourceBuilder<SliderDataSource> {
             override val resourceName: String get() = "Slider"
 
@@ -346,7 +349,7 @@ class CorePlugin : Plugin {
             }
         }
 
-        override val pluginPackage: String get() = id
+        override val pluginPackage: String get() = CorePlugin.id
         override val dataSourceName: String get() = "$title $resourceName"
         override fun getType(): GlslType = GlslType.Float
         override fun getRenderType(): String? = "Slider"
@@ -365,7 +368,7 @@ class CorePlugin : Plugin {
     data class XyPadDataSource(
         val title: String,
         val varPrefix: String
-    ) : DataSource {
+    ) : BaseDataSource() {
         companion object : DataSourceBuilder<XyPadDataSource> {
             override val resourceName: String get() = "XyPad"
 
@@ -376,7 +379,7 @@ class CorePlugin : Plugin {
                 XyPadDataSource(inputPort.title, inputPort.suggestVarName())
         }
 
-        override val pluginPackage: String get() = id
+        override val pluginPackage: String get() = CorePlugin.id
         override val dataSourceName: String get() = "XY Pad"
         override fun getType(): GlslType = GlslType.Vec2
         override fun suggestId(): String = "$title XY Pad".camelize()
@@ -409,7 +412,7 @@ class CorePlugin : Plugin {
     data class ColorPickerDataSource(
         override val title: String,
         val initialValue: Color
-    ) : GadgetDataSource<ColorPicker> {
+    ) : BaseDataSource(), GadgetDataSource<ColorPicker> {
         companion object : DataSourceBuilder<ColorPickerDataSource> {
             override val resourceName: String get() = "ColorPicker"
 
@@ -426,7 +429,7 @@ class CorePlugin : Plugin {
             }
         }
 
-        override val pluginPackage: String get() = id
+        override val pluginPackage: String get() = CorePlugin.id
         override val dataSourceName: String get() = "$title ${SliderDataSource.resourceName}"
         override fun getType(): GlslType = GlslType.Vec4
         override fun getRenderType(): String? = "ColorPicker"
@@ -450,7 +453,7 @@ class CorePlugin : Plugin {
         override val title: String,
         val options: List<String>,
         val initialSelectionIndex: Int
-    ) : GadgetDataSource<RadioButtonStrip> {
+    ) : BaseDataSource(), GadgetDataSource<RadioButtonStrip> {
         companion object : DataSourceBuilder<RadioButtonStripDataSource> {
             override val resourceName: String get() = "Radio Button Strip"
 
@@ -475,7 +478,7 @@ class CorePlugin : Plugin {
             }
         }
 
-        override val pluginPackage: String get() = id
+        override val pluginPackage: String get() = CorePlugin.id
         override val dataSourceName: String get() = resourceName
         override fun getType(): GlslType = GlslType.Int
 
@@ -490,7 +493,7 @@ class CorePlugin : Plugin {
 
     @Serializable
     @SerialName("baaahs.Core:Image")
-    data class ImageDataSource(val title: String) : DataSource {
+    data class ImageDataSource(val title: String) : BaseDataSource() {
         companion object : DataSourceBuilder<ImageDataSource> {
             override val resourceName: String get() = "Image"
             override fun looksValid(inputPort: InputPort): Boolean =
@@ -500,7 +503,7 @@ class CorePlugin : Plugin {
                 ImageDataSource(inputPort.title)
         }
 
-        override val pluginPackage: String get() = id
+        override val pluginPackage: String get() = CorePlugin.id
         override val dataSourceName: String get() = "Image"
         override fun getType(): GlslType = GlslType.Sampler2D
         override fun suggestId(): String = "$title Image".camelize()

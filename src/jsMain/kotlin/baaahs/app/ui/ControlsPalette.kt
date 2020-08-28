@@ -4,7 +4,7 @@ import baaahs.app.ui.controls.ControlDisplay
 import baaahs.app.ui.controls.SpecialControlProps
 import baaahs.app.ui.controls.control
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.ShowBuilder
+import baaahs.show.mutable.BuildContext
 import baaahs.ui.*
 import external.Direction
 import external.draggable
@@ -27,7 +27,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
     val editModeStyle =
         if (props.editMode) Styles.editModeOn else Styles.editModeOff
 
-    val showBuilder = ShowBuilder()
+    val showBuilder = BuildContext()
 
     portal {
         Draggable {

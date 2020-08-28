@@ -14,9 +14,10 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
+import baaahs.show.ConstSourcePort
 import baaahs.show.Shader
 import baaahs.show.ShaderType
-import baaahs.show.mutable.MutableConstPort
+import baaahs.show.mutable.MutableConstSourcePort
 import baaahs.show.mutable.MutablePatch
 import baaahs.ui.Observable
 import kotlinx.coroutines.GlobalScope
@@ -95,7 +96,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
 
         try {
             val defaultPorts = mapOf(
-                ContentType.UvCoordinateStream to MutableConstPort(
+                ContentType.UvCoordinateStream to MutableConstSourcePort(
                     "gl_FragCoord"
                 )
             )

@@ -3,6 +3,7 @@
 package baaahs.util
 
 import baaahs.camelize
+import baaahs.plugin.Plugins
 import baaahs.util.CanonicalizeReferables.ReferenceType
 import describe
 import kotlinx.serialization.ContextualSerialization
@@ -37,7 +38,9 @@ object CanonicalizeReferablesSpec : Spek({
             )
         }
 
-        val jsonx by value { Json(JsonConfiguration.Stable.copy(prettyPrint = true)) }
+        val jsonx by value {
+            Json(JsonConfiguration.Stable.copy(prettyPrint = true), Plugins.safe().serialModule)
+        }
         val stringified by value { jsonx.stringify(canonicalizer, testData) }
         val roundTripJson by value { Json(JsonConfiguration.Stable).parseJson(stringified) }
         val roundTripObject by value { jsonx.parse(canonicalizer, stringified) }
@@ -92,6 +95,13 @@ object CanonicalizeReferablesSpec : Spek({
         it("deserializes to equivalent objects") {
             expect(testData) { roundTripObject }
         }
+
+        it("sets the id on ReferablesWithId when deserializing") {
+            expect(true, "Was #{testData.orders[0].items[0].item.id}") {
+                testData.orders[0].items[0].item.id.startsWith("pants-") }
+
+            expect("pants") { roundTripObject.orders[0].items[0].item.id }
+        }
     }
 })
 
@@ -108,6 +118,6 @@ private data class Address(val zip: String) : Referable
 private data class OrderItem(val item: Item, val count: Int)
 
 @Serializable
-private data class Item(val name: String, val size: String) : Referable {
+private data class Item(val name: String, val size: String) : ReferableWithIdImpl() {
     override fun suggestId(): String? = name.camelize()
 }

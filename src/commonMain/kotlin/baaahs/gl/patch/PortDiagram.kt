@@ -1,31 +1,30 @@
 package baaahs.gl.patch
 
 import baaahs.Logger
-import baaahs.show.ShaderChannel
-import baaahs.show.Surfaces
-import baaahs.show.live.LiveShaderInstance
-import baaahs.show.live.OpenPatch
+import baaahs.show.*
+import baaahs.show.live.OpenShaders
 import baaahs.show.mutable.MutablePatch
 
-class PortDiagram {
+class PortDiagram(private val openShaders: OpenShaders) {
     private var surfaces: Surfaces? = null
     private var level = 0
     private val mutablePatch = MutablePatch()
     private val candidates = hashMapOf<Pair<ShaderChannel, ContentType>, MutableList<ChannelEntry>>()
-    private val resolved = hashMapOf<Pair<ShaderChannel, ContentType>, LiveShaderInstance>()
+    private val resolved = hashMapOf<Pair<ShaderChannel, ContentType>, ShaderInstance>()
 
-    private fun addToChannel(shaderChannel: ShaderChannel, contentType: ContentType, shaderInstance: LiveShaderInstance, level: Int) {
+    private fun addToChannel(shaderChannel: ShaderChannel, contentType: ContentType, shaderInstance: ShaderInstance, level: Int) {
         candidates.getOrPut(shaderChannel to contentType) { arrayListOf() }
             .add(
                 ChannelEntry(
                     shaderInstance,
+                    openShaders.getOpenShader(shaderInstance.shader).shaderType,
                     shaderInstance.priority,
                     level
                 )
             )
     }
 
-    fun add(patch: OpenPatch) {
+    fun add(patch: Patch) {
         if (surfaces == null) {
             surfaces = patch.surfaces
             mutablePatch.surfaces = patch.surfaces
@@ -33,11 +32,10 @@ class PortDiagram {
             error("Surface mismatch: $surfaces != ${patch.surfaces}")
         }
 
-        patch.shaderInstances.forEach { liveShaderInstance ->
-            if (liveShaderInstance.shaderChannel != null) {
-                val outputPort = liveShaderInstance.shader.outputPort
-                addToChannel(liveShaderInstance.shaderChannel, outputPort.contentType, liveShaderInstance, level)
-            }
+        patch.shaderInstances.forEach { shaderInstance ->
+            val openShader = openShaders.getOpenShader(shaderInstance.shader)
+            val outputPort = openShader.outputPort
+            addToChannel(shaderInstance.shaderChannel, outputPort.contentType, shaderInstance, level)
         }
 
         level++
@@ -45,21 +43,21 @@ class PortDiagram {
 
     fun resolvePatch(shaderChannel: ShaderChannel, contentType: ContentType): LinkedPatch? {
         return Resolver().resolve(shaderChannel, contentType)
-            ?.let { LinkedPatch(it, surfaces!!) }
+            ?.let { LinkedPatch(it, surfaces!!, openShaders) }
     }
 
     inner class Resolver {
         private val channelIterators =
-            hashMapOf<Pair<ShaderChannel, ContentType>, Iterator<LiveShaderInstance>>()
+            hashMapOf<Pair<ShaderChannel, ContentType>, Iterator<ShaderInstance>>()
 
-        fun resolve(shaderChannel: ShaderChannel, contentType: ContentType): LiveShaderInstance? {
+        fun resolve(shaderChannel: ShaderChannel, contentType: ContentType): ShaderInstance? {
             return resolveNext(shaderChannel, contentType).also {
                 logger.debug { "Resolved $shaderChannel/$contentType to $it"}
                 if (it != null) resolved[shaderChannel to contentType] = it
             }
         }
 
-        private fun nextOf(shaderChannel: ShaderChannel, contentType: ContentType): LiveShaderInstance? {
+        private fun nextOf(shaderChannel: ShaderChannel, contentType: ContentType): ShaderInstance? {
             resolved[shaderChannel to contentType]?.let { return it }
 
             val iterator = channelIterators.getOrPut(shaderChannel to contentType) {
@@ -71,18 +69,19 @@ class PortDiagram {
                             .thenByDescending { it.shaderInstance.shader.title }
                     )
                     ?.map { it.shaderInstance }?.iterator()
-                    ?: emptyList<LiveShaderInstance>().iterator()
+                    ?: emptyList<ShaderInstance>().iterator()
             }
             return if (iterator.hasNext()) iterator.next() else null
         }
 
-        private fun resolveNext(shaderChannel: ShaderChannel, contentType: ContentType): LiveShaderInstance? {
+        private fun resolveNext(shaderChannel: ShaderChannel, contentType: ContentType): ShaderInstance? {
             val nextInstance = nextOf(shaderChannel, contentType)
             return nextInstance?.let { shaderInstance ->
-                LiveShaderInstance(
+                ShaderInstance(
                     shaderInstance.shader,
                     shaderInstance.incomingLinks.mapValues { (portId, link) ->
-                        link.finalResolve(shaderInstance.shader.findInputPort(portId), this)
+                        val inputPort = openShaders.getOpenShader(shaderInstance.shader).findInputPort(portId)
+                        link.finalResolve(inputPort, this)
                     },
                     shaderChannel,
                     shaderInstance.priority
@@ -91,8 +90,13 @@ class PortDiagram {
         }
     }
 
-    class ChannelEntry(val shaderInstance: LiveShaderInstance, val priority: Float, val level: Int) {
-        val typePriority: Int get() = shaderInstance.shader.shaderType.priority
+    class ChannelEntry(
+        val shaderInstance: ShaderInstance,
+        val shaderType: ShaderType,
+        val priority: Float,
+        val level: Int
+    ) {
+        val typePriority: Int get() = shaderType.priority
 
         override fun toString(): String {
             return "ChannelEntry(shaderInstance=${shaderInstance.shader.title}, priority=$priority, level=$level)"

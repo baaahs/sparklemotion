@@ -6,7 +6,7 @@ import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderOutPort
+import baaahs.show.mutable.MutableShaderOutSourcePort
 import baaahs.toBeSpecified
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -129,7 +129,7 @@ object OpenPatchSpec : Spek({
                             addShaderInstance(openShader.shader) {
                                 link(
                                     "gl_FragCoord",
-                                    MutableShaderOutPort(
+                                    MutableShaderOutSourcePort(
                                         findShaderInstanceFor(cylindricalProjection)
                                     )
                                 )

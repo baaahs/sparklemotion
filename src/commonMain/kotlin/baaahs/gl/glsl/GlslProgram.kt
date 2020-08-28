@@ -7,7 +7,6 @@ import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.ModelRenderer
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
-import baaahs.show.OutputPortRef
 import com.danielgergely.kgl.GL_LINK_STATUS
 import com.danielgergely.kgl.GL_TRUE
 
@@ -151,8 +150,6 @@ class GlslProgram(
 
     companion object {
         private val logger = Logger("GlslProgram")
-
-        val PixelColor = OutputPortRef("sm_result")
     }
 }
 

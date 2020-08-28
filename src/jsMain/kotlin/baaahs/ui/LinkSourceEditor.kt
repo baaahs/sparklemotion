@@ -3,7 +3,7 @@ package baaahs.ui
 import baaahs.app.ui.appContext
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.BeatLinkPlugin
-import baaahs.show.mutable.MutablePort
+import baaahs.show.mutable.MutableSourcePort
 import kotlinx.html.js.onChangeFunction
 import materialui.AddCircleOutline
 import materialui.Icon
@@ -50,7 +50,7 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isP
                 it.title.asTextNode()
             }
             attrs.onChangeFunction = handleChange
-            val selected = sourcePortOptions.find { it.matches(props.currentSourcePort) }
+            val selected = sourcePortOptions.find { it == props.currentSourceSourcePort }
             attrs.value = selected
             if (selected == null) {
                 this@xComponent.logger.warn { "Huh? None of the SourcePortOptions are active for ${props.inputPort.id}?" }
@@ -81,25 +81,23 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isP
 
 private object NoSourcePortOption : SourcePortOption {
     override val title: String get() = "Nothing"
-    override val portEditor: MutablePort get() = error("not implemented")
+    override val sourcePort: SourcePort get() = error("not implemented")
     override val groupName: String? get() = null
     override val icon: Icon get() = NotInterested
-    override fun matches(otherPort: MutablePort?): Boolean = otherPort == null
     override fun isAppropriateFor(inputPort: InputPort): Boolean = true
 }
 
 private object NewSourcePortOption : SourcePortOption {
     override val title: String get() = "Create New…"
-    override val portEditor: MutablePort get() = error("not implemented")
+    override val sourcePort: SourcePort get() = error("not implemented")
     override val groupName: String? get() = null
     override val icon: Icon get() = AddCircleOutline
-    override fun matches(otherPort: MutablePort?): Boolean = false
     override fun isAppropriateFor(inputPort: InputPort): Boolean = true
 }
 
 external interface LinkSourceEditorProps : RProps {
     var inputPort: InputPort
-    var currentSourcePort: MutablePort?
+    var currentSourceSourcePort: MutableSourcePort?
     var sourcePortOptions: List<SourcePortOption>
     var onChange: (SourcePortOption?) -> Unit
 }

@@ -9,10 +9,10 @@ import baaahs.gl.patch.ContentType
 import baaahs.glsl.Shaders
 import baaahs.plugin.Plugins
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.MutableConstPort
+import baaahs.show.mutable.MutableConstSourcePort
 import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderChannel
-import baaahs.show.mutable.MutableShaderOutPort
+import baaahs.show.mutable.MutableShaderChannelSourcePort
+import baaahs.show.mutable.MutableShaderOutSourcePort
 import baaahs.toBeSpecified
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -80,9 +80,9 @@ object FilterShaderSpec : Spek({
                         }
 
                         addShaderInstance(shader.shader) {
-                            link("gl_FragColor", MutableShaderOutPort(redInstance))
-                            link("otherColorStream", MutableShaderChannel(otherChannel))
-                            link("fade", MutableConstPort(".5"))
+                            link("gl_FragColor", MutableShaderOutSourcePort(redInstance))
+                            link("otherColorStream", MutableShaderChannelSourcePort(otherChannel))
+                            link("fade", MutableConstSourcePort(".5"))
                         }
                     }.openForPreview(autoWirer)
                 }

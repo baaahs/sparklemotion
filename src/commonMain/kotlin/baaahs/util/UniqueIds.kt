@@ -14,6 +14,12 @@ class UniqueIds<T> {
         return byId.get(id) ?: error(unknown(type, id, byId.keys))
     }
 
+    fun idFor(value: T): String {
+        if (value is ReferableWithId) {
+            return idFor(value) { value.suggestId() ?: "unknown" }
+        } else throw error("not ReferableWithId")
+    }
+
     fun idFor(value: T, suggest: () -> String): String {
         return toId.getOrPut(value) {
             val suggestedId = suggest()

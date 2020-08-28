@@ -89,7 +89,9 @@ class StageManager(
         isUnsaved: Boolean = file == null
     ) {
         val newShowRunner = newShow?.let {
-            ShowRunner(newShow, newShowState, openShow(newShow), clock, modelRenderer, surfaceManager, autoWirer)
+            val showContext = openShow(newShow)
+            ShowRunner(newShow, newShowState, showContext,
+                this, clock, modelRenderer, surfaceManager, autoWirer)
         }
 
         showRunner?.release()

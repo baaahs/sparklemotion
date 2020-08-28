@@ -3,8 +3,7 @@ package baaahs.ui
 import baaahs.app.ui.appContext
 import baaahs.englishize
 import baaahs.gl.shader.InputPort
-import baaahs.show.DataSource
-import baaahs.show.ShaderChannel
+import baaahs.show.*
 import baaahs.show.mutable.*
 import materialui.Icon
 import materialui.Input
@@ -30,9 +29,9 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
         .map { shaderChannel -> ShaderChannelOption(shaderChannel) }
 
     val shaderOptions =
-        props.siblingMutableShaderInstances
-            .minus(props.mutableShaderInstance)
-            .sortedWith(MutableShaderInstance.defaultOrder)
+        props.siblingShaderInstances
+            .filterNot { it.id == props.mutableShaderInstance.id }
+            .sortedWith(ShaderInstance.defaultOrder)
             .map { instance -> ShaderOption(instance) }
 
     val dataSourceOptions =
@@ -40,7 +39,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
             .sortedBy { it.dataSourceName }.map { dataSource -> DataSourceOption(dataSource) }
 
     val sourcePortOptions =
-        memo(props.siblingMutableShaderInstances, props.mutableShaderInstance, appContext.showPlayer.dataSources) {
+        memo(props.siblingShaderInstances, props.mutableShaderInstance, appContext.showPlayer.dataSources) {
             shaderChannelOptions + shaderOptions + dataSourceOptions
         }
 
@@ -57,7 +56,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                 if (sourcePortOption == null) {
                     incomingLinks.remove(inputPort.id)
                 } else {
-                    incomingLinks[inputPort.id] = sourcePortOption.portEditor
+                    incomingLinks[inputPort.id] = MutableSourcePort(sourcePortOption.sourcePort)
                 }
                 props.onChange()
                 this@xComponent.forceRender()
@@ -82,7 +81,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                     tdCell {
                         linkSourceEditor {
                             attrs.inputPort = inputPort
-                            attrs.currentSourcePort = currentSourcePort
+                            attrs.currentSourceSourcePort = currentSourcePort
                             attrs.sourcePortOptions = sourcePortOptions
                             attrs.onChange = handleSourceChange
                         }
@@ -101,22 +100,17 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
 
 interface SourcePortOption {
     val title: String
-    val portEditor: MutablePort
+    val sourcePort: SourcePort
     val groupName: String?
     val icon: Icon
-    fun matches(otherPort: MutablePort?): Boolean
     fun isAppropriateFor(inputPort: InputPort): Boolean
 }
 
 data class DataSourceOption(val dataSource: DataSource) : SourcePortOption {
     override val title: String get() = dataSource.dataSourceName
-    override val portEditor: MutablePort get() = MutableDataSource(dataSource)
+    override val sourcePort: SourcePort get() = DataSourceSourcePort(dataSource)
     override val groupName: String? get() = "Data Source:"
     override val icon: Icon get() = Input
-
-    override fun matches(otherPort: MutablePort?): Boolean {
-        return otherPort is MutableDataSource && otherPort.dataSource == dataSource
-    }
 
     override fun isAppropriateFor(inputPort: InputPort): Boolean {
         return dataSource.getType() == inputPort.type
@@ -125,41 +119,31 @@ data class DataSourceOption(val dataSource: DataSource) : SourcePortOption {
 
 data class ShaderChannelOption(val shaderChannel: ShaderChannel) : SourcePortOption {
     override val title: String get() = shaderChannel.id.englishize()
-    override val portEditor: MutablePort get() = MutableShaderChannel(shaderChannel)
+    override val sourcePort: SourcePort get() = ShaderChannelSourcePort(shaderChannel)
     override val groupName: String? get() = "Channel:"
     override val icon: Icon get() = PowerInput
-
-    override fun matches(otherPort: MutablePort?): Boolean {
-        return otherPort is MutableShaderChannel && otherPort.shaderChannel == shaderChannel
-    }
 
     override fun isAppropriateFor(inputPort: InputPort): Boolean {
         return true // We don't have any type info for channel links.
     }
 }
 
-data class ShaderOption(val mutableShaderInstance: MutableShaderInstance) : SourcePortOption {
-    override val title: String get() = mutableShaderInstance.mutableShader.title
-    override val portEditor: MutablePort get() = MutableShaderOutPort(mutableShaderInstance)
+data class ShaderOption(val shaderInstance: ShaderInstance) : SourcePortOption {
+    override val title: String get() = shaderInstance.shader.title
+    override val sourcePort: SourcePort get() = ShaderOutSourcePort(shaderInstance)
     override val groupName: String? get() = "Shader output from:"
-    override val icon: Icon get() = Icons.forShader(mutableShaderInstance.mutableShader.type)
-
-    override fun matches(otherPort: MutablePort?): Boolean {
-        return otherPort is MutableShaderOutPort &&
-                otherPort.mutableShaderInstance == mutableShaderInstance
-    }
+    override val icon: Icon get() = Icons.forShader(shaderInstance.shader.type)
 
     override fun isAppropriateFor(inputPort: InputPort): Boolean {
         return inputPort.type ==
-                mutableShaderInstance.mutableShader.type.resultContentType.glslType
+                shaderInstance.shader.type.resultContentType.glslType
     }
 }
 
 
 external interface LinksEditorProps : RProps {
-    var showBuilder: ShowBuilder
     var mutableShaderInstance: MutableShaderInstance
-    var siblingMutableShaderInstances: List<MutableShaderInstance>
+    var siblingShaderInstances: List<ShaderInstance>
     var shaderChannels: Set<ShaderChannel>
     var onChange: () -> Unit
 }

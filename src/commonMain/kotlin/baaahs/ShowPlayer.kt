@@ -10,7 +10,7 @@ import baaahs.plugin.Plugins
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.Show
-import baaahs.show.live.OpenShow
+import baaahs.show.live.ShowContext
 import baaahs.show.live.ShowOpener
 
 interface ShowPlayer {
@@ -32,7 +32,11 @@ interface ShowPlayer {
     }
     fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed
     fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed
-    fun openShow(show: Show): OpenShow = ShowOpener(GlslAnalyzer(plugins), show, this).openShow()
+    fun openShow(show: Show): ShowContext {
+        val showContext = ShowOpener(GlslAnalyzer(plugins), show)
+        showContext.allDataSources.forEach { openDataFeed(it.id, it) }
+        return showContext
+    }
 
     fun releaseUnused()
 }
@@ -55,7 +59,7 @@ abstract class BaseShowPlayer(
     }
 
     override fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed {
-        return dataFeeds[dataSource]!!
+        return dataFeeds.getBang(dataSource, "data feed")
     }
 
     override fun openShader(shader: Shader, addToCache: Boolean): OpenShader {

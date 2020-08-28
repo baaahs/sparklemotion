@@ -1,12 +1,10 @@
 package baaahs.ui
 
 import baaahs.app.ui.PatchHolderEditorHelpText
-import baaahs.app.ui.appContext
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShaderInstance
-import baaahs.show.mutable.ShowBuilder
 import baaahs.ui.misc.slidePanel
 import kotlinx.css.*
 import kotlinx.html.js.onChangeFunction
@@ -47,9 +45,6 @@ import styled.StyleSheet
 fun <T> Event.targetEl(): T = target as T
 
 val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") { props ->
-    val appContext = useContext(appContext)
-    val showBuilder by state { ShowBuilder() }
-
     val changed = props.mutablePatchHolder.isChanged()
 
     val handleTitleChange = useCallback(props.mutablePatchHolder) { event: Event ->
@@ -143,7 +138,6 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                 attrs.mutablePatch = selectedPatch!!
                 attrs.mutableShaderInstance = shaderInstance
                 attrs.shaderChannels = shaderChannels
-                attrs.showBuilder = showBuilder
                 attrs.onChange = handleChange
             }
         }

@@ -7,11 +7,9 @@ import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.show.Surfaces
 import baaahs.show.live.ShowOpener
+import baaahs.show.mutable.BuildContext
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.ShowBuilder
-import baaahs.shows.FakeGlContext
-import baaahs.shows.FakeShowPlayer
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -42,10 +40,8 @@ object PatchLayeringSpec : Spek({
                 "vec4 mainFilter(vec4 colorIn) { return colorIn; }")
         }
         val mutableShow by value { MutableShow("test show") }
-        val show by value {
-            val show = mutableShow.build(ShowBuilder())
-            ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer(FakeGlContext())).openShow()
-        }
+        val show by value { mutableShow.build(BuildContext()) }
+        val showContext by value { ShowOpener(autoWirer.glslAnalyzer, show) }
 
         context("with a show, scene, and patchset patch") {
             beforeEachTest {
@@ -64,7 +60,7 @@ object PatchLayeringSpec : Spek({
 
             it("merges layered patches into a single patch") {
                 val portDiagrams =
-                    autoWirer.merge(show, show.scenes[0], show.scenes[0].patchSets[0])
+                    autoWirer.merge(showContext, show, show.scenes[0], show.scenes[0].patchSets[0])
                 val portDiagram = portDiagrams[Surfaces.AllSurfaces]!!
                 val linkedPatch = portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)!!
                 expect(

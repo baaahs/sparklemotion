@@ -112,14 +112,6 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
     }
 }
 
-class CacheBuilder<K, V>(val createFn: (K) -> V) {
-    private val map = mutableMapOf<K, V>()
-
-    operator fun get(key: K): V {
-        return map.getOrPut(key) { createFn(key) }
-    }
-}
-
 external interface PatchOverviewProps : RProps {
     var mutablePatch: MutablePatch
     var onSelectShaderInstance: (MutableShaderInstance) -> Unit

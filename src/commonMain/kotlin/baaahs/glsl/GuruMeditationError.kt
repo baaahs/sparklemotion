@@ -9,15 +9,14 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.model.ModelInfo
-import baaahs.only
 import baaahs.plugin.Plugins
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.show.live.ShowOpener
+import baaahs.show.mutable.BuildContext
 import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.ShowBuilder
 
 object GuruMeditationError {
     private val shader = Shader(
@@ -36,20 +35,18 @@ object GuruMeditationError {
     )
 
     private val linkedPatch: LinkedPatch?
-    private val dataFeeds: Map<DataSource, GlslProgram.DataFeed>
+    private val showPlayer = FakeShowPlayer()
 
     init {
         val autoWirer = AutoWirer(Plugins.safe())
-        val showBuilder = ShowBuilder()
         val show = MutableShow("error").apply {
             addPatch(autoWirer.autoWire(shader).resolve())
-        }.build(showBuilder)
+        }.build(BuildContext())
 
-        @Suppress("CAST_NEVER_SUCCEEDS")
-        val openShow = ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer).openShow()
-        dataFeeds = openShow.dataFeeds
-        val openPatch = openShow.patches.only("patch")
-        linkedPatch = autoWirer.buildPortDiagram(openPatch)
+        val showContext = ShowOpener(autoWirer.glslAnalyzer, show)
+        showContext.dataSources.values.forEach { showPlayer.openDataFeed(it.id, it) }
+        val patch = show.patches.first()
+        linkedPatch = autoWirer.buildPortDiagram(showContext, patch)
             .resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
     }
 
@@ -58,14 +55,15 @@ object GuruMeditationError {
 
         return RenderPlan(
             listOf(
-                linkedPatch to linkedPatch.createProgram(gl, dataFeeds)
+                linkedPatch to linkedPatch.createProgram(gl, showPlayer)
             )
         )
     }
 }
 
-private object FakeShowPlayer : BaseShowPlayer(Plugins.safe(), ModelInfo.Empty) {
+private class FakeShowPlayer : BaseShowPlayer(Plugins.safe(), ModelInfo.Empty) {
     override val glContext: GlContext get() = error("not implemented")
     override fun <T : Gadget> createdGadget(id: String, gadget: T): Unit = error("not implemented")
     override fun <T : Gadget> useGadget(id: String): T = error("not implemented")
+
 }

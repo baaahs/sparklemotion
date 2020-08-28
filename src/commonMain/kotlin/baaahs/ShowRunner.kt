@@ -8,13 +8,13 @@ import baaahs.gl.render.ModelRenderer
 import baaahs.glsl.GuruMeditationError
 import baaahs.show.ShaderChannel
 import baaahs.show.Show
-import baaahs.show.live.OpenShow
-import baaahs.show.live.OpenShow.OpenScene.OpenPatchSet
+import baaahs.show.live.ShowContext
 
 class ShowRunner(
     val show: Show,
     initialShowState: ShowState? = null,
-    private val openShow: OpenShow,
+    private val showContext: ShowContext,
+    private val showPlayer: ShowPlayer,
 //    private val beatSource: BeatSource,
 //    private val dmxUniverse: Dmx.Universe,
 //    private val movingHeadManager: MovingHeadManager,
@@ -24,12 +24,8 @@ class ShowRunner(
     private val autoWirer: AutoWirer
 ) {
     private var showState: ShowState = initialShowState ?: show.defaultShowState()
-    private var nextPatchSet: OpenPatchSet? = showState.findPatchSet(openShow)
-
-    private var currentPatchSet: OpenPatchSet? = null
+    private var nextShowState: ShowState? = showState
     internal var currentRenderPlan: RenderPlan? = null
-
-    private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()
 
     // TODO: Get beat sync working again.
 //    // Continuous from [0.0 ... 3.0] (0 is first beat in a measure, 3 is last)
@@ -59,20 +55,7 @@ class ShowRunner(
 
     fun switchTo(newShowState: ShowState) {
         this.showState = newShowState
-        nextPatchSet = newShowState.findPatchSet(openShow)
-    }
-
-    private fun switchTo(newPatchSet: OpenPatchSet) {
-        currentRenderPlan = prepare(newPatchSet)
-
-        logger.info {
-            "New show ${newPatchSet.title} created; " +
-                    "${surfaceManager.getSurfaceCount()} surfaces " +
-                    "and ${requestedGadgets.size} gadgets"
-        }
-
-//        TODO gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
-        requestedGadgets.clear()
+        nextShowState = newShowState
     }
 
     /** @return `true` if a frame was rendered and should be sent to fixtures. */
@@ -86,11 +69,9 @@ class ShowRunner(
         var remapSurfaces = surfaceManager.requiresRemap()
 
         // Maybe switch to a new show.
-        nextPatchSet?.let { startingPatchSet ->
-            switchTo(startingPatchSet)
-
-            currentPatchSet = nextPatchSet
-            nextPatchSet = null
+        nextShowState?.let { newShowState ->
+            currentRenderPlan = prepareRenderPlan(newShowState)
+            nextShowState = null
             remapSurfaces = true
         }
 
@@ -105,16 +86,17 @@ class ShowRunner(
         return remapSurfaces
     }
 
-    private fun prepare(newPatchSet: OpenPatchSet): RenderPlan {
+    private fun prepareRenderPlan(newShowState: ShowState): RenderPlan {
         try {
-            val activePatches = newPatchSet.activePatches()
-            val linkedPatches = autoWirer.merge(*activePatches.toTypedArray()).mapValues { (_, portDiagram) ->
-                portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
-            }
+            val activePatchHolders = newShowState.getActivePatchHolders(show)
+            val linkedPatches = autoWirer.merge(showContext, *activePatchHolders.toTypedArray())
+                .mapValues { (_, portDiagram) ->
+                    portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
+                }
             val glslContext = modelRenderer.gl
             val activeDataSources = mutableSetOf<String>()
             val programs = linkedPatches.mapNotNull { (_, linkedPatch) ->
-                linkedPatch?.let { it to it.createProgram(glslContext, openShow.dataFeeds) }
+                linkedPatch?.let { it to it.createProgram(glslContext, showPlayer) }
             }
             return RenderPlan(programs)
         } catch (e: GlslException) {
@@ -132,7 +114,7 @@ class ShowRunner(
     }
 
     fun release() {
-        openShow.release()
+        showContext.release()
     }
 
     data class SurfacesChanges(val added: Collection<SurfaceReceiver>, val removed: Collection<SurfaceReceiver>)

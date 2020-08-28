@@ -10,6 +10,7 @@ import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugin
 import baaahs.plugin.Plugins
 import baaahs.show.mutable.MutableGadgetControl
+import baaahs.util.ReferableWithId
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
@@ -29,7 +30,7 @@ interface DataSourceBuilder<T : DataSource> {
     fun build(inputPort: InputPort): T
 }
 
-interface DataSource {
+interface DataSource : ReferableWithId {
     val pluginPackage: String
     val dataSourceName: String
     fun isImplicit(): Boolean = false
@@ -46,7 +47,7 @@ interface DataSource {
         return createFeed(showPlayer, plugins.find(pluginPackage), id)
     }
 
-    fun suggestId(): String = dataSourceName.camelize()
+    override fun suggestId(): String = dataSourceName.camelize()
 
     fun buildControl(): MutableGadgetControl? = null
 

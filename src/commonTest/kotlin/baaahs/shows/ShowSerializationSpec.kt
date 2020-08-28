@@ -6,6 +6,7 @@ import baaahs.gadgets.Slider
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.show.*
+import baaahs.show.live.ShowComponents
 import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -15,10 +16,7 @@ object ShowSerializationSpec : Spek({
     describe("Show serialization") {
         val plugins by value { Plugins.safe() }
         val jsonPrettyPrint by value {
-            Json(
-                JsonConfiguration.Stable.copy(prettyPrint = true),
-                plugins.serialModule
-            )
+            Json(JsonConfiguration.Stable.copy(prettyPrint = true))
         }
         val origShow by value { SampleData.sampleShow }
         val showJson by value { origShow.toJson(plugins) }
@@ -46,7 +44,7 @@ private fun JsonObjectBuilder.addPatchHolder(patchHolder: PatchHolder) {
     "title" to patchHolder.title
     "patches" to patchHolder.patches.jsonMap { jsonFor(it) }
     "eventBindings" to patchHolder.eventBindings.jsonMap { jsonFor(it) }
-    "controlLayout" to patchHolder.controlLayout.jsonMap { it.jsonMap { JsonPrimitive(it) } }
+    "controlLayout" to patchHolder.controlLayout.jsonMap { it.jsonMap { JsonPrimitive(it.id) } }
 }
 
 private fun <V> Map<String, V>.jsonMap(block: JsonObjectBuilder.(V) -> JsonElement): JsonObject {
@@ -58,6 +56,7 @@ private fun <T> List<T>.jsonMap(block: (T) -> JsonElement): JsonArray {
 }
 
 private fun forJson(show: Show): JsonObject {
+    val showComponents = ShowComponents(show)
     return json {
         addPatchHolder(show)
         "scenes" to show.scenes.jsonMap { jsonFor(it) }
@@ -67,10 +66,10 @@ private fun forJson(show: Show): JsonObject {
                 json { "rootNode" to it.rootNode }
             }
         }
-        "shaders" to show.shaders.jsonMap { jsonFor(it) }
-        "shaderInstances" to show.shaderInstances.jsonMap { jsonFor(it) }
-        "controls" to show.controls.jsonMap { jsonFor(it) }
-        "dataSources" to show.dataSources.jsonMap { jsonFor(it) }
+        "shaders" to showComponents.shaders.jsonMap { jsonFor(it) }
+        "shaderInstances" to showComponents.shaderInstances.jsonMap { jsonFor(it) }
+        "controls" to showComponents.controls.jsonMap { jsonFor(it) }
+        "dataSources" to showComponents.dataSources.jsonMap { jsonFor(it) }
     }
 }
 
@@ -99,7 +98,7 @@ fun jsonFor(control: Control): JsonElement {
         is GadgetControl -> json {
             "type" to "baaahs.Core:Gadget"
             "gadget" to jsonFor(control.gadget)
-            "controlledDataSourceId" to control.controlledDataSourceId
+            "controlledDataSource" to control.controlledDataSource.id
         }
         is ButtonGroupControl -> json {
             "type" to "baaahs.Core:ButtonGroup"
@@ -174,32 +173,28 @@ fun jsonFor(dataSource: DataSource): JsonElement {
 
 private fun jsonFor(patch: Patch): JsonObject {
     return json {
-        "shaderInstanceIds" to patch.shaderInstanceIds.jsonMap { JsonPrimitive(it) }
+        "shaderInstances" to patch.shaderInstances.jsonMap { JsonPrimitive(it.id) }
         "surfaces" to json {
             "name" to "All Surfaces"
         }
     }
 }
 
-private fun jsonFor(portRef: PortRef): JsonObject {
-    return when (portRef) {
-        is DataSourceRef -> json {
+private fun jsonFor(sourcePort: SourcePort): JsonObject {
+    return when (sourcePort) {
+        is DataSourceSourcePort -> json {
             "type" to "datasource"
-            "dataSourceId" to portRef.dataSourceId
+            "dataSource" to sourcePort.dataSource.id
         }
-        is ShaderOutPortRef -> json {
+        is ShaderOutSourcePort -> json {
             "type" to "shader-out"
-            "shaderInstanceId" to portRef.shaderInstanceId
+            "shaderInstance" to sourcePort.shaderInstance.id
         }
-        is ShaderChannelRef -> json {
+        is ShaderChannelSourcePort -> json {
             "type" to "shader-channel"
-            "shaderChannel" to portRef.shaderChannel.id
+            "shaderChannel" to sourcePort.shaderChannel.id
         }
-        is OutputPortRef -> json {
-            "type" to "output"
-            "portId" to portRef.portId
-        }
-        else -> error("huh? $portRef")
+        else -> error("huh? $sourcePort")
     }
 }
 
@@ -210,7 +205,7 @@ private fun jsonFor(shader: Shader) = json {
 }
 
 private fun jsonFor(shaderInstance: ShaderInstance) = json {
-    "shaderId" to shaderInstance.shaderId
+    "shader" to shaderInstance.shader.id
     "incomingLinks" to shaderInstance.incomingLinks.jsonMap { jsonFor(it) }
     "shaderChannel" to shaderInstance.shaderChannel.id
     "priority" to shaderInstance.priority

@@ -1,14 +1,16 @@
 package baaahs.show
 
 import baaahs.ShowState
+import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.Plugins
+import baaahs.show.live.ShowOpener
+import baaahs.show.mutable.BuildContext
 import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.ShowBuilder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -33,11 +35,12 @@ object MutableShowSpec : Spek({
                 addControl("Scenes", MutableButtonGroupControl("Scenes"))
             }
         }
-        val baseShow by value { baseMutableShow.build(ShowBuilder()) }
+        val baseShow by value { baseMutableShow.build(BuildContext()) }
         fun Show.showState() = ShowState.forShow(this).selectScene(1).selectPatchSet(1)
         val baseShowState by value { baseShow.showState() }
         val mutableShow by value { MutableShow(baseShow, baseShowState) }
-        val show by value { mutableShow.build(ShowBuilder()) }
+        val show by value { mutableShow.build(BuildContext()) }
+        val showContext by value { ShowOpener(GlslAnalyzer(Plugins.safe()), show) }
         val showState by value { mutableShow.getShowState() }
 
         context("base show") {
@@ -50,13 +53,13 @@ object MutableShowSpec : Spek({
             it("has the expected initial shaders") {
                 expect(
                     setOf("Cylindrical Projection", "shader 1a", "shader 2a", "shader 2b", "shader 2c")
-                ) { show.shaders.values.map { it.title }.toSet() }
+                ) { showContext.shaders.values.map { it.title }.toSet() }
             }
 
             it("has the expected initial datasources") {
                 expect(
                     setOf("Pixel Coordinates Texture", "Model Info", "Time", "Resolution", "Blueness Slider")
-                ) { show.dataSources.values.map { it.dataSourceName }.toSet() }
+                ) { showContext.dataSources.values.map { it.dataSourceName }.toSet() }
             }
 
             it("has the expected initial state") {
@@ -81,7 +84,7 @@ object MutableShowSpec : Spek({
             it("collects shaders") {
                 expect(
                     setOf("Cylindrical Projection", "shader 1a", "shader 2a", "shader 2b", "shader 2c")
-                ) { show.shaders.values.map { it.title }.toSet() }
+                ) { showContext.shaders.values.map { it.title }.toSet() }
             }
         }
 
@@ -202,12 +205,7 @@ object MutableShowSpec : Spek({
                     ))
                 ) {
                     show.patches.map { patch ->
-                        patch.surfaces to
-                                patch.shaderInstanceIds.map {
-                                    show.shaderInstances[it]?.shaderId?.let { shaderId ->
-                                        show.shaders[shaderId]?.title
-                                    } ?: "?!?"
-                                }
+                        patch.surfaces to patch.shaderInstances.map { shaderInstance -> shaderInstance.shader.title }
                     }.associate { it }
                 }
             }
