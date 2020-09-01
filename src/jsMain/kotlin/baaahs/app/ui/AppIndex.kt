@@ -8,8 +8,8 @@ import baaahs.client.WebClient
 import baaahs.gl.patch.AutoWirer
 import baaahs.io.Fs
 import baaahs.show.SampleData
-import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.*
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
@@ -103,7 +103,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var appDrawerOpen by state { false }
     var layoutEditorDialogOpen by state { false }
     var renderDialog by state<(RBuilder.() -> Unit)?> { null }
-    var mutablePatchHolder by state<MutablePatchHolder?> { null }
+    var patchHolderEditContext by state<PatchHolderEditContext?> { null }
 
     val handleAppDrawerToggle =
         useCallback(appDrawerOpen) { appDrawerOpen = !appDrawerOpen }
@@ -127,19 +127,20 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         Unit
     }
 
-    val handleEditPatchHolder = useCallback { forEdit: MutablePatchHolder ->
-        mutablePatchHolder = forEdit
+    val handleEditPatchHolder = useCallback { forEdit: PatchHolderEditContext ->
+        patchHolderEditContext = forEdit
     }
 
     val handlePatchHolderEdit = useCallback {
-        mutablePatchHolder?.let {
-            webClient.onShowEdit(it.getShow(), it.getShowState())
+        patchHolderEditContext?.let {
+            val mutableShow = it.mutableShow
+            webClient.onShowEdit(mutableShow.getShow(), mutableShow.getShowState())
         }
-        mutablePatchHolder = null
+        patchHolderEditContext = null
     }
 
     val handlePatchHolderClose = useCallback {
-        mutablePatchHolder = null
+        patchHolderEditContext = null
     }
 
     val handleShowStateChange = useCallback { newShowState: ShowState ->
@@ -221,7 +222,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handleShowEditButtonClick = useCallback { _: Event ->
         webClient.show?.let { show ->
             webClient.showState?.let { showState ->
-                mutablePatchHolder = MutableShow(show, showState)
+                val mutableShow = MutableShow(show, showState)
+                patchHolderEditContext = PatchHolderEditContext(mutableShow, mutableShow)
             }
         }
         Unit
@@ -444,9 +446,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
             renderDialog?.invoke(this)
 
-            mutablePatchHolder?.let { editor ->
+            patchHolderEditContext?.let { editContext ->
                 patchHolderEditor {
-                    attrs.mutablePatchHolder = editor
+                    attrs.mutablePatchHolder = editContext.mutablePatchHolder
                     attrs.onApply = handlePatchHolderEdit
                     // TODO: This doesn't actually revert the change, it just closes the editor.
                     attrs.onCancel = handlePatchHolderClose

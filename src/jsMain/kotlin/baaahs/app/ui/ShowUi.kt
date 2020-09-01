@@ -2,7 +2,7 @@ package baaahs.app.ui
 
 import baaahs.ShowState
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.MutablePatchHolder
+import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.xComponent
 import external.dragDropContext
 import react.*
@@ -34,7 +34,7 @@ external interface ShowUiProps : RProps {
     var show: OpenShow
     var showState: ShowState
     var editMode: Boolean
-    var editPatchHolder: (MutablePatchHolder) -> Unit
+    var editPatchHolder: (PatchHolderEditContext) -> Unit
     var onShowStateChange: (ShowState) -> Unit
 }
 

@@ -14,6 +14,11 @@ import baaahs.show.live.OpenPatch
 import baaahs.show.live.ShaderInstanceResolver
 import baaahs.util.UniqueIds
 
+class PatchHolderEditContext(
+    val mutableShow: MutableShow,
+    val mutablePatchHolder: MutablePatchHolder
+)
+
 interface EditHandler {
     fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean = true)
     fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean = true)
@@ -121,9 +126,6 @@ abstract class MutablePatchHolder(
                 || eventBindings != basePatchHolder.eventBindings
                 || controlLayout != basePatchHolder.controlLayout
     }
-
-    abstract fun getShow(): Show
-    abstract fun getShowState(): ShowState
 }
 
 class MutableShow(
@@ -216,8 +218,8 @@ class MutableShow(
         )
     }
 
-    override fun getShow() = build(ShowBuilder())
-    override fun getShowState() = ShowState(selectedScene, patchSetSelections)
+    fun getShow() = build(ShowBuilder())
+    fun getShowState() = ShowState(selectedScene, patchSetSelections)
 
     fun findShader(shaderId: String): MutableShader =
         shaders.getBang(shaderId, "shader")
@@ -287,9 +289,6 @@ class MutableShow(
             )
         }
 
-        override fun getShow() = this@MutableShow.getShow()
-        override fun getShowState() = this@MutableShow.getShowState()
-
         inner class MutablePatchSet(basePatchSet: PatchSet) : MutablePatchHolder(
             basePatchSet, baseShow.controls, baseShow.dataSources
         ) {
@@ -305,10 +304,6 @@ class MutableShow(
                     controlLayout = buildControlLayout(showBuilder)
                 )
             }
-
-            override fun getShow() = this@MutableShow.getShow()
-            override fun getShowState() = this@MutableShow.getShowState()
-
         }
     }
 
