@@ -6,6 +6,7 @@ import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.EditHandler
+import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.*
 import external.Direction
 import external.copyFrom
@@ -46,7 +47,10 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
 
     val handleEditButtonClick = useCallback(props.show, props.showState) { event: Event, index: Int ->
         props.show.edit(props.showState) {
-            editScene(index) { props.editPatchHolder(this) }
+            val mutableShow = this
+            editScene(index) {
+                props.editPatchHolder(PatchHolderEditContext(mutableShow, this))
+            }
             event.preventDefault()
         }
     }
@@ -125,7 +129,10 @@ val SceneList = xComponent<SpecialControlProps>("SceneList") { props ->
                         icon(AddCircleOutline)
                         attrs.onClickFunction = { _: Event ->
                             props.show.edit(props.showState) {
-                                addScene("Untitled Scene") { props.editPatchHolder(this) }
+                                val mutableShow = this
+                                addScene("Untitled Scene") {
+                                    props.editPatchHolder(PatchHolderEditContext(mutableShow, this))
+                                }
                             }
                         }
                     }
