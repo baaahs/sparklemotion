@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
+import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 
 class JvmUdpProxy {
@@ -68,18 +69,18 @@ class JvmUdpProxy {
                             networkScope.launch {
 //                                logger.debug { "UDP: Will send ${data.size} ${msgId(data)} to $toInetAddress:$toPort" }
                                 socket!!.send(packet)
-//                                logger.debug { "UDP: Sent ${data.size} ${msgId(data)} to $toInetAddress:$toPort" }
+                                logger.debug { "UDP: Sent ${data.size} to $toInetAddress:$toPort" }
                             }
                         }
                         Network.UdpProxy.BROADCAST_OP.toByte() -> {
                             val toPort = readInt()
                             val data = readBytes()
                             val packet = DatagramPacket(data, 0, data.size,
-                                JvmNetwork.broadcastAddress, toPort)
+                                InetAddress.getByName("192.168.2.255"), toPort)
                             networkScope.launch {
 //                                logger.debug { "UDP: Will broadcast ${data.size} ${msgId(data)} to *:$toPort" }
                                 socket!!.send(packet)
-//                                logger.debug { "UDP: Broadcast ${data.size} ${msgId(data)} to *:$toPort" }
+                                logger.debug { "UDP: Broadcast ${data.size} to *:$toPort" }
                             }
                         }
                         else -> {

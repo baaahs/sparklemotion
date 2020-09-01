@@ -29,7 +29,7 @@ class JvmNetwork : Network {
 
         val logger = Logger("JvmNetwork")
 //        val myAddress = InetAddress.getLocalHost()
-        val myAddress = InetAddress.getByName("127.0.0.1")
+        val myAddress = InetAddress.getByName("192.168.2.1")
         val broadcastAddress = InetAddress.getByName("255.255.255.255")
 
         val networkScope = CoroutineScope(Dispatchers.IO)
@@ -85,7 +85,7 @@ class JvmNetwork : Network {
             }
 
             override fun broadcastUdp(port: Int, bytes: ByteArray) {
-                val packetOut = DatagramPacket(bytes, 0, bytes.size, InetSocketAddress(broadcastAddress, port))
+                val packetOut = DatagramPacket(bytes, 0, bytes.size, InetSocketAddress("192.168.2.4", port))
                 udpSocket.send(packetOut)
             }
         }
