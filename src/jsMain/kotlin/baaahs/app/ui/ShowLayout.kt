@@ -1,10 +1,10 @@
 package baaahs.app.ui
 
 import baaahs.ShowState
-import baaahs.app.ui.controls.ControlDisplay
 import baaahs.app.ui.controls.SpecialControlProps
 import baaahs.app.ui.controls.control
 import baaahs.show.Layout
+import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.*
