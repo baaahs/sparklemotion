@@ -1,4 +1,4 @@
-package baaahs.app.ui.controls
+package baaahs.show.live
 
 import baaahs.ShowState
 import baaahs.app.ui.DragNDrop
@@ -6,8 +6,6 @@ import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
 import baaahs.camelize
 import baaahs.getBang
-import baaahs.show.live.OpenControl
-import baaahs.show.live.OpenShow
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutablePatchHolder
