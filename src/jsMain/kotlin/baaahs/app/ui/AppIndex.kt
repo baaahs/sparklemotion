@@ -81,7 +81,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
-    val dragNDrop by state { DragNDrop() }
+    val dragNDrop by state { ReactBeautifulDragNDrop() }
     var prompt by state<Prompt?> { null }
 
     val myAppContext by state {
