@@ -1,14 +1,13 @@
 package baaahs.app.ui
 
 import baaahs.Logger
-import baaahs.camelize
 import baaahs.util.UniqueIds
 import external.DraggableLocation
 import external.DropReason
 import external.DropResult
 import external.ResponderProvided
 
-class DragNDrop {
+class ReactBeautifulDragNDrop : DragNDrop {
     private val dropTargets = UniqueIds<DropTarget>()
 
     fun onDragEnd(dropResult: DropResult, responderProvided: ResponderProvided) {
@@ -21,17 +20,21 @@ class DragNDrop {
             val sourceIndex = dropSourceLoc.index
             val destIndex = dropDestLoc.index
 
-            if (source == dest) {
-                if (sourceIndex != destIndex) {
-                    dest.moveDraggable(sourceIndex, destIndex)
-                }
-            } else {
-                val draggable = source.getDraggable(sourceIndex)
-                if (dest.willAccept(draggable) && draggable.willMoveTo(dest)) {
-                    source.removeDraggable(draggable)
-                    dest.insertDraggable(draggable, destIndex)
-                    draggable.onMove()
-                }
+            onMove(source, sourceIndex, dest, destIndex)
+        }
+    }
+
+    private fun onMove(source: DropTarget, sourceIndex: Int, dest: DropTarget, destIndex: Int) {
+        if (source == dest) {
+            if (sourceIndex != destIndex) {
+                dest.moveDraggable(sourceIndex, destIndex)
+            }
+        } else {
+            val draggable = source.getDraggable(sourceIndex)
+            if (dest.willAccept(draggable) && draggable.willMoveTo(dest)) {
+                source.removeDraggable(draggable)
+                dest.insertDraggable(draggable, destIndex)
+                draggable.onMove()
             }
         }
     }
@@ -44,11 +47,11 @@ class DragNDrop {
         return dropTarget
     }
 
-    fun addDropTarget(dropTarget: DropTarget): String {
+    override fun addDropTarget(dropTarget: DropTarget): String {
         return dropTargets.idFor(dropTarget) { dropTarget.suggestId() }
     }
 
-    fun removeDropTarget(dropTarget: DropTarget) {
+    override fun removeDropTarget(dropTarget: DropTarget) {
         dropTargets.remove(dropTarget) || throw IllegalStateException("Unregistered drop target.")
     }
 
@@ -63,20 +66,4 @@ class DragNDrop {
     companion object {
         private val logger = Logger("DragNDrop")
     }
-}
-
-interface DropTarget{
-    val type: String
-
-    fun suggestId(): String = type.camelize()
-    fun moveDraggable(fromIndex: Int, toIndex: Int)
-    fun willAccept(draggable: Draggable): Boolean
-    fun getDraggable(index: Int): Draggable
-    fun insertDraggable(draggable: Draggable, index: Int)
-    fun removeDraggable(draggable: Draggable)
-}
-
-interface Draggable {
-    fun willMoveTo(destination: DropTarget): Boolean = true
-    fun onMove() {}
 }
