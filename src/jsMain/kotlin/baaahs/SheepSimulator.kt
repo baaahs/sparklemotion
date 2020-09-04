@@ -81,7 +81,9 @@ class SheepSimulator(val model: Model<*>) {
     fun start() = doRunBlocking {
         val simSurfaces = prepareSurfaces()
 
-        pinky.startAndRun()
+        GlobalScope.launch {
+            pinky.startAndRun()
+        }
 
         val launcher = Launcher(document.getElementById("launcher")!!)
         launcher.add("Web UI") {
