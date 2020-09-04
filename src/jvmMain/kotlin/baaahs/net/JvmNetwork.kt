@@ -1,18 +1,18 @@
 package baaahs.net
 
 import baaahs.Logger
-import io.ktor.application.Application
-import io.ktor.application.install
+import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
-import io.ktor.request.host
-import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import io.ktor.websocket.webSocket
+import io.ktor.request.*
+import io.ktor.routing.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -75,13 +75,18 @@ class JvmNetwork : Network {
             init {
 //                println("Trying to set send buffer size to ${4*MAX_UDP_SIZE}")
 //                udpSocket.sendBufferSize = 4*MAX_UDP_SIZE;
-                println("Send buffer size is ${udpSocket.sendBufferSize}")
+                logger.info { "UDP socket bound to ${udpSocket.localAddress}" }
+                logger.debug { "Send buffer size is ${udpSocket.sendBufferSize}" }
             }
 
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
                 // println("Sending ${bytes.size} bytes to ${toAddress}")
                 val packetOut = DatagramPacket(bytes, 0, bytes.size, (toAddress as IpAddress).address, port)
-                udpSocket.send(packetOut)
+                try {
+                    udpSocket.send(packetOut)
+                } catch (e: IOException) {
+                    throw IOException("sending to $toAddress: ${e.message}", e)
+                }
             }
 
             override fun broadcastUdp(port: Int, bytes: ByteArray) {
