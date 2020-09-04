@@ -21,6 +21,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlin.math.abs
 import kotlin.random.Random
 
+/** [SolidBrainShader] appears to be busted as of 2020/09. */
+const val USE_SOLID_SHADERS = false
+
 class Mapper(
     private val network: Network,
     model: Model<*>,
@@ -601,13 +604,25 @@ class Mapper(
     }
 
     private fun solidColorBuffer(color: Color): BrainShader.Buffer {
-        val solidShader = SolidBrainShader()
-        val buffer = solidShader.createBuffer(object : Surface {
-            override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
+        return if (USE_SOLID_SHADERS) {
+            val solidShader = SolidBrainShader()
+            solidShader.createBuffer(object : Surface {
+                override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
 
-            override fun describe(): String = "Mapper surface"
-        }).apply { this.color = color }
-        return buffer
+                override fun describe(): String = "Mapper surface"
+            }).apply { this.color = color }
+        } else {
+            val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
+            pixelShader.createBuffer(object : Surface {
+                override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
+
+                override fun describe(): String = "Mapper surface"
+            }).apply {
+                palette[0] = Color.BLACK
+                palette[1] = color
+                setAll(1)
+            }
+        }
     }
 
     private val deliverer = ReliableShaderMessageDeliverer()
