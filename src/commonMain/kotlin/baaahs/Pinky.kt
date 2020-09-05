@@ -246,14 +246,16 @@ class Pinky(
     override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
         if (!isStartedUp) return
 
-        val message = parse(bytes)
-        when (message) {
-            is BrainHelloMessage -> foundBrain(fromAddress, message)
-            is MapperHelloMessage -> {
-                logger.debug { "Mapper isRunning=${message.isRunning}" }
-                mapperIsRunning = message.isRunning
+        CoroutineScope(coroutineContext).launch {
+            val message = parse(bytes)
+            when (message) {
+                is BrainHelloMessage -> foundBrain(fromAddress, message)
+                is MapperHelloMessage -> {
+                    logger.debug { "Mapper isRunning=${message.isRunning}" }
+                    mapperIsRunning = message.isRunning
+                }
+                is PingMessage -> if (message.isPong) receivedPong(message, fromAddress)
             }
-            is PingMessage -> if (message.isPong) receivedPong(message, fromAddress)
         }
     }
 
