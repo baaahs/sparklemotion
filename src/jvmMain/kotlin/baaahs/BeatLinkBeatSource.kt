@@ -21,6 +21,7 @@ class BeatLinkBeatSource(private val clock: Clock) : BeatSource, BeatListener, O
     private var lastBeatAt: Time? = null
 
     fun start() {
+        logger.info { "Starting Beat Sync" }
         val deviceFinder = DeviceFinder.getInstance()
         deviceFinder.start()
         deviceFinder.addDeviceAnnouncementListener(object : DeviceAnnouncementListener {
@@ -78,6 +79,7 @@ class BeatLinkBeatSource(private val clock: Clock) : BeatSource, BeatListener, O
         beatListener.addBeatListener(this)
         beatListener.addOnAirListener(this)
         beatListener.start()
+        logger.info { "Started" }
     }
 
     override fun channelsOnAir(audibleChannels: MutableSet<Int>?) {
