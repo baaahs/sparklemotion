@@ -44,17 +44,28 @@ object ShowRunnerSpec : Spek({
 
         val fakeGlslContext by value { FakeGlContext() }
         val model by value { TestModel() }
-        val patch by value {
-            AutoWirer(Plugins.safe()).autoWire(
-                Shaders.cylindricalProjection, Shader("Untitled", ShaderType.Paint, shaderSrc)
-            ).acceptSymbolicChannelLinks().resolve()
-        }
+        val autoWirer by value { AutoWirer(Plugins.safe()) }
         val surfaces by value { listOf(FakeSurface(100)) }
         val show by value {
             MutableShow("test show").apply {
-                addScene("test scene") {
-                    addPatchSet("test patchset") {
-                        addPatch(patch)
+                addPatch(
+                    autoWirer.autoWire(Shaders.cylindricalProjection, Shaders.blue)
+                        .acceptSymbolicChannelLinks().resolve()
+                )
+                addButtonGroup(
+                    "Panel", "Scenes",
+                ) {
+                    addButton("test scene") {
+                        addButtonGroup(
+                            "Panel", "Backdrops",
+                        ) {
+                            addButton("test patchset") {
+                                addPatch(
+                                    autoWirer.autoWire(Shader("Untitled", ShaderType.Paint, shaderSrc))
+                                        .acceptSymbolicChannelLinks().resolve()
+                                )
+                            }
+                        }
                     }
                 }
             }.build(ShowBuilder())
@@ -67,7 +78,7 @@ object ShowRunnerSpec : Spek({
             val fs = FakeFs()
             StageManager(
                 Plugins.safe(), glslRenderer, pubSub, Storage(fs, Plugins.safe()), surfaceManager, FakeDmxUniverse(),
-                MovingHeadManager(fs, pubSub, emptyList()), FakeClock(), model
+                MovingHeadManager(fs, pubSub, emptyList()), FakeClock(), model, coroutineContext
             )
         }
 

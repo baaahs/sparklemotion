@@ -4,6 +4,7 @@ import baaahs.*
 import baaahs.gl.GlContext
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
+import baaahs.show.DataSource
 import kotlinx.serialization.json.JsonElement
 
 class ClientShowPlayer(
@@ -14,7 +15,7 @@ class ClientShowPlayer(
 ) : BaseShowPlayer(plugins, modelInfo) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
 
-    override fun <T : Gadget> createdGadget(id: String, gadget: T) {
+    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
 //        gadgets[id]?.let { clientGadget -> TODO() }
 
         val listener: GadgetListener = {
@@ -31,6 +32,8 @@ class ClientShowPlayer(
             }
         }
         gadgets[id] = ClientGadget(gadget, channel)
+        controlledDataSource?.let { dataSourceGadgets[controlledDataSource] = gadget }
+        println("ClientShowPlayer: gadget.title = ${gadget.title} registered for ${controlledDataSource?.dataSourceName}")
     }
 
     override fun <T : Gadget> useGadget(id: String): T {

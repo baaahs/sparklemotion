@@ -12,14 +12,21 @@ import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
+import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.Surfaces
 import baaahs.show.buildEmptyShow
+import baaahs.show.live.ActiveSet
+import baaahs.show.live.OpenPatchHolder
 import com.soywiz.klock.DateTime
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 class StageManager(
     plugins: Plugins,
@@ -30,15 +37,13 @@ class StageManager(
     private val dmxUniverse: Dmx.Universe,
     private val movingHeadManager: MovingHeadManager,
     private val clock: Clock,
-    modelInfo: ModelInfo
+    modelInfo: ModelInfo,
+    private val coroutineContext: CoroutineContext
 ) : BaseShowPlayer(plugins, modelInfo) {
     val facade = Facade()
     private val autoWirer = AutoWirer(plugins)
     override val glContext: GlContext
         get() = modelRenderer.gl
-    private val showStateChannel = pubSub.publish(Topics.showState, null) { showState ->
-        if (showState != null) showRunner?.switchTo(showState)
-    }
     private var showRunner: ShowRunner? = null
     private val gadgets: MutableMap<String, GadgetManager.GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
@@ -61,19 +66,34 @@ class StageManager(
             switchTo(newShow, newShowState, showEditSession.showFile, newIsUnsaved)
         }
 
-    override fun <T : Gadget> createdGadget(id: String, gadget: T) {
+    private var gadgetsChangedJobEnqueued: Boolean = false
+
+    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
         val topic =
             PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
         val channel = pubSub.publish(topic, gadget.state) { updated ->
             gadget.state.putAll(updated)
             lastUserInteraction = DateTime.now()
+            if (!gadgetsChangedJobEnqueued) {
+                CoroutineScope(coroutineContext).launch {
+                    onGadgetChange()
+                    gadgetsChangedJobEnqueued = false
+                }
+            }
         }
-        val gadgetChannelListener: (Gadget) -> Unit = { gadget1 ->
-            channel.onChange(gadget1.state)
-        }
+        val gadgetChannelListener: (Gadget) -> Unit = { channel.onChange(it.state) }
         gadget.listen(gadgetChannelListener)
         val gadgetData = GadgetData(id, gadget, topic.name)
         gadgets[id] = GadgetManager.GadgetInfo(topic, channel, gadgetData, gadgetChannelListener)
+        controlledDataSource?.let { dataSourceGadgets[controlledDataSource] = gadget }
+        println("StageMananger: gadget.title = ${gadget.title} registered for ${controlledDataSource?.dataSourceName}")
+    }
+
+    fun onGadgetChange() {
+        showRunner?.onSelectedPatchesChanged()
+
+        // Start housekeeping early -- as soon as we see a change -- in hopes of avoiding jank.
+        showRunner?.housekeeping()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -84,12 +104,13 @@ class StageManager(
 
     fun switchTo(
         newShow: Show?,
-        newShowState: ShowState? = newShow?.defaultShowState(),
+        newShowState: ShowState? = null,
         file: Fs.File? = null,
         isUnsaved: Boolean = file == null
     ) {
         val newShowRunner = newShow?.let {
-            ShowRunner(newShow, newShowState, openShow(newShow), clock, modelRenderer, surfaceManager, autoWirer)
+            val openShow = openShow(newShow, newShowState)
+            ShowRunner(newShow, newShowState, openShow, clock, modelRenderer, surfaceManager, autoWirer)
         }
 
         showRunner?.release()
@@ -116,7 +137,6 @@ class StageManager(
     internal fun notifyOfShowChanges() {
         val showEditState = showEditSession.getShowEditState()
         showEditorStateChannel.onChange(showEditState)
-        showStateChannel.onChange(showEditState?.showState)
         facade.notifyChanged()
     }
 
@@ -141,7 +161,6 @@ class StageManager(
 
     fun shutDown() {
         showRunner?.release()
-        showStateChannel.unsubscribe()
         showEditorStateChannel.unsubscribe()
     }
 
@@ -240,10 +259,7 @@ class RefCounter : RefCounted {
     }
 }
 
-class RenderPlan(val programs: List<Pair<LinkedPatch, GlslProgram>>) {
-    fun render(modelRenderer: ModelRenderer) {
-        modelRenderer.draw()
-    }
+class RenderPlan(val programs: List<Pair<LinkedPatch, GlslProgram>>, val activeSet: ActiveSet) {
 }
 
 @Serializable

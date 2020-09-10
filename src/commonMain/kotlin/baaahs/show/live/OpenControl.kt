@@ -1,33 +1,94 @@
 package baaahs.show.live
 
 import baaahs.Gadget
-import baaahs.camelize
-import baaahs.randomId
+import baaahs.gadgets.Switch
+import baaahs.show.ButtonControl
+import baaahs.show.ButtonGroupControl
 import baaahs.show.DataSource
-import baaahs.show.mutable.MutableButtonGroupControl
-import baaahs.show.mutable.MutableControl
-import baaahs.show.mutable.MutableGadgetControl
+import baaahs.show.ShowContext
+import baaahs.show.mutable.MutableButtonControl
 
 interface OpenControl {
     val id: String
+    val gadget: Gadget?
+    fun isActive(): Boolean = true
     fun controlledDataSources(): Set<DataSource> = emptySet()
-    fun edit(): MutableControl
+    fun addTo(activeSetBuilder: ActiveSetBuilder, panelId: String, depth: Int) {}
+    fun applyConstraints() {}
 }
 
 class OpenGadgetControl(
-    val gadget: Gadget,
+    override val id: String,
+    override val gadget: Gadget,
     val controlledDataSource: DataSource
 ) : OpenControl {
-    override val id: String = randomId(gadget.title.camelize() + "Control")
-
     override fun controlledDataSources(): Set<DataSource> = setOf(controlledDataSource)
 
-    override fun edit(): MutableGadgetControl = MutableGadgetControl(gadget, controlledDataSource)
 }
 
-class OpenButtonGroupControl(val title: String) : OpenControl {
-    override val id: String
-        get() = title.camelize() + "ButtonGroupControl"
+class OpenButtonControl(
+    override val id: String,
+    private val buttonControl: ButtonControl,
+    openContext: OpenContext
+) : OpenPatchHolder(buttonControl, openContext), OpenControl {
+    override val gadget: Switch = Switch(buttonControl.title)
 
-    override fun edit(): MutableControl = MutableButtonGroupControl(title)
+    var isPressed: Boolean
+        get() = gadget.enabled
+        set(value) { gadget.enabled = value }
+
+    override fun isActive(): Boolean = isPressed
+
+    override fun addTo(activeSetBuilder: ActiveSetBuilder, panelId: String, depth: Int) {
+        if (isPressed) {
+            addTo(activeSetBuilder, depth)
+        }
+    }
+}
+
+interface ControlContainer {
+    fun containedControls() : List<OpenControl>
+}
+
+class OpenButtonGroupControl(
+    override val id: String,
+    private val buttonGroupControl: ButtonGroupControl,
+    openContext: OpenContext
+) : OpenControl, ControlContainer {
+    val title: String
+        get() = buttonGroupControl.title
+
+    override val gadget: Gadget?
+        get() = null
+
+    val direction = buttonGroupControl.direction
+
+    val buttons = buttonGroupControl.buttonIds.map {
+        openContext.getControl(it) as OpenButtonControl
+    }
+
+    override fun containedControls(): List<OpenControl> = buttons
+
+    override fun applyConstraints() {
+        val active = buttons.map { it.isPressed }
+        val countActive = active.count { it }
+        if (countActive == 0) {
+            buttons.firstOrNull()?.isPressed = true
+        } else if (countActive > 1) {
+            val firstActive = active.indexOfFirst { it }
+            buttons.forEachIndexed { index, openButtonControl ->
+                openButtonControl.isPressed = index == firstActive
+            }
+        }
+    }
+
+    fun clickOn(buttonIndex: Int) {
+        buttons.forEachIndexed { index, openButtonControl ->
+            openButtonControl.isPressed = index == buttonIndex
+        }
+    }
+
+    override fun addTo(activeSetBuilder: ActiveSetBuilder, panelId: String, depth: Int) {
+        buttons.forEach { it.addTo(activeSetBuilder, panelId, depth + 1) }
+    }
 }

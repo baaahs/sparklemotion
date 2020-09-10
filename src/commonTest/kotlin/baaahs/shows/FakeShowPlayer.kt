@@ -40,7 +40,7 @@ class FakeShowPlayer(
     override fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed =
         dataFeeds.getBang(dataSource, "datafeed")
 
-    override fun <T : Gadget> createdGadget(id: String, gadget: T) {
+    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
     }
 
     override fun releaseUnused() {
@@ -62,6 +62,10 @@ class FakeShowPlayer(
 
     override fun <T : Gadget> useGadget(id: String): T {
         return gadgets[id] as T
+    }
+
+    override fun <T : Gadget> useGadget(dataSource: DataSource): T {
+        TODO("not implemented")
     }
 
     fun drawFrame() {

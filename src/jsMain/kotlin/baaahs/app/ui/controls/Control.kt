@@ -3,13 +3,16 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.jsx.RangeSlider
 import baaahs.plugin.CorePlugin
+import baaahs.show.live.OpenButtonControl
 import baaahs.show.live.OpenButtonGroupControl
 import baaahs.show.live.OpenControl
 import baaahs.show.live.OpenGadgetControl
+import baaahs.ui.copyInto
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.DraggableProvided
 import external.copyFrom
+import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
 import materialui.DragIndicator
 import materialui.Edit
@@ -20,7 +23,6 @@ import react.dom.div
 val Control = xComponent<ControlProps>("Control") { props ->
     val control = props.control
     val specialControlProps = props.specialControlProps
-    val editMode = specialControlProps.editMode
 
     div(+Styles.controlBox) {
         ref = props.draggableProvided.innerRef
@@ -39,14 +41,18 @@ val Control = xComponent<ControlProps>("Control") { props ->
         }
 
         when (control) {
+            is OpenButtonControl -> {
+                child(Button, jsObject {
+                    specialControlProps.copyInto(this)
+                    button = control
+                })
+            }
+
             is OpenButtonGroupControl -> {
-                val title = control.title
-                val component = when (title) {
-                    "Scenes" -> SceneList
-                    "Patches" -> PatchSetList
-                    else -> error("unsupported special control $title")
-                }
-                child(component, specialControlProps)
+                child(ButtonGroup, jsObject {
+                    specialControlProps.copyInto(this)
+                    buttonGroupControl = control
+                })
             }
 
             is OpenGadgetControl -> {
@@ -66,6 +72,10 @@ val Control = xComponent<ControlProps>("Control") { props ->
                         div(+Styles.dataSourceLonelyTitle) { +title }
                     }
                 }
+            }
+
+            else -> {
+                +"Huh? What's $control?"
             }
         }
     }

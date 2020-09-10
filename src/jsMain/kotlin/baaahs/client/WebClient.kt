@@ -40,7 +40,6 @@ class WebClient(
 
     private var show: Show? = null
     private var openShow: OpenShow? = null
-    private var showState: ShowState? = null
 
     private var savedShow: Show? = null
     private var showIsUnsaved: Boolean = false
@@ -61,11 +60,6 @@ class WebClient(
             switchTo(incoming)
             undoStack.reset(incoming)
             showStateSynced = true
-            facade.notifyChanged()
-        }
-    private val showStateChannel =
-        pubSub.subscribe(Topics.showState) {
-            showState = it
             facade.notifyChanged()
         }
 
@@ -108,11 +102,10 @@ class WebClient(
         val newShowState = showEditorState?.showState
         val newIsUnsaved = showEditorState?.isUnsaved ?: false
         val newFile = showEditorState?.file
-        val newOpenShow = newShow?.let { showPlayer.openShow(newShow) }
+        val newOpenShow = newShow?.let { showPlayer.openShow(newShow, newShowState) }
         openShow?.release()
         openShow = newOpenShow
         this.show = newShow
-        this.showState = newShowState
         this.showIsUnsaved = newIsUnsaved
         this.showFile = newFile
         if (!newIsUnsaved) this.savedShow = show
@@ -130,7 +123,6 @@ class WebClient(
     }
 
     override fun onClose() {
-        showStateChannel.unsubscribe()
         showEditStateChannel.unsubscribe()
         pubSub.removeStateChangeListener(pubSubListener)
     }
@@ -163,9 +155,6 @@ class WebClient(
         val showIsModified: Boolean
             get() = this@WebClient.showIsUnsaved
 
-        val showState: ShowState?
-            get() = this@WebClient.showState
-
         val openShow: OpenShow?
             get() = this@WebClient.openShow
 
@@ -173,7 +162,7 @@ class WebClient(
             get() = this@WebClient.serverNotices
 
         override fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
-            onShowEdit(mutableShow.getShow(), mutableShow.getShowState(), pushToUndoStack)
+            onShowEdit(mutableShow.getShow(), openShow!!.getShowState(), pushToUndoStack)
         }
 
         override fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean) {
@@ -189,9 +178,7 @@ class WebClient(
             facade.notifyChanged()
         }
 
-        fun onShowStateChange(showState: ShowState) {
-            showStateChannel.onChange(showState)
-            this@WebClient.showState = showState
+        fun onShowStateChange() {
             facade.notifyChanged()
         }
 

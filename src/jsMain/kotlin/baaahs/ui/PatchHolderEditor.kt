@@ -47,7 +47,6 @@ import styled.StyleSheet
 fun <T> Event.targetEl(): T = target as T
 
 val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") { props ->
-    val appContext = useContext(appContext)
     val showBuilder by state { ShowBuilder() }
 
     val changed = props.mutablePatchHolder.isChanged()
@@ -150,9 +149,6 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
     }
     shaderPanel?.let { panels.add(it) }
 
-    val secondPanel = Panel("All Surfaces", AccountTree) { container { typographyH1 { +"Page 2" } } }
-    val thirdPanel = Panel("Shader", SettingsInputComponent) { container { typographyH1 { +"Page 3" } } }
-
     portal {
         form {
             drawer(styles.drawer on DrawerStyle.paper) {
@@ -168,12 +164,10 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                 }
 
                 dialogTitle {
-                    +"${props.mutablePatchHolder.displayType}:"
-
                     textField {
                         attrs.autoFocus = true
                         attrs.variant = FormControlVariant.outlined
-                        attrs.label = "${props.mutablePatchHolder.displayType} Title".asTextNode()
+                        attrs.label { +"Title" }
                         attrs.value = props.mutablePatchHolder.title
                         attrs.onChangeFunction = handleTitleChange
                     }

@@ -44,7 +44,7 @@ object PatchLayeringSpec : Spek({
         val mutableShow by value { MutableShow("test show") }
         val show by value {
             val show = mutableShow.build(ShowBuilder())
-            ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer(FakeGlContext())).openShow()
+            ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer(FakeGlContext())).openShow(showState)
         }
 
         context("with a show, scene, and patchset patch") {

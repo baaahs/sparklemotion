@@ -19,8 +19,9 @@ interface ShowPlayer {
     val modelInfo: ModelInfo
     val dataSources: List<DataSource>
 
-    fun <T : Gadget> createdGadget(id: String, gadget: T)
+    fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource? = null)
     fun <T : Gadget> useGadget(id: String): T = error("override me?")
+    fun <T : Gadget> useGadget(dataSource: DataSource): T?
 
     fun openShader(shader: Shader, addToCache: Boolean = false): OpenShader
     fun openShaderOrNull(shader: Shader, addToCache: Boolean = false): OpenShader? {
@@ -32,7 +33,8 @@ interface ShowPlayer {
     }
     fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed
     fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed
-    fun openShow(show: Show): OpenShow = ShowOpener(GlslAnalyzer(plugins), show, this).openShow()
+    fun openShow(show: Show, showState: ShowState? = null): OpenShow =
+        ShowOpener(GlslAnalyzer(plugins), show, this).openShow(showState)
 
     fun releaseUnused()
 }
@@ -47,6 +49,7 @@ abstract class BaseShowPlayer(
     private val shaders = mutableMapOf<Shader, OpenShader>()
 
     override val dataSources: List<DataSource> get() = dataFeeds.keys.toList()
+    protected val dataSourceGadgets: MutableMap<DataSource, Gadget> = mutableMapOf()
 
     override fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed {
         return dataFeeds.getOrPut(dataSource) {
@@ -56,6 +59,11 @@ abstract class BaseShowPlayer(
 
     override fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed {
         return dataFeeds[dataSource]!!
+    }
+
+    override fun <T : Gadget> useGadget(dataSource: DataSource): T? {
+        @Suppress("UNCHECKED_CAST")
+        return dataSourceGadgets[dataSource] as? T
     }
 
     override fun openShader(shader: Shader, addToCache: Boolean): OpenShader {
