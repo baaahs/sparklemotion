@@ -3,7 +3,6 @@ package baaahs.app.ui
 import baaahs.JsClock
 import baaahs.ShowEditorState
 import baaahs.ShowPlayer
-import baaahs.ShowState
 import baaahs.client.WebClient
 import baaahs.gl.patch.AutoWirer
 import baaahs.io.Fs
@@ -12,6 +11,7 @@ import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.*
 import baaahs.util.UndoStack
+import external.ErrorBoundary
 import kotlinext.js.jsObject
 import kotlinx.css.opacity
 import kotlinx.css.properties.Timing
@@ -134,7 +134,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handlePatchHolderEdit = useCallback {
         patchHolderEditContext?.let {
             val mutableShow = it.mutableShow
-            webClient.onShowEdit(mutableShow.getShow(), mutableShow.getShowState())
+            webClient.onShowEdit(mutableShow)
         }
         patchHolderEditContext = null
     }
@@ -143,8 +143,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         patchHolderEditContext = null
     }
 
-    val handleShowStateChange = useCallback { newShowState: ShowState ->
-        webClient.onShowStateChange(newShowState)
+    val handleShowStateChange = useCallback {
+        webClient.onShowStateChange()
+        forceRender()
     }
 
     var fileDialogOpen by state { false }
@@ -221,17 +222,16 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val handleShowEditButtonClick = useCallback { _: Event ->
         webClient.show?.let { show ->
-            webClient.showState?.let { showState ->
-                val mutableShow = MutableShow(show, showState)
-                patchHolderEditContext = PatchHolderEditContext(mutableShow, mutableShow)
-            }
+            val mutableShow = MutableShow(show)
+            patchHolderEditContext = PatchHolderEditContext(mutableShow, mutableShow)
         }
         Unit
     }
 
     val handlePromptClose = useCallback { prompt = null }
 
-    val renderAppDrawerOpen = appDrawerOpen || (webClient.isLoaded && webClient.show == null)
+    val forceAppDrawerOpen = webClient.isLoaded && webClient.show == null
+    val renderAppDrawerOpen = appDrawerOpen || forceAppDrawerOpen
 
     val appDrawerStateStyle = if (renderAppDrawerOpen)
         themeStyles.appDrawerOpen
@@ -242,7 +242,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         if (editMode) Styles.editModeOn else Styles.editModeOff
 
     val show = webClient.show
-    val showState = webClient.showState
 
     onMount {
         window.onkeydown = { event ->
@@ -359,6 +358,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                 appDrawer {
                     attrs.open = renderAppDrawerOpen
+                    attrs.forcedOpen = forceAppDrawerOpen
                     attrs.onClose = handleAppDrawerToggle
                     attrs.showLoaded = show != null
                     attrs.showFile = webClient.showFile
@@ -390,7 +390,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         }
                     }
 
-                    if (show == null || showState == null) {
+                    if (show == null) {
                         paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
                             if (webClient.isLoaded) {
                                 icon(NotificationImportant)
@@ -402,26 +402,29 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             }
                         }
                     } else {
-                        showUi {
-                            attrs.show = webClient.openShow!!
-                            attrs.showState = showState
-                            attrs.onShowStateChange = handleShowStateChange
-                            attrs.editMode = editMode
-                            attrs.editPatchHolder = handleEditPatchHolder
-                        }
+                        ErrorBoundary {
+                            attrs.FallbackComponent = ErrorDisplay
 
-                        if (layoutEditorDialogOpen) {
-                            // Layout Editor dialog
-                            layoutEditorDialog {
-                                attrs.open = layoutEditorDialogOpen
-                                attrs.layouts = show.layouts
-                                attrs.onApply = { newLayouts ->
-                                    val mutableShow = MutableShow(show, showState).editLayouts {
-                                        copyFrom(newLayouts)
+                            showUi {
+                                attrs.show = webClient.openShow!!
+                                attrs.onShowStateChange = handleShowStateChange
+                                attrs.editMode = editMode
+                                attrs.editPatchHolder = handleEditPatchHolder
+                            }
+
+                            if (layoutEditorDialogOpen) {
+                                // Layout Editor dialog
+                                layoutEditorDialog {
+                                    attrs.open = layoutEditorDialogOpen
+                                    attrs.layouts = show.layouts
+                                    attrs.onApply = { newLayouts ->
+                                        val mutableShow = MutableShow(show).editLayouts {
+                                            copyFrom(newLayouts)
+                                        }
+                                        myAppContext.webClient.onShowEdit(mutableShow)
                                     }
-                                    myAppContext.webClient.onShowEdit(mutableShow)
+                                    attrs.onClose = handleLayoutEditorDialogClose
                                 }
-                                attrs.onClose = handleLayoutEditorDialogClose
                             }
                         }
                     }

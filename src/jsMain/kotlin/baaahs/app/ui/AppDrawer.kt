@@ -30,7 +30,7 @@ import react.RProps
 import react.child
 import react.dom.div
 
-val AppDrawer = xComponent<AppDrawerProps>("AppDrawer") { props ->
+val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props ->
     val theme = useTheme()
     val themeStyles = ThemeStyles(theme)
 
@@ -50,6 +50,9 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer") { props ->
                     icon(ChevronLeft)
                 } else {
                     icon(ChevronRight)
+                }
+                if (props.forcedOpen) {
+                    attrs.disabled = true
                 }
             }
         }
@@ -136,6 +139,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer") { props ->
 
 external interface AppDrawerProps : RProps {
     var open: Boolean
+    var forcedOpen: Boolean
     var onClose: () -> Unit
 
     var showLoaded: Boolean

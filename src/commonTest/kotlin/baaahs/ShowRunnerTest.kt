@@ -53,7 +53,7 @@ class ShowRunnerTest {
         surfaceManager = SurfaceManager(glslRenderer)
         stageManager = StageManager(
             Plugins.safe(), glslRenderer, server, Storage(fs, Plugins.safe()), surfaceManager,
-            dmxUniverse, movingHeadManager, FakeClock(), sheepModel
+            dmxUniverse, movingHeadManager, FakeClock(), sheepModel, coroutineContext
         )
         stageManager.switchTo(SampleData.sampleShow)
         renderSurfaces = surfaceManager.getRenderSurfaces_ForTestOnly()

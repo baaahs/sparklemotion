@@ -181,6 +181,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     }
 
     val layoutPanel by css {
+        display = Display.flex
         height = 100.pct
     }
 
@@ -202,14 +203,20 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         transition(StyledElement::minHeight, duration = .5.s)
     }
 
-    val showControls by css {
+    val section0Controls by css {
     }
 
-    val sceneControls by css {
+    val section1Controls by css {
     }
 
-    val patchControls by css {
+    val section2Controls by css {
     }
+
+    val controlSections = arrayListOf(
+        section0Controls,
+        section1Controls,
+        section2Controls
+    )
 
     val unplacedControlsPalette by css {
         position = Position.fixed
@@ -239,6 +246,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         overflowY = Overflow.scroll
         minHeight = 4.em
         height = 33.vh
+        maxWidth = 15.em
     }
 
     val controlPanelHelpText by css {
@@ -265,15 +273,15 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
             transition(duration = 0.5.s)
         }
 
-        descendants(showControls) {
+        descendants(section0Controls) {
             background = linearRepeating(Color.lightPink.withAlpha(.5), Color.lightPink.withAlpha(.25))
         }
 
-        descendants(sceneControls) {
+        descendants(section1Controls) {
             background = linearRepeating(Color.lightGreen.withAlpha(.5), Color.lightGreen.withAlpha(.25))
         }
 
-        descendants(patchControls) {
+        descendants(section2Controls) {
             background = linearRepeating(Color.lightBlue.withAlpha(.5), Color.lightBlue.withAlpha(.25))
         }
 

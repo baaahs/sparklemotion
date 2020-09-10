@@ -5,6 +5,7 @@ import baaahs.gl.patch.PortDiagram
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.show.*
+import baaahs.util.CacheBuilder
 
 class LiveShaderInstance(
     val shader: OpenShader,
@@ -50,7 +51,7 @@ class LiveShaderInstance(
 }
 
 class ShaderInstanceResolver(
-    val openShaders: Map<String, OpenShader>,
+    val openShaders: CacheBuilder<String, OpenShader>,
     val shaderInstances: Map<String, ShaderInstance>,
     val dataSources: Map<String, DataSource>
 ) {

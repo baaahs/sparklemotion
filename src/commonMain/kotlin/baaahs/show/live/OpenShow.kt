@@ -1,16 +1,13 @@
 package baaahs.show.live
 
 import baaahs.*
-import baaahs.show.DataSource
-import baaahs.show.PatchSet
-import baaahs.show.Scene
-import baaahs.show.Show
+import baaahs.show.*
 import baaahs.show.mutable.MutableShow
 
 interface OpenContext {
     val allControls: List<OpenControl>
 
-    fun getControl(it: String): OpenControl
+    fun getControl(id: String): OpenControl
     fun getDataSource(id: String): DataSource
     fun getShaderInstance(it: String): LiveShaderInstance
     fun release()
@@ -23,6 +20,8 @@ class OpenShow(
 ) : OpenPatchHolder(show, openContext), RefCounted by RefCounter() {
     val id = randomId("show")
     val layouts get() = show.layouts
+    val showContext: ShowContext
+        get() = show
 
     val allDataSources = show.dataSources
     val allControls: List<OpenControl> = openContext.allControls
@@ -31,26 +30,110 @@ class OpenShow(
         val dataFeed = showPlayer.openDataFeed(id, dataSource)
         dataSource to dataFeed
     }
-    val scenes = show.scenes.map { OpenScene(it) }
 
-    fun edit(showState: ShowState, block: MutableShow.() -> Unit = {}): MutableShow =
-        MutableShow(show, showState).apply(block)
+    fun edit(block: MutableShow.() -> Unit = {}): MutableShow =
+        MutableShow(show).apply(block)
+
+    fun activeSet(): ActiveSet {
+        val builder = ActiveSetBuilder()
+        addTo(builder, 0)
+        return builder.build()
+    }
 
     override fun onFullRelease() {
         openContext.release()
         dataFeeds.values.forEach { it.release() }
     }
 
-    inner class OpenScene(scene: Scene) : OpenPatchHolder(scene, openContext) {
-        val id = randomId("scene")
-        val patchSets = scene.patchSets.map { OpenPatchSet(it) }
+    fun applyConstraints() {
+        allControls.forEach { it.applyConstraints() }
+    }
 
-        inner class OpenPatchSet(patchSet: PatchSet) : OpenPatchHolder(patchSet, openContext) {
-            val id = randomId("patchset")
+    fun getEnabledSwitchState(): Set<String> {
+        return allControls
+            .filterIsInstance<OpenButtonControl>()
+            .mapNotNull { if (it.isPressed) it.id else null }
+            .toSet()
+    }
 
-            fun activePatches(): List<OpenPatchHolder> {
-                return listOf(this@OpenShow, this@OpenScene, this)
+    fun getShowState(): ShowState {
+        return ShowState(
+            allControls.mapNotNull { control ->
+                control.gadget?.let { gadget -> control.id to gadget.state }
+            }.associate { it }
+        )
+    }
+
+    fun applyState(showState: ShowState) {
+    }
+}
+
+data class ActiveSet(val items: List<ActiveSetBuilder.Item>) {
+    fun getPatchHolders(): List<OpenPatchHolder> {
+        return items.map { it.patchHolder }
+    }
+
+    fun getActivePatches() : List<OpenPatch> {
+        return getPatchHolders().flatMap { it.patches }
+    }
+}
+
+class ActiveSetBuilder {
+    val items = arrayListOf<Item>()
+    var nextSerial = 0
+
+    fun add(patchHolder: OpenPatchHolder, depth: Int, panelId: String = "") {
+        items.add(Item(patchHolder, depth, panelId, nextSerial++))
+    }
+
+    fun build(): ActiveSet {
+        return ActiveSet(
+            items.sortedWith(
+                compareBy<Item> { it.depth }
+                    .thenBy { it.panelId }
+                    .thenBy { it.serial }
+            )
+        )
+    }
+
+    data class Item(val patchHolder: OpenPatchHolder, val depth: Int, val panelId: String, val serial: Int)
+}
+
+abstract class OpenShowVisitor {
+    open fun visitShow(openShow: OpenShow) {
+        visitPatchHolder(openShow)
+    }
+
+    open fun visitPatchHolder(openPatchHolder: OpenPatchHolder) {
+        openPatchHolder.patches.forEach {
+            visitPatch(it)
+        }
+
+        openPatchHolder.controlLayout.forEach { (panelName, openControls) ->
+            openControls.forEach { openControl ->
+                visitPlacedControl(panelName, openControl)
             }
         }
+    }
+
+    open fun visitPlacedControl(panelName: String, openControl: OpenControl) {
+        if (openControl is OpenPatchHolder) {
+            visitPatchHolder(openControl)
+        }
+
+        if (openControl is ControlContainer) {
+            visitControlContainer(openControl)
+        }
+    }
+
+    open fun visitControlContainer(openControl: ControlContainer) {
+        openControl.containedControls().forEach { containedControl ->
+            if (containedControl.isActive() && containedControl is OpenPatchHolder) {
+                visitPatchHolder(containedControl)
+            }
+        }
+    }
+
+    open fun visitPatch(openPatch: OpenPatch) {
     }
 }

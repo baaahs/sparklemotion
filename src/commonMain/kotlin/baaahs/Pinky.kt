@@ -58,7 +58,8 @@ class Pinky(
     internal val surfaceManager = SurfaceManager(modelRenderer)
 
     var stageManager: StageManager = StageManager(
-        plugins, modelRenderer, pubSub, storage, surfaceManager, dmxUniverse, movingHeadManager, clock, model
+        plugins, modelRenderer, pubSub, storage, surfaceManager, dmxUniverse, movingHeadManager, clock, model,
+        coroutineContext
     )
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {
