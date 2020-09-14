@@ -24,7 +24,6 @@ abstract class MutablePatchHolder(
     private val basePatchHolder: PatchHolder
 ) {
     protected abstract val mutableShow: MutableShow
-    abstract val descendents: List<MutablePatchHolder>
 
     var title = basePatchHolder.title
 
@@ -33,7 +32,7 @@ abstract class MutablePatchHolder(
     }
     val eventBindings = basePatchHolder.eventBindings.toMutableList()
 
-    private val controlLayout by lazy {
+    internal val controlLayout by lazy {
         basePatchHolder.controlLayout
             .mapValues { (_, v) ->
                 v.map { mutableShow.findControl(it) }.toMutableList()
@@ -65,27 +64,16 @@ abstract class MutablePatchHolder(
         return this
     }
 
-    fun findDataSources(): Set<DataSource> =
-        (
-            findControlDataSources() +
-                patches.flatMap { it.findDataSources() } +
-                descendents.flatMap { it.findDataSources() }
-        ).toSet()
-
-    fun findShaderInstances(): Set<MutableShaderInstance> =
-        (
-            patches.flatMap { it.findShaderInstances() } +
-                descendents.flatMap { it.findShaderInstances() }
-        ).toSet()
-
-    fun findShaderChannels(): Set<ShaderChannel> =
-        mutableShow.collectShaderChannels()
-
-    protected fun collectShaderChannels(): Set<ShaderChannel> =
-        (
-            patches.flatMap { it.findShaderChannels() } +
-                descendents.flatMap { it.collectShaderChannels() }
-        ).toSet()
+    fun findShaderChannels(): Set<ShaderChannel> {
+        val shaderChannels = hashSetOf<ShaderChannel>()
+        object : MutableShowVisitor() {
+            override fun visitShaderInstance(mutableShaderInstance: MutableShaderInstance) {
+                super.visitShaderInstance(mutableShaderInstance)
+                shaderChannels.addAll(mutableShaderInstance.findShaderChannels())
+            }
+        }
+        return shaderChannels
+    }
 
     fun addControl(panel: String, control: MutableControl) {
         controlLayout.getOrPut(panel) { arrayListOf() }.add(control)
@@ -142,7 +130,6 @@ class MutableShow(
     private val baseShow: Show
 ) : MutablePatchHolder(baseShow) {
     override val mutableShow: MutableShow get() = this
-    override val descendents: List<MutablePatchHolder> get() = scenes
 
     internal val controls = CacheBuilder<String, MutableControl> { id ->
         baseShow.controls.getBang(id, "control").toMutable(this)
@@ -177,28 +164,13 @@ class MutableShow(
         }
     }
 
-    private val scenes = baseShow.scenes.map { MutableScene(it) }.toMutableList()
     private val mutableLayouts = MutableLayouts(baseShow.layouts)
 
-    constructor(title: String) : this(Show(title))
+    constructor(title: String, block: MutableShow.() -> Unit = {}) : this(Show(title)) {
+        this.block()
+    }
 
     fun invoke(block: MutableShow.() -> Unit) = this.block()
-
-    fun addScene(title: String, block: MutableScene.() -> Unit): MutableShow {
-        scenes.add(MutableScene(Scene(title)).apply(block))
-        return this
-    }
-
-    fun getMutableScene(sceneIndex: Int): MutableScene = scenes[sceneIndex]
-
-    fun editScene(sceneIndex: Int, block: MutableScene.() -> Unit): MutableShow {
-        scenes[sceneIndex].apply(block)
-        return this
-    }
-
-    fun moveScene(fromIndex: Int, toIndex: Int) {
-        scenes.add(toIndex, scenes.removeAt(fromIndex))
-    }
 
     fun editLayouts(block: MutableLayouts.() -> Unit): MutableShow {
         mutableLayouts.apply(block)
@@ -211,7 +183,6 @@ class MutableShow(
             patches = patches.map { it.build(showBuilder) },
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder),
-            scenes = scenes.map { it.build(showBuilder) },
             layouts = mutableLayouts.build(),
             shaders = showBuilder.getShaders(),
             shaderInstances = showBuilder.getShaderInstances(),
@@ -224,6 +195,10 @@ class MutableShow(
 
     fun findControl(controlId: String): MutableControl =
         controls.getBang(controlId, "control")
+
+    fun edit(buttonGroupControl: OpenButtonGroupControl, block: MutableButtonGroupControl.() -> Unit = {}) {
+        (findControl(buttonGroupControl.id) as MutableButtonGroupControl).block()
+    }
 
     fun findDataSource(dataSourceId: String): MutableDataSource =
         dataSources.getBang(dataSourceId, "data source")
@@ -244,64 +219,6 @@ class MutableShow(
 
     fun findShaderInstance(id: String): MutableShaderInstance =
         shaderInstances.getBang(id, "shader instance")
-
-
-    inner class MutableScene(baseScene: Scene) : MutablePatchHolder(baseScene) {
-        override val mutableShow: MutableShow get() = this@MutableShow
-        override val descendents: List<MutablePatchHolder> get() = patchSets
-
-        private val patchSets = baseScene.patchSets.map { MutablePatchSet(it) }.toMutableList()
-
-        fun insertPatchSet(patchSetEditor: MutablePatchSet, index: Int): MutableScene {
-            patchSets.add(index, patchSetEditor)
-            return this
-        }
-
-        fun addPatchSet(title: String, block: MutablePatchSet.() -> Unit): MutableScene {
-            patchSets.add(MutablePatchSet(PatchSet(title)).apply(block))
-            return this
-        }
-
-        fun getMutablePatchSet(index: Int): MutablePatchSet = patchSets[index]
-
-        fun editPatchSet(index: Int, block: MutablePatchSet.() -> Unit): MutableScene {
-            patchSets[index].block()
-            return this
-        }
-
-        fun movePatchSet(fromIndex: Int, toIndex: Int) {
-            patchSets.add(toIndex, patchSets.removeAt(fromIndex))
-        }
-
-        fun removePatchSet(index: Int): MutableScene {
-            patchSets.removeAt(index)
-            return this
-        }
-
-        fun build(showBuilder: ShowBuilder): Scene {
-            return Scene(
-                title,
-                patches = patches.map { it.build(showBuilder) },
-                eventBindings = eventBindings,
-                controlLayout = buildControlLayout(showBuilder),
-                patchSets = patchSets.map { it.build(showBuilder) }
-            )
-        }
-
-        inner class MutablePatchSet(basePatchSet: PatchSet) : MutablePatchHolder(basePatchSet) {
-            override val mutableShow: MutableShow get() = this@MutableShow
-            override val descendents: List<MutablePatchHolder> get() = emptyList()
-
-            fun build(showBuilder: ShowBuilder): PatchSet {
-                return PatchSet(
-                    title,
-                    patches = patches.map { it.build(showBuilder) },
-                    eventBindings = eventBindings,
-                    controlLayout = buildControlLayout(showBuilder)
-                )
-            }
-        }
-    }
 
     companion object {
         fun create(title: String): Show {
@@ -441,9 +358,6 @@ class MutableButtonControl(
     baseButtonControl: ButtonControl,
     override val mutableShow: MutableShow
 ): MutablePatchHolder(baseButtonControl), MutableControl {
-    override val descendents: List<MutablePatchHolder>
-        get() = TODO("not implemented")
-
     override fun build(showBuilder: ShowBuilder): Control {
         return ButtonControl(
             title,
@@ -573,6 +487,52 @@ data class MutableConstPort(private val glsl: String) : MutablePort {
         ConstPortRef(glsl)
 
     override fun displayName(): String = "const($glsl)"
+}
+
+abstract class MutableShowVisitor {
+    open fun visitShow(mutableShow: MutableShow) {
+        visitPatchHolder(mutableShow)
+    }
+
+    open fun visitPatchHolder(mutablePatchHolder: MutablePatchHolder) {
+        mutablePatchHolder.patches.forEach {
+            visitPatch(it)
+        }
+
+        mutablePatchHolder.controlLayout.forEach { (panelName, mutableControls) ->
+            mutableControls.forEach { mutableControl ->
+                visitPlacedControl(panelName, mutableControl)
+            }
+        }
+    }
+
+    open fun visitPlacedControl(panelName: String, mutableControl: MutableControl) {
+        if (mutableControl is MutablePatchHolder) {
+            visitPatchHolder(mutableControl)
+        }
+
+        if (mutableControl is ControlContainer) {
+            visitControlContainer(mutableControl)
+        }
+    }
+
+    open fun visitControlContainer(mutableControl: ControlContainer) {
+        mutableControl.containedControls().forEach { containedControl ->
+            if (containedControl.isActive() && containedControl is MutablePatchHolder) {
+                visitPatchHolder(containedControl)
+            }
+        }
+    }
+
+    open fun visitPatch(mutablePatch: MutablePatch) {
+        mutablePatch.mutableShaderInstances.forEach {
+            visitShaderInstance(it)
+        }
+    }
+
+    open fun visitShaderInstance(mutableShaderInstance: MutableShaderInstance) {
+    }
+
 }
 
 class ShowBuilder {

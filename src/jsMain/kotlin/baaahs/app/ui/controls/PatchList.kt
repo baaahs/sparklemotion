@@ -4,38 +4,38 @@ import baaahs.app.ui.Draggable
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.xComponent
 
-class DraggablePatch(
-    private val editor: MutableShow,
-    private val sceneIndex: Int,
-    private val patchSetIndex: Int,
-    private val onEdit: () -> Unit
-) : Draggable {
-    lateinit var mutablePatchSet: MutableShow.MutableScene.MutablePatchSet
-
-    init {
-        editor.editScene(sceneIndex) {
-            editPatchSet(patchSetIndex) {
-                mutablePatchSet = this
-            }
-        }
-    }
-
-    fun remove() {
-        editor.editScene(sceneIndex) {
-            removePatchSet(patchSetIndex)
-        }
-    }
-
-    fun addTo(sceneIndex: Int, index: Int) {
-        editor.editScene(sceneIndex) {
-            insertPatchSet(mutablePatchSet, index)
-        }
-    }
-
-    override fun onMove() {
-        onEdit()
-    }
-}
+//class DraggablePatch(
+//    private val editor: MutableShow,
+//    private val sceneIndex: Int,
+//    private val patchSetIndex: Int,
+//    private val onEdit: () -> Unit
+//) : Draggable {
+//    lateinit var mutablePatchSet: MutableShow.MutableScene.MutablePatchSet
+//
+//    init {
+//        editor.editScene(sceneIndex) {
+//            editPatchSet(patchSetIndex) {
+//                mutablePatchSet = this
+//            }
+//        }
+//    }
+//
+//    fun remove() {
+//        editor.editScene(sceneIndex) {
+//            removePatchSet(patchSetIndex)
+//        }
+//    }
+//
+//    fun addTo(sceneIndex: Int, index: Int) {
+//        editor.editScene(sceneIndex) {
+//            insertPatchSet(mutablePatchSet, index)
+//        }
+//    }
+//
+//    override fun onMove() {
+//        onEdit()
+//    }
+//}
 
 val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
 //    val appContext = useContext(appContext)

@@ -7,11 +7,15 @@ import baaahs.show.ButtonGroupControl
 import baaahs.show.DataSource
 import baaahs.show.ShowContext
 import baaahs.show.mutable.MutableButtonControl
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
 
 interface OpenControl {
     val id: String
     val gadget: Gadget?
     fun isActive(): Boolean = true
+    fun getState(): Map<String, JsonElement>? = gadget?.state
+    fun applyState(state: Map<String, JsonElement>) = gadget?.applyState(state)
     fun controlledDataSources(): Set<DataSource> = emptySet()
     fun addTo(activeSetBuilder: ActiveSetBuilder, panelId: String, depth: Int) {}
     fun applyConstraints() {}
@@ -23,12 +27,11 @@ class OpenGadgetControl(
     val controlledDataSource: DataSource
 ) : OpenControl {
     override fun controlledDataSources(): Set<DataSource> = setOf(controlledDataSource)
-
 }
 
 class OpenButtonControl(
     override val id: String,
-    private val buttonControl: ButtonControl,
+    buttonControl: ButtonControl,
     openContext: OpenContext
 ) : OpenPatchHolder(buttonControl, openContext), OpenControl {
     override val gadget: Switch = Switch(buttonControl.title)
@@ -44,10 +47,10 @@ class OpenButtonControl(
             addTo(activeSetBuilder, depth)
         }
     }
-}
 
-interface ControlContainer {
-    fun containedControls() : List<OpenControl>
+    fun click() {
+        isPressed = !isPressed
+    }
 }
 
 class OpenButtonGroupControl(
@@ -91,4 +94,8 @@ class OpenButtonGroupControl(
     override fun addTo(activeSetBuilder: ActiveSetBuilder, panelId: String, depth: Int) {
         buttons.forEach { it.addTo(activeSetBuilder, panelId, depth + 1) }
     }
+}
+
+interface ControlContainer {
+    fun containedControls() : List<OpenControl>
 }

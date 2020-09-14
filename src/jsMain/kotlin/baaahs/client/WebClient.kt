@@ -52,16 +52,22 @@ class WebClient(
     }
 
     private val showPlayer = ClientShowPlayer(plugins, glslContext, pubSub, model)
-    private var showStateSynced = false
     private val showEditStateChannel =
         pubSub.subscribe(
             ShowEditorState.createTopic(plugins, remoteFsSerializer)
         ) { incoming ->
             switchTo(incoming)
             undoStack.reset(incoming)
-            showStateSynced = true
             facade.notifyChanged()
         }
+
+    private var pinkyState: PinkyState? = null
+    init {
+        pubSub.subscribe(Topics.pinkyState) { newState ->
+            pinkyState = newState
+            facade.notifyChanged()
+        }
+    }
 
     private val serverNotices = arrayListOf<Pinky.ServerNotice>()
     private val serverNoticesChannel =
@@ -144,7 +150,7 @@ class WebClient(
             get() = this@WebClient.clientData?.fsRoot
 
         val isLoaded: Boolean
-            get() = this@WebClient.showStateSynced && clientData != null
+            get() = this@WebClient.pinkyState == PinkyState.Running && clientData != null
 
         val show: Show?
             get() = this@WebClient.show

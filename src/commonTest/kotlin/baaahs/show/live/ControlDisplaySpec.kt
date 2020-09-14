@@ -5,6 +5,7 @@ import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.show.Layout
 import baaahs.show.Layouts
+import baaahs.show.Patch
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
@@ -91,30 +92,42 @@ object ControlDisplaySpec : Spek({
 
             val panel1 by value { openShow.controlLayout["Panel 1"] ?: emptyList() }
             val scenesButtonGroup by value { panel1.first() as OpenButtonGroupControl }
+            val scene1Button by value { scenesButtonGroup.buttons.first() }
+            val backdrops1ButtonGroup by value { scene1Button.controlLayout["Panel 2"]!!.first() as OpenButtonGroupControl }
+            val backdrop11Button by value { backdrops1ButtonGroup.buttons.first() }
 
             it("renders controls appropriately") {
                 expect(
                     """
-                    Panel 1:
-                      |0| scenesButtonGroup
-                    Panel 2:
-                      |0|
-                      |1| backdropsButtonGroup
-                    Panel 3:
-                      |0|
-                      |1| sliderSliderControl
-                """.trimIndent()
+                        Panel 1:
+                          |Show| scenesButtonGroup
+                        Panel 2:
+                          |Show| 
+                          |Scene 1| backdropsButtonGroup
+                        Panel 3:
+                          |Show| 
+                          |Scene 1| slider1SliderControl
+                    """.trimIndent()
                 ) { openShow.fakeRender(controlDisplay) }
-                expect(emptyList()) { controlDisplay.unplacedControls }
+                expect(setOf(
+                    "backdrop11Button", "slider2SliderControl", "backdrop12Button", "scene1Button",
+                    "backdrop21Button", "backdrop22Button", "backdropsButtonGroup2", "scene2Button"
+                )) { controlDisplay.unplacedControls.map { it.id }.toSet() }
             }
 
             it("has the first item in the button group selected by default") {
                 expect(listOf(true, false)) { scenesButtonGroup.buttons.map { it.isPressed } }
 
-                expect(openShow.patches + scenesButtonGroup.buttons[0].patches) {
-                    openShow.activeSet().getActivePatches()
+                expect(
+                    (openShow.patches + scene1Button.patches + backdrop11Button.patches).prettyPrint()
+                ) {
+                    openShow.activeSet().getActivePatches().prettyPrint()
                 }
             }
         }
     }
 })
+
+fun List<OpenPatch>.prettyPrint(): List<String> {
+    return flatMap { it.shaderInstances.map { it.shader.title } }
+}

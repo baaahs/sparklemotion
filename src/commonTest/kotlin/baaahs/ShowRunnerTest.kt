@@ -22,13 +22,12 @@ import kotlin.test.expect
 
 @InternalCoroutinesApi
 class ShowRunnerTest {
-    private val testCoroutineContext = TestCoroutineContext("network")
+    private lateinit var testCoroutineContext: TestCoroutineContext
     private val network = TestNetwork(0)
     private val serverNetwork = network.link("test")
-    private val server = PubSub.listen(serverNetwork.startHttpServer(1234), testCoroutineContext)
+    private lateinit var server: PubSub.Server
 
     private val fs = FakeFs()
-    private val movingHeadManager = MovingHeadManager(fs, server, emptyList())
 
     private lateinit var renderSurfaces: Map<Surface, RenderSurface>
     private val surface1Messages = mutableListOf<Pixels>()
@@ -46,14 +45,17 @@ class ShowRunnerTest {
 
     @BeforeTest
     fun setUp() {
+        testCoroutineContext = TestCoroutineContext("network")
+        server = PubSub.listen(serverNetwork.startHttpServer(1234), testCoroutineContext)
         fakeGlslContext = FakeGlContext()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
         val glslRenderer = ModelRenderer(fakeGlslContext, ModelInfo.Empty)
         surfaceManager = SurfaceManager(glslRenderer)
+        val movingHeadManager = MovingHeadManager(fs, server, emptyList())
         stageManager = StageManager(
             Plugins.safe(), glslRenderer, server, Storage(fs, Plugins.safe()), surfaceManager,
-            dmxUniverse, movingHeadManager, FakeClock(), sheepModel, coroutineContext
+            dmxUniverse, movingHeadManager, FakeClock(), sheepModel, testCoroutineContext
         )
         stageManager.switchTo(SampleData.sampleShow)
         renderSurfaces = surfaceManager.getRenderSurfaces_ForTestOnly()
@@ -205,7 +207,7 @@ class ShowRunnerTest {
         stageManager.renderAndSendNextFrame() // Create show and request gadgets.
         expect(1) { renderSurfaces.size }
 
-        val originalSlider = stageManager.useGadget<Slider>("brightnessSlider")
+        val originalSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
         expect(1.0f) { originalSlider.value }
         originalSlider.value = 0.5f
 
@@ -213,7 +215,7 @@ class ShowRunnerTest {
         stageManager.renderAndSendNextFrame() // Recreate show and restore gadget state.
         expect(2) { renderSurfaces.size }
 
-        val recreatedSlider = stageManager.useGadget<Slider>("brightnessSlider")
+        val recreatedSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
         expect(0.5f) { recreatedSlider.value }
     }
 
@@ -227,7 +229,7 @@ class ShowRunnerTest {
 
         expect(0) { serverNetwork.packetsToSend.size }
 
-        val originalSlider = stageManager.useGadget<Slider>("brightnessSlider")
+        val originalSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
         expect(1.0f) { originalSlider.value }
         originalSlider.value = 0.5f
 
@@ -235,7 +237,7 @@ class ShowRunnerTest {
         stageManager.renderAndSendNextFrame() // Recreate show and restore gadget state.
         expect(2) { renderSurfaces.size }
 
-        val recreatedSlider = stageManager.useGadget<Slider>("brightnessSlider")
+        val recreatedSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
         expect(0.5f) { recreatedSlider.value }
     }
 

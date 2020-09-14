@@ -299,7 +299,7 @@ class CorePlugin : Plugin {
         fun set(gadget: T, uniform: Uniform)
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
-            val gadget = showPlayer.useGadget<T>(this) ?: createGadget()
+            val gadget = showPlayer.useGadget(this) ?: createGadget()
             return object : GadgetDataFeed, RefCounted by RefCounter() {
                 override val id: String = id
                 override val gadget: Gadget = gadget

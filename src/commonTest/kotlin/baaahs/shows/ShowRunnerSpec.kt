@@ -12,10 +12,12 @@ import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.model.ModelInfo
 import baaahs.model.MovingHead
+import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.shaders.FakeSurface
 import baaahs.show.Shader
 import baaahs.show.ShaderType
+import baaahs.show.mutable.MutableGadgetControl
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
@@ -25,6 +27,7 @@ import baaahs.sim.FakeNetwork
 import com.danielgergely.kgl.*
 import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.serialization.json.JsonPrimitive
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.dsl.GroupBody
 import org.spekframework.spek2.dsl.Skip
@@ -46,18 +49,18 @@ object ShowRunnerSpec : Spek({
         val model by value { TestModel() }
         val autoWirer by value { AutoWirer(Plugins.safe()) }
         val surfaces by value { listOf(FakeSurface(100)) }
-        val show by value {
-            MutableShow("test show").apply {
+        val mutableShow by value {
+            MutableShow("test show") {
                 addPatch(
                     autoWirer.autoWire(Shaders.cylindricalProjection, Shaders.blue)
                         .acceptSymbolicChannelLinks().resolve()
                 )
                 addButtonGroup(
-                    "Panel", "Scenes",
+                    "Panel", "Scenes"
                 ) {
                     addButton("test scene") {
                         addButtonGroup(
-                            "Panel", "Backdrops",
+                            "Panel", "Backdrops"
                         ) {
                             addButton("test patchset") {
                                 addPatch(
@@ -68,7 +71,16 @@ object ShowRunnerSpec : Spek({
                         }
                     }
                 }
-            }.build(ShowBuilder())
+            }
+        }
+        val show by value { mutableShow.build(ShowBuilder()) }
+        val showState by value {
+            ShowState(
+                mapOf(
+                    "testPatchsetButton" to mapOf("enabled" to JsonPrimitive(true)),
+                    "testSceneButton" to mapOf("enabled" to JsonPrimitive(true))
+                )
+            )
         }
         val testCoroutineContext by value { TestCoroutineContext("Test") }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0), testCoroutineContext) }
@@ -78,14 +90,17 @@ object ShowRunnerSpec : Spek({
             val fs = FakeFs()
             StageManager(
                 Plugins.safe(), glslRenderer, pubSub, Storage(fs, Plugins.safe()), surfaceManager, FakeDmxUniverse(),
-                MovingHeadManager(fs, pubSub, emptyList()), FakeClock(), model, coroutineContext
+                MovingHeadManager(fs, pubSub, emptyList()), FakeClock(), model, testCoroutineContext
             )
         }
 
         val fakeProgram by value { fakeGlslContext.programs[1] }
 
+        val addControls by value { {} }
+
         beforeEachTest {
-            stageManager.switchTo(show)
+            addControls()
+            stageManager.switchTo(show, showState)
             surfaceManager.surfacesChanged(surfaces.map { FakeSurfaceReceiver(it) {} }, emptyList())
             stageManager.renderAndSendNextFrame()
         }
@@ -112,8 +127,15 @@ object ShowRunnerSpec : Spek({
                     """.trimIndent()
                 }
 
+                override(addControls) {
+                    {
+                        val colorPickerDataSource = CorePlugin.ColorPickerDataSource("Color", Color.WHITE)
+                        mutableShow.addControl("Panel", colorPickerDataSource.buildControl())
+                    }
+                }
+
                 val colorPickerGadget by value {
-                    stageManager.useGadget<ColorPicker>("colorColorPicker")
+                    stageManager.useGadget<ColorPicker>("colorColorPickerControl")
                 }
 
                 it("wires it up as a color picker") {
