@@ -88,6 +88,9 @@ class Pinky(
         }
     }
 
+    private var pinkyState = PinkyState.Initializing
+    private val pinkyStateChannel = pubSub.publish(Topics.pinkyState, pinkyState) {}
+
     init {
         httpServer.listenWebSocket("/ws/api") {
             WebSocketRouter(coroutineContext) { PinkyMapperHandlers(storage).register(this) }
@@ -165,7 +168,13 @@ class Pinky(
             }.join()
 
             isStartedUp = true
+            updatePinkyState(PinkyState.Running)
         }
+    }
+
+    private fun updatePinkyState(newState: PinkyState) {
+        pinkyState = newState
+        pinkyStateChannel.onChange(newState)
     }
 
     private suspend fun launchDaemonJobs(): Job {
@@ -529,3 +538,10 @@ class BrainInfo(
     val surfaceReceiver: ShowRunner.SurfaceReceiver,
     var hadException: Boolean = false
 )
+
+@Serializable
+enum class PinkyState {
+    Initializing,
+    Running,
+    ShuttingDown
+}

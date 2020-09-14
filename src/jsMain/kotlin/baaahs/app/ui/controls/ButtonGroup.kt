@@ -6,6 +6,7 @@ import baaahs.app.ui.appContext
 import baaahs.show.ButtonGroupControl
 import baaahs.show.live.OpenButtonGroupControl
 import baaahs.show.live.OpenShow
+import baaahs.show.live.View
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableButtonControl
 import baaahs.show.mutable.MutableButtonGroupControl
@@ -25,6 +26,8 @@ import org.w3c.dom.events.Event
 import react.dom.div
 import react.key
 import react.useContext
+
+class ButtonGroupView(val openControl: OpenButtonGroupControl) : View
 
 val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
     val appContext = useContext(appContext)
@@ -83,9 +86,9 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 
                 buttonGroupControl.buttons.forEachIndexed { index, buttonControl ->
                     draggable({
-                        key = buttonControl.id
-                        draggableId = buttonControl.id
-                        isDragDisabled = !props.editMode
+                        this.key = buttonControl.id
+                        this.draggableId = buttonControl.id
+                        this.isDragDisabled = !props.editMode
                         this.index = index
                     }) { sceneDragProvided, _ ->
 //                            div {
@@ -96,7 +99,9 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                             copyFrom(sceneDragProvided.draggableProps)
 
                             div(+Styles.editButton) {
-                                attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
+                                if (props.editMode) {
+                                    attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
+                                }
 
                                 icon(Edit)
                             }
@@ -119,7 +124,6 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                                     attrs["selected"] = buttonControl.isPressed
                                     attrs.onClickFunction = {
                                         buttonGroupControl.clickOn(index)
-//                                        val newState = props.showState.selectScene(index)
                                         props.onShowStateChange()
                                     }
 
@@ -139,9 +143,10 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                         icon(AddCircleOutline)
                         attrs.onClickFunction = { _: Event ->
                             props.show.edit {
-                                val mutableShow = this
-                                addScene("Untitled") {
-                                    props.editPatchHolder(PatchHolderEditContext(mutableShow, this))
+                                edit(props.buttonGroupControl) {
+                                    addButton("Untitled") {
+                                        props.editPatchHolder(PatchHolderEditContext(mutableShow, this))
+                                    }
                                 }
                             }
                         }

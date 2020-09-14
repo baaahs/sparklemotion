@@ -173,7 +173,7 @@ object SampleData {
         "Checkerboard Size", .1f, .001f, 1f, null
     )
 
-    val sampleShow = MutableShow("Sample Show").apply {
+    val sampleShow: Show get() = MutableShow("Sample Show").apply {
         editLayouts {
             copyFrom(layouts)
         }

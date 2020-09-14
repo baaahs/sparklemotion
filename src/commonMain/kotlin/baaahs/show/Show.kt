@@ -27,7 +27,6 @@ data class Show(
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
     override val controlLayout: Map<String, List<String>> = emptyMap(),
-    val scenes: List<Scene> = emptyList(),
     val layouts: Layouts = Layouts(),
     val shaders: Map<String, Shader> = emptyMap(),
     val shaderInstances: Map<String, ShaderInstance> = emptyMap(),
@@ -65,23 +64,6 @@ class ShowSerialModule(private val delegate: SerialModule) : SerialModule by del
         return delegate.getContextual(kclass)
     }
 }
-
-@Serializable
-data class Scene(
-    override val title: String,
-    override val patches: List<Patch> = emptyList(),
-    override val eventBindings: List<EventBinding> = emptyList(),
-    override val controlLayout: Map<String, List<String>> = emptyMap(),
-    val patchSets: List<PatchSet> = emptyList()
-) : PatchHolder
-
-@Serializable
-data class PatchSet(
-    override val title: String,
-    override val patches: List<Patch> = emptyList(),
-    override val eventBindings: List<EventBinding> = emptyList(),
-    override val controlLayout: Map<String, List<String>> = emptyMap()
-) : PatchHolder
 
 @Serializable
 data class Patch(

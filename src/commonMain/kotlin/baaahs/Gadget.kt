@@ -93,6 +93,14 @@ abstract class Gadget {
     @Transient
     val state: MutableMap<String, JsonElement> = hashMapOf()
 
+    /**
+     * Applies initial state.
+     */
+    fun applyState(newState: Map<String, JsonElement>) {
+        state.putAll(newState)
+        changed()
+    }
+
     private class Listener(val callback: GadgetListener, var enabled: Boolean = true)
 
     companion object {

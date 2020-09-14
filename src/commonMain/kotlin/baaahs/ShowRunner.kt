@@ -118,7 +118,7 @@ class ShowRunner(
     private fun prepareRenderPlan(activeSet: ActiveSet): RenderPlan {
         try {
             val activePatchHolders = activeSet.getPatchHolders()
-            println("active patches = ${activePatchHolders.map { it.patches }}")
+            println("active patches = ${activePatchHolders.map { it.title }}")
 
             val linkedPatches = autoWirer.merge(*activePatchHolders.toTypedArray()).mapValues { (_, portDiagram) ->
                 portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)

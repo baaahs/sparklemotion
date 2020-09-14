@@ -2,7 +2,6 @@ package baaahs.sim.ui
 
 import baaahs.Brain
 import baaahs.SheepSimulator
-import baaahs.show.PatchSet
 import baaahs.ui.BComponent
 import baaahs.ui.Observable
 import baaahs.ui.Observer
@@ -92,6 +91,5 @@ external interface ConsoleProps : RProps {
 }
 
 external interface ConsoleState : RState {
-    var selectedPatchSet: PatchSet
     var selectedBrain: Brain.Facade?
 }

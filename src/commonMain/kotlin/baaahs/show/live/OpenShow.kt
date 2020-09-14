@@ -1,12 +1,15 @@
 package baaahs.show.live
 
 import baaahs.*
-import baaahs.show.*
+import baaahs.show.DataSource
+import baaahs.show.Show
+import baaahs.show.ShowContext
 import baaahs.show.mutable.MutableShow
 
 interface OpenContext {
     val allControls: List<OpenControl>
 
+    fun findControl(id: String): OpenControl?
     fun getControl(id: String): OpenControl
     fun getDataSource(id: String): DataSource
     fun getShaderInstance(it: String): LiveShaderInstance
@@ -59,12 +62,24 @@ class OpenShow(
     fun getShowState(): ShowState {
         return ShowState(
             allControls.mapNotNull { control ->
-                control.gadget?.let { gadget -> control.id to gadget.state }
+                control.getState()?.let { control.id to it }
             }.associate { it }
         )
     }
 
     fun applyState(showState: ShowState) {
+        showState.controls.forEach { (id, state) ->
+            val control = openContext.findControl(id)
+            if (control != null) {
+                control.applyState(state)
+            } else {
+                logger.debug { "Can't apply state to unknown control \"$id\"" }
+            }
+        }
+    }
+
+    companion object {
+        private val logger = Logger("OpenShow")
     }
 }
 

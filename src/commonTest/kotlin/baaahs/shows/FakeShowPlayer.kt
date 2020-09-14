@@ -25,6 +25,7 @@ class FakeShowPlayer(
     private val dataFeeds = mutableMapOf<DataSource, GlslProgram.DataFeed>()
     val gadgets: MutableMap<String, Gadget> = mutableMapOf()
     override val dataSources: List<DataSource> get() = dataFeeds.keys.toList()
+    private val dataSourceGadgets: MutableMap<DataSource, Gadget> = mutableMapOf()
 
     override fun openShader(shader: Shader, addToCache: Boolean): OpenShader {
         return if (addToCache) {
@@ -41,6 +42,7 @@ class FakeShowPlayer(
         dataFeeds.getBang(dataSource, "datafeed")
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
+        controlledDataSource?.let { dataSourceGadgets[controlledDataSource] = gadget }
     }
 
     override fun releaseUnused() {
@@ -61,11 +63,13 @@ class FakeShowPlayer(
 //    }
 
     override fun <T : Gadget> useGadget(id: String): T {
+        @Suppress("UNCHECKED_CAST")
         return gadgets[id] as T
     }
 
-    override fun <T : Gadget> useGadget(dataSource: DataSource): T {
-        TODO("not implemented")
+    override fun <T : Gadget> useGadget(dataSource: DataSource): T? {
+        @Suppress("UNCHECKED_CAST")
+        return dataSourceGadgets[dataSource] as T?
     }
 
     fun drawFrame() {
@@ -77,6 +81,7 @@ class FakeShowPlayer(
     }
 
     fun <T : Gadget> getGadget(name: String): T {
+        @Suppress("UNCHECKED_CAST")
         return gadgets[name] as T
     }
 }
