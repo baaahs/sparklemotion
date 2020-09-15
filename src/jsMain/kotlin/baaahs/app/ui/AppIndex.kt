@@ -63,8 +63,10 @@ import styled.styledDiv
 import kotlin.browser.window
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
-    injectGlobal(Styles.global.toString())
-    injectGlobal(baaahs.app.ui.controls.Styles.global.toString())
+    onChange("global styles") {
+        injectGlobal(Styles.global.toString())
+        injectGlobal(baaahs.app.ui.controls.Styles.global.toString())
+    }
 
     val webClient = props.webClient
     observe(webClient)
@@ -75,16 +77,18 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var darkMode by state { false }
     val handleDarkModeChange = useCallback(darkMode) { _: Event -> darkMode = !darkMode }
 
-    val theme = createMuiTheme {
-        palette {
-            type = if (darkMode) PaletteType.dark else PaletteType.light
+    val theme = memo(darkMode) {
+        createMuiTheme {
+            palette {
+                type = if (darkMode) PaletteType.dark else PaletteType.light
+            }
         }
     }
 
     val dragNDrop by state { ReactBeautifulDragNDrop() }
     var prompt by state<Prompt?> { null }
 
-    val myAppContext by state {
+    val myAppContext = memo(theme) {
         jsObject<AppContext> {
             this.showPlayer = props.showPlayer
             this.dragNDrop = dragNDrop
@@ -98,7 +102,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     }
 
     val themeStyles = myAppContext.allStyles.appUi
-    injectGlobal(themeStyles.global.toString())
+    onChange("theme global styles", themeStyles) { injectGlobal(themeStyles.global.toString()) }
 
     var appDrawerOpen by state { false }
     var layoutEditorDialogOpen by state { false }
@@ -220,12 +224,11 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         webClient.onCloseShow()
     }
 
-    val handleShowEditButtonClick = useCallback { _: Event ->
+    val handleShowEditButtonClick = useCallback {
         webClient.show?.let { show ->
             val mutableShow = MutableShow(show)
             patchHolderEditContext = PatchHolderEditContext(mutableShow, mutableShow)
         }
-        Unit
     }
 
     val handlePromptClose = useCallback { prompt = null }
@@ -278,8 +281,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         iconButton {
                             attrs.color = ButtonColor.inherit
                             attrs.edge = IconButtonEdge.start
-                            attrs.onClickFunction =
-                                this@xComponent.handler("closeDrawer") { _ -> handleAppDrawerToggle() }
+                            attrs.onClickFunction = handleAppDrawerToggle.withEvent()
                             icon(Menu)
                         }
 
@@ -292,7 +294,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             if (show != null && editMode) {
                                 div(+themeStyles.editButton) {
                                     icon(Edit)
-                                    attrs.onClickFunction = handleShowEditButtonClick
+                                    attrs.onClickFunction = handleShowEditButtonClick.withEvent()
                                 }
                             }
                         }
