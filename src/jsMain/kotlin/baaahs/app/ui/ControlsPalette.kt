@@ -4,7 +4,6 @@ import baaahs.app.ui.controls.SpecialControlProps
 import baaahs.app.ui.controls.control
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.ShowBuilder
 import baaahs.ui.*
 import external.Direction
 import external.draggable
@@ -13,7 +12,6 @@ import external.react_draggable.Draggable
 import materialui.DragIndicator
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
-import materialui.components.portal.portal
 import materialui.components.typography.typographyH6
 import materialui.icon
 import org.w3c.dom.HTMLElement
@@ -43,41 +41,43 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
 
                 typographyH6 { +"Unplaced Controls" }
 
-                droppable({
-                    this.droppableId = props.controlDisplay.unplacedControlsDropTargetId
-                    this.type = "ControlPanel"
-                    this.direction = Direction.vertical.name
-                    this.isDropDisabled = !props.editMode
-                }) { droppableProvided, _ ->
-                    div(+Styles.unplacedControlsDroppable) {
-                        install(droppableProvided)
+                if (props.editMode) {
+                    droppable({
+                        this.droppableId = props.controlDisplay.unplacedControlsDropTargetId
+                        this.type = "ControlPanel"
+                        this.direction = Direction.vertical.name
+                        this.isDropDisabled = !props.editMode
+                    }) { droppableProvided, _ ->
+                        div(+Styles.unplacedControlsDroppable) {
+                            install(droppableProvided)
 
-                        props.controlDisplay.renderUnplacedControls { index, unplacedControl ->
-                            val draggableId = "unplaced-${unplacedControl.id}"
-                            draggable({
-                                this.key = draggableId
-                                this.draggableId = draggableId
-                                this.isDragDisabled = !props.editMode
-                                this.index = index
-                            }) { draggableProvided, snapshot ->
-                                if (snapshot.isDragging) {
+                            props.controlDisplay.renderUnplacedControls { index, unplacedControl ->
+                                val draggableId = "unplaced-${unplacedControl.id}"
+                                draggable({
+                                    this.key = draggableId
+                                    this.draggableId = draggableId
+                                    this.isDragDisabled = !props.editMode
+                                    this.index = index
+                                }) { draggableProvided, snapshot ->
+                                    if (snapshot.isDragging) {
 //                                    // Correct for translated parent.
 //                                    unplacedControlPaletteDiv.current?.let {
 //                                        val draggableStyle = draggableProvided.draggableProps.asDynamic().style
 //                                        draggableStyle.left -= it.offsetLeft
 //                                        draggableStyle.top -= it.offsetTop
 //                                    }
-                                }
+                                    }
 
-                                control {
-                                    attrs.control = unplacedControl
-                                    attrs.specialControlProps = props.specialControlProps
-                                    attrs.draggableProvided = draggableProvided
+                                    control {
+                                        attrs.control = unplacedControl
+                                        attrs.specialControlProps = props.specialControlProps
+                                        attrs.draggableProvided = draggableProvided
+                                    }
                                 }
                             }
-                        }
 
-                        insertPlaceholder(droppableProvided)
+                            insertPlaceholder(droppableProvided)
+                        }
                     }
                 }
             }
