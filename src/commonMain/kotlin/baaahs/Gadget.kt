@@ -81,8 +81,8 @@ abstract class Gadget {
         }
     }
 
-    protected fun <T> updatable(name: String, initialValue: T, serializer: KSerializer<T>) =
-        GadgetValueObserver(name, initialValue, serializer, state) { changed() }
+    protected fun <T> updatable(name: String, initialValue: T, serializer: KSerializer<T>): ReadWriteProperty<Gadget, T> =
+        GadgetValueObserver(name, initialValue, serializer) { changed() }
 
     /**
      * Implementing child classes should change their state a little bit in some valid way, as if a user had done it.
@@ -117,15 +117,14 @@ abstract class Gadget {
 
 typealias GadgetListener = (Gadget) -> Unit
 
-class GadgetValueObserver<T>(
+private class GadgetValueObserver<T>(
     val name: String,
     val initialValue: T,
     private val serializer: KSerializer<T>,
-    val data: MutableMap<String, JsonElement>,
     val onChange: () -> Unit
 ) : ReadWriteProperty<Gadget, T> {
     override fun getValue(thisRef: Gadget, property: KProperty<*>): T {
-        val value = data[name]
+        val value = thisRef.state[name]
         return if (value == null) initialValue else {
             jsonParser.fromJson(serializer, value)
         }
@@ -133,7 +132,7 @@ class GadgetValueObserver<T>(
 
     override fun setValue(thisRef: Gadget, property: KProperty<*>, value: T) {
         if (getValue(thisRef, property) != value) {
-            data[name] = jsonParser.toJson(serializer, value)
+            thisRef.state[name] = jsonParser.toJson(serializer, value)
             onChange()
         }
     }

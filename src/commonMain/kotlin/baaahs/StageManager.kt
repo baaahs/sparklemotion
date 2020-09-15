@@ -17,16 +17,13 @@ import baaahs.show.Show
 import baaahs.show.Surfaces
 import baaahs.show.buildEmptyShow
 import baaahs.show.live.ActiveSet
-import baaahs.show.live.OpenPatchHolder
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 class StageManager(
     plugins: Plugins,
@@ -72,10 +69,11 @@ class StageManager(
         val topic =
             PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
         val channel = pubSub.publish(topic, gadget.state) { updated ->
-            gadget.state.putAll(updated)
-            lastUserInteraction = DateTime.now()
-            if (!gadgetsChangedJobEnqueued) {
-                CoroutineScope(coroutineContext).launch {
+            CoroutineScope(coroutineContext).launch {
+                gadget.state.putAll(updated)
+                lastUserInteraction = DateTime.now()
+
+                if (!gadgetsChangedJobEnqueued) {
                     onGadgetChange()
                     gadgetsChangedJobEnqueued = false
                 }
