@@ -13,38 +13,23 @@ import baaahs.ui.*
 import baaahs.util.UndoStack
 import external.ErrorBoundary
 import kotlinext.js.jsObject
-import kotlinx.css.opacity
-import kotlinx.css.properties.Timing
-import kotlinx.css.properties.s
-import kotlinx.css.properties.transition
-import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
-import materialui.*
-import materialui.components.appbar.appBar
-import materialui.components.appbar.enums.AppBarPosition
-import materialui.components.appbar.enums.AppBarStyle
+import materialui.NotificationImportant
 import materialui.components.backdrop.backdrop
 import materialui.components.backdrop.enum.BackdropStyle
-import materialui.components.button.enums.ButtonColor
 import materialui.components.circularprogress.circularProgress
 import materialui.components.container.container
 import materialui.components.cssbaseline.cssBaseline
 import materialui.components.dialog.dialog
 import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.iconbutton.enums.IconButtonEdge
-import materialui.components.iconbutton.enums.IconButtonStyle
-import materialui.components.iconbutton.iconButton
 import materialui.components.list.list
 import materialui.components.listitem.listItem
 import materialui.components.listitemtext.listItemText
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
-import materialui.components.switches.switch
-import materialui.components.toolbar.toolbar
-import materialui.components.typography.enums.TypographyStyle
 import materialui.components.typography.typographyH6
+import materialui.icon
 import materialui.lab.components.alert.alert
 import materialui.lab.components.alert.enums.AlertColor
 import materialui.lab.components.alerttitle.alertTitle
@@ -54,12 +39,11 @@ import materialui.styles.palette.PaletteType
 import materialui.styles.palette.options.type
 import materialui.styles.themeprovider.themeProvider
 import org.w3c.dom.*
-import org.w3c.dom.events.Event
 import react.*
-import react.dom.*
-import styled.css
+import react.dom.code
+import react.dom.div
+import react.dom.p
 import styled.injectGlobal
-import styled.styledDiv
 import kotlin.browser.window
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
@@ -72,10 +56,10 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     observe(webClient)
 
     var editMode by state { false }
-    val handleEditModeChange = useCallback(editMode) { _: Event -> editMode = !editMode }
+    val handleEditModeChange = useCallback(editMode) { editMode = !editMode }
 
     var darkMode by state { false }
-    val handleDarkModeChange = useCallback(darkMode) { _: Event -> darkMode = !darkMode }
+    val handleDarkModeChange = useCallback(darkMode) { darkMode = !darkMode }
 
     val theme = memo(darkMode) {
         createMuiTheme {
@@ -113,23 +97,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         useCallback(appDrawerOpen) { appDrawerOpen = !appDrawerOpen }
 
     val handleLayoutEditorDialogToggle =
-        useCallback(layoutEditorDialogOpen) { _: Event -> layoutEditorDialogOpen = !layoutEditorDialogOpen }
+        useCallback(layoutEditorDialogOpen) { layoutEditorDialogOpen = !layoutEditorDialogOpen }
     val handleLayoutEditorDialogClose = useCallback { layoutEditorDialogOpen = false }
-
-    val undoStack = props.undoStack
-    val handleUndo = handler("handleUndo", undoStack) { _: Event ->
-        undoStack.undo().also { (show, showState) ->
-            webClient.onShowEdit(show, showState, pushToUndoStack = false)
-        }
-        Unit
-    }
-
-    val handleRedo = handler("handleRedo", undoStack) { _: Event ->
-        undoStack.redo().also { (show, showState) ->
-            webClient.onShowEdit(show, showState, pushToUndoStack = false)
-        }
-        Unit
-    }
 
     val handleEditPatchHolder = useCallback { forEdit: PatchHolderEditContext ->
         patchHolderEditContext = forEdit
@@ -224,13 +193,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         webClient.onCloseShow()
     }
 
-    val handleShowEditButtonClick = useCallback {
-        webClient.show?.let { show ->
-            val mutableShow = MutableShow(show)
-            patchHolderEditContext = PatchHolderEditContext(mutableShow, mutableShow)
-        }
-    }
-
     val handlePromptClose = useCallback { prompt = null }
 
     val forceAppDrawerOpen = webClient.isLoaded && webClient.show == null
@@ -274,88 +236,14 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             cssBaseline { }
 
             div(+Styles.root and appDrawerStateStyle and editModeStyle) {
-                appBar(themeStyles.appToolbar on AppBarStyle.root) {
-                    attrs.position = AppBarPosition.relative
-
-                    toolbar {
-                        iconButton {
-                            attrs.color = ButtonColor.inherit
-                            attrs.edge = IconButtonEdge.start
-                            attrs.onClickFunction = handleAppDrawerToggle.withEvent()
-                            icon(Menu)
-                        }
-
-                        typographyH6(themeStyles.title on TypographyStyle.root) {
-                            show?.let {
-                                b { +show.title }
-                                if (webClient.showIsModified) i { +" (Unsaved)" }
-                            }
-
-                            if (show != null && editMode) {
-                                div(+themeStyles.editButton) {
-                                    icon(Edit)
-                                    attrs.onClickFunction = handleShowEditButtonClick.withEvent()
-                                }
-                            }
-                        }
-
-                        div(+themeStyles.logotype) { +"Sparkle Motion™" }
-
-                        div(+themeStyles.appToolbarActions) {
-                            styledDiv {
-                                if (!editMode && !webClient.showIsModified) css { opacity = 0 }
-                                css {
-                                    transition("opacity", duration = .5.s, timing = Timing.linear)
-                                }
-
-                                iconButton(Styles.buttons on IconButtonStyle.root) {
-                                    icon(Undo)
-                                    attrs["disabled"] = !undoStack.canUndo()
-                                    attrs.onClickFunction = handleUndo
-
-                                    typographyH6 { +"Undo" }
-                                }
-
-                                iconButton(Styles.buttons on IconButtonStyle.root) {
-                                    icon(Redo)
-                                    attrs["disabled"] = !undoStack.canRedo()
-                                    attrs.onClickFunction = handleRedo
-
-                                    typographyH6 { +"Redo" }
-                                }
-
-                                if (webClient.showFile == null) {
-                                    iconButton(Styles.buttons on IconButtonStyle.root) {
-                                        icon(FileCopy)
-                                        attrs.onClickFunction = handleSaveShowAs.withEvent()
-                                        typographyH6 { +"Save As…" }
-                                    }
-                                } else {
-                                    iconButton(Styles.buttons on IconButtonStyle.root) {
-                                        icon(Save)
-                                        attrs["disabled"] = !webClient.showIsModified
-                                        attrs.onClickFunction = handleSaveShow.withEvent()
-                                        typographyH6 { +"Save" }
-                                    }
-                                }
-
-                                formControlLabel {
-                                    attrs.control {
-                                        switch {
-                                            attrs.checked = editMode
-                                            attrs.onChangeFunction = handleEditModeChange
-                                        }
-                                    }
-                                    attrs.label { typographyH6 { +"Design Mode" } }
-                                }
-                            }
-
-                            help {
-                                attrs.divClass = themeStyles.appToolbarHelpIcon.name
-                                attrs.inject(HelpText.appToolbar)
-                            }
-                        }
-                    }
+                appToolbar {
+                    attrs.editMode = editMode
+                    attrs.onEditModeChange = handleEditModeChange
+                    attrs.editPatchHolder = handleEditPatchHolder
+                    attrs.onMenuButtonClick = handleAppDrawerToggle
+                    attrs.undoStack = props.undoStack
+                    attrs.onSaveShow = handleSaveShow
+                    attrs.onSaveShowAs = handleSaveShowAs
                 }
 
                 appDrawer {
