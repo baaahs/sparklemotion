@@ -5,6 +5,7 @@ import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
 import baaahs.camelize
 import baaahs.getBang
+import baaahs.show.Layouts
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
@@ -15,27 +16,26 @@ class ControlDisplay(
     private val editHandler: EditHandler,
     private val dragNDrop: DragNDrop
 ) {
-    private val allPanelBuckets: Map<String, PanelBuckets>
+    private val allPanelBuckets = AllPanelBuckets(show.layouts)
     private val mutableShow = if (editMode) show.edit() else null
     private val placedControls = hashSetOf<OpenControl>()
     private var unplacedControlsDropTarget = UnplacedControlsDropTarget(mutableShow)
     val unplacedControlsDropTargetId = dragNDrop.addDropTarget(unplacedControlsDropTarget)
 
     init {
-        allPanelBuckets = show.layouts.panelNames.associateWith { panelTitle -> PanelBuckets(panelTitle) }
-
         object : OpenShowVisitor() {
             val breadcrumbs = arrayListOf<OpenPatchHolder>()
 
             override fun visitPatchHolder(openPatchHolder: OpenPatchHolder) {
+                allPanelBuckets.addTargetPatchHolder(openPatchHolder, breadcrumbs.size)
+
                 breadcrumbs.add(openPatchHolder)
                 super.visitPatchHolder(openPatchHolder)
                 breadcrumbs.removeLast()
             }
 
             override fun visitPlacedControl(panelName: String, openControl: OpenControl) {
-                allPanelBuckets.getBang(panelName, "panel")
-                    .addControl(openControl, breadcrumbs)
+                allPanelBuckets.addControl(panelName, openControl, breadcrumbs)
                 placedControls.add(openControl)
 
                 if (openControl.isActive()) {
@@ -58,8 +58,7 @@ class ControlDisplay(
     }
 
     fun render(panelTitle: String, renderBucket: RenderBucket) {
-        val panelBuckets = allPanelBuckets.getBang(panelTitle, "panel")
-        panelBuckets.render(renderBucket)
+        allPanelBuckets.render(panelTitle, renderBucket)
     }
 
     fun renderUnplacedControls(block: (index: Int, control: OpenControl) -> Unit) {
@@ -72,44 +71,67 @@ class ControlDisplay(
     }
 
     fun release() {
-        allPanelBuckets.values.forEach { it.release() }
+        allPanelBuckets.release()
         dragNDrop.removeDropTarget(unplacedControlsDropTarget)
     }
 
-    class AllPanelBuckets
+    inner class AllPanelBuckets(layouts: Layouts) {
+        private val byPanel = layouts.panelNames.associateWith { panelTitle -> PanelBuckets(panelTitle) }
+        private val sections = mutableListOf<Section>()
+        private var serialInt = 0
+
+        fun addTargetPatchHolder(openPatchHolder: OpenPatchHolder, depth: Int) {
+            val section = Section(openPatchHolder, depth, serialInt++)
+            sections.add(section)
+            byPanel.forEach { (_, panelBuckets) ->
+                panelBuckets.addSection(section)
+            }
+        }
+
+        fun addControl(panelName: String, openControl: OpenControl, breadcrumbs: ArrayList<OpenPatchHolder>) {
+            byPanel.getBang(panelName, "panel")
+                .addControl(openControl, breadcrumbs)
+        }
+
+        fun render(panelTitle: String, renderBucket: RenderBucket) {
+            val panelBuckets = byPanel.getBang(panelTitle, "panel")
+            panelBuckets.render(sections, renderBucket)
+        }
+
+        fun release() {
+            byPanel.values.forEach { it.release() }
+        }
+    }
 
     inner class PanelBuckets(
         private val panelTitle: String
     ) {
-        val panelBuckets = arrayListOf<PanelBucket>()
+        val byContainer =
+            mapOf<OpenPatchHolder, PanelBucket>().toMutableMap()
 
-        fun add(section: Section, control: OpenControl) {
-            section.getBucket(this).add(control)
-        }
-
-        fun render(renderBucket: RenderBucket) {
-            panelBuckets.forEach { panelBucket ->
-                renderSection(panelBucket.section, renderBucket)
-            }
-        }
-
-        private fun renderSection(section: Section, renderBucket: RenderBucket) {
-            section.getBucket(this).render(renderBucket)
-        }
-
-        fun release() {
-            panelBuckets.forEach { it.release() }
+        fun addSection(section: Section) {
+            byContainer.getOrPut(section.container) { PanelBucket(section, mutableShow) }
         }
 
         fun addControl(openControl: OpenControl, breadcrumbs: List<OpenPatchHolder>) {
-            while (panelBuckets.size < breadcrumbs.size) {
-                val depth = panelBuckets.size
-                panelBuckets.add(PanelBucket(Section(depth, breadcrumbs[depth]) { panelBuckets ->
-                    panelBuckets.panelBuckets[depth]
-                }, mutableShow))
-            }
+            val container = breadcrumbs.last()
+            byContainer[container]!!.add(openControl)
+        }
 
-            panelBuckets[breadcrumbs.size - 1].add(openControl)
+        fun render(sections: List<Section>, renderBucket: RenderBucket) {
+            sections.sortedWith(
+                compareBy<Section> { it.depth }
+                    .thenBy { it.serialInt }
+            ).forEach { section ->
+                val panelBucket = byContainer[section.container]
+                    ?: PanelBucket(section, mutableShow)
+                panelBucket.render(renderBucket)
+            }
+        }
+
+        fun release() {
+            byContainer.values.forEach { it.release() }
+            byContainer.clear()
         }
 
         inner class PanelBucket(
@@ -139,7 +161,7 @@ class ControlDisplay(
             }
 
             override fun moveDraggable(fromIndex: Int, toIndex: Int) {
-                val mutablePatchHolder = mutableShow!!.findPatchHolder(section.parent)
+                val mutablePatchHolder = mutableShow!!.findPatchHolder(section.container)
                 val mutableControls = mutablePatchHolder.editControlLayout(panelTitle)
                 val mutableControl = mutableControls.removeAt(fromIndex)
                 mutableControls.add(toIndex, mutableControl)
@@ -155,7 +177,7 @@ class ControlDisplay(
             }
 
             override fun insertDraggable(draggable: Draggable, index: Int) {
-                val mutablePatchHolder = mutableShow!!.findPatchHolder(section.parent)
+                val mutablePatchHolder = mutableShow!!.findPatchHolder(section.container)
 
                 draggable as PlaceableControl
                 val mutableControls = mutablePatchHolder.editControlLayout(panelTitle)
@@ -175,7 +197,7 @@ class ControlDisplay(
                 }
 
                 override fun remove() {
-                    val mutablePatchHolder = mutableShow!!.findPatchHolder(section.parent)
+                    val mutablePatchHolder = mutableShow!!.findPatchHolder(section.container)
                     mutableControl = mutablePatchHolder.removeControl(panelTitle, index)
                 }
             }
@@ -231,12 +253,12 @@ class ControlDisplay(
     }
 
     class Section(
+        val container: OpenPatchHolder,
         val depth: Int,
-        val parent: OpenPatchHolder,
-        val getBucket: (panelBuckets: PanelBuckets) -> PanelBuckets.PanelBucket
+        val serialInt: Int
     ) {
         val title: String
-            get() = parent.title
+            get() = container.title
     }
 }
 
