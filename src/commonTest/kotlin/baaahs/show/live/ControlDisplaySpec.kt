@@ -5,7 +5,6 @@ import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.show.Layout
 import baaahs.show.Layouts
-import baaahs.show.Patch
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
@@ -42,8 +41,11 @@ object ControlDisplaySpec : Spek({
                 expect(
                     """
                     Panel 1:
+                      |Show|
                     Panel 2:
+                      |Show|
                     Panel 3:
+                      |Show|
                 """.trimIndent()
                 ) { openShow.fakeRender(controlDisplay) }
                 expect(emptyList()) { controlDisplay.unplacedControls }
@@ -101,12 +103,16 @@ object ControlDisplaySpec : Spek({
                     """
                         Panel 1:
                           |Show| scenesButtonGroup
+                          |Scene 1|
+                          |Backdrop 1.1|
                         Panel 2:
-                          |Show| 
+                          |Show|
                           |Scene 1| backdropsButtonGroup
+                          |Backdrop 1.1|
                         Panel 3:
-                          |Show| 
+                          |Show|
                           |Scene 1| slider1SliderControl
+                          |Backdrop 1.1|
                     """.trimIndent()
                 ) { openShow.fakeRender(controlDisplay) }
                 expect(setOf(

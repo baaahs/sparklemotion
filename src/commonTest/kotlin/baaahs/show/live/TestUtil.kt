@@ -2,7 +2,6 @@ package baaahs.show.live
 
 import baaahs.ShowState
 import baaahs.app.ui.DragNDrop
-import baaahs.app.ui.DropTarget
 import baaahs.getBang
 import baaahs.gl.patch.AutoWirer
 import baaahs.show.Shader
@@ -55,5 +54,5 @@ fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
         }
     }
 
-    return buf.trim().toString()
+    return buf.trim().replace(Regex("\\s+\n"), "\n")
 }
