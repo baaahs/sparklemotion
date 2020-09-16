@@ -16,17 +16,17 @@ import react.dom.div
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-val Help = xComponent<HelpProps>("Help") { props ->
+val Help = xComponent<HelpProps>("Help", isPure = true) { props ->
     val styles = useContext(appContext).allStyles.appUi
 
     var open by state { false }
 
-    val toggleHelp = eventHandler("click") { open = !open }
-    val closeHelp = useCallback { event: Event, reason: String -> open = false }
+    val toggleHelp = useCallback { open = !open }
+    val closeHelp = useCallback { _: Event, _: String -> open = false }
 
     div("${styles.help.name} ${props.divClass}") {
         link {
-            attrs.onClickFunction = toggleHelp
+            attrs.onClickFunction = toggleHelp.withEvent()
             icon(HelpOutline)
         }
     }
@@ -47,7 +47,7 @@ val Help = xComponent<HelpProps>("Help") { props ->
 
         dialogActions {
             button {
-                attrs.onClickFunction = toggleHelp
+                attrs.onClickFunction = toggleHelp.withEvent()
 
                 +"Close"
             }
@@ -57,16 +57,16 @@ val Help = xComponent<HelpProps>("Help") { props ->
 
 external interface HelpProps : RProps {
     var divClass: String?
-    var children: MutableList<ReactElement>?
+    var children: Array<ReactElement>?
 }
 
 fun HelpProps.child(block: RBuilder.() -> Unit) {
     val rBuilder = RBuilder()
     rBuilder.block()
     if (children == null) {
-        children = arrayListOf()
+        children = arrayOf()
     }
-    children!!.addAll(rBuilder.childList.asDynamic())
+    rBuilder.childList.forEach { children.asDynamic().push(it) }
 }
 
 object materialProps : ReadWriteProperty<HelpProps, ReactElement?> {

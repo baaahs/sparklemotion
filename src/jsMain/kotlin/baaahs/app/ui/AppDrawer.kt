@@ -23,7 +23,6 @@ import materialui.components.listitemtext.listItemText
 import materialui.components.switches.switch
 import materialui.components.typography.typographyH6
 import materialui.styles.muitheme.direction
-import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RHandler
 import react.RProps
@@ -103,7 +102,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                     attrs.control {
                         switch {
                             attrs.checked = props.editMode
-                            attrs.onChangeFunction = props.onEditModeChange
+                            attrs.onChangeFunction = props.onEditModeChange.withEvent()
                         }
                     }
                     attrs.label { typographyH6 { +"Design Mode" } }
@@ -113,7 +112,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
             listItem {
                 attrs.button = true
                 attrs.disabled = !props.editMode
-                attrs.onClickFunction = props.onLayoutEditorDialogToggle
+                attrs.onClickFunction = props.onLayoutEditorDialogToggle.withEvent()
                 listItemIcon { icon(Dashboard) }
                 listItemText { attrs.primary { +"Layout Editor" } }
             }
@@ -127,7 +126,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                     attrs.control {
                         switch {
                             attrs.checked = props.darkMode
-                            attrs.onChangeFunction = props.onDarkModeChange
+                            attrs.onChangeFunction = props.onDarkModeChange.withEvent()
                         }
                     }
                     attrs.label { typographyH6 { +"Dark Mode" } }
@@ -146,12 +145,12 @@ external interface AppDrawerProps : RProps {
     var showFile: Fs.File?
     var editMode: Boolean
     var showUnsaved: Boolean
-    var onEditModeChange: (Event) -> Unit
+    var onEditModeChange: () -> Unit
 
-    var onLayoutEditorDialogToggle: (Event) -> Unit
+    var onLayoutEditorDialogToggle: () -> Unit
 
     var darkMode: Boolean
-    var onDarkModeChange: (Event) -> Unit
+    var onDarkModeChange: () -> Unit
 
     var onNewShow: () -> Unit
     var onOpenShow: () -> Unit
