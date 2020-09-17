@@ -52,37 +52,37 @@ object FileSerializationSpec : Spek({
                     get() = fakeRemoteFsBackend
 
             }
-            Json(JsonConfiguration.Stable, fsClientSideSerializer.serialModule)
+            Json { serializersModule = fsClientSideSerializer.serialModule }
         }
 
         val serverJson by value {
             val fsServerSideSerializer = FsServerSideSerializer()
-            Json(JsonConfiguration.Stable, fsServerSideSerializer.serialModule)
+            Json { serializersModule = fsServerSideSerializer.serialModule }
         }
 
         context("server-side serializer") {
             it("sends Fs objects by id ref") {
-                val actualFile1Json = serverJson.toJson(Fs.File.serializer(), actualFile1)
-                expect(json {
-                    "fs" to json { "name" to actualFile1.fs.name; "fsId" to 0 }
-                    "pathParts" to jsonArray { +"some"; +"file.txt" }
-                    "isDirectory" to JsonNull
-                }) { actualFile1Json}
+                val actualFile1Json = serverJson.encodeToJsonElement(Fs.File.serializer(), actualFile1)
+                expect(buildJsonObject {
+                    put("fs", buildJsonObject { put("name", actualFile1.fs.name); put("fsId", 0) })
+                    put("pathParts", buildJsonArray { add("some"); add("file.txt") })
+                    put("isDirectory", JsonNull)
+                }) { actualFile1Json }
 
-                val actualFile2Json = serverJson.toJson(Fs.File.serializer(), actualFile2)
-                expect(json {
-                    "fs" to json { "name" to actualFile2.fs.name; "fsId" to 1 }
-                    "pathParts" to jsonArray { +"another"; +"file.txt" }
-                    "isDirectory" to JsonNull
-                }) { actualFile2Json}
+                val actualFile2Json = serverJson.encodeToJsonElement(Fs.File.serializer(), actualFile2)
+                expect(buildJsonObject {
+                    put("fs", buildJsonObject { put("name", actualFile2.fs.name); put("fsId", 1) })
+                    put("pathParts", buildJsonArray { add("another"); add("file.txt") })
+                    put("isDirectory", JsonNull)
+                }) { actualFile2Json }
 
                 val thirdFile = actualFile1.parent!!.resolve("foo.txt")
-                val thirdFileJson = serverJson.toJson(Fs.File.serializer(), thirdFile)
-                expect(json {
-                    "fs" to json { "name" to thirdFile.fs.name; "fsId" to 0 }
-                    "pathParts" to jsonArray { +"some"; +"foo.txt" }
-                    "isDirectory" to JsonNull
-                }) { thirdFileJson}
+                val thirdFileJson = serverJson.encodeToJsonElement(Fs.File.serializer(), thirdFile)
+                expect(buildJsonObject {
+                    put("fs", buildJsonObject { put("name", thirdFile.fs.name); put("fsId", 0) })
+                    put("pathParts", buildJsonArray { add("some"); add("foo.txt") })
+                    put("isDirectory", JsonNull)
+                }) { thirdFileJson }
             }
         }
 
@@ -90,10 +90,10 @@ object FileSerializationSpec : Spek({
             val testCoroutineContext by value { TestCoroutineContext("network") }
 
             it("converts all Fs types to RemoteFs") {
-                val remoteFile1 = clientJson.fromJson(Fs.File.serializer(), json {
-                    "fs" to json { "name" to "Name"; "fsId" to 0 }
-                    "pathParts" to jsonArray { +"some"; +"file.txt" }
-                    "isDirectory" to JsonNull
+                val remoteFile1 = clientJson.decodeFromJsonElement(Fs.File.serializer(), buildJsonObject {
+                    put("fs", buildJsonObject { put("name", "Name"); put("fsId", 0) })
+                    put("pathParts", buildJsonArray { add("some"); add("file.txt") })
+                    put("isDirectory", JsonNull)
                 })
                 expect("some/file.txt") { remoteFile1.fullPath }
 
@@ -103,15 +103,15 @@ object FileSerializationSpec : Spek({
                 }
                 testCoroutineContext.runAll()
 
-                expect(listOf("fake/response.txt")) { resultFiles.map { it.fullPath }}
+                expect(listOf("fake/response.txt")) { resultFiles.map { it.fullPath } }
             }
         }
 
         context("round trip") {
-            val jsonFromServer by value { serverJson.stringify(Fs.File.serializer(), actualFile1) }
-            val clientSideFile by value { clientJson.parse(Fs.File.serializer(), jsonFromServer) }
-            val jsonFromClient by value { clientJson.stringify(Fs.File.serializer(), clientSideFile) }
-            val serverSideFile by value { serverJson.parse(Fs.File.serializer(), jsonFromClient) }
+            val jsonFromServer by value { serverJson.encodeToString(Fs.File.serializer(), actualFile1) }
+            val clientSideFile by value { clientJson.decodeFromString(Fs.File.serializer(), jsonFromServer) }
+            val jsonFromClient by value { clientJson.encodeToString(Fs.File.serializer(), clientSideFile) }
+            val serverSideFile by value { serverJson.decodeFromString(Fs.File.serializer(), jsonFromClient) }
 
             it("converts file to RemoteFs and back again to actual Fs") {
                 expect(actualFile1.fullPath) { serverSideFile.fullPath }

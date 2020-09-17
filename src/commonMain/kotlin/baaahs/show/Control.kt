@@ -8,6 +8,7 @@ import baaahs.show.mutable.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 
 interface Control {
     fun suggestId(): String = "control"
@@ -19,9 +20,9 @@ interface Control {
         val serialModule = SerializersModule {
             polymorphic(Control::class) {
 //        CorePlugin.NoOp::class with CorePlugin.NoOp.serializer()
-                GadgetControl::class with GadgetControl.serializer()
-                ButtonControl::class with ButtonControl.serializer()
-                ButtonGroupControl::class with ButtonGroupControl.serializer()
+                subclass(GadgetControl::class, GadgetControl.serializer())
+                subclass(ButtonControl::class, ButtonControl.serializer())
+                subclass(ButtonGroupControl::class, ButtonGroupControl.serializer())
             }
         }
     }

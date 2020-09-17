@@ -31,12 +31,13 @@ val lwjglNatives = when {
 }
 
 plugins {
-    id("org.jetbrains.kotlin.multiplatform") version Versions.kotlin
-    id("org.jetbrains.kotlin.plugin.serialization") version Versions.kotlin
+    kotlin("multiplatform") version Versions.kotlin
+    kotlin("plugin.serialization") version Versions.kotlin
     id("org.jetbrains.dokka") version "0.10.1"
     id("com.github.johnrengelman.shadow") version "5.2.0"
-    id("com.github.ben-manes.versions") version "0.28.0"
+    id("com.github.ben-manes.versions") version "0.29.0"
     id("maven-publish")
+    id("name.remal.check-dependency-updates") version "1.0.211"
 }
 
 repositories {
@@ -49,6 +50,7 @@ repositories {
     maven("https://dl.bintray.com/fabmax/kool")
     maven("https://raw.githubusercontent.com/baaahs/kgl/mvnrepo")
     maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/")
+    maven("https://dl.bintray.com/subroh0508/maven") // for material-ui
 //    maven("https://maven.danielgergely.com/repository/releases") TODO when next kgl is released
 }
 
@@ -72,12 +74,9 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val commonMain by getting {
             dependencies {
-                implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${Versions.coroutines}")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:${Versions.serialization_runtime}")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Versions.serialization_runtime}")
-                implementation("com.soywiz.korlibs.klock:klock:1.5.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.serializationRuntime}")
+                implementation("com.soywiz.korlibs.klock:klock:1.12.0")
                 api("com.danielgergely.kgl:kgl-metadata:${Versions.kgl}")
             }
         }
@@ -86,7 +85,6 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}")
                 implementation("spek:spek-dsl:${Versions.spek}")
             }
         }
@@ -94,8 +92,6 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting {
             dependencies {
-                implementation(kotlin("stdlib-jdk8"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
                 implementation("io.ktor:ktor-server-core:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-netty:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-host-common:${Versions.ktor}")
@@ -108,7 +104,7 @@ kotlin {
                 implementation(files("src/jvmMain/lib/javax.util.property-2_0.jar")) // required by ftd2xxj
                 implementation(files("src/jvmMain/lib/TarsosDSP-2.4-bin.jar")) // sound analysis
 
-                implementation("org.joml:joml:1.9.20")
+                implementation("org.joml:joml:1.9.25")
 
                 implementation("com.danielgergely.kgl:kgl-jvm:${Versions.kgl}")
 
@@ -137,7 +133,7 @@ kotlin {
                 runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.spek}")
                 runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
 
-                implementation("io.mockk:mockk:1.9.3")
+                implementation("io.mockk:mockk:1.10.0")
 
                 // For RunOpenGLTests:
                 implementation("org.junit.platform:junit-platform-launcher:1.6.2")
@@ -149,20 +145,17 @@ kotlin {
             kotlin.srcDir("src/jsMain/js")
 
             dependencies {
-                implementation(kotlin("stdlib-js"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:${Versions.coroutines}")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:${Versions.serialization_runtime}")
-                implementation("org.jetbrains.kotlinx:kotlinx-html-js:0.7.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-html-js:${Versions.kotlinxHtml}")
 
                 implementation("com.github.markaren:three.kt:v0.88-ALPHA-7")
                 implementation("com.danielgergely.kgl:kgl-js:${Versions.kgl}")
 
                 // kotlin react:
-                implementation("org.jetbrains:kotlin-react:16.13.1-pre.110-kotlin-1.3.72")
-                implementation("org.jetbrains:kotlin-react-dom:16.13.1-pre.110-kotlin-1.3.72")
-                implementation("org.jetbrains:kotlin-styled:1.0.0-pre.110-kotlin-1.3.72")
+                implementation("org.jetbrains:kotlin-react:${Versions.kotlinReact}")
+                implementation("org.jetbrains:kotlin-react-dom:${Versions.kotlinReact}")
+                implementation("org.jetbrains:kotlin-styled:${Versions.kotlinStyled}")
                 implementation(npm("styled-components", "^4.4.1"))
-                implementation(npm("inline-style-prefixer"))
+                implementation(npm("inline-style-prefixer", "^6.0.0"))
 
                 implementation(npm("babel-loader", "^8.0.6"))
                 implementation(npm("@babel/core", "^7.4.5"))
@@ -170,16 +163,16 @@ kotlin {
                 implementation(npm("@babel/plugin-proposal-object-rest-spread", "^7.4.4"))
                 implementation(npm("@babel/preset-env", "^7.4.5"))
                 implementation(npm("@babel/preset-react", "^7.0.0"))
-                implementation(npm("prettier", "1.19.1"))
+//                implementation(npm("prettier", "1.19.1"))
 
                 implementation(npm("camera-controls", "^1.12.1"))
                 implementation(npm("chroma-js", "^2.0.3"))
                 implementation(npm("css-loader", "^2.1.1"))
 
-                implementation("subroh0508.net.kotlinmaterialui:core:0.4.5")
-                implementation("subroh0508.net.kotlinmaterialui:lab:0.4.5")
+                implementation("net.subroh0508.kotlinmaterialui:core:0.5.0")
+                implementation("net.subroh0508.kotlinmaterialui:lab:0.5.0")
                 implementation(npm("@material-ui/core", "~4.11"))
-                implementation(npm("@material-ui/icons", "~4.9"))
+                implementation(npm("@material-ui/icons", "~4.9.1"))
 
                 implementation(npm("node-sass", "^4.12.0"))
                 implementation(npm("react", "^16.13.1"))

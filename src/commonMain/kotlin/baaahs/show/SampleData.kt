@@ -12,35 +12,36 @@ import baaahs.show.mutable.MutableDataSource
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShow
-import kotlinx.serialization.json.json
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 object SampleData {
-    val stdLayout = json {
-        "direction" to "row"
-        "splitPercentage" to 70
+    val stdLayout = buildJsonObject {
+        put("direction", "row")
+        put("splitPercentage", 70)
 
-        "first" to json {
-            "direction" to "column"
-            "splitPercentage" to 20
+        put("first", buildJsonObject {
+            put("direction", "column")
+            put("splitPercentage", 20)
 
-            "first" to "Scenes"
+            put("first", "Scenes")
 
-            "second" to json {
-                "direction" to "column"
-                "splitPercentage" to 60
+            put("second", buildJsonObject {
+                put("direction", "column")
+                put("splitPercentage", 60)
 
-                "first" to "Backdrops"
-                "second" to "More Controls"
-            }
-        }
+                put("first", "Backdrops")
+                put("second", "More Controls")
+            })
+        })
 
-        "second" to json {
-            "direction" to "column"
-            "splitPercentage" to 20
+        put("second", buildJsonObject {
+            put("direction", "column")
+            put("splitPercentage", 20)
 
-            "first" to "Preview"
-            "second" to "Controls"
-        }
+            put("first", "Preview")
+            put("second", "Controls")
+        })
     }
 
     private val plugins = Plugins.safe()

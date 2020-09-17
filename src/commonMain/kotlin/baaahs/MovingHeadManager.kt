@@ -5,7 +5,6 @@ import baaahs.model.MovingHead
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kotlin.js.JsName
 
 class MovingHeadManager(private val fs: Fs, private val pubSub: PubSub.Server, movingHeads: List<MovingHead>) {
@@ -15,14 +14,14 @@ class MovingHeadManager(private val fs: Fs, private val pubSub: PubSub.Server, m
     private val listeners = mutableMapOf<MovingHead, (MovingHead.MovingHeadPosition) -> Unit>()
 
     private val movingHeadPresets = mutableMapOf<String, MovingHead.MovingHeadPosition>()
-    private val json = Json(JsonConfiguration.Stable)
+    private val json = Json
 
     private val presetsFileName = fs.resolve("presets/moving-head-positions.json")
 
     suspend fun start() {
         val presetsJson = fs.loadFile(presetsFileName)
         if (presetsJson != null) {
-            val map = json.parse(Topics.movingHeadPresets.serializer, presetsJson)
+            val map = json.decodeFromString(Topics.movingHeadPresets.serializer, presetsJson)
             movingHeadPresets.putAll(map)
         }
     }
@@ -34,7 +33,7 @@ class MovingHeadManager(private val fs: Fs, private val pubSub: PubSub.Server, m
             )
         ) { map ->
             GlobalScope.launch {
-                fs.saveFile(presetsFileName, json.stringify(Topics.movingHeadPresets.serializer, map), true)
+                fs.saveFile(presetsFileName, json.encodeToString(Topics.movingHeadPresets.serializer, map), true)
                 println("Saved $map to disk!")
             }
         }
@@ -75,7 +74,7 @@ class MovingHeadDisplay(val pubSub: PubSub.Client, onUpdatedMovingHeads: (Array<
         }
 
     private fun notifyPresetsListeners() {
-        val json = Json.stringify(Topics.movingHeadPresets.serializer, presets)
+        val json = Json.encodeToString(Topics.movingHeadPresets.serializer, presets)
         presetsListeners.forEach { it.invoke(json) }
     }
 

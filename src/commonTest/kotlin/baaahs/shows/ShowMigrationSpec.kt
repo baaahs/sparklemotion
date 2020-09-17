@@ -7,32 +7,29 @@ import baaahs.show.Show
 import baaahs.show.ShowMigrator
 import baaahs.toBeSpecified
 import describe
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.json
+import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
 import kotlin.test.expect
 
 object ShowMigrationSpec : Spek({
     describe<ShowMigrator> {
-        val json by value { Json(JsonConfiguration.Stable, Plugins.safe().serialModule) }
+        val json by value { Json { serializersModule = Plugins.safe().serialModule } }
         val fromJson by value<JsonObject> { toBeSpecified() }
-        val show by value { json.fromJson(ShowMigrator, fromJson) }
+        val show by value { json.decodeFromJsonElement(ShowMigrator, fromJson) }
 
         context("from v0") {
             override(fromJson) {
-                json {
-                    "title" to ""
-                    "dataSources" to json {
-                        "modelInfo" to json {
-                            "type" to "baaahs.plugin.CorePlugin.ModelInfoDataSource"
-                            "structType" to "ModelInfo"
-                        }
-                        "time" to json {
-                            "type" to "baaahs.plugin.CorePlugin.Time"
-                        }
-                    }
+                buildJsonObject {
+                    put("title", "")
+                    put("dataSources", buildJsonObject {
+                        put("modelInfo", buildJsonObject {
+                            put("type", "baaahs.plugin.CorePlugin.ModelInfoDataSource")
+                            put("structType", "ModelInfo")
+                        })
+                        put("time", buildJsonObject {
+                            put("type", "baaahs.plugin.CorePlugin.Time")
+                        })
+                    })
                 }
             }
 
@@ -43,9 +40,9 @@ object ShowMigrationSpec : Spek({
         }
 
         context("when writing") {
-            val toJson by value { json.toJson(ShowMigrator, Show("test")) }
+            val toJson by value { json.encodeToJsonElement(ShowMigrator, Show("test")) }
             it("includes version") {
-                expect(1) { toJson.jsonObject.getPrimitiveOrNull("version")?.intOrNull }
+                expect(1) { toJson.jsonObject["version"]?.jsonPrimitive?.intOrNull }
             }
         }
     }

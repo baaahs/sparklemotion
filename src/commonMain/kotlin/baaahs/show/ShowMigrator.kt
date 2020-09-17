@@ -2,15 +2,13 @@ package baaahs.show
 
 import kotlinx.serialization.json.*
 
-object ShowMigrator : JsonTransformingSerializer<Show>(
-    Show.serializer(), "Show Migrator"
-) {
+object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
     private const val currentVersion = 1
     private const val versionKey = "version"
 
-    override fun readTransform(element: JsonElement): JsonElement {
+    override fun transformDeserialize(element: JsonElement): JsonElement {
         if (element !is JsonObject) return element
-        val fromVersion = element.getPrimitiveOrNull(versionKey)?.int ?: 0
+        val fromVersion = element[versionKey]?.jsonPrimitive?.int ?: 0
         if (fromVersion == currentVersion) return element
 
         val newJson = element.toMutableMap()
@@ -22,15 +20,15 @@ object ShowMigrator : JsonTransformingSerializer<Show>(
         return newJson.toJsonObj()
     }
 
-    override fun writeTransform(element: JsonElement): JsonElement {
+    override fun transformSerialize(element: JsonElement): JsonElement {
         if (element !is JsonObject) return element
         return element.toMutableMap().apply {
             put(versionKey, JsonPrimitive(currentVersion))
         }.toJsonObj()
     }
 
-    private fun Map<String, JsonElement>.toJsonObj(): JsonObject = json {
-        forEach { (k, v) -> k to v }
+    private fun Map<String, JsonElement>.toJsonObj(): JsonObject = buildJsonObject {
+        forEach { (k, v) -> put(k, v) }
     }
 
     object FromV0 {
@@ -52,7 +50,7 @@ object ShowMigrator : JsonTransformingSerializer<Show>(
             newJson["dataSources"] = (newJson["dataSources"] as JsonObject).mapValues { (_, v) ->
                 val dataSource = (v as JsonObject).toMutableMap()
 
-                val type = dataSource["type"]?.contentOrNull
+                val type = dataSource["type"]?.jsonPrimitive?.contentOrNull
                 if (type == "baaahs.plugin.CorePlugin.ModelInfoDataSource") {
                     dataSource.remove("structType")
                 }

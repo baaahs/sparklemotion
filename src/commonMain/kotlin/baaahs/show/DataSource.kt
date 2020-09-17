@@ -10,12 +10,8 @@ import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugin
 import baaahs.plugin.Plugins
 import baaahs.show.mutable.MutableGadgetControl
-import kotlinx.serialization.*
-import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObjectSerializer
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 
 
 interface DataSourceBuilder<T : DataSource> {
@@ -52,20 +48,20 @@ interface DataSource {
 
     companion object {
         val serialModule = SerializersModule {
-            polymorphic(DataSource::class) {
+            this.polymorphic(DataSource::class) {
 //        CorePlugin.NoOp::class with CorePlugin.NoOp.serializer()
-                CorePlugin.ResolutionDataSource::class with CorePlugin.ResolutionDataSource.serializer()
-                CorePlugin.PreviewResolutionDataSource::class with CorePlugin.PreviewResolutionDataSource.serializer()
-                CorePlugin.TimeDataSource::class with CorePlugin.TimeDataSource.serializer()
-                CorePlugin.PixelCoordsTextureDataSource::class with CorePlugin.PixelCoordsTextureDataSource.serializer()
-                CorePlugin.ModelInfoDataSource::class with CorePlugin.ModelInfoDataSource.serializer()
-                CorePlugin.SliderDataSource::class with CorePlugin.SliderDataSource.serializer()
-                CorePlugin.ColorPickerDataSource::class with CorePlugin.ColorPickerDataSource.serializer()
-                CorePlugin.ColorPickerDataSource::class with CorePlugin.ColorPickerDataSource.serializer()
-                CorePlugin.RadioButtonStripDataSource::class with CorePlugin.RadioButtonStripDataSource.serializer()
-                CorePlugin.XyPadDataSource::class with CorePlugin.XyPadDataSource.serializer()
+                subclass(CorePlugin.ResolutionDataSource::class, CorePlugin.ResolutionDataSource.serializer())
+                subclass(CorePlugin.PreviewResolutionDataSource::class, CorePlugin.PreviewResolutionDataSource.serializer())
+                subclass(CorePlugin.TimeDataSource::class, CorePlugin.TimeDataSource.serializer())
+                subclass(CorePlugin.PixelCoordsTextureDataSource::class, CorePlugin.PixelCoordsTextureDataSource.serializer())
+                subclass(CorePlugin.ModelInfoDataSource::class, CorePlugin.ModelInfoDataSource.serializer())
+                subclass(CorePlugin.SliderDataSource::class, CorePlugin.SliderDataSource.serializer())
+                subclass(CorePlugin.ColorPickerDataSource::class, CorePlugin.ColorPickerDataSource.serializer())
+                subclass(CorePlugin.ColorPickerDataSource::class, CorePlugin.ColorPickerDataSource.serializer())
+                subclass(CorePlugin.RadioButtonStripDataSource::class, CorePlugin.RadioButtonStripDataSource.serializer())
+                subclass(CorePlugin.XyPadDataSource::class, CorePlugin.XyPadDataSource.serializer())
 
-                BeatLinkPlugin.BeatLinkDataSource::class with BeatLinkPlugin.BeatLinkDataSource.serializer()
+                subclass(BeatLinkPlugin.BeatLinkDataSource::class, BeatLinkPlugin.BeatLinkDataSource.serializer())
             }
 
 //    polymorphic(ControlRef::class) {
@@ -75,30 +71,3 @@ interface DataSource {
         }
     }
 }
-
-class DataSourceSerializer(val plugins: Plugins): KSerializer<DataSource> {
-    override val descriptor: SerialDescriptor = SerialDescriptor("DataSource", StructureKind.MAP) {
-            element("pluginId", String.serializer().descriptor)
-            element("pluginData", MapSerializer(JsonElement.serializer(), JsonElement.serializer()).descriptor)
-        }
-
-    override fun deserialize(decoder: Decoder): DataSource {
-        val map = decoder.beginStructure(descriptor)
-        val pluginId = map.decodeStringElement(descriptor, 0)
-        val pluginData = map.decodeSerializableElement(descriptor, 1, JsonObjectSerializer)
-        val dataSource = plugins.decodeDataSource(pluginId, pluginData)
-        map.endStructure(descriptor)
-        return dataSource
-    }
-
-    override fun serialize(encoder: Encoder, value: DataSource) {
-        val map = encoder.beginStructure(descriptor)
-
-//        val pluginId = plugins.dataSourceType(value)
-//        val pluginData = plugins.serialize(value)
-//        map.encodeStringElement(descriptor, 0, pluginId)
-//        map.encodeSerializableElement(descriptor, 1, JsonObjectSerializer, pluginData)
-        map.endStructure(descriptor)
-    }
-}
-

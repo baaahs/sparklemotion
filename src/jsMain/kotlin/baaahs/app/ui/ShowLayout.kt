@@ -11,10 +11,8 @@ import external.Direction
 import external.draggable
 import external.droppable
 import external.mosaic.*
-import kotlinext.js.jsObject
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.json.JsonElementSerializer
+import kotlinx.serialization.json.JsonElement
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import react.*
@@ -22,8 +20,6 @@ import react.dom.div
 import kotlin.reflect.KClass
 
 val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
-    val appContext = useContext(appContext)
-
     val handleCreateNode = useCallback { args: Array<Any> ->
         console.log("ShowLayout:handleCreateNode", args)
     }
@@ -91,11 +87,9 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
             }
         }
 
-        val jsonInst =
-            Json(JsonConfiguration.Stable)
+        val jsonInst = Json
         val layoutRoot = props.layout.rootNode
-        val asJson =
-            jsonInst.stringify(JsonElementSerializer, layoutRoot)
+        val asJson = jsonInst.encodeToString(JsonElement.serializer(), layoutRoot)
         val layoutRootJs = JSON.parse<dynamic>(asJson)
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE", "UNCHECKED_CAST")
         value = layoutRootJs as MosaicParent<String>

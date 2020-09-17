@@ -7,13 +7,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.builtins.list
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonElementSerializer
-import kotlinx.serialization.modules.SerialModule
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.coroutines.CoroutineContext
 import kotlin.js.JsName
@@ -56,20 +54,20 @@ abstract class PubSub {
         val name: String,
         private val serializer: KSerializer<C>,
         private val replySerializer: KSerializer<R>,
-        serialModule: SerialModule = SerializersModule {}
+        serialModule: SerializersModule = SerializersModule {}
     ) {
-        private val json = Json(JsonConfiguration.Stable, serialModule)
+        private val json = Json { serializersModule = serialModule }
 
-        fun toJson(command: C): String = json.stringify(serializer, command)
-        fun fromJson(command: String): C = json.parse(serializer, command)
-        fun replyToJson(command: R): String = json.stringify(replySerializer, command)
-        fun replyFromJson(command: String): R = json.parse(replySerializer, command)
+        fun toJson(command: C): String = json.encodeToString(serializer, command)
+        fun fromJson(command: String): C = json.decodeFromString(serializer, command)
+        fun replyToJson(command: R): String = json.encodeToString(replySerializer, command)
+        fun replyFromJson(command: String): R = json.decodeFromString(replySerializer, command)
     }
 
     data class Topic<T>(
         val name: String,
         val serializer: KSerializer<T>,
-        val serialModule: SerialModule = SerializersModule { }
+        val serialModule: SerializersModule = SerializersModule { }
     )
 
     abstract class Listener(private val origin: Origin) {
@@ -90,18 +88,18 @@ abstract class PubSub {
 
         private val listeners: MutableList<Listener> = mutableListOf()
         internal val listeners_TEST_ONLY: MutableList<Listener> get() = listeners
-        private val json = Json(JsonConfiguration.Stable, topic.serialModule)
+        private val json = Json { serializersModule = topic.serialModule }
 
         fun notify(newValue: T, origin: Origin) {
             if (topic.serializer.descriptor.isNullable) {
                 // Workaround for https://github.com/Kotlin/kotlinx.serialization/issues/539
-                notify(json.toJson(topic.serializer.list, listOf(newValue)), origin)
+                notify(json.encodeToJsonElement(ListSerializer(topic.serializer), listOf(newValue)), origin)
             } else {
-                notify(json.toJson(topic.serializer, newValue), origin)
+                notify(json.encodeToJsonElement(topic.serializer, newValue), origin)
             }
         }
 
-        fun notify(s: String, origin: Origin) = notify(json.parseJson(s), origin)
+        fun notify(s: String, origin: Origin) = notify(json.parseToJsonElement(s), origin)
 
         private fun notify(newData: JsonElement, origin: Origin) {
             maybeUpdateValueAndGetListeners(newData).forEach { listener ->
@@ -119,16 +117,17 @@ abstract class PubSub {
             }
         }
 
+        @ExperimentalSerializationApi
         fun deserialize(jsonElement: JsonElement): T {
             return if (topic.serializer.descriptor.isNullable) {
                 // Workaround for https://github.com/Kotlin/kotlinx.serialization/issues/539
-                json.fromJson(topic.serializer.list, jsonElement)[0]
+                json.decodeFromJsonElement(ListSerializer(topic.serializer), jsonElement)[0]
             } else {
-                json.fromJson(topic.serializer, jsonElement)
+                json.decodeFromJsonElement(topic.serializer, jsonElement)
             }
         }
 
-        fun stringify(jsonElement: JsonElement): String = json.stringify(JsonElementSerializer, jsonElement)
+        fun stringify(jsonElement: JsonElement): String = json.encodeToString(JsonElement.serializer(), jsonElement)
 
         @Synchronized
         fun addListener(listener: Listener) {

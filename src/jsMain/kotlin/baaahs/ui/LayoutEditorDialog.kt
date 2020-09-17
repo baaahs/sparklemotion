@@ -28,11 +28,12 @@ import kotlin.browser.window
 
 val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow") { props ->
     val aceEditor = ref<AceEditor>()
-    val json = memo { Json(JsonConfiguration.Stable.copy(
-        isLenient = true,
-        prettyPrint = true,
-        unquotedPrint = true
-    )) }
+    val json = memo {
+        Json {
+            isLenient = true
+            prettyPrint = true
+        }
+    }
     var panelNames by state {
         props.layouts.map["default"]?.rootNode?.let { getPanelNames(it) }
     }
@@ -41,7 +42,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
 
     fun getLayoutJson(): JsonObject {
         val layoutJson = aceEditor.current.editor.session.getDocument()
-        return json.parseJson(layoutJson.getValue()) as JsonObject
+        return json.parseToJsonElement(layoutJson.getValue()) as JsonObject
     }
 
     val checkLayout = useCallback() {
@@ -77,7 +78,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         useCallback(props.onClose) { event: Event -> props.onClose() }
 
     val jsonStr = props.layouts.map["default"]?.let {
-        json.stringify(JsonElementSerializer, it.rootNode)
+        json.encodeToString(JsonElement.serializer(), it.rootNode)
     }
 
 
@@ -92,7 +93,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                 +"Eventually there'll be tabs that allow you to provide different layouts for phones/tablets/etc."
                 p {
                     +"See "
-                    a ("https://github.com/nomcopter/react-mosaic") { code { +"nomcopter/react-mosaic" } }
+                    a("https://github.com/nomcopter/react-mosaic") { code { +"nomcopter/react-mosaic" } }
                     +" for clues about the format."
                 }
             }
