@@ -11,14 +11,13 @@ import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 
 class Storage(val fs: Fs, val plugins: Plugins) {
     private val configFile = fs.resolve("config.json")
 
     companion object {
         private val logger = Logger("Storage")
-        val json = Json(JsonConfiguration.Stable.copy(isLenient = true))
+        val json = Json { isLenient = true }
 
         private val format = DateFormat("yyyy''MM''dd'-'HH''mm''ss")
 
@@ -38,7 +37,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
                 "mapping-sessions",
                 "${formatDateTime(mappingSession.startedAtDateTime)}-v${mappingSession.version}.json"
             )
-        fs.saveFile(file, json.stringify(MappingSession.serializer(), mappingSession))
+        fs.saveFile(file, json.encodeToString(MappingSession.serializer(), mappingSession))
         return file
     }
 
@@ -56,7 +55,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
                 .filter { it.name.endsWith(".json") }
                 .forEach { f ->
                     val mappingJson = fs.loadFile(f)
-                    val mappingSession = json.parse(MappingSession.serializer(), mappingJson!!)
+                    val mappingSession = json.decodeFromString(MappingSession.serializer(), mappingJson!!)
                     mappingSession.surfaces.forEach { surface ->
                         logger.debug { "Found pixel mapping for ${surface.panelName} (${surface.brainId})" }
                     }
@@ -73,11 +72,11 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     suspend fun updateConfig(update: PinkyConfig.() -> PinkyConfig) {
         val oldConfig = loadConfig() ?: PinkyConfig(null)
         val newConfig = oldConfig.update()
-        configFile.write(json.stringify(PinkyConfig.serializer(), newConfig), true)
+        configFile.write(json.encodeToString(PinkyConfig.serializer(), newConfig), true)
     }
 
     private suspend fun <T> loadJson(configFile: Fs.File, serializer: KSerializer<T>): T? {
-        return fs.loadFile(configFile)?.let { plugins.json.parse(serializer, it) }
+        return fs.loadFile(configFile)?.let { plugins.json.decodeFromString(serializer, it) }
     }
 
     suspend fun loadShow(file: Fs.File): Show? {
@@ -85,7 +84,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun saveShow(file: Fs.File, show: Show) {
-        file.write(plugins.json.stringify(Show.serializer(), show), true)
+        file.write(plugins.json.encodeToString(Show.serializer(), show), true)
     }
 
     fun resolve(path: String): Fs.File = fs.resolve(path)

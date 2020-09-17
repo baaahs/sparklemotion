@@ -15,10 +15,10 @@ object ShowSerializationSpec : Spek({
     describe("Show serialization") {
         val plugins by value { Plugins.safe() }
         val jsonPrettyPrint by value {
-            Json(
-                JsonConfiguration.Stable.copy(prettyPrint = true),
-                plugins.serialModule
-            )
+            Json {
+                prettyPrint = true
+                serializersModule = plugins.serialModule
+            }
         }
         val origShow by value { SampleData.sampleShow }
         val showJson by value { origShow.toJson(plugins) }
@@ -32,7 +32,7 @@ object ShowSerializationSpec : Spek({
         context("fromJson") {
             it("deserializes equally") {
                 expectJson(forJson(origShow)) {
-                    val jsonStr = jsonPrettyPrint.stringify(JsonElement.serializer(), origShow.toJson(plugins))
+                    val jsonStr = jsonPrettyPrint.encodeToString(JsonElement.serializer(), origShow.toJson(plugins))
                     forJson(Show.fromJson(plugins, jsonStr))
                 }
             }
@@ -40,78 +40,78 @@ object ShowSerializationSpec : Spek({
     }
 })
 
-private fun JsonObjectBuilder.mapTo(k: String, v: JsonElement) = k to v
+private fun JsonObjectBuilder.mapTo(k: String, v: JsonElement) = put(k, v)
 
 private fun JsonObjectBuilder.addPatchHolder(patchHolder: PatchHolder) {
-    "title" to patchHolder.title
-    "patches" to patchHolder.patches.jsonMap { jsonFor(it) }
-    "eventBindings" to patchHolder.eventBindings.jsonMap { jsonFor(it) }
-    "controlLayout" to patchHolder.controlLayout.jsonMap { it.jsonMap { JsonPrimitive(it) } }
+    put("title", patchHolder.title)
+    put("patches", patchHolder.patches.jsonMap { jsonFor(it) })
+    put("eventBindings", patchHolder.eventBindings.jsonMap { jsonFor(it) })
+    put("controlLayout", patchHolder.controlLayout.jsonMap { it.jsonMap { JsonPrimitive(it) } })
 }
 
 private fun <V> Map<String, V>.jsonMap(block: JsonObjectBuilder.(V) -> JsonElement): JsonObject {
-    return json { entries.forEach { (k, v) -> k to block(v) } }
+    return buildJsonObject { entries.forEach { (k, v) -> put(k, block(v)) } }
 }
 
 private fun <T> List<T>.jsonMap(block: (T) -> JsonElement): JsonArray {
-    return jsonArray { forEach { +block(it) } }
+    return buildJsonArray { forEach { add(block(it)) } }
 }
 
 private fun forJson(show: Show): JsonObject {
-    return json {
+    return buildJsonObject {
         addPatchHolder(show)
-        "layouts" to json {
-            "panelNames" to show.layouts.panelNames.jsonMap { JsonPrimitive(it) }
-            "map" to show.layouts.map.jsonMap {
-                json { "rootNode" to it.rootNode }
-            }
-        }
-        "shaders" to show.shaders.jsonMap { jsonFor(it) }
-        "shaderInstances" to show.shaderInstances.jsonMap { jsonFor(it) }
-        "controls" to show.controls.jsonMap { jsonFor(it) }
-        "dataSources" to show.dataSources.jsonMap { jsonFor(it) }
+        put("layouts", buildJsonObject {
+            put("panelNames", show.layouts.panelNames.jsonMap { JsonPrimitive(it) })
+            put("map", show.layouts.map.jsonMap {
+                buildJsonObject { put("rootNode", it.rootNode) }
+            })
+        })
+        put("shaders", show.shaders.jsonMap { jsonFor(it) })
+        put("shaderInstances", show.shaderInstances.jsonMap { jsonFor(it) })
+        put("controls", show.controls.jsonMap { jsonFor(it) })
+        put("dataSources", show.dataSources.jsonMap { jsonFor(it) })
     }
 }
 
-private fun jsonFor(eventBinding: EventBinding) = json { }
+private fun jsonFor(eventBinding: EventBinding) = buildJsonObject { }
 
 fun jsonFor(control: Control): JsonElement {
     return when (control) {
-        is GadgetControl -> json {
-            "type" to "baaahs.Core:Gadget"
-            "gadget" to jsonFor(control.gadget)
-            "controlledDataSourceId" to control.controlledDataSourceId
+        is GadgetControl -> buildJsonObject {
+            put("type", "baaahs.Core:Gadget")
+            put("gadget", jsonFor(control.gadget))
+            put("controlledDataSourceId", control.controlledDataSourceId)
         }
-        is ButtonGroupControl -> json {
-            "type" to "baaahs.Core:ButtonGroup"
-            "title" to control.title
-            "direction" to control.direction.name
-            "buttonIds" to control.buttonIds.jsonMap { JsonPrimitive(it) }
+        is ButtonGroupControl -> buildJsonObject {
+            put("type", "baaahs.Core:ButtonGroup")
+            put("title", control.title)
+            put("direction", control.direction.name)
+            put("buttonIds", control.buttonIds.jsonMap { JsonPrimitive(it) })
         }
-        is ButtonControl -> json {
-            "type" to "baaahs.Core:Button"
+        is ButtonControl -> buildJsonObject {
+            put("type", "baaahs.Core:Button")
             addPatchHolder(control)
         }
-        else -> json { "type" to "unknown" }
+        else -> buildJsonObject { put("type", "unknown") }
     }
 }
 
 fun jsonFor(gadget: Gadget): JsonElement {
     return when (gadget) {
-        is Slider -> json {
-            "type" to "baaahs.Core:Slider"
-            "title" to gadget.title
-            "initialValue" to gadget.initialValue
-            "minValue" to gadget.minValue
-            "maxValue" to gadget.maxValue
-            "stepValue" to gadget.stepValue
+        is Slider -> buildJsonObject {
+            put("type", "baaahs.Core:Slider")
+            put("title", gadget.title)
+            put("initialValue", gadget.initialValue)
+            put("minValue", gadget.minValue)
+            put("maxValue", gadget.maxValue)
+            put("stepValue", gadget.stepValue)
         }
-        is ColorPicker -> json {
-            "type" to "baaahs.Core:ColorPicker"
-            "title" to gadget.title
-            "initialValue" to gadget.initialValue.toInt()
+        is ColorPicker -> buildJsonObject {
+            put("type", "baaahs.Core:ColorPicker")
+            put("title", gadget.title)
+            put("initialValue", gadget.initialValue.toInt())
         }
-        else -> json { "type" to "unknown" }
+        else -> buildJsonObject { put("type", "unknown") }
     }
 
 }
@@ -119,92 +119,95 @@ fun jsonFor(gadget: Gadget): JsonElement {
 fun jsonFor(dataSource: DataSource): JsonElement {
     return when (dataSource) {
         is CorePlugin.SliderDataSource -> {
-            json {
-                "type" to "baaahs.Core:Slider"
-                "title" to dataSource.title
-                "initialValue" to dataSource.initialValue
-                "minValue" to dataSource.minValue
-                "maxValue" to dataSource.maxValue
-                "stepValue" to dataSource.stepValue
+            buildJsonObject {
+                put("type", "baaahs.Core:Slider")
+                put("title", dataSource.title)
+                put("initialValue", dataSource.initialValue)
+                put("minValue", dataSource.minValue)
+                put("maxValue", dataSource.maxValue)
+                put("stepValue", dataSource.stepValue)
             }
         }
         is CorePlugin.ColorPickerDataSource -> {
-            json {
-                "type" to "baaahs.Core:ColorPicker"
-                "title" to dataSource.title
-                "initialValue" to dataSource.initialValue.toInt()
+            buildJsonObject {
+                put("type", "baaahs.Core:ColorPicker")
+                put("title", dataSource.title)
+                put("initialValue", dataSource.initialValue.toInt())
             }
         }
         is CorePlugin.ResolutionDataSource -> {
-            json {
-                "type" to "baaahs.Core:Resolution"
+            buildJsonObject {
+                put("type", "baaahs.Core:Resolution")
             }
         }
         is CorePlugin.TimeDataSource -> {
-            json {
-                "type" to "baaahs.Core:Time"
+            buildJsonObject {
+                put("type", "baaahs.Core:Time")
             }
         }
         is CorePlugin.PixelCoordsTextureDataSource -> {
-            json {
-                "type" to "baaahs.Core:PixelCoordsTexture"
+            buildJsonObject {
+                put("type", "baaahs.Core:PixelCoordsTexture")
             }
         }
         is CorePlugin.ModelInfoDataSource -> {
-            json {
-                "type" to "baaahs.Core:ModelInfo"
+            buildJsonObject {
+                put("type", "baaahs.Core:ModelInfo")
             }
         }
-        else -> json { "type" to "unknown" }
+        else -> buildJsonObject { put("type", "unknown") }
     }
 }
 
 private fun jsonFor(patch: Patch): JsonObject {
-    return json {
-        "shaderInstanceIds" to patch.shaderInstanceIds.jsonMap { JsonPrimitive(it) }
-        "surfaces" to json {
-            "name" to "All Surfaces"
-        }
+    return buildJsonObject {
+        put("shaderInstanceIds", patch.shaderInstanceIds.jsonMap { JsonPrimitive(it) })
+        put("surfaces", buildJsonObject {
+            put("name", "All Surfaces")
+        })
     }
 }
 
 private fun jsonFor(portRef: PortRef): JsonObject {
     return when (portRef) {
-        is DataSourceRef -> json {
-            "type" to "datasource"
-            "dataSourceId" to portRef.dataSourceId
+        is DataSourceRef -> buildJsonObject {
+            put("type", "datasource")
+            put("dataSourceId", portRef.dataSourceId)
         }
-        is ShaderOutPortRef -> json {
-            "type" to "shader-out"
-            "shaderInstanceId" to portRef.shaderInstanceId
+        is ShaderOutPortRef -> buildJsonObject {
+            put("type", "shader-out")
+            put("shaderInstanceId", portRef.shaderInstanceId)
         }
-        is ShaderChannelRef -> json {
-            "type" to "shader-channel"
-            "shaderChannel" to portRef.shaderChannel.id
+        is ShaderChannelRef -> buildJsonObject {
+            put("type", "shader-channel")
+            put("shaderChannel", portRef.shaderChannel.id)
         }
-        is OutputPortRef -> json {
-            "type" to "output"
-            "portId" to portRef.portId
+        is OutputPortRef -> buildJsonObject {
+            put("type", "output")
+            put("portId", portRef.portId)
         }
         else -> error("huh? $portRef")
     }
 }
 
-private fun jsonFor(shader: Shader) = json {
-    "title" to shader.title
-    "type" to shader.type.name
-    "src" to shader.src
+private fun jsonFor(shader: Shader) = buildJsonObject {
+    put("title", shader.title)
+    put("type", shader.type.name)
+    put("src", shader.src)
 }
 
-private fun jsonFor(shaderInstance: ShaderInstance) = json {
-    "shaderId" to shaderInstance.shaderId
-    "incomingLinks" to shaderInstance.incomingLinks.jsonMap { jsonFor(it) }
-    "shaderChannel" to shaderInstance.shaderChannel.id
-    "priority" to shaderInstance.priority
+private fun jsonFor(shaderInstance: ShaderInstance) = buildJsonObject {
+    put("shaderId", shaderInstance.shaderId)
+    put("incomingLinks", shaderInstance.incomingLinks.jsonMap { jsonFor(it) })
+    put("shaderChannel", shaderInstance.shaderChannel.id)
+    put("priority", shaderInstance.priority)
 }
 
 fun expectJson(expected: JsonElement, block: () -> JsonElement) {
-    val json = Json(JsonConfiguration.Stable.copy(prettyPrint = true), Plugins.safe().serialModule)
-    fun JsonElement.toStr() = json.stringify(JsonElementSerializer, this)
+    val json = Json {
+        prettyPrint = true
+        serializersModule = Plugins.safe().serialModule
+    }
+    fun JsonElement.toStr() = json.encodeToString(JsonElement.serializer(), this)
     kotlin.test.expect(expected.toStr()) { block().toStr() }
 }

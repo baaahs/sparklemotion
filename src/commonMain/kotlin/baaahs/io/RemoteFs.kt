@@ -3,10 +3,15 @@ package baaahs.io
 import baaahs.PubSub
 import baaahs.sim.FakeFs
 import baaahs.sim.MergedFs
-import kotlinx.serialization.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.modules.SerialModule
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.*
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import kotlin.reflect.KClass
 
 @Serializable
@@ -20,7 +25,7 @@ class FsServerSideSerializer : KSerializer<Fs>, RemoteFsSerializer {
     private val fses = mutableListOf<Fs>()
 
     override val descriptor: SerialDescriptor =
-        SerialDescriptor("baaahs.io.Fs", StructureKind.CLASS) {
+        buildClassSerialDescriptor("baaahs.io.Fs") {
             element("name", String.serializer().descriptor)
             element("fsId", Int.serializer().descriptor)
         }
@@ -43,7 +48,7 @@ class FsServerSideSerializer : KSerializer<Fs>, RemoteFsSerializer {
 
     }
 
-    override val serialModule: SerialModule = SerializersModule {
+    override val serialModule: SerializersModule = SerializersModule {
         knownFsClasses.forEach {
             @Suppress("UNCHECKED_CAST")
             contextual(it as KClass<Fs>, this@FsServerSideSerializer)
@@ -55,7 +60,7 @@ abstract class FsClientSideSerializer : KSerializer<RemoteFs>, RemoteFsSerialize
     abstract val backend: RemoteFsBackend
 
     override val descriptor: SerialDescriptor =
-        SerialDescriptor("baaahs.io.Fs", StructureKind.CLASS) {
+        buildClassSerialDescriptor("baaahs.io.Fs") {
             element("name", String.serializer().descriptor)
             element("fsId", Int.serializer().descriptor)
         }
@@ -66,7 +71,7 @@ abstract class FsClientSideSerializer : KSerializer<RemoteFs>, RemoteFsSerialize
             var fsId: Int? = null
             loop@ while (true) {
                 when (val i = decodeElementIndex(descriptor)) {
-                    CompositeDecoder.READ_DONE -> break@loop
+                    CompositeDecoder.DECODE_DONE -> break@loop
                     0 -> name = decodeStringElement(descriptor, 0)
                     1 -> fsId = decodeIntElement(descriptor, 1)
                     else -> throw SerializationException("Unknown index $i")
@@ -84,7 +89,7 @@ abstract class FsClientSideSerializer : KSerializer<RemoteFs>, RemoteFsSerialize
         encoder.encodeInt(value.fsId)
     }
 
-    override val serialModule: SerialModule = SerializersModule {
+    override val serialModule: SerializersModule = SerializersModule {
         knownFsClasses.forEach {
             @Suppress("UNCHECKED_CAST")
             contextual(it as KClass<RemoteFs>, this@FsClientSideSerializer)
@@ -92,8 +97,11 @@ abstract class FsClientSideSerializer : KSerializer<RemoteFs>, RemoteFsSerialize
     }
 }
 
+internal class MissingFieldException(fieldName: String) :
+    SerializationException("Field '$fieldName' is required, but it was missing")
+
 interface RemoteFsSerializer {
-    val serialModule: SerialModule
+    val serialModule: SerializersModule
 
     @Suppress("UNCHECKED_CAST")
     val asSerializer: KSerializer<Fs>

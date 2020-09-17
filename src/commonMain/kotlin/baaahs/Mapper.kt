@@ -223,7 +223,7 @@ class Mapper(
                 sendToAllReliably(brainsToMap.values) { it.pixelShaderBuffer }
                 delay(1000L)
 
-                val maxPixelForTheseBrains = brainsToMap.values.map { it.expectedPixelCountOrDefault }.max()!!
+                val maxPixelForTheseBrains = brainsToMap.values.map { it.expectedPixelCountOrDefault }.maxOrNull()!!
                 val pixelStep = 4
                 fun actualPixelIndex(pixelIndexX: Int) =
                     pixelIndexX * pixelStep % maxPixelForTheseBrains + pixelIndexX * pixelStep / maxPixelForTheseBrains
@@ -297,9 +297,9 @@ class Mapper(
                         .map { it?.screenPosition }
                         .filterNotNull()
                     brainToMap.screenMin =
-                        Vector2F(mappedPixels.map { it.x }.min()!!, mappedPixels.map { it.y }.min()!!)
+                        Vector2F(mappedPixels.map { it.x }.minOrNull()!!, mappedPixels.map { it.y }.minOrNull()!!)
                     brainToMap.screenMax =
-                        Vector2F(mappedPixels.map { it.x }.max()!!, mappedPixels.map { it.y }.max()!!)
+                        Vector2F(mappedPixels.map { it.x }.maxOrNull()!!, mappedPixels.map { it.y }.maxOrNull()!!)
                 }
             }
 

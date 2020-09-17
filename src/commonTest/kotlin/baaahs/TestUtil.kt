@@ -4,7 +4,6 @@ import baaahs.geom.Vector3F
 import baaahs.model.Model
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kotlin.test.expect
 
 @Suppress("UNCHECKED_CAST")
@@ -20,11 +19,11 @@ fun MutableList<String>.assertContents(vararg s: String) {
     this.clear()
 }
 
-var json = Json(JsonConfiguration.Stable, Gadget.serialModule)
+var json = Json { serializersModule = Gadget.serialModule }
 
 fun <T> serializationRoundTrip(serializer: KSerializer<T>, obj: T): T {
-    val jsonString = json.stringify(serializer, obj)
-    return json.parse(serializer, jsonString)
+    val jsonString = json.encodeToString(serializer, obj)
+    return json.decodeFromString(serializer, jsonString)
 }
 
 fun <T: Any?> toBeSpecified(): T = error("override me!")

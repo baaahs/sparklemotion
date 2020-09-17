@@ -1,23 +1,25 @@
 package baaahs
 
 import baaahs.proto.Ports
-import io.ktor.application.install
+import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
-import io.ktor.http.cio.websocket.CloseReason.Codes.NORMAL
-import io.ktor.http.cio.websocket.Frame.Text
-import io.ktor.request.host
-import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import io.ktor.websocket.WebSocketServerSession
-import io.ktor.websocket.webSocket
-import kotlinx.serialization.builtins.list
+import io.ktor.http.cio.websocket.CloseReason.Codes.*
+import io.ktor.http.cio.websocket.Frame.*
+import io.ktor.request.*
+import io.ktor.routing.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import io.ktor.websocket.*
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.buildJsonArray
 import java.time.Duration
 
 object SimulatorBridge {
-    private val json = Json(JsonConfiguration.Stable)
+    private val json = Json
     private val webSocketConnections = mutableListOf<WebSocketServerSession>()
 
     private val soundAnalyzer = JvmSoundAnalyzer()
@@ -58,7 +60,7 @@ object SimulatorBridge {
         connection.outgoing.offer(
             Text(toWsMessage(
                 "soundFrequencies",
-                json.toJson(Float.serializer().list, soundAnalyzer.frequencies.toList())
+                json.encodeToJsonElement(ListSerializer(Float.serializer()), soundAnalyzer.frequencies.toList())
             ))
         )
     }
@@ -66,7 +68,7 @@ object SimulatorBridge {
     fun run() {
         val beatLinkBeatSource = BeatLinkBeatSource(SystemClock())
         beatLinkBeatSource.listen { beatData ->
-            sendToClients("beatData", json.toJson(BeatData.serializer(), beatData))
+            sendToClients("beatData", json.encodeToJsonElement(BeatData.serializer(), beatData))
         }
         beatLinkBeatSource.start()
 
@@ -75,7 +77,7 @@ object SimulatorBridge {
                 // todo: don't send more frequently than framerate
                 sendToClients(
                     "soundMagnitudes",
-                    json.toJson(Float.serializer().list, analysis.magnitudes.toList())
+                    json.encodeToJsonElement(ListSerializer(Float.serializer()), analysis.magnitudes.toList())
                 )
             }
         })
@@ -89,9 +91,9 @@ object SimulatorBridge {
     }
 
     private fun toWsMessage(command: String, json: JsonElement): String {
-        return SimulatorBridge.json.stringify(JsonElementSerializer, jsonArray {
-            +command
-            +json
+        return SimulatorBridge.json.encodeToString(JsonElement.serializer(), buildJsonArray {
+            add(command)
+            add(json)
         })
     }
 }
