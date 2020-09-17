@@ -17,13 +17,34 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">MutableButtonGroupControl</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableButtonGroupControl$<init>(kotlin.String)/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">MutableButtonGroupControl</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableButtonGroupControl$<init>(kotlin.String, baaahs.show.ButtonGroupControl.Direction, kotlin.collections.MutableList((baaahs.show.mutable.MutableButtonControl)), baaahs.show.mutable.MutableShow)/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutableButtonGroupControl$<init>(kotlin.String, baaahs.show.ButtonGroupControl.Direction, kotlin.collections.MutableList((baaahs.show.mutable.MutableButtonControl)), baaahs.show.mutable.MutableShow)/direction">direction</span><span class="symbol">:</span>&nbsp;<span class="identifier">Direction</span><span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutableButtonGroupControl$<init>(kotlin.String, baaahs.show.ButtonGroupControl.Direction, kotlin.collections.MutableList((baaahs.show.mutable.MutableButtonControl)), baaahs.show.mutable.MutableShow)/buttons">buttons</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html"><span class="identifier">MutableList</span></a><span class="symbol">&lt;</span><a href="../-mutable-button-control/index.html"><span class="identifier">MutableButtonControl</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;arrayListOf()<span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutableButtonGroupControl$<init>(kotlin.String, baaahs.show.ButtonGroupControl.Direction, kotlin.collections.MutableList((baaahs.show.mutable.MutableButtonControl)), baaahs.show.mutable.MutableShow)/mutableShow">mutableShow</span><span class="symbol">:</span>&nbsp;<a href="../-mutable-show/index.html"><span class="identifier">MutableShow</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
 <h3>Properties</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="buttons.html">buttons</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">buttons</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html"><span class="identifier">MutableList</span></a><span class="symbol">&lt;</span><a href="../-mutable-button-control/index.html"><span class="identifier">MutableButtonControl</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="direction.html">direction</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">direction</span><span class="symbol">: </span><span class="identifier">Direction</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="mutable-show.html">mutableShow</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">mutableShow</span><span class="symbol">: </span><a href="../-mutable-show/index.html"><span class="identifier">MutableShow</span></a></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="title.html">title</a></h4>
@@ -38,10 +59,24 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="add-button.html">addButton</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addButton</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableButtonGroupControl$addButton(kotlin.String, kotlin.Function1((baaahs.show.mutable.MutableButtonControl, kotlin.Unit)))/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutableButtonGroupControl$addButton(kotlin.String, kotlin.Function1((baaahs.show.mutable.MutableButtonControl, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<a href="../-mutable-button-control/index.html"><span class="identifier">MutableButtonControl</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-mutable-button-control/index.html"><span class="identifier">MutableButtonControl</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="build.html">build</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">build</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableButtonGroupControl$build(baaahs.show.mutable.ShowBuilder)/showBuilder">showBuilder</span><span class="symbol">:</span>&nbsp;<a href="../-show-builder/index.html"><span class="identifier">ShowBuilder</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-control/index.html"><span class="identifier">Control</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="move-button.html">moveButton</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">moveButton</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableButtonGroupControl$moveButton(kotlin.Int, kotlin.Int)/fromIndex">fromIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutableButtonGroupControl$moveButton(kotlin.Int, kotlin.Int)/toIndex">toIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>

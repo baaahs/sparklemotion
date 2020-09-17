@@ -13,6 +13,13 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="-button-control/index.html">ButtonControl</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ButtonControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patch-holder/index.html"><span class="identifier">PatchHolder</span></a><span class="symbol">, </span><a href="-control/index.html"><span class="identifier">Control</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-button-group-control/index.html">ButtonGroupControl</a></h4>
 </td>
 <td>
@@ -59,6 +66,13 @@
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">DataSourceSerializer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">KSerializer</span><span class="symbol">&lt;</span><a href="-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-empty-patch-holder/index.html">EmptyPatchHolder</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">EmptyPatchHolder</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patch-holder/index.html"><span class="identifier">PatchHolder</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -118,13 +132,6 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-patch-set/index.html">PatchSet</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PatchSet</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patch-holder/index.html"><span class="identifier">PatchHolder</span></a></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-port-ref/index.html">PortRef</a></h4>
 </td>
 <td>
@@ -136,13 +143,6 @@
 </td>
 <td>
 <code><span class="keyword">object </span><span class="identifier">SampleData</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-scene/index.html">Scene</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Scene</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patch-holder/index.html"><span class="identifier">PatchHolder</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -198,7 +198,14 @@
 <h4><a href="-show/index.html">Show</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Show</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patch-holder/index.html"><span class="identifier">PatchHolder</span></a></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Show</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-patch-holder/index.html"><span class="identifier">PatchHolder</span></a><span class="symbol">, </span><a href="-show-context/index.html"><span class="identifier">ShowContext</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-show-context/index.html">ShowContext</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ShowContext</span></code></td>
 </tr>
 <tr>
 <td>

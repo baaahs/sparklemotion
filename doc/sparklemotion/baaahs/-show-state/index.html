@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">ShowState</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowState$<init>(kotlin.Int, kotlin.collections.List((kotlin.Int)))/selectedScene">selectedScene</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowState$<init>(kotlin.Int, kotlin.collections.List((kotlin.Int)))/patchSetSelections">patchSetSelections</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">ShowState</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowState$<init>(kotlin.collections.Map((kotlin.String, kotlin.collections.Map((, kotlinx.serialization.json.JsonElement)))))/controls">controls</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,110 +26,10 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="patch-set-selections.html">patchSetSelections</a></h4>
+<h4><a href="controls.html">controls</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">patchSetSelections</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="selected-patch-set.html">selectedPatchSet</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">selectedPatchSet</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="selected-scene.html">selectedScene</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">selectedScene</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="bounded-by.html">boundedBy</a></h4>
-</td>
-<td>
-<p>Returns a ShowState whose parameters fit within the specified <a href="../../baaahs.show/-show/index.html">Show</a>.</p>
-<code><span class="keyword">fun </span><span class="identifier">boundedBy</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowState$boundedBy(baaahs.show.Show)/show">show</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShowState</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="find-mutable-patch-set.html">findMutablePatchSet</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">findMutablePatchSet</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowState$findMutablePatchSet(baaahs.show.mutable.MutableShow)/mutableShow">mutableShow</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-show/index.html"><span class="identifier">MutableShow</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">MutablePatchSet</span><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="find-mutable-scene.html">findMutableScene</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">findMutableScene</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowState$findMutableScene(baaahs.show.mutable.MutableShow)/mutableShow">mutableShow</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-show/index.html"><span class="identifier">MutableShow</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">MutableScene</span><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="find-patch-set.html">findPatchSet</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">findPatchSet</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowState$findPatchSet(baaahs.show.live.OpenShow)/show">show</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-open-show/index.html"><span class="identifier">OpenShow</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">OpenPatchSet</span><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="find-scene.html">findScene</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">findScene</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowState$findScene(baaahs.show.live.OpenShow)/show">show</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-open-show/index.html"><span class="identifier">OpenShow</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">OpenScene</span><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="select-patch-set.html">selectPatchSet</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">selectPatchSet</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowState$selectPatchSet(kotlin.Int)/i">i</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShowState</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="select-scene.html">selectScene</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">selectScene</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowState$selectScene(kotlin.Int)/i">i</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShowState</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="with-patch-set-selections.html">withPatchSetSelections</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">withPatchSetSelections</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowState$withPatchSetSelections(kotlin.collections.List((kotlin.Int)))/selections">selections</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShowState</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Companion Object Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-empty.html">Empty</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">Empty</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShowState</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Companion Object Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="for-show.html">forShow</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">forShow</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowState.Companion$forShow(baaahs.show.Show)/show">show</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShowState</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">controls</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>

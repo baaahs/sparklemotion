@@ -47,13 +47,6 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="created-gadget.html">createdGadget</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">&gt;</span> <span class="identifier">createdGadget</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowPlayer$createdGadget(kotlin.String, baaahs.ShowPlayer.createdGadget.T)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowPlayer$createdGadget(kotlin.String, baaahs.ShowPlayer.createdGadget.T)/gadget">gadget</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="open-data-feed.html">openDataFeed</a></h4>
 </td>
 <td>
@@ -78,7 +71,14 @@
 <h4><a href="open-show.html">openShow</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">openShow</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowPlayer$openShow(baaahs.show.Show)/show">show</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show.live/-open-show/index.html"><span class="identifier">OpenShow</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">openShow</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowPlayer$openShow(baaahs.show.Show, baaahs.ShowState)/show">show</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowPlayer$openShow(baaahs.show.Show, baaahs.ShowState)/showState">showState</span><span class="symbol">:</span>&nbsp;<a href="../-show-state/index.html"><span class="identifier">ShowState</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show.live/-open-show/index.html"><span class="identifier">OpenShow</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="register-gadget.html">registerGadget</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">&gt;</span> <span class="identifier">registerGadget</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowPlayer$registerGadget(kotlin.String, baaahs.ShowPlayer.registerGadget.T, baaahs.show.DataSource)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.ShowPlayer$registerGadget(kotlin.String, baaahs.ShowPlayer.registerGadget.T, baaahs.show.DataSource)/gadget">gadget</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="baaahs.ShowPlayer$registerGadget(kotlin.String, baaahs.ShowPlayer.registerGadget.T, baaahs.show.DataSource)/controlledDataSource">controlledDataSource</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -99,7 +99,8 @@
 <h4><a href="use-gadget.html">useGadget</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">&gt;</span> <span class="identifier">useGadget</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowPlayer$useGadget(kotlin.String)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">&gt;</span> <span class="identifier">useGadget</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowPlayer$useGadget(kotlin.String)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code><br/>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">&gt;</span> <span class="identifier">useGadget</span><span class="symbol">(</span><span class="identifier" id="baaahs.ShowPlayer$useGadget(baaahs.show.DataSource)/dataSource">dataSource</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span><span class="symbol">?</span></code></td>
 </tr>
 </tbody>
 </table>

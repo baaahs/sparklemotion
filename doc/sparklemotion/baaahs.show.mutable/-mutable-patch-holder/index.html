@@ -17,27 +17,13 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">MutablePatchHolder</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$<init>(baaahs.show.PatchHolder, kotlin.collections.Map((kotlin.String, baaahs.show.Control)), kotlin.collections.Map((kotlin.String, baaahs.show.DataSource)))/basePatchHolder">basePatchHolder</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-patch-holder/index.html"><span class="identifier">PatchHolder</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$<init>(baaahs.show.PatchHolder, kotlin.collections.Map((kotlin.String, baaahs.show.Control)), kotlin.collections.Map((kotlin.String, baaahs.show.DataSource)))/controls">controls</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-control/index.html"><span class="identifier">Control</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$<init>(baaahs.show.PatchHolder, kotlin.collections.Map((kotlin.String, baaahs.show.Control)), kotlin.collections.Map((kotlin.String, baaahs.show.DataSource)))/dataSources">dataSources</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">MutablePatchHolder</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$<init>(baaahs.show.PatchHolder)/basePatchHolder">basePatchHolder</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-patch-holder/index.html"><span class="identifier">PatchHolder</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
 <h3>Properties</h3>
 <table>
 <tbody>
-<tr>
-<td>
-<h4><a href="descendents.html">descendents</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">descendents</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="./index.html"><span class="identifier">MutablePatchHolder</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="display-type.html">displayType</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">displayType</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
 <tr>
 <td>
 <h4><a href="event-bindings.html">eventBindings</a></h4>
@@ -73,6 +59,20 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="add-button.html">addButton</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addButton</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$addButton(kotlin.String, kotlin.String, kotlin.Function1((baaahs.show.mutable.MutableButtonControl, kotlin.Unit)))/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$addButton(kotlin.String, kotlin.String, kotlin.Function1((baaahs.show.mutable.MutableButtonControl, kotlin.Unit)))/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$addButton(kotlin.String, kotlin.String, kotlin.Function1((baaahs.show.mutable.MutableButtonControl, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<a href="../-mutable-button-control/index.html"><span class="identifier">MutableButtonControl</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-mutable-button-control/index.html"><span class="identifier">MutableButtonControl</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="add-button-group.html">addButtonGroup</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addButtonGroup</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$addButtonGroup(kotlin.String, kotlin.String, baaahs.show.ButtonGroupControl.Direction, kotlin.Function1((baaahs.show.mutable.MutableButtonGroupControl, kotlin.Unit)))/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$addButtonGroup(kotlin.String, kotlin.String, baaahs.show.ButtonGroupControl.Direction, kotlin.Function1((baaahs.show.mutable.MutableButtonGroupControl, kotlin.Unit)))/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$addButtonGroup(kotlin.String, kotlin.String, baaahs.show.ButtonGroupControl.Direction, kotlin.Function1((baaahs.show.mutable.MutableButtonGroupControl, kotlin.Unit)))/direction">direction</span><span class="symbol">:</span>&nbsp;<span class="identifier">Direction</span>&nbsp;<span class="symbol">=</span>&nbsp;ButtonGroupControl.Direction.Horizontal<span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$addButtonGroup(kotlin.String, kotlin.String, baaahs.show.ButtonGroupControl.Direction, kotlin.Function1((baaahs.show.mutable.MutableButtonGroupControl, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<a href="../-mutable-button-group-control/index.html"><span class="identifier">MutableButtonGroupControl</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-mutable-button-group-control/index.html"><span class="identifier">MutableButtonGroupControl</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="add-control.html">addControl</a></h4>
 </td>
 <td>
@@ -85,13 +85,6 @@
 <td>
 <code><span class="keyword">fun </span><span class="identifier">addPatch</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$addPatch(kotlin.Function1((baaahs.show.mutable.MutablePatch, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<a href="../-mutable-patch/index.html"><span class="identifier">MutablePatch</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">MutablePatchHolder</span></a></code><br/>
 <code><span class="keyword">fun </span><span class="identifier">addPatch</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutablePatchHolder$addPatch(baaahs.show.mutable.MutablePatch)/mutablePatch">mutablePatch</span><span class="symbol">:</span>&nbsp;<a href="../-mutable-patch/index.html"><span class="identifier">MutablePatch</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">MutablePatchHolder</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="collect-shader-channels.html">collectShaderChannels</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">collectShaderChannels</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -116,38 +109,10 @@
 </tr>
 <tr>
 <td>
-<h4><a href="find-data-sources.html">findDataSources</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">findDataSources</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="find-shader-channels.html">findShaderChannels</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">findShaderChannels</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="find-shader-instances.html">findShaderInstances</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">findShaderInstances</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="../-mutable-shader-instance/index.html"><span class="identifier">MutableShaderInstance</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-show.html">getShow</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getShow</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-show-state.html">getShowState</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getShowState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-show-state/index.html"><span class="identifier">ShowState</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -168,6 +133,13 @@
 <h3>Inheritors</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="../-mutable-button-control/index.html">MutableButtonControl</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">MutableButtonControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MutablePatchHolder</span></a><span class="symbol">, </span><a href="../-mutable-control/index.html"><span class="identifier">MutableControl</span></a></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="../-mutable-show/index.html">MutableShow</a></h4>

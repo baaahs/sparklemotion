@@ -24,14 +24,14 @@
 <h4><a href="edit-patch-holder.html">editPatchHolder</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">editPatchHolder</span><span class="symbol">: </span><span class="symbol">(</span><a href="../../baaahs.show.mutable/-mutable-patch-holder/index.html"><span class="identifier">MutablePatchHolder</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">editPatchHolder</span><span class="symbol">: </span><span class="symbol">(</span><a href="../../baaahs.show.mutable/-patch-holder-edit-context/index.html"><span class="identifier">PatchHolderEditContext</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="on-show-state-change.html">onShowStateChange</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">onShowStateChange</span><span class="symbol">: </span><span class="symbol">(</span><a href="../../baaahs/-show-state/index.html"><span class="identifier">ShowState</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">onShowStateChange</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -40,12 +40,24 @@
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">show</span><span class="symbol">: </span><a href="../../baaahs.show.live/-open-show/index.html"><span class="identifier">OpenShow</span></a></code></td>
 </tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
 <tr>
 <td>
-<h4><a href="show-state.html">showState</a></h4>
+<h4><a href="../-button-group-props/index.html">ButtonGroupProps</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">showState</span><span class="symbol">: </span><a href="../../baaahs/-show-state/index.html"><span class="identifier">ShowState</span></a></code></td>
+<code><span class="keyword">interface </span><span class="identifier">ButtonGroupProps</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">SpecialControlProps</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-button-props/index.html">ButtonProps</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ButtonProps</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">SpecialControlProps</span></a></code></td>
 </tr>
 </tbody>
 </table>

@@ -14,6 +14,13 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="control-display.html">controlDisplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">controlDisplay</span><span class="symbol">: </span><a href="../../baaahs.show.live/-control-display/index.html"><span class="identifier">ControlDisplay</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="edit-mode.html">editMode</a></h4>
 </td>
 <td>
@@ -24,7 +31,7 @@
 <h4><a href="edit-patch-holder.html">editPatchHolder</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">editPatchHolder</span><span class="symbol">: </span><span class="symbol">(</span><a href="../../baaahs.show.mutable/-mutable-patch-holder/index.html"><span class="identifier">MutablePatchHolder</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">editPatchHolder</span><span class="symbol">: </span><span class="symbol">(</span><a href="../../baaahs.show.mutable/-patch-holder-edit-context/index.html"><span class="identifier">PatchHolderEditContext</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -38,7 +45,7 @@
 <h4><a href="on-show-state-change.html">onShowStateChange</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">onShowStateChange</span><span class="symbol">: </span><span class="symbol">(</span><a href="../../baaahs/-show-state/index.html"><span class="identifier">ShowState</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">onShowStateChange</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -49,10 +56,10 @@
 </tr>
 <tr>
 <td>
-<h4><a href="show-state.html">showState</a></h4>
+<h4><a href="special-control-props.html">specialControlProps</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">showState</span><span class="symbol">: </span><a href="../../baaahs/-show-state/index.html"><span class="identifier">ShowState</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">specialControlProps</span><span class="symbol">: </span><a href="../../baaahs.app.ui.controls/-special-control-props/index.html"><span class="identifier">SpecialControlProps</span></a></code></td>
 </tr>
 </tbody>
 </table>

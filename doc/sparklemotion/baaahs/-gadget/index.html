@@ -59,6 +59,14 @@
 </tr>
 <tr>
 <td>
+<h4><a href="apply-state.html">applyState</a></h4>
+</td>
+<td>
+<p>Applies initial state.</p>
+<code><span class="keyword">fun </span><span class="identifier">applyState</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$applyState(kotlin.collections.Map((kotlin.String, kotlinx.serialization.json.JsonElement)))/newState">newState</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="changed.html">changed</a></h4>
 </td>
 <td>
@@ -83,7 +91,7 @@
 <h4><a href="updatable.html">updatable</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">updatable</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$updatable(kotlin.String, baaahs.Gadget.updatable.T, kotlinx.serialization.KSerializer((baaahs.Gadget.updatable.T)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Gadget$updatable(kotlin.String, baaahs.Gadget.updatable.T, kotlinx.serialization.KSerializer((baaahs.Gadget.updatable.T)))/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="baaahs.Gadget$updatable(kotlin.String, baaahs.Gadget.updatable.T, kotlinx.serialization.KSerializer((baaahs.Gadget.updatable.T)))/serializer">serializer</span><span class="symbol">:</span>&nbsp;<span class="identifier">KSerializer</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-gadget-value-observer/index.html"><span class="identifier">GadgetValueObserver</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">updatable</span><span class="symbol">(</span><span class="identifier" id="baaahs.Gadget$updatable(kotlin.String, baaahs.Gadget.updatable.T, kotlinx.serialization.KSerializer((baaahs.Gadget.updatable.T)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Gadget$updatable(kotlin.String, baaahs.Gadget.updatable.T, kotlinx.serialization.KSerializer((baaahs.Gadget.updatable.T)))/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="baaahs.Gadget$updatable(kotlin.String, baaahs.Gadget.updatable.T, kotlinx.serialization.KSerializer((baaahs.Gadget.updatable.T)))/serializer">serializer</span><span class="symbol">:</span>&nbsp;<span class="identifier">KSerializer</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.properties/-read-write-property/index.html"><span class="identifier">ReadWriteProperty</span></a><span class="symbol">&lt;</span><a href="./index.html"><span class="identifier">Gadget</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -139,6 +147,14 @@
 <td>
 <p>A gadget for adjusting a scalar numeric value using a slider.</p>
 <code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Slider</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Gadget</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../../baaahs.gadgets/-switch/index.html">Switch</a></h4>
+</td>
+<td>
+<p>A switch.</p>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Switch</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Gadget</span></a></code></td>
 </tr>
 </tbody>
 </table>

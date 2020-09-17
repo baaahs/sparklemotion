@@ -14,6 +14,13 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="gadget.html">gadget</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">gadget</span><span class="symbol">: </span><a href="../../baaahs/-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="id.html">id</a></h4>
 </td>
 <td>
@@ -26,6 +33,27 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="add-to.html">addTo</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addTo</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.OpenControl$addTo(baaahs.show.live.ActiveSetBuilder, kotlin.String, kotlin.Int)/activeSetBuilder">activeSetBuilder</span><span class="symbol">:</span>&nbsp;<a href="../-active-set-builder/index.html"><span class="identifier">ActiveSetBuilder</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.OpenControl$addTo(baaahs.show.live.ActiveSetBuilder, kotlin.String, kotlin.Int)/panelId">panelId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.OpenControl$addTo(baaahs.show.live.ActiveSetBuilder, kotlin.String, kotlin.Int)/depth">depth</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="apply-constraints.html">applyConstraints</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">applyConstraints</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="apply-state.html">applyState</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">applyState</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.OpenControl$applyState(kotlin.collections.Map((kotlin.String, kotlinx.serialization.json.JsonElement)))/state">state</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="controlled-data-sources.html">controlledDataSources</a></h4>
 </td>
 <td>
@@ -33,10 +61,17 @@
 </tr>
 <tr>
 <td>
-<h4><a href="edit.html">edit</a></h4>
+<h4><a href="get-state.html">getState</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">edit</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show.mutable/-mutable-control/index.html"><span class="identifier">MutableControl</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-active.html">isActive</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">isActive</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -45,10 +80,17 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="../-open-button-control/index.html">OpenButtonControl</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">OpenButtonControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-open-patch-holder/index.html"><span class="identifier">OpenPatchHolder</span></a><span class="symbol">, </span><a href="./index.html"><span class="identifier">OpenControl</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="../-open-button-group-control/index.html">OpenButtonGroupControl</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">OpenButtonGroupControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">OpenControl</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">OpenButtonGroupControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">OpenControl</span></a><span class="symbol">, </span><a href="../-control-container/index.html"><span class="identifier">ControlContainer</span></a></code></td>
 </tr>
 <tr>
 <td>

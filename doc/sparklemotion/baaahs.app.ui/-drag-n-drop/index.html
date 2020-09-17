@@ -8,7 +8,7 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.app.ui</a>&nbsp;/&nbsp;<a href="./index.html">DragNDrop</a><br/>
 <br/>
 <h1>DragNDrop</h1>
-<code><span class="keyword">class </span><span class="identifier">DragNDrop</span></code>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">DragNDrop</span></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -18,6 +18,18 @@
 </td>
 <td>
 <code><span class="identifier">DragNDrop</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="drop-targets.html">dropTargets</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">dropTargets</span><span class="symbol">: </span><a href="../../baaahs.util/-unique-ids/index.html"><span class="identifier">UniqueIds</span></a><span class="symbol">&lt;</span><a href="../-drop-target/index.html"><span class="identifier">DropTarget</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -33,10 +45,10 @@
 </tr>
 <tr>
 <td>
-<h4><a href="on-drag-end.html">onDragEnd</a></h4>
+<h4><a href="on-move.html">onMove</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">onDragEnd</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.DragNDrop$onDragEnd(external.DropResult, external.ResponderProvided)/dropResult">dropResult</span><span class="symbol">:</span>&nbsp;<a href="../../external/-drop-result/index.html"><span class="identifier">DropResult</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.app.ui.DragNDrop$onDragEnd(external.DropResult, external.ResponderProvided)/responderProvided">responderProvided</span><span class="symbol">:</span>&nbsp;<a href="../../external/-responder-provided/index.html"><span class="identifier">ResponderProvided</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">onMove</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.DragNDrop$onMove(baaahs.app.ui.DropTarget, kotlin.Int, baaahs.app.ui.DropTarget, kotlin.Int)/source">source</span><span class="symbol">:</span>&nbsp;<a href="../-drop-target/index.html"><span class="identifier">DropTarget</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.app.ui.DragNDrop$onMove(baaahs.app.ui.DropTarget, kotlin.Int, baaahs.app.ui.DropTarget, kotlin.Int)/sourceIndex">sourceIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.app.ui.DragNDrop$onMove(baaahs.app.ui.DropTarget, kotlin.Int, baaahs.app.ui.DropTarget, kotlin.Int)/dest">dest</span><span class="symbol">:</span>&nbsp;<a href="../-drop-target/index.html"><span class="identifier">DropTarget</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.app.ui.DragNDrop$onMove(baaahs.app.ui.DropTarget, kotlin.Int, baaahs.app.ui.DropTarget, kotlin.Int)/destIndex">destIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -52,6 +64,18 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">reset</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-react-beautiful-drag-n-drop/index.html">ReactBeautifulDragNDrop</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ReactBeautifulDragNDrop</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">DragNDrop</span></a></code></td>
 </tr>
 </tbody>
 </table>
