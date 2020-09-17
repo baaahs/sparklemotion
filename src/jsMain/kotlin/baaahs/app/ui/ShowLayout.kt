@@ -1,13 +1,11 @@
 package baaahs.app.ui
 
-import baaahs.ShowState
-import baaahs.app.ui.controls.ControlDisplay
 import baaahs.app.ui.controls.SpecialControlProps
 import baaahs.app.ui.controls.control
 import baaahs.show.Layout
+import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.MutablePatchHolder
-import baaahs.show.mutable.ShowBuilder
+import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.*
 import external.Direction
 import external.draggable
@@ -33,27 +31,6 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     val editModeStyle =
         if (props.editMode) Styles.editModeOn else Styles.editModeOff
 
-    var controlDisplay by state<ControlDisplay> { nuffin() }
-    onChange("show/state", props.show, props.showState, props.editMode, appContext.dragNDrop) {
-        controlDisplay = ControlDisplay(
-            props.show, props.showState, props.editMode, appContext.webClient, appContext.dragNDrop
-        )
-
-        withCleanup {
-            controlDisplay.release()
-        }
-    }
-
-    val showBuilder = ShowBuilder()
-
-    val specialControlProps = jsObject<SpecialControlProps> {
-        this.show = props.show
-        this.showState = props.showState
-        this.onShowStateChange = props.onShowStateChange
-        this.editMode = props.editMode
-        this.editPatchHolder = props.editPatchHolder
-    }
-
 //    <MosiacMenuBar />
     mosaic<String> {
         renderTile = { panelTitle, path ->
@@ -72,7 +49,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                 }
 
                 paper(Styles.layoutPanel and editModeStyle on PaperStyle.root) {
-                    controlDisplay.render(panelTitle) { dropTargetId: String,
+                    props.controlDisplay.render(panelTitle) { dropTargetId: String,
                                                         section: ControlDisplay.Section,
                                                         controls: List<ControlDisplay.PanelBuckets.PanelBucket.PlacedControl> ->
 
@@ -82,16 +59,12 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                             this.direction = Direction.horizontal.name
                             this.isDropDisabled = !props.editMode
                         }) { droppableProvided, _ ->
-                            val style = when (section) {
-                                ControlDisplay.Section.Show -> Styles.showControls
-                                ControlDisplay.Section.Scene -> Styles.sceneControls
-                                ControlDisplay.Section.Patch -> Styles.patchControls
-                            }
+                            val style = Styles.controlSections[section.depth]
                             div(+Styles.layoutControls and style) {
                                 install(droppableProvided)
 
                                 div(+Styles.controlPanelHelpText) { +section.title }
-                                controls.forEach { placedControl ->
+                                controls.forEachIndexed { index, placedControl ->
                                     val control = placedControl.control
                                     val draggableId = control.id
 
@@ -99,11 +72,11 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                         this.key = draggableId
                                         this.draggableId = draggableId
                                         this.isDragDisabled = !props.editMode
-                                        this.index = placedControl.index
+                                        this.index = index
                                     }) { draggableProvided, _ ->
                                         control {
                                             attrs.control = control
-                                            attrs.specialControlProps = specialControlProps
+                                            attrs.specialControlProps = props.specialControlProps
                                             attrs.draggableProvided = draggableProvided
                                         }
                                     }
@@ -130,22 +103,16 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 //            onRelease = { onRelease }
 //            className = "mosaic mosaic-blueprint-theme bp3-dark"
     }
-
-    controlsPalette {
-        attrs.controlDisplay = controlDisplay
-        attrs.specialControlProps = specialControlProps
-        attrs.show = props.show
-        attrs.editMode = props.editMode
-    }
 }
 
 external interface ShowLayoutProps : RProps {
     var show: OpenShow
-    var showState: ShowState
-    var onShowStateChange: (ShowState) -> Unit
+    var onShowStateChange: () -> Unit
     var layout: Layout
+    var controlDisplay: ControlDisplay
+    var specialControlProps: SpecialControlProps
     var editMode: Boolean
-    var editPatchHolder: (MutablePatchHolder) -> Unit
+    var editPatchHolder: (PatchHolderEditContext) -> Unit
 }
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>): ReactElement =

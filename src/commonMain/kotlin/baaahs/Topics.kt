@@ -12,11 +12,11 @@ object Topics {
     fun createClientData(fsSerializer: RemoteFsSerializer) =
         PubSub.Topic("clientData", ClientData.serializer().nullable, fsSerializer.serialModule)
 
-    val showState =
-        PubSub.Topic("showState", ShowState.serializer().nullable)
-
     val serverNotices =
         PubSub.Topic("serverNotices", Pinky.ServerNotice.serializer().list)
+
+    val pinkyState =
+        PubSub.Topic("pinkyState", PinkyState.serializer())
 
     val activeGadgets =
         PubSub.Topic("activeGadgets", GadgetData.serializer().list, Gadget.serialModule)

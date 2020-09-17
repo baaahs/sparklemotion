@@ -290,7 +290,7 @@ class CorePlugin : Plugin {
     interface GadgetDataSource<T : Gadget> : DataSource {
         val title: String
 
-        override fun buildControl(): MutableGadgetControl? {
+        override fun buildControl(): MutableGadgetControl {
             return MutableGadgetControl(createGadget(), this)
         }
 
@@ -299,8 +299,13 @@ class CorePlugin : Plugin {
         fun set(gadget: T, uniform: Uniform)
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
-            val gadget = createGadget()
-            showPlayer.createdGadget(id, gadget)
+            val gadget = showPlayer.useGadget<T>(this)
+
+            if (gadget == null) {
+                logger.debug { "No control gadget registered for datasource $id, using no-op data feed" }
+                return GlslProgram.NoOpDataFeed()
+            }
+
             return object : GadgetDataFeed, RefCounted by RefCounter() {
                 override val id: String = id
                 override val gadget: Gadget = gadget
@@ -536,5 +541,7 @@ class CorePlugin : Plugin {
 //            Unknown
         )
         val dataSourceBuildersByName = supportedContentTypes.values.associateBy { it.resourceName }
+
+        private val logger = Logger("CorePlugin")
     }
 }

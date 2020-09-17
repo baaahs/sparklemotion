@@ -2,6 +2,7 @@ package baaahs.gl.glsl
 
 import baaahs.Logger
 import baaahs.RefCounted
+import baaahs.RefCounter
 import baaahs.gl.GlContext
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.ModelRenderer
@@ -147,6 +148,21 @@ class GlslProgram(
 
     interface ResolutionListener {
         fun onResolution(x: Float, y: Float)
+    }
+
+    class NoOpDataFeed : DataFeed, RefCounted by RefCounter() {
+        override fun bind(glslProgram: GlslProgram): Binding {
+            return object : Binding {
+                override val dataFeed: DataFeed
+                    get() = this@NoOpDataFeed
+                override val isValid: Boolean
+                    get() = true
+
+                override fun setOnProgram() {
+                    // No-op.
+                }
+            }
+        }
     }
 
     companion object {

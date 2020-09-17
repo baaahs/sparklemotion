@@ -13,4 +13,12 @@ open class OpenPatchHolder(
         patchHolder.controlLayout.mapValues { (_, controlRefs) ->
             controlRefs.map { openContext.getControl(it) }
         }
+
+    fun addTo(activeSetBuilder: ActiveSetBuilder, depth: Int) {
+        activeSetBuilder.add(this, depth)
+
+        controlLayout.forEach { (panelId, openControls) ->
+            openControls.forEach { openControl -> openControl.addTo(activeSetBuilder, panelId, depth + 1) }
+        }
+    }
 }

@@ -1,14 +1,10 @@
 package baaahs.show
 
 import baaahs.Gadget
-import baaahs.getBang
-import baaahs.show.live.OpenButtonGroupControl
-import baaahs.show.live.OpenContext
-import baaahs.show.live.OpenControl
-import baaahs.show.live.OpenGadgetControl
-import baaahs.show.mutable.MutableButtonGroupControl
-import baaahs.show.mutable.MutableControl
-import baaahs.show.mutable.MutableGadgetControl
+import baaahs.ShowPlayer
+import baaahs.camelize
+import baaahs.show.live.*
+import baaahs.show.mutable.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
@@ -16,14 +12,15 @@ import kotlinx.serialization.modules.SerializersModule
 interface Control {
     fun suggestId(): String = "control"
 
-    fun toMutable(dataSources: Map<String, DataSource>): MutableControl
-    fun open(openContext: OpenContext): OpenControl
+    fun toMutable(mutableShow: MutableShow): MutableControl
+    fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl
 
     companion object {
         val serialModule = SerializersModule {
             polymorphic(Control::class) {
 //        CorePlugin.NoOp::class with CorePlugin.NoOp.serializer()
                 GadgetControl::class with GadgetControl.serializer()
+                ButtonControl::class with ButtonControl.serializer()
                 ButtonGroupControl::class with ButtonGroupControl.serializer()
             }
         }
@@ -38,22 +35,59 @@ data class GadgetControl(
 ) : Control {
     override fun suggestId(): String = controlledDataSourceId + "Control"
 
-    override fun toMutable(dataSources: Map<String, DataSource>): MutableGadgetControl {
-        return MutableGadgetControl(gadget, dataSources.getBang(controlledDataSourceId, "data source"))
+    override fun toMutable(mutableShow: MutableShow): MutableGadgetControl {
+        return MutableGadgetControl(gadget, mutableShow.findDataSource(controlledDataSourceId).dataSource)
     }
 
-    override fun open(openContext: OpenContext): OpenControl =
-        OpenGadgetControl(gadget, openContext.getDataSource(controlledDataSourceId))
+    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
+        val controlledDataSource = openContext.getDataSource(controlledDataSourceId)
+        showPlayer.registerGadget(id, gadget, controlledDataSource)
+        return OpenGadgetControl(id, gadget, controlledDataSource)
+    }
+}
+
+@Serializable
+@SerialName("baaahs.Core:Button")
+data class ButtonControl(
+    override val title: String,
+    override val patches: List<Patch> = emptyList(),
+    override val eventBindings: List<EventBinding> = emptyList(),
+    override val controlLayout: Map<String, List<String>> = emptyMap()
+) : PatchHolder, Control {
+    override fun suggestId(): String = title.camelize() + "Button"
+
+    override fun toMutable(mutableShow: MutableShow): MutableButtonControl {
+        return MutableButtonControl(this, mutableShow)
+    }
+
+    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenButtonControl {
+        return OpenButtonControl(id, this, openContext)
+            .also { showPlayer.registerGadget(id, it.gadget) }
+    }
 }
 
 @Serializable
 @SerialName("baaahs.Core:ButtonGroup")
-data class ButtonGroupControl(val title: String) : Control {
-    override fun toMutable(dataSources: Map<String, DataSource>): MutableControl {
-        return MutableButtonGroupControl(title)
+data class ButtonGroupControl(
+    val title: String,
+    val direction: Direction,
+    val buttonIds: List<String>
+) : Control {
+
+    enum class Direction {
+        Horizontal,
+        Vertical
     }
 
-    override fun open(openContext: OpenContext): OpenControl {
-        return OpenButtonGroupControl(title)
+    override fun suggestId(): String = title.camelize() + "ButtonGroup"
+
+    override fun toMutable(mutableShow: MutableShow): MutableButtonGroupControl {
+        return MutableButtonGroupControl(title, direction, buttonIds.map {
+            mutableShow.findControl(it) as MutableButtonControl
+        }.toMutableList(), mutableShow)
+    }
+
+    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenButtonGroupControl {
+        return OpenButtonGroupControl(id, this, openContext)
     }
 }

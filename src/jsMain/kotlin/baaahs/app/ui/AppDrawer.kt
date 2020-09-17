@@ -23,14 +23,13 @@ import materialui.components.listitemtext.listItemText
 import materialui.components.switches.switch
 import materialui.components.typography.typographyH6
 import materialui.styles.muitheme.direction
-import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RHandler
 import react.RProps
 import react.child
 import react.dom.div
 
-val AppDrawer = xComponent<AppDrawerProps>("AppDrawer") { props ->
+val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props ->
     val theme = useTheme()
     val themeStyles = ThemeStyles(theme)
 
@@ -50,6 +49,9 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer") { props ->
                     icon(ChevronLeft)
                 } else {
                     icon(ChevronRight)
+                }
+                if (props.forcedOpen) {
+                    attrs.disabled = true
                 }
             }
         }
@@ -100,7 +102,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer") { props ->
                     attrs.control {
                         switch {
                             attrs.checked = props.editMode
-                            attrs.onChangeFunction = props.onEditModeChange
+                            attrs.onChangeFunction = props.onEditModeChange.withEvent()
                         }
                     }
                     attrs.label { typographyH6 { +"Design Mode" } }
@@ -110,7 +112,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer") { props ->
             listItem {
                 attrs.button = true
                 attrs.disabled = !props.editMode
-                attrs.onClickFunction = props.onLayoutEditorDialogToggle
+                attrs.onClickFunction = props.onLayoutEditorDialogToggle.withEvent()
                 listItemIcon { icon(Dashboard) }
                 listItemText { attrs.primary { +"Layout Editor" } }
             }
@@ -124,7 +126,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer") { props ->
                     attrs.control {
                         switch {
                             attrs.checked = props.darkMode
-                            attrs.onChangeFunction = props.onDarkModeChange
+                            attrs.onChangeFunction = props.onDarkModeChange.withEvent()
                         }
                     }
                     attrs.label { typographyH6 { +"Dark Mode" } }
@@ -136,18 +138,19 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer") { props ->
 
 external interface AppDrawerProps : RProps {
     var open: Boolean
+    var forcedOpen: Boolean
     var onClose: () -> Unit
 
     var showLoaded: Boolean
     var showFile: Fs.File?
     var editMode: Boolean
     var showUnsaved: Boolean
-    var onEditModeChange: (Event) -> Unit
+    var onEditModeChange: () -> Unit
 
-    var onLayoutEditorDialogToggle: (Event) -> Unit
+    var onLayoutEditorDialogToggle: () -> Unit
 
     var darkMode: Boolean
-    var onDarkModeChange: (Event) -> Unit
+    var onDarkModeChange: () -> Unit
 
     var onNewShow: () -> Unit
     var onOpenShow: () -> Unit

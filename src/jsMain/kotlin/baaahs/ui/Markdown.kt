@@ -9,15 +9,18 @@ import react.RProps
 import react.child
 import react.dom.span
 
-val Markdown = xComponent<MarkdownProps>("Markdown") { props ->
+val Markdown = xComponent<MarkdownProps>("Markdown", isPure = true) { props ->
     val mdRef = ref<HTMLElement>()
-
-    onMount(props.children) {
-        mdRef.current.innerHTML = MarkdownIt(jsObject {
+    val mdHtml = memo(props.children) {
+        MarkdownIt(jsObject {
             html = true
             linkify = true
             typographer = true
         }).render(props.children)
+    }
+
+    onMount(props.children) {
+        mdRef.current.innerHTML = mdHtml
     }
 
     span {

@@ -6,7 +6,12 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
-import baaahs.show.mutable.*
+import baaahs.show.ButtonGroupControl.Direction.Horizontal
+import baaahs.show.ButtonGroupControl.Direction.Vertical
+import baaahs.show.mutable.MutableDataSource
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePort
+import baaahs.show.mutable.MutableShow
 import kotlinx.serialization.json.json
 
 object SampleData {
@@ -24,7 +29,7 @@ object SampleData {
                 "direction" to "column"
                 "splitPercentage" to 60
 
-                "first" to "Patches"
+                "first" to "Backdrops"
                 "second" to "More Controls"
             }
         }
@@ -150,21 +155,25 @@ object SampleData {
 
     val defaultLayout = Layout(stdLayout)
     val layouts = Layouts(
-        listOf("Scenes", "Patches", "More Controls", "Preview", "Controls"),
+        listOf("Scenes", "Backdrops", "More Controls", "Preview", "Controls"),
         mapOf("default" to defaultLayout)
     )
 
     val color = CorePlugin.ColorPickerDataSource("Color", Color.WHITE)
     val brightness = CorePlugin.SliderDataSource(
-        "Brightness", 1f, 0f, 1.25f, null)
+        "Brightness", 1f, 0f, 1.25f, null
+    )
     val saturation = CorePlugin.SliderDataSource(
-        "Saturation", 1f, 0f, 1.25f, null)
+        "Saturation", 1f, 0f, 1.25f, null
+    )
     val intensity = CorePlugin.SliderDataSource(
-        "Intensity", 1f, 0f, 1f, null)
+        "Intensity", 1f, 0f, 1f, null
+    )
     val checkerboardSize = CorePlugin.SliderDataSource(
-        "Checkerboard Size", .1f, .001f, 1f, null)
+        "Checkerboard Size", .1f, .001f, 1f, null
+    )
 
-    val sampleShow = MutableShow("Sample Show").apply {
+    val sampleShow: Show get() = MutableShow("Sample Show").apply {
         editLayouts {
             copyFrom(layouts)
         }
@@ -175,47 +184,46 @@ object SampleData {
         addPatch(saturationFilter)
         addPatch(wireUp(Shaders.flipY))
 
-        addScene("Pleistocene") {
-            addPatchSet("Red Yellow Green") {
-                addPatch(redYellowGreenPatch)
-            }
-            addPatchSet("Fire") {
-                addPatch(fireBallPatch)
-                addControl("Patches", intensity.buildControl()!!)
-            }
-            addPatchSet("Checkerboard") {
-                addPatch(wireUp(Shaders.checkerboard, mapOf(
-                    "checkerboardSize" to MutableDataSource(checkerboardSize)
-                )))
-                addControl("Patches", checkerboardSize.buildControl()!!)
-            }
-            addPatchSet("Wobbly Checkerboard") {
-                addPatch(wireUp(Shaders.checkerboard, mapOf(
-                    "checkerboardSize" to MutableDataSource(checkerboardSize)
-                )))
-                addPatch(wireUp(Shaders.ripple))
-                addControl("Patches", checkerboardSize.buildControl()!!)
-            }
-        }
-        addScene("Holocene") {
-            addPatchSet("Blue Aqua Green") {
-                addPatch(blueAquaGreenPatch)
+        addButtonGroup("Scenes", "Scenes", Horizontal) {
+            addButton("Pleistocene") {
+                addButtonGroup("Backdrops", "Backdrops", Vertical) {
+                    addButton("Red Yellow Green") {
+                        addPatch(redYellowGreenPatch)
+                    }
 
-                // TODO
-//                blueAquaGreenPatch.links.forEach { link ->
-//                    val from = link.from
-//                    if (from is DataSourceEditor && from.dataSource is CorePlugin.GadgetDataSource<*>) {
-//                        addControl("Patches", from.dataSource)
-//                    }
-//                }
+                    addButton("Fire") {
+                        addPatch(fireBallPatch)
+                        addControl("Controls", intensity.buildControl())
+                    }
+
+                    addButton("Checkerboard") {
+                        addPatch(
+                            wireUp(
+                                Shaders.checkerboard,
+                                mapOf("checkerboardSize" to MutableDataSource(checkerboardSize))
+                            )
+                        )
+                        addControl("Controls", checkerboardSize.buildControl())
+                    }
+                }
+            }
+
+            addButton("Holocene") {
+                addButtonGroup("Backdrops", "Backdrops", Vertical) {
+                    addButton("Blue Aqua Green") {
+                        addPatch(blueAquaGreenPatch)
+                    }
+                }
             }
         }
 
-        addControl("Scenes", MutableButtonGroupControl("Scenes"))
-        addControl("Patches", MutableButtonGroupControl("Patches"))
-        addControl("More Controls", color.buildControl()!!)
-        addControl("More Controls", brightness.buildControl()!!)
-        addControl("More Controls", saturation.buildControl()!!)
+        addControl("More Controls", color.buildControl())
+        addControl("More Controls", brightness.buildControl())
+        addControl("More Controls", saturation.buildControl())
+
+        addButton("More Controls", "Wobbly") {
+            addPatch(wireUp(Shaders.ripple))
+        }
     }.getShow()
 
     private fun wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {

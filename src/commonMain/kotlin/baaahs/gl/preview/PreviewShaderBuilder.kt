@@ -14,6 +14,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
+import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableConstPort
@@ -58,7 +59,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
             val showPlayer = object : BaseShowPlayer(autoWirer.plugins, ModelInfo.Empty) {
                 override val glContext: GlContext get() = gl
 
-                override fun <T : Gadget> createdGadget(id: String, gadget: T) {
+                override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
                     mutableGadgets.add(GadgetData(id, gadget, "/preview/gadgets/$id"))
                 }
             }

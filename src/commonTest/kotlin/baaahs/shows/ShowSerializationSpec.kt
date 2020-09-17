@@ -60,7 +60,6 @@ private fun <T> List<T>.jsonMap(block: (T) -> JsonElement): JsonArray {
 private fun forJson(show: Show): JsonObject {
     return json {
         addPatchHolder(show)
-        "scenes" to show.scenes.jsonMap { jsonFor(it) }
         "layouts" to json {
             "panelNames" to show.layouts.panelNames.jsonMap { JsonPrimitive(it) }
             "map" to show.layouts.map.jsonMap {
@@ -72,24 +71,6 @@ private fun forJson(show: Show): JsonObject {
         "controls" to show.controls.jsonMap { jsonFor(it) }
         "dataSources" to show.dataSources.jsonMap { jsonFor(it) }
     }
-}
-
-private fun jsonFor(scene: Scene): JsonObject {
-    return json {
-        addPatchHolder(scene)
-        "patchSets" to jsonArray {
-            for (it in scene.patchSets) {
-                +jsonFor(it)
-            }
-        }
-    }
-}
-
-fun jsonFor(patchSet: PatchSet): JsonElement {
-    return json {
-        addPatchHolder(patchSet)
-    }
-
 }
 
 private fun jsonFor(eventBinding: EventBinding) = json { }
@@ -104,6 +85,12 @@ fun jsonFor(control: Control): JsonElement {
         is ButtonGroupControl -> json {
             "type" to "baaahs.Core:ButtonGroup"
             "title" to control.title
+            "direction" to control.direction.name
+            "buttonIds" to control.buttonIds.jsonMap { JsonPrimitive(it) }
+        }
+        is ButtonControl -> json {
+            "type" to "baaahs.Core:Button"
+            addPatchHolder(control)
         }
         else -> json { "type" to "unknown" }
     }

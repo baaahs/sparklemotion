@@ -8,8 +8,8 @@ import baaahs.gl.render.ModelRenderer
 import baaahs.glsl.GuruMeditationError
 import baaahs.show.ShaderChannel
 import baaahs.show.Show
+import baaahs.show.live.ActiveSet
 import baaahs.show.live.OpenShow
-import baaahs.show.live.OpenShow.OpenScene.OpenPatchSet
 
 class ShowRunner(
     val show: Show,
@@ -23,10 +23,8 @@ class ShowRunner(
     private val surfaceManager: SurfaceManager,
     private val autoWirer: AutoWirer
 ) {
-    private var showState: ShowState = initialShowState ?: show.defaultShowState()
-    private var nextPatchSet: OpenPatchSet? = showState.findPatchSet(openShow)
-
-    private var currentPatchSet: OpenPatchSet? = null
+    private var showState: ShowState = initialShowState ?: openShow.getShowState()
+    private var renderPlanNeedsRefresh: Boolean = true
     internal var currentRenderPlan: RenderPlan? = null
 
     private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()
@@ -59,39 +57,32 @@ class ShowRunner(
 
     fun switchTo(newShowState: ShowState) {
         this.showState = newShowState
-        nextPatchSet = newShowState.findPatchSet(openShow)
-    }
-
-    private fun switchTo(newPatchSet: OpenPatchSet) {
-        currentRenderPlan = prepare(newPatchSet)
-
-        logger.info {
-            "New show ${newPatchSet.title} created; " +
-                    "${surfaceManager.getSurfaceCount()} surfaces " +
-                    "and ${requestedGadgets.size} gadgets"
-        }
-
-//        TODO gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
-        requestedGadgets.clear()
+        renderPlanNeedsRefresh = true
     }
 
     /** @return `true` if a frame was rendered and should be sent to fixtures. */
     fun renderNextFrame(): Boolean {
-        val renderPlan = currentRenderPlan
-        renderPlan?.render(modelRenderer)
-        return renderPlan != null
+        return if (currentRenderPlan != null) {
+            modelRenderer.draw()
+            true
+        } else false
+    }
+
+    fun onSelectedPatchesChanged() {
+        renderPlanNeedsRefresh = true
     }
 
     fun housekeeping(): Boolean {
         var remapSurfaces = surfaceManager.requiresRemap()
 
         // Maybe switch to a new show.
-        nextPatchSet?.let { startingPatchSet ->
-            switchTo(startingPatchSet)
+        if (renderPlanNeedsRefresh) {
+            val renderPlanChanged = refreshRenderPlan()
+            if (renderPlanChanged) {
+                remapSurfaces = true
+            }
 
-            currentPatchSet = nextPatchSet
-            nextPatchSet = null
-            remapSurfaces = true
+            renderPlanNeedsRefresh = false
         }
 
         if (remapSurfaces) {
@@ -105,10 +96,31 @@ class ShowRunner(
         return remapSurfaces
     }
 
-    private fun prepare(newPatchSet: OpenPatchSet): RenderPlan {
+    /** @return `true` if `currentRenderPlan` changed. */
+    private fun refreshRenderPlan(): Boolean {
+        val activeSet = openShow.activeSet()
+        return if (activeSet != currentRenderPlan?.activeSet) {
+            currentRenderPlan = prepareRenderPlan(activeSet)
+
+            logger.info {
+                "New render plan created; ${currentRenderPlan?.programs?.size ?: 0} programs, " +
+                        "${surfaceManager.getSurfaceCount()} surfaces " +
+                        "and ${requestedGadgets.size} gadgets"
+            }
+            true
+        } else false
+
+
+//        TODO gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
+//        requestedGadgets.clear()
+    }
+
+    private fun prepareRenderPlan(activeSet: ActiveSet): RenderPlan {
         try {
-            val activePatches = newPatchSet.activePatches()
-            val linkedPatches = autoWirer.merge(*activePatches.toTypedArray()).mapValues { (_, portDiagram) ->
+            val activePatchHolders = activeSet.getPatchHolders()
+            println("active patches = ${activePatchHolders.map { it.title }}")
+
+            val linkedPatches = autoWirer.merge(*activePatchHolders.toTypedArray()).mapValues { (_, portDiagram) ->
                 portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
             }
             val glslContext = modelRenderer.gl
@@ -116,7 +128,7 @@ class ShowRunner(
             val programs = linkedPatches.mapNotNull { (_, linkedPatch) ->
                 linkedPatch?.let { it to it.createProgram(glslContext, openShow.dataFeeds) }
             }
-            return RenderPlan(programs)
+            return RenderPlan(programs, activeSet)
         } catch (e: GlslException) {
             logger.error("Error preparing program", e)
             if (e is CompilationException) {

@@ -13,4 +13,8 @@ class OpenPatch(
         },
         patch.surfaces
     )
+
+    override fun toString(): String {
+        return "OpenPatch(shaderInstances=$shaderInstances, surfaces=$surfaces)"
+    }
 }
