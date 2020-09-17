@@ -30,5 +30,5 @@ data class ShowEditorState(
 }
 
 fun Show.withState(showState: ShowState, isUnsaved: Boolean, file: Fs.File?): ShowEditorState {
-    return ShowEditorState(this, showState.boundedBy(this), isUnsaved, file)
+    return ShowEditorState(this, showState, isUnsaved, file)
 }

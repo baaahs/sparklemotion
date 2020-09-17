@@ -6,6 +6,7 @@ import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.show.Surfaces
+import baaahs.show.live.OpenButtonControl
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
@@ -26,45 +27,60 @@ object PatchLayeringSpec : Spek({
 
         val uvShader = Shaders.cylindricalProjection
         val blackShader by value {
-            Shader("Black Shader", ShaderType.Paint,
-                "void main() {\n  gl_FragColor = vec4(0.);\n}")
+            Shader(
+                "Black Shader", ShaderType.Paint,
+                "void main() {\n  gl_FragColor = vec4(0.);\n}"
+            )
         }
         val orangeShader by value {
-            Shader("Orange Shader", ShaderType.Paint,
-                "void main() {\n  gl_FragColor = vec4(1., .5, 0., gl_FragCoord.x);\n}")
+            Shader(
+                "Orange Shader", ShaderType.Paint,
+                "void main() {\n  gl_FragColor = vec4(1., .5, 0., gl_FragCoord.x);\n}"
+            )
         }
         val brightnessFilter by value {
-            Shader("Brightness Filter", ShaderType.Filter,
-                "uniform float brightness; // @@Slider min=0 max=1 default=1\nvec4 mainFilter(vec4 colorIn) {\n  return colorIn * brightness;\n}")
+            Shader(
+                "Brightness Filter", ShaderType.Filter,
+                "uniform float brightness; // @@Slider min=0 max=1 default=1\nvec4 mainFilter(vec4 colorIn) {\n  return colorIn * brightness;\n}"
+            )
         }
         val saturationFilter by value {
-            Shader("Saturation Filter", ShaderType.Filter,
-                "vec4 mainFilter(vec4 colorIn) { return colorIn; }")
+            Shader(
+                "Saturation Filter", ShaderType.Filter,
+                "vec4 mainFilter(vec4 colorIn) { return colorIn; }"
+            )
         }
-        val mutableShow by value { MutableShow("test show") }
+        val mutableShow by value {
+            MutableShow("test show") {
+                editLayouts { panelNames = mutableListOf("Main") }
+            }
+        }
         val show by value {
             val show = mutableShow.build(ShowBuilder())
             ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer(FakeGlContext())).openShow()
         }
 
-        context("with a show, scene, and patchset patch") {
+        context("for a show with a couple buttons") {
             beforeEachTest {
                 mutableShow.apply {
                     addPatch(autoWire(uvShader, blackShader))
 
-                    addScene("scene") {
+                    addButton("Main", "Brightness") {
                         addPatch(autoWire(brightnessFilter))
+                    }
 
-                        addPatchSet("patchset") {
-                            addPatch(autoWire(orangeShader))
-                        }
+                    addButton("Main", "Orange") {
+                        addPatch(autoWire(orangeShader))
                     }
                 }
+
+                (show.allControls.find { it.id == "brightnessButton" } as OpenButtonControl).click()
+                (show.allControls.find { it.id == "orangeButton" } as OpenButtonControl).click()
             }
 
             it("merges layered patches into a single patch") {
                 val portDiagrams =
-                    autoWirer.merge(show, show.scenes[0], show.scenes[0].patchSets[0])
+                    autoWirer.merge(show, *show.activeSet().getPatchHolders().toTypedArray())
                 val portDiagram = portDiagrams[Surfaces.AllSurfaces]!!
                 val linkedPatch = portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)!!
                 expect(

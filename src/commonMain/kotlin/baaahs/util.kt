@@ -32,7 +32,11 @@ fun <T> unknown(type: String, key: T, among: Collection<T>): String {
     return "unknown $type \"$key\" among [${among.map { it.toString() }.sorted().joinToString(", ")}]"
 }
 
-fun <K, V> Map<K, V>.getBang(key: K, type: String): V {
+fun <K, V> Map<K, V>?.getBang(key: K, type: String): V {
+    if (this == null) {
+        error("map for $type is null")
+    }
+
     return get(key)
         ?: error(unknown(type, key, keys))
 }

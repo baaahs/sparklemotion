@@ -58,7 +58,8 @@ class Pinky(
     internal val surfaceManager = SurfaceManager(modelRenderer)
 
     var stageManager: StageManager = StageManager(
-        plugins, modelRenderer, pubSub, storage, surfaceManager, dmxUniverse, movingHeadManager, clock, model
+        plugins, modelRenderer, pubSub, storage, surfaceManager, dmxUniverse, movingHeadManager, clock, model,
+        coroutineContext
     )
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {
@@ -86,6 +87,9 @@ class Pinky(
             serverNotices.addAll(it)
         }
     }
+
+    private var pinkyState = PinkyState.Initializing
+    private val pinkyStateChannel = pubSub.publish(Topics.pinkyState, pinkyState) {}
 
     init {
         httpServer.listenWebSocket("/ws/api") {
@@ -164,7 +168,13 @@ class Pinky(
             }.join()
 
             isStartedUp = true
+            updatePinkyState(PinkyState.Running)
         }
+    }
+
+    private fun updatePinkyState(newState: PinkyState) {
+        pinkyState = newState
+        pinkyStateChannel.onChange(newState)
     }
 
     private suspend fun launchDaemonJobs(): Job {
@@ -528,3 +538,10 @@ class BrainInfo(
     val surfaceReceiver: ShowRunner.SurfaceReceiver,
     var hadException: Boolean = false
 )
+
+@Serializable
+enum class PinkyState {
+    Initializing,
+    Running,
+    ShuttingDown
+}

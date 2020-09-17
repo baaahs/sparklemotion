@@ -15,6 +15,7 @@ import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
+import baaahs.show.live.ActiveSet
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
@@ -57,15 +58,14 @@ object GuruMeditationError {
         linkedPatch ?: error("Couldn't build guru meditation error patch.")
 
         return RenderPlan(
-            listOf(
-                linkedPatch to linkedPatch.createProgram(gl, dataFeeds)
-            )
+            listOf(linkedPatch to linkedPatch.createProgram(gl, dataFeeds)),
+            ActiveSet(emptyList())
         )
     }
 }
 
 private object FakeShowPlayer : BaseShowPlayer(Plugins.safe(), ModelInfo.Empty) {
     override val glContext: GlContext get() = error("not implemented")
-    override fun <T : Gadget> createdGadget(id: String, gadget: T): Unit = error("not implemented")
+    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?): Unit = error("not implemented")
     override fun <T : Gadget> useGadget(id: String): T = error("not implemented")
 }

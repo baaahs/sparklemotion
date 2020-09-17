@@ -18,7 +18,7 @@ val appContext = createContext<AppContext>()
  */
 external interface AppContext {
     var showPlayer: ShowPlayer
-    var dragNDrop: DragNDrop
+    var dragNDrop: ReactBeautifulDragNDrop
     var webClient: WebClient.Facade
     var plugins: Plugins
     var autoWirer: AutoWirer

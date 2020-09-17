@@ -1,10 +1,9 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.controls.ControlDisplay
 import baaahs.app.ui.controls.SpecialControlProps
 import baaahs.app.ui.controls.control
+import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.ShowBuilder
 import baaahs.ui.*
 import external.Direction
 import external.draggable
@@ -13,7 +12,6 @@ import external.react_draggable.Draggable
 import materialui.DragIndicator
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
-import materialui.components.portal.portal
 import materialui.components.typography.typographyH6
 import materialui.icon
 import org.w3c.dom.HTMLElement
@@ -27,25 +25,23 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
     val editModeStyle =
         if (props.editMode) Styles.editModeOn else Styles.editModeOff
 
-    val showBuilder = ShowBuilder()
+    Draggable {
+        val randomStyleForHandle = "handle-${Random.nextInt()}"
+        attrs.handle = ".$randomStyleForHandle"
 
-    portal {
-        Draggable {
-            val randomStyleForHandle = "handle-${Random.nextInt()}"
-            attrs.handle = ".$randomStyleForHandle"
+        div(+editModeStyle and Styles.unplacedControlsPalette) {
+            ref = unplacedControlPaletteDiv
 
-            div(+editModeStyle and Styles.unplacedControlsPalette) {
-                ref = unplacedControlPaletteDiv
+            div(+Styles.dragHandle and randomStyleForHandle) {
+                icon(DragIndicator)
+            }
 
-                div(+Styles.dragHandle and randomStyleForHandle) {
-                    icon(DragIndicator)
-                }
+            paper(Styles.unplacedControlsPaper on PaperStyle.root) {
+                attrs.elevation = 3
 
-                paper(Styles.unplacedControlsPaper on PaperStyle.root) {
-                    attrs.elevation = 3
+                typographyH6 { +"Unplaced Controls" }
 
-                    typographyH6 { +"Unplaced Controls" }
-
+                if (props.editMode) {
                     droppable({
                         this.droppableId = props.controlDisplay.unplacedControlsDropTargetId
                         this.type = "ControlPanel"
@@ -56,7 +52,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                             install(droppableProvided)
 
                             props.controlDisplay.renderUnplacedControls { index, unplacedControl ->
-                                val draggableId = unplacedControl.id
+                                val draggableId = "unplaced-${unplacedControl.id}"
                                 draggable({
                                     this.key = draggableId
                                     this.draggableId = draggableId
@@ -64,12 +60,12 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                                     this.index = index
                                 }) { draggableProvided, snapshot ->
                                     if (snapshot.isDragging) {
-                                        // Correct for translated parent.
-                                        unplacedControlPaletteDiv.current?.let {
-                                            val draggableStyle = draggableProvided.draggableProps.asDynamic().style
-                                            draggableStyle.left -= it.offsetLeft
-                                            draggableStyle.top -= it.offsetTop
-                                        }
+//                                    // Correct for translated parent.
+//                                    unplacedControlPaletteDiv.current?.let {
+//                                        val draggableStyle = draggableProvided.draggableProps.asDynamic().style
+//                                        draggableStyle.left -= it.offsetLeft
+//                                        draggableStyle.top -= it.offsetTop
+//                                    }
                                     }
 
                                     control {
