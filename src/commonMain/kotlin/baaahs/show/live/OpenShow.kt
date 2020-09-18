@@ -132,6 +132,14 @@ abstract class OpenShowVisitor {
     }
 
     open fun visitPlacedControl(panelName: String, openControl: OpenControl) {
+        visitControl(openControl)
+    }
+
+    open fun visitButtonGroupButton(controlContainer: ControlContainer, openControl: OpenControl) {
+        visitControl(openControl)
+    }
+
+    open fun visitControl(openControl: OpenControl) {
         if (openControl is OpenPatchHolder) {
             visitPatchHolder(openControl)
         }
@@ -141,11 +149,9 @@ abstract class OpenShowVisitor {
         }
     }
 
-    open fun visitControlContainer(openControl: ControlContainer) {
-        openControl.containedControls().forEach { containedControl ->
-            if (containedControl.isActive() && containedControl is OpenPatchHolder) {
-                visitPatchHolder(containedControl)
-            }
+    open fun visitControlContainer(controlContainer: ControlContainer) {
+        controlContainer.containedControls().forEach { containedControl ->
+            visitButtonGroupButton(controlContainer, containedControl)
         }
     }
 
