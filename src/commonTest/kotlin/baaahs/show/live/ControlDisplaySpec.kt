@@ -20,10 +20,12 @@ object ControlDisplaySpec : Spek({
     describe<ControlDisplay> {
         val mutableShow by value {
             MutableShow("Show").editLayouts {
-                copyFrom(Layouts(
-                    listOf("Panel 1", "Panel 2", "Panel 3"),
-                    mapOf("default" to Layout(buildJsonObject { }))
-                ))
+                copyFrom(
+                    Layouts(
+                        listOf("Panel 1", "Panel 2", "Panel 3"),
+                        mapOf("default" to Layout(buildJsonObject { }))
+                    )
+                )
             }
         }
         val show by value { mutableShow.build(ShowBuilder()) }
@@ -118,10 +120,12 @@ object ControlDisplaySpec : Spek({
                           |Backdrop 1.1|
                     """.trimIndent()
                 ) { openShow.fakeRender(controlDisplay) }
-                expect(setOf(
-                    "backdrop11Button", "slider2SliderControl", "backdrop12Button", "scene1Button",
-                    "backdrop21Button", "backdrop22Button", "backdropsButtonGroup2", "scene2Button"
-                )) { controlDisplay.unplacedControls.map { it.id }.toSet() }
+            }
+
+            it("lists controls that aren't visible on screen as unplaced") {
+                expect(
+                    setOf("slider2SliderControl", "backdrop21Button", "backdrop22Button", "backdropsButtonGroup2")
+                ) { controlDisplay.unplacedControls.map { it.id }.toSet() }
             }
 
             it("has the first item in the button group selected by default") {

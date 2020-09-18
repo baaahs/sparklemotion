@@ -36,10 +36,14 @@ class ControlDisplay(
 
             override fun visitPlacedControl(panelName: String, openControl: OpenControl) {
                 allPanelBuckets.addControl(panelName, openControl, breadcrumbs)
+                super.visitPlacedControl(panelName, openControl)
+            }
+
+            override fun visitControl(openControl: OpenControl) {
                 placedControls.add(openControl)
 
                 if (openControl.isActive()) {
-                    super.visitPlacedControl(panelName, openControl)
+                    super.visitControl(openControl)
                 }
             }
         }.visitShow(show)
