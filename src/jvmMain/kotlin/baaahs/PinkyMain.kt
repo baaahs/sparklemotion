@@ -8,6 +8,7 @@ import baaahs.gl.GlBase
 import baaahs.io.Fs
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
+import baaahs.server.index
 import baaahs.util.KoinLogger
 import baaahs.util.Logger
 import com.xenomachina.argparser.ArgParser
@@ -15,19 +16,19 @@ import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
 import io.ktor.application.*
 import io.ktor.features.*
+import io.ktor.html.*
+import io.ktor.http.*
 import io.ktor.http.content.*
-import io.ktor.response.*
 import io.ktor.routing.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.html.HTML
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import java.io.FileNotFoundException
-import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 
 @ObsoleteCoroutinesApi
 fun main(args: Array<String>) {
@@ -62,59 +63,62 @@ class PinkyMain(private val args: Args) {
 
         val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
         val resource = Pinky::class.java.classLoader.getResource("baaahs")!!
-        if (resource.protocol == "jar") {
-            val uri = resource.toURI()!!
-            FileSystems.newFileSystem(uri, mapOf("create" to "true"))
-            val jsResDir = Paths.get(uri).parent.resolve("htdocs")
-            testForIndexDotHtml(jsResDir)
-            logger.info { "Serving from jar at $jsResDir." }
+//        if (resource.protocol == "jar") {
+//            val uri = resource.toURI()!!
+//            FileSystems.newFileSystem(uri, mapOf("create" to "true"))
+//            val jsResDir = Paths.get(uri).parent.resolve("htdocs")
+//            testForIndexDotHtml(jsResDir)
+//            logger.info { "Serving from jar at $jsResDir." }
 
             ktor.application.routing {
+//                get("mapper") { call.respondRedirect("mapper/") }
+//                route("mapper/") { defaultResource("htdocs/mapper/index.html") }
+//                get("monitor") { call.respondRedirect("monitor/") }
+//                route("monitor/") { defaultResource("htdocs/monitor/index.html") }
+//                get("ui") { call.respondRedirect("ui/") }
+//                route("ui/") { defaultResource("htdocs/ui/index.html") }
+
+                get("/") {
+                    call.respondHtml(HttpStatusCode.OK, HTML::index)
+                }
                 static {
-                    resources("htdocs")
-                    get("mapper") { call.respondRedirect("mapper/") }
-                    route("mapper/") { defaultResource("htdocs/mapper/index.html") }
-                    get("monitor") { call.respondRedirect("monitor/") }
-                    route("monitor/") { defaultResource("htdocs/monitor/index.html") }
-                    get("ui") { call.respondRedirect("ui/") }
-                    route("ui/") { defaultResource("htdocs/ui/index.html") }
-                    defaultResource("htdocs/ui-index.html")
+                    resources()
                 }
             }
-        } else {
-            val classPathBaseDir = Paths.get(resource.file).parent
-            val repoDir = classPathBaseDir.parent.parent.parent.parent.parent
-            val jsResDir = repoDir.resolve("build/processedResources/js/main")
-            val jsPackageDir = "build/distributions"
-            testForIndexDotHtml(jsResDir)
-            logger.info { "Serving resources from files at $jsResDir." }
-            logger.info { "Serving sparklemotion from files at $jsPackageDir." }
-
-            ktor.application.routing {
-                static {
-                    staticRootFolder = jsResDir.toFile()
-
-                    file("sparklemotion.js",
-                        repoDir.resolve("$jsPackageDir/sparklemotion.js").toFile())
-                    file("sparklemotion.js.map",
-                        repoDir.resolve("$jsPackageDir/sparklemotion.js.map").toFile())
-
-                    file("vendors.js",
-                        repoDir.resolve("$jsPackageDir/vendors.js").toFile())
-                    file("vendors.js.map",
-                        repoDir.resolve("$jsPackageDir/vendors.js.map").toFile())
-
-                    files(jsResDir.toFile())
-                    get("mapper") { call.respondRedirect("mapper/") }
-                    route("mapper/") { default("mapper/index.html") }
-                    get("monitor") { call.respondRedirect("monitor/") }
-                    route("monitor/") { default("monitor/index.html") }
-                    get("ui") { call.respondRedirect("ui/") }
-                    route("ui/") { default("ui/index.html") }
-                    default("ui-index.html")
-                }
-            }
-        }
+//        } else {
+//            val classPathBaseDir = Paths.get(resource.file).parent
+//            val repoDir = classPathBaseDir.parent.parent.parent.parent.parent
+//            val jsResDir = repoDir.resolve("build/processedResources/js/main")
+//            val jsPackageDir = "build/distributions"
+//            testForIndexDotHtml(jsResDir)
+//            logger.info { "Serving resources from files at $jsResDir." }
+//            logger.info { "Serving sparklemotion from files at $jsPackageDir." }
+//
+//            ktor.application.routing {
+//                static {
+//                    staticRootFolder = jsResDir.toFile()
+//
+//                    file("sparklemotion.js",
+//                        repoDir.resolve("$jsPackageDir/sparklemotion.js").toFile())
+//                    file("sparklemotion.js.map",
+//                        repoDir.resolve("$jsPackageDir/sparklemotion.js.map").toFile())
+//
+//                    file("vendors.js",
+//                        repoDir.resolve("$jsPackageDir/vendors.js").toFile())
+//                    file("vendors.js.map",
+//                        repoDir.resolve("$jsPackageDir/vendors.js.map").toFile())
+//
+//                    files(jsResDir.toFile())
+//                    get("mapper") { call.respondRedirect("mapper/") }
+//                    route("mapper/") { default("mapper/index.html") }
+//                    get("monitor") { call.respondRedirect("monitor/") }
+//                    route("monitor/") { default("monitor/index.html") }
+//                    get("ui") { call.respondRedirect("ui/") }
+//                    route("ui/") { default("ui/index.html") }
+//                    default("ui-index.html")
+//                }
+//            }
+//        }
 
         ktor.application.install(CallLogging)
         ktor.application.routing {
