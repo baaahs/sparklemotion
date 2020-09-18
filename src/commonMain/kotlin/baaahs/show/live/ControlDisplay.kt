@@ -143,7 +143,7 @@ class ControlDisplay(
             private val mutableShow: MutableShow?
         ) : DropTarget {
             val controls = mutableListOf<PlacedControl>()
-            override val type: String get() = "ControlPanel"
+            override val type: String get() = "ControlContainer"
 
             private val dropTargetId = dragNDrop.addDropTarget(this)
 
@@ -211,7 +211,7 @@ class ControlDisplay(
     inner class UnplacedControlsDropTarget(
         private val mutableShow: MutableShow?
     ) : DropTarget {
-        override val type: String get() = "ControlPanel"
+        override val type: String get() = "ControlContainer"
 
         override fun moveDraggable(fromIndex: Int, toIndex: Int) {
             // No-op.
