@@ -12,7 +12,7 @@ import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeKgl
 import baaahs.shows.FakeShowPlayer
 import describe
-import kotlinx.serialization.json.json
+import kotlinx.serialization.json.buildJsonObject
 import org.spekframework.spek2.Spek
 import kotlin.test.expect
 
@@ -20,7 +20,10 @@ object ControlDisplaySpec : Spek({
     describe<ControlDisplay> {
         val mutableShow by value {
             MutableShow("Show").editLayouts {
-                copyFrom(Layouts(listOf("Panel 1", "Panel 2", "Panel 3"), mapOf("default" to Layout(json { }))))
+                copyFrom(Layouts(
+                    listOf("Panel 1", "Panel 2", "Panel 3"),
+                    mapOf("default" to Layout(buildJsonObject { }))
+                ))
             }
         }
         val show by value { mutableShow.build(ShowBuilder()) }

@@ -57,14 +57,7 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
                 if (offset == 0 && size == totalSize) {
                     udpListener.receive(fromAddress, fromPort, frameBytes)
                 } else {
-                    val fragmentCount = fragments.size
-                    if (fragmentCount > 200) {
-                        fragments = fragments.subList(fragmentCount - 50, fragmentCount)
-                    }
-                    val thisFragment = Fragment(messageId, offset, frameBytes)
-                    synchronized(fragments) {
-                        fragments.add(thisFragment)
-                    }
+                    addFragment(messageId, offset, frameBytes)
 
 //                        println("received fragment: ${thisFragment}")
                     if (offset + size == totalSize) {
@@ -94,11 +87,8 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
                                 }
                             }
 
-                            synchronized(fragments) {
-                                fragments.addAll(myFragments)
-                            }
+                            replaceFragments(myFragments)
                         }
-
                     }
                 }
             }
@@ -106,32 +96,50 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
     }
 
     @Synchronized
+    private fun addFragment(messageId: Short, offset: Int, frameBytes: ByteArray) {
+        val fragmentCount = fragments.size
+        if (fragmentCount > 200) {
+            fragments = fragments.subList(fragmentCount - 50, fragmentCount)
+        }
+        val thisFragment = Fragment(messageId, offset, frameBytes)
+        fragments.add(thisFragment)
+    }
+
+    @Synchronized
+    private fun replaceFragments(myFragments: List<Fragment>) {
+        fragments.addAll(myFragments)
+    }
+
     private fun removeMessageId(messageId: Short): List<Fragment> {
-        val myFragments = arrayListOf<Fragment>()
+        val myFragments = popMessageFragments(messageId)
 
-        synchronized(fragments) {
-            fragments.removeAll { fragment ->
-                val remove = fragment.messageId == messageId
-                if (remove) myFragments.add(fragment)
-                remove
-            }
-
-            val offsets = hashSetOf<Int>()
-            myFragments.removeAll { fragment ->
-                val alreadyThere = !offsets.add(fragment.offset)
+        val offsets = hashSetOf<Int>()
+        myFragments.removeAll { fragment ->
+            val alreadyThere = !offsets.add(fragment.offset)
 //                if (alreadyThere) {
 //                    println("already there: ${fragment}")
 //                    println("from: $myFragments")
 //                }
-                alreadyThere // duplicate, ignore
-            }
+            alreadyThere // duplicate, ignore
+        }
 
-            if (myFragments.isEmpty()) {
-                println("remaining fragments = ${fragments}")
-            }
+        if (myFragments.isEmpty()) {
+            println("remaining fragments = ${fragments}")
         }
 
         return myFragments.sortedBy { it.offset }
+    }
+
+    @Synchronized
+    private fun popMessageFragments(messageId: Short): ArrayList<Fragment> {
+        val myFragments = arrayListOf<Fragment>()
+
+        fragments.removeAll { fragment ->
+            val remove = fragment.messageId == messageId
+            if (remove) myFragments.add(fragment)
+            remove
+        }
+        return myFragments
     }
 
     inner class FragmentingUdpSocket(private val delegate: Network.UdpSocket) : Network.UdpSocket {

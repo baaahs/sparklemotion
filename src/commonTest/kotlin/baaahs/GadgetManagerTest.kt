@@ -5,10 +5,7 @@ import baaahs.net.Network
 import baaahs.net.TestNetwork
 import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.json
-import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.*
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.expect
@@ -34,16 +31,71 @@ class GadgetManagerTest {
         val third = Slider("third").apply { value = .345f }
         gadgetManager.sync(listOf("first" to first, "second" to second, "third" to third))
 
-        val expectedActiveGadgets = jsonArray {
-            +json { "name" to "first"; "gadget" to json { "type" to "baaahs.Core:Slider"; "title" to "first"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to JsonNull }; "topicName" to "/gadgets/first" }
-            +json { "name" to "second"; "gadget" to json { "type" to "baaahs.Core:Slider"; "title" to "second"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to JsonNull }; "topicName" to "/gadgets/second" }
-            +json { "name" to "third"; "gadget" to json { "type" to "baaahs.Core:Slider"; "title" to "third"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to JsonNull }; "topicName" to "/gadgets/third" }
+        val expectedActiveGadgets = buildJsonArray {
+            add(buildJsonObject {
+                put("name", "first")
+                put("gadget", buildJsonObject {
+                    put("type", "baaahs.Core:Slider")
+                    put("title", "first")
+                    put("initialValue", 1.0)
+                    put("minValue", 0.0)
+                    put("maxValue", 1.0)
+                    put("stepValue", JsonNull)
+                })
+                put("topicName", "/gadgets/first")
+            })
+            add(buildJsonObject {
+                put("name", "second")
+                put(
+                    "gadget",
+                    buildJsonObject {
+                        put("type", "baaahs.Core:Slider")
+                        put(
+                            "title",
+                            "second"
+                        )
+                        put("initialValue", 1.0)
+                        put(
+                            "minValue",
+                            0.0
+                        )
+                        put("maxValue", 1.0)
+                        put(
+                            "stepValue",
+                            JsonNull
+                        )
+                    })
+                put("topicName", "/gadgets/second")
+            })
+            add(buildJsonObject {
+                put("name", "third")
+                put(
+                    "gadget",
+                    buildJsonObject {
+                        put("type", "baaahs.Core:Slider")
+                        put(
+                            "title",
+                            "third"
+                        )
+                        put("initialValue", 1.0)
+                        put(
+                            "minValue",
+                            0.0
+                        )
+                        put("maxValue", 1.0)
+                        put(
+                            "stepValue",
+                            JsonNull
+                        )
+                    })
+                put("topicName", "/gadgets/third")
+            })
         }
         expect(expectedActiveGadgets) { pubSub.getTopicInfo("activeGadgets")!!.jsonValue }
 
-        expect(json { }) { pubSub.getTopicInfo("/gadgets/first")!!.jsonValue }
-        expect(json { "value" to 0.234 }) { pubSub.getTopicInfo("/gadgets/second")!!.jsonValue }
-        expect(json { "value" to 0.345 }) { pubSub.getTopicInfo("/gadgets/third")!!.jsonValue }
+        expect(buildJsonObject { }) { pubSub.getTopicInfo("/gadgets/first")!!.jsonValue }
+        expect(buildJsonObject { put("value", 0.234) }) { pubSub.getTopicInfo("/gadgets/second")!!.jsonValue }
+        expect(buildJsonObject { put("value", 0.345) }) { pubSub.getTopicInfo("/gadgets/third")!!.jsonValue }
 
         expect("{first={}, second={value=0.234}, third={value=0.345}}") {
             gadgetManager.getGadgetsState().toString()
@@ -71,16 +123,49 @@ class GadgetManagerTest {
         gadgetManager.sync(listOf("first" to firstB, "second" to secondB, "third" to thirdB))
 
         expect(
-            jsonArray {
-                +json { "name" to "first"; "gadget" to json { "type" to "baaahs.Core:Slider"; "title" to "uno"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to JsonNull}; "topicName" to "/gadgets/first"}
-                +json { "name" to "second"; "gadget" to json { "type" to "baaahs.Core:Slider"; "title" to "dos"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to JsonNull}; "topicName" to "/gadgets/second"}
-                +json { "name" to "third"; "gadget" to json { "type" to "baaahs.Core:Slider"; "title" to "tres"; "initialValue" to 1.0; "minValue" to 0.0; "maxValue" to 1.0; "stepValue" to JsonNull}; "topicName" to "/gadgets/third"}
+            buildJsonArray {
+                add(buildJsonObject {
+                    put("name", "first")
+                    put("gadget", buildJsonObject {
+                        put("type", "baaahs.Core:Slider")
+                        put("title", "uno")
+                        put("initialValue", 1.0)
+                        put("minValue", 0.0)
+                        put("maxValue", 1.0)
+                        put("stepValue", JsonNull)
+                    })
+                    put("topicName", "/gadgets/first")
+                })
+                add(buildJsonObject {
+                    put("name", "second")
+                    put("gadget", buildJsonObject {
+                        put("type", "baaahs.Core:Slider")
+                        put("title", "dos")
+                        put("initialValue", 1.0)
+                        put("minValue", 0.0)
+                        put("maxValue", 1.0)
+                        put("stepValue", JsonNull)
+                    })
+                    put("topicName", "/gadgets/second")
+                })
+                add(buildJsonObject {
+                    put("name", "third")
+                    put("gadget", buildJsonObject {
+                        put("type", "baaahs.Core:Slider")
+                        put("title", "tres")
+                        put("initialValue", 1.0)
+                        put("minValue", 0.0)
+                        put("maxValue", 1.0)
+                        put("stepValue", JsonNull)
+                    })
+                    put("topicName", "/gadgets/third")
+                })
 
             }
-        ) { activeGadgetsListener.events.map { json.parseJson(it) }.only() }
-        expect(json {}) { pubSub.getTopicInfo("/gadgets/first")!!.jsonValue }
-        expect(json { "value" to 0.123 }) { pubSub.getTopicInfo("/gadgets/second")!!.jsonValue }
-        expect(json {}) { pubSub.getTopicInfo("/gadgets/third")!!.jsonValue }
+        ) { activeGadgetsListener.events.map { json.parseToJsonElement(it) }.only() }
+        expect(buildJsonObject {}) { pubSub.getTopicInfo("/gadgets/first")!!.jsonValue }
+        expect(buildJsonObject { put("value", 0.123) }) { pubSub.getTopicInfo("/gadgets/second")!!.jsonValue }
+        expect(buildJsonObject {}) { pubSub.getTopicInfo("/gadgets/third")!!.jsonValue }
     }
 
     @Test
@@ -121,16 +206,21 @@ class GadgetManagerTest {
         expect(listOf("{\"value\":0.234}")) { secondListener.events }
         expect(emptyList<String>()) { thirdListener.events }
 
-        expect(json { "value" to 0.123 }) { pubSub.getTopicInfo("/gadgets/first")!!.jsonValue }
-        expect(json { "value" to 0.234 }) { pubSub.getTopicInfo("/gadgets/second")!!.jsonValue }
-        expect(json { "value" to 0.345 }) { pubSub.getTopicInfo("/gadgets/third")!!.jsonValue }
+        expect(buildJsonObject { put("value", 0.123) }) { pubSub.getTopicInfo("/gadgets/first")!!.jsonValue }
+        expect(buildJsonObject { put("value", 0.234) }) { pubSub.getTopicInfo("/gadgets/second")!!.jsonValue }
+        expect(buildJsonObject { put("value", 0.345) }) { pubSub.getTopicInfo("/gadgets/third")!!.jsonValue }
 
         expect("{first={value=0.123}, second={value=0.234}, third={value=0.345}}") {
             gadgetManager.getGadgetsState().toString()
         }
 
         // New gadget should receive updates from PubSub.
-        pubSub.getTopicInfo("/gadgets/third")!!.listeners_TEST_ONLY.first().onUpdate(json { "value" to .987 })
+        pubSub.getTopicInfo("/gadgets/third")!!.listeners_TEST_ONLY.first().onUpdate(buildJsonObject {
+            put(
+                "value",
+                .987
+            )
+        })
         expect(0.987f) { thirdB.value }
     }
 

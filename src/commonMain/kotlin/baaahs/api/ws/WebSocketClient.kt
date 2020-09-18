@@ -12,7 +12,8 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.builtins.list
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.*
 
@@ -27,7 +28,7 @@ class WebSocketClient(link: Network.Link, address: Network.Address) : Network.We
     }
 
     suspend fun listSessions(): List<String> {
-        return WebSocketRouter.json.fromJson(String.serializer().list, sendCommand("listSessions"))
+        return WebSocketRouter.json.decodeFromJsonElement(ListSerializer(String.serializer()), sendCommand("listSessions"))
     }
 
     suspend fun saveImage(sessionStartTime: DateTime, name: String, bitmap: Bitmap): String {
@@ -49,31 +50,33 @@ class WebSocketClient(link: Network.Link, address: Network.Address) : Network.We
     }
 
     suspend fun saveSession(mappingSession: MappingSession) {
-        sendCommand("saveSession", WebSocketRouter.json.toJson(MappingSession.serializer(), mappingSession))
+        sendCommand("saveSession",
+            WebSocketRouter.json.encodeToJsonElement(MappingSession.serializer(), mappingSession)
+        )
     }
 
     private suspend fun sendCommand(command: String, vararg args: JsonElement): JsonElement {
-        val content = jsonArray {
-            +command
-            args.forEach { +it }
+        val content = buildJsonArray {
+            add(command)
+            args.forEach { add(it) }
         }
         while (!connected) {
             logger.warn { "Mapper not connected to Pinky…" }
             delay(50)
         }
-        tcpConnection.send(WebSocketRouter.json.stringify(JsonArraySerializer, content).encodeToByteArray())
+        tcpConnection.send(WebSocketRouter.json.encodeToString(JsonArray.serializer(), content).encodeToByteArray())
 
         val responseJsonStr = responses.receive().decodeToString()
         try {
-            val responseJson = WebSocketRouter.json.parseJson(responseJsonStr)
-            val status = responseJson.jsonObject.getPrimitive("status")
+            val responseJson = WebSocketRouter.json.parseToJsonElement(responseJsonStr)
+            val status = responseJson.jsonObject.getValue("status").jsonPrimitive
             val response = responseJson.jsonObject.getValue("response")
             when (status.contentOrNull) {
                 "success" -> return response
-                "error" -> throw RuntimeException(response.contentOrNull)
+                "error" -> throw RuntimeException(response.jsonPrimitive.contentOrNull)
             }
             return responseJson
-        } catch (e: JsonDecodingException) {
+        } catch (e: SerializationException) {
             logger.error { "can't parse response to $command $args: $responseJsonStr" }
             throw e
         }

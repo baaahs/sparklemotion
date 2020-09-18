@@ -51,23 +51,24 @@ class DmxDevice(usbDevice: Device) : Dmx.Universe() {
             device.purgeTransmitBuffer()
         }
 
-        internal fun update(buf: ByteArray) {
-            synchronized(this) {
-                buf.copyInto(newData)
-                updated = true
-            }
+        @Synchronized
+        fun update(buf: ByteArray) {
+            buf.copyInto(newData)
+            updated = true
         }
 
         override fun run() {
             while (keepRunning) {
-                synchronized(this) {
-                    if (updated) {
-                        newData.copyInto(currentData)
-                        updated = false
-                    }
-                }
-
+                fillNewDataIfUpdated()
                 transmit(currentData)
+            }
+        }
+
+        @Synchronized
+        private fun fillNewDataIfUpdated() {
+            if (updated) {
+                newData.copyInto(currentData)
+                updated = false
             }
         }
 

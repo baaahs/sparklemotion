@@ -22,7 +22,7 @@ import com.danielgergely.kgl.GL_RGB
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import kotlinx.serialization.json.float
+import kotlinx.serialization.json.*
 
 class CorePlugin : Plugin {
     override val packageName: String = id
@@ -343,10 +343,10 @@ class CorePlugin : Plugin {
                 val config = inputPort.pluginConfig
                 return SliderDataSource(
                     inputPort.title,
-                    initialValue = config?.get("default")?.float ?: 1f,
-                    minValue = config?.get("min")?.float ?: 0f,
-                    maxValue = config?.get("max")?.float ?: 1f,
-                    stepValue = config?.get("step")?.float
+                    initialValue = config?.get("default")?.jsonPrimitive?.float ?: 1f,
+                    minValue = config?.get("min")?.jsonPrimitive?.float ?: 0f,
+                    maxValue = config?.get("max")?.jsonPrimitive?.float ?: 1f,
+                    stepValue = config?.get("step")?.jsonPrimitive?.float
                 )
             }
         }
@@ -422,7 +422,7 @@ class CorePlugin : Plugin {
                 inputPort.dataTypeIs(GlslType.Vec4)
 
             override fun build(inputPort: InputPort): ColorPickerDataSource {
-                val default = inputPort.pluginConfig?.get("default")?.primitive?.contentOrNull
+                val default = inputPort.pluginConfig?.get("default")?.jsonPrimitive?.contentOrNull
 
                 return ColorPickerDataSource(
                     inputPort.title,
@@ -465,11 +465,11 @@ class CorePlugin : Plugin {
             override fun build(inputPort: InputPort): RadioButtonStripDataSource {
                 val config = inputPort.pluginConfig
 
-                val initialSelectionIndex = config?.getPrimitive("default")?.int ?: 0
+                val initialSelectionIndex = config?.getValue("default")?.jsonPrimitive?.int ?: 0
 
                 val options = config
-                    ?.getArrayOrNull("options")
-                    ?.map { it.primitive.content }
+                    ?.let { it["options"]?.jsonArray }
+                    ?.map { it.jsonPrimitive.content }
                     ?: error("no options given")
 
                 return RadioButtonStripDataSource(

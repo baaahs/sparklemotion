@@ -8,13 +8,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.float
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonPrimitive
 import org.w3c.dom.WebSocket
 import kotlin.browser.window
 
 class BridgeClient(private val url: String) {
     private val logger = Logger("BridgedBeatSource")
-    private val json = Json(JsonConfiguration.Stable)
+    private val json = Json
     private val defaultBpm = BeatData(0.0, 500, confidence = 1f)
     private val l = window.location
     private lateinit var webSocket: WebSocket
@@ -60,19 +62,19 @@ class BridgeClient(private val url: String) {
         webSocket.onmessage = {
             val buf = it.data as String
 //            logger.debug { "Received $buf" }
-            val jsonCmd = json.parseJson(buf)
-            val command = jsonCmd.jsonArray[0].primitive.content
+            val jsonCmd = json.parseToJsonElement(buf)
+            val command = jsonCmd.jsonArray[0].jsonPrimitive.content
             val arg = jsonCmd.jsonArray[1]
             when (command) {
-                "soundFrequencies" -> soundAnalysisFrequences = arg.jsonArray.map { it.primitive.float }.toFloatArray()
+                "soundFrequencies" -> soundAnalysisFrequences = arg.jsonArray.map { it.jsonPrimitive.float }.toFloatArray()
                 "soundMagnitudes" -> {
-                    val magnitudes = arg.jsonArray.map { it.primitive.float }.toFloatArray()
+                    val magnitudes = arg.jsonArray.map { it.jsonPrimitive.float }.toFloatArray()
                     val analysis = SoundAnalyzer.Analysis(soundAnalysisFrequences, magnitudes)
                     soundAnalyzer.listeners.forEach {
                         it.onSample(analysis)
                     }
                 }
-                "beatData" -> beatData = json.fromJson(BeatData.serializer(), arg)
+                "beatData" -> beatData = json.decodeFromJsonElement(BeatData.serializer(), arg)
                 else -> throw IllegalArgumentException("unknown command \"$command\"")
             }
 

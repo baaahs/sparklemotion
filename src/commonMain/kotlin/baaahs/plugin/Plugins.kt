@@ -9,7 +9,6 @@ import baaahs.show.Control
 import baaahs.show.DataSource
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.modules.SerializersModule
 
@@ -42,7 +41,7 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
 //            contextual(DataSource::class, DataSourceSerializer(this@Plugins))
     }
 
-    val json = Json(JsonConfiguration.Stable, context = serialModule)
+    val json = Json { serializersModule = this@Plugins.serialModule }
 
     private fun findPlugin(pluginRef: PluginRef): Plugin {
         return byPackage[pluginRef.pluginId]
