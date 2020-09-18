@@ -54,8 +54,8 @@ expect fun logGroupBegin(id: String, message: String)
 expect fun logGroupEnd(id: String, message: String)
 
 class Logger(val id: String) {
-    fun debug(message: () -> String) {
-        log(id, "DEBUG", message.invoke())
+    fun debug(exception: Throwable? = null, message: () -> String) {
+        log(id, "DEBUG", message.invoke(), exception)
     }
 
     fun info(message: () -> String) {
