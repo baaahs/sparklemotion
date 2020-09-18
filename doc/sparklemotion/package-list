@@ -1,6 +1,5 @@
 $dokka.format:html
 $dokka.linkExtension:html
-$dokka.location:baaahs$array(kotlinx.serialization.KSerializer((baaahs.array.T)), kotlin.reflect.KClass((baaahs.array.T)))baaahs/kotlinx.serialization.-k-serializer/array.html
 $dokka.location:baaahs$boundedBy(kotlin.Int, kotlin.ranges.IntRange)baaahs/kotlin.-int/bounded-by.html
 $dokka.location:baaahs$camelize(kotlin.String)baaahs/kotlin.-string/camelize.html
 $dokka.location:baaahs$disabled#org.w3c.dom.Elementbaaahs/org.w3c.dom.-element/disabled.html
