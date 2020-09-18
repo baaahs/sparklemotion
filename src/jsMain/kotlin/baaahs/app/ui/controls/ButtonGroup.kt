@@ -4,6 +4,7 @@ import baaahs.app.ui.Draggable
 import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
 import baaahs.show.ButtonGroupControl
+import baaahs.show.live.ButtonGroupDropTarget
 import baaahs.show.live.OpenButtonGroupControl
 import baaahs.show.live.OpenShow
 import baaahs.show.live.View
@@ -166,38 +167,6 @@ private fun <T> ButtonGroupControl.Direction.decode(horizontal: T, vertical: T):
 
 external interface ButtonGroupProps : SpecialControlProps {
     var buttonGroupControl: OpenButtonGroupControl
-}
-
-private class ButtonGroupDropTarget(
-    private val show: OpenShow,
-    private val buttonGroupControl: OpenButtonGroupControl,
-    private val editHandler: EditHandler
-) : DropTarget {
-    override val type: String get() = "SceneList"
-    private val myDraggable = object : Draggable {}
-
-    override fun moveDraggable(fromIndex: Int, toIndex: Int) {
-        show.edit {
-            val mutableControl = findControl(buttonGroupControl.id) as MutableButtonGroupControl
-            mutableControl.moveButton(fromIndex, toIndex)
-        }.also { editor ->
-            editHandler.onShowEdit(editor)
-        }
-    }
-
-    override fun willAccept(draggable: Draggable): Boolean {
-        return draggable == myDraggable
-    }
-
-    // Scenes can only be moved within a single SceneList.
-    override fun getDraggable(index: Int): Draggable = error("not implemented")
-
-    // Scenes can only be moved within a single SceneList.
-    override fun insertDraggable(draggable: Draggable, index: Int): Unit = error("not implemented")
-
-    // Scenes can only be moved within a single SceneList.
-    override fun removeDraggable(draggable: Draggable): Unit = error("not implemented")
-
 }
 
 //private class SceneDropTarget(
