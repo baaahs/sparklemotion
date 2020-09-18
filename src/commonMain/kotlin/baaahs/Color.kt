@@ -2,8 +2,15 @@ package baaahs
 
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import kotlinx.serialization.*
-import kotlinx.serialization.PrimitiveKind.INT
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializer
+import kotlinx.serialization.Transient
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlin.js.JsName
 import kotlin.math.max
 import kotlin.math.min
@@ -221,7 +228,7 @@ data class Color(val argb: Int) {
         private fun bounded(b: Byte): Int = b.toInt() and 0xff
         private fun asInt(f: Float): Int = (bounded(f) * 255).toInt()
 
-        override val descriptor: SerialDescriptor = PrimitiveDescriptor("Color", INT)
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Color", PrimitiveKind.INT)
         override fun serialize(encoder: Encoder, obj: Color) = encoder.encodeInt(obj.argb)
         override fun deserialize(decoder: Decoder): Color = Color(decoder.decodeInt())
     }

@@ -10,7 +10,8 @@ import baaahs.only
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
 import baaahs.toBeSpecified
-import kotlinx.serialization.json.json
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
@@ -360,7 +361,10 @@ object GlslAnalyzerSpec : Spek({
 
             it("parses hints") {
                 expect(PluginRef("whatever.package.Plugin", "Thing")) { glslVar.hint!!.pluginRef }
-                expect(json { "key" to "value"; "key2" to "value2" }) { glslVar.hint!!.config }
+                expect(buildJsonObject {
+                    put("key", "value")
+                    put("key2", "value2")
+                }) { glslVar.hint!!.config }
             }
 
             context("when package is unspecified") {

@@ -8,17 +8,15 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import kotlinx.serialization.builtins.ArraySerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import kotlin.collections.set
 import kotlin.js.JsName
 import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 /**
@@ -106,10 +104,10 @@ abstract class Gadget {
     companion object {
         val serialModule = SerializersModule {
             polymorphic(Gadget::class) {
-                ColorPicker::class with ColorPicker.serializer()
-                PalettePicker::class with PalettePicker.serializer()
-                Slider::class with Slider.serializer()
-                Switch::class with Switch.serializer()
+                subclass(ColorPicker::class, ColorPicker.serializer())
+                subclass(PalettePicker::class, PalettePicker.serializer())
+                subclass(Slider::class, Slider.serializer())
+                subclass(Switch::class, Switch.serializer())
             }
         }
     }
@@ -126,13 +124,13 @@ private class GadgetValueObserver<T>(
     override fun getValue(thisRef: Gadget, property: KProperty<*>): T {
         val value = thisRef.state[name]
         return if (value == null) initialValue else {
-            jsonParser.fromJson(serializer, value)
+            jsonParser.decodeFromJsonElement(serializer, value)
         }
     }
 
     override fun setValue(thisRef: Gadget, property: KProperty<*>, value: T) {
         if (getValue(thisRef, property) != value) {
-            thisRef.state[name] = jsonParser.toJson(serializer, value)
+            thisRef.state[name] = jsonParser.encodeToJsonElement(serializer, value)
             onChange()
         }
     }
@@ -190,6 +188,4 @@ class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>)
     }
 }
 
-private val jsonParser = Json(JsonConfiguration.Stable)
-
-fun <T : Any> KSerializer<T>.array(kKlass: KClass<T>): KSerializer<Array<T>> = ArraySerializer(kKlass, this)
+private val jsonParser = Json

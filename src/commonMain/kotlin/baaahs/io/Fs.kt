@@ -1,10 +1,10 @@
-@file:ContextualSerialization(Fs::class)
+@file:UseContextualSerialization(Fs::class)
 
 package baaahs.io
 
-import kotlinx.serialization.ContextualSerialization
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseContextualSerialization
 
 @Polymorphic
 interface Fs {

@@ -1,6 +1,5 @@
 package baaahs.mapper
 
-import baaahs.Mapper
 import baaahs.MediaDevices
 import baaahs.imaging.Bitmap
 import kotlin.math.max
@@ -57,7 +56,7 @@ class ImageProcessing {
             return analyze(deltaBitmap, withinRegion)
         }
 
-        @UseExperimental(ExperimentalUnsignedTypes::class)
+        @OptIn(ExperimentalUnsignedTypes::class)
         fun pixels(
             bitmap: Bitmap,
             regionOfInterest: MediaDevices.Region = MediaDevices.Region.containing(bitmap),
@@ -67,7 +66,7 @@ class ImageProcessing {
                 for (y in regionOfInterest.yRange) {
                     for (x in regionOfInterest.xRange) {
                         val pixelByteIndex = (x + y * bitmap.width) * 4
-                        val pixValue = data[pixelByteIndex + rgbaPixelDetectionIndex].toInt()
+                        val pixValue = data[pixelByteIndex + rgbaPixelDetectionIndex]
                         fn(x, y, pixValue)
                     }
                 }
@@ -76,7 +75,7 @@ class ImageProcessing {
             }
         }
 
-        @UseExperimental(ExperimentalUnsignedTypes::class)
+        @OptIn(ExperimentalUnsignedTypes::class)
         fun analyze(
             bitmap: Bitmap,
             regionOfInterest: MediaDevices.Region = MediaDevices.Region.containing(bitmap)
@@ -135,12 +134,12 @@ class ImageProcessing {
         val yMin: ShortArray,
         val yMax: ShortArray
     ) {
-        val minValue: Int by lazy { xMin.copyOfRange(regionOfInterest.xRange).min()!!.toInt() }
-        val maxValue: Int by lazy { xMax.copyOfRange(regionOfInterest.xRange).max()!!.toInt() }
+        val minValue: Int by lazy { xMin.copyOfRange(regionOfInterest.xRange).minOrNull()!!.toInt() }
+        val maxValue: Int by lazy { xMax.copyOfRange(regionOfInterest.xRange).maxOrNull()!!.toInt() }
 
         val minChangeToDetect = 10f
         val scale: Float by lazy { max(minChangeToDetect, (maxValue - minValue).toFloat()) }
-        fun thresholdValueFor(threshold: Float) = (threshold * scale).toShort() + minValue
+        fun thresholdValueFor(threshold: Float) = (threshold * scale).toInt().toShort() + minValue
 
         fun detectChangeRegion(
             threshold: Float

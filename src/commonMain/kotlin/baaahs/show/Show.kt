@@ -5,15 +5,20 @@ import baaahs.camelize
 import baaahs.getBang
 import baaahs.plugin.Plugins
 import baaahs.show.ButtonGroupControl.Direction
-import baaahs.show.mutable.*
-import kotlinx.serialization.*
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderInstance
+import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.ShowBuilder
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.modules.SerialModule
-import kotlinx.serialization.modules.SerialModuleCollector
-import kotlin.reflect.KClass
 
 interface ShowContext {
     fun getControl(id: String): Control
@@ -34,7 +39,7 @@ data class Show(
     val dataSources: Map<String, DataSource> = emptyMap()
 ) : PatchHolder, ShowContext {
     fun toJson(plugins: Plugins): JsonElement {
-        return plugins.json.toJson(serializer(), this)
+        return plugins.json.encodeToJsonElement(serializer(), this)
     }
 
     override fun getControl(id: String): Control = controls.getBang(id, "control")
@@ -47,21 +52,9 @@ data class Show(
         val EmptyShow = Show("Empty Show")
 
         fun fromJson(plugins: Plugins, s: String): Show {
-            val json = Json(JsonConfiguration.Stable, context = ShowSerialModule(plugins.serialModule))
-            return json.parse(serializer(), s)
+            val json = Json { serializersModule = plugins.serialModule }
+            return json.decodeFromString(serializer(), s)
         }
-    }
-}
-
-class ShowSerialModule(private val delegate: SerialModule) : SerialModule by delegate {
-    override fun dumpTo(collector: SerialModuleCollector) {
-        println("dumpTo($collector)")
-        delegate.dumpTo(collector)
-    }
-
-    override fun <T : Any> getContextual(kclass: KClass<T>): KSerializer<T>? {
-        println("getContextual($kclass)")
-        return delegate.getContextual(kclass)
     }
 }
 
@@ -149,10 +142,11 @@ data class ShaderChannel(val id: String) {
     class ShaderChannelSerializer :
         KSerializer<ShaderChannel> {
         override val descriptor: SerialDescriptor
-            get() = PrimitiveDescriptor(
+            get() = PrimitiveSerialDescriptor(
                 "id",
                 PrimitiveKind.STRING
             )
+
 
         override fun deserialize(decoder: Decoder): ShaderChannel {
             return ShaderChannel(decoder.decodeString())

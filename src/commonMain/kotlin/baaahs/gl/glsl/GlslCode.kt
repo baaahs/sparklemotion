@@ -5,7 +5,8 @@ import baaahs.englishize
 import baaahs.plugin.PluginRef
 import baaahs.unknown
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.json
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 class GlslCode(
     val src: String,
@@ -154,10 +155,10 @@ class GlslCode(
                             lineNumber ?: -1
                         )
 
-                        config = json {
+                        config = buildJsonObject {
                             parts.subList(1, parts.size).forEach { s ->
                                 val kv = s.split("=")
-                                kv.first() to kv.subList(1, kv.size).joinToString("=")
+                                put(kv.first(), kv.subList(1, kv.size).joinToString("="))
                             }
                         }
 

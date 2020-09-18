@@ -14,7 +14,7 @@ class WebSocketRouter(
     private val handlerScope = CoroutineScope(coroutineContext)
 
     companion object {
-        val json = Json(JsonConfiguration.Stable)
+        val json = Json
         val logger = Logger("WebSocketEndpoint")
     }
 
@@ -25,8 +25,8 @@ class WebSocketRouter(
     }
 
     override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
-        val args = json.parseJson(bytes.decodeToString()).jsonArray
-        val command = args.first().contentOrNull
+        val args = json.parseToJsonElement(bytes.decodeToString()).jsonArray
+        val command = args.first().jsonPrimitive.contentOrNull
         var status = "success"
         var response: JsonElement
 
@@ -44,9 +44,9 @@ class WebSocketRouter(
             }
 
             logger.debug { "Command: $args -> $status $response" }
-            tcpConnection.send(json.stringify(JsonElementSerializer, json {
-                "status" to status
-                "response" to response
+            tcpConnection.send(json.encodeToString(JsonElement.serializer(), buildJsonObject {
+                put("status", status)
+                put("response", response)
             }).encodeToByteArray())
         }
     }

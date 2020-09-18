@@ -1,14 +1,14 @@
 package baaahs.mapper
 
 import com.soywiz.klock.DateTime
-import kotlinx.serialization.Decoder
-import kotlinx.serialization.Encoder
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.PrimitiveDescriptor
-import kotlinx.serialization.PrimitiveKind.STRING
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 object DateTimeSerializer : KSerializer<DateTime> {
-    override val descriptor = PrimitiveDescriptor("DateTime", STRING)
+    override val descriptor = PrimitiveSerialDescriptor("DateTime", PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): DateTime {
         return DateTime(decoder.decodeDouble())
