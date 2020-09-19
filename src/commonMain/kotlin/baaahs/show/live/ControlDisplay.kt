@@ -57,10 +57,6 @@ class ControlDisplay(
     }
     val unplacedControls = show.allControls.filter { !placedControls.contains(it) }
 
-    init {
-        println(show.fakeRender(this))
-    }
-
     fun render(panelTitle: String, renderBucket: RenderBucket) {
         allPanelBuckets.render(panelTitle, renderBucket)
     }
@@ -129,7 +125,7 @@ class ControlDisplay(
             ).forEach { section ->
                 val panelBucket = byContainer[section.container]
                     ?: PanelBucket(section, mutableShow)
-                panelBucket.render(renderBucket)
+                renderBucket(panelBucket)
             }
         }
 
@@ -145,15 +141,11 @@ class ControlDisplay(
             val controls = mutableListOf<PlacedControl>()
             override val type: String get() = "ControlContainer"
 
-            private val dropTargetId = dragNDrop.addDropTarget(this)
+            val dropTargetId = dragNDrop.addDropTarget(this)
 
             fun add(control: OpenControl) {
                 val nextIndex = controls.size
                 controls.add(PlacedControl(control, nextIndex))
-            }
-
-            fun render(renderBucket: RenderBucket) {
-                renderBucket(dropTargetId, section, controls)
             }
 
             fun release() {
@@ -267,21 +259,5 @@ class ControlDisplay(
 }
 
 typealias RenderBucket = (
-    dropTargetId: String,
-    section: ControlDisplay.Section,
-    controls: List<ControlDisplay.PanelBuckets.PanelBucket.PlacedControl>
+    panelBucket: ControlDisplay.PanelBuckets.PanelBucket
 ) -> Unit
-
-
-fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
-    val buf = StringBuilder()
-
-    layouts.panelNames.forEach { panelName ->
-        buf.append("$panelName:\n")
-        controlDisplay.render(panelName) { dropTargetId, section, controls ->
-            buf.append("  |${section.title}| ${controls.joinToString { it.control.id }}\n")
-        }
-    }
-
-    return buf.trim().toString()
-}
