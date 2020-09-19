@@ -1,16 +1,10 @@
 package baaahs.app.ui.controls
 
-import baaahs.app.ui.Draggable
-import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
 import baaahs.show.ButtonGroupControl
-import baaahs.show.live.ButtonGroupDropTarget
 import baaahs.show.live.OpenButtonGroupControl
-import baaahs.show.live.OpenShow
 import baaahs.show.live.View
-import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableButtonControl
-import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.*
 import external.Direction
@@ -34,7 +28,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
     val appContext = useContext(appContext)
 
     val buttonGroupControl = props.buttonGroupControl
-    val dropTarget = ButtonGroupDropTarget(props.show, buttonGroupControl, appContext.webClient)
+    val dropTarget = buttonGroupControl.createDropTarget(props.show, appContext.webClient)
     val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
     onChange("unregister drop target") {
         withCleanup {

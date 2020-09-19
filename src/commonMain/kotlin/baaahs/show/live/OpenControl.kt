@@ -7,12 +7,9 @@ import baaahs.gadgets.Switch
 import baaahs.show.ButtonControl
 import baaahs.show.ButtonGroupControl
 import baaahs.show.DataSource
-import baaahs.show.ShowContext
 import baaahs.show.mutable.EditHandler
-import baaahs.show.mutable.MutableButtonControl
 import baaahs.show.mutable.MutableButtonGroupControl
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
 
 interface OpenControl {
     val id: String
@@ -98,37 +95,44 @@ class OpenButtonGroupControl(
     override fun addTo(activeSetBuilder: ActiveSetBuilder, panelId: String, depth: Int) {
         buttons.forEach { it.addTo(activeSetBuilder, panelId, depth + 1) }
     }
-}
 
-class ButtonGroupDropTarget(
-    private val show: OpenShow,
-    private val buttonGroupControl: OpenButtonGroupControl,
-    private val editHandler: EditHandler
-) : DropTarget {
-    override val type: String get() = "ControlContainer"
-    private val myDraggable = object : Draggable {}
+    fun createDropTarget(show: OpenShow, editHandler: EditHandler) =
+        ButtonGroupDropTarget(show, editHandler)
 
-    override fun moveDraggable(fromIndex: Int, toIndex: Int) {
-        show.edit {
-            val mutableControl = findControl(buttonGroupControl.id) as MutableButtonGroupControl
-            mutableControl.moveButton(fromIndex, toIndex)
-        }.also { editor ->
-            editHandler.onShowEdit(editor)
+    inner class ButtonGroupDropTarget(
+        private val show: OpenShow,
+        private val editHandler: EditHandler
+    ) : DropTarget {
+        override val type: String get() = "ControlContainer"
+        private val myDraggable = object : Draggable {}
+
+        override fun moveDraggable(fromIndex: Int, toIndex: Int) {
+            show.edit {
+                val mutableControl = findControl(id) as MutableButtonGroupControl
+                mutableControl.moveButton(fromIndex, toIndex)
+            }.also { editor ->
+                editHandler.onShowEdit(editor)
+            }
         }
+
+        override fun willAccept(draggable: Draggable): Boolean {
+            return draggable == myDraggable
+        }
+
+        override fun getDraggable(index: Int): Draggable = object : Draggable {
+            override fun willMoveTo(destination: DropTarget): Boolean = true
+
+            override fun onMove() {
+                super.onMove()
+            }
+        }
+
+        // Scenes can only be moved within a single SceneList.
+        override fun insertDraggable(draggable: Draggable, index: Int): Unit = error("not implemented")
+
+        // Scenes can only be moved within a single SceneList.
+        override fun removeDraggable(draggable: Draggable): Unit = error("not implemented")
     }
-
-    override fun willAccept(draggable: Draggable): Boolean {
-        return draggable == myDraggable
-    }
-
-    // Scenes can only be moved within a single SceneList.
-    override fun getDraggable(index: Int): Draggable = error("not implemented")
-
-    // Scenes can only be moved within a single SceneList.
-    override fun insertDraggable(draggable: Draggable, index: Int): Unit = error("not implemented")
-
-    // Scenes can only be moved within a single SceneList.
-    override fun removeDraggable(draggable: Draggable): Unit = error("not implemented")
 }
 
 interface ControlContainer {
