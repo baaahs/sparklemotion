@@ -1,5 +1,6 @@
 package baaahs.show.live
 
+import baaahs.ShowPlayer
 import baaahs.ShowState
 import baaahs.app.ui.DragNDrop
 import baaahs.app.ui.DropTarget
@@ -53,13 +54,25 @@ class FakeDragNDrop : DragNDrop() {
     }
 }
 
+fun OpenControl.fakeRender(): String {
+    return when (this) {
+        is OpenButtonGroupControl -> "$id[${buttons.joinToString(", ") { it.fakeRender() }}]"
+        is OpenButtonControl -> if (isPressed) "*$id*" else id
+        else -> id
+    }
+}
+
 fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
     val buf = StringBuilder()
 
     layouts.panelNames.forEach { panelName ->
         buf.append("$panelName:\n")
         controlDisplay.render(panelName) { panelBucket ->
-            buf.append("  |${panelBucket.section.title}| ${panelBucket.controls.joinToString { it.control.id }}\n")
+            buf.append("  |${panelBucket.section.title}|")
+            if (panelBucket.controls.isNotEmpty()) {
+                buf.append(" ${panelBucket.controls.joinToString(", ") { it.control.fakeRender() }}")
+            }
+            buf.append("\n")
         }
     }
 
@@ -71,8 +84,6 @@ fun createLayouts(vararg panelNames: String): Layouts {
 }
 
 fun MutableShow.addFixtureControls() {
-    val autoWirer = AutoWirer(Plugins.safe())
-
     val slider1 = CorePlugin.SliderDataSource("slider1", 0f, 0f, 1f, 1f)
     val slider2 = CorePlugin.SliderDataSource("slider2", 0f, 0f, 1f, 1f)
 
@@ -109,4 +120,16 @@ fun MutableShow.addFixtureControls() {
             }
         }
     }
+}
+
+fun ControlDisplay.renderBuckets(panelName: String): List<ControlDisplay.PanelBuckets.PanelBucket> {
+    val buckets = arrayListOf<ControlDisplay.PanelBuckets.PanelBucket>()
+    render(panelName) { panelBucket -> buckets.add(panelBucket) }
+    return buckets
+}
+
+val autoWirer = AutoWirer(Plugins.safe())
+
+fun Show.open(showPlayer: ShowPlayer): OpenShow {
+    return ShowOpener(autoWirer.glslAnalyzer, this, showPlayer).openShow()
 }

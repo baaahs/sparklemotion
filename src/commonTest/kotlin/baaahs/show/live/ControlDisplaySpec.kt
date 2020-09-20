@@ -55,16 +55,16 @@ object ControlDisplaySpec : Spek({
             val backdrops1ButtonGroup by value { scene1Button.controlLayout["Panel 2"]!!.first() as OpenButtonGroupControl }
             val backdrop11Button by value { backdrops1ButtonGroup.buttons.first() }
 
-            it("renders controls appropriately") {
+            it("renders controls correctly") {
                 expect(
                     """
                         Panel 1:
-                          |Show| scenesButtonGroup
+                          |Show| scenesButtonGroup[*scene1Button*, scene2Button]
                           |Scene 1|
                           |Backdrop 1.1|
                         Panel 2:
                           |Show|
-                          |Scene 1| backdropsButtonGroup
+                          |Scene 1| backdropsButtonGroup[*backdrop11Button*, backdrop12Button]
                           |Backdrop 1.1|
                         Panel 3:
                           |Show|
