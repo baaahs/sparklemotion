@@ -44,7 +44,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                 if (props.editMode) {
                     droppable({
                         this.droppableId = props.controlDisplay.unplacedControlsDropTargetId
-                        this.type = "ControlPanel"
+                        this.type = props.controlDisplay.unplacedControlsDropTarget.type
                         this.direction = Direction.vertical.name
                         this.isDropDisabled = !props.editMode
                     }) { droppableProvided, _ ->

@@ -45,22 +45,19 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                 }
 
                 paper(Styles.layoutPanel and editModeStyle on PaperStyle.root) {
-                    props.controlDisplay.render(panelTitle) { dropTargetId: String,
-                                                        section: ControlDisplay.Section,
-                                                        controls: List<ControlDisplay.PanelBuckets.PanelBucket.PlacedControl> ->
-
+                    props.controlDisplay.render(panelTitle) { panelBucket ->
                         droppable({
-                            this.droppableId = dropTargetId
-                            this.type = "ControlPanel"
+                            this.droppableId = panelBucket.dropTargetId
+                            this.type = panelBucket.type
                             this.direction = Direction.horizontal.name
                             this.isDropDisabled = !props.editMode
                         }) { droppableProvided, _ ->
-                            val style = Styles.controlSections[section.depth]
+                            val style = Styles.controlSections[panelBucket.section.depth]
                             div(+Styles.layoutControls and style) {
                                 install(droppableProvided)
 
-                                div(+Styles.controlPanelHelpText) { +section.title }
-                                controls.forEachIndexed { index, placedControl ->
+                                div(+Styles.controlPanelHelpText) { +panelBucket.section.title }
+                                panelBucket.controls.forEachIndexed { index, placedControl ->
                                     val control = placedControl.control
                                     val draggableId = control.id
 

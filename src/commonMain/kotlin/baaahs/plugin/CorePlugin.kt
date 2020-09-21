@@ -343,11 +343,22 @@ class CorePlugin : Plugin {
                 val config = inputPort.pluginConfig
                 return SliderDataSource(
                     inputPort.title,
-                    initialValue = config?.get("default")?.jsonPrimitive?.float ?: 1f,
-                    minValue = config?.get("min")?.jsonPrimitive?.float ?: 0f,
-                    maxValue = config?.get("max")?.jsonPrimitive?.float ?: 1f,
-                    stepValue = config?.get("step")?.jsonPrimitive?.float
+                    initialValue = config.getFloat("default") ?: 1f,
+                    minValue = config.getFloat("min") ?: 0f,
+                    maxValue = config.getFloat("max") ?: 1f,
+                    stepValue = config.getFloat("step")
                 )
+            }
+
+            private fun JsonObject?.getFloat(key: String): Float? {
+                return try {
+                    this?.get(key)?.jsonPrimitive?.float
+                } catch (e: NumberFormatException) {
+                    logger.debug(e) {
+                        "Invalid number for key \"$key\": ${this?.get(key)?.jsonPrimitive?.contentOrNull}"
+                    }
+                    null
+                }
             }
         }
 

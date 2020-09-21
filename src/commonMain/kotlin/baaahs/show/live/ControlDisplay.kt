@@ -14,12 +14,13 @@ class ControlDisplay(
     show: OpenShow,
     editMode: Boolean,
     private val editHandler: EditHandler,
-    private val dragNDrop: DragNDrop
+    internal val dragNDrop: DragNDrop
 ) {
+    val mutableShow = if (editMode) show.edit() else null
     private val allPanelBuckets = AllPanelBuckets(show.layouts)
-    private val mutableShow = if (editMode) show.edit() else null
     private val placedControls = hashSetOf<OpenControl>()
-    private var unplacedControlsDropTarget = UnplacedControlsDropTarget(mutableShow)
+    val additionalDropTargets = mutableMapOf<OpenControl, OpenButtonGroupControl.ButtonGroupDropTarget>()
+    val unplacedControlsDropTarget = UnplacedControlsDropTarget(mutableShow)
     val unplacedControlsDropTargetId = dragNDrop.addDropTarget(unplacedControlsDropTarget)
 
     init {
@@ -36,10 +37,14 @@ class ControlDisplay(
 
             override fun visitPlacedControl(panelName: String, openControl: OpenControl) {
                 allPanelBuckets.addControl(panelName, openControl, breadcrumbs)
+                super.visitPlacedControl(panelName, openControl)
+            }
+
+            override fun visitControl(openControl: OpenControl) {
                 placedControls.add(openControl)
 
                 if (openControl.isActive()) {
-                    super.visitPlacedControl(panelName, openControl)
+                    super.visitControl(openControl)
                 }
             }
         }.visitShow(show)
@@ -53,10 +58,6 @@ class ControlDisplay(
     }
     val unplacedControls = show.allControls.filter { !placedControls.contains(it) }
 
-    init {
-        println(show.fakeRender(this))
-    }
-
     fun render(panelTitle: String, renderBucket: RenderBucket) {
         allPanelBuckets.render(panelTitle, renderBucket)
     }
@@ -65,7 +66,7 @@ class ControlDisplay(
         unplacedControls.forEachIndexed { index, control -> block(index, control) }
     }
 
-    private fun commitEdit() {
+    fun commitEdit() {
         mutableShow!!
         editHandler.onShowEdit(mutableShow)
     }
@@ -73,6 +74,13 @@ class ControlDisplay(
     fun release() {
         allPanelBuckets.release()
         dragNDrop.removeDropTarget(unplacedControlsDropTarget)
+        additionalDropTargets.values.forEach { it.release() }
+    }
+
+    fun dropTargetFor(buttonGroupControl: OpenButtonGroupControl): DropTarget {
+        return additionalDropTargets.getOrPut(buttonGroupControl) {
+            buttonGroupControl.createDropTarget(this)
+        }
     }
 
     inner class AllPanelBuckets(layouts: Layouts) {
@@ -110,7 +118,7 @@ class ControlDisplay(
             mapOf<OpenPatchHolder, PanelBucket>().toMutableMap()
 
         fun addSection(section: Section) {
-            byContainer.getOrPut(section.container) { PanelBucket(section, mutableShow) }
+            byContainer.getOrPut(section.container) { PanelBucket(section) }
         }
 
         fun addControl(openControl: OpenControl, breadcrumbs: List<OpenPatchHolder>) {
@@ -124,8 +132,8 @@ class ControlDisplay(
                     .thenBy { it.serialInt }
             ).forEach { section ->
                 val panelBucket = byContainer[section.container]
-                    ?: PanelBucket(section, mutableShow)
-                panelBucket.render(renderBucket)
+                    ?: PanelBucket(section)
+                renderBucket(panelBucket)
             }
         }
 
@@ -134,22 +142,15 @@ class ControlDisplay(
             byContainer.clear()
         }
 
-        inner class PanelBucket(
-            val section: Section,
-            private val mutableShow: MutableShow?
-        ) : DropTarget {
+        inner class PanelBucket(val section: Section) : DropTarget {
             val controls = mutableListOf<PlacedControl>()
-            override val type: String get() = "ControlPanel"
+            override val type: String get() = "ControlContainer"
 
-            private val dropTargetId = dragNDrop.addDropTarget(this)
+            val dropTargetId = dragNDrop.addDropTarget(this)
 
             fun add(control: OpenControl) {
                 val nextIndex = controls.size
                 controls.add(PlacedControl(control, nextIndex))
-            }
-
-            fun render(renderBucket: RenderBucket) {
-                renderBucket(dropTargetId, section, controls)
             }
 
             fun release() {
@@ -207,7 +208,7 @@ class ControlDisplay(
     inner class UnplacedControlsDropTarget(
         private val mutableShow: MutableShow?
     ) : DropTarget {
-        override val type: String get() = "ControlPanel"
+        override val type: String get() = "ControlContainer"
 
         override fun moveDraggable(fromIndex: Int, toIndex: Int) {
             // No-op.
@@ -263,21 +264,5 @@ class ControlDisplay(
 }
 
 typealias RenderBucket = (
-    dropTargetId: String,
-    section: ControlDisplay.Section,
-    controls: List<ControlDisplay.PanelBuckets.PanelBucket.PlacedControl>
+    panelBucket: ControlDisplay.PanelBuckets.PanelBucket
 ) -> Unit
-
-
-fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
-    val buf = StringBuilder()
-
-    layouts.panelNames.forEach { panelName ->
-        buf.append("$panelName:\n")
-        controlDisplay.render(panelName) { dropTargetId, section, controls ->
-            buf.append("  |${section.title}| ${controls.joinToString { it.control.id }}\n")
-        }
-    }
-
-    return buf.trim().toString()
-}
