@@ -28,13 +28,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
     val appContext = useContext(appContext)
 
     val buttonGroupControl = props.buttonGroupControl
-    val dropTarget = buttonGroupControl.createDropTarget(props.show, appContext.webClient)
-    val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
-    onChange("unregister drop target") {
-        withCleanup {
-            appContext.dragNDrop.removeDropTarget(dropTarget)
-        }
-    }
+    val dropTarget = props.controlDisplay.dropTargetFor(buttonGroupControl) as OpenButtonGroupControl.ButtonGroupDropTarget
 
 //    val sceneDropTargets = props.show.scenes.mapIndexed { index, _ ->
 //        val sceneDropTarget = SceneDropTarget(props.show, index)
@@ -60,8 +54,8 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 
     card {
         droppable({
-            droppableId = dropTargetId
-            type = "Scene"
+            droppableId = dropTarget.dropTargetId
+            type = dropTarget.type
             direction = buttonGroupControl.direction
                 .decode(Direction.horizontal, Direction.vertical).name
             isDropDisabled = !props.editMode
