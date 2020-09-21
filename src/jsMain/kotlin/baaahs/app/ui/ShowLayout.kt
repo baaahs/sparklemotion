@@ -48,7 +48,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                     props.controlDisplay.render(panelTitle) { panelBucket ->
                         droppable({
                             this.droppableId = panelBucket.dropTargetId
-                            this.type = "ControlPanel"
+                            this.type = panelBucket.type
                             this.direction = Direction.horizontal.name
                             this.isDropDisabled = !props.editMode
                         }) { droppableProvided, _ ->

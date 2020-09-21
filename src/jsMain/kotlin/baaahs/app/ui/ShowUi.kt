@@ -35,6 +35,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         this.show = props.show
         this.onShowStateChange = props.onShowStateChange
         this.editMode = props.editMode
+        this.controlDisplay = controlDisplay
         this.editPatchHolder = props.editPatchHolder
     }
 

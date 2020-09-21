@@ -1,6 +1,5 @@
 package baaahs.show.live
 
-import baaahs.ShowPlayer
 import baaahs.ShowState
 import baaahs.app.ui.DragNDrop
 import baaahs.app.ui.DropTarget
@@ -129,7 +128,3 @@ fun ControlDisplay.renderBuckets(panelName: String): List<ControlDisplay.PanelBu
 }
 
 val autoWirer = AutoWirer(Plugins.safe())
-
-fun Show.open(showPlayer: ShowPlayer): OpenShow {
-    return ShowOpener(autoWirer.glslAnalyzer, this, showPlayer).openShow()
-}
