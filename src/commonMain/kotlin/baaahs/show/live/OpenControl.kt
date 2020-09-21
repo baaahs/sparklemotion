@@ -1,14 +1,16 @@
 package baaahs.show.live
 
 import baaahs.Gadget
+import baaahs.app.ui.Draggable
+import baaahs.app.ui.DropTarget
 import baaahs.gadgets.Switch
 import baaahs.show.ButtonControl
 import baaahs.show.ButtonGroupControl
 import baaahs.show.DataSource
-import baaahs.show.ShowContext
 import baaahs.show.mutable.MutableButtonControl
+import baaahs.show.mutable.MutableButtonGroupControl
+import baaahs.show.mutable.MutableControl
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
 
 interface OpenControl {
     val id: String
@@ -93,6 +95,62 @@ class OpenButtonGroupControl(
 
     override fun addTo(activeSetBuilder: ActiveSetBuilder, panelId: String, depth: Int) {
         buttons.forEach { it.addTo(activeSetBuilder, panelId, depth + 1) }
+    }
+
+    fun createDropTarget(controlDisplay: ControlDisplay) =
+        ButtonGroupDropTarget(controlDisplay)
+
+    inner class ButtonGroupDropTarget(
+        private val controlDisplay: ControlDisplay
+    ) : DropTarget {
+        val dropTargetId = controlDisplay.dragNDrop.addDropTarget(this)
+        override val type: String get() = "ControlContainer"
+
+        override fun moveDraggable(fromIndex: Int, toIndex: Int) {
+            controlDisplay.mutableShow!!
+            findMutableControl().moveButton(fromIndex, toIndex)
+            commitEdit()
+        }
+
+        private fun findMutableControl() =
+            controlDisplay.mutableShow!!.findControl(id) as MutableButtonGroupControl
+
+        private fun commitEdit() {
+            controlDisplay.commitEdit()
+        }
+
+        override fun willAccept(draggable: Draggable): Boolean {
+            return draggable is ControlDisplay.PlaceableControl
+        }
+
+        override fun getDraggable(index: Int): Draggable = object : ControlDisplay.PlaceableControl {
+            private val mutableButtonGroupControl = findMutableControl()
+            override val mutableControl: MutableControl = mutableButtonGroupControl.buttons[index]
+
+            override fun willMoveTo(destination: DropTarget): Boolean = true
+
+            override fun remove() {
+                mutableButtonGroupControl.buttons.removeAt(index)
+            }
+
+            override fun onMove() {
+                commitEdit()
+            }
+        }
+
+        override fun insertDraggable(draggable: Draggable, index: Int) {
+            draggable as ControlDisplay.PlaceableControl
+            findMutableControl().buttons.add(index, draggable.mutableControl as MutableButtonControl)
+        }
+
+        override fun removeDraggable(draggable: Draggable) {
+            draggable as ControlDisplay.PlaceableControl
+            draggable.remove()
+        }
+
+        fun release() {
+            controlDisplay.dragNDrop.removeDropTarget(this)
+        }
     }
 }
 

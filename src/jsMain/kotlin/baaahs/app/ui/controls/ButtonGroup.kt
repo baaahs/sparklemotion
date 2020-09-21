@@ -1,15 +1,10 @@
 package baaahs.app.ui.controls
 
-import baaahs.app.ui.Draggable
-import baaahs.app.ui.DropTarget
 import baaahs.app.ui.appContext
 import baaahs.show.ButtonGroupControl
 import baaahs.show.live.OpenButtonGroupControl
-import baaahs.show.live.OpenShow
 import baaahs.show.live.View
-import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableButtonControl
-import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.*
 import external.Direction
@@ -33,13 +28,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
     val appContext = useContext(appContext)
 
     val buttonGroupControl = props.buttonGroupControl
-    val dropTarget = ButtonGroupDropTarget(props.show, buttonGroupControl, appContext.webClient)
-    val dropTargetId = appContext.dragNDrop.addDropTarget(dropTarget)
-    onChange("unregister drop target") {
-        withCleanup {
-            appContext.dragNDrop.removeDropTarget(dropTarget)
-        }
-    }
+    val dropTarget = props.controlDisplay.dropTargetFor(buttonGroupControl) as OpenButtonGroupControl.ButtonGroupDropTarget
 
 //    val sceneDropTargets = props.show.scenes.mapIndexed { index, _ ->
 //        val sceneDropTarget = SceneDropTarget(props.show, index)
@@ -65,8 +54,8 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 
     card {
         droppable({
-            droppableId = dropTargetId
-            type = "Scene"
+            droppableId = dropTarget.dropTargetId
+            type = dropTarget.type
             direction = buttonGroupControl.direction
                 .decode(Direction.horizontal, Direction.vertical).name
             isDropDisabled = !props.editMode
@@ -166,38 +155,6 @@ private fun <T> ButtonGroupControl.Direction.decode(horizontal: T, vertical: T):
 
 external interface ButtonGroupProps : SpecialControlProps {
     var buttonGroupControl: OpenButtonGroupControl
-}
-
-private class ButtonGroupDropTarget(
-    private val show: OpenShow,
-    private val buttonGroupControl: OpenButtonGroupControl,
-    private val editHandler: EditHandler
-) : DropTarget {
-    override val type: String get() = "SceneList"
-    private val myDraggable = object : Draggable {}
-
-    override fun moveDraggable(fromIndex: Int, toIndex: Int) {
-        show.edit {
-            val mutableControl = findControl(buttonGroupControl.id) as MutableButtonGroupControl
-            mutableControl.moveButton(fromIndex, toIndex)
-        }.also { editor ->
-            editHandler.onShowEdit(editor)
-        }
-    }
-
-    override fun willAccept(draggable: Draggable): Boolean {
-        return draggable == myDraggable
-    }
-
-    // Scenes can only be moved within a single SceneList.
-    override fun getDraggable(index: Int): Draggable = error("not implemented")
-
-    // Scenes can only be moved within a single SceneList.
-    override fun insertDraggable(draggable: Draggable, index: Int): Unit = error("not implemented")
-
-    // Scenes can only be moved within a single SceneList.
-    override fun removeDraggable(draggable: Draggable): Unit = error("not implemented")
-
 }
 
 //private class SceneDropTarget(
