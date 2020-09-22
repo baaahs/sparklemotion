@@ -10,6 +10,7 @@ import baaahs.show.DataSource
 import baaahs.show.mutable.MutableButtonControl
 import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.MutableControl
+import baaahs.show.mutable.MutableShow
 import kotlinx.serialization.json.JsonElement
 
 interface OpenControl {
@@ -107,16 +108,10 @@ class OpenButtonGroupControl(
         override val type: String get() = "ControlContainer"
 
         override fun moveDraggable(fromIndex: Int, toIndex: Int) {
-            controlDisplay.mutableShow!!
-            findMutableControl().moveButton(fromIndex, toIndex)
-            commitEdit()
-        }
-
-        private fun findMutableControl() =
-            controlDisplay.mutableShow!!.findControl(id) as MutableButtonGroupControl
-
-        private fun commitEdit() {
-            controlDisplay.commitEdit()
+            controlDisplay.show.edit {
+                findButtonGroup()
+                    .moveButton(fromIndex, toIndex)
+            }.commit(controlDisplay.editHandler)
         }
 
         override fun willAccept(draggable: Draggable): Boolean {
@@ -124,29 +119,37 @@ class OpenButtonGroupControl(
         }
 
         override fun getDraggable(index: Int): Draggable = object : ControlDisplay.PlaceableControl {
-            private val mutableButtonGroupControl = findMutableControl()
-            override val mutableControl: MutableControl = mutableButtonGroupControl.buttons[index]
+            override lateinit var mutableShow: MutableShow
+            override lateinit var mutableControl: MutableControl
 
             override fun willMoveTo(destination: DropTarget): Boolean = true
 
             override fun remove() {
-                mutableButtonGroupControl.buttons.removeAt(index)
+                mutableShow = controlDisplay.show.edit()
+                mutableControl = mutableShow.findButtonGroup()
+                    .buttons
+                    .removeAt(index)
             }
 
             override fun onMove() {
-                commitEdit()
+                mutableShow.commit(controlDisplay.editHandler)
             }
         }
 
         override fun insertDraggable(draggable: Draggable, index: Int) {
             draggable as ControlDisplay.PlaceableControl
-            findMutableControl().buttons.add(index, draggable.mutableControl as MutableButtonControl)
+            draggable.mutableShow.findButtonGroup()
+                .buttons
+                .add(index, draggable.mutableControl as MutableButtonControl)
         }
 
         override fun removeDraggable(draggable: Draggable) {
             draggable as ControlDisplay.PlaceableControl
             draggable.remove()
         }
+
+        private fun MutableShow.findButtonGroup() =
+            findControl(id) as MutableButtonGroupControl
 
         fun release() {
             controlDisplay.dragNDrop.removeDropTarget(this)

@@ -22,7 +22,7 @@ class ButtonView(val openButtonControl: OpenButtonControl) : View {
     }
 
     override fun onEdit(props: GenericControlProps) {
-        with(props.controlDisplay.mutableShow!!) {
+        props.controlDisplay.show.edit {
             val mutableButtonControl = findControl(openButtonControl.id) as MutableButtonControl
             props.editPatchHolder(PatchHolderEditContext(this, mutableButtonControl))
         }

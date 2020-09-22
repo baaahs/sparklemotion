@@ -34,6 +34,9 @@ class OpenShow(
         dataSource to dataFeed
     }
 
+    /**
+     * Don't hold on to MutableShows; create them, apply changes, and commit or abandon them promptly!
+     */
     fun edit(block: MutableShow.() -> Unit = {}): MutableShow =
         MutableShow(show).apply(block)
 

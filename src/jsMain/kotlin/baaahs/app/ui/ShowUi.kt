@@ -23,7 +23,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     logger.info { "switch state is ${props.show.getEnabledSwitchState()}" }
     onChange("show/state", props.show, props.show.getEnabledSwitchState(), props.editMode, appContext.dragNDrop) {
         controlDisplay = ControlDisplay(
-            props.show, props.editMode, appContext.webClient, appContext.dragNDrop
+            props.show, appContext.webClient, appContext.dragNDrop
         )
 
         withCleanup {
