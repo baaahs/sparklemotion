@@ -136,11 +136,11 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                     iconButton {
                         icon(AddCircleOutline)
                         attrs.onClickFunction = { _: Event ->
-                            props.show.edit {
-                                edit(props.control) {
-                                    addButton("Untitled") {
-                                        props.editPatchHolder(PatchHolderEditContext(mutableShow, this))
-                                    }
+                            val mutableShow = props.show.edit()
+                            mutableShow.edit(props.control) {
+                                addButton("Untitled") {
+                                    props.editPatchHolder(
+                                        PatchHolderEditContext(mutableShow, this))
                                 }
                             }
                         }

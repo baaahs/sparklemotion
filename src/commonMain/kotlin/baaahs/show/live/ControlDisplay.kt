@@ -11,16 +11,14 @@ import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 
 class ControlDisplay(
-    show: OpenShow,
-    editMode: Boolean,
-    private val editHandler: EditHandler,
+    internal val show: OpenShow,
+    internal val editHandler: EditHandler,
     internal val dragNDrop: DragNDrop
 ) {
-    val mutableShow = if (editMode) show.edit() else null
     private val allPanelBuckets = AllPanelBuckets(show.layouts)
     private val placedControls = hashSetOf<OpenControl>()
     val additionalDropTargets = mutableMapOf<OpenControl, OpenButtonGroupControl.ButtonGroupDropTarget>()
-    val unplacedControlsDropTarget = UnplacedControlsDropTarget(mutableShow)
+    val unplacedControlsDropTarget = UnplacedControlsDropTarget()
     val unplacedControlsDropTargetId = dragNDrop.addDropTarget(unplacedControlsDropTarget)
 
     init {
@@ -64,11 +62,6 @@ class ControlDisplay(
 
     fun renderUnplacedControls(block: (index: Int, control: OpenControl) -> Unit) {
         unplacedControls.forEachIndexed { index, control -> block(index, control) }
-    }
-
-    fun commitEdit() {
-        mutableShow!!
-        editHandler.onShowEdit(mutableShow)
     }
 
     fun release() {
@@ -162,11 +155,12 @@ class ControlDisplay(
             }
 
             override fun moveDraggable(fromIndex: Int, toIndex: Int) {
-                val mutablePatchHolder = mutableShow!!.findPatchHolder(section.container)
-                val mutableControls = mutablePatchHolder.editControlLayout(panelTitle)
-                val mutableControl = mutableControls.removeAt(fromIndex)
-                mutableControls.add(toIndex, mutableControl)
-                commitEdit()
+                show.edit {
+                    val mutablePatchHolder = findPatchHolder(section.container)
+                    val mutableControls = mutablePatchHolder.editControlLayout(panelTitle)
+                    val mutableControl = mutableControls.removeAt(fromIndex)
+                    mutableControls.add(toIndex, mutableControl)
+                }.commit(editHandler)
             }
 
             override fun willAccept(draggable: Draggable): Boolean {
@@ -178,11 +172,11 @@ class ControlDisplay(
             }
 
             override fun insertDraggable(draggable: Draggable, index: Int) {
-                val mutablePatchHolder = mutableShow!!.findPatchHolder(section.container)
-
                 draggable as PlaceableControl
-                val mutableControls = mutablePatchHolder.editControlLayout(panelTitle)
-                mutableControls.add(index, draggable.mutableControl)
+                draggable.mutableShow
+                    .findPatchHolder(section.container)
+                    .editControlLayout(panelTitle)
+                    .add(index, draggable.mutableControl)
             }
 
             override fun removeDraggable(draggable: Draggable) {
@@ -191,23 +185,23 @@ class ControlDisplay(
             }
 
             inner class PlacedControl(val control: OpenControl, val index: Int) : PlaceableControl {
+                override lateinit var mutableShow: MutableShow
                 override lateinit var mutableControl: MutableControl
 
-                override fun onMove() {
-                    commitEdit()
+                override fun remove() {
+                    mutableShow = show.edit()
+                    val mutablePatchHolder = mutableShow.findPatchHolder(section.container)
+                    mutableControl = mutablePatchHolder.removeControl(panelTitle, index)
                 }
 
-                override fun remove() {
-                    val mutablePatchHolder = mutableShow!!.findPatchHolder(section.container)
-                    mutableControl = mutablePatchHolder.removeControl(panelTitle, index)
+                override fun onMove() {
+                    mutableShow.commit(editHandler)
                 }
             }
         }
     }
 
-    inner class UnplacedControlsDropTarget(
-        private val mutableShow: MutableShow?
-    ) : DropTarget {
+    inner class UnplacedControlsDropTarget : DropTarget {
         override val type: String get() = "ControlContainer"
 
         override fun moveDraggable(fromIndex: Int, toIndex: Int) {
@@ -219,7 +213,7 @@ class ControlDisplay(
         }
 
         override fun getDraggable(index: Int): Draggable {
-            return UnplacedControl(index, mutableShow)
+            return UnplacedControl(index)
         }
 
         override fun insertDraggable(draggable: Draggable, index: Int) {
@@ -231,23 +225,22 @@ class ControlDisplay(
         }
     }
 
-    inner class UnplacedControl(
-        val index: Int,
-        private val mutableShow: MutableShow?
-    ) : PlaceableControl {
-        override val mutableControl: MutableControl
-            get() = mutableShow!!.findControl(unplacedControls[index].id)
+    inner class UnplacedControl(val index: Int) : PlaceableControl {
+        override lateinit var mutableShow: MutableShow
+        override lateinit var mutableControl: MutableControl
 
         override fun remove() {
-            // No-op.
+            mutableShow = show.edit()
+            mutableControl = mutableShow.findControl(unplacedControls[index].id)
         }
 
         override fun onMove() {
-            commitEdit()
+            mutableShow.commit(editHandler)
         }
     }
 
     interface PlaceableControl : Draggable {
+        val mutableShow: MutableShow
         val mutableControl: MutableControl
 
         fun remove()

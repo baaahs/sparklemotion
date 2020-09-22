@@ -220,6 +220,10 @@ class MutableShow(
     fun findShaderInstance(id: String): MutableShaderInstance =
         shaderInstances.getBang(id, "shader instance")
 
+    fun commit(editHandler: EditHandler) {
+        editHandler.onShowEdit(this)
+    }
+
     companion object {
         fun create(title: String): Show {
             return Show(title = title)
