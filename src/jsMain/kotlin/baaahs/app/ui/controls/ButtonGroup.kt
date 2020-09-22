@@ -1,10 +1,10 @@
 package baaahs.app.ui.controls
 
-import baaahs.app.ui.appContext
 import baaahs.show.ButtonGroupControl
+import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenButtonGroupControl
+import baaahs.show.live.OpenControl
 import baaahs.show.live.View
-import baaahs.show.mutable.MutableButtonControl
 import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.*
 import external.Direction
@@ -18,16 +18,22 @@ import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
 import materialui.components.iconbutton.iconButton
 import org.w3c.dom.events.Event
+import react.FunctionalComponent
 import react.dom.div
 import react.key
-import react.useContext
 
-class ButtonGroupView(val openControl: OpenButtonGroupControl) : View
+class ButtonGroupView(val openControl: OpenButtonGroupControl) : View {
+    override fun <P : ControlProps<in OpenControl>> getReactElement(): FunctionalComponent<P> {
+        return ButtonGroup.unsafeCast<FunctionalComponent<P>>()
+    }
+
+    override fun onEdit(props: GenericControlProps) {
+        println("Edit ${openControl.id}!")
+    }
+}
 
 val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
-    val appContext = useContext(appContext)
-
-    val buttonGroupControl = props.buttonGroupControl
+    val buttonGroupControl = props.control
     val dropTarget = props.controlDisplay.dropTargetFor(buttonGroupControl) as OpenButtonGroupControl.ButtonGroupDropTarget
 
 //    val sceneDropTargets = props.show.scenes.mapIndexed { index, _ ->
@@ -43,13 +49,12 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 //        }
 //    }
 
-    val handleEditButtonClick = useCallback(props.show) { event: Event, index: Int ->
-        props.show.edit {
-            val button = props.buttonGroupControl.buttons[index]
-            val mutableButtonControl = findControl(button.id) as MutableButtonControl
-            props.editPatchHolder(PatchHolderEditContext(this@edit, mutableButtonControl))
-            event.preventDefault()
-        }
+    val propsRef = ref { props }
+    propsRef.current = props
+    val handleEditButtonClick = useCallback { event: Event, index: Int ->
+        val button = propsRef.current.control.buttons[index]
+        ButtonView(button).onEdit(propsRef.current)
+        event.preventDefault()
     }
 
     card {
@@ -132,7 +137,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                         icon(AddCircleOutline)
                         attrs.onClickFunction = { _: Event ->
                             props.show.edit {
-                                edit(props.buttonGroupControl) {
+                                edit(props.control) {
                                     addButton("Untitled") {
                                         props.editPatchHolder(PatchHolderEditContext(mutableShow, this))
                                     }
@@ -153,9 +158,7 @@ private fun <T> ButtonGroupControl.Direction.decode(horizontal: T, vertical: T):
     }
 }
 
-external interface ButtonGroupProps : SpecialControlProps {
-    var buttonGroupControl: OpenButtonGroupControl
-}
+external interface ButtonGroupProps : ControlProps<OpenButtonGroupControl>
 
 //private class SceneDropTarget(
 //    private val show: OpenShow,

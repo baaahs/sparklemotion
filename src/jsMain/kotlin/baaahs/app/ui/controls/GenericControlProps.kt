@@ -5,7 +5,7 @@ import baaahs.show.live.OpenShow
 import baaahs.show.mutable.PatchHolderEditContext
 import react.RProps
 
-external interface SpecialControlProps : RProps {
+external interface GenericControlProps : RProps {
     var show: OpenShow
     var onShowStateChange: () -> Unit
     var editMode: Boolean

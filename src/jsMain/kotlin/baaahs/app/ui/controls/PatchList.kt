@@ -1,7 +1,5 @@
 package baaahs.app.ui.controls
 
-import baaahs.app.ui.Draggable
-import baaahs.show.mutable.MutableShow
 import baaahs.ui.xComponent
 
 //class DraggablePatch(
@@ -37,7 +35,7 @@ import baaahs.ui.xComponent
 //    }
 //}
 
-val PatchSetList = xComponent<SpecialControlProps>("PatchSetList") { props ->
+val PatchSetList = xComponent<GenericControlProps>("PatchSetList") { props ->
 //    val appContext = useContext(appContext)
 //    val dropTarget =
 //        PatchSetListDropTarget(props.show, props.showState, appContext.webClient)

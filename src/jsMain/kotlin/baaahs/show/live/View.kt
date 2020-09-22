@@ -1,8 +1,17 @@
 package baaahs.show.live
 
-import baaahs.app.ui.controls.ButtonGroupView
-import baaahs.app.ui.controls.ButtonView
-import baaahs.app.ui.controls.GadgetView
+import baaahs.app.ui.controls.*
+import react.FunctionalComponent
+
+external interface ControlProps<T : OpenControl> : GenericControlProps {
+    var control: T
+}
+
+actual interface View {
+    fun <P: ControlProps<in OpenControl>> getReactElement(): FunctionalComponent<P>
+
+    fun onEdit(props: GenericControlProps) = Unit
+}
 
 actual fun getViewFor(openControl: OpenControl): View =
     when (openControl) {
@@ -11,5 +20,3 @@ actual fun getViewFor(openControl: OpenControl): View =
         is OpenGadgetControl -> GadgetView(openControl)
         else -> UnknownView(openControl)
     }
-
-class UnknownView(val openControl: OpenControl) : View

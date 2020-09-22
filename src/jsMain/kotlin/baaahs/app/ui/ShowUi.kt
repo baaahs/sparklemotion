@@ -1,6 +1,6 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.controls.SpecialControlProps
+import baaahs.app.ui.controls.GenericControlProps
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.PatchHolderEditContext
@@ -31,7 +31,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         }
     }
 
-    val specialControlProps = jsObject<SpecialControlProps> {
+    val genericControlProps = jsObject<GenericControlProps> {
         this.show = props.show
         this.onShowStateChange = props.onShowStateChange
         this.editMode = props.editMode
@@ -47,7 +47,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
             attrs.onShowStateChange = props.onShowStateChange
             attrs.layout = currentLayout
             attrs.controlDisplay = controlDisplay
-            attrs.specialControlProps = specialControlProps
+            attrs.genericControlProps = genericControlProps
             attrs.editMode = props.editMode
             attrs.editPatchHolder = props.editPatchHolder
         }
@@ -55,7 +55,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         portal {
             controlsPalette {
                 attrs.controlDisplay = controlDisplay
-                attrs.specialControlProps = specialControlProps
+                attrs.genericControlProps = genericControlProps
                 attrs.show = props.show
                 attrs.editMode = props.editMode
             }
