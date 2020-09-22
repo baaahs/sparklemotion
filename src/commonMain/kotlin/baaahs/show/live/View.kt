@@ -1,5 +1,5 @@
 package baaahs.show.live
 
-interface View
+expect interface View
 
 expect fun getViewFor(openControl: OpenControl): View

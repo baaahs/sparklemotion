@@ -1,7 +1,7 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.controls.SpecialControlProps
-import baaahs.app.ui.controls.control
+import baaahs.app.ui.controls.GenericControlProps
+import baaahs.app.ui.controls.controlWrapper
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
 import baaahs.ui.*
@@ -68,9 +68,9 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
 //                                    }
                                     }
 
-                                    control {
+                                    controlWrapper {
                                         attrs.control = unplacedControl
-                                        attrs.specialControlProps = props.specialControlProps
+                                        attrs.genericControlProps = props.genericControlProps
                                         attrs.draggableProvided = draggableProvided
                                     }
                                 }
@@ -87,7 +87,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
 
 external interface ControlsPaletteProps : RProps {
     var controlDisplay: ControlDisplay
-    var specialControlProps: SpecialControlProps
+    var genericControlProps: GenericControlProps
     var show: OpenShow
     var editMode: Boolean
 }

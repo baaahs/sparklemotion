@@ -1,7 +1,7 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.controls.SpecialControlProps
-import baaahs.app.ui.controls.control
+import baaahs.app.ui.controls.GenericControlProps
+import baaahs.app.ui.controls.controlWrapper
 import baaahs.show.Layout
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
@@ -67,9 +67,9 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                         this.isDragDisabled = !props.editMode
                                         this.index = index
                                     }) { draggableProvided, _ ->
-                                        control {
+                                        controlWrapper {
                                             attrs.control = control
-                                            attrs.specialControlProps = props.specialControlProps
+                                            attrs.genericControlProps = props.genericControlProps
                                             attrs.draggableProvided = draggableProvided
                                         }
                                     }
@@ -101,7 +101,7 @@ external interface ShowLayoutProps : RProps {
     var onShowStateChange: () -> Unit
     var layout: Layout
     var controlDisplay: ControlDisplay
-    var specialControlProps: SpecialControlProps
+    var genericControlProps: GenericControlProps
     var editMode: Boolean
     var editPatchHolder: (PatchHolderEditContext) -> Unit
 }
