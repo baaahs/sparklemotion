@@ -1,6 +1,11 @@
-package baaahs.ui
+package baaahs.app.ui
 
+import baaahs.app.ui.editor.PatchHolderEditorStyles
 import baaahs.show.mutable.MutableShaderInstance
+import baaahs.ui.Icons
+import baaahs.ui.on
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
 import materialui.Delete
 import materialui.components.avatar.avatar

@@ -1,8 +1,8 @@
 package baaahs.ui.preview
 
+import baaahs.app.ui.editor.showControls
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.addObserver
-import baaahs.ui.showControls
 import baaahs.ui.xComponent
 import react.RBuilder
 import react.RHandler

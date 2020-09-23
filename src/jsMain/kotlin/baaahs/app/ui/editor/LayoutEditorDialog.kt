@@ -1,10 +1,11 @@
-package baaahs.ui
+package baaahs.app.ui.editor
 
 import ReactAce.Ace.reactAce
 import acex.AceEditor
 import baaahs.show.Layout
 import baaahs.show.Layouts
 import baaahs.ui.Styles.previewBar
+import baaahs.ui.xComponent
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
 import kotlinx.serialization.json.*
@@ -45,7 +46,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         return json.parseToJsonElement(layoutJson.getValue()) as JsonObject
     }
 
-    val checkLayout = useCallback() {
+    val checkLayout = baaahs.ui.useCallback() {
         if (changed.current) {
             errorMessage = try {
                 panelNames = getPanelNames(getLayoutJson())
@@ -62,7 +63,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         withCleanup { window.clearInterval(interval) }
     }
 
-    val handleApply = useCallback(props.onApply) { event: Event ->
+    val handleApply = baaahs.ui.useCallback(props.onApply) { event: Event ->
         val layoutJson = getLayoutJson()
         val layouts = Layouts(
             getPanelNames(layoutJson),
@@ -72,10 +73,10 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
     }
 
     val handleClose =
-        useCallback(props.onClose) { event: Event, reason: String -> props.onClose() }
+        baaahs.ui.useCallback(props.onClose) { event: Event, reason: String -> props.onClose() }
 
     val handleCancel =
-        useCallback(props.onClose) { event: Event -> props.onClose() }
+        baaahs.ui.useCallback(props.onClose) { event: Event -> props.onClose() }
 
     val jsonStr = props.layouts.map["default"]?.let {
         json.encodeToString(JsonElement.serializer(), it.rootNode)

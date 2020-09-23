@@ -1,8 +1,6 @@
 package baaahs.show.live
 
 import baaahs.Gadget
-import baaahs.app.ui.Draggable
-import baaahs.app.ui.DropTarget
 import baaahs.gadgets.Switch
 import baaahs.show.ButtonControl
 import baaahs.show.ButtonGroupControl
@@ -11,6 +9,8 @@ import baaahs.show.mutable.MutableButtonControl
 import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
+import baaahs.ui.Draggable
+import baaahs.ui.DropTarget
 import kotlinx.serialization.json.JsonElement
 
 interface OpenControl {

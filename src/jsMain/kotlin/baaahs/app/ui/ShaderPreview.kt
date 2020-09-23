@@ -1,6 +1,5 @@
-package baaahs.ui
+package baaahs.app.ui
 
-import baaahs.app.ui.appContext
 import baaahs.gl.GlBase
 import baaahs.gl.GlContext
 import baaahs.gl.preview.GadgetAdjuster
@@ -8,6 +7,10 @@ import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.render.QuadPreview
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
+import baaahs.ui.addObserver
+import baaahs.ui.on
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import external.IntersectionObserver
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction

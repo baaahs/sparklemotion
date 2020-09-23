@@ -1,4 +1,4 @@
-package baaahs.ui
+package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
 import baaahs.englishize
@@ -6,6 +6,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.*
+import baaahs.ui.Icons
+import baaahs.ui.xComponent
 import materialui.Icon
 import materialui.Input
 import materialui.PowerInput

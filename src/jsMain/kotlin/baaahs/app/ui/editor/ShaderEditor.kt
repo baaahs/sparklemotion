@@ -1,4 +1,4 @@
-package baaahs.ui
+package baaahs.app.ui.editor
 
 import acex.*
 import baaahs.boundedBy
@@ -6,6 +6,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.jsx.ShowControls
 import baaahs.jsx.ShowControlsProps
 import baaahs.show.mutable.EditingShader
+import baaahs.ui.*
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
@@ -62,9 +63,9 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     val glslNumberRegex = Regex("[0-9.]")
     val glslIllegalRegex = Regex("[A-Za-z_]")
     val glslFloatOrIntRegex = Regex("^([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+|[0-9]+)$")
-    val handleCursorChange = useCallback { value: Any, _: Any ->
+    val handleCursorChange = baaahs.ui.useCallback { value: Any, _: Any ->
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
-        val selection = value as acex.Selection
+        val selection = value as Selection
         val session = selection.session
 
         val cursor = selection.getCursor()
@@ -98,7 +99,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         Unit
     }
 
-    val extractUniform = useCallback { _: Event ->
+    val extractUniform = baaahs.ui.useCallback { _: Event ->
         val extraction = extractionCandidate ?: return@useCallback
 
         val editor = aceEditor?.editor ?: return@useCallback

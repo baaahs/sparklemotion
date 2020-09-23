@@ -1,9 +1,11 @@
-package baaahs.ui
+package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.BeatLinkPlugin
 import baaahs.show.mutable.MutablePort
+import baaahs.ui.asTextNode
+import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
 import materialui.AddCircleOutline
 import materialui.Icon

@@ -1,4 +1,4 @@
-package baaahs.ui
+package baaahs.app.ui.editor
 
 import ReactAce.Ace.IAceOptions
 import ReactAce.Ace.IEditorProps
@@ -10,6 +10,9 @@ import acex.Themes
 import baaahs.Time
 import baaahs.app.ui.appContext
 import baaahs.jsx.useResizeListener
+import baaahs.ui.Styles
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import kotlinext.js.jsObject
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.type
@@ -22,8 +25,8 @@ import kotlin.browser.window
 val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { props ->
     val appContext = useContext(appContext)
 
-    val rootEl = useRef<Element>()
-    val aceEditor = useRef<AceEditor?>()
+    val rootEl = baaahs.ui.useRef<Element>()
+    val aceEditor = baaahs.ui.useRef<AceEditor?>()
 
     val src = ref { "" }
     val srcLastChangedAt = ref<Time?> { null }
@@ -34,7 +37,7 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
         aceEditor.current?.editor?.resize()
     }
 
-    val handleChangeDebounced = useCallback(
+    val handleChangeDebounced = baaahs.ui.useCallback(
         props.document, props.debounceSeconds, props.onChange
     ) { value: String, event: Any ->
         props.document.content = value

@@ -1,14 +1,14 @@
 package baaahs.show.live
 
-import baaahs.app.ui.DragNDrop
-import baaahs.app.ui.Draggable
-import baaahs.app.ui.DropTarget
 import baaahs.camelize
 import baaahs.getBang
 import baaahs.show.Layouts
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
+import baaahs.ui.DragNDrop
+import baaahs.ui.Draggable
+import baaahs.ui.DropTarget
 
 class ControlDisplay(
     internal val show: OpenShow,

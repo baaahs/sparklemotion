@@ -1,9 +1,14 @@
-package baaahs.ui
+package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.shaderCard
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
+import baaahs.ui.Icons
+import baaahs.ui.on
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
 import materialui.AddCircleOutline
 import materialui.CloudDownload
@@ -37,8 +42,8 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
 
     val newPatchCardRef = ref<Element>()
     var newPatchMenuAnchor by state<EventTarget?> { null }
-    val handleNewPatchClick = useCallback { e: Event -> newPatchMenuAnchor = e.currentTarget }
-    val handleNewPatchMenuClose = useCallback { _: Event, _: String -> newPatchMenuAnchor = null }
+    val handleNewPatchClick = baaahs.ui.useCallback { e: Event -> newPatchMenuAnchor = e.currentTarget }
+    val handleNewPatchMenuClose = baaahs.ui.useCallback { _: Event, _: String -> newPatchMenuAnchor = null }
     val handleNewShaderMenuClick: CacheBuilder<ShaderType, (Event) -> Unit> =
         CacheBuilder { type ->
             {

@@ -1,12 +1,12 @@
-package baaahs.ui
+package baaahs.app.ui.editor
 
 import baaahs.app.ui.PatchHolderEditorHelpText
-import baaahs.app.ui.appContext
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.ShowBuilder
+import baaahs.ui.*
 import baaahs.ui.misc.slidePanel
 import kotlinx.css.*
 import kotlinx.html.js.onChangeFunction
@@ -16,7 +16,6 @@ import materialui.*
 import materialui.components.breadcrumbs.breadcrumbs
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
-import materialui.components.container.container
 import materialui.components.dialogactions.dialogActions
 import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
@@ -33,7 +32,6 @@ import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
 import materialui.components.portal.portal
 import materialui.components.textfield.textField
-import materialui.components.typography.typographyH1
 import materialui.components.typography.typographyH6
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
@@ -51,7 +49,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
 
     val changed = props.mutablePatchHolder.isChanged()
 
-    val handleTitleChange = useCallback(props.mutablePatchHolder) { event: Event ->
+    val handleTitleChange = baaahs.ui.useCallback(props.mutablePatchHolder) { event: Event ->
         props.mutablePatchHolder.title = event.targetEl<HTMLInputElement>().value
         forceRender()
     }
@@ -59,13 +57,13 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
     val handleDrawerClose = eventHandler("handleDrawerClose", props.onCancel) {
         props.onCancel()
     }
-    val handleChange = useCallback { forceRender() }
+    val handleChange = baaahs.ui.useCallback { forceRender() }
 
     var visiblePanel by state { 0 }
 
     var selectedPatch by state { props.mutablePatchHolder.patches.firstOrNull() }
     var selectedShaderInstance by state<MutableShaderInstance?> { null }
-    val handleSelectShader = useCallback { selected: MutableShaderInstance ->
+    val handleSelectShader = baaahs.ui.useCallback { selected: MutableShaderInstance ->
         selectedShaderInstance = selected
         visiblePanel = 1
     }
@@ -73,8 +71,8 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
     val x = this
     val styles = PatchHolderEditorStyles
     val patchNavPanel = Panel(selectedPatch?.surfaces?.name ?: "Surfaces", Apps) {
-        div(+styles.panel and styles.columns) {
-            div(+styles.fixturesListCol) {
+        div(+PatchHolderEditorStyles.panel and PatchHolderEditorStyles.columns) {
+            div(+PatchHolderEditorStyles.fixturesListCol) {
                 header {
                     +"Fixtures"
                     help {
@@ -83,7 +81,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                     }
                 }
 
-                list(styles.fixturesList on ListStyle.root) {
+                list(PatchHolderEditorStyles.fixturesList on ListStyle.root) {
                     props.mutablePatchHolder.patches.forEachIndexed { index, mutablePatch ->
                         listItem {
                             attrs.button = true
@@ -109,7 +107,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                 }
             }
 
-            div(+styles.patchOverviewCol) {
+            div(+PatchHolderEditorStyles.patchOverviewCol) {
                 header {
                     +"Patch Overview"
                     help {
@@ -118,7 +116,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                     }
                 }
 
-                div(+styles.patchOverview) {
+                div(+PatchHolderEditorStyles.patchOverview) {
                     if (selectedPatch == null) {
                         typographyH6 { +"No patch selected." }
                     } else {
@@ -151,7 +149,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
 
     portal {
         form {
-            drawer(styles.drawer on DrawerStyle.paper) {
+            drawer(PatchHolderEditorStyles.drawer on DrawerStyle.paper) {
                 attrs.anchor = DrawerAnchor.bottom
                 attrs.variant = DrawerVariant.temporary
                 attrs.elevation
@@ -185,7 +183,7 @@ val PatchHolderEditor = xComponent<PatchHolderEditorProps>("PatchHolderEditor") 
                     button { attrs.onClickFunction = { visiblePanel = 2 }; +"3" }
                 }
 
-                dialogContent(+styles.dialogContent) {
+                dialogContent(+PatchHolderEditorStyles.dialogContent) {
                     slidePanel {
                         attrs.panels = panels.map { it.content }
                         attrs.index = visiblePanel
