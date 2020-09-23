@@ -1,7 +1,5 @@
 package baaahs.show.live
 
-import baaahs.app.ui.Draggable
-import baaahs.app.ui.DropTarget
 import baaahs.getBang
 import baaahs.gl.override
 import baaahs.show.live.ControlDisplay.PanelBuckets.PanelBucket
@@ -11,6 +9,8 @@ import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeKgl
 import baaahs.shows.FakeShowPlayer
 import baaahs.toBeSpecified
+import baaahs.ui.Draggable
+import baaahs.ui.DropTarget
 import baaahs.unknown
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe

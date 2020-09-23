@@ -3,6 +3,8 @@ package baaahs.app.ui
 import baaahs.JsClock
 import baaahs.ShowEditorState
 import baaahs.ShowPlayer
+import baaahs.app.ui.editor.layoutEditorDialog
+import baaahs.app.ui.editor.patchHolderEditor
 import baaahs.client.WebClient
 import baaahs.gl.patch.AutoWirer
 import baaahs.io.Fs

@@ -1,11 +1,13 @@
-package baaahs.ui
+package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.shaderPreview
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.ShowBuilder
+import baaahs.ui.*
 import baaahs.ui.preview.gadgetsPreview
 import kotlinx.css.*
 import kotlinx.html.js.onChangeFunction
