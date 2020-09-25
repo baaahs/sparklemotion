@@ -2,14 +2,15 @@ package baaahs.ui
 
 import baaahs.show.ShaderType
 import materialui.Icon
+import materialui.icons.Icons as MaterialIcons
 
 object Icons {
     fun forShader(shaderType: ShaderType): Icon {
         return when (shaderType) {
-            ShaderType.Projection -> materialui.CastConnected
-            ShaderType.Distortion -> materialui.Map
-            ShaderType.Paint -> materialui.Image
-            ShaderType.Filter ->materialui.FilterBAndW
+            ShaderType.Projection -> MaterialIcons.CastConnected
+            ShaderType.Distortion -> MaterialIcons.Map
+            ShaderType.Paint -> MaterialIcons.Image
+            ShaderType.Filter -> MaterialIcons.FilterBAndW
         }
     }
 }

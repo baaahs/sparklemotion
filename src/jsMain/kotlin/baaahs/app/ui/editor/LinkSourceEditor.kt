@@ -7,9 +7,7 @@ import baaahs.show.mutable.MutablePort
 import baaahs.ui.asTextNode
 import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
-import materialui.AddCircleOutline
 import materialui.Icon
-import materialui.NotInterested
 import materialui.components.divider.divider
 import materialui.components.formcontrol.formControl
 import materialui.components.inputlabel.inputLabel
@@ -19,6 +17,7 @@ import materialui.components.listsubheader.listSubheader
 import materialui.components.menuitem.menuItem
 import materialui.components.select.select
 import materialui.icon
+import materialui.icons.Icons
 import react.*
 
 val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isPure = true) { props ->
@@ -85,7 +84,7 @@ private object NoSourcePortOption : SourcePortOption {
     override val title: String get() = "Nothing"
     override val portEditor: MutablePort get() = error("not implemented")
     override val groupName: String? get() = null
-    override val icon: Icon get() = NotInterested
+    override val icon: Icon get() = Icons.NotInterested
     override fun matches(otherPort: MutablePort?): Boolean = otherPort == null
     override fun isAppropriateFor(inputPort: InputPort): Boolean = true
 }
@@ -94,7 +93,7 @@ private object NewSourcePortOption : SourcePortOption {
     override val title: String get() = "Create New…"
     override val portEditor: MutablePort get() = error("not implemented")
     override val groupName: String? get() = null
-    override val icon: Icon get() = AddCircleOutline
+    override val icon: Icon get() = Icons.AddCircleOutline
     override fun matches(otherPort: MutablePort?): Boolean = false
     override fun isAppropriateFor(inputPort: InputPort): Boolean = true
 }

@@ -9,11 +9,11 @@ import external.Direction
 import external.draggable
 import external.droppable
 import external.react_draggable.Draggable
-import materialui.DragIndicator
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.components.typography.typographyH6
 import materialui.icon
+import materialui.icons.Icons
 import org.w3c.dom.HTMLElement
 import react.*
 import react.dom.div
@@ -33,7 +33,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
             ref = unplacedControlPaletteDiv
 
             div(+Styles.dragHandle and randomStyleForHandle) {
-                icon(DragIndicator)
+                icon(Icons.DragIndicator)
             }
 
             paper(Styles.unplacedControlsPaper on PaperStyle.root) {

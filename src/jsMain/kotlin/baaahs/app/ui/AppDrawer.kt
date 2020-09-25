@@ -8,7 +8,6 @@ import baaahs.ui.xComponent
 import kotlinx.css.Direction
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
-import materialui.*
 import materialui.components.divider.divider
 import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
@@ -22,7 +21,10 @@ import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
 import materialui.components.switches.switch
 import materialui.components.typography.typographyH6
+import materialui.icon
+import materialui.icons.Icons
 import materialui.styles.muitheme.direction
+import materialui.useTheme
 import react.RBuilder
 import react.RHandler
 import react.RProps
@@ -46,9 +48,9 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
             iconButton {
                 attrs.onClickFunction = props.onClose.withEvent()
                 if (theme.direction == Direction.ltr) {
-                    icon(ChevronLeft)
+                    icon(Icons.ChevronLeft)
                 } else {
-                    icon(ChevronRight)
+                    icon(Icons.ChevronRight)
                 }
                 if (props.forcedOpen) {
                     attrs.disabled = true
@@ -62,14 +64,14 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
             listItem {
                 attrs.button = true
                 attrs.onClickFunction = props.onNewShow.withEvent()
-                listItemIcon { icon(Add) }
+                listItemIcon { icon(Icons.Add) }
                 listItemText { attrs.primary { +"New Show…" } }
             }
 
             listItem {
                 attrs.button = true
                 attrs.onClickFunction = props.onOpenShow.withEvent()
-                listItemIcon { icon(OpenInBrowser) }
+                listItemIcon { icon(Icons.OpenInBrowser) }
                 listItemText { attrs.primary { +if (props.showLoaded) "Switch To…" else "Open…" } }
             }
 
@@ -77,21 +79,21 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                 attrs.button = true
                 attrs.disabled = !props.showUnsaved || props.showFile == null
                 attrs.onClickFunction = props.onSaveShow.withEvent()
-                listItemIcon { icon(Save) }
+                listItemIcon { icon(Icons.Save) }
                 listItemText { attrs.primary { +"Save" } }
             }
 
             listItem {
                 attrs.button = true
                 attrs.onClickFunction = props.onSaveShowAs.withEvent()
-                listItemIcon { icon(FileCopy) }
+                listItemIcon { icon(Icons.FileCopy) }
                 listItemText { attrs.primary { +"Save As…" } }
             }
 
             listItem {
                 attrs.button = true
                 attrs.onClickFunction = props.onCloseShow.withEvent()
-                listItemIcon { icon(Close) }
+                listItemIcon { icon(Icons.Close) }
                 listItemText { attrs.primary { +"Close" } }
             }
 
@@ -113,7 +115,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                 attrs.button = true
                 attrs.disabled = !props.editMode
                 attrs.onClickFunction = props.onLayoutEditorDialogToggle.withEvent()
-                listItemIcon { icon(Dashboard) }
+                listItemIcon { icon(Icons.Dashboard) }
                 listItemText { attrs.primary { +"Layout Editor" } }
             }
         }

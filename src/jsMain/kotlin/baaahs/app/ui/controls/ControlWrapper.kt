@@ -10,9 +10,8 @@ import external.DraggableProvided
 import external.copyFrom
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
-import materialui.DragIndicator
-import materialui.Edit
 import materialui.icon
+import materialui.icons.Icons
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
@@ -33,11 +32,11 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
         div(+Styles.editButton) {
             attrs.onClickFunction = onEditButtonClick
 
-            icon(Edit)
+            icon(Icons.Edit)
         }
         div(+Styles.dragHandle) {
             copyFrom(props.draggableProvided.dragHandleProps)
-            icon(DragIndicator)
+            icon(Icons.DragIndicator)
         }
 
         child(controlView.getReactElement(), jsObject {
