@@ -16,7 +16,6 @@ import baaahs.util.UndoStack
 import external.ErrorBoundary
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
-import materialui.NotificationImportant
 import materialui.components.backdrop.backdrop
 import materialui.components.backdrop.enum.BackdropStyle
 import materialui.components.circularprogress.circularProgress
@@ -32,6 +31,7 @@ import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.components.typography.typographyH6
 import materialui.icon
+import materialui.icons.Icons
 import materialui.lab.components.alert.alert
 import materialui.lab.components.alert.enums.AlertColor
 import materialui.lab.components.alerttitle.alertTitle
@@ -275,7 +275,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                         container {
                             circularProgress {}
-                            icon(NotificationImportant)
+                            icon(Icons.NotificationImportant)
 
                             typographyH6 { +"Connecting…" }
                             +"Attempting to connect to Sparkle Motion."
@@ -285,7 +285,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     if (show == null) {
                         paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
                             if (webClient.isLoaded) {
-                                icon(NotificationImportant)
+                                icon(Icons.NotificationImportant)
                                 typographyH6 { +"No open show." }
                                 p { +"Maybe you'd like to open one? " }
                             } else {

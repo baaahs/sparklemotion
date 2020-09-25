@@ -5,13 +5,10 @@ import baaahs.app.ui.shaderCard
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
-import baaahs.ui.Icons
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
-import materialui.AddCircleOutline
-import materialui.CloudDownload
 import materialui.components.card.card
 import materialui.components.cardcontent.cardContent
 import materialui.components.listitemicon.listItemIcon
@@ -23,6 +20,7 @@ import materialui.components.typography.enums.TypographyDisplay
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.icon
+import materialui.icons.Icons
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
@@ -86,7 +84,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         attrs.onClickFunction = handleNewPatchClick
 
         cardContent {
-            icon(AddCircleOutline)
+            icon(Icons.AddCircleOutline)
             typography {
                 attrs.display = TypographyDisplay.block
                 attrs.variant = TypographyVariant.subtitle1
@@ -105,13 +103,13 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
             menuItem {
                 attrs.onClickFunction = handleNewShaderMenuClick[type]
 
-                listItemIcon { icon(Icons.forShader(type)) }
+                listItemIcon { icon(baaahs.ui.Icons.forShader(type)) }
                 listItemText { +"New ${type.name} Shader…" }
             }
         }
 
         menuItem {
-            listItemIcon { icon(CloudDownload) }
+            listItemIcon { icon(Icons.CloudDownload) }
             listItemText { +"Import… (TBD)" }
         }
     }

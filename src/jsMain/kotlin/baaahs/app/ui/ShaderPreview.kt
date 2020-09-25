@@ -14,13 +14,13 @@ import baaahs.ui.xComponent
 import external.IntersectionObserver
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
-import materialui.Warning
 import materialui.components.divider.divider
 import materialui.components.popover.enums.PopoverStyle
 import materialui.components.popover.popover
 import materialui.components.typography.enums.TypographyDisplay
 import materialui.components.typography.typography
 import materialui.icon
+import materialui.icons.Icons
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.events.EventTarget
 import react.*
@@ -139,7 +139,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                         event.stopPropagation()
                     }
 
-                    icon(Warning)
+                    icon(Icons.Warning)
                     typography {
                         attrs.display = TypographyDisplay.block
                         +"Preview failed."

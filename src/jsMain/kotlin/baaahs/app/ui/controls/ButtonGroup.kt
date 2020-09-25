@@ -12,11 +12,15 @@ import external.copyFrom
 import external.draggable
 import external.droppable
 import kotlinx.html.js.onClickFunction
-import materialui.*
+import materialui.ToggleButtonGroupStyle
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
 import materialui.components.iconbutton.iconButton
+import materialui.icon
+import materialui.icons.Icons
+import materialui.toggleButton
+import materialui.toggleButtonGroup
 import org.w3c.dom.events.Event
 import react.FunctionalComponent
 import react.dom.div
@@ -97,11 +101,11 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                                     attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
                                 }
 
-                                icon(Edit)
+                                icon(Icons.Edit)
                             }
                             div(+Styles.dragHandle) {
                                 copyFrom(sceneDragProvided.dragHandleProps)
-                                icon(DragIndicator)
+                                icon(Icons.DragIndicator)
                             }
 
 //                            droppable({
@@ -134,7 +138,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 
                 if (props.editMode) {
                     iconButton {
-                        icon(AddCircleOutline)
+                        icon(Icons.AddCircleOutline)
                         attrs.onClickFunction = { _: Event ->
                             val mutableShow = props.show.edit()
                             mutableShow.edit(props.control) {
