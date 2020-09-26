@@ -29,6 +29,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
     val handleUpdate =
         handler("handleShaderUpdate", props.mutableShaderInstance) { block: MutableShaderInstance.() -> Unit ->
             props.mutableShaderInstance.block()
+            props.editableManager.onChange()
             forceRender()
         }
 
@@ -49,8 +50,8 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
                 editingIncomingLinks.clear()
                 editingIncomingLinks.putAll(guessIncomingLinks)
-
             }
+            props.editableManager.onChange()
             forceRender()
         }
         withCleanup { observer.remove() }
@@ -169,6 +170,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 }
 
 external interface ShaderInstanceEditorProps : RProps {
+    var editableManager: EditableManager
     var mutablePatch: MutablePatch
     var mutableShaderInstance: MutableShaderInstance
     var shaderChannels: Set<ShaderChannel>

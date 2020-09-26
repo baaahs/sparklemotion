@@ -1,6 +1,11 @@
 package baaahs.show.mutable
 
 import baaahs.*
+import baaahs.app.ui.EditorPanel
+import baaahs.app.ui.MutableEditable
+import baaahs.app.ui.editor.PatchEditorPanel
+import baaahs.app.ui.editor.PatchHolderEditorPanel
+import baaahs.app.ui.editor.ShowPropertiesEditorPanel
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
@@ -17,15 +22,20 @@ class PatchHolderEditContext(
 
 interface EditHandler {
     fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean = true)
+    fun onShowEdit(show: Show, pushToUndoStack: Boolean = true)
     fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean = true)
 }
 
 abstract class MutablePatchHolder(
     private val basePatchHolder: PatchHolder
-) {
+): MutableEditable {
     protected abstract val mutableShow: MutableShow
 
     var title = basePatchHolder.title
+
+    override fun getEditorPanels(): List<EditorPanel> {
+        return listOf(PatchHolderEditorPanel(this))
+    }
 
     val patches by lazy {
         basePatchHolder.patches.map { MutablePatch(it, mutableShow) }.toMutableList()
@@ -117,18 +127,11 @@ abstract class MutablePatchHolder(
             v.map { showBuilder.idFor(it.build(showBuilder)) }
         }
     }
-
-    open fun isChanged(): Boolean {
-        return title != basePatchHolder.title
-                || patches != basePatchHolder.patches
-                || eventBindings != basePatchHolder.eventBindings
-                || controlLayout != basePatchHolder.controlLayout
-    }
 }
 
 class MutableShow(
     private val baseShow: Show
-) : MutablePatchHolder(baseShow) {
+) : MutablePatchHolder(baseShow), MutableEditable {
     override val mutableShow: MutableShow get() = this
 
     internal val controls = CacheBuilder<String, MutableControl> { id ->
@@ -164,6 +167,10 @@ class MutableShow(
         }
     }
 
+    override fun getEditorPanels(): List<EditorPanel> {
+        return listOf(ShowPropertiesEditorPanel(mutableShow)) + super.getEditorPanels()
+    }
+
     private val mutableLayouts = MutableLayouts(baseShow.layouts)
 
     constructor(title: String, block: MutableShow.() -> Unit = {}) : this(Show(title)) {
@@ -175,6 +182,10 @@ class MutableShow(
     fun editLayouts(block: MutableLayouts.() -> Unit): MutableShow {
         mutableLayouts.apply(block)
         return this
+    }
+
+    fun isChanged(): Boolean {
+        return baseShow != getShow()
     }
 
     fun build(showBuilder: ShowBuilder): Show {
@@ -330,6 +341,8 @@ class MutablePatch {
     fun remove(mutableShaderInstance: MutableShaderInstance) {
         mutableShaderInstances.remove(mutableShaderInstance)
     }
+
+    fun getEditorPanel() = PatchEditorPanel(this)
 }
 
 interface MutablePort {
@@ -354,7 +367,7 @@ data class MutableDataSource(val dataSource: DataSource) : MutablePort {
 
 fun DataSource.editor() = MutableDataSource(this)
 
-interface MutableControl {
+interface MutableControl : MutableEditable {
     fun build(showBuilder: ShowBuilder): Control
 }
 
@@ -385,6 +398,10 @@ data class MutableButtonGroupControl(
         return control
     }
 
+    override fun getEditorPanels(): List<EditorPanel> {
+        return emptyList()
+    }
+
     override fun build(showBuilder: ShowBuilder): Control {
         return ButtonGroupControl(title, direction, buttons.map { mutableButtonControl ->
             val buttonControl = mutableButtonControl.build(showBuilder)
@@ -401,6 +418,10 @@ data class MutableGadgetControl(
     var gadget: Gadget,
     val controlledDataSource: DataSource
 ) : MutableControl {
+    override fun getEditorPanels(): List<EditorPanel> {
+        return emptyList()
+    }
+
     override fun build(showBuilder: ShowBuilder): Control {
         return GadgetControl(gadget, showBuilder.idFor(controlledDataSource))
     }
@@ -461,6 +482,9 @@ data class MutableShaderInstance(
             priority
         )
     }
+
+    fun getEditorPanel(patchEditorPanel: PatchEditorPanel): EditorPanel =
+        patchEditorPanel.ShaderInstanceEditorPanel(this)
 
     companion object {
         val defaultOrder = compareBy<MutableShaderInstance>(

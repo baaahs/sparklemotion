@@ -1,11 +1,11 @@
 package baaahs.app.ui.controls
 
+import baaahs.app.ui.AppContext
+import baaahs.app.ui.ControlEditIntent
 import baaahs.show.live.ControlProps
+import baaahs.show.live.ControlView
 import baaahs.show.live.OpenButtonControl
 import baaahs.show.live.OpenControl
-import baaahs.show.live.View
-import baaahs.show.mutable.MutableButtonControl
-import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
@@ -16,16 +16,13 @@ import react.RHandler
 import react.child
 import react.dom.div
 
-class ButtonView(val openButtonControl: OpenButtonControl) : View {
+class ButtonControlView(val openButtonControl: OpenButtonControl) : ControlView {
     override fun <P : ControlProps<in OpenControl>> getReactElement(): FunctionalComponent<P> {
         return Button.unsafeCast<FunctionalComponent<P>>()
     }
 
-    override fun onEdit(props: GenericControlProps) {
-        props.controlDisplay.show.edit {
-            val mutableButtonControl = findControl(openButtonControl.id) as MutableButtonControl
-            props.editPatchHolder(PatchHolderEditContext(this, mutableButtonControl))
-        }
+    override fun onEdit(appContext: AppContext) {
+        appContext.openEditor(ControlEditIntent(openButtonControl.id))
     }
 }
 

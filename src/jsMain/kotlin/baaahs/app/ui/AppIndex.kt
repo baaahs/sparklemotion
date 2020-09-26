@@ -3,14 +3,14 @@ package baaahs.app.ui
 import baaahs.JsClock
 import baaahs.ShowEditorState
 import baaahs.ShowPlayer
+import baaahs.app.ui.editor.EditableManager
+import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layoutEditorDialog
-import baaahs.app.ui.editor.patchHolderEditor
 import baaahs.client.WebClient
 import baaahs.gl.patch.AutoWirer
 import baaahs.io.Fs
 import baaahs.show.SampleData
 import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.*
 import baaahs.util.UndoStack
 import external.ErrorBoundary
@@ -73,6 +73,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val dragNDrop by state { ReactBeautifulDragNDrop() }
     var prompt by state<Prompt?> { null }
+    val editableManager by state { EditableManager { newShow ->
+        webClient.onShowEdit(newShow)
+    } }
 
     val myAppContext = memo(theme) {
         jsObject<AppContext> {
@@ -84,6 +87,10 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.allStyles = AllStyles(theme)
             this.prompt = { prompt = it }
             this.clock = JsClock()
+
+            this.openEditor = { editIntent ->
+                editableManager.openEditor(webClient.show!!, editIntent)
+            }
         }
     }
 
@@ -93,7 +100,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var appDrawerOpen by state { false }
     var layoutEditorDialogOpen by state { false }
     var renderDialog by state<(RBuilder.() -> Unit)?> { null }
-    var patchHolderEditContext by state<PatchHolderEditContext?> { null }
 
     val handleAppDrawerToggle =
         useCallback(appDrawerOpen) { appDrawerOpen = !appDrawerOpen }
@@ -101,22 +107,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handleLayoutEditorDialogToggle =
         useCallback(layoutEditorDialogOpen) { layoutEditorDialogOpen = !layoutEditorDialogOpen }
     val handleLayoutEditorDialogClose = useCallback { layoutEditorDialogOpen = false }
-
-    val handleEditPatchHolder = useCallback { forEdit: PatchHolderEditContext ->
-        patchHolderEditContext = forEdit
-    }
-
-    val handlePatchHolderEdit = useCallback {
-        patchHolderEditContext?.let {
-            val mutableShow = it.mutableShow
-            webClient.onShowEdit(mutableShow)
-        }
-        patchHolderEditContext = null
-    }
-
-    val handlePatchHolderClose = useCallback {
-        patchHolderEditContext = null
-    }
 
     val handleShowStateChange = useCallback {
         webClient.onShowStateChange()
@@ -241,7 +231,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 appToolbar {
                     attrs.editMode = editMode
                     attrs.onEditModeChange = handleEditModeChange
-                    attrs.editPatchHolder = handleEditPatchHolder
                     attrs.onMenuButtonClick = handleAppDrawerToggle
                     attrs.undoStack = props.undoStack
                     attrs.onSaveShow = handleSaveShow
@@ -301,7 +290,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                 attrs.show = webClient.openShow!!
                                 attrs.onShowStateChange = handleShowStateChange
                                 attrs.editMode = editMode
-                                attrs.editPatchHolder = handleEditPatchHolder
                             }
 
                             if (layoutEditorDialogOpen) {
@@ -341,13 +329,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
             renderDialog?.invoke(this)
 
-            patchHolderEditContext?.let { editContext ->
-                patchHolderEditor {
-                    attrs.mutablePatchHolder = editContext.mutablePatchHolder
-                    attrs.onApply = handlePatchHolderEdit
-                    // TODO: This doesn't actually revert the change, it just closes the editor.
-                    attrs.onCancel = handlePatchHolderClose
-                }
+            editableManagerUi {
+                attrs.editMode = editMode
+                attrs.editableManager = editableManager
             }
 
             prompt?.let {

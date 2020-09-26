@@ -1,5 +1,6 @@
 package baaahs.app.ui.controls
 
+import baaahs.app.ui.appContext
 import baaahs.show.live.OpenControl
 import baaahs.show.live.getViewFor
 import baaahs.ui.copyInto
@@ -17,11 +18,13 @@ import react.*
 import react.dom.div
 
 val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
+    val appContext = useContext(appContext)
+
     val control = props.control
     val controlView = memo(control) { getViewFor(control) }
 
     val onEditButtonClick = useCallback(control, props.genericControlProps) { event: Event ->
-        controlView.onEdit(props.genericControlProps)
+        controlView.onEdit(appContext)
         event.preventDefault()
     }
 

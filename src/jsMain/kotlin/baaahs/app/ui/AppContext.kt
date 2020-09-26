@@ -26,4 +26,6 @@ external interface AppContext {
     var allStyles: AllStyles
     var prompt: (prompt: Prompt) -> Unit
     var clock: Clock
+
+    var openEditor: (EditIntent) -> Unit
 }

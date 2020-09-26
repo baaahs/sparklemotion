@@ -7,6 +7,7 @@ external object Icons {
     val AccountTree: Icon
     val Add: Icon
     val AddCircleOutline: Icon
+    val Airplay: Icon
     val Apps: Icon
     val CastConnected: Icon
     val ChevronLeft: Icon
@@ -42,6 +43,7 @@ external object Icons {
     val PowerInput: Icon
     val Redo: Icon
     val Save: Icon
+    val Settings: Icon
     val SettingsInputComponent: Icon
     val Undo: Icon
     val Warning: Icon

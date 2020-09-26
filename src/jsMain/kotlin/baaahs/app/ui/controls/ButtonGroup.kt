@@ -1,11 +1,14 @@
 package baaahs.app.ui.controls
 
+import baaahs.app.ui.AddButtonToContainerEditIntent
+import baaahs.app.ui.AppContext
+import baaahs.app.ui.ControlEditIntent
+import baaahs.app.ui.appContext
 import baaahs.show.ButtonGroupControl
 import baaahs.show.live.ControlProps
+import baaahs.show.live.ControlView
 import baaahs.show.live.OpenButtonGroupControl
 import baaahs.show.live.OpenControl
-import baaahs.show.live.View
-import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.*
 import external.Direction
 import external.copyFrom
@@ -25,18 +28,21 @@ import org.w3c.dom.events.Event
 import react.FunctionalComponent
 import react.dom.div
 import react.key
+import react.useContext
 
-class ButtonGroupView(val openControl: OpenButtonGroupControl) : View {
+class ButtonGroupControlView(val openControl: OpenButtonGroupControl) : ControlView {
     override fun <P : ControlProps<in OpenControl>> getReactElement(): FunctionalComponent<P> {
         return ButtonGroup.unsafeCast<FunctionalComponent<P>>()
     }
 
-    override fun onEdit(props: GenericControlProps) {
-        println("Edit ${openControl.id}!")
+    override fun onEdit(appContext: AppContext) {
+        appContext.openEditor(ControlEditIntent(openControl.id))
     }
 }
 
 val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
+    val appContext = useContext(appContext)
+
     val buttonGroupControl = props.control
     val dropTarget = props.controlDisplay.dropTargetFor(buttonGroupControl) as OpenButtonGroupControl.ButtonGroupDropTarget
 
@@ -57,7 +63,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
     propsRef.current = props
     val handleEditButtonClick = useCallback { event: Event, index: Int ->
         val button = propsRef.current.control.buttons[index]
-        ButtonView(button).onEdit(propsRef.current)
+        ButtonControlView(button).onEdit(appContext)
         event.preventDefault()
     }
 
@@ -140,13 +146,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                     iconButton {
                         icon(Icons.AddCircleOutline)
                         attrs.onClickFunction = { _: Event ->
-                            val mutableShow = props.show.edit()
-                            mutableShow.edit(props.control) {
-                                addButton("Untitled") {
-                                    props.editPatchHolder(
-                                        PatchHolderEditContext(mutableShow, this))
-                                }
-                            }
+                            appContext.openEditor(AddButtonToContainerEditIntent(props.control.id))
                         }
                     }
                 }

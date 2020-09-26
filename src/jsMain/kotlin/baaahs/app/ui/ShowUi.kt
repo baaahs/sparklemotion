@@ -3,7 +3,6 @@ package baaahs.app.ui
 import baaahs.app.ui.controls.GenericControlProps
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.nuffin
 import baaahs.ui.xComponent
 import external.dragDropContext
@@ -36,7 +35,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         this.onShowStateChange = props.onShowStateChange
         this.editMode = props.editMode
         this.controlDisplay = controlDisplay
-        this.editPatchHolder = props.editPatchHolder
     }
 
     dragDropContext({
@@ -49,7 +47,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
             attrs.controlDisplay = controlDisplay
             attrs.genericControlProps = genericControlProps
             attrs.editMode = props.editMode
-            attrs.editPatchHolder = props.editPatchHolder
         }
 
         portal {
@@ -66,7 +63,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 external interface ShowUiProps : RProps {
     var show: OpenShow
     var editMode: Boolean
-    var editPatchHolder: (PatchHolderEditContext) -> Unit
     var onShowStateChange: () -> Unit
 }
 

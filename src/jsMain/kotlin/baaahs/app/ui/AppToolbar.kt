@@ -1,8 +1,6 @@
 package baaahs.app.ui
 
 import baaahs.ShowEditorState
-import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.*
 import baaahs.util.UndoStack
 import kotlinx.css.opacity
@@ -38,13 +36,8 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val themeStyles = appContext.allStyles.appUi
     val webClient = appContext.webClient
 
-    val show = webClient.show
-
     val handleShowEditButtonClick = useCallback {
-        webClient.show?.let { show ->
-            val mutableShow = MutableShow(show)
-            props.editPatchHolder(PatchHolderEditContext(mutableShow, mutableShow))
-        }
+        appContext.openEditor(ShowEditIntent())
     }
 
     val undoStack = props.undoStack
@@ -62,6 +55,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
         Unit
     }
 
+    val show = webClient.show
 
     appBar(themeStyles.appToolbar on AppBarStyle.root) {
         attrs.position = AppBarPosition.relative
@@ -151,7 +145,6 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 external interface AppToolbarProps : RProps {
     var editMode: Boolean
     var onEditModeChange: () -> Unit
-    var editPatchHolder: (PatchHolderEditContext) -> Unit
     var onMenuButtonClick: () -> Unit
     var undoStack: UndoStack<ShowEditorState>
     var onSaveShow: () -> Unit
