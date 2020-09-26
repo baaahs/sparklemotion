@@ -142,7 +142,7 @@ data class ShaderOption(val mutableShaderInstance: MutableShaderInstance) : Sour
     override val title: String get() = mutableShaderInstance.mutableShader.title
     override val portEditor: MutablePort get() = MutableShaderOutPort(mutableShaderInstance)
     override val groupName: String? get() = "Shader output from:"
-    override val icon: Icon get() = baaahs.ui.Icons.forShader(mutableShaderInstance.mutableShader.type)
+    override val icon: Icon get() = mutableShaderInstance.mutableShader.type.icon.getReactIcon()
 
     override fun matches(otherPort: MutablePort?): Boolean {
         return otherPort is MutableShaderOutPort &&

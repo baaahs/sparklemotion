@@ -1,6 +1,6 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.editor.PatchHolderEditorStyles
+import baaahs.app.ui.editor.EditableStyles
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
@@ -26,7 +26,7 @@ import react.RProps
 import react.child
 
 val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { props ->
-    val styles = PatchHolderEditorStyles
+    val styles = EditableStyles
 
     val mutableShaderInstance = props.mutableShaderInstance
     val shader = mutableShaderInstance.mutableShader.build()
@@ -47,7 +47,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
 
         cardHeader {
             attrs.avatar {
-                avatar { icon(baaahs.ui.Icons.forShader(shader.type)) }
+                avatar { icon(shader.type.icon) }
             }
             attrs.title { +shader.title }
 //                                attrs.subheader { +"${shader.type.name} Shader" }

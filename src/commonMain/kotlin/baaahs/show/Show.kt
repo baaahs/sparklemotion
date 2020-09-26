@@ -1,6 +1,7 @@
 package baaahs.show
 
 import baaahs.Surface
+import baaahs.app.ui.Editable
 import baaahs.camelize
 import baaahs.getBang
 import baaahs.plugin.Plugins
@@ -37,7 +38,7 @@ data class Show(
     val shaderInstances: Map<String, ShaderInstance> = emptyMap(),
     val controls: Map<String, Control>  = emptyMap(),
     val dataSources: Map<String, DataSource> = emptyMap()
-) : PatchHolder, ShowContext {
+) : PatchHolder, ShowContext, Editable {
     fun toJson(plugins: Plugins): JsonElement {
         return plugins.json.encodeToJsonElement(serializer(), this)
     }

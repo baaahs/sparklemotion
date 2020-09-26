@@ -4,15 +4,15 @@ import baaahs.app.ui.appContext
 import baaahs.jsx.RangeSlider
 import baaahs.plugin.CorePlugin
 import baaahs.show.live.ControlProps
+import baaahs.show.live.ControlView
 import baaahs.show.live.OpenControl
 import baaahs.show.live.OpenGadgetControl
-import baaahs.show.live.View
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import react.*
 import react.dom.div
 
-class GadgetView(val openControl: OpenGadgetControl) : View {
+class GadgetControlView(val openControl: OpenGadgetControl) : ControlView {
     override fun <P : ControlProps<in OpenControl>> getReactElement(): FunctionalComponent<P> {
         return Gadget.unsafeCast<FunctionalComponent<P>>()
     }

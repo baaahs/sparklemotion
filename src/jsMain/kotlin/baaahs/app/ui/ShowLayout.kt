@@ -5,7 +5,6 @@ import baaahs.app.ui.controls.controlWrapper
 import baaahs.show.Layout
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.*
 import external.Direction
 import external.draggable
@@ -103,7 +102,6 @@ external interface ShowLayoutProps : RProps {
     var controlDisplay: ControlDisplay
     var genericControlProps: GenericControlProps
     var editMode: Boolean
-    var editPatchHolder: (PatchHolderEditContext) -> Unit
 }
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>): ReactElement =

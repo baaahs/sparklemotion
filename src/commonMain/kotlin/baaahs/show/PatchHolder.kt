@@ -1,7 +1,9 @@
 package baaahs.show
 
-interface PatchHolder {
-    val title: String
+import baaahs.app.ui.Editable
+
+interface PatchHolder : Editable {
+    override val title: String
     val patches: List<Patch>
     val eventBindings: List<EventBinding>
     val controlLayout: Map<String, List<String>>

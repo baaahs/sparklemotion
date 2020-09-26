@@ -39,6 +39,10 @@ class FakeEditHandler : EditHandler {
         updatedShow = mutableShow.getShow()
     }
 
+    override fun onShowEdit(show: Show, pushToUndoStack: Boolean) {
+        onShowEdit(show, ShowState(emptyMap()), pushToUndoStack)
+    }
+
     override fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean) {
         calls.add(listOf(show, showState, pushToUndoStack))
         updatedShow = show
