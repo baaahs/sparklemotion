@@ -1,6 +1,6 @@
 package baaahs.app.ui.controls
 
-import baaahs.app.ui.AddButtonToContainerEditIntent
+import baaahs.app.ui.AddButtonToButtonGroupEditIntent
 import baaahs.app.ui.AppContext
 import baaahs.app.ui.ControlEditIntent
 import baaahs.app.ui.appContext
@@ -146,7 +146,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                     iconButton {
                         icon(Icons.AddCircleOutline)
                         attrs.onClickFunction = { _: Event ->
-                            appContext.openEditor(AddButtonToContainerEditIntent(props.control.id))
+                            appContext.openEditor(AddButtonToButtonGroupEditIntent(props.control.id))
                         }
                     }
                 }

@@ -1,13 +1,20 @@
 package baaahs.app.ui.editor
 
+import baaahs.app.ui.AddButtonToButtonGroupEditIntent
+import baaahs.app.ui.ControlEditIntent
+import baaahs.app.ui.EditIntent
 import baaahs.app.ui.ShowEditIntent
+import baaahs.gl.override
 import baaahs.show.SampleData
 import baaahs.show.Show
+import baaahs.show.mutable.MutableButtonControl
+import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.addObserver
 import describe
 import org.spekframework.spek2.Spek
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import kotlin.test.expect
 
@@ -35,7 +42,7 @@ object EditableManagerSpec : Spek({
 
         context("when there's an active session") {
             val baseShow by value { SampleData.sampleShow }
-            val editIntent by value { ShowEditIntent() }
+            val editIntent by value<EditIntent> { ShowEditIntent() }
             val session: EditableManager.Session by value { editableManager.session!! }
 
             beforeEachTest {
@@ -61,11 +68,11 @@ object EditableManagerSpec : Spek({
             }
 
             it("finds the relevant MutableEditable") {
-                assertTrue { session.mutableShow === session.mutableEditable }
+                assertSame(session.mutableShow, session.mutableEditable)
             }
 
             it("pushes it onto the undo stack") {
-                assertTrue { baseShow === editableManager.undoStack.stack.first() }
+                assertSame(baseShow, editableManager.undoStack.stack.first().show)
             }
 
             it("is not modified") {
@@ -81,7 +88,7 @@ object EditableManagerSpec : Spek({
                 it("pushes the changed show onto the undo stack") {
                     expect(
                         listOf("Sample Show", "different title")
-                    ) { editableManager.undoStack.stack.map { it.title } }
+                    ) { editableManager.undoStack.stack.map { it.show.title } }
                 }
 
                 it("is modified") {
@@ -103,7 +110,7 @@ object EditableManagerSpec : Spek({
                     it("still has the same undo stack") {
                         expect(
                             listOf("Sample Show", "different title")
-                        ) { editableManager.undoStack.stack.map { it.title } }
+                        ) { editableManager.undoStack.stack.map { it.show.title } }
                     }
 
                     it("is not modified") {
@@ -115,6 +122,70 @@ object EditableManagerSpec : Spek({
                     }
                 }
             }
+
+            context("when the EditIntent creates a new object") {
+                val baseButtonGroupId by value { baseShow.findControlIdByTitle("Scenes") }
+                override(editIntent) { AddButtonToButtonGroupEditIntent(baseButtonGroupId) }
+                val mutableButtonGroup by value {
+                    session.mutableShow.findControl(baseButtonGroupId) as MutableButtonGroupControl
+                }
+                val mutableButton by value { session.mutableEditable as MutableButtonControl }
+
+                it("creates a new empty button") {
+                    expect("New Button") { mutableButton.title }
+                }
+
+                it("adds the new button to the MutableButtonGroup") {
+                    expect(listOf("Pleistocene", "Holocene", "New Button")) {
+                        mutableButtonGroup.buttons.map { it.title }
+                    }
+                }
+
+                it("returns the new button as the MutableEditable") {
+                    expect(mutableButtonGroup.buttons.last()) { session.mutableEditable }
+                }
+
+                it("is modified because a button has been added to the button group") {
+                    expect(true) { editableManager.isModified() }
+                }
+
+                context("when a change has been made to the editable") {
+                    beforeEachTest {
+                        mutableButton.title = "My new button"
+                        editableManager.onChange()
+                    }
+
+                    it("pushes the changed show with the same edit intent onto the undo stack") {
+                        expect(listOf(editIntent, editIntent)) { editableManager.undoStack.stack.map { it.editIntent } }
+                    }
+
+                    context("when changes are applied") {
+                        beforeEachTest {
+                            editableManager.applyChanges()
+                        }
+                        val newShow by value { showUpdates.last() }
+                        val savedButtonId by value { newShow.findControlIdByTitle("My new button") }
+
+                        it("still has the same undo stack") {
+                            expect(
+                                listOf(editIntent, editIntent)
+                            ) { editableManager.undoStack.stack.map { it.editIntent } }
+                        }
+
+                        it("is not modified") {
+                            expect(false) { editableManager.isModified() }
+                        }
+
+                        it("has a new EditIntent which modifies the now-existing button") {
+                            val newEditIntent = editableManager.session!!.editIntent
+                            expect(ControlEditIntent(savedButtonId)) { newEditIntent }
+                        }
+                    }
+                }
+            }
         }
     }
 })
+
+private fun Show.findControlIdByTitle(title: String) =
+    controls.entries.find { (_, v) -> v.title == title }!!.key
