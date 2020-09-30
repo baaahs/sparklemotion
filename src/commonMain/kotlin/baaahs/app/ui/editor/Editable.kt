@@ -1,7 +1,9 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.editor.EditableManager
-import baaahs.show.Show
+import baaahs.show.ButtonControl
+import baaahs.show.mutable.MutableButtonControl
+import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.Icon
 import baaahs.ui.Renderer
@@ -11,37 +13,39 @@ interface Editable {
 }
 
 interface MutableEditable {
+    val title: String
     fun getEditorPanels(): List<EditorPanel>
 }
 
 interface EditIntent {
-    fun findEditable(baseShow: Show): Editable
     fun findMutableEditable(mutableShow: MutableShow): MutableEditable
+    fun nextEditIntent(): EditIntent = this
 }
 
 class ShowEditIntent : EditIntent {
-    override fun findEditable(baseShow: Show): Editable =
-        baseShow
 
     override fun findMutableEditable(mutableShow: MutableShow): MutableEditable =
         mutableShow
 }
 
-class ControlEditIntent(val controlId: String) : EditIntent {
-    override fun findEditable(baseShow: Show): Editable =
-        baseShow.getControl(controlId)
+data class ControlEditIntent(private val controlId: String) : EditIntent {
 
     override fun findMutableEditable(mutableShow: MutableShow): MutableEditable =
         mutableShow.findControl(controlId)
 }
 
-class AddButtonToContainerEditIntent(val containerId: String) : EditIntent {
-    override fun findEditable(baseShow: Show): Editable =
-        TODO() // baseShow.getControl(controlId)
+data class AddButtonToButtonGroupEditIntent(private val containerId: String) : EditIntent {
+    private lateinit var mutableEditable: MutableButtonControl
 
     override fun findMutableEditable(mutableShow: MutableShow): MutableEditable {
-        TODO () // baseShow.getControl(controlId)
-//            .toMutable(MutableShow(baseShow))
+        val container = mutableShow.findControl(containerId) as MutableButtonGroupControl
+        mutableEditable = MutableButtonControl(ButtonControl("New Button"), mutableShow)
+        container.buttons.add(mutableEditable)
+        return mutableEditable
+    }
+
+    override fun nextEditIntent(): EditIntent {
+        return ControlEditIntent(mutableEditable.asBuiltId!!)
     }
 }
 

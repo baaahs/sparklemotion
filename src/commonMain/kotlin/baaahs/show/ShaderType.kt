@@ -52,7 +52,7 @@ enum class ShaderType(
     Distortion(
         1,
         mapOf(ContentType.UvCoordinateStream to ShaderChannel.Main),
-        ContentType.UvCoordinateStream, CommonIcons.ProjectionShader,
+        ContentType.UvCoordinateStream, CommonIcons.DistortionShader,
         """
             uniform float size; // @@Slider min=0.75 max=1.25 default=1
     
@@ -71,7 +71,7 @@ enum class ShaderType(
     Paint(
         3,
         mapOf(ContentType.UvCoordinateStream to ShaderChannel.Main),
-        ContentType.ColorStream, CommonIcons.ProjectionShader,
+        ContentType.ColorStream, CommonIcons.PaintShader,
         """
             uniform float time;
     
@@ -97,7 +97,7 @@ enum class ShaderType(
 
     Filter(
         4, mapOf(ContentType.ColorStream to ShaderChannel.Main),
-        ContentType.ColorStream,  CommonIcons.ProjectionShader,
+        ContentType.ColorStream,  CommonIcons.FilterShader,
         """
         vec4 mainFilter(vec4 inColor) {
             return inColor;

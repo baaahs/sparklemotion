@@ -3,6 +3,7 @@ package baaahs.show.mutable
 import baaahs.*
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
+import baaahs.app.ui.editor.ButtonGroupPropertiesEditorPanel
 import baaahs.app.ui.editor.PatchEditorPanel
 import baaahs.app.ui.editor.PatchHolderEditorPanel
 import baaahs.app.ui.editor.ShowPropertiesEditorPanel
@@ -31,7 +32,7 @@ abstract class MutablePatchHolder(
 ): MutableEditable {
     protected abstract val mutableShow: MutableShow
 
-    var title = basePatchHolder.title
+    override var title = basePatchHolder.title
 
     override fun getEditorPanels(): List<EditorPanel> {
         return listOf(PatchHolderEditorPanel(this))
@@ -124,7 +125,9 @@ abstract class MutablePatchHolder(
 
     internal fun buildControlLayout(showBuilder: ShowBuilder): Map<String, List<String>> {
         return controlLayout.mapValues { (_, v) ->
-            v.map { showBuilder.idFor(it.build(showBuilder)) }
+            v.map { mutableControl ->
+                mutableControl.buildAndStashId(showBuilder)
+            }
         }
     }
 }
@@ -368,6 +371,7 @@ data class MutableDataSource(val dataSource: DataSource) : MutablePort {
 fun DataSource.editor() = MutableDataSource(this)
 
 interface MutableControl : MutableEditable {
+    var asBuiltId: String?
     fun build(showBuilder: ShowBuilder): Control
 }
 
@@ -375,6 +379,8 @@ class MutableButtonControl(
     baseButtonControl: ButtonControl,
     override val mutableShow: MutableShow
 ): MutablePatchHolder(baseButtonControl), MutableControl {
+    override var asBuiltId: String? = null
+
     override fun build(showBuilder: ShowBuilder): Control {
         return ButtonControl(
             title,
@@ -386,11 +392,13 @@ class MutableButtonControl(
 }
 
 data class MutableButtonGroupControl(
-    var title: String,
+    override var title: String,
     var direction: ButtonGroupControl.Direction,
     val buttons: MutableList<MutableButtonControl> = arrayListOf(),
     val mutableShow: MutableShow
 ) : MutableControl {
+    override var asBuiltId: String? = null
+
     fun addButton(title: String, block: MutableButtonControl.() -> Unit): MutableButtonControl {
         val control = MutableButtonControl(ButtonControl(title), mutableShow)
         control.block()
@@ -399,13 +407,12 @@ data class MutableButtonGroupControl(
     }
 
     override fun getEditorPanels(): List<EditorPanel> {
-        return emptyList()
+        return listOf(ButtonGroupPropertiesEditorPanel(this))
     }
 
     override fun build(showBuilder: ShowBuilder): Control {
         return ButtonGroupControl(title, direction, buttons.map { mutableButtonControl ->
-            val buttonControl = mutableButtonControl.build(showBuilder)
-            showBuilder.idFor(buttonControl)
+            mutableButtonControl.buildAndStashId(showBuilder)
         })
     }
 
@@ -418,6 +425,11 @@ data class MutableGadgetControl(
     var gadget: Gadget,
     val controlledDataSource: DataSource
 ) : MutableControl {
+    override val title: String
+        get() = gadget.title
+
+    override var asBuiltId: String? = null
+
     override fun getEditorPanels(): List<EditorPanel> {
         return emptyList()
     }
@@ -560,8 +572,14 @@ abstract class MutableShowVisitor {
 
     open fun visitShaderInstance(mutableShaderInstance: MutableShaderInstance) {
     }
-
 }
+
+
+private fun MutableControl.buildAndStashId(showBuilder: ShowBuilder): String {
+    return showBuilder.idFor(build(showBuilder))
+        .also { asBuiltId = it }
+}
+
 
 class ShowBuilder {
     private val controlIds = UniqueIds<Control>()

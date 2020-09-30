@@ -114,7 +114,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                     iconButton(Styles.buttons on IconButtonStyle.root) {
                         icon(Icons.Undo)
-                        attrs["disabled"] = !props.editableManager.undoStack.canUndo()
+                        attrs["disabled"] = !props.editableManager.canUndo()
                         attrs.onClickFunction = handleUndo
 
                         typographyH6 { +"Undo" }
@@ -122,7 +122,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                     iconButton(Styles.buttons on IconButtonStyle.root) {
                         icon(Icons.Redo)
-                        attrs["disabled"] = !props.editableManager.undoStack.canRedo()
+                        attrs["disabled"] = !props.editableManager.canRedo()
                         attrs.onClickFunction = handleRedo
 
                         typographyH6 { +"Redo" }

@@ -2,10 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.EditorPanel
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutablePatchHolder
-import baaahs.show.mutable.MutableShaderInstance
-import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.*
 import baaahs.ui.Icon
 import baaahs.ui.Renderer
 
@@ -86,6 +83,18 @@ data class ShowPropertiesEditorPanel(val mutableShow: MutableShow) : EditorPanel
         editorPanelViews.forShow(editableManager, mutableShow)
 }
 
+data class ButtonGroupPropertiesEditorPanel(val mutableButtonGroupControl: MutableButtonGroupControl) : EditorPanel {
+    override val title: String
+        get() = "Properties"
+    override val listSubhead: String?
+        get() = null
+    override val icon: Icon?
+        get() = CommonIcons.Settings
+
+    override fun getRenderer(editableManager: EditableManager): Renderer =
+        editorPanelViews.forButtonGroup(editableManager, mutableButtonGroupControl)
+}
+
 interface EditorPanelViews {
     fun forPatchHolder(editableManager: EditableManager, mutablePatchHolder: MutablePatchHolder): Renderer
     fun forPatch(editableManager: EditableManager, mutablePatch: MutablePatch): Renderer
@@ -95,6 +104,7 @@ interface EditorPanelViews {
         mutableShaderInstance: MutableShaderInstance
     ): Renderer
     fun forShow(editableManager: EditableManager, mutableShow: MutableShow): Renderer
+    fun forButtonGroup(editableManager: EditableManager, mutableButtonGroupControl: MutableButtonGroupControl): Renderer
 }
 
 val editorPanelViews by lazy { getEditorPanelViews() }

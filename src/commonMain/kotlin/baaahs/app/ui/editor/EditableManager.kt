@@ -1,7 +1,6 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.EditIntent
-import baaahs.app.ui.Editable
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
 import baaahs.show.Show
@@ -12,7 +11,7 @@ import baaahs.util.UndoStack
 class EditableManager(
     private val onApply: (Show) -> Unit
 ) : Facade() {
-    val undoStack = UndoStack<Show>()
+    internal val undoStack = UndoStack<ShowAndEditIntent>()
     internal var session: Session? = null
 
     fun isEditing(): Boolean = session != null
@@ -33,7 +32,7 @@ class EditableManager(
         if (isEditing()) error("already editing ${session!!.editIntent}")
 
         session = Session(baseShow, editIntent)
-        undoStack.reset(baseShow)
+        undoStack.reset(ShowAndEditIntent(baseShow, editIntent))
         selectedPanel = editorPanels.firstOrNull()
         notifyChanged()
     }
@@ -49,22 +48,22 @@ class EditableManager(
         notifyChanged()
     }
 
-    fun undo() {
-        switchBaseShow(undoStack.undo())
-    }
+    fun undo() = switchBaseShow(undoStack.undo())
+    fun canUndo() = undoStack.canUndo()
 
-    fun redo() {
-        switchBaseShow(undoStack.redo())
-    }
+    fun redo() = switchBaseShow(undoStack.redo())
+    fun canRedo() = undoStack.canRedo()
 
     fun applyChanges() {
-        val newShow = session!!.mutableShow.getShow()
+        val session = session!!
+        val newShow = session.mutableShow.getShow()
+        val nextEditIntent = session.editIntent.nextEditIntent()
         onApply(newShow)
-        switchBaseShow(newShow)
+        switchBaseShow(ShowAndEditIntent(newShow, nextEditIntent))
     }
 
-    private fun switchBaseShow(newShow: Show) {
-        session = Session(newShow, session!!.editIntent)
+    private fun switchBaseShow(newShowAndEditIntent: ShowAndEditIntent) {
+        session = Session(newShowAndEditIntent.show, newShowAndEditIntent.editIntent)
         notifyChanged()
     }
 
@@ -91,12 +90,11 @@ class EditableManager(
         val editIntent: EditIntent
     ) {
         val mutableShow = MutableShow(baseShow)
-        val editable: Editable = editIntent.findEditable(baseShow)
         val mutableEditable: MutableEditable = editIntent.findMutableEditable(mutableShow)
         var cachedIsChanged: Boolean? = null
 
         val uiTitle: String
-            get() = "Editing ${editable.title}"
+            get() = "Editing ${mutableEditable.title}"
 
         fun getEditorPanels(): List<EditorPanel> =
             mutableEditable.getEditorPanels()
@@ -108,8 +106,10 @@ class EditableManager(
 
         fun onChange() {
             cachedIsChanged = null
-            undoStack.changed(mutableShow.getShow())
+            undoStack.changed(ShowAndEditIntent(mutableShow.getShow(), editIntent))
             notifyChanged()
         }
     }
+
+    internal class ShowAndEditIntent(val show: Show, val editIntent: EditIntent)
 }
