@@ -31,7 +31,19 @@ class FsServerSideSerializer : KSerializer<Fs>, RemoteFsSerializer {
         }
 
     override fun deserialize(decoder: Decoder): Fs {
-        return fses[decoder.decodeInt()]
+        return decoder.decodeStructure(descriptor) {
+            var fsId: Int? = null
+            loop@ while (true) {
+                when (val i = decodeElementIndex(descriptor)) {
+                    CompositeDecoder.DECODE_DONE -> break@loop
+                    0 -> decodeStringElement(descriptor, 0) // ignored
+                    1 -> fsId = decodeIntElement(descriptor, 1)
+                    else -> throw SerializationException("Unknown index $i")
+                }
+            }
+
+            fses[fsId ?: throw MissingFieldException("fsId")]
+        }
     }
 
     override fun serialize(encoder: Encoder, value: Fs) {
@@ -45,7 +57,6 @@ class FsServerSideSerializer : KSerializer<Fs>, RemoteFsSerializer {
             encodeStringElement(descriptor, 0, value.name)
             encodeIntElement(descriptor, 1, fsId)
         }
-
     }
 
     override val serialModule: SerializersModule = SerializersModule {
@@ -86,7 +97,10 @@ abstract class FsClientSideSerializer : KSerializer<RemoteFs>, RemoteFsSerialize
     }
 
     override fun serialize(encoder: Encoder, value: RemoteFs) {
-        encoder.encodeInt(value.fsId)
+        encoder.encodeStructure(descriptor) {
+            encodeStringElement(descriptor, 0, value.name)
+            encodeIntElement(descriptor, 1, value.fsId)
+        }
     }
 
     override val serialModule: SerializersModule = SerializersModule {

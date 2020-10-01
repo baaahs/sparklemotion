@@ -16,16 +16,16 @@ class FakeFs(override val name: String = "FakeFs") : BaseFakeFs() {
 
     override suspend fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
         logger.debug { "FakeFs.createFile($file) -> ${content.size} bytes" }
-        addFile(file, content)
+        addFile(file, content, allowOverwrite)
     }
 
     override suspend fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean) {
         saveFile(file, content.encodeToByteArray(), allowOverwrite)
     }
 
-    private fun addFile(file: Fs.File, content: ByteArray) {
+    private fun addFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
         val path = file.fullPath
-        if (files.containsKey(path)) {
+        if (files.containsKey(path) && !allowOverwrite) {
             throw Exception("$path already exists")
         }
         files[path] = content

@@ -1,8 +1,11 @@
-package baaahs.ui
+package baaahs.app.ui
 
+import baaahs.app.ui.editor.EditableStyles
 import baaahs.show.mutable.MutableShaderInstance
+import baaahs.ui.on
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
-import materialui.Delete
 import materialui.components.avatar.avatar
 import materialui.components.card.card
 import materialui.components.cardactions.cardActions
@@ -16,13 +19,14 @@ import materialui.components.typography.enums.TypographyStyle
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.icon
+import materialui.icons.Icons
 import react.RBuilder
 import react.RHandler
 import react.RProps
 import react.child
 
 val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { props ->
-    val styles = PatchHolderEditorStyles
+    val styles = EditableStyles
 
     val mutableShaderInstance = props.mutableShaderInstance
     val shader = mutableShaderInstance.mutableShader.build()
@@ -43,7 +47,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
 
         cardHeader {
             attrs.avatar {
-                avatar { icon(Icons.forShader(shader.type)) }
+                avatar { icon(shader.type.icon) }
             }
             attrs.title { +shader.title }
 //                                attrs.subheader { +"${shader.type.name} Shader" }
@@ -66,7 +70,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
             iconButton {
                 attrs.onClickFunction = handleDeleteClick
 
-                icon(Delete)
+                icon(Icons.Delete)
             }
         }
     }

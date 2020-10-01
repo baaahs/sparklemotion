@@ -2,6 +2,7 @@ package baaahs.show
 
 import baaahs.Gadget
 import baaahs.ShowPlayer
+import baaahs.app.ui.Editable
 import baaahs.camelize
 import baaahs.show.live.*
 import baaahs.show.mutable.*
@@ -10,7 +11,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
-interface Control {
+interface Control : Editable {
+    override val title: String
     fun suggestId(): String = "control"
 
     fun toMutable(mutableShow: MutableShow): MutableControl
@@ -34,6 +36,9 @@ data class GadgetControl(
     val gadget: Gadget,
     val controlledDataSourceId: String
 ) : Control {
+    override val title: String
+        get() = gadget.title
+
     override fun suggestId(): String = controlledDataSourceId + "Control"
 
     override fun toMutable(mutableShow: MutableShow): MutableGadgetControl {
@@ -70,7 +75,7 @@ data class ButtonControl(
 @Serializable
 @SerialName("baaahs.Core:ButtonGroup")
 data class ButtonGroupControl(
-    val title: String,
+    override val title: String,
     val direction: Direction,
     val buttonIds: List<String>
 ) : Control {

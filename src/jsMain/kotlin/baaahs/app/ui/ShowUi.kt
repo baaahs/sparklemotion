@@ -1,9 +1,8 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.controls.SpecialControlProps
+import baaahs.app.ui.controls.GenericControlProps
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.PatchHolderEditContext
 import baaahs.ui.nuffin
 import baaahs.ui.xComponent
 import external.dragDropContext
@@ -23,7 +22,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     logger.info { "switch state is ${props.show.getEnabledSwitchState()}" }
     onChange("show/state", props.show, props.show.getEnabledSwitchState(), props.editMode, appContext.dragNDrop) {
         controlDisplay = ControlDisplay(
-            props.show, props.editMode, appContext.webClient, appContext.dragNDrop
+            props.show, appContext.webClient, appContext.dragNDrop
         )
 
         withCleanup {
@@ -31,12 +30,11 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         }
     }
 
-    val specialControlProps = jsObject<SpecialControlProps> {
+    val genericControlProps = jsObject<GenericControlProps> {
         this.show = props.show
         this.onShowStateChange = props.onShowStateChange
         this.editMode = props.editMode
         this.controlDisplay = controlDisplay
-        this.editPatchHolder = props.editPatchHolder
     }
 
     dragDropContext({
@@ -47,15 +45,14 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
             attrs.onShowStateChange = props.onShowStateChange
             attrs.layout = currentLayout
             attrs.controlDisplay = controlDisplay
-            attrs.specialControlProps = specialControlProps
+            attrs.genericControlProps = genericControlProps
             attrs.editMode = props.editMode
-            attrs.editPatchHolder = props.editPatchHolder
         }
 
         portal {
             controlsPalette {
                 attrs.controlDisplay = controlDisplay
-                attrs.specialControlProps = specialControlProps
+                attrs.genericControlProps = genericControlProps
                 attrs.show = props.show
                 attrs.editMode = props.editMode
             }
@@ -66,7 +63,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 external interface ShowUiProps : RProps {
     var show: OpenShow
     var editMode: Boolean
-    var editPatchHolder: (PatchHolderEditContext) -> Unit
     var onShowStateChange: () -> Unit
 }
 

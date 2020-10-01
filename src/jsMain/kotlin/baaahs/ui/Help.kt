@@ -2,7 +2,6 @@ package baaahs.ui
 
 import baaahs.app.ui.appContext
 import kotlinx.html.js.onClickFunction
-import materialui.HelpOutline
 import materialui.components.button.button
 import materialui.components.dialog.dialog
 import materialui.components.dialogactions.dialogActions
@@ -10,6 +9,7 @@ import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
 import materialui.components.link.link
 import materialui.icon
+import materialui.icons.Icons
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
@@ -27,7 +27,7 @@ val Help = xComponent<HelpProps>("Help", isPure = true) { props ->
     div("${styles.help.name} ${props.divClass}") {
         link {
             attrs.onClickFunction = toggleHelp.withEvent()
-            icon(HelpOutline)
+            icon(Icons.HelpOutline)
         }
     }
 

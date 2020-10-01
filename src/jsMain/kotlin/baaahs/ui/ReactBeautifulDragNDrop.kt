@@ -1,4 +1,4 @@
-package baaahs.app.ui
+package baaahs.ui
 
 import baaahs.Logger
 import external.DraggableLocation
