@@ -206,7 +206,7 @@ abstract class PubSub {
         }
     }
 
-    open class Connection(
+    abstract class Connection(
         private val name: String,
         private val topics: Topics,
         private val commandChannels: CommandChannels
@@ -358,6 +358,12 @@ abstract class PubSub {
         override fun toString(): String = "Connection from $name"
     }
 
+    class ConnectionFromClient(
+        name: String,
+        topics: Topics,
+        commandChannels: CommandChannels
+    ) : Connection(name, topics, commandChannels)
+
     abstract class Endpoint {
         protected fun <T> buildTopicInfo(topic: Topic<T>): TopicInfo<T> {
             return TopicInfo(topic)
@@ -365,14 +371,14 @@ abstract class PubSub {
     }
 
     class Server(httpServer: Network.HttpServer, private val handlerContext: CoroutineContext) : Endpoint() {
-        private val publisher = Origin("Server")
+        private val publisher = Origin("Server-side publisher")
         private val topics: Topics = Topics()
         private val commandChannels = CommandChannels()
 
         init {
             httpServer.listenWebSocket("/sm/ws") { incomingConnection ->
                 val name = "server ${incomingConnection.toAddress} to ${incomingConnection.fromAddress}"
-                Connection(name, topics, commandChannels)
+                ConnectionFromClient(name, topics, commandChannels)
             }
         }
 
@@ -459,11 +465,11 @@ abstract class PubSub {
         }
     }
 
-    class Client(
+    open class Client(
         private val link: Network.Link,
-        serverAddress: Network.Address,
-        port: Int,
-        coroutineScope: CoroutineScope = GlobalScope
+        private val serverAddress: Network.Address,
+        private val port: Int,
+        private val coroutineScope: CoroutineScope = GlobalScope
     ) : Endpoint() {
         @JsName("isConnected")
         val isConnected: Boolean
@@ -473,39 +479,40 @@ abstract class PubSub {
         private val topics: Topics = Topics()
         private val commandChannels = CommandChannels()
 
-        private var connectionToServer: Connection =
-            object : Connection("client ${link.myAddress} to $serverAddress", topics, commandChannels) {
-                override fun connected(tcpConnection: Network.TcpConnection) {
-                    super.connected(tcpConnection)
+        private var connectionToServer: Connection = ConnectionToServer()
 
-                    // If any topics were subscribed to before this connection was established, send the sub command now.
-                    topics.forEach { topicInfo -> sendTopicSub(topicInfo) }
+        inner class ConnectionToServer : Connection("Client-side connection from ${link.myAddress} to server at $serverAddress", topics, commandChannels) {
+            override fun connected(tcpConnection: Network.TcpConnection) {
+                super.connected(tcpConnection)
 
-                    notifyChangeListeners()
-                }
+                // If any topics were subscribed to before this connection was established, send the sub command now.
+                topics.forEach { topicInfo -> sendTopicSub(topicInfo) }
 
-                override fun reset(tcpConnection: Network.TcpConnection) {
-                    super.reset(tcpConnection)
-                    notifyChangeListeners()
-
-                    coroutineScope.launch {
-                        delay(1000)
-                        connectWebSocket(link, serverAddress, port)
-                    }
-                }
+                notifyChangeListeners()
             }
 
-        init {
-            connectWebSocket(link, serverAddress, port)
+            override fun reset(tcpConnection: Network.TcpConnection) {
+                super.reset(tcpConnection)
+                notifyChangeListeners()
+
+                coroutineScope.launch {
+                    delay(1000)
+                    connectWebSocket()
+                }
+            }
         }
 
-        private fun connectWebSocket(link: Network.Link, serverAddress: Network.Address, port: Int) {
+        init {
+            connectWebSocket()
+        }
+
+        private fun connectWebSocket() {
             link.connectWebSocket(serverAddress, port, "/sm/ws", connectionToServer)
         }
 
         @JsName("subscribe")
         fun <T> subscribe(topic: Topic<T>, onUpdateFn: (T) -> Unit): Channel<T> {
-            val subscriber = Origin("Subscriber at ${link.myAddress}")
+            val subscriber = Origin("Client-side subscriber at ${link.myAddress}")
 
             val topicName = topic.name
 

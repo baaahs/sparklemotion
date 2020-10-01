@@ -46,7 +46,11 @@ class StageManager(
     var lastUserInteraction = DateTime.now()
 
     private val fsSerializer = FsServerSideSerializer()
-    init { PubSubRemoteFsServerBackend(pubSub, fsSerializer) }
+
+    init {
+        PubSubRemoteFsServerBackend(pubSub, fsSerializer)
+    }
+
     @Suppress("unused")
     private val clientData =
         pubSub.state(Topics.createClientData(fsSerializer), ClientData(storage.fs.rootFile))
@@ -60,7 +64,10 @@ class StageManager(
             val newShow = incoming?.show
             val newShowState = incoming?.showState
             val newIsUnsaved = incoming?.isUnsaved ?: false
-            switchTo(newShow, newShowState, showEditSession.showFile, newIsUnsaved)
+            switchTo(
+                newShow, newShowState, showEditSession.showFile,
+                newIsUnsaved, fromClientUpdate = true
+            )
         }
 
     private var gadgetsChangedJobEnqueued: Boolean = false
@@ -103,7 +110,8 @@ class StageManager(
         newShow: Show?,
         newShowState: ShowState? = null,
         file: Fs.File? = null,
-        isUnsaved: Boolean = file == null
+        isUnsaved: Boolean = file == null,
+        fromClientUpdate: Boolean = false
     ) {
         val newShowRunner = newShow?.let {
             val openShow = openShow(newShow, newShowState)
@@ -120,7 +128,7 @@ class StageManager(
 
         updateRunningShowPath(file)
 
-        notifyOfShowChanges()
+        notifyOfShowChanges(fromClientUpdate)
     }
 
     private fun updateRunningShowPath(file: Fs.File?) {
@@ -131,9 +139,11 @@ class StageManager(
         }
     }
 
-    internal fun notifyOfShowChanges() {
-        val showEditState = showEditSession.getShowEditState()
-        showEditorStateChannel.onChange(showEditState)
+    internal fun notifyOfShowChanges(fromClientUpdate: Boolean = false) {
+        if (!fromClientUpdate) {
+            showEditorStateChannel.onChange(showEditSession.getShowEditState())
+        }
+
         facade.notifyChanged()
     }
 
@@ -191,7 +201,6 @@ class StageManager(
             } else {
                 switchTo(null, null, null)
             }
-            notifyOfShowChanges()
         }
 
         private suspend fun handleSaveShow() {
