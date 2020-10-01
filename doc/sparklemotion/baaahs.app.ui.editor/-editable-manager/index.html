@@ -1,0 +1,146 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>EditableManager - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.app.ui.editor</a>&nbsp;/&nbsp;<a href="./index.html">EditableManager</a><br/>
+<br/>
+<h1>EditableManager</h1>
+<code><span class="keyword">class </span><span class="identifier">EditableManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-facade/index.html"><span class="identifier">Facade</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">EditableManager</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor.EditableManager$<init>(kotlin.Function1((baaahs.show.Show, kotlin.Unit)))/onApply">onApply</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="editor-panels.html">editorPanels</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">editorPanels</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.app.ui/-editor-panel/index.html"><span class="identifier">EditorPanel</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="selected-panel.html">selectedPanel</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">selectedPanel</span><span class="symbol">: </span><a href="../../baaahs.app.ui/-editor-panel/index.html"><span class="identifier">EditorPanel</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="ui-title.html">uiTitle</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">uiTitle</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="apply-changes.html">applyChanges</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">applyChanges</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="can-redo.html">canRedo</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">canRedo</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="can-undo.html">canUndo</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">canUndo</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="close.html">close</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">close</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-editing.html">isEditing</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">isEditing</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-modified.html">isModified</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">isModified</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-change.html">onChange</a></h4>
+</td>
+<td>
+<p><a href="../../baaahs.app.ui/-editor-panel/index.html">EditorPanel</a>s should call this when they've made a change to the <a href="../../baaahs.app.ui/-mutable-editable/index.html">MutableEditable</a>.</p>
+<code><span class="keyword">fun </span><span class="identifier">onChange</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="open-editor.html">openEditor</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">openEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor.EditableManager$openEditor(baaahs.show.Show, baaahs.app.ui.EditIntent)/baseShow">baseShow</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.app.ui.editor.EditableManager$openEditor(baaahs.show.Show, baaahs.app.ui.EditIntent)/editIntent">editIntent</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.app.ui/-edit-intent/index.html"><span class="identifier">EditIntent</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="open-panel.html">openPanel</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">openPanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor.EditableManager$openPanel(baaahs.app.ui.EditorPanel)/editorPanel">editorPanel</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.app.ui/-editor-panel/index.html"><span class="identifier">EditorPanel</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="redo.html">redo</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">redo</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="undo.html">undo</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">undo</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Extension Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../../baaahs.ui/add-observer.html">addObserver</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-observable/index.html"><span class="identifier">Observable</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">addObserver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.ui/-removable-observer/index.html"><span class="identifier">RemovableObserver</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -24,7 +24,7 @@
 <h4><a href="-client/index.html">Client</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">Client</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Endpoint</span></code></td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Client</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Endpoint</span></code></td>
 </tr>
 <tr>
 <td>
@@ -52,7 +52,14 @@
 <h4><a href="-connection/index.html">Connection</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Connection</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Origin</span><span class="symbol">, </span><span class="identifier">WebSocketListener</span></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Connection</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Origin</span><span class="symbol">, </span><span class="identifier">WebSocketListener</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-connection-from-client/index.html">ConnectionFromClient</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ConnectionFromClient</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Connection</span></code></td>
 </tr>
 <tr>
 <td>

@@ -31,7 +31,7 @@
 <h4><a href="-placeable-control/index.html">PlaceableControl</a></h4>
 </td>
 <td>
-<code><span class="keyword">interface </span><span class="identifier">PlaceableControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.app.ui/-draggable/index.html"><span class="identifier">Draggable</span></a></code></td>
+<code><span class="keyword">interface </span><span class="identifier">PlaceableControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-draggable/index.html"><span class="identifier">Draggable</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -52,7 +52,7 @@
 <h4><a href="-unplaced-controls-drop-target/index.html">UnplacedControlsDropTarget</a></h4>
 </td>
 <td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">UnplacedControlsDropTarget</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.app.ui/-drop-target/index.html"><span class="identifier">DropTarget</span></a></code></td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">UnplacedControlsDropTarget</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-drop-target/index.html"><span class="identifier">DropTarget</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -64,7 +64,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">ControlDisplay</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.ControlDisplay$<init>(baaahs.show.live.OpenShow, kotlin.Boolean, baaahs.show.mutable.EditHandler, baaahs.app.ui.DragNDrop)/show">show</span><span class="symbol">:</span>&nbsp;<a href="../-open-show/index.html"><span class="identifier">OpenShow</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.ControlDisplay$<init>(baaahs.show.live.OpenShow, kotlin.Boolean, baaahs.show.mutable.EditHandler, baaahs.app.ui.DragNDrop)/editMode">editMode</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.ControlDisplay$<init>(baaahs.show.live.OpenShow, kotlin.Boolean, baaahs.show.mutable.EditHandler, baaahs.app.ui.DragNDrop)/editHandler">editHandler</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.mutable/-edit-handler/index.html"><span class="identifier">EditHandler</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.ControlDisplay$<init>(baaahs.show.live.OpenShow, kotlin.Boolean, baaahs.show.mutable.EditHandler, baaahs.app.ui.DragNDrop)/dragNDrop">dragNDrop</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.app.ui/-drag-n-drop/index.html"><span class="identifier">DragNDrop</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">ControlDisplay</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.ControlDisplay$<init>(baaahs.show.live.OpenShow, baaahs.show.mutable.EditHandler, baaahs.ui.DragNDrop)/show">show</span><span class="symbol">:</span>&nbsp;<a href="../-open-show/index.html"><span class="identifier">OpenShow</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.ControlDisplay$<init>(baaahs.show.live.OpenShow, baaahs.show.mutable.EditHandler, baaahs.ui.DragNDrop)/editHandler">editHandler</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.mutable/-edit-handler/index.html"><span class="identifier">EditHandler</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.ControlDisplay$<init>(baaahs.show.live.OpenShow, baaahs.show.mutable.EditHandler, baaahs.ui.DragNDrop)/dragNDrop">dragNDrop</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-drag-n-drop/index.html"><span class="identifier">DragNDrop</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -77,13 +77,6 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">additionalDropTargets</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../-open-control/index.html"><span class="identifier">OpenControl</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">ButtonGroupDropTarget</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="mutable-show.html">mutableShow</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">mutableShow</span><span class="symbol">: </span><a href="../../baaahs.show.mutable/-mutable-show/index.html"><span class="identifier">MutableShow</span></a><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>
@@ -113,17 +106,10 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="commit-edit.html">commitEdit</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">commitEdit</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="drop-target-for.html">dropTargetFor</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">dropTargetFor</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.ControlDisplay$dropTargetFor(baaahs.show.live.OpenButtonGroupControl)/buttonGroupControl">buttonGroupControl</span><span class="symbol">:</span>&nbsp;<a href="../-open-button-group-control/index.html"><span class="identifier">OpenButtonGroupControl</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.app.ui/-drop-target/index.html"><span class="identifier">DropTarget</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">dropTargetFor</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.ControlDisplay$dropTargetFor(baaahs.show.live.OpenButtonGroupControl)/buttonGroupControl">buttonGroupControl</span><span class="symbol">:</span>&nbsp;<a href="../-open-button-group-control/index.html"><span class="identifier">OpenButtonGroupControl</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.ui/-drop-target/index.html"><span class="identifier">DropTarget</span></a></code></td>
 </tr>
 <tr>
 <td>
