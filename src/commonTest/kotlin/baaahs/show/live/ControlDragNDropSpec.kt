@@ -1,7 +1,5 @@
 package baaahs.show.live
 
-import baaahs.app.ui.Draggable
-import baaahs.app.ui.DropTarget
 import baaahs.getBang
 import baaahs.gl.override
 import baaahs.show.live.ControlDisplay.PanelBuckets.PanelBucket
@@ -11,6 +9,8 @@ import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeKgl
 import baaahs.shows.FakeShowPlayer
 import baaahs.toBeSpecified
+import baaahs.ui.Draggable
+import baaahs.ui.DropTarget
 import baaahs.unknown
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -26,14 +26,13 @@ object ControlDragNDropSpec : Spek({
 
         val showPlayer by value { FakeShowPlayer(FakeGlContext(FakeKgl())) }
         val openShow by value { showPlayer.openShow(show) }
-        val editMode by value { true }
         val editHandler by value { FakeEditHandler() }
         val dragNDrop by value { FakeDragNDrop() }
-        val controlDisplay by value { ControlDisplay(openShow, editMode, editHandler, dragNDrop) }
+        val controlDisplay by value { ControlDisplay(openShow, editHandler, dragNDrop) }
 
         fun renderEditedShow(): String {
             val editedOpenShow = showPlayer.openShow(editHandler.updatedShow, openShow.getShowState())
-            val newControlDisplay = ControlDisplay(editedOpenShow, editMode, editHandler, dragNDrop)
+            val newControlDisplay = ControlDisplay(editedOpenShow, editHandler, dragNDrop)
             return editedOpenShow.fakeRender(newControlDisplay)
         }
 

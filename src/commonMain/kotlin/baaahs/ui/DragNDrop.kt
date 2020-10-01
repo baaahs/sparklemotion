@@ -1,4 +1,4 @@
-package baaahs.app.ui
+package baaahs.ui
 
 import baaahs.camelize
 import baaahs.util.UniqueIds

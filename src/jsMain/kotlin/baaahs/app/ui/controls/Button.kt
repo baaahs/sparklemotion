@@ -1,38 +1,33 @@
 package baaahs.app.ui.controls
 
+import baaahs.app.ui.AppContext
+import baaahs.app.ui.ControlEditIntent
+import baaahs.show.live.ControlProps
+import baaahs.show.live.ControlView
 import baaahs.show.live.OpenButtonControl
-import baaahs.show.live.View
-import baaahs.show.mutable.MutableButtonControl
-import baaahs.show.mutable.PatchHolderEditContext
+import baaahs.show.live.OpenControl
 import baaahs.ui.unaryPlus
-import baaahs.ui.useCallback
 import baaahs.ui.xComponent
-import external.copyFrom
-import external.draggable
 import kotlinx.html.js.onClickFunction
-import materialui.DragIndicator
-import materialui.Edit
-import materialui.icon
 import materialui.toggleButton
-import org.w3c.dom.events.Event
+import react.FunctionalComponent
 import react.RBuilder
 import react.RHandler
 import react.child
 import react.dom.div
-import react.key
 
-class ButtonView(val openButtonControl: OpenButtonControl) : View
+class ButtonControlView(val openButtonControl: OpenButtonControl) : ControlView {
+    override fun <P : ControlProps<in OpenControl>> getReactElement(): FunctionalComponent<P> {
+        return Button.unsafeCast<FunctionalComponent<P>>()
+    }
+
+    override fun onEdit(appContext: AppContext) {
+        appContext.openEditor(ControlEditIntent(openButtonControl.id))
+    }
+}
 
 val Button = xComponent<ButtonProps>("Button") { props ->
-    val buttonControl = props.buttonControl
-
-    val handleEditButtonClick = useCallback(props.show) { event: Event ->
-        props.show.edit {
-            val mutableButtonControl = findControl(props.buttonControl.id) as MutableButtonControl
-            props.editPatchHolder(PatchHolderEditContext(this@edit, mutableButtonControl))
-            event.preventDefault()
-        }
-    }
+    val buttonControl = props.control
 
     div(+Styles.controlButton) {
 //        ref = sceneDragProvided.innerRef
@@ -73,9 +68,7 @@ val Button = xComponent<ButtonProps>("Button") { props ->
     }
 }
 
-external interface ButtonProps : SpecialControlProps {
-    var buttonControl: OpenButtonControl
-}
+external interface ButtonProps : ControlProps<OpenButtonControl>
 
 fun RBuilder.button(handler: RHandler<ButtonProps>) =
     child(Button, handler = handler)

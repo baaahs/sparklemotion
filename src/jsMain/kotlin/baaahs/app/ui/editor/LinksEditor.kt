@@ -1,4 +1,4 @@
-package baaahs.ui
+package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
 import baaahs.englishize
@@ -6,15 +6,15 @@ import baaahs.gl.shader.InputPort
 import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.*
+import baaahs.ui.xComponent
 import materialui.Icon
-import materialui.Input
-import materialui.PowerInput
 import materialui.components.table.table
 import materialui.components.tablebody.tableBody
 import materialui.components.tablecell.tdCell
 import materialui.components.tablecell.thCell
 import materialui.components.tablehead.tableHead
 import materialui.components.tablerow.tableRow
+import materialui.icons.Icons
 import react.*
 import react.dom.b
 import react.dom.code
@@ -112,7 +112,7 @@ data class DataSourceOption(val dataSource: DataSource) : SourcePortOption {
     override val title: String get() = dataSource.dataSourceName
     override val portEditor: MutablePort get() = MutableDataSource(dataSource)
     override val groupName: String? get() = "Data Source:"
-    override val icon: Icon get() = Input
+    override val icon: Icon get() = Icons.Input
 
     override fun matches(otherPort: MutablePort?): Boolean {
         return otherPort is MutableDataSource && otherPort.dataSource == dataSource
@@ -127,7 +127,7 @@ data class ShaderChannelOption(val shaderChannel: ShaderChannel) : SourcePortOpt
     override val title: String get() = shaderChannel.id.englishize()
     override val portEditor: MutablePort get() = MutableShaderChannel(shaderChannel)
     override val groupName: String? get() = "Channel:"
-    override val icon: Icon get() = PowerInput
+    override val icon: Icon get() = Icons.PowerInput
 
     override fun matches(otherPort: MutablePort?): Boolean {
         return otherPort is MutableShaderChannel && otherPort.shaderChannel == shaderChannel
@@ -142,7 +142,7 @@ data class ShaderOption(val mutableShaderInstance: MutableShaderInstance) : Sour
     override val title: String get() = mutableShaderInstance.mutableShader.title
     override val portEditor: MutablePort get() = MutableShaderOutPort(mutableShaderInstance)
     override val groupName: String? get() = "Shader output from:"
-    override val icon: Icon get() = Icons.forShader(mutableShaderInstance.mutableShader.type)
+    override val icon: Icon get() = mutableShaderInstance.mutableShader.type.icon.getReactIcon()
 
     override fun matches(otherPort: MutablePort?): Boolean {
         return otherPort is MutableShaderOutPort &&

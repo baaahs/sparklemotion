@@ -1,7 +1,7 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.controls.SpecialControlProps
-import baaahs.app.ui.controls.control
+import baaahs.app.ui.controls.GenericControlProps
+import baaahs.app.ui.controls.controlWrapper
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
 import baaahs.ui.*
@@ -9,11 +9,11 @@ import external.Direction
 import external.draggable
 import external.droppable
 import external.react_draggable.Draggable
-import materialui.DragIndicator
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.components.typography.typographyH6
 import materialui.icon
+import materialui.icons.Icons
 import org.w3c.dom.HTMLElement
 import react.*
 import react.dom.div
@@ -33,7 +33,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
             ref = unplacedControlPaletteDiv
 
             div(+Styles.dragHandle and randomStyleForHandle) {
-                icon(DragIndicator)
+                icon(Icons.DragIndicator)
             }
 
             paper(Styles.unplacedControlsPaper on PaperStyle.root) {
@@ -68,9 +68,9 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
 //                                    }
                                     }
 
-                                    control {
+                                    controlWrapper {
                                         attrs.control = unplacedControl
-                                        attrs.specialControlProps = props.specialControlProps
+                                        attrs.genericControlProps = props.genericControlProps
                                         attrs.draggableProvided = draggableProvided
                                     }
                                 }
@@ -87,7 +87,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
 
 external interface ControlsPaletteProps : RProps {
     var controlDisplay: ControlDisplay
-    var specialControlProps: SpecialControlProps
+    var genericControlProps: GenericControlProps
     var show: OpenShow
     var editMode: Boolean
 }

@@ -19,32 +19,7 @@ object FileSerializationSpec : Spek({
         val actualFs2 by value { FakeFs() }
         val actualFile2 by value { actualFs2.resolve("another", "file.txt") }
 
-        val fakeRemoteFsBackend by value {
-            object : RemoteFsBackend {
-                override val name: String
-                    get() = "Remote Fs"
-
-                override suspend fun listFiles(directory: Fs.File): List<Fs.File> {
-                    return listOf(Fs.File(this, "fake/response.txt", false))
-                }
-
-                override suspend fun loadFile(file: Fs.File): String? {
-                    TODO("not implemented")
-                }
-
-                override suspend fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
-                    TODO("not implemented")
-                }
-
-                override suspend fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean) {
-                    TODO("not implemented")
-                }
-
-                override suspend fun exists(file: Fs.File): Boolean {
-                    TODO("not implemented")
-                }
-            }
-        }
+        val fakeRemoteFsBackend by value { FakeRemoteFsBackend() }
 
         val clientJson by value {
             val fsClientSideSerializer = object : FsClientSideSerializer() {
@@ -120,3 +95,28 @@ object FileSerializationSpec : Spek({
         }
     }
 })
+
+class FakeRemoteFsBackend : RemoteFsBackend {
+    override val name: String
+        get() = "Remote Fs"
+
+    override suspend fun listFiles(directory: Fs.File): List<Fs.File> {
+        return listOf(Fs.File(this, "fake/response.txt", false))
+    }
+
+    override suspend fun loadFile(file: Fs.File): String? {
+        TODO("not implemented")
+    }
+
+    override suspend fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
+        TODO("not implemented")
+    }
+
+    override suspend fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean) {
+        TODO("not implemented")
+    }
+
+    override suspend fun exists(file: Fs.File): Boolean {
+        TODO("not implemented")
+    }
+}

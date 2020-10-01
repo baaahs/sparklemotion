@@ -23,11 +23,10 @@ object ControlDisplaySpec : Spek({
         val autoWirer by value { AutoWirer(Plugins.safe()) }
         val showOpener by value { ShowOpener(autoWirer.glslAnalyzer, show, showPlayer) }
         val openShow by value { showOpener.openShow() }
-        val editMode by value { false }
         val editHandler by value { FakeEditHandler() }
         val dragNDrop by value { FakeDragNDrop() }
         val controlDisplay by value {
-            ControlDisplay(openShow, editMode, editHandler, dragNDrop)
+            ControlDisplay(openShow, editHandler, dragNDrop)
         }
 
         context("empty show") {

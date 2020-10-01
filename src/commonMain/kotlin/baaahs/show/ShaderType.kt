@@ -1,19 +1,24 @@
 package baaahs.show
 
+import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.*
 import baaahs.plugin.Plugins
 import baaahs.show.mutable.MutableShader
+import baaahs.ui.Icon
 
 enum class ShaderType(
     val priority: Int,
     val defaultUpstreams: Map<ContentType, ShaderChannel>,
     val resultContentType: ContentType,
+    val icon: Icon,
     val template: String
 ) {
     Projection(
-        0, emptyMap(), ContentType.UvCoordinateStream, """
+        0, emptyMap(),
+        ContentType.UvCoordinateStream, CommonIcons.ProjectionShader,
+        """
             uniform sampler2D pixelCoordsTexture;
             
             struct ModelInfo {
@@ -47,7 +52,8 @@ enum class ShaderType(
     Distortion(
         1,
         mapOf(ContentType.UvCoordinateStream to ShaderChannel.Main),
-        ContentType.UvCoordinateStream, """
+        ContentType.UvCoordinateStream, CommonIcons.DistortionShader,
+        """
             uniform float size; // @@Slider min=0.75 max=1.25 default=1
     
             vec2 mainDistortion(vec2 uvIn) {
@@ -65,7 +71,8 @@ enum class ShaderType(
     Paint(
         3,
         mapOf(ContentType.UvCoordinateStream to ShaderChannel.Main),
-        ContentType.ColorStream, """
+        ContentType.ColorStream, CommonIcons.PaintShader,
+        """
             uniform float time;
     
             void main(void) {
@@ -89,7 +96,9 @@ enum class ShaderType(
     },
 
     Filter(
-        4, mapOf(ContentType.ColorStream to ShaderChannel.Main), ContentType.ColorStream, """
+        4, mapOf(ContentType.ColorStream to ShaderChannel.Main),
+        ContentType.ColorStream,  CommonIcons.FilterShader,
+        """
         vec4 mainFilter(vec4 inColor) {
             return inColor;
         }

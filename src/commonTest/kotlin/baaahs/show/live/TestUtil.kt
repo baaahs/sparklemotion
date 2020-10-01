@@ -1,8 +1,6 @@
 package baaahs.show.live
 
 import baaahs.ShowState
-import baaahs.app.ui.DragNDrop
-import baaahs.app.ui.DropTarget
 import baaahs.getBang
 import baaahs.gl.patch.AutoWirer
 import baaahs.plugin.CorePlugin
@@ -12,6 +10,8 @@ import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShow
+import baaahs.ui.DragNDrop
+import baaahs.ui.DropTarget
 import kotlinx.serialization.json.buildJsonObject
 
 fun AutoWirer.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {
@@ -37,6 +37,10 @@ class FakeEditHandler : EditHandler {
     override fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
         calls.add(listOf(mutableShow, pushToUndoStack))
         updatedShow = mutableShow.getShow()
+    }
+
+    override fun onShowEdit(show: Show, pushToUndoStack: Boolean) {
+        onShowEdit(show, ShowState(emptyMap()), pushToUndoStack)
     }
 
     override fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean) {

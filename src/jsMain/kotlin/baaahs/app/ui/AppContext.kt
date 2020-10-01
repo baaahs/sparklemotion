@@ -6,6 +6,7 @@ import baaahs.client.WebClient
 import baaahs.gl.patch.AutoWirer
 import baaahs.plugin.Plugins
 import baaahs.ui.Prompt
+import baaahs.ui.ReactBeautifulDragNDrop
 import react.createContext
 
 val appContext = createContext<AppContext>()
@@ -25,4 +26,6 @@ external interface AppContext {
     var allStyles: AllStyles
     var prompt: (prompt: Prompt) -> Unit
     var clock: Clock
+
+    var openEditor: (EditIntent) -> Unit
 }

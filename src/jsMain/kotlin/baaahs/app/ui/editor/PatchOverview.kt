@@ -1,12 +1,14 @@
-package baaahs.ui
+package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.shaderCard
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
+import baaahs.ui.on
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
-import materialui.AddCircleOutline
-import materialui.CloudDownload
 import materialui.components.card.card
 import materialui.components.cardcontent.cardContent
 import materialui.components.listitemicon.listItemIcon
@@ -18,27 +20,37 @@ import materialui.components.typography.enums.TypographyDisplay
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.icon
+import materialui.icons.Icons
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
+import react.dom.div
 
 val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
     val appContext = useContext(appContext)
-    val styles = PatchHolderEditorStyles
+    val styles = EditableStyles
 
     val handleShaderSelect: CacheBuilder<MutableShaderInstance, () -> Unit> =
-        CacheBuilder { { props.onSelectShaderInstance(it) } }
+        CacheBuilder {
+            {
+                props.editableManager.openPanel(
+                    it.getEditorPanel(props.mutablePatch.getEditorPanel())
+                )
+            }
+        }
     val handleShaderDelete: CacheBuilder<MutableShaderInstance, () -> Unit> =
-        CacheBuilder { {
-            props.mutablePatch.remove(it)
-            forceRender()
-        } }
+        CacheBuilder {
+            {
+                props.mutablePatch.remove(it)
+                forceRender()
+            }
+        }
 
     val newPatchCardRef = ref<Element>()
     var newPatchMenuAnchor by state<EventTarget?> { null }
-    val handleNewPatchClick = useCallback { e: Event -> newPatchMenuAnchor = e.currentTarget }
-    val handleNewPatchMenuClose = useCallback { _: Event, _: String -> newPatchMenuAnchor = null }
+    val handleNewPatchClick = baaahs.ui.useCallback { e: Event -> newPatchMenuAnchor = e.currentTarget }
+    val handleNewPatchMenuClose = baaahs.ui.useCallback { _: Event, _: String -> newPatchMenuAnchor = null }
     val handleNewShaderMenuClick: CacheBuilder<ShaderType, (Event) -> Unit> =
         CacheBuilder { type ->
             {
@@ -59,55 +71,57 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
                     incomingLinks.putAll(resolved.incomingLinks)
                     shaderChannel = resolved.shaderChannel
                 }
-                props.onSelectShaderInstance(newShaderInstance)
+                handleShaderSelect[newShaderInstance].invoke()
             }
         }
 
-    props.mutablePatch.mutableShaderInstances
-        .sortedWith(MutableShaderInstance.defaultOrder)
-        .forEach { mutableShaderInstance ->
-            shaderCard {
-                key = mutableShaderInstance.id
-                attrs.mutableShaderInstance = mutableShaderInstance
-                attrs.onSelect = handleShaderSelect[mutableShaderInstance]
-                attrs.onDelete = handleShaderDelete[mutableShaderInstance]
+    div(+EditableStyles.patchOverview) {
+        props.mutablePatch.mutableShaderInstances
+            .sortedWith(MutableShaderInstance.defaultOrder)
+            .forEach { mutableShaderInstance ->
+                shaderCard {
+                    key = mutableShaderInstance.id
+                    attrs.mutableShaderInstance = mutableShaderInstance
+                    attrs.onSelect = handleShaderSelect[mutableShaderInstance]
+                    attrs.onDelete = handleShaderDelete[mutableShaderInstance]
+                }
+            }
+
+        card(+styles.shaderCard on PaperStyle.root) {
+            key = "new patch"
+            ref = newPatchCardRef
+
+            attrs.onClickFunction = handleNewPatchClick
+
+            cardContent {
+                icon(Icons.AddCircleOutline)
+                typography {
+                    attrs.display = TypographyDisplay.block
+                    attrs.variant = TypographyVariant.subtitle1
+                    +"New Shader…"
+                }
             }
         }
 
-    card(+styles.shaderCard on PaperStyle.root) {
-        key = "new patch"
-        ref = newPatchCardRef
+        menu {
+            attrs.getContentAnchorEl = null
+            attrs.anchorEl(newPatchMenuAnchor)
+            attrs.open = newPatchMenuAnchor != null
+            attrs.onClose = handleNewPatchMenuClose
 
-        attrs.onClickFunction = handleNewPatchClick
+            ShaderType.values().forEach { type ->
+                menuItem {
+                    attrs.onClickFunction = handleNewShaderMenuClick[type]
 
-        cardContent {
-            icon(AddCircleOutline)
-            typography {
-                attrs.display = TypographyDisplay.block
-                attrs.variant = TypographyVariant.subtitle1
-                +"New Shader…"
+                    listItemIcon { icon(type.icon) }
+                    listItemText { +"New ${type.name} Shader…" }
+                }
             }
-        }
-    }
 
-    menu {
-        attrs.getContentAnchorEl = null
-        attrs.anchorEl(newPatchMenuAnchor)
-        attrs.open = newPatchMenuAnchor != null
-        attrs.onClose = handleNewPatchMenuClose
-
-        ShaderType.values().forEach { type ->
             menuItem {
-                attrs.onClickFunction = handleNewShaderMenuClick[type]
-
-                listItemIcon { icon(Icons.forShader(type)) }
-                listItemText { +"New ${type.name} Shader…" }
+                listItemIcon { icon(Icons.CloudDownload) }
+                listItemText { +"Import… (TBD)" }
             }
-        }
-
-        menuItem {
-            listItemIcon { icon(CloudDownload) }
-            listItemText { +"Import… (TBD)" }
         }
     }
 }
@@ -121,8 +135,8 @@ class CacheBuilder<K, V>(val createFn: (K) -> V) {
 }
 
 external interface PatchOverviewProps : RProps {
+    var editableManager: EditableManager
     var mutablePatch: MutablePatch
-    var onSelectShaderInstance: (MutableShaderInstance) -> Unit
 }
 
 fun RBuilder.patchOverview(handler: RHandler<PatchOverviewProps>) =

@@ -171,6 +171,10 @@ class WebClient(
             onShowEdit(mutableShow.getShow(), openShow!!.getShowState(), pushToUndoStack)
         }
 
+        override fun onShowEdit(show: Show, pushToUndoStack: Boolean) {
+            onShowEdit(show, openShow!!.getShowState(), pushToUndoStack)
+        }
+
         override fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean) {
             val isUnsaved = savedShow?.equals(show) != true
             val showEditState = show.withState(showState, isUnsaved, showFile)
