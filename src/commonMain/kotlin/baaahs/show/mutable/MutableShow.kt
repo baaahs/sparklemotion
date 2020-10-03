@@ -3,10 +3,7 @@ package baaahs.show.mutable
 import baaahs.*
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
-import baaahs.app.ui.editor.ButtonGroupPropertiesEditorPanel
-import baaahs.app.ui.editor.PatchEditorPanel
-import baaahs.app.ui.editor.PatchHolderEditorPanel
-import baaahs.app.ui.editor.ShowPropertiesEditorPanel
+import baaahs.app.ui.editor.*
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
@@ -29,13 +26,17 @@ interface EditHandler {
 
 abstract class MutablePatchHolder(
     private val basePatchHolder: PatchHolder
-): MutableEditable {
+) : MutableEditable {
     protected abstract val mutableShow: MutableShow
 
     override var title = basePatchHolder.title
 
     override fun getEditorPanels(): List<EditorPanel> {
-        return listOf(PatchHolderEditorPanel(this))
+        return listOf(
+            GenericPropertiesEditorPanel(
+                TitleEditorPanelComponent(this)
+            ),
+            PatchHolderEditorPanel(this))
     }
 
     val patches by lazy {
@@ -133,7 +134,7 @@ abstract class MutablePatchHolder(
 }
 
 class MutableShow(
-    private val baseShow: Show
+    baseShow: Show
 ) : MutablePatchHolder(baseShow), MutableEditable {
     override val mutableShow: MutableShow get() = this
 
@@ -170,10 +171,6 @@ class MutableShow(
         }
     }
 
-    override fun getEditorPanels(): List<EditorPanel> {
-        return listOf(ShowPropertiesEditorPanel(mutableShow)) + super.getEditorPanels()
-    }
-
     private val mutableLayouts = MutableLayouts(baseShow.layouts)
 
     constructor(title: String, block: MutableShow.() -> Unit = {}) : this(Show(title)) {
@@ -187,7 +184,7 @@ class MutableShow(
         return this
     }
 
-    fun isChanged(): Boolean {
+    fun isChanged(baseShow: Show): Boolean {
         return baseShow != getShow()
     }
 
@@ -304,7 +301,10 @@ class MutablePatch {
     }
 
     fun build(showBuilder: ShowBuilder): Patch =
-        Patch.from(this, showBuilder)
+        Patch(
+            mutableShaderInstances.map { showBuilder.idFor(it.build(showBuilder)) },
+            surfaces
+        )
 
     /** Build a [LinkedPatch] independent of an [baaahs.show.live.OpenShow]. */
     fun openForPreview(autoWirer: AutoWirer): LinkedPatch? {
@@ -378,7 +378,7 @@ interface MutableControl : MutableEditable {
 class MutableButtonControl(
     baseButtonControl: ButtonControl,
     override val mutableShow: MutableShow
-): MutablePatchHolder(baseButtonControl), MutableControl {
+) : MutablePatchHolder(baseButtonControl), MutableControl {
     override var asBuiltId: String? = null
 
     override fun build(showBuilder: ShowBuilder): Control {
@@ -407,7 +407,11 @@ data class MutableButtonGroupControl(
     }
 
     override fun getEditorPanels(): List<EditorPanel> {
-        return listOf(ButtonGroupPropertiesEditorPanel(this))
+        return listOf(
+            GenericPropertiesEditorPanel(
+                ButtonGroupDirectionEditorPanelComponent(this)
+            )
+        )
     }
 
     override fun build(showBuilder: ShowBuilder): Control {
