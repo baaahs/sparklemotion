@@ -36,7 +36,7 @@ object PinkySpec : Spek({
         val clientPort = 1234
 
         val panel17 = SheepModel.Panel("17")
-        val model = SheepModel().apply { panels = listOf(panel17); eyes = emptyList() } as Model<*>
+        val model = SheepModel().apply { panels = listOf(panel17) } as Model<*>
 
         val fakeFs by value { FakeFs() }
         val pinky by value {
