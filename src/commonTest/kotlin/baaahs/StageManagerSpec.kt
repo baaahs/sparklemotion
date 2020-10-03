@@ -25,7 +25,7 @@ import kotlin.test.expect
 object StageManagerSpec : Spek({
     describe<StageManager> {
         val panel17 = SheepModel.Panel("17")
-        val model = SheepModel().apply { panels = listOf(panel17); eyes = emptyList() } as Model<*>
+        val model = SheepModel().apply { panels = listOf(panel17) } as Model<*>
 
         val plugins by value { Plugins.safe() }
         val fakeFs by value { FakeFs() }
