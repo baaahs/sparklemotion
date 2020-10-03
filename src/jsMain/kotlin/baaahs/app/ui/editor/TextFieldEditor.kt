@@ -20,7 +20,7 @@ val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { prop
         textField {
             attrs.autoFocus = false
             attrs.fullWidth = true
-            attrs.defaultValue = props.getValue()
+            attrs.value = props.getValue()
 
             // Notify EditableManager of changes as we type, but don't push them to the undo stack...
             attrs.onChangeFunction = { event: Event ->

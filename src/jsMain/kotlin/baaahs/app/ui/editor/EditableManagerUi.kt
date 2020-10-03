@@ -52,9 +52,8 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
     val handleClose = useCallback { event: Event -> props.editableManager.close() }
     val handleApply = useCallback { event: Event -> props.editableManager.applyChanges() }
 
-    val handleTabClick = useCallback { event: Event -> event.preventDefault() }
-
     val editorPanels = props.editableManager.editorPanels
+    val selectedPanel = props.editableManager.selectedPanel
 
     fun RBuilder.recursingList(editorPanels: List<EditorPanel>) {
         list(EditableStyles.tabsList on ListStyle.root) {
@@ -69,7 +68,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                 listItem {
                     attrs.button = true
-                    attrs.selected = props.editableManager.selectedPanel == editorPanel
+                    attrs.selected = selectedPanel == editorPanel
                     attrs.onClickFunction = { props.editableManager.openPanel(editorPanel) }
 
                     editorPanel.icon?.let {
@@ -143,7 +142,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
                     }
 
                     div(+EditableStyles.editorCol) {
-                        props.editableManager.selectedPanel?.let { editorPanel ->
+                        selectedPanel?.let { editorPanel ->
                             header {
                                 +editorPanel.title
 
