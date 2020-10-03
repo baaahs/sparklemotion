@@ -30,7 +30,6 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
         handler("handleShaderUpdate", props.mutableShaderInstance) { block: MutableShaderInstance.() -> Unit ->
             props.mutableShaderInstance.block()
             props.editableManager.onChange()
-            forceRender()
         }
 
     val editingShader = memo(props.mutableShaderInstance) {
@@ -92,17 +91,11 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
             }
 
             div(+Styles.shaderMeta) {
-                formControl {
-                    textField {
-                        attrs.autoFocus = false
-                        attrs.fullWidth = true
-                        attrs.value = shaderInstance.mutableShader.title
-                        attrs.onChangeFunction = { event: Event ->
-                            val str = event.target!!.asDynamic().value as String
-                            handleUpdate { mutableShader.title = str }
-                        }
-                    }
-                    formHelperText { +"Shader Name" }
+                textFieldEditor {
+                    attrs.label = "Shader Name"
+                    attrs.getValue = { shaderInstance.mutableShader.title }
+                    attrs.setValue = { value -> shaderInstance.mutableShader.title = value }
+                    attrs.editableManager = props.editableManager
                 }
 
                 formControl {

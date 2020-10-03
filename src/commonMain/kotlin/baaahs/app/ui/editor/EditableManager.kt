@@ -1,5 +1,6 @@
 package baaahs.app.ui.editor
 
+import baaahs.Logger
 import baaahs.app.ui.EditIntent
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
@@ -7,11 +8,13 @@ import baaahs.show.Show
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.Facade
 import baaahs.util.UndoStack
+import kotlin.math.max
 
 class EditableManager(
     private val onApply: (Show) -> Unit
 ) : Facade() {
     internal val undoStack = UndoStack<ShowAndEditIntent>()
+    private var appliedShow: Show? = null
     internal var session: Session? = null
 
     fun isEditing(): Boolean = session != null
@@ -26,25 +29,47 @@ class EditableManager(
     val editorPanels: List<EditorPanel>
         get() = session?.getEditorPanels() ?: emptyList()
 
-    var selectedPanel: EditorPanel? = null
+    private fun flatEditorPanels(): List<EditorPanel> {
+        val list = arrayListOf<EditorPanel>()
+        fun add(editorPanel: EditorPanel) {
+            list.add(editorPanel)
+            editorPanel.getNestedEditorPanels().forEach { add(it) }
+        }
+        editorPanels.forEach { add(it) }
+        return list
+    }
+
+    private var selectedPanelIndex: Int = 0
+
+    val selectedPanel: EditorPanel?
+        get() {
+            val flatList = flatEditorPanels()
+            if (selectedPanelIndex >= flatList.size) return flatList.lastOrNull()
+            return flatList[selectedPanelIndex]
+        }
 
     fun openEditor(baseShow: Show, editIntent: EditIntent) {
         if (isEditing()) error("already editing ${session!!.editIntent}")
 
+        appliedShow = baseShow
         session = Session(baseShow, editIntent)
         undoStack.reset(ShowAndEditIntent(baseShow, editIntent))
-        selectedPanel = editorPanels.firstOrNull()
+        selectedPanelIndex = 0
         notifyChanged()
     }
 
     fun openPanel(editorPanel: EditorPanel) {
-        selectedPanel = editorPanel
+        val index = flatEditorPanels().indexOf(editorPanel)
+        if (index == -1) {
+            logger.warn { "Unknown panel $editorPanel" }
+        }
+        selectedPanelIndex = max(0, index)
         notifyChanged()
     }
 
     /** [EditorPanel]s should call this when they've made a change to the [MutableEditable]. */
-    fun onChange() {
-        session!!.onChange()
+    fun onChange(pushToUndoStack: Boolean = true) {
+        session!!.onChange(pushToUndoStack)
         notifyChanged()
     }
 
@@ -58,6 +83,7 @@ class EditableManager(
         val session = session!!
         val newShow = session.mutableShow.getShow()
         val nextEditIntent = session.editIntent.nextEditIntent()
+        appliedShow = newShow
         onApply(newShow)
         switchBaseShow(ShowAndEditIntent(newShow, nextEditIntent))
     }
@@ -69,6 +95,7 @@ class EditableManager(
 
     fun close() {
         undoStack.reset(null)
+        appliedShow = null
         session = null
         notifyChanged()
     }
@@ -86,7 +113,7 @@ class EditableManager(
 //    }
 
     internal inner class Session(
-        val baseShow: Show,
+        baseShow: Show,
         val editIntent: EditIntent
     ) {
         val mutableShow = MutableShow(baseShow)
@@ -101,15 +128,21 @@ class EditableManager(
 
         fun isChanged(): Boolean {
             return cachedIsChanged
-                ?: mutableShow.isChanged().also { cachedIsChanged = it }
+                ?: mutableShow.isChanged(appliedShow!!).also { cachedIsChanged = it }
         }
 
-        fun onChange() {
+        fun onChange(pushToUndoStack: Boolean = true) {
             cachedIsChanged = null
-            undoStack.changed(ShowAndEditIntent(mutableShow.getShow(), editIntent))
-            notifyChanged()
+
+            if (pushToUndoStack) {
+                undoStack.changed(ShowAndEditIntent(mutableShow.getShow(), editIntent.refreshEditIntent()))
+            }
         }
     }
 
     internal class ShowAndEditIntent(val show: Show, val editIntent: EditIntent)
+
+    companion object {
+        private val logger = Logger("EditableManager")
+    }
 }
