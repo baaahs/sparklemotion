@@ -1,7 +1,7 @@
 package baaahs.gl.patch
 
+import baaahs.Fixture
 import baaahs.Logger
-import baaahs.Surface
 import baaahs.getBang
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslCode
@@ -230,7 +230,7 @@ class LinkedPatch(
         return compile(glContext) { _, dataSource -> dataFeeds.getBang(dataSource, "data feed") }
     }
 
-    fun matches(surface: Surface): Boolean = this.surfaces.matches(surface)
+    fun matches(fixture: Fixture): Boolean = this.surfaces.matches(fixture)
 
     fun bind(glslProgram: GlslProgram, resolver: Resolver): List<GlslProgram.Binding> {
         return dataSourceLinks.mapNotNull { (dataSource, id) ->

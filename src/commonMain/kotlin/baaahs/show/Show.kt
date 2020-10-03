@@ -1,6 +1,6 @@
 package baaahs.show
 
-import baaahs.Surface
+import baaahs.Fixture
 import baaahs.app.ui.Editable
 import baaahs.camelize
 import baaahs.getBang
@@ -73,7 +73,7 @@ data class EventBinding(
 data class Surfaces(
     val name: String
 ) {
-    fun matches(surface: Surface): Boolean {
+    fun matches(fixture: Fixture): Boolean {
         return true
     }
 

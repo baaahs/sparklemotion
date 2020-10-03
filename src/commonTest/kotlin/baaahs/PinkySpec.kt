@@ -57,8 +57,8 @@ object PinkySpec : Spek({
             )
         }
         val pinkyLink by value { network.links.only() }
-        val surfaceManager by value { pinky.surfaceManager }
-        val renderSurfaces by value { surfaceManager.getRenderSurfaces_ForTestOnly() }
+        val fixtureManager by value { pinky.fixtureManager }
+        val fixtureRenderPlans by value { fixtureManager.getFixtureRenderPlans_ForTestOnly() }
 
         val panelMappings by value { emptyList<Pair<BrainId, Model.Surface>>() }
 
@@ -88,7 +88,7 @@ object PinkySpec : Spek({
 
             beforeEachTest {
                 pinky.receive(clientAddress, clientPort, brainHelloMessage.toBytes())
-                pinky.updateSurfaces()
+                pinky.updateFixtures()
                 pinky.renderAndSendNextFrame()
             }
 
@@ -96,8 +96,8 @@ object PinkySpec : Spek({
                 override(brainHelloMessage) { BrainHelloMessage("brain1", null) }
 
                 it("should notify show of anonymous surface") {
-                    val surface = renderSurfaces.keys.only()
-                    expect(true) { surface is AnonymousSurface }
+                    val fixture = fixtureRenderPlans.keys.only()
+                    expect(true) { fixture is AnonymousFixture }
                 }
 
                 it("should send pixels but not not send mapping to the brain") {
@@ -113,9 +113,9 @@ object PinkySpec : Spek({
                     override(brainHelloMessage) { BrainHelloMessage("brain1", panel17.name) }
 
                     it("should notify show") {
-                        val surface = renderSurfaces.keys.only()
-                        expect(true) { surface is IdentifiedSurface }
-                        expect(panel17.name) { (surface as IdentifiedSurface).name }
+                        val fixture = fixtureRenderPlans.keys.only()
+                        expect(true) { fixture is IdentifiedFixture }
+                        expect(panel17.name) { (fixture as IdentifiedFixture).name }
                     }
 
                     it("should send pixels but not mapping to the brain") {
@@ -135,9 +135,9 @@ object PinkySpec : Spek({
                     }
 
                     it("should send mapping and pixels to the brain") {
-                        val surface = renderSurfaces.keys.only()
-                        expect(true) { surface is IdentifiedSurface }
-                        expect(panel17.name) { (surface as IdentifiedSurface).name }
+                        val fixture = fixtureRenderPlans.keys.only()
+                        expect(true) { fixture is IdentifiedFixture }
+                        expect(panel17.name) { (fixture as IdentifiedFixture).name }
                     }
 
                     context("then when the brain re-sends its hello with its newfound mapping") {
@@ -145,12 +145,12 @@ object PinkySpec : Spek({
                             pinky.renderAndSendNextFrame()
 
                             pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
-                            pinky.updateSurfaces()
+                            pinky.updateFixtures()
                             pinky.renderAndSendNextFrame()
                             pinky.renderAndSendNextFrame()
-                            expect(1) { renderSurfaces.size }
-                            expect(true) { renderSurfaces.keys.only() is IdentifiedSurface }
-                            expect(panel17.name) { (renderSurfaces.keys.only() as IdentifiedSurface).name }
+                            expect(1) { fixtureRenderPlans.size }
+                            expect(true) { fixtureRenderPlans.keys.only() is IdentifiedFixture }
+                            expect(panel17.name) { (fixtureRenderPlans.keys.only() as IdentifiedFixture).name }
                         }
                     }
 
@@ -162,28 +162,28 @@ object PinkySpec : Spek({
                             pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
                             // ... but a packet also made it through identifying brain1 as unmapped.
                             pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
-                            pinky.updateSurfaces()
+                            pinky.updateFixtures()
                             pinky.renderAndSendNextFrame()
                             pinky.renderAndSendNextFrame()
 
                             // Pinky should have sent out another BrainMappingMessage message; todo: verify that!
 
                             pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
-                            pinky.updateSurfaces()
+                            pinky.updateFixtures()
                             pinky.renderAndSendNextFrame()
                             pinky.renderAndSendNextFrame()
 
-                            expect(1) { renderSurfaces.size }
-                            expect(true) { (renderSurfaces.keys.only() as IdentifiedSurface).modelSurface == panel17 }
+                            expect(1) { fixtureRenderPlans.size }
+                            expect(true) { (fixtureRenderPlans.keys.only() as IdentifiedFixture).modelSurface == panel17 }
 
                             pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
-                            pinky.updateSurfaces()
+                            pinky.updateFixtures()
                             pinky.renderAndSendNextFrame()
                             pinky.renderAndSendNextFrame()
-                            expect(1) { renderSurfaces.size }
-                            val surface = renderSurfaces.keys.only()
-                            expect(true) { surface is IdentifiedSurface }
-                            expect(panel17.name) { (surface as IdentifiedSurface).name }
+                            expect(1) { fixtureRenderPlans.size }
+                            val fixture = fixtureRenderPlans.keys.only()
+                            expect(true) { fixture is IdentifiedFixture }
+                            expect(panel17.name) { (fixture as IdentifiedFixture).name }
                         }
                     }
                 }

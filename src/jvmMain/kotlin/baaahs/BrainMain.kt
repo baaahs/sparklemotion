@@ -40,7 +40,7 @@ class BrainMain(private val args: Args) {
                 ?: throw IllegalArgumentException("unknown surface \"${args.surfaceName}")
         }
         println("I'll be ${mySurface?.name ?: "anonymous"}!")
-        mySurface?.let { brain.forcedSurfaceName(mySurface.name) }
+        mySurface?.let { brain.forcedFixtureName(mySurface.name) }
 
         GlobalScope.launch { brain.run() }
 

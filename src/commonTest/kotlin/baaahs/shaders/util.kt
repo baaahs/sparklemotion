@@ -2,13 +2,13 @@ package baaahs.shaders
 
 import baaahs.BrainShader
 import baaahs.Color
+import baaahs.Fixture
 import baaahs.Pixels
-import baaahs.Surface
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.test.expect
 
-private fun <T : BrainShader.Buffer> send(srcBrainShader: BrainShader<T>, srcBuf: T, surface: Surface): Pair<BrainShader<T>, T> {
+private fun <T : BrainShader.Buffer> send(srcBrainShader: BrainShader<T>, srcBuf: T, fixture: Fixture): Pair<BrainShader<T>, T> {
     val writer = ByteArrayWriter()
     srcBrainShader.serialize(writer)
     srcBuf.serialize(writer)
@@ -19,22 +19,22 @@ private fun <T : BrainShader.Buffer> send(srcBrainShader: BrainShader<T>, srcBuf
 
     @Suppress("UNCHECKED_CAST")
     val dstBrainShader: BrainShader<T> = srcBrainShader.idBrain.reader.parse(reader) as BrainShader<T>
-    val dstBuf = dstBrainShader.createBuffer(surface)
+    val dstBuf = dstBrainShader.createBuffer(fixture)
     dstBuf.read(reader)
     return Pair(dstBrainShader, dstBuf)
 }
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : BrainShader.Buffer> transmit(srcBuf: T, surface: Surface): T {
-    val (_: BrainShader<T>, dstBuf) = send(srcBuf.brainShader as BrainShader<T>, srcBuf, surface)
+internal fun <T : BrainShader.Buffer> transmit(srcBuf: T, fixture: Fixture): T {
+    val (_: BrainShader<T>, dstBuf) = send(srcBuf.brainShader as BrainShader<T>, srcBuf, fixture)
     return dstBuf
 }
 
 @Suppress("UNCHECKED_CAST")
-internal fun <T : BrainShader.Buffer> render(srcBuf: T, surface: Surface): Pixels {
-    val (dstBrainShader: BrainShader<T>, dstBuf) = send(srcBuf.brainShader as BrainShader<T>, srcBuf, surface)
-    val pixels = FakePixels(surface.pixelCount)
-    val renderer = dstBrainShader.createRenderer(surface)
+internal fun <T : BrainShader.Buffer> render(srcBuf: T, fixture: Fixture): Pixels {
+    val (dstBrainShader: BrainShader<T>, dstBuf) = send(srcBuf.brainShader as BrainShader<T>, srcBuf, fixture)
+    val pixels = FakePixels(fixture.pixelCount)
+    val renderer = dstBrainShader.createRenderer(fixture)
     renderer.beginFrame(dstBuf, pixels.size)
     for (i in pixels.indices) {
         pixels[i] = renderer.draw(dstBuf, i)
@@ -43,10 +43,10 @@ internal fun <T : BrainShader.Buffer> render(srcBuf: T, surface: Surface): Pixel
     return pixels
 }
 
-internal fun <T : BrainShader.Buffer> render(srcBrainShaderAndBuffer: Pair<BrainShader<T>, T>, surface: Surface): Pixels =
-    render(srcBrainShaderAndBuffer.second, surface)
+internal fun <T : BrainShader.Buffer> render(srcBrainShaderAndBuffer: Pair<BrainShader<T>, T>, fixture: Fixture): Pixels =
+    render(srcBrainShaderAndBuffer.second, fixture)
 
-class FakeSurface(override val pixelCount: Int) : Surface {
+class FakeFixture(override val pixelCount: Int) : Fixture {
     override fun describe(): String = "fake"
 }
 

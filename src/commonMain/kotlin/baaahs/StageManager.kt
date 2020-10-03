@@ -30,7 +30,7 @@ class StageManager(
     private val modelRenderer: ModelRenderer,
     private val pubSub: PubSub.Server,
     private val storage: Storage,
-    private val surfaceManager: SurfaceManager,
+    private val fixtureManager: FixtureManager,
     private val dmxUniverse: Dmx.Universe,
     private val movingHeadManager: MovingHeadManager,
     private val clock: Clock,
@@ -115,7 +115,7 @@ class StageManager(
     ) {
         val newShowRunner = newShow?.let {
             val openShow = openShow(newShow, newShowState)
-            ShowRunner(newShow, newShowState, openShow, clock, modelRenderer, surfaceManager, autoWirer)
+            ShowRunner(newShow, newShowState, openShow, clock, modelRenderer, fixtureManager, autoWirer)
         }
 
         showRunner?.release()
@@ -154,7 +154,7 @@ class StageManager(
             if (dontProcrastinate) housekeeping()
 
             if (showRunner.renderNextFrame()) {
-                surfaceManager.sendFrame()
+                fixtureManager.sendFrame()
                 dmxUniverse.sendFrame()
             }
 

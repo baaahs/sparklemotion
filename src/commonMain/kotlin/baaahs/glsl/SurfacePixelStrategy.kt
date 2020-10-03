@@ -1,27 +1,27 @@
 package baaahs.glsl
 
-import baaahs.IdentifiedSurface
+import baaahs.Fixture
+import baaahs.IdentifiedFixture
 import baaahs.Logger
-import baaahs.Surface
 import baaahs.geom.Vector3F
 import kotlin.random.Random
 
 interface SurfacePixelStrategy {
-    fun forSurface(surface: Surface): List<Vector3F?>
+    fun forFixture(fixture: Fixture): List<Vector3F?>
 }
 
 object RandomSurfacePixelStrategy : SurfacePixelStrategy {
-    override fun forSurface(surface: Surface): List<Vector3F?> {
+    override fun forFixture(fixture: Fixture): List<Vector3F?> {
         return when {
-            surface is IdentifiedSurface && surface.pixelLocations != null -> {
-                surface.pixelLocations
+            fixture is IdentifiedFixture && fixture.pixelLocations != null -> {
+                fixture.pixelLocations
             }
 
-            surface is IdentifiedSurface -> {
+            fixture is IdentifiedFixture -> {
                 // Randomly pick locations within the surface.
-                val surfaceVertices = surface.modelSurface.allVertices().toList()
+                val surfaceVertices = fixture.modelSurface.allVertices().toList()
                 var lastPixelLocation = surfaceVertices.random()
-                (0 until surface.pixelCount).map {
+                (0 until fixture.pixelCount).map {
                     lastPixelLocation = (lastPixelLocation + surfaceVertices.random()) / 2f
                     lastPixelLocation
                 }
@@ -33,7 +33,7 @@ object RandomSurfacePixelStrategy : SurfacePixelStrategy {
                 val max = Vector3F(100f, 100f, 100f)
                 val scale = max - min
 
-                (0 until surface.pixelCount).map {
+                (0 until fixture.pixelCount).map {
                     Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) * scale + min
                 }
             }
@@ -44,19 +44,19 @@ object RandomSurfacePixelStrategy : SurfacePixelStrategy {
 object LinearSurfacePixelStrategy : SurfacePixelStrategy {
     val logger = Logger("LinearSurfacePixelStrategy")
 
-    override fun forSurface(surface: Surface): List<Vector3F?> {
-        val pixelCount = surface.pixelCount
+    override fun forFixture(fixture: Fixture): List<Vector3F?> {
+        val pixelCount = fixture.pixelCount
 
         return when {
-            surface is IdentifiedSurface && surface.pixelLocations != null -> {
-                logger.debug { "Surface ${surface.name} has mapped pixels."}
-                surface.pixelLocations
+            fixture is IdentifiedFixture && fixture.pixelLocations != null -> {
+                logger.debug { "Surface ${fixture.name} has mapped pixels."}
+                fixture.pixelLocations
             }
 
-            surface is IdentifiedSurface -> {
-                logger.debug { "Surface ${surface.name} doesn't have mapped pixels."}
+            fixture is IdentifiedFixture -> {
+                logger.debug { "Surface ${fixture.name} doesn't have mapped pixels."}
                 // Generate pixel locations along a line from one vertex to the surface's center.
-                val surfaceVertices = surface.modelSurface.allVertices()
+                val surfaceVertices = fixture.modelSurface.allVertices()
                 if (surfaceVertices.isEmpty()) return emptyList()
 
                 val surfaceCenter = surfaceVertices.average()
@@ -66,7 +66,7 @@ object LinearSurfacePixelStrategy : SurfacePixelStrategy {
             }
 
             else -> {
-                logger.debug { "Surface ${surface.describe()} is unknown."}
+                logger.debug { "Surface ${fixture.describe()} is unknown."}
                 // Randomly pick locations. TODO: this should be based on model extents.
                 val min = Vector3F(0f, 0f, 0f)
                 val max = Vector3F(100f, 100f, 100f)

@@ -40,7 +40,7 @@ object StageManagerSpec : Spek({
                 modelRenderer,
                 pubSub.server,
                 Storage(fakeFs, plugins),
-                SurfaceManager(modelRenderer),
+                FixtureManager(modelRenderer),
                 FakeDmxUniverse(),
                 MovingHeadManager(fakeFs, pubSub.server, emptyList()),
                 FakeClock(),
