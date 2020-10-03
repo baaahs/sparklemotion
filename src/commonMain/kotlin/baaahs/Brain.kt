@@ -1,5 +1,8 @@
 package baaahs
 
+import baaahs.fixtures.AnonymousFixture
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.IdentifiedFixture
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model

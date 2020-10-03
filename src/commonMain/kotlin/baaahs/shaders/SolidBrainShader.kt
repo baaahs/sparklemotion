@@ -1,6 +1,10 @@
 package baaahs.shaders
 
-import baaahs.*
+import baaahs.BrainShader
+import baaahs.BrainShaderId
+import baaahs.BrainShaderReader
+import baaahs.Color
+import baaahs.fixtures.Fixture
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 

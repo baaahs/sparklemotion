@@ -1,9 +1,9 @@
 package baaahs.gl.render
 
 import baaahs.Color
-import baaahs.Fixture
 import baaahs.Pixels
 import baaahs.ShowRunner
+import baaahs.fixtures.Fixture
 import baaahs.gl.glsl.GlslProgram
 import baaahs.model.ModelInfo
 

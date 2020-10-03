@@ -1,6 +1,7 @@
 package baaahs.shaders
 
 import baaahs.*
+import baaahs.fixtures.Fixture
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.math.min

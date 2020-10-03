@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureManager
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.GlslException
 import baaahs.gl.patch.AutoWirer

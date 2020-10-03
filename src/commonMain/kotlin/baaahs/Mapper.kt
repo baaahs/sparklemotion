@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.api.ws.WebSocketClient
+import baaahs.fixtures.Fixture
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F

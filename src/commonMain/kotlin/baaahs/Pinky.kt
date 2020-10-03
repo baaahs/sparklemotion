@@ -1,6 +1,10 @@
 package baaahs
 
 import baaahs.api.ws.WebSocketRouter
+import baaahs.fixtures.AnonymousFixture
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.IdentifiedFixture
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.CompilationException
