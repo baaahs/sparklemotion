@@ -4,18 +4,6 @@ import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.geom.center
 
-interface ModelInfo {
-    val center: Vector3F
-    val extents: Vector3F
-
-    object Empty : ModelInfo {
-        override val center: Vector3F
-            get() = Vector3F.origin
-        override val extents: Vector3F
-            get() = Vector3F.origin
-    }
-}
-
 abstract class Model<T : Model.Surface>: ModelInfo {
     abstract val name: String
     abstract val movingHeads: List<MovingHead>
@@ -75,4 +63,3 @@ abstract class Model<T : Model.Surface>: ModelInfo {
         val vertices: Array<Vector3F> = arrayOf(a, b, c)
     }
 }
-
