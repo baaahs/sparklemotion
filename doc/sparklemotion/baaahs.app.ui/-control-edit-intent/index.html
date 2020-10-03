@@ -31,6 +31,26 @@
 <td>
 <code><span class="keyword">fun </span><span class="identifier">findMutableEditable</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.ControlEditIntent$findMutableEditable(baaahs.show.mutable.MutableShow)/mutableShow">mutableShow</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-show/index.html"><span class="identifier">MutableShow</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-mutable-editable/index.html"><span class="identifier">MutableEditable</span></a></code></td>
 </tr>
+<tr>
+<td>
+<h4><a href="next-edit-intent.html">nextEditIntent</a></h4>
+</td>
+<td>
+<p>If applying <a href="../../baaahs.app.ui.editor/-editable-manager/index.html">EditableManager</a> changes performs an action like adding a new control,
+and further edits should modify that control but not add yet another one, a new
+EditIntent for subsequent edits can be provided here.</p>
+<code><span class="keyword">fun </span><span class="identifier">nextEditIntent</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-edit-intent/index.html"><span class="identifier">EditIntent</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="refresh-edit-intent.html">refreshEditIntent</a></h4>
+</td>
+<td>
+<p>If a mutation might have changed how we should look up the editable, a new
+version of the same EditIntent can be provided here. This is called when pushing
+to the <a href="../../baaahs.app.ui.editor/-editable-manager/index.html">EditableManager</a>'s <a href="../../baaahs.util/-undo-stack/index.html">baaahs.util.UndoStack</a>.</p>
+<code><span class="keyword">fun </span><span class="identifier">refreshEditIntent</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-edit-intent/index.html"><span class="identifier">EditIntent</span></a></code></td>
+</tr>
 </tbody>
 </table>
 </BODY>
