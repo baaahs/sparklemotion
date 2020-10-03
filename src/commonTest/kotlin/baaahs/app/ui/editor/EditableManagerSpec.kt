@@ -120,6 +120,26 @@ object EditableManagerSpec : Spek({
                     it("has a different MutableShow") {
                         assertTrue { priorMutableShow !== editableManager.session!!.mutableShow }
                     }
+
+                    context("and user clicks Undo") {
+                        beforeEachTest {
+                            editableManager.undo()
+                        }
+
+                        it("is modified") {
+                            expect(true) { editableManager.isModified() }
+                        }
+
+                        context("and user clicks Redo") {
+                            beforeEachTest {
+                                editableManager.redo()
+                            }
+
+                            it("is not modified") {
+                                expect(false) { editableManager.isModified() }
+                            }
+                        }
+                    }
                 }
             }
 

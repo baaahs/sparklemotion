@@ -6,10 +6,7 @@ import baaahs.camelize
 import baaahs.getBang
 import baaahs.plugin.Plugins
 import baaahs.show.ButtonGroupControl.Direction
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.ShowBuilder
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -63,16 +60,7 @@ data class Show(
 data class Patch(
     val shaderInstanceIds: List<String>,
     val surfaces: Surfaces
-) {
-    companion object {
-        fun from(mutablePatch: MutablePatch, showBuilder: ShowBuilder): Patch {
-            return Patch(
-                mutablePatch.mutableShaderInstances.map { showBuilder.idFor(it.build(showBuilder)) },
-                mutablePatch.surfaces
-            )
-        }
-    }
-}
+)
 
 @Serializable
 data class EventBinding(
@@ -125,12 +113,6 @@ data class ShaderInstance(
 
     fun findDataSourceRefs(): List<DataSourceRef> {
         return incomingLinks.values.filterIsInstance<DataSourceRef>()
-    }
-
-    companion object {
-        fun from(mutableShaderInstance: MutableShaderInstance, showBuilder: ShowBuilder): ShaderInstance {
-            return mutableShaderInstance.build(showBuilder)
-        }
     }
 }
 

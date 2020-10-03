@@ -10,6 +10,7 @@ import baaahs.show.mutable.ShowBuilder
 import baaahs.ui.*
 import baaahs.ui.preview.gadgetsPreview
 import kotlinx.css.*
+import kotlinx.html.js.onBlurFunction
 import kotlinx.html.js.onChangeFunction
 import materialui.components.divider.divider
 import materialui.components.formcontrol.formControl
@@ -30,7 +31,6 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
         handler("handleShaderUpdate", props.mutableShaderInstance) { block: MutableShaderInstance.() -> Unit ->
             props.mutableShaderInstance.block()
             props.editableManager.onChange()
-            forceRender()
         }
 
     val editingShader = memo(props.mutableShaderInstance) {
@@ -96,10 +96,12 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                     textField {
                         attrs.autoFocus = false
                         attrs.fullWidth = true
-                        attrs.value = shaderInstance.mutableShader.title
-                        attrs.onChangeFunction = { event: Event ->
-                            val str = event.target!!.asDynamic().value as String
-                            handleUpdate { mutableShader.title = str }
+                        attrs.defaultValue = shaderInstance.mutableShader.title
+                        attrs.onBlurFunction = { event: Event ->
+                            val str = event.target.value
+                            if (shaderInstance.mutableShader.title != str) {
+                                handleUpdate { mutableShader.title = str }
+                            }
                         }
                     }
                     formHelperText { +"Shader Name" }
