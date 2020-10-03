@@ -20,7 +20,7 @@ class ShowRunner(
 //    private val movingHeadManager: MovingHeadManager,
     internal val clock: Clock,
     private val modelRenderer: ModelRenderer,
-    private val surfaceManager: SurfaceManager,
+    private val fixtureManager: FixtureManager,
     private val autoWirer: AutoWirer
 ) {
     private var showState: ShowState = initialShowState ?: openShow.getShowState()
@@ -73,27 +73,27 @@ class ShowRunner(
     }
 
     fun housekeeping(): Boolean {
-        var remapSurfaces = surfaceManager.requiresRemap()
+        var remapFixtures = fixtureManager.requiresRemap()
 
         // Maybe switch to a new show.
         if (renderPlanNeedsRefresh) {
             val renderPlanChanged = refreshRenderPlan()
             if (renderPlanChanged) {
-                remapSurfaces = true
+                remapFixtures = true
             }
 
             renderPlanNeedsRefresh = false
         }
 
-        if (remapSurfaces) {
-            surfaceManager.clearRenderPlans()
+        if (remapFixtures) {
+            fixtureManager.clearRenderPlans()
 
             currentRenderPlan?.let {
-                surfaceManager.remap(it)
+                fixtureManager.remap(it)
             }
         }
 
-        return remapSurfaces
+        return remapFixtures
     }
 
     /** @return `true` if `currentRenderPlan` changed. */
@@ -104,7 +104,7 @@ class ShowRunner(
 
             logger.info {
                 "New render plan created; ${currentRenderPlan?.programs?.size ?: 0} programs, " +
-                        "${surfaceManager.getSurfaceCount()} surfaces " +
+                        "${fixtureManager.getFixtureCount()} fixtures " +
                         "and ${requestedGadgets.size} gadgets"
             }
             true
@@ -147,10 +147,10 @@ class ShowRunner(
         openShow.release()
     }
 
-    data class SurfacesChanges(val added: Collection<SurfaceReceiver>, val removed: Collection<SurfaceReceiver>)
+    data class FixturesChanges(val added: Collection<FixtureReceiver>, val removed: Collection<FixtureReceiver>)
 
-    interface SurfaceReceiver {
-        val surface: Surface
+    interface FixtureReceiver {
+        val fixture: Fixture
         fun send(pixels: Pixels)
     }
 

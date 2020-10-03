@@ -1,8 +1,8 @@
 package baaahs.gl.render
 
 import baaahs.Color
+import baaahs.Fixture
 import baaahs.Logger
-import baaahs.Surface
 import baaahs.gl.GlContext
 import baaahs.gl.render.ModelRenderer.GlConst.GL_RGBA8
 import baaahs.glsl.LinearSurfacePixelStrategy
@@ -16,14 +16,14 @@ open class ModelRenderer(
     val gl: GlContext,
     private val modelInfo: ModelInfo
 ) {
-    private val surfacesToAdd: MutableList<RenderSurface> = mutableListOf()
-    private val surfacesToRemove: MutableList<RenderSurface> = mutableListOf()
+    private val fixturesToAdd: MutableList<FixtureRenderPlan> = mutableListOf()
+    private val fixturesToRemove: MutableList<FixtureRenderPlan> = mutableListOf()
     private val fbMaxPixWidth = 1024
     var pixelCount: Int = 0
     var nextPixelOffset: Int = 0
     var nextRectOffset: Int = 0
 
-    private val renderSurfaces: MutableList<RenderSurface> = mutableListOf()
+    private val fixtureRenderPlans: MutableList<FixtureRenderPlan> = mutableListOf()
 
     var arrangement: Arrangement
 
@@ -33,43 +33,43 @@ open class ModelRenderer(
         gl.runInContext { gl.check { clearColor(0f, .5f, 0f, 1f) } }
 
         arrangement = gl.runInContext {
-            createArrangement(0, FloatArray(0), renderSurfaces)
+            createArrangement(0, FloatArray(0), fixtureRenderPlans)
                 .also { notifyListeners(it) }
         }
     }
 
-    fun addSurface(surface: Surface): RenderSurface {
-        val surfacePixels = SurfacePixels(surface, nextPixelOffset)
-        val rects = mapSurfaceToRects(
+    fun addFixture(fixture: Fixture): FixtureRenderPlan {
+        val fixturePixels = FixturePixels(fixture, nextPixelOffset)
+        val rects = mapFixturePixelsToRects(
             nextPixelOffset,
             fbMaxPixWidth,
-            surface
+            fixture
         )
         val renderSurface =
-            RenderSurface(surfacePixels, nextRectOffset, rects, modelInfo)
-        nextPixelOffset += surface.pixelCount
+            FixtureRenderPlan(fixturePixels, nextRectOffset, rects, modelInfo)
+        nextPixelOffset += fixture.pixelCount
         nextRectOffset += renderSurface.rects.size
 
-        surfacesToAdd.add(renderSurface)
+        fixturesToAdd.add(renderSurface)
         return renderSurface
     }
 
-    fun removeSurface(renderSurface: RenderSurface) {
-        surfacesToRemove.add(renderSurface)
+    fun removeFixture(fixtureRenderPlan: FixtureRenderPlan) {
+        fixturesToRemove.add(fixtureRenderPlan)
     }
 
-    inner class SurfacePixels(
-        surface: Surface, pixel0Index: Int
-    ) : baaahs.gl.render.SurfacePixels(surface, pixel0Index) {
+    inner class FixturePixels(
+        fixture: Fixture, pixel0Index: Int
+    ) : baaahs.gl.render.FixturePixels(fixture, pixel0Index) {
         override fun get(i: Int): Color = arrangement.getPixel(pixel0Index + i)
     }
 
-    private fun createArrangement(pixelCount: Int, pixelCoords: FloatArray, surfaceCount: List<RenderSurface>): Arrangement =
-        Arrangement(pixelCount, pixelCoords, surfaceCount.toList())
+    private fun createArrangement(pixelCount: Int, pixelCoords: FloatArray, fixtureCount: List<FixtureRenderPlan>): Arrangement =
+        Arrangement(pixelCount, pixelCoords, fixtureCount.toList())
 
     fun draw() {
         gl.runInContext {
-            stats.addSurfacesMs += timeSync { incorporateNewSurfaces() }
+            stats.addFixturesMs += timeSync { incorporateNewSurfaces() }
             stats.bindFbMs += timeSync { arrangement.bindFramebuffer() }
             stats.renderMs += timeSync { render() }
             stats.readPxMs += timeSync { arrangement.copyToPixelBuffer() }
@@ -89,11 +89,11 @@ open class ModelRenderer(
     }
 
     protected fun incorporateNewSurfaces() {
-        if (surfacesToRemove.isNotEmpty()) {
+        if (fixturesToRemove.isNotEmpty()) {
 //            TODO("remove TBD")
         }
 
-        if (surfacesToAdd.isNotEmpty()) {
+        if (fixturesToAdd.isNotEmpty()) {
             val oldPixelCoords = arrangement.pixelCoords
             val newPixelCount = nextPixelOffset
 
@@ -102,14 +102,14 @@ open class ModelRenderer(
             val newPixelCoords = FloatArray(newPixelCount.bufSize * 3)
             oldPixelCoords.copyInto(newPixelCoords)
 
-            surfacesToAdd.forEach {
+            fixturesToAdd.forEach {
                 putPixelCoords(it, newPixelCoords)
             }
 
-            renderSurfaces.addAll(surfacesToAdd)
-            surfacesToAdd.clear()
+            fixtureRenderPlans.addAll(fixturesToAdd)
+            fixturesToAdd.clear()
 
-            arrangement = createArrangement(newPixelCount, newPixelCoords, renderSurfaces)
+            arrangement = createArrangement(newPixelCount, newPixelCoords, fixtureRenderPlans)
                 .also { notifyListeners(it) }
 
             pixelCount = newPixelCount
@@ -117,13 +117,13 @@ open class ModelRenderer(
         }
     }
 
-    private fun putPixelCoords(renderSurface: RenderSurface, newPixelCoords: FloatArray) {
-        val surface = renderSurface.pixels.surface
-        val pixelLocations = LinearSurfacePixelStrategy.forSurface(surface)
+    private fun putPixelCoords(fixtureRenderPlan: FixtureRenderPlan, newPixelCoords: FloatArray) {
+        val fixture = fixtureRenderPlan.pixels.fixture
+        val pixelLocations = LinearSurfacePixelStrategy.forFixture(fixture)
 
         pixelLocations.forEachIndexed { i, pixelLocation ->
-            val bufOffset = (renderSurface.pixels.pixel0Index + i) * 3
-            val (x, y, z) = pixelLocation ?: renderSurface.modelInfo.center
+            val bufOffset = (fixtureRenderPlan.pixels.pixel0Index + i) * 3
+            val (x, y, z) = pixelLocation ?: fixtureRenderPlan.modelInfo.center
             newPixelCoords[bufOffset] = x     // x
             newPixelCoords[bufOffset + 1] = y // y
             newPixelCoords[bufOffset + 2] = z // z
@@ -135,7 +135,7 @@ open class ModelRenderer(
     }
 
     private fun notifyListeners(arrangement: Arrangement) {
-        renderSurfaces
+        fixtureRenderPlans
             .mapNotNull { it.program }
             .distinct()
             .flatMap { it.arrangementListeners }
@@ -151,7 +151,7 @@ open class ModelRenderer(
         private val logger = Logger("GlslRenderer")
 
         /** Resulting Rect is in pixel coordinates starting at (0,0) with Y increasing. */
-        internal fun mapSurfaceToRects(nextPix: Int, pixWidth: Int, surface: Surface): List<Quad.Rect> {
+        internal fun mapFixturePixelsToRects(nextPix: Int, pixWidth: Int, fixture: Fixture): List<Quad.Rect> {
             fun makeQuad(offsetPix: Int, widthPix: Int): Quad.Rect {
                 val xStartPixel = offsetPix % pixWidth
                 val yStartPixel = offsetPix / pixWidth
@@ -166,7 +166,7 @@ open class ModelRenderer(
             }
 
             var nextPixelOffset = nextPix
-            var pixelsLeft = surface.pixelCount
+            var pixelsLeft = fixture.pixelCount
             val rects = mutableListOf<Quad.Rect>()
             while (pixelsLeft > 0) {
                 val rowPixelOffset = nextPixelOffset % pixWidth
@@ -184,7 +184,7 @@ open class ModelRenderer(
     inner class Arrangement(
         val pixelCount: Int,
         val pixelCoords: FloatArray,
-        val surfaces: List<RenderSurface>
+        val fixtureRenderPlans: List<FixtureRenderPlan>
     ) {
         init {
             println("Creating arrangement with $pixelCount")
@@ -196,7 +196,7 @@ open class ModelRenderer(
         private val pixelBuffer = ByteBuffer(pixelCount.bufSize * 4)
 
         private val quad: Quad =
-            Quad(gl, surfaces.flatMap {
+            Quad(gl, fixtureRenderPlans.flatMap {
                 it.rects.map { rect ->
                     // Remap from pixel coordinates to normalized device coordinates.
                     Quad.Rect(
@@ -227,7 +227,7 @@ open class ModelRenderer(
         }
 
         fun release() {
-            logger.debug { "Release $this with ${surfaces.count()} surfaces and $pixelCount pixels" }
+            logger.debug { "Release $this with ${fixtureRenderPlans.count()} fixtures and $pixelCount pixels" }
 
             quad.release()
 
@@ -235,15 +235,15 @@ open class ModelRenderer(
         }
 
         fun render() {
-            surfaces.groupBy { it.program }.forEach { (program, surfaces) ->
+            fixtureRenderPlans.groupBy { it.program }.forEach { (program, fixtures) ->
                 if (program != null) {
                     gl.useProgram(program)
                     program.updateUniforms()
 
                     quad.prepareToRender(program.vertexAttribLocation) {
-                        surfaces.forEach { surface ->
-                            surface.rects.indices.forEach { i ->
-                                quad.renderRect(surface.rect0Index + i)
+                        fixtures.forEach { fixture ->
+                            fixture.rects.indices.forEach { i ->
+                                quad.renderRect(fixture.rect0Index + i)
                             }
                         }
                     }
@@ -257,7 +257,7 @@ open class ModelRenderer(
     val Int.bufSize: Int get() = bufWidth * bufHeight
 
     class Stats {
-        var addSurfacesMs = 0; internal set
+        var addFixturesMs = 0; internal set
         var bindFbMs = 0; internal set
         var renderMs = 0; internal set
         var readPxMs = 0; internal set
@@ -266,7 +266,7 @@ open class ModelRenderer(
         fun dump() {
             println(
                 "Render of $frameCount frames took: " +
-                        "addSurface=${addSurfacesMs}ms " +
+                        "addFixtures=${addFixturesMs}ms " +
                         "bindFbMs=${bindFbMs}ms " +
                         "renderMs=${renderMs}ms " +
                         "readPxMs=${readPxMs}ms " +
@@ -275,7 +275,7 @@ open class ModelRenderer(
         }
 
         fun reset() {
-            addSurfacesMs = 0
+            addFixturesMs = 0
             bindFbMs = 0
             renderMs = 0
             readPxMs = 0

@@ -55,10 +55,10 @@ class Pinky(
     private val pubSub: PubSub.Server = PubSub.Server(httpServer, coroutineContext)
 //    private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    internal val surfaceManager = SurfaceManager(modelRenderer)
+    internal val fixtureManager = FixtureManager(modelRenderer)
 
     var stageManager: StageManager = StageManager(
-        plugins, modelRenderer, pubSub, storage, surfaceManager, dmxUniverse, movingHeadManager, clock, model,
+        plugins, modelRenderer, pubSub, storage, fixtureManager, dmxUniverse, movingHeadManager, clock, model,
         coroutineContext
     )
 
@@ -135,7 +135,7 @@ class Pinky(
                 continue
             }
 
-            updateSurfaces()
+            updateFixtures()
 
             networkStats.reset()
             val elapsedMs = time {
@@ -216,30 +216,30 @@ class Pinky(
         stageManager.renderAndSendNextFrame()
     }
 
-    internal fun updateSurfaces() {
+    internal fun updateFixtures() {
         if (pendingBrainInfos.isNotEmpty()) {
-            val brainSurfacesToRemove = mutableListOf<ShowRunner.SurfaceReceiver>()
-            val brainSurfacesToAdd = mutableListOf<ShowRunner.SurfaceReceiver>()
+            val brainFixturesToRemove = mutableListOf<ShowRunner.FixtureReceiver>()
+            val brainFixturesToAdd = mutableListOf<ShowRunner.FixtureReceiver>()
 
             pendingBrainInfos.forEach { (brainId, incomingBrainInfo) ->
                 val priorBrainInfo = brainInfos[brainId]
                 if (priorBrainInfo != null) {
-                    brainSurfacesToRemove.add(priorBrainInfo.surfaceReceiver)
+                    brainFixturesToRemove.add(priorBrainInfo.fixtureReceiver)
                 }
 
                 if (incomingBrainInfo.hadException) {
                     // Existing Brain has had exceptions so we're forgetting about it.
                     brainInfos.remove(brainId)
                 } else {
-                    brainSurfacesToAdd.add(incomingBrainInfo.surfaceReceiver)
+                    brainFixturesToAdd.add(incomingBrainInfo.fixtureReceiver)
                     brainInfos[brainId] = incomingBrainInfo
                 }
             }
 
-            surfaceManager.surfacesChanged(brainSurfacesToAdd, brainSurfacesToRemove)
+            fixtureManager.fixturesChanged(brainFixturesToAdd, brainFixturesToRemove)
             listeningVisualizers.forEach { listeningVisualizer ->
-                brainSurfacesToAdd.forEach {
-                    listeningVisualizer.sendPixelData(it.surface)
+                brainFixturesToAdd.forEach {
+                    listeningVisualizer.sendPixelData(it.fixture)
                 }
             }
 
@@ -300,7 +300,7 @@ class Pinky(
             ?: mappingResults.dataFor(msg.surfaceName ?: "__nope")
             ?: msg.surfaceName?.let { MappingResults.Info(model.findModelSurface(it), null) }
 
-        val surface = dataFor?.let {
+        val fixture = dataFor?.let {
             val pixelLocations = dataFor.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) } ?: emptyList()
             val pixelCount = dataFor.pixelLocations?.size ?: SparkleMotion.MAX_PIXEL_COUNT
 
@@ -312,13 +312,13 @@ class Pinky(
                 udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
             }
 
-            IdentifiedSurface(dataFor.surface, pixelCount, dataFor.pixelLocations)
-        } ?: AnonymousSurface(brainId)
+            IdentifiedFixture(dataFor.surface, pixelCount, dataFor.pixelLocations)
+        } ?: AnonymousFixture(brainId)
 
 
         val priorBrainInfo = brainInfos[brainId]
         if (priorBrainInfo != null) {
-            if (priorBrainInfo.brainId == brainId && priorBrainInfo.surface == surface) {
+            if (priorBrainInfo.brainId == brainId && priorBrainInfo.fixture == fixture) {
                 // Duplicate packet?
 //                logger.debug(
 //                    "Ignore ${priorBrainInfo.brainId} ${priorBrainInfo.surface.describe()} ->" +
@@ -352,9 +352,9 @@ class Pinky(
         }
 
         val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.DIRECT_RGB)
-        val surfaceReceiver = object : ShowRunner.SurfaceReceiver {
-            override val surface = surface
-            private val pixelBuffer = pixelShader.createBuffer(surface)
+        val fixtureReceiver = object : ShowRunner.FixtureReceiver {
+            override val fixture = fixture
+            private val pixelBuffer = pixelShader.createBuffer(fixture)
 
             override fun send(pixels: Pixels) {
                 pixelBuffer.indices.forEach { i ->
@@ -362,11 +362,11 @@ class Pinky(
                 }
                 sendFn(pixelBuffer)
 
-                updateListeningVisualizers(surface, pixelBuffer.colors)
+                updateListeningVisualizers(fixture, pixelBuffer.colors)
             }
         }
 
-        val brainInfo = BrainInfo(brainAddress, brainId, surface, msg.firmwareVersion, msg.idfVersion, surfaceReceiver)
+        val brainInfo = BrainInfo(brainAddress, brainId, fixture, msg.firmwareVersion, msg.idfVersion, fixtureReceiver)
 //        logger.debug("Map ${brainInfo.brainId} to ${brainInfo.surface.describe()}")
         pendingBrainInfos[brainId] = brainInfo
 
@@ -417,7 +417,7 @@ class Pinky(
             this.tcpConnection = tcpConnection
             listeningVisualizers.add(this)
 
-            brainInfos.values.forEach { sendPixelData(it.surface) }
+            brainInfos.values.forEach { sendPixelData(it.fixture) }
         }
 
         override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
@@ -428,14 +428,14 @@ class Pinky(
             listeningVisualizers.remove(this)
         }
 
-        fun sendPixelData(surface: Surface) {
-            if (surface is IdentifiedSurface) {
-                val pixelLocations = surface.pixelLocations ?: return
+        fun sendPixelData(fixture: Fixture) {
+            if (fixture is IdentifiedFixture) {
+                val pixelLocations = fixture.pixelLocations ?: return
 
-                val out = ByteArrayWriter(surface.name.length + surface.pixelCount * 3 * 4 + 20)
+                val out = ByteArrayWriter(fixture.name.length + fixture.pixelCount * 3 * 4 + 20)
                 out.writeByte(0)
-                out.writeString(surface.name)
-                out.writeInt(surface.pixelCount)
+                out.writeString(fixture.name)
+                out.writeInt(fixture.pixelCount)
                 pixelLocations.forEach {
                     (it ?: Vector3F(0f, 0f, 0f)).serialize(out)
                 }
@@ -443,11 +443,11 @@ class Pinky(
             }
         }
 
-        fun sendFrame(surface: Surface, colors: List<Color>) {
-            if (surface is IdentifiedSurface) {
-                val out = ByteArrayWriter(surface.name.length + colors.size * 3 + 20)
+        fun sendFrame(fixture: Fixture, colors: List<Color>) {
+            if (fixture is IdentifiedFixture) {
+                val out = ByteArrayWriter(fixture.name.length + colors.size * 3 + 20)
                 out.writeByte(1)
-                out.writeString(surface.name)
+                out.writeString(fixture.name)
                 out.writeInt(colors.size)
                 colors.forEach {
                     it.serializeWithoutAlpha(out)
@@ -457,10 +457,10 @@ class Pinky(
         }
     }
 
-    private fun updateListeningVisualizers(surface: Surface, colors: List<Color>) {
+    private fun updateListeningVisualizers(fixture: Fixture, colors: List<Color>) {
         if (listeningVisualizers.isNotEmpty()) {
             listeningVisualizers.forEach {
-                it.sendFrame(surface, colors)
+                it.sendFrame(fixture, colors)
             }
         }
     }
@@ -532,10 +532,10 @@ data class BrainId(val uuid: String)
 class BrainInfo(
     val address: Network.Address,
     val brainId: BrainId,
-    val surface: Surface,
+    val fixture: Fixture,
     val firmwareVersion: String?,
     val idfVersion: String?,
-    val surfaceReceiver: ShowRunner.SurfaceReceiver,
+    val fixtureReceiver: ShowRunner.FixtureReceiver,
     var hadException: Boolean = false
 )
 
