@@ -1,4 +1,5 @@
 import baaahs.*
+import baaahs.fixtures.FixtureManager
 import baaahs.gadgets.ColorPicker
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext.Companion.GL_RGB32F

@@ -1,5 +1,7 @@
-package baaahs
+package baaahs.fixtures
 
+import baaahs.RenderPlan
+import baaahs.ShowRunner
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.FixtureRenderPlan

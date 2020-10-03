@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.fixtures.Fixture
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.shaders.PixelBrainShader

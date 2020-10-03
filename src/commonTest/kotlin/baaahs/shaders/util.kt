@@ -2,8 +2,8 @@ package baaahs.shaders
 
 import baaahs.BrainShader
 import baaahs.Color
-import baaahs.Fixture
 import baaahs.Pixels
+import baaahs.fixtures.Fixture
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.test.expect

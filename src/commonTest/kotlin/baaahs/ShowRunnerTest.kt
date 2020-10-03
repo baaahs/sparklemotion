@@ -1,6 +1,9 @@
 package baaahs
 
 import baaahs.ShowRunner.FixtureReceiver
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.IdentifiedFixture
 import baaahs.gadgets.Slider
 import baaahs.gl.render.FixtureRenderPlan
 import baaahs.gl.render.ModelRenderer

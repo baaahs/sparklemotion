@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.fixtures.AnonymousFixture
+import baaahs.fixtures.IdentifiedFixture
 import baaahs.geom.Matrix4
 import baaahs.gl.override
 import baaahs.gl.render.ModelRenderer

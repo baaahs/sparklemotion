@@ -1,6 +1,11 @@
 package baaahs.gl.render
 
-import baaahs.*
+import baaahs.BrainId
+import baaahs.Color
+import baaahs.TestModelSurface
+import baaahs.fixtures.AnonymousFixture
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.IdentifiedFixture
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.gl.GlBase

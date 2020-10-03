@@ -1,8 +1,8 @@
 package baaahs.gl.render
 
 import baaahs.Color
-import baaahs.Fixture
 import baaahs.Logger
+import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
 import baaahs.gl.render.ModelRenderer.GlConst.GL_RGBA8
 import baaahs.glsl.LinearSurfacePixelStrategy

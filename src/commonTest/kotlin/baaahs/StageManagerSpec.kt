@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.fixtures.FixtureManager
 import baaahs.gl.render.ModelRenderer
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer

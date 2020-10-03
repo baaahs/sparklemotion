@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.fixtures.FixtureManager
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer

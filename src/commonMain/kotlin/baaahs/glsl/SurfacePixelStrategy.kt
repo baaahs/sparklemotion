@@ -1,8 +1,8 @@
 package baaahs.glsl
 
-import baaahs.Fixture
-import baaahs.IdentifiedFixture
 import baaahs.Logger
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.IdentifiedFixture
 import baaahs.geom.Vector3F
 import kotlin.random.Random
 

@@ -1,7 +1,7 @@
 package baaahs.gl.patch
 
-import baaahs.Fixture
 import baaahs.Logger
+import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslCode

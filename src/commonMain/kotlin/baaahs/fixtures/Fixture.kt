@@ -1,5 +1,7 @@
-package baaahs
+package baaahs.fixtures
 
+import baaahs.BrainId
+import baaahs.SparkleMotion
 import baaahs.geom.Vector3F
 import baaahs.model.Model
 

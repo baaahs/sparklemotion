@@ -1,8 +1,8 @@
 package baaahs.shows
 
-import baaahs.Fixture
 import baaahs.Gadget
 import baaahs.ShowPlayer
+import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslAnalyzer
