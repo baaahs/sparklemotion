@@ -2,17 +2,10 @@ package baaahs.models
 
 import baaahs.geom.Vector3F
 import baaahs.getResource
-import baaahs.glsl.CylindricalModelSpaceUvTranslator
-import baaahs.glsl.UvTranslator
 import baaahs.model.ObjModel
 
 class SheepModel : ObjModel<SheepModel.Panel>("baaahs-model.obj") {
     override val name: String = "BAAAHS"
-    override val defaultUvTranslator: UvTranslator by lazy {
-        CylindricalModelSpaceUvTranslator(
-            this
-        )
-    }
     private val pixelsPerPanel = hashMapOf<String, Int>()
 
     override fun load() {

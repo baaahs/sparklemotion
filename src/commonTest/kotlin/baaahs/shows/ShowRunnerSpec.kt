@@ -5,9 +5,7 @@ import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.render.ModelRenderer
-import baaahs.gl.render.ModelRendererTest
 import baaahs.glsl.Shaders
-import baaahs.glsl.UvTranslator
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.model.ModelInfo
@@ -17,7 +15,6 @@ import baaahs.plugin.Plugins
 import baaahs.shaders.FakeSurface
 import baaahs.show.Shader
 import baaahs.show.ShaderType
-import baaahs.show.mutable.MutableGadgetControl
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
@@ -165,7 +162,6 @@ class TestModel : Model<Model.Surface>() {
     override val movingHeads: List<MovingHead> = emptyList()
     override val allSurfaces: List<Surface> = emptyList()
     override val geomVertices: List<Vector3F> = emptyList()
-    override val defaultUvTranslator: UvTranslator = ModelRendererTest.UvTranslatorForTest
 }
 
 @Synonym(SynonymType.GROUP)
