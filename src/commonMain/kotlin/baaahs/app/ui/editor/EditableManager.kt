@@ -12,6 +12,7 @@ class EditableManager(
     private val onApply: (Show) -> Unit
 ) : Facade() {
     internal val undoStack = UndoStack<ShowAndEditIntent>()
+    private var appliedShow: Show? = null
     internal var session: Session? = null
 
     fun isEditing(): Boolean = session != null
@@ -31,6 +32,7 @@ class EditableManager(
     fun openEditor(baseShow: Show, editIntent: EditIntent) {
         if (isEditing()) error("already editing ${session!!.editIntent}")
 
+        appliedShow = baseShow
         session = Session(baseShow, editIntent)
         undoStack.reset(ShowAndEditIntent(baseShow, editIntent))
         selectedPanel = editorPanels.firstOrNull()
@@ -43,8 +45,8 @@ class EditableManager(
     }
 
     /** [EditorPanel]s should call this when they've made a change to the [MutableEditable]. */
-    fun onChange() {
-        session!!.onChange()
+    fun onChange(pushToUndoStack: Boolean = true) {
+        session!!.onChange(pushToUndoStack)
         notifyChanged()
     }
 
@@ -58,6 +60,7 @@ class EditableManager(
         val session = session!!
         val newShow = session.mutableShow.getShow()
         val nextEditIntent = session.editIntent.nextEditIntent()
+        appliedShow = newShow
         onApply(newShow)
         switchBaseShow(ShowAndEditIntent(newShow, nextEditIntent))
     }
@@ -69,6 +72,7 @@ class EditableManager(
 
     fun close() {
         undoStack.reset(null)
+        appliedShow = null
         session = null
         notifyChanged()
     }
@@ -86,7 +90,7 @@ class EditableManager(
 //    }
 
     internal inner class Session(
-        val baseShow: Show,
+        baseShow: Show,
         val editIntent: EditIntent
     ) {
         val mutableShow = MutableShow(baseShow)
@@ -101,13 +105,15 @@ class EditableManager(
 
         fun isChanged(): Boolean {
             return cachedIsChanged
-                ?: mutableShow.isChanged().also { cachedIsChanged = it }
+                ?: mutableShow.isChanged(appliedShow!!).also { cachedIsChanged = it }
         }
 
-        fun onChange() {
+        fun onChange(pushToUndoStack: Boolean = true) {
             cachedIsChanged = null
-            undoStack.changed(ShowAndEditIntent(mutableShow.getShow(), editIntent))
-            notifyChanged()
+
+            if (pushToUndoStack) {
+                undoStack.changed(ShowAndEditIntent(mutableShow.getShow(), editIntent.refreshEditIntent()))
+            }
         }
     }
 

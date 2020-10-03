@@ -7,6 +7,7 @@ import kotlinx.css.CSSBuilder
 import kotlinx.css.RuleSet
 import kotlinx.css.StyledElement
 import org.w3c.dom.events.Event
+import org.w3c.dom.events.EventTarget
 import react.RMutableRef
 import react.RProps
 import react.ReactElement
@@ -54,6 +55,9 @@ fun String?.truncate(length: Int): String? {
 
 @Suppress("UNCHECKED_CAST")
 fun Function<*>.withEvent(): (Event) -> Unit = this as (Event) -> Unit
+
+val EventTarget?.value: String
+        get() = asDynamic()!!.value as String
 
 private val jsObj = js("Object")
 fun RProps.copyInto(dest: RProps) {

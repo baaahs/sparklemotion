@@ -1,18 +1,39 @@
 package baaahs.app.ui.editor
 
 import baaahs.show.ButtonGroupControl
-import baaahs.show.mutable.*
+import baaahs.show.mutable.MutableButtonGroupControl
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePatchHolder
+import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.Renderer
 import kotlinx.html.js.onChangeFunction
+import materialui.components.divider.divider
+import materialui.components.divider.enums.DividerVariant
 import materialui.components.formcontrol.formControl
 import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.formlabel.formLabel
 import materialui.components.radio.radio
 import materialui.components.radiogroup.radioGroup
 import org.w3c.dom.HTMLInputElement
-import react.dom.div
 
 actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
+    override fun forGenericPropertiesPanel(
+        editableManager: EditableManager,
+        components: List<EditorPanelComponent>
+    ): Renderer = renderWrapper {
+        components.forEachIndexed { index, editorPanelComponent ->
+            if (index > 0) {
+                divider {
+                    attrs.variant = DividerVariant.middle
+                }
+            }
+
+            with(editorPanelComponent.getRenderer(editableManager)) {
+                render()
+            }
+        }
+    }
+
     override fun forPatchHolder(
         editableManager: EditableManager,
         mutablePatchHolder: MutablePatchHolder
@@ -48,13 +69,6 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
             }
         }
 
-    override fun forShow(
-        editableManager: EditableManager,
-        mutableShow: MutableShow
-    ): Renderer = renderWrapper {
-        div {}
-    }
-
     override fun forButtonGroup(
         editableManager: EditableManager,
         mutableButtonGroupControl: MutableButtonGroupControl
@@ -85,6 +99,17 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
                 }
             }
         }
+    }
 
+    override fun forTitleComponent(
+        editableManager: EditableManager,
+        mutablePatchHolder: MutablePatchHolder
+    ): Renderer = renderWrapper {
+        textFieldEditor {
+            attrs.label = "Title"
+            attrs.getValue = { mutablePatchHolder.title }
+            attrs.setValue = { value -> mutablePatchHolder.title = value }
+            attrs.editableManager = editableManager
+        }
     }
 }
