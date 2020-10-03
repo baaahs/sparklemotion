@@ -3,7 +3,6 @@ package baaahs.model
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.geom.center
-import baaahs.glsl.UvTranslator
 
 interface ModelInfo {
     val center: Vector3F
@@ -22,7 +21,6 @@ abstract class Model<T : Model.Surface>: ModelInfo {
     abstract val movingHeads: List<MovingHead>
     abstract val allSurfaces: List<T>
     abstract val geomVertices: List<Vector3F>
-    abstract val defaultUvTranslator: UvTranslator
 
     private val allSurfacesByName: Map<String, T> by lazy { allSurfaces.associateBy { it.name } }
 
