@@ -2,6 +2,7 @@ package baaahs.gl.render
 
 import baaahs.BrainId
 import baaahs.Color
+import baaahs.Pixels
 import baaahs.TestModelSurface
 import baaahs.fixtures.AnonymousFixture
 import baaahs.fixtures.Fixture
@@ -287,3 +288,6 @@ class ModelRendererTest {
     val ModelInfoForTest = ModelInfo.Empty
 
 }
+
+val FixtureRenderPlan.pixels: Pixels
+    get() = renderResult as Pixels

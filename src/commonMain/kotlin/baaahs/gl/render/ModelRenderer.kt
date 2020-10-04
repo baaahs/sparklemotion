@@ -1,6 +1,5 @@
 package baaahs.gl.render
 
-import baaahs.Color
 import baaahs.Logger
 import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
@@ -14,11 +13,11 @@ import kotlin.math.min
 
 open class ModelRenderer(
     val gl: GlContext,
-    private val modelInfo: ModelInfo
+    private val modelInfo: ModelInfo,
+    private val resultFormat: ResultFormat = BytesResultFormat
 ) {
     private val fixturesToAdd: MutableList<FixtureRenderPlan> = mutableListOf()
     private val fixturesToRemove: MutableList<FixtureRenderPlan> = mutableListOf()
-    private val fbMaxPixWidth = 1024
     var pixelCount: Int = 0
     var nextPixelOffset: Int = 0
     var nextRectOffset: Int = 0
@@ -39,14 +38,15 @@ open class ModelRenderer(
     }
 
     fun addFixture(fixture: Fixture): FixtureRenderPlan {
-        val fixturePixels = FixturePixels(fixture, nextPixelOffset)
         val rects = mapFixturePixelsToRects(
             nextPixelOffset,
             fbMaxPixWidth,
             fixture
         )
+        val renderResult =
+            resultFormat.createRenderResult(this, fixture.pixelCount, nextPixelOffset)
         val renderSurface =
-            FixtureRenderPlan(fixturePixels, nextRectOffset, rects, modelInfo)
+            FixtureRenderPlan(fixture, renderResult, nextRectOffset, rects, modelInfo)
         nextPixelOffset += fixture.pixelCount
         nextRectOffset += renderSurface.rects.size
 
@@ -56,12 +56,6 @@ open class ModelRenderer(
 
     fun removeFixture(fixtureRenderPlan: FixtureRenderPlan) {
         fixturesToRemove.add(fixtureRenderPlan)
-    }
-
-    inner class FixturePixels(
-        fixture: Fixture, pixel0Index: Int
-    ) : baaahs.gl.render.FixturePixels(fixture, pixel0Index) {
-        override fun get(i: Int): Color = arrangement.getPixel(pixel0Index + i)
     }
 
     private fun createArrangement(pixelCount: Int, pixelCoords: FloatArray, fixtureCount: List<FixtureRenderPlan>): Arrangement =
@@ -118,11 +112,11 @@ open class ModelRenderer(
     }
 
     private fun putPixelCoords(fixtureRenderPlan: FixtureRenderPlan, newPixelCoords: FloatArray) {
-        val fixture = fixtureRenderPlan.pixels.fixture
+        val fixture = fixtureRenderPlan.fixture
         val pixelLocations = LinearSurfacePixelStrategy.forFixture(fixture)
 
         pixelLocations.forEachIndexed { i, pixelLocation ->
-            val bufOffset = (fixtureRenderPlan.pixels.pixel0Index + i) * 3
+            val bufOffset = (fixtureRenderPlan.renderResult.bufferOffset + i) * 3
             val (x, y, z) = pixelLocation ?: fixtureRenderPlan.modelInfo.center
             newPixelCoords[bufOffset] = x     // x
             newPixelCoords[bufOffset + 1] = y // y
@@ -179,6 +173,11 @@ open class ModelRenderer(
             }
             return rects
         }
+
+        private const val fbMaxPixWidth = 1024
+        val Int.bufWidth: Int get() = max(1, min(this, fbMaxPixWidth))
+        val Int.bufHeight: Int get() = this / fbMaxPixWidth + 1
+        val Int.bufSize: Int get() = bufWidth * bufHeight
     }
 
     inner class Arrangement(
@@ -193,7 +192,7 @@ open class ModelRenderer(
         val pixHeight = pixelCount.bufHeight
 
         private val renderBuffer = gl.createRenderBuffer()
-        private val pixelBuffer = ByteBuffer(pixelCount.bufSize * 4)
+        internal val resultBuffer = resultFormat.createBuffer(pixelCount.bufSize)
 
         private val quad: Quad =
             Quad(gl, fixtureRenderPlans.flatMap {
@@ -209,21 +208,14 @@ open class ModelRenderer(
             })
 
         fun bindFramebuffer() {
-            renderBuffer.bind(GL_RGBA8, pixWidth, pixHeight, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER)
-        }
-
-        fun getPixel(pixelIndex: Int): Color {
-            val offset = pixelIndex * 4
-            return Color(
-                red = pixelBuffer[offset],
-                green = pixelBuffer[offset + 1],
-                blue = pixelBuffer[offset + 2],
-                alpha = pixelBuffer[offset + 3]
-            )
+            renderBuffer.bind(resultFormat.renderPixelFormat, pixWidth, pixHeight, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER)
         }
 
         fun copyToPixelBuffer() {
-            gl.check { readPixels(0, 0, pixWidth, pixHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer) }
+            gl.check {
+                readPixels(0, 0, pixWidth, pixHeight,
+                    resultFormat.readPixelFormat, resultFormat.readType, resultBuffer)
+            }
         }
 
         fun release() {
@@ -251,10 +243,6 @@ open class ModelRenderer(
             }
         }
     }
-
-    val Int.bufWidth: Int get() = max(1, min(this, fbMaxPixWidth))
-    val Int.bufHeight: Int get() = this / fbMaxPixWidth + 1
-    val Int.bufSize: Int get() = bufWidth * bufHeight
 
     class Stats {
         var addFixturesMs = 0; internal set
@@ -285,5 +273,31 @@ open class ModelRenderer(
 
     object GlConst {
         val GL_RGBA8 = 0x8058
+    }
+
+    interface ResultFormat {
+        val renderPixelFormat: Int
+        val readPixelFormat: Int
+        val readType: Int
+
+        fun createRenderResult(modelRenderer: ModelRenderer, size: Int, nextPixelOffset: Int): RenderResult
+        fun createBuffer(size: Int): Buffer
+    }
+
+    object BytesResultFormat : ResultFormat {
+        override val renderPixelFormat: Int
+            get() = GL_RGBA8
+        override val readPixelFormat: Int
+            get() = GL_RGBA
+        override val readType: Int
+            get() = GL_UNSIGNED_BYTE
+
+        override fun createRenderResult(modelRenderer: ModelRenderer, size: Int, nextPixelOffset: Int): RenderResult {
+            return FixturePixels(modelRenderer, size, nextPixelOffset)
+        }
+
+        override fun createBuffer(size: Int): Buffer {
+            return ByteBuffer(size * 4)
+        }
     }
 }
