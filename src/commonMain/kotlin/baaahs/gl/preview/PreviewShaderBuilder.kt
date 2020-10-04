@@ -23,7 +23,11 @@ import baaahs.ui.Observable
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer): Observable() {
+class PreviewShaderBuilder(
+    val shader: Shader,
+    private val autoWirer: AutoWirer,
+    private val modelInfo: ModelInfo
+) : Observable() {
     var state: State =
         State.Unbuilt
         private set
@@ -56,7 +60,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
         notifyChanged()
 
         GlobalScope.launch {
-            val showPlayer = object : BaseShowPlayer(autoWirer.plugins, ModelInfo.Empty) {
+            val showPlayer = object : BaseShowPlayer(autoWirer.plugins, modelInfo) {
                 override val glContext: GlContext get() = gl
 
                 override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
@@ -82,24 +86,18 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
             )
         }
         val shaders: Array<Shader> = when (shader.type) {
-            ShaderType.Projection -> arrayOf(shader,
-                Shaders.smpteColorBars
-            )
-            ShaderType.Distortion -> arrayOf(screenCoordsProjection, shader,
-                Shaders.smpteColorBars
-            )
+            ShaderType.Projection -> arrayOf(shader, Shaders.pixelUvIdentity)
+            ShaderType.Distortion -> arrayOf(screenCoordsProjection, shader, Shaders.smpteColorBars)
             ShaderType.Paint -> arrayOf(screenCoordsProjection, shader)
-            ShaderType.Filter -> arrayOf(screenCoordsProjection, shader,
-                Shaders.smpteColorBars
-            )
+            ShaderType.Filter -> arrayOf(screenCoordsProjection, shader, Shaders.smpteColorBars)
+        }
+
+        val defaultPorts = when (shader.type) {
+            ShaderType.Projection -> emptyMap()
+            else -> mapOf(ContentType.UvCoordinateStream to MutableConstPort("gl_FragCoord"))
         }
 
         try {
-            val defaultPorts = mapOf(
-                ContentType.UvCoordinateStream to MutableConstPort(
-                    "gl_FragCoord"
-                )
-            )
             previewPatch = autoWirer.autoWire(*shaders, defaultPorts = defaultPorts)
                 .acceptSymbolicChannelLinks()
                 .takeFirstIfAmbiguous()
@@ -121,7 +119,7 @@ class PreviewShaderBuilder(val shader: Shader, private val autoWirer: AutoWirer)
         try {
             glslProgram = linkedPatch?.compile(gl, resolver)
             state = State.Success
-        }  catch (e: GlslException) {
+        } catch (e: GlslException) {
             glslErrors = e.errors
             state = State.Errors
         } catch (e: Exception) {

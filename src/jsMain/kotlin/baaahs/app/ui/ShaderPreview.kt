@@ -4,9 +4,12 @@ import baaahs.gl.GlBase
 import baaahs.gl.GlContext
 import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.PreviewShaderBuilder
+import baaahs.gl.render.ProjectionPreview
 import baaahs.gl.render.QuadPreview
+import baaahs.gl.render.ShaderPreview
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
+import baaahs.show.ShaderType
 import baaahs.ui.addObserver
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
@@ -28,13 +31,14 @@ import react.dom.*
 import styled.StyleSheet
 import styled.css
 import styled.styledDiv
+import kotlin.browser.document
 import kotlin.collections.set
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
     val canvas = ref<HTMLCanvasElement?> { null }
     var gl by state<GlContext?> { null }
-    var glslPreview by state<QuadPreview?> { null }
+    var glslPreview by state<ShaderPreview?> { null }
     var errorPopupAnchor by state<EventTarget?> { null }
     val preRenderHook = ref { {} }
 
@@ -43,11 +47,22 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
     onMount(canvas.current) {
         val canvasEl = canvas.current ?: return@onMount
-        val glslContext = GlBase.jsManager.createContext(canvasEl)
-        gl = glslContext
 
-        val preview = QuadPreview(glslContext, canvasEl.width, canvasEl.height) {
-            preRenderHook.current()
+        val preview = if (props.shader?.type == ShaderType.Projection) {
+            val canvas2d = canvasEl
+            val canvas3d = document.createElement("canvas") as HTMLCanvasElement
+            val glslContext = GlBase.jsManager.createContext(canvas3d)
+            gl = glslContext
+
+            ProjectionPreview(canvas2d, glslContext, canvasEl.width, canvasEl.height, appContext.webClient.model) {
+                preRenderHook.current()
+            }
+        } else {
+            val glslContext = GlBase.jsManager.createContext(canvasEl)
+            gl = glslContext
+            QuadPreview(glslContext, canvasEl.width, canvasEl.height) {
+                preRenderHook.current()
+            }
         }
 
         val intersectionObserver = IntersectionObserver { entries ->
@@ -70,7 +85,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val builder = memo(gl, props.shader, props.previewShaderBuilder) {
         gl?.let { gl ->
             props.previewShaderBuilder
-                ?: PreviewShaderBuilder(props.shader!!, appContext.autoWirer)
+                ?: PreviewShaderBuilder(props.shader!!, appContext.autoWirer, appContext.webClient.model)
         }
     }
 

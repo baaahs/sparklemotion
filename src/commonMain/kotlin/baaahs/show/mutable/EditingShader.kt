@@ -2,6 +2,7 @@ package baaahs.show.mutable
 
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.PreviewShaderBuilder
+import baaahs.model.ModelInfo
 import baaahs.randomId
 import baaahs.show.Shader
 import baaahs.ui.Observable
@@ -9,7 +10,8 @@ import baaahs.ui.addObserver
 
 class EditingShader(
     val mutableShaderInstance: MutableShaderInstance,
-    private val autoWirer: AutoWirer
+    private val autoWirer: AutoWirer,
+    private val modelInfo: ModelInfo
 ): Observable() {
     val id = randomId("EditingShader")
     var state = State.Changed
@@ -18,7 +20,7 @@ class EditingShader(
     val title: String get() = mutableShader.title
 
     var previewShaderBuilder: PreviewShaderBuilder =
-        PreviewShaderBuilder(build(), autoWirer)
+        PreviewShaderBuilder(build(), autoWirer, modelInfo)
         private set
 
     val gadgets get() = previewShaderBuilder.gadgets
@@ -39,7 +41,7 @@ class EditingShader(
     }
 
     private fun startBuilding() {
-        val newPreviewShaderBuilder = PreviewShaderBuilder(build(), autoWirer)
+        val newPreviewShaderBuilder = PreviewShaderBuilder(build(), autoWirer, modelInfo)
         newPreviewShaderBuilder.addObserver {
             val newState = when (it.state) {
                 PreviewShaderBuilder.State.Success -> State.Success

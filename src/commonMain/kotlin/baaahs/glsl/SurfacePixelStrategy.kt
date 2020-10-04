@@ -13,10 +13,6 @@ interface SurfacePixelStrategy {
 object RandomSurfacePixelStrategy : SurfacePixelStrategy {
     override fun forFixture(fixture: Fixture): List<Vector3F?> {
         return when {
-            fixture is IdentifiedFixture && fixture.pixelLocations != null -> {
-                fixture.pixelLocations
-            }
-
             fixture is IdentifiedFixture -> {
                 // Randomly pick locations within the surface.
                 val surfaceVertices = fixture.modelSurface.allVertices().toList()
@@ -48,11 +44,6 @@ object LinearSurfacePixelStrategy : SurfacePixelStrategy {
         val pixelCount = fixture.pixelCount
 
         return when {
-            fixture is IdentifiedFixture && fixture.pixelLocations != null -> {
-                logger.debug { "Surface ${fixture.name} has mapped pixels."}
-                fixture.pixelLocations
-            }
-
             fixture is IdentifiedFixture -> {
                 logger.debug { "Surface ${fixture.name} doesn't have mapped pixels."}
                 // Generate pixel locations along a line from one vertex to the surface's center.
