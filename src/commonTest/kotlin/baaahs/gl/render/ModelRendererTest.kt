@@ -9,8 +9,6 @@ import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
 import baaahs.glsl.Shaders.cylindricalProjection
-import baaahs.glsl.UvTranslator
-import baaahs.io.ByteArrayWriter
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
 import baaahs.shows.FakeShowPlayer
@@ -283,13 +281,4 @@ class ModelRendererTest {
 
     val ModelInfoForTest = ModelInfo.Empty
 
-    object UvTranslatorForTest : UvTranslator(Id.PANEL_SPACE_UV_TRANSLATOR) {
-        override fun serializeConfig(writer: ByteArrayWriter) = TODO("not implemented")
-
-        override fun forPixels(pixelLocations: List<Vector3F?>) = object :
-            SurfaceUvTranslator {
-            override val pixelCount = pixelLocations.count()
-            override fun getUV(pixelIndex: Int): Pair<Float, Float> = pixelLocations[pixelIndex]!!.let { it.x to it.y }
-        }
-    }
 }
