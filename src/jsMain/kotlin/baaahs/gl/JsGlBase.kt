@@ -24,8 +24,8 @@ actual object GlBase {
         }
 
         fun createContext(canvas: HTMLCanvasElement): JsGlContext {
-            val gl = canvas.getContext("webgl2") as WebGL2RenderingContext?
-            if (gl == null) {
+            val webgl = canvas.getContext("webgl2") as WebGL2RenderingContext?
+            if (webgl == null) {
                 window.alert(
                     "Running GLSL shows on iOS requires WebGL 2.0.\n" +
                             "\n" +
@@ -33,11 +33,15 @@ actual object GlBase {
                 )
                 throw Exception("WebGL 2 not supported")
             }
-            return JsGlContext(KglJs(gl), "300 es")
+            return JsGlContext(KglJs(webgl), "300 es", webgl)
         }
     }
 
-    class JsGlContext(kgl: Kgl, glslVersion: String) : GlContext(kgl, glslVersion) {
+    class JsGlContext(
+        kgl: Kgl,
+        glslVersion: String,
+        internal val webgl: WebGL2RenderingContext
+    ) : GlContext(kgl, glslVersion) {
         override fun <T> runInContext(fn: () -> T): T = fn()
     }
 }

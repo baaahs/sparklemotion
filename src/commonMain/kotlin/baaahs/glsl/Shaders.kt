@@ -140,4 +140,9 @@ object Shaders {
             """.trimIndent()
     )
 
+    val pixelUvIdentity = Shader("Pixel U/V Identity", ShaderType.Paint, """
+        void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+            fragColor = vec4(fragCoord.x, fragCoord.y, 0., 1.);
+        }
+    """.trimIndent())
 }

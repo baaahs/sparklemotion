@@ -2,6 +2,7 @@ package baaahs.gl.render
 
 import baaahs.Logger
 import baaahs.fixtures.Fixture
+import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.render.ModelRenderer.GlConst.GL_RGBA8
 import baaahs.glsl.LinearSurfacePixelStrategy
@@ -113,11 +114,23 @@ open class ModelRenderer(
 
     private fun putPixelCoords(fixtureRenderPlan: FixtureRenderPlan, newPixelCoords: FloatArray) {
         val fixture = fixtureRenderPlan.fixture
-        val pixelLocations = LinearSurfacePixelStrategy.forFixture(fixture)
+        val pixelLocations = fixture.pixelLocations
+            ?: LinearSurfacePixelStrategy.forFixture(fixture)
 
+        val pixel0Index = fixtureRenderPlan.renderResult.bufferOffset
+        val defaultPixelLocation = fixtureRenderPlan.modelInfo.center
+        fillPixelLocations(newPixelCoords, pixel0Index, pixelLocations, defaultPixelLocation)
+    }
+
+    private fun fillPixelLocations(
+        newPixelCoords: FloatArray,
+        pixel0Index: Int,
+        pixelLocations: List<Vector3F?>,
+        defaultPixelLocation: Vector3F
+    ) {
         pixelLocations.forEachIndexed { i, pixelLocation ->
-            val bufOffset = (fixtureRenderPlan.renderResult.bufferOffset + i) * 3
-            val (x, y, z) = pixelLocation ?: fixtureRenderPlan.modelInfo.center
+            val bufOffset = (pixel0Index + i) * 3
+            val (x, y, z) = pixelLocation ?: defaultPixelLocation
             newPixelCoords[bufOffset] = x     // x
             newPixelCoords[bufOffset + 1] = y // y
             newPixelCoords[bufOffset + 2] = z // z
@@ -273,6 +286,8 @@ open class ModelRenderer(
 
     object GlConst {
         val GL_RGBA8 = 0x8058
+        val GL_RG32F = 0x8230
+        val GL_RGBA32F = 0x8814
     }
 
     interface ResultFormat {

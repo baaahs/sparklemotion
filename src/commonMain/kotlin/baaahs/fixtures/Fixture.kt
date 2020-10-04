@@ -12,6 +12,7 @@ import baaahs.model.Model
  */
 interface Fixture {
     val pixelCount: Int
+    val pixelLocations: List<Vector3F?>?
 
     fun describe(): String
 }
@@ -23,7 +24,7 @@ class IdentifiedFixture(
     val modelSurface: Model.Surface,
     override val pixelCount: Int,
     /** Each pixel's location in the global 3d model. */
-    val pixelLocations: List<Vector3F?>? = emptyList()
+    override val pixelLocations: List<Vector3F?>? = emptyList()
 ) : Fixture {
     val name: String = modelSurface.name
     override fun describe(): String = modelSurface.description
@@ -53,6 +54,7 @@ class AnonymousFixture(
     val brainId: BrainId,
     override val pixelCount: Int = SparkleMotion.MAX_PIXEL_COUNT
 ) : Fixture {
+    override val pixelLocations: List<Vector3F?>? get() = null
     override fun describe(): String = "Anonymous fixture at $brainId"
     override fun equals(other: Any?): Boolean = other is AnonymousFixture && brainId.equals(other.brainId)
     override fun hashCode(): Int = brainId.hashCode()
