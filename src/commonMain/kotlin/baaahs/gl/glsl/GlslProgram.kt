@@ -9,57 +9,24 @@ import baaahs.gl.render.ModelRenderer
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.OutputPortRef
-import com.danielgergely.kgl.GL_LINK_STATUS
-import com.danielgergely.kgl.GL_TRUE
 
 class GlslProgram(
     internal val gl: GlContext,
     private val linkedPatch: LinkedPatch,
     resolver: Resolver
 ) {
-    internal val id = gl.runInContext { gl.check { createProgram() ?: throw IllegalStateException() } }
 
     private val vertexShader =
         gl.createVertexShader(
-            """
-            #version ${gl.glslVersion}
-                
-            precision lowp float;
-            
-            // xy = vertex position in normalized device coordinates ([-1,+1] range).
-            in vec2 Vertex;
-            
-            const vec2 scale = vec2(0.5, 0.5);
-            
-            void main()
-            {
-                vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range
-                gl_Position = vec4(Vertex, 0.0, 1.0);
-            }
-            """.trimIndent()
+            "#version ${gl.glslVersion}\n${GlslProgram.vertexShader}"
         )
 
     internal val fragShader =
         gl.createFragmentShader(linkedPatch.toFullGlsl(gl.glslVersion))
 
-    private val bindings: List<Binding>
+    val id = gl.compile(vertexShader, fragShader)
 
-    init {
-        gl.runInContext {
-            gl.check { attachShader(id, vertexShader.shaderId) }
-            gl.check { attachShader(id, fragShader.shaderId) }
-            gl.check { linkProgram(id) }
-            if (gl.check { getProgramParameter(id, GL_LINK_STATUS) } != GL_TRUE) {
-                vertexShader.validate()
-                fragShader.validate()
-
-                val infoLog = gl.check { getProgramInfoLog(id) }
-                throw CompilationException(infoLog ?: "Huh? Program error?")
-            }
-        }
-
-        bindings = gl.runInContext { bind(resolver) }
-    }
+    private val bindings = gl.runInContext { bind(resolver) }
 
     val vertexAttribLocation: Int = gl.runInContext {
         gl.check { getAttribLocation(id, "Vertex") }
@@ -169,6 +136,21 @@ class GlslProgram(
         private val logger = Logger("GlslProgram")
 
         val PixelColor = OutputPortRef("sm_result")
+
+        val vertexShader = """
+            precision lowp float;
+
+            // xy = vertex position in normalized device coordinates ([-1,+1] range).
+            in vec2 Vertex;
+
+            const vec2 scale = vec2(0.5, 0.5);
+
+            void main()
+            {
+                vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range
+                gl_Position = vec4(Vertex, 0.0, 1.0);
+            }
+        """.trimIndent()
     }
 }
 

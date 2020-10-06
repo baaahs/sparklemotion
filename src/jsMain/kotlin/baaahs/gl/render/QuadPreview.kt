@@ -11,32 +11,31 @@ class QuadPreview(
     private var width: Int,
     private var height: Int,
     private val preRenderCallback: (() -> Unit)? = null
-) {
+) : ShaderPreview {
     private var running = false
     private var scene: Scene? = null
 
-    fun start() {
+    override fun start() {
         running = true
         render()
     }
 
-    fun stop() {
+    override fun stop() {
         running = false
     }
 
-    fun destroy() {
+    override fun destroy() {
         stop()
         scene?.release()
     }
 
-    @JsName("setShaderSrc")
-    fun setProgram(program: GlslProgram) {
+    override fun setProgram(program: GlslProgram) {
         scene?.release()
         scene = null
         scene = Scene(program)
     }
 
-    fun render() {
+    override fun render() {
         if (!running) return
 
         preRenderCallback?.invoke()
@@ -44,8 +43,7 @@ class QuadPreview(
         window.requestAnimationFrame { render() }
     }
 
-    @JsName("resize")
-    fun resize(width: Int, height: Int) {
+    override fun resize(width: Int, height: Int) {
         this.width = width
         this.height = height
         scene?.resize()

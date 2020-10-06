@@ -6,7 +6,7 @@ import kotlin.test.Test
 import kotlin.test.expect
 
 class PixelShaderTest {
-    private val surface = FakeSurface(5)
+    private val fixture = FakeFixture(5)
     private val rgbColors = arrayOf(
         Color.from("#111111"),
         Color.from("#333333"),
@@ -24,16 +24,16 @@ class PixelShaderTest {
 
     @Test
     fun forDirect32Bit_shouldTransmitAndRender() {
-        val dstBuf = transmit(directBuffer(argbColors, PixelBrainShader.Encoding.DIRECT_ARGB), surface)
+        val dstBuf = transmit(directBuffer(argbColors, PixelBrainShader.Encoding.DIRECT_ARGB), fixture)
         expect("#111111,#333333,#77777777,#cccccc,#00ffffff") { dstBuf.getColors() }
-        expect("#111111,#333333,#77777777,#cccccc,#00ffffff") { render(dstBuf, surface).getColors() }
+        expect("#111111,#333333,#77777777,#cccccc,#00ffffff") { render(dstBuf, fixture).getColors() }
     }
 
     @Test
     fun forDirect24Bit_shouldTransmitAndRenderIgnoringAlpha() {
-        val dstBuf = transmit(directBuffer(argbColors, PixelBrainShader.Encoding.DIRECT_RGB), surface)
+        val dstBuf = transmit(directBuffer(argbColors, PixelBrainShader.Encoding.DIRECT_RGB), fixture)
         expect("#111111,#333333,#777777,#cccccc,#ffffff") { dstBuf.getColors() }
-        expect("#111111,#333333,#777777,#cccccc,#ffffff") { render(dstBuf, surface).getColors() }
+        expect("#111111,#333333,#777777,#cccccc,#ffffff") { render(dstBuf, fixture).getColors() }
     }
 
     @Test
@@ -107,21 +107,21 @@ class PixelShaderTest {
                 arrayOf(Color.BLACK, Color.YELLOW),
                 arrayOf(0, 1, 0, 1, 0),
                 PixelBrainShader.Encoding.INDEXED_2
-            ), surface
+            ), fixture
         )
         expect("#000000,#ffff00,#000000,#ffff00,#000000") { dstBuf.getColors() }
-        expect("#000000,#ffff00,#000000,#ffff00,#000000") { render(dstBuf, surface).getColors() }
+        expect("#000000,#ffff00,#000000,#ffff00,#000000") { render(dstBuf, fixture).getColors() }
     }
 
     @Test
     fun whenFewerPixels_shouldTruncate() {
-        val pixels = render(directBuffer(rgbColors), FakeSurface(3))
+        val pixels = render(directBuffer(rgbColors), FakeFixture(3))
         expect("#111111,#333333,#777777") { pixels.joinToString(",") { it.toHexString() } }
     }
 
     @Test
     fun whenMorePixels_shouldRepeat() {
-        val pixels = render(directBuffer(rgbColors), FakeSurface(12))
+        val pixels = render(directBuffer(rgbColors), FakeFixture(12))
         expect(
             "#111111,#333333,#777777,#cccccc,#ffffff," +
                     "#111111,#333333,#777777,#cccccc,#ffffff," +
@@ -134,7 +134,7 @@ class PixelShaderTest {
         encoding: PixelBrainShader.Encoding = PixelBrainShader.Encoding.DIRECT_ARGB
     ): PixelBrainShader.Buffer {
         val shader = PixelBrainShader(encoding)
-        return shader.createBuffer(surface).apply {
+        return shader.createBuffer(fixture).apply {
             (0 until 5).forEach { i -> this.colors[i] = colors[i] }
         }
     }
@@ -145,7 +145,7 @@ class PixelShaderTest {
         encoding: PixelBrainShader.Encoding
     ): PixelBrainShader.Buffer {
         val shader = PixelBrainShader(encoding)
-        return shader.createBuffer(surface).apply {
+        return shader.createBuffer(fixture).apply {
             palette.forEachIndexed { index, color -> this.palette[index] = color }
             colorIndices.forEachIndexed { pixelIndex, colorIndex -> this[pixelIndex] = colorIndex }
         }

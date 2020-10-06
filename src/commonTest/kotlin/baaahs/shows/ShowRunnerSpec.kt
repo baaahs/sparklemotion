@@ -1,4 +1,5 @@
 import baaahs.*
+import baaahs.fixtures.FixtureManager
 import baaahs.gadgets.ColorPicker
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext.Companion.GL_RGB32F
@@ -12,7 +13,7 @@ import baaahs.model.ModelInfo
 import baaahs.model.MovingHead
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
-import baaahs.shaders.FakeSurface
+import baaahs.shaders.FakeFixture
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableShow
@@ -45,7 +46,7 @@ object ShowRunnerSpec : Spek({
         val fakeGlslContext by value { FakeGlContext() }
         val model by value { TestModel() }
         val autoWirer by value { AutoWirer(Plugins.safe()) }
-        val surfaces by value { listOf(FakeSurface(100)) }
+        val fixtures by value { listOf(FakeFixture(100)) }
         val mutableShow by value {
             MutableShow("test show") {
                 addPatch(
@@ -82,11 +83,11 @@ object ShowRunnerSpec : Spek({
         val testCoroutineContext by value { TestCoroutineContext("Test") }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0), testCoroutineContext) }
         val glslRenderer by value { ModelRenderer(fakeGlslContext, ModelInfo.Empty) }
-        val surfaceManager by value { SurfaceManager(glslRenderer) }
+        val fixtureManager by value { FixtureManager(glslRenderer) }
         val stageManager by value {
             val fs = FakeFs()
             StageManager(
-                Plugins.safe(), glslRenderer, pubSub, Storage(fs, Plugins.safe()), surfaceManager, FakeDmxUniverse(),
+                Plugins.safe(), glslRenderer, pubSub, Storage(fs, Plugins.safe()), fixtureManager, FakeDmxUniverse(),
                 MovingHeadManager(fs, pubSub, emptyList()), FakeClock(), model, testCoroutineContext
             )
         }
@@ -98,7 +99,7 @@ object ShowRunnerSpec : Spek({
         beforeEachTest {
             addControls()
             stageManager.switchTo(show, showState)
-            surfaceManager.surfacesChanged(surfaces.map { FakeSurfaceReceiver(it) {} }, emptyList())
+            fixtureManager.fixturesChanged(fixtures.map { FakeFixtureReceiver(it) {} }, emptyList())
             stageManager.renderAndSendNextFrame()
         }
 

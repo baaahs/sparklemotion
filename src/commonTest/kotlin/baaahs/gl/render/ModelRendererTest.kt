@@ -1,6 +1,12 @@
 package baaahs.gl.render
 
-import baaahs.*
+import baaahs.BrainId
+import baaahs.Color
+import baaahs.Pixels
+import baaahs.TestModelSurface
+import baaahs.fixtures.AnonymousFixture
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.IdentifiedFixture
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
@@ -67,7 +73,7 @@ class ModelRendererTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val renderSurface = modelRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan = modelRenderer.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
         modelRenderer.draw()
 
@@ -75,7 +81,7 @@ class ModelRendererTest {
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        )) { renderSurface.pixels.toList() }
+        )) { fixtureRenderPlan.pixels.toList() }
     }
 
     @Test
@@ -96,7 +102,7 @@ class ModelRendererTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val renderSurface = modelRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan = modelRenderer.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
         fakeShowPlayer.getGadget<Slider>("glsl_in_blue").value = .1f
         fakeShowPlayer.drawFrame()
@@ -105,7 +111,7 @@ class ModelRendererTest {
             Color(0f, .1f, .1f),
             Color(.2f, .3f, .1f),
             Color(.4f, .5f, .1f)
-        )) { renderSurface.pixels.toList() }
+        )) { fixtureRenderPlan.pixels.toList() }
 
         fakeShowPlayer.getGadget<Slider>("glsl_in_blue").value = .2f
         fakeShowPlayer.drawFrame()
@@ -114,7 +120,7 @@ class ModelRendererTest {
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .5f, .2f)
-        )) { renderSurface.pixels.toList() }
+        )) { fixtureRenderPlan.pixels.toList() }
     }
 
     @Test
@@ -132,9 +138,9 @@ class ModelRendererTest {
 
         val glslProgram = compileAndBind(program)
 
-        val renderSurface1 = modelRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
-        val renderSurface2 = modelRenderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
-        val renderSurface3 = modelRenderer.addSurface(anonymousSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan1 = modelRenderer.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan2 = modelRenderer.addFixture(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan3 = modelRenderer.addFixture(anonymousSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
 
         modelRenderer.draw()
 
@@ -142,14 +148,14 @@ class ModelRendererTest {
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        )) { renderSurface1.pixels.toList() }
+        )) { fixtureRenderPlan1.pixels.toList() }
 
         // Interpolation between vertex 0 and the surface's center.
         expectColor(listOf(
             Color(.6f, .6f, .5f),
             Color(.651f, .651f, .5f),
             Color(.7f, .7f, .5f)
-        )) { renderSurface2.pixels.toList() }
+        )) { fixtureRenderPlan2.pixels.toList() }
 
         // TODO: this is wrong (and flaky); it depends on LinearModelSpaceUvTranslator picking a random
         //       x,y,x coord in [0..100], which is usually > 1.
@@ -157,7 +163,7 @@ class ModelRendererTest {
 //            Color(1f, 1f, .5f),
 //            Color(1f, 1f, .5f),
 //            Color(1f, 1f, .5f)
-//        )) { renderSurface3.pixels.toList() }
+//        )) { fixtureRenderPlan3.pixels.toList() }
     }
 
     @Ignore @Test // TODO: Per-surface uniform control TBD
@@ -178,12 +184,12 @@ class ModelRendererTest {
 
         val glslProgram = compileAndBind(program)
 
-        val renderSurface1 = modelRenderer.addSurface(surfaceWithThreePixels()).apply { this.program = glslProgram }
-        val renderSurface2 = modelRenderer.addSurface(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan1 = modelRenderer.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan2 = modelRenderer.addFixture(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
 
         // TODO: yuck, let's not do this [first part]
-//        renderSurface1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
-//        renderSurface2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
+//        fixtureRenderPlan1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
+//        fixtureRenderPlan2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
 
         modelRenderer.draw()
 
@@ -191,24 +197,24 @@ class ModelRendererTest {
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .503f, .2f)
-        )) { renderSurface1.pixels.toList() }
+        )) { fixtureRenderPlan1.pixels.toList() }
 
         // Interpolation between vertex 0 and the surface's center.
         expectColor(listOf(
             Color(.6f, .6f, .3f),
             Color(.651f, .651f, .3f),
             Color(.7f, .7f, .3f)
-        )) { renderSurface2.pixels.toList() }
+        )) { fixtureRenderPlan2.pixels.toList() }
     }
 
     @Test
-    fun mapSurfacesToRects_shouldWrapAsNecessary() {
+    fun mapFixturePanelsToRects_shouldWrapAsNecessary() {
 
         // ....
         // xxx.
         expect(listOf(
             Quad.Rect(1f, 0f, 2f, 3f)
-        )) { ModelRenderer.mapSurfaceToRects(4, 4, createSurface("A", 3)) }
+        )) { ModelRenderer.mapFixturePixelsToRects(4, 4, createSurface("A", 3)) }
 
         // ...x
         // xxxx
@@ -217,11 +223,11 @@ class ModelRendererTest {
             Quad.Rect(0f, 3f, 1f, 4f),
             Quad.Rect(1f, 0f, 2f, 4f),
             Quad.Rect(2f, 0f, 3f, 2f)
-        )) { ModelRenderer.mapSurfaceToRects(3, 4, createSurface("A", 7)) }
+        )) { ModelRenderer.mapFixturePixelsToRects(3, 4, createSurface("A", 7)) }
     }
 
-    private fun surfaceWithThreePixels(): IdentifiedSurface {
-        return IdentifiedSurface(
+    private fun surfaceWithThreePixels(): IdentifiedFixture {
+        return IdentifiedFixture(
             TestModelSurface("xyz"), 3, listOf(
                 Vector3F(0f, .1f, 0f),
                 Vector3F(.2f, .3f, 0f),
@@ -230,8 +236,8 @@ class ModelRendererTest {
         )
     }
 
-    private fun identifiedSurfaceWithThreeUnmappedPixels(): IdentifiedSurface {
-        return IdentifiedSurface(
+    private fun identifiedSurfaceWithThreeUnmappedPixels(): IdentifiedFixture {
+        return IdentifiedFixture(
             TestModelSurface("zyx", vertices = listOf(
                 Vector3F(.6f, .6f, 0f),
                 Vector3F(.8f, .8f, 0f),
@@ -240,12 +246,12 @@ class ModelRendererTest {
             )), 3, null)
     }
 
-    private fun anonymousSurfaceWithThreeUnmappedPixels(): AnonymousSurface {
-        return AnonymousSurface(BrainId("some-brain"), 3)
+    private fun anonymousSurfaceWithThreeUnmappedPixels(): AnonymousFixture {
+        return AnonymousFixture(BrainId("some-brain"), 3)
     }
 
-    private fun createSurface(name: String, pixelCount: Int): Surface {
-        return IdentifiedSurface(
+    private fun createSurface(name: String, pixelCount: Int): Fixture {
+        return IdentifiedFixture(
             TestModelSurface(name), pixelCount,
             (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) }
         )
@@ -282,3 +288,6 @@ class ModelRendererTest {
     val ModelInfoForTest = ModelInfo.Empty
 
 }
+
+val FixtureRenderPlan.pixels: Pixels
+    get() = renderResult as Pixels

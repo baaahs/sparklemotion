@@ -1,8 +1,8 @@
 package baaahs.show
 
-import baaahs.Surface
 import baaahs.app.ui.Editable
 import baaahs.camelize
+import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.plugin.Plugins
 import baaahs.show.ButtonGroupControl.Direction
@@ -73,7 +73,7 @@ data class EventBinding(
 data class Surfaces(
     val name: String
 ) {
-    fun matches(surface: Surface): Boolean {
+    fun matches(fixture: Fixture): Boolean {
         return true
     }
 
