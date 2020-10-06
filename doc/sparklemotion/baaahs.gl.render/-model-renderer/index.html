@@ -28,6 +28,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-bytes-result-format/index.html">BytesResultFormat</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">BytesResultFormat</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">ResultFormat</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-gl-const/index.html">GlConst</a></h4>
 </td>
 <td>
@@ -35,17 +42,17 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-result-format/index.html">ResultFormat</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ResultFormat</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-stats/index.html">Stats</a></h4>
 </td>
 <td>
 <code><span class="keyword">class </span><span class="identifier">Stats</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-surface-pixels/index.html">SurfacePixels</a></h4>
-</td>
-<td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">SurfacePixels</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-surface-pixels/index.html"><span class="identifier">SurfacePixels</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -57,7 +64,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">ModelRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderer$<init>(baaahs.gl.GlContext, baaahs.model.ModelInfo)/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl/-gl-context/index.html"><span class="identifier">GlContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.ModelRenderer$<init>(baaahs.gl.GlContext, baaahs.model.ModelInfo)/modelInfo">modelInfo</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model-info/index.html"><span class="identifier">ModelInfo</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">ModelRenderer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderer$<init>(baaahs.gl.GlContext, baaahs.model.ModelInfo, baaahs.gl.render.ModelRenderer.ResultFormat)/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl/-gl-context/index.html"><span class="identifier">GlContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.ModelRenderer$<init>(baaahs.gl.GlContext, baaahs.model.ModelInfo, baaahs.gl.render.ModelRenderer.ResultFormat)/modelInfo">modelInfo</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model-info/index.html"><span class="identifier">ModelInfo</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.ModelRenderer$<init>(baaahs.gl.GlContext, baaahs.model.ModelInfo, baaahs.gl.render.ModelRenderer.ResultFormat)/resultFormat">resultFormat</span><span class="symbol">:</span>&nbsp;<span class="identifier">ResultFormat</span>&nbsp;<span class="symbol">=</span>&nbsp;BytesResultFormat<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -70,27 +77,6 @@
 </td>
 <td>
 <code><span class="keyword">var </span><span class="identifier">arrangement</span><span class="symbol">: </span><span class="identifier">Arrangement</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="buf-height.html">bufHeight</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">.</span><span class="identifier">bufHeight</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="buf-size.html">bufSize</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">.</span><span class="identifier">bufSize</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="buf-width.html">bufWidth</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">.</span><span class="identifier">bufWidth</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -134,10 +120,10 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="add-surface.html">addSurface</a></h4>
+<h4><a href="add-fixture.html">addFixture</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">addSurface</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderer$addSurface(baaahs.Surface)/surface">surface</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-surface/index.html"><span class="identifier">Surface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-render-surface/index.html"><span class="identifier">RenderSurface</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">addFixture</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderer$addFixture(baaahs.fixtures.Fixture)/fixture">fixture</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.fixtures/-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-fixture-render-plan/index.html"><span class="identifier">FixtureRenderPlan</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -162,10 +148,36 @@
 </tr>
 <tr>
 <td>
-<h4><a href="remove-surface.html">removeSurface</a></h4>
+<h4><a href="remove-fixture.html">removeFixture</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">removeSurface</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderer$removeSurface(baaahs.gl.render.RenderSurface)/renderSurface">renderSurface</span><span class="symbol">:</span>&nbsp;<a href="../-render-surface/index.html"><span class="identifier">RenderSurface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">removeFixture</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderer$removeFixture(baaahs.gl.render.FixtureRenderPlan)/fixtureRenderPlan">fixtureRenderPlan</span><span class="symbol">:</span>&nbsp;<a href="../-fixture-render-plan/index.html"><span class="identifier">FixtureRenderPlan</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="buf-height.html">bufHeight</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">.</span><span class="identifier">bufHeight</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="buf-size.html">bufSize</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">.</span><span class="identifier">bufSize</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="buf-width.html">bufWidth</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">.</span><span class="identifier">bufWidth</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 </tbody>
 </table>

@@ -17,13 +17,20 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">Arrangement</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderer.Arrangement$<init>(kotlin.Int, kotlin.FloatArray, kotlin.collections.List((baaahs.gl.render.RenderSurface)))/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.ModelRenderer.Arrangement$<init>(kotlin.Int, kotlin.FloatArray, kotlin.collections.List((baaahs.gl.render.RenderSurface)))/pixelCoords">pixelCoords</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float-array/index.html"><span class="identifier">FloatArray</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.ModelRenderer.Arrangement$<init>(kotlin.Int, kotlin.FloatArray, kotlin.collections.List((baaahs.gl.render.RenderSurface)))/surfaces">surfaces</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../-render-surface/index.html"><span class="identifier">RenderSurface</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">Arrangement</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderer.Arrangement$<init>(kotlin.Int, kotlin.FloatArray, kotlin.collections.List((baaahs.gl.render.FixtureRenderPlan)))/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.ModelRenderer.Arrangement$<init>(kotlin.Int, kotlin.FloatArray, kotlin.collections.List((baaahs.gl.render.FixtureRenderPlan)))/pixelCoords">pixelCoords</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float-array/index.html"><span class="identifier">FloatArray</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.ModelRenderer.Arrangement$<init>(kotlin.Int, kotlin.FloatArray, kotlin.collections.List((baaahs.gl.render.FixtureRenderPlan)))/fixtureRenderPlans">fixtureRenderPlans</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../-fixture-render-plan/index.html"><span class="identifier">FixtureRenderPlan</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
 <h3>Properties</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="fixture-render-plans.html">fixtureRenderPlans</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">fixtureRenderPlans</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../-fixture-render-plan/index.html"><span class="identifier">FixtureRenderPlan</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="pixel-coords.html">pixelCoords</a></h4>
@@ -52,13 +59,6 @@
 <td>
 <code><span class="keyword">val </span><span class="identifier">pixWidth</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
-<tr>
-<td>
-<h4><a href="surfaces.html">surfaces</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">surfaces</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../-render-surface/index.html"><span class="identifier">RenderSurface</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
 </tbody>
 </table>
 <h3>Functions</h3>
@@ -77,13 +77,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">copyToPixelBuffer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-pixel.html">getPixel</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getPixel</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderer.Arrangement$getPixel(kotlin.Int)/pixelIndex">pixelIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs/-color/index.html"><span class="identifier">Color</span></a></code></td>
 </tr>
 <tr>
 <td>
