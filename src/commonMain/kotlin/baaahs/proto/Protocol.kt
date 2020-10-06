@@ -136,7 +136,7 @@ class BrainIdRequest : Message(Type.BRAIN_ID_REQUEST) {
 
 class BrainMappingMessage(
     val brainId: BrainId,
-    val surfaceName: String?,
+    val fixtureName: String?,
     val uvMapName: String?,
     val panelUvTopLeft: Vector2F,
     val panelUvBottomRight: Vector2F,
@@ -181,7 +181,7 @@ class BrainMappingMessage(
 
     override fun serialize(writer: ByteArrayWriter) {
         writer.writeString(brainId.uuid)
-        writer.writeNullableString(surfaceName)
+        writer.writeNullableString(fixtureName)
         writer.writeNullableString(uvMapName)
         writer.writeVector2F(panelUvTopLeft)
         writer.writeVector2F(panelUvBottomRight)

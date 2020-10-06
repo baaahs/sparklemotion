@@ -34,7 +34,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
     val editingShader = memo(props.mutableShaderInstance) {
         val newEditingShader =
-            EditingShader(props.mutableShaderInstance, appContext.autoWirer)
+            EditingShader(props.mutableShaderInstance, appContext.autoWirer, appContext.webClient.model)
 
         val observer = newEditingShader.addObserver {
             if (it.state == EditingShader.State.Success) {
@@ -79,6 +79,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
         div {
             shaderPreview {
+                attrs.shader = editingShader.previewShaderBuilder.shader
                 attrs.previewShaderBuilder = editingShader.previewShaderBuilder
                 attrs.width = 250.px
                 attrs.height = 250.px

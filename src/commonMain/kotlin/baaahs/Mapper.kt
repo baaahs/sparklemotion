@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.api.ws.WebSocketClient
+import baaahs.fixtures.Fixture
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
@@ -606,15 +607,17 @@ class Mapper(
     private fun solidColorBuffer(color: Color): BrainShader.Buffer {
         return if (USE_SOLID_SHADERS) {
             val solidShader = SolidBrainShader()
-            solidShader.createBuffer(object : Surface {
+            solidShader.createBuffer(object : Fixture {
                 override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
+                override val pixelLocations: List<Vector3F?>? get() = null
 
                 override fun describe(): String = "Mapper surface"
             }).apply { this.color = color }
         } else {
             val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
-            pixelShader.createBuffer(object : Surface {
+            pixelShader.createBuffer(object : Fixture {
                 override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
+                override val pixelLocations: List<Vector3F?>? get() = null
 
                 override fun describe(): String = "Mapper surface"
             }).apply {
@@ -801,8 +804,9 @@ class Mapper(
         var screenMax: Vector2F? = null
 
         val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
-        val pixelShaderBuffer = pixelShader.createBuffer(object : Surface {
+        val pixelShaderBuffer = pixelShader.createBuffer(object : Fixture {
             override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
+            override val pixelLocations: List<Vector3F?>? get() = null
 
             override fun describe(): String = "Mapper surface"
         }).apply {

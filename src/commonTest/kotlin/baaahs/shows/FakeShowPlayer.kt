@@ -2,12 +2,12 @@ package baaahs.shows
 
 import baaahs.Gadget
 import baaahs.ShowPlayer
-import baaahs.Surface
+import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.render.RenderSurface
+import baaahs.gl.render.FixtureRenderPlan
 import baaahs.gl.shader.OpenShader
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
@@ -52,7 +52,7 @@ class FakeShowPlayer(
 //    override val allMovingHeads: List<MovingHead> = emptyList()
 //    override val currentBeat: Float = 1f
 
-    private val renderSurfaces = mutableMapOf<Surface, RenderSurface>()
+    private val renderSurfaces = mutableMapOf<Fixture, FixtureRenderPlan>()
 
 //    override fun getBeatSource(): BeatSource {
 //        TODO("not implemented")

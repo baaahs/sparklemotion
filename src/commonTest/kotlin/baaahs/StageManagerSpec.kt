@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.fixtures.FixtureManager
 import baaahs.gl.render.ModelRenderer
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
@@ -40,7 +41,7 @@ object StageManagerSpec : Spek({
                 modelRenderer,
                 pubSub.server,
                 Storage(fakeFs, plugins),
-                SurfaceManager(modelRenderer),
+                FixtureManager(modelRenderer),
                 FakeDmxUniverse(),
                 MovingHeadManager(fakeFs, pubSub.server, emptyList()),
                 FakeClock(),

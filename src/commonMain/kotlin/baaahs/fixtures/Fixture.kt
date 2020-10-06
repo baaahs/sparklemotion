@@ -1,28 +1,31 @@
-package baaahs
+package baaahs.fixtures
 
+import baaahs.BrainId
+import baaahs.SparkleMotion
 import baaahs.geom.Vector3F
 import baaahs.model.Model
 
 /**
- * Represents a surface whose lighting can be controlled.
+ * Represents a controllable lighting fixture.
  *
  * May or may not be associated with a [Model.Surface].
  */
-interface Surface {
+interface Fixture {
     val pixelCount: Int
+    val pixelLocations: List<Vector3F?>?
 
     fun describe(): String
 }
 
 /**
- * A surface which has been associated with a specific [Model.Surface].
+ * A fixture which has been associated with a specific [Model.Surface].
  */
-class IdentifiedSurface(
+class IdentifiedFixture(
     val modelSurface: Model.Surface,
     override val pixelCount: Int,
     /** Each pixel's location in the global 3d model. */
-    val pixelLocations: List<Vector3F?>? = emptyList()
-) : Surface {
+    override val pixelLocations: List<Vector3F?>? = emptyList()
+) : Fixture {
     val name: String = modelSurface.name
     override fun describe(): String = modelSurface.description
 
@@ -30,7 +33,7 @@ class IdentifiedSurface(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
 
-        other as IdentifiedSurface
+        other as IdentifiedFixture
 
         if (modelSurface != other.modelSurface) return false
 
@@ -45,13 +48,14 @@ class IdentifiedSurface(
 }
 
 /**
- * A surface whose identity isn't known.
+ * A fixture whose identity isn't known.
  */
-class AnonymousSurface(
+class AnonymousFixture(
     val brainId: BrainId,
     override val pixelCount: Int = SparkleMotion.MAX_PIXEL_COUNT
-) : Surface {
-    override fun describe(): String = "Anonymous surface at $brainId"
-    override fun equals(other: Any?): Boolean = other is AnonymousSurface && brainId.equals(other.brainId)
+) : Fixture {
+    override val pixelLocations: List<Vector3F?>? get() = null
+    override fun describe(): String = "Anonymous fixture at $brainId"
+    override fun equals(other: Any?): Boolean = other is AnonymousFixture && brainId.equals(other.brainId)
     override fun hashCode(): Int = brainId.hashCode()
 }

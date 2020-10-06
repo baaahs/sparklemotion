@@ -6,6 +6,7 @@ import baaahs.app.ui.AppIndexProps
 import baaahs.gl.GlBase
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsClientBackend
+import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.plugin.BeatLinkPlugin
 import baaahs.plugin.Plugins
@@ -151,6 +152,9 @@ class WebClient(
 
         val isLoaded: Boolean
             get() = this@WebClient.pinkyState == PinkyState.Running && clientData != null
+
+        val model: Model<*>
+            get() = this@WebClient.model
 
         val show: Show?
             get() = this@WebClient.show

@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.fixtures.Fixture
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.shaders.PixelBrainShader
@@ -25,9 +26,9 @@ interface BrainShaderReader<T : BrainShader<*>> {
 }
 
 abstract class BrainShader<B : BrainShader.Buffer>(val idBrain: BrainShaderId) {
-    abstract fun createRenderer(surface: Surface): Renderer<B>
+    abstract fun createRenderer(fixture: Fixture): Renderer<B>
 
-    abstract fun createBuffer(surface: Surface): B
+    abstract fun createBuffer(fixture: Fixture): B
 
     val descriptorBytes: ByteArray by lazy { toBytes() }
 
