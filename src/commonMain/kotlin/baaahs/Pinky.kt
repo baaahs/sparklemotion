@@ -8,7 +8,7 @@ import baaahs.fixtures.IdentifiedFixture
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.CompilationException
-import baaahs.gl.render.ModelRenderer
+import baaahs.gl.render.RenderEngine
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
@@ -40,7 +40,7 @@ class Pinky(
     soundAnalyzer: SoundAnalyzer,
     private val switchShowAfterIdleSeconds: Int? = 600,
     private val adjustShowAfterIdleSeconds: Int? = null,
-    modelRenderer: ModelRenderer,
+    renderEngine: RenderEngine,
     val plugins: Plugins,
     val pinkyMainDispatcher: CoroutineDispatcher
 ) : CoroutineScope, Network.UdpListener {
@@ -60,10 +60,10 @@ class Pinky(
     private val pubSub: PubSub.Server = PubSub.Server(httpServer, coroutineContext)
 //    private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    internal val fixtureManager = FixtureManager(modelRenderer)
+    internal val fixtureManager = FixtureManager(renderEngine)
 
     var stageManager: StageManager = StageManager(
-        plugins, modelRenderer, pubSub, storage, fixtureManager, dmxUniverse, movingHeadManager, clock, model,
+        plugins, renderEngine, pubSub, storage, fixtureManager, dmxUniverse, movingHeadManager, clock, model,
         coroutineContext
     )
 

@@ -3,7 +3,7 @@ package baaahs.gl.render
 import baaahs.fixtures.Fixture
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
-import baaahs.gl.render.ModelRenderer.GlConst.GL_RGBA8
+import baaahs.gl.render.RenderEngine.GlConst.GL_RGBA8
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.model.ModelInfo
 import baaahs.timeSync
@@ -12,7 +12,7 @@ import com.danielgergely.kgl.*
 import kotlin.math.max
 import kotlin.math.min
 
-open class ModelRenderer(
+open class RenderEngine(
     val gl: GlContext,
     private val modelInfo: ModelInfo,
     private val resultFormat: ResultFormat = BytesResultFormat
@@ -155,7 +155,7 @@ open class ModelRenderer(
     }
 
     companion object {
-        private val logger = Logger("GlslRenderer")
+        private val logger = Logger("RenderEngine")
 
         /** Resulting Rect is in pixel coordinates starting at (0,0) with Y increasing. */
         internal fun mapFixturePixelsToRects(nextPix: Int, pixWidth: Int, fixture: Fixture): List<Quad.Rect> {
@@ -295,7 +295,7 @@ open class ModelRenderer(
         val readPixelFormat: Int
         val readType: Int
 
-        fun createRenderResult(modelRenderer: ModelRenderer, size: Int, nextPixelOffset: Int): RenderResult
+        fun createRenderResult(renderEngine: RenderEngine, size: Int, nextPixelOffset: Int): RenderResult
         fun createBuffer(size: Int): Buffer
     }
 
@@ -307,8 +307,8 @@ open class ModelRenderer(
         override val readType: Int
             get() = GL_UNSIGNED_BYTE
 
-        override fun createRenderResult(modelRenderer: ModelRenderer, size: Int, nextPixelOffset: Int): RenderResult {
-            return FixturePixels(modelRenderer, size, nextPixelOffset)
+        override fun createRenderResult(renderEngine: RenderEngine, size: Int, nextPixelOffset: Int): RenderResult {
+            return FixturePixels(renderEngine, size, nextPixelOffset)
         }
 
         override fun createBuffer(size: Int): Buffer {

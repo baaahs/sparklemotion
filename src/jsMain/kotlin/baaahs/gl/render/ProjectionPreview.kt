@@ -29,14 +29,14 @@ class ProjectionPreview(
     private val preRenderCallback: (() -> Unit)? = null
 ) : ShaderPreview {
     private var running = false
-    private val modelRenderer = ModelRenderer(gl, model, FloatsResultFormat(gl.webgl))
+    private val renderEngine = RenderEngine(gl, model, FloatsResultFormat(gl.webgl))
     private var projectionProgram: GlslProgram? = null
     private val fixtureRenderPlans: Map<Model.Surface, FixtureRenderPlan>
     private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D
 
     init {
         fixtureRenderPlans = model.allSurfaces.associateWith { surface ->
-            modelRenderer.addFixture(object : Fixture {
+            renderEngine.addFixture(object : Fixture {
                 val lineVertices = surface.lines.flatMap { it.vertices }
 
                 override val pixelCount: Int
@@ -77,7 +77,7 @@ class ProjectionPreview(
         if (projectionProgram != null) {
             preRenderCallback?.invoke()
 
-            modelRenderer.draw()
+            renderEngine.draw()
 
             context2d.strokeStyle = "#ffffff"
             context2d.lineWidth = 2.0
@@ -187,20 +187,20 @@ class ProjectionPreview(
     }
 }
 
-class FloatsResultFormat(gl: WebGL2RenderingContext) : ModelRenderer.ResultFormat {
+class FloatsResultFormat(gl: WebGL2RenderingContext) : RenderEngine.ResultFormat {
     init {
         gl.getExtension("EXT_color_buffer_float")!!
     }
 
     override val renderPixelFormat: Int
-        get() = ModelRenderer.GlConst.GL_RGBA32F
+        get() = RenderEngine.GlConst.GL_RGBA32F
     override val readPixelFormat: Int
         get() = GL_RGBA
     override val readType: Int
         get() = GL_FLOAT
 
-    override fun createRenderResult(modelRenderer: ModelRenderer, size: Int, nextPixelOffset: Int): RenderResult {
-        return FloatsResult(modelRenderer, size, nextPixelOffset)
+    override fun createRenderResult(renderEngine: RenderEngine, size: Int, nextPixelOffset: Int): RenderResult {
+        return FloatsResult(renderEngine, size, nextPixelOffset)
     }
 
     override fun createBuffer(size: Int): Buffer {
@@ -210,7 +210,7 @@ class FloatsResultFormat(gl: WebGL2RenderingContext) : ModelRenderer.ResultForma
 }
 
 class FloatsResult(
-    private val modelRenderer: ModelRenderer,
+    private val renderEngine: RenderEngine,
     override val size: Int,
     override val bufferOffset: Int
 ) : RenderResult {
@@ -220,7 +220,7 @@ class FloatsResult(
     fun getA(i: Int): Float = getFloat(i, 3)
 
     private fun getFloat(i: Int, component: Int): Float {
-        val floatBuffer = modelRenderer.arrangement.resultBuffer as FloatBuffer
+        val floatBuffer = renderEngine.arrangement.resultBuffer as FloatBuffer
         val offset = (bufferOffset + i) * 4
         return floatBuffer[offset + component]
     }

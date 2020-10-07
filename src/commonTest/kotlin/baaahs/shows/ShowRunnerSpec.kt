@@ -5,7 +5,7 @@ import baaahs.geom.Vector3F
 import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
-import baaahs.gl.render.ModelRenderer
+import baaahs.gl.render.RenderEngine
 import baaahs.glsl.Shaders
 import baaahs.mapper.Storage
 import baaahs.model.Model
@@ -77,12 +77,12 @@ object ShowRunnerSpec : Spek({
         }
         val testCoroutineContext by value { TestCoroutineContext("Test") }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0), testCoroutineContext) }
-        val glslRenderer by value { ModelRenderer(fakeGlslContext, ModelInfo.Empty) }
-        val fixtureManager by value { FixtureManager(glslRenderer) }
+        val renderEngine by value { RenderEngine(fakeGlslContext, ModelInfo.Empty) }
+        val fixtureManager by value { FixtureManager(renderEngine) }
         val stageManager by value {
             val fs = FakeFs()
             StageManager(
-                Plugins.safe(), glslRenderer, pubSub, Storage(fs, Plugins.safe()), fixtureManager, FakeDmxUniverse(),
+                Plugins.safe(), renderEngine, pubSub, Storage(fs, Plugins.safe()), fixtureManager, FakeDmxUniverse(),
                 MovingHeadManager(fs, pubSub, emptyList()), FakeClock(), model, testCoroutineContext
             )
         }
