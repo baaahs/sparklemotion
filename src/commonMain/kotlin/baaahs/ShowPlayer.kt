@@ -28,6 +28,7 @@ interface ShowPlayer {
         return try {
             openShader(shader, addToCache)
         } catch (e: AnalysisException) {
+            logger.debug(e) { "Failed to analyze shader \"${shader.title}\"" }
             null
         }
     }
@@ -37,6 +38,10 @@ interface ShowPlayer {
         ShowOpener(GlslAnalyzer(plugins), show, this).openShow(showState)
 
     fun releaseUnused()
+
+    companion object {
+        private val logger = Logger("ShowPlayer")
+    }
 }
 
 abstract class BaseShowPlayer(
