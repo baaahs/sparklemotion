@@ -65,13 +65,48 @@ object GlslCodeSpec : Spek({
         context("struct") {
             val struct by value { statement.asStructOrNull() }
 
-            context("uniform") {
-                override(text) { "struct MovingHead {\n  float pan;\n  float tilt;\n};" }
-                expectValue(
+            override(text) {
+                """
+                        struct MovingHead {
+                            float pan; // in radians
+                            float tilt; // in radians
+                        };
+                    """.trimIndent()
+            }
+
+            it("should return a GlslStruct") {
+                expect(
                     GlslCode.GlslStruct(
-                        "MovingHead", "struct MovingHead {\n  float pan;\n  float tilt;\n};"
+                        "MovingHead",
+                        mapOf("pan" to GlslType.Float, "tilt" to GlslType.Float),
+                        null,
+                        false,
+                        text
                     )
                 ) { struct }
+            }
+
+            context("also declaring a variable") {
+                override(text) {
+                    """
+                        struct MovingHead {
+                            float pan; // in radians
+                            float tilt; // in radians
+                        } movingHead;
+                    """.trimIndent()
+                }
+
+                it("should return a GlslStruct") {
+                    expect(
+                        GlslCode.GlslStruct(
+                            "MovingHead",
+                            mapOf("pan" to GlslType.Float, "tilt" to GlslType.Float),
+                            "movingHead",
+                            false,
+                            text
+                        )
+                    ) { struct }
+                }
             }
         }
     }

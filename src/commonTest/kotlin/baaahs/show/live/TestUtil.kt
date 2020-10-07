@@ -1,7 +1,6 @@
 package baaahs.show.live
 
 import baaahs.ShowState
-import baaahs.getBang
 import baaahs.gl.patch.AutoWirer
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
@@ -18,7 +17,7 @@ fun AutoWirer.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap(
     val unresolvedPatch = autoWire(shader)
     unresolvedPatch.editShader(shader).apply {
         ports.forEach { (portId, port) ->
-            incomingLinksOptions.getBang(portId, "port").apply {
+            linkOptionsFor(portId).apply {
                 clear()
                 add(port)
             }
