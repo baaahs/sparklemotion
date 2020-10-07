@@ -4,7 +4,7 @@ import baaahs.client.WebClient
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
-import baaahs.gl.render.ModelRenderer
+import baaahs.gl.render.RenderEngine
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
@@ -70,7 +70,7 @@ class SheepSimulator(val model: Model<*>) {
         fs,
         PermissiveFirmwareDaddy(),
         bridgeClient.soundAnalyzer,
-        modelRenderer = ModelRenderer(glslContext, model),
+        renderEngine = RenderEngine(glslContext, model),
         pinkyMainDispatcher = Dispatchers.Main,
         plugins = plugins
     )

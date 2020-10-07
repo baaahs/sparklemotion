@@ -6,10 +6,10 @@ import baaahs.ShowRunner
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.FixtureRenderPlan
-import baaahs.gl.render.ModelRenderer
+import baaahs.gl.render.RenderEngine
 
 class FixtureManager(
-    private val modelRenderer: ModelRenderer
+    private val renderEngine: RenderEngine
 ) {
     private val changedFixtures = mutableListOf<ShowRunner.FixturesChanges>()
     private val fixtureRenderPlans: MutableMap<Fixture, FixtureRenderPlan> = hashMapOf()
@@ -72,7 +72,7 @@ class FixtureManager(
     private fun addReceiver(receiver: ShowRunner.FixtureReceiver) {
         val fixture = receiver.fixture
         val fixtureRenderPlan = fixtureRenderPlans.getOrPut(fixture) {
-            modelRenderer.addFixture(fixture)
+            renderEngine.addFixture(fixture)
         }
         fixtureRenderPlan.receivers.add(receiver)
 
@@ -89,7 +89,7 @@ class FixtureManager(
         }
 
         if (fixtureRenderPlan.receivers.isEmpty()) {
-            modelRenderer.removeFixture(fixtureRenderPlan)
+            renderEngine.removeFixture(fixtureRenderPlan)
             fixtureRenderPlan.release()
             fixtureRenderPlans.remove(fixture)
         }

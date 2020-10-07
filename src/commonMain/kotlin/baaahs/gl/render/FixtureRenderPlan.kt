@@ -30,12 +30,12 @@ class FixtureRenderPlan(
 }
 
 class FixturePixels(
-    private val modelRenderer: ModelRenderer,
+    private val renderEngine: RenderEngine,
     override val size: Int,
     override val bufferOffset: Int
 ) : Pixels, RenderResult {
     override fun get(i: Int): Color {
-        val pixelBuffer = modelRenderer.arrangement.resultBuffer as ByteBuffer
+        val pixelBuffer = renderEngine.arrangement.resultBuffer as ByteBuffer
         val offset = (bufferOffset + i) * 4
         return Color(
             red = pixelBuffer[offset],

@@ -22,7 +22,7 @@ import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.test.*
 
-class ModelRendererTest {
+class RenderEngineTest {
     // assumeTrue() doesn't work in js runners; instead, bail manually.
     // TODO: Do something better.
 //    @BeforeTest
@@ -37,14 +37,14 @@ class ModelRendererTest {
     }
 
     private lateinit var glContext: GlContext
-    private lateinit var modelRenderer: ModelRenderer
+    private lateinit var renderEngine: RenderEngine
     private lateinit var fakeShowPlayer: FakeShowPlayer
 
     @BeforeTest
     fun setUp() {
         if (glslAvailable()) {
             glContext = GlBase.manager.createContext()
-            modelRenderer = ModelRenderer(glContext, ModelInfoForTest)
+            renderEngine = RenderEngine(glContext, ModelInfoForTest)
             fakeShowPlayer = FakeShowPlayer(glContext)
         }
     }
@@ -53,7 +53,7 @@ class ModelRendererTest {
     fun tearDown() {
         if (glslAvailable()) {
             glContext.release()
-            modelRenderer.release()
+            renderEngine.release()
         }
     }
 
@@ -73,9 +73,9 @@ class ModelRendererTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val fixtureRenderPlan = modelRenderer.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan = renderEngine.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
-        modelRenderer.draw()
+        renderEngine.draw()
 
         expectColor(listOf(
             Color(0f, .1f, .5f),
@@ -102,7 +102,7 @@ class ModelRendererTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val fixtureRenderPlan = modelRenderer.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan = renderEngine.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
 
         fakeShowPlayer.getGadget<Slider>("glsl_in_blue").value = .1f
         fakeShowPlayer.drawFrame()
@@ -138,11 +138,11 @@ class ModelRendererTest {
 
         val glslProgram = compileAndBind(program)
 
-        val fixtureRenderPlan1 = modelRenderer.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
-        val fixtureRenderPlan2 = modelRenderer.addFixture(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
-        val fixtureRenderPlan3 = modelRenderer.addFixture(anonymousSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan1 = renderEngine.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan2 = renderEngine.addFixture(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan3 = renderEngine.addFixture(anonymousSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
 
-        modelRenderer.draw()
+        renderEngine.draw()
 
         expectColor(listOf(
             Color(0f, .1f, .5f),
@@ -184,14 +184,14 @@ class ModelRendererTest {
 
         val glslProgram = compileAndBind(program)
 
-        val fixtureRenderPlan1 = modelRenderer.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
-        val fixtureRenderPlan2 = modelRenderer.addFixture(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan1 = renderEngine.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val fixtureRenderPlan2 = renderEngine.addFixture(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
 
         // TODO: yuck, let's not do this [first part]
 //        fixtureRenderPlan1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
 //        fixtureRenderPlan2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
 
-        modelRenderer.draw()
+        renderEngine.draw()
 
         expectColor(listOf(
             Color(0f, .1f, .2f),
@@ -214,7 +214,7 @@ class ModelRendererTest {
         // xxx.
         expect(listOf(
             Quad.Rect(1f, 0f, 2f, 3f)
-        )) { ModelRenderer.mapFixturePixelsToRects(4, 4, createSurface("A", 3)) }
+        )) { RenderEngine.mapFixturePixelsToRects(4, 4, createSurface("A", 3)) }
 
         // ...x
         // xxxx
@@ -223,7 +223,7 @@ class ModelRendererTest {
             Quad.Rect(0f, 3f, 1f, 4f),
             Quad.Rect(1f, 0f, 2f, 4f),
             Quad.Rect(2f, 0f, 3f, 2f)
-        )) { ModelRenderer.mapFixturePixelsToRects(3, 4, createSurface("A", 7)) }
+        )) { RenderEngine.mapFixturePixelsToRects(3, 4, createSurface("A", 7)) }
     }
 
     private fun surfaceWithThreePixels(): IdentifiedFixture {

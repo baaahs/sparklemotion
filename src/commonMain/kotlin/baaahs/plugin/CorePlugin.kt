@@ -10,7 +10,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslProgram.DataFeed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
-import baaahs.gl.render.ModelRenderer
+import baaahs.gl.render.RenderEngine
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
@@ -194,12 +194,12 @@ class CorePlugin : Plugin {
         override fun suggestId(): String = "pixelCoordsTexture"
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
-            object : DataFeed, ModelRenderer.ArrangementListener, RefCounted by RefCounter() {
+            object : DataFeed, RenderEngine.ArrangementListener, RefCounted by RefCounter() {
                 private val gl = showPlayer.glContext
                 private val uvCoordTextureUnit = gl.getTextureUnit(PixelCoordsTextureDataSource::class)
                 private val uvCoordTexture = gl.check { createTexture() }
 
-                override fun onArrangementChange(arrangement: ModelRenderer.Arrangement) {
+                override fun onArrangementChange(arrangement: RenderEngine.Arrangement) {
                     if (arrangement.pixelCoords.isEmpty()) return
 
                     val pixWidth = arrangement.pixWidth

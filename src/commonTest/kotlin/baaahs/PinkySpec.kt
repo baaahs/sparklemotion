@@ -4,7 +4,7 @@ import baaahs.fixtures.AnonymousFixture
 import baaahs.fixtures.IdentifiedFixture
 import baaahs.geom.Matrix4
 import baaahs.gl.override
-import baaahs.gl.render.ModelRenderer
+import baaahs.gl.render.RenderEngine
 import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.model.Model
@@ -49,7 +49,7 @@ object PinkySpec : Spek({
                 fakeFs,
                 PermissiveFirmwareDaddy(),
                 StubSoundAnalyzer(),
-                modelRenderer = ModelRenderer(fakeGlslContext, ModelInfo.Empty),
+                renderEngine = RenderEngine(fakeGlslContext, ModelInfo.Empty),
                 plugins = Plugins.safe(),
                 pinkyMainDispatcher = object : CoroutineDispatcher() {
                     override fun dispatch(context: CoroutineContext, block: Runnable) {
