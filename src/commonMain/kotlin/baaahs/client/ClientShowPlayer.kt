@@ -17,7 +17,7 @@ class ClientShowPlayer(
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
         gadgets[id] = ClientGadget(id, pubSub, gadget)
-        controlledDataSource?.let { dataSourceGadgets[controlledDataSource] = gadget }
+        super.registerGadget(id, gadget, controlledDataSource)
     }
 
     override fun <T : Gadget> useGadget(id: String): T {

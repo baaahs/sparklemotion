@@ -49,7 +49,7 @@ abstract class BaseShowPlayer(
     private val shaders = mutableMapOf<Shader, OpenShader>()
 
     override val dataSources: List<DataSource> get() = dataFeeds.keys.toList()
-    protected val dataSourceGadgets: MutableMap<DataSource, Gadget> = mutableMapOf()
+    private val dataSourceGadgets: MutableMap<DataSource, Gadget> = mutableMapOf()
 
     override fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed {
         return dataFeeds.getOrPut(dataSource) {
@@ -59,6 +59,10 @@ abstract class BaseShowPlayer(
 
     override fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed {
         return dataFeeds[dataSource]!!
+    }
+
+    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
+        controlledDataSource?.let { dataSourceGadgets[controlledDataSource] = gadget }
     }
 
     override fun <T : Gadget> useGadget(dataSource: DataSource): T? {
