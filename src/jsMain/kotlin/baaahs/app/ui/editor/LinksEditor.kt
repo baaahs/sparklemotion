@@ -51,7 +51,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
         ?.sortedBy { it.title }
         ?.associateWith { inputPort ->
             handler(
-                "change to ${inputPort.id}", props.mutableShaderInstance, props.onChange
+                "change to ${inputPort.id}", props.mutableShaderInstance, props.editableManager
             ) { sourcePortOption: SourcePortOption? ->
                 val incomingLinks = props.mutableShaderInstance.incomingLinks
                 if (sourcePortOption == null) {
@@ -59,8 +59,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                 } else {
                     incomingLinks[inputPort.id] = sourcePortOption.portEditor
                 }
-                props.onChange()
-                this@xComponent.forceRender()
+                props.editableManager.onChange()
             }
         }
 
@@ -157,11 +156,10 @@ data class ShaderOption(val mutableShaderInstance: MutableShaderInstance) : Sour
 
 
 external interface LinksEditorProps : RProps {
-    var showBuilder: ShowBuilder
+    var editableManager: EditableManager
     var mutableShaderInstance: MutableShaderInstance
     var siblingMutableShaderInstances: List<MutableShaderInstance>
     var shaderChannels: Set<ShaderChannel>
-    var onChange: () -> Unit
 }
 
 fun RBuilder.linksEditor(handler: RHandler<LinksEditorProps>): ReactElement =
