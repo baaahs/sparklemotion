@@ -1,6 +1,7 @@
 package baaahs.app.ui.editor
 
 import baaahs.show.ButtonGroupControl
+import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
@@ -65,7 +66,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
                 attrs.editableManager = editableManager
                 attrs.mutablePatch = mutablePatch
                 attrs.mutableShaderInstance = mutableShaderInstance
-                attrs.shaderChannels = emptySet() // TODO
+                attrs.shaderChannels = (mutablePatch.findShaderChannels() + ShaderChannel.Main).toSet()
             }
         }
 
