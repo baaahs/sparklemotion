@@ -134,6 +134,27 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                     attrs.label { typographyH6 { +"Dark Mode" } }
                 }
             }
+
+            listItem {
+                formControlLabel {
+                    attrs.control {
+                        switch {
+                            attrs.checked = props.advancedMode
+                            attrs.onChangeFunction = props.onAdvancedModeChange.withEvent()
+                        }
+                    }
+                    attrs.label { typographyH6 { +"Advanced Mode" } }
+                }
+            }
+
+            if (props.advancedMode) {
+                listItem {
+                    attrs.button = true
+                    attrs.onClickFunction = props.onShowGlsl.withEvent()
+                    listItemIcon { icon(Icons.Code) }
+                    listItemText { attrs.primary { +"Show GLSL" } }
+                }
+            }
         }
     }
 }
@@ -153,12 +174,16 @@ external interface AppDrawerProps : RProps {
 
     var darkMode: Boolean
     var onDarkModeChange: () -> Unit
+    var advancedMode: Boolean
+    var onAdvancedModeChange: () -> Unit
 
     var onNewShow: () -> Unit
     var onOpenShow: () -> Unit
     var onSaveShow: () -> Unit
     var onSaveShowAs: () -> Unit
     var onCloseShow: () -> Unit
+
+    var onShowGlsl: () -> Unit
 }
 
 fun RBuilder.appDrawer(handler: RHandler<AppDrawerProps>) =

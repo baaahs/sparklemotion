@@ -63,6 +63,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var darkMode by state { false }
     val handleDarkModeChange = useCallback(darkMode) { darkMode = !darkMode }
 
+    var advancedMode by state { false }
+    val handleAdvancedModeChange = useCallback(advancedMode) { advancedMode = !advancedMode }
+
     val theme = memo(darkMode) {
         createMuiTheme {
             palette {
@@ -185,6 +188,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         webClient.onCloseShow()
     }
 
+    val handleShowGlsl = useCallback { webClient.onShowGlsl() }
+
     val handlePromptClose = useCallback { prompt = null }
 
     val forceAppDrawerOpen = webClient.isLoaded && webClient.show == null
@@ -249,11 +254,13 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
                     attrs.darkMode = darkMode
                     attrs.onDarkModeChange = handleDarkModeChange
+                    attrs.onAdvancedModeChange = handleAdvancedModeChange
                     attrs.onNewShow = handleNewShow
                     attrs.onOpenShow = handleOpenShow
                     attrs.onSaveShow = handleSaveShow
                     attrs.onSaveShowAs = handleSaveShowAs
                     attrs.onCloseShow = handleCloseShow
+                    attrs.onShowGlsl = handleShowGlsl
                 }
 
                 div(+themeStyles.appContent) {
