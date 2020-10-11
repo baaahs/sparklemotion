@@ -1,9 +1,11 @@
 package baaahs.show.live
 
 import baaahs.gl.patch.AutoWirer
+import baaahs.only
 import baaahs.plugin.Plugins
 import baaahs.show.Layout
 import baaahs.show.Layouts
+import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
@@ -72,6 +74,22 @@ object OpenShowSpec : Spek({
                 expect(openShow.patches + scenesButtonGroup.buttons[0].patches) {
                     openShow.activeSet().getActivePatches()
                 }
+            }
+        }
+
+        context("when a shader instance has weird incoming links") {
+            beforeEachTest {
+                mutableShow.addPatch(
+                    autoWirer.wireUp(fakeShader("Weird Shader")).apply {
+                        mutableShaderInstances.only().incomingLinks["nonsense"] = MutableConstPort("invalid")
+                    }
+                )
+            }
+
+            it("ignores links to unknown ports") {
+                expect(
+                    setOf("gl_FragCoord", "time")
+                ) { openShow.patches.only().shaderInstances.only().incomingLinks.keys }
             }
         }
     }
