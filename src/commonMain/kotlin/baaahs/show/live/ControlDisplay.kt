@@ -54,7 +54,8 @@ class ControlDisplay(
                 show.allControls.flatMap { it.controlledDataSources() }
         suggestedControls = dataSourcesWithoutControls.mapNotNull { it.buildControl()?.open() }
     }
-    val unplacedControls = show.allControls.filter { !placedControls.contains(it) }
+    val unplacedControls = (show.allControls + suggestedControls)
+        .filter { !placedControls.contains(it) }
 
     fun render(panelTitle: String, renderBucket: RenderBucket) {
         allPanelBuckets.render(panelTitle, renderBucket)
@@ -185,11 +186,10 @@ class ControlDisplay(
             }
 
             inner class PlacedControl(val control: OpenControl, val index: Int) : PlaceableControl {
-                override lateinit var mutableShow: MutableShow
+                override val mutableShow: MutableShow by lazy { show.edit() }
                 override lateinit var mutableControl: MutableControl
 
                 override fun remove() {
-                    mutableShow = show.edit()
                     val mutablePatchHolder = mutableShow.findPatchHolder(section.container)
                     mutableControl = mutablePatchHolder.removeControl(panelTitle, index)
                 }
@@ -226,12 +226,17 @@ class ControlDisplay(
     }
 
     inner class UnplacedControl(val index: Int) : PlaceableControl {
-        override lateinit var mutableShow: MutableShow
-        override lateinit var mutableControl: MutableControl
+        override val mutableShow: MutableShow by lazy { show.edit() }
+        override val mutableControl: MutableControl by lazy {
+            val subject = unplacedControls[index]
+            if (suggestedControls.contains(subject)) {
+                subject.toNewMutable(mutableShow)
+            } else {
+                mutableShow.findControl(subject.id)
+            }
+        }
 
         override fun remove() {
-            mutableShow = show.edit()
-            mutableControl = mutableShow.findControl(unplacedControls[index].id)
         }
 
         override fun onMove() {
