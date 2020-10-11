@@ -22,12 +22,16 @@ val Gadget = xComponent<GadgetProps>("Gadget") { props ->
     val appContext = useContext(appContext)
     val dataSource = props.control.controlledDataSource
     val dataFeed = appContext.showPlayer.useDataFeed(dataSource)
+    val gadget = when (dataFeed) {
+        is CorePlugin.GadgetDataFeed -> dataFeed.gadget
+        else -> dataSource.buildControl()!!.gadget
+    }
     val title = props.control.gadget.title
 
     when (dataSource.getRenderType()) {
         "Slider" -> {
             RangeSlider {
-                attrs.gadget = (dataFeed as CorePlugin.GadgetDataFeed).gadget
+                attrs.gadget = gadget
             }
             div(+Styles.dataSourceTitle) { +title }
         }
