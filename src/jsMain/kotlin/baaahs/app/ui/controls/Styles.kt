@@ -63,6 +63,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
             child(".${dragHandle.name}") {
                 opacity = 1
+                cursor = Cursor.move
             }
         }
     }
@@ -90,6 +91,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
             child(".${dragHandle.name}") {
                 opacity = 1
+                cursor = Cursor.move
             }
         }
     }
