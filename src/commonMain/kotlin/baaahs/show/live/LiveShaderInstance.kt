@@ -1,5 +1,6 @@
 package baaahs.show.live
 
+import baaahs.Logger
 import baaahs.getBang
 import baaahs.gl.patch.PortDiagram
 import baaahs.gl.shader.InputPort
@@ -72,19 +73,32 @@ class ShaderInstanceResolver(
 
         val shaderInstance = findShaderInstance(id)
         val shader = findShader(shaderInstance.shaderId)
-        val links = shaderInstance.incomingLinks.mapValues { (_, portRef) ->
-            when (portRef) {
-                is ShaderOutPortRef -> LiveShaderInstance.ShaderOutLink(resolve(portRef.shaderInstanceId))
-                is DataSourceRef -> LiveShaderInstance.DataSourceLink(findDataSource(portRef.dataSourceId), portRef.dataSourceId)
-                is ShaderChannelRef -> LiveShaderInstance.ShaderChannelLink(portRef.shaderChannel)
-                is OutputPortRef -> TODO()
-                is ConstPortRef -> LiveShaderInstance.ConstLink(portRef.glsl)
+        val knownInputPorts = shader.inputPorts.associateBy { it.id }
+
+        val links = shaderInstance.incomingLinks
+            .filterKeys { portId ->
+                knownInputPorts.contains(portId).also { containsKey ->
+                    if (!containsKey) logger.warn { "Unknown port mapping \"$portId\" for shader \"${shader.title}\"" }
+                }
             }
-        }
+            .mapValues { (_, portRef) ->
+                when (portRef) {
+                    is ShaderOutPortRef -> LiveShaderInstance.ShaderOutLink(resolve(portRef.shaderInstanceId))
+                    is DataSourceRef -> LiveShaderInstance.DataSourceLink(findDataSource(portRef.dataSourceId), portRef.dataSourceId)
+                    is ShaderChannelRef -> LiveShaderInstance.ShaderChannelLink(portRef.shaderChannel)
+                    is OutputPortRef -> TODO()
+                    is ConstPortRef -> LiveShaderInstance.ConstLink(portRef.glsl)
+                }
+            }
+
         return LiveShaderInstance(shader, links, shaderInstance.shaderChannel, shaderInstance.priority).also {
             liveShaderInstances[id] = it
         }
     }
 
     fun getResolvedShaderInstances() = liveShaderInstances
+
+    companion object {
+        private val logger = Logger("ShaderInstanceResolver")
+    }
 }

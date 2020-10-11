@@ -54,10 +54,10 @@ enum class ShaderType(
         mapOf(ContentType.UvCoordinateStream to ShaderChannel.Main),
         ContentType.UvCoordinateStream, CommonIcons.DistortionShader,
         """
-            uniform float size; // @@Slider min=0.75 max=1.25 default=1
+            uniform float scale; // @@Slider min=0.25 max=4 default=1
     
             vec2 mainDistortion(vec2 uvIn) {
-              return (uvIn - .5)  * size + .5;
+              return (uvIn - .5) / scale + .5;
             }
         """.trimIndent()
     ) {
