@@ -162,12 +162,12 @@ class MutableShow(
 
     init {
         // Second pass required here since they might refer to each other.
-        baseShow.shaderInstances.values.zip(shaderInstances.values).forEach { (shaderInstance, editor) ->
-            editor.incomingLinks.putAll(
-                shaderInstance.incomingLinks.mapValues { (_, fromPortRef) ->
-                    fromPortRef.dereference(this)
-                }
-            )
+        baseShow.shaderInstances.forEach { (id, shaderInstance) ->
+            val editor = shaderInstances.getBang(id, "shader instance")
+            val resolvedIncomingLinks = shaderInstance.incomingLinks.mapValues { (_, fromPortRef) ->
+                fromPortRef.dereference(this)
+            }
+            editor.incomingLinks.putAll(resolvedIncomingLinks)
         }
     }
 

@@ -47,9 +47,10 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     val shaderInstance = props.mutableShaderInstance
     val shader = shaderInstance.mutableShader
     val openShader = appContext.showPlayer.openShaderOrNull(shader.build())
-    val inputPorts = openShader?.inputPorts
-        ?.sortedBy { it.title }
-        ?.associateWith { inputPort ->
+    val inputPorts = (openShader?.inputPorts ?: emptyList()).associateBy { it.id }
+    val inputPortChangeHandlers = inputPorts.values
+        .sortedBy { it.title }
+        .associateWith { inputPort ->
             handler(
                 "change to ${inputPort.id}", props.mutableShaderInstance, props.editableManager
             ) { sourcePortOption: SourcePortOption? ->
@@ -59,6 +60,13 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                 } else {
                     incomingLinks[inputPort.id] = sourcePortOption.portEditor
                 }
+
+                // Prune any unknown port mappings (e.g. if a uniform was removed).
+                incomingLinks.keys.minus(inputPorts.keys).forEach { unknownKey ->
+                    logger.debug { "Removing unknown mapping for unknown port \"$unknownKey\"" }
+                    incomingLinks.remove(unknownKey)
+                }
+
                 props.editableManager.onChange()
             }
         }
@@ -74,7 +82,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
         }
 
         tableBody {
-            inputPorts?.forEach { (inputPort, handleSourceChange) ->
+            inputPortChangeHandlers?.forEach { (inputPort, handleSourceChange) ->
                 val currentSourcePort = shaderInstance.incomingLinks[inputPort.id]
 
                 tableRow {
