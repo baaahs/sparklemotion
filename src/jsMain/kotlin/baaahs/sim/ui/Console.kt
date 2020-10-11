@@ -7,21 +7,19 @@ import baaahs.ui.Observable
 import baaahs.ui.Observer
 import baaahs.ui.SimulatorStyles
 import baaahs.ui.SimulatorStyles.console
-import materialui.components.typography.typographyH6
 import react.RBuilder
 import react.RProps
 import react.RState
 import react.dom.b
 import react.dom.div
 import react.dom.hr
-import react.dom.pre
 import react.setState
 import styled.css
 import styled.styledDiv
 
 class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(props), Observer {
     override fun observing(props: ConsoleProps, state: ConsoleState): List<Observable?> {
-        return listOf(props.simulator, props.simulator.pinky.stageManager)
+        return listOf(props.simulator, props.simulator.visualizer, props.simulator.pinky)
     }
 
     private fun brainSelectionListener(brain: Brain.Facade) =
@@ -70,16 +68,6 @@ class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(prop
                     simulator.visualizer.selectedSurface?.let {
                         +"Selected: ${it.name}"
                     }
-                }
-            }
-
-            styledDiv {
-                css { +SimulatorStyles.section }
-                b { +"GLSL:" }
-
-                simulator.pinky.stageManager.currentGlsl?.forEach { (surfaces, glsl) ->
-                    typographyH6 { +surfaces.name }
-                    pre { +glsl }
                 }
             }
         }
