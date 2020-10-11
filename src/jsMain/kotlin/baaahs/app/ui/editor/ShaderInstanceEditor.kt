@@ -6,7 +6,6 @@ import baaahs.show.ShaderChannel
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
-import baaahs.show.mutable.ShowBuilder
 import baaahs.ui.*
 import baaahs.ui.preview.gadgetsPreview
 import kotlinx.css.*
@@ -51,7 +50,6 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                 editingIncomingLinks.putAll(guessIncomingLinks)
             }
             props.editableManager.onChange()
-            forceRender()
         }
         withCleanup { observer.remove() }
 
@@ -69,11 +67,10 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
         div {
             linksEditor {
+                attrs.editableManager = props.editableManager
                 attrs.siblingMutableShaderInstances = selectedPatch.mutableShaderInstances
-                attrs.showBuilder = props.showBuilder
                 attrs.mutableShaderInstance = shaderInstance
                 attrs.shaderChannels = shaderChannels
-                attrs.onChange = props.onChange
             }
         }
 
@@ -168,8 +165,6 @@ external interface ShaderInstanceEditorProps : RProps {
     var mutablePatch: MutablePatch
     var mutableShaderInstance: MutableShaderInstance
     var shaderChannels: Set<ShaderChannel>
-    var showBuilder: ShowBuilder
-    var onChange: () -> Unit
 }
 
 fun RBuilder.shaderInstanceEditor(handler: RHandler<ShaderInstanceEditorProps>) =

@@ -37,7 +37,6 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isP
                     else -> value
                 }
             )
-            this@xComponent.forceRender()
         }
 
     val sourcePortOptions = props.sourcePortOptions + suggestedDataSources.map { DataSourceOption(it) } +

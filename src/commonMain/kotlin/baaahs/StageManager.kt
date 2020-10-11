@@ -91,7 +91,7 @@ class StageManager(
         gadget.listen(gadgetChannelListener)
         val gadgetData = GadgetData(id, gadget, topic.name)
         gadgets[id] = GadgetManager.GadgetInfo(topic, channel, gadgetData, gadgetChannelListener)
-        controlledDataSource?.let { dataSourceGadgets[controlledDataSource] = gadget }
+        super.registerGadget(id, gadget, controlledDataSource)
     }
 
     fun onGadgetChange() {
