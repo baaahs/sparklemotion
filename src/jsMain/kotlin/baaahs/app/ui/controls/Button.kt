@@ -55,7 +55,7 @@ val Button = xComponent<ButtonProps>("Button") { props ->
 //                                    ref = patchDroppableProvided.innerRef
 //                                    copyFrom(patchDroppableProvided.droppableProps)
 
-//                attrs["value"] = index
+            attrs["value"] = "n/a"
             attrs["selected"] = buttonControl.isPressed
             attrs.onClickFunction = {
                 buttonControl.click()
