@@ -137,7 +137,9 @@ private class GadgetValueObserver<T>(
 }
 
 @Serializable()
-class GadgetData(val name: String, @Polymorphic var gadget: Gadget, val topicName: String)
+class GadgetData(val name: String, @Polymorphic var gadget: Gadget, val topicName: String) {
+    override fun toString(): String = "GadgetData(name='$name', gadget=$gadget, topicName='$topicName')"
+}
 
 val GadgetDataSerializer = MapSerializer(String.serializer(), JsonElement.serializer())
 

@@ -53,6 +53,8 @@ object EditableStyles : StyleSheet("app-ui-Editable", isStatic = true) {
 
     val editorCol by css {
         flex(4.0, flexBasis = FlexBasis.zero)
+        display = Display.flex
+        flexDirection = FlexDirection.column
         marginLeft = 2.em
     }
     val patchOverview by css {

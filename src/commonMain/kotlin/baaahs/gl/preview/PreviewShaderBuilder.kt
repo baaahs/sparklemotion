@@ -20,13 +20,15 @@ import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePatch
 import baaahs.ui.Observable
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class PreviewShaderBuilder(
     val shader: Shader,
     private val autoWirer: AutoWirer,
-    private val modelInfo: ModelInfo
+    private val modelInfo: ModelInfo,
+    private val coroutineScope: CoroutineScope = GlobalScope
 ) : Observable() {
     var state: State =
         State.Unbuilt
@@ -50,26 +52,8 @@ class PreviewShaderBuilder(
         state = State.Linking
         notifyChanged()
 
-        GlobalScope.launch {
+        coroutineScope.launch {
             link()
-        }
-    }
-
-    fun startCompile(gl: GlContext) {
-        state = State.Compiling
-        notifyChanged()
-
-        GlobalScope.launch {
-            val showPlayer = object : BaseShowPlayer(autoWirer.plugins, modelInfo) {
-                override val glContext: GlContext get() = gl
-
-                override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
-                    mutableGadgets.add(GadgetData(id, gadget, "/preview/gadgets/$id"))
-                }
-            }
-            compile(gl) { id, dataSource ->
-                dataSource.createFeed(showPlayer, autoWirer.plugins, id)
-            }
         }
     }
 
@@ -115,6 +99,29 @@ class PreviewShaderBuilder(
         notifyChanged()
     }
 
+    fun startCompile(gl: GlContext) {
+        state = State.Compiling
+        notifyChanged()
+
+        coroutineScope.launch {
+            val showPlayer = object : BaseShowPlayer(autoWirer.plugins, modelInfo) {
+                override val glContext: GlContext get() = gl
+                override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
+                    mutableGadgets.add(GadgetData(id, gadget, "/preview/gadgets/$id"))
+                    super.registerGadget(id, gadget, controlledDataSource)
+                }
+            }
+
+            compile(gl) { id, dataSource ->
+                dataSource.buildControl()?.let {
+                    showPlayer.registerGadget(dataSource.suggestId(), it.gadget, dataSource)
+                }
+
+                dataSource.createFeed(showPlayer, autoWirer.plugins, id)
+            }
+        }
+    }
+
     fun compile(gl: GlContext, resolver: Resolver) {
         try {
             glslProgram = linkedPatch?.compile(gl, resolver)
@@ -130,6 +137,9 @@ class PreviewShaderBuilder(
         notifyChanged()
     }
 
+    /**
+     * Contrary to expectations, linking happens before compliling in this world.
+     */
     enum class State {
         Unbuilt,
         Linking,

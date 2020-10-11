@@ -43,7 +43,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         CacheBuilder {
             {
                 props.mutablePatch.remove(it)
-                forceRender()
+                props.editableManager.onChange()
             }
         }
 

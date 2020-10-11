@@ -5,10 +5,7 @@ import baaahs.gadgets.Switch
 import baaahs.show.ButtonControl
 import baaahs.show.ButtonGroupControl
 import baaahs.show.DataSource
-import baaahs.show.mutable.MutableButtonControl
-import baaahs.show.mutable.MutableButtonGroupControl
-import baaahs.show.mutable.MutableControl
-import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.*
 import baaahs.ui.Draggable
 import baaahs.ui.DropTarget
 import kotlinx.serialization.json.JsonElement
@@ -22,6 +19,7 @@ interface OpenControl {
     fun controlledDataSources(): Set<DataSource> = emptySet()
     fun addTo(activeSetBuilder: ActiveSetBuilder, panelId: String, depth: Int) {}
     fun applyConstraints() {}
+    fun toNewMutable(mutableShow: MutableShow): MutableControl
 }
 
 class OpenGadgetControl(
@@ -30,11 +28,14 @@ class OpenGadgetControl(
     val controlledDataSource: DataSource
 ) : OpenControl {
     override fun controlledDataSources(): Set<DataSource> = setOf(controlledDataSource)
+    override fun toNewMutable(mutableShow: MutableShow): MutableControl {
+        return MutableGadgetControl(gadget, controlledDataSource)
+    }
 }
 
 class OpenButtonControl(
     override val id: String,
-    buttonControl: ButtonControl,
+    private val buttonControl: ButtonControl,
     openContext: OpenContext
 ) : OpenPatchHolder(buttonControl, openContext), OpenControl {
     override val gadget: Switch = Switch(buttonControl.title)
@@ -49,6 +50,10 @@ class OpenButtonControl(
         if (isPressed) {
             addTo(activeSetBuilder, depth)
         }
+    }
+
+    override fun toNewMutable(mutableShow: MutableShow): MutableControl {
+        return MutableButtonControl(buttonControl, mutableShow)
     }
 
     fun click() {
@@ -88,6 +93,10 @@ class OpenButtonGroupControl(
         }
     }
 
+    override fun toNewMutable(mutableShow: MutableShow): MutableControl {
+        error("not implemented for button groups")
+    }
+
     fun clickOn(buttonIndex: Int) {
         buttons.forEachIndexed { index, openButtonControl ->
             openButtonControl.isPressed = index == buttonIndex
@@ -119,13 +128,12 @@ class OpenButtonGroupControl(
         }
 
         override fun getDraggable(index: Int): Draggable = object : ControlDisplay.PlaceableControl {
-            override lateinit var mutableShow: MutableShow
+            override val mutableShow: MutableShow by lazy { controlDisplay.show.edit() }
             override lateinit var mutableControl: MutableControl
 
             override fun willMoveTo(destination: DropTarget): Boolean = true
 
             override fun remove() {
-                mutableShow = controlDisplay.show.edit()
                 mutableControl = mutableShow.findButtonGroup()
                     .buttons
                     .removeAt(index)
