@@ -17,7 +17,6 @@ import materialui.icons.Icons
 import org.w3c.dom.HTMLElement
 import react.*
 import react.dom.div
-import kotlin.random.Random
 
 val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { props ->
     val unplacedControlPaletteDiv = ref<HTMLElement?>()
@@ -26,7 +25,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
         if (props.editMode) Styles.editModeOn else Styles.editModeOff
 
     Draggable {
-        val randomStyleForHandle = "handle-${Random.nextInt()}"
+        val randomStyleForHandle = "ControlsPaletteHandle"
         attrs.handle = ".$randomStyleForHandle"
 
         div(+editModeStyle and Styles.unplacedControlsPalette) {
