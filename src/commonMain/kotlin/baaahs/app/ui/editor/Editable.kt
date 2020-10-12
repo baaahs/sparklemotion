@@ -2,6 +2,8 @@ package baaahs.app.ui
 
 import baaahs.app.ui.editor.EditableManager
 import baaahs.show.ButtonControl
+import baaahs.show.ButtonGroupControl
+import baaahs.show.live.ControlDisplay
 import baaahs.show.mutable.MutableButtonControl
 import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.MutableControl
@@ -58,18 +60,66 @@ data class ControlEditIntent(internal val controlId: String) : EditIntent {
     }
 }
 
-data class AddButtonToButtonGroupEditIntent(private val containerId: String) : EditIntent {
-    private lateinit var mutableEditable: MutableButtonControl
+abstract class AddToContainerEditIntent<T: MutableControl> : EditIntent {
+    private lateinit var mutableEditable: T
+
+    abstract fun createControl(mutableShow: MutableShow): T
+
+    abstract fun addToContainer(mutableShow: MutableShow, mutableControl: T)
 
     override fun findMutableEditable(mutableShow: MutableShow): MutableEditable {
-        val container = mutableShow.findControl(containerId) as MutableButtonGroupControl
-        mutableEditable = MutableButtonControl(ButtonControl("New Button"), mutableShow)
-        container.buttons.add(mutableEditable)
+        mutableEditable = createControl(mutableShow)
+        addToContainer(mutableShow, mutableEditable)
         return mutableEditable
     }
 
     override fun nextEditIntent(): EditIntent {
         return ControlEditIntent(mutableEditable.asBuiltId!!)
+    }
+}
+
+data class AddButtonToButtonGroupEditIntent(
+    private val containerId: String
+) : AddToContainerEditIntent<MutableButtonControl>() {
+    override fun createControl(mutableShow: MutableShow): MutableButtonControl {
+        return MutableButtonControl(ButtonControl("New Button"), mutableShow)
+    }
+
+    override fun addToContainer(mutableShow: MutableShow, mutableControl: MutableButtonControl) {
+        val container = mutableShow.findControl(containerId) as MutableButtonGroupControl
+        container.buttons.add(mutableControl)
+    }
+}
+
+data class AddButtonToPanelBucket(
+    private val panelBucket: ControlDisplay.PanelBuckets.PanelBucket
+) : AddToContainerEditIntent<MutableButtonControl>() {
+    override fun createControl(mutableShow: MutableShow): MutableButtonControl {
+        return MutableButtonControl(ButtonControl("New Button"), mutableShow)
+    }
+
+    override fun addToContainer(mutableShow: MutableShow, mutableControl: MutableButtonControl) {
+        mutableShow.findPatchHolder(panelBucket.section.container)
+            .editControlLayout(panelBucket.panelTitle)
+            .add(mutableControl)
+    }
+}
+
+data class AddButtonGroupToPanelBucket(
+    private val panelBucket: ControlDisplay.PanelBuckets.PanelBucket
+) : AddToContainerEditIntent<MutableButtonGroupControl>() {
+    override fun createControl(mutableShow: MutableShow): MutableButtonGroupControl {
+        return MutableButtonGroupControl(
+            "New Button Group",
+            ButtonGroupControl.Direction.Horizontal,
+            mutableShow = mutableShow
+        )
+    }
+
+    override fun addToContainer(mutableShow: MutableShow, mutableControl: MutableButtonGroupControl) {
+        mutableShow.findPatchHolder(panelBucket.section.container)
+            .editControlLayout(panelBucket.panelTitle)
+            .add(mutableControl)
     }
 }
 
