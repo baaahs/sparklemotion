@@ -305,6 +305,10 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
             )
         }
 
+        descendants(baaahs.app.ui.controls.Styles.editButton) {
+            opacity = .2
+        }
+
         descendants(baaahs.app.ui.controls.Styles.dragHandle) {
             opacity = .2
         }

@@ -40,6 +40,8 @@ class OpenButtonControl(
 ) : OpenPatchHolder(buttonControl, openContext), OpenControl {
     override val gadget: Switch = Switch(buttonControl.title)
 
+    val type get() = buttonControl.activationType
+
     var isPressed: Boolean
         get() = gadget.enabled
         set(value) { gadget.enabled = value }
