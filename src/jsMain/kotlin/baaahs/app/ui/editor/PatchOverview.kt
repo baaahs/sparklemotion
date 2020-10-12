@@ -8,6 +8,7 @@ import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import baaahs.util.CacheBuilder
 import kotlinx.html.js.onClickFunction
 import materialui.components.card.card
 import materialui.components.cardcontent.cardContent
@@ -123,14 +124,6 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
                 listItemText { +"Import… (TBD)" }
             }
         }
-    }
-}
-
-class CacheBuilder<K, V>(val createFn: (K) -> V) {
-    private val map = mutableMapOf<K, V>()
-
-    operator fun get(key: K): V {
-        return map.getOrPut(key) { createFn(key) }
     }
 }
 

@@ -15,6 +15,9 @@ interface PlatformIcons {
     val PaintShader: Icon
     val ProjectionShader: Icon
 
+    val Button: Icon
+    val ButtonGroup: Icon
+
     fun forShader(shaderType: ShaderType): Icon {
         return when (shaderType) {
             ShaderType.Projection -> ProjectionShader

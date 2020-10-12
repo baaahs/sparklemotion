@@ -10,21 +10,38 @@ import external.Direction
 import external.draggable
 import external.droppable
 import external.mosaic.*
+import kotlinx.html.js.onClickFunction
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
+import materialui.components.iconbutton.enums.IconButtonStyle
+import materialui.components.iconbutton.iconButton
+import materialui.components.listitemicon.listItemIcon
+import materialui.components.listitemtext.listItemText
+import materialui.components.menu.menu
+import materialui.components.menuitem.menuItem
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
+import materialui.icon
+import materialui.icons.Icons
+import org.w3c.dom.events.Event
+import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.div
 import kotlin.reflect.KClass
 
 val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
+    val appContext = useContext(appContext)
+
     val handleCreateNode = useCallback { args: Array<Any> ->
         console.log("ShowLayout:handleCreateNode", args)
     }
 
     val editModeStyle =
         if (props.editMode) Styles.editModeOn else Styles.editModeOff
+
+    val handleAddButtonClick = memo { mutableMapOf<String, (Event) -> Unit>() }
+    var showAddMenuFor by state<ControlDisplay.PanelBuckets.PanelBucket?> { null }
+    var showAddMenuForAnchorEl by state<EventTarget?> { null }
 
 //    <MosiacMenuBar />
     mosaic<String> {
@@ -75,10 +92,19 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                 }
 
                                 insertPlaceholder(droppableProvided)
+
+                                iconButton(+Styles.addToSectionButton on IconButtonStyle.root) {
+                                    attrs.onClickFunction = handleAddButtonClick.getOrPut(panelBucket.suggestId()) {
+                                        { event: Event ->
+                                            showAddMenuFor = panelBucket
+                                            showAddMenuForAnchorEl = event.target
+                                        }
+                                    }.withEvent()
+                                    icon(Icons.AddCircleOutline)
+                                }
                             }
                         }
                     }
-
                 }
             }
         }
@@ -92,6 +118,33 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
         //            onChange = { onChange }
 //            onRelease = { onRelease }
 //            className = "mosaic mosaic-blueprint-theme bp3-dark"
+    }
+
+    showAddMenuFor?.let { panelBucket ->
+        menu {
+            attrs.getContentAnchorEl = null
+            attrs.anchorEl(showAddMenuForAnchorEl)
+            attrs.open = true
+            attrs.onClose = { event, reason -> showAddMenuFor = null }
+
+            menuItem {
+                attrs.onClickFunction = {
+                    appContext.openEditor(AddButtonToPanelBucket(panelBucket))
+                }
+
+                listItemIcon { icon(CommonIcons.Button) }
+                listItemText { +"New Button…" }
+            }
+
+            menuItem {
+                attrs.onClickFunction = {
+                    appContext.openEditor(AddButtonGroupToPanelBucket(panelBucket))
+                }
+
+                listItemIcon { icon(CommonIcons.ButtonGroup) }
+                listItemText { +"New Button Group…" }
+            }
+        }
     }
 }
 
