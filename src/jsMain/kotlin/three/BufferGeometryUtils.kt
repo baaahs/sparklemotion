@@ -16,5 +16,7 @@ open external class OrbitControls(camera: Any, thing: Any) {
     var minPolarAngle: Double
     var maxPolarAngle: Double
     var target: Any
+    var enableKeys: Boolean
+
     fun update()
 }

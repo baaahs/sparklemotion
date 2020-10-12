@@ -16,6 +16,16 @@ object EditableStyles : StyleSheet("app-ui-Editable", isStatic = true) {
         important(::maxHeight, 85.vh)
     }
 
+    val dialogTitle by css {
+        position = Position.relative
+    }
+
+    val dialogTitleButtons by css {
+        position = Position.absolute
+        top = 1.em
+        right = 1.em
+    }
+
     val dialogContent by css {
         display = Display.flex
         alignItems = Align.stretch
@@ -80,5 +90,10 @@ object EditableStyles : StyleSheet("app-ui-Editable", isStatic = true) {
             flex(0.0)
             padding(0.px)
         }
+    }
+
+    val propertiesSection by css {
+        paddingTop = .5.em
+        paddingBottom = 1.em
     }
 }
