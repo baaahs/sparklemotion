@@ -40,7 +40,6 @@ import materialui.styles.muitheme.options.palette
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.options.type
 import materialui.styles.themeprovider.themeProvider
-import org.w3c.dom.*
 import react.*
 import react.dom.code
 import react.dom.div
@@ -201,24 +200,18 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val show = webClient.show
 
     onMount {
-        window.onkeydown = { event ->
-            when (event.target) {
-                is HTMLButtonElement,
-                is HTMLInputElement,
-                is HTMLSelectElement,
-                is HTMLOptionElement,
-                is HTMLTextAreaElement -> {
-                    // Ignore.
-                }
-                else -> {
-                    when (event.key) {
-                        "d" -> editMode = !editMode
-                    }
+        val keyboardShortcutHandler = KeyboardShortcutHandler { event ->
+            when (event.key) {
+                "d" -> {
+                    editMode = !editMode
+                    event.stopPropagation()
                 }
             }
-            true
         }
-        withCleanup { window.onkeydown = null }
+        keyboardShortcutHandler.listen(window)
+        withCleanup {
+            keyboardShortcutHandler.unlisten(window)
+        }
     }
 
     appContext.Provider {
