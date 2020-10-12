@@ -33,14 +33,13 @@ import materialui.components.typography.typographyH6
 import materialui.icon
 import materialui.icons.Icons
 import materialui.lab.components.alert.alert
-import materialui.lab.components.alert.enums.AlertColor
+import materialui.lab.components.alert.enums.AlertSeverity
 import materialui.lab.components.alerttitle.alertTitle
 import materialui.styles.createMuiTheme
 import materialui.styles.muitheme.options.palette
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.options.type
 import materialui.styles.themeprovider.themeProvider
-import org.w3c.dom.*
 import react.*
 import react.dom.code
 import react.dom.div
@@ -201,24 +200,18 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val show = webClient.show
 
     onMount {
-        window.onkeydown = { event ->
-            when (event.target) {
-                is HTMLButtonElement,
-                is HTMLInputElement,
-                is HTMLSelectElement,
-                is HTMLOptionElement,
-                is HTMLTextAreaElement -> {
-                    // Ignore.
-                }
-                else -> {
-                    when (event.key) {
-                        "d" -> editMode = !editMode
-                    }
+        val keyboardShortcutHandler = KeyboardShortcutHandler { event ->
+            when (event.key) {
+                "d" -> {
+                    editMode = !editMode
+                    event.stopPropagation()
                 }
             }
-            true
         }
-        withCleanup { window.onkeydown = null }
+        keyboardShortcutHandler.listen(window)
+        withCleanup {
+            keyboardShortcutHandler.unlisten(window)
+        }
     }
 
     appContext.Provider {
@@ -349,7 +342,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         div {
                             serverNotices.forEach { serverNotice ->
                                 alert {
-                                    attrs.color = AlertColor.error
+                                    attrs.severity = AlertSeverity.error
                                     attrs.onClose = { webClient.confirmServerNotice(serverNotice.id) }
 
                                     alertTitle {

@@ -40,7 +40,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
                 EditingShader.State.Errors -> {
                     val lineCount = editor.getSession().getLength().toInt()
                     setAnnotations(editingShader.previewShaderBuilder.glslErrors.map { error ->
-                        jsObject<Annotation> {
+                        jsObject {
                             row = (error.row).boundedBy(0 until lineCount)
                             column = 0
                             text = error.message
@@ -63,7 +63,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     val glslNumberRegex = Regex("[0-9.]")
     val glslIllegalRegex = Regex("[A-Za-z_]")
     val glslFloatOrIntRegex = Regex("^([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+|[0-9]+)$")
-    val handleCursorChange = baaahs.ui.useCallback { value: Any, _: Any ->
+    val handleCursorChange = useCallback { value: Any, _: Any ->
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         val selection = value as Selection
         val session = selection.session
@@ -99,7 +99,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         Unit
     }
 
-    val extractUniform = baaahs.ui.useCallback { _: Event ->
+    val extractUniform = useCallback { _: Event ->
         val extraction = extractionCandidate ?: return@useCallback
 
         val editor = aceEditor?.editor ?: return@useCallback

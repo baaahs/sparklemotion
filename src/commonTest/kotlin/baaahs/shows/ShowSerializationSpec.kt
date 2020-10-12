@@ -43,7 +43,6 @@ object ShowSerializationSpec : Spek({
 private fun JsonObjectBuilder.mapTo(k: String, v: JsonElement) = put(k, v)
 
 private fun JsonObjectBuilder.addPatchHolder(patchHolder: PatchHolder) {
-    put("title", patchHolder.title)
     put("patches", patchHolder.patches.jsonMap { jsonFor(it) })
     put("eventBindings", patchHolder.eventBindings.jsonMap { jsonFor(it) })
     put("controlLayout", patchHolder.controlLayout.jsonMap { it.jsonMap { JsonPrimitive(it) } })
@@ -59,6 +58,7 @@ private fun <T> List<T>.jsonMap(block: (T) -> JsonElement): JsonArray {
 
 private fun forJson(show: Show): JsonObject {
     return buildJsonObject {
+        put("title", show.title)
         addPatchHolder(show)
         put("layouts", buildJsonObject {
             put("panelNames", show.layouts.panelNames.jsonMap { JsonPrimitive(it) })
@@ -90,6 +90,8 @@ fun jsonFor(control: Control): JsonElement {
         }
         is ButtonControl -> buildJsonObject {
             put("type", "baaahs.Core:Button")
+            put("title", control.title)
+            put("activationType", control.activationType.name)
             addPatchHolder(control)
         }
         else -> buildJsonObject { put("type", "unknown") }

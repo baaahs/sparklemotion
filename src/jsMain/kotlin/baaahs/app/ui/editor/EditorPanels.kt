@@ -1,28 +1,19 @@
 package baaahs.app.ui.editor
 
-import baaahs.show.ButtonGroupControl
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.MutableButtonGroupControl
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutablePatchHolder
-import baaahs.show.mutable.MutableShaderInstance
+import baaahs.show.mutable.*
 import baaahs.ui.Renderer
-import kotlinx.html.js.onChangeFunction
+import baaahs.ui.unaryPlus
 import materialui.components.divider.divider
 import materialui.components.divider.enums.DividerVariant
-import materialui.components.formcontrol.formControl
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.formlabel.formLabel
-import materialui.components.radio.radio
-import materialui.components.radiogroup.radioGroup
-import org.w3c.dom.HTMLInputElement
+import react.dom.div
 
 actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     override fun forGenericPropertiesPanel(
         editableManager: EditableManager,
-        components: List<EditorPanelComponent>
+        propsEditors: List<PropsEditor>
     ): Renderer = renderWrapper {
-        components.forEachIndexed { index, editorPanelComponent ->
+        propsEditors.forEachIndexed { index, editorPanelComponent ->
             if (index > 0) {
                 divider {
                     attrs.variant = DividerVariant.middle
@@ -70,35 +61,23 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
             }
         }
 
+    override fun forButton(
+        editableManager: EditableManager,
+        mutableButtonControl: MutableButtonControl
+    ) = renderWrapper {
+        buttonPropsEditor {
+            attrs.editableManager = editableManager
+            attrs.mutableButtonControl = mutableButtonControl
+        }
+    }
+
     override fun forButtonGroup(
         editableManager: EditableManager,
         mutableButtonGroupControl: MutableButtonGroupControl
     ) = renderWrapper {
-        formControl {
-            formLabel {
-                attrs.component = "legend"
-                +"Direction"
-            }
-
-            radioGroup {
-                attrs.value(mutableButtonGroupControl.direction.name)
-                attrs.onChangeFunction = {
-                    val value = (it.target as HTMLInputElement).value
-                    mutableButtonGroupControl.direction = ButtonGroupControl.Direction.valueOf(value)
-                    editableManager.onChange()
-                }
-
-                formControlLabel {
-                    attrs.value = "Horizontal"
-                    attrs.control = radio {}
-                    attrs.label { +"Horizontal" }
-                }
-                formControlLabel {
-                    attrs.value = "Vertical"
-                    attrs.control = radio {}
-                    attrs.label { +"Vertical" }
-                }
-            }
+        buttonGroupPropsEditor {
+            attrs.editableManager = editableManager
+            attrs.mutableButtonGroupControl = mutableButtonGroupControl
         }
     }
 
@@ -106,11 +85,15 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
         editableManager: EditableManager,
         mutablePatchHolder: MutablePatchHolder
     ): Renderer = renderWrapper {
-        textFieldEditor {
-            attrs.label = "Title"
-            attrs.getValue = { mutablePatchHolder.title }
-            attrs.setValue = { value -> mutablePatchHolder.title = value }
-            attrs.editableManager = editableManager
+        div(+EditableStyles.propertiesSection) {
+            textFieldEditor {
+                attrs.label = "Title"
+                attrs.helperText = "Visible on the button"
+
+                attrs.getValue = { mutablePatchHolder.title }
+                attrs.setValue = { value -> mutablePatchHolder.title = value }
+                attrs.editableManager = editableManager
+            }
         }
     }
 }
