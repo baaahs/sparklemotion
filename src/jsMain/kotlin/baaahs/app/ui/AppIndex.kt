@@ -33,7 +33,7 @@ import materialui.components.typography.typographyH6
 import materialui.icon
 import materialui.icons.Icons
 import materialui.lab.components.alert.alert
-import materialui.lab.components.alert.enums.AlertColor
+import materialui.lab.components.alert.enums.AlertSeverity
 import materialui.lab.components.alerttitle.alertTitle
 import materialui.styles.createMuiTheme
 import materialui.styles.muitheme.options.palette
@@ -342,7 +342,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         div {
                             serverNotices.forEach { serverNotice ->
                                 alert {
-                                    attrs.color = AlertColor.error
+                                    attrs.severity = AlertSeverity.error
                                     attrs.onClose = { webClient.confirmServerNotice(serverNotice.id) }
 
                                     alertTitle {
