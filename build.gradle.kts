@@ -203,6 +203,8 @@ kotlin {
                 implementation(npm("normalize.css", "^7.0.0"))
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
+
+                implementation(npm("@welldone-software/why-did-you-render", "^4.3.2"))
             }
         }
         @Suppress("UNUSED_VARIABLE")

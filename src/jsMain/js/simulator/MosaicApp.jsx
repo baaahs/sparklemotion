@@ -1,3 +1,5 @@
+import '../wdyr'
+
 import {hot} from 'react-hot-loader';
 import styles from './MosaicUI.scss';
 import React, {useContext, useEffect, useState} from 'react';
