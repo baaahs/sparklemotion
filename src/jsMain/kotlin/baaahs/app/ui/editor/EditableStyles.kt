@@ -16,6 +16,16 @@ object EditableStyles : StyleSheet("app-ui-Editable", isStatic = true) {
         important(::maxHeight, 85.vh)
     }
 
+    val dialogTitle by css {
+        position = Position.relative
+    }
+
+    val dialogTitleButtons by css {
+        position = Position.absolute
+        top = 1.em
+        right = 1.em
+    }
+
     val dialogContent by css {
         display = Display.flex
         alignItems = Align.stretch
