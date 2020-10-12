@@ -33,10 +33,12 @@ abstract class MutablePatchHolder(
 
     override fun getEditorPanels(): List<EditorPanel> {
         return listOf(
-            GenericPropertiesEditorPanel(
-                TitleEditorPanelComponent(this)
-            ),
+            GenericPropertiesEditorPanel(getPropertiesComponents()),
             PatchHolderEditorPanel(this))
+    }
+
+    open fun getPropertiesComponents(): List<PropsEditor> {
+        return listOf(TitlePropsEditor(this))
     }
 
     val patches by lazy {
@@ -139,7 +141,7 @@ class MutableShow(
     override val mutableShow: MutableShow get() = this
 
     internal val controls = CacheBuilder<String, MutableControl> { id ->
-        baseShow.controls.getBang(id, "control").toMutable(this)
+        baseShow.controls.getBang(id, "control").createMutable(this)
     }
 
     internal val dataSources = baseShow.dataSources
@@ -379,11 +381,18 @@ class MutableButtonControl(
     baseButtonControl: ButtonControl,
     override val mutableShow: MutableShow
 ) : MutablePatchHolder(baseButtonControl), MutableControl {
+    var activationType: ButtonControl.ActivationType = baseButtonControl.activationType
+
     override var asBuiltId: String? = null
+
+    override fun getPropertiesComponents(): List<PropsEditor> {
+        return super.getPropertiesComponents() + ButtonPropsEditor(this)
+    }
 
     override fun build(showBuilder: ShowBuilder): Control {
         return ButtonControl(
             title,
+            activationType,
             patches = patches.map { it.build(showBuilder) },
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder)
@@ -409,7 +418,7 @@ data class MutableButtonGroupControl(
     override fun getEditorPanels(): List<EditorPanel> {
         return listOf(
             GenericPropertiesEditorPanel(
-                ButtonGroupDirectionEditorPanelComponent(this)
+                ButtonGroupPropsEditor(this)
             )
         )
     }

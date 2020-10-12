@@ -18,8 +18,9 @@ val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { prop
 
     formControl {
         textField {
-            attrs.autoFocus = false
+            attrs.autoFocus = props.autoFocus == true
             attrs.fullWidth = true
+            attrs.label { +props.label }
             attrs.value = props.getValue()
 
             // Notify EditableManager of changes as we type, but don't push them to the undo stack...
@@ -37,12 +38,17 @@ val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { prop
                 }
             }
         }
-        formHelperText { +props.label }
+
+        props.helperText?.let { helperText ->
+            formHelperText { +helperText }
+        }
     }
 }
 
 external interface TextFieldEditorProps : RProps {
     var label: String
+    var helperText: String?
+    var autoFocus: Boolean?
     var getValue: () -> String
     var setValue: (String) -> Unit
     var editableManager: EditableManager

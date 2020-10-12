@@ -81,4 +81,9 @@ object EditableStyles : StyleSheet("app-ui-Editable", isStatic = true) {
             padding(0.px)
         }
     }
+
+    val propertiesSection by css {
+        paddingTop = .5.em
+        paddingBottom = 1.em
+    }
 }

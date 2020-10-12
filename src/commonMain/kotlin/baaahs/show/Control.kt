@@ -15,7 +15,9 @@ interface Control : Editable {
     override val title: String
     fun suggestId(): String = "control"
 
-    fun toMutable(mutableShow: MutableShow): MutableControl
+    /** Don't call this directly; use [MutableShow.findControl]. */
+    fun createMutable(mutableShow: MutableShow): MutableControl
+
     fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl
 
     companion object {
@@ -41,7 +43,7 @@ data class GadgetControl(
 
     override fun suggestId(): String = controlledDataSourceId + "Control"
 
-    override fun toMutable(mutableShow: MutableShow): MutableGadgetControl {
+    override fun createMutable(mutableShow: MutableShow): MutableGadgetControl {
         return MutableGadgetControl(gadget, mutableShow.findDataSource(controlledDataSourceId).dataSource)
     }
 
@@ -56,13 +58,20 @@ data class GadgetControl(
 @SerialName("baaahs.Core:Button")
 data class ButtonControl(
     override val title: String,
+    val activationType: ActivationType = ActivationType.Toggle,
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
     override val controlLayout: Map<String, List<String>> = emptyMap()
 ) : PatchHolder, Control {
+
+    enum class ActivationType {
+        Toggle,
+        Momentary
+    }
+
     override fun suggestId(): String = title.camelize() + "Button"
 
-    override fun toMutable(mutableShow: MutableShow): MutableButtonControl {
+    override fun createMutable(mutableShow: MutableShow): MutableButtonControl {
         return MutableButtonControl(this, mutableShow)
     }
 
@@ -87,7 +96,7 @@ data class ButtonGroupControl(
 
     override fun suggestId(): String = title.camelize() + "ButtonGroup"
 
-    override fun toMutable(mutableShow: MutableShow): MutableButtonGroupControl {
+    override fun createMutable(mutableShow: MutableShow): MutableButtonGroupControl {
         return MutableButtonGroupControl(title, direction, buttonIds.map {
             mutableShow.findControl(it) as MutableButtonControl
         }.toMutableList(), mutableShow)
