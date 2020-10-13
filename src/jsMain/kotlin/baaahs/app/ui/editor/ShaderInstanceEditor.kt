@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderPreview
+import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
@@ -33,11 +34,13 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
     val editingShader = memo(props.mutableShaderInstance) {
         val newEditingShader =
-            EditingShader(props.mutableShaderInstance, appContext.autoWirer, appContext.webClient.model)
+            EditingShader(props.mutableShaderInstance) { shader ->
+                PreviewShaderBuilder(shader, appContext.autoWirer, appContext.webClient.model)
+            }
 
         val observer = newEditingShader.addObserver {
             if (it.state == EditingShader.State.Success) {
-                val shader = it.previewShaderBuilder.shader
+                val shader = it.shaderBuilder.shader
                 val wiringGuess = appContext.autoWirer.autoWire(shader)
                     .acceptSymbolicChannelLinks()
                     .takeFirstIfAmbiguous()
@@ -76,8 +79,8 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
         div {
             shaderPreview {
-                attrs.shader = editingShader.previewShaderBuilder.shader
-                attrs.previewShaderBuilder = editingShader.previewShaderBuilder
+                attrs.shader = editingShader.shaderBuilder.shader
+                attrs.previewShaderBuilder = editingShader.shaderBuilder
                 attrs.width = 250.px
                 attrs.height = 250.px
             }

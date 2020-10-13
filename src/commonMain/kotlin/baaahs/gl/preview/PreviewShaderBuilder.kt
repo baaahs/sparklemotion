@@ -19,37 +19,60 @@ import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePatch
+import baaahs.ui.IObservable
 import baaahs.ui.Observable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+interface ShaderBuilder : IObservable {
+    val shader: Shader
+    val state: State
+    val gadgets: List<GadgetData>
+    val linkedPatch: LinkedPatch?
+    val glslProgram: GlslProgram?
+    val glslErrors: List<GlslError>
+
+    fun startBuilding()
+    fun startCompile(gl: GlContext)
+
+    /** Contrary to expectations, linking happens before compiling in this world. */
+    enum class State {
+        Unbuilt,
+        Linking,
+        Linked,
+        Compiling,
+        Success,
+        Errors
+    }
+}
+
 class PreviewShaderBuilder(
-    val shader: Shader,
+    override val shader: Shader,
     private val autoWirer: AutoWirer,
     private val modelInfo: ModelInfo,
     private val coroutineScope: CoroutineScope = GlobalScope
-) : Observable() {
-    var state: State =
-        State.Unbuilt
+) : Observable(), ShaderBuilder {
+    override var state: ShaderBuilder.State =
+        ShaderBuilder.State.Unbuilt
         private set
 
     var previewPatch: MutablePatch? = null
         private set
-    var linkedPatch: LinkedPatch? = null
+    override var linkedPatch: LinkedPatch? = null
         private set
-    var glslProgram: GlslProgram? = null
+    override var glslProgram: GlslProgram? = null
         private set
 
-    val gadgets: List<GadgetData> get() = mutableGadgets
+    override val gadgets: List<GadgetData> get() = mutableGadgets
     private val mutableGadgets: MutableList<GadgetData> = arrayListOf()
 
-    var glslErrors: List<GlslError> = emptyList()
+    override var glslErrors: List<GlslError> = emptyList()
         private set
 
 
-    fun startBuilding() {
-        state = State.Linking
+    override fun startBuilding() {
+        state = ShaderBuilder.State.Linking
         notifyChanged()
 
         coroutineScope.launch {
@@ -87,20 +110,20 @@ class PreviewShaderBuilder(
                 .takeFirstIfAmbiguous()
                 .resolve()
             linkedPatch = previewPatch?.openForPreview(autoWirer)
-            state = State.Linked
+            state = ShaderBuilder.State.Linked
         } catch (e: GlslException) {
             glslErrors = e.errors
-            state = State.Errors
+            state = ShaderBuilder.State.Errors
         } catch (e: Exception) {
             logger.warn(e) { "Failed to analyze shader." }
             glslErrors = listOf(GlslError(e.message ?: e.toString()))
-            state = State.Errors
+            state = ShaderBuilder.State.Errors
         }
         notifyChanged()
     }
 
-    fun startCompile(gl: GlContext) {
-        state = State.Compiling
+    override fun startCompile(gl: GlContext) {
+        state = ShaderBuilder.State.Compiling
         notifyChanged()
 
         coroutineScope.launch {
@@ -125,28 +148,16 @@ class PreviewShaderBuilder(
     fun compile(gl: GlContext, resolver: Resolver) {
         try {
             glslProgram = linkedPatch?.compile(gl, resolver)
-            state = State.Success
+            state = ShaderBuilder.State.Success
         } catch (e: GlslException) {
             glslErrors = e.errors
-            state = State.Errors
+            state = ShaderBuilder.State.Errors
         } catch (e: Exception) {
             logger.warn(e) { "Failed to compile patch." }
             glslErrors = listOf(GlslError(e.message ?: e.toString()))
-            state = State.Errors
+            state = ShaderBuilder.State.Errors
         }
         notifyChanged()
-    }
-
-    /**
-     * Contrary to expectations, linking happens before compliling in this world.
-     */
-    enum class State {
-        Unbuilt,
-        Linking,
-        Linked,
-        Compiling,
-        Success,
-        Errors
     }
 
     companion object {

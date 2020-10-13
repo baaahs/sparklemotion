@@ -4,6 +4,7 @@ import baaahs.gl.GlBase
 import baaahs.gl.GlContext
 import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.PreviewShaderBuilder
+import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.ProjectionPreview
 import baaahs.gl.render.QuadPreview
 import baaahs.gl.render.ShaderPreview
@@ -96,10 +97,10 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
         val observer = builder.addObserver {
             when (it.state) {
-                PreviewShaderBuilder.State.Linked -> {
+                ShaderBuilder.State.Linked -> {
                     it.startCompile(gl!!)
                 }
-                PreviewShaderBuilder.State.Success -> {
+                ShaderBuilder.State.Success -> {
                     val gadgetAdjuster =
                         GadgetAdjuster(builder.gadgets, appContext.clock)
                     preRenderHook.current = { gadgetAdjuster.adjustGadgets() }
@@ -113,7 +114,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         }
         withCleanup { observer.remove() }
 
-        if (builder.state == PreviewShaderBuilder.State.Unbuilt) {
+        if (builder.state == ShaderBuilder.State.Unbuilt) {
             builder.startBuilding()
         }
     }
@@ -136,18 +137,18 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         }
 
         println("${builder?.shader?.title} is ${builder?.state}")
-        when (builder?.state ?: PreviewShaderBuilder.State.Unbuilt) {
-            PreviewShaderBuilder.State.Unbuilt,
-            PreviewShaderBuilder.State.Linking,
-            PreviewShaderBuilder.State.Linked,
-            PreviewShaderBuilder.State.Compiling -> {
+        when (builder?.state ?: ShaderBuilder.State.Unbuilt) {
+            ShaderBuilder.State.Unbuilt,
+            ShaderBuilder.State.Linking,
+            ShaderBuilder.State.Linked,
+            ShaderBuilder.State.Compiling -> {
                 div { +"Building..." }
             }
 
-            PreviewShaderBuilder.State.Success -> {
+            ShaderBuilder.State.Success -> {
             }
 
-            PreviewShaderBuilder.State.Errors -> {
+            ShaderBuilder.State.Errors -> {
                 div(+ShaderPreviewStyles.errorBox) {
                     attrs.onClickFunction = { event ->
                         errorPopupAnchor = event.currentTarget
@@ -248,7 +249,7 @@ object ShaderPreviewStyles : StyleSheet("ui-ShaderPreview", isStatic = true) {
 
 external interface ShaderPreviewProps : RProps {
     var shader: Shader?
-    var previewShaderBuilder: PreviewShaderBuilder?
+    var previewShaderBuilder: ShaderBuilder?
     var width: LinearDimension?
     var height: LinearDimension?
 }

@@ -39,7 +39,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
 
                 EditingShader.State.Errors -> {
                     val lineCount = editor.getSession().getLength().toInt()
-                    setAnnotations(editingShader.previewShaderBuilder.glslErrors.map { error ->
+                    setAnnotations(editingShader.shaderBuilder.glslErrors.map { error ->
                         jsObject {
                             row = (error.row).boundedBy(0 until lineCount)
                             column = 0
