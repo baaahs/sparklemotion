@@ -1,6 +1,5 @@
 package baaahs.gl.patch
 
-import baaahs.Logger
 import baaahs.getBang
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.shader.InputPort
@@ -15,6 +14,7 @@ import baaahs.show.mutable.MutableDataSource
 import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderChannel
+import baaahs.util.Logger
 
 class AutoWirer(
     val plugins: Plugins,

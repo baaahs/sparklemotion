@@ -1,7 +1,7 @@
 package baaahs.sim
 
-import baaahs.Logger
 import baaahs.net.Network
+import baaahs.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

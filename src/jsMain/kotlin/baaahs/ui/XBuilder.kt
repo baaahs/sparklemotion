@@ -1,6 +1,6 @@
 package baaahs.ui
 
-import baaahs.Logger
+import baaahs.util.Logger
 import external.react.memo
 import org.w3c.dom.events.Event
 import react.RMutableRef

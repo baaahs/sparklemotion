@@ -1,7 +1,7 @@
 package baaahs.sim
 
-import baaahs.Logger
 import baaahs.io.Fs
+import baaahs.util.Logger
 
 class FakeFs(override val name: String = "FakeFs") : BaseFakeFs() {
     private val files = mutableMapOf<String, ByteArray>()

@@ -1,6 +1,6 @@
 package baaahs.gl
 
-import baaahs.Logger
+import baaahs.util.Logger
 import com.danielgergely.kgl.*
 
 class KglTracer(private val kgl: Kgl) : Kgl {

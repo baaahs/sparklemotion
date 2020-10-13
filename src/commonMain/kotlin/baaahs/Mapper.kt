@@ -16,6 +16,7 @@ import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.shaders.SolidBrainShader
+import baaahs.util.Logger
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel

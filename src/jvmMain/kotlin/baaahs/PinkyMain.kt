@@ -9,6 +9,7 @@ import baaahs.plugin.BeatLinkPlugin
 import baaahs.plugin.Plugins
 import baaahs.proto.Ports
 import baaahs.sim.FakeDmxUniverse
+import baaahs.util.Logger
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
