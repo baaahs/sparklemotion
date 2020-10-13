@@ -8,6 +8,7 @@ import baaahs.model.Model
 import com.danielgergely.kgl.*
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.Path2D
 import kotlin.browser.window
 
 interface ShaderPreview {
@@ -80,29 +81,66 @@ class ProjectionPreview(
 
             context2d.strokeStyle = "#ffffff"
             context2d.lineWidth = 2.0
-            context2d.fillStyle = "black"
+            context2d.fillStyle = "#000000"
             context2d.fillRect(0.0, 0.0, width.toDouble(), height.toDouble())
-            context2d.beginPath()
+
+            val errorMargin = 3.0
+            val insetWidth = width - errorMargin * 2;
+            val insetHeight = height - errorMargin * 2;
+
+            val overflows = arrayListOf<DoubleArray>()
 
             fixtureRenderPlans.forEach { (surface, fixtureRenderPlan) ->
                 val projectedVertices = fixtureRenderPlan.renderResult as FloatsResult
                 var vertexIndex = 0
 
+                val path = Path2D()
                 surface.lines.forEach { line ->
                     line.vertices.forEachIndexed { vIndex, _ ->
-                        val pointX = projectedVertices.getR(vertexIndex).toDouble() * width
-                        val pointY = (1 - projectedVertices.getG(vertexIndex).toDouble()) * height
+                        val u = projectedVertices.getR(vertexIndex).toDouble()
+                        val v = 1 - projectedVertices.getG(vertexIndex).toDouble()
+
+                        val pointX = u * insetWidth + errorMargin
+                        val pointY = v * insetHeight + errorMargin
                         if (vIndex == 0) {
-                            context2d.moveTo(pointX, pointY)
+                            path.moveTo(pointX, pointY)
                         } else {
-                            context2d.lineTo(pointX, pointY)
+                            path.lineTo(pointX, pointY)
                         }
+
+                        var overflowX = pointX + (errorMargin - 1) / 2
+                        var overflowY = pointY + (errorMargin - 1) / 2
+                        var isOverflow = false
+                        if (u < 0) {
+                            overflowX = 0.0
+                            isOverflow = true
+                        } else if (u >= 1) {
+                            overflowX = insetWidth + errorMargin
+                            isOverflow = true
+                        }
+                        if (v < 0) {
+                            overflowY = 0.0
+                            isOverflow = true
+                        } else if (v >= 1) {
+                            overflowY = insetHeight + errorMargin
+                            isOverflow = true
+                        }
+                        if (isOverflow) {
+                            overflows.add(doubleArrayOf(overflowX, overflowY))
+                        }
+
                         vertexIndex++
                     }
                 }
+                path.closePath()
+                context2d.stroke(path)
             }
 
-            context2d.stroke()
+            // Show overflow vertices.
+            context2d.fillStyle = "#ff0000"
+            overflows.forEach { coords ->
+                context2d.fillRect(coords[0], coords[1], errorMargin, errorMargin)
+            }
         }
 
         window.requestAnimationFrame { render() }
