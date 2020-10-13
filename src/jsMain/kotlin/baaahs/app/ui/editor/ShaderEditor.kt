@@ -33,7 +33,6 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
                 editor.getSession().setAnnotations(list.toTypedArray())
             }
             when (editingShader.state) {
-                EditingShader.State.Changed,
                 EditingShader.State.Building,
                 EditingShader.State.Success -> setAnnotations(emptyList())
 
