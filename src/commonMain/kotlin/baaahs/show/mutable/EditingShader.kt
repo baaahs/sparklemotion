@@ -11,17 +11,19 @@ class EditingShader(
     private val createShaderBuilder: (Shader) -> ShaderBuilder,
 ): Observable() {
     val id = randomId("EditingShader")
-    var state = State.Changed
+    var state = State.Building
 
     val mutableShader: MutableShader get() = mutableShaderInstance.mutableShader
     val title: String get() = mutableShader.title
 
-    var shaderBuilder: ShaderBuilder = createShaderBuilder(build())
+    var shaderBuilder: ShaderBuilder = createShaderBuilder(mutableShader.build())
         private set
 
     val gadgets get() = shaderBuilder.gadgets
 
-    fun build(): Shader = mutableShader.build()
+    init {
+        startBuilding()
+    }
 
     private fun maybeNotifyStateChanging(newState: State) {
         if (state != newState) {
@@ -31,14 +33,16 @@ class EditingShader(
     }
 
     fun updateSrc(newSrc: String) {
-        mutableShader.src = newSrc
+        if (mutableShader.src != newSrc) {
+            mutableShader.src = newSrc
 
-        startBuilding()
+            shaderBuilder = createShaderBuilder(mutableShader.build())
+            startBuilding()
+        }
     }
 
     private fun startBuilding() {
-        val newShaderBuilder = createShaderBuilder(build())
-        newShaderBuilder.addObserver {
+        shaderBuilder.addObserver {
             val newState = when (it.state) {
                 ShaderBuilder.State.Success -> State.Success
                 ShaderBuilder.State.Errors -> State.Errors
@@ -47,14 +51,12 @@ class EditingShader(
 
             maybeNotifyStateChanging(newState)
         }
-        shaderBuilder = newShaderBuilder
-        newShaderBuilder.startBuilding()
+        shaderBuilder.startBuilding()
         state = State.Building
         notifyChanged()
     }
 
     enum class State {
-        Changed,
         Building,
         Success,
         Errors
