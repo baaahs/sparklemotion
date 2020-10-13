@@ -1,14 +1,19 @@
 package baaahs.ui
 
-open class Observable {
+interface IObservable {
+    fun addObserver(observer: Observer): Observer
+    fun removeObserver(observer: Observer)
+}
+
+open class Observable : IObservable {
     private val observers = mutableListOf<Observer>()
 
-    fun addObserver(observer: Observer): Observer {
+    override fun addObserver(observer: Observer): Observer {
         observers.add(observer)
         return observer
     }
 
-    fun removeObserver(observer: Observer) {
+    override fun removeObserver(observer: Observer) {
         observers.remove(observer)
     }
 
@@ -17,13 +22,13 @@ open class Observable {
     }
 }
 
-fun <T : Observable> T.addObserver(callback: (T) -> Unit): RemovableObserver<T> {
+fun <T : IObservable> T.addObserver(callback: (T) -> Unit): RemovableObserver<T> {
     val observer = RemovableObserver(this, callback)
     addObserver(observer)
     return observer
 }
 
-class RemovableObserver<T : Observable>(
+class RemovableObserver<T : IObservable>(
     private val observable: T,
     private val callback: (T) -> Unit
 ) : Observer {

@@ -1,17 +1,14 @@
 package baaahs.show.mutable
 
-import baaahs.gl.patch.AutoWirer
-import baaahs.gl.preview.PreviewShaderBuilder
-import baaahs.model.ModelInfo
+import baaahs.gl.preview.ShaderBuilder
 import baaahs.randomId
 import baaahs.show.Shader
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
 
 class EditingShader(
-    val mutableShaderInstance: MutableShaderInstance,
-    private val autoWirer: AutoWirer,
-    private val modelInfo: ModelInfo
+    private val mutableShaderInstance: MutableShaderInstance,
+    private val createShaderBuilder: (Shader) -> ShaderBuilder,
 ): Observable() {
     val id = randomId("EditingShader")
     var state = State.Changed
@@ -19,11 +16,10 @@ class EditingShader(
     val mutableShader: MutableShader get() = mutableShaderInstance.mutableShader
     val title: String get() = mutableShader.title
 
-    var previewShaderBuilder: PreviewShaderBuilder =
-        PreviewShaderBuilder(build(), autoWirer, modelInfo)
+    var shaderBuilder: ShaderBuilder = createShaderBuilder(build())
         private set
 
-    val gadgets get() = previewShaderBuilder.gadgets
+    val gadgets get() = shaderBuilder.gadgets
 
     fun build(): Shader = mutableShader.build()
 
@@ -41,18 +37,18 @@ class EditingShader(
     }
 
     private fun startBuilding() {
-        val newPreviewShaderBuilder = PreviewShaderBuilder(build(), autoWirer, modelInfo)
-        newPreviewShaderBuilder.addObserver {
+        val newShaderBuilder = createShaderBuilder(build())
+        newShaderBuilder.addObserver {
             val newState = when (it.state) {
-                PreviewShaderBuilder.State.Success -> State.Success
-                PreviewShaderBuilder.State.Errors -> State.Errors
+                ShaderBuilder.State.Success -> State.Success
+                ShaderBuilder.State.Errors -> State.Errors
                 else -> State.Building
             }
 
             maybeNotifyStateChanging(newState)
         }
-        previewShaderBuilder = newPreviewShaderBuilder
-        newPreviewShaderBuilder.startBuilding()
+        shaderBuilder = newShaderBuilder
+        newShaderBuilder.startBuilding()
         state = State.Building
         notifyChanged()
     }
