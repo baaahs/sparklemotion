@@ -3,7 +3,6 @@ package baaahs.gl.preview
 import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.GadgetData
-import baaahs.Logger
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslException
@@ -21,6 +20,7 @@ import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePatch
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
+import baaahs.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

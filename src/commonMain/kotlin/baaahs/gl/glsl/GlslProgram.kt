@@ -1,6 +1,5 @@
 package baaahs.gl.glsl
 
-import baaahs.Logger
 import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.gl.GlContext
@@ -9,6 +8,7 @@ import baaahs.gl.render.ModelRenderer
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.OutputPortRef
+import baaahs.util.Logger
 
 class GlslProgram(
     internal val gl: GlContext,

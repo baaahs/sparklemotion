@@ -1,6 +1,6 @@
 package baaahs.gl
 
-import baaahs.Logger
+import baaahs.util.Logger
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglLwjgl
 import org.lwjgl.glfw.GLFW

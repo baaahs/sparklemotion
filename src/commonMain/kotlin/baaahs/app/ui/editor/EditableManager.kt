@@ -1,12 +1,12 @@
 package baaahs.app.ui.editor
 
-import baaahs.Logger
 import baaahs.app.ui.EditIntent
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
 import baaahs.show.Show
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.Facade
+import baaahs.util.Logger
 import baaahs.util.UndoStack
 import kotlin.math.max
 

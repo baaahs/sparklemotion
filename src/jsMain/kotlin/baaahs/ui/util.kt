@@ -1,6 +1,6 @@
 package baaahs.ui
 
-import baaahs.Logger
+import baaahs.util.Logger
 import external.DroppableProvided
 import external.copyFrom
 import kotlinx.css.CSSBuilder
