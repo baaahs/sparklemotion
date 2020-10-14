@@ -40,13 +40,12 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
     val theme = useTheme()
     val shaderEditorStyles = memo(theme) { ShaderEditorStyles(theme) }
 
-    var selectedTab by state { PageTabs.Ports }
+    var selectedTab by state { PageTabs.Properties }
     @Suppress("UNCHECKED_CAST")
     val handleChangeTab = handler("on tab click") { event: Event, value: PageTabs ->
         selectedTab = value
     } as (Event, Any?) -> Unit
 
-    logger.info { "Rendering for ${props.mutableShaderInstance.mutableShader.title}..." }
     val handleUpdate =
         handler("handleShaderUpdate", props.mutableShaderInstance) { block: MutableShaderInstance.() -> Unit ->
             props.mutableShaderInstance.block()
