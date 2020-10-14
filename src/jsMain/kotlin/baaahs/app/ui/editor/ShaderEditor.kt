@@ -134,7 +134,6 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
 
     div(+Styles.shaderEditor) {
         textEditor {
-
             attrs.document = glslDoc
             attrs.mode = Modes.glsl
             attrs.onAceEditor = x.handler("onAceEditor") { incoming: AceEditor -> aceEditor = incoming }

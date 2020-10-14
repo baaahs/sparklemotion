@@ -33,6 +33,10 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
 
     val defaultDebounceSeconds = 0f
 
+    onMount {
+        aceEditor.current?.let { props.onAceEditor(it) }
+    }
+
     useResizeListener(rootEl) {
         aceEditor.current?.editor?.resize()
     }
