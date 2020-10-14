@@ -20,6 +20,7 @@ import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
 import materialui.components.iconbutton.iconButton
+import materialui.components.paper.enums.PaperStyle
 import materialui.icon
 import materialui.icons.Icons
 import materialui.toggleButton
@@ -67,7 +68,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
         event.preventDefault()
     }
 
-    card {
+    card(Styles.buttonGroupCard on PaperStyle.root) {
         droppable({
             droppableId = dropTarget.dropTargetId
             type = dropTarget.type

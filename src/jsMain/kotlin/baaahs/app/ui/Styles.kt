@@ -212,6 +212,16 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     val section2Controls by css {
     }
 
+    val addToSectionButton by css {
+        opacity = 0
+        transition(StyledElement::visibility, duration = 0.25.s, timing = Timing.linear)
+        important(StyledElement::position, Position.absolute)
+        right = 0.px
+        top = 0.px
+        important(StyledElement::padding, 0.px)
+        zIndex = 101
+    }
+
     val controlSections = arrayListOf(
         section0Controls,
         section1Controls,
@@ -293,10 +303,13 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
             declarations["writing-mode"] = "vertical-lr"
         }
 
+        descendants(addToSectionButton) {
+            opacity = 1
+        }
+
         descendants(baaahs.app.ui.controls.Styles.controlBox) {
             padding(3.px)
             marginBottom = 0.25.em
-            backgroundColor = Color.white.withAlpha(.5)
             border(
                 width = 1.px,
                 style = BorderStyle.solid,

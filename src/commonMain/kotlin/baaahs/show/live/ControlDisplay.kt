@@ -137,6 +137,8 @@ class ControlDisplay(
         }
 
         inner class PanelBucket(val section: Section) : DropTarget {
+            val panelTitle: String get() = this@PanelBuckets.panelTitle
+
             val controls = mutableListOf<PlacedControl>()
             override val type: String get() = "ControlContainer"
 
