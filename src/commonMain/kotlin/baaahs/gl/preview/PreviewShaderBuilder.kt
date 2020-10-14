@@ -11,6 +11,7 @@ import baaahs.gl.glsl.Resolver
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.show.DataSource
@@ -29,6 +30,7 @@ interface ShaderBuilder : IObservable {
     val shader: Shader
     val state: State
     val gadgets: List<GadgetData>
+    val openShader: OpenShader?
     val linkedPatch: LinkedPatch?
     val glslProgram: GlslProgram?
     val glslErrors: List<GlslError>
@@ -57,6 +59,8 @@ class PreviewShaderBuilder(
         ShaderBuilder.State.Unbuilt
         private set
 
+    override var openShader: OpenShader? = null
+        private set
     var previewPatch: MutablePatch? = null
         private set
     override var linkedPatch: LinkedPatch? = null
@@ -70,6 +74,10 @@ class PreviewShaderBuilder(
     override var glslErrors: List<GlslError> = emptyList()
         private set
 
+    private fun analyze(shader: Shader) = autoWirer.glslAnalyzer.openShader(shader)
+    private val screenCoordsProjection by lazy { analyze(PreviewShaderBuilder.screenCoordsProjection) }
+    private val pixelUvIdentity by lazy { analyze(Shaders.pixelUvIdentity) }
+    private val smpteColorBars by lazy { analyze(Shaders.smpteColorBars) }
 
     override fun startBuilding() {
         state = ShaderBuilder.State.Linking
@@ -81,22 +89,13 @@ class PreviewShaderBuilder(
     }
 
     fun link() {
-        val screenCoordsProjection by lazy {
-            Shader(
-                "Screen Coords", ShaderType.Projection, """
-                    uniform vec2 previewResolution;
-                    
-                    vec2 mainProjection(vec2 fragCoords) {
-                      return fragCoords / previewResolution;
-                    }
-                """.trimIndent()
-            )
-        }
-        val shaders: Array<Shader> = when (shader.type) {
-            ShaderType.Projection -> arrayOf(shader, Shaders.pixelUvIdentity)
-            ShaderType.Distortion -> arrayOf(screenCoordsProjection, shader, Shaders.smpteColorBars)
-            ShaderType.Paint -> arrayOf(screenCoordsProjection, shader)
-            ShaderType.Filter -> arrayOf(screenCoordsProjection, shader, Shaders.smpteColorBars)
+        val openShader = analyze(shader)
+        this.openShader = openShader
+        val shaders: Array<OpenShader> = when (shader.type) {
+            ShaderType.Projection -> arrayOf(openShader, pixelUvIdentity)
+            ShaderType.Distortion -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
+            ShaderType.Paint -> arrayOf(screenCoordsProjection, openShader)
+            ShaderType.Filter -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
         }
 
         val defaultPorts = when (shader.type) {
@@ -162,5 +161,17 @@ class PreviewShaderBuilder(
 
     companion object {
         private val logger = Logger("ShaderEditor")
+
+        private val screenCoordsProjection by lazy {
+            Shader(
+                "Screen Coords", ShaderType.Projection, """
+                    uniform vec2 previewResolution;
+                    
+                    vec2 mainProjection(vec2 fragCoords) {
+                      return fragCoords / previewResolution;
+                    }
+                """.trimIndent()
+            )
+        }
     }
 }

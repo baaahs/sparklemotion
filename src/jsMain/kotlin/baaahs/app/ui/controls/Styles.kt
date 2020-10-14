@@ -31,7 +31,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val editButton by css {
         opacity = 0
-        transition(StyledElement::opacity, duration = 0.25.s, timing = Timing.linear)
+        transition(::opacity, duration = 0.25.s, timing = Timing.linear)
         position = Position.absolute
         right = 2.px
         bottom = (-2).px + 2.em
@@ -45,7 +45,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val dragHandle by css {
         opacity = 0
-        transition(StyledElement::opacity, duration = 0.25.s, timing = Timing.linear)
+        transition(::opacity, duration = 0.25.s, timing = Timing.linear)
         position = Position.absolute
         right = 2.px
         bottom = (-2).px
