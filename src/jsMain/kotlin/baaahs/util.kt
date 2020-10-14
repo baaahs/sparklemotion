@@ -1,5 +1,6 @@
 import org.w3c.dom.Location
 
+external fun encodeURIComponent(uri: String): String
 external fun decodeURIComponent(encodedURI: String): String
 
 
