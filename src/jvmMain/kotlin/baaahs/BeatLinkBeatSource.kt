@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.util.Logger
 import org.deepsymmetry.beatlink.*
 import kotlin.concurrent.thread
 import kotlin.math.abs

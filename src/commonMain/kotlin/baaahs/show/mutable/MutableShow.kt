@@ -33,10 +33,12 @@ abstract class MutablePatchHolder(
 
     override fun getEditorPanels(): List<EditorPanel> {
         return listOf(
-            GenericPropertiesEditorPanel(
-                TitleEditorPanelComponent(this)
-            ),
+            GenericPropertiesEditorPanel(getPropertiesComponents()),
             PatchHolderEditorPanel(this))
+    }
+
+    open fun getPropertiesComponents(): List<PropsEditor> {
+        return listOf(TitlePropsEditor(this))
     }
 
     val patches by lazy {
@@ -74,17 +76,6 @@ abstract class MutablePatchHolder(
     fun editPatch(index: Int, block: MutablePatch.() -> Unit): MutablePatchHolder {
         patches[index].block()
         return this
-    }
-
-    fun findShaderChannels(): Set<ShaderChannel> {
-        val shaderChannels = hashSetOf<ShaderChannel>()
-        object : MutableShowVisitor() {
-            override fun visitShaderInstance(mutableShaderInstance: MutableShaderInstance) {
-                super.visitShaderInstance(mutableShaderInstance)
-                shaderChannels.addAll(mutableShaderInstance.findShaderChannels())
-            }
-        }
-        return shaderChannels
     }
 
     fun addControl(panel: String, control: MutableControl) {
@@ -139,7 +130,7 @@ class MutableShow(
     override val mutableShow: MutableShow get() = this
 
     internal val controls = CacheBuilder<String, MutableControl> { id ->
-        baseShow.controls.getBang(id, "control").toMutable(this)
+        baseShow.controls.getBang(id, "control").createMutable(this)
     }
 
     internal val dataSources = baseShow.dataSources
@@ -150,8 +141,12 @@ class MutableShow(
         .mapValues { (_, shader) -> MutableShader(shader) }
         .toMutableMap()
 
+    val shaderChannels = mutableSetOf<ShaderChannel>()
+
     val shaderInstances = baseShow.shaderInstances
         .mapValues { (_, shaderInstance) ->
+            shaderChannels.add(shaderInstance.shaderChannel)
+
             MutableShaderInstance(
                 findShader(shaderInstance.shaderId),
                 hashMapOf(),
@@ -166,6 +161,7 @@ class MutableShow(
             val editor = shaderInstances.getBang(id, "shader instance")
             val resolvedIncomingLinks = shaderInstance.incomingLinks.mapValues { (_, fromPortRef) ->
                 fromPortRef.dereference(this)
+                    .also { it.collectShaderChannels(shaderChannels) }
             }
             editor.incomingLinks.putAll(resolvedIncomingLinks)
         }
@@ -351,6 +347,7 @@ class MutablePatch {
 interface MutablePort {
     fun toRef(showBuilder: ShowBuilder): PortRef
     fun displayName(): String
+    fun collectShaderChannels(shaderChannels: MutableSet<ShaderChannel>) = Unit
 }
 
 data class MutableShaderChannel(val shaderChannel: ShaderChannel) : MutablePort {
@@ -359,6 +356,10 @@ data class MutableShaderChannel(val shaderChannel: ShaderChannel) : MutablePort 
 
     override fun displayName(): String =
         "channel(${shaderChannel.id})"
+
+    override fun collectShaderChannels(shaderChannels: MutableSet<ShaderChannel>) {
+        shaderChannels.add(shaderChannel)
+    }
 }
 
 data class MutableDataSource(val dataSource: DataSource) : MutablePort {
@@ -379,11 +380,18 @@ class MutableButtonControl(
     baseButtonControl: ButtonControl,
     override val mutableShow: MutableShow
 ) : MutablePatchHolder(baseButtonControl), MutableControl {
+    var activationType: ButtonControl.ActivationType = baseButtonControl.activationType
+
     override var asBuiltId: String? = null
+
+    override fun getPropertiesComponents(): List<PropsEditor> {
+        return super.getPropertiesComponents() + ButtonPropsEditor(this)
+    }
 
     override fun build(showBuilder: ShowBuilder): Control {
         return ButtonControl(
             title,
+            activationType,
             patches = patches.map { it.build(showBuilder) },
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder)
@@ -409,7 +417,7 @@ data class MutableButtonGroupControl(
     override fun getEditorPanels(): List<EditorPanel> {
         return listOf(
             GenericPropertiesEditorPanel(
-                ButtonGroupDirectionEditorPanelComponent(this)
+                ButtonGroupPropsEditor(this)
             )
         )
     }

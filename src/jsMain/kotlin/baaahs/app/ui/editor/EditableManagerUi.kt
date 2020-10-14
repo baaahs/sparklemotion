@@ -15,6 +15,7 @@ import materialui.components.drawer.enums.DrawerStyle
 import materialui.components.drawer.enums.DrawerVariant
 import materialui.components.iconbutton.enums.IconButtonStyle
 import materialui.components.iconbutton.iconButton
+import materialui.components.link.link
 import materialui.components.list.enums.ListStyle
 import materialui.components.list.list
 import materialui.components.listitem.listItem
@@ -23,9 +24,13 @@ import materialui.components.listitemtext.listItemText
 import materialui.components.listsubheader.enums.ListSubheaderStyle
 import materialui.components.listsubheader.listSubheader
 import materialui.components.portal.portal
+import materialui.components.snackbar.snackbar
 import materialui.components.typography.typographyH6
 import materialui.icon
 import materialui.icons.Icons
+import materialui.lab.components.alert.alert
+import materialui.lab.components.alert.enums.AlertSeverity
+import materialui.lab.components.alerttitle.alertTitle
 import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RHandler
@@ -43,8 +48,20 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 //        forceRender()
 //    }
 
-    val handleFormSubmit = useCallback { event: Event -> event.preventDefault() }
-    val handleDrawerClose = useCallback { event: Event -> event.preventDefault() }
+    var showModifiedWarning by state { false }
+
+    val handleFormSubmit = useCallback { event: Event ->
+        if (props.editableManager.isModified()) {
+            props.editableManager.applyChanges()
+        }
+    }
+    val handleDrawerClose = useCallback { event: Event ->
+        if (props.editableManager.isModified()) {
+            showModifiedWarning = true
+        } else {
+            props.editableManager.close()
+        }
+    }
 
     val handleUndo = useCallback { event: Event -> props.editableManager.undo() }
     val handleRedo = useCallback { event: Event -> props.editableManager.redo() }
@@ -101,30 +118,26 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
                 attrs.open = props.editableManager.isEditing()
                 attrs.onClose = handleDrawerClose
 
-                dialogTitle {
-                    +props.editableManager.uiTitle
-//                    textField {
-//                        attrs.autoFocus = true
-//                        attrs.variant = FormControlVariant.outlined
-//                        attrs.label { +"Title" }
-//                        attrs.value = props.mutablePatchHolder.title
-//                        attrs.onChangeFunction = handleTitleChange
-//                    }
+                dialogTitle(+EditableStyles.dialogTitle) {
+                    attrs.disableTypography = true
+                    typographyH6 { +props.editableManager.uiTitle }
 
-                    iconButton(Styles.buttons on IconButtonStyle.root) {
-                        icon(Icons.Undo)
-                        attrs["disabled"] = !props.editableManager.canUndo()
-                        attrs.onClickFunction = handleUndo
+                    div(+EditableStyles.dialogTitleButtons) {
+                        iconButton(Styles.buttons on IconButtonStyle.root) {
+                            icon(Icons.Undo)
+                            attrs["disabled"] = !props.editableManager.canUndo()
+                            attrs.onClickFunction = handleUndo
 
-                        typographyH6 { +"Undo" }
-                    }
+                            typographyH6 { +"Undo" }
+                        }
 
-                    iconButton(Styles.buttons on IconButtonStyle.root) {
-                        icon(Icons.Redo)
-                        attrs["disabled"] = !props.editableManager.canRedo()
-                        attrs.onClickFunction = handleRedo
+                        iconButton(Styles.buttons on IconButtonStyle.root) {
+                            icon(Icons.Redo)
+                            attrs["disabled"] = !props.editableManager.canRedo()
+                            attrs.onClickFunction = handleRedo
 
-                        typographyH6 { +"Redo" }
+                            typographyH6 { +"Redo" }
+                        }
                     }
                 }
 
@@ -148,6 +161,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                                 help {
                                     attrs.divClass = Styles.helpInline.name
+                                    // TODO: this should come from editorPanel:
                                     attrs.inject(PatchHolderEditorHelpText.patchOverview)
                                 }
                             }
@@ -159,6 +173,36 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
                 }
 
                 dialogActions {
+                    if (showModifiedWarning) {
+                        snackbar {
+                            attrs.open = true
+                            attrs.onClose = { _, _ -> showModifiedWarning = false }
+
+                            alert {
+                                attrs.severity = AlertSeverity.error
+                                attrs.onClose = { showModifiedWarning = false }
+
+                                alertTitle {
+                                    link {
+                                        attrs.onClickFunction = {
+                                            props.editableManager.applyChanges()
+                                            props.editableManager.close()
+                                        }
+                                        +"Apply changes and close"
+                                    }
+                                    +" or "
+                                    link {
+                                        attrs.onClickFunction = {
+                                            props.editableManager.close()
+                                        }
+                                        +"abandon changes and close"
+                                    }
+                                    +"."
+                                }
+                            }
+                        }
+                    }
+
                     button {
                         if (props.editableManager.isModified()) {
                             +"Abandon Changes"

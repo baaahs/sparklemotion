@@ -116,6 +116,8 @@ class Visualizer(model: Model<*>): JsMapperUi.StatusListener {
         controls = OrbitControls(camera, container!!).apply {
             minPolarAngle = PI / 2 - .25 // radians
             maxPolarAngle = PI / 2 + .25 // radians
+
+            enableKeys = false
         }
 
         resize()

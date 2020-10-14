@@ -1,12 +1,12 @@
 package baaahs.show.live
 
-import baaahs.Logger
 import baaahs.getBang
 import baaahs.gl.patch.PortDiagram
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.show.*
 import baaahs.util.CacheBuilder
+import baaahs.util.Logger
 
 class LiveShaderInstance(
     val shader: OpenShader,

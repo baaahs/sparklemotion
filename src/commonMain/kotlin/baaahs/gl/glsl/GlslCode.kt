@@ -1,9 +1,9 @@
 package baaahs.gl.glsl
 
-import baaahs.Logger
 import baaahs.englishize
 import baaahs.plugin.PluginRef
 import baaahs.unknown
+import baaahs.util.Logger
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put

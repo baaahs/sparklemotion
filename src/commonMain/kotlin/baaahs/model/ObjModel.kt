@@ -1,8 +1,8 @@
 package baaahs.model
 
-import baaahs.Logger
 import baaahs.geom.Vector3F
 import baaahs.getResource
+import baaahs.util.Logger
 
 abstract class ObjModel<T : Model.Surface>(val objResourceName: String) : Model<T>() {
     override val geomVertices: List<Vector3F> get() = vertices

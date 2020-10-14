@@ -1,7 +1,7 @@
 package baaahs.api.ws
 
-import baaahs.Logger
 import baaahs.net.Network
+import baaahs.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.*

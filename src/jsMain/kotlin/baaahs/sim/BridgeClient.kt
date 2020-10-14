@@ -2,8 +2,8 @@ package baaahs.sim
 
 import baaahs.BeatData
 import baaahs.BeatSource
-import baaahs.Logger
 import baaahs.SoundAnalyzer
+import baaahs.util.Logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

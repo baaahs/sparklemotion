@@ -1,12 +1,12 @@
 package baaahs.visualizer
 
 import baaahs.Color
-import baaahs.Logger
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.proto.Ports
+import baaahs.util.Logger
 import info.laht.threekt.math.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope

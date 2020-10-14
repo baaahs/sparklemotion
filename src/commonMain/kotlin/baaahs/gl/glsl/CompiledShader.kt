@@ -1,7 +1,7 @@
 package baaahs.gl.glsl
 
-import baaahs.Logger
 import baaahs.gl.GlContext
+import baaahs.util.Logger
 import com.danielgergely.kgl.GL_COMPILE_STATUS
 import com.danielgergely.kgl.GL_TRUE
 import com.danielgergely.kgl.Shader

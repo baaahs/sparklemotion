@@ -3,6 +3,7 @@ package baaahs.gl
 import baaahs.gadgets.Slider
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.PreviewShaderBuilder
+import baaahs.gl.preview.ShaderBuilder
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
@@ -28,7 +29,7 @@ object PreviewShaderBuilderSpec : Spek({
         val glContext by value { FakeGlContext(FakeKgl()) }
 
         it("is in Unbuilt state") {
-            expect(PreviewShaderBuilder.State.Unbuilt) { previewShaderBuilder.state }
+            expect(ShaderBuilder.State.Unbuilt) { previewShaderBuilder.state }
         }
 
         context("when startBuilding() is called") {
@@ -37,14 +38,14 @@ object PreviewShaderBuilderSpec : Spek({
             }
 
             it("is in Linking state") {
-                expect(PreviewShaderBuilder.State.Linking) { previewShaderBuilder.state }
+                expect(ShaderBuilder.State.Linking) { previewShaderBuilder.state }
             }
 
             context("after idle") {
                 beforeEachTest { testCoroutineContext.runAll() }
 
                 it("is in Linked state") {
-                    expect(PreviewShaderBuilder.State.Linked) { previewShaderBuilder.state }
+                    expect(ShaderBuilder.State.Linked) { previewShaderBuilder.state }
                 }
 
                 it("has a previewPatch") {
@@ -63,14 +64,14 @@ object PreviewShaderBuilderSpec : Spek({
                     beforeEachTest { previewShaderBuilder.startCompile(glContext) }
 
                     it("is in Compiling state") {
-                        expect(PreviewShaderBuilder.State.Compiling) { previewShaderBuilder.state }
+                        expect(ShaderBuilder.State.Compiling) { previewShaderBuilder.state }
                     }
 
                     context("after idle") {
                         beforeEachTest { testCoroutineContext.runAll() }
 
                         it("is in Success state") {
-                            expect(PreviewShaderBuilder.State.Success) { previewShaderBuilder.state }
+                            expect(ShaderBuilder.State.Success) { previewShaderBuilder.state }
                         }
 
                         it("has gadgets") {
