@@ -15,6 +15,7 @@ import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.mutable.MutableGadgetControl
+import baaahs.util.Logger
 import com.danielgergely.kgl.FloatBuffer
 import com.danielgergely.kgl.GL_FLOAT
 import com.danielgergely.kgl.GL_NEAREST

@@ -1,9 +1,9 @@
 package baaahs.glsl
 
-import baaahs.Logger
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.IdentifiedFixture
 import baaahs.geom.Vector3F
+import baaahs.util.Logger
 import kotlin.random.Random
 
 interface SurfacePixelStrategy {

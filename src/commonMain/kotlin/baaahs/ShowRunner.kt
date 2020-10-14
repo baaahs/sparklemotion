@@ -12,6 +12,7 @@ import baaahs.show.ShaderChannel
 import baaahs.show.Show
 import baaahs.show.live.ActiveSet
 import baaahs.show.live.OpenShow
+import baaahs.util.Logger
 
 class ShowRunner(
     val show: Show,

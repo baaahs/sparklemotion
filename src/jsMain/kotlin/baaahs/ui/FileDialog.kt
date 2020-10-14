@@ -81,7 +81,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
     }
 
     val handleFileNameChange = useCallback(currentDir) { event: Event ->
-        val str = event.target!!.asDynamic().value as String
+        val str = event.target.value
         selectedFile = currentDir.resolve(str)
     }
 

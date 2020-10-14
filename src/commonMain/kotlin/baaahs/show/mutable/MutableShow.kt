@@ -78,17 +78,6 @@ abstract class MutablePatchHolder(
         return this
     }
 
-    fun findShaderChannels(): Set<ShaderChannel> {
-        val shaderChannels = hashSetOf<ShaderChannel>()
-        object : MutableShowVisitor() {
-            override fun visitShaderInstance(mutableShaderInstance: MutableShaderInstance) {
-                super.visitShaderInstance(mutableShaderInstance)
-                shaderChannels.addAll(mutableShaderInstance.findShaderChannels())
-            }
-        }
-        return shaderChannels
-    }
-
     fun addControl(panel: String, control: MutableControl) {
         controlLayout.getOrPut(panel) { arrayListOf() }.add(control)
     }
@@ -152,8 +141,12 @@ class MutableShow(
         .mapValues { (_, shader) -> MutableShader(shader) }
         .toMutableMap()
 
+    val shaderChannels = mutableSetOf<ShaderChannel>()
+
     val shaderInstances = baseShow.shaderInstances
         .mapValues { (_, shaderInstance) ->
+            shaderChannels.add(shaderInstance.shaderChannel)
+
             MutableShaderInstance(
                 findShader(shaderInstance.shaderId),
                 hashMapOf(),
@@ -168,6 +161,7 @@ class MutableShow(
             val editor = shaderInstances.getBang(id, "shader instance")
             val resolvedIncomingLinks = shaderInstance.incomingLinks.mapValues { (_, fromPortRef) ->
                 fromPortRef.dereference(this)
+                    .also { it.collectShaderChannels(shaderChannels) }
             }
             editor.incomingLinks.putAll(resolvedIncomingLinks)
         }
@@ -353,6 +347,7 @@ class MutablePatch {
 interface MutablePort {
     fun toRef(showBuilder: ShowBuilder): PortRef
     fun displayName(): String
+    fun collectShaderChannels(shaderChannels: MutableSet<ShaderChannel>) = Unit
 }
 
 data class MutableShaderChannel(val shaderChannel: ShaderChannel) : MutablePort {
@@ -361,6 +356,10 @@ data class MutableShaderChannel(val shaderChannel: ShaderChannel) : MutablePort 
 
     override fun displayName(): String =
         "channel(${shaderChannel.id})"
+
+    override fun collectShaderChannels(shaderChannels: MutableSet<ShaderChannel>) {
+        shaderChannels.add(shaderChannel)
+    }
 }
 
 data class MutableDataSource(val dataSource: DataSource) : MutablePort {

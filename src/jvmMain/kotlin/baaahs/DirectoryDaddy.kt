@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.io.Fs
 import baaahs.io.RealFs
+import baaahs.util.Logger
 
 class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
     private var preferredVersion: String? = null

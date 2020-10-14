@@ -1,11 +1,11 @@
 package baaahs.gl.patch
 
-import baaahs.Logger
 import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.OpenPatch
 import baaahs.show.mutable.MutablePatch
+import baaahs.util.Logger
 
 class PortDiagram {
     private var surfaces: Surfaces? = null

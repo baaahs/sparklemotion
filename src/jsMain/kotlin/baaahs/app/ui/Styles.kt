@@ -199,8 +199,8 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         height = 100.pct
         verticalAlign = VerticalAlign.top
 
-        transition(StyledElement::minWidth, duration = .5.s)
-        transition(StyledElement::minHeight, duration = .5.s)
+        transition(::minWidth, duration = .5.s)
+        transition(::minHeight, duration = .5.s)
     }
 
     val section0Controls by css {
@@ -224,7 +224,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         bottom = 5.em
         zIndex = 100
         opacity = 0
-        transition(StyledElement::opacity, duration = 1.s)
+        transition(::opacity, duration = 1.s)
         pointerEvents = PointerEvents.none
 
         hover {
@@ -255,7 +255,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
     val dragHandle by css {
         opacity = .2
-        transition(StyledElement::visibility, duration = 0.25.s, timing = Timing.linear)
+        transition(::visibility, duration = 0.25.s, timing = Timing.linear)
         position = Position.absolute
         right = 2.px
         top = 0.5.em
