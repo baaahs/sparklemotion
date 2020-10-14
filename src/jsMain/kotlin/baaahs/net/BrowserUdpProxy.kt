@@ -1,9 +1,9 @@
 package baaahs.net
 
-import baaahs.Logger
 import baaahs.getTimeMillis
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.util.Logger
 
 internal class BrowserUdpProxy(
     link: Network.Link, address: BrowserNetwork.BrowserAddress, port: Int

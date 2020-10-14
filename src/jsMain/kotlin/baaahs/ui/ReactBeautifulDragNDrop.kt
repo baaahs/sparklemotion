@@ -1,6 +1,6 @@
 package baaahs.ui
 
-import baaahs.Logger
+import baaahs.util.Logger
 import external.DraggableLocation
 import external.DropReason
 import external.DropResult

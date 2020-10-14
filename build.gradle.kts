@@ -133,7 +133,7 @@ kotlin {
                 runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.spek}")
                 runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
 
-                implementation("io.mockk:mockk:1.10.0")
+                implementation("io.mockk:mockk:1.10.2")
 
                 // For RunOpenGLTests:
                 implementation("org.junit.platform:junit-platform-launcher:1.6.2")

@@ -86,17 +86,6 @@ object Styles : StyleSheet("ui", isStatic = true) {
         marginTop = .5.em
     }
 
-    val shaderMeta by css {
-        display = Display.flex
-        flexDirection = FlexDirection.row
-
-        child("*") {
-            flex(1.0)
-            padding(1.em)
-        }
-        firstChild { flex(3.0) }
-    }
-
     val glslNumber by css {
         display = Display.block
         backgroundColor = Color("#0D0")

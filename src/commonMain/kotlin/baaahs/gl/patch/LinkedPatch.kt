@@ -1,6 +1,5 @@
 package baaahs.gl.patch
 
-import baaahs.Logger
 import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.gl.GlContext
@@ -13,6 +12,7 @@ import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.LiveShaderInstance.*
 import baaahs.show.mutable.ShowBuilder
+import baaahs.util.Logger
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set

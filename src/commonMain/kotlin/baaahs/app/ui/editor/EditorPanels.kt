@@ -2,17 +2,14 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.EditorPanel
-import baaahs.show.mutable.MutableButtonGroupControl
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutablePatchHolder
-import baaahs.show.mutable.MutableShaderInstance
+import baaahs.show.mutable.*
 import baaahs.ui.Icon
 import baaahs.ui.Renderer
 
 data class GenericPropertiesEditorPanel(
-    val components: List<EditorPanelComponent>
+    val propsEditors: List<PropsEditor>
 ) : EditorPanel {
-    constructor(vararg components: EditorPanelComponent) : this(components.toList())
+    constructor(vararg propsEditors: PropsEditor) : this(propsEditors.toList())
 
     override val title: String
         get() = "Properties"
@@ -22,7 +19,7 @@ data class GenericPropertiesEditorPanel(
         get() = CommonIcons.Settings
 
     override fun getRenderer(editableManager: EditableManager): Renderer =
-        editorPanelViews.forGenericPropertiesPanel(editableManager, components)
+        editorPanelViews.forGenericPropertiesPanel(editableManager, propsEditors)
 }
 
 data class PatchHolderEditorPanel(
@@ -90,24 +87,31 @@ data class PatchEditorPanel(
     }
 }
 
-interface EditorPanelComponent {
+interface PropsEditor {
     fun getRenderer(editableManager: EditableManager): Renderer
 }
 
-data class TitleEditorPanelComponent(val mutablePatchHolder: MutablePatchHolder) : EditorPanelComponent {
+data class TitlePropsEditor(val mutablePatchHolder: MutablePatchHolder) : PropsEditor {
     override fun getRenderer(editableManager: EditableManager): Renderer =
         editorPanelViews.forTitleComponent(editableManager, mutablePatchHolder)
 }
 
-data class ButtonGroupDirectionEditorPanelComponent(
+data class ButtonPropsEditor(
+    val mutableButtonControl: MutableButtonControl
+) : PropsEditor {
+    override fun getRenderer(editableManager: EditableManager): Renderer =
+        editorPanelViews.forButton(editableManager, mutableButtonControl)
+}
+
+data class ButtonGroupPropsEditor(
     val mutableButtonGroupControl: MutableButtonGroupControl
-) : EditorPanelComponent {
+) : PropsEditor {
     override fun getRenderer(editableManager: EditableManager): Renderer =
         editorPanelViews.forButtonGroup(editableManager, mutableButtonGroupControl)
 }
 
 interface EditorPanelViews {
-    fun forGenericPropertiesPanel(editableManager: EditableManager, components: List<EditorPanelComponent>): Renderer
+    fun forGenericPropertiesPanel(editableManager: EditableManager, propsEditors: List<PropsEditor>): Renderer
     fun forPatchHolder(editableManager: EditableManager, mutablePatchHolder: MutablePatchHolder): Renderer
     fun forPatch(editableManager: EditableManager, mutablePatch: MutablePatch): Renderer
     fun forShaderInstance(
@@ -115,6 +119,7 @@ interface EditorPanelViews {
         mutablePatch: MutablePatch,
         mutableShaderInstance: MutableShaderInstance
     ): Renderer
+    fun forButton(editableManager: EditableManager, mutableButtonControl: MutableButtonControl): Renderer
     fun forButtonGroup(editableManager: EditableManager, mutableButtonGroupControl: MutableButtonGroupControl): Renderer
 
     fun forTitleComponent(editableManager: EditableManager, mutablePatchHolder: MutablePatchHolder): Renderer

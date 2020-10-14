@@ -1,10 +1,10 @@
 package baaahs.gl
 
-import baaahs.Logger
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.CompiledShader
 import baaahs.gl.glsl.GlslProgram
 import baaahs.glsl.Uniform
+import baaahs.util.Logger
 import com.danielgergely.kgl.*
 
 abstract class GlContext(
