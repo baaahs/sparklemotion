@@ -1,0 +1,34 @@
+package baaahs.app.ui
+
+import baaahs.plugin.Plugins
+import baaahs.show.Show
+import encodeURIComponent
+import kotlinext.js.jsObject
+import kotlinx.serialization.json.Json
+import org.w3c.dom.HTMLAnchorElement
+import org.w3c.files.Blob
+import kotlin.browser.document
+import kotlin.browser.window
+
+object UiActions {
+    fun downloadShow(show: Show, plugins: Plugins) {
+        val filename = "${show.title}.sparkle"
+        val contentType = "application/json;charset=utf-8;"
+        val showJson = Json(plugins.json) {
+            prettyPrint = true
+        }.encodeToString(Show.serializer(), show)
+        val navigator = window.navigator
+        if (navigator.asDynamic()?.msSaveOrOpenBlob != null) {
+            val blob = Blob(arrayOf(showJson), jsObject { type = contentType })
+            navigator.asDynamic().msSaveOrOpenBlob(blob, filename);
+        } else {
+            val a = document.createElement("a") as HTMLAnchorElement
+            a.download = filename;
+            a.href = "data:${contentType},${encodeURIComponent(showJson)}"
+            a.target = "_blank"
+            document.body!!.appendChild(a)
+            a.click()
+            document.body!!.removeChild(a)
+        }
+    }
+}

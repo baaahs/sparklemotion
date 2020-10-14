@@ -25,15 +25,19 @@ import materialui.icon
 import materialui.icons.Icons
 import materialui.styles.muitheme.direction
 import materialui.useTheme
-import react.RBuilder
-import react.RHandler
-import react.RProps
-import react.child
+import org.w3c.dom.events.Event
+import react.*
 import react.dom.div
 
 val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props ->
+    val appContext = useContext(appContext)
     val theme = useTheme()
     val themeStyles = ThemeStyles(theme)
+
+    val handleDownloadShow = handler("handleDownloadShow") { event: Event ->
+        val show = appContext.webClient.show!!
+        UiActions.downloadShow(show, appContext.plugins)
+    }
 
     drawer(
         themeStyles.appDrawer on DrawerStyle.root,
@@ -88,6 +92,14 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                 attrs.onClickFunction = props.onSaveShowAs.withEvent()
                 listItemIcon { icon(Icons.FileCopy) }
                 listItemText { attrs.primary { +"Save As…" } }
+            }
+
+            listItem {
+                attrs.button = true
+                attrs.disabled = appContext.webClient.show == null
+                attrs.onClickFunction = handleDownloadShow
+                listItemIcon { icon(Icons.CloudDownload) }
+                listItemText { attrs.primary { +"Download Show" } }
             }
 
             listItem {
