@@ -1,6 +1,5 @@
 package baaahs.gl.render
 
-import baaahs.Logger
 import baaahs.fixtures.Fixture
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
@@ -8,6 +7,7 @@ import baaahs.gl.render.ModelRenderer.GlConst.GL_RGBA8
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.model.ModelInfo
 import baaahs.timeSync
+import baaahs.util.Logger
 import com.danielgergely.kgl.*
 import kotlin.math.max
 import kotlin.math.min

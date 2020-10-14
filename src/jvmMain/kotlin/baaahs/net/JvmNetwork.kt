@@ -1,6 +1,6 @@
 package baaahs.net
 
-import baaahs.Logger
+import baaahs.util.Logger
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.request.*

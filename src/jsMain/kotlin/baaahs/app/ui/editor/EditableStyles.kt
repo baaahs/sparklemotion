@@ -67,6 +67,7 @@ object EditableStyles : StyleSheet("app-ui-Editable", isStatic = true) {
         flexDirection = FlexDirection.column
         marginLeft = 2.em
     }
+
     val patchOverview by css {
         backgroundColor = StuffThatShouldComeFromTheTheme.lightBackgroundColor
         display = Display.grid

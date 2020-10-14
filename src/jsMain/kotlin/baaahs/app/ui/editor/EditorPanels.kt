@@ -1,6 +1,5 @@
 package baaahs.app.ui.editor
 
-import baaahs.show.ShaderChannel
 import baaahs.show.mutable.*
 import baaahs.ui.Renderer
 import baaahs.ui.unaryPlus
@@ -57,7 +56,6 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
                 attrs.editableManager = editableManager
                 attrs.mutablePatch = mutablePatch
                 attrs.mutableShaderInstance = mutableShaderInstance
-                attrs.shaderChannels = (mutablePatch.findShaderChannels() + ShaderChannel.Main).toSet()
             }
         }
 

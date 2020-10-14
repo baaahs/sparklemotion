@@ -71,7 +71,7 @@ object SlidePanelStyles : StyleSheet("ui-misc-SlidePanel", isStatic = true) {
     val slideContainer by css {
         position = Position.absolute
         top = 0.px
-        transition(StyledElement::left, duration = .75.s)
+        transition(::left, duration = .75.s)
         width = 100.pct
         flex(1.0)
     }

@@ -161,6 +161,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                                 help {
                                     attrs.divClass = Styles.helpInline.name
+                                    // TODO: this should come from editorPanel:
                                     attrs.inject(PatchHolderEditorHelpText.patchOverview)
                                 }
                             }

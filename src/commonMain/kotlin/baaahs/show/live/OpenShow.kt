@@ -5,6 +5,7 @@ import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.ShowContext
 import baaahs.show.mutable.MutableShow
+import baaahs.util.Logger
 
 interface OpenContext {
     val allControls: List<OpenControl>
