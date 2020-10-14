@@ -3,14 +3,13 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.show.live.OpenControl
 import baaahs.show.live.getViewFor
-import baaahs.ui.copyInto
-import baaahs.ui.unaryPlus
-import baaahs.ui.useCallback
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import external.DraggableProvided
 import external.copyFrom
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
+import materialui.components.card.card
+import materialui.components.paper.enums.PaperStyle
 import materialui.icon
 import materialui.icons.Icons
 import org.w3c.dom.events.Event
@@ -28,7 +27,7 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
         event.preventDefault()
     }
 
-    div(+Styles.controlBox) {
+    card(Styles.controlBox on PaperStyle.root) {
         ref = props.draggableProvided.innerRef
         copyFrom(props.draggableProvided.draggableProps)
 

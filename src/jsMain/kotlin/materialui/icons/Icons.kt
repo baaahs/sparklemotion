@@ -16,6 +16,7 @@ external object Icons {
     val CloudDownload: Icon
     val CloudUpload: Icon
     val Code: Icon
+    val CropLandscape: Icon
     val Delete: Icon
     val Dashboard: Icon
     val DeveloperMode: Icon
@@ -46,5 +47,6 @@ external object Icons {
     val Settings: Icon
     val SettingsInputComponent: Icon
     val Undo: Icon
+    val ViewModule: Icon
     val Warning: Icon
 }
