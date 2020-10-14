@@ -19,14 +19,14 @@ val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { prop
 
     val handleChange = handler("on change", props.setValue, props.editableManager) { event: Event ->
         props.setValue(event.target.value)
-        props.editableManager.onChange(false)
+        props.editableManager.onChange(pushToUndoStack = false)
     }
 
     val handleBlur = handler("on blur", props.editableManager) { event: Event ->
         val newValue = event.target.value
         if (newValue != valueOnUndoStack.current) {
             valueOnUndoStack.current = newValue
-            props.editableManager.onChange()
+            props.editableManager.onChange(pushToUndoStack = true)
         }
     }
 

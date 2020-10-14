@@ -63,7 +63,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
             }
 
         val observer = newEditingShader.addObserver {
-            props.editableManager.onChange()
+            props.editableManager.onChange(pushToUndoStack = false)
         }
         withCleanup { observer.remove() }
 
