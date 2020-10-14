@@ -128,7 +128,6 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         css { +ShaderPreviewStyles.container }
         css.width = width
         css.height = height
-        css.position = Position.relative
 
         canvas {
             ref = canvas
@@ -136,7 +135,6 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
             attrs.height = height.toString()
         }
 
-        println("${builder?.shader?.title} is ${builder?.state}")
         when (builder?.state ?: ShaderBuilder.State.Unbuilt) {
             ShaderBuilder.State.Unbuilt,
             ShaderBuilder.State.Linking,

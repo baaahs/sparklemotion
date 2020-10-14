@@ -51,7 +51,7 @@ class Logger(val id: String) {
     }
 }
 
-inline fun <reified T> Logger() = Logger(T::class.qualifiedName ?: "unknown")
+inline fun <reified T> Logger() = Logger(T::class.simpleName ?: "unknown")
 
 expect fun log(id: String, level: String, message: String, exception: Throwable? = null)
 expect fun logGroupBegin(id: String, message: String)

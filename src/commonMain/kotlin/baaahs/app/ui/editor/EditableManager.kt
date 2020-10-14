@@ -23,6 +23,9 @@ class EditableManager(
         return session?.isChanged() ?: false
     }
 
+    val currentMutableShow: MutableShow
+        get() = session!!.mutableShow
+
     val uiTitle: String
         get() = session?.uiTitle ?: ""
 

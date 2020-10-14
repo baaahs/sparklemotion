@@ -35,7 +35,7 @@ object EditingShaderSpec : Spek({
         val notifiedStates by value { arrayListOf<State>() }
 
         val editingShader by value {
-            EditingShader(mutableShaderInstance) {
+            EditingShader(mutableShow, mutablePatch, mutableShaderInstance) {
                 mockShaderBuilder
             }.also { it.addObserver { notifiedStates.add(it.state) } }
         }

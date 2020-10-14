@@ -7,7 +7,6 @@ import baaahs.show.mutable.MutablePort
 import baaahs.ui.asTextNode
 import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
-import materialui.Icon
 import materialui.components.divider.divider
 import materialui.components.formcontrol.formControl
 import materialui.components.inputlabel.inputLabel
@@ -17,7 +16,6 @@ import materialui.components.listsubheader.listSubheader
 import materialui.components.menuitem.menuItem
 import materialui.components.select.select
 import materialui.icon
-import materialui.icons.Icons
 import react.*
 
 val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isPure = true) { props ->
@@ -31,6 +29,7 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isP
         eventHandler("change to ${props.inputPort.id}", props.onChange) { event ->
             val value = event.target.asDynamic().value as SourcePortOption?
             props.onChange(
+                props.inputPort,
                 when (value) {
                     NoSourcePortOption -> null
                     NewSourcePortOption -> error("new not yet implemented") // TODO
@@ -41,20 +40,18 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isP
 
     val sourcePortOptions = props.sourcePortOptions + suggestedDataSources.map { DataSourceOption(it) } +
             NoSourcePortOption + NewSourcePortOption
+    val selected = sourcePortOptions.find { it.matches(props.currentSourcePort) }
 
     formControl {
         inputLabel { +"Source" }
 
         select {
-            attrs.renderValue<SourcePortOption> {
-                it.title.asTextNode()
-            }
-            attrs.onChangeFunction = handleChange
-            val selected = sourcePortOptions.find { it.matches(props.currentSourcePort) }
             attrs.value = selected
             if (selected == null) {
                 this@xComponent.logger.warn { "Huh? None of the SourcePortOptions are active for ${props.inputPort.id}?" }
             }
+            attrs.renderValue<SourcePortOption> { it.title.asTextNode() }
+            attrs.onChangeFunction = handleChange
 
             var dividerGroup: String? = null
             sourcePortOptions.forEach { option ->
@@ -79,29 +76,11 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isP
     }
 }
 
-private object NoSourcePortOption : SourcePortOption {
-    override val title: String get() = "Nothing"
-    override val portEditor: MutablePort get() = error("not implemented")
-    override val groupName: String? get() = null
-    override val icon: Icon get() = Icons.NotInterested
-    override fun matches(otherPort: MutablePort?): Boolean = otherPort == null
-    override fun isAppropriateFor(inputPort: InputPort): Boolean = true
-}
-
-private object NewSourcePortOption : SourcePortOption {
-    override val title: String get() = "Create New…"
-    override val portEditor: MutablePort get() = error("not implemented")
-    override val groupName: String? get() = null
-    override val icon: Icon get() = Icons.AddCircleOutline
-    override fun matches(otherPort: MutablePort?): Boolean = false
-    override fun isAppropriateFor(inputPort: InputPort): Boolean = true
-}
-
 external interface LinkSourceEditorProps : RProps {
     var inputPort: InputPort
     var currentSourcePort: MutablePort?
     var sourcePortOptions: List<SourcePortOption>
-    var onChange: (SourcePortOption?) -> Unit
+    var onChange: (InputPort, SourcePortOption?) -> Unit
 }
 
 fun RBuilder.linkSourceEditor(handler: RHandler<LinkSourceEditorProps>) =
