@@ -8,20 +8,7 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gl.preview</a>&nbsp;/&nbsp;<a href="./index.html">PreviewShaderBuilder</a><br/>
 <br/>
 <h1>PreviewShaderBuilder</h1>
-<code><span class="keyword">class </span><span class="identifier">PreviewShaderBuilder</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-observable/index.html"><span class="identifier">Observable</span></a></code>
-<h3>Types</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-state/index.html">State</a></h4>
-</td>
-<td>
-<p>Contrary to expectations, linking happens before compliling in this world.</p>
-<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">State</span></code></td>
-</tr>
-</tbody>
-</table>
+<code><span class="keyword">class </span><span class="identifier">PreviewShaderBuilder</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-observable/index.html"><span class="identifier">Observable</span></a><span class="symbol">, </span><a href="../-shader-builder/index.html"><span class="identifier">ShaderBuilder</span></a></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -64,6 +51,13 @@
 </td>
 <td>
 <code><span class="keyword">var </span><span class="identifier">linkedPatch</span><span class="symbol">: </span><a href="../../baaahs.gl.patch/-linked-patch/index.html"><span class="identifier">LinkedPatch</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="open-shader.html">openShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">openShader</span><span class="symbol">: </span><a href="../../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>
@@ -129,7 +123,7 @@
 <h4><a href="../../baaahs.ui/add-observer.html">addObserver</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-observable/index.html"><span class="identifier">Observable</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">addObserver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.ui/-removable-observer/index.html"><span class="identifier">RemovableObserver</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-i-observable/index.html"><span class="identifier">IObservable</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">addObserver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.ui/-removable-observer/index.html"><span class="identifier">RemovableObserver</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>

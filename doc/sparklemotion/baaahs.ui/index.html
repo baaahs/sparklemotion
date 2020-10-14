@@ -83,6 +83,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-i-observable/index.html">IObservable</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">IObservable</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-keyboard-shortcut-handler/index.html">KeyboardShortcutHandler</a></h4>
 </td>
 <td>
@@ -121,7 +128,7 @@
 <h4><a href="-observable/index.html">Observable</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Observable</span></code></td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Observable</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-i-observable/index.html"><span class="identifier">IObservable</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -156,7 +163,7 @@
 <h4><a href="-removable-observer/index.html">RemovableObserver</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">RemovableObserver</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-observable/index.html"><span class="identifier">Observable</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-observer/index.html"><span class="identifier">Observer</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">RemovableObserver</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-i-observable/index.html"><span class="identifier">IObservable</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-observer/index.html"><span class="identifier">Observer</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -297,7 +304,7 @@
 <h4><a href="add-observer.html">addObserver</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-observable/index.html"><span class="identifier">Observable</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">addObserver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-removable-observer/index.html"><span class="identifier">RemovableObserver</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-i-observable/index.html"><span class="identifier">IObservable</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">addObserver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-removable-observer/index.html"><span class="identifier">RemovableObserver</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
