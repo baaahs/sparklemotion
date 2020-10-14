@@ -20,14 +20,18 @@ class CompilationException(
     errorMessage: String,
     val source: String? = null
 ) : GlslException("GLSL compilation error: $errorMessage") {
-    override val errors = errorMessage.trimEnd().split("\n").map { line ->
-        pattern.matchEntire(line)?.groupValues?.let { match ->
-            val fileId = match[1].toInt()
-            val row = match[2].toInt()
-            val message = match[3]
-            GlslError(message, row, fileId)
-        } ?: GlslError(line)
-    }
+    override val errors =
+        errorMessage
+            .split("\n")
+            .filter { it.isNotBlank() }
+            .map { line ->
+                pattern.matchEntire(line)?.groupValues?.let { match ->
+                    val fileId = match[1].toInt()
+                    val row = match[2].toInt()
+                    val message = match[3]
+                    GlslError(message, row, fileId)
+                } ?: GlslError(line)
+            }
 
     companion object {
         val pattern = Regex("^ERROR: (\\d+):(\\d+): (.*)$")
