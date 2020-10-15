@@ -1,5 +1,6 @@
 package baaahs.show.mutable
 
+import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.ShaderBuilder
@@ -10,7 +11,6 @@ import baaahs.show.live.wireUp
 import baaahs.show.mutable.EditingShader.State
 import baaahs.ui.Observer
 import baaahs.ui.addObserver
-import describe
 import io.mockk.*
 import org.spekframework.spek2.Spek
 import kotlin.test.expect
