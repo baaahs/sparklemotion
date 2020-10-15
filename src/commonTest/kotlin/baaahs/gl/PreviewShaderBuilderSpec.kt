@@ -1,5 +1,6 @@
 package baaahs.gl
 
+import baaahs.describe
 import baaahs.gadgets.Slider
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.PreviewShaderBuilder
@@ -9,7 +10,6 @@ import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeKgl
-import describe
 import ext.TestCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi

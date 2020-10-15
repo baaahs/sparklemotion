@@ -1,9 +1,9 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.ControlEditIntent
+import baaahs.describe
 import baaahs.show.mutable.MutableButtonControl
 import baaahs.show.mutable.MutableShow
-import describe
 import org.spekframework.spek2.Spek
 import kotlin.test.expect
 
