@@ -8,6 +8,7 @@ import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
+import baaahs.show.live.LiveShaderInstance
 import baaahs.show.mutable.MutableDataSource
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderChannel
@@ -45,6 +46,8 @@ object AutoWirerSpec : Spek({
             val paintShader by value { autoWirer.glslAnalyzer.import(shaderText) }
             val shaders by value { arrayOf(paintShader) }
             val patch by value { autoWirer.autoWire(*shaders).acceptSymbolicChannelLinks().resolve() }
+            val linkedPatch by value { patch.openForPreview(autoWirer)!! }
+            val liveShaderInstance by value { linkedPatch.shaderInstance }
 
             it("creates a reasonable guess patch") {
                 expect(
@@ -54,13 +57,7 @@ object AutoWirerSpec : Spek({
                             hashMapOf(
                                 "time" to MutableDataSource(CorePlugin.TimeDataSource()),
                                 "blueness" to MutableDataSource(
-                                    CorePlugin.SliderDataSource(
-                                        "Blueness",
-                                        1f,
-                                        0f,
-                                        1f,
-                                        null
-                                    )
+                                    CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
                                 ),
                                 "resolution" to MutableDataSource(CorePlugin.ResolutionDataSource()),
                                 "gl_FragCoord" to MutableShaderChannel(ShaderChannel.Main)
@@ -70,6 +67,85 @@ object AutoWirerSpec : Spek({
                         )
                     )
                 ) { patch.mutableShaderInstances }
+            }
+
+            it("builds a linked patch") {
+                expect(
+                    mapOf(
+                        "gl_FragCoord" to LiveShaderInstance.NoOpLink,
+                        "time" to LiveShaderInstance.DataSourceLink(
+                            CorePlugin.TimeDataSource(), "time"
+                        ),
+                        "resolution" to LiveShaderInstance.DataSourceLink(
+                            CorePlugin.ResolutionDataSource(), "resolution"
+                        ),
+                        "blueness" to LiveShaderInstance.DataSourceLink(
+                            CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null), "bluenessSlider"
+                        )
+                    )
+                ) { liveShaderInstance.incomingLinks }
+            }
+
+            context("with a ShaderToy shader") {
+                override(shaderText) {
+                    /**language=glsl*/
+                    """
+                        // This Shader's Name
+                        // Other stuff.
+                        
+                        uniform float blueness;
+                        int someGlobalVar;
+                        const int someConstVar = 123;
+                        
+                        int anotherFunc(int i) { return i; }
+                        
+                        void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+                            vec2 uv = fragCoord.xy / iResolution.xy;
+                            someGlobalVar = anotherFunc(someConstVar) + int(iTime);
+                            fragColor = vec4(uv.xy, blueness, 1.);
+                        }
+                    """.trimIndent()
+                }
+
+                it("creates a reasonable guess patch") {
+                    expect(
+                        listOf(
+                            MutableShaderInstance(
+                                MutableShader(paintShader),
+                                hashMapOf(
+                                    "iTime" to MutableDataSource(CorePlugin.TimeDataSource()),
+                                    "blueness" to MutableDataSource(
+                                        CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
+                                    ),
+                                    "iResolution" to MutableDataSource(CorePlugin.ResolutionDataSource()),
+                                    "sm_FragCoord" to MutableShaderChannel(ShaderChannel.Main)
+                                ),
+                                shaderChannel = ShaderChannel.Main,
+                                priority = 0f
+                            )
+                        )
+                    ) { patch.mutableShaderInstances }
+                }
+
+                it("builds a linked patch") {
+                    liveShaderInstance.incomingLinks.forEach { (port, link) ->
+                        println("port $port -> $link")
+                    }
+                    expect(
+                        mapOf(
+                            "blueness" to LiveShaderInstance.DataSourceLink(
+                                CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null), "bluenessSlider"
+                            ),
+                            "iResolution" to LiveShaderInstance.DataSourceLink(
+                                CorePlugin.ResolutionDataSource(), "resolution"
+                            ),
+                            "iTime" to LiveShaderInstance.DataSourceLink(
+                                CorePlugin.TimeDataSource(), "time"
+                            ),
+                            "sm_FragCoord" to LiveShaderInstance.NoOpLink
+                        )
+                    ) { liveShaderInstance.incomingLinks }
+                }
             }
 
             context("with a UV projection shader") {
@@ -87,13 +163,7 @@ object AutoWirerSpec : Spek({
                                     "time" to MutableDataSource(CorePlugin.TimeDataSource()),
                                     "resolution" to MutableDataSource(CorePlugin.ResolutionDataSource()),
                                     "blueness" to MutableDataSource(
-                                        CorePlugin.SliderDataSource(
-                                            "Blueness",
-                                            1f,
-                                            0f,
-                                            1f,
-                                            null
-                                        )
+                                        CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
                                     ),
                                     "gl_FragCoord" to MutableShaderChannel(ShaderChannel.Main)
                                 ),
@@ -126,7 +196,8 @@ object AutoWirerSpec : Spek({
                         vec4 mainFilter(vec4 colorIn) {
                           colorOut = colorIn * brightness;
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
 
                 override(shaders) { arrayOf(filterShader) }
 
@@ -137,13 +208,7 @@ object AutoWirerSpec : Spek({
                                 MutableShader(filterShader),
                                 hashMapOf(
                                     "brightness" to MutableDataSource(
-                                        CorePlugin.SliderDataSource(
-                                            "Brightness",
-                                            1f,
-                                            0f,
-                                            1f,
-                                            null
-                                        )
+                                        CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f, null)
                                     ),
                                     "gl_FragColor" to MutableShaderChannel(ShaderChannel.Main)
                                 ),
@@ -162,7 +227,8 @@ object AutoWirerSpec : Spek({
                         vec2 mainDistortion(vec2 uvIn) {
                           return vec2(uvIn.x, 1.0 - uvIn.y);
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
 
 
                 override(shaders) { arrayOf(filterShader) }
