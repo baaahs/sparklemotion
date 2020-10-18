@@ -89,21 +89,21 @@ class PreviewShaderBuilder(
     }
 
     fun link() {
-        val openShader = analyze(shader)
-        this.openShader = openShader
-        val shaders: Array<OpenShader> = when (shader.type) {
-            ShaderType.Projection -> arrayOf(openShader, pixelUvIdentity)
-            ShaderType.Distortion -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
-            ShaderType.Paint -> arrayOf(screenCoordsProjection, openShader)
-            ShaderType.Filter -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
-        }
-
-        val defaultPorts = when (shader.type) {
-            ShaderType.Projection -> emptyMap()
-            else -> mapOf(ContentType.UvCoordinateStream to MutableConstPort("gl_FragCoord"))
-        }
-
         try {
+            val openShader = analyze(shader)
+            this.openShader = openShader
+            val shaders: Array<OpenShader> = when (shader.type) {
+                ShaderType.Projection -> arrayOf(openShader, pixelUvIdentity)
+                ShaderType.Distortion -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
+                ShaderType.Paint -> arrayOf(screenCoordsProjection, openShader)
+                ShaderType.Filter -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
+            }
+
+            val defaultPorts = when (shader.type) {
+                ShaderType.Projection -> emptyMap()
+                else -> mapOf(ContentType.UvCoordinateStream to MutableConstPort("gl_FragCoord"))
+            }
+
             previewPatch = autoWirer.autoWire(*shaders, defaultPorts = defaultPorts)
                 .acceptSymbolicChannelLinks()
                 .takeFirstIfAmbiguous()
