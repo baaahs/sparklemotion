@@ -34,7 +34,8 @@ abstract class MutablePatchHolder(
     override fun getEditorPanels(): List<EditorPanel> {
         return listOf(
             GenericPropertiesEditorPanel(getPropertiesComponents()),
-            PatchHolderEditorPanel(this))
+            PatchHolderEditorPanel(this)
+        )
     }
 
     open fun getPropertiesComponents(): List<PropsEditor> {
@@ -107,7 +108,7 @@ abstract class MutablePatchHolder(
 
     fun findControlDataSources(): Set<DataSource> {
         return controlLayout.values.flatMap {
-            it.filterIsInstance<MutableDataSource>().map { it.dataSource }
+            it.filterIsInstance<MutableDataSourcePort>().map { it.dataSource }
         }.toSet()
     }
 
@@ -122,6 +123,14 @@ abstract class MutablePatchHolder(
             }
         }
     }
+
+    open fun accept(visitor: MutableShowVisitor, log: VisitationLog = VisitationLog()) {
+        if (log.patchHolders.add(this)) visitor.visit(this)
+        patches.forEach { it.accept(visitor, log) }
+        controlLayout.forEach { (_, controls) ->
+            controls.forEach { it.accept(visitor, log) }
+        }
+    }
 }
 
 class MutableShow(
@@ -134,23 +143,23 @@ class MutableShow(
     }
 
     internal val dataSources = baseShow.dataSources
-        .mapValues { (_, shader) -> MutableDataSource(shader) }
+        .mapValues { (_, shader) -> MutableDataSourcePort(shader) }
         .toMutableMap()
 
     internal val shaders = baseShow.shaders
         .mapValues { (_, shader) -> MutableShader(shader) }
         .toMutableMap()
 
-    val shaderChannels = mutableSetOf<ShaderChannel>()
+    internal val shaderChannels = CacheBuilder<ShaderChannel, MutableShaderChannel> {
+        MutableShaderChannel(it.id)
+    }
 
-    val shaderInstances = baseShow.shaderInstances
+    private val shaderInstances = baseShow.shaderInstances
         .mapValues { (_, shaderInstance) ->
-            shaderChannels.add(shaderInstance.shaderChannel)
-
             MutableShaderInstance(
                 findShader(shaderInstance.shaderId),
                 hashMapOf(),
-                shaderInstance.shaderChannel,
+                shaderChannels[shaderInstance.shaderChannel],
                 shaderInstance.priority
             )
         }.toMutableMap()
@@ -158,10 +167,9 @@ class MutableShow(
     init {
         // Second pass required here since they might refer to each other.
         baseShow.shaderInstances.forEach { (id, shaderInstance) ->
-            val editor = shaderInstances.getBang(id, "shader instance")
+            val editor = findShaderInstance(id)
             val resolvedIncomingLinks = shaderInstance.incomingLinks.mapValues { (_, fromPortRef) ->
                 fromPortRef.dereference(this)
-                    .also { it.collectShaderChannels(shaderChannels) }
             }
             editor.incomingLinks.putAll(resolvedIncomingLinks)
         }
@@ -207,7 +215,7 @@ class MutableShow(
         (findControl(buttonGroupControl.id) as MutableButtonGroupControl).block()
     }
 
-    fun findDataSource(dataSourceId: String): MutableDataSource =
+    fun findDataSource(dataSourceId: String): MutableDataSourcePort =
         dataSources.getBang(dataSourceId, "data source")
 
     fun findPatchHolder(openPatchHolder: OpenPatchHolder): MutablePatchHolder {
@@ -284,23 +292,18 @@ class MutablePatch {
         block()
     }
 
-    fun findDataSources(): Set<DataSource> =
-        mutableShaderInstances.flatMap { it.findDataSources() }.toSet()
-
-    fun findShaderInstances(): Set<MutableShaderInstance> =
-        mutableShaderInstances.toSet()
-
-    fun findShaderChannels(): List<ShaderChannel> {
-        return findShaderInstances().flatMap { shaderInstanceEditor ->
-            shaderInstanceEditor.findShaderChannels()
-        }
-    }
-
     fun build(showBuilder: ShowBuilder): Patch =
         Patch(
             mutableShaderInstances.map { showBuilder.idFor(it.build(showBuilder)) },
             surfaces
         )
+
+    fun accept(visitor: MutableShowVisitor, log: VisitationLog = VisitationLog()) {
+        if (log.patches.add(this)) visitor.visit(this)
+
+        surfaces.accept(visitor, log)
+        mutableShaderInstances.forEach { it.accept(visitor, log) }
+    }
 
     /** Build a [LinkedPatch] independent of an [baaahs.show.live.OpenShow]. */
     fun openForPreview(autoWirer: AutoWirer): LinkedPatch? {
@@ -325,8 +328,12 @@ class MutablePatch {
         return this
     }
 
-    fun addShaderInstance(shader: Shader, block: MutableShaderInstance.() -> Unit): MutableShaderInstance {
-        val mutableShaderInstance = MutableShaderInstance(MutableShader(shader))
+    fun addShaderInstance(shader: Shader, block: MutableShaderInstance.() -> Unit = {}): MutableShaderInstance {
+        return addShaderInstance(MutableShader(shader), block)
+    }
+
+    fun addShaderInstance(shader: MutableShader, block: MutableShaderInstance.() -> Unit = {}): MutableShaderInstance {
+        val mutableShaderInstance = MutableShaderInstance(shader)
         mutableShaderInstance.block()
         mutableShaderInstances.add(mutableShaderInstance)
         return mutableShaderInstance
@@ -344,36 +351,14 @@ class MutablePatch {
     fun getEditorPanel() = PatchEditorPanel(this)
 }
 
-interface MutablePort {
-    fun toRef(showBuilder: ShowBuilder): PortRef
-    fun displayName(): String
-    fun collectShaderChannels(shaderChannels: MutableSet<ShaderChannel>) = Unit
-}
-
-data class MutableShaderChannel(val shaderChannel: ShaderChannel) : MutablePort {
-    override fun toRef(showBuilder: ShowBuilder): PortRef =
-        ShaderChannelRef(shaderChannel)
-
-    override fun displayName(): String =
-        "channel(${shaderChannel.id})"
-
-    override fun collectShaderChannels(shaderChannels: MutableSet<ShaderChannel>) {
-        shaderChannels.add(shaderChannel)
-    }
-}
-
-data class MutableDataSource(val dataSource: DataSource) : MutablePort {
-    override fun toRef(showBuilder: ShowBuilder): PortRef =
-        DataSourceRef(showBuilder.idFor(dataSource))
-
-    override fun displayName(): String = dataSource.dataSourceName
-}
-
-fun DataSource.editor() = MutableDataSource(this)
+fun DataSource.editor() = MutableDataSourcePort(this)
 
 interface MutableControl : MutableEditable {
     var asBuiltId: String?
     fun build(showBuilder: ShowBuilder): Control
+    fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
+        if (log.controls.add(this)) visitor.visit(this)
+    }
 }
 
 class MutableButtonControl(
@@ -396,6 +381,11 @@ class MutableButtonControl(
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder)
         )
+    }
+
+    override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
+        super<MutablePatchHolder>.accept(visitor, log)
+        super<MutableControl>.accept(visitor, log)
     }
 }
 
@@ -426,6 +416,11 @@ data class MutableButtonGroupControl(
         return ButtonGroupControl(title, direction, buttons.map { mutableButtonControl ->
             mutableButtonControl.buildAndStashId(showBuilder)
         })
+    }
+
+    override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
+        super.accept(visitor, log)
+        buttons.forEach { it.accept(visitor, log) }
     }
 
     fun moveButton(fromIndex: Int, toIndex: Int) {
@@ -466,25 +461,33 @@ data class MutableShader(
     fun build(): Shader {
         return Shader(title, type, src)
     }
+
+    fun accept(visitor: MutableShowVisitor, log: VisitationLog = VisitationLog()) {
+        if (log.shaders.add(this)) visitor.visit(this)
+    }
+
+    override fun toString(): String {
+        return "MutableShader(title='$title', type=$type, src='[${src.length} chars]')"
+    }
 }
 
 data class MutableShaderInstance(
     val mutableShader: MutableShader,
     val incomingLinks: MutableMap<String, MutablePort> = hashMapOf(),
-    var shaderChannel: ShaderChannel = ShaderChannel.Main,
+    var shaderChannel: MutableShaderChannel = MutableShaderChannel(ShaderChannel.Main.id),
     var priority: Float = 0f
 ) {
     val id = randomId("MutableShaderInstance")
 
     fun findDataSources(): List<DataSource> {
         return incomingLinks.mapNotNull { (_, from) ->
-            (from as? MutableDataSource)?.dataSource
+            (from as? MutableDataSourcePort)?.dataSource
         }
     }
 
-    fun findShaderChannels(): List<ShaderChannel> {
+    fun findShaderChannels(): List<MutableShaderChannel> {
         return (incomingLinks.values.map { link ->
-            if (link is MutableShaderChannel) link.shaderChannel else null
+            link as? MutableShaderChannel
         } + shaderChannel).filterNotNull()
     }
 
@@ -502,9 +505,16 @@ data class MutableShaderInstance(
             incomingLinks.mapValues { (_, portRef) ->
                 portRef.toRef(showBuilder)
             },
-            shaderChannel,
+            shaderChannel.build(),
             priority
         )
+    }
+
+    fun accept(visitor: MutableShowVisitor, log: VisitationLog = VisitationLog()) {
+        if (log.shaderInstances.add(this)) visitor.visit(this)
+        mutableShader.accept(visitor, log)
+        shaderChannel.accept(visitor, log)
+        incomingLinks.forEach { (_, port) -> port.accept(visitor, log) }
     }
 
     fun getEditorPanel(patchEditorPanel: PatchEditorPanel): EditorPanel =
@@ -515,74 +525,6 @@ data class MutableShaderInstance(
             { it.mutableShader.type.priority },
             { it.mutableShader.title }
         )
-    }
-}
-
-data class MutableShaderOutPort(var mutableShaderInstance: MutableShaderInstance) : MutablePort {
-    override fun toRef(showBuilder: ShowBuilder): PortRef =
-        ShaderOutPortRef(showBuilder.idFor(mutableShaderInstance.build(showBuilder)))
-
-    override fun displayName(): String = "Shader \"${mutableShaderInstance.mutableShader.title}\" output"
-
-    override fun toString(): String = "ShaderOutPortEditor(shader=${mutableShaderInstance.mutableShader.title})"
-}
-
-data class MutableOutputPort(private val portId: String) : MutablePort {
-    override fun toRef(showBuilder: ShowBuilder): PortRef =
-        OutputPortRef(portId)
-
-    override fun displayName(): String = "$portId Output"
-}
-
-data class MutableConstPort(private val glsl: String) : MutablePort {
-    override fun toRef(showBuilder: ShowBuilder): PortRef =
-        ConstPortRef(glsl)
-
-    override fun displayName(): String = "const($glsl)"
-}
-
-abstract class MutableShowVisitor {
-    open fun visitShow(mutableShow: MutableShow) {
-        visitPatchHolder(mutableShow)
-    }
-
-    open fun visitPatchHolder(mutablePatchHolder: MutablePatchHolder) {
-        mutablePatchHolder.patches.forEach {
-            visitPatch(it)
-        }
-
-        mutablePatchHolder.controlLayout.forEach { (panelName, mutableControls) ->
-            mutableControls.forEach { mutableControl ->
-                visitPlacedControl(panelName, mutableControl)
-            }
-        }
-    }
-
-    open fun visitPlacedControl(panelName: String, mutableControl: MutableControl) {
-        if (mutableControl is MutablePatchHolder) {
-            visitPatchHolder(mutableControl)
-        }
-
-        if (mutableControl is ControlContainer) {
-            visitControlContainer(mutableControl)
-        }
-    }
-
-    open fun visitControlContainer(mutableControl: ControlContainer) {
-        mutableControl.containedControls().forEach { containedControl ->
-            if (containedControl.isActive() && containedControl is MutablePatchHolder) {
-                visitPatchHolder(containedControl)
-            }
-        }
-    }
-
-    open fun visitPatch(mutablePatch: MutablePatch) {
-        mutablePatch.mutableShaderInstances.forEach {
-            visitShaderInstance(it)
-        }
-    }
-
-    open fun visitShaderInstance(mutableShaderInstance: MutableShaderInstance) {
     }
 }
 
@@ -619,4 +561,15 @@ class ShowBuilder {
     fun getDataSources(): Map<String, DataSource> = dataSourceIds.all()
     fun getShaders(): Map<String, Shader> = shaderIds.all()
     fun getShaderInstances(): Map<String, ShaderInstance> = shaderInstanceIds.all()
+}
+
+class VisitationLog {
+    val patchHolders = mutableSetOf<MutablePatchHolder>()
+    val patches = mutableSetOf<MutablePatch>()
+    val surfaces = mutableSetOf<Surfaces>()
+    val shaderInstances = mutableSetOf<MutableShaderInstance>()
+    val shaders = mutableSetOf<MutableShader>()
+    val shaderChannels = mutableSetOf<MutableShaderChannel>()
+    val controls = mutableSetOf<MutableControl>()
+    val dataSources = mutableSetOf<MutableDataSourcePort>()
 }

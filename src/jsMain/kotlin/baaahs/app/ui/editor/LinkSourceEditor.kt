@@ -1,8 +1,6 @@
 package baaahs.app.ui.editor
 
-import baaahs.app.ui.appContext
 import baaahs.gl.shader.InputPort
-import baaahs.plugin.BeatLinkPlugin
 import baaahs.show.mutable.MutablePort
 import baaahs.ui.asTextNode
 import baaahs.ui.xComponent
@@ -16,18 +14,15 @@ import materialui.components.listsubheader.listSubheader
 import materialui.components.menuitem.menuItem
 import materialui.components.select.select
 import materialui.icon
-import react.*
+import react.RBuilder
+import react.RHandler
+import react.RProps
+import react.child
 
 val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isPure = true) { props ->
-    val appContext = useContext(appContext)
-
-    val suggestedDataSources = appContext.plugins.suggestDataSources(
-        props.inputPort, setOf(BeatLinkPlugin.beatDataContentType)
-    )
-
     val handleChange =
         eventHandler("change to ${props.inputPort.id}", props.onChange) { event ->
-            val value = event.target.asDynamic().value as SourcePortOption?
+            val value = event.target.asDynamic().value as LinkOption?
             props.onChange(
                 props.inputPort,
                 when (value) {
@@ -38,9 +33,11 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isP
             )
         }
 
-    val sourcePortOptions = props.sourcePortOptions + suggestedDataSources.map { DataSourceOption(it) } +
-            NoSourcePortOption + NewSourcePortOption
-    val selected = sourcePortOptions.find { it.matches(props.currentSourcePort) }
+    val linkOptions =
+        props.linkOptions.sortedWith(
+            compareBy<LinkOption> { it.groupName }.thenBy { it.title }
+        ) + NewSourcePortOption
+    val selected = linkOptions.find { it.matches(props.currentSourcePort) }
 
     formControl {
         inputLabel { +"Source" }
@@ -48,28 +45,27 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isP
         select {
             attrs.value = selected
             if (selected == null) {
-                this@xComponent.logger.warn { "Huh? None of the SourcePortOptions are active for ${props.inputPort.id}?" }
+                this@xComponent.logger.warn { "Huh? None of the LinkOptions are active for ${props.inputPort.id}?" }
             }
-            attrs.renderValue<SourcePortOption> { it.title.asTextNode() }
+            attrs.renderValue<LinkOption> { it.title.asTextNode() }
             attrs.onChangeFunction = handleChange
+            attrs.disabled = props.isDisabled
 
             var dividerGroup: String? = null
-            sourcePortOptions.forEach { option ->
-                if (option.isAppropriateFor(props.inputPort)) {
-                    if (dividerGroup != option.groupName) {
-                        if (dividerGroup != null) {
-                            divider {}
-                        }
-                        option.groupName?.let { listSubheader { +it } }
-                        dividerGroup = option.groupName
+            linkOptions.forEach { option ->
+                if (dividerGroup != option.groupName) {
+                    if (dividerGroup != null) {
+                        divider {}
                     }
+                    option.groupName?.let { listSubheader { +it } }
+                    dividerGroup = option.groupName
+                }
 
-                    menuItem {
-                        attrs.dense = true
-                        attrs["value"] = option
-                        listItemIcon { icon(option.icon) }
-                        listItemText { +option.title }
-                    }
+                menuItem {
+                    attrs.dense = true
+                    attrs["value"] = option
+                    listItemIcon { icon(option.icon) }
+                    listItemText { +option.title }
                 }
             }
         }
@@ -79,8 +75,9 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isP
 external interface LinkSourceEditorProps : RProps {
     var inputPort: InputPort
     var currentSourcePort: MutablePort?
-    var sourcePortOptions: List<SourcePortOption>
-    var onChange: (InputPort, SourcePortOption?) -> Unit
+    var linkOptions: List<LinkOption>
+    var isDisabled: Boolean
+    var onChange: (InputPort, LinkOption?) -> Unit
 }
 
 fun RBuilder.linkSourceEditor(handler: RHandler<LinkSourceEditorProps>) =

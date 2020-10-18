@@ -6,6 +6,7 @@ import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShaderOutPort
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -51,7 +52,7 @@ object GlslGenerationSpec : Spek({
                         "blueness",
                         CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null)
                     )
-                    shaderChannel = ShaderChannel.Main
+                    shaderChannel = MutableShaderChannel(ShaderChannel.Main.id)
                 }
             }
 
@@ -132,7 +133,7 @@ object GlslGenerationSpec : Spek({
                     link("iResolution", CorePlugin.ResolutionDataSource())
                     link("iTime", CorePlugin.TimeDataSource())
                     link("sm_FragCoord", CorePlugin.ScreenUvCoordDataSource())
-                    shaderChannel = ShaderChannel.Main
+                    shaderChannel = MutableShaderChannel(ShaderChannel.Main.id)
                 }
             }
 
@@ -198,7 +199,7 @@ object GlslGenerationSpec : Spek({
                             "modelInfo",
                             CorePlugin.ModelInfoDataSource()
                         )
-                        shaderChannel = ShaderChannel.Main
+                        shaderChannel = MutableShaderChannel(ShaderChannel.Main.id)
                     }
 
                     addShaderInstance(paintShader) {
@@ -220,7 +221,7 @@ object GlslGenerationSpec : Spek({
                                 null
                             )
                         )
-                        shaderChannel = ShaderChannel.Main
+                        shaderChannel = MutableShaderChannel(ShaderChannel.Main.id)
                     }
                 }
             }

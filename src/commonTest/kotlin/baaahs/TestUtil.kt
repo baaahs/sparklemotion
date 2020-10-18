@@ -9,6 +9,7 @@ import org.spekframework.spek2.dsl.Skip
 import org.spekframework.spek2.meta.*
 import org.spekframework.spek2.style.specification.Suite
 import org.spekframework.spek2.style.specification.describe
+import kotlin.test.assertEquals
 import kotlin.test.expect
 
 @Suppress("UNCHECKED_CAST")
@@ -56,4 +57,19 @@ expect fun assumeTrue(boolean: Boolean)
 @Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
 inline fun <reified T> GroupBody.describe(skip: Skip = Skip.No, noinline body: Suite.() -> Unit) {
     describe(T::class.toString(), skip, body)
+}
+
+fun expectEmptySet(block: () -> Set<*>) {
+    val collection = block()
+    assertEquals(0, collection.size, "Expected 0 items but have: $collection")
+}
+
+fun expectEmptyList(block: () -> List<*>) {
+    val collection = block()
+    assertEquals(0, collection.size, "Expected 0 items but have: $collection")
+}
+
+fun expectEmptyMap(block: () -> Map<*, *>) {
+    val collection = block()
+    assertEquals(0, collection.size, "Expected 0 items but have: ${collection.keys}")
 }

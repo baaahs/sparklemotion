@@ -1,5 +1,6 @@
 package baaahs.app.ui.editor
 
+import baaahs.gl.patch.ShaderInstanceOptions
 import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.xComponent
@@ -18,12 +19,18 @@ import kotlin.collections.component2
 
 val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     observe(props.editingShader)
-    val sourcePortOptions = props.editingShader.suggestSourcePortOptions()
-    val openShader = props.editingShader.openShader
+
+    val lastShaderInstanceOptions = ref<ShaderInstanceOptions?>(null)
+    val curShaderInstanceOptions = props.editingShader.getShaderInstanceOptions()
+    val suggestionsAreCurrent = curShaderInstanceOptions != null
+    val shaderInstanceOptions = curShaderInstanceOptions
+        ?: lastShaderInstanceOptions.current
+    lastShaderInstanceOptions.current = shaderInstanceOptions
+
     val handleInputPortChange = handler(
         "change to inputPort source", props.editingShader, props.editableManager
-    ) { inputPort: InputPort, sourcePortOption: SourcePortOption? ->
-        props.editingShader.changeInputPort(inputPort, sourcePortOption)
+    ) { inputPort: InputPort, linkOption: LinkOption? ->
+        props.editingShader.changeInputPort(inputPort, linkOption)
         props.editableManager.onChange()
     }
 
@@ -50,7 +57,9 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                         linkSourceEditor {
                             attrs.inputPort = inputPort
                             attrs.currentSourcePort = currentSourcePort
-                            attrs.sourcePortOptions = sourcePortOptions
+                            attrs.linkOptions = shaderInstanceOptions?.suggestions?.get(inputPort.id)
+                                ?: emptyList()
+                            attrs.isDisabled = !suggestionsAreCurrent
                             attrs.onChange = handleInputPortChange
                         }
                     }
