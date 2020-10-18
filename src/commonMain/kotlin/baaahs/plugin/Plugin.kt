@@ -1,5 +1,6 @@
 package baaahs.plugin
 
+import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.show.DataSource
@@ -13,7 +14,7 @@ interface Plugin {
     fun suggestDataSources(
         inputPort: InputPort,
         suggestedContentTypes: Set<ContentType>
-    ): List<DataSource>
+    ): List<PortLinkOption>
 
     fun resolveContentType(type: String): ContentType?
 

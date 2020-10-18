@@ -56,22 +56,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         CacheBuilder { type ->
             {
                 newPatchMenuAnchor = null
-                val newShader = type.shaderFromTemplate().build()
-                val contextShaders =
-                    props.mutablePatch.mutableShaderInstances.map { it.mutableShader.build() } + newShader
-                val unresolvedPatch = appContext.autoWirer.autoWire(
-                    *contextShaders.toTypedArray()
-                )
-                val newShaderInstance = props.mutablePatch.addShaderInstance(newShader) {
-                    // TODO: Something better than this.
-                    val resolved = unresolvedPatch
-                        .acceptSymbolicChannelLinks()
-                        .takeFirstIfAmbiguous()
-                        .resolve()
-                        .mutableShaderInstances[0]
-                    incomingLinks.putAll(resolved.incomingLinks)
-                    shaderChannel = resolved.shaderChannel
-                }
+                val newShaderInstance = props.mutablePatch.addShaderInstance(type.shaderFromTemplate())
                 handleShaderSelect[newShaderInstance].invoke()
             }
         }

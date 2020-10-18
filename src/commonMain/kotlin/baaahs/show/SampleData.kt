@@ -8,7 +8,7 @@ import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.show.ButtonGroupControl.Direction.Horizontal
 import baaahs.show.ButtonGroupControl.Direction.Vertical
-import baaahs.show.mutable.MutableDataSource
+import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShow
@@ -201,7 +201,7 @@ object SampleData {
                         addPatch(
                             wireUp(
                                 Shaders.checkerboard,
-                                mapOf("checkerboardSize" to MutableDataSource(checkerboardSize))
+                                mapOf("checkerboardSize" to MutableDataSourcePort(checkerboardSize))
                             )
                         )
                         addControl("Controls", checkerboardSize.buildControl())

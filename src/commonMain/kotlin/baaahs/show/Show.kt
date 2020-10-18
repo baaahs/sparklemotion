@@ -6,7 +6,10 @@ import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.plugin.Plugins
 import baaahs.show.ButtonGroupControl.Direction
+import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.MutableShowVisitor
+import baaahs.show.mutable.VisitationLog
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -77,6 +80,10 @@ data class Surfaces(
         return true
     }
 
+    fun accept(visitor: MutableShowVisitor, log: VisitationLog = VisitationLog()) {
+        if (log.surfaces.add(this)) visitor.visit(this)
+    }
+
     companion object {
         val AllSurfaces = Surfaces("All Surfaces")
     }
@@ -118,6 +125,8 @@ data class ShaderInstance(
 
 @Serializable(with = ShaderChannel.ShaderChannelSerializer::class)
 data class ShaderChannel(val id: String) {
+    fun toMutable(): MutableShaderChannel = MutableShaderChannel(id)
+
     companion object {
         val Main = ShaderChannel("main")
     }

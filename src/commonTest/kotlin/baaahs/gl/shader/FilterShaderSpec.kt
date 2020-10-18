@@ -76,12 +76,12 @@ object FilterShaderSpec : Spek({
                             addShaderInstance(Shaders.red) {}
 
                         addShaderInstance(Shaders.blue) {
-                            shaderChannel = otherChannel
+                            shaderChannel = MutableShaderChannel(otherChannel.id)
                         }
 
                         addShaderInstance(shader.shader) {
                             link("gl_FragColor", MutableShaderOutPort(redInstance))
-                            link("otherColorStream", MutableShaderChannel(otherChannel))
+                            link("otherColorStream", MutableShaderChannel(otherChannel.id))
                             link("fade", MutableConstPort(".5"))
                         }
                     }.openForPreview(autoWirer)

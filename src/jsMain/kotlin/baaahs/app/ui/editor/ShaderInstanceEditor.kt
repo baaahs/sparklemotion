@@ -3,10 +3,12 @@ package baaahs.app.ui.editor
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderPreview
+import baaahs.englishize
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.*
 import baaahs.ui.preview.gadgetsPreview
@@ -57,7 +59,8 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
             EditingShader(
                 props.editableManager.currentMutableShow,
                 props.mutablePatch,
-                props.mutableShaderInstance
+                props.mutableShaderInstance,
+                appContext.autoWirer
             ) { shader ->
                 PreviewShaderBuilder(shader, appContext.autoWirer, appContext.webClient.model)
             }
@@ -83,13 +86,13 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                 submitButtonLabel = "Create",
                 onSubmit = { name ->
                     handleUpdate {
-                        shaderChannel = if (name.isNotBlank()) ShaderChannel(name) else ShaderChannel.Main
+                        shaderChannel = MutableShaderChannel.from(name)
                     }
                 }
             ))
         } else {
             handleUpdate {
-                shaderChannel = if (channelId.isNotBlank()) ShaderChannel(channelId) else ShaderChannel.Main
+                shaderChannel = MutableShaderChannel.from(channelId)
             }
         }
     }
@@ -118,25 +121,33 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                     }
 
                     formControl {
+                        val main = ShaderChannel.Main
                         inputLabel { +"Channel" }
                         select {
                             attrs.renderValue<String> { it.asTextNode() }
                             attrs.value(shaderInstance.shaderChannel.id)
                             attrs.onChangeFunction = handleSelectShaderChannel
-                            editingShader.suggestShaderChannels().forEach { shaderChannel ->
-                                menuItem {
-                                    attrs["value"] = shaderChannel.id
-                                    listItemIcon { icon(CommonIcons.ShaderChannel) }
-                                    listItemText { +shaderChannel.id }
-                                }
+
+                            menuItem {
+                                attrs["value"] = main.id
+                                listItemIcon { icon(CommonIcons.ShaderChannel) }
+                                listItemText { +"${main.id.englishize()} (default)" }
                             }
 
+                            val shaderChannels =
+                                (editingShader.getShaderInstanceOptions()?.shaderChannels ?: emptyList())
+                                    .filter { it.id != main.id }
+
                             divider {}
-                            menuItem {
-                                attrs["value"] = ""
-                                listItemIcon { icon(CommonIcons.None) }
-                                listItemText { +"Default" }
-                            }
+                            shaderChannels.forEach { shaderChannel ->
+                                    menuItem {
+                                        attrs["value"] = shaderChannel.id
+                                        listItemIcon { icon(CommonIcons.ShaderChannel) }
+                                        listItemText { +shaderChannel.id.englishize() }
+                                    }
+                                }
+
+                            divider {}
                             menuItem {
                                 attrs["value"] = "__new__"
                                 listItemIcon { icon(CommonIcons.Add) }

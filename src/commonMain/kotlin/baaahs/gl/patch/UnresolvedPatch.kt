@@ -3,6 +3,7 @@ package baaahs.gl.patch
 import baaahs.show.Shader
 import baaahs.show.Surfaces
 import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.MutableShaderOutPort
 import baaahs.unknown
@@ -31,7 +32,7 @@ class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShad
                 it.incomingLinksOptions.mapValues { (_, fromPortOptions) ->
                     fromPortOptions.first()
                 }.toMutableMap(),
-                it.shaderChannel,
+                MutableShaderChannel(it.shaderChannel.id),
                 it.priority
             )
         }

@@ -18,7 +18,7 @@ class UnresolvedShaderInstance(
                 incomingLinksOptions
                     .filter { (_, links) -> links.size > 1 }
                     .map { (portId, links) ->
-                        "$portId->(${links.joinToString(",") { it.displayName() }}"
+                        "$portId->(${links.joinToString(",") { it.title }}"
                     }
     }
 

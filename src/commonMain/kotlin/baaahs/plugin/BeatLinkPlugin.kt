@@ -4,12 +4,14 @@ import baaahs.BeatSource
 import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.ShowPlayer
+import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.mutable.MutableDataSourcePort
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -41,12 +43,19 @@ class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: ba
     override fun suggestDataSources(
         inputPort: InputPort,
         suggestedContentTypes: Set<ContentType>
-    ): List<DataSource> {
+    ): List<PortLinkOption> {
         if ((inputPort.contentType == beatDataContentType
                     || suggestedContentTypes.contains(beatDataContentType))
             || (inputPort.type == GlslType.Float && inputPort.glslVar?.isVarying != true)
         ) {
-            return listOf(BeatLinkDataSource())
+            return listOf(
+                PortLinkOption(
+                    MutableDataSourcePort(BeatLinkDataSource()),
+                    wasPurposeBuilt = true,
+                    isExactContentType = inputPort.contentType == beatDataContentType,
+                    isPluginSuggestion = true
+                )
+            )
         } else {
             return emptyList()
         }
@@ -57,10 +66,6 @@ class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: ba
     }
 
 
-    /**
-     * Sparkle Motion always uses a resolution of (1, 1), except for previews, which
-     * use [PreviewBeatLinkDataSource] instead.
-     */
     @Serializable
     @SerialName("baaahs.BeatLink:BeatLink")
     data class BeatLinkDataSource(@Transient val `_`: Boolean = true) : DataSource {
