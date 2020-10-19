@@ -4,6 +4,11 @@ import baaahs.geom.Vector3F
 import baaahs.model.Model
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
+import org.spekframework.spek2.dsl.GroupBody
+import org.spekframework.spek2.dsl.Skip
+import org.spekframework.spek2.meta.*
+import org.spekframework.spek2.style.specification.Suite
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
 
 @Suppress("UNCHECKED_CAST")
@@ -46,3 +51,9 @@ class TestModelSurface(
 }
 
 expect fun assumeTrue(boolean: Boolean)
+
+@Synonym(SynonymType.GROUP)
+@Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
+inline fun <reified T> GroupBody.describe(skip: Skip = Skip.No, noinline body: Suite.() -> Unit) {
+    describe(T::class.toString(), skip, body)
+}

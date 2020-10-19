@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.gl.override
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
@@ -48,13 +49,7 @@ object GlslGenerationSpec : Spek({
                     link("time", CorePlugin.TimeDataSource())
                     link(
                         "blueness",
-                        CorePlugin.SliderDataSource(
-                            "Blueness",
-                            0f,
-                            0f,
-                            1f,
-                            null
-                        )
+                        CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null)
                     )
                     shaderChannel = ShaderChannel.Main
                 }
@@ -101,6 +96,90 @@ object GlslGenerationSpec : Spek({
                         void main() {
                           p0_thisShaderSName_main(); // This Shader's Name
                           sm_result = p0_thisShaderSName_gl_FragColor;
+                        }
+                    """.trimIndent()
+                ) { glsl }
+            }
+        }
+
+        context("with a ShaderToy paint shader") {
+            override(shaderText) {
+                /**language=glsl*/
+                """
+                    // This Shader's Name
+                    // Other stuff.
+                    
+                    uniform float blueness;
+                    int someGlobalVar;
+                    const int someConstVar = 123;
+                    
+                    int anotherFunc(int i) { return i; }
+                    
+                    void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+                        vec2 uv = fragCoord.xy / iResolution.xy;
+                        someGlobalVar = anotherFunc(someConstVar) + iTime * 0.;
+                        fragColor = vec4(uv.xy, blueness, 1.);
+                    }
+                """.trimIndent()
+            }
+
+            beforeEachTest {
+                mutablePatch.addShaderInstance(paintShader) {
+                    link(
+                        "blueness",
+                        CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null)
+                    )
+                    link("iResolution", CorePlugin.ResolutionDataSource())
+                    link("iTime", CorePlugin.TimeDataSource())
+                    link("sm_FragCoord", CorePlugin.ScreenUvCoordDataSource())
+                    shaderChannel = ShaderChannel.Main
+                }
+            }
+
+            it("generates GLSL") {
+                linkedPatch.shaderInstance.incomingLinks.forEach { (port, link) ->
+                    println("port $port -> $link")
+                }
+                expect(
+                    """
+                        #ifdef GL_ES
+                        precision mediump float;
+                        #endif
+
+                        // SparkleMotion-generated GLSL
+
+                        layout(location = 0) out vec4 sm_result;
+
+                        uniform float in_bluenessSlider;
+                        uniform vec2 in_resolution;
+                        uniform float in_time;
+
+                        // Shader: This Shader's Name; namespace: p0
+                        // This Shader's Name
+
+                        vec4 p0_thisShaderSNamei_result = vec4(0., 0., 0., 1.);
+
+                        #line 5
+                        int p0_thisShaderSName_someGlobalVar;
+
+                        #line 6
+                        const int p0_thisShaderSName_someConstVar = 123;
+
+                        #line 8
+                        int p0_thisShaderSName_anotherFunc(int i) { return i; }
+
+                        #line 10
+                        void p0_thisShaderSName_mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+                            vec2 uv = fragCoord.xy / in_resolution.xy;
+                            p0_thisShaderSName_someGlobalVar = p0_thisShaderSName_anotherFunc(p0_thisShaderSName_someConstVar) + in_time * 0.;
+                            fragColor = vec4(uv.xy, in_bluenessSlider, 1.);
+                        }
+
+
+                        #line 10001
+                        void main() {
+                          p0_thisShaderSName_mainImage(p0_thisShaderSNamei_result, gl_FragCoord.xy); // This Shader's Name
+                          sm_result = p0_thisShaderSNamei_result;
                         }
                     """.trimIndent()
                 ) { glsl }

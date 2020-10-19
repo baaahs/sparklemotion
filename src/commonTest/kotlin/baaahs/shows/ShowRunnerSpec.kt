@@ -27,11 +27,6 @@ import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.serialization.json.JsonPrimitive
 import org.spekframework.spek2.Spek
-import org.spekframework.spek2.dsl.GroupBody
-import org.spekframework.spek2.dsl.Skip
-import org.spekframework.spek2.meta.*
-import org.spekframework.spek2.style.specification.Suite
-import org.spekframework.spek2.style.specification.describe
 import kotlin.test.expect
 
 @InternalCoroutinesApi
@@ -163,10 +158,4 @@ class TestModel : Model<Model.Surface>() {
     override val movingHeads: List<MovingHead> = emptyList()
     override val allSurfaces: List<Surface> = emptyList()
     override val geomVertices: List<Vector3F> = emptyList()
-}
-
-@Synonym(SynonymType.GROUP)
-@Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
-inline fun <reified T> GroupBody.describe(skip: Skip = Skip.No, noinline body: Suite.() -> Unit) {
-    describe(T::class.toString(), skip, body)
 }
