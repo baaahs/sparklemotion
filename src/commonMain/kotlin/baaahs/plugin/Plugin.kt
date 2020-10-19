@@ -15,7 +15,7 @@ interface Plugin {
         suggestedContentTypes: Set<ContentType>
     ): List<DataSource>
 
-    fun resolveContentType(type: String): ContentType?
+    fun resolveContentType(type: PluginRef): ContentType?
 
     fun suggestContentTypes(inputPort: InputPort): Collection<ContentType>
 

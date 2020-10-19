@@ -31,8 +31,8 @@ class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: ba
             emptyList()
     }
 
-    override fun resolveContentType(type: String): ContentType? {
-        return when (type) {
+    override fun resolveContentType(type: PluginRef): ContentType? {
+        return when (type.resourceName) {
             "beat-link" -> beatDataContentType
             else -> null
         }
@@ -94,7 +94,7 @@ class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: ba
 
     companion object {
         val id = "baaahs.BeatLink"
-        val beatDataContentType = ContentType("Beat Link", GlslType.Float)
+        val beatDataContentType = ContentType("$id:beat-link", "Beat Link", GlslType.Float)
     }
 }
 

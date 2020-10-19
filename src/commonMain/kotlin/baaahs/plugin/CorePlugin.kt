@@ -42,11 +42,8 @@ class CorePlugin : Plugin {
         return contentTypesByGlslType[glslType to isStream] ?: emptyList()
     }
 
-    override fun resolveContentType(type: String): ContentType? {
-        return when (type) {
-            "color-stream" -> ContentType.ColorStream
-            else -> null
-        }
+    override fun resolveContentType(type: PluginRef): ContentType? {
+        return contentTypesById[type.resourceName]
     }
 
     override fun suggestDataSources(
@@ -536,6 +533,8 @@ class CorePlugin : Plugin {
 
         val contentTypesByGlslType =
             ContentType.coreTypes.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })
+
+        val contentTypesById = ContentType.coreTypes.associateBy { it.id }
 
         val supportedContentTypes = mapOf(
             ContentType.PixelCoordinatesTexture to PixelCoordsTextureDataSource,

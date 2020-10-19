@@ -51,7 +51,7 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
     fun resolveContentType(name: String): ContentType? {
         val pluginRef = PluginRef.from(name)
         return try {
-            findPlugin(pluginRef).resolveContentType(name)
+            findPlugin(pluginRef).resolveContentType(pluginRef)
         } catch (e: Exception) {
             logger.debug { "Failed to resolve content type $name: ${e.message}" }
             null

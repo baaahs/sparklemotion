@@ -3,6 +3,7 @@ package baaahs.gl.patch
 import baaahs.gl.glsl.GlslType
 
 class ContentType(
+    val id: String,
     val description: String,
     val glslType: GlslType,
     val isStream: Boolean = false,
@@ -19,7 +20,7 @@ class ContentType(
      */
     fun stream(): ContentType {
         if (isStream) error("Already a stream!")
-        return ContentType("$description Stream", glslType, true, suggest, defaultInitializer)
+        return ContentType("$id-stream", "$description Stream", glslType, true, suggest, defaultInitializer)
     }
 
     override fun toString(): String = "ContentType($description [$glslType])"
@@ -44,26 +45,26 @@ class ContentType(
 
 
     companion object {
-        val PixelCoordinatesTexture = ContentType("Pixel Coordinates Texture", GlslType.Sampler2D, suggest = true)
-        val PreviewResolution = ContentType("Preview Resolution", GlslType.Vec2, suggest = false)
-        val RasterCoordinate = ContentType("Raster Coordinate", GlslType.Vec2, suggest = false)
-        val Resolution = ContentType("Resolution", GlslType.Vec2, suggest = false)
-        val Unknown = ContentType("Unknown", GlslType.Void, suggest = false)
+        val PixelCoordinatesTexture = ContentType("x-pixel-coords-texture", "Pixel Coordinates Texture", GlslType.Sampler2D, suggest = true)
+        val PreviewResolution = ContentType("x-preview-resolution", "Preview Resolution", GlslType.Vec2, suggest = false)
+        val RasterCoordinate = ContentType("x-raster-coord", "Raster Coordinate", GlslType.Vec2, suggest = false)
+        val Resolution = ContentType("resolution", "Resolution", GlslType.Vec2, suggest = false)
+        val Unknown = ContentType("x-unknown", "Unknown", GlslType.Void, suggest = false)
 
-        val UvCoordinate = ContentType("U/V Coordinate", GlslType.Vec2)
+        val UvCoordinate = ContentType("uv-coord", "U/V Coordinate", GlslType.Vec2)
         val UvCoordinateStream = UvCoordinate.stream()
-        val XyCoordinate = ContentType("X/Y Coordinate", GlslType.Vec2)
-        val ModelInfo = ContentType("Model Info", GlslType.from("ModelInfo"))
-        val Mouse = ContentType("Mouse", GlslType.Vec2)
-        val XyzCoordinate = ContentType("X/Y/Z Coordinate", GlslType.Vec3)
-        val Color = ContentType("Color", GlslType.Vec4) { type ->
+        val XyCoordinate = ContentType("xy-coord", "X/Y Coordinate", GlslType.Vec2)
+        val ModelInfo = ContentType("model-info", "Model Info", GlslType.from("ModelInfo"))
+        val Mouse = ContentType("mouse", "Mouse", GlslType.Vec2)
+        val XyzCoordinate = ContentType("xyz-coord", "X/Y/Z Coordinate", GlslType.Vec3)
+        val Color = ContentType("color", "Color", GlslType.Vec4) { type ->
             if (type == GlslType.Vec4) "vec4(0., 0., 0., 1.)" else type.defaultInitializer()
         }
         val ColorStream = Color.stream()
-        val Time = ContentType("Time", GlslType.Float)
-        val Float = ContentType("Float", GlslType.Float)
-        val Int = ContentType("Integer", GlslType.Int)
-        val Media = ContentType("Media", GlslType.Sampler2D)
+        val Time = ContentType("time", "Time", GlslType.Float)
+        val Float = ContentType("float", "Float", GlslType.Float)
+        val Int = ContentType("int", "Integer", GlslType.Int)
+        val Media = ContentType("media", "Media", GlslType.Sampler2D)
 
         val coreTypes = listOf(
             PixelCoordinatesTexture,

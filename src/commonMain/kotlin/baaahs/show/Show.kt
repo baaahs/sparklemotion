@@ -4,6 +4,8 @@ import baaahs.app.ui.Editable
 import baaahs.camelize
 import baaahs.fixtures.Fixture
 import baaahs.getBang
+import baaahs.gl.glsl.GlslType
+import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.ButtonGroupControl.Direction
 import baaahs.show.mutable.MutableShow
@@ -98,7 +100,8 @@ data class Shader(
     val title: String,
     val type: ShaderType,
     /**language=glsl*/
-    val src: String
+    val src: String,
+    val resultContentType: String? = null
 ) {
     fun suggestId(): String = title.camelize()
 }
