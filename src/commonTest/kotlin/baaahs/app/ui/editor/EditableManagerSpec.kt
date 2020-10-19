@@ -4,6 +4,7 @@ import baaahs.app.ui.AddButtonToButtonGroupEditIntent
 import baaahs.app.ui.ControlEditIntent
 import baaahs.app.ui.EditIntent
 import baaahs.app.ui.ShowEditIntent
+import baaahs.describe
 import baaahs.gl.override
 import baaahs.show.SampleData
 import baaahs.show.Show
@@ -12,7 +13,6 @@ import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.addObserver
-import describe
 import org.spekframework.spek2.Spek
 import kotlin.test.assertSame
 import kotlin.test.assertTrue

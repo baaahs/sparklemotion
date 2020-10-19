@@ -22,6 +22,7 @@ class CompilationException(
 ) : GlslException("GLSL compilation error: $errorMessage") {
     override val errors =
         errorMessage
+            .replace("\u0000", "") // Sometimes Kgl gives us back null chars?
             .split("\n")
             .filter { it.isNotBlank() }
             .map { line ->

@@ -1,12 +1,12 @@
 package baaahs.shows
 
+import baaahs.describe
 import baaahs.gl.override
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
 import baaahs.toBeSpecified
-import describe
 import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
 import kotlin.test.expect

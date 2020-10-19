@@ -1,5 +1,6 @@
 package baaahs.show.live
 
+import baaahs.describe
 import baaahs.gl.patch.AutoWirer
 import baaahs.only
 import baaahs.plugin.Plugins
@@ -11,7 +12,6 @@ import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeKgl
 import baaahs.shows.FakeShowPlayer
-import describe
 import kotlinx.serialization.json.buildJsonObject
 import org.spekframework.spek2.Spek
 import kotlin.test.expect
