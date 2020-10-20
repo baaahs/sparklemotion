@@ -1,6 +1,7 @@
 package baaahs.plugin
 
 import baaahs.*
+import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.RadioButtonStrip
 import baaahs.gadgets.Slider
@@ -14,6 +15,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutableGadgetControl
 import baaahs.util.Logger
 import com.danielgergely.kgl.FloatBuffer
@@ -49,18 +51,37 @@ class CorePlugin : Plugin {
         }
     }
 
+    private fun DataSource.appearsToBePurposeBuiltFor(inputPort: InputPort) =
+        dataSourceName.camelize().toLowerCase().contains(inputPort.id.toLowerCase())
+
     override fun suggestDataSources(
         inputPort: InputPort,
         suggestedContentTypes: Set<ContentType>
-    ): List<DataSource> {
-        val suggestions = (setOf(inputPort.contentType) + suggestedContentTypes).map {
-            supportedContentTypes[it]?.build(inputPort)
+    ): List<PortLinkOption> {
+        val suggestions = (setOf(inputPort.contentType) + suggestedContentTypes).map { contentType ->
+            supportedContentTypes[contentType]?.build(inputPort)
+                ?.let { dataSource ->
+                    PortLinkOption(
+                        MutableDataSourcePort(dataSource),
+                        wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
+                        isPluginSuggestion = true,
+                        isExactContentType = contentType == inputPort.contentType
+                    )
+                }
         }.filterNotNull()
 
         return if (suggestions.isNotEmpty()) {
             suggestions
         } else {
-            supportedContentTypes.values.map { it.suggestDataSources(inputPort) }.flatten()
+            supportedContentTypes.values.map {
+                it.suggestDataSources(inputPort).map { dataSource ->
+                    PortLinkOption(
+                        MutableDataSourcePort(dataSource),
+                        wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
+                        isPluginSuggestion = true
+                    )
+                }
+            }.flatten()
         }
     }
 
@@ -207,13 +228,13 @@ class CorePlugin : Plugin {
     @SerialName("baaahs.Core:ScreenUvCoord")
     data class ScreenUvCoordDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<ScreenUvCoordDataSource> {
-            override val resourceName: String get() = "U/V Coordinate"
+            override val resourceName: String get() = "Screen U/V Coordinate"
             override fun build(inputPort: InputPort): ScreenUvCoordDataSource =
                 ScreenUvCoordDataSource()
         }
 
         override val pluginPackage: String get() = id
-        override val dataSourceName: String get() = "U/V Coordinate"
+        override val dataSourceName: String get() = "Screen U/V Coordinate"
         override fun getType(): GlslType = GlslType.Vec2
         override fun isImplicit(): Boolean = true
         override fun getVarName(id: String): String = "gl_FragCoord"
@@ -332,7 +353,7 @@ class CorePlugin : Plugin {
         val initialValue: Float,
         val minValue: Float,
         val maxValue: Float,
-        val stepValue: Float?
+        val stepValue: Float? = null
     ) : GadgetDataSource<Slider> {
         companion object : DataSourceBuilder<SliderDataSource> {
             override val resourceName: String get() = "Slider"
@@ -444,7 +465,7 @@ class CorePlugin : Plugin {
         }
 
         override val pluginPackage: String get() = id
-        override val dataSourceName: String get() = "$title ${SliderDataSource.resourceName}"
+        override val dataSourceName: String get() = "$title $resourceName"
         override fun getType(): GlslType = GlslType.Vec4
         override fun getRenderType(): String? = "ColorPicker"
         override fun suggestId(): String = "$title Color Picker".camelize()

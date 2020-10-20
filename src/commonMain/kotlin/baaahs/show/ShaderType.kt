@@ -1,6 +1,7 @@
 package baaahs.show
 
 import baaahs.app.ui.CommonIcons
+import baaahs.gl.glsl.AnalysisException
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.*
@@ -91,7 +92,7 @@ enum class ShaderType(
             } else if (glslCode.functionNames.contains("mainImage")) {
                 return ShaderToyPaintShader(shader, glslCode, plugins)
             } else
-                error("Can't identify paint shader type.")
+                throw AnalysisException("Can't identify paint shader type.")
         }
     },
 
