@@ -3,7 +3,6 @@ package baaahs.gl.patch
 import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.gl.GlContext
-import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.Resolver
 import baaahs.show.DataSource
@@ -15,7 +14,6 @@ import baaahs.show.mutable.ShowBuilder
 import baaahs.util.Logger
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.set
 
 class LinkedPatch(
     val shaderInstance: LiveShaderInstance,
@@ -55,13 +53,15 @@ class LinkedPatch(
                     .thenBy { it.shaderShortName}
             )
             .mapIndexed { index, instanceNode ->
-                val component = Component(index, instanceNode)
+                val component = Component(index, instanceNode, this@LinkedPatch::findUpstreamComponent)
                 components.add(component)
                 instanceNode.liveShaderInstance to component
             }.associate { it }
         componentsByChannel[ShaderChannel.Main]?.redirectOutputTo("sm_result")
     }
 
+    private fun findUpstreamComponent(liveShaderInstance: LiveShaderInstance) =
+        componentLookup.getBang(liveShaderInstance, "shader")
 
     class InstanceNode(
         val liveShaderInstance: LiveShaderInstance,
@@ -70,112 +70,6 @@ class LinkedPatch(
     ) {
         fun atDepth(depth: Int) {
             if (depth > maxDepth) maxDepth = depth
-        }
-    }
-
-    inner class Component(
-        val index: Int,
-        val instanceNode: InstanceNode
-    ) {
-        private val shaderInstance = instanceNode.liveShaderInstance
-        val title: String get() = shaderInstance.shader.title
-        private val prefix = "p$index"
-        private val namespace = GlslCode.Namespace(prefix + "_" + instanceNode.shaderShortName)
-        private val portMap: Map<String, Lazy<String>>
-        private val resultInReturnValue: Boolean
-        private var resultVar: String
-
-        init {
-            val tmpPortMap = hashMapOf<String, Lazy<String>>()
-
-            shaderInstance.incomingLinks.forEach { (toPortId, fromLink) ->
-                when (fromLink) {
-                    is ShaderOutLink -> {
-                        tmpPortMap[toPortId] = lazy {
-                            val fromComponent = componentLookup.getBang(fromLink.shaderInstance, "shader")
-                            val outputPort = fromLink.shaderInstance.shader.outputPort
-                            if (outputPort.isReturnValue()) {
-                                fromComponent.resultVar
-                            } else {
-                                fromComponent.namespace.qualify(outputPort.id)
-                            }
-                        }
-                    }
-                    is DataSourceLink -> {
-                        tmpPortMap[toPortId] = lazy {
-                            fromLink.dataSource.getVarName(fromLink.varName)
-                        }
-                    }
-                    is ShaderChannelLink -> {
-                        logger.warn { "Unexpected unresolved $fromLink for $toPortId" }
-                    }
-                    is ConstLink -> {
-                        tmpPortMap[toPortId] = lazy {
-                            "(" + fromLink.glsl + ")"
-                        }
-                    }
-                    is NoOpLink -> {
-                    }
-                }
-            }
-
-            var usesReturnValue = false
-            val outputPort = shaderInstance.shader.outputPort
-            if (outputPort.isReturnValue()) {
-                usesReturnValue = true
-                resultVar = namespace.internalQualify("result")
-            } else {
-                resultVar = namespace.qualify(outputPort.id)
-                tmpPortMap[outputPort.id] = lazy { resultVar }
-            }
-
-            portMap = tmpPortMap
-            resultInReturnValue = usesReturnValue
-        }
-
-        var outputVar: String = resultVar
-        private var resultRedirected = false
-
-        private val resolvedPortMap by lazy {
-            portMap.mapValues { (_, v) -> v.value } +
-                    mapOf(shaderInstance.shader.outputPort.id to outputVar)
-        }
-
-        fun redirectOutputTo(varName: String) {
-            outputVar = varName
-            resultRedirected = true
-        }
-
-        fun appendStructs(buf: StringBuilder) {
-            shaderInstance.shader.glslCode.structs.forEach { struct ->
-                // TODO: we really ought to namespace structs, but that's not straightforward because
-                // multiple shaders might share a uniform input (e.g. ModelInfo).
-
-//                val qualifiedName = namespace.qualify(struct.name)
-//                val structText = struct.fullText.replace(struct.name, qualifiedName)
-                val structText = struct.fullText
-                buf.append(structText, "\n")
-            }
-        }
-
-        fun appendDeclaratoryLines(buf: StringBuilder) {
-            val openShader = shaderInstance.shader
-
-            buf.append("// Shader: ", openShader.title, "; namespace: ", prefix, "\n")
-            buf.append("// ", openShader.title, "\n")
-
-            if (!resultRedirected) {
-                buf.append("\n")
-                with(openShader.outputPort) {
-                    buf.append("${dataType.glslLiteral} $resultVar = ${contentType.initializer(dataType)};\n")
-                }
-            }
-
-            buf.append(openShader.toGlsl(namespace, resolvedPortMap), "\n")
-        }
-
-        fun invokeAndSetResultGlsl(): String {
-            return shaderInstance.shader.invocationGlsl(namespace, resultVar, resolvedPortMap)
         }
     }
 
