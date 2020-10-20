@@ -8,6 +8,7 @@ import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
 import baaahs.sim.ui.WebClientWindow
+import baaahs.util.ConsoleFormatters
 import decodeQueryParams
 import kotlinext.js.jsObject
 import org.w3c.dom.get
@@ -19,6 +20,7 @@ import kotlin.browser.window
 fun main(args: Array<String>) {
     @Suppress("ConstantConditionIf", "SimplifyBooleanWithConstants")
     if (1 + 1 == 3) noDCE()
+    ConsoleFormatters.install()
 
     val mode = document["sparklemotionMode"] ?: "test"
     println("args = $args, mode = $mode")
