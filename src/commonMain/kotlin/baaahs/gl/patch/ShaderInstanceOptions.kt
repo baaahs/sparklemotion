@@ -16,15 +16,77 @@ class ShaderInstanceOptions(
     parentMutableShow: MutableShow? = null,
     parentMutablePatch: MutablePatch? = null,
     defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
+    currentLinks: Map<String, MutablePort>,
     glslAnalyzer: GlslAnalyzer,
     private val plugins: Plugins
 ) {
     val shaderChannels: List<MutableShaderChannel>
-    val suggestions: Map<String, List<LinkOption>>
+    val inputPortLinkOptions: Map<String, List<LinkOption>>
 
     init {
         val shaderOutsInPatch: MutableMap<ContentType, MutableSet<MutableShaderInstance>> = mutableMapOf()
         val shaderChannels: MutableMap<ContentType, MutableSet<MutableShaderChannel>> = mutableMapOf()
+
+        fun suggestLinksFor(inputPort: InputPort): ArrayList<PortLinkOption> {
+            val options = arrayListOf<PortLinkOption>()
+
+            val exactContentType = inputPort.contentType
+            val expandedContentTypes = plugins.suggestContentTypes(inputPort).let { expanded ->
+                exactContentType?.let { expanded - exactContentType } ?: expanded
+            }
+            val contentTypes =
+                (exactContentType?.let { listOf(it) } ?: emptyList()) + expandedContentTypes
+
+            contentTypes.forEach { contentType ->
+                defaultPorts[contentType]?.let { defaultPort ->
+                    options.add(
+                        PortLinkOption(
+                            defaultPort,
+                            isExactContentType = contentType == exactContentType,
+                            isDefaultBinding = true,
+                        )
+                    )
+                }
+            }
+
+            contentTypes.forEach { contentType ->
+                shaderOutsInPatch[contentType]?.let { shaderInstances ->
+                    shaderInstances.forEach { shaderInstance ->
+                        options.add(
+                            PortLinkOption(
+                                MutableShaderOutPort(shaderInstance),
+                                isLocalShaderOut = true,
+                                isExactContentType = contentType == exactContentType
+                            )
+                        )
+                    }
+                }
+
+                shaderChannels[contentType]?.forEach { shaderChannel ->
+                    options.add(
+                        PortLinkOption(
+                            shaderChannel,
+                            isShaderChannel = true,
+                            isExactContentType = contentType == exactContentType
+                        )
+                    )
+                }
+            }
+
+            if (inputPort.hasPluginRef()) {
+                try {
+                    val dataSource = plugins.resolveDataSource(inputPort)
+                    options.add(PortLinkOption(MutableDataSourcePort(dataSource), isPluginRef = true))
+                } catch (e: IllegalStateException) {
+                    logger.warn(e) { "Incorrect plugin reference." }
+                }
+            }
+
+            plugins.suggestDataSources(inputPort, contentTypes.toSet()).forEach { portLinkOption ->
+                options.add(portLinkOption)
+            }
+            return options
+        }
 
         // Gather shader output ports.
         parentMutablePatch?.mutableShaderInstances?.forEach { shaderInstance ->
@@ -45,87 +107,20 @@ class ShaderInstanceOptions(
         })
 
         val map = shader.inputPorts.associate { inputPort ->
-            val options = suggestLinksFor(
-                inputPort,
-                defaultPorts,
-                shaderOutsInPatch,
-                shaderChannels
-            )
+            val currentLink = currentLinks[inputPort.id]
+            val options = suggestLinksFor(inputPort) +
+                    listOfNotNull(currentLink).map { PortLinkOption(it) }
 
             val alreadyAdded = mutableSetOf<MutablePort?>()
-            inputPort.id to options
+            val sortedOptions = options
                 .sortedBy { 0f - it.priority }
                 .filter { alreadyAdded.add(it.getMutablePort()) }
+
+            inputPort.id to sortedOptions
         }
 
         this.shaderChannels = shaderChannels.values.flatten().toList().sortedBy { it.title }
-        this.suggestions = map
-    }
-
-    private fun suggestLinksFor(
-        inputPort: InputPort,
-        defaultPorts: Map<ContentType, MutablePort>,
-        shaderOutsInPatch: MutableMap<ContentType, MutableSet<MutableShaderInstance>>,
-        shaderChannels: MutableMap<ContentType, MutableSet<MutableShaderChannel>>
-    ): ArrayList<PortLinkOption> {
-        val options = arrayListOf<PortLinkOption>()
-
-        val exactContentType = inputPort.contentType
-        val expandedContentTypes = plugins.suggestContentTypes(inputPort).let { expanded ->
-            exactContentType?.let { expanded - exactContentType } ?: expanded
-        }
-        val contentTypes =
-            (exactContentType?.let { listOf(it) } ?: emptyList()) + expandedContentTypes
-
-        contentTypes.forEach { contentType ->
-            defaultPorts[contentType]?.let { defaultPort ->
-                options.add(
-                    PortLinkOption(
-                        defaultPort,
-                        isExactContentType = contentType == exactContentType,
-                        isDefaultBinding = true,
-                    )
-                )
-            }
-        }
-
-        contentTypes.forEach { contentType ->
-            shaderOutsInPatch[contentType]?.let { shaderInstances ->
-                shaderInstances.forEach { shaderInstance ->
-                    options.add(
-                        PortLinkOption(
-                            MutableShaderOutPort(shaderInstance),
-                            isLocalShaderOut = true,
-                            isExactContentType = contentType == exactContentType
-                        )
-                    )
-                }
-            }
-
-            shaderChannels[contentType]?.forEach { shaderChannel ->
-                options.add(
-                    PortLinkOption(
-                        shaderChannel,
-                        isShaderChannel = true,
-                        isExactContentType = contentType == exactContentType
-                    )
-                )
-            }
-        }
-
-        if (inputPort.hasPluginRef()) {
-            try {
-                val dataSource = plugins.resolveDataSource(inputPort)
-                options.add(PortLinkOption(MutableDataSourcePort(dataSource), isPluginRef = true))
-            } catch (e: IllegalStateException) {
-                logger.warn(e) { "Incorrect plugin reference." }
-            }
-        }
-
-        plugins.suggestDataSources(inputPort, contentTypes.toSet()).forEach { portLinkOption ->
-            options.add(portLinkOption)
-        }
-        return options
+        this.inputPortLinkOptions = map
     }
 
     companion object {

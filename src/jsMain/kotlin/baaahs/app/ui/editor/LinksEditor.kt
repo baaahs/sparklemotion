@@ -1,40 +1,33 @@
 package baaahs.app.ui.editor
 
-import baaahs.gl.patch.ShaderInstanceOptions
 import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.xComponent
+import materialui.components.circularprogress.circularProgress
 import materialui.components.table.table
 import materialui.components.tablebody.tableBody
 import materialui.components.tablecell.tdCell
 import materialui.components.tablecell.thCell
 import materialui.components.tablehead.tableHead
 import materialui.components.tablerow.tableRow
+import materialui.components.typography.typographyH6
 import react.*
 import react.dom.b
 import react.dom.br
 import react.dom.code
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     observe(props.editingShader)
 
-    val lastShaderInstanceOptions = ref<ShaderInstanceOptions?>(null)
-    val curShaderInstanceOptions = props.editingShader.getShaderInstanceOptions()
-    val suggestionsAreCurrent = curShaderInstanceOptions != null
-    val shaderInstanceOptions = curShaderInstanceOptions
-        ?: lastShaderInstanceOptions.current
-    lastShaderInstanceOptions.current = shaderInstanceOptions
+    val lastShaderInputPorts = ref<List<InputPort>?>(null)
+    val shaderInputPorts = props.editingShader.inputPorts
+        ?.also { lastShaderInputPorts.current = it }
+        ?: lastShaderInputPorts.current
 
-    val handleInputPortChange = handler(
-        "change to inputPort source", props.editingShader, props.editableManager
-    ) { inputPort: InputPort, linkOption: LinkOption? ->
-        props.editingShader.changeInputPort(inputPort, linkOption)
-        props.editableManager.onChange()
-    }
-
-    table {
+    if (shaderInputPorts == null) {
+        circularProgress {}
+        typographyH6 { +"Analyzing Shader…" }
+    } else table {
         attrs["size"] = "small"
 
         tableHead {
@@ -45,22 +38,19 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
         }
 
         tableBody {
-            props.editingShader.inputPorts.forEach { (inputPort, currentSourcePort) ->
+            shaderInputPorts.forEach { inputPort ->
                 tableRow {
                     tdCell {
                         b { +inputPort.title }
                         br {}
-                        code { +" (${inputPort.type.glslLiteral})" }
+                        code { +"(${inputPort.contentType?.description ?: inputPort.type.glslLiteral})" }
                     }
 
                     tdCell {
                         linkSourceEditor {
+                            attrs.editableManager = props.editableManager
+                            attrs.editingShader = props.editingShader
                             attrs.inputPort = inputPort
-                            attrs.currentSourcePort = currentSourcePort
-                            attrs.linkOptions = shaderInstanceOptions?.suggestions?.get(inputPort.id)
-                                ?: emptyList()
-                            attrs.isDisabled = !suggestionsAreCurrent
-                            attrs.onChange = handleInputPortChange
                         }
                     }
                 }
