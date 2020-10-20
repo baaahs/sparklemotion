@@ -1,6 +1,7 @@
 package baaahs.plugin
 
 import baaahs.Gadget
+import baaahs.app.ui.editor.PortLinkOption
 import baaahs.getBang
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -15,24 +16,31 @@ import kotlinx.serialization.modules.SerializersModule
 @Serializable
 data class PluginRef(
     val pluginId: String,
-    val resourceName: String
+    val resourceName: String,
+    val pluginIdNotSpecified: Boolean = false
 ) {
     fun toRef() = "$pluginId:$resourceName"
 
     companion object {
+        fun hasPackage(identString: String): Boolean {
+            return identString.contains(":")
+        }
+
         fun from(identString: String): PluginRef {
             val result = Regex("(([\\w.]+):)?(\\w+)").matchEntire(identString)
             return if (result != null) {
                 val (_, pluginId, resourceName) = result.destructured
                 PluginRef(pluginId, resourceName)
             } else {
-                PluginRef(CorePlugin.id, identString)
+                PluginRef(Plugins.default, identString, pluginIdNotSpecified = true)
             }
         }
     }
 }
 
-class Plugins(private val byPackage: Map<String, Plugin>) {
+class Plugins(plugins: List<Plugin>) {
+    private val byPackage: Map<String, Plugin> = plugins.associateBy { it.packageName }
+
     val serialModule = SerializersModule {
         include(Gadget.serialModule)
 //        include(portRefModule)
@@ -51,7 +59,13 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
     fun resolveContentType(name: String): ContentType? {
         val pluginRef = PluginRef.from(name)
         return try {
-            findPlugin(pluginRef).resolveContentType(name)
+            if (pluginRef.pluginIdNotSpecified) {
+                byPackage.values
+                    .mapNotNull { it.resolveContentType(pluginRef.resourceName) }
+                    .firstOrNull()
+            } else {
+                findPlugin(pluginRef).resolveContentType(pluginRef.resourceName)
+            }
         } catch (e: Exception) {
             logger.debug { "Failed to resolve content type $name: ${e.message}" }
             null
@@ -69,7 +83,7 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
     fun suggestDataSources(
         inputPort: InputPort,
         suggestedContentTypes: Set<ContentType> = emptySet()
-    ): List<DataSource> {
+    ): List<PortLinkOption> {
         return byPackage.values.map { plugin ->
             plugin.suggestDataSources(inputPort, suggestedContentTypes)
         }.flatten()
@@ -118,7 +132,7 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
     }
 
     operator fun plus(plugin: Plugin): Plugins {
-        return Plugins(byPackage + (plugin.packageName to plugin))
+        return Plugins(byPackage.values + plugin)
     }
 
     fun find(packageName: String): Plugin {
@@ -126,15 +140,8 @@ class Plugins(private val byPackage: Map<String, Plugin>) {
     }
 
     companion object {
-        val default = "baaahs.Core"
-        private val plugins = Plugins(
-            listOf(CorePlugin())
-                .associateBy(Plugin::packageName)
-        )
-
-        fun safe(): Plugins {
-            return Plugins(mapOf(default to CorePlugin()))
-        }
+        fun safe(): Plugins = Plugins(listOf(CorePlugin()))
+        val default = CorePlugin.id
 
         private val logger = Logger("Plugins")
     }

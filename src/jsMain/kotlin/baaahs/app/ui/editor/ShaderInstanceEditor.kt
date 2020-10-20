@@ -3,14 +3,15 @@ package baaahs.app.ui.editor
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderPreview
+import baaahs.englishize
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.*
 import baaahs.ui.preview.gadgetsPreview
-import kotlinx.css.px
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
 import materialui.components.divider.divider
@@ -23,6 +24,7 @@ import materialui.components.menuitem.menuItem
 import materialui.components.select.select
 import materialui.components.tab.enums.TabStyle
 import materialui.components.tab.tab
+import materialui.components.tabs.enums.TabsStyle
 import materialui.components.tabs.tabs
 import materialui.components.textfield.textField
 import materialui.icon
@@ -57,7 +59,8 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
             EditingShader(
                 props.editableManager.currentMutableShow,
                 props.mutablePatch,
-                props.mutableShaderInstance
+                props.mutableShaderInstance,
+                appContext.autoWirer
             ) { shader ->
                 PreviewShaderBuilder(shader, appContext.autoWirer, appContext.webClient.model)
             }
@@ -83,20 +86,20 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                 submitButtonLabel = "Create",
                 onSubmit = { name ->
                     handleUpdate {
-                        shaderChannel = if (name.isNotBlank()) ShaderChannel(name) else ShaderChannel.Main
+                        shaderChannel = MutableShaderChannel.from(name)
                     }
                 }
             ))
         } else {
             handleUpdate {
-                shaderChannel = if (channelId.isNotBlank()) ShaderChannel(channelId) else ShaderChannel.Main
+                shaderChannel = MutableShaderChannel.from(channelId)
             }
         }
     }
 
     div(+shaderEditorStyles.propsAndPreview) {
-        div(+shaderEditorStyles.propsPanels) {
-            tabs {
+        div(+shaderEditorStyles.propsTabsAndPanels) {
+            tabs(shaderEditorStyles.tabsContainer on TabsStyle.flexContainer) {
                 attrs.value = selectedTab
                 attrs.onChange = handleChangeTab
                 attrs["orientation"] = "vertical"
@@ -108,65 +111,75 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                 }
             }
 
-            when (selectedTab) {
-                PageTabs.Properties -> div(+shaderEditorStyles.shaderProperties) {
-                    textFieldEditor {
-                        attrs.label = "Shader Name"
-                        attrs.getValue = { shaderInstance.mutableShader.title }
-                        attrs.setValue = { value -> shaderInstance.mutableShader.title = value }
-                        attrs.editableManager = props.editableManager
-                    }
+            div(+shaderEditorStyles.propsPanel) {
+                when (selectedTab) {
+                    PageTabs.Properties -> div(+shaderEditorStyles.shaderProperties) {
+                        textFieldEditor {
+                            attrs.label = "Shader Name"
+                            attrs.getValue = { shaderInstance.mutableShader.title }
+                            attrs.setValue = { value -> shaderInstance.mutableShader.title = value }
+                            attrs.editableManager = props.editableManager
+                        }
 
-                    formControl {
-                        inputLabel { +"Channel" }
-                        select {
-                            attrs.renderValue<String> { it.asTextNode() }
-                            attrs.value(shaderInstance.shaderChannel.id)
-                            attrs.onChangeFunction = handleSelectShaderChannel
-                            editingShader.suggestShaderChannels().forEach { shaderChannel ->
+                        formControl {
+                            val main = ShaderChannel.Main
+                            inputLabel { +"Channel" }
+                            select {
+                                attrs.renderValue<String> { it.asTextNode() }
+                                attrs.value(shaderInstance.shaderChannel.id)
+                                attrs.onChangeFunction = handleSelectShaderChannel
+
                                 menuItem {
-                                    attrs["value"] = shaderChannel.id
+                                    attrs["value"] = main.id
                                     listItemIcon { icon(CommonIcons.ShaderChannel) }
-                                    listItemText { +shaderChannel.id }
+                                    listItemText { +"${main.id.englishize()} (default)" }
+                                }
+
+                                val shaderChannels =
+                                    (editingShader.getShaderInstanceOptions()?.shaderChannels ?: emptyList())
+                                        .filter { it.id != main.id }
+
+                                divider {}
+                                shaderChannels.forEach { shaderChannel ->
+                                    menuItem {
+                                        attrs["value"] = shaderChannel.id
+                                        listItemIcon { icon(CommonIcons.ShaderChannel) }
+                                        listItemText { +shaderChannel.id.englishize() }
+                                    }
+                                }
+
+                                divider {}
+                                menuItem {
+                                    attrs["value"] = "__new__"
+                                    listItemIcon { icon(CommonIcons.Add) }
+                                    listItemText { +"New Channel…" }
                                 }
                             }
-
-                            divider {}
-                            menuItem {
-                                attrs["value"] = ""
-                                listItemIcon { icon(CommonIcons.None) }
-                                listItemText { +"Default" }
-                            }
-                            menuItem {
-                                attrs["value"] = "__new__"
-                                listItemIcon { icon(CommonIcons.Add) }
-                                listItemText { +"New Channel…" }
-                            }
+                            formHelperText { +"This shader's channel." }
                         }
-                        formHelperText { +"This shader's channel." }
+
+                        formControl {
+                            textField {
+                                attrs.label { +"Priority" }
+                                attrs.type = InputType.number
+                                attrs.value = shaderInstance.priority
+                                attrs.onChangeFunction = { event: Event ->
+                                    val priorityStr = event.target.value
+                                    handleUpdate { priority = priorityStr.toFloat() }
+                                }
+                            }
+                            formHelperText { +"This shader's priority in the patch." }
+                        }
                     }
 
-                    formControl {
-                        textField {
-                            attrs.label { +"Priority" }
-                            attrs.type = InputType.number
-                            attrs.value = shaderInstance.priority
-                            attrs.onChangeFunction = { event: Event ->
-                                val priorityStr = event.target.value
-                                handleUpdate { priority = priorityStr.toFloat() }
-                            }
-                        }
-                        formHelperText { +"This shader's priority in the patch." }
+                    PageTabs.Ports -> linksEditor {
+                        attrs.editableManager = props.editableManager
+                        attrs.editingShader = editingShader
                     }
-                }
 
-                PageTabs.Ports -> linksEditor {
-                    attrs.editableManager = props.editableManager
-                    attrs.editingShader = editingShader
-                }
-
-                PageTabs.Gadgets -> gadgetsPreview {
-                    attrs.editingShader = editingShader
+                    PageTabs.Gadgets -> gadgetsPreview {
+                        attrs.editingShader = editingShader
+                    }
                 }
             }
         }
@@ -174,8 +187,8 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
         shaderPreview {
             attrs.shader = editingShader.shaderBuilder.shader
             attrs.previewShaderBuilder = editingShader.shaderBuilder
-            attrs.width = 250.px
-            attrs.height = 250.px
+            attrs.width = ShaderEditorStyles.previewWidth
+            attrs.height = ShaderEditorStyles.previewHeight
         }
     }
 
