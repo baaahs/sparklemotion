@@ -1,17 +1,20 @@
 package baaahs.util
 
-import baaahs.util.ConsoleFormatters.Formatter.Companion.bold
-import baaahs.util.ConsoleFormatters.Formatter.Companion.jsonMl
-import baaahs.util.ConsoleFormatters.Formatter.Companion.maxOf
 import kotlin.browser.window
 
 object ConsoleFormatters {
+    fun install() {
+        window.asDynamic().devtoolsFormatters = arrayOf(
+            map, set, list
+        )
+    }
+
     val map = object : Formatter {
         override fun header(x: Any): dynamic {
             return if (x is Map<*, *>) {
                 return jsonMl(
                     "span",
-                    "Map with ${x.size} elements; keys: ",
+                    "Map with ${x.size} entries; keys: ",
                     x.keys.toList().maxOf(3)
                 )
             } else null
@@ -24,7 +27,6 @@ object ConsoleFormatters {
 
             return jsonMl(
                 "table",
-//                mapOf("style" to "background-color: #fcc"),
                 jsonMl(
                     "tr",
                     jsonMl("td", bold, "Key"),
@@ -45,7 +47,7 @@ object ConsoleFormatters {
     val set = object : Formatter {
         override fun header(x: Any): dynamic {
             return if (x is Set<*>) {
-                jsonMl("span", "Set with ${x.size} elements: ${x.toList().maxOf(3)}")
+                jsonMl("span", "Set with ${x.size} items: ${x.toList().maxOf(3)}")
             } else null
         }
 
@@ -66,7 +68,7 @@ object ConsoleFormatters {
     val list = object : Formatter {
         override fun header(x: Any): dynamic {
             return if (x is List<*>) {
-                jsonMl("span", "List with ${x.size} elements: ${x.maxOf(3)}")
+                jsonMl("span", "List with ${x.size} items: ${x.maxOf(3)}")
             } else null
         }
 
@@ -95,50 +97,38 @@ object ConsoleFormatters {
         // Returns http://www.jsonml.org/ or null.
         @JsName("body")
         fun body(x: Any): dynamic
+    }
 
-        companion object {
-            val bold = mapOf("style" to "font-weight: bold")
 
-            fun <T> List<T>.maxOf(size: Int): Array<dynamic> {
-                return if (this.size > size) {
-                    jsonMl("span",
-                        *subList(0, 3)
-                            .flatMap { listOf(it.asDynamic(), ", ".asDynamic()) }
-                            .toTypedArray(),
-                        "...",
-                    )
-                } else {
-                    jsonMl("span",
-                        *flatMap { listOf(it.asDynamic(), ", ".asDynamic()) }
-                            .toTypedArray()
-                    )
-                }
-            }
+    private val bold = mapOf("style" to "font-weight: bold")
 
-            protected fun obj() = js("{}")
-
-            protected fun jsonMl(
-                tag: String,
-                vararg children: dynamic
-            ): Array<Any> {
-                return arrayOf(tag, *children)
-            }
-
-            protected fun jsonMl(
-                tag: String,
-                attrs: Map<String, String> = emptyMap(),
-                vararg children: dynamic
-            ): Array<dynamic> {
-                val attrsObj = obj()
-                attrs.forEach { (k, v) -> attrsObj[k] = v }
-                return arrayOf(tag, attrsObj, *children)
-            }
+    private fun <T> List<T>.maxOf(size: Int): Array<dynamic> {
+        return if (this.size > size) {
+            jsonMl("span",
+                *subList(0, 3)
+                    .flatMap { listOf(it.asDynamic(), ", ".asDynamic()) }
+                    .toTypedArray(),
+                "...",
+            )
+        } else {
+            jsonMl("span",
+                *flatMap { listOf(it.asDynamic(), ", ".asDynamic()) }
+                    .toTypedArray()
+            )
         }
     }
 
-    fun install() {
-        window.asDynamic().devtoolsFormatters = arrayOf(
-            map, list
-        )
+    private fun jsonMl(tag: String, vararg children: dynamic): Array<Any> {
+        return arrayOf(tag, *children)
+    }
+
+    private fun jsonMl(
+        tag: String,
+        attrs: Map<String, String> = emptyMap(),
+        vararg children: dynamic
+    ): Array<dynamic> {
+        val attrsObj = js("{}")
+        attrs.forEach { (k, v) -> attrsObj[k] = v }
+        return arrayOf(tag, attrsObj, *children)
     }
 }
