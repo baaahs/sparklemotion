@@ -27,7 +27,7 @@ class PortLinkOption(
     override val icon get() = mutablePort.icon
     override val groupName get() = mutablePort.groupName
 
-    override fun getMutablePort(): MutablePort? = mutablePort
+    override fun getMutablePort(): MutablePort = mutablePort
 
     val priority: Int get() =
         pack(
@@ -66,7 +66,7 @@ object NoSourcePortOption : LinkOption {
 
 object NewSourcePortOption : LinkOption {
     override val title: String get() = "Create New…"
-    override fun getMutablePort(): MutablePort? = error("not implemented")
+    override fun getMutablePort(): MutablePort = error("not implemented")
     override val groupName: String? get() = null
     override val icon: Icon get() = CommonIcons.Add
     override fun matches(otherPort: MutablePort?): Boolean = false

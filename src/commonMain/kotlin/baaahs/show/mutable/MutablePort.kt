@@ -17,7 +17,7 @@ interface MutablePort {
 data class MutableDataSourcePort(val dataSource: DataSource) : MutablePort {
     override val title: String get() = dataSource.dataSourceName
     override val icon: Icon get() = CommonIcons.DataSource
-    override val groupName: String? get() = "Data Source:"
+    override val groupName: String get() = "Data Source:"
 
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         DataSourceRef(showBuilder.idFor(dataSource))
@@ -35,7 +35,7 @@ class MutableShaderOutPort(var mutableShaderInstance: MutableShaderInstance) : M
 
     override val title: String get() = "Shader \"${mutableShader.title}\" output"
     override val icon: Icon get() = mutableShader.type.icon
-    override val groupName: String? get() = "Shader Output:"
+    override val groupName: String get() = "Shader Output:"
 
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) = visitor.visit(mutableShaderInstance)
 
@@ -59,7 +59,7 @@ class MutableShaderOutPort(var mutableShaderInstance: MutableShaderInstance) : M
 data class MutableShaderChannel(val id: String) : MutablePort {
     override val title: String get() = "${id.englishize()} Channel"
     override val icon: Icon get() = CommonIcons.ShaderChannel
-    override val groupName: String? get() = "Channel:"
+    override val groupName: String get() = "Channel:"
 
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         ShaderChannelRef(build())
@@ -82,7 +82,7 @@ data class MutableShaderChannel(val id: String) : MutablePort {
 data class MutableOutputPort(private val portId: String) : MutablePort {
     override val title: String get() = "$portId Output"
     override val icon: Icon get() = error("not implemented")
-    override val groupName: String? get() = error("not implemented")
+    override val groupName: String get() = error("not implemented")
 
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         OutputPortRef(portId)
@@ -93,7 +93,7 @@ data class MutableOutputPort(private val portId: String) : MutablePort {
 data class MutableConstPort(private val glsl: String) : MutablePort {
     override val title: String get() = "const($glsl)"
     override val icon: Icon get() = error("not implemented")
-    override val groupName: String? get() = error("not implemented")
+    override val groupName: String get() = error("not implemented")
 
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         ConstPortRef(glsl)

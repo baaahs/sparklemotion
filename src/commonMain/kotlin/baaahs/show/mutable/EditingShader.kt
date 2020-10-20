@@ -17,7 +17,7 @@ class EditingShader(
     val mutableShaderInstance: MutableShaderInstance,
     private val autoWirer: AutoWirer,
     private val createShaderBuilder: (Shader) -> ShaderBuilder,
-): Observable() {
+) : Observable() {
     val id = randomId("EditingShader")
     var state = State.Building
 
@@ -32,9 +32,7 @@ class EditingShader(
 
     val gadgets get() = shaderBuilder.gadgets
     val openShader get() = shaderBuilder.openShader
-    val inputPorts get() =
-        (openShader?.inputPorts?.sortedBy { it.title } ?: emptyList())
-            .associateWith { mutableShaderInstance.incomingLinks[it.id] }
+    val inputPorts get() = openShader?.inputPorts?.sortedBy { it.title }
 
     init {
         startBuilding()
@@ -80,7 +78,7 @@ class EditingShader(
         openShader?.inputPorts?.forEach { inputPort ->
             if (!linksSelectedByAHuman.containsKey(inputPort.id)) {
                 getShaderInstanceOptions()
-                    ?.suggestions?.get(inputPort.id)?.firstOrNull()
+                    ?.inputPortLinkOptions?.get(inputPort.id)?.firstOrNull()
                     ?.getMutablePort()
                     ?.let { mutableShaderInstance.incomingLinks[inputPort.id] = it }
             }
@@ -96,21 +94,23 @@ class EditingShader(
             shaderInstanceOptions = autoWirer.autoWire(
                 currentOpenShader,
                 parentMutablePatch = parentMutablePatch,
-                parentMutableShow = parentMutableShow)
+                parentMutableShow = parentMutableShow,
+                currentLinks = mutableShaderInstance.incomingLinks
+            )
         }
         return shaderInstanceOptions
     }
 
-    fun linkSuggestionsFor(portId: String): List<LinkOption> {
-        return getShaderInstanceOptions()?.suggestions?.get(portId)
-            ?: emptyList()
+    fun linkOptionsFor(inputPort: InputPort): List<LinkOption>? = linkOptionsFor(inputPort.id)
+    fun linkOptionsFor(portId: String): List<LinkOption>? {
+        return getShaderInstanceOptions()
+            ?.inputPortLinkOptions
+            ?.get(portId)
     }
 
-    fun changeInputPort(inputPort: InputPort, linkOption: LinkOption?) {
-        changeInputPort(inputPort.id, linkOption)
-    }
-
-    fun changeInputPort(portId: String, linkOption: LinkOption?) {
+    fun changeInputPortLink(inputPort: InputPort, linkOption: LinkOption?) =
+        changeInputPortLink(inputPort.id, linkOption)
+    fun changeInputPortLink(portId: String, linkOption: LinkOption?) {
         val incomingLinks = mutableShaderInstance.incomingLinks
         if (linkOption == null) {
             incomingLinks.remove(portId)
@@ -131,6 +131,13 @@ class EditingShader(
             incomingLinks.remove(unknownKey)
         }
     }
+
+    fun getInputPortLink(inputPort: InputPort) = getInputPortLink(inputPort.id)
+    private fun getInputPortLink(portId: String): MutablePort? {
+        return mutableShaderInstance.incomingLinks[portId]
+    }
+
+    fun isBuilding(): Boolean = state == State.Building
 
     //    if (it.state == EditingShader.State.Success) {
 //        val shader = it.shaderBuilder.shader

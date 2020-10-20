@@ -95,16 +95,18 @@ class AutoWirer(
         shaderChannel: ShaderChannel = ShaderChannel.Main,
         parentMutableShow: MutableShow? = null,
         parentMutablePatch: MutablePatch? = null,
-        defaultPorts: Map<ContentType, MutablePort> = emptyMap()
+        defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
+        currentLinks: Map<String, MutablePort> = emptyMap()
     ): ShaderInstanceOptions = ShaderInstanceOptions(
-            shader,
-            shaderChannel,
-            parentMutableShow,
-            parentMutablePatch,
-            defaultPorts,
-            glslAnalyzer,
-            plugins
-        )
+        shader,
+        shaderChannel,
+        parentMutableShow,
+        parentMutablePatch,
+        defaultPorts,
+        currentLinks,
+        glslAnalyzer,
+        plugins
+    )
 
     private fun collectLinkOptions(
         inputPort: InputPort,

@@ -178,8 +178,6 @@ object EditingShaderSpec : Spek({
                     override(scaleUniform) { "uniform float theScale; // @type beat-link" }
 
                     it("should create an appropriate data source") {
-                        val options = editingShader.linkSuggestionsFor("theScale")
-                        println("options = ${options}")
                         expect(
                             MutableDataSourcePort(BeatLinkPlugin.BeatLinkDataSource())
                         ) { mutableShaderInstance.incomingLinks["theScale"] }
@@ -191,12 +189,26 @@ object EditingShaderSpec : Spek({
                 override(beforeBuildingShader) {
                     {
                         mutableShaderInstance.incomingLinks["theScale"] =
-                            MutableDataSourcePort(CorePlugin.SliderDataSource("custom slider", 1f, 0f, 1f))
+                            MutableDataSourcePort(CorePlugin.SliderDataSource("Custom slider", 1f, 0f, 1f))
                     }
                 }
 
                 it("shouldn't change it") {
-                    expect("custom slider Slider") { mutableShaderInstance.incomingLinks["theScale"]!!.title }
+                    expect("Custom slider Slider") { mutableShaderInstance.incomingLinks["theScale"]!!.title }
+                }
+
+                it("should be listed in link options") {
+                    expect(
+                        """
+                            Data Source:
+                            * BeatLink
+                            * Custom slider Slider
+                            * The Scale Slider
+                            * Time
+                        """.trimIndent()
+                    ) {
+                        editingShader.linkOptionsFor("theScale").stringify()
+                    }
                 }
             }
 
@@ -205,7 +217,7 @@ object EditingShaderSpec : Spek({
                     mutableShaderInstance.incomingLinks["theScale"] =
                         MutableDataSourcePort(CorePlugin.SliderDataSource("custom slider", 1f, 0f, 1f))
 
-                    editingShader.changeInputPort(
+                    editingShader.changeInputPortLink(
                         "theScale",
                         PortLinkOption(
                             MutableDataSourcePort(CorePlugin.SliderDataSource("custom slider", 1f, 0f, 1f))
@@ -239,7 +251,7 @@ object EditingShaderSpec : Spek({
                             * Time
                         """.trimIndent()
                     ) {
-                        editingShader.linkSuggestionsFor("theScale").stringify()
+                        editingShader.linkOptionsFor("theScale").stringify()
                     }
                 }
 
@@ -252,7 +264,7 @@ object EditingShaderSpec : Spek({
                             * Time Slider
                         """.trimIndent()
                     ) {
-                        editingShader.linkSuggestionsFor("time").stringify()
+                        editingShader.linkOptionsFor("time").stringify()
                     }
                 }
 
@@ -268,7 +280,7 @@ object EditingShaderSpec : Spek({
                             * Shader "Paint" output
                         """.trimIndent()
                     ) {
-                        editingShader.linkSuggestionsFor("gl_FragColor").stringify()
+                        editingShader.linkOptionsFor("gl_FragColor").stringify()
                     }
                 }
 
@@ -291,7 +303,7 @@ object EditingShaderSpec : Spek({
                                     * Shader "Paint" output
                                 """.trimIndent()
                             ) {
-                                editingShader.linkSuggestionsFor("gl_FragColor").stringify()
+                                editingShader.linkOptionsFor("gl_FragColor").stringify()
                             }
                         }
                     }
@@ -310,7 +322,7 @@ object EditingShaderSpec : Spek({
                                     * Shader "Paint" output
                                 """.trimIndent()
                             ) {
-                                editingShader.linkSuggestionsFor("gl_FragColor").stringify()
+                                editingShader.linkOptionsFor("gl_FragColor").stringify()
                             }
                         }
 
@@ -321,7 +333,9 @@ object EditingShaderSpec : Spek({
     }
 })
 
-fun List<LinkOption>.stringify(): String {
+fun List<LinkOption>?.stringify(): String {
+    if (this == null) return "no options!"
+
     val lines = arrayListOf<String>()
     var groupName: String? = null
     sortedWith(
