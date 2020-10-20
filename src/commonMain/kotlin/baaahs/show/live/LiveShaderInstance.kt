@@ -39,16 +39,30 @@ class LiveShaderInstance(
             resolver: PortDiagram.Resolver
         ): Link {
             val contentType = inputPort.contentType
-                ?: return NoOpLink
+                ?: return NoOpLink.also {
+                    // TODO: This should probably show a user-visible error.
+                    logger.error {
+                        "No content type specified for port ${inputPort.id};" +
+                                " it's required to resolve on channel ${shaderChannel.id}" }
+                }
             val resolved = resolver.resolve(shaderChannel, contentType)
             return if (resolved != null)
                 ShaderOutLink(resolved)
-            else
+            else {
+                // TODO: This should probably show a user-visible error.
+                logger.error {
+                    "No upstream shader found for port ${inputPort.id}" +
+                            " (${inputPort.contentType}) on channel ${shaderChannel.id}" }
                 NoOpLink
+            }
         }
     }
     data class ConstLink(val glsl: String) : Link
     object NoOpLink : Link
+
+    companion object {
+        private val logger = Logger<LiveShaderInstance>()
+    }
 }
 
 class ShaderInstanceResolver(
