@@ -78,7 +78,7 @@ class ShowRunner(
     fun housekeeping(): Boolean {
         var remapFixtures = fixtureManager.requiresRemap()
 
-        // Maybe switch to a new show.
+        // Maybe build new shaders.
         if (renderPlanNeedsRefresh) {
             val renderPlanChanged = refreshRenderPlan()
             if (renderPlanChanged) {
@@ -103,12 +103,14 @@ class ShowRunner(
     private fun refreshRenderPlan(): Boolean {
         val activeSet = openShow.activeSet()
         return if (activeSet != currentRenderPlan?.activeSet) {
-            currentRenderPlan = prepareRenderPlan(activeSet)
+            val elapsedMs = timeSync {
+                currentRenderPlan = prepareRenderPlan(activeSet)
+            }
 
             logger.info {
                 "New render plan created; ${currentRenderPlan?.programs?.size ?: 0} programs, " +
                         "${fixtureManager.getFixtureCount()} fixtures " +
-                        "and ${requestedGadgets.size} gadgets"
+                        "and ${requestedGadgets.size} gadgets; took ${elapsedMs}ms"
             }
             true
         } else false
