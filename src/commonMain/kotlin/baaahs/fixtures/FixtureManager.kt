@@ -12,7 +12,7 @@ class FixtureManager(
     private val modelRenderer: ModelRenderer
 ) {
     private val changedFixtures = mutableListOf<ShowRunner.FixturesChanges>()
-    internal val fixtureRenderPlans: MutableMap<Fixture, FixtureRenderPlan> = hashMapOf()
+    private val fixtureRenderPlans: MutableMap<Fixture, FixtureRenderPlan> = hashMapOf()
     private var totalFixtureReceivers = 0
 
     fun getFixtureRenderPlans_ForTestOnly(): Map<Fixture, FixtureRenderPlan> {

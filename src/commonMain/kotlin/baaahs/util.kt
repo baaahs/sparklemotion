@@ -55,10 +55,10 @@ expect fun getResource(name: String): String
 
 expect fun decodeBase64(s: String): ByteArray
 
-internal suspend fun time(function: suspend () -> Unit): Long {
+internal suspend fun time(function: suspend () -> Unit): Int {
     val now = getTimeMillis()
     function.invoke()
-    return getTimeMillis() - now
+    return (getTimeMillis() - now).toInt()
 }
 
 internal fun timeSync(function: () -> Unit): Int {
