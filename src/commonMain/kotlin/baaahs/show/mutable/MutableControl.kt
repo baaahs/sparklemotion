@@ -3,10 +3,7 @@ package baaahs.show.mutable
 import baaahs.Gadget
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
-import baaahs.app.ui.editor.ButtonGroupPropsEditor
-import baaahs.app.ui.editor.ButtonPropsEditor
-import baaahs.app.ui.editor.GenericPropertiesEditorPanel
-import baaahs.app.ui.editor.PropsEditor
+import baaahs.app.ui.editor.*
 import baaahs.camelize
 import baaahs.randomId
 import baaahs.show.*
@@ -112,5 +109,26 @@ data class MutableButtonGroupControl(
 
     fun moveButton(fromIndex: Int, toIndex: Int) {
         buttons.add(toIndex, buttons.removeAt(fromIndex))
+    }
+}
+
+data class MutableVisualizerControl(
+    var surfaceDisplayMode: VisualizerControl.SurfaceDisplayMode = VisualizerControl.SurfaceDisplayMode.Continuous,
+    var rotate: Boolean = false
+) : MutableControl {
+    override val title: String get() = "Visualizer"
+
+    override var asBuiltId: String? = null
+
+    override fun getEditorPanels(): List<EditorPanel> {
+        return listOf(
+            GenericPropertiesEditorPanel(
+                VisualizerPropsEditor(this)
+            )
+        )
+    }
+
+    override fun build(showBuilder: ShowBuilder): Control {
+        return VisualizerControl(surfaceDisplayMode, rotate)
     }
 }

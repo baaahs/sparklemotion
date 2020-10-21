@@ -22,6 +22,7 @@ import info.laht.threekt.objects.Mesh
 import info.laht.threekt.objects.Points
 import info.laht.threekt.renderers.WebGLRenderer
 import info.laht.threekt.scenes.Scene
+import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.MouseEvent
 import three.Matrix4
@@ -83,7 +84,7 @@ class Visualizer(model: Model<*>): JsMapperUi.StatusListener {
 
     init {
         scene.add(camera)
-        renderer.setPixelRatio(window.devicePixelRatio)
+//        renderer.setPixelRatio(window.devicePixelRatio)
 
         raycaster.asDynamic().params.Points.threshold = 1
         sphere = Mesh(
@@ -251,9 +252,14 @@ class Visualizer(model: Model<*>): JsMapperUi.StatusListener {
 
     fun resize() {
         container?.let {
+            val canvas = renderer.domElement as HTMLCanvasElement
+            canvas.width = it.offsetWidth
+            canvas.height = it.offsetHeight
+
             camera.aspect = it.offsetWidth.toDouble() / it.offsetHeight
             camera.updateProjectionMatrix()
-            renderer.setSize(it.offsetWidth, it.offsetHeight)
+
+            renderer.setSize(it.offsetWidth, it.offsetHeight, updateStyle = false)
         }
     }
 

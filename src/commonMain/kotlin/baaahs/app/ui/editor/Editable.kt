@@ -4,10 +4,7 @@ import baaahs.app.ui.editor.EditableManager
 import baaahs.show.ButtonControl
 import baaahs.show.ButtonGroupControl
 import baaahs.show.live.ControlDisplay
-import baaahs.show.mutable.MutableButtonControl
-import baaahs.show.mutable.MutableButtonGroupControl
-import baaahs.show.mutable.MutableControl
-import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.*
 import baaahs.ui.Icon
 import baaahs.ui.Renderer
 
@@ -117,6 +114,20 @@ data class AddButtonGroupToPanelBucket(
     }
 
     override fun addToContainer(mutableShow: MutableShow, mutableControl: MutableButtonGroupControl) {
+        mutableShow.findPatchHolder(panelBucket.section.container)
+            .editControlLayout(panelBucket.panelTitle)
+            .add(mutableControl)
+    }
+}
+
+data class AddVisualizerToPanelBucket(
+    private val panelBucket: ControlDisplay.PanelBuckets.PanelBucket
+) : AddToContainerEditIntent<MutableVisualizerControl>() {
+    override fun createControl(mutableShow: MutableShow): MutableVisualizerControl {
+        return MutableVisualizerControl()
+    }
+
+    override fun addToContainer(mutableShow: MutableShow, mutableControl: MutableVisualizerControl) {
         mutableShow.findPatchHolder(panelBucket.section.container)
             .editControlLayout(panelBucket.panelTitle)
             .add(mutableControl)

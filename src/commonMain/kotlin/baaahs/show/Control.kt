@@ -27,6 +27,7 @@ interface Control : Editable {
                 subclass(GadgetControl::class, GadgetControl.serializer())
                 subclass(ButtonControl::class, ButtonControl.serializer())
                 subclass(ButtonGroupControl::class, ButtonGroupControl.serializer())
+                subclass(VisualizerControl::class, VisualizerControl.serializer())
             }
         }
     }
@@ -104,5 +105,27 @@ data class ButtonGroupControl(
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenButtonGroupControl {
         return OpenButtonGroupControl(id, this, openContext)
+    }
+}
+
+@Serializable
+@SerialName("baaahs.Core:Visualizer")
+data class VisualizerControl(
+    val surfaceDisplayMode: SurfaceDisplayMode = SurfaceDisplayMode.Continuous,
+    val rotate: Boolean = false
+): Control {
+    enum class SurfaceDisplayMode {
+        Pixels,
+        Continuous
+    }
+
+    override val title: String get() = "Visualizer"
+
+    override fun createMutable(mutableShow: MutableShow): MutableVisualizerControl {
+        return MutableVisualizerControl(surfaceDisplayMode, rotate)
+    }
+
+    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
+        return OpenVisualizerControl(id, this)
     }
 }

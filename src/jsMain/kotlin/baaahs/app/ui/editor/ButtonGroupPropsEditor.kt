@@ -45,15 +45,12 @@ private val buttonGroupPropsEditor =
                         props.editableManager.onChange()
                     }
 
-                    formControlLabel {
-                        attrs.value = "Horizontal"
-                        attrs.control = radio {}
-                        attrs.label { +"Horizontal" }
-                    }
-                    formControlLabel {
-                        attrs.value = "Vertical"
-                        attrs.control = radio {}
-                        attrs.label { +"Vertical" }
+                    ButtonGroupControl.Direction.values().forEach {
+                        formControlLabel {
+                            attrs.value = it.name
+                            attrs.control = radio {}
+                            attrs.label { +it.name }
+                        }
                     }
                 }
             }

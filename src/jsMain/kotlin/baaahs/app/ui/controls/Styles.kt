@@ -47,6 +47,11 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         }
     }
 
+    val visualizerCard by css {
+        display = Display.flex
+        flex(1.0, 0.0)
+    }
+
     val dragHandle by css {
         opacity = 0
         transition(::opacity, duration = 0.25.s, timing = Timing.linear)
@@ -58,8 +63,9 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val controlBox by css {
         display = Display.flex
+        flex(1.0, 0.0)
         position = Position.relative
-        marginRight = 2.em
+        marginRight = 0.em
 
         hover {
             child(".${editButton.name}") {
