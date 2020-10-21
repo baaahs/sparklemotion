@@ -10,6 +10,7 @@ import baaahs.show.live.OpenControl
 import baaahs.show.live.OpenVisualizerControl
 import baaahs.ui.on
 import baaahs.ui.xComponent
+import baaahs.visualizer.SurfaceGeometry
 import materialui.components.card.card
 import materialui.components.paper.enums.PaperStyle
 import org.w3c.dom.Element
@@ -30,7 +31,17 @@ val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
     val appContext = useContext(appContext)
 
     val rootEl = ref<Element>()
-    val visualizer by state { baaahs.visualizer.Visualizer(appContext.webClient.model).facade }
+    val visualizer by state {
+        val model = appContext.webClient.model
+        baaahs.visualizer.Visualizer(model)
+            .also { viz ->
+                model.allSurfaces.forEach { surface ->
+                    val vizSurface = viz.addSurface(SurfaceGeometry(surface))
+                    // TODO: Bind this to renderer output.
+                }
+
+            }
+            .facade }
     visualizer.rotate = props.control.visualizerControl.rotate
 
     onMount {

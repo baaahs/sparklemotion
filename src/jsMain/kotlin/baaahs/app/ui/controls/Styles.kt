@@ -35,6 +35,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val editButton by css {
         opacity = 0
+        backgroundColor = Color.white // TODO: should be based on theme.
         transition(::opacity, duration = 0.25.s, timing = Timing.linear)
         position = Position.absolute
         right = 2.px
@@ -53,6 +54,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val dragHandle by css {
+        backgroundColor = Color.white // TODO: should be based on theme.
         opacity = 0
         transition(::opacity, duration = 0.25.s, timing = Timing.linear)
         position = Position.absolute
