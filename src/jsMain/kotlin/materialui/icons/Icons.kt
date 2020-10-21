@@ -9,6 +9,7 @@ external object Icons {
     val AddCircleOutline: Icon
     val Airplay: Icon
     val Apps: Icon
+    val AvTimer: Icon
     val CastConnected: Icon
     val ChevronLeft: Icon
     val ChevronRight: Icon
@@ -48,5 +49,6 @@ external object Icons {
     val SettingsInputComponent: Icon
     val Undo: Icon
     val ViewModule: Icon
+    val Visibility: Icon
     val Warning: Icon
 }

@@ -35,6 +35,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val editButton by css {
         opacity = 0
+        backgroundColor = Color.white // TODO: should be based on theme.
         transition(::opacity, duration = 0.25.s, timing = Timing.linear)
         position = Position.absolute
         right = 2.px
@@ -47,7 +48,13 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         }
     }
 
+    val visualizerCard by css {
+        display = Display.flex
+        flex(1.0, 0.0)
+    }
+
     val dragHandle by css {
+        backgroundColor = Color.white // TODO: should be based on theme.
         opacity = 0
         transition(::opacity, duration = 0.25.s, timing = Timing.linear)
         position = Position.absolute
@@ -58,8 +65,9 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val controlBox by css {
         display = Display.flex
+        flex(1.0, 0.0)
         position = Position.relative
-        marginRight = 2.em
+        marginRight = 0.em
 
         hover {
             child(".${editButton.name}") {

@@ -19,5 +19,6 @@ actual fun getViewFor(openControl: OpenControl): ControlView =
         is OpenButtonControl -> ButtonControlView(openControl)
         is OpenButtonGroupControl -> ButtonGroupControlView(openControl)
         is OpenGadgetControl -> GadgetControlView(openControl)
+        is OpenVisualizerControl -> VisualizerControlView(openControl)
         else -> UnknownControlView(openControl)
     }
