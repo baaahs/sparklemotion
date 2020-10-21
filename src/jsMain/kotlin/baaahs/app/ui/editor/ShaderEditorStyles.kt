@@ -13,7 +13,7 @@ class ShaderEditorStyles(private val theme: MuiTheme) : StyleSheet("app-ui-edito
     val propsAndPreview by css {
         display = Display.flex
         gap = Gap(1.em.toString())
-        paddingTop = 1.em
+        marginTop = 1.em
         paddingRight = 1.em
         maxHeight = previewHeight
 

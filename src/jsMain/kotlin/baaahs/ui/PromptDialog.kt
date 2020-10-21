@@ -11,7 +11,7 @@ import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
 import materialui.components.formcontrol.enums.FormControlMargin
 import materialui.components.textfield.textField
-import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RHandler
 import react.RProps
@@ -19,52 +19,65 @@ import react.child
 
 val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
     val prompt = props.prompt
-    var value = prompt.defaultValue ?: ""
+    val value = ref { prompt.defaultValue }
+    var isInvalidMessage by state { prompt.isValid(value.current) }
+
+    val handleChange = handler("change", prompt) { event: Event ->
+        val newValue = event.target.value
+        value.current = newValue
+        isInvalidMessage = prompt.isValid(newValue)
+    }
+
+    val handleDialogClose = handler("dialog close", props.onClose, prompt.onCancel) { event: Event, _: String ->
+        props.onClose()
+        prompt.onCancel()
+        event.stopPropagation()
+    }
+    val handleCancelClick = handler("click cancel", props.onClose, prompt.onCancel) { event: Event ->
+        props.onClose()
+        prompt.onCancel()
+        event.stopPropagation()
+    }
+    val handleSubmitClick = handler("click submit", props.onClose, prompt.onSubmit) { event: Event ->
+        props.onClose()
+        prompt.onSubmit(value.current)
+        event.stopPropagation()
+    }
+
 
     dialog {
         attrs.open = true
-        attrs.onClose = { event, reason ->
-            props.onClose()
-            prompt.onCancel()
-            event.stopPropagation()
-        }
+        attrs.onClose = handleDialogClose
 
         dialogTitle { +prompt.title }
-
         dialogContent {
-//            dialogContentText {
             +prompt.description
-//            }
-        }
 
-        textField {
-            attrs.autoFocus = true
-            attrs.margin = FormControlMargin.dense
-            attrs.label { +prompt.fieldLabel }
-            attrs.type = InputType.text
-            attrs.fullWidth = true
-            attrs.onChangeFunction = { event ->
-                value = (event.target as HTMLInputElement).value
+            textField {
+                attrs.autoFocus = true
+                attrs.margin = FormControlMargin.dense
+                attrs.label { +prompt.fieldLabel }
+                attrs.type = InputType.text
+                attrs.fullWidth = true
+                attrs.defaultValue(value.current)
+                isInvalidMessage?.let {
+                    attrs.error = true
+                    attrs.helperText = it.asTextNode()
+                }
+                attrs.onChangeFunction = handleChange
             }
         }
 
         dialogActions {
             button {
-                attrs.onClickFunction = { event ->
-                    props.onClose()
-                    prompt.onCancel()
-                    event.stopPropagation()
-                }
                 attrs.color = ButtonColor.primary
+                attrs.onClickFunction = handleCancelClick
                 +(prompt.cancelButtonLabel ?: "Cancel")
             }
             button {
-                attrs.onClickFunction = { event ->
-                    props.onClose()
-                    prompt.onSubmit(value)
-                    event.stopPropagation()
-                }
                 attrs.color = ButtonColor.primary
+                attrs.disabled = isInvalidMessage != null
+                attrs.onClickFunction = handleSubmitClick
                 +(prompt.submitButtonLabel ?: "Submit")
             }
         }
@@ -78,11 +91,10 @@ class Prompt(
     val fieldLabel: String,
     val cancelButtonLabel: String?,
     val submitButtonLabel: String?,
+    val isValid: (String) -> String? = { null },
     val onSubmit: (value: String) -> Unit,
-    val onCancel: () -> Unit = {},
-    val isValid: (String) -> Boolean = { true }
-) {
-}
+    val onCancel: () -> Unit = {}
+)
 
 external interface PromptDialogProps : RProps {
     var prompt: Prompt

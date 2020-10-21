@@ -65,17 +65,19 @@ object Styles : StyleSheet("ui", isStatic = true) {
         }
     }
 
-    val shaderTab by css {
-        display = Display.flex
-        flexDirection = FlexDirection.row
-    }
-
     val shaderEditor by css {
         width = 100.pct
         height = 100.pct
         display = Display.flex
         flexDirection = FlexDirection.row
         marginTop = .5.em
+    }
+
+    val shaderEditorActions by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        flex()
+        minWidth = 10.em
     }
 
     val textEditor by css {
