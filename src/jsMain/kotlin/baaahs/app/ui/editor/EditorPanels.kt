@@ -79,6 +79,16 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
         }
     }
 
+    override fun forVisualizer(
+        editableManager: EditableManager,
+        mutableVisualizerControl: MutableVisualizerControl
+    ) = renderWrapper {
+        visualizerPropsEditor {
+            attrs.editableManager = editableManager
+            attrs.mutableVisualizerControl = mutableVisualizerControl
+        }
+    }
+
     override fun forTitleComponent(
         editableManager: EditableManager,
         mutablePatchHolder: MutablePatchHolder

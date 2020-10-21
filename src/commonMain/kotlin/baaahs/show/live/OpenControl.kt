@@ -5,6 +5,7 @@ import baaahs.gadgets.Switch
 import baaahs.show.ButtonControl
 import baaahs.show.ButtonGroupControl
 import baaahs.show.DataSource
+import baaahs.show.VisualizerControl
 import baaahs.show.mutable.*
 import baaahs.ui.Draggable
 import baaahs.ui.DropTarget
@@ -164,6 +165,17 @@ class OpenButtonGroupControl(
         fun release() {
             controlDisplay.dragNDrop.removeDropTarget(this)
         }
+    }
+}
+
+class OpenVisualizerControl(
+    override val id: String,
+    val visualizerControl: VisualizerControl
+) : OpenControl {
+    override val gadget: Gadget? get() = null
+
+    override fun toNewMutable(mutableShow: MutableShow): MutableControl {
+        return visualizerControl.createMutable(mutableShow)
     }
 }
 

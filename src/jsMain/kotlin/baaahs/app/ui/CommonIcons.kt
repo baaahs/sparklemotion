@@ -18,8 +18,11 @@ actual fun getCommonIcons() = object : PlatformIcons {
     override val PaintShader get() = icon(Icons.Image)
     override val FilterShader get() = icon(Icons.FilterBAndW)
 
+    override val BeatLinkControl get() = icon(Icons.AvTimer)
     override val Button get() = icon(Icons.CropLandscape)
     override val ButtonGroup get() = icon(Icons.ViewModule)
+    override val ColorPalette get() = icon(Icons.Palette)
+    override val Visualizer get() = icon(Icons.Visibility)
 
     fun icon(materialIcon: materialui.Icon) = JsIcon(materialIcon)
 }

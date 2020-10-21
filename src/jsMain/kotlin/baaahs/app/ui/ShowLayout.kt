@@ -144,6 +144,31 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                 listItemIcon { icon(CommonIcons.ButtonGroup) }
                 listItemText { +"New Button Group…" }
             }
+
+            menuItem {
+                attrs.disabled = true
+                attrs.onClickFunction = {}
+
+                listItemIcon { icon(CommonIcons.ColorPalette) }
+                listItemText { +"New Color Palette…" }
+            }
+
+            menuItem {
+                attrs.onClickFunction = {
+                    appContext.openEditor(AddVisualizerToPanelBucket(panelBucket))
+                }
+
+                listItemIcon { icon(CommonIcons.Visualizer) }
+                listItemText { +"New Visualizer…" }
+            }
+
+            menuItem {
+                attrs.disabled = true
+                attrs.onClickFunction = {}
+
+                listItemIcon { icon(CommonIcons.BeatLinkControl) }
+                listItemText { +"New BeatLink Control…" }
+            }
         }
     }
 }
