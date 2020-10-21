@@ -77,7 +77,7 @@ class FakeShowPlayer(
 //        renderSurfaces.values.forEach { renderSurface ->
 //            renderSurface.updateRenderSurface()
 //        }
-//        glslRenderer.draw()
+//        renderEngine.draw()
     }
 
     fun <T : Gadget> getGadget(name: String): T {

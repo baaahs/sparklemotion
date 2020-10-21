@@ -50,8 +50,7 @@ class AutoWirer(
                 val unresolvedShaderInstance = UnresolvedShaderInstance(
                     MutableShader(openShader.shader),
                     openShader.inputPorts
-                        .map { it.id }
-                        .associateWith { hashSetOf<MutablePort>() },
+                        .associateWith { hashSetOf() },
                     shaderChannel,
                     0f
                 )
@@ -77,8 +76,7 @@ class AutoWirer(
             openShader.inputPorts.forEach { inputPort ->
                 val suggestions = collectLinkOptions(inputPort, locallyAvailable)
 
-                unresolvedShaderInstance.incomingLinksOptions
-                    .getBang(inputPort.id, "port")
+                unresolvedShaderInstance.linkOptionsFor(inputPort)
                     .addAll(suggestions.filter {
                         // Don't suggest linking back to ourself.
                         !(it is UnresolvedShaderOutPort &&

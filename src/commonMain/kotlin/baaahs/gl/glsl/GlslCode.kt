@@ -18,7 +18,10 @@ class GlslCode(
 
     val statements = glslStatements.map {
         it.asSpecialOrNull()
-            ?: it.asStructOrNull()
+            ?: it.asStructOrNull()?.also { glslStruct ->
+                structNames.add(glslStruct.name)
+                glslStruct.varName?.let { globalVarNames += it }
+            }
             ?: it.asVarOrNull()?.also { glslVar -> globalVarNames.add(glslVar.name) }
             ?: it.asFunctionOrNull()?.also { glslFunction -> functionNames.add(glslFunction.name) }
             ?: GlslOther("unknown", it.text, it.lineNumber).also {
@@ -26,7 +29,10 @@ class GlslCode(
             }
     }
     val symbolNames = globalVarNames + functionNames + structNames
-    val globalVars: Collection<GlslVar> get() = statements.filterIsInstance<GlslVar>()
+    val globalVars: Collection<GlslVar> get() =
+        statements.filterIsInstance<GlslVar>() +
+                structs.filter { it.varName != null }
+                    .map { it. getSyntheticVar() }
     val globalInputVars: Collection<GlslVar> get() = globalVars.filter { it.isUniform || it.isVarying }
     val uniforms: Collection<GlslVar> get() = globalVars.filter { it.isUniform }
     val functions: Collection<GlslFunction> get() = statements.filterIsInstance<GlslFunction>()
@@ -99,11 +105,23 @@ class GlslCode(
 
     data class GlslStruct(
         override val name: String,
+        val fields: Map<String, GlslType>,
+        val varName: String?,
+        val isUniform: Boolean = false,
         override val fullText: String,
         override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList()
     ) : Statement {
         override fun stripSource() = copy(fullText = "", lineNumber = null)
+
+        fun getSyntheticVar(): GlslVar {
+            val fieldsStr = fields.entries.joinToString("\n") { (name, type) ->
+                "    ${type.glslLiteral} $name;"
+            }
+            val structType = GlslType.from("struct $name {\n$fieldsStr\n}")
+            val fullText = "${if (isUniform) "uniform " else ""}$name $varName;"
+            return GlslVar(structType, varName!!, fullText, lineNumber = lineNumber, comments = comments)
+        }
     }
 
     data class GlslVar(

@@ -39,10 +39,12 @@ object GlslAnalyzerSpec : Spek({
                     //   key2=value2
                     uniform vec2  resolution;
                     
-                    struct MovingHead {
+                    // @@AnotherClass key=value key2=value2
+                    uniform struct MovingHead {
                         float pan;
                         float tilt;
-                    };
+                    } leftEye;
+
                     void mainFunc( out vec4 fragColor, in vec2 fragCoord )
                     {
                         vec2 uv = fragCoord.xy / resolution.xy;
@@ -76,22 +78,23 @@ object GlslAnalyzerSpec : Spek({
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
                             ),
                             GlslStatement(
-                                "struct MovingHead {\n" +
+                                "uniform struct MovingHead {\n" +
                                         "    float pan;\n" +
                                         "    float tilt;\n" +
-                                        "};", lineNumber = 12
+                                        "} leftEye;", lineNumber = 12,
+                                comments = listOf("@@AnotherClass key=value key2=value2")
                             ),
                             GlslStatement(
                                 "void mainFunc( out vec4 fragColor, in vec2 fragCoord )\n" +
                                         "{\n" +
                                         "    vec2 uv = fragCoord.xy / resolution.xy;\n" +
                                         "    fragColor = vec4(uv.xy, 0., 1.);\n" +
-                                        "}", lineNumber = 16
+                                        "}", lineNumber = 18
                             ),
                             GlslStatement(
                                 "void main() {\n" +
                                         "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
-                                        "}", lineNumber = 22
+                                        "}", lineNumber = 24
                             )
                         ), { glslAnalyzer.findStatements(shaderText) }, true
                     )
@@ -109,6 +112,12 @@ object GlslAnalyzerSpec : Spek({
                                 GlslType.Vec2, "resolution",
                                 fullText = " \n\n\n\nuniform vec2  resolution;", isUniform = true, lineNumber = 5,
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
+                            ),
+                            GlslCode.GlslVar(
+                                GlslType.from("struct MovingHead {\n    float pan;\n    float tilt;\n}"),
+                                "leftEye",
+                                fullText = "uniform MovingHead leftEye;", lineNumber = 12,
+                                comments = listOf(" @@AnotherClass key=value key2=value2")
                             )
                         )
                     ) { glslCode.globalVars.toList() }
@@ -126,7 +135,7 @@ object GlslAnalyzerSpec : Spek({
                 it("finds the structs") {
                     expect(
                         listOf(
-                            "struct MovingHead {\n    float pan;\n    float tilt;\n};"
+                            "\nuniform struct MovingHead {\n    float pan;\n    float tilt;\n} leftEye;"
                         )
                     ) { glslCode.structs.map { it.fullText } }
                 }

@@ -1,13 +1,15 @@
 package baaahs.gl.patch
 
+import baaahs.gl.shader.InputPort
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderChannel
+import baaahs.unknown
 
 class UnresolvedShaderInstance(
     val mutableShader: MutableShader,
-    val incomingLinksOptions: Map<String, MutableSet<MutablePort>>,
+    val incomingLinksOptions: Map<InputPort, MutableSet<MutablePort>>,
     var shaderChannel: ShaderChannel = ShaderChannel.Main,
     var priority: Float
 ) {
@@ -31,6 +33,15 @@ class UnresolvedShaderInstance(
             }
         }
     }
+
+    fun linkOptionsFor(portId: String): MutableSet<MutablePort> {
+        val key = incomingLinksOptions.keys.find { it.id == portId }
+            ?: throw error(unknown("port", portId, incomingLinksOptions.keys.map { it.id }))
+        return linkOptionsFor(key)
+    }
+
+    fun linkOptionsFor(inputPort: InputPort) =
+        incomingLinksOptions.getValue(inputPort)
 
     override fun toString(): String {
         return "UnresolvedShaderInstance(shader=${mutableShader.title})"
