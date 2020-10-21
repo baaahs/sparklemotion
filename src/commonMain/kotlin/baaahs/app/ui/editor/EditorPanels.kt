@@ -110,6 +110,13 @@ data class ButtonGroupPropsEditor(
         editorPanelViews.forButtonGroup(editableManager, mutableButtonGroupControl)
 }
 
+data class VisualizerPropsEditor(
+    val mutableVisualizerControl: MutableVisualizerControl
+) : PropsEditor {
+    override fun getRenderer(editableManager: EditableManager): Renderer =
+        editorPanelViews.forVisualizer(editableManager, mutableVisualizerControl)
+}
+
 interface EditorPanelViews {
     fun forGenericPropertiesPanel(editableManager: EditableManager, propsEditors: List<PropsEditor>): Renderer
     fun forPatchHolder(editableManager: EditableManager, mutablePatchHolder: MutablePatchHolder): Renderer
@@ -121,6 +128,7 @@ interface EditorPanelViews {
     ): Renderer
     fun forButton(editableManager: EditableManager, mutableButtonControl: MutableButtonControl): Renderer
     fun forButtonGroup(editableManager: EditableManager, mutableButtonGroupControl: MutableButtonGroupControl): Renderer
+    fun forVisualizer(editableManager: EditableManager, mutableVisualizerControl: MutableVisualizerControl): Renderer
 
     fun forTitleComponent(editableManager: EditableManager, mutablePatchHolder: MutablePatchHolder): Renderer
 }

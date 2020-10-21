@@ -195,6 +195,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
     val layoutControls by css {
         display = Display.inlineFlex
+        flex(1.0, 0.0)
         position = Position.relative
         height = 100.pct
         verticalAlign = VerticalAlign.top
@@ -283,6 +284,10 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
             transition(duration = 0.5.s)
         }
 
+        descendants(layoutPanel) {
+            overflow = Overflow.scroll
+        }
+
         descendants(section0Controls) {
             background = linearRepeating(Color.lightPink.withAlpha(.5), Color.lightPink.withAlpha(.25))
         }
@@ -309,6 +314,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
         descendants(baaahs.app.ui.controls.Styles.controlBox) {
             padding(3.px)
+            marginRight = 1.em
             marginBottom = 0.25.em
             border(
                 width = 1.px,

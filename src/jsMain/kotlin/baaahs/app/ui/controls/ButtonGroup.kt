@@ -164,26 +164,3 @@ private fun <T> ButtonGroupControl.Direction.decode(horizontal: T, vertical: T):
 }
 
 external interface ButtonGroupProps : ControlProps<OpenButtonGroupControl>
-
-//private class SceneDropTarget(
-//    private val show: OpenShow,
-//    private val sceneIndex: Int
-//) : DropTarget {
-//    override val type: String get() = "Scene"
-//
-//    override fun moveDraggable(fromIndex: Int, toIndex: Int): Unit = error("not implemented")
-//
-//    override fun willAccept(draggable: Draggable): Boolean {
-//        return draggable is DraggablePatch
-//    }
-//
-//    override fun getDraggable(index: Int): Draggable = error("not implemented")
-//
-//    override fun insertDraggable(draggable: Draggable, index: Int) {
-//        draggable as DraggablePatch
-//        val scene = show.scenes[sceneIndex]
-//        draggable.addTo(sceneIndex, scene.patchSets.size)
-//    }
-//
-//    override fun removeDraggable(draggable: Draggable): Unit = error("not implemented")
-//}
