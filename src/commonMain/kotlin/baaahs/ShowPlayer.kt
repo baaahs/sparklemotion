@@ -12,6 +12,7 @@ import baaahs.show.Shader
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
 import baaahs.show.live.ShowOpener
+import baaahs.util.Logger
 
 interface ShowPlayer {
     val plugins: Plugins
