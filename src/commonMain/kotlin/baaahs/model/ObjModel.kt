@@ -5,18 +5,17 @@ import baaahs.getResource
 import baaahs.util.Logger
 
 abstract class ObjModel<T : Model.Surface>(val objResourceName: String) : Model<T>() {
+    override val movingHeads: List<MovingHead>
+        get() = emptyList()
     override val geomVertices: List<Vector3F> get() = vertices
     lateinit var vertices: List<Vector3F>
     lateinit var panels: List<T>
-
-    lateinit var eyes: List<MovingHead>
 
     val allPanels: List<T>
         get() = panels
     val partySide: List<T>
         get() = panels.filter { panel -> Regex("P$").matches(panel.name) }
 
-    override val movingHeads: List<MovingHead> get() = eyes
     override val allSurfaces get() = allPanels
     lateinit var surfaceNeighbors: Map<T, List<T>>
     private val surfacesByName = mutableMapOf<String, T>()
@@ -96,17 +95,6 @@ abstract class ObjModel<T : Model.Surface>(val objResourceName: String) : Model<
         }
 
         surfaceNeighbors = allPanels.associateWith { neighborsOf(it) }
-
-        eyes = arrayListOf(
-            MovingHead(
-                "leftEye",
-                Vector3F(0f, 204.361f, 48.738f)
-            ),
-            MovingHead(
-                "rightEye",
-                Vector3F(0f, 204.361f, -153.738f)
-            )
-        )
     }
 
     fun neighborsOf(panel: T) = surfaceNeighbors[panel] ?: emptyList()

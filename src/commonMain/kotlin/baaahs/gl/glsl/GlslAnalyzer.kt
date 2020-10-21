@@ -180,13 +180,15 @@ class GlslAnalyzer(private val plugins: Plugins) {
         ) : ParseState(context) {
             var lineNumber = context.lineNumber
             var braceNestLevel: Int = 0
-            var needsTrailingSemicolon = false
             val comments = mutableListOf<String>()
+            var nextCommentIsMeantForPreviousStatement = true
 
             override fun visitComment(): ParseState {
                 return if (braceNestLevel == 0) {
                     val parentParseState =
-                        if (!textAsString.contains("\n") && precedingStatement != null) precedingStatement else this
+                        if (nextCommentIsMeantForPreviousStatement && precedingStatement != null)
+                            precedingStatement
+                        else this
                     Comment(context, parentParseState, this)
                 } else {
                     super.visitComment()
@@ -212,9 +214,9 @@ class GlslAnalyzer(private val plugins: Plugins) {
                 super.visitRightCurlyBrace()
 
                 return if (braceNestLevel == 0) {
-                    val isStruct = textAsString.contains(Regex("^\\s*struct\\s*"))
+                    val isStruct = textAsString.trim()
+                        .contains(Regex("^(uniform\\s+)?struct\\s"))
                     if (isStruct) {
-                        needsTrailingSemicolon = true
                         this
                     } else {
                         finishStatement()
@@ -229,6 +231,8 @@ class GlslAnalyzer(private val plugins: Plugins) {
             }
 
             override fun visitNewline(): ParseState {
+                nextCommentIsMeantForPreviousStatement = false
+
                 return if (textIsEmpty() && comments.isEmpty()) {
                     // Skip leading newlines.
                     lineNumber = context.lineNumber
@@ -438,10 +442,25 @@ class GlslAnalyzer(private val plugins: Plugins) {
         }
 
         fun asStructOrNull(): GlslCode.GlslStruct? {
-            return Regex("^struct\\s+(\\w+)\\s+", RegexOption.MULTILINE)
+            return Regex("^(uniform\\s+)?struct\\s+(\\w+)\\s+\\{([^}]+)}(?:\\s+(\\w+)?)?;\$", RegexOption.MULTILINE)
                 .find(text.trim())?.let {
-                    val (name) = it.destructured
-                    GlslCode.GlslStruct(name, text, lineNumber, comments)
+                    val (uniform, name, members, varName) = it.destructured
+                    val fields = mutableMapOf<String, GlslType>()
+
+                    members.replace(Regex("//.*"), "")
+                        .split(";")
+                        .forEach { member ->
+                            val trimmed = member.trim()
+                            if (trimmed.isEmpty()) return@forEach
+                            val parts = trimmed.split(Regex("\\s+"))
+                            when(parts.size) {
+                                0 -> return@forEach
+                                2 -> fields[parts[1]] = GlslType.from(parts[0])
+                                else -> throw AnalysisException("illegal struct member \"$member\"", lineNumber ?: -1)
+                            }
+                        }
+                    val varNameOrNull = if (varName.isBlank()) null else varName
+                    GlslCode.GlslStruct(name, fields, varNameOrNull, uniform.isNotBlank(), text, lineNumber, comments)
                 }
         }
 

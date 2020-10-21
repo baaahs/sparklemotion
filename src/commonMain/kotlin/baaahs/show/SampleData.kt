@@ -1,7 +1,6 @@
 package baaahs.show
 
 import baaahs.Color
-import baaahs.getBang
 import baaahs.gl.patch.AutoWirer
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
@@ -231,7 +230,7 @@ object SampleData {
         val unresolvedPatch = autoWirer.autoWire(shader)
         unresolvedPatch.editShader(shader).apply {
             ports.forEach { (portId, port) ->
-                incomingLinksOptions.getBang(portId, "port").apply {
+                linkOptionsFor(portId).apply {
                     clear()
                     add(port)
                 }

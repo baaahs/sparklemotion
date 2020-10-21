@@ -1,15 +1,12 @@
 package baaahs
 
 import baaahs.api.ws.WebSocketRouter
-import baaahs.fixtures.AnonymousFixture
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.IdentifiedFixture
-import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.CompilationException
-import baaahs.gl.render.ModelRenderer
-import baaahs.io.ByteArrayReader
+import baaahs.gl.render.RenderEngine
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
 import baaahs.mapper.MappingResults
@@ -21,7 +18,6 @@ import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.proto.*
-import baaahs.shaders.PixelBrainShader
 import baaahs.show.Show
 import baaahs.util.Framerate
 import baaahs.util.Logger
@@ -40,13 +36,13 @@ class Pinky(
     soundAnalyzer: SoundAnalyzer,
     private val switchShowAfterIdleSeconds: Int? = 600,
     private val adjustShowAfterIdleSeconds: Int? = null,
-    modelRenderer: ModelRenderer,
+    renderEngine: RenderEngine,
     val plugins: Plugins,
     val pinkyMainDispatcher: CoroutineDispatcher
 ) : CoroutineScope, Network.UdpListener {
     val facade = Facade()
     private val storage = Storage(fs, plugins)
-    private lateinit var mappingResults: MappingResults
+    private val mappingResults = FutureMappingResults()
 
     private val link = FragmentingUdpLink(network.link("pinky"))
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
@@ -60,10 +56,10 @@ class Pinky(
     private val pubSub: PubSub.Server = PubSub.Server(httpServer, coroutineContext)
 //    private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    internal val fixtureManager = FixtureManager(modelRenderer)
+    internal val fixtureManager = FixtureManager(renderEngine)
 
     var stageManager: StageManager = StageManager(
-        plugins, modelRenderer, pubSub, storage, fixtureManager, dmxUniverse, movingHeadManager, clock, model,
+        plugins, renderEngine, pubSub, storage, fixtureManager, dmxUniverse, movingHeadManager, clock, model,
         coroutineContext
     )
 
@@ -73,8 +69,6 @@ class Pinky(
 
 //    private var selectedNewShowAt = DateTime.now()
 
-    private val brainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
-    private val pendingBrainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
     var pixelCount: Int = 0
 
     val address: Network.Address get() = link.myAddress
@@ -82,8 +76,8 @@ class Pinky(
 
     // This needs to go last-ish, otherwise we start getting network traffic too early.
     private val udpSocket = link.listenUdp(Ports.PINKY, this)
-
-    private val listeningVisualizers = hashSetOf<ListeningVisualizer>()
+    private val brainManager =
+        BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats)
 
     private val serverNotices = arrayListOf<ServerNotice>()
     private val serverNoticesChannel = pubSub.publish(Topics.serverNotices, serverNotices) {
@@ -125,7 +119,7 @@ class Pinky(
         val fakeAddress = object : Network.Address {}
         val mappingInfos = (mappingResults as SessionMappingResults).brainData
         mappingInfos.forEach { (brainId, info) ->
-            foundBrain(
+            brainManager.foundBrain(
                 fakeAddress, BrainHelloMessage(brainId.uuid, info.surface.name, null, null),
                 isSimulatedBrain = true
             )
@@ -168,7 +162,7 @@ class Pinky(
             CoroutineScope(coroutineContext).launch {
                 launch { firmwareDaddy.start() }
                 launch { movingHeadManager.start() }
-                launch { mappingResults = storage.loadMappingData(model) }
+                launch { mappingResults.actualMappingResults = storage.loadMappingData(model) }
                 launch { loadConfig() }
             }.join()
 
@@ -189,9 +183,9 @@ class Pinky(
             launch {
                 while (true) {
                     if (mapperIsRunning) {
-                        logger.info { "Mapping ${brainInfos.size} brains..." }
+                        logger.info { "Mapping ${brainManager.brainCount} brains..." }
                     } else {
-                        logger.info { "Sending to ${brainInfos.size} brains..." }
+                        logger.info { "Sending to ${brainManager.brainCount} brains..." }
                     }
                     delay(10000)
                 }
@@ -222,34 +216,7 @@ class Pinky(
     }
 
     internal fun updateFixtures() {
-        if (pendingBrainInfos.isNotEmpty()) {
-            val brainFixturesToRemove = mutableListOf<ShowRunner.FixtureReceiver>()
-            val brainFixturesToAdd = mutableListOf<ShowRunner.FixtureReceiver>()
-
-            pendingBrainInfos.forEach { (brainId, incomingBrainInfo) ->
-                val priorBrainInfo = brainInfos[brainId]
-                if (priorBrainInfo != null) {
-                    brainFixturesToRemove.add(priorBrainInfo.fixtureReceiver)
-                }
-
-                if (incomingBrainInfo.hadException) {
-                    // Existing Brain has had exceptions so we're forgetting about it.
-                    brainInfos.remove(brainId)
-                } else {
-                    brainFixturesToAdd.add(incomingBrainInfo.fixtureReceiver)
-                    brainInfos[brainId] = incomingBrainInfo
-                }
-            }
-
-            fixtureManager.fixturesChanged(brainFixturesToAdd, brainFixturesToRemove)
-            listeningVisualizers.forEach { listeningVisualizer ->
-                brainFixturesToAdd.forEach {
-                    listeningVisualizer.sendPixelData(it.fixture)
-                }
-            }
-
-            pendingBrainInfos.clear()
-
+        if (brainManager.updateFixtures()) {
             facade.notifyChanged()
         }
     }
@@ -264,132 +231,14 @@ class Pinky(
         CoroutineScope(coroutineContext).launch {
             val message = parse(bytes)
             when (message) {
-                is BrainHelloMessage -> foundBrain(fromAddress, message)
+                is BrainHelloMessage -> brainManager.foundBrain(fromAddress, message)
+                is PingMessage -> brainManager.receivedPing(fromAddress, message)
                 is MapperHelloMessage -> {
                     logger.debug { "Mapper isRunning=${message.isRunning}" }
                     mapperIsRunning = message.isRunning
                 }
-                is PingMessage -> if (message.isPong) receivedPong(message, fromAddress)
             }
         }
-    }
-
-    private fun foundBrain(
-        brainAddress: Network.Address,
-        msg: BrainHelloMessage,
-        isSimulatedBrain: Boolean = false
-    ) {
-        val brainId = BrainId(msg.brainId)
-        val surfaceName = msg.surfaceName
-
-        logger.debug {
-            "Hello from ${brainId.uuid}" +
-                    " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
-                    " at $brainAddress: $msg"
-        }
-        if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
-            // You need the new hotness bro
-            logger.debug {
-                "The firmware daddy doesn't like $brainId" +
-                        " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
-                        " having ${msg.firmwareVersion}" +
-                        " so we'll send ${firmwareDaddy.urlForPreferredVersion}"
-            }
-            val newHotness = UseFirmwareMessage(firmwareDaddy.urlForPreferredVersion)
-            udpSocket.sendUdp(brainAddress, Ports.BRAIN, newHotness)
-        }
-
-
-        // println("Heard from brain $brainId at $brainAddress for $surfaceName")
-        val dataFor = mappingResults.dataFor(brainId)
-            ?: mappingResults.dataFor(msg.surfaceName ?: "__nope")
-            ?: msg.surfaceName?.let { MappingResults.Info(model.findModelSurface(it), null) }
-
-        val fixture = dataFor?.let {
-            val pixelLocations = dataFor.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) } ?: emptyList()
-            val pixelCount = dataFor.pixelLocations?.size ?: SparkleMotion.MAX_PIXEL_COUNT
-
-            if (msg.surfaceName != dataFor.surface.name) {
-                val mappingMsg = BrainMappingMessage(
-                    brainId, dataFor.surface.name, null, Vector2F(0f, 0f),
-                    Vector2F(0f, 0f), pixelCount, pixelLocations
-                )
-                udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
-            }
-
-            IdentifiedFixture(dataFor.surface, pixelCount, dataFor.pixelLocations)
-        } ?: AnonymousFixture(brainId)
-
-
-        val priorBrainInfo = brainInfos[brainId]
-        if (priorBrainInfo != null) {
-            if (priorBrainInfo.brainId == brainId && priorBrainInfo.fixture == fixture) {
-                // Duplicate packet?
-//                logger.debug(
-//                    "Ignore ${priorBrainInfo.brainId} ${priorBrainInfo.surface.describe()} ->" +
-//                            " ${surface.describe()} because probably duplicate?"
-//                )
-                return
-            }
-
-//            logger.debug(
-//                "Remapping ${priorBrainInfo.brainId} from ${priorBrainInfo.surface.describe()} ->" +
-//                        " ${surface.describe()}"
-//            )
-        }
-
-        val sendFn: (BrainShader.Buffer) -> Unit = { shaderBuffer ->
-            val message = BrainShaderMessage(shaderBuffer.brainShader, shaderBuffer).toBytes()
-            try {
-                if (!isSimulatedBrain)
-                    udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
-            } catch (e: Exception) {
-                // Couldn't send to Brain? Schedule to remove it.
-                val brainInfo = brainInfos[brainId]!!
-                brainInfo.hadException = true
-                pendingBrainInfos[brainId] = brainInfo
-
-                logger.error("Error sending to $brainId, will take offline", e)
-            }
-
-            networkStats.packetsSent++
-            networkStats.bytesSent += message.size
-        }
-
-        val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.DIRECT_RGB)
-        val fixtureReceiver = object : ShowRunner.FixtureReceiver {
-            override val fixture = fixture
-            private val pixelBuffer = pixelShader.createBuffer(fixture)
-
-            override fun send(pixels: Pixels) {
-                pixelBuffer.indices.forEach { i ->
-                    pixelBuffer.colors[i] = pixels[i]
-                }
-                sendFn(pixelBuffer)
-
-                updateListeningVisualizers(fixture, pixelBuffer.colors)
-            }
-        }
-
-        val brainInfo = BrainInfo(brainAddress, brainId, fixture, msg.firmwareVersion, msg.idfVersion, fixtureReceiver)
-//        logger.debug("Map ${brainInfo.brainId} to ${brainInfo.surface.describe()}")
-        pendingBrainInfos[brainId] = brainInfo
-
-        // Decide whether or not to tell this brain it should use a different firmware
-
-    }
-
-    /** If we want a pong back from a [BrainShaderMessage], send this. */
-    private fun generatePongPayload(): ByteArray {
-        return ByteArrayWriter().apply {
-            writeLong(getTimeMillis())
-        }.toBytes()
-    }
-
-    private fun receivedPong(message: PingMessage, fromAddress: Network.Address) {
-        val originalSentAt = ByteArrayReader(message.data).readLong()
-        val elapsedMs = getTimeMillis() - originalSentAt
-        logger.debug { "Shader pong from $fromAddress took ${elapsedMs}ms" }
     }
 
     inner class PinkyBeatDisplayer(private val beatSource: BeatSource) {
@@ -420,9 +269,7 @@ class Pinky(
 
         override fun connected(tcpConnection: Network.TcpConnection) {
             this.tcpConnection = tcpConnection
-            listeningVisualizers.add(this)
-
-            brainInfos.values.forEach { sendPixelData(it.fixture) }
+            brainManager.addListeningVisualizer(this)
         }
 
         override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
@@ -430,7 +277,7 @@ class Pinky(
         }
 
         override fun reset(tcpConnection: Network.TcpConnection) {
-            listeningVisualizers.remove(this)
+            brainManager.removeListeningVisualizer(this)
         }
 
         fun sendPixelData(fixture: Fixture) {
@@ -458,14 +305,6 @@ class Pinky(
                     it.serializeWithoutAlpha(out)
                 }
                 tcpConnection.send(out.toBytes())
-            }
-        }
-    }
-
-    private fun updateListeningVisualizers(fixture: Fixture, colors: List<Color>) {
-        if (listeningVisualizers.isNotEmpty()) {
-            listeningVisualizers.forEach {
-                it.sendFrame(fixture, colors)
             }
         }
     }
@@ -512,7 +351,7 @@ class Pinky(
             get() = this@Pinky.networkStats
 
         val brains: List<BrainInfo>
-            get() = this@Pinky.brainInfos.values.toList()
+            get() = this@Pinky.brainManager.brainInfos.values.toList()
 
         val beatData: BeatData
             get() = this@Pinky.beatSource.getBeatData()
@@ -549,4 +388,22 @@ enum class PinkyState {
     Initializing,
     Running,
     ShuttingDown
+}
+
+private class FutureMappingResults : MappingResults {
+    var actualMappingResults: MappingResults? = null
+
+    override fun dataFor(brainId: BrainId): MappingResults.Info? {
+        if (actualMappingResults == null) {
+            Pinky.logger.warn { "Mapping results for $brainId requested before available." }
+        }
+        return actualMappingResults?.dataFor(brainId)
+    }
+
+    override fun dataFor(surfaceName: String): MappingResults.Info? {
+        if (actualMappingResults == null) {
+            Pinky.logger.warn { "Mapping results for $surfaceName requested before available." }
+        }
+        return actualMappingResults?.dataFor(surfaceName)
+    }
 }

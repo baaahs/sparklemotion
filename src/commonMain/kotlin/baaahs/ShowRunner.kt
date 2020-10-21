@@ -6,7 +6,7 @@ import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.GlslException
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
-import baaahs.gl.render.ModelRenderer
+import baaahs.gl.render.RenderEngine
 import baaahs.glsl.GuruMeditationError
 import baaahs.show.ShaderChannel
 import baaahs.show.Show
@@ -22,7 +22,7 @@ class ShowRunner(
 //    private val dmxUniverse: Dmx.Universe,
 //    private val movingHeadManager: MovingHeadManager,
     internal val clock: Clock,
-    private val modelRenderer: ModelRenderer,
+    private val renderEngine: RenderEngine,
     private val fixtureManager: FixtureManager,
     private val autoWirer: AutoWirer
 ) {
@@ -66,7 +66,7 @@ class ShowRunner(
     /** @return `true` if a frame was rendered and should be sent to fixtures. */
     fun renderNextFrame(): Boolean {
         return if (currentRenderPlan != null) {
-            modelRenderer.draw()
+            renderEngine.draw()
             true
         } else false
     }
@@ -128,7 +128,7 @@ class ShowRunner(
             val linkedPatches = autoWirer.merge(*activePatchHolders.toTypedArray()).mapValues { (_, portDiagram) ->
                 portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
             }
-            val glslContext = modelRenderer.gl
+            val glslContext = renderEngine.gl
             val activeDataSources = mutableSetOf<String>()
             val programs = linkedPatches.mapNotNull { (_, linkedPatch) ->
                 linkedPatch?.let { it to it.createProgram(glslContext, openShow.dataFeeds) }
@@ -139,7 +139,7 @@ class ShowRunner(
             if (e is CompilationException) {
                 e.source?.let { logger.info { it } }
             }
-            return GuruMeditationError.createRenderPlan(modelRenderer.gl)
+            return GuruMeditationError.createRenderPlan(renderEngine.gl)
         }
     }
 
