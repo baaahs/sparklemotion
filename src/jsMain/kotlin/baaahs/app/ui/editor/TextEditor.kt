@@ -102,6 +102,8 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
             attrs.focus = true
             attrs.setOptions = setOptions
             attrs.editorProps = editorProps
+
+            acex.Extensions.searchBox.install()
         }
     }
 }
