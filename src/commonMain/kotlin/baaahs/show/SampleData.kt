@@ -1,6 +1,7 @@
 package baaahs.show
 
 import baaahs.Color
+import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.patch.AutoWirer
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
@@ -60,7 +61,8 @@ object SampleData {
             """.trimIndent()
         )
     )
-        .acceptSymbolicChannelLinks().resolve()
+        .acceptSuggestedLinkOptions()
+        .resolve()
 
     private val brightnessFilter = autoWirer.autoWire(
         Shader(
@@ -77,7 +79,8 @@ object SampleData {
             """.trimIndent()
         )
     )
-        .acceptSymbolicChannelLinks().resolve()
+        .acceptSuggestedLinkOptions()
+        .resolve()
 
     private val saturationFilter = autoWirer.autoWire(
         Shader(
@@ -119,7 +122,8 @@ object SampleData {
             """.trimIndent()
         )
     )
-        .acceptSymbolicChannelLinks().resolve()
+        .acceptSuggestedLinkOptions()
+        .resolve()
 
     private val redYellowGreenPatch = autoWirer.autoWire(
         Shader(
@@ -133,7 +137,9 @@ object SampleData {
                 }
             """.trimIndent()
         )
-    ).acceptSymbolicChannelLinks().resolve()
+    )
+        .acceptSuggestedLinkOptions()
+        .resolve()
 
     private val blueAquaGreenPatch = autoWirer.autoWire(
         Shader(
@@ -148,10 +154,13 @@ object SampleData {
                 }
             """.trimIndent()
         )
-    ).acceptSymbolicChannelLinks().resolve()
+    )
+        .acceptSuggestedLinkOptions()
+        .resolve()
 
     private val fireBallPatch = autoWirer.autoWire(FixtureShaders.fireBallGlsl)
-        .acceptSymbolicChannelLinks().resolve()
+        .acceptSuggestedLinkOptions()
+        .resolve()
 
     val defaultLayout = Layout(stdLayout)
     val layouts = Layouts(
@@ -232,10 +241,12 @@ object SampleData {
             ports.forEach { (portId, port) ->
                 linkOptionsFor(portId).apply {
                     clear()
-                    add(port)
+                    add(PortLinkOption(port))
                 }
             }
         }
-        return unresolvedPatch.acceptSymbolicChannelLinks().resolve()
+        return unresolvedPatch
+            .acceptSuggestedLinkOptions()
+            .resolve()
     }
 }

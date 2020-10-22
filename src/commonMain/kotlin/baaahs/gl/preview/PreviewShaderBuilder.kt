@@ -105,8 +105,7 @@ class PreviewShaderBuilder(
             }
 
             previewPatch = autoWirer.autoWire(*shaders, defaultPorts = defaultPorts)
-                .acceptSymbolicChannelLinks()
-                .takeFirstIfAmbiguous()
+                .acceptSuggestedLinkOptions()
                 .resolve()
             linkedPatch = previewPatch?.openForPreview(autoWirer)
             state = ShaderBuilder.State.Linked
