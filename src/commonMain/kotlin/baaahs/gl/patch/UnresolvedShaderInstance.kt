@@ -1,15 +1,15 @@
 package baaahs.gl.patch
 
+import baaahs.app.ui.editor.LinkOption
 import baaahs.gl.shader.InputPort
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderChannel
 import baaahs.unknown
 
 class UnresolvedShaderInstance(
     val mutableShader: MutableShader,
-    val incomingLinksOptions: Map<InputPort, MutableSet<MutablePort>>,
+    val incomingLinksOptions: Map<InputPort, MutableList<LinkOption>>,
     var shaderChannel: ShaderChannel = ShaderChannel.Main,
     var priority: Float
 ) {
@@ -26,7 +26,7 @@ class UnresolvedShaderInstance(
 
     fun acceptSymbolicChannelLinks() {
         incomingLinksOptions.values.forEach { options ->
-            val shaderChannelOptions = options.filterIsInstance<MutableShaderChannel>()
+            val shaderChannelOptions = options.filter { it.getMutablePort() is MutableShaderChannel }
             if (options.size > 1 && shaderChannelOptions.size == 1) {
                 options.clear()
                 options.add(shaderChannelOptions.first())
@@ -34,7 +34,7 @@ class UnresolvedShaderInstance(
         }
     }
 
-    fun linkOptionsFor(portId: String): MutableSet<MutablePort> {
+    fun linkOptionsFor(portId: String): MutableList<LinkOption> {
         val key = incomingLinksOptions.keys.find { it.id == portId }
             ?: throw error(unknown("port", portId, incomingLinksOptions.keys.map { it.id }))
         return linkOptionsFor(key)

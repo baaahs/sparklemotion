@@ -22,7 +22,7 @@ object PatchLayeringSpec : Spek({
         val autoWirer by value { AutoWirer(Plugins.safe()) }
 
         fun autoWire(vararg shaders: Shader): MutablePatch {
-            return autoWirer.autoWire(*shaders).acceptSymbolicChannelLinks().resolve()
+            return autoWirer.autoWire(*shaders).acceptSuggestedLinkOptions().resolve()
         }
 
         val uvShader = Shaders.cylindricalProjection

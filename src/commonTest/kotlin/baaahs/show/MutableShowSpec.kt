@@ -252,9 +252,7 @@ private fun AutoWirer.testPatch(title: String): MutablePatch {
         """.trimIndent()
     )
 
-    return autoWire(shader)
-        .acceptSymbolicChannelLinks()
-        .resolve()
+    return autoWire(shader).acceptSuggestedLinkOptions().resolve()
 }
 
 //private fun Show.desc(): List<String> =

@@ -2,11 +2,7 @@ package baaahs.gl.patch
 
 import baaahs.show.Shader
 import baaahs.show.Surfaces
-import baaahs.show.mutable.MutableConstPort
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderChannel
-import baaahs.show.mutable.MutableShaderInstance
-import baaahs.show.mutable.MutableShaderOutPort
+import baaahs.show.mutable.*
 import baaahs.unknown
 
 class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShaderInstance>) {
@@ -32,7 +28,7 @@ class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShad
                 it.mutableShader,
                 it.incomingLinksOptions.entries.associate { (port, fromPortOptions) ->
                     port.id to
-                            (fromPortOptions.firstOrNull()
+                            (fromPortOptions.firstOrNull()?.getMutablePort()
                                 ?: MutableConstPort(port.type.defaultInitializer()))
                 }.toMutableMap(),
                 MutableShaderChannel(it.shaderChannel.id),
@@ -56,12 +52,7 @@ class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShad
         return MutablePatch(shaderInstances.values.toList(), Surfaces.AllSurfaces)
     }
 
-    fun acceptSymbolicChannelLinks(): UnresolvedPatch {
-        unresolvedShaderInstances.forEach { it.acceptSymbolicChannelLinks() }
-        return this
-    }
-
-    fun takeFirstIfAmbiguous(): UnresolvedPatch {
+    fun acceptSuggestedLinkOptions(): UnresolvedPatch {
         unresolvedShaderInstances.forEach { it.takeFirstIfAmbiguous() }
         return this
     }
