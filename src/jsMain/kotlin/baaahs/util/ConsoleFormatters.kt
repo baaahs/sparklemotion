@@ -1,3 +1,5 @@
+@file:Suppress("ObsoleteKotlinJsPackages")
+
 package baaahs.util
 
 import kotlin.browser.window
@@ -14,8 +16,9 @@ object ConsoleFormatters {
             return if (x is Map<*, *>) {
                 return jsonMl(
                     "span",
+                    noAttrs,
                     "Map with ${x.size} entries; keys: ",
-                    x.keys.toList().maxOf(3)
+                    *x.keys.toList().maxOf(3)
                 )
             } else null
         }
@@ -27,8 +30,10 @@ object ConsoleFormatters {
 
             return jsonMl(
                 "table",
+                noAttrs,
                 jsonMl(
                     "tr",
+                    noAttrs,
                     jsonMl("td", bold, "Key"),
                     jsonMl("td", bold, "Value"),
                 ),
@@ -36,8 +41,9 @@ object ConsoleFormatters {
                 *x.map { (k, v) ->
                     jsonMl(
                         "tr",
-                        jsonMl("td", k),
-                        jsonMl("td", v),
+                        noAttrs,
+                        jsonMl("td", noAttrs, k.asMl()),
+                        jsonMl("td", noAttrs, v.asMl()),
                     )
                 }.toTypedArray()
             )
@@ -47,7 +53,7 @@ object ConsoleFormatters {
     val set = object : Formatter {
         override fun header(x: Any): dynamic {
             return if (x is Set<*>) {
-                jsonMl("span", "Set with ${x.size} items: ${x.toList().maxOf(3)}")
+                jsonMl("span", noAttrs, "Set with ${x.size} items:", *x.toList().maxOf(3))
             } else null
         }
 
@@ -58,8 +64,9 @@ object ConsoleFormatters {
 
             return jsonMl(
                 "table",
+                noAttrs,
                 *x.map {
-                    jsonMl("tr", jsonMl("td", it))
+                    jsonMl("tr", noAttrs, jsonMl("td", noAttrs, it.asMl()))
                 }.toTypedArray()
             )
         }
@@ -68,7 +75,7 @@ object ConsoleFormatters {
     val list = object : Formatter {
         override fun header(x: Any): dynamic {
             return if (x is List<*>) {
-                jsonMl("span", "List with ${x.size} items: ${x.maxOf(3)}")
+                jsonMl("span", noAttrs, "List with ${x.size} items:", *x.maxOf(3))
             } else null
         }
 
@@ -79,8 +86,9 @@ object ConsoleFormatters {
 
             return jsonMl(
                 "table",
+                noAttrs,
                 *x.map {
-                    jsonMl("tr", jsonMl("td", it))
+                    jsonMl("tr", noAttrs, jsonMl("td", noAttrs, it.asMl()))
                 }.toTypedArray()
             )
         }
@@ -103,32 +111,44 @@ object ConsoleFormatters {
     private val bold = mapOf("style" to "font-weight: bold")
 
     private fun <T> List<T>.maxOf(size: Int): Array<dynamic> {
-        return if (this.size > size) {
-            jsonMl("span",
-                *subList(0, 3)
-                    .flatMap { listOf(it.asDynamic(), ", ".asDynamic()) }
-                    .toTypedArray(),
-                "...",
-            )
-        } else {
-            jsonMl("span",
-                *flatMap { listOf(it.asDynamic(), ", ".asDynamic()) }
-                    .toTypedArray()
-            )
+        return when {
+            this.isEmpty() -> return emptyArray()
+            this.size > size -> {
+                subList(0, size)
+                    .flatMap { listOf(it.asMl(), ", ") }
+                    .toTypedArray() + "..."
+            }
+            else -> {
+                val items = flatMap { listOf(it.asMl(), ", ") }.toMutableList()
+                items.removeAt(items.size - 1)
+                items.toTypedArray()
+            }
         }
-    }
-
-    private fun jsonMl(tag: String, vararg children: dynamic): Array<Any> {
-        return arrayOf(tag, *children)
     }
 
     private fun jsonMl(
         tag: String,
-        attrs: Map<String, String> = emptyMap(),
+        attrs: Map<String, String> = noAttrs,
         vararg children: dynamic
     ): Array<dynamic> {
+        return arrayOf(tag, attrs(attrs), *children)
+    }
+
+    private fun attrs(attrs: Map<String, Any?>): dynamic {
         val attrsObj = js("{}")
         attrs.forEach { (k, v) -> attrsObj[k] = v }
-        return arrayOf(tag, attrsObj, *children)
+        return attrsObj
     }
+
+    private fun Any?.asMl(): dynamic {
+        return if (this is String || this is Number) {
+            this
+        } else if (this == null || this == undefined) {
+            return this
+        } else {
+            arrayOf("object", attrs(mapOf("object" to this)))
+        }
+    }
+
+    private val noAttrs = emptyMap<String, String>()
 }
