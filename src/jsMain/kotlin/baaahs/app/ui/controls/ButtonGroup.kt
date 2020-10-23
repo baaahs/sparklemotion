@@ -1,14 +1,10 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.AddButtonToButtonGroupEditIntent
-import baaahs.app.ui.AppContext
-import baaahs.app.ui.ControlEditIntent
 import baaahs.app.ui.appContext
 import baaahs.show.ButtonGroupControl
 import baaahs.show.live.ControlProps
-import baaahs.show.live.ControlView
 import baaahs.show.live.OpenButtonGroupControl
-import baaahs.show.live.OpenControl
 import baaahs.ui.*
 import external.Direction
 import external.copyFrom
@@ -26,26 +22,17 @@ import materialui.icons.Icons
 import materialui.toggleButton
 import materialui.toggleButtonGroup
 import org.w3c.dom.events.Event
-import react.FunctionalComponent
+import react.*
 import react.dom.div
-import react.key
-import react.useContext
 
-class ButtonGroupControlView(val openControl: OpenButtonGroupControl) : ControlView {
-    override fun <P : ControlProps<in OpenControl>> getReactElement(): FunctionalComponent<P> {
-        return ButtonGroup.unsafeCast<FunctionalComponent<P>>()
-    }
-
-    override fun onEdit(appContext: AppContext) {
-        appContext.openEditor(ControlEditIntent(openControl.id))
-    }
-}
-
-val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
+private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
     val appContext = useContext(appContext)
 
-    val buttonGroupControl = props.control
-    val dropTarget = props.controlDisplay.dropTargetFor(buttonGroupControl) as OpenButtonGroupControl.ButtonGroupDropTarget
+    val buttonGroupControl = props.buttonGroupControl
+    val dropTarget = props.controlProps.controlDisplay.dropTargetFor(buttonGroupControl)
+            as OpenButtonGroupControl.ButtonGroupDropTarget
+    val editMode = props.controlProps.editMode
+    val onShowStateChange = props.controlProps.onShowStateChange
 
 //    val sceneDropTargets = props.show.scenes.mapIndexed { index, _ ->
 //        val sceneDropTarget = SceneDropTarget(props.show, index)
@@ -62,9 +49,9 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 
     val propsRef = ref { props }
     propsRef.current = props
-    val handleEditButtonClick = useCallback { event: Event, index: Int ->
-        val button = propsRef.current.control.buttons[index]
-        ButtonControlView(button).onEdit(appContext)
+    val handleEditButtonClick = useCallback(buttonGroupControl) { event: Event, index: Int ->
+        val button = buttonGroupControl.buttons[index]
+        button.getEditIntent()?.let { appContext.openEditor(it) }
         event.preventDefault()
     }
 
@@ -74,7 +61,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
             type = dropTarget.type
             direction = buttonGroupControl.direction
                 .decode(Direction.horizontal, Direction.vertical).name
-            isDropDisabled = !props.editMode
+            isDropDisabled = !editMode
         }) { sceneDropProvided, _ ->
             toggleButtonGroup(
                 ToggleButtonGroupStyle.root to buttonGroupControl.direction
@@ -93,7 +80,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                     draggable({
                         this.key = buttonControl.id
                         this.draggableId = buttonControl.id
-                        this.isDragDisabled = !props.editMode
+                        this.isDragDisabled = !editMode
                         this.index = index
                     }) { sceneDragProvided, _ ->
 //                            div {
@@ -104,7 +91,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                             copyFrom(sceneDragProvided.draggableProps)
 
                             div(+Styles.editButton) {
-                                if (props.editMode) {
+                                if (editMode) {
                                     attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
                                 }
 
@@ -129,7 +116,7 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                                     attrs["selected"] = buttonControl.isPressed
                                     attrs.onClickFunction = {
                                         buttonGroupControl.clickOn(index)
-                                        props.onShowStateChange()
+                                        onShowStateChange()
                                     }
 
                                     +buttonControl.title
@@ -143,11 +130,11 @@ val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 
                 insertPlaceholder(sceneDropProvided)
 
-                if (props.editMode) {
+                if (editMode) {
                     iconButton {
                         icon(Icons.AddCircleOutline)
                         attrs.onClickFunction = { _: Event ->
-                            appContext.openEditor(AddButtonToButtonGroupEditIntent(props.control.id))
+                            appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
                         }
                     }
                 }
@@ -163,4 +150,10 @@ private fun <T> ButtonGroupControl.Direction.decode(horizontal: T, vertical: T):
     }
 }
 
-external interface ButtonGroupProps : ControlProps<OpenButtonGroupControl>
+external interface ButtonGroupProps : RProps {
+    var controlProps: ControlProps
+    var buttonGroupControl: OpenButtonGroupControl
+}
+
+fun RBuilder.buttonGroup(handler: RHandler<ButtonGroupProps>) =
+    child(ButtonGroup, handler = handler)
