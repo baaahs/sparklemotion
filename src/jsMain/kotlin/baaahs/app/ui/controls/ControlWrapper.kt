@@ -1,12 +1,14 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
+import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
-import baaahs.show.live.getViewFor
-import baaahs.ui.*
+import baaahs.ui.on
+import baaahs.ui.unaryPlus
+import baaahs.ui.useCallback
+import baaahs.ui.xComponent
 import external.DraggableProvided
 import external.copyFrom
-import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
 import materialui.components.card.card
 import materialui.components.paper.enums.PaperStyle
@@ -20,10 +22,9 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
     val appContext = useContext(appContext)
 
     val control = props.control
-    val controlView = memo(control) { getViewFor(control) }
 
-    val onEditButtonClick = useCallback(control, props.genericControlProps) { event: Event ->
-        controlView.onEdit(appContext)
+    val onEditButtonClick = useCallback(control, props.controlProps) { event: Event ->
+        control.getEditIntent()?.let { appContext.openEditor(it) }
         event.preventDefault()
     }
 
@@ -41,16 +42,15 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
             icon(Icons.DragIndicator)
         }
 
-        child(controlView.getReactElement(), jsObject {
-            props.genericControlProps.copyInto(this)
-            this.control = props.control
-        })
+        with (props.control.getRenderer(props.controlProps)) {
+            render()
+        }
     }
 }
 
 external interface ControlWrapperProps : RProps {
     var control: OpenControl
-    var genericControlProps: GenericControlProps
+    var controlProps: ControlProps
     var draggableProvided: DraggableProvided
 }
 

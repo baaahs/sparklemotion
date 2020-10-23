@@ -1,6 +1,8 @@
 package baaahs.show.live
 
 import baaahs.Gadget
+import baaahs.app.ui.ControlEditIntent
+import baaahs.app.ui.EditIntent
 import baaahs.gadgets.Switch
 import baaahs.show.ButtonControl
 import baaahs.show.ButtonGroupControl
@@ -9,6 +11,7 @@ import baaahs.show.VisualizerControl
 import baaahs.show.mutable.*
 import baaahs.ui.Draggable
 import baaahs.ui.DropTarget
+import baaahs.ui.Renderer
 import kotlinx.serialization.json.JsonElement
 
 interface OpenControl {
@@ -21,6 +24,8 @@ interface OpenControl {
     fun addTo(activeSetBuilder: ActiveSetBuilder, panelId: String, depth: Int) {}
     fun applyConstraints() {}
     fun toNewMutable(mutableShow: MutableShow): MutableControl
+    fun getRenderer(controlProps: ControlProps): Renderer
+    fun getEditIntent(): EditIntent? = ControlEditIntent(id)
 }
 
 class OpenGadgetControl(
@@ -28,10 +33,16 @@ class OpenGadgetControl(
     override val gadget: Gadget,
     val controlledDataSource: DataSource
 ) : OpenControl {
-    override fun controlledDataSources(): Set<DataSource> = setOf(controlledDataSource)
-    override fun toNewMutable(mutableShow: MutableShow): MutableControl {
-        return MutableGadgetControl(gadget, controlledDataSource)
-    }
+    override fun controlledDataSources(): Set<DataSource> =
+        setOf(controlledDataSource)
+
+    override fun toNewMutable(mutableShow: MutableShow): MutableControl =
+        MutableGadgetControl(gadget, controlledDataSource)
+
+    override fun getRenderer(controlProps: ControlProps): Renderer =
+        controlViews.forGadget(this, controlProps)
+
+    override fun getEditIntent(): EditIntent? = null
 }
 
 class OpenButtonControl(
@@ -55,9 +66,11 @@ class OpenButtonControl(
         }
     }
 
-    override fun toNewMutable(mutableShow: MutableShow): MutableControl {
-        return MutableButtonControl(buttonControl, mutableShow)
-    }
+    override fun toNewMutable(mutableShow: MutableShow): MutableControl =
+        MutableButtonControl(buttonControl, mutableShow)
+
+    override fun getRenderer(controlProps: ControlProps): Renderer =
+        controlViews.forButton(this, controlProps)
 
     fun click() {
         isPressed = !isPressed
@@ -96,9 +109,11 @@ class OpenButtonGroupControl(
         }
     }
 
-    override fun toNewMutable(mutableShow: MutableShow): MutableControl {
+    override fun toNewMutable(mutableShow: MutableShow): MutableControl =
         error("not implemented for button groups")
-    }
+
+    override fun getRenderer(controlProps: ControlProps): Renderer =
+        controlViews.forButtonGroup(this, controlProps)
 
     fun clickOn(buttonIndex: Int) {
         buttons.forEachIndexed { index, openButtonControl ->
@@ -170,15 +185,39 @@ class OpenButtonGroupControl(
 
 class OpenVisualizerControl(
     override val id: String,
-    val visualizerControl: VisualizerControl
+    private val visualizerControl: VisualizerControl
 ) : OpenControl {
     override val gadget: Gadget? get() = null
 
-    override fun toNewMutable(mutableShow: MutableShow): MutableControl {
-        return visualizerControl.createMutable(mutableShow)
-    }
+    override fun toNewMutable(mutableShow: MutableShow): MutableControl =
+        visualizerControl.createMutable(mutableShow)
+
+    override fun getRenderer(controlProps: ControlProps): Renderer =
+        controlViews.forVisualizer(this, controlProps)
+
+    override fun getEditIntent(): EditIntent =
+        ControlEditIntent(id)
+
+    val rotate get() = visualizerControl.rotate
 }
 
 interface ControlContainer {
     fun containedControls() : List<OpenControl>
 }
+
+interface ControlViews {
+    fun forGadget(openGadgetControl: OpenGadgetControl, controlProps: ControlProps): Renderer
+    fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): Renderer
+    fun forButtonGroup(openButtonGroupControl: OpenButtonGroupControl, controlProps: ControlProps): Renderer
+    fun forVisualizer(openVisualizerControl: OpenVisualizerControl, controlProps: ControlProps): Renderer
+}
+
+data class ControlProps(
+    val show: OpenShow,
+    val onShowStateChange: () -> Unit,
+    val editMode: Boolean,
+    val controlDisplay: ControlDisplay
+)
+
+val controlViews by lazy { getControlViews() }
+expect fun getControlViews(): ControlViews
