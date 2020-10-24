@@ -3,6 +3,7 @@ package baaahs.ui
 import baaahs.app.ui.appContext
 import baaahs.io.Fs
 import baaahs.ui.Styles.fileDialogFileList
+import baaahs.window
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.html.js.onChangeFunction
@@ -29,7 +30,6 @@ import materialui.icon
 import materialui.icons.Icons
 import org.w3c.dom.events.Event
 import react.*
-import kotlin.browser.window
 
 private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
     val appContext = useContext(appContext)

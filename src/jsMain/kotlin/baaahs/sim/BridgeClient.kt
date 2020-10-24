@@ -4,6 +4,7 @@ import baaahs.BeatData
 import baaahs.BeatSource
 import baaahs.SoundAnalyzer
 import baaahs.util.Logger
+import baaahs.window
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -12,7 +13,6 @@ import kotlinx.serialization.json.float
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import org.w3c.dom.WebSocket
-import kotlin.browser.window
 
 class BridgeClient(private val url: String) {
     private val logger = Logger("BridgedBeatSource")

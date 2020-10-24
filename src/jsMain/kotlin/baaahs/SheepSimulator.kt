@@ -22,8 +22,6 @@ import baaahs.visualizer.VizPixels
 import decodeQueryParams
 import info.laht.threekt.math.Vector3
 import kotlinx.coroutines.*
-import kotlin.browser.document
-import kotlin.browser.window
 import kotlin.js.Date
 
 class SheepSimulator(val model: Model<*>) {

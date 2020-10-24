@@ -5,11 +5,11 @@ import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
 import baaahs.gl.glsl.GlslProgram
 import baaahs.model.Model
+import baaahs.window
 import com.danielgergely.kgl.*
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.Path2D
-import kotlin.browser.window
 
 interface ShaderPreview {
     fun start()

@@ -8,7 +8,6 @@ import org.w3c.dom.HTMLElement
 import react.ReactElement
 import react.createElement
 import react.dom.render
-import kotlin.browser.document
 import kotlin.dom.appendElement
 import kotlin.dom.appendText
 

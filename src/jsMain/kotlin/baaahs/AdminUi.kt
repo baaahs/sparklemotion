@@ -9,7 +9,6 @@ import kotlinext.js.jsObject
 import org.w3c.dom.HTMLDivElement
 import react.ReactElement
 import react.createElement
-import kotlin.browser.document
 
 class AdminUi(network: Network, pinkyAddress: Network.Address, model: Model<*>) : HostedWebApp {
     private val clientLink = network.link("admin")
