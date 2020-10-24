@@ -30,7 +30,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     }
 
     val genericControlProps = ControlProps(
-        props.show,
         props.onShowStateChange,
         props.editMode,
         controlDisplay

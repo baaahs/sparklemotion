@@ -22,9 +22,10 @@ open class Observable : IObservable {
     }
 }
 
-fun <T : IObservable> T.addObserver(callback: (T) -> Unit): RemovableObserver<T> {
+fun <T : IObservable> T.addObserver(fireImmediately: Boolean = false, callback: (T) -> Unit): RemovableObserver<T> {
     val observer = RemovableObserver(this, callback)
     addObserver(observer)
+    if (fireImmediately) callback(this)
     return observer
 }
 

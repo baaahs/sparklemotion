@@ -4,6 +4,7 @@ import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.PalettePicker
 import baaahs.gadgets.Slider
 import baaahs.gadgets.Switch
+import baaahs.show.DataSource
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
@@ -136,58 +137,14 @@ private class GadgetValueObserver<T>(
     }
 }
 
-@Serializable()
-class GadgetData(val name: String, @Polymorphic var gadget: Gadget, val topicName: String) {
-    override fun toString(): String = "GadgetData(name='$name', gadget=$gadget, topicName='$topicName')"
-}
+class GadgetInfo(
+    val gadget: Gadget,
+    val controlledDataSource: DataSource?,
+    val topic: PubSub.Topic<Map<String, JsonElement>>,
+    val channel: PubSub.Channel<Map<String, JsonElement>>,
+    val gadgetChannelListener: (Gadget) -> Unit
+)
 
 val GadgetDataSerializer = MapSerializer(String.serializer(), JsonElement.serializer())
-
-class GadgetDisplay(pubSub: PubSub.Client, onUpdatedGadgets: (Array<GadgetData>) -> Unit) {
-    private var gadgetsChannel: PubSub.Channel<List<GadgetData>>
-    private val activeGadgets = mutableListOf<GadgetData>()
-    private val channels = hashMapOf<String, PubSub.Channel<Map<String, JsonElement>>>()
-
-    init {
-        this.gadgetsChannel = pubSub.subscribe(Topics.activeGadgets) { gadgetDatas ->
-            activeGadgets.clear()
-            channels.forEach { it.value.unsubscribe() }
-            channels.clear()
-
-            gadgetDatas.forEach { gadgetData ->
-                val gadget = gadgetData.gadget
-                val topicName = gadgetData.topicName
-
-                val listener: GadgetListener = {
-                    val observer = channels[topicName]
-                    if (observer == null) {
-                        println("Huh, no observer for $topicName; discarding update (know about ${channels.keys})")
-                    } else {
-                        observer.onChange(it.state)
-                    }
-                }
-                gadget.listen(listener)
-
-                channels[topicName] =
-                    pubSub.subscribe(PubSub.Topic(topicName, GadgetDataSerializer, Gadget.serialModule)) { json ->
-                        gadget.apply {
-                            withoutTriggering(listener) {
-                                gadget.state.putAll(json)
-                                gadget.changed()
-                            }
-                        }
-                    }
-
-                activeGadgets.add(gadgetData)
-            }
-
-            onUpdatedGadgets(activeGadgets.toTypedArray())
-        }
-    }
-
-    fun unsubscribe() {
-        gadgetsChannel.unsubscribe()
-    }
-}
 
 private val jsonParser = Json
