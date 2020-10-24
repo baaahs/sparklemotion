@@ -1,11 +1,11 @@
 package baaahs.gl
 
+import baaahs.document
+import baaahs.window
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglJs
 import com.danielgergely.kgl.WebGL2RenderingContext
 import org.w3c.dom.HTMLCanvasElement
-import kotlin.browser.document
-import kotlin.browser.window
 
 actual object GlBase {
     actual val manager: GlManager by lazy { jsManager }

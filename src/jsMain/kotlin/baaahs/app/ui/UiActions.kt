@@ -1,14 +1,14 @@
 package baaahs.app.ui
 
+import baaahs.document
 import baaahs.plugin.Plugins
 import baaahs.show.Show
+import baaahs.window
 import encodeURIComponent
 import kotlinext.js.jsObject
 import kotlinx.serialization.json.Json
 import org.w3c.dom.HTMLAnchorElement
 import org.w3c.files.Blob
-import kotlin.browser.document
-import kotlin.browser.window
 
 object UiActions {
     fun downloadShow(show: Show, plugins: Plugins) {

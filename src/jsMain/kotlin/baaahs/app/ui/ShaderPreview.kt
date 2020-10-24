@@ -1,5 +1,6 @@
 package baaahs.app.ui
 
+import baaahs.document
 import baaahs.gl.GlBase
 import baaahs.gl.GlContext
 import baaahs.gl.preview.GadgetAdjuster
@@ -32,7 +33,6 @@ import react.dom.*
 import styled.StyleSheet
 import styled.css
 import styled.styledDiv
-import kotlin.browser.document
 import kotlin.collections.set
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->

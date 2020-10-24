@@ -1,7 +1,7 @@
 package baaahs.sim
 
 import baaahs.io.Fs
-import kotlin.browser.window
+import baaahs.window
 
 class BrowserSandboxFs(override val name: String) : BaseFakeFs() {
     private val storage = window.localStorage

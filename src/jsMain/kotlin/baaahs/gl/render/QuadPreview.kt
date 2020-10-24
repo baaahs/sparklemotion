@@ -2,9 +2,9 @@ package baaahs.gl.render
 
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
+import baaahs.window
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
-import kotlin.browser.window
 
 class QuadPreview(
     private val gl: GlContext,

@@ -2,7 +2,7 @@ package baaahs.imaging
 
 import baaahs.MediaDevices
 import baaahs.context2d
-import baaahs.first
+import baaahs.document
 import kotlinx.html.dom.create
 import kotlinx.html.js.canvas
 import org.khronos.webgl.Uint8ClampedArray
@@ -11,7 +11,6 @@ import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLVideoElement
 import org.w3c.dom.ImageBitmap
-import kotlin.browser.document
 
 actual class NativeBitmap actual constructor(override val width: Int, override val height: Int) :
     CanvasBitmap(createCanvas(width, height)), Bitmap {
