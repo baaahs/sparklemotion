@@ -3,14 +3,14 @@ import React, {createContext, useReducer} from 'react';
 const initialState = {
   currentNode: {
     direction: 'row',
-    splitPercentage: 30,
-    first: {
+    splitPercentage: 75,
+    first: 'Web UI',
+    second: {
       direction: 'column',
-      splitPercentage: 50,
-      first: 'Sheep Visualizer',
+      splitPercentage: 25,
+      first: 'Model Simulator',
       second: 'Simulator Console',
     },
-    second: 'Web UI',
   },
   selectedShow: '',
   currentTheme: 'Blueprint',
