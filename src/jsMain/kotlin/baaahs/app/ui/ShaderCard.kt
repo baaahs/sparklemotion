@@ -57,6 +57,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
             attrs.shader = shader
             attrs.width = styles.cardWidth
             attrs.height = styles.cardWidth
+            attrs.adjustGadgets = true
         }
 
         cardActions(styles.shaderCardActions on CardActionsStyle.root) {

@@ -3,8 +3,6 @@ package baaahs.app.ui.editor
 import acex.*
 import baaahs.app.ui.appContext
 import baaahs.boundedBy
-import baaahs.jsx.ShowControls
-import baaahs.jsx.ShowControlsProps
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.*
 import kotlinext.js.jsObject
@@ -110,6 +108,3 @@ external interface ShaderEditorProps : RProps {
 
 fun RBuilder.shaderEditor(handler: RHandler<ShaderEditorProps>) =
     child(ShaderEditor, handler = handler)
-
-fun RBuilder.showControls(handler: RHandler<ShowControlsProps>): ReactElement =
-    ShowControls { attrs { handler() } }

@@ -1,6 +1,7 @@
 package baaahs.show.live
 
 import baaahs.ShowState
+import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.patch.AutoWirer
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
@@ -19,11 +20,11 @@ fun AutoWirer.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap(
         ports.forEach { (portId, port) ->
             linkOptionsFor(portId).apply {
                 clear()
-                add(port)
+                add(PortLinkOption(port))
             }
         }
     }
-    return unresolvedPatch.acceptSymbolicChannelLinks().resolve()
+    return unresolvedPatch.acceptSuggestedLinkOptions().resolve()
 }
 
 fun fakeShader(title: String, type: ShaderType = ShaderType.Paint) =

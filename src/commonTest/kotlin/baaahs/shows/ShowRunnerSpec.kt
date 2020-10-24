@@ -46,7 +46,8 @@ object ShowRunnerSpec : Spek({
             MutableShow("test show") {
                 addPatch(
                     autoWirer.autoWire(Shaders.cylindricalProjection, Shaders.blue)
-                        .acceptSymbolicChannelLinks().resolve()
+                        .acceptSuggestedLinkOptions()
+                        .resolve()
                 )
                 addButtonGroup(
                     "Panel", "Scenes"
@@ -58,7 +59,8 @@ object ShowRunnerSpec : Spek({
                             addButton("test patchset") {
                                 addPatch(
                                     autoWirer.autoWire(Shader("Untitled", ShaderType.Paint, shaderSrc))
-                                        .acceptSymbolicChannelLinks().resolve()
+                                        .acceptSuggestedLinkOptions()
+                                        .resolve()
                                 )
                             }
                         }

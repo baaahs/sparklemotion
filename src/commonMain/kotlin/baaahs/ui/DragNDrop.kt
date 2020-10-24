@@ -40,6 +40,7 @@ abstract class DragNDrop {
 
 interface DropTarget{
     val type: String
+    val dropTargetId: String
 
     fun suggestId(): String = type.camelize()
     fun moveDraggable(fromIndex: Int, toIndex: Int)

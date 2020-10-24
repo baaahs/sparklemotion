@@ -1,12 +1,11 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.controls.GenericControlProps
 import baaahs.show.live.ControlDisplay
+import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenShow
 import baaahs.ui.nuffin
 import baaahs.ui.xComponent
 import external.dragDropContext
-import kotlinext.js.jsObject
 import materialui.components.portal.portal
 import react.*
 
@@ -30,12 +29,11 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         }
     }
 
-    val genericControlProps = jsObject<GenericControlProps> {
-        this.show = props.show
-        this.onShowStateChange = props.onShowStateChange
-        this.editMode = props.editMode
-        this.controlDisplay = controlDisplay
-    }
+    val genericControlProps = ControlProps(
+        props.onShowStateChange,
+        props.editMode,
+        controlDisplay
+    )
 
     dragDropContext({
         onDragEnd = appContext.dragNDrop::onDragEnd
@@ -45,14 +43,14 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
             attrs.onShowStateChange = props.onShowStateChange
             attrs.layout = currentLayout
             attrs.controlDisplay = controlDisplay
-            attrs.genericControlProps = genericControlProps
+            attrs.controlProps = genericControlProps
             attrs.editMode = props.editMode
         }
 
         portal {
             controlsPalette {
                 attrs.controlDisplay = controlDisplay
-                attrs.genericControlProps = genericControlProps
+                attrs.controlProps = genericControlProps
                 attrs.show = props.show
                 attrs.editMode = props.editMode
             }

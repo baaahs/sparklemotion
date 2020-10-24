@@ -4,6 +4,9 @@ import baaahs.app.ui.ShaderPreviewStyles
 import baaahs.ui.child
 import baaahs.ui.important
 import kotlinx.css.*
+import kotlinx.css.properties.deg
+import kotlinx.css.properties.rotate
+import kotlinx.css.properties.transform
 import materialui.styles.muitheme.MuiTheme
 import materialui.styles.palette.dark
 import materialui.styles.palette.paper
@@ -26,6 +29,7 @@ class ShaderEditorStyles(private val theme: MuiTheme) : StyleSheet("app-ui-edito
         grow(Grow.GROW)
         display = Display.flex
         flexDirection = FlexDirection.row
+        position = Position.relative
     }
 
     val tabsContainer by css {
@@ -42,6 +46,14 @@ class ShaderEditorStyles(private val theme: MuiTheme) : StyleSheet("app-ui-edito
         child("TABLE") {
             display = Display.block
         }
+    }
+
+    val adjustGadgetsSwitch by css {
+        position = Position.absolute
+        right = 1.em
+        top = 0.px
+        transform { rotate((-90).deg) }
+        declarations["transformOrigin"] = "top right"
     }
 
     val shaderProperties by css {

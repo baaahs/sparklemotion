@@ -1,10 +1,9 @@
 package baaahs.gl.preview
 
 import baaahs.Clock
-import baaahs.GadgetData
 import baaahs.gadgets.Slider
 
-class GadgetAdjuster(val gadgets: List<GadgetData>, val clock: Clock) {
+class GadgetAdjuster(val gadgets: List<ShaderBuilder.GadgetPreview>, val clock: Clock) {
     fun adjustGadgets() {
         val now = clock.now() / 2
         val count = gadgets.size

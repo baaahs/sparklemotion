@@ -8,6 +8,10 @@ import kotlinx.css.properties.transition
 import styled.StyleSheet
 
 object Styles : StyleSheet("app-ui-controls", isStatic = true) {
+    val showControls by css {
+        display = Display.flex
+    }
+
     val buttonGroupCard by css {
         display = Display.flex
     }
