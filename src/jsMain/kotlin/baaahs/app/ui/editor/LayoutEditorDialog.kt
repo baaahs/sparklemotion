@@ -6,6 +6,7 @@ import baaahs.show.Layout
 import baaahs.show.Layouts
 import baaahs.ui.Styles.previewBar
 import baaahs.ui.xComponent
+import baaahs.window
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
 import kotlinx.serialization.json.*
@@ -25,7 +26,6 @@ import react.dom.code
 import react.dom.p
 import styled.css
 import styled.styledDiv
-import kotlin.browser.window
 
 val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow") { props ->
     val aceEditor = ref<AceEditor>()

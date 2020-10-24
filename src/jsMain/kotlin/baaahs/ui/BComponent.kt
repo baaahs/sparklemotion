@@ -1,9 +1,9 @@
 package baaahs.ui
 
+import baaahs.window
 import react.RComponent
 import react.RProps
 import react.RState
-import kotlin.browser.window
 import kotlin.js.Promise
 
 abstract class BComponent<P : RProps, S : RState>(props: P) : RComponent<P, S>(props), Observer {

@@ -1,11 +1,11 @@
 package baaahs.ui
 
 import baaahs.util.Logger
+import baaahs.window
 import external.react.memo
 import org.w3c.dom.events.Event
 import react.RMutableRef
 import react.RProps
-import kotlin.browser.window
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
