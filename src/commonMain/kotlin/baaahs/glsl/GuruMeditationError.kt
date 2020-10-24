@@ -25,7 +25,6 @@ object GuruMeditationError {
         "Ω Guru Meditation Error Ω",
         ShaderType.Paint,
         /**language=glsl*/
-        /**language=glsl*/
         """
             uniform float time;
             void main() {
@@ -42,8 +41,11 @@ object GuruMeditationError {
     init {
         val autoWirer = AutoWirer(Plugins.safe())
         val showBuilder = ShowBuilder()
+        val mutablePatch = autoWirer.autoWire(shader)
+            .acceptSuggestedLinkOptions()
+            .resolve()
         val show = MutableShow("error").apply {
-            addPatch(autoWirer.autoWire(shader).resolve())
+            addPatch(mutablePatch)
         }.build(showBuilder)
 
         @Suppress("CAST_NEVER_SUCCEEDS")
