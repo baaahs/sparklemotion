@@ -29,8 +29,8 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
     val appContext = useContext(appContext)
 
     val buttonGroupControl = props.buttonGroupControl
-    val dropTarget = props.controlProps.controlDisplay.dropTargetFor(buttonGroupControl)
-            as OpenButtonGroupControl.ButtonGroupDropTarget
+    val dropTarget = props.controlProps.controlDisplay?.dropTargetFor(buttonGroupControl)
+
     val editMode = props.controlProps.editMode
     val onShowStateChange = props.controlProps.onShowStateChange
 
@@ -57,8 +57,12 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 
     card(Styles.buttonGroupCard on PaperStyle.root) {
         droppable({
-            droppableId = dropTarget.dropTargetId
-            type = dropTarget.type
+            if (dropTarget != null) {
+                droppableId = dropTarget.dropTargetId
+                type = dropTarget.type
+            } else {
+                isDropDisabled = true
+            }
             direction = buttonGroupControl.direction
                 .decode(Direction.horizontal, Direction.vertical).name
             isDropDisabled = !editMode

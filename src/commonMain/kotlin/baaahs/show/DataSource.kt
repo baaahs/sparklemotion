@@ -34,8 +34,6 @@ interface DataSource {
     fun getContentType(): ContentType
     fun getVarName(id: String): String = "in_$id"
 
-    fun getRenderType(): String? = null
-
     // TODO: We shouldn't need to pass in the [Plugin] here; when plugins handle their own serialization,
     //  then the [DataSource] could be created with whatever dependencies it needs.
     fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): GlslProgram.DataFeed

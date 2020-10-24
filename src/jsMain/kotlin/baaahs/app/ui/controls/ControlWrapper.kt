@@ -23,23 +23,30 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
 
     val control = props.control
 
-    val onEditButtonClick = useCallback(control, props.controlProps) { event: Event ->
+    val onEditButtonClick = useCallback(control) { event: Event ->
         control.getEditIntent()?.let { appContext.openEditor(it) }
         event.preventDefault()
     }
 
     card(Styles.controlBox on PaperStyle.root) {
-        ref = props.draggableProvided.innerRef
-        copyFrom(props.draggableProvided.draggableProps)
-
-        div(+Styles.editButton) {
-            attrs.onClickFunction = onEditButtonClick
-
-            icon(Icons.Edit)
+        props.draggableProvided?.let { draggableProvided ->
+            ref = draggableProvided.innerRef
+            copyFrom(draggableProvided.draggableProps)
         }
-        div(+Styles.dragHandle) {
-            copyFrom(props.draggableProvided.dragHandleProps)
-            icon(Icons.DragIndicator)
+
+        if (!props.disableEdit) {
+            div(+Styles.editButton) {
+                attrs.onClickFunction = onEditButtonClick
+
+                icon(Icons.Edit)
+            }
+        }
+
+        props.draggableProvided?.let { draggableProvided ->
+            div(+Styles.dragHandle) {
+                copyFrom(draggableProvided.dragHandleProps)
+                icon(Icons.DragIndicator)
+            }
         }
 
         with (props.control.getRenderer(props.controlProps)) {
@@ -51,7 +58,8 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
 external interface ControlWrapperProps : RProps {
     var control: OpenControl
     var controlProps: ControlProps
-    var draggableProvided: DraggableProvided
+    var draggableProvided: DraggableProvided?
+    var disableEdit: Boolean
 }
 
 fun RBuilder.controlWrapper(handler: RHandler<ControlWrapperProps>): ReactElement =

@@ -18,9 +18,6 @@ object Topics {
     val pinkyState =
         PubSub.Topic("pinkyState", PinkyState.serializer())
 
-    val activeGadgets =
-        PubSub.Topic("activeGadgets", ListSerializer(GadgetData.serializer()), Gadget.serialModule)
-
     val movingHeads =
         PubSub.Topic("movingHeads", ListSerializer(MovingHead.serializer()))
 

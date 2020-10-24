@@ -245,8 +245,6 @@ class CorePlugin : Plugin {
         override fun isImplicit(): Boolean = true
         override fun getVarName(id: String): String = "gl_FragCoord"
 
-        override fun getRenderType(): String? = null
-
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
             return object : DataFeed, RefCounted by RefCounter() {
 
@@ -285,7 +283,6 @@ class CorePlugin : Plugin {
         override val dataSourceName: String get() = "Model Info"
         override fun getType(): GlslType = modelInfoType
         override fun getContentType(): ContentType = ContentType.ModelInfo
-        override fun getRenderType(): String? = null
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
             return object : DataFeed, RefCounted by RefCounter() {
@@ -329,11 +326,10 @@ class CorePlugin : Plugin {
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
             val gadget = showPlayer.useGadget<T>(this)
-
-            if (gadget == null) {
-                logger.debug { "No control gadget registered for datasource $id, using no-op data feed" }
-                return GlslProgram.NoOpDataFeed()
-            }
+                ?: run {
+                    logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
+                    createGadget()
+                }
 
             return object : GadgetDataFeed, RefCounted by RefCounter() {
                 override val id: String = id
@@ -395,7 +391,6 @@ class CorePlugin : Plugin {
         override val dataSourceName: String get() = "$title $resourceName"
         override fun getType(): GlslType = GlslType.Float
         override fun getContentType(): ContentType = ContentType.Float
-        override fun getRenderType(): String? = "Slider"
         override fun suggestId(): String = "$title Slider".camelize()
 
         override fun createGadget(): Slider =
@@ -477,7 +472,6 @@ class CorePlugin : Plugin {
         override val dataSourceName: String get() = "$title $resourceName"
         override fun getType(): GlslType = GlslType.Vec4
         override fun getContentType(): ContentType = ContentType.Color
-        override fun getRenderType(): String? = "ColorPicker"
         override fun suggestId(): String = "$title Color Picker".camelize()
 
         override fun createGadget(): ColorPicker = ColorPicker(title, initialValue)

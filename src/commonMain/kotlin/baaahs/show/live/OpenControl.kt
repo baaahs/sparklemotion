@@ -131,7 +131,7 @@ class OpenButtonGroupControl(
     inner class ButtonGroupDropTarget(
         private val controlDisplay: ControlDisplay
     ) : DropTarget {
-        val dropTargetId = controlDisplay.dragNDrop.addDropTarget(this)
+        override val dropTargetId = controlDisplay.dragNDrop.addDropTarget(this)
         override val type: String get() = "ControlContainer"
 
         override fun moveDraggable(fromIndex: Int, toIndex: Int) {
@@ -213,10 +213,9 @@ interface ControlViews {
 }
 
 data class ControlProps(
-    val show: OpenShow,
     val onShowStateChange: () -> Unit,
     val editMode: Boolean,
-    val controlDisplay: ControlDisplay
+    val controlDisplay: ControlDisplay?
 )
 
 val controlViews by lazy { getControlViews() }
