@@ -1,12 +1,8 @@
 package baaahs.app.ui.controls
 
-import baaahs.app.ui.AppContext
-import baaahs.app.ui.ControlEditIntent
 import baaahs.app.ui.appContext
 import baaahs.jsx.useResizeListener
 import baaahs.show.live.ControlProps
-import baaahs.show.live.ControlView
-import baaahs.show.live.OpenControl
 import baaahs.show.live.OpenVisualizerControl
 import baaahs.ui.on
 import baaahs.ui.xComponent
@@ -16,16 +12,6 @@ import materialui.components.paper.enums.PaperStyle
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLDivElement
 import react.*
-
-class VisualizerControlView(val openControl: OpenVisualizerControl) : ControlView {
-    override fun <P : ControlProps<in OpenControl>> getReactElement(): FunctionalComponent<P> {
-        return Visualizer.unsafeCast<FunctionalComponent<P>>()
-    }
-
-    override fun onEdit(appContext: AppContext) {
-        appContext.openEditor(ControlEditIntent(openControl.id))
-    }
-}
 
 val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
     val appContext = useContext(appContext)
@@ -42,7 +28,7 @@ val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
 
             }
             .facade }
-    visualizer.rotate = props.control.visualizerControl.rotate
+    visualizer.rotate = props.visualizerControl.rotate
 
     onMount {
         visualizer.container = rootEl.current as HTMLDivElement
@@ -60,7 +46,10 @@ val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
     }
 }
 
-external interface VisualizerProps : ControlProps<OpenVisualizerControl>
+external interface VisualizerProps : RProps {
+    var controlProps: ControlProps
+    var visualizerControl: OpenVisualizerControl
+}
 
-fun RBuilder.Visualizer(handler: RHandler<VisualizerProps>) =
+fun RBuilder.visualizer(handler: RHandler<VisualizerProps>) =
     child(Visualizer, handler = handler)

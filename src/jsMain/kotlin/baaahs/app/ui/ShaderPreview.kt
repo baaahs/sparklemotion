@@ -90,12 +90,12 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         }
     }
 
-    onChange("different builder", gl, glslPreview, builder) {
+    onChange("different builder", gl, glslPreview, builder, props.adjustGadgets) {
         if (gl == null) return@onChange
         if (glslPreview == null) return@onChange
         if (builder == null) return@onChange
 
-        val observer = builder.addObserver {
+        val observer = builder.addObserver(fireImmediately = true) {
             when (it.state) {
                 ShaderBuilder.State.Linked -> {
                     it.startCompile(gl!!)
@@ -103,7 +103,9 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                 ShaderBuilder.State.Success -> {
                     val gadgetAdjuster =
                         GadgetAdjuster(builder.gadgets, appContext.clock)
-                    preRenderHook.current = { gadgetAdjuster.adjustGadgets() }
+                    preRenderHook.current = {
+                        if (props.adjustGadgets) gadgetAdjuster.adjustGadgets()
+                    }
 
                     glslPreview!!.setProgram(it.glslProgram!!)
                 }
@@ -250,6 +252,7 @@ external interface ShaderPreviewProps : RProps {
     var previewShaderBuilder: ShaderBuilder?
     var width: LinearDimension?
     var height: LinearDimension?
+    var adjustGadgets: Boolean
 }
 
 fun RBuilder.shaderPreview(handler: RHandler<ShaderPreviewProps>) =

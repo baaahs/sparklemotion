@@ -2,7 +2,6 @@ package baaahs.gl.preview
 
 import baaahs.BaseShowPlayer
 import baaahs.Gadget
-import baaahs.GadgetData
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslException
@@ -29,7 +28,7 @@ import kotlinx.coroutines.launch
 interface ShaderBuilder : IObservable {
     val shader: Shader
     val state: State
-    val gadgets: List<GadgetData>
+    val gadgets: List<GadgetPreview>
     val openShader: OpenShader?
     val linkedPatch: LinkedPatch?
     val glslProgram: GlslProgram?
@@ -47,6 +46,12 @@ interface ShaderBuilder : IObservable {
         Success,
         Errors
     }
+
+    class GadgetPreview(
+        val id: String,
+        val gadget: Gadget,
+        val controlledDataSource: DataSource?
+    )
 }
 
 class PreviewShaderBuilder(
@@ -68,8 +73,8 @@ class PreviewShaderBuilder(
     override var glslProgram: GlslProgram? = null
         private set
 
-    override val gadgets: List<GadgetData> get() = mutableGadgets
-    private val mutableGadgets: MutableList<GadgetData> = arrayListOf()
+    override val gadgets: List<ShaderBuilder.GadgetPreview> get() = mutableGadgets
+    private val mutableGadgets: MutableList<ShaderBuilder.GadgetPreview> = arrayListOf()
 
     override var glslErrors: List<GlslError> = emptyList()
         private set
@@ -105,8 +110,7 @@ class PreviewShaderBuilder(
             }
 
             previewPatch = autoWirer.autoWire(*shaders, defaultPorts = defaultPorts)
-                .acceptSymbolicChannelLinks()
-                .takeFirstIfAmbiguous()
+                .acceptSuggestedLinkOptions()
                 .resolve()
             linkedPatch = previewPatch?.openForPreview(autoWirer)
             state = ShaderBuilder.State.Linked
@@ -129,7 +133,7 @@ class PreviewShaderBuilder(
             val showPlayer = object : BaseShowPlayer(autoWirer.plugins, modelInfo) {
                 override val glContext: GlContext get() = gl
                 override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
-                    mutableGadgets.add(GadgetData(id, gadget, "/preview/gadgets/$id"))
+                    mutableGadgets.add(ShaderBuilder.GadgetPreview(id, gadget, controlledDataSource))
                     super.registerGadget(id, gadget, controlledDataSource)
                 }
             }

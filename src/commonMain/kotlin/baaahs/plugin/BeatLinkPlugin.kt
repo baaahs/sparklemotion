@@ -78,6 +78,7 @@ class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: ba
         override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "BeatLink"
         override fun getType(): GlslType = GlslType.Float
+        override fun getContentType(): ContentType = beatDataContentType
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): GlslProgram.DataFeed {
             plugin as BeatLinkPlugin

@@ -11,24 +11,28 @@ import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.*
-import baaahs.ui.preview.gadgetsPreview
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
 import materialui.components.divider.divider
 import materialui.components.formcontrol.formControl
+import materialui.components.formcontrollabel.enums.FormControlLabelStyle
+import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.formhelpertext.formHelperText
 import materialui.components.inputlabel.inputLabel
 import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
 import materialui.components.menuitem.menuItem
 import materialui.components.select.select
+import materialui.components.switches.switch
 import materialui.components.tab.enums.TabStyle
 import materialui.components.tab.tab
 import materialui.components.tabs.enums.TabsStyle
 import materialui.components.tabs.tabs
 import materialui.components.textfield.textField
+import materialui.components.typography.typographyH6
 import materialui.icon
 import materialui.useTheme
+import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
@@ -44,9 +48,14 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 
     var selectedTab by state { PageTabs.Properties }
     @Suppress("UNCHECKED_CAST")
-    val handleChangeTab = handler("on tab click") { event: Event, value: PageTabs ->
+    val handleChangeTab = handler("on tab click") { _: Event, value: PageTabs ->
         selectedTab = value
     } as (Event, Any?) -> Unit
+
+    var adjustGadgets by state { true }
+    val handleChangeAdjustGadgets = handler("on adjust gadgets change") { event: Event ->
+        adjustGadgets = (event.target as HTMLInputElement).checked
+    }
 
     val handleUpdate =
         handler("handleShaderUpdate", props.mutableShaderInstance) { block: MutableShaderInstance.() -> Unit ->
@@ -182,6 +191,16 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                     }
                 }
             }
+
+            formControlLabel(shaderEditorStyles.adjustGadgetsSwitch on FormControlLabelStyle.root) {
+                attrs.control {
+                    switch {
+                        attrs.checked = adjustGadgets
+                        attrs.onChangeFunction = handleChangeAdjustGadgets
+                    }
+                }
+                attrs.label { typographyH6 { +"Adjust Gadgets" } }
+            }
         }
 
         shaderPreview {
@@ -189,6 +208,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
             attrs.previewShaderBuilder = editingShader.shaderBuilder
             attrs.width = ShaderEditorStyles.previewWidth
             attrs.height = ShaderEditorStyles.previewHeight
+            attrs.adjustGadgets = adjustGadgets
         }
     }
 

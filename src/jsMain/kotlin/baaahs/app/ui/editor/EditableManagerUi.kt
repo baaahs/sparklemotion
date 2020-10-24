@@ -3,6 +3,7 @@ package baaahs.app.ui.editor
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.PatchHolderEditorHelpText
 import baaahs.ui.*
+import external.ErrorBoundary
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
 import materialui.components.button.button
@@ -167,7 +168,11 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
                             }
 
                             val panelRenderer = editorPanel.getRenderer(props.editableManager)
-                            with (panelRenderer) { render() }
+                            ErrorBoundary {
+                                attrs.FallbackComponent = ErrorDisplay
+
+                                with (panelRenderer) { render() }
+                            }
                         }
                     }
                 }

@@ -43,7 +43,7 @@ class StageManager(
     override val glContext: GlContext
         get() = renderEngine.gl
     private var showRunner: ShowRunner? = null
-    private val gadgets: MutableMap<String, GadgetManager.GadgetInfo> = mutableMapOf()
+    private val gadgets: MutableMap<String, GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
 
     private val fsSerializer = FsServerSideSerializer()
@@ -89,8 +89,7 @@ class StageManager(
         }
         val gadgetChannelListener: (Gadget) -> Unit = { channel.onChange(it.state) }
         gadget.listen(gadgetChannelListener)
-        val gadgetData = GadgetData(id, gadget, topic.name)
-        gadgets[id] = GadgetManager.GadgetInfo(topic, channel, gadgetData, gadgetChannelListener)
+        gadgets[id] = GadgetInfo(gadget, controlledDataSource, topic, channel, gadgetChannelListener)
         super.registerGadget(id, gadget, controlledDataSource)
     }
 
@@ -103,7 +102,7 @@ class StageManager(
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Gadget> useGadget(id: String): T {
-        return (gadgets[id]?.gadgetData?.gadget
+        return (gadgets[id]?.gadget
             ?: error("no such gadget \"$id\" among [${gadgets.keys.sorted()}]")) as T
     }
 

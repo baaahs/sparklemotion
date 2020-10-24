@@ -45,7 +45,7 @@ object AutoWirerSpec : Spek({
             }
             val paintShader by value { autoWirer.glslAnalyzer.import(shaderText) }
             val shaders by value { arrayOf(paintShader) }
-            val patch by value { autoWirer.autoWire(*shaders).acceptSymbolicChannelLinks().resolve() }
+            val patch by value { autoWirer.autoWire(*shaders).acceptSuggestedLinkOptions().resolve() }
             val linkedPatch by value { patch.openForPreview(autoWirer)!! }
             val liveShaderInstance by value { linkedPatch.shaderInstance }
 

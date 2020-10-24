@@ -1,8 +1,6 @@
 package baaahs.gl.patch
 
-import baaahs.getBang
 import baaahs.gl.glsl.GlslAnalyzer
-import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
@@ -10,7 +8,10 @@ import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.OpenPatchHolder
-import baaahs.show.mutable.*
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePort
+import baaahs.show.mutable.MutableShader
+import baaahs.show.mutable.MutableShow
 import baaahs.util.Logger
 
 class AutoWirer(
@@ -44,48 +45,35 @@ class AutoWirer(
             locallyAvailable[contentType] = hashSetOf(port)
         }
 
+        val siblingsPatch = MutablePatch {
+            shaders.forEach { addShaderInstance(it.shader) }
+        }
+
         // First pass: gather shader output ports.
         val shaderInstances =
             shaders.associateWith { openShader ->
+                val shaderInstanceOptions = ShaderInstanceOptions(
+                    openShader,
+                    parentMutablePatch = siblingsPatch,
+                    defaultPorts = defaultPorts,
+                    currentLinks = emptyMap(),
+                    glslAnalyzer = glslAnalyzer,
+                    plugins = plugins
+                )
+
                 val unresolvedShaderInstance = UnresolvedShaderInstance(
                     MutableShader(openShader.shader),
-                    openShader.inputPorts
-                        .associateWith { hashSetOf() },
+                    openShader.inputPorts.associateWith { inputPort ->
+                        shaderInstanceOptions.inputPortLinkOptions[inputPort.id]?.toMutableList() ?: mutableListOf()
+                    },
                     shaderChannel,
                     0f
                 )
 
-                locallyAvailable.getOrPut(openShader.outputPort.contentType) { mutableSetOf() }
-                    .add(
-                        UnresolvedShaderOutPort(
-                            unresolvedShaderInstance,
-                            openShader.outputPort.id
-                        )
-                    )
-
-                openShader.shaderType.defaultUpstreams.forEach { (contentType, shaderChannel) ->
-                    locallyAvailable.getOrPut(contentType) { mutableSetOf() }
-                        .add(MutableShaderChannel(shaderChannel.id))
-                }
-
                 unresolvedShaderInstance
             }
 
-        // Second pass: link datasources/output ports to input ports.
-        val unresolvedShaderInstances = shaderInstances.map { (openShader, unresolvedShaderInstance) ->
-            openShader.inputPorts.forEach { inputPort ->
-                val suggestions = collectLinkOptions(inputPort, locallyAvailable)
-
-                unresolvedShaderInstance.linkOptionsFor(inputPort)
-                    .addAll(suggestions.filter {
-                        // Don't suggest linking back to ourself.
-                        !(it is UnresolvedShaderOutPort &&
-                                it.unresolvedShaderInstance === unresolvedShaderInstance)
-                    })
-            }
-            unresolvedShaderInstance
-        }
-        return UnresolvedPatch(unresolvedShaderInstances)
+        return UnresolvedPatch(shaderInstances.values.toList())
     }
 
     fun autoWire(
@@ -105,28 +93,6 @@ class AutoWirer(
         glslAnalyzer,
         plugins
     )
-
-    private fun collectLinkOptions(
-        inputPort: InputPort,
-        locallyAvailable: MutableMap<ContentType, MutableSet<MutablePort>>
-    ): Collection<MutablePort> {
-        val contentTypes = inputPort.contentType?.let { setOf(it) }
-            ?: plugins.suggestContentTypes(inputPort)
-
-        val localSuggestions = contentTypes.mapNotNull { locallyAvailable[it] }.flatten().toSet()
-
-        if (localSuggestions.isNotEmpty())
-            return localSuggestions
-
-        if (inputPort.hasPluginRef())
-            return listOf(MutableDataSourcePort(plugins.resolveDataSource(inputPort)))
-
-        val pluginSuggestions = plugins.suggestDataSources(inputPort).map { it.getMutablePort()!! }
-        if (pluginSuggestions.isNotEmpty())
-            return pluginSuggestions
-
-        return plugins.suggestDataSources(inputPort, contentTypes).map { it.getMutablePort()!! }
-    }
 
     fun merge(vararg patchHolders: OpenPatchHolder): Map<Surfaces, PortDiagram> {
         val patchesBySurfaces = mutableMapOf<Surfaces, MutableList<OpenPatch>>()

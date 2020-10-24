@@ -27,6 +27,30 @@ class ShaderInstanceOptions(
         val shaderOutsInPatch: MutableMap<ContentType, MutableSet<MutableShaderInstance>> = mutableMapOf()
         val shaderChannels: MutableMap<ContentType, MutableSet<MutableShaderChannel>> = mutableMapOf()
 
+        // Gather shader output ports.
+        parentMutablePatch?.mutableShaderInstances?.forEach { shaderInstance ->
+            val openShader = glslAnalyzer.openShader(shaderInstance.mutableShader.build())
+
+            openShader.shaderType.defaultUpstreams.forEach { (contentType, shaderChannel) ->
+                shaderChannels.getOrPut(contentType) { mutableSetOf() }
+                    .add(MutableShaderChannel(shaderChannel.id))
+            }
+
+            // Never include this shader in its own suggestions.
+            if (openShader.shader == shader.shader) return@forEach
+
+            shaderOutsInPatch.getOrPut(openShader.outputPort.contentType) { mutableSetOf() }
+                .add(shaderInstance)
+        }
+
+        parentMutableShow?.accept(object : MutableShowVisitor {
+            override fun visit(mutableShaderInstance: MutableShaderInstance) {
+                val contentType = mutableShaderInstance.mutableShader.type.resultContentType
+                shaderChannels.getOrPut(contentType) { mutableSetOf() }
+                    .add(mutableShaderInstance.shaderChannel)
+            }
+        })
+
         fun suggestLinksFor(inputPort: InputPort): ArrayList<PortLinkOption> {
             val options = arrayListOf<PortLinkOption>()
 
@@ -87,24 +111,6 @@ class ShaderInstanceOptions(
             }
             return options
         }
-
-        // Gather shader output ports.
-        parentMutablePatch?.mutableShaderInstances?.forEach { shaderInstance ->
-            val openShader = glslAnalyzer.openShader(shaderInstance.mutableShader.build())
-            // Never include this shader in its own suggestions.
-            if (openShader.shader == shader.shader) return@forEach
-
-            shaderOutsInPatch.getOrPut(openShader.outputPort.contentType) { mutableSetOf() }
-                .add(shaderInstance)
-        }
-
-        parentMutableShow?.accept(object : MutableShowVisitor {
-            override fun visit(mutableShaderInstance: MutableShaderInstance) {
-                val contentType = mutableShaderInstance.mutableShader.type.resultContentType
-                shaderChannels.getOrPut(contentType) { mutableSetOf() }
-                    .add(mutableShaderInstance.shaderChannel)
-            }
-        })
 
         val map = shader.inputPorts.associate { inputPort ->
             val currentLink = currentLinks[inputPort.id]

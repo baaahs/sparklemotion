@@ -1,12 +1,8 @@
 package baaahs.app.ui.controls
 
-import baaahs.app.ui.AppContext
-import baaahs.app.ui.ControlEditIntent
 import baaahs.show.ButtonControl
 import baaahs.show.live.ControlProps
-import baaahs.show.live.ControlView
 import baaahs.show.live.OpenButtonControl
-import baaahs.show.live.OpenControl
 import baaahs.ui.unaryPlus
 import baaahs.ui.withEvent
 import baaahs.ui.xComponent
@@ -14,39 +10,30 @@ import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onMouseDownFunction
 import kotlinx.html.js.onMouseUpFunction
 import materialui.toggleButton
-import react.FunctionalComponent
 import react.RBuilder
 import react.RHandler
+import react.RProps
 import react.child
 import react.dom.div
 import materialui.components.button.button as muiButton
 
-class ButtonControlView(private val openButtonControl: OpenButtonControl) : ControlView {
-    override fun <P : ControlProps<in OpenControl>> getReactElement(): FunctionalComponent<P> {
-        return button.unsafeCast<FunctionalComponent<P>>()
-    }
+private val Button = xComponent<ButtonProps>("Button") { props ->
+    val buttonControl = props.buttonControl
+    val onShowStateChange = props.controlProps.onShowStateChange
 
-    override fun onEdit(appContext: AppContext) {
-        appContext.openEditor(ControlEditIntent(openButtonControl.id))
-    }
-}
-
-private val button = xComponent<ButtonProps>("Button") { props ->
-    val buttonControl = props.control
-
-    val handleToggleClick = handler("toggle click") {
+    val handleToggleClick = handler("toggle click", onShowStateChange) {
         buttonControl.click()
-        props.onShowStateChange()
+        onShowStateChange()
     }
 
-    val handleMomentaryPress = handler("momentary press") {
+    val handleMomentaryPress = handler("momentary press", onShowStateChange) {
         if (!buttonControl.isPressed) buttonControl.click()
-        props.onShowStateChange()
+        onShowStateChange()
     }
 
-    val handleMomentaryRelease = handler("momentary release") {
+    val handleMomentaryRelease = handler("momentary release", onShowStateChange) {
         if (buttonControl.isPressed) buttonControl.click()
-        props.onShowStateChange()
+        onShowStateChange()
     }
 
     div(+Styles.controlButton) {
@@ -73,7 +60,10 @@ private val button = xComponent<ButtonProps>("Button") { props ->
     }
 }
 
-external interface ButtonProps : ControlProps<OpenButtonControl>
+external interface ButtonProps : RProps {
+    var controlProps: ControlProps
+    var buttonControl: OpenButtonControl
+}
 
 fun RBuilder.button(handler: RHandler<ButtonProps>) =
-    child(button, handler = handler)
+    child(Button, handler = handler)

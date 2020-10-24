@@ -262,7 +262,7 @@ class RenderEngineTest {
         val shader = GlslAnalyzer(Plugins.safe()).import(program)
         return autoWirer
             .autoWire(cylindricalProjection, shader)
-            .acceptSymbolicChannelLinks()
+            .acceptSuggestedLinkOptions()
             .resolve()
             .openForPreview(autoWirer)!!
             .compile(glContext) { id, dataSource ->

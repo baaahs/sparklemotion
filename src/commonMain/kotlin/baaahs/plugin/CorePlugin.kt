@@ -65,7 +65,7 @@ class CorePlugin : Plugin {
                         MutableDataSourcePort(dataSource),
                         wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
                         isPluginSuggestion = true,
-                        isExactContentType = contentType == inputPort.contentType
+                        isExactContentType = dataSource.getContentType() == inputPort.contentType
                     )
                 }
         }.filterNotNull()
@@ -78,7 +78,8 @@ class CorePlugin : Plugin {
                     PortLinkOption(
                         MutableDataSourcePort(dataSource),
                         wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
-                        isPluginSuggestion = true
+                        isPluginSuggestion = true,
+                        isExactContentType = dataSource.getContentType() == inputPort.contentType
                     )
                 }
             }.flatten()
@@ -111,6 +112,7 @@ class CorePlugin : Plugin {
         override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "Resolution"
         override fun getType(): GlslType = GlslType.Vec2
+        override fun getContentType(): ContentType = ContentType.Resolution
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
             object : DataFeed, RefCounted by RefCounter() {
@@ -133,6 +135,7 @@ class CorePlugin : Plugin {
         override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "PreviewResolution"
         override fun getType(): GlslType = GlslType.Vec2
+        override fun getContentType(): ContentType = ContentType.Resolution
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
             object : DataFeed, GlslProgram.ResolutionListener, RefCounted by RefCounter() {
@@ -168,6 +171,7 @@ class CorePlugin : Plugin {
         override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "Time"
         override fun getType(): GlslType = GlslType.Float
+        override fun getContentType(): ContentType = ContentType.Time
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
             object : DataFeed, RefCounted by RefCounter() {
@@ -191,6 +195,7 @@ class CorePlugin : Plugin {
         override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "Pixel Coordinates Texture"
         override fun getType(): GlslType = GlslType.Sampler2D
+        override fun getContentType(): ContentType = ContentType.PixelCoordinatesTexture
         override fun suggestId(): String = "pixelCoordsTexture"
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
@@ -236,10 +241,9 @@ class CorePlugin : Plugin {
         override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "Screen U/V Coordinate"
         override fun getType(): GlslType = GlslType.Vec2
+        override fun getContentType(): ContentType = ContentType.UvCoordinateStream
         override fun isImplicit(): Boolean = true
         override fun getVarName(id: String): String = "gl_FragCoord"
-
-        override fun getRenderType(): String? = null
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
             return object : DataFeed, RefCounted by RefCounter() {
@@ -278,7 +282,7 @@ class CorePlugin : Plugin {
         override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "Model Info"
         override fun getType(): GlslType = modelInfoType
-        override fun getRenderType(): String? = null
+        override fun getContentType(): ContentType = ContentType.ModelInfo
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
             return object : DataFeed, RefCounted by RefCounter() {
@@ -322,11 +326,10 @@ class CorePlugin : Plugin {
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
             val gadget = showPlayer.useGadget<T>(this)
-
-            if (gadget == null) {
-                logger.debug { "No control gadget registered for datasource $id, using no-op data feed" }
-                return GlslProgram.NoOpDataFeed()
-            }
+                ?: run {
+                    logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
+                    createGadget()
+                }
 
             return object : GadgetDataFeed, RefCounted by RefCounter() {
                 override val id: String = id
@@ -387,7 +390,7 @@ class CorePlugin : Plugin {
         override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "$title $resourceName"
         override fun getType(): GlslType = GlslType.Float
-        override fun getRenderType(): String? = "Slider"
+        override fun getContentType(): ContentType = ContentType.Float
         override fun suggestId(): String = "$title Slider".camelize()
 
         override fun createGadget(): Slider =
@@ -417,6 +420,7 @@ class CorePlugin : Plugin {
         override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "XY Pad"
         override fun getType(): GlslType = GlslType.Vec2
+        override fun getContentType(): ContentType = ContentType.XyCoordinate
         override fun suggestId(): String = "$title XY Pad".camelize()
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
@@ -467,7 +471,7 @@ class CorePlugin : Plugin {
         override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "$title $resourceName"
         override fun getType(): GlslType = GlslType.Vec4
-        override fun getRenderType(): String? = "ColorPicker"
+        override fun getContentType(): ContentType = ContentType.Color
         override fun suggestId(): String = "$title Color Picker".camelize()
 
         override fun createGadget(): ColorPicker = ColorPicker(title, initialValue)
@@ -516,6 +520,7 @@ class CorePlugin : Plugin {
         override val pluginPackage: String get() = id
         override val dataSourceName: String get() = resourceName
         override fun getType(): GlslType = GlslType.Int
+        override fun getContentType(): ContentType = ContentType.Int
 
         override fun createGadget(): RadioButtonStrip {
             return RadioButtonStrip(title, options, initialSelectionIndex)
@@ -541,6 +546,7 @@ class CorePlugin : Plugin {
         override val pluginPackage: String get() = id
         override val dataSourceName: String get() = "Image"
         override fun getType(): GlslType = GlslType.Sampler2D
+        override fun getContentType(): ContentType = ContentType.ColorStream
         override fun suggestId(): String = "$title Image".camelize()
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
@@ -560,7 +566,7 @@ class CorePlugin : Plugin {
 
         val supportedContentTypes = mapOf(
             ContentType.PixelCoordinatesTexture to PixelCoordsTextureDataSource,
-            ContentType.UvCoordinateStream to ScreenUvCoordDataSource,
+//            ContentType.UvCoordinateStream to ScreenUvCoordDataSource,
             ContentType.ModelInfo to ModelInfoDataSource,
 //            UvCoordinate,
             ContentType.Mouse to XyPadDataSource,
