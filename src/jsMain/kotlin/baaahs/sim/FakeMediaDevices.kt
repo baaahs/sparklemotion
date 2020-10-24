@@ -4,6 +4,7 @@ import baaahs.MediaDevices
 import baaahs.imaging.Image
 import baaahs.imaging.ImageBitmapImage
 import baaahs.visualizer.Visualizer
+import baaahs.window
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.renderers.WebGLRenderer
@@ -11,7 +12,6 @@ import info.laht.threekt.scenes.Scene
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.Uint8ClampedArray
 import org.w3c.dom.*
-import kotlin.browser.window
 
 class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
     var currentCam: MediaDevices.Camera? = null

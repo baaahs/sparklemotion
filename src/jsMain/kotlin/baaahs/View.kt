@@ -2,6 +2,12 @@ package baaahs
 
 import org.w3c.dom.*
 
+@Suppress("ObsoleteKotlinJsPackages")
+val document get() = kotlin.browser.document
+
+@Suppress("ObsoleteKotlinJsPackages")
+val window get() = kotlin.browser.window
+
 var Element.disabled: Boolean
     get() = getAttribute("disabled") == "disabled"
     set(value) {

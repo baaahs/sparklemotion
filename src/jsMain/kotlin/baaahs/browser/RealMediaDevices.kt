@@ -1,8 +1,10 @@
 package baaahs.browser
 
 import baaahs.MediaDevices
+import baaahs.document
 import baaahs.imaging.Image
 import baaahs.imaging.VideoElementImage
+import baaahs.window
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -14,8 +16,6 @@ import org.w3c.dom.mediacapture.MediaStream
 import org.w3c.dom.mediacapture.MediaStreamConstraints
 import org.w3c.dom.mediacapture.MediaStreamTrack
 import org.w3c.dom.mediacapture.MediaStreamTrackEvent
-import kotlin.browser.document
-import kotlin.browser.window
 import kotlin.js.Promise
 
 class RealMediaDevices : MediaDevices, CoroutineScope by MainScope() {

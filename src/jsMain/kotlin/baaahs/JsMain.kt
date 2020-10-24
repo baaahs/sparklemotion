@@ -14,8 +14,6 @@ import kotlinext.js.jsObject
 import org.w3c.dom.get
 import react.createElement
 import react.dom.render
-import kotlin.browser.document
-import kotlin.browser.window
 
 fun main(args: Array<String>) {
     @Suppress("ConstantConditionIf", "SimplifyBooleanWithConstants")

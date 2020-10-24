@@ -13,6 +13,7 @@ import baaahs.jsx.useResizeListener
 import baaahs.ui.Styles
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import baaahs.window
 import kotlinext.js.jsObject
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.type
@@ -20,7 +21,6 @@ import materialui.useTheme
 import org.w3c.dom.Element
 import react.*
 import react.dom.div
-import kotlin.browser.window
 
 val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { props ->
     val appContext = useContext(appContext)

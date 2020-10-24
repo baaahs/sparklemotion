@@ -13,6 +13,7 @@ import baaahs.show.SampleData
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.util.UndoStack
+import baaahs.window
 import external.ErrorBoundary
 import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
@@ -45,7 +46,6 @@ import react.dom.code
 import react.dom.div
 import react.dom.p
 import styled.injectGlobal
-import kotlin.browser.window
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     onChange("global styles") {

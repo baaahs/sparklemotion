@@ -2,7 +2,7 @@
 
 package baaahs.util
 
-import kotlin.browser.window
+import baaahs.window
 
 object ConsoleFormatters {
     fun install() {

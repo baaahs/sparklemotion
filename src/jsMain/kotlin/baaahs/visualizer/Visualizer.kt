@@ -8,6 +8,7 @@ import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Framerate
+import baaahs.window
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.core.Geometry
@@ -27,7 +28,6 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.MouseEvent
 import three.Matrix4
 import three.OrbitControls
-import kotlin.browser.window
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
