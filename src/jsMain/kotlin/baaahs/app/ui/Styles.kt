@@ -275,9 +275,9 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
     val editModeOn by css {
         descendants(layoutControls) {
-            padding(1.em)
-            minWidth = 5.em
-            minHeight = 5.em
+            paddingLeft = 1.25.em
+            minWidth = 3.em
+            minHeight = 3.em
             border = "1px solid black"
             borderRadius = 3.px
 
@@ -303,7 +303,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         descendants(controlPanelHelpText) {
             display = Display.block
             position = Position.absolute
-            top = 0.5.em
+            bottom = 0.5.em
             left = 0.5.px
             declarations["writing-mode"] = "vertical-lr"
         }
@@ -314,7 +314,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
         descendants(baaahs.app.ui.controls.Styles.controlBox) {
             padding(3.px)
-            marginRight = 1.em
+            marginRight = 0.25.em
             marginBottom = 0.25.em
             border(
                 width = 1.px,
@@ -330,6 +330,14 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
         descendants(baaahs.app.ui.controls.Styles.dragHandle) {
             opacity = .2
+        }
+
+        descendants(baaahs.app.ui.controls.Styles.horizontalButtonList) {
+            paddingRight = 1.em
+        }
+
+        descendants(baaahs.app.ui.controls.Styles.verticalButtonList) {
+            paddingBottom = 1.em
         }
     }
 

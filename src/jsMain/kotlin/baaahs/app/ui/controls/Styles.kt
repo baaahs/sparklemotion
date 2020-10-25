@@ -8,10 +8,6 @@ import kotlinx.css.properties.transition
 import styled.StyleSheet
 
 object Styles : StyleSheet("app-ui-controls", isStatic = true) {
-    val showControls by css {
-        display = Display.flex
-    }
-
     val buttonGroupCard by css {
         display = Display.flex
     }
@@ -22,8 +18,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         whiteSpace = WhiteSpace.nowrap
 
         descendants("button.MuiButtonBase-root") {
-            width = 150.px
-            minHeight = 75.px
             display = Display.block
         }
     }
@@ -32,8 +26,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         padding(2.px)
 
         descendants("button.MuiButtonBase-root") {
-            width = 150.px
-            minHeight = 75.px
         }
     }
 
@@ -99,8 +91,10 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val controlButton by css {
-        display = Display.flex
+        display = Display.grid
         position = Position.relative
+        width = 150.px
+        minHeight = 75.px
 
         hover {
             child(".${editButton.name}") {
