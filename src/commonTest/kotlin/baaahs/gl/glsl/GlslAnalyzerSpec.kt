@@ -197,12 +197,13 @@ object GlslAnalyzerSpec : Spek({
                         ) { glslCode.functions.map { "${it.returnType.glslLiteral} ${it.name}(${it.params})" } }
                     }
 
-                    context("with defines") {
+                    context("with define macros") {
                         override(shaderText) {
                             /**language=glsl*/
                             """
                                 #define iResolution resolution
-                                #define Circle(U,r) smoothstep(0., 1., abs(length(U)-r)-.02 )
+                                #define dividedBy(a,b) (a / b)
+                                #define Circle(U, r) smoothstep(0., 1., abs(length(U)-r)-.02 )
 
                                 uniform vec2 resolution;
                                 void main() {
@@ -210,22 +211,24 @@ object GlslAnalyzerSpec : Spek({
                                     foo();
                                 #endif
                                     gl_FragColor = Circle(gl_FragCoord, iResolution.x);
+                                    gl_FragColor = Circle(dividedBy(gl_FragCoord, 1.0), iResolution.x);
                                 }
                                 """.trimIndent()
                         }
 
-                        it("handles and replaces directives with empty lines") {
+                        it("handles nested macro expansions") {
                             val glslFunction = glslCode.functions.only()
 
                             val glsl = glslFunction.toGlsl(GlslCode.Namespace("ns"), emptySet(), emptyMap())
 
                             expect(
-                                "#line 5\n" +
+                                "#line 6\n" +
                                         "void ns_main() {\n" +
                                         "\n" +
                                         "\n" +
                                         "\n" +
                                         "    gl_FragColor = smoothstep(0., 1., abs(length(gl_FragCoord)-resolution.x)-.02 );\n" +
+                                        "    gl_FragColor = smoothstep(0., 1., abs(length((gl_FragCoord / 1.0))-resolution.x)-.02 );\n" +
                                         "}\n".trimIndent()
                             ) { glsl.trim() }
                         }

@@ -110,6 +110,17 @@ class GlslAnalyzer(private val plugins: Plugins) {
             // No-op.
         }
 
+        fun checkForMacro(value: String, parseState: ParseState): ParseState? {
+            val macro = macros[value]
+            return if (macro == null) {
+                null
+            } else if (macro.params == null) {
+                parse(macro.replacement.trim(), parseState, freezeLineNumber = true)
+            } else {
+                ParseState.MacroExpansion(this, parseState, macro)
+            }
+        }
+
         fun glslError(message: String) =
             AnalysisException(message, lineNumberForError)
     }
@@ -150,15 +161,11 @@ class GlslAnalyzer(private val plugins: Plugins) {
 
         open fun visitText(value: String): ParseState {
             return if (context.outputEnabled || value == "\n") {
-                val macro = context.macros[value]
-                if (macro == null) {
-                    appendText(value)
-                    this
-                } else if (macro.params == null) {
-                    context.parse(macro.replacement.trim(), this, freezeLineNumber = true)
-                } else {
-                    MacroExpansion(context, this, macro)
-                }
+                context.checkForMacro(value, this)
+                    ?: run {
+                        appendText(value)
+                        this
+                    }
             } else this
         }
 
@@ -293,11 +300,10 @@ class GlslAnalyzer(private val plugins: Plugins) {
                     this
                 }
             }
-
             override fun visitNewline(): ParseState {
                 context.lineNumberForError -= 1
 
-                val str = textAsString
+                val str = textAsString.trim()
                 val args = str.split(Regex("\\s+")).toMutableList()
                 val directive = args.removeFirst()
                 when (directive) {
@@ -340,8 +346,8 @@ class GlslAnalyzer(private val plugins: Plugins) {
                         super.visitText(value)
                     }
                     Mode.InArgs -> {
-                        if (value.isNotBlank() && value != ",") {
-                            args!!.add(value)
+                        if (value.isNotBlank() && value.trim() != ",") {
+                            args!!.add(value.trim())
                         }
                     }
                     Mode.InReplacement -> {
@@ -377,7 +383,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
             }
         }
 
-        private class MacroExpansion(
+        class MacroExpansion(
             context: Context,
             private val priorParseState: ParseState,
             private val macro: Macro
@@ -389,8 +395,11 @@ class GlslAnalyzer(private val plugins: Plugins) {
                     priorParseState.visitText(macro.replacement.trim())
                     insertReplacement(value)
                 } else {
-                    super.appendText(value)
-                    this
+                    context.checkForMacro(value, this)
+                        ?: run {
+                            super.appendText(value)
+                            this
+                        }
                 }
             }
 
