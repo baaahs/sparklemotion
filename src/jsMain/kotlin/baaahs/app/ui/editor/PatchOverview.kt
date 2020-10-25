@@ -58,6 +58,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
                 newPatchMenuAnchor = null
                 val newShaderInstance = props.mutablePatch.addShaderInstance(type.shaderFromTemplate())
                 handleShaderSelect[newShaderInstance].invoke()
+                props.editableManager.onChange()
             }
         }
 
