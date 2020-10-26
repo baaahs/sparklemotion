@@ -8,6 +8,8 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
+import baaahs.show.Shader
+import baaahs.show.ShaderType
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeKgl
 import ext.TestCoroutineContext
@@ -58,6 +60,21 @@ object PreviewShaderBuilderSpec : Spek({
 
                 it("has no gadgets yet") {
                     expect(emptyList()) { previewShaderBuilder.gadgets }
+                }
+
+                context("when there's a problem parsing hints") {
+                    override(shader) {
+                        Shader("Shader", ShaderType.Filter, """
+                            uniform float foo; // @@something.bad
+                            vec4 mainFilter(vec4 inColor) {
+                                return inColor;
+                            }
+                        """.trimIndent())
+                    }
+
+                    it("should report an error right away") {
+                        expect(ShaderBuilder.State.Errors) { previewShaderBuilder.state }
+                    }
                 }
 
                 context("when startCompile() is called") {
