@@ -118,6 +118,28 @@ abstract class GlContext(
             check { deleteFramebuffer(framebuffer) }
             curRenderBuffers.values.forEach { it.release() }
         }
+
+        // This attempts to work around readBuffer() not existing in Kgl (or on Android).
+        // Temporarily attach the renderbuffer as the primary color buffer.
+        fun <T> withRenderBufferAsAttachment0(renderBuffer: RenderBuffer, fn: () -> T): T {
+            bind()
+
+            val attachment = GL_COLOR_ATTACHMENT0
+            val priorAttachment0 = curRenderBuffers[attachment]
+            return if (priorAttachment0 != null && priorAttachment0 != renderBuffer) {
+                check { framebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, renderBuffer.renderbuffer) }
+                curRenderBuffers[attachment] = renderBuffer
+
+                try {
+                    fn()
+                } finally {
+                    check { framebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, priorAttachment0.renderbuffer) }
+                    curRenderBuffers[attachment] = priorAttachment0
+                }
+            } else {
+                fn()
+            }
+        }
     }
 
     inner class RenderBuffer(internal val renderbuffer: Renderbuffer) {
@@ -145,6 +167,10 @@ abstract class GlContext(
                 curWidth = width
                 curHeight = height
             }
+        }
+
+        fun readPixels(x: Int, y: Int, width: Int, height: Int, format: Int, type: Int, buffer: Buffer, offset: Int = 0) {
+            check { readPixels(x, y, width, height, format, type, buffer, offset) }
         }
 
         fun release() {

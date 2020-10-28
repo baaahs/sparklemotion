@@ -3,6 +3,7 @@ package baaahs
 import baaahs.ShowRunner.FixtureReceiver
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.gadgets.Slider
 import baaahs.gl.render.FixtureRenderPlan
 import baaahs.gl.render.RenderEngine
@@ -34,10 +35,10 @@ class ShowRunnerTest {
     private lateinit var fixtureRenderPlans: Map<Fixture, FixtureRenderPlan>
     private val surface1Messages = mutableListOf<Pixels>()
     private val surface1Receiver =
-        FakeFixtureReceiver(Fixture(SheepModel.Panel("surface 1"), 1, emptyList())) { buffer -> surface1Messages.add(buffer) }
+        FakeFixtureReceiver(Fixture(SheepModel.Panel("surface 1"), 1, emptyList(), PixelArrayDevice)) { buffer -> surface1Messages.add(buffer) }
     private val surface2Messages = mutableListOf<Pixels>()
     private val surface2Receiver =
-        FakeFixtureReceiver(Fixture(SheepModel.Panel("surface 2"), 1, emptyList())) { buffer -> surface2Messages.add(buffer) }
+        FakeFixtureReceiver(Fixture(SheepModel.Panel("surface 2"), 1, emptyList(), PixelArrayDevice)) { buffer -> surface2Messages.add(buffer) }
     private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
@@ -52,7 +53,7 @@ class ShowRunnerTest {
         fakeGlslContext = FakeGlContext()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
-        val renderEngine = RenderEngine(fakeGlslContext, ModelInfo.Empty)
+        val renderEngine = RenderEngine(fakeGlslContext, ModelInfo.Empty, PixelArrayDevice)
         fixtureManager = FixtureManager(renderEngine)
         val movingHeadManager = MovingHeadManager(fs, server, emptyList())
         stageManager = StageManager(

@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.glsl.LinearSurfacePixelStrategy
@@ -178,7 +179,7 @@ class BrainManager(
         val pixelLocations = mappingData?.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) }
             ?: surfacePixelStrategy.forFixture(pixelCount, modelSurface, model)
 
-        return Fixture(modelSurface, pixelCount, pixelLocations)
+        return Fixture(modelSurface, pixelCount, pixelLocations, PixelArrayDevice)
     }
 
     /** If we want a pong back from a [BrainShaderMessage], send this. */

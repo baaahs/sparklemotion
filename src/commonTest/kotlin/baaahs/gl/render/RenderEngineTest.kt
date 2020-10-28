@@ -5,6 +5,7 @@ import baaahs.Color
 import baaahs.Pixels
 import baaahs.TestModelSurface
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
@@ -43,7 +44,7 @@ class RenderEngineTest {
     fun setUp() {
         if (glslAvailable()) {
             glContext = GlBase.manager.createContext()
-            renderEngine = RenderEngine(glContext, TestModel)
+            renderEngine = RenderEngine(glContext, TestModel, PixelArrayDevice)
             fakeShowPlayer = FakeShowPlayer(glContext)
         }
     }
@@ -232,14 +233,16 @@ class RenderEngineTest {
             (0 until pixelCount).map { i ->
                 val offset = i * .2f
                 Vector3F(0f + offset, .1f + offset, 0f)
-            }
+            },
+            PixelArrayDevice
         )
     }
 
     private fun createSurface(name: String, pixelCount: Int): Fixture {
         return Fixture(
             TestModelSurface(name), pixelCount,
-            (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) }
+            (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) },
+            PixelArrayDevice
         )
     }
 
@@ -304,4 +307,4 @@ private val directXyProjection = Shader("Direct XY Projection", ShaderType.Proje
 )
 
 val FixtureRenderPlan.pixels: Pixels
-    get() = renderResult as Pixels
+    get() = PixelArrayDevice.getPixels(this)

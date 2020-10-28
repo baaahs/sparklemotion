@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.gl.render.RenderEngine
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
@@ -31,7 +32,7 @@ object StageManagerSpec : Spek({
         val fakeFs by value { FakeFs() }
         val pubSub by value { TestPubSub() }
         val fakeGlslContext by value { FakeGlContext() }
-        val renderEngine by value { RenderEngine(fakeGlslContext, ModelInfo.Empty) }
+        val renderEngine by value { RenderEngine(fakeGlslContext, ModelInfo.Empty, PixelArrayDevice) }
         val baseShow by value { SampleData.sampleShow }
 
         val stageManager by value {

@@ -1,20 +1,21 @@
 package baaahs.gl.render
 
+import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
-import baaahs.gl.render.RenderEngine.GlConst.GL_RGBA8
 import baaahs.model.ModelInfo
 import baaahs.timeSync
 import baaahs.util.Logger
-import com.danielgergely.kgl.*
+import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
+import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import kotlin.math.max
 import kotlin.math.min
 
 open class RenderEngine(
     val gl: GlContext,
     private val modelInfo: ModelInfo,
-    private val resultFormat: ResultFormat = BytesResultFormat
+    private val deviceType: DeviceType
 ) {
     private val fixturesToAdd: MutableList<FixtureRenderPlan> = mutableListOf()
     private val fixturesToRemove: MutableList<FixtureRenderPlan> = mutableListOf()
@@ -24,11 +25,11 @@ open class RenderEngine(
 
     private val fixtureRenderPlans: MutableList<FixtureRenderPlan> = mutableListOf()
 
-    private val renderBuffer = gl.createRenderBuffer()
-        .also { it.storage(resultFormat.renderPixelFormat, 1.bufWidth, 1.bufHeight) }
+    private val resultBuffers = deviceType.resultParams
+        .mapIndexed { index, deviceParam -> deviceParam.allocate(gl, index) }
 
     private val frameBuffer = gl.createFrameBuffer()
-        .also { it.attach(renderBuffer, GL_COLOR_ATTACHMENT0)}
+        .also { fb -> resultBuffers.forEach { it.attachTo(fb) } }
         .also { it.check() }
 
     var arrangement: Arrangement
@@ -45,20 +46,24 @@ open class RenderEngine(
     }
 
     fun addFixture(fixture: Fixture): FixtureRenderPlan {
+        if (fixture.deviceType != deviceType) {
+            throw IllegalArgumentException(
+                "This RenderEngine can't accept ${fixture.deviceType} devices, only $deviceType.")
+        }
+
         val rects = mapFixturePixelsToRects(
             nextPixelOffset,
             fbMaxPixWidth,
             fixture
         )
-        val renderResult =
-            resultFormat.createRenderResult(this, fixture.pixelCount, nextPixelOffset)
-        val renderSurface =
-            FixtureRenderPlan(fixture, renderResult, nextRectOffset, rects, modelInfo)
+        val fixtureRenderPlan = FixtureRenderPlan(
+            fixture, nextRectOffset, rects, modelInfo, fixture.pixelCount, nextPixelOffset, resultBuffers
+        )
         nextPixelOffset += fixture.pixelCount
-        nextRectOffset += renderSurface.rects.size
+        nextRectOffset += rects.size
 
-        fixturesToAdd.add(renderSurface)
-        return renderSurface
+        fixturesToAdd.add(fixtureRenderPlan)
+        return fixtureRenderPlan
     }
 
     fun removeFixture(fixtureRenderPlan: FixtureRenderPlan) {
@@ -106,7 +111,7 @@ open class RenderEngine(
             fixturesToAdd.forEach {
                 val fixture = it.fixture
                 val pixelLocations = fixture.pixelLocations
-                val pixel0Index = it.renderResult.bufferOffset
+                val pixel0Index = it.pixel0Index
                 val defaultPixelLocation = it.modelInfo.center
                 fillPixelLocations(newPixelCoords, pixel0Index, pixelLocations, defaultPixelLocation)
             }
@@ -139,8 +144,7 @@ open class RenderEngine(
 
     fun release() {
         arrangement.release()
-
-        renderBuffer.release()
+        resultBuffers.forEach { it.release() }
         frameBuffer.release()
     }
 
@@ -154,7 +158,7 @@ open class RenderEngine(
     }
 
     interface ArrangementListener {
-        fun onArrangementChange(arrangement: Arrangement)
+        fun onArrangementChange(arrangement: RenderEngine.Arrangement)
     }
 
     companion object {
@@ -208,14 +212,13 @@ open class RenderEngine(
         val pixHeight = pixelCount.bufHeight
 
         init {
-            renderBuffer.storage(
-                resultFormat.renderPixelFormat,
-                max(pixWidth, 1.bufWidth),
-                max(pixHeight, 1.bufHeight)
-            )
+            resultBuffers.forEach {
+                it.resize(
+                    max(pixWidth, 1.bufWidth),
+                    max(pixHeight, 1.bufHeight)
+                )
+            }
         }
-
-        internal val resultBuffer = resultFormat.createBuffer(pixelCount.bufSize)
 
         private val quad: Quad =
             Quad(gl, fixtureRenderPlans.flatMap {
@@ -235,10 +238,7 @@ open class RenderEngine(
         }
 
         fun copyToPixelBuffer() {
-            gl.check {
-                readPixels(0, 0, pixWidth, pixHeight,
-                    resultFormat.readPixelFormat, resultFormat.readType, resultBuffer)
-            }
+            resultBuffers.forEach { it.afterFrame(frameBuffer) }
         }
 
         fun release() {
@@ -296,31 +296,5 @@ open class RenderEngine(
         val GL_RGBA8 = 0x8058
         val GL_RG32F = 0x8230
         val GL_RGBA32F = 0x8814
-    }
-
-    interface ResultFormat {
-        val renderPixelFormat: Int
-        val readPixelFormat: Int
-        val readType: Int
-
-        fun createRenderResult(renderEngine: RenderEngine, size: Int, nextPixelOffset: Int): RenderResult
-        fun createBuffer(size: Int): Buffer
-    }
-
-    object BytesResultFormat : ResultFormat {
-        override val renderPixelFormat: Int
-            get() = GL_RGBA8
-        override val readPixelFormat: Int
-            get() = GL_RGBA
-        override val readType: Int
-            get() = GL_UNSIGNED_BYTE
-
-        override fun createRenderResult(renderEngine: RenderEngine, size: Int, nextPixelOffset: Int): RenderResult {
-            return FixturePixels(renderEngine, size, nextPixelOffset)
-        }
-
-        override fun createBuffer(size: Int): Buffer {
-            return ByteBuffer(size * 4)
-        }
     }
 }

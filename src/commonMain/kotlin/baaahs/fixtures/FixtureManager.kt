@@ -1,6 +1,5 @@
 package baaahs.fixtures
 
-import baaahs.Pixels
 import baaahs.RenderPlan
 import baaahs.ShowRunner
 import baaahs.gl.glsl.GlslProgram
@@ -56,15 +55,12 @@ class FixtureManager(
 
     fun sendFrame() {
         fixtureRenderPlans.values.forEach { fixtureRenderPlan ->
-//            if (shaderBuffers.size != 1) {
-//                throw IllegalStateException("Too many shader buffers for ${surface.describe()}: $shaderBuffers")
-//            }
-
             fixtureRenderPlan.receivers.forEach { receiver ->
                 // TODO: The send might return an error, at which point this receiver should be nuked
                 // from the list of receivers for this fixture. I'm not quite sure the best way to do
                 // that so I'm leaving this note.
-                receiver.send(fixtureRenderPlan.renderResult as Pixels)
+                val pixels = PixelArrayDevice.getPixels(fixtureRenderPlan)
+                receiver.send(pixels)
             }
         }
     }

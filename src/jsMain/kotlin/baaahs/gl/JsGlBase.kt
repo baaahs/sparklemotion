@@ -44,8 +44,15 @@ actual object GlBase {
     class JsGlContext(
         kgl: Kgl,
         glslVersion: String,
-        internal val webgl: WebGL2RenderingContext
+        private val webgl: WebGL2RenderingContext
     ) : GlContext(kgl, glslVersion) {
         override fun <T> runInContext(fn: () -> T): T = fn()
+
+        fun ensureColorBufferFloatExtension() {
+            if (webgl.getExtension("EXT_color_buffer_float") == null) {
+                window.alert("EXT_color_buffer_float not supported")
+                throw Exception("EXT_color_buffer_float not supported")
+            }
+        }
     }
 }

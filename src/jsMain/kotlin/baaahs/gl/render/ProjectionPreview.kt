@@ -1,11 +1,10 @@
 package baaahs.gl.render
 
-import baaahs.fixtures.Fixture
+import baaahs.fixtures.*
 import baaahs.gl.GlBase
 import baaahs.gl.glsl.GlslProgram
 import baaahs.model.Model
 import baaahs.window
-import com.danielgergely.kgl.*
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.Path2D
@@ -27,12 +26,15 @@ class ProjectionPreview(
     model: Model<*>,
     private val preRenderCallback: (() -> Unit)? = null
 ) : ShaderPreview {
+    init { gl.ensureColorBufferFloatExtension() }
+
     private var running = false
-    private val renderEngine = RenderEngine(gl, model, FloatsResultFormat(gl.webgl))
+    private val deviceType = ProjectionPreviewDevice
+    private val renderEngine = RenderEngine(gl, model, deviceType)
     private var projectionProgram: GlslProgram? = null
     private val fixtureRenderPlans = model.allSurfaces.associateWith { surface ->
         val lineVertices = surface.lines.flatMap { it.vertices }
-        renderEngine.addFixture(Fixture(surface, lineVertices.size, lineVertices))
+        renderEngine.addFixture(Fixture(surface, lineVertices.size, lineVertices, deviceType))
     }
     private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D
 
@@ -77,14 +79,15 @@ class ProjectionPreview(
             val overflows = arrayListOf<DoubleArray>()
 
             fixtureRenderPlans.forEach { (surface, fixtureRenderPlan) ->
-                val projectedVertices = fixtureRenderPlan.renderResult as FloatsResult
+                val projectedVertices = deviceType.getVertexLocations(fixtureRenderPlan.resultBuffers)
                 var vertexIndex = 0
 
                 val path = Path2D()
                 surface.lines.forEach { line ->
                     line.vertices.forEachIndexed { vIndex, _ ->
-                        val u = projectedVertices.getR(vertexIndex).toDouble()
-                        val v = 1 - projectedVertices.getG(vertexIndex).toDouble()
+                        val vec2 = projectedVertices.get(fixtureRenderPlan.pixel0Index + vertexIndex)
+                        val u = vec2.x.toDouble()
+                        val v = 1 - vec2.y.toDouble()
 
                         val pointX = u * insetWidth + errorMargin
                         val pointY = v * insetHeight + errorMargin
@@ -138,41 +141,13 @@ class ProjectionPreview(
     }
 }
 
-class FloatsResultFormat(gl: WebGL2RenderingContext) : RenderEngine.ResultFormat {
-    init {
-        gl.getExtension("EXT_color_buffer_float")!!
-    }
+object ProjectionPreviewDevice: DeviceType {
+    override val resultParams: List<DeviceParam>
+        get() = listOf(
+            DeviceParam("Vertex Location", XyParam)
+        )
 
-    override val renderPixelFormat: Int
-        get() = RenderEngine.GlConst.GL_RGBA32F
-    override val readPixelFormat: Int
-        get() = GL_RGBA
-    override val readType: Int
-        get() = GL_FLOAT
-
-    override fun createRenderResult(renderEngine: RenderEngine, size: Int, nextPixelOffset: Int): RenderResult {
-        return FloatsResult(renderEngine, size, nextPixelOffset)
-    }
-
-    override fun createBuffer(size: Int): Buffer {
-        return FloatBuffer(size * 4)
-    }
-
-}
-
-class FloatsResult(
-    private val renderEngine: RenderEngine,
-    override val size: Int,
-    override val bufferOffset: Int
-) : RenderResult {
-    fun getR(i: Int): Float = getFloat(i, 0)
-    fun getG(i: Int): Float = getFloat(i, 1)
-    fun getB(i: Int): Float = getFloat(i, 2)
-    fun getA(i: Int): Float = getFloat(i, 3)
-
-    private fun getFloat(i: Int, component: Int): Float {
-        val floatBuffer = renderEngine.arrangement.resultBuffer as FloatBuffer
-        val offset = (bufferOffset + i) * 4
-        return floatBuffer[offset + component]
+    fun getVertexLocations(resultBuffers: List<DeviceParamBuffer>): XyParam.Buffer {
+        return resultBuffers[0] as XyParam.Buffer
     }
 }
