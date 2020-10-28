@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.dmx.DmxDevice
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.gl.GlBase
 import baaahs.gl.render.RenderEngine
 import baaahs.io.RealFs
@@ -72,7 +73,7 @@ class PinkyMain(private val args: Args) {
 
         val pinky = runBlocking(pinkyMainDispatcher) {
             val glslContext = GlBase.manager.createContext()
-            val renderEngine = RenderEngine(glslContext, model)
+            val renderEngine = RenderEngine(glslContext, model, PixelArrayDevice)
             Pinky(
                 model, network, dmxUniverse, beatSource, clock, fs,
                 daddy, soundAnalyzer, switchShowAfterIdleSeconds = args.switchShowAfter,

@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.api.ws.WebSocketClient
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
@@ -839,11 +840,11 @@ class Mapper(
     companion object {
         val logger = Logger("Mapper")
 
-        val dummyFixture = Fixture(null, SparkleMotion.MAX_PIXEL_COUNT, emptyList())
+        val dummyFixture = Fixture(null, SparkleMotion.MAX_PIXEL_COUNT, emptyList(), PixelArrayDevice)
     }
 
     fun List<Byte>.stringify(): String {
-        return map { (it.toInt() and 0xff).toString(16).padStart(2, '0') }.joinToString("")
+        return joinToString("") { (it.toInt() and 0xff).toString(16).padStart(2, '0') }
     }
 }
 

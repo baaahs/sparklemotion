@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.client.WebClient
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
@@ -68,7 +69,7 @@ class SheepSimulator(val model: Model<*>) {
         fs,
         PermissiveFirmwareDaddy(),
         bridgeClient.soundAnalyzer,
-        renderEngine = RenderEngine(glslContext, model),
+        renderEngine = RenderEngine(glslContext, model, PixelArrayDevice),
         pinkyMainDispatcher = Dispatchers.Main,
         plugins = plugins
     )

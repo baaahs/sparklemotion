@@ -1,5 +1,6 @@
 import baaahs.*
 import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.gadgets.ColorPicker
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext.Companion.GL_RGB32F
@@ -79,7 +80,7 @@ object ShowRunnerSpec : Spek({
         }
         val testCoroutineContext by value { TestCoroutineContext("Test") }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0), testCoroutineContext) }
-        val renderEngine by value { RenderEngine(fakeGlslContext, ModelInfo.Empty) }
+        val renderEngine by value { RenderEngine(fakeGlslContext, ModelInfo.Empty, PixelArrayDevice) }
         val fixtureManager by value { FixtureManager(renderEngine) }
         val stageManager by value {
             val fs = FakeFs()

@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Matrix4
 import baaahs.gl.override
 import baaahs.gl.render.RenderEngine
@@ -48,7 +49,7 @@ object PinkySpec : Spek({
                 fakeFs,
                 PermissiveFirmwareDaddy(),
                 StubSoundAnalyzer(),
-                renderEngine = RenderEngine(fakeGlslContext, ModelInfo.Empty),
+                renderEngine = RenderEngine(fakeGlslContext, ModelInfo.Empty, PixelArrayDevice),
                 plugins = Plugins.safe(),
                 pinkyMainDispatcher = object : CoroutineDispatcher() {
                     override fun dispatch(context: CoroutineContext, block: Runnable) {

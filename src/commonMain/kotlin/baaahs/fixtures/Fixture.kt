@@ -17,6 +17,7 @@ class Fixture(
     val pixelCount: Int,
     /** Each pixel's location in the global 3d model. */
     val pixelLocations: List<Vector3F>,
+    val deviceType: DeviceType,
     val name: String = modelSurface?.name ?: "Anonymous fixture"
 ) {
     fun describe(): String = modelSurface?.description ?: name
@@ -49,6 +50,7 @@ fun anonymousFixture(
         null,
         pixelCount,
         RandomSurfacePixelStrategy().forUnknownSurface(pixelCount, modelInfo),
+        PixelArrayDevice,
         "Anonymous fixture for ${brainId.uuid}"
     )
 }

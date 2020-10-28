@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.fixtures.anonymousFixture
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
@@ -128,7 +129,7 @@ class Brain(
                     fixtureName = message.fixtureName
                     fixture = if (message.fixtureName != null) {
                         val fakeModelSurface = FakeModelSurface(message.fixtureName)
-                        Fixture(fakeModelSurface, message.pixelCount, message.pixelLocations)
+                        Fixture(fakeModelSurface, message.pixelCount, message.pixelLocations, PixelArrayDevice)
                     } else {
                         anonymousFixture(BrainId(id), modelInfo)
                     }
