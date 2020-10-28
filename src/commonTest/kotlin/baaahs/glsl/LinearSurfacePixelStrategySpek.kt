@@ -39,9 +39,9 @@ object LinearSurfacePixelStrategySpek : Spek({
             it("interpolates between vertex 0 and the surface's center") {
                 expect(
                     listOf(
-                        Vector3F(x = 0.27945447f, y = 1.2866522f, z = 1.7544947f),
-                        Vector3F(x = 0.7675074f, y = 1.5172625f, z = 1.1435459f),
-                        Vector3F(x = 1.2555603f, y = 1.7478726f, z = 0.53259706f)
+                        Vector3F(x=0.13972723f, y=0.6433261f, z=0.87724733f),
+                        Vector3F(x=0.3837537f, y=0.7586312f, z=0.57177293f),
+                        Vector3F(x=0.62778014f, y=0.8739363f, z=0.26629853f)
                     )
                 ) { strategy.forUnknownSurface(3, TestModel) }
             }

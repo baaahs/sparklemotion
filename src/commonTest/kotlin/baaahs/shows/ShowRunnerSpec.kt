@@ -162,7 +162,7 @@ object TestModel : Model<Model.Surface>() {
     override val geomVertices: List<Vector3F> = emptyList()
 
     override val center: Vector3F
-        get() = Vector3F(1f, 1f, 1f)
+        get() = Vector3F(.5f, .5f, .5f)
     override val extents: Vector3F
-        get() = Vector3F(2f, 2f, 2f)
+        get() = Vector3F(1f, 1f, 1f)
 }
