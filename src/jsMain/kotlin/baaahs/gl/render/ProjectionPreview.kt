@@ -1,7 +1,6 @@
 package baaahs.gl.render
 
 import baaahs.fixtures.Fixture
-import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
 import baaahs.gl.glsl.GlslProgram
 import baaahs.model.Model
@@ -31,23 +30,11 @@ class ProjectionPreview(
     private var running = false
     private val renderEngine = RenderEngine(gl, model, FloatsResultFormat(gl.webgl))
     private var projectionProgram: GlslProgram? = null
-    private val fixtureRenderPlans: Map<Model.Surface, FixtureRenderPlan>
-    private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D
-
-    init {
-        fixtureRenderPlans = model.allSurfaces.associateWith { surface ->
-            renderEngine.addFixture(object : Fixture {
-                val lineVertices = surface.lines.flatMap { it.vertices }
-
-                override val pixelCount: Int
-                    get() = lineVertices.size
-                override val pixelLocations: List<Vector3F?>?
-                    get() = lineVertices
-
-                override fun describe(): String = surface.name
-            })
-        }
+    private val fixtureRenderPlans = model.allSurfaces.associateWith { surface ->
+        val lineVertices = surface.lines.flatMap { it.vertices }
+        renderEngine.addFixture(Fixture(surface, lineVertices.size, lineVertices))
     }
+    private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D
 
     override fun start() {
         running = true
@@ -60,7 +47,6 @@ class ProjectionPreview(
 
     override fun destroy() {
         stop()
-//        scene.release()
         projectionProgram?.release()
     }
 
@@ -85,8 +71,8 @@ class ProjectionPreview(
             context2d.fillRect(0.0, 0.0, width.toDouble(), height.toDouble())
 
             val errorMargin = 3.0
-            val insetWidth = width - errorMargin * 2;
-            val insetHeight = height - errorMargin * 2;
+            val insetWidth = width - errorMargin * 2
+            val insetHeight = height - errorMargin * 2
 
             val overflows = arrayListOf<DoubleArray>()
 
@@ -149,41 +135,6 @@ class ProjectionPreview(
     override fun resize(width: Int, height: Int) {
         this.width = width
         this.height = height
-    }
-
-//    inner class Scene {
-//        private val vertexShader = gl.createVertexShader(GlslProgram.vertexShader)
-//        private val fragmentShader = gl.createFragmentShader("""
-//                    void main(void) { gl_FragColor = vec4(.5, 1., .5, 1.); }
-//                """.trimIndent())
-//        private val program = gl.compile(vertexShader, fragmentShader)
-//
-//        fun render() {
-//            gl.runInContext {
-//                gl.check { viewport(0, 0, width, height) }
-//                gl.check { clearColor(1f, 0f, 0f, 1f) }
-//                gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
-//
-//                fixtureRenderPlans.forEach { (surface, fixtureRenderPlan) ->
-//                    surface.lines.forEach { line ->
-//                        gl.check { dra }
-//                    }
-//                    fixtureRenderPlan.pixels.
-//                }
-//            }
-//        }
-//
-//        fun release() {
-//            gl.runInContext {
-//                gl.check { deleteShader(vertexShader) }
-//                gl.check { deleteShader(fragmentShader) }
-////                gl.check { deleteProgram(program) }
-//            }
-//        }
-//    }
-
-    companion object {
-        private val quadRect = Quad.Rect(1f, -1f, -1f, 1f)
     }
 }
 
