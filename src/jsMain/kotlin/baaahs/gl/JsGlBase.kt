@@ -18,12 +18,12 @@ actual object GlBase {
             gl != null
         }
 
-        override fun createContext(): GlContext {
+        override fun createContext(trace: Boolean): GlContext {
             val canvas = document.createElement("canvas") as HTMLCanvasElement
-            return createContext(canvas)
+            return createContext(canvas, trace)
         }
 
-        fun createContext(canvas: HTMLCanvasElement): JsGlContext {
+        fun createContext(canvas: HTMLCanvasElement, trace: Boolean = false): JsGlContext {
             val webgl = canvas.getContext("webgl2") as WebGL2RenderingContext?
             if (webgl == null) {
                 window.alert(
@@ -33,7 +33,11 @@ actual object GlBase {
                 )
                 throw Exception("WebGL 2 not supported")
             }
-            return JsGlContext(KglJs(webgl), "300 es", webgl)
+            return JsGlContext(
+                maybeTrace(KglJs(webgl), trace),
+                "300 es",
+                webgl
+            )
         }
     }
 

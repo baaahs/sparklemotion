@@ -9,9 +9,10 @@ class JoglGlManager : GlManager() {
     override val available: Boolean
         get() = true
 
-    override fun createContext(): GlContext {
+    override fun createContext(trace: Boolean): GlContext {
         val gl = createGLContext()
-        return JoglGlContext(KglJogl(gl as GL3ES3), gl)
+        val kgl = maybeTrace(KglJogl(gl as GL3ES3), trace)
+        return JoglGlContext(kgl, gl)
     }
 
     class JoglGlContext(kgl: Kgl, gl: GL4) : GlContext(kgl, "330 core") {
