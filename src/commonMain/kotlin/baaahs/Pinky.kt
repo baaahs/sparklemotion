@@ -3,8 +3,6 @@ package baaahs
 import baaahs.api.ws.WebSocketRouter
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
-import baaahs.fixtures.IdentifiedFixture
-import baaahs.geom.Vector3F
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.render.RenderEngine
 import baaahs.io.ByteArrayWriter
@@ -117,7 +115,7 @@ class Pinky(
 
     fun addSimulatedBrains() {
         val fakeAddress = object : Network.Address {}
-        val mappingInfos = (mappingResults as SessionMappingResults).brainData
+        val mappingInfos = (mappingResults.actualMappingResults as SessionMappingResults).brainData
         mappingInfos.forEach { (brainId, info) ->
             brainManager.foundBrain(
                 fakeAddress, BrainHelloMessage(brainId.uuid, info.surface.name, null, null),
@@ -149,7 +147,7 @@ class Pinky(
                 }
             }
             facade.notifyChanged()
-            facade.framerate.elapsed(elapsedMs.toInt())
+            facade.framerate.elapsed(elapsedMs)
 
             maybeChangeThingsIfUsersAreIdle()
 
@@ -281,22 +279,20 @@ class Pinky(
         }
 
         fun sendPixelData(fixture: Fixture) {
-            if (fixture is IdentifiedFixture) {
-                val pixelLocations = fixture.pixelLocations ?: return
+            if (fixture.modelSurface != null) {
+                val pixelLocations = fixture.pixelLocations
 
                 val out = ByteArrayWriter(fixture.name.length + fixture.pixelCount * 3 * 4 + 20)
                 out.writeByte(0)
                 out.writeString(fixture.name)
                 out.writeInt(fixture.pixelCount)
-                pixelLocations.forEach {
-                    (it ?: Vector3F(0f, 0f, 0f)).serialize(out)
-                }
+                pixelLocations.forEach { it.serialize(out) }
                 tcpConnection.send(out.toBytes())
             }
         }
 
         fun sendFrame(fixture: Fixture, colors: List<Color>) {
-            if (fixture is IdentifiedFixture) {
+            if (fixture.modelSurface != null) {
                 val out = ByteArrayWriter(fixture.name.length + colors.size * 3 + 20)
                 out.writeByte(1)
                 out.writeString(fixture.name)

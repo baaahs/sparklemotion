@@ -1,11 +1,11 @@
 package baaahs
 
-import baaahs.fixtures.AnonymousFixture
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
-import baaahs.fixtures.IdentifiedFixture
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
+import baaahs.glsl.LinearSurfacePixelStrategy
+import baaahs.glsl.SurfacePixelStrategy
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.mapper.MappingResults
@@ -20,7 +20,8 @@ class BrainManager(
     private val model: Model<*>,
     private val mappingResults: MappingResults,
     private val udpSocket: Network.UdpSocket,
-    private val networkStats: Pinky.NetworkStats
+    private val networkStats: Pinky.NetworkStats,
+    private val surfacePixelStrategy: SurfacePixelStrategy = LinearSurfacePixelStrategy()
 ) {
     internal val brainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
     private val pendingBrainInfos: MutableMap<BrainId, BrainInfo> = mutableMapOf()
@@ -74,7 +75,6 @@ class BrainManager(
         isSimulatedBrain: Boolean = false
     ) {
         val brainId = BrainId(msg.brainId)
-        val surfaceName = msg.surfaceName
 
         Pinky.logger.debug {
             "Hello from ${brainId.uuid}" +
@@ -95,25 +95,17 @@ class BrainManager(
 
 
         // println("Heard from brain $brainId at $brainAddress for $surfaceName")
-        val dataFor = mappingResults.dataFor(brainId)
-            ?: mappingResults.dataFor(msg.surfaceName ?: "__nope")
-            ?: msg.surfaceName?.let { MappingResults.Info(model.findModelSurface(it), null) }
+        val fixture = createFixtureFor(msg)
 
-        val fixture = dataFor?.let {
-            val pixelLocations = dataFor.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) } ?: emptyList()
-            val pixelCount = dataFor.pixelLocations?.size ?: SparkleMotion.MAX_PIXEL_COUNT
-
-            if (msg.surfaceName != dataFor.surface.name) {
+        fixture.modelSurface?.let { modelSurface ->
+            if (msg.surfaceName != modelSurface.name) {
                 val mappingMsg = BrainMappingMessage(
-                    brainId, dataFor.surface.name, null, Vector2F(0f, 0f),
-                    Vector2F(0f, 0f), pixelCount, pixelLocations
+                    brainId, modelSurface.name, null, Vector2F(0f, 0f),
+                    Vector2F(0f, 0f), fixture.pixelCount, fixture.pixelLocations
                 )
                 udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
             }
-
-            IdentifiedFixture(dataFor.surface, pixelCount, dataFor.pixelLocations)
-        } ?: AnonymousFixture(brainId)
-
+        }
 
         val priorBrainInfo = brainInfos[brainId]
         if (priorBrainInfo != null) {
@@ -170,6 +162,23 @@ class BrainManager(
         pendingBrainInfos[brainId] = brainInfo
 
         // Decide whether or not to tell this brain it should use a different firmware
+    }
+
+    fun createFixtureFor(msg: BrainHelloMessage): Fixture {
+        val brainId = BrainId(msg.brainId)
+
+        val mappingData = mappingResults.dataFor(brainId)
+            ?: mappingResults.dataFor(msg.surfaceName ?: "__nope")
+            ?: msg.surfaceName?.let { MappingResults.Info(model.findModelSurface(it), null) }
+
+        val modelSurface = mappingData?.surface
+        val pixelCount = mappingData?.pixelLocations?.size
+            ?: modelSurface?.expectedPixelCount
+            ?: SparkleMotion.MAX_PIXEL_COUNT
+        val pixelLocations = mappingData?.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) }
+            ?: surfacePixelStrategy.forFixture(pixelCount, modelSurface, model)
+
+        return Fixture(modelSurface, pixelCount, pixelLocations)
     }
 
     /** If we want a pong back from a [BrainShaderMessage], send this. */

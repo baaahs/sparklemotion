@@ -608,20 +608,10 @@ class Mapper(
     private fun solidColorBuffer(color: Color): BrainShader.Buffer {
         return if (USE_SOLID_SHADERS) {
             val solidShader = SolidBrainShader()
-            solidShader.createBuffer(object : Fixture {
-                override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
-                override val pixelLocations: List<Vector3F?>? get() = null
-
-                override fun describe(): String = "Mapper surface"
-            }).apply { this.color = color }
+            solidShader.createBuffer(dummyFixture).apply { this.color = color }
         } else {
             val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
-            pixelShader.createBuffer(object : Fixture {
-                override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
-                override val pixelLocations: List<Vector3F?>? get() = null
-
-                override fun describe(): String = "Mapper surface"
-            }).apply {
+            pixelShader.createBuffer(dummyFixture).apply {
                 palette[0] = Color.BLACK
                 palette[1] = color
                 setAll(1)
@@ -805,12 +795,7 @@ class Mapper(
         var screenMax: Vector2F? = null
 
         val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
-        val pixelShaderBuffer = pixelShader.createBuffer(object : Fixture {
-            override val pixelCount = SparkleMotion.MAX_PIXEL_COUNT
-            override val pixelLocations: List<Vector3F?>? get() = null
-
-            override fun describe(): String = "Mapper surface"
-        }).apply {
+        val pixelShaderBuffer = pixelShader.createBuffer(dummyFixture).apply {
             palette[0] = Color.BLACK
             palette[1] = Color.WHITE
             setAll(0)
@@ -853,6 +838,8 @@ class Mapper(
 
     companion object {
         val logger = Logger("Mapper")
+
+        val dummyFixture = Fixture(null, SparkleMotion.MAX_PIXEL_COUNT, emptyList())
     }
 
     fun List<Byte>.stringify(): String {
