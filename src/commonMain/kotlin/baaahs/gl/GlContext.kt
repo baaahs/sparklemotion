@@ -10,7 +10,7 @@ import com.danielgergely.kgl.*
 abstract class GlContext(
     private val kgl: Kgl,
     val glslVersion: String,
-    var checkForErrors: Boolean = false
+    var checkForErrors: Boolean = true
 ) {
     init { logger.debug { "Created ${this::class.simpleName}" } }
     abstract fun <T> runInContext(fn: () -> T): T
@@ -22,6 +22,7 @@ abstract class GlContext(
     private var activeTextureUnit: TextureUnit? = null
 
     private var activeProgram: GlslProgram? = null
+    private var activeFrameBuffer: FrameBuffer? = null
     private var activeRenderBuffer: RenderBuffer? = null
 
     class Stats {
@@ -71,44 +72,37 @@ abstract class GlContext(
         }
     }
 
-    fun createRenderBuffer(): RenderBuffer {
-        val frameBuffer = check { createFramebuffer() }
-        val renderBuffer = check { createRenderbuffer() }
-
-        return RenderBuffer(frameBuffer, renderBuffer)
+    fun createFrameBuffer(): FrameBuffer {
+        return FrameBuffer(check { createFramebuffer() })
     }
 
-    inner class RenderBuffer(
-        private val framebuffer: Framebuffer,
-        private val renderbuffer: Renderbuffer
-    ) {
-        var curRenderbufferStorageArgs = emptyList<Any>()
-        var curFramebufferRenderbufferArgs = emptyList<Any>()
+    fun createRenderBuffer(): RenderBuffer {
+        return RenderBuffer(check { createRenderbuffer() })
+    }
 
-        fun bind(
-            internalformat: Int, width: Int, height: Int,
-            attachment: Int, renderbuffertarget: Int
-        ) {
-            if (activeRenderBuffer != this) {
+    inner class FrameBuffer(private val framebuffer: Framebuffer) {
+        private val curRenderBuffers = mutableMapOf<Int, RenderBuffer>()
+
+        fun bind() {
+            if (activeFrameBuffer != this) {
                 check { bindFramebuffer(GL_FRAMEBUFFER, framebuffer) }
-                check { bindRenderbuffer(GL_RENDERBUFFER, renderbuffer) }
-                activeRenderBuffer = this
+                activeFrameBuffer = this
             }
+        }
 
-            val newRenderbufferStorageArgs = listOf(internalformat, width, height)
-            if (newRenderbufferStorageArgs != curRenderbufferStorageArgs) {
-                check { renderbufferStorage(GL_RENDERBUFFER, internalformat, width, height) }
-                curRenderbufferStorageArgs = newRenderbufferStorageArgs
+        fun attach(renderBuffer: RenderBuffer, attachment: Int) {
+            bind()
+
+            if (curRenderBuffers[attachment] != renderBuffer) {
+                check { framebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, renderBuffer.renderbuffer) }
+                curRenderBuffers[attachment] = renderBuffer
             }
+        }
 
-            val newFramebufferRenderbufferArgs = listOf(attachment, renderbuffertarget)
-            if (newFramebufferRenderbufferArgs != curFramebufferRenderbufferArgs) {
-                check { renderbufferStorage(GL_RENDERBUFFER, internalformat, width, height) }
-                curFramebufferRenderbufferArgs = newFramebufferRenderbufferArgs
-                check { framebufferRenderbuffer(GL_FRAMEBUFFER, attachment, renderbuffertarget, renderbuffer) }
-            }
-
+        fun check() {
             if (checkForErrors) {
+                bind()
+
                 val status = check { checkFramebufferStatus(GL_FRAMEBUFFER) }
                 if (status != GL_FRAMEBUFFER_COMPLETE) {
                     logger.warn { "FrameBuffer huh? $status" }
@@ -117,12 +111,43 @@ abstract class GlContext(
         }
 
         fun release() {
-            if (activeRenderBuffer == this) {
-                check { bindRenderbuffer(GL_RENDERBUFFER, null) }
+            if (activeFrameBuffer == this) {
                 check { bindFramebuffer(GL_FRAMEBUFFER, null) }
             }
 
             check { deleteFramebuffer(framebuffer) }
+            curRenderBuffers.values.forEach { it.release() }
+        }
+    }
+
+    inner class RenderBuffer(internal val renderbuffer: Renderbuffer) {
+        var curInternalFormat = -1
+        var curWidth = -1
+        var curHeight = -1
+
+        fun bind() {
+            if (activeRenderBuffer != this) {
+                check { bindRenderbuffer(GL_RENDERBUFFER, renderbuffer) }
+                activeRenderBuffer = this
+            }
+        }
+
+        fun storage(internalformat: Int, width: Int, height: Int) {
+            bind()
+
+            if (internalformat != curInternalFormat
+                || width != curWidth
+                || height != curHeight
+            ) {
+                check { renderbufferStorage(GL_RENDERBUFFER, internalformat, width, height) }
+
+                curInternalFormat = internalformat
+                curWidth = width
+                curHeight = height
+            }
+        }
+
+        fun release() {
             check { deleteRenderbuffer(renderbuffer) }
         }
     }
