@@ -4,7 +4,6 @@ import baaahs.BrainShader
 import baaahs.Color
 import baaahs.Pixels
 import baaahs.fixtures.Fixture
-import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.test.expect
@@ -47,10 +46,8 @@ internal fun <T : BrainShader.Buffer> render(srcBuf: T, fixture: Fixture): Pixel
 internal fun <T : BrainShader.Buffer> render(srcBrainShaderAndBuffer: Pair<BrainShader<T>, T>, fixture: Fixture): Pixels =
     render(srcBrainShaderAndBuffer.second, fixture)
 
-class FakeFixture(override val pixelCount: Int) : Fixture {
-    override val pixelLocations: List<Vector3F?>? get() = null
-    override fun describe(): String = "fake"
-}
+fun fakeFixture(pixelCount: Int) =
+    Fixture(null, pixelCount, emptyList(), "fake fixture")
 
 class FakePixels(override val size: Int) : Pixels {
     private val buf = Array(size) { Color.BLACK }

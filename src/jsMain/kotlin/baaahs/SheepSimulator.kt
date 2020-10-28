@@ -105,7 +105,7 @@ class SheepSimulator(val model: Model<*>) {
             val vizPanel = visualizer.addSurface(simSurface.surfaceGeometry)
             vizPanel.vizPixels = VizPixels(vizPanel, simSurface.pixelPositions)
 
-            val brain = Brain(simSurface.brainId.uuid, network, vizPanel.vizPixels ?: NullPixels)
+            val brain = Brain(simSurface.brainId.uuid, network, vizPanel.vizPixels ?: NullPixels, model)
             brains.add(brain)
 
             brainScope.launch { randomDelay(1000); brain.run() }

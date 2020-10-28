@@ -13,7 +13,7 @@ import baaahs.model.ModelInfo
 import baaahs.model.MovingHead
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
-import baaahs.shaders.FakeFixture
+import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableShow
@@ -39,9 +39,9 @@ object ShowRunnerSpec : Spek({
         }
 
         val fakeGlslContext by value { FakeGlContext() }
-        val model by value { TestModel() }
+        val model by value { TestModel }
         val autoWirer by value { AutoWirer(Plugins.safe()) }
-        val fixtures by value { listOf(FakeFixture(100)) }
+        val fixtures by value { listOf(fakeFixture(100)) }
         val mutableShow by value {
             MutableShow("test show") {
                 addPatch(
@@ -155,9 +155,14 @@ object ShowRunnerSpec : Spek({
     }
 })
 
-class TestModel : Model<Model.Surface>() {
+object TestModel : Model<Model.Surface>() {
     override val name: String = "Test Model"
     override val movingHeads: List<MovingHead> = emptyList()
     override val allSurfaces: List<Surface> = emptyList()
     override val geomVertices: List<Vector3F> = emptyList()
+
+    override val center: Vector3F
+        get() = Vector3F(1f, 1f, 1f)
+    override val extents: Vector3F
+        get() = Vector3F(2f, 2f, 2f)
 }

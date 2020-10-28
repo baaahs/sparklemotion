@@ -4,7 +4,6 @@ import baaahs.fixtures.Fixture
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.render.RenderEngine.GlConst.GL_RGBA8
-import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.model.ModelInfo
 import baaahs.timeSync
 import baaahs.util.Logger
@@ -98,7 +97,11 @@ open class RenderEngine(
             oldPixelCoords.copyInto(newPixelCoords)
 
             fixturesToAdd.forEach {
-                putPixelCoords(it, newPixelCoords)
+                val fixture = it.fixture
+                val pixelLocations = fixture.pixelLocations
+                val pixel0Index = it.renderResult.bufferOffset
+                val defaultPixelLocation = it.modelInfo.center
+                fillPixelLocations(newPixelCoords, pixel0Index, pixelLocations, defaultPixelLocation)
             }
 
             fixtureRenderPlans.addAll(fixturesToAdd)
@@ -110,16 +113,6 @@ open class RenderEngine(
             pixelCount = newPixelCount
             println("Now managing $pixelCount pixels.")
         }
-    }
-
-    private fun putPixelCoords(fixtureRenderPlan: FixtureRenderPlan, newPixelCoords: FloatArray) {
-        val fixture = fixtureRenderPlan.fixture
-        val pixelLocations = fixture.pixelLocations
-            ?: LinearSurfacePixelStrategy.forFixture(fixture)
-
-        val pixel0Index = fixtureRenderPlan.renderResult.bufferOffset
-        val defaultPixelLocation = fixtureRenderPlan.modelInfo.center
-        fillPixelLocations(newPixelCoords, pixel0Index, pixelLocations, defaultPixelLocation)
     }
 
     private fun fillPixelLocations(

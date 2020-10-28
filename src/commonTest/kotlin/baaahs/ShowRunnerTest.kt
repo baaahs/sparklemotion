@@ -3,7 +3,6 @@ package baaahs
 import baaahs.ShowRunner.FixtureReceiver
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
-import baaahs.fixtures.IdentifiedFixture
 import baaahs.gadgets.Slider
 import baaahs.gl.render.FixtureRenderPlan
 import baaahs.gl.render.RenderEngine
@@ -35,10 +34,10 @@ class ShowRunnerTest {
     private lateinit var fixtureRenderPlans: Map<Fixture, FixtureRenderPlan>
     private val surface1Messages = mutableListOf<Pixels>()
     private val surface1Receiver =
-        FakeFixtureReceiver(IdentifiedFixture(SheepModel.Panel("surface 1"), 1)) { buffer -> surface1Messages.add(buffer) }
+        FakeFixtureReceiver(Fixture(SheepModel.Panel("surface 1"), 1, emptyList())) { buffer -> surface1Messages.add(buffer) }
     private val surface2Messages = mutableListOf<Pixels>()
     private val surface2Receiver =
-        FakeFixtureReceiver(IdentifiedFixture(SheepModel.Panel("surface 2"), 1)) { buffer -> surface2Messages.add(buffer) }
+        FakeFixtureReceiver(Fixture(SheepModel.Panel("surface 2"), 1, emptyList())) { buffer -> surface2Messages.add(buffer) }
     private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()

@@ -1,11 +1,11 @@
 package baaahs
 
-import baaahs.fixtures.AnonymousFixture
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.IdentifiedFixture
+import baaahs.fixtures.anonymousFixture
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
+import baaahs.model.ModelInfo
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 class Brain(
     val id: String,
     private val network: Network,
-    private val pixels: Pixels
+    private val pixels: Pixels,
+    private val modelInfo: ModelInfo
 ) : Network.UdpListener {
     val facade = Facade()
 
@@ -25,7 +26,7 @@ class Brain(
     private lateinit var udpSocket: Network.UdpSocket
     private var lastInstructionsReceivedAtMs: Long = 0
     private var fixtureName : String? = null
-    private var fixture : Fixture = AnonymousFixture(BrainId(id))
+    private var fixture : Fixture = anonymousFixture(BrainId(id), modelInfo)
         set(value) { field = value; facade.notifyChanged() }
     private var currentShaderDesc: ByteArray? = null
     private var currentRenderTree: RenderTree<*>? = null
@@ -42,7 +43,7 @@ class Brain(
     private suspend fun reset() {
         lastInstructionsReceivedAtMs = 0
         fixtureName = null
-        fixture = AnonymousFixture(BrainId(id))
+        fixture = anonymousFixture(BrainId(id), modelInfo)
         currentShaderDesc = null
         currentRenderTree = null
 
@@ -127,9 +128,9 @@ class Brain(
                     fixtureName = message.fixtureName
                     fixture = if (message.fixtureName != null) {
                         val fakeModelSurface = FakeModelSurface(message.fixtureName)
-                        IdentifiedFixture(fakeModelSurface, message.pixelCount, message.pixelLocations)
+                        Fixture(fakeModelSurface, message.pixelCount, message.pixelLocations)
                     } else {
-                        AnonymousFixture(BrainId(id))
+                        anonymousFixture(BrainId(id), modelInfo)
                     }
 
                     // next frame we'll need to recreate everything...
