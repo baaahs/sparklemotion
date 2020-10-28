@@ -24,6 +24,13 @@ open class RenderEngine(
 
     private val fixtureRenderPlans: MutableList<FixtureRenderPlan> = mutableListOf()
 
+    private val renderBuffer = gl.createRenderBuffer()
+        .also { it.storage(resultFormat.renderPixelFormat, 1.bufWidth, 1.bufHeight) }
+
+    private val frameBuffer = gl.createFrameBuffer()
+        .also { it.attach(renderBuffer, GL_COLOR_ATTACHMENT0)}
+        .also { it.check() }
+
     var arrangement: Arrangement
 
     val stats = Stats()
@@ -132,6 +139,9 @@ open class RenderEngine(
 
     fun release() {
         arrangement.release()
+
+        renderBuffer.release()
+        frameBuffer.release()
     }
 
     private fun notifyListeners(arrangement: Arrangement) {
@@ -181,7 +191,7 @@ open class RenderEngine(
         }
 
         private const val fbMaxPixWidth = 1024
-        val Int.bufWidth: Int get() = max(1, min(this, fbMaxPixWidth))
+        val Int.bufWidth: Int get() = max(16, min(this, fbMaxPixWidth))
         val Int.bufHeight: Int get() = this / fbMaxPixWidth + 1
         val Int.bufSize: Int get() = bufWidth * bufHeight
     }
@@ -197,7 +207,14 @@ open class RenderEngine(
         val pixWidth = pixelCount.bufWidth
         val pixHeight = pixelCount.bufHeight
 
-        private val renderBuffer = gl.createRenderBuffer()
+        init {
+            renderBuffer.storage(
+                resultFormat.renderPixelFormat,
+                max(pixWidth, 1.bufWidth),
+                max(pixHeight, 1.bufHeight)
+            )
+        }
+
         internal val resultBuffer = resultFormat.createBuffer(pixelCount.bufSize)
 
         private val quad: Quad =
@@ -214,7 +231,7 @@ open class RenderEngine(
             })
 
         fun bindFramebuffer() {
-            renderBuffer.bind(resultFormat.renderPixelFormat, pixWidth, pixHeight, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER)
+            frameBuffer.bind()
         }
 
         fun copyToPixelBuffer() {
@@ -228,8 +245,6 @@ open class RenderEngine(
             logger.debug { "Release $this with ${fixtureRenderPlans.count()} fixtures and $pixelCount pixels" }
 
             quad.release()
-
-            renderBuffer.release()
         }
 
         fun render() {
