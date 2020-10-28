@@ -16,13 +16,13 @@ class LwjglGlManager : GlManager() {
     override val available: Boolean
         get() = window != 0L
 
-    override fun createContext(): GlContext {
+    override fun createContext(trace: Boolean): GlContext {
         if (!available) throw RuntimeException("GLSL not available")
         GLFW.glfwMakeContextCurrent(window)
         checkCapabilities()
         GLFW.glfwMakeContextCurrent(0)
 
-        return LwjglGlContext(KglLwjgl())
+        return LwjglGlContext(maybeTrace(KglLwjgl(), trace))
     }
 
     inner class LwjglGlContext(kgl: Kgl) : GlContext(kgl, "330 core") {
