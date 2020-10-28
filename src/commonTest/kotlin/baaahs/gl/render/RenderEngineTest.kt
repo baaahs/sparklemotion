@@ -1,5 +1,6 @@
 package baaahs.gl.render
 
+import TestModel
 import baaahs.Color
 import baaahs.Pixels
 import baaahs.TestModelSurface
@@ -11,9 +12,10 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
-import baaahs.glsl.Shaders.cylindricalProjection
-import baaahs.model.ModelInfo
+import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
+import baaahs.show.Shader
+import baaahs.show.ShaderType
 import baaahs.shows.FakeShowPlayer
 import kotlin.math.abs
 import kotlin.random.Random
@@ -41,7 +43,7 @@ class RenderEngineTest {
     fun setUp() {
         if (glslAvailable()) {
             glContext = GlBase.manager.createContext()
-            renderEngine = RenderEngine(glContext, ModelInfoForTest)
+            renderEngine = RenderEngine(glContext, TestModel)
             fakeShowPlayer = FakeShowPlayer(glContext)
         }
     }
@@ -74,11 +76,11 @@ class RenderEngineTest {
 
         renderEngine.draw()
 
-        expectColor(listOf(
+        expectColor(
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        )) { fixtureRenderPlan.pixels.toList() }
+        ) { fixtureRenderPlan.pixels.toList() }
     }
 
     @Test
@@ -89,9 +91,7 @@ class RenderEngineTest {
             /**language=glsl*/
             """
             uniform float time;
-            
-            // SPARKLEMOTION GADGET: Slider {}
-            uniform float blue;
+            uniform float blue; // @@Slider
             
             void main() {
                 gl_FragColor = vec4(gl_FragCoord.xy, blue, 1.);
@@ -101,23 +101,23 @@ class RenderEngineTest {
         val glslProgram = compileAndBind(program)
         val fixtureRenderPlan = renderEngine.addFixture(fakeSurface()).apply { this.program = glslProgram }
 
-        fakeShowPlayer.getGadget<Slider>("glsl_in_blue").value = .1f
-        fakeShowPlayer.drawFrame()
+        fakeShowPlayer.getGadget<Slider>("blueSlider").value = .1f
+        renderEngine.draw()
 
-        expectColor(listOf(
+        expectColor(
             Color(0f, .1f, .1f),
             Color(.2f, .3f, .1f),
             Color(.4f, .5f, .1f)
-        )) { fixtureRenderPlan.pixels.toList() }
+        ) { fixtureRenderPlan.pixels.toList() }
 
-        fakeShowPlayer.getGadget<Slider>("glsl_in_blue").value = .2f
-        fakeShowPlayer.drawFrame()
+        fakeShowPlayer.getGadget<Slider>("blueSlider").value = .2f
+        renderEngine.draw()
 
-        expectColor(listOf(
+        expectColor(
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .5f, .2f)
-        )) { fixtureRenderPlan.pixels.toList() }
+        ) { fixtureRenderPlan.pixels.toList() }
     }
 
     @Test
@@ -141,22 +141,22 @@ class RenderEngineTest {
 
         renderEngine.draw()
 
-        expectColor(listOf(
+        expectColor(
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        )) { fixtureRenderPlan1.pixels.toList() }
+        ) { fixtureRenderPlan1.pixels.toList() }
 
-        expectColor(listOf(
-            Color(.6f, .6f, .5f),
-            Color(.651f, .651f, .5f)
-        )) { fixtureRenderPlan2.pixels.toList() }
+        expectColor(
+            Color(0f, .1f, .5f),
+            Color(.2f, .3f, .5f)
+        ) { fixtureRenderPlan2.pixels.toList() }
 
-        expect(listOf(
-            Color(1f, 1f, .5f),
-            Color(1f, 1f, .5f),
-            Color(1f, 1f, .5f)
-        )) { fixtureRenderPlan3.pixels.toList() }
+        expectColor(
+            Color(0f, .1f, .5f),
+            Color(.2f, .3f, .5f),
+            Color(.4f, .5f, .5f)
+        ) { fixtureRenderPlan3.pixels.toList() }
     }
 
     @Ignore @Test // TODO: Per-surface uniform control TBD
@@ -186,18 +186,18 @@ class RenderEngineTest {
 
         renderEngine.draw()
 
-        expectColor(listOf(
+        expectColor(
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .503f, .2f)
-        )) { fixtureRenderPlan1.pixels.toList() }
+        ) { fixtureRenderPlan1.pixels.toList() }
 
         // Interpolation between vertex 0 and the surface's center.
-        expectColor(listOf(
+        expectColor(
             Color(.6f, .6f, .3f),
             Color(.651f, .651f, .3f),
             Color(.7f, .7f, .3f)
-        )) { fixtureRenderPlan2.pixels.toList() }
+        ) { fixtureRenderPlan2.pixels.toList() }
     }
 
     @Test
@@ -230,7 +230,7 @@ class RenderEngineTest {
              *  Vector3F(.4f, .5f, 0f)
              */
             (0 until pixelCount).map { i ->
-                val offset = i * .1f
+                val offset = i * .2f
                 Vector3F(0f + offset, .1f + offset, 0f)
             }
         )
@@ -247,33 +247,61 @@ class RenderEngineTest {
         val autoWirer = AutoWirer(Plugins.safe())
         val shader = GlslAnalyzer(Plugins.safe()).import(program)
         return autoWirer
-            .autoWire(cylindricalProjection, shader)
+            .autoWire(directXyProjection, shader)
             .acceptSuggestedLinkOptions()
             .resolve()
             .openForPreview(autoWirer)!!
             .compile(glContext) { id, dataSource ->
-            dataSource.createFeed(fakeShowPlayer, autoWirer.plugins, id)
-        }
+                if (dataSource is CorePlugin.GadgetDataSource<*>) {
+                    fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
+                }
+                dataSource.createFeed(fakeShowPlayer, autoWirer.plugins, id)
+            }
     }
 
     // More forgiving color equality checking, allows each channel to be off by one.
-    fun expectColor(expected: List<Color>, actualFn: () -> List<Color>) {
+    fun expectColor(vararg expected: Color, actualFn: () -> List<Color>) {
         val actual = actualFn()
         val nearlyEqual = expected.zip(actual) { exp, act ->
             val diff = exp - act
             (diff.redI <= 1 && diff.greenI <= 1 && diff.blueI <= 1)
         }.all { it }
         if (!nearlyEqual) {
-            expect(expected, actualFn)
+            expect(expected.toList()) { actual }
         }
     }
 
     operator fun Color.minus(other: Color) =
         Color(abs(redI - other.redI), abs(greenI - other.greenI), abs(blueI - other.blueI), abs(alphaI - other.alphaI))
-
-    val ModelInfoForTest = ModelInfo.Empty
-
 }
+
+private val directXyProjection = Shader("Direct XY Projection", ShaderType.Projection,
+    /**language=glsl*/
+    """
+        // Direct XY Projection
+        // !SparkleMotion:internal
+
+        uniform sampler2D pixelCoordsTexture;
+
+        struct ModelInfo {
+            vec3 center;
+            vec3 extents;
+        };
+        uniform ModelInfo modelInfo;
+
+        vec2 project(vec3 pixelLocation) {
+            return vec2(pixelLocation.x, pixelLocation.y);
+        }
+
+        vec2 mainProjection(vec2 rasterCoord) {
+            int rasterX = int(rasterCoord.x);
+            int rasterY = int(rasterCoord.y);
+            
+            vec3 pixelCoord = texelFetch(pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
+            return project(pixelCoord);
+        }
+    """.trimIndent()
+)
 
 val FixtureRenderPlan.pixels: Pixels
     get() = renderResult as Pixels

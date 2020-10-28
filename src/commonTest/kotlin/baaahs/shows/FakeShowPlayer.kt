@@ -2,12 +2,10 @@ package baaahs.shows
 
 import baaahs.Gadget
 import baaahs.ShowPlayer
-import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.render.FixtureRenderPlan
 import baaahs.gl.shader.OpenShader
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
@@ -42,29 +40,16 @@ class FakeShowPlayer(
         dataFeeds.getBang(dataSource, "datafeed")
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
+        gadgets[id] = gadget
         controlledDataSource?.let { dataSourceGadgets[controlledDataSource] = gadget }
     }
 
     override fun releaseUnused() {
     }
 
-//    override val allSurfaces: List<Surface> = emptyList()
-//    override val allMovingHeads: List<MovingHead> = emptyList()
-//    override val currentBeat: Float = 1f
-
-    private val renderSurfaces = mutableMapOf<Fixture, FixtureRenderPlan>()
-
-//    override fun getBeatSource(): BeatSource {
-//        TODO("not implemented")
-//    }
-
-//    override fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
-//        TODO("not implemented")
-//    }
-
     override fun <T : Gadget> useGadget(id: String): T {
         @Suppress("UNCHECKED_CAST")
-        return gadgets[id] as T
+        return gadgets.getBang(id, "gadget") as T
     }
 
     override fun <T : Gadget> useGadget(dataSource: DataSource): T? {
@@ -72,16 +57,8 @@ class FakeShowPlayer(
         return dataSourceGadgets[dataSource] as T?
     }
 
-    fun drawFrame() {
-        TODO()
-//        renderSurfaces.values.forEach { renderSurface ->
-//            renderSurface.updateRenderSurface()
-//        }
-//        renderEngine.draw()
-    }
-
     fun <T : Gadget> getGadget(name: String): T {
         @Suppress("UNCHECKED_CAST")
-        return gadgets[name] as T
+        return gadgets.getBang(name, "gadget") as T
     }
 }
