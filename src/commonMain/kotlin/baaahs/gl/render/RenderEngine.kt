@@ -291,10 +291,4 @@ open class RenderEngine(
             frameCount = 0
         }
     }
-
-    object GlConst {
-        val GL_RGBA8 = 0x8058
-        val GL_RG32F = 0x8230
-        val GL_RGBA32F = 0x8814
-    }
 }

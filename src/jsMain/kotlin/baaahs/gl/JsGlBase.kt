@@ -49,9 +49,14 @@ actual object GlBase {
         override fun <T> runInContext(fn: () -> T): T = fn()
 
         fun ensureColorBufferFloatExtension() {
-            if (webgl.getExtension("EXT_color_buffer_float") == null) {
-                window.alert("EXT_color_buffer_float not supported")
-                throw Exception("EXT_color_buffer_float not supported")
+            // For RGBA32F in FloatXyzwParam:
+            ensureExtension("EXT_color_buffer_float")
+        }
+
+        private fun ensureExtension(name: String) {
+            if (webgl.getExtension(name) == null) {
+                window.alert("$name not supported")
+                throw Exception("$name not supported")
             }
         }
     }

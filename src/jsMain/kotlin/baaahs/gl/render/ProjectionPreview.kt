@@ -144,10 +144,10 @@ class ProjectionPreview(
 object ProjectionPreviewDevice: DeviceType {
     override val resultParams: List<DeviceParam>
         get() = listOf(
-            DeviceParam("Vertex Location", XyParam)
+            DeviceParam("Vertex Location", FloatXyParam)
         )
 
-    fun getVertexLocations(resultBuffers: List<DeviceParamBuffer>): XyParam.Buffer {
-        return resultBuffers[0] as XyParam.Buffer
+    fun getVertexLocations(resultBuffers: List<DeviceParamBuffer>): FloatXyParam.XyParamBuffer {
+        return resultBuffers[0] as FloatXyParam.XyParamBuffer
     }
 }
