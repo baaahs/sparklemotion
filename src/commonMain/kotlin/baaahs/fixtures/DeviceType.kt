@@ -5,19 +5,19 @@ import com.danielgergely.kgl.Buffer
 import com.danielgergely.kgl.GL_COLOR_ATTACHMENT0
 
 interface DeviceType {
-    val resultParams: List<DeviceParam>
+    val resultParams: List<ResultParam>
 }
 
-class DeviceParam(val title: String, val type: DeviceParamType) {
-    fun allocate(gl: GlContext, index: Int): DeviceParamBuffer {
+class ResultParam(val title: String, val type: ResultType) {
+    fun allocate(gl: GlContext, index: Int): ResultBuffer {
         return type.createParamBuffer(gl, index)
     }
 }
 
-abstract class DeviceParamBuffer(
+abstract class ResultBuffer(
     gl: GlContext,
     private val paramIndex: Int,
-    val type: DeviceParamType
+    val type: ResultType
 ) {
     private var curWidth = 0
     private var curHeight = 0

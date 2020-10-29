@@ -7,16 +7,16 @@ import baaahs.geom.Vector4F
 import baaahs.gl.GlContext
 import com.danielgergely.kgl.*
 
-interface DeviceParamType {
+interface ResultType {
     val renderPixelFormat: Int
     val readPixelFormat: Int
     val readType: Int
     val stride: Int
 
-    fun createParamBuffer(gl: GlContext, index: Int): DeviceParamBuffer
+    fun createParamBuffer(gl: GlContext, index: Int): ResultBuffer
 }
 
-object ColorParam : DeviceParamType {
+object ColorResultType : ResultType {
     override val renderPixelFormat: Int
         get() = GlContext.GL_RGBA8
     override val readPixelFormat: Int
@@ -30,7 +30,7 @@ object ColorParam : DeviceParamType {
         return Buffer(gl, index)
     }
 
-    class Buffer(gl: GlContext, paramIndex: Int) : DeviceParamBuffer(gl, paramIndex, ColorParam) {
+    class Buffer(gl: GlContext, paramIndex: Int) : ResultBuffer(gl, paramIndex, ColorResultType) {
         private lateinit var byteBuffer: ByteBuffer
 
         override val cpuBuffer: com.danielgergely.kgl.Buffer
@@ -55,15 +55,15 @@ object ColorParam : DeviceParamType {
 
 // Yuck. XY and XYZ fail, at least on WebGL. Maybe they work on others?
 
-object FloatXParam : FloatsParam(
+object FloatResultType : FloatsResultType(
     // Haven't tested this, but I'm assuming it doesn't work.
     1, GL_R32F, GL_RED
 ) {
-    override fun createParamBuffer(gl: GlContext, index: Int): DeviceParamBuffer {
-        return XParamBuffer(gl, index, this)
+    override fun createParamBuffer(gl: GlContext, index: Int): ResultBuffer {
+        return ParamBuffer(gl, index, this)
     }
 
-    class XParamBuffer(gl: GlContext, index: Int, type: DeviceParamType) : FloatsParam.Buffer(gl, index, type) {
+    class ParamBuffer(gl: GlContext, index: Int, type: ResultType) : FloatsResultType.Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Float {
             val offset = pixelIndex * type.stride
 
@@ -72,18 +72,18 @@ object FloatXParam : FloatsParam(
     }
 }
 
-object FloatXyParam : FloatsParam(
+object Vec2ResultType : FloatsResultType(
     // This doesn't work in WebGL2 because... dunno.
     //    2, GL_RG32F, GL_RG
     // readPixels() fails with INVALID_OPERATION.
     // Instead we use four floats and ignore one:
     4, GlContext.GL_RGBA32F, GL_RGBA
 ) {
-    override fun createParamBuffer(gl: GlContext, index: Int): DeviceParamBuffer {
-        return XyParamBuffer(gl, index, this)
+    override fun createParamBuffer(gl: GlContext, index: Int): ResultBuffer {
+        return ParamBuffer(gl, index, this)
     }
 
-    class XyParamBuffer(gl: GlContext, index: Int, type: DeviceParamType) : FloatsParam.Buffer(gl, index, type) {
+    class ParamBuffer(gl: GlContext, index: Int, type: ResultType) : FloatsResultType.Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Vector2F {
             val offset = pixelIndex * type.stride
 
@@ -95,18 +95,18 @@ object FloatXyParam : FloatsParam(
     }
 }
 
-object FloatXyzParam : FloatsParam(
+object Vec3ResultType : FloatsResultType(
     // This doesn't work in WebGL2 because EXT_color_buffer_float doesn't have RGB32F!?
     //    3, GlContext.GL_RGB32F, GL_RGB
     // framebufferRenderbuffer() fails with INVALID_ENUM.
     // Instead we use four floats and ignore one:
     4, GlContext.GL_RGBA32F, GL_RGBA
 ) {
-    override fun createParamBuffer(gl: GlContext, index: Int): DeviceParamBuffer {
-        return XyzParamBuffer(gl, index, this)
+    override fun createParamBuffer(gl: GlContext, index: Int): ResultBuffer {
+        return ParamBuffer(gl, index, this)
     }
 
-    class XyzParamBuffer(gl: GlContext, index: Int, type: DeviceParamType) : FloatsParam.Buffer(gl, index, type) {
+    class ParamBuffer(gl: GlContext, index: Int, type: ResultType) : FloatsResultType.Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Vector3F {
             val offset = pixelIndex * type.stride
 
@@ -119,12 +119,12 @@ object FloatXyzParam : FloatsParam(
     }
 }
 
-object FloatXyzwParam : FloatsParam(4, GlContext.GL_RGBA32F, GL_RGBA) {
-    override fun createParamBuffer(gl: GlContext, index: Int): DeviceParamBuffer {
-        return XyzwParamBuffer(gl, index, this)
+object Vec4ResultType : FloatsResultType(4, GlContext.GL_RGBA32F, GL_RGBA) {
+    override fun createParamBuffer(gl: GlContext, index: Int): ResultBuffer {
+        return ParamBuffer(gl, index, this)
     }
 
-    class XyzwParamBuffer(gl: GlContext, index: Int, type: DeviceParamType) : FloatsParam.Buffer(gl, index, type) {
+    class ParamBuffer(gl: GlContext, index: Int, type: ResultType) : FloatsResultType.Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Vector4F {
             val offset = pixelIndex * type.stride
 
@@ -139,17 +139,17 @@ object FloatXyzwParam : FloatsParam(4, GlContext.GL_RGBA32F, GL_RGBA) {
 }
 
 
-abstract class FloatsParam(
+abstract class FloatsResultType(
     private val floatCount: Int,
     override val renderPixelFormat: Int,
     override val readPixelFormat: Int
-) : DeviceParamType {
+) : ResultType {
     override val readType: Int
         get() = GL_FLOAT
     override val stride: Int
         get() = floatCount
 
-    open class Buffer(gl: GlContext, index: Int, type: DeviceParamType) : DeviceParamBuffer(gl, index, type) {
+    open class Buffer(gl: GlContext, index: Int, type: ResultType) : ResultBuffer(gl, index, type) {
         protected lateinit var floatBuffer: FloatBuffer
 
         override val cpuBuffer: com.danielgergely.kgl.Buffer

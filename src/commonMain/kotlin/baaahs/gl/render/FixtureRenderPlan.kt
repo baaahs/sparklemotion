@@ -1,8 +1,8 @@
 package baaahs.gl.render
 
 import baaahs.ShowRunner
-import baaahs.fixtures.DeviceParamBuffer
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.ResultBuffer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.model.ModelInfo
 
@@ -13,7 +13,7 @@ class FixtureRenderPlan(
     val modelInfo: ModelInfo,
     val pixelCount: Int,
     val pixel0Index: Int,
-    val resultBuffers: List<DeviceParamBuffer>
+    val resultBuffers: List<ResultBuffer>
 ) {
     var program: GlslProgram? = null
     val receivers = mutableListOf<ShowRunner.FixtureReceiver>()
