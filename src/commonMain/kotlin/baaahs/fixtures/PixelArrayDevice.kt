@@ -5,19 +5,19 @@ import baaahs.Pixels
 import baaahs.gl.render.FixtureRenderPlan
 
 object PixelArrayDevice: DeviceType {
-    override val resultParams: List<DeviceParam> =
+    override val resultParams: List<ResultParam> =
         listOf(
-            DeviceParam("Pixel Color", ColorParam)
+            ResultParam("Pixel Color", ColorResultType)
         )
 
     fun getPixels(fixtureRenderPlan: FixtureRenderPlan): Pixels {
-        val buffer = fixtureRenderPlan.resultBuffers[0] as ColorParam.Buffer
+        val buffer = fixtureRenderPlan.resultBuffers[0] as ColorResultType.Buffer
         return FixturePixels(buffer, fixtureRenderPlan.pixelCount, fixtureRenderPlan.pixel0Index)
     }
 }
 
 class FixturePixels(
-    private val pixelBuffer: ColorParam.Buffer,
+    private val pixelBuffer: ColorResultType.Buffer,
     override val size: Int,
     private val bufferOffset: Int
 ) : Pixels {
