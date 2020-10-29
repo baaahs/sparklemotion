@@ -264,6 +264,11 @@ abstract class GlContext(
     companion object {
         private val logger = Logger("GlslContext")
 
+        const val GL_RGBA8 = 0x8058
+
+        const val GL_R32F = 0x822E
+        const val GL_RG32F = 0x8230
         const val GL_RGB32F = 0x8815
+        const val GL_RGBA32F = 0x8814
     }
 }
