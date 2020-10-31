@@ -2,7 +2,6 @@ package baaahs.gl.render
 
 import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
-import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.model.ModelInfo
 import baaahs.timeSync
@@ -11,6 +10,7 @@ import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 open class RenderEngine(
     val gl: GlContext,
@@ -25,6 +25,8 @@ open class RenderEngine(
 
     private val fixtureRenderPlans: MutableList<FixtureRenderPlan> = mutableListOf()
 
+    private val paramBuffers = deviceType.params
+        .mapIndexed { index, param -> param.allocate(gl, index) }
     private val resultBuffers = deviceType.resultParams
         .mapIndexed { index, deviceParam -> deviceParam.allocate(gl, index) }
 
@@ -40,7 +42,7 @@ open class RenderEngine(
         gl.runInContext { gl.check { clearColor(0f, .5f, 0f, 1f) } }
 
         arrangement = gl.runInContext {
-            createArrangement(0, FloatArray(0), fixtureRenderPlans)
+            Arrangement(0, fixturesToAdd)
                 .also { notifyListeners(it) }
         }
     }
@@ -70,80 +72,54 @@ open class RenderEngine(
         fixturesToRemove.add(fixtureRenderPlan)
     }
 
-    private fun createArrangement(pixelCount: Int, pixelCoords: FloatArray, fixtureCount: List<FixtureRenderPlan>): Arrangement =
-        Arrangement(pixelCount, pixelCoords, fixtureCount.toList())
-
     fun draw() {
         gl.runInContext {
-            stats.addFixturesMs += timeSync { incorporateNewSurfaces() }
-            stats.bindFbMs += timeSync { arrangement.bindFramebuffer() }
+            stats.prepareMs += timeSync { incorporateNewFixtures() }
             stats.renderMs += timeSync { render() }
-            stats.readPxMs += timeSync { arrangement.copyToPixelBuffer() }
+            stats.finishMs += timeSync { gl.check { finish() } }
+            stats.readPxMs += timeSync { copyResultsToCpuBuffer() }
         }
 
         stats.frameCount++
     }
 
     private fun render() {
+        frameBuffer.bind()
+
         gl.setViewport(0, 0, arrangement.pixWidth, arrangement.pixHeight)
         gl.check { clearColor(0f, .5f, 0f, 1f) }
         gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
         arrangement.render()
-
-        gl.check { finish() }
     }
 
-    protected fun incorporateNewSurfaces() {
+    fun copyResultsToCpuBuffer() {
+        resultBuffers.forEach { it.afterFrame(frameBuffer) }
+    }
+
+    private fun incorporateNewFixtures() {
         if (fixturesToRemove.isNotEmpty()) {
 //            TODO("remove TBD")
         }
 
         if (fixturesToAdd.isNotEmpty()) {
-            val oldPixelCoords = arrangement.pixelCoords
             val newPixelCount = nextPixelOffset
 
             arrangement.release()
 
-            val newPixelCoords = FloatArray(newPixelCount.bufSize * 3)
-            oldPixelCoords.copyInto(newPixelCoords)
-
-            fixturesToAdd.forEach {
-                val fixture = it.fixture
-                val pixelLocations = fixture.pixelLocations
-                val pixel0Index = it.pixel0Index
-                val defaultPixelLocation = it.modelInfo.center
-                fillPixelLocations(newPixelCoords, pixel0Index, pixelLocations, defaultPixelLocation)
-            }
-
             fixtureRenderPlans.addAll(fixturesToAdd)
-            fixturesToAdd.clear()
-
-            arrangement = createArrangement(newPixelCount, newPixelCoords, fixtureRenderPlans)
+            arrangement = Arrangement(newPixelCount, fixturesToAdd)
                 .also { notifyListeners(it) }
 
-            pixelCount = newPixelCount
-            println("Now managing $pixelCount pixels.")
-        }
-    }
+            fixturesToAdd.clear()
 
-    private fun fillPixelLocations(
-        newPixelCoords: FloatArray,
-        pixel0Index: Int,
-        pixelLocations: List<Vector3F?>,
-        defaultPixelLocation: Vector3F
-    ) {
-        pixelLocations.forEachIndexed { i, pixelLocation ->
-            val bufOffset = (pixel0Index + i) * 3
-            val (x, y, z) = pixelLocation ?: defaultPixelLocation
-            newPixelCoords[bufOffset] = x     // x
-            newPixelCoords[bufOffset + 1] = y // y
-            newPixelCoords[bufOffset + 2] = z // z
+            pixelCount = newPixelCount
         }
     }
 
     fun release() {
         arrangement.release()
+        paramBuffers.forEach { it.release() }
         resultBuffers.forEach { it.release() }
         frameBuffer.release()
     }
@@ -200,23 +176,30 @@ open class RenderEngine(
         val Int.bufSize: Int get() = bufWidth * bufHeight
     }
 
-    inner class Arrangement(
-        val pixelCount: Int,
-        val pixelCoords: FloatArray,
-        val fixtureRenderPlans: List<FixtureRenderPlan>
-    ) {
+    inner class Arrangement(val pixelCount: Int, addedFixtures: List<FixtureRenderPlan>) {
         init {
-            println("Creating arrangement with $pixelCount")
+            logger.info { "Creating ${deviceType::class.simpleName} arrangement with $pixelCount pixels" }
         }
+
         val pixWidth = pixelCount.bufWidth
         val pixHeight = pixelCount.bufHeight
 
         init {
+            val safeWidth = max(pixWidth, 1.bufWidth)
+            val safeHeight = max(pixHeight, 1.bufHeight)
+
+            paramBuffers.forEach {
+                it.resizeBuffer(safeWidth, safeHeight)
+            }
+            for (addedFixture in addedFixtures) {
+                deviceType.initPixelParams(addedFixture, paramBuffers)
+            }
+            paramBuffers.forEach {
+                it.resizeTexture(safeWidth, safeHeight)
+            }
+
             resultBuffers.forEach {
-                it.resize(
-                    max(pixWidth, 1.bufWidth),
-                    max(pixHeight, 1.bufHeight)
-                )
+                it.resize(safeWidth, safeHeight)
             }
         }
 
@@ -233,14 +216,6 @@ open class RenderEngine(
                 }
             })
 
-        fun bindFramebuffer() {
-            frameBuffer.bind()
-        }
-
-        fun copyToPixelBuffer() {
-            resultBuffers.forEach { it.afterFrame(frameBuffer) }
-        }
-
         fun release() {
             logger.debug { "Release $this with ${fixtureRenderPlans.count()} fixtures and $pixelCount pixels" }
 
@@ -248,45 +223,54 @@ open class RenderEngine(
         }
 
         fun render() {
-            fixtureRenderPlans.groupBy { it.program }.forEach { (program, fixtures) ->
-                if (program != null) {
-                    gl.useProgram(program)
-                    program.updateUniforms()
+            fixtureRenderPlans
+                .groupBy { it.program }
+                .forEach { (program, fixtureRenderPlans) ->
+                    if (program != null) {
+                        // TODO: This ought to be merged with GlslProgram.bindings probably?
+                        paramBuffers.forEach { it.bind(program).setOnProgram() }
 
-                    quad.prepareToRender(program.vertexAttribLocation) {
-                        fixtures.forEach { fixture ->
-                            fixture.rects.indices.forEach { i ->
-                                quad.renderRect(fixture.rect0Index + i)
+                        gl.useProgram(program)
+                        program.updateUniforms()
+
+                        quad.prepareToRender(program.vertexAttribLocation) {
+                            fixtureRenderPlans.forEach { fixtureRenderPlan ->
+                                deviceType.setFixtureParamUniforms(fixtureRenderPlan, paramBuffers)
+
+                                fixtureRenderPlan.rects.indices.forEach { i ->
+                                    quad.renderRect(fixtureRenderPlan.rect0Index + i)
+                                }
                             }
                         }
                     }
                 }
-            }
         }
     }
 
     class Stats {
-        var addFixturesMs = 0; internal set
-        var bindFbMs = 0; internal set
+        var prepareMs = 0; internal set
         var renderMs = 0; internal set
+        var finishMs = 0; internal set
         var readPxMs = 0; internal set
         var frameCount = 0; internal set
 
         fun dump() {
+            val count = frameCount * 1f
+            fun Int.pretty() = ((this / count * 10).roundToInt() / 10f).toString()
             println(
-                "Render of $frameCount frames took: " +
-                        "addFixtures=${addFixturesMs}ms " +
-                        "bindFbMs=${bindFbMs}ms " +
-                        "renderMs=${renderMs}ms " +
-                        "readPxMs=${readPxMs}ms " +
-                        "$this"
+                "Average time drawing $frameCount frames:\n" +
+                        " prepareMs=${prepareMs.pretty()}ms/frame\n" +
+                        "  renderMs=${renderMs.pretty()}ms/frame\n" +
+                        "  finishMs=${finishMs.pretty()}ms/frame\n" +
+                        "  readPxMs=${readPxMs.pretty()}ms/frame\n" +
+                        "   totalMs=${(prepareMs + renderMs + finishMs + readPxMs).pretty()}ms/frame"
             )
         }
 
         fun reset() {
-            addFixturesMs = 0
-            bindFbMs = 0
+            prepareMs = 0
             renderMs = 0
+            finishMs = 0
             readPxMs = 0
             frameCount = 0
         }

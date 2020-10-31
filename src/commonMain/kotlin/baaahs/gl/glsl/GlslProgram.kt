@@ -11,10 +11,11 @@ import baaahs.show.OutputPortRef
 import baaahs.util.Logger
 
 class GlslProgram(
-    internal val gl: GlContext,
+    internal val renderEngine: RenderEngine,
     private val linkedPatch: LinkedPatch,
     resolver: Resolver
 ) {
+    internal val gl: GlContext = renderEngine.gl
 
     private val vertexShader =
         gl.createVertexShader(
@@ -38,7 +39,7 @@ class GlslProgram(
 
     private inline fun <reified T> bindingsOf(): List<T> {
         return bindings
-            .map { it.dataFeed }
+            .mapNotNull { it.dataFeed }
             .filterIsInstance<T>()
     }
 
@@ -75,7 +76,7 @@ class GlslProgram(
     }
 
     interface Binding {
-        val dataFeed: DataFeed
+        val dataFeed: DataFeed?
         val isValid: Boolean
 
         fun setOnProgram()

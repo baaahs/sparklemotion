@@ -2,6 +2,7 @@ package baaahs.gl.preview
 
 import baaahs.BaseShowPlayer
 import baaahs.Gadget
+import baaahs.fixtures.*
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslException
@@ -10,6 +11,8 @@ import baaahs.gl.glsl.Resolver
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.render.FixtureRenderPlan
+import baaahs.gl.render.RenderEngine
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
@@ -149,8 +152,9 @@ class PreviewShaderBuilder(
     }
 
     fun compile(gl: GlContext, resolver: Resolver) {
+        val renderEngine = RenderEngine(gl, modelInfo, ProjectionPreviewDevice)
         try {
-            glslProgram = linkedPatch?.compile(gl, resolver)
+            glslProgram = linkedPatch?.compile(renderEngine, resolver)
             state = ShaderBuilder.State.Success
         } catch (e: GlslException) {
             glslErrors = e.errors
@@ -177,5 +181,24 @@ class PreviewShaderBuilder(
                 """.trimIndent()
             )
         }
+    }
+}
+
+object ProjectionPreviewDevice: DeviceType {
+    override val params: List<Param>
+        get() = emptyList()
+    override val resultParams: List<ResultParam>
+        get() = listOf(
+            ResultParam("Vertex Location", Vec2ResultType)
+        )
+
+    override fun setFixtureParamUniforms(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>) {
+    }
+
+    override fun initPixelParams(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>) {
+    }
+
+    fun getVertexLocations(resultBuffers: List<ResultBuffer>): Vec2ResultType.ParamBuffer {
+        return resultBuffers[0] as Vec2ResultType.ParamBuffer
     }
 }

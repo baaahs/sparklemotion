@@ -5,12 +5,10 @@ import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.RadioButtonStrip
 import baaahs.gadgets.Slider
-import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslProgram.DataFeed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
-import baaahs.gl.render.RenderEngine
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
@@ -18,10 +16,6 @@ import baaahs.show.DataSourceBuilder
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutableGadgetControl
 import baaahs.util.Logger
-import com.danielgergely.kgl.FloatBuffer
-import com.danielgergely.kgl.GL_FLOAT
-import com.danielgergely.kgl.GL_NEAREST
-import com.danielgergely.kgl.GL_RGB
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -199,33 +193,10 @@ class CorePlugin : Plugin {
         override fun suggestId(): String = "pixelCoordsTexture"
 
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
-            object : DataFeed, RenderEngine.ArrangementListener, RefCounted by RefCounter() {
-                private val gl = showPlayer.glContext
-                private val uvCoordTextureUnit = gl.getTextureUnit(PixelCoordsTextureDataSource::class)
-                private val uvCoordTexture = gl.check { createTexture() }
-
-                override fun onArrangementChange(arrangement: RenderEngine.Arrangement) {
-                    if (arrangement.pixelCoords.isEmpty()) return
-
-                    val pixWidth = arrangement.pixWidth
-                    val pixHeight = arrangement.pixHeight
-                    val floatBuffer = FloatBuffer(arrangement.pixelCoords)
-
-                    with(uvCoordTextureUnit) {
-                        bindTexture(uvCoordTexture)
-                        configure(GL_NEAREST, GL_NEAREST)
-                        uploadTexture(0, GL_RGB32F, pixWidth, pixHeight, 0, GL_RGB, GL_FLOAT, floatBuffer)
-                    }
-                }
-
+            object : DataFeed, RefCounted by RefCounter() {
                 override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(glslProgram, this@PixelCoordsTextureDataSource, id, this) { uniform ->
-                        uniform.set(uvCoordTextureUnit)
-                    }
-
-                override fun onFullRelease() {
-                    gl.check { deleteTexture(uvCoordTexture) }
-                }
+                    GlslProgram.NoOpDataFeed().bind(glslProgram)
+                override fun onFullRelease() = Unit
             }
     }
 

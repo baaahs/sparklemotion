@@ -152,7 +152,7 @@ class MutableShow(
         .mapValues { (_, shader) -> MutableShader(shader) }
         .toMutableMap()
 
-    internal val shaderChannels = CacheBuilder<ShaderChannel, MutableShaderChannel> {
+    private val shaderChannels = CacheBuilder<ShaderChannel, MutableShaderChannel> {
         MutableShaderChannel(it.id)
     }
 
