@@ -2,9 +2,9 @@ package baaahs.gl.patch
 
 import baaahs.fixtures.Fixture
 import baaahs.getBang
-import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.Resolver
+import baaahs.gl.render.RenderEngine
 import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
@@ -114,14 +114,14 @@ class LinkedPatch(
         return "#version ${glslVersion}\n\n${toGlsl()}\n"
     }
 
-    fun compile(glContext: GlContext, resolver: Resolver): GlslProgram =
-        GlslProgram(glContext, this, resolver)
+    fun compile(renderEngine: RenderEngine, resolver: Resolver): GlslProgram =
+        GlslProgram(renderEngine, this, resolver)
 
     fun createProgram(
-        glContext: GlContext,
+        renderEngine: RenderEngine,
         dataFeeds: Map<DataSource, GlslProgram.DataFeed>
     ): GlslProgram {
-        return compile(glContext) { _, dataSource -> dataFeeds.getBang(dataSource, "data feed") }
+        return compile(renderEngine) { _, dataSource -> dataFeeds.getBang(dataSource, "data feed") }
     }
 
     fun matches(fixture: Fixture): Boolean = this.surfaces.matches(fixture)

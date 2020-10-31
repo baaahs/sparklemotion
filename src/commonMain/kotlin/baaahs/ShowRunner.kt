@@ -128,10 +128,9 @@ class ShowRunner(
             val linkedPatches = autoWirer.merge(*activePatchHolders.toTypedArray()).mapValues { (_, portDiagram) ->
                 portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
             }
-            val glslContext = renderEngine.gl
             val activeDataSources = mutableSetOf<String>()
             val programs = linkedPatches.mapNotNull { (_, linkedPatch) ->
-                linkedPatch?.let { it to it.createProgram(glslContext, openShow.dataFeeds) }
+                linkedPatch?.let { it to it.createProgram(renderEngine, openShow.dataFeeds) }
             }
             return RenderPlan(programs, activeSet)
         } catch (e: GlslException) {
@@ -139,7 +138,7 @@ class ShowRunner(
             if (e is CompilationException) {
                 e.source?.let { logger.info { it } }
             }
-            return GuruMeditationError.createRenderPlan(renderEngine.gl)
+            return GuruMeditationError.createRenderPlan(renderEngine)
         }
     }
 

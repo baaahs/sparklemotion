@@ -254,7 +254,7 @@ class RenderEngineTest {
             .acceptSuggestedLinkOptions()
             .resolve()
             .openForPreview(autoWirer)!!
-            .compile(glContext) { id, dataSource ->
+            .compile(renderEngine) { id, dataSource ->
                 if (dataSource is CorePlugin.GadgetDataSource<*>) {
                     fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
                 }

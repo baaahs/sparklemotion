@@ -1,8 +1,9 @@
 package baaahs.gl.render
 
-import baaahs.fixtures.*
+import baaahs.fixtures.Fixture
 import baaahs.gl.GlBase
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.preview.ProjectionPreviewDevice
 import baaahs.model.Model
 import baaahs.window
 import org.w3c.dom.CanvasRenderingContext2D
@@ -138,16 +139,5 @@ class ProjectionPreview(
     override fun resize(width: Int, height: Int) {
         this.width = width
         this.height = height
-    }
-}
-
-object ProjectionPreviewDevice: DeviceType {
-    override val resultParams: List<ResultParam>
-        get() = listOf(
-            ResultParam("Vertex Location", Vec2ResultType)
-        )
-
-    fun getVertexLocations(resultBuffers: List<ResultBuffer>): Vec2ResultType.ParamBuffer {
-        return resultBuffers[0] as Vec2ResultType.ParamBuffer
     }
 }

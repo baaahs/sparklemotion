@@ -8,6 +8,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.render.RenderEngine
 import baaahs.model.ModelInfo
 import baaahs.only
 import baaahs.plugin.Plugins
@@ -56,11 +57,11 @@ object GuruMeditationError {
             .resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
     }
 
-    fun createRenderPlan(gl: GlContext): RenderPlan {
+    fun createRenderPlan(renderEngine: RenderEngine): RenderPlan {
         linkedPatch ?: error("Couldn't build guru meditation error patch.")
 
         return RenderPlan(
-            listOf(linkedPatch to linkedPatch.createProgram(gl, dataFeeds)),
+            listOf(linkedPatch to linkedPatch.createProgram(renderEngine, dataFeeds)),
             ActiveSet(emptyList())
         )
     }
