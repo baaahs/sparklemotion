@@ -10,23 +10,28 @@ import kotlinx.serialization.json.put
 
 class GlslCode(
     val src: String,
-    glslStatements: List<GlslAnalyzer.GlslStatement>
+    val statements: List<GlslStatement>
 ) {
     internal val globalVarNames = hashSetOf<String>()
     internal val functionNames = hashSetOf<String>()
     internal val structNames = hashSetOf<String>()
 
-    val statements = glslStatements.map {
-        it.asSpecialOrNull()
-            ?: it.asStructOrNull()?.also { glslStruct ->
-                structNames.add(glslStruct.name)
-                glslStruct.varName?.let { globalVarNames += it }
+    init {
+        statements.forEach {
+            when (it) {
+                is GlslStruct -> {
+                    structNames.add(it.name)
+                    it.varName?.let { varName -> globalVarNames += varName }
+                }
+                is GlslVar -> globalVarNames.add(it.name)
+                is GlslFunction -> functionNames.add(it.name)
+                else -> {
+                    if (it.fullText.isNotBlank()) {
+                        logger.warn { "unrecognized GLSL: ${it.fullText} at ${it.lineNumber}" }
+                    }
+                }
             }
-            ?: it.asVarOrNull()?.also { glslVar -> globalVarNames.add(glslVar.name) }
-            ?: it.asFunctionOrNull()?.also { glslFunction -> functionNames.add(glslFunction.name) }
-            ?: GlslOther("unknown", it.text, it.lineNumber).also {
-                if (it.fullText.isNotBlank()) logger.warn { "unrecognized GLSL: ${it.fullText} at ${it.lineNumber}" }
-            }
+        }
     }
     val symbolNames = globalVarNames + functionNames + structNames
     val globalVars: Collection<GlslVar> get() =
@@ -69,13 +74,13 @@ class GlslCode(
         }
     }
 
-    interface Statement {
+    interface GlslStatement {
         val name: String
         val fullText: String
         val lineNumber: Int?
         val comments: List<String>
 
-        fun stripSource(): Statement
+        fun stripSource(): GlslStatement
 
         fun toGlsl(
             namespace: Namespace,
@@ -99,7 +104,7 @@ class GlslCode(
         override val fullText: String,
         override val lineNumber: Int?,
         override val comments: List<String> = emptyList()
-    ) : Statement {
+    ) : GlslStatement {
         override fun stripSource() = copy(fullText = "", lineNumber = null)
     }
 
@@ -111,7 +116,7 @@ class GlslCode(
         override val fullText: String,
         override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList()
-    ) : Statement {
+    ) : GlslStatement {
         override fun stripSource() = copy(fullText = "", lineNumber = null)
 
         fun getSyntheticVar(): GlslVar {
@@ -133,7 +138,7 @@ class GlslCode(
         val isVarying: Boolean = false,
         override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList()
-    ) : Statement {
+    ) : GlslStatement {
         override fun stripSource() = copy(fullText = "", lineNumber = null)
 
         val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
@@ -205,7 +210,7 @@ class GlslCode(
         override val lineNumber: Int? = null,
         val symbols: Set<String> = emptySet(),
         override val comments: List<String> = emptyList()
-    ) : Statement {
+    ) : GlslStatement {
         override fun stripSource() = copy(lineNumber = null, symbols = emptySet())
     }
 
