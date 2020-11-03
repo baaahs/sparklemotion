@@ -54,7 +54,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
             freezeLineNumber: Boolean = false
         ): ParseState {
             var state = initialState
-            Regex("(.*?)(//|[;{}()#\n]|$)").findAll(text).forEach { matchResult ->
+            Regex("(.*?)(//|[;{}(,)#\n]|$)").findAll(text).forEach { matchResult ->
                 val (before, token) = matchResult.destructured
 
                 if (!freezeLineNumber && token == "\n") lineNumber++
@@ -139,6 +139,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
                 "{" -> visitLeftCurlyBrace()
                 "}" -> visitRightCurlyBrace()
                 "(" -> visitLeftParen()
+                "," -> visitComma()
                 ")" -> visitRightParen()
                 "#" -> visitDirective()
                 "\n" -> visitNewline()
@@ -166,6 +167,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
         open fun visitLeftCurlyBrace(): ParseState = visitText("{")
         open fun visitRightCurlyBrace(): ParseState = visitText("}")
         open fun visitLeftParen(): ParseState = visitText("(")
+        open fun visitComma(): ParseState = visitText(",")
         open fun visitRightParen(): ParseState = visitText(")")
         open fun visitDirective(): ParseState = visitText("#")
         open fun visitNewline(): ParseState = visitText("\n")
@@ -295,8 +297,10 @@ class GlslAnalyzer(private val plugins: Plugins) {
 
             override fun visitLeftParen(): ParseState {
                 return if (context.outputEnabled && braceNestLevel == 0 && !tokensSoFar.contains("=")) {
-                    Function(tokensSoFar, context)
-                        .copyFrom(this).apply { appendText("(") }
+                    val fn = Function(tokensSoFar, context)
+                    fn.copyFrom(this)
+                    fn.appendText("(")
+                    fn.Params()
                 } else {
                     super.visitLeftParen()
                 }
@@ -357,6 +361,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
         ) : Statement(context) {
             val returnType: GlslType
             val name: String
+            val params = arrayListOf<GlslParam>()
 
             init {
                 if (tokensSoFar.size != 2)
@@ -367,17 +372,72 @@ class GlslAnalyzer(private val plugins: Plugins) {
             }
 
             override fun createStatement(): GlslStatement =
-                asFunctionOrNull()
-                    ?: throw context.glslError("huh? couldn't find a function in \"$textAsString\"")
+                GlslFunction(returnType, name, params, textAsString, lineNumber, emptySet(), comments)
 
-            fun asFunctionOrNull(globalVars: Set<String> = emptySet()): GlslFunction? {
-                val text = textAsString
-                return Regex("(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})", RegexOption.MULTILINE)
-                    .find(text.trim())?.let {
-                        val (returnType, name, params, body) = it.destructured
-                        GlslFunction(GlslType.from(returnType), name, params,
-                            text, lineNumber, globalVars, comments)
+            inner class Params(
+                recipientOfNextComment: Statement? = null
+            ) : Statement(context, recipientOfNextComment) {
+                var qualifier: String? = null
+                var type: GlslType? = null
+                var name: String? = null
+
+                override fun visitText(value: String): ParseState {
+                    val trimmed = value.trim()
+                    if (trimmed.isNotEmpty()) {
+                        if (qualifier == null && (trimmed == "in" || trimmed == "out" || trimmed == "inout")) {
+                            qualifier = trimmed
+                        } else if (type == null) {
+                            type = GlslType.from(trimmed)
+                        } else if (name == null) {
+                            name = trimmed
+                        } else {
+                            throw context.glslError("Unexpected token \"$trimmed\".")
+                        }
                     }
+
+                    return super.visitText(value)
+                }
+
+                override fun visitComma(): ParseState {
+                    addParam()
+                    appendText(",")
+                    this@Function.appendText(textAsString)
+                    return Params(this)
+                }
+
+                override fun visitRightParen(): ParseState {
+                    addParam()
+                    appendText(")")
+                    this@Function.appendText(textAsString)
+                    return this@Function
+                }
+
+                override fun createStatement(): GlslStatement {
+                    error("huh?")
+                }
+
+                fun addParam() {
+                    val type = type
+                    val name = name
+
+                    if (type == GlslType.Void) return
+                    if (name == null && type == null) return
+
+                    if (type == null) {
+                        throw context.glslError("No type for parameter in ${this@Function.name}().")
+                    } else if (name == null) {
+                        throw context.glslError("No name for parameter in ${this@Function.name}().")
+                    }
+
+                    params.add(GlslParam(
+                        name,
+                        type,
+                        isIn = qualifier == null || qualifier == "in" || qualifier == "inout",
+                        isOut = qualifier == "out" || qualifier == "inout",
+                        lineNumber = lineNumber,
+                        comments = comments
+                    ))
+                }
             }
         }
 

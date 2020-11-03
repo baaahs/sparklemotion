@@ -41,6 +41,14 @@ fun <T> expects(expected: Collection<T>, block: () -> Collection<T>) {
         assertEquals(expected.joinToString("\n"), actual.joinToString("\n"))
 }
 
+fun <K, V> expects(expected: Map<K, V>, block: () -> Map<K, V>) {
+    val actual = block()
+    fun Map<*, *>.prettier() =
+        entries.sortedBy { (k, _) -> k.toString() }.joinToString("\n") { (k, v) -> "$k = $v" }
+    if (actual != expected)
+        assertEquals(expected.prettier(), actual.prettier())
+}
+
 @Synonym(SynonymType.TEST)
 @Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
 fun <T> Suite.expectValue(expected: T, skip: Skip = Skip.No, actual: () -> T) {
