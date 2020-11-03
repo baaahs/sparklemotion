@@ -1,5 +1,6 @@
 package baaahs.gl.shader
 
+import baaahs.gl.expects
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
@@ -41,7 +42,7 @@ object PaintShaderSpec : Spek({
             }
 
             it("finds magic uniforms") {
-                expect(
+                expects(
                     listOf(
                         InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream),
                         InputPort("time", GlslType.Float, "Time", ContentType.Time),
@@ -109,7 +110,7 @@ object PaintShaderSpec : Spek({
 
             describe("#inputPorts") {
                 it("finds magic uniforms") {
-                    expect(
+                    expects(
                         listOf(
                             InputPort("blueness", GlslType.Float, "Blueness"),
                             InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution),

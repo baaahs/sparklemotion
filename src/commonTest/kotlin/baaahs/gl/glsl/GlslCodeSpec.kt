@@ -64,8 +64,29 @@ object GlslCodeSpec : Spek({
                 override(text) { "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }" }
                 expectValue(
                     GlslCode.GlslFunction(
-                        GlslType.Float, "rand", "vec2 uv",
+                        GlslType.Float, "rand",
+                        listOf(GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 2)),
                         "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }"
+                    )
+                ) { function }
+            }
+
+            context("void params") {
+                override(text) { "float zero( void ) { return 0.; }" }
+                expectValue(
+                    GlslCode.GlslFunction(
+                        GlslType.Float, "zero", emptyList(),
+                        "float zero( void ) { return 0.; }"
+                    )
+                ) { function }
+            }
+
+            context("with hints") {
+                override(text) { "float zero( void ) { return 0.; }" }
+                expectValue(
+                    GlslCode.GlslFunction(
+                        GlslType.Float, "zero", emptyList(),
+                        "float zero( void ) { return 0.; }"
                     )
                 ) { function }
             }

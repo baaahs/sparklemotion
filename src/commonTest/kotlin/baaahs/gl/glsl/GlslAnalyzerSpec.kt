@@ -1,6 +1,7 @@
 package baaahs.gl.glsl
 
 import baaahs.gl.expectStatements
+import baaahs.gl.expects
 import baaahs.gl.glsl.GlslCode.*
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
@@ -107,13 +108,16 @@ object GlslAnalyzerSpec : Spek({
                                         "    vec2 uv = fragCoord.xy / resolution.xy;\n" +
                                         "    fragColor = vec4(uv.xy, 0., 1.);\n" +
                                         "}",
-                                params = " out vec4 fragColor, in vec2 fragCoord "
+                                params = listOf(
+                                    GlslParam("fragColor", GlslType.Vec4, isOut = true),
+                                    GlslParam("fragCoord", GlslType.Vec2, isIn = true)
+                                )
                             ),
                             GlslFunction(
                                 GlslType.Void,
                                 "mainFunc",
                                 lineNumber = 24,
-                                params = "",
+                                params = emptyList(),
                                 fullText = "void main() {\n" +
                                         "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
                                         "}"
@@ -148,10 +152,10 @@ object GlslAnalyzerSpec : Spek({
                 it("finds the functions") {
                     expect(
                         listOf(
-                            "void mainFunc( out vec4 fragColor, in vec2 fragCoord )",
+                            "void mainFunc(out vec4 fragColor, in vec2 fragCoord)",
                             "void main()"
                         )
-                    ) { glslCode.functions.map { "${it.returnType.glslLiteral} ${it.name}(${it.params})" } }
+                    ) { glslCode.functions.map { it.prettify() } }
                 }
 
                 it("finds the structs") {
@@ -216,7 +220,7 @@ object GlslAnalyzerSpec : Spek({
                                 "void mainFunc(out vec4 fragColor, in vec2 fragCoord)",
                                 "void main()"
                             )
-                        ) { glslCode.functions.map { "${it.returnType.glslLiteral} ${it.name}(${it.params})" } }
+                        ) { glslCode.functions.map { it.prettify() } }
                     }
 
                     context("with defines") {
@@ -265,10 +269,10 @@ object GlslAnalyzerSpec : Spek({
                     it("finds both functions") {
                         expect(
                             listOf(
-                                "vec3 mod289(vec3 x)",
-                                "vec4 mod289(vec4 x)"
+                                "vec3 mod289(in vec3 x)",
+                                "vec4 mod289(in vec4 x)"
                             )
-                        ) { glslCode.functions.map { "${it.returnType.glslLiteral} ${it.name}(${it.params})" } }
+                        ) { glslCode.functions.map { it.prettify() } }
                     }
                 }
             }
@@ -332,7 +336,7 @@ object GlslAnalyzerSpec : Spek({
                     }
 
                     it("creates inputs for implicit uniforms") {
-                        expect(
+                        expects(
                             listOf(
                                 InputPort("blueness", GlslType.Float, "Blueness"),
                                 InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution),
@@ -351,7 +355,7 @@ object GlslAnalyzerSpec : Spek({
                     }
 
                     it("creates inputs for implicit uniforms") {
-                        expect(
+                        expects(
                             listOf(
                                 InputPort(
                                     "pixelCoordsTexture",
@@ -384,3 +388,19 @@ object GlslAnalyzerSpec : Spek({
         }
     }
 })
+
+private fun GlslFunction.prettify() =
+    "${returnType.glslLiteral} ${name}(${params.joinToString(", ") { it.prettify() }})"
+
+private fun GlslParam.prettify(): String = "${
+        when (isIn to isOut) {
+            false to false -> ""
+            true to false -> "in "
+            false to true -> "out "
+            true to true -> "inout "
+            else -> error("huh?")
+        }
+    }${type.glslLiteral} ${name}${
+        if (comments.isNotEmpty()) " /* ${comments.joinToString(" ")} */" else ""
+    }"
+

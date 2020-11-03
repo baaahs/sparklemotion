@@ -108,7 +108,7 @@ object AutoWirerSpec : Spek({
                 }
 
                 it("creates a reasonable guess patch") {
-                    expect(
+                    expects(
                         listOf(
                             MutableShaderInstance(
                                 MutableShader(paintShader),
@@ -131,7 +131,7 @@ object AutoWirerSpec : Spek({
                     liveShaderInstance.incomingLinks.forEach { (port, link) ->
                         println("port $port -> $link")
                     }
-                    expect(
+                    expects(
                         mapOf(
                             "blueness" to LiveShaderInstance.DataSourceLink(
                                 CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null), "bluenessSlider"

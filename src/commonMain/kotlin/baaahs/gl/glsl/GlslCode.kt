@@ -37,7 +37,7 @@ class GlslCode(
     val globalVars: Collection<GlslVar> get() =
         statements.filterIsInstance<GlslVar>() +
                 structs.filter { it.varName != null }
-                    .map { it. getSyntheticVar() }
+                    .map { it.getSyntheticVar() }
     val globalInputVars: Collection<GlslVar> get() = globalVars.filter { it.isUniform || it.isVarying }
     val uniforms: Collection<GlslVar> get() = globalVars.filter { it.isUniform }
     val functions: Collection<GlslFunction> get() = statements.filterIsInstance<GlslFunction>()
@@ -154,7 +154,7 @@ class GlslCode(
         fun tag(name: String) = tags[name]
 
         companion object {
-            fun parse(commentString: String, lineNumber: Int?): Hint? {
+            fun parse(commentString: String, lineNumber: Int? = null): Hint? {
                 var pluginRef: PluginRef? = null
                 var config: JsonObject? = null
                 val tags = mutableMapOf<String, String>()
@@ -205,13 +205,24 @@ class GlslCode(
     data class GlslFunction(
         val returnType: GlslType,
         override val name: String,
-        val params: String,
+        val params: List<GlslParam>,
         override val fullText: String,
         override val lineNumber: Int? = null,
         val symbols: Set<String> = emptySet(),
         override val comments: List<String> = emptyList()
     ) : GlslStatement {
         override fun stripSource() = copy(lineNumber = null, symbols = emptySet())
+    }
+
+    data class GlslParam(
+        val name: String,
+        val type: GlslType,
+        val isIn: Boolean = false,
+        val isOut: Boolean = false,
+        val lineNumber: Int? = null,
+        val comments: List<String> = emptyList()
+    ) {
+        val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }) }
     }
 
     class Namespace(private val prefix: String) {
