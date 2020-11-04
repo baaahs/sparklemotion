@@ -13,38 +13,33 @@ class Component(
     val title: String get() = shaderInstance.shader.title
     private val prefix = "p$index"
     private val namespace = GlslCode.Namespace(prefix + "_" + instanceNode.shaderShortName)
-    private val portMap: Map<String, Lazy<String>>
+    private val portMap: Map<String, String>
     private val resultInReturnValue: Boolean
     private var resultVar: String
 
     init {
-        val tmpPortMap = hashMapOf<String, Lazy<String>>()
+        val tmpPortMap = hashMapOf<String, String>()
 
         shaderInstance.incomingLinks.forEach { (toPortId, fromLink) ->
             when (fromLink) {
                 is LiveShaderInstance.ShaderOutLink -> {
-                    tmpPortMap[toPortId] = lazy {
-                        val upstreamComponent = findUpstreamComponent(fromLink.shaderInstance)
-                        val outputPort = fromLink.shaderInstance.shader.outputPort
+                    val upstreamComponent = findUpstreamComponent(fromLink.shaderInstance)
+                    val outputPort = fromLink.shaderInstance.shader.outputPort
+                    tmpPortMap[toPortId] =
                         if (outputPort.isReturnValue()) {
                             upstreamComponent.resultVar
                         } else {
                             upstreamComponent.namespace.qualify(outputPort.id)
                         }
-                    }
                 }
                 is LiveShaderInstance.DataSourceLink -> {
-                    tmpPortMap[toPortId] = lazy {
-                        fromLink.dataSource.getVarName(fromLink.varName)
-                    }
+                    tmpPortMap[toPortId] = fromLink.dataSource.getVarName(fromLink.varName)
                 }
                 is LiveShaderInstance.ShaderChannelLink -> {
                     logger.warn { "Unexpected unresolved $fromLink for $toPortId" }
                 }
                 is LiveShaderInstance.ConstLink -> {
-                    tmpPortMap[toPortId] = lazy {
-                        "(" + fromLink.glsl + ")"
-                    }
+                    tmpPortMap[toPortId] = "(" + fromLink.glsl + ")"
                 }
                 is LiveShaderInstance.NoOpLink -> {
                 }
@@ -58,7 +53,7 @@ class Component(
             resultVar = namespace.internalQualify("result")
         } else {
             resultVar = namespace.qualify(outputPort.id)
-            tmpPortMap[outputPort.id] = lazy { resultVar }
+            tmpPortMap[outputPort.id] = resultVar
         }
 
         portMap = tmpPortMap
@@ -68,10 +63,8 @@ class Component(
     var outputVar: String = resultVar
     private var resultRedirected = false
 
-    private val resolvedPortMap by lazy {
-        portMap.mapValues { (_, v) -> v.value } +
-                mapOf(shaderInstance.shader.outputPort.id to outputVar)
-    }
+    private val resolvedPortMap get() =
+        portMap + mapOf(shaderInstance.shader.outputPort.id to outputVar)
 
     fun redirectOutputTo(varName: String) {
         outputVar = varName
