@@ -11,6 +11,7 @@ import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.LiveShaderInstance.*
 import baaahs.show.mutable.ShowBuilder
+import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -20,8 +21,8 @@ class LinkedPatch(
     val surfaces: Surfaces
 ) {
     private val dataSourceLinks: Set<DataSourceLink>
-    private val componentLookup: Map<LiveShaderInstance, Component>
-    private val components = arrayListOf<Component>()
+    private val componentBuilder: CacheBuilder<LiveShaderInstance, Component>
+    private val components: List<Component>
 
     init {
         val instanceNodes = hashMapOf<LiveShaderInstance, InstanceNode>()
@@ -46,28 +47,39 @@ class LinkedPatch(
 
         dataSourceLinks = traverseLinks(shaderInstance)
 
-        val componentsByChannel = hashMapOf<ShaderChannel, Component>()
-        componentLookup = instanceNodes.values
+        instanceNodes.values
             .sortedWith(
                 compareByDescending<InstanceNode> { it.maxDepth }
                     .thenBy { it.shaderShortName}
             )
-            .mapIndexed { index, instanceNode ->
-                val component = Component(index, instanceNode, this@LinkedPatch::findUpstreamComponent)
-                components.add(component)
-                instanceNode.liveShaderInstance to component
-            }.associate { it }
+            .forEachIndexed { index, instanceNode -> instanceNode.index = index }
+
+        val componentsByChannel = hashMapOf<ShaderChannel, Component>()
+
+        componentBuilder = CacheBuilder {
+            val instanceNode = instanceNodes.getBang(it, "instance node")
+            val index = instanceNode.index
+            val component = Component(index, instanceNode, this@LinkedPatch::findUpstreamComponent)
+            component
+        }
+
+        components = instanceNodes.values
+            .sortedBy { it.index }
+            .map { componentBuilder[it.liveShaderInstance] }
+
         componentsByChannel[ShaderChannel.Main]?.redirectOutputTo("sm_result")
     }
 
     private fun findUpstreamComponent(liveShaderInstance: LiveShaderInstance) =
-        componentLookup.getBang(liveShaderInstance, "shader")
+        componentBuilder.getBang(liveShaderInstance, "shader")
 
     class InstanceNode(
         val liveShaderInstance: LiveShaderInstance,
         val shaderShortName: String,
         var maxDepth: Int = 0
     ) {
+        var index: Int = -1
+
         fun atDepth(depth: Int) {
             if (depth > maxDepth) maxDepth = depth
         }
