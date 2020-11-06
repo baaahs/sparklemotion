@@ -4,7 +4,7 @@ import baaahs.api.ws.WebSocketRouter
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.glsl.CompilationException
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
 import baaahs.mapper.MappingResults
@@ -34,7 +34,7 @@ class Pinky(
     soundAnalyzer: SoundAnalyzer,
     private val switchShowAfterIdleSeconds: Int? = 600,
     private val adjustShowAfterIdleSeconds: Int? = null,
-    renderEngine: RenderEngine,
+    renderManager: RenderManager,
     val plugins: Plugins,
     val pinkyMainDispatcher: CoroutineDispatcher
 ) : CoroutineScope, Network.UdpListener {
@@ -54,10 +54,10 @@ class Pinky(
     private val pubSub: PubSub.Server = PubSub.Server(httpServer, coroutineContext)
 //    private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    internal val fixtureManager = FixtureManager(renderEngine)
+    internal val fixtureManager = FixtureManager(renderManager)
 
     var stageManager: StageManager = StageManager(
-        plugins, renderEngine, pubSub, storage, fixtureManager, dmxUniverse, movingHeadManager, clock, model,
+        plugins, renderManager, pubSub, storage, fixtureManager, dmxUniverse, movingHeadManager, clock, model,
         coroutineContext
     )
 

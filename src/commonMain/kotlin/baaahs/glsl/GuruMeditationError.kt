@@ -3,12 +3,11 @@ package baaahs.glsl
 import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.RenderPlan
-import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.model.ModelInfo
 import baaahs.only
 import baaahs.plugin.Plugins
@@ -57,18 +56,18 @@ object GuruMeditationError {
             .resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
     }
 
-    fun createRenderPlan(renderEngine: RenderEngine): RenderPlan {
+    fun createRenderPlan(renderManager: RenderManager): RenderPlan {
         linkedPatch ?: error("Couldn't build guru meditation error patch.")
 
+        // TODO: Should maybe display error state for whatever device type failed? Or everywhere?
         return RenderPlan(
-            listOf(linkedPatch to linkedPatch.createProgram(renderEngine, dataFeeds)),
+            listOf(linkedPatch to linkedPatch.createProgram(renderManager, dataFeeds)),
             ActiveSet(emptyList())
         )
     }
 }
 
 private object FakeShowPlayer : BaseShowPlayer(Plugins.safe(), ModelInfo.Empty) {
-    override val glContext: GlContext get() = error("not implemented")
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?): Unit = error("not implemented")
     override fun <T : Gadget> useGadget(id: String): T = error("not implemented")
 }

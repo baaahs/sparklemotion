@@ -1,6 +1,5 @@
 package baaahs
 
-import baaahs.gl.GlContext
 import baaahs.gl.glsl.AnalysisException
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
@@ -16,7 +15,6 @@ import baaahs.util.Logger
 
 interface ShowPlayer {
     val plugins: Plugins
-    val glContext: GlContext
     val modelInfo: ModelInfo
     val dataSources: List<DataSource>
 

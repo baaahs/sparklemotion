@@ -52,7 +52,7 @@ class WebClient(
         facade.notifyChanged()
     }
 
-    private val showPlayer = ClientShowPlayer(plugins, glslContext, pubSub, model)
+    private val showPlayer = ClientShowPlayer(plugins, pubSub, model)
     private val showEditStateChannel =
         pubSub.subscribe(
             ShowEditorState.createTopic(plugins, remoteFsSerializer)

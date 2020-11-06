@@ -1,13 +1,11 @@
 package baaahs
 
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Matrix4
 import baaahs.gl.override
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.model.Model
-import baaahs.model.ModelInfo
 import baaahs.models.SheepModel
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.TestNetwork
@@ -49,7 +47,7 @@ object PinkySpec : Spek({
                 fakeFs,
                 PermissiveFirmwareDaddy(),
                 StubSoundAnalyzer(),
-                renderEngine = RenderEngine(fakeGlslContext, ModelInfo.Empty, PixelArrayDevice),
+                renderManager = RenderManager(TestModel) { fakeGlslContext },
                 plugins = Plugins.safe(),
                 pinkyMainDispatcher = object : CoroutineDispatcher() {
                     override fun dispatch(context: CoroutineContext, block: Runnable) {

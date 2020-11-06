@@ -1,10 +1,12 @@
 package baaahs.gl.patch
 
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.Resolver
 import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
@@ -130,9 +132,11 @@ class LinkedPatch(
         GlslProgram(renderEngine, this, resolver)
 
     fun createProgram(
-        renderEngine: RenderEngine,
+        renderManager: RenderManager,
         dataFeeds: Map<DataSource, GlslProgram.DataFeed>
     ): GlslProgram {
+        // TODO: not just PixelArrayDevice!
+        val renderEngine = renderManager.getEngineFor(PixelArrayDevice)
         return compile(renderEngine) { _, dataSource -> dataFeeds.getBang(dataSource, "data feed") }
     }
 

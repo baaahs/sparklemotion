@@ -6,9 +6,8 @@ import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.gadgets.Slider
 import baaahs.gl.render.FixtureRenderPlan
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.mapper.Storage
-import baaahs.model.ModelInfo
 import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
 import baaahs.plugin.Plugins
@@ -53,11 +52,11 @@ class ShowRunnerTest {
         fakeGlslContext = FakeGlContext()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
-        val renderEngine = RenderEngine(fakeGlslContext, ModelInfo.Empty, PixelArrayDevice)
-        fixtureManager = FixtureManager(renderEngine)
+        val renderManager = RenderManager(TestModel) { fakeGlslContext }
+        fixtureManager = FixtureManager(renderManager)
         val movingHeadManager = MovingHeadManager(fs, server, emptyList())
         stageManager = StageManager(
-            Plugins.safe(), renderEngine, server, Storage(fs, Plugins.safe()), fixtureManager,
+            Plugins.safe(), renderManager, server, Storage(fs, Plugins.safe()), fixtureManager,
             dmxUniverse, movingHeadManager, FakeClock(), sheepModel, testCoroutineContext
         )
         stageManager.switchTo(SampleData.sampleShow)

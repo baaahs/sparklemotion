@@ -1,11 +1,10 @@
 package baaahs
 
 import baaahs.client.WebClient
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
@@ -56,7 +55,6 @@ class SheepSimulator(val model: Model) {
         }
     }
 
-    val glslContext = GlBase.manager.createContext()
     val clock = JsClock()
 
     val plugins = Plugins.safe() + BeatLinkPlugin(bridgeClient.beatSource, clock)
@@ -69,7 +67,7 @@ class SheepSimulator(val model: Model) {
         fs,
         PermissiveFirmwareDaddy(),
         bridgeClient.soundAnalyzer,
-        renderEngine = RenderEngine(glslContext, model, PixelArrayDevice),
+        renderManager = RenderManager(model) { GlBase.manager.createContext() },
         pinkyMainDispatcher = Dispatchers.Main,
         plugins = plugins
     )

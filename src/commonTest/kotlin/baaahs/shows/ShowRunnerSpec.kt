@@ -1,17 +1,12 @@
 import baaahs.*
 import baaahs.fixtures.FixtureManager
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.gadgets.ColorPicker
-import baaahs.geom.Vector3F
 import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.glsl.Shaders
 import baaahs.mapper.Storage
-import baaahs.model.Model
-import baaahs.model.ModelInfo
-import baaahs.model.MovingHead
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.shaders.fakeFixture
@@ -80,12 +75,12 @@ object ShowRunnerSpec : Spek({
         }
         val testCoroutineContext by value { TestCoroutineContext("Test") }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0), testCoroutineContext) }
-        val renderEngine by value { RenderEngine(fakeGlslContext, ModelInfo.Empty, PixelArrayDevice) }
-        val fixtureManager by value { FixtureManager(renderEngine) }
+        val renderManager by value { RenderManager(TestModel) { fakeGlslContext } }
+        val fixtureManager by value { FixtureManager(renderManager) }
         val stageManager by value {
             val fs = FakeFs()
             StageManager(
-                Plugins.safe(), renderEngine, pubSub, Storage(fs, Plugins.safe()), fixtureManager, FakeDmxUniverse(),
+                Plugins.safe(), renderManager, pubSub, Storage(fs, Plugins.safe()), fixtureManager, FakeDmxUniverse(),
                 MovingHeadManager(fs, pubSub, emptyList()), FakeClock(), model, testCoroutineContext
             )
         }
@@ -155,15 +150,3 @@ object ShowRunnerSpec : Spek({
         }
     }
 })
-
-object TestModel : Model() {
-    override val name: String = "Test Model"
-    override val movingHeads: List<MovingHead> = emptyList()
-    override val allSurfaces: List<Surface> = emptyList()
-    override val geomVertices: List<Vector3F> = emptyList()
-
-    override val center: Vector3F
-        get() = Vector3F(.5f, .5f, .5f)
-    override val extents: Vector3F
-        get() = Vector3F(1f, 1f, 1f)
-}

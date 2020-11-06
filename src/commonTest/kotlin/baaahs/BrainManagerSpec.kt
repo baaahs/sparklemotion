@@ -1,6 +1,5 @@
 package baaahs
 
-import TestModel
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.glsl.LinearSurfacePixelStrategy

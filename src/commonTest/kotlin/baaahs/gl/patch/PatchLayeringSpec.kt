@@ -11,7 +11,6 @@ import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -57,7 +56,7 @@ object PatchLayeringSpec : Spek({
         }
         val show by value {
             val show = mutableShow.build(ShowBuilder())
-            ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer(FakeGlContext())).openShow()
+            ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer()).openShow()
         }
 
         context("for a show with a couple buttons") {
