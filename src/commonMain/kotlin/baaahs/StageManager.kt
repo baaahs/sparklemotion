@@ -1,11 +1,10 @@
 package baaahs
 
 import baaahs.fixtures.FixtureManager
-import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsServerBackend
@@ -28,7 +27,7 @@ import kotlin.coroutines.CoroutineContext
 
 class StageManager(
     plugins: Plugins,
-    private val renderEngine: RenderEngine,
+    private val renderManager: RenderManager,
     private val pubSub: PubSub.Server,
     private val storage: Storage,
     private val fixtureManager: FixtureManager,
@@ -40,8 +39,6 @@ class StageManager(
 ) : BaseShowPlayer(plugins, modelInfo) {
     val facade = Facade()
     private val autoWirer = AutoWirer(plugins)
-    override val glContext: GlContext
-        get() = renderEngine.gl
     private var showRunner: ShowRunner? = null
     private val gadgets: MutableMap<String, GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
@@ -115,7 +112,7 @@ class StageManager(
     ) {
         val newShowRunner = newShow?.let {
             val openShow = openShow(newShow, newShowState)
-            ShowRunner(newShow, newShowState, openShow, clock, renderEngine, fixtureManager, autoWirer)
+            ShowRunner(newShow, newShowState, openShow, clock, renderManager, fixtureManager, autoWirer)
         }
 
         showRunner?.release()

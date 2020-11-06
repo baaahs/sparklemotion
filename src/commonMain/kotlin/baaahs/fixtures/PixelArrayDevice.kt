@@ -6,6 +6,8 @@ import baaahs.geom.Vector3F
 import baaahs.gl.render.FixtureRenderPlan
 
 object PixelArrayDevice : DeviceType {
+    override val id: String get() = "PixelArray"
+    override val title: String get() = "Pixel Array"
     override val params: List<Param> = listOf(
         FloatsPixelParam("in_pixelCoordsTexture", "Pixel Coords", 3)
     )

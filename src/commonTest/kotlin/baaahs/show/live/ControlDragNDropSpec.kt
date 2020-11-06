@@ -5,8 +5,6 @@ import baaahs.gl.override
 import baaahs.show.live.ControlDisplay.PanelBuckets.PanelBucket
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.shows.FakeGlContext
-import baaahs.shows.FakeKgl
 import baaahs.shows.FakeShowPlayer
 import baaahs.toBeSpecified
 import baaahs.ui.Draggable
@@ -24,7 +22,7 @@ object ControlDragNDropSpec : Spek({
         }
         val show by value { mutableShow.build(ShowBuilder()) }
 
-        val showPlayer by value { FakeShowPlayer(FakeGlContext(FakeKgl())) }
+        val showPlayer by value { FakeShowPlayer() }
         val openShow by value { showPlayer.openShow(show) }
         val editHandler by value { FakeEditHandler() }
         val dragNDrop by value { FakeDragNDrop() }

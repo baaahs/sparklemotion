@@ -166,6 +166,7 @@ private fun jsonFor(patch: Patch): JsonObject {
         put("shaderInstanceIds", patch.shaderInstanceIds.jsonMap { JsonPrimitive(it) })
         put("surfaces", buildJsonObject {
             put("name", "All Surfaces")
+            put("deviceTypes", buildJsonArray { })
         })
     }
 }

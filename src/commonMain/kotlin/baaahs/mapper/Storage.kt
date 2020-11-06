@@ -84,7 +84,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun saveShow(file: Fs.File, show: Show) {
-        file.write(plugins.json.encodeToString(Show.serializer(), show), true)
+        file.write(plugins.json.encodeToString(ShowMigrator, show), true)
     }
 
     fun resolve(path: String): Fs.File = fs.resolve(path)

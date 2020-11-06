@@ -2,6 +2,7 @@ package baaahs.plugin
 
 import baaahs.Gadget
 import baaahs.app.ui.editor.PortLinkOption
+import baaahs.fixtures.DeviceType
 import baaahs.getBang
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -46,6 +47,7 @@ class Plugins(plugins: List<Plugin>) {
 //        include(portRefModule)
         include(Control.serialModule)
         include(DataSource.serialModule)
+        include(DeviceType.serialModule)
 //            contextual(DataSource::class, DataSourceSerializer(this@Plugins))
     }
 

@@ -1,8 +1,8 @@
 package baaahs.gl.render
 
-import TestModel
 import baaahs.Color
 import baaahs.Pixels
+import baaahs.TestModel
 import baaahs.TestModelSurface
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayDevice
@@ -45,7 +45,7 @@ class RenderEngineTest {
         if (glslAvailable()) {
             glContext = GlBase.manager.createContext()
             renderEngine = RenderEngine(glContext, TestModel, PixelArrayDevice)
-            fakeShowPlayer = FakeShowPlayer(glContext)
+            fakeShowPlayer = FakeShowPlayer()
         }
     }
 

@@ -3,6 +3,7 @@ package baaahs
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.model.Model
+import baaahs.model.MovingHead
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import org.spekframework.spek2.dsl.GroupBody
@@ -46,6 +47,21 @@ class TestModelSurface(
 ) : Model.Surface(name, name, PixelArrayDevice, expectedPixelCount, emptyList(), emptyList()) {
     override fun allVertices(): Collection<Vector3F> = vertices
 }
+
+object TestModel : ModelForTest(listOf(TestModelSurface("Panel")))
+
+open class ModelForTest(private val entities: List<Entity>) : Model() {
+    override val name: String = "Test Model"
+    override val movingHeads: List<MovingHead> get() = entities.filterIsInstance<MovingHead>()
+    override val allSurfaces: List<Surface> get() = entities.filterIsInstance<Surface>()
+    override val geomVertices: List<Vector3F> = emptyList()
+
+    override val center: Vector3F
+        get() = Vector3F(.5f, .5f, .5f)
+    override val extents: Vector3F
+        get() = Vector3F(1f, 1f, 1f)
+}
+
 
 expect fun assumeTrue(boolean: Boolean)
 

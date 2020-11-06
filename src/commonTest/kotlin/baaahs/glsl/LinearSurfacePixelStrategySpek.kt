@@ -1,6 +1,6 @@
 package baaahs.glsl
 
-import TestModel
+import baaahs.TestModel
 import baaahs.TestModelSurface
 import baaahs.describe
 import baaahs.geom.Vector3F

@@ -1,17 +1,56 @@
 package baaahs.fixtures
 
+import baaahs.getBang
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.FixtureRenderPlan
 import com.danielgergely.kgl.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.modules.SerializersModule
 import kotlin.math.min
+import kotlin.reflect.KClass
 
 interface DeviceType {
+    val id: String
+    val title: String
     val params: List<Param>
     val resultParams: List<ResultParam>
 
     fun setFixtureParamUniforms(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>)
     fun initPixelParams(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>)
+
+    companion object {
+        private val knownDeviceTypes = listOf(
+            PixelArrayDevice, MovingHeadDevice
+        ).associateBy { it.id }
+
+        val serialModule = SerializersModule {
+            val serializer = Serializer(knownDeviceTypes)
+
+            contextual(DeviceType::class, serializer)
+            knownDeviceTypes.values.forEach { deviceType ->
+                @Suppress("UNCHECKED_CAST")
+                contextual(deviceType::class as KClass<DeviceType>, serializer)
+            }
+        }
+    }
+
+    class Serializer(private val knownDeviceTypes: Map<String, DeviceType>) : KSerializer<DeviceType> {
+        override val descriptor: SerialDescriptor
+            get() = String.serializer().descriptor
+
+        override fun serialize(encoder: Encoder, value: DeviceType) {
+            encoder.encodeString(value.id)
+        }
+
+        override fun deserialize(decoder: Decoder): DeviceType {
+            return knownDeviceTypes.getBang(decoder.decodeString(), "device type")
+        }
+    }
 }
 
 interface ParamBuffer {

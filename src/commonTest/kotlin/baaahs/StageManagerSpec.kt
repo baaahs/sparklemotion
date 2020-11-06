@@ -1,13 +1,11 @@
 package baaahs
 
 import baaahs.fixtures.FixtureManager
-import baaahs.fixtures.PixelArrayDevice
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
 import baaahs.model.Model
-import baaahs.model.ModelInfo
 import baaahs.models.SheepModel
 import baaahs.plugin.Plugins
 import baaahs.show.SampleData
@@ -32,16 +30,16 @@ object StageManagerSpec : Spek({
         val fakeFs by value { FakeFs() }
         val pubSub by value { TestPubSub() }
         val fakeGlslContext by value { FakeGlContext() }
-        val renderEngine by value { RenderEngine(fakeGlslContext, ModelInfo.Empty, PixelArrayDevice) }
+        val renderManager by value { RenderManager(TestModel) { fakeGlslContext } }
         val baseShow by value { SampleData.sampleShow }
 
         val stageManager by value {
             StageManager(
                 plugins,
-                renderEngine,
+                renderManager,
                 pubSub.server,
                 Storage(fakeFs, plugins),
-                FixtureManager(renderEngine),
+                FixtureManager(renderManager),
                 FakeDmxUniverse(),
                 MovingHeadManager(fakeFs, pubSub.server, emptyList()),
                 FakeClock(),

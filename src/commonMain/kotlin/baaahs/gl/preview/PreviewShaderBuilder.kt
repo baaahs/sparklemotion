@@ -134,7 +134,6 @@ class PreviewShaderBuilder(
 
         coroutineScope.launch {
             val showPlayer = object : BaseShowPlayer(autoWirer.plugins, modelInfo) {
-                override val glContext: GlContext get() = gl
                 override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
                     mutableGadgets.add(ShaderBuilder.GadgetPreview(id, gadget, controlledDataSource))
                     super.registerGadget(id, gadget, controlledDataSource)
@@ -185,8 +184,9 @@ class PreviewShaderBuilder(
 }
 
 object ProjectionPreviewDevice: DeviceType {
-    override val params: List<Param>
-        get() = emptyList()
+    override val id: String get() = "ProjectionPreview"
+    override val title: String get() = "Projection Preview"
+    override val params: List<Param> get() = emptyList()
     override val resultParams: List<ResultParam>
         get() = listOf(
             ResultParam("Vertex Location", Vec2ResultType)
