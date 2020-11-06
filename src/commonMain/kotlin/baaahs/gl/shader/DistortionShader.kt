@@ -11,7 +11,11 @@ import baaahs.show.ShaderType
 
 class DistortionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
     companion object {
-        val proFormaInputPorts = listOf(
+        val argInputPorts: Map<GlslType, ContentType> = mapOf(
+            GlslType.Vec2 to ContentType.UvCoordinateStream
+        )
+
+        val implicitInputPorts = listOf(
             InputPort("gl_FragCoord", GlslType.Vec2, "U/V Coordinates", ContentType.UvCoordinateStream)
         )
 
@@ -33,8 +37,10 @@ class DistortionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : O
 
     override val entryPointName: String get() = "mainDistortion"
 
-    override val proFormaInputPorts
-        get() = DistortionShader.proFormaInputPorts
+    override val argInputPorts: Map<GlslType, ContentType>
+        get() = DistortionShader.argInputPorts
+    override val implicitInputPorts
+        get() = DistortionShader.implicitInputPorts
     override val wellKnownInputPorts
         get() = DistortionShader.wellKnownInputPorts
     override val outputPort: OutputPort

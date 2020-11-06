@@ -22,8 +22,10 @@ class ShaderToyPaintShader(
     plugins: Plugins
 ) : PaintShader(shader, glslCode, plugins) {
     companion object {
-        val proFormaInputPorts = listOf(
-            InputPort("sm_FragCoord", GlslType.Vec2, "Coordinates", ContentType.UvCoordinateStream)
+        val implicitInputPorts = emptyList<InputPort>()
+
+        val argInputPorts: Map<GlslType, ContentType> = mapOf(
+            GlslType.Vec2 to ContentType.UvCoordinateStream
         )
 
         val wellKnownInputPorts = listOf(
@@ -74,8 +76,10 @@ class ShaderToyPaintShader(
 
     override val entryPointName: String
         get() = "mainImage"
-    override val proFormaInputPorts: List<InputPort>
-        get() = ShaderToyPaintShader.proFormaInputPorts
+    override val argInputPorts: Map<GlslType, ContentType>
+        get() = ShaderToyPaintShader.argInputPorts
+    override val implicitInputPorts: List<InputPort>
+        get() = ShaderToyPaintShader.implicitInputPorts
     override val wellKnownInputPorts: Map<String, InputPort>
         get() = ShaderToyPaintShader.wellKnownInputPorts
     override val outputPort: OutputPort
@@ -94,9 +98,9 @@ class ShaderToyPaintShader(
             if (iVars.contains(k)) v else null
         }
 
-        val explicitUniforms = glslCode.uniforms.map { toInputPort(it) }
+        val explicitUniforms = glslCode.uniforms.map { it.toInputPort() }
 
-        explicitUniforms + implicitUniforms + proFormaInputPorts
+        explicitUniforms + implicitUniforms + implicitInputPorts + inputPortsFromEntryPointParams()
     }
 
     override fun invocationGlsl(
@@ -115,7 +119,9 @@ class GenericPaintShader(
     plugins: Plugins
 ) : PaintShader(shader, glslCode, plugins) {
     companion object {
-        val proFormaInputPorts = listOf(
+        val argInputPorts: Map<GlslType, ContentType> = emptyMap()
+
+        val implicitInputPorts = listOf(
             InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream)
         )
 
@@ -130,8 +136,10 @@ class GenericPaintShader(
             OutputPort(GlslType.Vec4, "gl_FragColor", "Output Color", ContentType.ColorStream)
     }
 
-    override val proFormaInputPorts: List<InputPort>
-        get() = GenericPaintShader.proFormaInputPorts
+    override val argInputPorts: Map<GlslType, ContentType>
+        get() = GenericPaintShader.argInputPorts
+    override val implicitInputPorts: List<InputPort>
+        get() = GenericPaintShader.implicitInputPorts
     override val wellKnownInputPorts: Map<String, InputPort>
         get() = GenericPaintShader.wellKnownInputPorts
     override val outputPort: OutputPort

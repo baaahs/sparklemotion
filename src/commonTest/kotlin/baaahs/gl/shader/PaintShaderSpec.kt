@@ -50,7 +50,7 @@ object PaintShaderSpec : Spek({
                         InputPort("mouse", GlslType.Vec2, "Mouse", ContentType.Mouse),
                         InputPort("blueness", GlslType.Float, "Blueness")
                     )
-                ) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                ) { shader.inputPorts.map { it.copy(glslField = null) } }
             }
 
             it("generates function declarations") {
@@ -118,7 +118,7 @@ object PaintShaderSpec : Spek({
                             InputPort("iMouse", GlslType.Vec2, "Mouse", ContentType.Mouse),
                             InputPort("sm_FragCoord", GlslType.Vec2, "Coordinates", ContentType.UvCoordinateStream)
                         )
-                    ) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                    ) { shader.inputPorts.map { it.copy(glslField = null) } }
                 }
             }
 

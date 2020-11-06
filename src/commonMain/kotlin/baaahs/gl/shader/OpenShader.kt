@@ -5,6 +5,9 @@ import baaahs.RefCounter
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
+import baaahs.gl.glsl.GlslType
+import baaahs.gl.glsl.LinkException
+import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderType
@@ -31,7 +34,12 @@ interface OpenShader : RefCounted {
         namespace: Namespace,
         resultVar: String,
         portMap: Map<String, String> = emptyMap()
-    ): String
+    ): String {
+        return "$resultVar = ${namespace.qualify(entryPoint.name)}" +
+                "(${entryPoint.params.map {
+                    portMap[it.name] ?: throw LinkException("No ${it.name} input for shader \"$title\"")
+                }})"
+    }
 
     abstract class Base(
         final override val shader: Shader,
@@ -40,25 +48,46 @@ interface OpenShader : RefCounted {
     ) : OpenShader, RefCounted by RefCounter() {
         override val title: String get() = shader.title
 
-        abstract val proFormaInputPorts: List<InputPort>
+        abstract val argInputPorts: Map<GlslType, ContentType>
+        abstract val implicitInputPorts: List<InputPort>
         abstract val wellKnownInputPorts: Map<String, InputPort>
 
         override val inputPorts: List<InputPort> by lazy {
-            proFormaInputPorts +
-                    glslCode.globalInputVars.map {
-                        wellKnownInputPorts[it.name]
-                            ?.copy(type = it.type, glslVar = it)
-                            ?: toInputPort(it)
+            implicitInputPorts +
+                    inputPortsFromEntryPointParams() +
+                    glslCode.globalInputVars.map { glslVar ->
+                        wellKnownInputPorts[glslVar.name]
+                            ?.copy(type = glslVar.type, glslField = glslVar)
+                            ?: glslVar.toInputPort()
                     }
         }
 
-        protected fun toInputPort(it: GlslCode.GlslVar): InputPort {
+        protected fun inputPortsFromEntryPointParams(): List<InputPort> {
+            val argInputPorts = argInputPorts.toMutableMap()
+            return entryPoint.params
+                .filter { it.isIn }
+                .map { glslParam -> glslParam.toInputPort(argInputPorts) }
+        }
+
+        protected fun GlslCode.GlslVar.toInputPort(): InputPort {
             return InputPort(
-                it.name, it.type, it.displayName(),
-                pluginRef = it.hint?.pluginRef,
-                pluginConfig = it.hint?.config,
-                contentType = it.hint?.tag("type")?.let { plugins.resolveContentType(it) },
-                glslVar = it
+                name, type, displayName(),
+                pluginRef = hint?.pluginRef,
+                pluginConfig = hint?.config,
+                contentType = hint?.tag("type")?.let { plugins.resolveContentType(it) },
+                glslField = this
+            )
+        }
+
+        protected fun GlslCode.GlslParam.toInputPort(contentTypeHints: MutableMap<GlslType, ContentType>): InputPort {
+            return InputPort(
+                name, type, displayName(),
+                pluginRef = hint?.pluginRef,
+                pluginConfig = hint?.config,
+                contentType = hint?.tag("type")?.let { plugins.resolveContentType(it) }
+                    ?: contentTypeHints.remove(type),
+                glslField = this,
+                isParametric = true
             )
         }
 

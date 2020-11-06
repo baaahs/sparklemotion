@@ -13,9 +13,10 @@ data class InputPort(
     val contentType: ContentType? = null,
     val pluginRef: PluginRef? = null,
     val pluginConfig: JsonObject? = null,
-    val glslVar: GlslCode.GlslVar? = null,
+    val glslField: GlslCode.GlslField? = null,
     val varName: String = id,
-    val isImplicit: Boolean = false
+    val isImplicit: Boolean = false,
+    val isParametric: Boolean = false
 ) {
     fun hasPluginRef() = pluginRef != null
 
@@ -26,6 +27,6 @@ data class InputPort(
 
     fun dataTypeIs(glslType: GlslType, isStreaming: Boolean = false): Boolean {
         return type == glslType
-                && (glslVar?.isVarying ?: false) == isStreaming
+                && (glslField?.isVarying ?: false) == isStreaming
     }
 }

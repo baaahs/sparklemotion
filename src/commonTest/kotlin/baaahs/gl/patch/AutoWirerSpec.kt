@@ -118,7 +118,7 @@ object AutoWirerSpec : Spek({
                                         CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
                                     ),
                                     "iResolution" to MutableDataSourcePort(CorePlugin.ResolutionDataSource()),
-                                    "sm_FragCoord" to MutableShaderChannel(ShaderChannel.Main.id)
+                                    "fragCoord" to MutableShaderChannel(ShaderChannel.Main.id)
                                 ),
                                 shaderChannel = MutableShaderChannel(ShaderChannel.Main.id),
                                 priority = 0f
@@ -142,7 +142,7 @@ object AutoWirerSpec : Spek({
                             "iTime" to LiveShaderInstance.DataSourceLink(
                                 CorePlugin.TimeDataSource(), "time"
                             ),
-                            "sm_FragCoord" to LiveShaderInstance.NoOpLink
+                            "fragCoord" to LiveShaderInstance.NoOpLink
                         )
                     ) { liveShaderInstance.incomingLinks }
                 }

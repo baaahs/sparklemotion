@@ -18,14 +18,21 @@ class Component(
     private var resultVar: String
 
     init {
-        val tmpPortMap = hashMapOf<String, String>()
+        val tmpSymbolMap = hashMapOf<String, String>()
+        val tmpArgMap = hashMapOf<String, String>()
+
+        val links = shaderInstance.incomingLinks
+        shaderInstance.shader.inputPorts.forEach { inputPort ->
+            val link = links[inputPort.id]
+            if (inputPort.isParametric) {}
+        }
 
         shaderInstance.incomingLinks.forEach { (toPortId, fromLink) ->
             when (fromLink) {
                 is LiveShaderInstance.ShaderOutLink -> {
                     val upstreamComponent = findUpstreamComponent(fromLink.shaderInstance)
                     val outputPort = fromLink.shaderInstance.shader.outputPort
-                    tmpPortMap[toPortId] =
+                    tmpSymbolMap[toPortId] =
                         if (outputPort.isReturnValue()) {
                             upstreamComponent.resultVar
                         } else {
@@ -33,13 +40,13 @@ class Component(
                         }
                 }
                 is LiveShaderInstance.DataSourceLink -> {
-                    tmpPortMap[toPortId] = fromLink.dataSource.getVarName(fromLink.varName)
+                    tmpSymbolMap[toPortId] = fromLink.dataSource.getVarName(fromLink.varName)
                 }
                 is LiveShaderInstance.ShaderChannelLink -> {
                     logger.warn { "Unexpected unresolved $fromLink for $toPortId" }
                 }
                 is LiveShaderInstance.ConstLink -> {
-                    tmpPortMap[toPortId] = "(" + fromLink.glsl + ")"
+                    tmpSymbolMap[toPortId] = "(" + fromLink.glsl + ")"
                 }
                 is LiveShaderInstance.NoOpLink -> {
                 }
@@ -53,18 +60,19 @@ class Component(
             resultVar = namespace.internalQualify("result")
         } else {
             resultVar = namespace.qualify(outputPort.id)
-            tmpPortMap[outputPort.id] = resultVar
+            tmpSymbolMap[outputPort.id] = resultVar
         }
 
-        portMap = tmpPortMap
+        portMap = tmpSymbolMap
         resultInReturnValue = usesReturnValue
     }
 
     var outputVar: String = resultVar
     private var resultRedirected = false
 
-    private val resolvedPortMap get() =
+    private val resolvedPortMap by lazy {
         portMap + mapOf(shaderInstance.shader.outputPort.id to outputVar)
+    }
 
     fun redirectOutputTo(varName: String) {
         outputVar = varName

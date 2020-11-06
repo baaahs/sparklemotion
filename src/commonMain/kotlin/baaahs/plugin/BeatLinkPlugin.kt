@@ -26,7 +26,7 @@ class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: ba
 
     override fun suggestContentTypes(inputPort: InputPort): Collection<ContentType> {
         val glslType = inputPort.type
-        val isStream = inputPort.glslVar?.isVarying ?: false
+        val isStream = inputPort.glslField?.isVarying ?: false
         return if (glslType == GlslType.Float && !isStream)
             listOf(beatDataContentType)
         else
@@ -46,7 +46,7 @@ class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: ba
     ): List<PortLinkOption> {
         if ((inputPort.contentType == beatDataContentType
                     || suggestedContentTypes.contains(beatDataContentType))
-            || (inputPort.type == GlslType.Float && inputPort.glslVar?.isVarying != true)
+            || (inputPort.type == GlslType.Float && inputPort.glslField?.isVarying != true)
         ) {
             return listOf(
                 PortLinkOption(

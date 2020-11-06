@@ -1,5 +1,6 @@
 package baaahs.gl.shader
 
+import baaahs.gl.expects
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
@@ -40,11 +41,11 @@ object FilterShaderSpec : Spek({
             }
 
             it("finds magic uniforms") {
-                expect(listOf(
-                    InputPort("gl_FragColor", GlslType.Vec4, "Input Color", ContentType.ColorStream),
+                expects(listOf(
+                    InputPort("colorIn", GlslType.Vec4, "Input Color", ContentType.ColorStream),
                     InputPort("fade", GlslType.Float, "Fade"),
                     InputPort("otherColorStream", GlslType.Vec4, "Other Color Stream", ContentType.ColorStream)
-                )) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                )) { shader.inputPorts.map { it.copy(glslField = null) } }
             }
 
             it("generates function declarations") {
@@ -62,7 +63,7 @@ object FilterShaderSpec : Spek({
                             "resolution" to "in_resolution",
                             "blueness" to "aquamarinity",
                             "identity" to "p0_identity",
-                            "gl_FragColor" to "sm_result"
+                            "colorIn" to "sm_result"
                         )).trim()
                 }
             }
@@ -80,7 +81,7 @@ object FilterShaderSpec : Spek({
                         }
 
                         addShaderInstance(shader.shader) {
-                            link("gl_FragColor", MutableShaderOutPort(redInstance))
+                            link("colorIn", MutableShaderOutPort(redInstance))
                             link("otherColorStream", MutableShaderChannel(otherChannel.id))
                             link("fade", MutableConstPort(".5"))
                         }
@@ -147,7 +148,7 @@ object FilterShaderSpec : Spek({
 
             it("generates invocation GLSL") {
                 expect("resultVar = p0_mainFilter(boof)") {
-                    shader.invocationGlsl(namespace, "resultVar", mapOf("gl_FragColor" to "boof"))
+                    shader.invocationGlsl(namespace, "resultVar", mapOf("colorIn" to "boof"))
                 }
             }
         }

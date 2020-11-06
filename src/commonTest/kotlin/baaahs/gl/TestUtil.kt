@@ -1,6 +1,7 @@
 package baaahs.gl
 
 import baaahs.gl.glsl.GlslCode
+import baaahs.show.mutable.MutableShaderInstance
 import org.spekframework.spek2.dsl.LifecycleAware
 import org.spekframework.spek2.dsl.Skip
 import org.spekframework.spek2.meta.*
@@ -30,15 +31,37 @@ fun expectStatements(
     checkLineNumbers: Boolean = false
 ) {
     assertEquals(
-        expected.map { it.esc(checkLineNumbers) }.joinToString("\n"),
-        actual().map { it.esc(checkLineNumbers) }.joinToString("\n")
+        expected.joinToString("\n") { it.esc(checkLineNumbers) },
+        actual().joinToString("\n") { it.esc(checkLineNumbers) }
     )
+}
+
+fun Any?.prettify(nestLevel: Int = 0): String {
+    val prefix = "  ".repeat(nestLevel)
+    return when (this) {
+        null -> "null"
+
+        is Collection<*> -> joinToString("") {
+            "\n${prefix}- ${it.prettify(nestLevel + 1)}}"
+        }
+
+        is Map<*, *> -> entries.sortedBy { it.key.toString() }.joinToString("") { (k,v) ->
+            "\n${prefix}- ${k.prettify(nestLevel + 1)}: ${v.prettify(nestLevel + 1)}"
+        }
+
+        is MutableShaderInstance ->
+            "${prefix}MutableShaderInstance\n" +
+                    "$prefix  shader=$mutableShader\n" +
+                    "$prefix  incomingLinks:${incomingLinks.prettify(nestLevel + 1)}"
+
+        else -> this.toString()
+    }
 }
 
 fun <T> expects(expected: Collection<T>, block: () -> Collection<T>) {
     val actual = block()
     if (actual != expected)
-        assertEquals(expected.joinToString("\n"), actual.joinToString("\n"))
+        assertEquals(expected.prettify(), actual.prettify())
 }
 
 fun <K, V> expects(expected: Map<K, V>, block: () -> Map<K, V>) {

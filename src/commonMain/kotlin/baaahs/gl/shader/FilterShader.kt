@@ -11,7 +11,11 @@ import baaahs.show.ShaderType
 
 class FilterShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
     companion object {
-        val proFormaInputPorts = listOf(
+        val argInputPorts: Map<GlslType, ContentType> = mapOf(
+            GlslType.Vec4 to ContentType.ColorStream
+        )
+
+        val implicitInputPorts = listOf(
             InputPort("gl_FragColor", GlslType.Vec4, "Input Color", ContentType.ColorStream)
         )
 
@@ -33,20 +37,22 @@ class FilterShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenS
 
     override val entryPointName: String get() = "mainFilter"
 
-    override val proFormaInputPorts: List<InputPort>
-        get() = FilterShader.proFormaInputPorts
+    override val argInputPorts: Map<GlslType, ContentType>
+        get() = FilterShader.argInputPorts
+    override val implicitInputPorts: List<InputPort>
+        get() = FilterShader.implicitInputPorts
     override val wellKnownInputPorts: Map<String, InputPort>
         get() = FilterShader.wellKnownInputPorts
     override val outputPort: OutputPort
         get() = FilterShader.outputPort
 
-    override fun invocationGlsl(
-        namespace: GlslCode.Namespace,
-        resultVar: String,
-        portMap: Map<String, String>
-    ): String {
-        val inVar = portMap["gl_FragColor"]
-            ?: throw LinkException("No gl_FragColor input for shader \"$title\"")
-        return resultVar + " = " + namespace.qualify(entryPoint.name) + "($inVar)"
-    }
+//    override fun invocationGlsl(
+//        namespace: GlslCode.Namespace,
+//        resultVar: String,
+//        portMap: Map<String, String>
+//    ): String {
+//        val inVar = portMap["gl_FragColor"]
+//            ?: throw LinkException("No gl_FragColor input for shader \"$title\"")
+//        return resultVar + " = " + namespace.qualify(entryPoint.name) + "($inVar)"
+//    }
 }

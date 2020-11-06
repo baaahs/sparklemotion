@@ -310,7 +310,7 @@ object GlslAnalyzerSpec : Spek({
                                 InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
                                 InputPort("blueness", GlslType.Float, "Blueness")
                             )
-                        ) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                        ) { shader.inputPorts.map { it.copy(glslField = null) } }
                     }
                 }
 
@@ -341,9 +341,9 @@ object GlslAnalyzerSpec : Spek({
                                 InputPort("blueness", GlslType.Float, "Blueness"),
                                 InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution),
                                 InputPort("iTime", GlslType.Float, "Time", ContentType.Time),
-                                InputPort("sm_FragCoord", GlslType.Vec2, "Coordinates", ContentType.UvCoordinateStream)
+                                InputPort("fragCoord", GlslType.Vec2, "Frag Coord", ContentType.UvCoordinateStream)
                             )
-                        ) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                        ) { shader.inputPorts.map { it.copy(glslField = null) } }
                     }
                 }
 
@@ -365,7 +365,7 @@ object GlslAnalyzerSpec : Spek({
                                 ),
                                 InputPort("modelInfo", ContentType.ModelInfo.glslType, "Model Info", null)
                             )
-                        ) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                        ) { shader.inputPorts.map { it.copy(glslField = null) } }
                     }
                 }
             }

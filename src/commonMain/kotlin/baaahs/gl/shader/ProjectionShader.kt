@@ -10,7 +10,9 @@ import baaahs.show.ShaderType
 
 class ProjectionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
     companion object {
-        val proFormaInputPorts = listOf<InputPort>()
+        val argInputPorts: Map<GlslType, ContentType> = emptyMap()
+
+        val implicitInputPorts = listOf<InputPort>()
 
         val wellKnownInputPorts = listOf(
             InputPort("pixelCoordsTexture", GlslType.Sampler2D, "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
@@ -27,8 +29,10 @@ class ProjectionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : O
 
     override val entryPointName: String
         get() = "mainProjection"
-    override val proFormaInputPorts: List<InputPort>
-        get() = ProjectionShader.proFormaInputPorts
+    override val argInputPorts: Map<GlslType, ContentType>
+        get() = ProjectionShader.argInputPorts
+    override val implicitInputPorts: List<InputPort>
+        get() = ProjectionShader.implicitInputPorts
     override val wellKnownInputPorts: Map<String, InputPort>
         get() = ProjectionShader.wellKnownInputPorts
     override val outputPort: OutputPort

@@ -28,24 +28,32 @@ class LinkedPatch(
         val instanceNodes = hashMapOf<LiveShaderInstance, InstanceNode>()
         val showBuilder = ShowBuilder()
 
-        fun traverseLinks(liveShaderInstance: LiveShaderInstance, depth: Int = 0): Set<DataSourceLink> {
-            instanceNodes.getOrPut(liveShaderInstance) {
-                val shaderShortName = showBuilder.idFor(liveShaderInstance.shader.shader)
-                InstanceNode(liveShaderInstance, shaderShortName)
+        fun LiveShaderInstance.traverseLinks(depth: Int = 0): Set<DataSourceLink> = traverse {
+            println("  ".repeat(depth) + "Traverse ${shader.title}")
+            instanceNodes.getOrPut(this) {
+                val shaderShortName = showBuilder.idFor(shader.shader)
+                InstanceNode(this, shaderShortName)
             }.atDepth(depth)
 
             val dataSourceLinks = hashSetOf<DataSourceLink>()
-            liveShaderInstance.incomingLinks.forEach { (_, link) ->
+            incomingLinks.forEach { (portId, link) ->
+                println("  ".repeat(depth) + " $portId ->")
                 when (link) {
                     is DataSourceLink -> dataSourceLinks.add(link)
-                    is ShaderOutLink -> traverseLinks(link.shaderInstance, depth + 1)
-                        .also { dataSourceLinks.addAll(it) }
+                    is ShaderOutLink ->
+                        try {
+                            link.shaderInstance.traverseLinks(depth + 1)
+                                .also { dataSourceLinks.addAll(it) }
+                        } catch (e: CircularGraphException) {
+                            logger.error(e) { "Encountered circular graph link from ${shader.title}.$portId to ${shader.title}" }
+                            throw e
+                        }
                 }
             }
-            return dataSourceLinks
+            dataSourceLinks
         }
 
-        dataSourceLinks = traverseLinks(shaderInstance)
+        dataSourceLinks = shaderInstance.traverseLinks()
 
         instanceNodes.values
             .sortedWith(
@@ -160,4 +168,6 @@ class LinkedPatch(
     companion object {
         private val logger = Logger("OpenPatch")
     }
+
+    class CircularGraphException(shaderInstance: LiveShaderInstance) : Exception("Encountered circular graph at ${shaderInstance.shader.title}")
 }

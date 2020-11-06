@@ -130,15 +130,15 @@ class GlslCode(
     }
 
     data class GlslVar(
-        val type: GlslType,
+        override val type: GlslType,
         override val name: String,
         override val fullText: String = "",
         val isConst: Boolean = false,
         val isUniform: Boolean = false,
-        val isVarying: Boolean = false,
+        override val isVarying: Boolean = false,
         override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList()
-    ) : GlslStatement {
+    ) : GlslStatement, GlslField {
         override fun stripSource() = copy(fullText = "", lineNumber = null)
 
         val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
@@ -215,14 +215,29 @@ class GlslCode(
     }
 
     data class GlslParam(
-        val name: String,
-        val type: GlslType,
+        override val name: String,
+        override val type: GlslType,
         val isIn: Boolean = false,
         val isOut: Boolean = false,
         val lineNumber: Int? = null,
-        val comments: List<String> = emptyList()
-    ) {
+        override val comments: List<String> = emptyList()
+    ) : GlslField {
+        // Parameters are 'varying' by definition.
+        override val isVarying: Boolean get() = true
+
         val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }) }
+
+        fun displayName() = name.englishize()
+    }
+
+    /** A GLSL global variable or function parameter. */
+    interface GlslField {
+        val name: String
+        val type: GlslType
+
+        /** True if the value could be different for each pixel. */
+        val isVarying: Boolean
+        val comments: List<String>
     }
 
     class Namespace(private val prefix: String) {

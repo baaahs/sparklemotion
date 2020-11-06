@@ -34,7 +34,7 @@ class CorePlugin : Plugin {
 
     override fun suggestContentTypes(inputPort: InputPort): Collection<ContentType> {
         val glslType = inputPort.type
-        val isStream = inputPort.glslVar?.isVarying ?: false
+        val isStream = inputPort.glslField?.isVarying ?: false
         return contentTypesByGlslType[glslType to isStream] ?: emptyList()
     }
 

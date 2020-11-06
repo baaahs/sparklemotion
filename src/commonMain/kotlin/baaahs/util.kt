@@ -80,6 +80,7 @@ fun String.englishize(): String {
     }.capitalize()
 }
 
+operator fun String.times(index: Int): String = repeat(index)
 
 fun randomId(prefix: String): String {
     return prefix +

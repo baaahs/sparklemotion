@@ -1,6 +1,7 @@
 package baaahs.show.live
 
 import baaahs.getBang
+import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PortDiagram
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
@@ -14,9 +15,27 @@ class LiveShaderInstance(
     val shaderChannel: ShaderChannel?,
     val priority: Float
 ) {
-    fun findDataSourceRefs(): List<DataSourceRef> {
-        return incomingLinks.values.filterIsInstance<DataSourceRef>()
+    private var inTraversal = false
+
+    fun <T> traverse(fn: () -> T): T {
+        if (inTraversal) throw LinkedPatch.CircularGraphException(this)
+        inTraversal = true
+        try {
+            return fn()
+        } finally {
+            inTraversal = false
+        }
     }
+
+    fun finalResolve(resolver: PortDiagram.Resolver, shaderChannel: ShaderChannel) =
+        LiveShaderInstance(
+            shader,
+            incomingLinks.mapValues { (portId, link) ->
+                link.finalResolve(shader.findInputPort(portId), resolver)
+            },
+            shaderChannel,
+            priority
+        )
 
     fun release() {
         shader.release()

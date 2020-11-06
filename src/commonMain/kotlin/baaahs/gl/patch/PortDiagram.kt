@@ -52,10 +52,15 @@ class PortDiagram {
         private val channelIterators =
             hashMapOf<Pair<ShaderChannel, ContentType>, Iterator<LiveShaderInstance>>()
 
+        private val shaderStack = hashSetOf<LiveShaderInstance>()
+
         fun resolve(shaderChannel: ShaderChannel, contentType: ContentType): LiveShaderInstance? {
             return resolveNext(shaderChannel, contentType).also {
                 logger.debug { "Resolved $shaderChannel/$contentType to $it"}
-                if (it != null) resolved[shaderChannel to contentType] = it
+                if (it != null) {
+                    resolved[shaderChannel to contentType] = it
+                    if (!shaderStack.add(it)) throw LinkedPatch.CircularGraphException(it)
+                }
             }
         }
 
@@ -78,16 +83,7 @@ class PortDiagram {
 
         private fun resolveNext(shaderChannel: ShaderChannel, contentType: ContentType): LiveShaderInstance? {
             val nextInstance = nextOf(shaderChannel, contentType)
-            return nextInstance?.let { shaderInstance ->
-                LiveShaderInstance(
-                    shaderInstance.shader,
-                    shaderInstance.incomingLinks.mapValues { (portId, link) ->
-                        link.finalResolve(shaderInstance.shader.findInputPort(portId), this)
-                    },
-                    shaderChannel,
-                    shaderInstance.priority
-                )
-            }
+            return nextInstance?.finalResolve(this, shaderChannel)
         }
     }
 
