@@ -32,7 +32,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(model: Model<*>): JsMapperUi.StatusListener {
+class Visualizer(model: Model): JsMapperUi.StatusListener {
     val facade = Facade()
 
     private var container: HTMLDivElement? = null

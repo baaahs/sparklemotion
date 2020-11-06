@@ -24,7 +24,7 @@ import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
 
 class Pinky(
-    val model: Model<*>,
+    val model: Model,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
     val beatSource: BeatSource,

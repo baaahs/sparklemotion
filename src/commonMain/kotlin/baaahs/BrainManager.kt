@@ -18,7 +18,7 @@ import baaahs.shaders.PixelBrainShader
 class BrainManager(
     private val fixtureManager: FixtureManager,
     private val firmwareDaddy: FirmwareDaddy,
-    private val model: Model<*>,
+    private val model: Model,
     private val mappingResults: MappingResults,
     private val udpSocket: Network.UdpSocket,
     private val networkStats: Pinky.NetworkStats,
@@ -170,7 +170,7 @@ class BrainManager(
 
         val mappingData = mappingResults.dataFor(brainId)
             ?: mappingResults.dataFor(msg.surfaceName ?: "__nope")
-            ?: msg.surfaceName?.let { MappingResults.Info(model.findModelSurface(it), null) }
+            ?: msg.surfaceName?.let { MappingResults.Info(model.findSurface(it), null) }
 
         val modelSurface = mappingData?.surface
         val pixelCount = mappingData?.pixelLocations?.size

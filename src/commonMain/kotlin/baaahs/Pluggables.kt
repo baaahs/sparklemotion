@@ -11,7 +11,7 @@ object Pluggables {
     const val defaultModel = "BAAAHS"
 
     @JsName("loadModel")
-    fun loadModel(name: String): Model<*> {
+    fun loadModel(name: String): Model {
         return when (name) {
             "Decom2019" -> Decom2019Model()
             "SuiGeneris" -> SuiGenerisModel()

@@ -16,7 +16,7 @@ class VisualizerListenerClient(
     link: Network.Link,
     address: Network.Address,
     private val visualizer: Visualizer,
-    model: Model<*>
+    model: Model
 ) :
     Network.WebSocketListener, CoroutineScope by MainScope() {
 

@@ -156,7 +156,7 @@ object ShowRunnerSpec : Spek({
     }
 })
 
-object TestModel : Model<Model.Surface>() {
+object TestModel : Model() {
     override val name: String = "Test Model"
     override val movingHeads: List<MovingHead> = emptyList()
     override val allSurfaces: List<Surface> = emptyList()

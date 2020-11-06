@@ -10,7 +10,7 @@ import org.w3c.dom.HTMLDivElement
 import react.ReactElement
 import react.createElement
 
-class AdminUi(network: Network, pinkyAddress: Network.Address, model: Model<*>) : HostedWebApp {
+class AdminUi(network: Network, pinkyAddress: Network.Address, model: Model) : HostedWebApp {
     private val clientLink = network.link("admin")
     private val container = document.createElement("div") as HTMLDivElement
     private val visualizer = Visualizer(model)
@@ -34,5 +34,5 @@ class AdminUi(network: Network, pinkyAddress: Network.Address, model: Model<*>) 
         visualizerListenerClient.close()
     }
 
-    private fun selectModel(): Model<*> = Pluggables.getModel()
+    private fun selectModel(): Model = Pluggables.getModel()
 }
