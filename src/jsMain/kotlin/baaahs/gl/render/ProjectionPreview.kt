@@ -24,7 +24,7 @@ class ProjectionPreview(
     gl: GlBase.JsGlContext,
     private var width: Int,
     private var height: Int,
-    model: Model<*>,
+    model: Model,
     private val preRenderCallback: (() -> Unit)? = null
 ) : ShaderPreview {
     init { gl.ensureColorBufferFloatExtension() }

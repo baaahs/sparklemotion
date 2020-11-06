@@ -12,7 +12,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-open class RenderEngine(
+class RenderEngine(
     val gl: GlContext,
     private val modelInfo: ModelInfo,
     private val deviceType: DeviceType

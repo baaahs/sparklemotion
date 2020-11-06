@@ -25,7 +25,7 @@ import info.laht.threekt.math.Vector3
 import kotlinx.coroutines.*
 import kotlin.js.Date
 
-class SheepSimulator(val model: Model<*>) {
+class SheepSimulator(val model: Model) {
     @Suppress("unused")
     val facade = Facade()
 

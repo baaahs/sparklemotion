@@ -29,7 +29,7 @@ const val USE_SOLID_SHADERS = false
 
 class Mapper(
     private val network: Network,
-    model: Model<*>,
+    model: Model,
     private val mapperUi: MapperUi,
     private val mediaDevices: MediaDevices,
     private val pinkyAddress: Network.Address
@@ -851,7 +851,7 @@ class Mapper(
 interface MapperUi {
     fun listen(listener: Listener)
 
-    fun addWireframe(model: Model<*>)
+    fun addWireframe(model: Model)
     fun showCamImage(image: Image, changeRegion: MediaDevices.Region? = null)
     fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region? = null)
     fun showMessage(message: String)

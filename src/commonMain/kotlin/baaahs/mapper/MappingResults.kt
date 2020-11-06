@@ -18,7 +18,7 @@ interface MappingResults {
     )
 }
 
-class SessionMappingResults(model: Model<*>, mappingSessions: List<MappingSession>) : MappingResults {
+class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>) : MappingResults {
     val brainData = mutableMapOf<BrainId, MappingResults.Info>()
 
     init {
@@ -28,7 +28,7 @@ class SessionMappingResults(model: Model<*>, mappingSessions: List<MappingSessio
                 val surfaceName = surfaceData.surfaceName
 
                 try {
-                    val modelSurface = model.findModelSurface(surfaceName)
+                    val modelSurface = model.findSurface(surfaceName)
                     val pixelLocations = surfaceData.pixels.map { it?.modelPosition }
 
                     brainData[brainId] = MappingResults.Info(modelSurface, pixelLocations)

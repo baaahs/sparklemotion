@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.model.Model
 import kotlinx.serialization.KSerializer
@@ -39,16 +40,11 @@ class FakeClock(var time: Time = 0.0) : Clock {
 }
 
 class TestModelSurface(
-    override val name: String,
-    override val expectedPixelCount: Int? = 1,
-    val vertices: Collection<Vector3F> = emptyList()
-) : Model.Surface {
-    override val description = name
-
+    name: String,
+    expectedPixelCount: Int? = 1,
+    private val vertices: Collection<Vector3F> = emptyList()
+) : Model.Surface(name, name, PixelArrayDevice, expectedPixelCount, emptyList(), emptyList()) {
     override fun allVertices(): Collection<Vector3F> = vertices
-
-    override val faces: List<Model.Face> = emptyList()
-    override val lines: List<Model.Line> = emptyList()
 }
 
 expect fun assumeTrue(boolean: Boolean)

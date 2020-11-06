@@ -3,7 +3,6 @@ package baaahs
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.fixtures.anonymousFixture
-import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
 import baaahs.model.ModelInfo
@@ -128,7 +127,10 @@ class Brain(
                     val message = BrainMappingMessage.parse(reader)
                     fixtureName = message.fixtureName
                     fixture = if (message.fixtureName != null) {
-                        val fakeModelSurface = FakeModelSurface(message.fixtureName)
+                        val fakeModelSurface = Model.Surface(
+                            message.fixtureName, message.fixtureName, PixelArrayDevice,
+                            null, emptyList(), emptyList()
+                        )
                         Fixture(fakeModelSurface, message.pixelCount, message.pixelLocations, PixelArrayDevice)
                     } else {
                         anonymousFixture(BrainId(id), modelInfo)
@@ -173,15 +175,6 @@ class Brain(
         fun release() {
             renderer.release()
         }
-    }
-
-    class FakeModelSurface(override val name: String, override val description: String = name) : Model.Surface {
-        override val expectedPixelCount: Int? = null
-
-        override fun allVertices(): Collection<Vector3F> = emptyList()
-
-        override val faces: List<Model.Face> = emptyList()
-        override val lines: List<Model.Line> = emptyList()
     }
 
     inner class Facade : baaahs.ui.Facade() {

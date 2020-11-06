@@ -8,7 +8,6 @@ import kotlinx.serialization.json.Json
 import kotlin.js.JsName
 
 class MovingHeadManager(private val fs: Fs, private val pubSub: PubSub.Server, movingHeads: List<MovingHead>) {
-    private val movingHeadsChannel = pubSub.publish(Topics.movingHeads, movingHeads) { }
     private val defaultPosition = MovingHead.MovingHeadPosition(127, 127)
     private val currentPositions = mutableMapOf<MovingHead, MovingHead.MovingHeadPosition>()
     private val listeners = mutableMapOf<MovingHead, (MovingHead.MovingHeadPosition) -> Unit>()
@@ -57,10 +56,10 @@ class MovingHeadManager(private val fs: Fs, private val pubSub: PubSub.Server, m
 
 class MovingHeadDisplay(val pubSub: PubSub.Client, onUpdatedMovingHeads: (Array<Wrapper>) -> Unit) {
     init {
-        pubSub.subscribe(Topics.movingHeads) { movingHeads ->
-            val wrappers = movingHeads.map { movingHead -> Wrapper(movingHead, pubSub) }
-            onUpdatedMovingHeads(wrappers.toTypedArray())
-        }
+//        pubSub.subscribe(Topics.movingHeads) { movingHeads ->
+//            val wrappers = movingHeads.map { movingHead -> Wrapper(movingHead, pubSub) }
+//            onUpdatedMovingHeads(wrappers.toTypedArray())
+//        }
     }
 
     private val presets = mutableMapOf<String, MovingHead.MovingHeadPosition>()

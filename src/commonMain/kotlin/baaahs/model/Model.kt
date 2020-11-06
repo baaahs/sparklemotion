@@ -1,18 +1,21 @@
 package baaahs.model
 
+import baaahs.fixtures.DeviceType
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.geom.center
 
-abstract class Model<T : Model.Surface>: ModelInfo {
+abstract class Model : ModelInfo {
     abstract val name: String
     abstract val movingHeads: List<MovingHead>
-    abstract val allSurfaces: List<T>
+    abstract val allSurfaces: List<Surface>
+    val allEntities: List<Entity> get() = allSurfaces + movingHeads
+
     abstract val geomVertices: List<Vector3F>
 
-    private val allSurfacesByName: Map<String, T> by lazy { allSurfaces.associateBy { it.name } }
+    private val allSurfacesByName: Map<String, Surface> by lazy { allSurfaces.associateBy { it.name } }
 
-    fun findModelSurface(name: String) =
+    fun findSurface(name: String) =
         allSurfacesByName[name] ?: throw RuntimeException("no such model surface $name")
 
     val allVertices by lazy {
@@ -30,7 +33,7 @@ abstract class Model<T : Model.Surface>: ModelInfo {
         max - min
     }
     override val extents
-            get() = modelExtents
+        get() = modelExtents
 
     val modelCenter by lazy {
         center(allVertices)
@@ -38,14 +41,26 @@ abstract class Model<T : Model.Surface>: ModelInfo {
     override val center: Vector3F
         get() = modelCenter
 
-    /** A named surface in the geometry model. */
-    interface Surface {
+    interface Entity {
         val name: String
         val description: String
-        val expectedPixelCount: Int?
-        fun allVertices(): Collection<Vector3F>
-        val faces: List<Face>
+        val deviceType: DeviceType
+    }
+
+    /** A named surface in the geometry model. */
+    open class Surface(
+        override val name: String,
+        override val description: String,
+        override val deviceType: DeviceType,
+        val expectedPixelCount: Int?,
+        val faces: List<Face>,
         val lines: List<Line>
+    ) : Entity {
+        open fun allVertices(): Collection<Vector3F> {
+            val vertices = hashSetOf<Vector3F>()
+            vertices.addAll(lines.flatMap { it.vertices })
+            return vertices
+        }
     }
 
     data class Line(val vertices: List<Vector3F>)

@@ -46,7 +46,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
         fs.saveFile(file, imageData)
     }
 
-    suspend fun loadMappingData(model: Model<*>): MappingResults {
+    suspend fun loadMappingData(model: Model): MappingResults {
         val sessions = arrayListOf<MappingSession>()
         val path = fs.resolve("mapping", model.name)
         fs.listFiles(path).forEach { dir ->
