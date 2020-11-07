@@ -249,17 +249,17 @@ class RenderEngineTest {
     private fun compileAndBind(program: String): GlslProgram {
         val autoWirer = AutoWirer(Plugins.safe())
         val shader = GlslAnalyzer(Plugins.safe()).import(program)
-        return autoWirer
+        val linkedPatch = autoWirer
             .autoWire(directXyProjection, shader)
             .acceptSuggestedLinkOptions()
             .resolve()
             .openForPreview(autoWirer)!!
-            .compile(renderEngine) { id, dataSource ->
-                if (dataSource is CorePlugin.GadgetDataSource<*>) {
-                    fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
-                }
-                dataSource.createFeed(fakeShowPlayer, autoWirer.plugins, id)
+        return renderEngine.compile(linkedPatch) { id, dataSource ->
+            if (dataSource is CorePlugin.GadgetDataSource<*>) {
+                fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
             }
+            dataSource.createFeed(fakeShowPlayer, autoWirer.plugins, id)
+        }
     }
 
     // More forgiving color equality checking, allows each channel to be off by one.

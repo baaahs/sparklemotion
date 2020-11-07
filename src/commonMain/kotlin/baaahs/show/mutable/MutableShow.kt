@@ -8,6 +8,7 @@ import baaahs.getBang
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.patch.PatchResolver
 import baaahs.gl.shader.OpenShader
 import baaahs.randomId
 import baaahs.show.*
@@ -321,7 +322,7 @@ class MutablePatch {
                 .getResolvedShaderInstances()
         val openPatch = OpenPatch(resolvedShaderInstances.values.toList(), surfaces)
 
-        val portDiagram = autoWirer.buildPortDiagram(openPatch)
+        val portDiagram = PatchResolver.buildPortDiagram(openPatch)
         return portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
     }
 

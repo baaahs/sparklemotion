@@ -1,15 +1,13 @@
 package baaahs.glsl
 
-import baaahs.BaseShowPlayer
-import baaahs.Gadget
-import baaahs.RenderPlan
+import baaahs.*
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.patch.PatchResolver
 import baaahs.gl.render.RenderManager
 import baaahs.model.ModelInfo
-import baaahs.only
 import baaahs.plugin.Plugins
 import baaahs.show.DataSource
 import baaahs.show.Shader
@@ -52,7 +50,7 @@ object GuruMeditationError {
         val openShow = ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer).openShow()
         dataFeeds = openShow.dataFeeds
         val openPatch = openShow.patches.only("patch")
-        linkedPatch = autoWirer.buildPortDiagram(openPatch)
+        linkedPatch = PatchResolver.buildPortDiagram(openPatch)
             .resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
     }
 
@@ -61,7 +59,9 @@ object GuruMeditationError {
 
         // TODO: Should maybe display error state for whatever device type failed? Or everywhere?
         return RenderPlan(
-            listOf(linkedPatch to linkedPatch.createProgram(renderManager, dataFeeds)),
+            listOf(linkedPatch to linkedPatch.createProgram(renderManager) { _, dataSource ->
+                dataFeeds.getBang(dataSource, "data feed")
+            }),
             ActiveSet(emptyList())
         )
     }

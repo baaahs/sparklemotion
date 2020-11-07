@@ -149,7 +149,11 @@ abstract class FloatsResultType(
     override val stride: Int
         get() = floatCount
 
-    open class Buffer(gl: GlContext, index: Int, type: ResultType) : ResultBuffer(gl, index, type) {
+    open class Buffer(
+        gl: GlContext, index: Int, type: ResultType
+    ) : ResultBuffer(
+        gl.also { gl.ensureResultBufferCanContainFloats() }, index, type
+    ) {
         protected lateinit var floatBuffer: FloatBuffer
 
         override val cpuBuffer: com.danielgergely.kgl.Buffer

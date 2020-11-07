@@ -10,7 +10,7 @@ import com.danielgergely.kgl.*
 abstract class GlContext(
     private val kgl: Kgl,
     val glslVersion: String,
-    var checkForErrors: Boolean = true
+    var checkForErrors: Boolean = false
 ) {
     init { logger.debug { "Created ${this::class.simpleName}" } }
     abstract fun <T> runInContext(fn: () -> T): T
@@ -223,6 +223,9 @@ abstract class GlContext(
         fun setUniform(uniform: Uniform) {
             uniform.set(unitNumber)
         }
+    }
+
+    open fun ensureResultBufferCanContainFloats() {
     }
 
     fun <T> noCheck(fn: Kgl.() -> T): T {

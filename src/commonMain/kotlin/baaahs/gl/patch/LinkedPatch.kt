@@ -5,9 +5,7 @@ import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.Resolver
-import baaahs.gl.render.RenderEngine
 import baaahs.gl.render.RenderManager
-import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
@@ -128,16 +126,10 @@ class LinkedPatch(
         return "#version ${glslVersion}\n\n${toGlsl()}\n"
     }
 
-    fun compile(renderEngine: RenderEngine, resolver: Resolver): GlslProgram =
-        GlslProgram(renderEngine, this, resolver)
-
-    fun createProgram(
-        renderManager: RenderManager,
-        dataFeeds: Map<DataSource, GlslProgram.DataFeed>
-    ): GlslProgram {
+    fun createProgram(renderManager: RenderManager, resolver: Resolver): GlslProgram {
         // TODO: not just PixelArrayDevice!
         val renderEngine = renderManager.getEngineFor(PixelArrayDevice)
-        return compile(renderEngine) { _, dataSource -> dataFeeds.getBang(dataSource, "data feed") }
+        return renderEngine.compile(this, resolver)
     }
 
     fun matches(fixture: Fixture): Boolean = this.surfaces.matches(fixture)
