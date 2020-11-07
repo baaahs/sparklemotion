@@ -155,4 +155,6 @@ class GlslProgram(
     }
 }
 
-typealias Resolver = (String, DataSource) -> GlslProgram.DataFeed?
+fun interface Resolver {
+    fun resolveDataSource(id: String, dataSource: DataSource): GlslProgram.DataFeed?
+}
