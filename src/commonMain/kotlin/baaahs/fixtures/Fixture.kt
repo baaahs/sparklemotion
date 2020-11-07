@@ -17,19 +17,4 @@ class Fixture(
     val name: String = modelSurface?.name ?: "Anonymous fixture"
 ) {
     fun describe(): String = modelSurface?.description ?: name
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as Fixture
-
-        if (modelSurface != other.modelSurface) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return modelSurface.hashCode()
-    }
 }
