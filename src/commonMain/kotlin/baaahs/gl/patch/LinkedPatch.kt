@@ -145,7 +145,7 @@ class LinkedPatch(
     fun bind(glslProgram: GlslProgram, resolver: Resolver): List<GlslProgram.Binding> {
         return dataSourceLinks.mapNotNull { (dataSource, id) ->
             if (dataSource.isImplicit()) return@mapNotNull null
-            val dataFeed = resolver.invoke(id, dataSource)
+            val dataFeed = resolver.resolveDataSource(id, dataSource)
 
             if (dataFeed != null) {
                 val binding = dataFeed.bind(glslProgram)
