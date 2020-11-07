@@ -1,8 +1,6 @@
 package baaahs
 
 import baaahs.api.ws.WebSocketClient
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
@@ -34,8 +32,6 @@ class Mapper(
     private val mediaDevices: MediaDevices,
     private val pinkyAddress: Network.Address
 ) : Network.UdpListener, MapperUi.Listener, CoroutineScope by MainScope() {
-    private val maxPixelsPerBrain = SparkleMotion.MAX_PIXEL_COUNT
-
     // TODO: getCamera should just return max available size?
     lateinit var camera: MediaDevices.Camera
 
@@ -609,10 +605,10 @@ class Mapper(
     private fun solidColorBuffer(color: Color): BrainShader.Buffer {
         return if (USE_SOLID_SHADERS) {
             val solidShader = SolidBrainShader()
-            solidShader.createBuffer(dummyFixture).apply { this.color = color }
+            solidShader.createBuffer(maxPixelsPerBrain).apply { this.color = color }
         } else {
             val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
-            pixelShader.createBuffer(dummyFixture).apply {
+            pixelShader.createBuffer(maxPixelsPerBrain).apply {
                 palette[0] = Color.BLACK
                 palette[1] = color
                 setAll(1)
@@ -796,7 +792,7 @@ class Mapper(
         var screenMax: Vector2F? = null
 
         val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
-        val pixelShaderBuffer = pixelShader.createBuffer(dummyFixture).apply {
+        val pixelShaderBuffer = pixelShader.createBuffer(maxPixelsPerBrain).apply {
             palette[0] = Color.BLACK
             palette[1] = Color.WHITE
             setAll(0)
@@ -840,7 +836,7 @@ class Mapper(
     companion object {
         val logger = Logger("Mapper")
 
-        val dummyFixture = Fixture(null, SparkleMotion.MAX_PIXEL_COUNT, emptyList(), PixelArrayDevice)
+        private val maxPixelsPerBrain = SparkleMotion.MAX_PIXEL_COUNT
     }
 
     fun List<Byte>.stringify(): String {

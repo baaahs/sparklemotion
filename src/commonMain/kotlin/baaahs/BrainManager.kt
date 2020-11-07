@@ -146,7 +146,7 @@ class BrainManager(
         val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.DIRECT_RGB)
         val fixtureReceiver = object : ShowRunner.FixtureReceiver {
             override val fixture = fixture
-            private val pixelBuffer = pixelShader.createBuffer(fixture)
+            private val pixelBuffer = pixelShader.createBuffer(fixture.pixelCount)
 
             override fun send(pixels: Pixels) {
                 pixelBuffer.indices.forEach { i ->

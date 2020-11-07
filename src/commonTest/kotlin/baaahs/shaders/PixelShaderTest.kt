@@ -134,7 +134,7 @@ class PixelShaderTest {
         encoding: PixelBrainShader.Encoding = PixelBrainShader.Encoding.DIRECT_ARGB
     ): PixelBrainShader.Buffer {
         val shader = PixelBrainShader(encoding)
-        return shader.createBuffer(fixture).apply {
+        return shader.createBuffer(fixture.pixelCount).apply {
             (0 until 5).forEach { i -> this.colors[i] = colors[i] }
         }
     }
@@ -145,7 +145,7 @@ class PixelShaderTest {
         encoding: PixelBrainShader.Encoding
     ): PixelBrainShader.Buffer {
         val shader = PixelBrainShader(encoding)
-        return shader.createBuffer(fixture).apply {
+        return shader.createBuffer(fixture.pixelCount).apply {
             palette.forEachIndexed { index, color -> this.palette[index] = color }
             colorIndices.forEachIndexed { pixelIndex, colorIndex -> this[pixelIndex] = colorIndex }
         }
