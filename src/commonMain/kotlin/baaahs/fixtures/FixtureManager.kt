@@ -3,9 +3,13 @@ package baaahs.fixtures
 import baaahs.RenderPlan
 import baaahs.ShowRunner
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.glsl.Resolver
 import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.patch.PatchResolver
 import baaahs.gl.render.FixtureRenderPlan
 import baaahs.gl.render.RenderManager
+import baaahs.show.live.ActiveSet
+import baaahs.timeSync
 
 class FixtureManager(
     private val renderManager: RenderManager
@@ -14,12 +18,16 @@ class FixtureManager(
     private val fixtureRenderPlans: MutableMap<Fixture, FixtureRenderPlan> = hashMapOf()
     private var totalFixtureReceivers = 0
 
+    private var currentActiveSet: ActiveSet = ActiveSet(emptyList())
+    private var activeSetChanged = false
+    internal var currentRenderPlan: RenderPlan? = null
+
     fun getFixtureRenderPlans_ForTestOnly(): Map<Fixture, FixtureRenderPlan> {
         return fixtureRenderPlans
     }
 
     fun fixturesChanged(addedFixtures: Collection<ShowRunner.FixtureReceiver>, removedFixtures: Collection<ShowRunner.FixtureReceiver>) {
-        changedFixtures.add(ShowRunner.FixturesChanges(ArrayList(addedFixtures), ArrayList(removedFixtures)))
+        changedFixtures.add(ShowRunner.FixturesChanges(addedFixtures.toList(), removedFixtures.toList()))
     }
 
     fun requiresRemap(): Boolean {
@@ -91,5 +99,52 @@ class FixtureManager(
         }
 
         totalFixtureReceivers--
+    }
+
+    fun activeSetChanged(activeSet: ActiveSet) {
+        if (activeSet != currentActiveSet) {
+            currentActiveSet = activeSet
+            activeSetChanged = true
+        }
+    }
+
+    fun maybeUpdateRenderPlans(resolver: Resolver): Boolean {
+        var remapFixtures = requiresRemap()
+
+        // Maybe build new shaders.
+        if (this.activeSetChanged) {
+            val activeSet = currentActiveSet
+
+            val elapsedMs = timeSync {
+                currentRenderPlan = prepareRenderPlan(activeSet, resolver)
+            }
+
+            ShowRunner.logger.info {
+                "New render plan created; ${currentRenderPlan?.programs?.size ?: 0} programs, " +
+                        "${getFixtureCount()} fixtures; took ${elapsedMs}ms"
+            }
+
+            remapFixtures = true
+            this.activeSetChanged = false
+        }
+
+        if (remapFixtures) {
+            clearRenderPlans()
+
+            currentRenderPlan?.let {
+                remap(it)
+            }
+        }
+
+        return remapFixtures
+    }
+
+    private fun prepareRenderPlan(activeSet: ActiveSet, resolver: Resolver): RenderPlan {
+        val patchResolution = PatchResolver(fixtureRenderPlans.values, activeSet)
+        return patchResolution.createRenderPlan(renderManager, resolver)
+    }
+
+    fun hasActiveRenderPlan(): Boolean {
+        return currentRenderPlan != null
     }
 }

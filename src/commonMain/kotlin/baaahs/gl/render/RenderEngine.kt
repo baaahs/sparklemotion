@@ -3,6 +3,9 @@ package baaahs.gl.render
 import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.glsl.Resolver
+import baaahs.gl.patch.LinkedPatch
 import baaahs.model.ModelInfo
 import baaahs.timeSync
 import baaahs.util.Logger
@@ -70,6 +73,10 @@ class RenderEngine(
 
     fun removeFixture(fixtureRenderPlan: FixtureRenderPlan) {
         fixturesToRemove.add(fixtureRenderPlan)
+    }
+
+    fun compile(linkedPatch: LinkedPatch, resolver: Resolver): GlslProgram {
+        return GlslProgram(gl, linkedPatch, resolver)
     }
 
     fun draw() {

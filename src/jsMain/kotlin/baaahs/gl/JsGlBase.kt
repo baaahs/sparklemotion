@@ -46,15 +46,17 @@ actual object GlBase {
         glslVersion: String,
         private val webgl: WebGL2RenderingContext
     ) : GlContext(kgl, glslVersion) {
+        private val checkedExtensions = hashSetOf<String>()
+
         override fun <T> runInContext(fn: () -> T): T = fn()
 
-        fun ensureColorBufferFloatExtension() {
+        override fun ensureResultBufferCanContainFloats() {
             // For RGBA32F in FloatXyzwParam:
             ensureExtension("EXT_color_buffer_float")
         }
 
         private fun ensureExtension(name: String) {
-            if (webgl.getExtension(name) == null) {
+            if (checkedExtensions.add(name) && webgl.getExtension(name) == null) {
                 window.alert("$name not supported")
                 throw Exception("$name not supported")
             }

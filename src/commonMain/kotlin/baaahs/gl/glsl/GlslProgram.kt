@@ -9,14 +9,13 @@ import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.OutputPortRef
 import baaahs.util.Logger
+import com.danielgergely.kgl.Kgl
 
 class GlslProgram(
-    internal val renderEngine: RenderEngine,
+    private val gl: GlContext,
     private val linkedPatch: LinkedPatch,
     resolver: Resolver
 ) {
-    internal val gl: GlContext = renderEngine.gl
-
     private val vertexShader =
         gl.createVertexShader(
             "#version ${gl.glslVersion}\n${GlslProgram.vertexShader}"
@@ -73,6 +72,11 @@ class GlslProgram(
             logger.debug { "no such uniform $name" }
         }
         uniformLoc?.let { Uniform(this@GlslProgram, it) }
+    }
+
+    fun <T> withProgram(fn: Kgl.() -> T): T {
+        gl.useProgram(this)
+        return gl.check(fn)
     }
 
     interface Binding {

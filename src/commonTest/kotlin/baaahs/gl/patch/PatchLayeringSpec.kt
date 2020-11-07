@@ -78,9 +78,8 @@ object PatchLayeringSpec : Spek({
             }
 
             it("merges layered patches into a single patch") {
-                val portDiagrams =
-                    autoWirer.merge(show, *show.activeSet().getPatchHolders().toTypedArray())
-                val portDiagram = portDiagrams[Surfaces.AllSurfaces]!!
+                val patchResolution = PatchResolver(emptyList(), show.activeSet())
+                val portDiagram = patchResolution.portDiagrams[Surfaces.AllSurfaces]!!
                 val linkedPatch = portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)!!
                 expect(
                     /** language=glsl */

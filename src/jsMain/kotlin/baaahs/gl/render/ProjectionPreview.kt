@@ -27,8 +27,6 @@ class ProjectionPreview(
     model: Model,
     private val preRenderCallback: (() -> Unit)? = null
 ) : ShaderPreview {
-    init { gl.ensureColorBufferFloatExtension() }
-
     private var running = false
     private val deviceType = ProjectionPreviewDevice
     private val renderEngine = RenderEngine(gl, model, deviceType)

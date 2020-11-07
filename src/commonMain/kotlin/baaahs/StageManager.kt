@@ -1,9 +1,7 @@
 package baaahs
 
 import baaahs.fixtures.FixtureManager
-import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
-import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
@@ -16,7 +14,6 @@ import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.Surfaces
 import baaahs.show.buildEmptyShow
-import baaahs.show.live.ActiveSet
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -229,7 +226,7 @@ class StageManager(
             get() = this@StageManager.showRunner?.show
 
         val currentGlsl: Map<Surfaces, String>?
-            get() = this@StageManager.showRunner?.currentRenderPlan
+            get() = this@StageManager.fixtureManager.currentRenderPlan
                 ?.programs?.map { (patch, program) ->
                     patch.surfaces to program.fragShader.source
                 }?.associate { it }
@@ -260,9 +257,6 @@ class RefCounter : RefCounted {
 
     override fun onFullRelease() {
     }
-}
-
-class RenderPlan(val programs: List<Pair<LinkedPatch, GlslProgram>>, val activeSet: ActiveSet) {
 }
 
 @Serializable

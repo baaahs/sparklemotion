@@ -153,7 +153,7 @@ class PreviewShaderBuilder(
     fun compile(gl: GlContext, resolver: Resolver) {
         val renderEngine = RenderEngine(gl, modelInfo, ProjectionPreviewDevice)
         try {
-            glslProgram = linkedPatch?.compile(renderEngine, resolver)
+            glslProgram = linkedPatch?.let { renderEngine.compile(it, resolver) }
             state = ShaderBuilder.State.Success
         } catch (e: GlslException) {
             glslErrors = e.errors
