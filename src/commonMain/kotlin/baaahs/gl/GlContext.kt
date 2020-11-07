@@ -200,7 +200,7 @@ abstract class GlContext(
         }
 
         fun bindTexture(texture: Texture) {
-            if (boundTexture !== texture) {
+            if (boundTexture != texture) {
                 activate()
                 stats.bindTexture++
                 check { bindTexture(GL_TEXTURE_2D, texture) }
