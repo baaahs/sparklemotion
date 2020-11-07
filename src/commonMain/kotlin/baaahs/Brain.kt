@@ -1,10 +1,7 @@
 package baaahs
 
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.PixelArrayDevice
-import baaahs.fixtures.anonymousFixture
+import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
-import baaahs.model.Model
 import baaahs.model.ModelInfo
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
@@ -25,9 +22,10 @@ class Brain(
     private lateinit var link: Network.Link
     private lateinit var udpSocket: Network.UdpSocket
     private var lastInstructionsReceivedAtMs: Long = 0
-    private var fixtureName : String? = null
-    private var fixture : Fixture = anonymousFixture(BrainId(id), modelInfo)
+    private var modelElementName : String? = null
         set(value) { field = value; facade.notifyChanged() }
+    private var pixelCount: Int = SparkleMotion.MAX_PIXEL_COUNT
+    private var pixelLocations: List<Vector3F> = emptyList()
     private var currentShaderDesc: ByteArray? = null
     private var currentRenderTree: RenderTree<*>? = null
     private val state: State = State.Unknown
@@ -42,8 +40,9 @@ class Brain(
 
     private suspend fun reset() {
         lastInstructionsReceivedAtMs = 0
-        fixtureName = null
-        fixture = anonymousFixture(BrainId(id), modelInfo)
+        modelElementName = null
+        pixelCount = SparkleMotion.MAX_PIXEL_COUNT
+        pixelLocations = emptyList()
         currentShaderDesc = null
         currentRenderTree = null
 
@@ -56,7 +55,7 @@ class Brain(
      * So that the JVM standalone can boot up and have a fixture name without mapping
      */
     fun forcedFixtureName(name: String) {
-        fixtureName = name
+        modelElementName = name
     }
 
     private suspend fun sendHello() {
@@ -66,7 +65,7 @@ class Brain(
                 if (lastInstructionsReceivedAtMs != 0L) {
                     logger.info { "$id: haven't heard from Pinky in ${elapsedSinceMessageMs}ms" }
                 }
-                udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, fixtureName))
+                udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, modelElementName))
             }
 
             delay(5000)
@@ -101,8 +100,8 @@ class Brain(
                         val shader = BrainShader.parse(ByteArrayReader(shaderDesc)) as BrainShader<BrainShader.Buffer>
                         val newRenderTree = RenderTree(
                             shader,
-                            shader.createRenderer(fixture),
-                            shader.createBuffer(fixture)
+                            shader.createRenderer(),
+                            shader.createBuffer(pixelCount)
                         )
                         currentRenderTree?.release()
                         currentRenderTree = newRenderTree
@@ -120,27 +119,20 @@ class Brain(
                 }
 
                 Type.BRAIN_ID_REQUEST -> {
-                    udpSocket.sendUdp(fromAddress, fromPort, BrainHelloMessage(id, fixtureName))
+                    udpSocket.sendUdp(fromAddress, fromPort, BrainHelloMessage(id, modelElementName))
                 }
 
                 Type.BRAIN_MAPPING -> {
                     val message = BrainMappingMessage.parse(reader)
-                    fixtureName = message.fixtureName
-                    fixture = if (message.fixtureName != null) {
-                        val fakeModelSurface = Model.Surface(
-                            message.fixtureName, message.fixtureName, PixelArrayDevice,
-                            null, emptyList(), emptyList()
-                        )
-                        Fixture(fakeModelSurface, message.pixelCount, message.pixelLocations, PixelArrayDevice)
-                    } else {
-                        anonymousFixture(BrainId(id), modelInfo)
-                    }
+                    modelElementName = message.fixtureName
+                    pixelCount = message.pixelCount
+                    pixelLocations = message.pixelLocations
 
                     // next frame we'll need to recreate everything...
                     currentShaderDesc = null
                     currentRenderTree = null
 
-                    udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, fixtureName))
+                    udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, modelElementName))
                 }
 
                 Type.PING -> {
@@ -182,8 +174,8 @@ class Brain(
             get() = this@Brain.id
         val state: State
             get() = this@Brain.state
-        val fixture: Fixture
-            get() = this@Brain.fixture
+        val modelElementName: String?
+            get() = this@Brain.modelElementName
 
         fun reset() {
             logger.info { "Resetting Brain $id!" }

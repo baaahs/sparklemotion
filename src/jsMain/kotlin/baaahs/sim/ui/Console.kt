@@ -60,7 +60,7 @@ class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(prop
                     if (selectedBrain != null) {
                         hr {}
                         b { +"Brain ${selectedBrain.id}" }
-                        div { +"Fixture: ${selectedBrain.fixture.describe()}" }
+                        div { +"Model Element: ${selectedBrain.modelElementName ?: "unknown"}" }
                     }
                 }
 
