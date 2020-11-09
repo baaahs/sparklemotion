@@ -51,10 +51,8 @@ object PixelArrayDevice : DeviceType {
         }
     }
 
-    fun getPixels(fixtureRenderPlan: FixtureRenderPlan): Pixels {
-        val buffer = fixtureRenderPlan.resultBuffers[0] as ColorResultType.Buffer
-        return FixturePixels(buffer, fixtureRenderPlan.pixelCount, fixtureRenderPlan.pixel0Index)
-    }
+    fun getColorResults(resultViews: List<ResultView>) =
+        resultViews[0] as ColorResultType.ColorResultView
 }
 
 class FixturePixels(

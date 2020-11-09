@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.fixtures.NullTransport
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.glsl.LinearSurfacePixelStrategy
@@ -36,7 +37,7 @@ object BrainManagerSpec : Spek({
             val mappingInfo by value { MappingResults.Info(surface, pixelLocations) }
             val brainHelloMessage by value { BrainHelloMessage(brainId, msgSurfaceName, null, null) }
 
-            val subject by value { brainManager.createFixtureFor(brainHelloMessage) }
+            val subject by value { brainManager.createFixtureFor(brainHelloMessage, NullTransport) }
 
             context("when the brain id is mapped to a model element") {
                 override(resultsByBrainId) { mapOf(BrainId(brainId) to mappingInfo) }

@@ -136,6 +136,9 @@ abstract class ResultBuffer(
     private val paramIndex: Int,
     val type: ResultType
 ) {
+    var pixelCount: Int = 0
+        private set
+
     private var curWidth = 0
     private var curHeight = 0
     private var cpuBufferSize = 0
@@ -154,6 +157,7 @@ abstract class ResultBuffer(
         curHeight = height
 
         val bufferSize = width * height
+        pixelCount = bufferSize
         if (cpuBufferSize != bufferSize) {
             resizeBuffer(bufferSize)
             cpuBufferSize = bufferSize
@@ -175,7 +179,14 @@ abstract class ResultBuffer(
         }
     }
 
+    abstract fun getView(pixelOffset: Int, pixelCount: Int): ResultView
+
     fun release() {
         gpuBuffer.release()
     }
 }
+
+abstract class ResultView(
+    val pixelOffset: Int,
+    val pixelCount: Int
+)

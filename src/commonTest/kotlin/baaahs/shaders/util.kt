@@ -4,6 +4,7 @@ import baaahs.BrainShader
 import baaahs.Color
 import baaahs.Pixels
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.NullTransport
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
@@ -48,7 +49,7 @@ internal fun <T : BrainShader.Buffer> render(srcBrainShaderAndBuffer: Pair<Brain
     render(srcBrainShaderAndBuffer.second, fixture)
 
 fun fakeFixture(pixelCount: Int) =
-    Fixture(null, pixelCount, emptyList(), PixelArrayDevice, "fake fixture")
+    Fixture(null, pixelCount, emptyList(), PixelArrayDevice, "fake fixture", transport = NullTransport)
 
 class FakePixels(override val size: Int) : Pixels {
     private val buf = Array(size) { Color.BLACK }

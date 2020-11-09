@@ -1,10 +1,11 @@
 package baaahs.gl.render
 
 import baaahs.Color
-import baaahs.Pixels
 import baaahs.TestModel
 import baaahs.TestModelSurface
+import baaahs.fixtures.ColorResultType
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.NullTransport
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
@@ -81,7 +82,7 @@ class RenderEngineTest {
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        ) { fixtureRenderPlan.pixels.toList() }
+        ) { fixtureRenderPlan.colors.toList() }
     }
 
     @Test
@@ -109,7 +110,7 @@ class RenderEngineTest {
             Color(0f, .1f, .1f),
             Color(.2f, .3f, .1f),
             Color(.4f, .5f, .1f)
-        ) { fixtureRenderPlan.pixels.toList() }
+        ) { fixtureRenderPlan.colors.toList() }
 
         fakeShowPlayer.getGadget<Slider>("blueSlider").value = .2f
         renderEngine.draw()
@@ -118,7 +119,7 @@ class RenderEngineTest {
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .5f, .2f)
-        ) { fixtureRenderPlan.pixels.toList() }
+        ) { fixtureRenderPlan.colors.toList() }
     }
 
     @Test
@@ -146,18 +147,18 @@ class RenderEngineTest {
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        ) { fixtureRenderPlan1.pixels.toList() }
+        ) { fixtureRenderPlan1.colors.toList() }
 
         expectColor(
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f)
-        ) { fixtureRenderPlan2.pixels.toList() }
+        ) { fixtureRenderPlan2.colors.toList() }
 
         expectColor(
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        ) { fixtureRenderPlan3.pixels.toList() }
+        ) { fixtureRenderPlan3.colors.toList() }
     }
 
     @Ignore @Test // TODO: Per-surface uniform control TBD
@@ -191,14 +192,14 @@ class RenderEngineTest {
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .503f, .2f)
-        ) { fixtureRenderPlan1.pixels.toList() }
+        ) { fixtureRenderPlan1.colors.toList() }
 
         // Interpolation between vertex 0 and the surface's center.
         expectColor(
             Color(.6f, .6f, .3f),
             Color(.651f, .651f, .3f),
             Color(.7f, .7f, .3f)
-        ) { fixtureRenderPlan2.pixels.toList() }
+        ) { fixtureRenderPlan2.colors.toList() }
     }
 
     @Test
@@ -234,7 +235,8 @@ class RenderEngineTest {
                 val offset = i * .2f
                 Vector3F(0f + offset, .1f + offset, 0f)
             },
-            PixelArrayDevice
+            PixelArrayDevice,
+            transport = NullTransport
         )
     }
 
@@ -242,7 +244,8 @@ class RenderEngineTest {
         return Fixture(
             TestModelSurface(name), pixelCount,
             (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) },
-            PixelArrayDevice
+            PixelArrayDevice,
+            transport = NullTransport
         )
     }
 
@@ -306,5 +309,5 @@ private val directXyProjection = Shader("Direct XY Projection", ShaderType.Proje
     """.trimIndent()
 )
 
-val FixtureRenderPlan.pixels: Pixels
-    get() = PixelArrayDevice.getPixels(this)
+val FixtureRenderPlan.colors: ColorResultType.ColorResultView
+    get() = PixelArrayDevice.getColorResults(this.resultViews)

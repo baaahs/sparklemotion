@@ -227,8 +227,7 @@ class Pinky(
         if (!isStartedUp) return
 
         CoroutineScope(coroutineContext).launch {
-            val message = parse(bytes)
-            when (message) {
+            when (val message = parse(bytes)) {
                 is BrainHelloMessage -> brainManager.foundBrain(fromAddress, message)
                 is PingMessage -> brainManager.receivedPing(fromAddress, message)
                 is MapperHelloMessage -> {
@@ -346,8 +345,8 @@ class Pinky(
         val networkStats: NetworkStats
             get() = this@Pinky.networkStats
 
-        val brains: List<BrainInfo>
-            get() = this@Pinky.brainManager.brainInfos.values.toList()
+        val brains: List<BrainManager.BrainTransport>
+            get() = this@Pinky.brainManager.activeBrains.values.toList()
 
         val beatData: BeatData
             get() = this@Pinky.beatSource.getBeatData()
@@ -365,18 +364,6 @@ class Pinky(
 @Serializable
 data class PinkyConfig(
     val runningShowPath: String?
-)
-
-data class BrainId(val uuid: String)
-
-class BrainInfo(
-    val address: Network.Address,
-    val brainId: BrainId,
-    val fixture: Fixture,
-    val firmwareVersion: String?,
-    val idfVersion: String?,
-    val fixtureReceiver: ShowRunner.FixtureReceiver,
-    var hadException: Boolean = false
 )
 
 @Serializable

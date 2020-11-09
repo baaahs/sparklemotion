@@ -92,7 +92,7 @@ object ShowRunnerSpec : Spek({
         beforeEachTest {
             addControls()
             stageManager.switchTo(show, showState)
-            fixtureManager.fixturesChanged(fixtures.map { FakeFixtureReceiver(it) {} }, emptyList())
+            fixtureManager.fixturesChanged(fixtures, emptyList())
             stageManager.renderAndSendNextFrame()
         }
 

@@ -1,6 +1,5 @@
 package baaahs
 
-import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
@@ -85,13 +84,6 @@ class ShowRunner(
 
     fun release() {
         openShow.release()
-    }
-
-    data class FixturesChanges(val added: Collection<FixtureReceiver>, val removed: Collection<FixtureReceiver>)
-
-    interface FixtureReceiver {
-        val fixture: Fixture
-        fun send(pixels: Pixels)
     }
 
     companion object {

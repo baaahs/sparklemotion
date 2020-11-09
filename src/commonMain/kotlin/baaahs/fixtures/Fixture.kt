@@ -14,7 +14,9 @@ class Fixture(
     /** Each pixel's location in the global 3d model. */
     val pixelLocations: List<Vector3F>,
     val deviceType: DeviceType,
-    val name: String = modelSurface?.name ?: "Anonymous fixture"
+    val name: String = modelSurface?.name ?: "Anonymous fixture",
+    val transport: Transport
 ) {
-    fun describe(): String = modelSurface?.description ?: name
+    val title: String get() =
+        "$name: ${deviceType.title} with $pixelCount pixels at ${transport.name}"
 }
