@@ -20,13 +20,13 @@ class RenderEngine(
     private val modelInfo: ModelInfo,
     private val deviceType: DeviceType
 ) {
-    private val fixturesToAdd: MutableList<FixtureRenderPlan> = mutableListOf()
-    private val fixturesToRemove: MutableList<FixtureRenderPlan> = mutableListOf()
+    private val renderTargetsToAdd: MutableList<RenderTarget> = mutableListOf()
+    private val renderTargetsToRemove: MutableList<RenderTarget> = mutableListOf()
     var pixelCount: Int = 0
     var nextPixelOffset: Int = 0
     var nextRectOffset: Int = 0
 
-    private val fixtureRenderPlans: MutableList<FixtureRenderPlan> = mutableListOf()
+    private val renderTargets: MutableList<RenderTarget> = mutableListOf()
 
     private val paramBuffers = deviceType.params
         .mapIndexed { index, param -> param.allocate(gl, index) }
@@ -44,10 +44,10 @@ class RenderEngine(
     init {
         gl.runInContext { gl.check { clearColor(0f, .5f, 0f, 1f) } }
 
-        arrangement = gl.runInContext { Arrangement(0, fixturesToAdd) }
+        arrangement = gl.runInContext { Arrangement(0, renderTargetsToAdd) }
     }
 
-    fun addFixture(fixture: Fixture): FixtureRenderPlan {
+    fun addFixture(fixture: Fixture): RenderTarget {
         if (fixture.deviceType != deviceType) {
             throw IllegalArgumentException(
                 "This RenderEngine can't accept ${fixture.deviceType} devices, only $deviceType.")
@@ -58,18 +58,18 @@ class RenderEngine(
             fbMaxPixWidth,
             fixture
         )
-        val fixtureRenderPlan = FixtureRenderPlan(
+        val renderTarget = RenderTarget(
             fixture, nextRectOffset, rects, modelInfo, fixture.pixelCount, nextPixelOffset, resultBuffers
         )
         nextPixelOffset += fixture.pixelCount
         nextRectOffset += rects.size
 
-        fixturesToAdd.add(fixtureRenderPlan)
-        return fixtureRenderPlan
+        renderTargetsToAdd.add(renderTarget)
+        return renderTarget
     }
 
-    fun removeFixture(fixtureRenderPlan: FixtureRenderPlan) {
-        fixturesToRemove.add(fixtureRenderPlan)
+    fun removeRenderTarget(renderTarget: RenderTarget) {
+        renderTargetsToRemove.add(renderTarget)
     }
 
     fun compile(linkedPatch: LinkedPatch, resolver: Resolver): GlslProgram {
@@ -103,19 +103,19 @@ class RenderEngine(
 
     // This must be run from within a GL context
     private fun incorporateNewFixtures() {
-        if (fixturesToRemove.isNotEmpty()) {
+        if (renderTargetsToRemove.isNotEmpty()) {
 //            TODO("remove TBD")
         }
 
-        if (fixturesToAdd.isNotEmpty()) {
+        if (renderTargetsToAdd.isNotEmpty()) {
             val newPixelCount = nextPixelOffset
 
             arrangement.release()
 
-            fixtureRenderPlans.addAll(fixturesToAdd)
-            arrangement = Arrangement(newPixelCount, fixturesToAdd)
+            renderTargets.addAll(renderTargetsToAdd)
+            arrangement = Arrangement(newPixelCount, renderTargetsToAdd)
 
-            fixturesToAdd.clear()
+            renderTargetsToAdd.clear()
 
             pixelCount = newPixelCount
         }
@@ -167,7 +167,7 @@ class RenderEngine(
         val Int.bufSize: Int get() = bufWidth * bufHeight
     }
 
-    inner class Arrangement(val pixelCount: Int, addedFixtures: List<FixtureRenderPlan>) {
+    inner class Arrangement(val pixelCount: Int, addedRenderTargets: List<RenderTarget>) {
         init {
             logger.info { "Creating ${deviceType::class.simpleName} arrangement with $pixelCount pixels" }
         }
@@ -182,7 +182,7 @@ class RenderEngine(
             paramBuffers.forEach {
                 it.resizeBuffer(safeWidth, safeHeight)
             }
-            for (addedFixture in addedFixtures) {
+            for (addedFixture in addedRenderTargets) {
                 deviceType.initPixelParams(addedFixture, paramBuffers)
             }
             paramBuffers.forEach {
@@ -195,7 +195,7 @@ class RenderEngine(
         }
 
         private val quad: Quad =
-            Quad(gl, fixtureRenderPlans.flatMap {
+            Quad(gl, renderTargets.flatMap {
                 it.rects.map { rect ->
                     // Remap from pixel coordinates to normalized device coordinates.
                     Quad.Rect(
@@ -208,15 +208,15 @@ class RenderEngine(
             })
 
         fun release() {
-            logger.debug { "Release arrangement with ${fixtureRenderPlans.count()} fixtures and $pixelCount pixels" }
+            logger.debug { "Release arrangement with ${renderTargets.count()} fixtures and $pixelCount pixels" }
 
             quad.release()
         }
 
         fun render() {
-            fixtureRenderPlans
+            renderTargets
                 .groupBy { it.program }
-                .forEach { (program, fixtureRenderPlans) ->
+                .forEach { (program, renderTargets) ->
                     if (program != null) {
                         // TODO: This ought to be merged with GlslProgram.bindings probably?
                         paramBuffers.forEach { it.bind(program).setOnProgram() }
@@ -225,11 +225,11 @@ class RenderEngine(
                         program.updateUniforms()
 
                         quad.prepareToRender(program.vertexAttribLocation) {
-                            fixtureRenderPlans.forEach { fixtureRenderPlan ->
-                                deviceType.setFixtureParamUniforms(fixtureRenderPlan, paramBuffers)
+                            renderTargets.forEach { renderTarget ->
+                                deviceType.setFixtureParamUniforms(renderTarget, paramBuffers)
 
-                                fixtureRenderPlan.rects.indices.forEach { i ->
-                                    quad.renderRect(fixtureRenderPlan.rect0Index + i)
+                                renderTarget.rects.indices.forEach { i ->
+                                    quad.renderRect(renderTarget.rect0Index + i)
                                 }
                             }
                         }

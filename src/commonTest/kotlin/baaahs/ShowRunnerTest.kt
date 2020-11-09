@@ -2,8 +2,8 @@ package baaahs
 
 import baaahs.fixtures.*
 import baaahs.gadgets.Slider
-import baaahs.gl.render.FixtureRenderPlan
 import baaahs.gl.render.RenderManager
+import baaahs.gl.render.RenderTarget
 import baaahs.mapper.Storage
 import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
@@ -28,7 +28,7 @@ class ShowRunnerTest {
 
     private val fs = FakeFs()
 
-    private lateinit var fixtureRenderPlans: Map<Fixture, FixtureRenderPlan>
+    private lateinit var renderTargets: Map<Fixture, RenderTarget>
     private val surface1Messages = mutableListOf<String>()
     private val surface1Fixture =
         Fixture(SheepModel.Panel("surface 1"), 1, emptyList(), PixelArrayDevice,
@@ -59,7 +59,7 @@ class ShowRunnerTest {
             dmxUniverse, movingHeadManager, FakeClock(), sheepModel, testCoroutineContext
         )
         stageManager.switchTo(SampleData.sampleShow)
-        fixtureRenderPlans = fixtureManager.getFixtureRenderPlans_ForTestOnly()
+        renderTargets = fixtureManager.getRenderTargets_ForTestOnly()
         surface1Messages.clear()
         surface2Messages.clear()
         dmxEvents.clear()
@@ -68,7 +68,7 @@ class ShowRunnerTest {
     @Test @Ignore // TODO
     fun whenNoKnownSurfaces_shouldStillCreateShow() {
         stageManager.renderAndSendNextFrame()
-        expect(1) { fixtureRenderPlans.size }
+        expect(1) { renderTargets.size }
         expect(0) { surface1Messages.size }
     }
 
@@ -76,12 +76,12 @@ class ShowRunnerTest {
     fun shouldRenderShow() {
         fixtureManager.fixturesChanged(listOf(surface1Fixture, surface2Fixture), emptyList())
         stageManager.renderAndSendNextFrame()
-        expect(2) { fixtureRenderPlans.size }
+        expect(2) { renderTargets.size }
         expect(1) { surface1Messages.size }
         expect(1) { surface2Messages.size }
 
         stageManager.renderAndSendNextFrame()
-        expect(2) { fixtureRenderPlans.size }
+        expect(2) { renderTargets.size }
         expect(2) { surface1Messages.size }
         expect(2) { surface2Messages.size }
 
@@ -97,36 +97,36 @@ class ShowRunnerTest {
     @Test
     fun inProcrastinationMode_whenSurfacesAreAddedOrRemoved_shouldUpdateShowAfterNextFrame() {
         stageManager.renderAndSendNextFrame(false) // No surfaces so no show created, nothing rendered.
-        expect(0) { fixtureRenderPlans.size }
+        expect(0) { renderTargets.size }
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
         stageManager.renderAndSendNextFrame(false) // Create a new show with one surface but don't render to it yet.
-        expect(1) { fixtureRenderPlans.size }
+        expect(1) { renderTargets.size }
         expect(0) { surface1Messages.size }
 
         stageManager.renderAndSendNextFrame(false) // Render and include that surface.
-        expect(1) { fixtureRenderPlans.size }
+        expect(1) { renderTargets.size }
         expect(1) { surface1Messages.size }
 
         fixtureManager.fixturesChanged(listOf(surface2Fixture), emptyList())
         stageManager.renderAndSendNextFrame(false) // Add another surface, but still only render to the first.
-        expect(2) { fixtureRenderPlans.size }
+        expect(2) { renderTargets.size }
         expect(2) { surface1Messages.size }
         expect(0) { surface2Messages.size }
 
         stageManager.renderAndSendNextFrame(false) // Render to both.
-        expect(2) { fixtureRenderPlans.size }
+        expect(2) { renderTargets.size }
         expect(3) { surface1Messages.size }
         expect(1) { surface2Messages.size }
 
         fixtureManager.fixturesChanged(emptyList(), listOf(surface1Fixture))
         stageManager.renderAndSendNextFrame(false) // Remove the first surface, but still render to both.
-        expect(1) { fixtureRenderPlans.size }
+        expect(1) { renderTargets.size }
         expect(4) { surface1Messages.size }
         expect(2) { surface2Messages.size }
 
         stageManager.renderAndSendNextFrame(false) // Render again to the remaining surface.
-        expect(1) { fixtureRenderPlans.size }
+        expect(1) { renderTargets.size }
         expect(4) { surface1Messages.size }
         expect(3) { surface2Messages.size }
     }
@@ -134,36 +134,36 @@ class ShowRunnerTest {
     @Test
     fun inNoProcrastinationMode_whenSurfacesAreAddedOrRemoved_shouldUpdateShowAfterNextFrame() {
         stageManager.renderAndSendNextFrame() // No surfaces so no show created, nothing rendered.
-        expect(0) { fixtureRenderPlans.size }
+        expect(0) { renderTargets.size }
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
         stageManager.renderAndSendNextFrame() // Create a new show with one surface and render to it.
-        expect(1) { fixtureRenderPlans.size }
+        expect(1) { renderTargets.size }
         expect(1) { surface1Messages.size }
 
         stageManager.renderAndSendNextFrame() // Render again.
-        expect(1) { fixtureRenderPlans.size }
+        expect(1) { renderTargets.size }
         expect(2) { surface1Messages.size }
 
         fixtureManager.fixturesChanged(listOf(surface2Fixture), emptyList())
         stageManager.renderAndSendNextFrame() // Add another surface, render to both.
-        expect(2) { fixtureRenderPlans.size }
+        expect(2) { renderTargets.size }
         expect(3) { surface1Messages.size }
         expect(1) { surface2Messages.size }
 
         stageManager.renderAndSendNextFrame() // Render again to both.
-        expect(2) { fixtureRenderPlans.size }
+        expect(2) { renderTargets.size }
         expect(4) { surface1Messages.size }
         expect(2) { surface2Messages.size }
 
         fixtureManager.fixturesChanged(emptyList(), listOf(surface1Fixture))
         stageManager.renderAndSendNextFrame() // Remove the first surface and render to only the second.
-        expect(1) { fixtureRenderPlans.size }
+        expect(1) { renderTargets.size }
         expect(4) { surface1Messages.size }
         expect(3) { surface2Messages.size }
 
         stageManager.renderAndSendNextFrame() // Render another frame on the remaining surface.
-        expect(1) { fixtureRenderPlans.size }
+        expect(1) { renderTargets.size }
         expect(4) { surface1Messages.size }
         expect(4) { surface2Messages.size }
     }
@@ -174,28 +174,28 @@ class ShowRunnerTest {
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
         stageManager.renderAndSendNextFrame() // Render a frame.
-        expect(1) { fixtureRenderPlans.size }
+        expect(1) { renderTargets.size }
         expect(1) { surface1Messages.size }
 
         fixtureManager.fixturesChanged(listOf(surface2Fixture), emptyList())
         stageManager.renderAndSendNextFrame() // Prior show renders a frame, new show is created with two surfaces.
-        expect(2) { fixtureRenderPlans.size }
+        expect(2) { renderTargets.size }
         expect(2) { surface1Messages.size }
         expect(0) { surface2Messages.size }
 
         stageManager.renderAndSendNextFrame() // Render a frame with the new show.
-        expect(2) { fixtureRenderPlans.size }
+        expect(2) { renderTargets.size }
         expect(3) { surface1Messages.size }
         expect(1) { surface2Messages.size }
 
         fixtureManager.fixturesChanged(emptyList(), listOf(surface1Fixture))
         stageManager.renderAndSendNextFrame() // Render another frame on both surfaces, then recreate the show with new surfaces.
-        expect(3) { fixtureRenderPlans.size }
+        expect(3) { renderTargets.size }
         expect(4) { surface1Messages.size }
         expect(2) { surface2Messages.size }
 
         stageManager.renderAndSendNextFrame() // Render another frame on the remaining surface.
-        expect(3) { fixtureRenderPlans.size }
+        expect(3) { renderTargets.size }
         expect(4) { surface1Messages.size }
         expect(3) { surface2Messages.size }
     }
@@ -206,7 +206,7 @@ class ShowRunnerTest {
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
         stageManager.renderAndSendNextFrame() // Create show and request gadgets.
-        expect(1) { fixtureRenderPlans.size }
+        expect(1) { renderTargets.size }
 
         val originalSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
         expect(1.0f) { originalSlider.value }
@@ -214,7 +214,7 @@ class ShowRunnerTest {
 
         fixtureManager.fixturesChanged(listOf(surface2Fixture), emptyList())
         stageManager.renderAndSendNextFrame() // Recreate show and restore gadget state.
-        expect(2) { fixtureRenderPlans.size }
+        expect(2) { renderTargets.size }
 
         val recreatedSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
         expect(0.5f) { recreatedSlider.value }
@@ -226,7 +226,7 @@ class ShowRunnerTest {
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
         stageManager.renderAndSendNextFrame() // Create show and request gadgets.
-        expect(1) { fixtureRenderPlans.size }
+        expect(1) { renderTargets.size }
 
         expect(0) { serverNetwork.packetsToSend.size }
 
@@ -236,7 +236,7 @@ class ShowRunnerTest {
 
         fixtureManager.fixturesChanged(listOf(surface2Fixture), emptyList())
         stageManager.renderAndSendNextFrame() // Recreate show and restore gadget state.
-        expect(2) { fixtureRenderPlans.size }
+        expect(2) { renderTargets.size }
 
         val recreatedSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
         expect(0.5f) { recreatedSlider.value }

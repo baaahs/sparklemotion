@@ -74,7 +74,7 @@ class RenderEngineTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val fixtureRenderPlan = renderEngine.addFixture(fakeSurface()).apply { this.program = glslProgram }
+        val renderTarget = renderEngine.addFixture(fakeSurface()).apply { this.program = glslProgram }
 
         renderEngine.draw()
 
@@ -82,7 +82,7 @@ class RenderEngineTest {
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        ) { fixtureRenderPlan.colors.toList() }
+        ) { renderTarget.colors.toList() }
     }
 
     @Test
@@ -101,7 +101,7 @@ class RenderEngineTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val fixtureRenderPlan = renderEngine.addFixture(fakeSurface()).apply { this.program = glslProgram }
+        val renderTarget = renderEngine.addFixture(fakeSurface()).apply { this.program = glslProgram }
 
         fakeShowPlayer.getGadget<Slider>("blueSlider").value = .1f
         renderEngine.draw()
@@ -110,7 +110,7 @@ class RenderEngineTest {
             Color(0f, .1f, .1f),
             Color(.2f, .3f, .1f),
             Color(.4f, .5f, .1f)
-        ) { fixtureRenderPlan.colors.toList() }
+        ) { renderTarget.colors.toList() }
 
         fakeShowPlayer.getGadget<Slider>("blueSlider").value = .2f
         renderEngine.draw()
@@ -119,7 +119,7 @@ class RenderEngineTest {
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .5f, .2f)
-        ) { fixtureRenderPlan.colors.toList() }
+        ) { renderTarget.colors.toList() }
     }
 
     @Test
@@ -137,9 +137,9 @@ class RenderEngineTest {
 
         val glslProgram = compileAndBind(program)
 
-        val fixtureRenderPlan1 = renderEngine.addFixture(fakeSurface("s1")).apply { this.program = glslProgram }
-        val fixtureRenderPlan2 = renderEngine.addFixture(fakeSurface("s2", 2)).apply { this.program = glslProgram }
-        val fixtureRenderPlan3 = renderEngine.addFixture(fakeSurface("s3")).apply { this.program = glslProgram }
+        val renderTarget1 = renderEngine.addFixture(fakeSurface("s1")).apply { this.program = glslProgram }
+        val renderTarget2 = renderEngine.addFixture(fakeSurface("s2", 2)).apply { this.program = glslProgram }
+        val renderTarget3 = renderEngine.addFixture(fakeSurface("s3")).apply { this.program = glslProgram }
 
         renderEngine.draw()
 
@@ -147,18 +147,18 @@ class RenderEngineTest {
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        ) { fixtureRenderPlan1.colors.toList() }
+        ) { renderTarget1.colors.toList() }
 
         expectColor(
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f)
-        ) { fixtureRenderPlan2.colors.toList() }
+        ) { renderTarget2.colors.toList() }
 
         expectColor(
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        ) { fixtureRenderPlan3.colors.toList() }
+        ) { renderTarget3.colors.toList() }
     }
 
     @Ignore @Test // TODO: Per-surface uniform control TBD
@@ -179,12 +179,12 @@ class RenderEngineTest {
 
         val glslProgram = compileAndBind(program)
 
-        val fixtureRenderPlan1 = renderEngine.addFixture(fakeSurface("s1")).apply { this.program = glslProgram }
-        val fixtureRenderPlan2 = renderEngine.addFixture(fakeSurface("s2")).apply { this.program = glslProgram }
+        val renderTarget1 = renderEngine.addFixture(fakeSurface("s1")).apply { this.program = glslProgram }
+        val renderTarget2 = renderEngine.addFixture(fakeSurface("s2")).apply { this.program = glslProgram }
 
         // TODO: yuck, let's not do this [first part]
-//        fixtureRenderPlan1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
-//        fixtureRenderPlan2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
+//        renderTarget1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
+//        renderTarget2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
 
         renderEngine.draw()
 
@@ -192,14 +192,14 @@ class RenderEngineTest {
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .503f, .2f)
-        ) { fixtureRenderPlan1.colors.toList() }
+        ) { renderTarget1.colors.toList() }
 
         // Interpolation between vertex 0 and the surface's center.
         expectColor(
             Color(.6f, .6f, .3f),
             Color(.651f, .651f, .3f),
             Color(.7f, .7f, .3f)
-        ) { fixtureRenderPlan2.colors.toList() }
+        ) { renderTarget2.colors.toList() }
     }
 
     @Test
@@ -309,5 +309,5 @@ private val directXyProjection = Shader("Direct XY Projection", ShaderType.Proje
     """.trimIndent()
 )
 
-val FixtureRenderPlan.colors: ColorResultType.ColorResultView
+val RenderTarget.colors: ColorResultType.ColorResultView
     get() = PixelArrayDevice.getColorResults(this.resultViews)

@@ -32,7 +32,7 @@ class ProjectionPreview(
     private val deviceType = ProjectionPreviewDevice
     private val renderEngine = RenderEngine(gl, model, deviceType)
     private var projectionProgram: GlslProgram? = null
-    private val fixtureRenderPlans = model.allSurfaces.associateWith { surface ->
+    private val renderTargets = model.allSurfaces.associateWith { surface ->
         val lineVertices = surface.lines.flatMap { it.vertices }
         val fixture = Fixture(surface, lineVertices.size, lineVertices, deviceType, transport = NullTransport)
         renderEngine.addFixture(fixture)
@@ -54,8 +54,8 @@ class ProjectionPreview(
     }
 
     override fun setProgram(program: GlslProgram) {
-        fixtureRenderPlans.forEach { (_, fixtureRenderPlan) ->
-            fixtureRenderPlan.program = program
+        renderTargets.forEach { (_, renderTarget) ->
+            renderTarget.program = program
         }
         projectionProgram = program
     }
@@ -79,14 +79,14 @@ class ProjectionPreview(
 
             val overflows = arrayListOf<DoubleArray>()
 
-            fixtureRenderPlans.forEach { (surface, fixtureRenderPlan) ->
-                val projectedVertices = deviceType.getVertexLocations(fixtureRenderPlan.resultViews)
+            renderTargets.forEach { (surface, renderTarget) ->
+                val projectedVertices = deviceType.getVertexLocations(renderTarget.resultViews)
                 var vertexIndex = 0
 
                 val path = Path2D()
                 surface.lines.forEach { line ->
                     line.vertices.forEachIndexed { vIndex, _ ->
-                        val vec2 = projectedVertices[fixtureRenderPlan.pixel0Index + vertexIndex]
+                        val vec2 = projectedVertices[renderTarget.pixel0Index + vertexIndex]
                         val u = vec2.x.toDouble()
                         val v = 1 - vec2.y.toDouble()
 

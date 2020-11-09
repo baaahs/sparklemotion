@@ -11,8 +11,8 @@ import baaahs.gl.glsl.Resolver
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.render.FixtureRenderPlan
 import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
@@ -192,10 +192,10 @@ object ProjectionPreviewDevice: DeviceType {
             ResultParam("Vertex Location", Vec2ResultType)
         )
 
-    override fun setFixtureParamUniforms(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>) {
+    override fun setFixtureParamUniforms(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>) {
     }
 
-    override fun initPixelParams(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>) {
+    override fun initPixelParams(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>) {
     }
 
     fun getVertexLocations(resultViews: List<ResultView>): Vec2ResultType.Vec2ResultView {

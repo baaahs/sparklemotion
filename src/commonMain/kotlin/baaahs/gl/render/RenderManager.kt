@@ -20,11 +20,11 @@ class RenderManager(
         renderEngines.values.forEach { it.draw() }
     }
 
-    fun addFixture(fixture: Fixture): FixtureRenderPlan {
+    fun addFixture(fixture: Fixture): RenderTarget {
         return getEngineFor(fixture.deviceType).addFixture(fixture)
     }
 
-    fun removeFixture(fixtureRenderPlan: FixtureRenderPlan) {
-        getEngineFor(fixtureRenderPlan.fixture.deviceType).removeFixture(fixtureRenderPlan)
+    fun removeRenderTarget(renderTarget: RenderTarget) {
+        getEngineFor(renderTarget.fixture.deviceType).removeRenderTarget(renderTarget)
     }
 }

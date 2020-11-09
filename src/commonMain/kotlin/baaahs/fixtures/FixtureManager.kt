@@ -5,8 +5,8 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.Resolver
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
-import baaahs.gl.render.FixtureRenderPlan
 import baaahs.gl.render.RenderManager
+import baaahs.gl.render.RenderTarget
 import baaahs.show.live.ActiveSet
 import baaahs.timeSync
 import baaahs.util.Logger
@@ -15,15 +15,15 @@ class FixtureManager(
     private val renderManager: RenderManager
 ) {
     private val changedFixtures = mutableListOf<FixturesChanges>()
-    private val fixtureRenderPlans: MutableMap<Fixture, FixtureRenderPlan> = hashMapOf()
+    private val renderTargets: MutableMap<Fixture, RenderTarget> = hashMapOf()
     private var totalFixtures = 0
 
     private var currentActiveSet: ActiveSet = ActiveSet(emptyList())
     private var activeSetChanged = false
     internal var currentRenderPlan: RenderPlan? = null
 
-    fun getFixtureRenderPlans_ForTestOnly(): Map<Fixture, FixtureRenderPlan> {
-        return fixtureRenderPlans
+    fun getRenderTargets_ForTestOnly(): Map<Fixture, RenderTarget> {
+        return renderTargets
     }
 
     fun fixturesChanged(addedFixtures: Collection<Fixture>, removedFixtures: Collection<Fixture>) {
@@ -44,33 +44,33 @@ class FixtureManager(
     }
 
     fun remap(renderPlan: RenderPlan) {
-        fixtureRenderPlans.forEach { (fixture, fixtureRenderPlan) ->
+        renderTargets.forEach { (fixture, renderTarget) ->
             renderPlan.programs.forEach { (patch: LinkedPatch, program: GlslProgram) ->
                 if (patch.matches(fixture)) {
-                    fixtureRenderPlan.useProgram(program)
+                    renderTarget.useProgram(program)
                 }
             }
         }
     }
 
-    fun clearRenderPlans() {
-        fixtureRenderPlans.values.forEach { it.release() }
+    fun clearRenderTargets() {
+        renderTargets.values.forEach { it.release() }
     }
 
     fun getFixtureCount(): Int {
-        return fixtureRenderPlans.size
+        return renderTargets.size
     }
 
     fun sendFrame() {
-        fixtureRenderPlans.values.forEach { fixtureRenderPlan ->
+        renderTargets.values.forEach { renderTarget ->
             // TODO(tom): The send might return an error, at which point this fixture should be nuked
             // from the list of fixtures. I'm not quite sure the best way to do that so I'm leaving this note.
-            fixtureRenderPlan.sendFrame()
+            renderTarget.sendFrame()
         }
     }
 
     private fun addFixture(fixture: Fixture) {
-        fixtureRenderPlans.getOrPut(fixture) {
+        renderTargets.getOrPut(fixture) {
             logger.debug { "Adding fixture ${fixture.title}" }
             renderManager.addFixture(fixture)
                 .also { totalFixtures++ }
@@ -78,10 +78,10 @@ class FixtureManager(
     }
 
     private fun removeFixture(fixture: Fixture) {
-        fixtureRenderPlans.remove(fixture)?.let { fixtureRenderPlan ->
+        renderTargets.remove(fixture)?.let { renderTarget ->
             logger.debug { "Removing fixture ${fixture.title}" }
-            renderManager.removeFixture(fixtureRenderPlan)
-            fixtureRenderPlan.release()
+            renderManager.removeRenderTarget(renderTarget)
+            renderTarget.release()
             totalFixtures--
         } ?: throw IllegalStateException("huh? can't remove unknown fixture $fixture")
     }
@@ -114,7 +114,7 @@ class FixtureManager(
         }
 
         if (remapFixtures) {
-            clearRenderPlans()
+            clearRenderTargets()
 
             currentRenderPlan?.let {
                 remap(it)
@@ -125,7 +125,7 @@ class FixtureManager(
     }
 
     private fun prepareRenderPlan(activeSet: ActiveSet, resolver: Resolver): RenderPlan {
-        val patchResolution = PatchResolver(fixtureRenderPlans.values, activeSet)
+        val patchResolution = PatchResolver(renderTargets.values, activeSet)
         return patchResolution.createRenderPlan(renderManager, resolver)
     }
 
