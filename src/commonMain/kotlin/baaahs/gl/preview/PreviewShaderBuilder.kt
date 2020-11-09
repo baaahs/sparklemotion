@@ -11,7 +11,6 @@ import baaahs.gl.glsl.Resolver
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.render.RenderEngine
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
@@ -151,9 +150,8 @@ class PreviewShaderBuilder(
     }
 
     fun compile(gl: GlContext, resolver: Resolver) {
-        val renderEngine = RenderEngine(gl, modelInfo, ProjectionPreviewDevice)
         try {
-            glslProgram = linkedPatch?.let { renderEngine.compile(it, resolver) }
+            glslProgram = linkedPatch?.let { GlslProgram(gl, it, resolver) }
             state = ShaderBuilder.State.Success
         } catch (e: GlslException) {
             glslErrors = e.errors
@@ -186,7 +184,7 @@ class PreviewShaderBuilder(
 object ProjectionPreviewDevice: DeviceType {
     override val id: String get() = "ProjectionPreview"
     override val title: String get() = "Projection Preview"
-    override val params: List<Param> get() = emptyList()
+    override val params: List<Param> get() = PixelArrayDevice.params
     override val resultParams: List<ResultParam>
         get() = listOf(
             ResultParam("Vertex Location", Vec2ResultType)
@@ -196,6 +194,7 @@ object ProjectionPreviewDevice: DeviceType {
     }
 
     override fun initPixelParams(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>) {
+        PixelArrayDevice.initPixelParams(renderTarget, paramBuffers)
     }
 
     fun getVertexLocations(resultViews: List<ResultView>): Vec2ResultType.Vec2ResultView {
