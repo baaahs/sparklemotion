@@ -5,7 +5,7 @@ import baaahs.fixtures.ResultBuffer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.model.ModelInfo
 
-class FixtureRenderPlan(
+class RenderTarget(
     val fixture: Fixture,
     val rect0Index: Int,
     val rects: List<Quad.Rect>, // these are in pixels, (0,0) at top left

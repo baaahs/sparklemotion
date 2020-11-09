@@ -58,7 +58,7 @@ object PinkySpec : Spek({
         }
         val pinkyLink by value { network.links.only() }
         val fixtureManager by value { pinky.fixtureManager }
-        val fixtureRenderPlans by value { fixtureManager.getFixtureRenderPlans_ForTestOnly() }
+        val renderTargets by value { fixtureManager.getRenderTargets_ForTestOnly() }
 
         val panelMappings by value { emptyList<Pair<BrainId, Model.Surface>>() }
 
@@ -96,7 +96,7 @@ object PinkySpec : Spek({
                 override(brainHelloMessage) { BrainHelloMessage("brain1", null) }
 
                 it("should notify show of anonymous surface") {
-                    val fixture = fixtureRenderPlans.keys.only()
+                    val fixture = renderTargets.keys.only()
                     expect(null) { fixture.modelSurface }
                 }
 
@@ -113,7 +113,7 @@ object PinkySpec : Spek({
                     override(brainHelloMessage) { BrainHelloMessage("brain1", panel17.name) }
 
                     it("should notify show") {
-                        val fixture = fixtureRenderPlans.keys.only()
+                        val fixture = renderTargets.keys.only()
                         expect(panel17) { fixture.modelSurface }
                         expect(panel17.name) { fixture.name }
                     }
@@ -135,7 +135,7 @@ object PinkySpec : Spek({
                     }
 
                     it("should send mapping and pixels to the brain") {
-                        val fixture = fixtureRenderPlans.keys.only()
+                        val fixture = renderTargets.keys.only()
                         expect(panel17) { fixture.modelSurface }
                     }
 
@@ -147,8 +147,8 @@ object PinkySpec : Spek({
                             pinky.updateFixtures()
                             pinky.renderAndSendNextFrame()
                             pinky.renderAndSendNextFrame()
-                            expect(1) { fixtureRenderPlans.size }
-                            val fixture = fixtureRenderPlans.keys.only()
+                            expect(1) { renderTargets.size }
+                            val fixture = renderTargets.keys.only()
                             expect(panel17) { fixture.modelSurface }
                         }
                     }
@@ -172,15 +172,15 @@ object PinkySpec : Spek({
                             pinky.renderAndSendNextFrame()
                             pinky.renderAndSendNextFrame()
 
-                            expect(1) { fixtureRenderPlans.size }
-                            expect(panel17) { fixtureRenderPlans.keys.only().modelSurface }
+                            expect(1) { renderTargets.size }
+                            expect(panel17) { renderTargets.keys.only().modelSurface }
 
                             pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
                             pinky.updateFixtures()
                             pinky.renderAndSendNextFrame()
                             pinky.renderAndSendNextFrame()
-                            expect(1) { fixtureRenderPlans.size }
-                            val fixture = fixtureRenderPlans.keys.only()
+                            expect(1) { renderTargets.size }
+                            val fixture = renderTargets.keys.only()
                             expect(panel17) { fixture.modelSurface }
                         }
                     }

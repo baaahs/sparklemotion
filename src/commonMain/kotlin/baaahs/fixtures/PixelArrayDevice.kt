@@ -3,7 +3,7 @@ package baaahs.fixtures
 import baaahs.Color
 import baaahs.Pixels
 import baaahs.geom.Vector3F
-import baaahs.gl.render.FixtureRenderPlan
+import baaahs.gl.render.RenderTarget
 
 object PixelArrayDevice : DeviceType {
     override val id: String get() = "PixelArray"
@@ -17,17 +17,17 @@ object PixelArrayDevice : DeviceType {
         ResultParam("Pixel Color", ColorResultType)
     )
 
-    override fun setFixtureParamUniforms(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>) {
+    override fun setFixtureParamUniforms(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>) {
     }
 
-    override fun initPixelParams(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>) {
-        val fixture = fixtureRenderPlan.fixture
+    override fun initPixelParams(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>) {
+        val fixture = renderTarget.fixture
         val pixelLocations = fixture.pixelLocations
-        val defaultPixelLocation = fixtureRenderPlan.modelInfo.center
+        val defaultPixelLocation = renderTarget.modelInfo.center
         val pixelCoordsBuffer = getPixelCoordsBuffer(paramBuffers)
         fillPixelLocations(
             pixelCoordsBuffer,
-            fixtureRenderPlan.pixel0Index,
+            renderTarget.pixel0Index,
             pixelLocations,
             defaultPixelLocation
         )

@@ -5,8 +5,8 @@ import baaahs.ShowRunner
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.GlslException
 import baaahs.gl.glsl.Resolver
-import baaahs.gl.render.FixtureRenderPlan
 import baaahs.gl.render.RenderManager
+import baaahs.gl.render.RenderTarget
 import baaahs.glsl.GuruMeditationError
 import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
@@ -14,7 +14,7 @@ import baaahs.show.live.ActiveSet
 import baaahs.show.live.OpenPatch
 
 class PatchResolver(
-    val fixtureRenderPlans: Collection<FixtureRenderPlan>,
+    val renderTargets: Collection<RenderTarget>,
     val activeSet: ActiveSet
 ) {
     val portDiagrams: Map<Surfaces, PortDiagram> = run {

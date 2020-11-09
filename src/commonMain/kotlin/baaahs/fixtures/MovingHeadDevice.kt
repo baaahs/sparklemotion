@@ -1,6 +1,6 @@
 package baaahs.fixtures
 
-import baaahs.gl.render.FixtureRenderPlan
+import baaahs.gl.render.RenderTarget
 
 object MovingHeadDevice : DeviceType {
     override val id: String get() = "MovingHead"
@@ -12,11 +12,11 @@ object MovingHeadDevice : DeviceType {
         ResultParam("Pan/Tilt", Vec2ResultType)
     )
 
-    override fun initPixelParams(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>) {
+    override fun initPixelParams(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>) {
 //        TODO("not implemented")
     }
 
-    override fun setFixtureParamUniforms(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>) {
+    override fun setFixtureParamUniforms(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>) {
 //        TODO("not implemented")
     }
 }

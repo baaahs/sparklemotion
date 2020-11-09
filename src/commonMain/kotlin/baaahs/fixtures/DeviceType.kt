@@ -3,7 +3,7 @@ package baaahs.fixtures
 import baaahs.getBang
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.render.FixtureRenderPlan
+import baaahs.gl.render.RenderTarget
 import com.danielgergely.kgl.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
@@ -20,8 +20,8 @@ interface DeviceType {
     val params: List<Param>
     val resultParams: List<ResultParam>
 
-    fun setFixtureParamUniforms(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>)
-    fun initPixelParams(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>)
+    fun setFixtureParamUniforms(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>)
+    fun initPixelParams(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>)
 
     companion object {
         private val knownDeviceTypes = listOf(
