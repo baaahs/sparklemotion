@@ -4,7 +4,6 @@ import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.gl.GlContext
 import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.render.RenderEngine
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.OutputPortRef
@@ -41,9 +40,6 @@ class GlslProgram(
             .mapNotNull { it.dataFeed }
             .filterIsInstance<T>()
     }
-
-    val arrangementListeners: List<RenderEngine.ArrangementListener>
-        get() = bindingsOf()
 
     val resolutionListeners: List<ResolutionListener>
         get() = bindingsOf()

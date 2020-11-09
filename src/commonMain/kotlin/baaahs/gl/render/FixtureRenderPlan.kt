@@ -1,6 +1,5 @@
 package baaahs.gl.render
 
-import baaahs.ShowRunner
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.ResultBuffer
 import baaahs.gl.glsl.GlslProgram
@@ -13,15 +12,20 @@ class FixtureRenderPlan(
     val modelInfo: ModelInfo,
     val pixelCount: Int,
     val pixel0Index: Int,
-    val resultBuffers: List<ResultBuffer>
+    resultBuffers: List<ResultBuffer>
 ) {
     var program: GlslProgram? = null
-    val receivers = mutableListOf<ShowRunner.FixtureReceiver>()
+
+    val resultViews = resultBuffers.map { it.getView(pixel0Index, pixelCount) }
 
     fun useProgram(program: GlslProgram?) {
         if (program != null && this.program != null)
             throw IllegalStateException("buffer already bound")
         this.program = program
+    }
+
+    fun sendFrame() {
+        fixture.transport.send(fixture, resultViews)
     }
 
     fun release() {

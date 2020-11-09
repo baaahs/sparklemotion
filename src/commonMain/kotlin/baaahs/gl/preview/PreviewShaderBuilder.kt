@@ -198,7 +198,7 @@ object ProjectionPreviewDevice: DeviceType {
     override fun initPixelParams(fixtureRenderPlan: FixtureRenderPlan, paramBuffers: List<ParamBuffer>) {
     }
 
-    fun getVertexLocations(resultBuffers: List<ResultBuffer>): Vec2ResultType.ParamBuffer {
-        return resultBuffers[0] as Vec2ResultType.ParamBuffer
+    fun getVertexLocations(resultViews: List<ResultView>): Vec2ResultType.Vec2ResultView {
+        return resultViews[0] as Vec2ResultType.Vec2ResultView
     }
 }

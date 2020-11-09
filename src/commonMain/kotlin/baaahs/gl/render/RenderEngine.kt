@@ -44,10 +44,7 @@ class RenderEngine(
     init {
         gl.runInContext { gl.check { clearColor(0f, .5f, 0f, 1f) } }
 
-        arrangement = gl.runInContext {
-            Arrangement(0, fixturesToAdd)
-                .also { notifyListeners(it) }
-        }
+        arrangement = gl.runInContext { Arrangement(0, fixturesToAdd) }
     }
 
     fun addFixture(fixture: Fixture): FixtureRenderPlan {
@@ -104,6 +101,7 @@ class RenderEngine(
         resultBuffers.forEach { it.afterFrame(frameBuffer) }
     }
 
+    // This must be run from within a GL context
     private fun incorporateNewFixtures() {
         if (fixturesToRemove.isNotEmpty()) {
 //            TODO("remove TBD")
@@ -116,7 +114,6 @@ class RenderEngine(
 
             fixtureRenderPlans.addAll(fixturesToAdd)
             arrangement = Arrangement(newPixelCount, fixturesToAdd)
-                .also { notifyListeners(it) }
 
             fixturesToAdd.clear()
 
@@ -131,21 +128,8 @@ class RenderEngine(
         frameBuffer.release()
     }
 
-    private fun notifyListeners(arrangement: Arrangement) {
-        fixtureRenderPlans
-            .mapNotNull { it.program }
-            .distinct()
-            .flatMap { it.arrangementListeners }
-            .distinct()
-            .forEach { it.onArrangementChange(arrangement) }
-    }
-
-    interface ArrangementListener {
-        fun onArrangementChange(arrangement: RenderEngine.Arrangement)
-    }
-
     companion object {
-        private val logger = Logger("RenderEngine")
+        private val logger = Logger<RenderEngine>()
 
         /** Resulting Rect is in pixel coordinates starting at (0,0) with Y increasing. */
         internal fun mapFixturePixelsToRects(nextPix: Int, pixWidth: Int, fixture: Fixture): List<Quad.Rect> {
@@ -224,7 +208,7 @@ class RenderEngine(
             })
 
         fun release() {
-            logger.debug { "Release $this with ${fixtureRenderPlans.count()} fixtures and $pixelCount pixels" }
+            logger.debug { "Release arrangement with ${fixtureRenderPlans.count()} fixtures and $pixelCount pixels" }
 
             quad.release()
         }
