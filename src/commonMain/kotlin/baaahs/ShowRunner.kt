@@ -74,7 +74,7 @@ class ShowRunner(
         }
 
         return fixtureManager.maybeUpdateRenderPlans { id, dataSource ->
-            openShow.dataFeeds.getBang(dataSource, "data feed")
+            openShow.feeds.getBang(dataSource, "data feed")
         }
     }
 

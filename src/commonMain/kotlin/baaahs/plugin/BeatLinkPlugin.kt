@@ -5,6 +5,8 @@ import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.ShowPlayer
 import baaahs.app.ui.editor.PortLinkOption
+import baaahs.gl.data.Binding
+import baaahs.gl.data.SingleUniformBinding
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -80,12 +82,12 @@ class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: ba
         override fun getType(): GlslType = GlslType.Float
         override fun getContentType(): ContentType = beatDataContentType
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): GlslProgram.DataFeed {
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): baaahs.gl.data.Feed {
             plugin as BeatLinkPlugin
 
-            return object : GlslProgram.DataFeed, RefCounted by RefCounter() {
-                override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(glslProgram, this@BeatLinkDataSource, id, this) { uniform ->
+            return object : baaahs.gl.data.Feed, RefCounted by RefCounter() {
+                override fun bind(glslProgram: GlslProgram): Binding =
+                    SingleUniformBinding(glslProgram, this@BeatLinkDataSource, id, this) { uniform ->
                         uniform.set(plugin.beatSource.getBeatData().fractionTillNextBeat(plugin.clock))
                     }
             }
