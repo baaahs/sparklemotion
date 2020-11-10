@@ -6,15 +6,15 @@ import baaahs.model.Model
 /**
  * Represents a controllable lighting fixture.
  *
- * May or may not be associated with a [Model.Surface].
+ * May or may not be associated with a [Model.Entity].
  */
 class Fixture(
-    val modelSurface: Model.Surface?,
+    val modelEntity: Model.Entity?,
     val pixelCount: Int,
     /** Each pixel's location in the global 3d model. */
     val pixelLocations: List<Vector3F>,
     val deviceType: DeviceType,
-    val name: String = modelSurface?.name ?: "Anonymous fixture",
+    val name: String = modelEntity?.name ?: "Anonymous fixture",
     val transport: Transport
 ) {
     val title: String get() =

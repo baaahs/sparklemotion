@@ -99,7 +99,7 @@ class BrainManager(
         val fixture = createFixtureFor(msg, transport)
             .also { transport.fixture = it }
 
-        fixture.modelSurface?.let { modelSurface ->
+        fixture.modelEntity?.let { modelSurface ->
             if (msg.surfaceName != modelSurface.name) {
                 logger.debug {
                     "Sending BrainMappingMessage to $brainId, " +
@@ -115,7 +115,7 @@ class BrainManager(
 
         val priorBrainTransport = activeBrains[brainId]
         if (priorBrainTransport != null) {
-            if (priorBrainTransport.fixture.modelSurface == fixture.modelSurface) {
+            if (priorBrainTransport.fixture.modelEntity == fixture.modelEntity) {
                 // Duplicate packet?
                 logger.debug {
                     "Ignore hello from ${priorBrainTransport.brainId} (${priorBrainTransport.fixture.title}), " +

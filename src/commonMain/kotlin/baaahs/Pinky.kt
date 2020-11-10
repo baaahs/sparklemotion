@@ -278,7 +278,7 @@ class Pinky(
         }
 
         fun sendPixelData(fixture: Fixture) {
-            if (fixture.modelSurface != null) {
+            if (fixture.modelEntity != null) {
                 val pixelLocations = fixture.pixelLocations
 
                 val out = ByteArrayWriter(fixture.name.length + fixture.pixelCount * 3 * 4 + 20)
@@ -291,7 +291,7 @@ class Pinky(
         }
 
         fun sendFrame(fixture: Fixture, colors: List<Color>) {
-            if (fixture.modelSurface != null) {
+            if (fixture.modelEntity != null) {
                 val out = ByteArrayWriter(fixture.name.length + colors.size * 3 + 20)
                 out.writeByte(1)
                 out.writeString(fixture.name)

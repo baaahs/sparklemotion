@@ -43,7 +43,7 @@ object BrainManagerSpec : Spek({
                 override(resultsByBrainId) { mapOf(BrainId(brainId) to mappingInfo) }
 
                 it("should create a fixture") {
-                    expect(surface) { subject.modelSurface }
+                    expect(surface) { subject.modelEntity }
                     expect(2) { subject.pixelCount }
                     expect(
                         LinearSurfacePixelStrategy(Random(1)).forKnownSurface(2, surface, TestModel)
@@ -56,7 +56,7 @@ object BrainManagerSpec : Spek({
                 override(resultsBySurfaceName) { mapOf(msgSurfaceName to mappingInfo) }
 
                 it("should create a fixture") {
-                    expect(surface) { subject.modelSurface }
+                    expect(surface) { subject.modelEntity }
                     expect(2) { subject.pixelCount }
                     expect(
                         LinearSurfacePixelStrategy(Random(1)).forKnownSurface(2, surface, TestModel)
