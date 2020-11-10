@@ -3,8 +3,8 @@ package baaahs.gl.patch
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
+import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.glsl.Resolver
 import baaahs.gl.render.RenderManager
 import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
@@ -20,7 +20,7 @@ class LinkedPatch(
     val shaderInstance: LiveShaderInstance,
     val surfaces: Surfaces
 ) {
-    private val dataSourceLinks: Set<DataSourceLink>
+    internal val dataSourceLinks: Set<DataSourceLink>
     private val componentBuilder: CacheBuilder<LiveShaderInstance, Component>
     private val components: List<Component>
 
@@ -126,32 +126,13 @@ class LinkedPatch(
         return "#version ${glslVersion}\n\n${toGlsl()}\n"
     }
 
-    fun createProgram(renderManager: RenderManager, resolver: Resolver): GlslProgram {
+    fun createProgram(renderManager: RenderManager, feedResolver: FeedResolver): GlslProgram {
         // TODO: not just PixelArrayDevice!
         val renderEngine = renderManager.getEngineFor(PixelArrayDevice)
-        return renderEngine.compile(this, resolver)
+        return renderEngine.compile(this, feedResolver)
     }
 
     fun matches(fixture: Fixture): Boolean = this.surfaces.matches(fixture)
-
-    fun bind(glslProgram: GlslProgram, resolver: Resolver): List<GlslProgram.Binding> {
-        return dataSourceLinks.mapNotNull { (dataSource, id) ->
-            if (dataSource.isImplicit()) return@mapNotNull null
-            val dataFeed = resolver.resolveDataSource(id, dataSource)
-
-            if (dataFeed != null) {
-                val binding = dataFeed.bind(glslProgram)
-                if (binding.isValid) binding else {
-                    logger.debug { "unused uniform for $dataSource?" }
-                    binding.release()
-                    null
-                }
-            } else {
-                logger.warn { "no UniformProvider bound for $dataSource" }
-                null
-            }
-        }
-    }
 
     companion object {
         private val logger = Logger("OpenPatch")

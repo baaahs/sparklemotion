@@ -3,8 +3,8 @@ package baaahs.gl.render
 import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
+import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.glsl.Resolver
 import baaahs.gl.patch.LinkedPatch
 import baaahs.model.ModelInfo
 import baaahs.timeSync
@@ -72,8 +72,8 @@ class RenderEngine(
         renderTargetsToRemove.add(renderTarget)
     }
 
-    fun compile(linkedPatch: LinkedPatch, resolver: Resolver): GlslProgram {
-        return GlslProgram(gl, linkedPatch, resolver)
+    fun compile(linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
+        return GlslProgram(gl, linkedPatch, feedResolver)
     }
 
     fun draw() {

@@ -13,7 +13,7 @@ import com.danielgergely.kgl.Kgl
 class GlslProgram(
     private val gl: GlContext,
     private val linkedPatch: LinkedPatch,
-    resolver: Resolver
+    feedResolver: FeedResolver
 ) {
     private val vertexShader =
         gl.createVertexShader(
@@ -25,14 +25,27 @@ class GlslProgram(
 
     val id = gl.compile(vertexShader, fragShader)
 
-    private val bindings = gl.runInContext { bind(resolver) }
+    private val bindings = gl.runInContext {
+        linkedPatch.dataSourceLinks.mapNotNull { (dataSource, id) ->
+            if (dataSource.isImplicit()) return@mapNotNull null
+            val dataFeed = feedResolver.openFeed(id, dataSource)
+
+            if (dataFeed != null) {
+                val binding = dataFeed.bind(this)
+                if (binding.isValid) binding else {
+                    logger.debug { "unused uniform for $dataSource?" }
+                    binding.release()
+                    null
+                }
+            } else {
+                logger.warn { "no UniformProvider bound for $dataSource" }
+                null
+            }
+        }
+    }
 
     val vertexAttribLocation: Int = gl.runInContext {
         gl.check { getAttribLocation(id, "Vertex") }
-    }
-
-    private fun bind(resolver: Resolver): List<Binding> {
-        return linkedPatch.bind(this, resolver)
     }
 
     private inline fun <reified T> bindingsOf(): List<T> {
@@ -155,6 +168,6 @@ class GlslProgram(
     }
 }
 
-fun interface Resolver {
-    fun resolveDataSource(id: String, dataSource: DataSource): GlslProgram.DataFeed?
+fun interface FeedResolver {
+    fun openFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed?
 }

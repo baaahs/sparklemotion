@@ -4,10 +4,10 @@ import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.fixtures.*
 import baaahs.gl.GlContext
+import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslException
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.glsl.Resolver
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
@@ -149,9 +149,9 @@ class PreviewShaderBuilder(
         }
     }
 
-    fun compile(gl: GlContext, resolver: Resolver) {
+    fun compile(gl: GlContext, feedResolver: FeedResolver) {
         try {
-            glslProgram = linkedPatch?.let { GlslProgram(gl, it, resolver) }
+            glslProgram = linkedPatch?.let { GlslProgram(gl, it, feedResolver) }
             state = ShaderBuilder.State.Success
         } catch (e: GlslException) {
             glslErrors = e.errors

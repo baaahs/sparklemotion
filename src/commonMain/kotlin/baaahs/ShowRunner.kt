@@ -91,4 +91,7 @@ class ShowRunner(
     }
 }
 
-class RenderPlan(val programs: List<Pair<LinkedPatch, GlslProgram>>, val activeSet: ActiveSet)
+class RenderPlan(
+    val programs: List<Pair<LinkedPatch, GlslProgram>>,
+    val activeSet: ActiveSet
+)

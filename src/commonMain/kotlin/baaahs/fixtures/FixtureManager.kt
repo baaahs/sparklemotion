@@ -1,8 +1,8 @@
 package baaahs.fixtures
 
 import baaahs.RenderPlan
+import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.glsl.Resolver
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
 import baaahs.gl.render.RenderManager
@@ -93,7 +93,7 @@ class FixtureManager(
         }
     }
 
-    fun maybeUpdateRenderPlans(resolver: Resolver): Boolean {
+    fun maybeUpdateRenderPlans(feedResolver: FeedResolver): Boolean {
         var remapFixtures = incorporateFixtureChanges()
 
         // Maybe build new shaders.
@@ -101,7 +101,8 @@ class FixtureManager(
             val activeSet = currentActiveSet
 
             val elapsedMs = timeSync {
-                currentRenderPlan = prepareRenderPlan(activeSet, resolver)
+                val patchResolution = PatchResolver(renderTargets.values, activeSet)
+                currentRenderPlan = patchResolution.createRenderPlan(renderManager, feedResolver)
             }
 
             logger.info {
@@ -122,11 +123,6 @@ class FixtureManager(
         }
 
         return remapFixtures
-    }
-
-    private fun prepareRenderPlan(activeSet: ActiveSet, resolver: Resolver): RenderPlan {
-        val patchResolution = PatchResolver(renderTargets.values, activeSet)
-        return patchResolution.createRenderPlan(renderManager, resolver)
     }
 
     fun hasActiveRenderPlan(): Boolean {
