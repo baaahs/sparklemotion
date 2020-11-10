@@ -3,8 +3,8 @@ package baaahs.gl.patch
 import baaahs.RenderPlan
 import baaahs.ShowRunner
 import baaahs.gl.glsl.CompilationException
+import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslException
-import baaahs.gl.glsl.Resolver
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.GuruMeditationError
@@ -34,14 +34,14 @@ class PatchResolver(
         }
     }
 
-    fun createRenderPlan(renderManager: RenderManager, resolver: Resolver): RenderPlan {
+    fun createRenderPlan(renderManager: RenderManager, feedResolver: FeedResolver): RenderPlan {
         val linkedPatches = portDiagrams.mapValues { (_, portDiagram) ->
             portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
         }
         val activeDataSources = mutableSetOf<String>()
         val programs = linkedPatches.mapNotNull { (_, linkedPatch) ->
             try {
-                linkedPatch?.let { it to it.createProgram(renderManager, resolver) }
+                linkedPatch?.let { it to it.createProgram(renderManager, feedResolver) }
             } catch (e: GlslException) {
                 ShowRunner.logger.error("Error preparing program", e)
                 if (e is CompilationException) {
