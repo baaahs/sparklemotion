@@ -2,6 +2,8 @@ package baaahs.fixtures
 
 import baaahs.getBang
 import baaahs.gl.GlContext
+import baaahs.gl.data.Binding
+import baaahs.gl.data.Feed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.RenderTarget
 import com.danielgergely.kgl.*
@@ -56,7 +58,7 @@ interface DeviceType {
 interface ParamBuffer {
     fun resizeBuffer(width: Int, height: Int)
     fun resizeTexture(width: Int, height: Int)
-    fun bind(glslProgram: GlslProgram): GlslProgram.Binding
+    fun bind(glslProgram: GlslProgram): Binding
     fun release()
 }
 
@@ -88,11 +90,11 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
         }
     }
 
-    override fun bind(glslProgram: GlslProgram): GlslProgram.Binding {
+    override fun bind(glslProgram: GlslProgram): Binding {
         val uniform = glslProgram.getUniform(id)
 
-        return object : GlslProgram.Binding {
-            override val dataFeed: GlslProgram.DataFeed? get() = null
+        return object : Binding {
+            override val feed: Feed? get() = null
             override val isValid get() = uniform != null
 
             override fun setOnProgram() {

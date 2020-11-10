@@ -1,8 +1,8 @@
 package baaahs
 
+import baaahs.gl.data.Feed
 import baaahs.gl.glsl.AnalysisException
 import baaahs.gl.glsl.GlslAnalyzer
-import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.shader.OpenShader
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
@@ -31,8 +31,8 @@ interface ShowPlayer {
             null
         }
     }
-    fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed
-    fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed
+    fun openFeed(id: String, dataSource: DataSource): Feed
+    fun useFeed(dataSource: DataSource): Feed
     fun openShow(show: Show, showState: ShowState? = null): OpenShow =
         ShowOpener(GlslAnalyzer(plugins), show, this).openShow(showState)
 
@@ -49,20 +49,20 @@ abstract class BaseShowPlayer(
 ) : ShowPlayer {
     private val glslAnalyzer = GlslAnalyzer(plugins)
 
-    private val dataFeeds = mutableMapOf<DataSource, GlslProgram.DataFeed>()
+    private val feeds = mutableMapOf<DataSource, Feed>()
     private val shaders = mutableMapOf<Shader, OpenShader>()
 
-    override val dataSources: List<DataSource> get() = dataFeeds.keys.toList()
+    override val dataSources: List<DataSource> get() = feeds.keys.toList()
     private val dataSourceGadgets: MutableMap<DataSource, Gadget> = mutableMapOf()
 
-    override fun openDataFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed {
-        return dataFeeds.getOrPut(dataSource) {
+    override fun openFeed(id: String, dataSource: DataSource): Feed {
+        return feeds.getOrPut(dataSource) {
             dataSource.createFeed(this, plugins, id)
         }
     }
 
-    override fun useDataFeed(dataSource: DataSource): GlslProgram.DataFeed {
-        return dataFeeds[dataSource]!!
+    override fun useFeed(dataSource: DataSource): Feed {
+        return feeds[dataSource]!!
     }
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
@@ -83,8 +83,8 @@ abstract class BaseShowPlayer(
     }
 
     override fun releaseUnused() {
-        ArrayList(dataFeeds.entries).forEach { (dataSource, dataFeed) ->
-            if (!dataFeed.inUse()) dataFeeds.remove(dataSource)
+        ArrayList(feeds.entries).forEach { (dataSource, feed) ->
+            if (!feed.inUse()) feeds.remove(dataSource)
         }
 
         ArrayList(shaders.entries).forEach { (shader, openShader) ->

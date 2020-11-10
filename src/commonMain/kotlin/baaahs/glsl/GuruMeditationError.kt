@@ -1,7 +1,7 @@
 package baaahs.glsl
 
 import baaahs.*
-import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.data.Feed
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
@@ -34,7 +34,7 @@ object GuruMeditationError {
     )
 
     private val linkedPatch: LinkedPatch?
-    private val dataFeeds: Map<DataSource, GlslProgram.DataFeed>
+    private val feeds: Map<DataSource, Feed>
 
     init {
         val autoWirer = AutoWirer(Plugins.safe())
@@ -48,7 +48,7 @@ object GuruMeditationError {
 
         @Suppress("CAST_NEVER_SUCCEEDS")
         val openShow = ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer).openShow()
-        dataFeeds = openShow.dataFeeds
+        feeds = openShow.feeds
         val openPatch = openShow.patches.only("patch")
         linkedPatch = PatchResolver.buildPortDiagram(openPatch)
             .resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
@@ -60,7 +60,7 @@ object GuruMeditationError {
         // TODO: Should maybe display error state for whatever device type failed? Or everywhere?
         return RenderPlan(
             listOf(linkedPatch to linkedPatch.createProgram(renderManager) { _, dataSource ->
-                dataFeeds.getBang(dataSource, "data feed")
+                feeds.getBang(dataSource, "data feed")
             }),
             ActiveSet(emptyList())
         )

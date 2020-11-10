@@ -2,7 +2,7 @@ package baaahs.show
 
 import baaahs.ShowPlayer
 import baaahs.camelize
-import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.data.Feed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -36,9 +36,9 @@ interface DataSource {
 
     // TODO: We shouldn't need to pass in the [Plugin] here; when plugins handle their own serialization,
     //  then the [DataSource] could be created with whatever dependencies it needs.
-    fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): GlslProgram.DataFeed
+    fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed
 
-    fun createFeed(showPlayer: ShowPlayer, plugins: Plugins, id: String): GlslProgram.DataFeed {
+    fun createFeed(showPlayer: ShowPlayer, plugins: Plugins, id: String): Feed {
         return createFeed(showPlayer, plugins.find(pluginPackage), id)
     }
 

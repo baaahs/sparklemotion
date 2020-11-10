@@ -1,8 +1,7 @@
 package baaahs.gl.glsl
 
-import baaahs.RefCounted
-import baaahs.RefCounter
 import baaahs.gl.GlContext
+import baaahs.gl.data.Feed
 import baaahs.gl.patch.LinkedPatch
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
@@ -28,10 +27,10 @@ class GlslProgram(
     private val bindings = gl.runInContext {
         linkedPatch.dataSourceLinks.mapNotNull { (dataSource, id) ->
             if (dataSource.isImplicit()) return@mapNotNull null
-            val dataFeed = feedResolver.openFeed(id, dataSource)
+            val feed = feedResolver.openFeed(id, dataSource)
 
-            if (dataFeed != null) {
-                val binding = dataFeed.bind(this)
+            if (feed != null) {
+                val binding = feed.bind(this)
                 if (binding.isValid) binding else {
                     logger.debug { "unused uniform for $dataSource?" }
                     binding.release()
@@ -50,7 +49,7 @@ class GlslProgram(
 
     private inline fun <reified T> bindingsOf(): List<T> {
         return bindings
-            .mapNotNull { it.dataFeed }
+            .mapNotNull { it.feed }
             .filterIsInstance<T>()
     }
 
@@ -88,62 +87,8 @@ class GlslProgram(
         return gl.check(fn)
     }
 
-    interface Binding {
-        val dataFeed: DataFeed?
-        val isValid: Boolean
-
-        fun setOnProgram()
-
-        /**
-         * Only release any resources specifically allocated by this Binding, not by
-         * its parent [DataFeed].
-         */
-        fun release() {}
-    }
-
-    class SingleUniformBinding(
-        glslProgram: GlslProgram,
-        dataSource: DataSource,
-        val id: String,
-        override val dataFeed: DataFeed,
-        val setUniform: (Uniform) -> Unit
-    ) : Binding {
-        private val type: Any = dataSource.getType()
-        private val varName = dataSource.getVarName(id)
-        private val uniformLocation = glslProgram.getUniform(varName)
-
-        override val isValid: Boolean get() = uniformLocation != null
-
-        override fun setOnProgram() {
-            try {
-                uniformLocation?.let { setUniform(it) }
-            } catch (e: Exception) {
-                logger.error(e) { "failed to set uniform $type $varName for $id" }
-            }
-        }
-    }
-
-    interface DataFeed : RefCounted {
-        fun bind(glslProgram: GlslProgram): Binding
-    }
-
     interface ResolutionListener {
         fun onResolution(x: Float, y: Float)
-    }
-
-    class NoOpDataFeed : DataFeed, RefCounted by RefCounter() {
-        override fun bind(glslProgram: GlslProgram): Binding {
-            return object : Binding {
-                override val dataFeed: DataFeed
-                    get() = this@NoOpDataFeed
-                override val isValid: Boolean
-                    get() = true
-
-                override fun setOnProgram() {
-                    // No-op.
-                }
-            }
-        }
     }
 
     companion object {
@@ -169,5 +114,5 @@ class GlslProgram(
 }
 
 fun interface FeedResolver {
-    fun openFeed(id: String, dataSource: DataSource): GlslProgram.DataFeed?
+    fun openFeed(id: String, dataSource: DataSource): Feed?
 }

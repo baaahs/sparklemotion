@@ -5,8 +5,11 @@ import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.RadioButtonStrip
 import baaahs.gadgets.Slider
+import baaahs.gl.data.Binding
+import baaahs.gl.data.Feed
+import baaahs.gl.data.NoOpFeed
+import baaahs.gl.data.SingleUniformBinding
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.glsl.GlslProgram.DataFeed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -108,10 +111,10 @@ class CorePlugin : Plugin {
         override fun getType(): GlslType = GlslType.Vec2
         override fun getContentType(): ContentType = ContentType.Resolution
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
-            object : DataFeed, RefCounted by RefCounter() {
-                override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(glslProgram, this@ResolutionDataSource, id, this) { uniform ->
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+            object : Feed, RefCounted by RefCounter() {
+                override fun bind(glslProgram: GlslProgram): Binding =
+                    SingleUniformBinding(glslProgram, this@ResolutionDataSource, id, this) { uniform ->
                         uniform.set(1f, 1f)
                     }
             }
@@ -131,13 +134,13 @@ class CorePlugin : Plugin {
         override fun getType(): GlslType = GlslType.Vec2
         override fun getContentType(): ContentType = ContentType.Resolution
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
-            object : DataFeed, GlslProgram.ResolutionListener, RefCounted by RefCounter() {
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+            object : Feed, GlslProgram.ResolutionListener, RefCounted by RefCounter() {
                 var x = 1f
                 var y = 1f
 
-                override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(
+                override fun bind(glslProgram: GlslProgram): Binding =
+                    SingleUniformBinding(
                         glslProgram,
                         this@PreviewResolutionDataSource,
                         id,
@@ -167,10 +170,10 @@ class CorePlugin : Plugin {
         override fun getType(): GlslType = GlslType.Float
         override fun getContentType(): ContentType = ContentType.Time
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
-            object : DataFeed, RefCounted by RefCounter() {
-                override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(glslProgram, this@TimeDataSource, id, this) { uniform ->
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+            object : Feed, RefCounted by RefCounter() {
+                override fun bind(glslProgram: GlslProgram): Binding =
+                    SingleUniformBinding(glslProgram, this@TimeDataSource, id, this) { uniform ->
                         val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
                         uniform.set(thisTime)
                     }
@@ -192,10 +195,10 @@ class CorePlugin : Plugin {
         override fun getContentType(): ContentType = ContentType.PixelCoordinatesTexture
         override fun suggestId(): String = "pixelCoordsTexture"
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
-            object : DataFeed, RefCounted by RefCounter() {
-                override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.NoOpDataFeed().bind(glslProgram)
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+            object : Feed, RefCounted by RefCounter() {
+                override fun bind(glslProgram: GlslProgram): Binding =
+                    NoOpFeed().bind(glslProgram)
                 override fun onFullRelease() = Unit
             }
     }
@@ -216,14 +219,14 @@ class CorePlugin : Plugin {
         override fun isImplicit(): Boolean = true
         override fun getVarName(id: String): String = "gl_FragCoord"
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
-            return object : DataFeed, RefCounted by RefCounter() {
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
+            return object : Feed, RefCounted by RefCounter() {
 
-                override fun bind(glslProgram: GlslProgram): GlslProgram.Binding {
-                    val dataFeed = this
-                    return object : GlslProgram.Binding {
-                        override val dataFeed: DataFeed
-                            get() = dataFeed
+                override fun bind(glslProgram: GlslProgram): Binding {
+                    val feed = this
+                    return object : Binding {
+                        override val feed: Feed
+                            get() = feed
                         override val isValid: Boolean get() = true
 
                         override fun setOnProgram() {
@@ -255,21 +258,21 @@ class CorePlugin : Plugin {
         override fun getType(): GlslType = modelInfoType
         override fun getContentType(): ContentType = ContentType.ModelInfo
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
-            return object : DataFeed, RefCounted by RefCounter() {
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
+            return object : Feed, RefCounted by RefCounter() {
                 private val varPrefix = getVarName(id)
-                override fun bind(glslProgram: GlslProgram): GlslProgram.Binding {
-                    val dataFeed = this
+                override fun bind(glslProgram: GlslProgram): Binding {
+                    val feed = this
                     val modelInfo = showPlayer.modelInfo
                     val center by lazy { modelInfo.center }
                     val extents by lazy { modelInfo.extents }
 
-                    return object : GlslProgram.Binding {
+                    return object : Binding {
                         val centerUniform = glslProgram.getUniform("${varPrefix}.center")
                         val extentsUniform = glslProgram.getUniform("${varPrefix}.extents")
 
-                        override val dataFeed: DataFeed
-                            get() = dataFeed
+                        override val feed: Feed
+                            get() = feed
 
                         override val isValid: Boolean
                             get() = centerUniform != null && extentsUniform != null
@@ -295,19 +298,19 @@ class CorePlugin : Plugin {
 
         fun set(gadget: T, uniform: Uniform)
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
             val gadget = showPlayer.useGadget<T>(this)
                 ?: run {
                     logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
                     createGadget()
                 }
 
-            return object : GadgetDataFeed, RefCounted by RefCounter() {
+            return object : GadgetFeed, RefCounted by RefCounter() {
                 override val id: String = id
                 override val gadget: Gadget = gadget
 
-                override fun bind(glslProgram: GlslProgram): GlslProgram.Binding {
-                    return GlslProgram.SingleUniformBinding(glslProgram, this@GadgetDataSource, id, this) { uniform ->
+                override fun bind(glslProgram: GlslProgram): Binding {
+                    return SingleUniformBinding(glslProgram, this@GadgetDataSource, id, this) { uniform ->
                         this@GadgetDataSource.set(gadget, uniform)
                     }
                 }
@@ -315,7 +318,7 @@ class CorePlugin : Plugin {
         }
     }
 
-    interface GadgetDataFeed : DataFeed {
+    interface GadgetFeed : Feed {
         val id: String
         val gadget: Gadget
     }
@@ -394,16 +397,16 @@ class CorePlugin : Plugin {
         override fun getContentType(): ContentType = ContentType.XyCoordinate
         override fun suggestId(): String = "$title XY Pad".camelize()
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed {
-            return object : DataFeed, RefCounted by RefCounter() {
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
+            return object : Feed, RefCounted by RefCounter() {
 //                val xControl = showPlayer.useGadget<Slider>("${varPrefix}_x")
 //                val yControl = showPlayer.useGadget<Slider>("${varPrefix}_y")
 
-                override fun bind(glslProgram: GlslProgram): GlslProgram.Binding {
-                    val dataFeed = this
-                    return object : GlslProgram.Binding {
-                        override val dataFeed: DataFeed
-                            get() = dataFeed
+                override fun bind(glslProgram: GlslProgram): Binding {
+                    val feed = this
+                    return object : Binding {
+                        override val feed: Feed
+                            get() = feed
 
                         override val isValid: Boolean
                             get() = false
@@ -520,10 +523,10 @@ class CorePlugin : Plugin {
         override fun getContentType(): ContentType = ContentType.ColorStream
         override fun suggestId(): String = "$title Image".camelize()
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): DataFeed =
-            object : DataFeed, RefCounted by RefCounter() {
-                override fun bind(glslProgram: GlslProgram): GlslProgram.Binding =
-                    GlslProgram.SingleUniformBinding(glslProgram, this@ImageDataSource, id, this) { uniform ->
+        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+            object : Feed, RefCounted by RefCounter() {
+                override fun bind(glslProgram: GlslProgram): Binding =
+                    SingleUniformBinding(glslProgram, this@ImageDataSource, id, this) { uniform ->
                         // no-op
                     }
             }
