@@ -123,7 +123,7 @@ fun jsonFor(dataSource: DataSource): JsonElement {
         is CorePlugin.SliderDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:Slider")
-                put("title", dataSource.title)
+                put("title", dataSource.gadgetTitle)
                 put("initialValue", dataSource.initialValue)
                 put("minValue", dataSource.minValue)
                 put("maxValue", dataSource.maxValue)
@@ -133,7 +133,7 @@ fun jsonFor(dataSource: DataSource): JsonElement {
         is CorePlugin.ColorPickerDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:ColorPicker")
-                put("title", dataSource.title)
+                put("title", dataSource.gadgetTitle)
                 put("initialValue", dataSource.initialValue.toInt())
             }
         }

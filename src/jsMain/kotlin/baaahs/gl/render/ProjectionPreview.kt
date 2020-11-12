@@ -11,15 +11,6 @@ import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.Path2D
 
-interface ShaderPreview {
-    fun start()
-    fun stop()
-    fun destroy()
-    fun setProgram(program: GlslProgram)
-    fun render()
-    fun resize(width: Int, height: Int)
-}
-
 class ProjectionPreview(
     canvas2d: HTMLCanvasElement,
     gl: GlBase.JsGlContext,
@@ -30,7 +21,7 @@ class ProjectionPreview(
 ) : ShaderPreview {
     private var running = false
     private val deviceType = ProjectionPreviewDevice
-    private val renderEngine = RenderEngine(gl, model, deviceType)
+    override val renderEngine = ModelRenderEngine(gl, model, deviceType)
     private var projectionProgram: GlslProgram? = null
     private val renderTargets = model.allSurfaces.associateWith { surface ->
         val lineVertices = surface.lines.flatMap { it.vertices }

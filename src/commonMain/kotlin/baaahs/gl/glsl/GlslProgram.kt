@@ -1,18 +1,21 @@
 package baaahs.gl.glsl
 
 import baaahs.gl.GlContext
+import baaahs.gl.data.EngineFeed
 import baaahs.gl.data.Feed
 import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.OutputPortRef
+import baaahs.show.UpdateMode
 import baaahs.util.Logger
 import com.danielgergely.kgl.Kgl
 
 class GlslProgram(
     private val gl: GlContext,
     private val linkedPatch: LinkedPatch,
-    feedResolver: FeedResolver
+    engineFeedResolver: EngineFeedResolver
 ) {
     private val vertexShader =
         gl.createVertexShader(
@@ -24,16 +27,18 @@ class GlslProgram(
 
     val id = gl.compile(vertexShader, fragShader)
 
-    private val bindings = gl.runInContext {
+    private val feeds = gl.runInContext {
         linkedPatch.dataSourceLinks.mapNotNull { (dataSource, id) ->
             if (dataSource.isImplicit()) return@mapNotNull null
-            val feed = feedResolver.openFeed(id, dataSource)
+            val engineFeed = engineFeedResolver.openFeed(id, dataSource)
 
-            if (feed != null) {
-                val binding = feed.bind(this)
-                if (binding.isValid) binding else {
+            if (engineFeed != null) {
+                val programFeed = engineFeed.bind(this)
+                if (programFeed.isValid) {
+                    programFeed
+                } else {
                     logger.debug { "unused uniform for $dataSource?" }
-                    binding.release()
+                    programFeed.release()
                     null
                 }
             } else {
@@ -43,33 +48,49 @@ class GlslProgram(
         }
     }
 
+    init {
+        gl.runInContext {
+            feeds.forEach { programFeed ->
+                if (programFeed.updateMode == UpdateMode.ONCE)
+                    programFeed.setOnProgram()
+            }
+        }
+    }
+
+    private val perFrameFeeds = feeds.mapNotNull { programFeed ->
+        if (programFeed.updateMode == UpdateMode.PER_FRAME)
+            programFeed
+        else null
+    }
+
+    private val perFixtureFeeds = feeds.mapNotNull { programFeed ->
+        if (programFeed.updateMode == UpdateMode.PER_FIXTURE)
+            programFeed
+        else null
+    }
+
     val vertexAttribLocation: Int = gl.runInContext {
         gl.check { getAttribLocation(id, "Vertex") }
     }
 
-    private inline fun <reified T> bindingsOf(): List<T> {
-        return bindings
-            .mapNotNull { it.feed }
-            .filterIsInstance<T>()
-    }
-
-    val resolutionListeners: List<ResolutionListener>
-        get() = bindingsOf()
+    private inline fun <reified T> feedsOf(): List<T> = feeds.filterIsInstance<T>()
 
     fun setResolution(x: Float, y: Float) {
-        resolutionListeners.forEach { it.onResolution(x, y) }
+        feedsOf<ResolutionListener>().forEach { it.onResolution(x, y) }
     }
 
-    fun updateUniforms() {
-        gl.runInContext {
-            gl.useProgram(this)
+    fun aboutToRenderFrame() {
+        perFrameFeeds.forEach { it.setOnProgram() }
+    }
 
-            bindings.forEach { it.setOnProgram() }
+    fun aboutToRenderFixture(renderTarget: RenderTarget) {
+        perFixtureFeeds.forEach {
+            it.setOnProgram(renderTarget)
         }
     }
 
     fun release() {
-        bindings.forEach { it.release() }
+        feeds.forEach { it.release() }
 //        TODO gl.runInContext { gl.check { deleteProgram } }
     }
 
@@ -115,4 +136,8 @@ class GlslProgram(
 
 fun interface FeedResolver {
     fun openFeed(id: String, dataSource: DataSource): Feed?
+}
+
+fun interface EngineFeedResolver {
+    fun openFeed(id: String, dataSource: DataSource): EngineFeed?
 }

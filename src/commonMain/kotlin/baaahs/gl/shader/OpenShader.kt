@@ -52,14 +52,8 @@ interface OpenShader : RefCounted {
                     }
         }
 
-        protected fun toInputPort(it: GlslCode.GlslVar): InputPort {
-            return InputPort(
-                it.name, it.type, it.displayName(),
-                pluginRef = it.hint?.pluginRef,
-                pluginConfig = it.hint?.config,
-                contentType = it.hint?.tag("type")?.let { plugins.resolveContentType(it) },
-                glslVar = it
-            )
+        protected fun toInputPort(glslVar: GlslCode.GlslVar): InputPort {
+            return glslVar.toInputPort(plugins)
         }
 
         override fun findInputPort(portId: String): InputPort {

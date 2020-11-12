@@ -1,7 +1,9 @@
 package baaahs.gl.glsl
 
 import baaahs.englishize
+import baaahs.gl.shader.InputPort
 import baaahs.plugin.PluginRef
+import baaahs.plugin.Plugins
 import baaahs.unknown
 import baaahs.util.Logger
 import kotlinx.serialization.json.JsonObject
@@ -144,6 +146,16 @@ class GlslCode(
         val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
 
         fun displayName() = name.englishize()
+
+        fun toInputPort(plugins: Plugins): InputPort {
+            return InputPort(
+                name, type, displayName(),
+                pluginRef = hint?.pluginRef,
+                pluginConfig = hint?.config,
+                contentType = hint?.tag("type")?.let { plugins.resolveContentType(it) },
+                glslVar = this
+            )
+        }
     }
 
     class Hint(

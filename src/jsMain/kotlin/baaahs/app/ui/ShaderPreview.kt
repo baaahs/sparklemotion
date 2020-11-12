@@ -39,7 +39,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
     val canvas = ref<HTMLCanvasElement?> { null }
     var gl by state<GlContext?> { null }
-    var glslPreview by state<ShaderPreview?> { null }
+    var shaderPreview by state<ShaderPreview?> { null }
     var errorPopupAnchor by state<EventTarget?> { null }
     val preRenderHook = ref { {} }
 
@@ -75,7 +75,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         }
         intersectionObserver.observe(canvasEl)
 
-        glslPreview = preview
+        shaderPreview = preview
 
         withCleanup {
             intersectionObserver.disconnect()
@@ -90,15 +90,15 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         }
     }
 
-    onChange("different builder", gl, glslPreview, builder, props.adjustGadgets) {
+    onChange("different builder", gl, shaderPreview, builder, props.adjustGadgets) {
         if (gl == null) return@onChange
-        if (glslPreview == null) return@onChange
+        if (shaderPreview == null) return@onChange
         if (builder == null) return@onChange
 
         val observer = builder.addObserver(fireImmediately = true) {
             when (it.state) {
                 ShaderBuilder.State.Linked -> {
-                    it.startCompile(gl!!)
+                    it.startCompile(shaderPreview!!.renderEngine)
                 }
                 ShaderBuilder.State.Success -> {
                     val gadgetAdjuster =
@@ -107,7 +107,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                         if (props.adjustGadgets) gadgetAdjuster.adjustGadgets()
                     }
 
-                    glslPreview!!.setProgram(it.glslProgram!!)
+                    shaderPreview!!.setProgram(it.glslProgram!!)
                 }
                 else -> {
                 }
@@ -123,7 +123,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
     useResizeListener(canvas) {
         // Tell Kotlin controller the window was resized
-        glslPreview?.resize(canvas.current!!.width, canvas.current!!.height)
+        shaderPreview?.resize(canvas.current!!.width, canvas.current!!.height)
     }
 
     styledDiv {

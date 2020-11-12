@@ -96,6 +96,7 @@ object PatchLayeringSpec : Spek({
                             vec3 center;
                             vec3 extents;
                         };
+                        
                         uniform float in_brightnessSlider;
                         uniform ModelInfo in_modelInfo;
                         uniform sampler2D in_pixelCoordsTexture;

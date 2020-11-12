@@ -85,7 +85,7 @@ object ShowRunnerSpec : Spek({
             )
         }
 
-        val fakeProgram by value { fakeGlslContext.programs[1] }
+        val fakeProgram by value { fakeGlslContext.programs.only("program") }
 
         val addControls by value { {} }
 

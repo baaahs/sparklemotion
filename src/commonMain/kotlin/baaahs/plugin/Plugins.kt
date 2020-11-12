@@ -16,7 +16,9 @@ import kotlinx.serialization.modules.SerializersModule
 
 @Serializable
 data class PluginRef(
+    /** A unique ID for plugin. Should be lowercase alphanums and dots, like a package name. */
     val pluginId: String,
+    /** A unique ID for a resource within a plugin. Should be CamelCase alphanums, like a class name. */
     val resourceName: String,
     val pluginIdNotSpecified: Boolean = false
 ) {

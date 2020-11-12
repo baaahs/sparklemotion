@@ -18,7 +18,7 @@ abstract class GlContext(
     private var viewport: List<Int> = emptyList()
     private val maxTextureUnit = 31 // TODO: should be gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS)
 
-    private val textureUnits = mutableMapOf<Any, TextureUnit>()
+    protected val textureUnits = mutableMapOf<Any, TextureUnit>()
     private var activeTextureUnit: TextureUnit? = null
 
     private var activeProgram: GlslProgram? = null
@@ -179,16 +179,16 @@ abstract class GlContext(
     }
 
     fun getTextureUnit(key: Any): TextureUnit {
-        return textureUnits[key] ?: allocTextureUnit().also { textureUnits[key] = it }
+        return textureUnits[key] ?: allocTextureUnit(key).also { textureUnits[key] = it }
     }
 
-    private fun allocTextureUnit(): TextureUnit {
+    private fun allocTextureUnit(key: Any): TextureUnit {
         val nextTextureUnit = textureUnits.size
         check(nextTextureUnit <= maxTextureUnit) { "too many texture units" }
-        return TextureUnit(nextTextureUnit)
+        return TextureUnit(key, nextTextureUnit)
     }
 
-    inner class TextureUnit(private val unitNumber: Int) {
+    inner class TextureUnit(private val key: Any, private val unitNumber: Int) {
         var boundTexture: Texture? = null
 
         private fun activate() {
@@ -222,6 +222,10 @@ abstract class GlContext(
 
         fun setUniform(uniform: Uniform) {
             uniform.set(unitNumber)
+        }
+
+        fun release() {
+            textureUnits.remove(key)
         }
     }
 

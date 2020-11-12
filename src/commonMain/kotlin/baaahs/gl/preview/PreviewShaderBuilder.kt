@@ -3,7 +3,7 @@ package baaahs.gl.preview
 import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.fixtures.*
-import baaahs.gl.GlContext
+import baaahs.gl.data.Feed
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslException
@@ -11,7 +11,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.render.RenderTarget
+import baaahs.gl.render.RenderEngine
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
@@ -37,7 +37,7 @@ interface ShaderBuilder : IObservable {
     val glslErrors: List<GlslError>
 
     fun startBuilding()
-    fun startCompile(gl: GlContext)
+    fun startCompile(renderEngine: RenderEngine)
 
     /** Contrary to expectations, linking happens before compiling in this world. */
     enum class State {
@@ -80,6 +80,8 @@ class PreviewShaderBuilder(
 
     override var glslErrors: List<GlslError> = emptyList()
         private set
+
+    val feeds = mutableListOf<Feed>()
 
     private fun analyze(shader: Shader) = autoWirer.glslAnalyzer.openShader(shader)
     private val screenCoordsProjection by lazy { analyze(PreviewShaderBuilder.screenCoordsProjection) }
@@ -127,7 +129,7 @@ class PreviewShaderBuilder(
         notifyChanged()
     }
 
-    override fun startCompile(gl: GlContext) {
+    override fun startCompile(renderEngine: RenderEngine) {
         state = ShaderBuilder.State.Compiling
         notifyChanged()
 
@@ -139,19 +141,20 @@ class PreviewShaderBuilder(
                 }
             }
 
-            compile(gl) { id, dataSource ->
+            compile(renderEngine) { id, dataSource ->
                 dataSource.buildControl()?.let {
                     showPlayer.registerGadget(dataSource.suggestId(), it.gadget, dataSource)
                 }
 
                 dataSource.createFeed(showPlayer, autoWirer.plugins, id)
+                    .also { feeds.add(it) }
             }
         }
     }
 
-    fun compile(gl: GlContext, feedResolver: FeedResolver) {
+    private fun compile(renderEngine: RenderEngine, feedResolver: FeedResolver) {
         try {
-            glslProgram = linkedPatch?.let { GlslProgram(gl, it, feedResolver) }
+            glslProgram = linkedPatch?.let { renderEngine.compile(it, feedResolver) }
             state = ShaderBuilder.State.Success
         } catch (e: GlslException) {
             glslErrors = e.errors
@@ -162,6 +165,14 @@ class PreviewShaderBuilder(
             state = ShaderBuilder.State.Errors
         }
         notifyChanged()
+    }
+
+    fun release() {
+        feeds.forEach { feed -> feed.release() }
+    }
+
+    fun finalize() {
+        release()
     }
 
     companion object {
@@ -184,18 +195,11 @@ class PreviewShaderBuilder(
 object ProjectionPreviewDevice: DeviceType {
     override val id: String get() = "ProjectionPreview"
     override val title: String get() = "Projection Preview"
-    override val params: List<Param> get() = PixelArrayDevice.params
+    override val dataSources: List<DataSource> get() = PixelArrayDevice.dataSources
     override val resultParams: List<ResultParam>
         get() = listOf(
             ResultParam("Vertex Location", Vec2ResultType)
         )
-
-    override fun setFixtureParamUniforms(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>) {
-    }
-
-    override fun initPixelParams(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>) {
-        PixelArrayDevice.initPixelParams(renderTarget, paramBuffers)
-    }
 
     fun getVertexLocations(resultViews: List<ResultView>): Vec2ResultType.Vec2ResultView {
         return resultViews[0] as Vec2ResultType.Vec2ResultView

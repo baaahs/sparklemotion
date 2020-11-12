@@ -16,6 +16,7 @@ import kotlinx.serialization.modules.polymorphic
 
 
 interface DataSourceBuilder<T : DataSource> {
+    /** The unique ID for this resource within a plugin. Should be CamelCase alphanums, like a class name. */
     val resourceName: String
     fun suggestDataSources(inputPort: InputPort): List<T> {
         return if (looksValid(inputPort)) {
@@ -28,7 +29,10 @@ interface DataSourceBuilder<T : DataSource> {
 
 interface DataSource {
     val pluginPackage: String
-    val dataSourceName: String
+    /** Short English name for this datasource. */
+    val title: String
+
+    // TODO: kill this
     fun isImplicit(): Boolean = false
     fun getType(): GlslType
     fun getContentType(): ContentType
@@ -42,9 +46,17 @@ interface DataSource {
         return createFeed(showPlayer, plugins.find(pluginPackage), id)
     }
 
-    fun suggestId(): String = dataSourceName.camelize()
+    /** Yuck. Merge this with [createFeed]. */
+    fun createFixtureFeed(): Feed = error("unsupported")
+
+    fun suggestId(): String = title.camelize()
 
     fun buildControl(): MutableGadgetControl? = null
+
+    fun appendDeclaration(buf: StringBuilder, varName: String) {
+        if (!isImplicit())
+            buf.append("uniform ${getType().glslLiteral} ${getVarName(varName)};\n")
+    }
 
     companion object {
         val serialModule = SerializersModule {
@@ -70,4 +82,15 @@ interface DataSource {
 //    }
         }
     }
+}
+
+enum class UpdateMode {
+    /** The data from this data source will never change. */
+    ONCE,
+
+    /** The data from this data source may be different for each frame. */
+    PER_FRAME,
+
+    /** The data from this data source may be different for each fixture. */
+    PER_FIXTURE
 }
