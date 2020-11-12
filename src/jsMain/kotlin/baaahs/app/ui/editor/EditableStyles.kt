@@ -21,6 +21,7 @@ object EditableStyles : StyleSheet("app-ui-Editable", isStatic = true) {
     }
 
     val dialogTitleButtons by css {
+        display = Display.flex
         position = Position.absolute
         top = 1.em
         right = 1.em

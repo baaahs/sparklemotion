@@ -86,6 +86,8 @@ class EditingShader(
     }
 
     fun getShaderInstanceOptions(): ShaderInstanceOptions? {
+        if (state == State.Errors) return null
+
         val currentOpenShader = openShader
         if (shaderInstanceOptions == null && currentOpenShader != null) {
             val showBuilder = ShowBuilder()

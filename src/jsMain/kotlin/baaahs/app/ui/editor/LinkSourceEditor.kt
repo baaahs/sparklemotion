@@ -18,7 +18,7 @@ import react.RHandler
 import react.RProps
 import react.child
 
-val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor", isPure = true) { props ->
+val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { props ->
     val lastLinkOptions = ref<List<LinkOption>?>(null)
     val linkOptions = props.editingShader.linkOptionsFor(props.inputPort)
         ?.also { lastLinkOptions.current = it }
