@@ -127,6 +127,10 @@ object EditingShaderSpec : Spek({
                     it("should not notify our observers again") {
                         expect(listOf(State.Errors)) { notifiedStates }
                     }
+
+                    it("should return null for ShaderInstanceOptions") {
+                        expect(null) { editingShader.getShaderInstanceOptions() }
+                    }
                 }
             }
         }

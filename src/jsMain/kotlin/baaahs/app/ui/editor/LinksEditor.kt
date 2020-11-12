@@ -48,6 +48,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
 
                     tdCell {
                         linkSourceEditor {
+                            key = inputPort.id
                             attrs.editableManager = props.editableManager
                             attrs.editingShader = props.editingShader
                             attrs.inputPort = inputPort
