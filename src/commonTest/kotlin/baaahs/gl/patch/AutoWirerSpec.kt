@@ -9,6 +9,7 @@ import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.show.live.LiveShaderInstance
+import baaahs.show.live.link
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderChannel
@@ -73,15 +74,9 @@ object AutoWirerSpec : Spek({
                 expect(
                     mapOf(
                         "gl_FragCoord" to LiveShaderInstance.NoOpLink,
-                        "time" to LiveShaderInstance.DataSourceLink(
-                            CorePlugin.TimeDataSource(), "time"
-                        ),
-                        "resolution" to LiveShaderInstance.DataSourceLink(
-                            CorePlugin.ResolutionDataSource(), "resolution"
-                        ),
-                        "blueness" to LiveShaderInstance.DataSourceLink(
-                            CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null), "bluenessSlider"
-                        )
+                        "time" to CorePlugin.TimeDataSource().link("time"),
+                        "resolution" to CorePlugin.ResolutionDataSource().link("resolution"),
+                        "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).link("bluenessSlider")
                     )
                 ) { liveShaderInstance.incomingLinks }
             }
@@ -133,15 +128,9 @@ object AutoWirerSpec : Spek({
                     }
                     expects(
                         mapOf(
-                            "blueness" to LiveShaderInstance.DataSourceLink(
-                                CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null), "bluenessSlider"
-                            ),
-                            "iResolution" to LiveShaderInstance.DataSourceLink(
-                                CorePlugin.ResolutionDataSource(), "resolution"
-                            ),
-                            "iTime" to LiveShaderInstance.DataSourceLink(
-                                CorePlugin.TimeDataSource(), "time"
-                            ),
+                            "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).link("bluenessSlider"),
+                            "iResolution" to CorePlugin.ResolutionDataSource().link("resolution"),
+                            "iTime" to CorePlugin.TimeDataSource().link("time"),
                             "sm_FragCoord" to LiveShaderInstance.NoOpLink
                         )
                     ) { liveShaderInstance.incomingLinks }

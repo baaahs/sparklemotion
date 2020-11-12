@@ -5,13 +5,12 @@ import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.util.Logger
 
-class SingleUniformBinding(
+class SingleUniformFeed(
     glslProgram: GlslProgram,
     dataSource: DataSource,
     val id: String,
-    override val feed: Feed,
     val setUniform: (Uniform) -> Unit
-) : Binding {
+) : ProgramFeed {
     private val type: Any = dataSource.getType()
     private val varName = dataSource.getVarName(id)
     private val uniformLocation = glslProgram.getUniform(varName)
@@ -27,6 +26,6 @@ class SingleUniformBinding(
     }
 
     companion object {
-        private val logger = Logger<SingleUniformBinding>()
+        private val logger = Logger<SingleUniformFeed>()
     }
 }

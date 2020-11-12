@@ -65,6 +65,8 @@ class LiveShaderInstance(
     }
 }
 
+fun DataSource.link(varName: String) = LiveShaderInstance.DataSourceLink(this, varName)
+
 class ShaderInstanceResolver(
     val openShaders: CacheBuilder<String, OpenShader>,
     val shaderInstances: Map<String, ShaderInstance>,
@@ -98,7 +100,7 @@ class ShaderInstanceResolver(
             .mapValues { (_, portRef) ->
                 when (portRef) {
                     is ShaderOutPortRef -> LiveShaderInstance.ShaderOutLink(resolve(portRef.shaderInstanceId))
-                    is DataSourceRef -> LiveShaderInstance.DataSourceLink(findDataSource(portRef.dataSourceId), portRef.dataSourceId)
+                    is DataSourceRef -> findDataSource(portRef.dataSourceId).link(portRef.dataSourceId)
                     is ShaderChannelRef -> LiveShaderInstance.ShaderChannelLink(portRef.shaderChannel)
                     is OutputPortRef -> TODO()
                     is ConstPortRef -> LiveShaderInstance.ConstLink(portRef.glsl)

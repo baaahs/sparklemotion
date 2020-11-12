@@ -11,9 +11,9 @@ class RenderManager(
     private val createContext: () -> GlContext
 ) {
     private val renderEngines = model.allEntities.map { it.deviceType }.distinct()
-        .associateWith { deviceType -> RenderEngine(createContext(), model, deviceType) }
+        .associateWith { deviceType -> ModelRenderEngine(createContext(), model, deviceType) }
 
-    fun getEngineFor(deviceType: DeviceType): RenderEngine =
+    fun getEngineFor(deviceType: DeviceType): ModelRenderEngine =
         renderEngines.getBang(deviceType, "render engine")
 
     fun draw() {

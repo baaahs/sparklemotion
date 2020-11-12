@@ -2,10 +2,11 @@ package baaahs.fixtures
 
 import baaahs.getBang
 import baaahs.gl.GlContext
-import baaahs.gl.data.Binding
-import baaahs.gl.data.Feed
+import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.RenderTarget
+import baaahs.glsl.Uniform
+import baaahs.show.DataSource
 import com.danielgergely.kgl.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
@@ -19,11 +20,8 @@ import kotlin.reflect.KClass
 interface DeviceType {
     val id: String
     val title: String
-    val params: List<Param>
+    val dataSources: List<DataSource>
     val resultParams: List<ResultParam>
-
-    fun setFixtureParamUniforms(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>)
-    fun initPixelParams(renderTarget: RenderTarget, paramBuffers: List<ParamBuffer>)
 
     companion object {
         private val knownDeviceTypes = listOf(
@@ -57,15 +55,18 @@ interface DeviceType {
 
 interface ParamBuffer {
     fun resizeBuffer(width: Int, height: Int)
-    fun resizeTexture(width: Int, height: Int)
-    fun bind(glslProgram: GlslProgram): Binding
+    fun uploadToTexture()
+    fun setTexture(uniform: Uniform)
+    fun bind(glslProgram: GlslProgram): ProgramFeed
     fun release()
 }
 
 class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlContext) : ParamBuffer {
     private val textureUnit = gl.getTextureUnit(this)
     private val texture = gl.check { createTexture() }
-    var floats = FloatArray(0)
+    private var floats = FloatArray(0)
+    private var width = 0
+    private var height = 0
 
     override fun resizeBuffer(width: Int, height: Int) {
         val size = width * height
@@ -73,28 +74,41 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
         val newFloats = FloatArray(size * stride)
         floats.copyInto(newFloats, 0, 0, min(floats.size, size * stride))
         floats = newFloats
+
+        this.width = width
+        this.height = height
     }
 
-    override fun resizeTexture(width: Int, height: Int) {
+    override fun uploadToTexture() {
         with(textureUnit) {
             bindTexture(texture)
             configure(GL_NEAREST, GL_NEAREST)
 
-            // Stride currently has to be 3.
+            val format = when(stride) {
+                1 -> GL_RED
+                2 -> GL_RG
+                3 -> GL_RGB
+                4 -> GL_RGBA
+                else -> error("Stride currently has to be between 1 and 4.")
+            }
+
             uploadTexture(
                 0,
                 GlContext.GL_RGB32F, width, height, 0,
-                GL_RGB,
+                format,
                 GL_FLOAT, FloatBuffer(floats)
             )
         }
     }
 
-    override fun bind(glslProgram: GlslProgram): Binding {
+    override fun setTexture(uniform: Uniform) {
+        uniform.set(textureUnit)
+    }
+
+    override fun bind(glslProgram: GlslProgram): ProgramFeed {
         val uniform = glslProgram.getUniform(id)
 
-        return object : Binding {
-            override val feed: Feed? get() = null
+        return object : ProgramFeed {
             override val isValid get() = uniform != null
 
             override fun setOnProgram() {
@@ -106,9 +120,46 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
         }
     }
 
+    fun scoped(
+        renderTarget: RenderTarget,
+        callback: ((Int) -> Float)? = null
+    ) = object : BufferView<Float> {
+        val offset = renderTarget.pixel0Index
+        val size = renderTarget.pixelCount
+
+        override fun set(pixelIndex: Int, t: Float) = set(pixelIndex, 0, t)
+
+        override fun set(pixelIndex: Int, index: Int, t: Float) {
+            if (pixelIndex > size) throw IndexOutOfBoundsException("$pixelIndex > $size")
+            floats[(offset + pixelIndex) * stride + index] = t
+        }
+
+        override fun get(pixelIndex: Int): Float = get(pixelIndex, 0)
+
+        override fun get(pixelIndex: Int, index: Int): Float {
+            if (pixelIndex > size) throw IndexOutOfBoundsException("$pixelIndex > $size")
+            return floats[(offset + pixelIndex) * stride]
+        }
+    }.also {
+        if (callback != null) {
+            val offset = renderTarget.pixel0Index
+            for (pixelIndex in 0 until renderTarget.pixelCount) {
+                floats[(offset + pixelIndex) * stride] = callback.invoke(pixelIndex)
+            }
+        }
+    }
+
     override fun release() {
         gl.check { deleteTexture(texture) }
+        textureUnit.release()
     }
+}
+
+interface BufferView<T> {
+    operator fun set(pixelIndex: Int, t: T)
+    operator fun set(pixelIndex: Int, index: Int, t: T)
+    operator fun get(pixelIndex: Int): T
+    operator fun get(pixelIndex: Int, index: Int): T
 }
 
 interface Param {

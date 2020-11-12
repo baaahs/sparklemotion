@@ -15,7 +15,7 @@ interface MutablePort {
 }
 
 data class MutableDataSourcePort(val dataSource: DataSource) : MutablePort {
-    override val title: String get() = dataSource.dataSourceName
+    override val title: String get() = dataSource.title
     override val icon: Icon get() = CommonIcons.DataSource
     override val groupName: String get() = "Data Source:"
 
