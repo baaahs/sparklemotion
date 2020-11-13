@@ -1,0 +1,96 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>DeviceType - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.fixtures</a>&nbsp;/&nbsp;<a href="./index.html">DeviceType</a><br/>
+<br/>
+<h1>DeviceType</h1>
+<code><span class="keyword">interface </span><span class="identifier">DeviceType</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-serializer/index.html">Serializer</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Serializer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">KSerializer</span><span class="symbol">&lt;</span><a href="./index.html"><span class="identifier">DeviceType</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="data-sources.html">dataSources</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">dataSources</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="id.html">id</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="result-params.html">resultParams</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">resultParams</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-result-param/index.html"><span class="identifier">ResultParam</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="title.html">title</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="serial-module.html">serialModule</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">serialModule</span><span class="symbol">: </span><span class="identifier">SerializersModule</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-moving-head-device/index.html">MovingHeadDevice</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">MovingHeadDevice</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">DeviceType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-pixel-array-device/index.html">PixelArrayDevice</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">PixelArrayDevice</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">DeviceType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../../baaahs.gl.preview/-projection-preview-device/index.html">ProjectionPreviewDevice</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">ProjectionPreviewDevice</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">DeviceType</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

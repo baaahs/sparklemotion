@@ -17,28 +17,42 @@
 <h4><a href="-glsl-function/index.html">GlslFunction</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslFunction</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Statement</span></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslFunction</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">GlslStatement</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="-glsl-other/index.html">GlslOther</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslOther</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Statement</span></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslOther</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">GlslStatement</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-glsl-param/index.html">GlslParam</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslParam</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-glsl-statement/index.html">GlslStatement</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">GlslStatement</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="-glsl-struct/index.html">GlslStruct</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslStruct</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Statement</span></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslStruct</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">GlslStatement</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="-glsl-var/index.html">GlslVar</a></h4>
 </td>
 <td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslVar</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Statement</span></code></td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslVar</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">GlslStatement</span></code></td>
 </tr>
 <tr>
 <td>
@@ -54,13 +68,6 @@
 <td>
 <code><span class="keyword">class </span><span class="identifier">Namespace</span></code></td>
 </tr>
-<tr>
-<td>
-<h4><a href="-statement/index.html">Statement</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">Statement</span></code></td>
-</tr>
 </tbody>
 </table>
 <h3>Constructors</h3>
@@ -71,7 +78,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">GlslCode</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode$<init>(kotlin.String, kotlin.collections.List((baaahs.gl.glsl.GlslAnalyzer.GlslStatement)))/src">src</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode$<init>(kotlin.String, kotlin.collections.List((baaahs.gl.glsl.GlslAnalyzer.GlslStatement)))/glslStatements">glslStatements</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">GlslStatement</span><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">GlslCode</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode$<init>(kotlin.String, kotlin.collections.List((baaahs.gl.glsl.GlslCode.GlslStatement)))/src">src</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode$<init>(kotlin.String, kotlin.collections.List((baaahs.gl.glsl.GlslCode.GlslStatement)))/statements">statements</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">GlslStatement</span><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -111,7 +118,7 @@
 <h4><a href="statements.html">statements</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">statements</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Statement</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">statements</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">GlslStatement</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>

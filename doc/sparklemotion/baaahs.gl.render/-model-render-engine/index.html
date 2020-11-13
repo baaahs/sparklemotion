@@ -1,0 +1,164 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ModelRenderEngine - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gl.render</a>&nbsp;/&nbsp;<a href="./index.html">ModelRenderEngine</a><br/>
+<br/>
+<h1>ModelRenderEngine</h1>
+<code><span class="keyword">class </span><span class="identifier">ModelRenderEngine</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-render-engine/index.html"><span class="identifier">RenderEngine</span></a></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-arrangement/index.html">Arrangement</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Arrangement</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">ModelRenderEngine</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderEngine$<init>(baaahs.gl.GlContext, baaahs.model.ModelInfo, baaahs.fixtures.DeviceType, kotlin.Int)/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl/-gl-context/index.html"><span class="identifier">GlContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.ModelRenderEngine$<init>(baaahs.gl.GlContext, baaahs.model.ModelInfo, baaahs.fixtures.DeviceType, kotlin.Int)/modelInfo">modelInfo</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model-info/index.html"><span class="identifier">ModelInfo</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.ModelRenderEngine$<init>(baaahs.gl.GlContext, baaahs.model.ModelInfo, baaahs.fixtures.DeviceType, kotlin.Int)/deviceType">deviceType</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.fixtures/-device-type/index.html"><span class="identifier">DeviceType</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.ModelRenderEngine$<init>(baaahs.gl.GlContext, baaahs.model.ModelInfo, baaahs.fixtures.DeviceType, kotlin.Int)/minTextureWidth">minTextureWidth</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;16<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="arrangement.html">arrangement</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">arrangement</span><span class="symbol">: </span><span class="identifier">Arrangement</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="buf-height.html">bufHeight</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">.</span><span class="identifier">bufHeight</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="buf-size.html">bufSize</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">.</span><span class="identifier">bufSize</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="buf-width.html">bufWidth</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">.</span><span class="identifier">bufWidth</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="next-pixel-offset.html">nextPixelOffset</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">nextPixelOffset</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="next-rect-offset.html">nextRectOffset</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">nextRectOffset</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pixel-count.html">pixelCount</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">pixelCount</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="add-fixture.html">addFixture</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addFixture</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderEngine$addFixture(baaahs.fixtures.Fixture)/fixture">fixture</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.fixtures/-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-render-target/index.html"><span class="identifier">RenderTarget</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="bind-results.html">bindResults</a></h4>
+</td>
+<td>
+<p>This is run from within a GL context.</p>
+<code><span class="keyword">fun </span><span class="identifier">bindResults</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-bind.html">onBind</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onBind</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderEngine$onBind(baaahs.gl.data.EngineFeed)/engineFeed">engineFeed</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.data/-engine-feed/index.html"><span class="identifier">EngineFeed</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-release.html">onRelease</a></h4>
+</td>
+<td>
+<p>This is run from within a GL context.</p>
+<code><span class="keyword">fun </span><span class="identifier">onRelease</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="prepare.html">prepare</a></h4>
+</td>
+<td>
+<p>This is run from within a GL context.</p>
+<code><span class="keyword">fun </span><span class="identifier">prepare</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-render-target.html">removeRenderTarget</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">removeRenderTarget</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderEngine$removeRenderTarget(baaahs.gl.render.RenderTarget)/renderTarget">renderTarget</span><span class="symbol">:</span>&nbsp;<a href="../-render-target/index.html"><span class="identifier">RenderTarget</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="render.html">render</a></h4>
+</td>
+<td>
+<p>This is run from within a GL context.</p>
+<code><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="resolve.html">resolve</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">resolve</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.ModelRenderEngine$resolve(kotlin.String, baaahs.show.DataSource)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.ModelRenderEngine$resolve(kotlin.String, baaahs.show.DataSource)/dataSource">dataSource</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.data/-feed/index.html"><span class="identifier">Feed</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="retrieve-results.html">retrieveResults</a></h4>
+</td>
+<td>
+<p>This is run from within a GL context.</p>
+<code><span class="keyword">fun </span><span class="identifier">retrieveResults</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

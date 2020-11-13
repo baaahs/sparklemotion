@@ -13,11 +13,24 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="-anonymous-fixture/index.html">AnonymousFixture</a></h4>
+<h4><a href="-buffer-view/index.html">BufferView</a></h4>
 </td>
 <td>
-<p>A fixture whose identity isn't known.</p>
-<code><span class="keyword">class </span><span class="identifier">AnonymousFixture</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-fixture/index.html"><span class="identifier">Fixture</span></a></code></td>
+<code><span class="keyword">interface </span><span class="identifier">BufferView</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-color-result-type/index.html">ColorResultType</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">ColorResultType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-result-type/index.html"><span class="identifier">ResultType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-device-type/index.html">DeviceType</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">DeviceType</span></code></td>
 </tr>
 <tr>
 <td>
@@ -25,7 +38,7 @@
 </td>
 <td>
 <p>Represents a controllable lighting fixture.</p>
-<code><span class="keyword">interface </span><span class="identifier">Fixture</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">Fixture</span></code></td>
 </tr>
 <tr>
 <td>
@@ -36,11 +49,136 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-identified-fixture/index.html">IdentifiedFixture</a></h4>
+<h4><a href="-float-result-type/index.html">FloatResultType</a></h4>
 </td>
 <td>
-<p>A fixture which has been associated with a specific <a href="../baaahs.model/-model/-surface/index.html">Model.Surface</a>.</p>
-<code><span class="keyword">class </span><span class="identifier">IdentifiedFixture</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-fixture/index.html"><span class="identifier">Fixture</span></a></code></td>
+<code><span class="keyword">object </span><span class="identifier">FloatResultType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-floats-result-type/index.html"><span class="identifier">FloatsResultType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-floats-param-buffer/index.html">FloatsParamBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">FloatsParamBuffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-param-buffer/index.html"><span class="identifier">ParamBuffer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-floats-pixel-param/index.html">FloatsPixelParam</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">FloatsPixelParam</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-param/index.html"><span class="identifier">Param</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-floats-result-type/index.html">FloatsResultType</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">FloatsResultType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-result-type/index.html"><span class="identifier">ResultType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-moving-head-device/index.html">MovingHeadDevice</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">MovingHeadDevice</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-device-type/index.html"><span class="identifier">DeviceType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-null-transport/index.html">NullTransport</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">NullTransport</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-transport/index.html"><span class="identifier">Transport</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-param/index.html">Param</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Param</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-param-buffer/index.html">ParamBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ParamBuffer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pixel-array-device/index.html">PixelArrayDevice</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">PixelArrayDevice</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-device-type/index.html"><span class="identifier">DeviceType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pixel-location-data-source/index.html">PixelLocationDataSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PixelLocationDataSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pixel-location-feed/index.html">PixelLocationFeed</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PixelLocationFeed</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.gl.data/-feed/index.html"><span class="identifier">Feed</span></a><span class="symbol">, </span><a href="../baaahs/-ref-counted/index.html"><span class="identifier">RefCounted</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-result-buffer/index.html">ResultBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">ResultBuffer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-result-param/index.html">ResultParam</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ResultParam</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-result-type/index.html">ResultType</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ResultType</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-result-view/index.html">ResultView</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">ResultView</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-transport/index.html">Transport</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Transport</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-vec2-result-type/index.html">Vec2ResultType</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Vec2ResultType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-floats-result-type/index.html"><span class="identifier">FloatsResultType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-vec3-result-type/index.html">Vec3ResultType</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Vec3ResultType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-floats-result-type/index.html"><span class="identifier">FloatsResultType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-vec4-result-type/index.html">Vec4ResultType</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">Vec4ResultType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-floats-result-type/index.html"><span class="identifier">FloatsResultType</span></a></code></td>
 </tr>
 </tbody>
 </table>

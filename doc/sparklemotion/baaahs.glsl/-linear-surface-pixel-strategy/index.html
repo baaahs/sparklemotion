@@ -8,16 +8,16 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.glsl</a>&nbsp;/&nbsp;<a href="./index.html">LinearSurfacePixelStrategy</a><br/>
 <br/>
 <h1>LinearSurfacePixelStrategy</h1>
-<code><span class="keyword">object </span><span class="identifier">LinearSurfacePixelStrategy</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-surface-pixel-strategy/index.html"><span class="identifier">SurfacePixelStrategy</span></a></code>
-<h3>Properties</h3>
+<code><span class="keyword">class </span><span class="identifier">LinearSurfacePixelStrategy</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-surface-pixel-strategy/index.html"><span class="identifier">SurfacePixelStrategy</span></a></code>
+<h3>Constructors</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<h4><a href="logger.html">logger</a></h4>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">logger</span><span class="symbol">: </span><a href="../../baaahs.util/-logger/index.html"><span class="identifier">Logger</span></a></code></td>
+<code><span class="identifier">LinearSurfacePixelStrategy</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.LinearSurfacePixelStrategy$<init>(kotlin.random.Random)/random">random</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/index.html"><span class="identifier">Random</span></a>&nbsp;<span class="symbol">=</span>&nbsp;Random<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,10 +26,17 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="for-fixture.html">forFixture</a></h4>
+<h4><a href="for-known-surface.html">forKnownSurface</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">forFixture</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.LinearSurfacePixelStrategy$forFixture(baaahs.fixtures.Fixture)/fixture">fixture</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.fixtures/-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.geom/-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">?</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">forKnownSurface</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.LinearSurfacePixelStrategy$forKnownSurface(kotlin.Int, baaahs.model.Model.Surface, baaahs.model.ModelInfo)/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.LinearSurfacePixelStrategy$forKnownSurface(kotlin.Int, baaahs.model.Model.Surface, baaahs.model.ModelInfo)/surface">surface</span><span class="symbol">:</span>&nbsp;<span class="identifier">Surface</span><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.LinearSurfacePixelStrategy$forKnownSurface(kotlin.Int, baaahs.model.Model.Surface, baaahs.model.ModelInfo)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model-info/index.html"><span class="identifier">ModelInfo</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.geom/-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="for-unknown-surface.html">forUnknownSurface</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">forUnknownSurface</span><span class="symbol">(</span><span class="identifier" id="baaahs.glsl.LinearSurfacePixelStrategy$forUnknownSurface(kotlin.Int, baaahs.model.ModelInfo)/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.glsl.LinearSurfacePixelStrategy$forUnknownSurface(kotlin.Int, baaahs.model.ModelInfo)/modelInfo">modelInfo</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model-info/index.html"><span class="identifier">ModelInfo</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.geom/-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>

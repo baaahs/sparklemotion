@@ -1,0 +1,98 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>PreviewRenderEngine - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gl.render</a>&nbsp;/&nbsp;<a href="./index.html">PreviewRenderEngine</a><br/>
+<br/>
+<h1>PreviewRenderEngine</h1>
+<code><span class="keyword">class </span><span class="identifier">PreviewRenderEngine</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-render-engine/index.html"><span class="identifier">RenderEngine</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">PreviewRenderEngine</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.PreviewRenderEngine$<init>(baaahs.gl.GlContext, kotlin.Int, kotlin.Int)/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl/-gl-context/index.html"><span class="identifier">GlContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.PreviewRenderEngine$<init>(baaahs.gl.GlContext, kotlin.Int, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.PreviewRenderEngine$<init>(baaahs.gl.GlContext, kotlin.Int, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="bind-results.html">bindResults</a></h4>
+</td>
+<td>
+<p>This is run from within a GL context.</p>
+<code><span class="keyword">fun </span><span class="identifier">bindResults</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-bind.html">onBind</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onBind</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.PreviewRenderEngine$onBind(baaahs.gl.data.EngineFeed)/engineFeed">engineFeed</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.data/-engine-feed/index.html"><span class="identifier">EngineFeed</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-release.html">onRelease</a></h4>
+</td>
+<td>
+<p>This is run from within a GL context.</p>
+<code><span class="keyword">fun </span><span class="identifier">onRelease</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-resize.html">onResize</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onResize</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.PreviewRenderEngine$onResize(kotlin.Int, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.PreviewRenderEngine$onResize(kotlin.Int, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="prepare.html">prepare</a></h4>
+</td>
+<td>
+<p>This is run from within a GL context.</p>
+<code><span class="keyword">fun </span><span class="identifier">prepare</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="render.html">render</a></h4>
+</td>
+<td>
+<p>This is run from within a GL context.</p>
+<code><span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="resolve.html">resolve</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">resolve</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.PreviewRenderEngine$resolve(kotlin.String, baaahs.show.DataSource)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.render.PreviewRenderEngine$resolve(kotlin.String, baaahs.show.DataSource)/dataSource">dataSource</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.data/-feed/index.html"><span class="identifier">Feed</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="retrieve-results.html">retrieveResults</a></h4>
+</td>
+<td>
+<p>This is run from within a GL context.</p>
+<code><span class="keyword">fun </span><span class="identifier">retrieveResults</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="use-program.html">useProgram</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">useProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.render.PreviewRenderEngine$useProgram(baaahs.gl.glsl.GlslProgram)/glslProgram">glslProgram</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-glsl-program/index.html"><span class="identifier">GlslProgram</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

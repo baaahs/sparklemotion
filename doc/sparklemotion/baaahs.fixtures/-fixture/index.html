@@ -8,58 +8,74 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.fixtures</a>&nbsp;/&nbsp;<a href="./index.html">Fixture</a><br/>
 <br/>
 <h1>Fixture</h1>
-<code><span class="keyword">interface </span><span class="identifier">Fixture</span></code>
+<code><span class="keyword">class </span><span class="identifier">Fixture</span></code>
 <p>Represents a controllable lighting fixture.</p>
-<p>May or may not be associated with a <a href="../../baaahs.model/-model/-surface/index.html">Model.Surface</a>.</p>
+<p>May or may not be associated with a <a href="../../baaahs.model/-model/-entity/index.html">Model.Entity</a>.</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<p>Represents a controllable lighting fixture.</p>
+<code><span class="identifier">Fixture</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.Fixture$<init>(baaahs.model.Model.Entity, kotlin.Int, kotlin.collections.List((baaahs.geom.Vector3F)), baaahs.fixtures.DeviceType, kotlin.String, baaahs.fixtures.Transport)/modelEntity">modelEntity</span><span class="symbol">:</span>&nbsp;<span class="identifier">Entity</span><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.Fixture$<init>(baaahs.model.Model.Entity, kotlin.Int, kotlin.collections.List((baaahs.geom.Vector3F)), baaahs.fixtures.DeviceType, kotlin.String, baaahs.fixtures.Transport)/pixelCount">pixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.Fixture$<init>(baaahs.model.Model.Entity, kotlin.Int, kotlin.collections.List((baaahs.geom.Vector3F)), baaahs.fixtures.DeviceType, kotlin.String, baaahs.fixtures.Transport)/pixelLocations">pixelLocations</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.geom/-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.Fixture$<init>(baaahs.model.Model.Entity, kotlin.Int, kotlin.collections.List((baaahs.geom.Vector3F)), baaahs.fixtures.DeviceType, kotlin.String, baaahs.fixtures.Transport)/deviceType">deviceType</span><span class="symbol">:</span>&nbsp;<a href="../-device-type/index.html"><span class="identifier">DeviceType</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.Fixture$<init>(baaahs.model.Model.Entity, kotlin.Int, kotlin.collections.List((baaahs.geom.Vector3F)), baaahs.fixtures.DeviceType, kotlin.String, baaahs.fixtures.Transport)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;modelEntity?.name ?: "Anonymous fixture"<span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.Fixture$<init>(baaahs.model.Model.Entity, kotlin.Int, kotlin.collections.List((baaahs.geom.Vector3F)), baaahs.fixtures.DeviceType, kotlin.String, baaahs.fixtures.Transport)/transport">transport</span><span class="symbol">:</span>&nbsp;<a href="../-transport/index.html"><span class="identifier">Transport</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Properties</h3>
 <table>
 <tbody>
 <tr>
 <td>
+<h4><a href="device-type.html">deviceType</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">deviceType</span><span class="symbol">: </span><a href="../-device-type/index.html"><span class="identifier">DeviceType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="model-entity.html">modelEntity</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">modelEntity</span><span class="symbol">: </span><span class="identifier">Entity</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="name.html">name</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="pixel-count.html">pixelCount</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">pixelCount</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">pixelCount</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="pixel-locations.html">pixelLocations</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">pixelLocations</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.geom/-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">?</span><span class="symbol">&gt;</span><span class="symbol">?</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="describe.html">describe</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">describe</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Inheritors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="../-anonymous-fixture/index.html">AnonymousFixture</a></h4>
-</td>
-<td>
-<p>A fixture whose identity isn't known.</p>
-<code><span class="keyword">class </span><span class="identifier">AnonymousFixture</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Fixture</span></a></code></td>
+<p>Each pixel's location in the global 3d model.</p>
+<code><span class="keyword">val </span><span class="identifier">pixelLocations</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.geom/-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
-<h4><a href="../-identified-fixture/index.html">IdentifiedFixture</a></h4>
+<h4><a href="title.html">title</a></h4>
 </td>
 <td>
-<p>A fixture which has been associated with a specific <a href="../../baaahs.model/-model/-surface/index.html">Model.Surface</a>.</p>
-<code><span class="keyword">class </span><span class="identifier">IdentifiedFixture</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Fixture</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="transport.html">transport</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">transport</span><span class="symbol">: </span><a href="../-transport/index.html"><span class="identifier">Transport</span></a></code></td>
 </tr>
 </tbody>
 </table>

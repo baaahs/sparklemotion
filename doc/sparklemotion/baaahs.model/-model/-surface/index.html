@@ -8,8 +8,21 @@
 <a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.model</a>&nbsp;/&nbsp;<a href="../index.html">Model</a>&nbsp;/&nbsp;<a href="./index.html">Surface</a><br/>
 <br/>
 <h1>Surface</h1>
-<code><span class="keyword">interface </span><span class="identifier">Surface</span></code>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Surface</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Entity</span></code>
 <p>A named surface in the geometry model.</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<p>A named surface in the geometry model.</p>
+<code><span class="identifier">Surface</span><span class="symbol">(</span><span class="identifier" id="baaahs.model.Model.Surface$<init>(kotlin.String, kotlin.String, baaahs.fixtures.DeviceType, kotlin.Int, kotlin.collections.List((baaahs.model.Model.Face)), kotlin.collections.List((baaahs.model.Model.Line)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.model.Model.Surface$<init>(kotlin.String, kotlin.String, baaahs.fixtures.DeviceType, kotlin.Int, kotlin.collections.List((baaahs.model.Model.Face)), kotlin.collections.List((baaahs.model.Model.Line)))/description">description</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.model.Model.Surface$<init>(kotlin.String, kotlin.String, baaahs.fixtures.DeviceType, kotlin.Int, kotlin.collections.List((baaahs.model.Model.Face)), kotlin.collections.List((baaahs.model.Model.Line)))/deviceType">deviceType</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.fixtures/-device-type/index.html"><span class="identifier">DeviceType</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.model.Model.Surface$<init>(kotlin.String, kotlin.String, baaahs.fixtures.DeviceType, kotlin.Int, kotlin.collections.List((baaahs.model.Model.Face)), kotlin.collections.List((baaahs.model.Model.Line)))/expectedPixelCount">expectedPixelCount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.model.Model.Surface$<init>(kotlin.String, kotlin.String, baaahs.fixtures.DeviceType, kotlin.Int, kotlin.collections.List((baaahs.model.Model.Face)), kotlin.collections.List((baaahs.model.Model.Line)))/faces">faces</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Face</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.model.Model.Surface$<init>(kotlin.String, kotlin.String, baaahs.fixtures.DeviceType, kotlin.Int, kotlin.collections.List((baaahs.model.Model.Face)), kotlin.collections.List((baaahs.model.Model.Line)))/lines">lines</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Line</span><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Properties</h3>
 <table>
 <tbody>
@@ -18,35 +31,42 @@
 <h4><a href="description.html">description</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">description</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">description</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="device-type.html">deviceType</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">deviceType</span><span class="symbol">: </span><a href="../../../baaahs.fixtures/-device-type/index.html"><span class="identifier">DeviceType</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="expected-pixel-count.html">expectedPixelCount</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">expectedPixelCount</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">?</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">expectedPixelCount</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="faces.html">faces</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">faces</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Face</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">faces</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Face</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="lines.html">lines</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">lines</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Line</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">lines</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Line</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="name.html">name</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -58,7 +78,7 @@
 <h4><a href="all-vertices.html">allVertices</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">allVertices</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.geom/-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">allVertices</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.geom/-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>

@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">RenderBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$<init>(kotlin.Int, kotlin.Int)/framebuffer">framebuffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Framebuffer</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$<init>(kotlin.Int, kotlin.Int)/renderbuffer">renderbuffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Renderbuffer</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">RenderBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$<init>(kotlin.Int)/renderbuffer">renderbuffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Renderbuffer</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,17 +26,24 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="cur-framebuffer-renderbuffer-args.html">curFramebufferRenderbufferArgs</a></h4>
+<h4><a href="cur-height.html">curHeight</a></h4>
 </td>
 <td>
-<code><span class="keyword">var </span><span class="identifier">curFramebufferRenderbufferArgs</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">var </span><span class="identifier">curHeight</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
-<h4><a href="cur-renderbuffer-storage-args.html">curRenderbufferStorageArgs</a></h4>
+<h4><a href="cur-internal-format.html">curInternalFormat</a></h4>
 </td>
 <td>
-<code><span class="keyword">var </span><span class="identifier">curRenderbufferStorageArgs</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">var </span><span class="identifier">curInternalFormat</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="cur-width.html">curWidth</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">curWidth</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -48,7 +55,14 @@
 <h4><a href="bind.html">bind</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$bind(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/internalformat">internalformat</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$bind(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$bind(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$bind(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/attachment">attachment</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$bind(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/renderbuffertarget">renderbuffertarget</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">bind</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="read-pixels.html">readPixels</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">readPixels</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/format">format</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$readPixels(kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, com.danielgergely.kgl.Buffer, kotlin.Int)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -56,6 +70,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">release</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="storage.html">storage</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">storage</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$storage(kotlin.Int, kotlin.Int, kotlin.Int)/internalformat">internalformat</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$storage(kotlin.Int, kotlin.Int, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.GlContext.RenderBuffer$storage(kotlin.Int, kotlin.Int, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>

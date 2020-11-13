@@ -14,6 +14,13 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="-frame-buffer/index.html">FrameBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">FrameBuffer</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-render-buffer/index.html">RenderBuffer</a></h4>
 </td>
 <td>
@@ -71,6 +78,13 @@
 <td>
 <code><span class="keyword">val </span><span class="identifier">stats</span><span class="symbol">: </span><span class="identifier">Stats</span></code></td>
 </tr>
+<tr>
+<td>
+<h4><a href="texture-units.html">textureUnits</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">textureUnits</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">TextureUnit</span><span class="symbol">&gt;</span></code></td>
+</tr>
 </tbody>
 </table>
 <h3>Functions</h3>
@@ -99,6 +113,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="create-frame-buffer.html">createFrameBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createFrameBuffer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">FrameBuffer</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="create-render-buffer.html">createRenderBuffer</a></h4>
 </td>
 <td>
@@ -110,6 +131,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">createVertexShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.GlContext$createVertexShader(kotlin.String)/source">source</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.glsl/-compiled-shader/index.html"><span class="identifier">CompiledShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="ensure-result-buffer-can-contain-floats.html">ensureResultBufferCanContainFloats</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">ensureResultBufferCanContainFloats</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -160,10 +188,38 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="-g-l_-r32-f.html">GL_R32F</a></h4>
+</td>
+<td>
+<code><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">GL_R32F</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-g-l_-r-g32-f.html">GL_RG32F</a></h4>
+</td>
+<td>
+<code><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">GL_RG32F</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-g-l_-r-g-b32-f.html">GL_RGB32F</a></h4>
 </td>
 <td>
 <code><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">GL_RGB32F</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-g-l_-r-g-b-a32-f.html">GL_RGBA32F</a></h4>
+</td>
+<td>
+<code><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">GL_RGBA32F</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-g-l_-r-g-b-a8.html">GL_RGBA8</a></h4>
+</td>
+<td>
+<code><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">GL_RGBA8</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 </tbody>
 </table>

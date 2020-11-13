@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>BrainManager.BrainTransport - sparklemotion</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs</a>&nbsp;/&nbsp;<a href="../index.html">BrainManager</a>&nbsp;/&nbsp;<a href="./index.html">BrainTransport</a><br/>
+<br/>
+<h1>BrainTransport</h1>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">BrainTransport</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../../baaahs.fixtures/-transport/index.html"><span class="identifier">Transport</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">BrainTransport</span><span class="symbol">(</span><span class="identifier" id="baaahs.BrainManager.BrainTransport$<init>(baaahs.net.Network.Address, baaahs.BrainId, kotlin.Boolean, kotlin.String, kotlin.String)/brainAddress">brainAddress</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">, </span><span class="identifier" id="baaahs.BrainManager.BrainTransport$<init>(baaahs.net.Network.Address, baaahs.BrainId, kotlin.Boolean, kotlin.String, kotlin.String)/brainId">brainId</span><span class="symbol">:</span>&nbsp;<a href="../../-brain-id/index.html"><span class="identifier">BrainId</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.BrainManager.BrainTransport$<init>(baaahs.net.Network.Address, baaahs.BrainId, kotlin.Boolean, kotlin.String, kotlin.String)/isSimulatedBrain">isSimulatedBrain</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.BrainManager.BrainTransport$<init>(baaahs.net.Network.Address, baaahs.BrainId, kotlin.Boolean, kotlin.String, kotlin.String)/firmwareVersion">firmwareVersion</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="baaahs.BrainManager.BrainTransport$<init>(baaahs.net.Network.Address, baaahs.BrainId, kotlin.Boolean, kotlin.String, kotlin.String)/idfVersion">idfVersion</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="brain-id.html">brainId</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">brainId</span><span class="symbol">: </span><a href="../../-brain-id/index.html"><span class="identifier">BrainId</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="firmware-version.html">firmwareVersion</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">firmwareVersion</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="fixture.html">fixture</a></h4>
+</td>
+<td>
+<code><span class="keyword">lateinit</span> <span class="keyword">var </span><span class="identifier">fixture</span><span class="symbol">: </span><a href="../../../baaahs.fixtures/-fixture/index.html"><span class="identifier">Fixture</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="had-exception.html">hadException</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">hadException</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="idf-version.html">idfVersion</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">idfVersion</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="name.html">name</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="send.html">send</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">send</span><span class="symbol">(</span><span class="identifier" id="baaahs.BrainManager.BrainTransport$send(baaahs.fixtures.Fixture, kotlin.collections.List((baaahs.fixtures.ResultView)))/fixture">fixture</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.fixtures/-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.BrainManager.BrainTransport$send(baaahs.fixtures.Fixture, kotlin.collections.List((baaahs.fixtures.ResultView)))/resultViews">resultViews</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.fixtures/-result-view/index.html"><span class="identifier">ResultView</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

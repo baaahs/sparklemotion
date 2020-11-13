@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>FloatsParamBuffer - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.fixtures</a>&nbsp;/&nbsp;<a href="./index.html">FloatsParamBuffer</a><br/>
+<br/>
+<h1>FloatsParamBuffer</h1>
+<code><span class="keyword">class </span><span class="identifier">FloatsParamBuffer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-param-buffer/index.html"><span class="identifier">ParamBuffer</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">FloatsParamBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FloatsParamBuffer$<init>(kotlin.String, kotlin.Int, baaahs.gl.GlContext)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FloatsParamBuffer$<init>(kotlin.String, kotlin.Int, baaahs.gl.GlContext)/stride">stride</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FloatsParamBuffer$<init>(kotlin.String, kotlin.Int, baaahs.gl.GlContext)/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl/-gl-context/index.html"><span class="identifier">GlContext</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="id.html">id</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stride.html">stride</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">stride</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="bind.html">bind</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FloatsParamBuffer$bind(baaahs.gl.glsl.GlslProgram)/glslProgram">glslProgram</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-glsl-program/index.html"><span class="identifier">GlslProgram</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.data/-program-feed/index.html"><span class="identifier">ProgramFeed</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="release.html">release</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">release</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="resize-buffer.html">resizeBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">resizeBuffer</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FloatsParamBuffer$resizeBuffer(kotlin.Int, kotlin.Int)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FloatsParamBuffer$resizeBuffer(kotlin.Int, kotlin.Int)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="scoped.html">scoped</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">scoped</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FloatsParamBuffer$scoped(baaahs.gl.render.RenderTarget, kotlin.Function1((kotlin.Int, kotlin.Float)))/renderTarget">renderTarget</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.render/-render-target/index.html"><span class="identifier">RenderTarget</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FloatsParamBuffer$scoped(baaahs.gl.render.RenderTarget, kotlin.Function1((kotlin.Int, kotlin.Float)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">(</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="../-buffer-view/index.html"><span class="identifier">BufferView</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-texture.html">setTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setTexture</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FloatsParamBuffer$setTexture(baaahs.glsl.Uniform)/uniform">uniform</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-uniform/index.html"><span class="identifier">Uniform</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="upload-to-texture.html">uploadToTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">uploadToTexture</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

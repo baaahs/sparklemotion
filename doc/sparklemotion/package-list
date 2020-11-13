@@ -38,6 +38,7 @@ baaahs.fixtures
 baaahs.gadgets
 baaahs.geom
 baaahs.gl
+baaahs.gl.data
 baaahs.gl.glsl
 baaahs.gl.patch
 baaahs.gl.preview
