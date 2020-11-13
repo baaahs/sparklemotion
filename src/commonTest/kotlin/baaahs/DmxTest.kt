@@ -1,5 +1,6 @@
 package baaahs;
 
+import baaahs.dmx.Dmx
 import baaahs.dmx.Shenzarpy
 import kotlin.math.abs
 import kotlin.test.Test

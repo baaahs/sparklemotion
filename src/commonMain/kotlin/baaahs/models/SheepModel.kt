@@ -5,6 +5,7 @@ import baaahs.geom.Vector3F
 import baaahs.getResource
 import baaahs.model.MovingHead
 import baaahs.model.ObjModel
+import kotlin.math.PI
 
 class SheepModel : ObjModel("baaahs-model.obj") {
     override val name: String = "BAAAHS"
@@ -14,12 +15,14 @@ class SheepModel : ObjModel("baaahs-model.obj") {
             MovingHead(
                 "leftEye",
                 "Left Eye",
-                Vector3F(0f, 204.361f, 48.738f)
+                origin = Vector3F(489.0f,202.361f, 27.5f),
+                heading = Vector3F(0f, 0f, (PI / 2).toFloat())
             ),
             MovingHead(
                 "rightEye",
                 "Right Eye",
-                Vector3F(0f, 204.361f, -153.738f)
+                origin = Vector3F(489.0f,202.361f, -24.5f),
+                heading = Vector3F(0f, 0f, (PI / 2).toFloat())
             )
         )
 

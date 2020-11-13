@@ -15,7 +15,6 @@ import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
-import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
 import com.danielgergely.kgl.*
@@ -80,9 +79,8 @@ object ShowRunnerSpec : Spek({
         val stageManager by value {
             val fs = FakeFs()
             StageManager(
-                Plugins.safe(), renderManager, pubSub, Storage(fs, Plugins.safe()), fixtureManager, FakeDmxUniverse(),
-                MovingHeadManager(fs, pubSub, emptyList()), FakeClock(), model, testCoroutineContext
-            )
+                Plugins.safe(), renderManager, pubSub, Storage(fs, Plugins.safe()), fixtureManager,
+                FakeClock(), model, testCoroutineContext)
         }
 
         val fakeProgram by value { fakeGlslContext.programs.only("program") }

@@ -1,15 +1,14 @@
 package baaahs.dmx
 
 import baaahs.Color
-import baaahs.Dmx
 import baaahs.model.MovingHead
 import baaahs.toRadians
 
-class Shenzarpy(override val buffer: Dmx.Buffer) : Dmx.DeviceType(16), MovingHead.Buffer {
+class Shenzarpy(override val buffer: Dmx.Buffer) : Dmx.Adapter, MovingHead.Buffer {
     override val panChannel get() = Channel.PAN
-    override val panFineChannel: Dmx.Channel? get() = Channel.PAN_FINE
+    override val panFineChannel: Dmx.Channel get() = Channel.PAN_FINE
     override val tiltChannel: Dmx.Channel get() = Channel.TILT
-    override val tiltFineChannel: Dmx.Channel? get() = Channel.TILT_FINE
+    override val tiltFineChannel: Dmx.Channel get() = Channel.TILT_FINE
     override val dimmerChannel: Dmx.Channel get() = Channel.DIMMER
     override var color: Color
         get() = WheelColor.values[colorWheel.toInt()].color
@@ -18,9 +17,13 @@ class Shenzarpy(override val buffer: Dmx.Buffer) : Dmx.DeviceType(16), MovingHea
     override val colorMode: MovingHead.ColorMode get() = MovingHead.ColorMode.ColorWheel
     override val colorWheelColors: List<WheelColor> = WheelColor.values.toList()
 
-    companion object {
-        val panRange = toRadians(0f)..toRadians(540f)
-        val tiltRange = toRadians(-110f)..toRadians(110f)
+    override val panRange: ClosedRange<Float> =
+        toRadians(0f)..toRadians(540f)
+    override val tiltRange: ClosedRange<Float> =
+        toRadians(-110f)..toRadians(110f)
+
+    companion object : Dmx.AdapterBuilder {
+        override fun build(buffer: Dmx.Buffer) = Shenzarpy(buffer)
     }
 
     enum class WheelColor(val color: Color) {

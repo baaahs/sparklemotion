@@ -1,14 +1,12 @@
 package baaahs.visualizer
 
-import baaahs.Config
-import baaahs.JsMapperUi
-import baaahs.dmx.LixadaMiniMovingHead
-import baaahs.getTimeMillis
+import baaahs.*
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Framerate
-import baaahs.window
+import baaahs.util.Logger
+import info.laht.threekt.THREE
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.core.Geometry
@@ -26,13 +24,12 @@ import info.laht.threekt.scenes.Scene
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.MouseEvent
-import three.Matrix4
 import three.OrbitControls
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(model: Model): JsMapperUi.StatusListener {
+class Visualizer(model: Model) : JsMapperUi.StatusListener {
     val facade = Facade()
 
     private var container: HTMLDivElement? = null
@@ -161,36 +158,70 @@ class Visualizer(model: Model): JsMapperUi.StatusListener {
         return VizMovingHead(movingHead, dmxUniverse)
     }
 
-    inner class VizMovingHead(movingHead: MovingHead, dmxUniverse: FakeDmxUniverse) {
-        private val baseChannel = Config.DMX_DEVICES[movingHead.name]!!
-        private val device = LixadaMiniMovingHead(dmxUniverse.reader(baseChannel, 16) { receivedDmxFrame() })
-        private val geometry = ConeBufferGeometry(50, 1000)
-        private val material = MeshBasicMaterial().apply { color.set(0xffff00) }
-        private val cone = Mesh(geometry, material)
-        private val baseXRotation = PI
-        private val baseYRotation = 0.0
-        private val baseZRotation = 0.0
+    inner class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniverse) {
+        private val dmxChannelMapping = Config.findDmxChannelMapping(movingHead)
+        private val adapter = run {
+            val dmxBufferReader = dmxUniverse.reader(dmxChannelMapping.baseChannel, dmxChannelMapping.channelCount) {
+                receivedDmxFrame()
+            }
+            dmxChannelMapping.adapter.build(dmxBufferReader) as MovingHead.Buffer
+        }
+
+        private val innerConeMaterial = MeshBasicMaterial().apply {
+            color.set(0xffff00)
+            side = THREE.DoubleSide
+            transparent = true
+            opacity = .75
+            depthTest = false
+        }
+        private val innerConeGeometry = ConeBufferGeometry(20, 1000)
+        private val innerCone = Mesh(innerConeGeometry, innerConeMaterial)
+
+        private val outerConeMaterial = MeshBasicMaterial().apply {
+            color.set(0xffff00)
+            side = THREE.DoubleSide
+            transparent = true
+            opacity = .4
+            blending = THREE.AdditiveBlending
+            depthTest = false
+        }
+        private val outerConeGeometry = ConeBufferGeometry(50, 1000)
+        private val outerCone = Mesh(outerConeGeometry, outerConeMaterial)
+
+        private val materials = listOf(innerConeMaterial, outerConeMaterial)
+        private val cones = listOf(innerCone, outerCone)
 
         init {
-            geometry.applyMatrix(Matrix4().makeTranslation(0.0, -500.0, 0.0))
-            material.transparent = true
-            material.opacity = .75
-            cone.position.set(movingHead.origin.x, movingHead.origin.y, movingHead.origin.z)
-            cone.rotation.x = baseXRotation
-            cone.rotation.y = baseYRotation
-            cone.rotation.z = baseZRotation
-            scene.add(cone)
+            cones.forEach { cone ->
+                cone.position.set(movingHead.origin.x, movingHead.origin.y, movingHead.origin.z)
+                cone.rotation.set(movingHead.heading.x, movingHead.heading.y, movingHead.heading.z)
+                scene.add(cone)
+            }
         }
 
         private fun receivedDmxFrame() {
-            material.color.set(device.color.rgb)
-            material.visible = device.dimmer > .1
+            logger.info {
+                "Received DMX frame for ${movingHead.name}:" +
+                        " color=${adapter.color} pan=${adapter.pan} tilt=${adapter.tilt}"
+            }
 
-            cone.rotation.x = baseXRotation + device.tilt
-            cone.rotation.y = baseYRotation
-            cone.rotation.z = baseZRotation
+            materials.forEach { material ->
+                material.color.set(adapter.color.rgb)
+                material.visible = adapter.dimmer > .1
+            }
+
+            cones.forEach { cone ->
+                cone.rotation.set(
+                    movingHead.heading.x + adapter.panRange.scale(adapter.pan),
+                    movingHead.heading.y,
+                    movingHead.heading.z + adapter.tiltRange.scale(adapter.tilt)
+                )
+            }
         }
     }
+
+    fun ClosedRange<Float>.scale(value: Float) =
+        (endInclusive - start) * value + start
 
     private fun startRender() {
         geom.computeBoundingSphere()
@@ -203,8 +234,6 @@ class Visualizer(model: Model): JsMapperUi.StatusListener {
         stopRendering = false
         render()
     }
-
-    private val REFRESH_DELAY = 50 // ms
 
     fun render() {
         if (stopRendering) return
@@ -275,11 +304,15 @@ class Visualizer(model: Model): JsMapperUi.StatusListener {
     inner class Facade : baaahs.ui.Facade() {
         var container: HTMLDivElement?
             get() = this@Visualizer.container
-            set(value) { this@Visualizer.container = value }
+            set(value) {
+                this@Visualizer.container = value
+            }
 
         var rotate: Boolean
             get() = this@Visualizer.rotate
-            set(value) { this@Visualizer.rotate = value}
+            set(value) {
+                this@Visualizer.rotate = value
+            }
 
         var selectedSurface: VizSurface? = null
 
@@ -287,5 +320,10 @@ class Visualizer(model: Model): JsMapperUi.StatusListener {
 
         fun resize() = this@Visualizer.resize()
         fun onMouseDown(event: MouseEvent) = this@Visualizer.onMouseDown(event)
+    }
+
+    companion object {
+        private const val REFRESH_DELAY = 50 // ms
+        private val logger = Logger<Visualizer>()
     }
 }

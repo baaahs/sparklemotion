@@ -11,4 +11,7 @@ object MovingHeadDevice : DeviceType {
     override val resultParams: List<ResultParam> get() = listOf(
         ResultParam("Pan/Tilt", Vec2ResultType)
     )
+
+    fun getResults(resultViews: List<ResultView>) =
+        resultViews[0] as Vec2ResultType.Vec2ResultView
 }

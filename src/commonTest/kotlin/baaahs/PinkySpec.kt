@@ -34,7 +34,7 @@ object PinkySpec : Spek({
         val clientPort = 1234
 
         val panel17 = SheepModel.Panel("17")
-        val model = SheepModel().apply { surfaces = listOf(panel17) } as Model
+        val model = ModelForTest(listOf(panel17))
 
         val fakeFs by value { FakeFs() }
         val pinky by value {
@@ -47,7 +47,7 @@ object PinkySpec : Spek({
                 fakeFs,
                 PermissiveFirmwareDaddy(),
                 StubSoundAnalyzer(),
-                renderManager = fakeGlslContext.runInContext { RenderManager(TestModel) { fakeGlslContext } },
+                renderManager = fakeGlslContext.runInContext { RenderManager(model) { fakeGlslContext } },
                 plugins = Plugins.safe(),
                 pinkyMainDispatcher = object : CoroutineDispatcher() {
                     override fun dispatch(context: CoroutineContext, block: Runnable) {
