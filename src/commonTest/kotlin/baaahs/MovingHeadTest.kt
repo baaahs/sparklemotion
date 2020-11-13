@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.dmx.Dmx
 import baaahs.dmx.Shenzarpy
 import baaahs.model.MovingHead
 import kotlin.test.Test
@@ -19,13 +20,17 @@ class MovingHeadTest {
     class TestMovingHead : MovingHead.Buffer {
         override val buffer: Dmx.Buffer = Dmx.Buffer(ByteArray(10), 0, 10)
         override val panChannel: Dmx.Channel get() = TestChannel(1)
-        override val panFineChannel: Dmx.Channel? get() = TestChannel(2)
+        override val panFineChannel: Dmx.Channel get() = TestChannel(2)
         override val tiltChannel: Dmx.Channel get() = TestChannel(3)
-        override val tiltFineChannel: Dmx.Channel? get() = TestChannel(4)
+        override val tiltFineChannel: Dmx.Channel get() = TestChannel(4)
         override val dimmerChannel: Dmx.Channel get() = TestChannel(5)
         override var color: Color
             get() = Color.BLACK
-            set(value) {}
+            set(_) {}
+        override val panRange: ClosedRange<Float> =
+            toRadians(0f)..toRadians(540f)
+        override val tiltRange: ClosedRange<Float> =
+            toRadians(-110f)..toRadians(110f)
         override val colorMode: MovingHead.ColorMode get() = MovingHead.ColorMode.ColorWheel
         override val colorWheelColors: List<Shenzarpy.WheelColor> get() = emptyList()
     }

@@ -1,6 +1,5 @@
 package baaahs.dmx
 
-import baaahs.Dmx
 import com.ftdichip.ftd2xx.*
 
 class DmxDevice(usbDevice: Device) : Dmx.Universe() {

@@ -28,8 +28,6 @@ class StageManager(
     private val pubSub: PubSub.Server,
     private val storage: Storage,
     private val fixtureManager: FixtureManager,
-    private val dmxUniverse: Dmx.Universe,
-    private val movingHeadManager: MovingHeadManager,
     private val clock: Clock,
     modelInfo: ModelInfo,
     private val coroutineContext: CoroutineContext
@@ -149,7 +147,6 @@ class StageManager(
 
             if (showRunner.renderNextFrame()) {
                 fixtureManager.sendFrame()
-                dmxUniverse.sendFrame()
             }
 
             if (!dontProcrastinate) housekeeping()

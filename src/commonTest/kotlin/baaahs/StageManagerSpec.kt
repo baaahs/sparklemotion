@@ -11,7 +11,6 @@ import baaahs.plugin.Plugins
 import baaahs.show.SampleData
 import baaahs.show.mutable.MutableShow
 import baaahs.shows.FakeGlContext
-import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -40,8 +39,6 @@ object StageManagerSpec : Spek({
                 pubSub.server,
                 Storage(fakeFs, plugins),
                 FixtureManager(renderManager),
-                FakeDmxUniverse(),
-                MovingHeadManager(fakeFs, pubSub.server, emptyList()),
                 FakeClock(),
                 model,
                 object : CoroutineDispatcher() {

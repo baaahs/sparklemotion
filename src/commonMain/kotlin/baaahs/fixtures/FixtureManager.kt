@@ -14,6 +14,7 @@ import baaahs.util.Logger
 class FixtureManager(
     private val renderManager: RenderManager
 ) {
+    private val frameListeners: MutableList<() -> Unit> = arrayListOf()
     private val changedFixtures = mutableListOf<FixturesChanges>()
     private val renderTargets: MutableMap<Fixture, RenderTarget> = hashMapOf()
     private var totalFixtures = 0
@@ -21,6 +22,10 @@ class FixtureManager(
     private var currentActiveSet: ActiveSet = ActiveSet(emptyList())
     private var activeSetChanged = false
     internal var currentRenderPlan: RenderPlan? = null
+
+    fun addFrameListener(callback: () -> Unit) {
+        frameListeners.add(callback)
+    }
 
     fun getRenderTargets_ForTestOnly(): Map<Fixture, RenderTarget> {
         return renderTargets
@@ -67,6 +72,7 @@ class FixtureManager(
             // from the list of fixtures. I'm not quite sure the best way to do that so I'm leaving this note.
             renderTarget.sendFrame()
         }
+        frameListeners.forEach { it.invoke() }
     }
 
     private fun addFixture(fixture: Fixture) {
