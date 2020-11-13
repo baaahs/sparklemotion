@@ -2,6 +2,8 @@ package baaahs.gl.patch
 
 import baaahs.RenderPlan
 import baaahs.ShowRunner
+import baaahs.fixtures.MovingHeadDevice
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslException
@@ -35,23 +37,26 @@ class PatchResolver(
     }
 
     fun createRenderPlan(renderManager: RenderManager, feedResolver: FeedResolver): RenderPlan {
-        val linkedPatches = portDiagrams.mapValues { (_, portDiagram) ->
-            portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
-        }
-        val activeDataSources = mutableSetOf<String>()
-        val programs = linkedPatches.mapNotNull { (_, linkedPatch) ->
-            try {
-                linkedPatch?.let { it to it.createProgram(renderManager, feedResolver) }
-            } catch (e: GlslException) {
-                ShowRunner.logger.error("Error preparing program", e)
-                if (e is CompilationException) {
-                    e.source?.let { ShowRunner.logger.info { it } }
+        return RenderPlan(
+            listOf(PixelArrayDevice, MovingHeadDevice).associateWith { deviceType ->
+                val linkedPatches = portDiagrams.mapValues { (_, portDiagram) ->
+                    portDiagram.resolvePatch(ShaderChannel.Main, deviceType.resultContentType)
                 }
-                return GuruMeditationError.createRenderPlan(renderManager)
-            }
-        }
-
-        return RenderPlan(programs, activeSet)
+                val activeDataSources = mutableSetOf<String>()
+                linkedPatches.mapNotNull { (_, linkedPatch) ->
+                    try {
+                        linkedPatch?.let { it to it.createProgram(renderManager, deviceType, feedResolver) }
+                    } catch (e: GlslException) {
+                        ShowRunner.logger.error("Error preparing program", e)
+                        if (e is CompilationException) {
+                            e.source?.let { ShowRunner.logger.info { it } }
+                        }
+                        return GuruMeditationError.createRenderPlan(renderManager)
+                    }
+                }
+            },
+            activeSet
+        )
     }
 
     companion object {

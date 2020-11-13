@@ -17,6 +17,8 @@ class GlslProgram(
     private val linkedPatch: LinkedPatch,
     engineFeedResolver: EngineFeedResolver
 ) {
+    val title: String get() = linkedPatch.shaderInstance.shader.title
+
     private val vertexShader =
         gl.createVertexShader(
             "#version ${gl.glslVersion}\n${GlslProgram.vertexShader}"

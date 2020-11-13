@@ -9,9 +9,12 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
     override fun transformDeserialize(element: JsonElement): JsonElement {
         if (element !is JsonObject) return element
         val fromVersion = element[versionKey]?.jsonPrimitive?.int ?: 0
-        if (fromVersion == currentVersion) return element
+        if (fromVersion == currentVersion)
+            return element.toMutableMap()
+                .apply { remove(versionKey) }.toJsonObj()
 
         val newJson = element.toMutableMap()
+        newJson.remove(versionKey)
 
         if (fromVersion < 1) {
             FromV0.apply(newJson)

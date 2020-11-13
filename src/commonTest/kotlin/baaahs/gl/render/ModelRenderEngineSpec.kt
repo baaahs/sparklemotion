@@ -11,6 +11,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.override
+import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.shader.PaintShader
 import baaahs.only
@@ -256,6 +257,7 @@ class DeviceTypeForTest(vararg fixtureDataSources: DataSource) : DeviceType {
     override val title: String get() = error("not implemented")
     override val dataSources: List<DataSource> = fixtureDataSources.toList()
     override val resultParams: List<ResultParam> get() = emptyList()
+    override val resultContentType: ContentType get() = error("not implemented")
 }
 
 fun Boolean.truify(): Boolean {

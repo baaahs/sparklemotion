@@ -12,9 +12,11 @@ import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.core.Geometry
 import info.laht.threekt.core.Object3D
 import info.laht.threekt.geometries.ConeBufferGeometry
+import info.laht.threekt.geometries.CylinderBufferGeometry
 import info.laht.threekt.geometries.SphereBufferGeometry
 import info.laht.threekt.materials.MeshBasicMaterial
 import info.laht.threekt.materials.PointsMaterial
+import info.laht.threekt.math.Matrix4
 import info.laht.threekt.math.Vector2
 import info.laht.threekt.math.Vector3
 import info.laht.threekt.objects.Mesh
@@ -175,6 +177,7 @@ class Visualizer(model: Model) : JsMapperUi.StatusListener {
             depthTest = false
         }
         private val innerConeGeometry = ConeBufferGeometry(20, 1000)
+            .also { it.applyMatrix(Matrix4().makeTranslation(0.0, -500.0, 0.0)) }
         private val innerCone = Mesh(innerConeGeometry, innerConeMaterial)
 
         private val outerConeMaterial = MeshBasicMaterial().apply {
@@ -186,6 +189,7 @@ class Visualizer(model: Model) : JsMapperUi.StatusListener {
             depthTest = false
         }
         private val outerConeGeometry = ConeBufferGeometry(50, 1000)
+            .also { it.applyMatrix(Matrix4().makeTranslation(0.0, -500.0, 0.0)) }
         private val outerCone = Mesh(outerConeGeometry, outerConeMaterial)
 
         private val materials = listOf(innerConeMaterial, outerConeMaterial)
@@ -193,18 +197,13 @@ class Visualizer(model: Model) : JsMapperUi.StatusListener {
 
         init {
             cones.forEach { cone ->
-                cone.position.set(movingHead.origin.x, movingHead.origin.y, movingHead.origin.z)
+                cone.position.set(movingHead.origin.x - 500, movingHead.origin.y, movingHead.origin.z)
                 cone.rotation.set(movingHead.heading.x, movingHead.heading.y, movingHead.heading.z)
                 scene.add(cone)
             }
         }
 
         private fun receivedDmxFrame() {
-            logger.info {
-                "Received DMX frame for ${movingHead.name}:" +
-                        " color=${adapter.color} pan=${adapter.pan} tilt=${adapter.tilt}"
-            }
-
             materials.forEach { material ->
                 material.color.set(adapter.color.rgb)
                 material.visible = adapter.dimmer > .1

@@ -1,8 +1,10 @@
 package baaahs
 
+import baaahs.fixtures.DeviceType
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.RenderManager
 import baaahs.show.Show
@@ -92,6 +94,6 @@ class ShowRunner(
 }
 
 class RenderPlan(
-    val programs: List<Pair<LinkedPatch, GlslProgram>>,
+    val programs: Map<DeviceType, List<Pair<LinkedPatch, GlslProgram>>>,
     val activeSet: ActiveSet
 )

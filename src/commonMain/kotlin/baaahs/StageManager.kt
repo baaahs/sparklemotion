@@ -222,11 +222,16 @@ class StageManager(
         val currentShow: Show?
             get() = this@StageManager.showRunner?.show
 
-        val currentGlsl: Map<Surfaces, String>?
-            get() = this@StageManager.fixtureManager.currentRenderPlan
-                ?.programs?.map { (patch, program) ->
-                    patch.surfaces to program.fragShader.source
-                }?.associate { it }
+        val currentGlsl: List<Pair<String, String>>?
+            get() {
+                val glsls = arrayListOf<Pair<String, String>>()
+                this@StageManager.fixtureManager.currentRenderPlan?.programs?.forEach { (deviceType, entries) ->
+                        entries.map { (patch, program) ->
+                            glsls.add("${deviceType::class.simpleName} (${patch.surfaces.name})" to program.fragShader.source)
+                        }
+                    }
+                return glsls
+            }
     }
 }
 
