@@ -3,6 +3,7 @@ package baaahs.fixtures
 import baaahs.RenderPlan
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
 import baaahs.gl.render.RenderManager
@@ -50,9 +51,14 @@ class FixtureManager(
 
     fun remap(renderPlan: RenderPlan) {
         renderTargets.forEach { (fixture, renderTarget) ->
-            renderPlan.programs.forEach { (patch: LinkedPatch, program: GlslProgram) ->
-                if (patch.matches(fixture)) {
-                    renderTarget.useProgram(program)
+            renderPlan.programs.forEach { (deviceType, patches) ->
+                if (fixture.deviceType == deviceType) {
+                    patches.forEach { (patch, program) ->
+                        if (patch.matches(fixture)) {
+                            renderTarget.useProgram(program)
+                        }
+
+                    }
                 }
             }
         }

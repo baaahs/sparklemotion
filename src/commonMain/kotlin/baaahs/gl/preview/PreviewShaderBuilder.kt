@@ -4,10 +4,7 @@ import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.fixtures.*
 import baaahs.gl.data.Feed
-import baaahs.gl.glsl.FeedResolver
-import baaahs.gl.glsl.GlslError
-import baaahs.gl.glsl.GlslException
-import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.glsl.*
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
@@ -106,6 +103,7 @@ class PreviewShaderBuilder(
                 ShaderType.Distortion -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
                 ShaderType.Paint -> arrayOf(screenCoordsProjection, openShader)
                 ShaderType.Filter -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
+                ShaderType.Mover -> arrayOf(openShader)
             }
 
             val defaultPorts = when (shader.type) {
@@ -200,6 +198,8 @@ object ProjectionPreviewDevice: DeviceType {
         get() = listOf(
             ResultParam("Vertex Location", Vec2ResultType)
         )
+    override val resultContentType: ContentType
+        get() = ContentType.UvCoordinateStream
 
     fun getVertexLocations(resultViews: List<ResultView>): Vec2ResultType.Vec2ResultView {
         return resultViews[0] as Vec2ResultType.Vec2ResultView

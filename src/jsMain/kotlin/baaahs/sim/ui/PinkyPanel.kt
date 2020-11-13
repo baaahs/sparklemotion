@@ -49,8 +49,8 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
                             typographyH6 { +"Generated GLSL" }
 
                             div(+Styles.glslCodeDiv) {
-                                props.pinky.stageManager.currentGlsl?.forEach { (surfaces, glsl) ->
-                                    header { +surfaces.name }
+                                props.pinky.stageManager.currentGlsl?.forEach { (surfaceName, glsl) ->
+                                    header { +surfaceName }
                                     pre { +glsl }
                                 }
                             }

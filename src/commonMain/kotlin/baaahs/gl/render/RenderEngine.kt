@@ -23,7 +23,7 @@ abstract class RenderEngine(val gl: GlContext) {
 
     abstract fun resolve(id: String, dataSource: DataSource): Feed?
 
-    fun compile(linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
+    open fun compile(linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
         return GlslProgram(gl, linkedPatch) { id: String, dataSource: DataSource ->
             val feed = resolve(id, dataSource) ?: feedResolver.openFeed(id, dataSource)
 

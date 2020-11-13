@@ -100,10 +100,10 @@ enum class ShaderType(
         4, mapOf(ContentType.ColorStream to ShaderChannel.Main),
         ContentType.ColorStream,  CommonIcons.FilterShader,
         """
-        vec4 mainFilter(vec4 inColor) {
-            return inColor;
-        }
-    """.trimIndent()
+            vec4 mainFilter(vec4 inColor) {
+                return inColor;
+            }
+        """.trimIndent()
     ) {
         override fun matches(glslCode: GlslCode): Boolean {
             return glslCode.functionNames.contains("mainFilter")
@@ -111,6 +111,23 @@ enum class ShaderType(
 
         override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins) =
             FilterShader(shader, glslCode, plugins)
+    },
+
+    Mover(
+        0, emptyMap(), ContentType.PanAndTilt,
+        CommonIcons.None,
+        """
+            vec4 mainMover() {
+                return vec4(0., .5);
+            }
+        """.trimIndent()
+    ) {
+        override fun matches(glslCode: GlslCode): Boolean {
+            return glslCode.functionNames.contains("mainFilter")
+        }
+
+        override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins) =
+            MoverShader(shader, glslCode, plugins)
     };
 
     abstract fun matches(glslCode: GlslCode): Boolean

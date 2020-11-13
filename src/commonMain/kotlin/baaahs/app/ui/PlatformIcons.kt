@@ -25,15 +25,6 @@ interface PlatformIcons {
     val ButtonGroup: Icon
     val ColorPalette: Icon
     val Visualizer: Icon
-
-    fun forShader(shaderType: ShaderType): Icon {
-        return when (shaderType) {
-            ShaderType.Projection -> ProjectionShader
-            ShaderType.Distortion -> DistortionShader
-            ShaderType.Paint -> PaintShader
-            ShaderType.Filter -> FilterShader
-        }
-    }
 }
 
 expect fun getCommonIcons(): PlatformIcons

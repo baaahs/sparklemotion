@@ -65,6 +65,8 @@ class ContentType(
         val Int = ContentType("Integer", GlslType.Int)
         val Media = ContentType("Media", GlslType.Sampler2D)
 
+        val PanAndTilt = ContentType("Pan & Tilt", GlslType.Vec4)
+
         val coreTypes = listOf(
             PixelCoordinatesTexture,
             PreviewResolution,
@@ -83,7 +85,9 @@ class ContentType(
             Time,
             Float,
             Int,
-            Media
+            Media,
+
+            PanAndTilt
         )
     }
 }

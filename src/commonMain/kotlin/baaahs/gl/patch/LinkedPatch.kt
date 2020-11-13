@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
@@ -125,9 +126,9 @@ class LinkedPatch(
         return "#version ${glslVersion}\n\n${toGlsl()}\n"
     }
 
-    fun createProgram(renderManager: RenderManager, feedResolver: FeedResolver): GlslProgram {
+    fun createProgram(renderManager: RenderManager, deviceType: DeviceType, feedResolver: FeedResolver): GlslProgram {
         // TODO: not just PixelArrayDevice!
-        val renderEngine = renderManager.getEngineFor(PixelArrayDevice)
+        val renderEngine = renderManager.getEngineFor(deviceType)
         return renderEngine.compile(this, feedResolver)
     }
 

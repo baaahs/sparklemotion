@@ -30,6 +30,9 @@ object PixelArrayDevice : DeviceType {
         ResultParam("Pixel Color", ColorResultType)
     )
 
+    override val resultContentType: ContentType
+        get() = ContentType.ColorStream
+
     fun getColorResults(resultViews: List<ResultView>) =
         resultViews[0] as ColorResultType.ColorResultView
 }

@@ -1,6 +1,7 @@
 package baaahs.glsl
 
 import baaahs.*
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.gl.data.Feed
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
@@ -59,9 +60,12 @@ object GuruMeditationError {
 
         // TODO: Should maybe display error state for whatever device type failed? Or everywhere?
         return RenderPlan(
-            listOf(linkedPatch to linkedPatch.createProgram(renderManager) { _, dataSource ->
-                feeds.getBang(dataSource, "data feed")
-            }),
+            mapOf(
+                PixelArrayDevice to
+                        listOf(linkedPatch to linkedPatch.createProgram(renderManager, PixelArrayDevice) { _, dataSource ->
+                            feeds.getBang(dataSource, "data feed")
+                        })
+            ),
             ActiveSet(emptyList())
         )
     }

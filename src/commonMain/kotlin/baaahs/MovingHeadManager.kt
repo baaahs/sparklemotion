@@ -4,6 +4,7 @@ import baaahs.dmx.Dmx
 import baaahs.fixtures.*
 import baaahs.io.Fs
 import baaahs.model.MovingHead
+import baaahs.util.Logger
 import kotlinx.serialization.json.Json
 
 class MovingHeadManager(
@@ -23,12 +24,13 @@ class MovingHeadManager(
         val buffer = dmxUniverse.writer(dmxChannelMapping.baseChannel, dmxChannelMapping.channelCount)
         val adapter = dmxChannelMapping.adapter.build(buffer) as MovingHead.Buffer
 
-        Fixture(movingHead, 0, emptyList(), MovingHeadDevice, transport = object : Transport {
+        Fixture(movingHead, 1, emptyList(), MovingHeadDevice, transport = object : Transport {
             override val name: String
                 get() = "DMX Transport"
 
             override fun send(fixture: Fixture, resultViews: List<ResultView>) {
                 val panAndTilt = MovingHeadDevice.getResults(resultViews)[0]
+                logger.info { "Pan and tilt on ${movingHead.name} -> $panAndTilt" }
                 adapter.pan = panAndTilt.x
                 adapter.tilt = panAndTilt.y
 
@@ -58,5 +60,9 @@ class MovingHeadManager(
 
     fun listen(movingHead: MovingHead, onUpdate: (MovingHead.MovingHeadPosition) -> Unit) {
         listeners[movingHead] = onUpdate
+    }
+
+    companion object {
+        private val logger = Logger<MovingHeadManager>()
     }
 }
