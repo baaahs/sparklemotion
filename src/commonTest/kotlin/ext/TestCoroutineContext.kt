@@ -2,6 +2,7 @@ package ext
 
 //@file:Suppress("PackageDirectoryMismatch")
 
+import baaahs.util.Logger
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -83,6 +84,7 @@ class TestCoroutineContext constructor(private val name: String?) : CoroutineCon
     override fun hashCode() = handler.hashCode()
 
     private fun handleException(@Suppress("UNUSED_PARAMETER") context: CoroutineContext, exception: Throwable) {
+        logger.error(exception) { "Exception in coroutine" }
         caughtExceptions += exception
     }
 
@@ -108,6 +110,10 @@ class TestCoroutineContext constructor(private val name: String?) : CoroutineCon
         }
 
 //        override fun processNextEvent() = handler.processNextEvent()
+    }
+
+    companion object {
+        private val logger = Logger<TestCoroutineContext>()
     }
 }
 

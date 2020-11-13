@@ -7,7 +7,7 @@
 //import baaahs.model.Model
 // TODO: Reimplement using GLSL.
 //object PanelTweenShow : Show("PanelTweenShow") {
-//    override fun createRenderer(model: Model<*>, showContext: ShowContext): Renderer {
+//    override fun createRenderer(model: Model, showContext: ShowContext): Renderer {
 //        val initialColors = listOf(
 //            Color.from("#FF8A47"),
 //            Color.from("#FC6170"),

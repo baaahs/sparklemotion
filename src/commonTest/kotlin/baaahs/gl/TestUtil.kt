@@ -1,6 +1,6 @@
 package baaahs.gl
 
-import baaahs.gl.glsl.GlslAnalyzer
+import baaahs.gl.glsl.GlslCode
 import org.spekframework.spek2.dsl.LifecycleAware
 import org.spekframework.spek2.dsl.Skip
 import org.spekframework.spek2.meta.*
@@ -8,16 +8,15 @@ import org.spekframework.spek2.style.specification.Suite
 import kotlin.test.assertEquals
 import kotlin.test.expect
 
-
 fun <T> LifecycleAware.override(letValue: T, factory: () -> T) {
     value(letValue, factory)
 }
 
 fun String.esc() = replace("\n", "\\n")
 
-fun GlslAnalyzer.GlslStatement.esc(lineNumbers: Boolean): String {
+fun GlslCode.GlslStatement.esc(lineNumbers: Boolean): String {
     val buf = StringBuilder()
-    buf.append(text.trim().esc())
+    buf.append(fullText.trim().esc())
     if (comments.isNotEmpty())
         buf.append(" // ${comments.joinToString(" ") { it.trim().esc() }}")
     if (lineNumbers)
@@ -26,8 +25,8 @@ fun GlslAnalyzer.GlslStatement.esc(lineNumbers: Boolean): String {
 }
 
 fun expectStatements(
-    expected: List<GlslAnalyzer.GlslStatement>,
-    actual: () -> List<GlslAnalyzer.GlslStatement>,
+    expected: List<GlslCode.GlslStatement>,
+    actual: () -> List<GlslCode.GlslStatement>,
     checkLineNumbers: Boolean = false
 ) {
     assertEquals(
@@ -40,6 +39,14 @@ fun <T> expects(expected: Collection<T>, block: () -> Collection<T>) {
     val actual = block()
     if (actual != expected)
         assertEquals(expected.joinToString("\n"), actual.joinToString("\n"))
+}
+
+fun <K, V> expects(expected: Map<K, V>, block: () -> Map<K, V>) {
+    val actual = block()
+    fun Map<*, *>.prettier() =
+        entries.sortedBy { (k, _) -> k.toString() }.joinToString("\n") { (k, v) -> "$k = $v" }
+    if (actual != expected)
+        assertEquals(expected.prettier(), actual.prettier())
 }
 
 @Synonym(SynonymType.TEST)

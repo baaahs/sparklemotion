@@ -3,8 +3,6 @@ package baaahs.gl.render
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.window
-import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
-import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 
 class QuadPreview(
     private val gl: GlContext,
@@ -13,7 +11,7 @@ class QuadPreview(
     private val preRenderCallback: (() -> Unit)? = null
 ) : ShaderPreview {
     private var running = false
-    private var scene: Scene? = null
+    override var renderEngine = PreviewRenderEngine(gl, width, height)
 
     override fun start() {
         running = true
@@ -26,58 +24,24 @@ class QuadPreview(
 
     override fun destroy() {
         stop()
-        scene?.release()
+        renderEngine.release()
     }
 
     override fun setProgram(program: GlslProgram) {
-        scene?.release()
-        scene = null
-        scene = Scene(program)
+        renderEngine.useProgram(program)
     }
 
     override fun render() {
         if (!running) return
 
         preRenderCallback?.invoke()
-        scene?.render()
+        renderEngine.render()
         window.requestAnimationFrame { render() }
     }
 
     override fun resize(width: Int, height: Int) {
         this.width = width
         this.height = height
-        scene?.resize()
-    }
-
-    inner class Scene(private val program: GlslProgram) {
-        private var quad = Quad(gl, listOf(quadRect))
-
-        init { resize() }
-
-        fun resize() {
-            program.setResolution(width.toFloat(), height.toFloat())
-        }
-
-        fun render() {
-            gl.runInContext {
-                gl.check { viewport(0, 0, width, height) }
-                gl.check { clearColor(1f, 0f, 0f, 1f) }
-                gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
-
-                program.updateUniforms()
-                quad.prepareToRender(program.vertexAttribLocation) {
-                    quad.renderRect(0)
-                }
-            }
-        }
-
-        fun release() {
-            quad.release()
-            program.release()
-        }
-    }
-
-    companion object {
-        private val quadRect = Quad.Rect(1f, -1f, -1f, 1f)
+        renderEngine.onResize(width, height)
     }
 }

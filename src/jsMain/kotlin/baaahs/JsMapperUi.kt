@@ -292,7 +292,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         afterCanvas.height = (uiHeight * diffCanvasScale).toInt()
     }
 
-    override fun addWireframe(model: Model<*>) {
+    override fun addWireframe(model: Model) {
         val vertices = model.geomVertices.map { v -> Vector3(v.x, v.y, v.z) }.toTypedArray()
         model.allSurfaces.forEach { surface ->
             val geom = Geometry()

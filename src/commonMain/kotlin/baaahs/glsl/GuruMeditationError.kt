@@ -1,15 +1,13 @@
 package baaahs.glsl
 
-import baaahs.BaseShowPlayer
-import baaahs.Gadget
-import baaahs.RenderPlan
-import baaahs.gl.GlContext
-import baaahs.gl.glsl.GlslProgram
+import baaahs.*
+import baaahs.gl.data.Feed
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.patch.PatchResolver
+import baaahs.gl.render.RenderManager
 import baaahs.model.ModelInfo
-import baaahs.only
 import baaahs.plugin.Plugins
 import baaahs.show.DataSource
 import baaahs.show.Shader
@@ -36,7 +34,7 @@ object GuruMeditationError {
     )
 
     private val linkedPatch: LinkedPatch?
-    private val dataFeeds: Map<DataSource, GlslProgram.DataFeed>
+    private val feeds: Map<DataSource, Feed>
 
     init {
         val autoWirer = AutoWirer(Plugins.safe())
@@ -50,24 +48,26 @@ object GuruMeditationError {
 
         @Suppress("CAST_NEVER_SUCCEEDS")
         val openShow = ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer).openShow()
-        dataFeeds = openShow.dataFeeds
+        feeds = openShow.feeds
         val openPatch = openShow.patches.only("patch")
-        linkedPatch = autoWirer.buildPortDiagram(openPatch)
+        linkedPatch = PatchResolver.buildPortDiagram(openPatch)
             .resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
     }
 
-    fun createRenderPlan(gl: GlContext): RenderPlan {
+    fun createRenderPlan(renderManager: RenderManager): RenderPlan {
         linkedPatch ?: error("Couldn't build guru meditation error patch.")
 
+        // TODO: Should maybe display error state for whatever device type failed? Or everywhere?
         return RenderPlan(
-            listOf(linkedPatch to linkedPatch.createProgram(gl, dataFeeds)),
+            listOf(linkedPatch to linkedPatch.createProgram(renderManager) { _, dataSource ->
+                feeds.getBang(dataSource, "data feed")
+            }),
             ActiveSet(emptyList())
         )
     }
 }
 
 private object FakeShowPlayer : BaseShowPlayer(Plugins.safe(), ModelInfo.Empty) {
-    override val glContext: GlContext get() = error("not implemented")
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?): Unit = error("not implemented")
     override fun <T : Gadget> useGadget(id: String): T = error("not implemented")
 }

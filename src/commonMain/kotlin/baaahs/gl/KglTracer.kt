@@ -397,9 +397,19 @@ class KglTracer(private val kgl: Kgl) : Kgl {
 
     private fun log(name: String, vararg args: Any?, fn: (() -> Any?)? = null) {
         logger.debug {
-            "$name(${args.joinToString(", ")})${fn?.let { " => ${fn()}" } ?: ""}"
+            val argsStr = args.joinToString(", ") { stringify(it) }
+            "$name($argsStr)${fn?.let { " => ${stringify(fn())}" } ?: ""}"
         }
     }
+
+    private fun stringify(it: Any?) =
+        if (it is IntArray) {
+            "[${it.joinToString(",")}]"
+        } else if (it is FloatArray) {
+            "[${it.joinToString(",")}]"
+        } else if (it is Array<*>) {
+            "[${it.joinToString(",")}]"
+        } else it.toString()
 
     companion object {
         private var tracerCounter = 0

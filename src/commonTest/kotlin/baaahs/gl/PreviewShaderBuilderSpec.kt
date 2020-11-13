@@ -5,13 +5,13 @@ import baaahs.gadgets.Slider
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
+import baaahs.gl.render.PreviewRenderEngine
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.shows.FakeGlContext
-import baaahs.shows.FakeKgl
 import ext.TestCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -28,7 +28,7 @@ object PreviewShaderBuilderSpec : Spek({
         val previewShaderBuilder by value {
             PreviewShaderBuilder(shader, autoWirer, ModelInfo.Empty, CoroutineScope(testCoroutineContext))
         }
-        val glContext by value { FakeGlContext(FakeKgl()) }
+        val renderEngine by value { PreviewRenderEngine(FakeGlContext(), 100, 100) }
 
         it("is in Unbuilt state") {
             expect(ShaderBuilder.State.Unbuilt) { previewShaderBuilder.state }
@@ -78,7 +78,7 @@ object PreviewShaderBuilderSpec : Spek({
                 }
 
                 context("when startCompile() is called") {
-                    beforeEachTest { previewShaderBuilder.startCompile(glContext) }
+                    beforeEachTest { previewShaderBuilder.startCompile(renderEngine) }
 
                     it("is in Compiling state") {
                         expect(ShaderBuilder.State.Compiling) { previewShaderBuilder.state }

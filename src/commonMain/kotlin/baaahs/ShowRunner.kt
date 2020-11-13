@@ -1,14 +1,10 @@
 package baaahs
 
-import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
-import baaahs.gl.glsl.CompilationException
-import baaahs.gl.glsl.GlslException
+import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
-import baaahs.gl.patch.ContentType
-import baaahs.gl.render.RenderEngine
-import baaahs.glsl.GuruMeditationError
-import baaahs.show.ShaderChannel
+import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.render.RenderManager
 import baaahs.show.Show
 import baaahs.show.live.ActiveSet
 import baaahs.show.live.OpenShow
@@ -22,15 +18,12 @@ class ShowRunner(
 //    private val dmxUniverse: Dmx.Universe,
 //    private val movingHeadManager: MovingHeadManager,
     internal val clock: Clock,
-    private val renderEngine: RenderEngine,
+    private val renderManager: RenderManager,
     private val fixtureManager: FixtureManager,
     private val autoWirer: AutoWirer
 ) {
     private var showState: ShowState = initialShowState ?: openShow.getShowState()
-    private var renderPlanNeedsRefresh: Boolean = true
-    internal var currentRenderPlan: RenderPlan? = null
-
-    private var requestedGadgets: LinkedHashMap<String, Gadget> = linkedMapOf()
+    private var activeSetChanged: Boolean = true
 
     // TODO: Get beat sync working again.
 //    // Continuous from [0.0 ... 3.0] (0 is first beat in a measure, 3 is last)
@@ -60,89 +53,30 @@ class ShowRunner(
 
     fun switchTo(newShowState: ShowState) {
         this.showState = newShowState
-        renderPlanNeedsRefresh = true
+        activeSetChanged = true
     }
 
     /** @return `true` if a frame was rendered and should be sent to fixtures. */
     fun renderNextFrame(): Boolean {
-        return if (currentRenderPlan != null) {
-            renderEngine.draw()
+        return if (fixtureManager.hasActiveRenderPlan()) {
+            renderManager.draw()
             true
         } else false
     }
 
     fun onSelectedPatchesChanged() {
-        renderPlanNeedsRefresh = true
+        activeSetChanged = true
     }
 
     fun housekeeping(): Boolean {
-        var remapFixtures = fixtureManager.requiresRemap()
-
-        // Maybe build new shaders.
-        if (renderPlanNeedsRefresh) {
-            val renderPlanChanged = refreshRenderPlan()
-            if (renderPlanChanged) {
-                remapFixtures = true
-            }
-
-            renderPlanNeedsRefresh = false
+        if (activeSetChanged) {
+            fixtureManager.activeSetChanged(openShow.activeSet())
         }
 
-        if (remapFixtures) {
-            fixtureManager.clearRenderPlans()
-
-            currentRenderPlan?.let {
-                fixtureManager.remap(it)
-            }
-        }
-
-        return remapFixtures
-    }
-
-    /** @return `true` if `currentRenderPlan` changed. */
-    private fun refreshRenderPlan(): Boolean {
-        val activeSet = openShow.activeSet()
-        return if (activeSet != currentRenderPlan?.activeSet) {
-            val elapsedMs = timeSync {
-                currentRenderPlan = prepareRenderPlan(activeSet)
-            }
-
-            logger.info {
-                "New render plan created; ${currentRenderPlan?.programs?.size ?: 0} programs, " +
-                        "${fixtureManager.getFixtureCount()} fixtures " +
-                        "and ${requestedGadgets.size} gadgets; took ${elapsedMs}ms"
-            }
-            true
-        } else false
-
-
-//        TODO gadgetManager.sync(requestedGadgets.toList(), gadgetsState)
-//        requestedGadgets.clear()
-    }
-
-    private fun prepareRenderPlan(activeSet: ActiveSet): RenderPlan {
-        try {
-            val activePatchHolders = activeSet.getPatchHolders()
-            println("active patches = ${activePatchHolders.map { it.title }}")
-
-            val linkedPatches = autoWirer.merge(*activePatchHolders.toTypedArray()).mapValues { (_, portDiagram) ->
-                portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
-            }
-            val glslContext = renderEngine.gl
-            val activeDataSources = mutableSetOf<String>()
-            val programs = linkedPatches.mapNotNull { (_, linkedPatch) ->
-                linkedPatch?.let { it to it.createProgram(glslContext, openShow.dataFeeds) }
-            }
-            return RenderPlan(programs, activeSet)
-        } catch (e: GlslException) {
-            logger.error("Error preparing program", e)
-            if (e is CompilationException) {
-                e.source?.let { logger.info { it } }
-            }
-            return GuruMeditationError.createRenderPlan(renderEngine.gl)
+        return fixtureManager.maybeUpdateRenderPlans { id, dataSource ->
+            openShow.feeds.getBang(dataSource, "data feed")
         }
     }
-
 
     fun shutDown() {
         // TODO gadgetManager.clear()
@@ -152,14 +86,12 @@ class ShowRunner(
         openShow.release()
     }
 
-    data class FixturesChanges(val added: Collection<FixtureReceiver>, val removed: Collection<FixtureReceiver>)
-
-    interface FixtureReceiver {
-        val fixture: Fixture
-        fun send(pixels: Pixels)
-    }
-
     companion object {
         val logger = Logger("ShowRunner")
     }
 }
+
+class RenderPlan(
+    val programs: List<Pair<LinkedPatch, GlslProgram>>,
+    val activeSet: ActiveSet
+)

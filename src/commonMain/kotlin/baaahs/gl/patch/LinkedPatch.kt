@@ -1,16 +1,17 @@
 package baaahs.gl.patch
 
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
-import baaahs.gl.GlContext
+import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.glsl.Resolver
-import baaahs.show.DataSource
+import baaahs.gl.render.RenderManager
 import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.LiveShaderInstance.*
 import baaahs.show.mutable.ShowBuilder
+import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -19,9 +20,9 @@ class LinkedPatch(
     val shaderInstance: LiveShaderInstance,
     val surfaces: Surfaces
 ) {
-    private val dataSourceLinks: Set<DataSourceLink>
-    private val componentLookup: Map<LiveShaderInstance, Component>
-    private val components = arrayListOf<Component>()
+    internal val dataSourceLinks: Set<DataSourceLink>
+    private val componentBuilder: CacheBuilder<LiveShaderInstance, Component>
+    private val components: List<Component>
 
     init {
         val instanceNodes = hashMapOf<LiveShaderInstance, InstanceNode>()
@@ -46,28 +47,39 @@ class LinkedPatch(
 
         dataSourceLinks = traverseLinks(shaderInstance)
 
-        val componentsByChannel = hashMapOf<ShaderChannel, Component>()
-        componentLookup = instanceNodes.values
+        instanceNodes.values
             .sortedWith(
                 compareByDescending<InstanceNode> { it.maxDepth }
                     .thenBy { it.shaderShortName}
             )
-            .mapIndexed { index, instanceNode ->
-                val component = Component(index, instanceNode, this@LinkedPatch::findUpstreamComponent)
-                components.add(component)
-                instanceNode.liveShaderInstance to component
-            }.associate { it }
+            .forEachIndexed { index, instanceNode -> instanceNode.index = index }
+
+        val componentsByChannel = hashMapOf<ShaderChannel, Component>()
+
+        componentBuilder = CacheBuilder {
+            val instanceNode = instanceNodes.getBang(it, "instance node")
+            val index = instanceNode.index
+            val component = Component(index, instanceNode, this@LinkedPatch::findUpstreamComponent)
+            component
+        }
+
+        components = instanceNodes.values
+            .sortedBy { it.index }
+            .map { componentBuilder[it.liveShaderInstance] }
+
         componentsByChannel[ShaderChannel.Main]?.redirectOutputTo("sm_result")
     }
 
     private fun findUpstreamComponent(liveShaderInstance: LiveShaderInstance) =
-        componentLookup.getBang(liveShaderInstance, "shader")
+        componentBuilder.getBang(liveShaderInstance, "shader")
 
     class InstanceNode(
         val liveShaderInstance: LiveShaderInstance,
         val shaderShortName: String,
         var maxDepth: Int = 0
     ) {
+        var index: Int = -1
+
         fun atDepth(depth: Int) {
             if (depth > maxDepth) maxDepth = depth
         }
@@ -91,8 +103,7 @@ class LinkedPatch(
         }
 
         dataSourceLinks.sortedBy { it.varName }.forEach { (dataSource, varName) ->
-            if (!dataSource.isImplicit())
-                buf.append("uniform ${dataSource.getType().glslLiteral} ${dataSource.getVarName(varName)};\n")
+            dataSource.appendDeclaration(buf, varName)
         }
         buf.append("\n")
 
@@ -114,36 +125,13 @@ class LinkedPatch(
         return "#version ${glslVersion}\n\n${toGlsl()}\n"
     }
 
-    fun compile(glContext: GlContext, resolver: Resolver): GlslProgram =
-        GlslProgram(glContext, this, resolver)
-
-    fun createProgram(
-        glContext: GlContext,
-        dataFeeds: Map<DataSource, GlslProgram.DataFeed>
-    ): GlslProgram {
-        return compile(glContext) { _, dataSource -> dataFeeds.getBang(dataSource, "data feed") }
+    fun createProgram(renderManager: RenderManager, feedResolver: FeedResolver): GlslProgram {
+        // TODO: not just PixelArrayDevice!
+        val renderEngine = renderManager.getEngineFor(PixelArrayDevice)
+        return renderEngine.compile(this, feedResolver)
     }
 
     fun matches(fixture: Fixture): Boolean = this.surfaces.matches(fixture)
-
-    fun bind(glslProgram: GlslProgram, resolver: Resolver): List<GlslProgram.Binding> {
-        return dataSourceLinks.mapNotNull { (dataSource, id) ->
-            if (dataSource.isImplicit()) return@mapNotNull null
-            val dataFeed = resolver.invoke(id, dataSource)
-
-            if (dataFeed != null) {
-                val binding = dataFeed.bind(glslProgram)
-                if (binding.isValid) binding else {
-                    logger.debug { "unused uniform for $dataSource?" }
-                    binding.release()
-                    null
-                }
-            } else {
-                logger.warn { "no UniformProvider bound for $dataSource" }
-                null
-            }
-        }
-    }
 
     companion object {
         private val logger = Logger("OpenPatch")

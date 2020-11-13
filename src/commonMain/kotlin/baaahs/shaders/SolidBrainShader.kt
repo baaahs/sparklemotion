@@ -4,7 +4,6 @@ import baaahs.BrainShader
 import baaahs.BrainShaderId
 import baaahs.BrainShaderReader
 import baaahs.Color
-import baaahs.fixtures.Fixture
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 
@@ -12,11 +11,11 @@ import baaahs.io.ByteArrayWriter
  * A shader that sets all pixels to a single color.
  */
 class SolidBrainShader : BrainShader<SolidBrainShader.Buffer>(BrainShaderId.SOLID) {
-    override fun createBuffer(fixture: Fixture): Buffer = Buffer()
+    override fun createBuffer(pixelCount: Int): Buffer = Buffer()
 
     override fun readBuffer(reader: ByteArrayReader): Buffer = Buffer().apply { read(reader) }
 
-    override fun createRenderer(fixture: Fixture): Renderer = Renderer()
+    override fun createRenderer(): Renderer = Renderer()
 
     companion object : BrainShaderReader<SolidBrainShader> {
         override fun parse(reader: ByteArrayReader) = SolidBrainShader()

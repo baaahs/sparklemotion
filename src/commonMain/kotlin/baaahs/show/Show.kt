@@ -2,6 +2,7 @@ package baaahs.show
 
 import baaahs.app.ui.Editable
 import baaahs.camelize
+import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.plugin.Plugins
@@ -10,6 +11,7 @@ import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.MutableShowVisitor
 import baaahs.show.mutable.VisitationLog
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -74,7 +76,10 @@ data class EventBinding(
 
 @Serializable
 data class Surfaces(
-    val name: String
+    val name: String,
+    /** Set of [DeviceType]s that this object matches. If the set is empty, every DeviceType matches. */
+    @Contextual
+    val deviceTypes: Set<DeviceType> = emptySet()
 ) {
     fun matches(fixture: Fixture): Boolean {
         return true
@@ -85,7 +90,7 @@ data class Surfaces(
     }
 
     companion object {
-        val AllSurfaces = Surfaces("All Surfaces")
+        val AllSurfaces = Surfaces("All Surfaces", emptySet())
     }
 }
 

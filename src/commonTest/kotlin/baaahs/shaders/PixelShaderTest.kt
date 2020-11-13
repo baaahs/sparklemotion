@@ -6,7 +6,7 @@ import kotlin.test.Test
 import kotlin.test.expect
 
 class PixelShaderTest {
-    private val fixture = FakeFixture(5)
+    private val fixture = fakeFixture(5)
     private val rgbColors = arrayOf(
         Color.from("#111111"),
         Color.from("#333333"),
@@ -115,13 +115,13 @@ class PixelShaderTest {
 
     @Test
     fun whenFewerPixels_shouldTruncate() {
-        val pixels = render(directBuffer(rgbColors), FakeFixture(3))
+        val pixels = render(directBuffer(rgbColors), fakeFixture(3))
         expect("#111111,#333333,#777777") { pixels.joinToString(",") { it.toHexString() } }
     }
 
     @Test
     fun whenMorePixels_shouldRepeat() {
-        val pixels = render(directBuffer(rgbColors), FakeFixture(12))
+        val pixels = render(directBuffer(rgbColors), fakeFixture(12))
         expect(
             "#111111,#333333,#777777,#cccccc,#ffffff," +
                     "#111111,#333333,#777777,#cccccc,#ffffff," +
@@ -134,7 +134,7 @@ class PixelShaderTest {
         encoding: PixelBrainShader.Encoding = PixelBrainShader.Encoding.DIRECT_ARGB
     ): PixelBrainShader.Buffer {
         val shader = PixelBrainShader(encoding)
-        return shader.createBuffer(fixture).apply {
+        return shader.createBuffer(fixture.pixelCount).apply {
             (0 until 5).forEach { i -> this.colors[i] = colors[i] }
         }
     }
@@ -145,7 +145,7 @@ class PixelShaderTest {
         encoding: PixelBrainShader.Encoding
     ): PixelBrainShader.Buffer {
         val shader = PixelBrainShader(encoding)
-        return shader.createBuffer(fixture).apply {
+        return shader.createBuffer(fixture.pixelCount).apply {
             palette.forEachIndexed { index, color -> this.palette[index] = color }
             colorIndices.forEachIndexed { pixelIndex, colorIndex -> this[pixelIndex] = colorIndex }
         }

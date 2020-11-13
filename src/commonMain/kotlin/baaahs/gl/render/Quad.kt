@@ -52,8 +52,10 @@ class Quad(private val gl: GlContext, rects: List<Rect>) {
 
     fun release() {
         if (!released) {
-            gl.check { deleteBuffer(quadVertexBuffer) }
-            gl.check { deleteVertexArray(vao) }
+            gl.runInContext {
+                gl.check { deleteBuffer(quadVertexBuffer) }
+                gl.check { deleteVertexArray(vao) }
+            }
             released = true
         }
     }
@@ -63,4 +65,8 @@ class Quad(private val gl: GlContext, rects: List<Rect>) {
     }
 
     data class Rect(val top: Float, val left: Float, val bottom: Float, val right: Float)
+
+    companion object {
+        val quadRect2x2 = Rect(1f, -1f, -1f, 1f)
+    }
 }

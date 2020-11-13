@@ -1,21 +1,22 @@
 package baaahs.gl.glsl
 
-import baaahs.RefCounted
-import baaahs.RefCounter
 import baaahs.gl.GlContext
+import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.Feed
 import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.OutputPortRef
+import baaahs.show.UpdateMode
 import baaahs.util.Logger
+import com.danielgergely.kgl.Kgl
 
 class GlslProgram(
-    internal val gl: GlContext,
+    private val gl: GlContext,
     private val linkedPatch: LinkedPatch,
-    resolver: Resolver
+    engineFeedResolver: EngineFeedResolver
 ) {
-
     private val vertexShader =
         gl.createVertexShader(
             "#version ${gl.glslVersion}\n${GlslProgram.vertexShader}"
@@ -26,42 +27,70 @@ class GlslProgram(
 
     val id = gl.compile(vertexShader, fragShader)
 
-    private val bindings = gl.runInContext { bind(resolver) }
+    private val feeds = gl.runInContext {
+        linkedPatch.dataSourceLinks.mapNotNull { (dataSource, id) ->
+            if (dataSource.isImplicit()) return@mapNotNull null
+            val engineFeed = engineFeedResolver.openFeed(id, dataSource)
+
+            if (engineFeed != null) {
+                val programFeed = engineFeed.bind(this)
+                if (programFeed.isValid) {
+                    programFeed
+                } else {
+                    logger.debug { "unused uniform for $dataSource?" }
+                    programFeed.release()
+                    null
+                }
+            } else {
+                logger.warn { "no UniformProvider bound for $dataSource" }
+                null
+            }
+        }
+    }
+
+    init {
+        gl.runInContext {
+            feeds.forEach { programFeed ->
+                if (programFeed.updateMode == UpdateMode.ONCE)
+                    programFeed.setOnProgram()
+            }
+        }
+    }
+
+    private val perFrameFeeds = feeds.mapNotNull { programFeed ->
+        if (programFeed.updateMode == UpdateMode.PER_FRAME)
+            programFeed
+        else null
+    }
+
+    private val perFixtureFeeds = feeds.mapNotNull { programFeed ->
+        if (programFeed.updateMode == UpdateMode.PER_FIXTURE)
+            programFeed
+        else null
+    }
 
     val vertexAttribLocation: Int = gl.runInContext {
         gl.check { getAttribLocation(id, "Vertex") }
     }
 
-    private fun bind(resolver: Resolver): List<Binding> {
-        return linkedPatch.bind(this, resolver)
-    }
-
-    private inline fun <reified T> bindingsOf(): List<T> {
-        return bindings
-            .map { it.dataFeed }
-            .filterIsInstance<T>()
-    }
-
-    val arrangementListeners: List<RenderEngine.ArrangementListener>
-        get() = bindingsOf()
-
-    val resolutionListeners: List<ResolutionListener>
-        get() = bindingsOf()
+    private inline fun <reified T> feedsOf(): List<T> = feeds.filterIsInstance<T>()
 
     fun setResolution(x: Float, y: Float) {
-        resolutionListeners.forEach { it.onResolution(x, y) }
+        feedsOf<ResolutionListener>().forEach { it.onResolution(x, y) }
     }
 
-    fun updateUniforms() {
-        gl.runInContext {
-            gl.useProgram(this)
+    fun aboutToRenderFrame() {
+        perFrameFeeds.forEach { it.setOnProgram() }
+    }
 
-            bindings.forEach { it.setOnProgram() }
+    fun aboutToRenderFixture(renderTarget: RenderTarget) {
+        perFixtureFeeds.forEach {
+            it.setOnProgram(renderTarget)
         }
     }
 
     fun release() {
-        bindings.forEach { it.release() }
+        feeds.forEach { it.release() }
 //        TODO gl.runInContext { gl.check { deleteProgram } }
     }
 
@@ -74,62 +103,13 @@ class GlslProgram(
         uniformLoc?.let { Uniform(this@GlslProgram, it) }
     }
 
-    interface Binding {
-        val dataFeed: DataFeed
-        val isValid: Boolean
-
-        fun setOnProgram()
-
-        /**
-         * Only release any resources specifically allocated by this Binding, not by
-         * its parent [DataFeed].
-         */
-        fun release() {}
-    }
-
-    class SingleUniformBinding(
-        glslProgram: GlslProgram,
-        dataSource: DataSource,
-        val id: String,
-        override val dataFeed: DataFeed,
-        val setUniform: (Uniform) -> Unit
-    ) : Binding {
-        private val type: Any = dataSource.getType()
-        private val varName = dataSource.getVarName(id)
-        private val uniformLocation = glslProgram.getUniform(varName)
-
-        override val isValid: Boolean get() = uniformLocation != null
-
-        override fun setOnProgram() {
-            try {
-                uniformLocation?.let { setUniform(it) }
-            } catch (e: Exception) {
-                logger.error(e) { "failed to set uniform $type $varName for $id" }
-            }
-        }
-    }
-
-    interface DataFeed : RefCounted {
-        fun bind(glslProgram: GlslProgram): Binding
+    fun <T> withProgram(fn: Kgl.() -> T): T {
+        gl.useProgram(this)
+        return gl.check(fn)
     }
 
     interface ResolutionListener {
         fun onResolution(x: Float, y: Float)
-    }
-
-    class NoOpDataFeed : DataFeed, RefCounted by RefCounter() {
-        override fun bind(glslProgram: GlslProgram): Binding {
-            return object : Binding {
-                override val dataFeed: DataFeed
-                    get() = this@NoOpDataFeed
-                override val isValid: Boolean
-                    get() = true
-
-                override fun setOnProgram() {
-                    // No-op.
-                }
-            }
-        }
     }
 
     companion object {
@@ -154,4 +134,10 @@ class GlslProgram(
     }
 }
 
-typealias Resolver = (String, DataSource) -> GlslProgram.DataFeed?
+fun interface FeedResolver {
+    fun openFeed(id: String, dataSource: DataSource): Feed?
+}
+
+fun interface EngineFeedResolver {
+    fun openFeed(id: String, dataSource: DataSource): EngineFeed?
+}

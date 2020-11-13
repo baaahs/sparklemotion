@@ -29,7 +29,7 @@ class BrainMain(private val args: Args) {
 
         val network = JvmNetwork()
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
-        val brain = Brain(brainId, network, JvmPixelsDisplay(2000))
+        val brain = Brain(brainId, network, JvmPixelsDisplay(2000), model)
 
         val mySurface = if (args.anonymous) {
             null

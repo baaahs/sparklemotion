@@ -57,7 +57,7 @@ object MutableShowSpec : Spek({
             it("has the expected initial datasources") {
                 expect(
                     setOf("Time", "Resolution", "Blueness Slider")
-                ) { show.dataSources.values.map { it.dataSourceName }.toSet() }
+                ) { show.dataSources.values.map { it.title }.toSet() }
             }
         }
 
