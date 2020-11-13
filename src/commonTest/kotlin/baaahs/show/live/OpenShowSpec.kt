@@ -9,8 +9,6 @@ import baaahs.show.Layouts
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.shows.FakeGlContext
-import baaahs.shows.FakeKgl
 import baaahs.shows.FakeShowPlayer
 import kotlinx.serialization.json.buildJsonObject
 import org.spekframework.spek2.Spek
@@ -21,7 +19,7 @@ object OpenShowSpec : Spek({
         val mutableShow by value { MutableShow("Show") }
         val show by value { mutableShow.build(ShowBuilder()) }
 
-        val showPlayer by value { FakeShowPlayer(FakeGlContext(FakeKgl())) }
+        val showPlayer by value { FakeShowPlayer() }
         val autoWirer by value { AutoWirer(Plugins.safe()) }
         val showOpener by value { ShowOpener(autoWirer.glslAnalyzer, show, showPlayer) }
         val openShow by value { showOpener.openShow() }

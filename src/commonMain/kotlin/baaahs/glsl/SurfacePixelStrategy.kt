@@ -1,73 +1,67 @@
 package baaahs.glsl
 
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.IdentifiedFixture
 import baaahs.geom.Vector3F
-import baaahs.util.Logger
+import baaahs.model.Model
+import baaahs.model.ModelInfo
 import kotlin.random.Random
 
 interface SurfacePixelStrategy {
-    fun forFixture(fixture: Fixture): List<Vector3F?>
+    fun forFixture(pixelCount: Int, surface: Model.Surface?, model: ModelInfo): List<Vector3F> {
+        return if (surface != null) {
+            forKnownSurface(pixelCount, surface, model)
+        } else {
+            forUnknownSurface(pixelCount, model)
+        }
+    }
+
+    fun forKnownSurface(pixelCount: Int, surface: Model.Surface, model: ModelInfo): List<Vector3F>
+    fun forUnknownSurface(pixelCount: Int, modelInfo: ModelInfo): List<Vector3F>
 }
 
-object RandomSurfacePixelStrategy : SurfacePixelStrategy {
-    override fun forFixture(fixture: Fixture): List<Vector3F?> {
-        return when {
-            fixture is IdentifiedFixture -> {
-                // Randomly pick locations within the surface.
-                val surfaceVertices = fixture.modelSurface.allVertices().toList()
-                var lastPixelLocation = surfaceVertices.random()
-                (0 until fixture.pixelCount).map {
-                    lastPixelLocation = (lastPixelLocation + surfaceVertices.random()) / 2f
-                    lastPixelLocation
-                }
-            }
+class RandomSurfacePixelStrategy(private val random: Random = Random) : SurfacePixelStrategy {
+    override fun forKnownSurface(pixelCount: Int, surface: Model.Surface, model: ModelInfo): List<Vector3F> {
+        // Randomly pick locations within the surface.
+        val surfaceVertices = surface.allVertices().toList()
+        var lastPixelLocation = surfaceVertices.random()
+        return (0 until pixelCount).map {
+            lastPixelLocation = (lastPixelLocation + surfaceVertices.random(random)) / 2f
+            lastPixelLocation
+        }
+    }
 
-            else -> {
-                // Randomly pick locations. TODO: this should be based on model extents.
-                val min = Vector3F(0f, 0f, 0f)
-                val max = Vector3F(100f, 100f, 100f)
-                val scale = max - min
+    override fun forUnknownSurface(pixelCount: Int, modelInfo: ModelInfo): List<Vector3F> {
+        // Randomly pick locations. TODO: this should be based on model extents.
+        val min = Vector3F(0f, 0f, 0f)
+        val max = Vector3F(100f, 100f, 100f)
+        val scale = max - min
 
-                (0 until fixture.pixelCount).map {
-                    Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) * scale + min
-                }
-            }
+        return (0 until pixelCount).map {
+            Vector3F(random.nextFloat(), random.nextFloat(), random.nextFloat()) * scale + min
         }
     }
 }
 
-object LinearSurfacePixelStrategy : SurfacePixelStrategy {
-    val logger = Logger("LinearSurfacePixelStrategy")
+class LinearSurfacePixelStrategy(private val random: Random = Random) : SurfacePixelStrategy {
+    override fun forKnownSurface(pixelCount: Int, surface: Model.Surface, model: ModelInfo): List<Vector3F> {
+        // Generate pixel locations along a line from one vertex to the surface's center.
+        val surfaceVertices = surface.allVertices()
+        if (surfaceVertices.isEmpty()) return forUnknownSurface(pixelCount, model)
 
-    override fun forFixture(fixture: Fixture): List<Vector3F?> {
-        val pixelCount = fixture.pixelCount
+        val surfaceCenter = surfaceVertices.average()
+        val vertex1 = surfaceVertices.first()
 
-        return when {
-            fixture is IdentifiedFixture -> {
-                logger.debug { "Surface ${fixture.name} doesn't have mapped pixels."}
-                // Generate pixel locations along a line from one vertex to the surface's center.
-                val surfaceVertices = fixture.modelSurface.allVertices()
-                if (surfaceVertices.isEmpty()) return emptyList()
+        return interpolate(vertex1, surfaceCenter, pixelCount)
+    }
 
-                val surfaceCenter = surfaceVertices.average()
-                val vertex1 = surfaceVertices.first()
+    override fun forUnknownSurface(pixelCount: Int, modelInfo: ModelInfo): List<Vector3F> {
+        val min = modelInfo.boundsMin
+        val max = modelInfo.boundsMax
 
-                interpolate(vertex1, surfaceCenter, pixelCount)
-            }
+        val scale = max - min
+        val vertex1 = Vector3F(random.nextFloat(), random.nextFloat(), random.nextFloat()) * scale + min
+        val vertex2 = Vector3F(random.nextFloat(), random.nextFloat(), random.nextFloat()) * scale + min
 
-            else -> {
-                logger.debug { "Surface ${fixture.describe()} is unknown."}
-                // Randomly pick locations. TODO: this should be based on model extents.
-                val min = Vector3F(0f, 0f, 0f)
-                val max = Vector3F(100f, 100f, 100f)
-                val scale = max - min
-                val vertex1 = Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) * scale + min
-                val vertex2 = Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) * scale + min
-
-                interpolate(vertex1, vertex2, pixelCount)
-            }
-        }
+        return interpolate(vertex1, vertex2, pixelCount)
     }
 
     private fun Collection<Vector3F>.average(): Vector3F {

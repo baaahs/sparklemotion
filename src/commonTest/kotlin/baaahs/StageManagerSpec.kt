@@ -1,12 +1,11 @@
 package baaahs
 
 import baaahs.fixtures.FixtureManager
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
 import baaahs.model.Model
-import baaahs.model.ModelInfo
 import baaahs.models.SheepModel
 import baaahs.plugin.Plugins
 import baaahs.show.SampleData
@@ -25,22 +24,22 @@ import kotlin.test.expect
 object StageManagerSpec : Spek({
     describe<StageManager> {
         val panel17 = SheepModel.Panel("17")
-        val model = SheepModel().apply { panels = listOf(panel17) } as Model<*>
+        val model = SheepModel().apply { surfaces = listOf(panel17) } as Model
 
         val plugins by value { Plugins.safe() }
         val fakeFs by value { FakeFs() }
         val pubSub by value { TestPubSub() }
         val fakeGlslContext by value { FakeGlContext() }
-        val renderEngine by value { RenderEngine(fakeGlslContext, ModelInfo.Empty) }
+        val renderManager by value { RenderManager(TestModel) { fakeGlslContext } }
         val baseShow by value { SampleData.sampleShow }
 
         val stageManager by value {
             StageManager(
                 plugins,
-                renderEngine,
+                renderManager,
                 pubSub.server,
                 Storage(fakeFs, plugins),
-                FixtureManager(renderEngine),
+                FixtureManager(renderManager),
                 FakeDmxUniverse(),
                 MovingHeadManager(fakeFs, pubSub.server, emptyList()),
                 FakeClock(),

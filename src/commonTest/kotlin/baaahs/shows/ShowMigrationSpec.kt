@@ -20,7 +20,7 @@ object ShowMigrationSpec : Spek({
         context("from v0") {
             override(fromJson) {
                 buildJsonObject {
-                    put("title", "")
+                    put("title", "Show")
                     put("dataSources", buildJsonObject {
                         put("modelInfo", buildJsonObject {
                             put("type", "baaahs.plugin.CorePlugin.ModelInfoDataSource")
@@ -30,12 +30,24 @@ object ShowMigrationSpec : Spek({
                             put("type", "baaahs.plugin.CorePlugin.Time")
                         })
                     })
+                    put("patches", buildJsonArray {
+                        add(buildJsonObject {
+                            put("shaderInstanceIds", buildJsonArray { })
+                            put("surfaces", buildJsonObject {
+                                put("name", "All Surfaces")
+                            })
+                        })
+                    })
                 }
             }
 
             it("ignores `structType` and maps from old class names") {
                 expect(CorePlugin.ModelInfoDataSource()) { show.dataSources["modelInfo"] }
                 expect(CorePlugin.TimeDataSource()) { show.dataSources["time"] }
+            }
+
+            it("permits missing surfaces.deviceTypes") {
+                expect(emptySet()) { show.patches[0].surfaces.deviceTypes }
             }
         }
 

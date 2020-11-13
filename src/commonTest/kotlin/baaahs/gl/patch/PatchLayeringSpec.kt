@@ -11,7 +11,6 @@ import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -57,7 +56,7 @@ object PatchLayeringSpec : Spek({
         }
         val show by value {
             val show = mutableShow.build(ShowBuilder())
-            ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer(FakeGlContext())).openShow()
+            ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer()).openShow()
         }
 
         context("for a show with a couple buttons") {
@@ -79,9 +78,8 @@ object PatchLayeringSpec : Spek({
             }
 
             it("merges layered patches into a single patch") {
-                val portDiagrams =
-                    autoWirer.merge(show, *show.activeSet().getPatchHolders().toTypedArray())
-                val portDiagram = portDiagrams[Surfaces.AllSurfaces]!!
+                val patchResolution = PatchResolver(emptyList(), show.activeSet())
+                val portDiagram = patchResolution.portDiagrams[Surfaces.AllSurfaces]!!
                 val linkedPatch = portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)!!
                 expect(
                     /** language=glsl */
@@ -98,6 +96,7 @@ object PatchLayeringSpec : Spek({
                             vec3 center;
                             vec3 extents;
                         };
+                        
                         uniform float in_brightnessSlider;
                         uniform ModelInfo in_modelInfo;
                         uniform sampler2D in_pixelCoordsTexture;

@@ -1,7 +1,6 @@
 package baaahs.gl.glsl
 
-import baaahs.gl.glsl.GlslCode.GlslFunction
-import baaahs.gl.glsl.GlslCode.GlslVar
+import baaahs.gl.glsl.GlslCode.*
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
@@ -55,7 +54,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
             freezeLineNumber: Boolean = false
         ): ParseState {
             var state = initialState
-            Regex("(.*?)(//|[;{}()#\n]|$)").findAll(text).forEach { matchResult ->
+            Regex("(.*?)(//|[;{}(,)#\n]|$)").findAll(text).forEach { matchResult ->
                 val (before, token) = matchResult.destructured
 
                 if (!freezeLineNumber && token == "\n") lineNumber++
@@ -133,7 +132,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
     private sealed class ParseState(val context: Context) {
         companion object {
             fun initial(context: Context): ParseState =
-                Statement(context)
+                UnidentifiedStatement(context)
         }
 
         private val text = StringBuilder()
@@ -151,6 +150,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
                 "{" -> visitLeftCurlyBrace()
                 "}" -> visitRightCurlyBrace()
                 "(" -> visitLeftParen()
+                "," -> visitComma()
                 ")" -> visitRightParen()
                 "#" -> visitDirective()
                 "\n" -> visitNewline()
@@ -174,6 +174,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
         open fun visitLeftCurlyBrace(): ParseState = visitText("{")
         open fun visitRightCurlyBrace(): ParseState = visitText("}")
         open fun visitLeftParen(): ParseState = visitText("(")
+        open fun visitComma(): ParseState = visitText(",")
         open fun visitRightParen(): ParseState = visitText(")")
         open fun visitDirective(): ParseState = visitText("#")
         open fun visitNewline(): ParseState = visitText("\n")
@@ -181,22 +182,17 @@ class GlslAnalyzer(private val plugins: Plugins) {
 
         open fun addComment(comment: String) {}
 
-        private class Statement(
+        private abstract class Statement(
             context: Context,
-            val precedingStatement: Statement? = null
+            var recipientOfNextComment: Statement? = null
         ) : ParseState(context) {
             var lineNumber = context.lineNumber
             var braceNestLevel: Int = 0
             val comments = mutableListOf<String>()
-            var nextCommentIsMeantForPreviousStatement = true
 
             override fun visitComment(): ParseState {
                 return if (braceNestLevel == 0) {
-                    val parentParseState =
-                        if (nextCommentIsMeantForPreviousStatement && precedingStatement != null)
-                            precedingStatement
-                        else this
-                    Comment(context, parentParseState, this)
+                    Comment(context, recipientOfNextComment ?: this, this)
                 } else {
                     super.visitComment()
                 }
@@ -238,7 +234,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
             }
 
             override fun visitNewline(): ParseState {
-                nextCommentIsMeantForPreviousStatement = false
+                recipientOfNextComment = null
 
                 return if (textIsEmpty() && comments.isEmpty()) {
                     // Skip leading newlines.
@@ -251,7 +247,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
 
             override fun visitEof(): ParseState {
                 if (!isEmpty()) finishStatement()
-                return Statement(context, this)
+                return UnidentifiedStatement(context, this)
             }
 
             override fun addComment(comment: String) {
@@ -259,22 +255,202 @@ class GlslAnalyzer(private val plugins: Plugins) {
             }
 
             fun finishStatement(): Statement {
-                context.statements.add(
-                    GlslStatement(
-                        textAsString,
-                        comments,
-                        lineNumber
-                    )
-                )
-                return Statement(context, this)
+                context.statements.add(createStatement())
+                return UnidentifiedStatement(context, this)
+            }
+
+            abstract fun createStatement(): GlslStatement
+
+            fun asVarOrNull(): GlslVar? {
+                val text = textAsString
+
+                return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(\\s*=.*)?;", RegexOption.MULTILINE)
+                    .find(text.trim())?.let {
+                        val (qualifier, type, name, constValue) = it.destructured
+                        var (isConst, isUniform, isVarying) = arrayOf(false, false, false)
+                        when (qualifier) {
+                            "const" -> isConst = true
+                            "uniform" -> isUniform = true
+                            "varying" -> isVarying = true
+                        }
+                        GlslVar(GlslType.from(type), name, text, isConst, isUniform, isVarying, lineNumber, comments)
+                    }
+            }
+
+            fun asSpecialOrNull(): GlslOther? {
+                val text = textAsString
+                return Regex("^(precision)\\s+.*;", RegexOption.MULTILINE)
+                    .find(text.trim())?.let {
+                        val (keyword) = it.destructured
+                        GlslOther(keyword, text, lineNumber, comments)
+                    }
+            }
+
+            fun copyFrom(other: Statement): ParseState {
+                appendText(other.textAsString)
+                lineNumber = other.lineNumber
+                comments.addAll(other.comments)
+                return this
             }
 
             fun isEmpty(): Boolean = textAsString.isEmpty() && comments.isEmpty()
         }
 
+        private class UnidentifiedStatement(
+            context: Context,
+            recipientOfNextComment: Statement? = null
+        ) : Statement(context, recipientOfNextComment) {
+            val tokensSoFar = mutableListOf<String>()
+
+            override fun visitLeftParen(): ParseState {
+                return if (context.outputEnabled && braceNestLevel == 0 && !tokensSoFar.contains("=")) {
+                    val fn = Function(tokensSoFar, context)
+                    fn.copyFrom(this)
+                    fn.appendText("(")
+                    fn.Params()
+                } else {
+                    super.visitLeftParen()
+                }
+            }
+
+            override fun visitText(value: String): ParseState {
+                return if (value == "struct") {
+                    Struct(context)
+                        .copyFrom(this).apply { appendText(value) }
+                } else {
+                    if (context.outputEnabled && value.isNotBlank())
+                        tokensSoFar.add(value.trim())
+                    super.visitText(value)
+                }
+            }
+
+            override fun createStatement(): GlslStatement {
+                return asSpecialOrNull()
+                    ?: asVarOrNull()
+                    ?: GlslOther("unknown", textAsString, lineNumber)
+            }
+        }
+
+        private class Struct(context: Context) : Statement(context) {
+            override fun createStatement(): GlslStatement =
+                asStructOrNull()
+                    ?: throw context.glslError("huh? couldn't find a struct in \"$textAsString\"")
+
+            fun asStructOrNull(): GlslStruct? {
+                val text = textAsString
+                return Regex("^(uniform\\s+)?struct\\s+(\\w+)\\s+\\{([^}]+)}(?:\\s+(\\w+)?)?;\$", RegexOption.MULTILINE)
+                    .find(text.trim())?.let {
+                        val (uniform, name, members, varName) = it.destructured
+                        val fields = mutableMapOf<String, GlslType>()
+
+                        members.replace(Regex("//.*"), "")
+                            .split(";")
+                            .forEach { member ->
+                                val trimmed = member.trim()
+                                if (trimmed.isEmpty()) return@forEach
+                                val parts = trimmed.split(Regex("\\s+"))
+                                when(parts.size) {
+                                    0 -> return@forEach
+                                    2 -> fields[parts[1]] = GlslType.from(parts[0])
+                                    else -> throw AnalysisException("illegal struct member \"$member\"", lineNumber)
+                                }
+                            }
+                        val varNameOrNull = if (varName.isBlank()) null else varName
+                        GlslStruct(name, fields, varNameOrNull, uniform.isNotBlank(),
+                            text, lineNumber, comments)
+                    }
+            }
+        }
+
+        private class Function(
+            tokensSoFar: List<String>,
+            context: Context
+        ) : Statement(context) {
+            val returnType: GlslType
+            val name: String
+            val params = arrayListOf<GlslParam>()
+
+            init {
+                if (tokensSoFar.size != 2)
+                    throw context.glslError("unexpected tokens $tokensSoFar in function")
+
+                returnType = GlslType.from(tokensSoFar[0])
+                name = tokensSoFar[1]
+            }
+
+            override fun createStatement(): GlslStatement =
+                GlslFunction(returnType, name, params, textAsString, lineNumber, emptySet(), comments)
+
+            inner class Params(
+                recipientOfNextComment: Statement? = null
+            ) : Statement(context, recipientOfNextComment) {
+                var qualifier: String? = null
+                var type: GlslType? = null
+                var name: String? = null
+
+                override fun visitText(value: String): ParseState {
+                    val trimmed = value.trim()
+                    if (trimmed.isNotEmpty()) {
+                        if (qualifier == null && (trimmed == "in" || trimmed == "out" || trimmed == "inout")) {
+                            qualifier = trimmed
+                        } else if (type == null) {
+                            type = GlslType.from(trimmed)
+                        } else if (name == null) {
+                            name = trimmed
+                        } else {
+                            throw context.glslError("Unexpected token \"$trimmed\".")
+                        }
+                    }
+
+                    return super.visitText(value)
+                }
+
+                override fun visitComma(): ParseState {
+                    addParam()
+                    appendText(",")
+                    this@Function.appendText(textAsString)
+                    return Params(this)
+                }
+
+                override fun visitRightParen(): ParseState {
+                    addParam()
+                    appendText(")")
+                    this@Function.appendText(textAsString)
+                    return this@Function
+                }
+
+                override fun createStatement(): GlslStatement {
+                    error("huh?")
+                }
+
+                fun addParam() {
+                    val type = type
+                    val name = name
+
+                    if (type == GlslType.Void) return
+                    if (name == null && type == null) return
+
+                    if (type == null) {
+                        throw context.glslError("No type for parameter in ${this@Function.name}().")
+                    } else if (name == null) {
+                        throw context.glslError("No name for parameter in ${this@Function.name}().")
+                    }
+
+                    params.add(GlslParam(
+                        name,
+                        type,
+                        isIn = qualifier == null || qualifier == "in" || qualifier == "inout",
+                        isOut = qualifier == "out" || qualifier == "inout",
+                        lineNumber = lineNumber,
+                        comments = comments
+                    ))
+                }
+            }
+        }
+
         private class Comment(
             context: Context,
-            val parentParseState: ParseState,
+            val recipientOfComment: ParseState,
             val nextParseState: ParseState
         ) : ParseState(context) {
             val commentText = StringBuilder()
@@ -285,8 +461,8 @@ class GlslAnalyzer(private val plugins: Plugins) {
             }
 
             override fun visitNewline(): ParseState {
-                parentParseState.addComment(commentText.toString())
-                parentParseState.visitText("\n")
+                recipientOfComment.addComment(commentText.toString())
+                recipientOfComment.visitText("\n")
                 return nextParseState
             }
         }
@@ -437,69 +613,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
         }
     }
 
-    data class GlslStatement(
-        val text: String,
-        val comments: List<String> = emptyList(),
-        val lineNumber: Int? = null
-    ) {
-        fun asSpecialOrNull(): GlslCode.GlslOther? {
-            return Regex("^(precision)\\s+.*;", RegexOption.MULTILINE)
-                .find(text.trim())?.let {
-                    val (keyword) = it.destructured
-                    GlslCode.GlslOther(keyword, text, lineNumber, comments)
-                }
-        }
-
-        fun asStructOrNull(): GlslCode.GlslStruct? {
-            return Regex("^(uniform\\s+)?struct\\s+(\\w+)\\s+\\{([^}]+)}(?:\\s+(\\w+)?)?;\$", RegexOption.MULTILINE)
-                .find(text.trim())?.let {
-                    val (uniform, name, members, varName) = it.destructured
-                    val fields = mutableMapOf<String, GlslType>()
-
-                    members.replace(Regex("//.*"), "")
-                        .split(";")
-                        .forEach { member ->
-                            val trimmed = member.trim()
-                            if (trimmed.isEmpty()) return@forEach
-                            val parts = trimmed.split(Regex("\\s+"))
-                            when(parts.size) {
-                                0 -> return@forEach
-                                2 -> fields[parts[1]] = GlslType.from(parts[0])
-                                else -> throw AnalysisException("illegal struct member \"$member\"", lineNumber ?: -1)
-                            }
-                        }
-                    val varNameOrNull = if (varName.isBlank()) null else varName
-                    GlslCode.GlslStruct(name, fields, varNameOrNull, uniform.isNotBlank(), text, lineNumber, comments)
-                }
-        }
-
-        fun asVarOrNull(): GlslVar? {
-            // If there are curly braces it must be a function.
-            if (text.contains("{")) return null
-
-            return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(\\s*=.*)?;", RegexOption.MULTILINE)
-                .find(text.trim())?.let {
-                    val (qualifier, type, name, constValue) = it.destructured
-                    var (isConst, isUniform, isVarying) = arrayOf(false, false, false)
-                    when (qualifier) {
-                        "const" -> isConst = true
-                        "uniform" -> isUniform = true
-                        "varying" -> isVarying = true
-                    }
-                    GlslVar(GlslType.from(type), name, text, isConst, isUniform, isVarying, lineNumber, comments)
-                }
-        }
-
-        fun asFunctionOrNull(globalVars: Set<String> = emptySet()): GlslFunction? {
-            return Regex("(\\w+)\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*(\\{[\\s\\S]*})", RegexOption.MULTILINE)
-                .find(text.trim())?.let {
-                    val (returnType, name, params, body) = it.destructured
-                    GlslFunction(GlslType.from(returnType), name, params, text, lineNumber, globalVars, comments)
-                }
-        }
-    }
-
     companion object {
-        val wordRegex = Regex("([A-Za-z][A-Za-z0-9_]*)")
+        private val wordRegex = Regex("([A-Za-z][A-Za-z0-9_]*)")
     }
 }

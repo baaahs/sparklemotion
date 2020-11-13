@@ -18,10 +18,11 @@ abstract class GlContext(
     private var viewport: List<Int> = emptyList()
     private val maxTextureUnit = 31 // TODO: should be gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS)
 
-    private val textureUnits = mutableMapOf<Any, TextureUnit>()
+    protected val textureUnits = mutableMapOf<Any, TextureUnit>()
     private var activeTextureUnit: TextureUnit? = null
 
     private var activeProgram: GlslProgram? = null
+    private var activeFrameBuffer: FrameBuffer? = null
     private var activeRenderBuffer: RenderBuffer? = null
 
     class Stats {
@@ -71,44 +72,37 @@ abstract class GlContext(
         }
     }
 
-    fun createRenderBuffer(): RenderBuffer {
-        val frameBuffer = check { createFramebuffer() }
-        val renderBuffer = check { createRenderbuffer() }
-
-        return RenderBuffer(frameBuffer, renderBuffer)
+    fun createFrameBuffer(): FrameBuffer {
+        return FrameBuffer(check { createFramebuffer() })
     }
 
-    inner class RenderBuffer(
-        private val framebuffer: Framebuffer,
-        private val renderbuffer: Renderbuffer
-    ) {
-        var curRenderbufferStorageArgs = emptyList<Any>()
-        var curFramebufferRenderbufferArgs = emptyList<Any>()
+    fun createRenderBuffer(): RenderBuffer {
+        return RenderBuffer(check { createRenderbuffer() })
+    }
 
-        fun bind(
-            internalformat: Int, width: Int, height: Int,
-            attachment: Int, renderbuffertarget: Int
-        ) {
-            if (activeRenderBuffer != this) {
+    inner class FrameBuffer(private val framebuffer: Framebuffer) {
+        private val curRenderBuffers = mutableMapOf<Int, RenderBuffer>()
+
+        fun bind() {
+            if (activeFrameBuffer != this) {
                 check { bindFramebuffer(GL_FRAMEBUFFER, framebuffer) }
-                check { bindRenderbuffer(GL_RENDERBUFFER, renderbuffer) }
-                activeRenderBuffer = this
+                activeFrameBuffer = this
             }
+        }
 
-            val newRenderbufferStorageArgs = listOf(internalformat, width, height)
-            if (newRenderbufferStorageArgs != curRenderbufferStorageArgs) {
-                check { renderbufferStorage(GL_RENDERBUFFER, internalformat, width, height) }
-                curRenderbufferStorageArgs = newRenderbufferStorageArgs
+        fun attach(renderBuffer: RenderBuffer, attachment: Int) {
+            bind()
+
+            if (curRenderBuffers[attachment] != renderBuffer) {
+                check { framebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, renderBuffer.renderbuffer) }
+                curRenderBuffers[attachment] = renderBuffer
             }
+        }
 
-            val newFramebufferRenderbufferArgs = listOf(attachment, renderbuffertarget)
-            if (newFramebufferRenderbufferArgs != curFramebufferRenderbufferArgs) {
-                check { renderbufferStorage(GL_RENDERBUFFER, internalformat, width, height) }
-                curFramebufferRenderbufferArgs = newFramebufferRenderbufferArgs
-                check { framebufferRenderbuffer(GL_FRAMEBUFFER, attachment, renderbuffertarget, renderbuffer) }
-            }
-
+        fun check() {
             if (checkForErrors) {
+                bind()
+
                 val status = check { checkFramebufferStatus(GL_FRAMEBUFFER) }
                 if (status != GL_FRAMEBUFFER_COMPLETE) {
                     logger.warn { "FrameBuffer huh? $status" }
@@ -117,27 +111,84 @@ abstract class GlContext(
         }
 
         fun release() {
-            if (activeRenderBuffer == this) {
-                check { bindRenderbuffer(GL_RENDERBUFFER, null) }
+            if (activeFrameBuffer == this) {
                 check { bindFramebuffer(GL_FRAMEBUFFER, null) }
             }
 
             check { deleteFramebuffer(framebuffer) }
+            curRenderBuffers.values.forEach { it.release() }
+        }
+
+        // This attempts to work around readBuffer() not existing in Kgl (or on Android).
+        // Temporarily attach the renderbuffer as the primary color buffer.
+        fun <T> withRenderBufferAsAttachment0(renderBuffer: RenderBuffer, fn: () -> T): T {
+            bind()
+
+            val attachment = GL_COLOR_ATTACHMENT0
+            val priorAttachment0 = curRenderBuffers[attachment]
+            return if (priorAttachment0 != null && priorAttachment0 != renderBuffer) {
+                check { framebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, renderBuffer.renderbuffer) }
+                curRenderBuffers[attachment] = renderBuffer
+
+                try {
+                    fn()
+                } finally {
+                    check { framebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, priorAttachment0.renderbuffer) }
+                    curRenderBuffers[attachment] = priorAttachment0
+                }
+            } else {
+                fn()
+            }
+        }
+    }
+
+    inner class RenderBuffer(internal val renderbuffer: Renderbuffer) {
+        var curInternalFormat = -1
+        var curWidth = -1
+        var curHeight = -1
+
+        fun bind() {
+            if (activeRenderBuffer != this) {
+                check { bindRenderbuffer(GL_RENDERBUFFER, renderbuffer) }
+                activeRenderBuffer = this
+            }
+        }
+
+        fun storage(internalformat: Int, width: Int, height: Int) {
+            bind()
+
+            if (internalformat != curInternalFormat
+                || width != curWidth
+                || height != curHeight
+            ) {
+                check { renderbufferStorage(GL_RENDERBUFFER, internalformat, width, height) }
+
+                curInternalFormat = internalformat
+                curWidth = width
+                curHeight = height
+            }
+        }
+
+        fun readPixels(x: Int, y: Int, width: Int, height: Int, format: Int, type: Int, buffer: Buffer, offset: Int = 0) {
+            check { readPixels(x, y, width, height, format, type, buffer, offset) }
+        }
+
+        fun release() {
             check { deleteRenderbuffer(renderbuffer) }
         }
     }
 
     fun getTextureUnit(key: Any): TextureUnit {
-        return textureUnits[key] ?: allocTextureUnit().also { textureUnits[key] = it }
+        return textureUnits[key] ?: allocTextureUnit(key).also { textureUnits[key] = it }
     }
 
-    private fun allocTextureUnit(): TextureUnit {
+    private fun allocTextureUnit(key: Any): TextureUnit {
         val nextTextureUnit = textureUnits.size
         check(nextTextureUnit <= maxTextureUnit) { "too many texture units" }
-        return TextureUnit(nextTextureUnit)
+        return TextureUnit(key, nextTextureUnit)
     }
 
-    inner class TextureUnit(private val unitNumber: Int) {
+    inner class TextureUnit(private val key: Any, private val unitNumber: Int) {
         var boundTexture: Texture? = null
 
         private fun activate() {
@@ -149,7 +200,7 @@ abstract class GlContext(
         }
 
         fun bindTexture(texture: Texture) {
-            if (boundTexture !== texture) {
+            if (boundTexture != texture) {
                 activate()
                 stats.bindTexture++
                 check { bindTexture(GL_TEXTURE_2D, texture) }
@@ -172,6 +223,13 @@ abstract class GlContext(
         fun setUniform(uniform: Uniform) {
             uniform.set(unitNumber)
         }
+
+        fun release() {
+            textureUnits.remove(key)
+        }
+    }
+
+    open fun ensureResultBufferCanContainFloats() {
     }
 
     fun <T> noCheck(fn: Kgl.() -> T): T {
@@ -213,6 +271,11 @@ abstract class GlContext(
     companion object {
         private val logger = Logger("GlslContext")
 
+        const val GL_RGBA8 = 0x8058
+
+        const val GL_R32F = 0x822E
+        const val GL_RG32F = 0x8230
         const val GL_RGB32F = 0x8815
+        const val GL_RGBA32F = 0x8814
     }
 }

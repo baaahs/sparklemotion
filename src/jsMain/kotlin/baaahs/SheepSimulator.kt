@@ -4,7 +4,7 @@ import baaahs.client.WebClient
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
@@ -24,7 +24,7 @@ import info.laht.threekt.math.Vector3
 import kotlinx.coroutines.*
 import kotlin.js.Date
 
-class SheepSimulator(val model: Model<*>) {
+class SheepSimulator(val model: Model) {
     @Suppress("unused")
     val facade = Facade()
 
@@ -55,7 +55,6 @@ class SheepSimulator(val model: Model<*>) {
         }
     }
 
-    val glslContext = GlBase.manager.createContext()
     val clock = JsClock()
 
     val plugins = Plugins.safe() + BeatLinkPlugin(bridgeClient.beatSource, clock)
@@ -68,7 +67,7 @@ class SheepSimulator(val model: Model<*>) {
         fs,
         PermissiveFirmwareDaddy(),
         bridgeClient.soundAnalyzer,
-        renderEngine = RenderEngine(glslContext, model),
+        renderManager = RenderManager(model) { GlBase.manager.createContext() },
         pinkyMainDispatcher = Dispatchers.Main,
         plugins = plugins
     )
@@ -105,7 +104,7 @@ class SheepSimulator(val model: Model<*>) {
             val vizPanel = visualizer.addSurface(simSurface.surfaceGeometry)
             vizPanel.vizPixels = VizPixels(vizPanel, simSurface.pixelPositions)
 
-            val brain = Brain(simSurface.brainId.uuid, network, vizPanel.vizPixels ?: NullPixels)
+            val brain = Brain(simSurface.brainId.uuid, network, vizPanel.vizPixels ?: NullPixels, model)
             brains.add(brain)
 
             brainScope.launch { randomDelay(1000); brain.run() }

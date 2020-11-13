@@ -46,7 +46,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
         fs.saveFile(file, imageData)
     }
 
-    suspend fun loadMappingData(model: Model<*>): MappingResults {
+    suspend fun loadMappingData(model: Model): MappingResults {
         val sessions = arrayListOf<MappingSession>()
         val path = fs.resolve("mapping", model.name)
         fs.listFiles(path).forEach { dir ->
@@ -84,7 +84,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun saveShow(file: Fs.File, show: Show) {
-        file.write(plugins.json.encodeToString(Show.serializer(), show), true)
+        file.write(plugins.json.encodeToString(ShowMigrator, show), true)
     }
 
     fun resolve(path: String): Fs.File = fs.resolve(path)

@@ -107,6 +107,6 @@ class CollectingVisitor : MutableShowVisitor {
     }
 
     override fun visit(dataSource: DataSource) {
-        items.add("Data source ${dataSource.dataSourceName}")
+        items.add("Data source ${dataSource.title}")
     }
 }

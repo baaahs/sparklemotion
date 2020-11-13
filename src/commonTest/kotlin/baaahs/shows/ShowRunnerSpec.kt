@@ -1,19 +1,15 @@
 import baaahs.*
 import baaahs.fixtures.FixtureManager
 import baaahs.gadgets.ColorPicker
-import baaahs.geom.Vector3F
 import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.glsl.Shaders
 import baaahs.mapper.Storage
-import baaahs.model.Model
-import baaahs.model.ModelInfo
-import baaahs.model.MovingHead
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
-import baaahs.shaders.FakeFixture
+import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableShow
@@ -39,9 +35,9 @@ object ShowRunnerSpec : Spek({
         }
 
         val fakeGlslContext by value { FakeGlContext() }
-        val model by value { TestModel() }
+        val model by value { TestModel }
         val autoWirer by value { AutoWirer(Plugins.safe()) }
-        val fixtures by value { listOf(FakeFixture(100)) }
+        val fixtures by value { listOf(fakeFixture(100)) }
         val mutableShow by value {
             MutableShow("test show") {
                 addPatch(
@@ -79,24 +75,24 @@ object ShowRunnerSpec : Spek({
         }
         val testCoroutineContext by value { TestCoroutineContext("Test") }
         val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0), testCoroutineContext) }
-        val renderEngine by value { RenderEngine(fakeGlslContext, ModelInfo.Empty) }
-        val fixtureManager by value { FixtureManager(renderEngine) }
+        val renderManager by value { RenderManager(TestModel) { fakeGlslContext } }
+        val fixtureManager by value { FixtureManager(renderManager) }
         val stageManager by value {
             val fs = FakeFs()
             StageManager(
-                Plugins.safe(), renderEngine, pubSub, Storage(fs, Plugins.safe()), fixtureManager, FakeDmxUniverse(),
+                Plugins.safe(), renderManager, pubSub, Storage(fs, Plugins.safe()), fixtureManager, FakeDmxUniverse(),
                 MovingHeadManager(fs, pubSub, emptyList()), FakeClock(), model, testCoroutineContext
             )
         }
 
-        val fakeProgram by value { fakeGlslContext.programs[1] }
+        val fakeProgram by value { fakeGlslContext.programs.only("program") }
 
         val addControls by value { {} }
 
         beforeEachTest {
             addControls()
             stageManager.switchTo(show, showState)
-            fixtureManager.fixturesChanged(fixtures.map { FakeFixtureReceiver(it) {} }, emptyList())
+            fixtureManager.fixturesChanged(fixtures, emptyList())
             stageManager.renderAndSendNextFrame()
         }
 
@@ -154,10 +150,3 @@ object ShowRunnerSpec : Spek({
         }
     }
 })
-
-class TestModel : Model<Model.Surface>() {
-    override val name: String = "Test Model"
-    override val movingHeads: List<MovingHead> = emptyList()
-    override val allSurfaces: List<Surface> = emptyList()
-    override val geomVertices: List<Vector3F> = emptyList()
-}

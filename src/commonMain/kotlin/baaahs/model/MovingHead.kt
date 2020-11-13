@@ -3,11 +3,17 @@ package baaahs.model
 import baaahs.Color
 import baaahs.Dmx
 import baaahs.dmx.Shenzarpy
+import baaahs.fixtures.DeviceType
+import baaahs.fixtures.MovingHeadDevice
 import baaahs.geom.Vector3F
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class MovingHead(val name: String, val origin: Vector3F/*, val heading: Vector3F*/) {
+class MovingHead(
+    override val name: String,
+    override val description: String,
+    val origin: Vector3F
+    /*, val heading: Vector3F*/
+) : Model.Entity {
     enum class ColorMode {
         ColorWheel,
         RGB,
@@ -93,4 +99,7 @@ data class MovingHead(val name: String, val origin: Vector3F/*, val heading: Vec
         val x: Int,
         val y: Int
     )
+
+    override val deviceType: DeviceType
+        get() = MovingHeadDevice
 }

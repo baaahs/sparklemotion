@@ -18,9 +18,6 @@ object Topics {
     val pinkyState =
         PubSub.Topic("pinkyState", PinkyState.serializer())
 
-    val movingHeads =
-        PubSub.Topic("movingHeads", ListSerializer(MovingHead.serializer()))
-
     val movingHeadPresets =
         PubSub.Topic(
             "movingHeadPresets",

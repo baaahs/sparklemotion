@@ -1,12 +1,12 @@
 package baaahs.gl.render
 
-import baaahs.BrainId
 import baaahs.Color
-import baaahs.Pixels
+import baaahs.TestModel
 import baaahs.TestModelSurface
-import baaahs.fixtures.AnonymousFixture
+import baaahs.fixtures.ColorResultType
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.IdentifiedFixture
+import baaahs.fixtures.NullTransport
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
@@ -14,9 +14,10 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
-import baaahs.glsl.Shaders.cylindricalProjection
-import baaahs.model.ModelInfo
+import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
+import baaahs.show.Shader
+import baaahs.show.ShaderType
 import baaahs.shows.FakeShowPlayer
 import kotlin.math.abs
 import kotlin.random.Random
@@ -37,15 +38,15 @@ class RenderEngineTest {
     }
 
     private lateinit var glContext: GlContext
-    private lateinit var renderEngine: RenderEngine
+    private lateinit var renderEngine: ModelRenderEngine
     private lateinit var fakeShowPlayer: FakeShowPlayer
 
     @BeforeTest
     fun setUp() {
         if (glslAvailable()) {
             glContext = GlBase.manager.createContext()
-            renderEngine = RenderEngine(glContext, ModelInfoForTest)
-            fakeShowPlayer = FakeShowPlayer(glContext)
+            renderEngine = ModelRenderEngine(glContext, TestModel, PixelArrayDevice)
+            fakeShowPlayer = FakeShowPlayer()
         }
     }
 
@@ -73,15 +74,15 @@ class RenderEngineTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val fixtureRenderPlan = renderEngine.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val renderTarget = renderEngine.addFixture(fakeSurface()).apply { this.program = glslProgram }
 
         renderEngine.draw()
 
-        expectColor(listOf(
+        expectColor(
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        )) { fixtureRenderPlan.pixels.toList() }
+        ) { renderTarget.colors.toList() }
     }
 
     @Test
@@ -92,9 +93,7 @@ class RenderEngineTest {
             /**language=glsl*/
             """
             uniform float time;
-            
-            // SPARKLEMOTION GADGET: Slider {}
-            uniform float blue;
+            uniform float blue; // @@Slider
             
             void main() {
                 gl_FragColor = vec4(gl_FragCoord.xy, blue, 1.);
@@ -102,29 +101,29 @@ class RenderEngineTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val fixtureRenderPlan = renderEngine.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
+        val renderTarget = renderEngine.addFixture(fakeSurface()).apply { this.program = glslProgram }
 
-        fakeShowPlayer.getGadget<Slider>("glsl_in_blue").value = .1f
-        fakeShowPlayer.drawFrame()
+        fakeShowPlayer.getGadget<Slider>("blueSlider").value = .1f
+        renderEngine.draw()
 
-        expectColor(listOf(
+        expectColor(
             Color(0f, .1f, .1f),
             Color(.2f, .3f, .1f),
             Color(.4f, .5f, .1f)
-        )) { fixtureRenderPlan.pixels.toList() }
+        ) { renderTarget.colors.toList() }
 
-        fakeShowPlayer.getGadget<Slider>("glsl_in_blue").value = .2f
-        fakeShowPlayer.drawFrame()
+        fakeShowPlayer.getGadget<Slider>("blueSlider").value = .2f
+        renderEngine.draw()
 
-        expectColor(listOf(
+        expectColor(
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .5f, .2f)
-        )) { fixtureRenderPlan.pixels.toList() }
+        ) { renderTarget.colors.toList() }
     }
 
     @Test
-    fun testRenderingWithUnmappedPixels() {
+    fun testRenderingWithMultipleFixtures() {
         if (!glslAvailable()) return
 
         val program =
@@ -138,32 +137,28 @@ class RenderEngineTest {
 
         val glslProgram = compileAndBind(program)
 
-        val fixtureRenderPlan1 = renderEngine.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
-        val fixtureRenderPlan2 = renderEngine.addFixture(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
-        val fixtureRenderPlan3 = renderEngine.addFixture(anonymousSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val renderTarget1 = renderEngine.addFixture(fakeSurface("s1")).apply { this.program = glslProgram }
+        val renderTarget2 = renderEngine.addFixture(fakeSurface("s2", 2)).apply { this.program = glslProgram }
+        val renderTarget3 = renderEngine.addFixture(fakeSurface("s3")).apply { this.program = glslProgram }
 
         renderEngine.draw()
 
-        expectColor(listOf(
+        expectColor(
             Color(0f, .1f, .5f),
             Color(.2f, .3f, .5f),
             Color(.4f, .5f, .5f)
-        )) { fixtureRenderPlan1.pixels.toList() }
+        ) { renderTarget1.colors.toList() }
 
-        // Interpolation between vertex 0 and the surface's center.
-        expectColor(listOf(
-            Color(.6f, .6f, .5f),
-            Color(.651f, .651f, .5f),
-            Color(.7f, .7f, .5f)
-        )) { fixtureRenderPlan2.pixels.toList() }
+        expectColor(
+            Color(0f, .1f, .5f),
+            Color(.2f, .3f, .5f)
+        ) { renderTarget2.colors.toList() }
 
-        // TODO: this is wrong (and flaky); it depends on LinearModelSpaceUvTranslator picking a random
-        //       x,y,x coord in [0..100], which is usually > 1.
-//        expect(listOf(
-//            Color(1f, 1f, .5f),
-//            Color(1f, 1f, .5f),
-//            Color(1f, 1f, .5f)
-//        )) { fixtureRenderPlan3.pixels.toList() }
+        expectColor(
+            Color(0f, .1f, .5f),
+            Color(.2f, .3f, .5f),
+            Color(.4f, .5f, .5f)
+        ) { renderTarget3.colors.toList() }
     }
 
     @Ignore @Test // TODO: Per-surface uniform control TBD
@@ -184,27 +179,27 @@ class RenderEngineTest {
 
         val glslProgram = compileAndBind(program)
 
-        val fixtureRenderPlan1 = renderEngine.addFixture(surfaceWithThreePixels()).apply { this.program = glslProgram }
-        val fixtureRenderPlan2 = renderEngine.addFixture(identifiedSurfaceWithThreeUnmappedPixels()).apply { this.program = glslProgram }
+        val renderTarget1 = renderEngine.addFixture(fakeSurface("s1")).apply { this.program = glslProgram }
+        val renderTarget2 = renderEngine.addFixture(fakeSurface("s2")).apply { this.program = glslProgram }
 
         // TODO: yuck, let's not do this [first part]
-//        fixtureRenderPlan1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
-//        fixtureRenderPlan2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
+//        renderTarget1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
+//        renderTarget2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
 
         renderEngine.draw()
 
-        expectColor(listOf(
+        expectColor(
             Color(0f, .1f, .2f),
             Color(.2f, .3f, .2f),
             Color(.4f, .503f, .2f)
-        )) { fixtureRenderPlan1.pixels.toList() }
+        ) { renderTarget1.colors.toList() }
 
         // Interpolation between vertex 0 and the surface's center.
-        expectColor(listOf(
+        expectColor(
             Color(.6f, .6f, .3f),
             Color(.651f, .651f, .3f),
             Color(.7f, .7f, .3f)
-        )) { fixtureRenderPlan2.pixels.toList() }
+        ) { renderTarget2.colors.toList() }
     }
 
     @Test
@@ -214,7 +209,7 @@ class RenderEngineTest {
         // xxx.
         expect(listOf(
             Quad.Rect(1f, 0f, 2f, 3f)
-        )) { RenderEngine.mapFixturePixelsToRects(4, 4, createSurface("A", 3)) }
+        )) { ModelRenderEngine.mapFixturePixelsToRects(4, 4, createSurface("A", 3)) }
 
         // ...x
         // xxxx
@@ -223,71 +218,96 @@ class RenderEngineTest {
             Quad.Rect(0f, 3f, 1f, 4f),
             Quad.Rect(1f, 0f, 2f, 4f),
             Quad.Rect(2f, 0f, 3f, 2f)
-        )) { RenderEngine.mapFixturePixelsToRects(3, 4, createSurface("A", 7)) }
+        )) { ModelRenderEngine.mapFixturePixelsToRects(3, 4, createSurface("A", 7)) }
     }
 
-    private fun surfaceWithThreePixels(): IdentifiedFixture {
-        return IdentifiedFixture(
-            TestModelSurface("xyz"), 3, listOf(
-                Vector3F(0f, .1f, 0f),
-                Vector3F(.2f, .3f, 0f),
-                Vector3F(.4f, .5f, 0f)
-            )
+    private fun fakeSurface(name: String = "xyz", pixelCount: Int = 3): Fixture {
+        return Fixture(
+            TestModelSurface(name),
+            pixelCount,
+            /**
+             * e.g.:
+             *  Vector3F(0f, .1f, 0f),
+             *  Vector3F(.2f, .3f, 0f),
+             *  Vector3F(.4f, .5f, 0f)
+             */
+            (0 until pixelCount).map { i ->
+                val offset = i * .2f
+                Vector3F(0f + offset, .1f + offset, 0f)
+            },
+            PixelArrayDevice,
+            transport = NullTransport
         )
     }
 
-    private fun identifiedSurfaceWithThreeUnmappedPixels(): IdentifiedFixture {
-        return IdentifiedFixture(
-            TestModelSurface("zyx", vertices = listOf(
-                Vector3F(.6f, .6f, 0f),
-                Vector3F(.8f, .8f, 0f),
-                Vector3F(.6f, .8f, 0f),
-                Vector3F(.8f, .6f, 0f)
-            )), 3, null)
-    }
-
-    private fun anonymousSurfaceWithThreeUnmappedPixels(): AnonymousFixture {
-        return AnonymousFixture(BrainId("some-brain"), 3)
-    }
-
     private fun createSurface(name: String, pixelCount: Int): Fixture {
-        return IdentifiedFixture(
+        return Fixture(
             TestModelSurface(name), pixelCount,
-            (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) }
+            (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) },
+            PixelArrayDevice,
+            transport = NullTransport
         )
     }
 
     private fun compileAndBind(program: String): GlslProgram {
         val autoWirer = AutoWirer(Plugins.safe())
         val shader = GlslAnalyzer(Plugins.safe()).import(program)
-        return autoWirer
-            .autoWire(cylindricalProjection, shader)
+        val linkedPatch = autoWirer
+            .autoWire(directXyProjection, shader)
             .acceptSuggestedLinkOptions()
             .resolve()
             .openForPreview(autoWirer)!!
-            .compile(glContext) { id, dataSource ->
+        return renderEngine.compile(linkedPatch) { id, dataSource ->
+            if (dataSource is CorePlugin.GadgetDataSource<*>) {
+                fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
+            }
             dataSource.createFeed(fakeShowPlayer, autoWirer.plugins, id)
         }
     }
 
     // More forgiving color equality checking, allows each channel to be off by one.
-    fun expectColor(expected: List<Color>, actualFn: () -> List<Color>) {
+    fun expectColor(vararg expected: Color, actualFn: () -> List<Color>) {
         val actual = actualFn()
         val nearlyEqual = expected.zip(actual) { exp, act ->
             val diff = exp - act
             (diff.redI <= 1 && diff.greenI <= 1 && diff.blueI <= 1)
         }.all { it }
         if (!nearlyEqual) {
-            expect(expected, actualFn)
+            expect(expected.toList()) { actual }
         }
     }
 
     operator fun Color.minus(other: Color) =
         Color(abs(redI - other.redI), abs(greenI - other.greenI), abs(blueI - other.blueI), abs(alphaI - other.alphaI))
-
-    val ModelInfoForTest = ModelInfo.Empty
-
 }
 
-val FixtureRenderPlan.pixels: Pixels
-    get() = renderResult as Pixels
+private val directXyProjection = Shader("Direct XY Projection", ShaderType.Projection,
+    /**language=glsl*/
+    """
+        // Direct XY Projection
+        // !SparkleMotion:internal
+
+        uniform sampler2D pixelCoordsTexture;
+
+        struct ModelInfo {
+            vec3 center;
+            vec3 extents;
+        };
+        uniform ModelInfo modelInfo;
+
+        vec2 project(vec3 pixelLocation) {
+            return vec2(pixelLocation.x, pixelLocation.y);
+        }
+
+        vec2 mainProjection(vec2 rasterCoord) {
+            int rasterX = int(rasterCoord.x);
+            int rasterY = int(rasterCoord.y);
+            
+            vec3 pixelCoord = texelFetch(pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
+            return project(pixelCoord);
+        }
+    """.trimIndent()
+)
+
+val RenderTarget.colors: ColorResultType.ColorResultView
+    get() = PixelArrayDevice.getColorResults(this.resultViews)

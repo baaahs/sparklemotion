@@ -3,10 +3,8 @@ package baaahs
 import baaahs.api.ws.WebSocketRouter
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
-import baaahs.fixtures.IdentifiedFixture
-import baaahs.geom.Vector3F
 import baaahs.gl.glsl.CompilationException
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
 import baaahs.mapper.MappingResults
@@ -26,7 +24,7 @@ import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
 
 class Pinky(
-    val model: Model<*>,
+    val model: Model,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
     val beatSource: BeatSource,
@@ -36,7 +34,7 @@ class Pinky(
     soundAnalyzer: SoundAnalyzer,
     private val switchShowAfterIdleSeconds: Int? = 600,
     private val adjustShowAfterIdleSeconds: Int? = null,
-    renderEngine: RenderEngine,
+    renderManager: RenderManager,
     val plugins: Plugins,
     val pinkyMainDispatcher: CoroutineDispatcher
 ) : CoroutineScope, Network.UdpListener {
@@ -56,10 +54,10 @@ class Pinky(
     private val pubSub: PubSub.Server = PubSub.Server(httpServer, coroutineContext)
 //    private val gadgetManager = GadgetManager(pubSub)
     private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
-    internal val fixtureManager = FixtureManager(renderEngine)
+    internal val fixtureManager = FixtureManager(renderManager)
 
     var stageManager: StageManager = StageManager(
-        plugins, renderEngine, pubSub, storage, fixtureManager, dmxUniverse, movingHeadManager, clock, model,
+        plugins, renderManager, pubSub, storage, fixtureManager, dmxUniverse, movingHeadManager, clock, model,
         coroutineContext
     )
 
@@ -117,7 +115,7 @@ class Pinky(
 
     fun addSimulatedBrains() {
         val fakeAddress = object : Network.Address {}
-        val mappingInfos = (mappingResults as SessionMappingResults).brainData
+        val mappingInfos = (mappingResults.actualMappingResults as SessionMappingResults).brainData
         mappingInfos.forEach { (brainId, info) ->
             brainManager.foundBrain(
                 fakeAddress, BrainHelloMessage(brainId.uuid, info.surface.name, null, null),
@@ -149,7 +147,7 @@ class Pinky(
                 }
             }
             facade.notifyChanged()
-            facade.framerate.elapsed(elapsedMs.toInt())
+            facade.framerate.elapsed(elapsedMs)
 
             maybeChangeThingsIfUsersAreIdle()
 
@@ -229,8 +227,7 @@ class Pinky(
         if (!isStartedUp) return
 
         CoroutineScope(coroutineContext).launch {
-            val message = parse(bytes)
-            when (message) {
+            when (val message = parse(bytes)) {
                 is BrainHelloMessage -> brainManager.foundBrain(fromAddress, message)
                 is PingMessage -> brainManager.receivedPing(fromAddress, message)
                 is MapperHelloMessage -> {
@@ -281,22 +278,20 @@ class Pinky(
         }
 
         fun sendPixelData(fixture: Fixture) {
-            if (fixture is IdentifiedFixture) {
-                val pixelLocations = fixture.pixelLocations ?: return
+            if (fixture.modelEntity != null) {
+                val pixelLocations = fixture.pixelLocations
 
                 val out = ByteArrayWriter(fixture.name.length + fixture.pixelCount * 3 * 4 + 20)
                 out.writeByte(0)
                 out.writeString(fixture.name)
                 out.writeInt(fixture.pixelCount)
-                pixelLocations.forEach {
-                    (it ?: Vector3F(0f, 0f, 0f)).serialize(out)
-                }
+                pixelLocations.forEach { it.serialize(out) }
                 tcpConnection.send(out.toBytes())
             }
         }
 
         fun sendFrame(fixture: Fixture, colors: List<Color>) {
-            if (fixture is IdentifiedFixture) {
+            if (fixture.modelEntity != null) {
                 val out = ByteArrayWriter(fixture.name.length + colors.size * 3 + 20)
                 out.writeByte(1)
                 out.writeString(fixture.name)
@@ -350,8 +345,8 @@ class Pinky(
         val networkStats: NetworkStats
             get() = this@Pinky.networkStats
 
-        val brains: List<BrainInfo>
-            get() = this@Pinky.brainManager.brainInfos.values.toList()
+        val brains: List<BrainManager.BrainTransport>
+            get() = this@Pinky.brainManager.activeBrains.values.toList()
 
         val beatData: BeatData
             get() = this@Pinky.beatSource.getBeatData()
@@ -369,18 +364,6 @@ class Pinky(
 @Serializable
 data class PinkyConfig(
     val runningShowPath: String?
-)
-
-data class BrainId(val uuid: String)
-
-class BrainInfo(
-    val address: Network.Address,
-    val brainId: BrainId,
-    val fixture: Fixture,
-    val firmwareVersion: String?,
-    val idfVersion: String?,
-    val fixtureReceiver: ShowRunner.FixtureReceiver,
-    var hadException: Boolean = false
 )
 
 @Serializable

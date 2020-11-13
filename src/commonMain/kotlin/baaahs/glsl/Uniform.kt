@@ -23,7 +23,6 @@ class Uniform internal constructor(
     fun set(textureUnit: GlContext.TextureUnit) = textureUnit.setUniform(this)
 
     private fun <T> withProgram(fn: Kgl.() -> T): T {
-        glslProgram.gl.useProgram(glslProgram)
-        return glslProgram.gl.check(fn)
+        return glslProgram.withProgram(fn)
     }
 }

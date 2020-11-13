@@ -2,6 +2,7 @@ package baaahs.plugin
 
 import baaahs.Gadget
 import baaahs.app.ui.editor.PortLinkOption
+import baaahs.fixtures.DeviceType
 import baaahs.getBang
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -15,7 +16,9 @@ import kotlinx.serialization.modules.SerializersModule
 
 @Serializable
 data class PluginRef(
+    /** A unique ID for plugin. Should be lowercase alphanums and dots, like a package name. */
     val pluginId: String,
+    /** A unique ID for a resource within a plugin. Should be CamelCase alphanums, like a class name. */
     val resourceName: String,
     val pluginIdNotSpecified: Boolean = false
 ) {
@@ -46,6 +49,7 @@ class Plugins(plugins: List<Plugin>) {
 //        include(portRefModule)
         include(Control.serialModule)
         include(DataSource.serialModule)
+        include(DeviceType.serialModule)
 //            contextual(DataSource::class, DataSourceSerializer(this@Plugins))
     }
 

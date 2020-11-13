@@ -4,7 +4,8 @@ import baaahs.BrainShader
 import baaahs.Color
 import baaahs.Pixels
 import baaahs.fixtures.Fixture
-import baaahs.geom.Vector3F
+import baaahs.fixtures.NullTransport
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.test.expect
@@ -20,7 +21,7 @@ private fun <T : BrainShader.Buffer> send(srcBrainShader: BrainShader<T>, srcBuf
 
     @Suppress("UNCHECKED_CAST")
     val dstBrainShader: BrainShader<T> = srcBrainShader.idBrain.reader.parse(reader) as BrainShader<T>
-    val dstBuf = dstBrainShader.createBuffer(fixture)
+    val dstBuf = dstBrainShader.createBuffer(fixture.pixelCount)
     dstBuf.read(reader)
     return Pair(dstBrainShader, dstBuf)
 }
@@ -35,7 +36,7 @@ internal fun <T : BrainShader.Buffer> transmit(srcBuf: T, fixture: Fixture): T {
 internal fun <T : BrainShader.Buffer> render(srcBuf: T, fixture: Fixture): Pixels {
     val (dstBrainShader: BrainShader<T>, dstBuf) = send(srcBuf.brainShader as BrainShader<T>, srcBuf, fixture)
     val pixels = FakePixels(fixture.pixelCount)
-    val renderer = dstBrainShader.createRenderer(fixture)
+    val renderer = dstBrainShader.createRenderer()
     renderer.beginFrame(dstBuf, pixels.size)
     for (i in pixels.indices) {
         pixels[i] = renderer.draw(dstBuf, i)
@@ -47,10 +48,8 @@ internal fun <T : BrainShader.Buffer> render(srcBuf: T, fixture: Fixture): Pixel
 internal fun <T : BrainShader.Buffer> render(srcBrainShaderAndBuffer: Pair<BrainShader<T>, T>, fixture: Fixture): Pixels =
     render(srcBrainShaderAndBuffer.second, fixture)
 
-class FakeFixture(override val pixelCount: Int) : Fixture {
-    override val pixelLocations: List<Vector3F?>? get() = null
-    override fun describe(): String = "fake"
-}
+fun fakeFixture(pixelCount: Int) =
+    Fixture(null, pixelCount, emptyList(), PixelArrayDevice, "fake fixture", transport = NullTransport)
 
 class FakePixels(override val size: Int) : Pixels {
     private val buf = Array(size) { Color.BLACK }

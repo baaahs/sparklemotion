@@ -1,7 +1,6 @@
 package baaahs.shaders
 
 import baaahs.*
-import baaahs.fixtures.Fixture
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.math.min
@@ -49,17 +48,17 @@ class PixelBrainShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : 
         writer.writeByte(encoding.ordinal.toByte())
     }
 
-    override fun createBuffer(fixture: Fixture): Buffer {
-        val pixelCount = if (fixture.pixelCount == SparkleMotion.PIXEL_COUNT_UNKNOWN) {
-            SparkleMotion.DEFAULT_PIXEL_COUNT
-        } else {
-            fixture.pixelCount
-        }
+    override fun createBuffer(pixelCount: Int): Buffer {
+//        if (pixelCount == SparkleMotion.PIXEL_COUNT_UNKNOWN) {
+//            SparkleMotion.DEFAULT_PIXEL_COUNT
+//        } else {
+//            pixelCount
+//        }
 
         return encoding.createBuffer(this, pixelCount)
     }
 
-    override fun createRenderer(fixture: Fixture): BrainShader.Renderer<Buffer> = Renderer()
+    override fun createRenderer(): BrainShader.Renderer<Buffer> = Renderer()
 
     override fun readBuffer(reader: ByteArrayReader): Buffer {
         val incomingPixelCount = reader.readShort().toInt()

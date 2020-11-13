@@ -1,11 +1,8 @@
 package baaahs
 
 import baaahs.fixtures.FixtureManager
-import baaahs.gl.GlContext
-import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
-import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsServerBackend
@@ -17,7 +14,6 @@ import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.Surfaces
 import baaahs.show.buildEmptyShow
-import baaahs.show.live.ActiveSet
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -28,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
 
 class StageManager(
     plugins: Plugins,
-    private val renderEngine: RenderEngine,
+    private val renderManager: RenderManager,
     private val pubSub: PubSub.Server,
     private val storage: Storage,
     private val fixtureManager: FixtureManager,
@@ -40,8 +36,6 @@ class StageManager(
 ) : BaseShowPlayer(plugins, modelInfo) {
     val facade = Facade()
     private val autoWirer = AutoWirer(plugins)
-    override val glContext: GlContext
-        get() = renderEngine.gl
     private var showRunner: ShowRunner? = null
     private val gadgets: MutableMap<String, GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
@@ -115,7 +109,7 @@ class StageManager(
     ) {
         val newShowRunner = newShow?.let {
             val openShow = openShow(newShow, newShowState)
-            ShowRunner(newShow, newShowState, openShow, clock, renderEngine, fixtureManager, autoWirer)
+            ShowRunner(newShow, newShowState, openShow, clock, renderManager, fixtureManager, autoWirer)
         }
 
         showRunner?.release()
@@ -232,7 +226,7 @@ class StageManager(
             get() = this@StageManager.showRunner?.show
 
         val currentGlsl: Map<Surfaces, String>?
-            get() = this@StageManager.showRunner?.currentRenderPlan
+            get() = this@StageManager.fixtureManager.currentRenderPlan
                 ?.programs?.map { (patch, program) ->
                     patch.surfaces to program.fragShader.source
                 }?.associate { it }
@@ -263,9 +257,6 @@ class RefCounter : RefCounted {
 
     override fun onFullRelease() {
     }
-}
-
-class RenderPlan(val programs: List<Pair<LinkedPatch, GlslProgram>>, val activeSet: ActiveSet) {
 }
 
 @Serializable

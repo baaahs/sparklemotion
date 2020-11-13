@@ -5,8 +5,6 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.plugin.Plugins
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.shows.FakeGlContext
-import baaahs.shows.FakeKgl
 import baaahs.shows.FakeShowPlayer
 import org.spekframework.spek2.Spek
 import kotlin.test.expect
@@ -19,7 +17,7 @@ object ControlDisplaySpec : Spek({
         }
         val show by value { mutableShow.build(ShowBuilder()) }
 
-        val showPlayer by value { FakeShowPlayer(FakeGlContext(FakeKgl())) }
+        val showPlayer by value { FakeShowPlayer() }
         val autoWirer by value { AutoWirer(Plugins.safe()) }
         val showOpener by value { ShowOpener(autoWirer.glslAnalyzer, show, showPlayer) }
         val openShow by value { showOpener.openShow() }

@@ -4,27 +4,21 @@ import baaahs.geom.Vector3F
 import baaahs.getResource
 import baaahs.util.Logger
 
-abstract class ObjModel<T : Model.Surface>(val objResourceName: String) : Model<T>() {
+abstract class ObjModel(private val objResourceName: String) : Model() {
     override val movingHeads: List<MovingHead>
         get() = emptyList()
     override val geomVertices: List<Vector3F> get() = vertices
     lateinit var vertices: List<Vector3F>
-    lateinit var panels: List<T>
+    lateinit var surfaces: List<Surface>
 
-    val allPanels: List<T>
-        get() = panels
-    val partySide: List<T>
-        get() = panels.filter { panel -> Regex("P$").matches(panel.name) }
+    override val allSurfaces get() = surfaces
+    private val surfacesByName = mutableMapOf<String, Surface>()
 
-    override val allSurfaces get() = allPanels
-    lateinit var surfaceNeighbors: Map<T, List<T>>
-    private val surfacesByName = mutableMapOf<String, T>()
-
-    abstract fun createSurface(name: String, faces: List<Face>, lines: List<Line>): T
+    abstract fun createSurface(name: String, faces: List<Face>, lines: List<Line>): Surface
 
     open fun load() {
         val vertices: MutableList<Vector3F> = mutableListOf()
-        val panels: MutableList<T> = mutableListOf()
+        val panels: MutableList<Surface> = mutableListOf()
         var surfaceName: String? = null
         var faceVerts = mutableListOf<List<Int>>()
         var lines = mutableListOf<Line>()
@@ -84,20 +78,8 @@ abstract class ObjModel<T : Model.Surface>(val objResourceName: String) : Model<
 
         logger.debug { "${this::class.simpleName} has ${panels.size} panels and ${vertices.size} vertices" }
         this.vertices = vertices
-        this.panels = panels
-
-        fun neighborsOf(surface: T): List<T> {
-            return edgesBySurface[surface.name]
-                ?.flatMap { surfacesByEdge[it]?.toList() ?: emptyList() }
-                ?.filter { it != surface.name }
-                ?.map { surfacesByName[it]!! }
-                ?: emptyList()
-        }
-
-        surfaceNeighbors = allPanels.associateWith { neighborsOf(it) }
+        this.surfaces = panels
     }
-
-    fun neighborsOf(panel: T) = surfaceNeighbors[panel] ?: emptyList()
 
     companion object {
         val logger = Logger("ObjModel")

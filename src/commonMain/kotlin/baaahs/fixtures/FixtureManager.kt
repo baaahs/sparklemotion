@@ -1,35 +1,42 @@
 package baaahs.fixtures
 
-import baaahs.Pixels
 import baaahs.RenderPlan
-import baaahs.ShowRunner
+import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.render.FixtureRenderPlan
-import baaahs.gl.render.RenderEngine
+import baaahs.gl.patch.PatchResolver
+import baaahs.gl.render.RenderManager
+import baaahs.gl.render.RenderTarget
+import baaahs.show.live.ActiveSet
+import baaahs.timeSync
+import baaahs.util.Logger
 
 class FixtureManager(
-    private val renderEngine: RenderEngine
+    private val renderManager: RenderManager
 ) {
-    private val changedFixtures = mutableListOf<ShowRunner.FixturesChanges>()
-    private val fixtureRenderPlans: MutableMap<Fixture, FixtureRenderPlan> = hashMapOf()
-    private var totalFixtureReceivers = 0
+    private val changedFixtures = mutableListOf<FixturesChanges>()
+    private val renderTargets: MutableMap<Fixture, RenderTarget> = hashMapOf()
+    private var totalFixtures = 0
 
-    fun getFixtureRenderPlans_ForTestOnly(): Map<Fixture, FixtureRenderPlan> {
-        return fixtureRenderPlans
+    private var currentActiveSet: ActiveSet = ActiveSet(emptyList())
+    private var activeSetChanged = false
+    internal var currentRenderPlan: RenderPlan? = null
+
+    fun getRenderTargets_ForTestOnly(): Map<Fixture, RenderTarget> {
+        return renderTargets
     }
 
-    fun fixturesChanged(addedFixtures: Collection<ShowRunner.FixtureReceiver>, removedFixtures: Collection<ShowRunner.FixtureReceiver>) {
-        changedFixtures.add(ShowRunner.FixturesChanges(ArrayList(addedFixtures), ArrayList(removedFixtures)))
+    fun fixturesChanged(addedFixtures: Collection<Fixture>, removedFixtures: Collection<Fixture>) {
+        changedFixtures.add(FixturesChanges(addedFixtures.toList(), removedFixtures.toList()))
     }
 
-    fun requiresRemap(): Boolean {
+    private fun incorporateFixtureChanges(): Boolean {
         var anyChanges = false
 
         for ((added, removed) in changedFixtures) {
-            ShowRunner.logger.info { "ShowRunner surfaces changed! ${added.size} added, ${removed.size} removed" }
-            for (receiver in removed) removeReceiver(receiver)
-            for (receiver in added) addReceiver(receiver)
+            logger.info { "fixtures changed! ${added.size} added, ${removed.size} removed" }
+            for (fixture in removed) removeFixture(fixture)
+            for (fixture in added) addFixture(fixture)
             anyChanges = true
         }
         changedFixtures.clear()
@@ -37,63 +44,94 @@ class FixtureManager(
     }
 
     fun remap(renderPlan: RenderPlan) {
-        fixtureRenderPlans.forEach { (fixture, fixtureRenderPlan) ->
+        renderTargets.forEach { (fixture, renderTarget) ->
             renderPlan.programs.forEach { (patch: LinkedPatch, program: GlslProgram) ->
                 if (patch.matches(fixture)) {
-                    fixtureRenderPlan.useProgram(program)
+                    renderTarget.useProgram(program)
                 }
             }
         }
     }
 
-    fun clearRenderPlans() {
-        fixtureRenderPlans.values.forEach { it.release() }
+    fun clearRenderTargets() {
+        renderTargets.values.forEach { it.release() }
     }
 
     fun getFixtureCount(): Int {
-        return fixtureRenderPlans.size
+        return renderTargets.size
     }
 
     fun sendFrame() {
-        fixtureRenderPlans.values.forEach { fixtureRenderPlan ->
-//            if (shaderBuffers.size != 1) {
-//                throw IllegalStateException("Too many shader buffers for ${surface.describe()}: $shaderBuffers")
-//            }
+        renderTargets.values.forEach { renderTarget ->
+            // TODO(tom): The send might return an error, at which point this fixture should be nuked
+            // from the list of fixtures. I'm not quite sure the best way to do that so I'm leaving this note.
+            renderTarget.sendFrame()
+        }
+    }
 
-            fixtureRenderPlan.receivers.forEach { receiver ->
-                // TODO: The send might return an error, at which point this receiver should be nuked
-                // from the list of receivers for this fixture. I'm not quite sure the best way to do
-                // that so I'm leaving this note.
-                receiver.send(fixtureRenderPlan.renderResult as Pixels)
+    private fun addFixture(fixture: Fixture) {
+        renderTargets.getOrPut(fixture) {
+            logger.debug { "Adding fixture ${fixture.title}" }
+            renderManager.addFixture(fixture)
+                .also { totalFixtures++ }
+        }
+    }
+
+    private fun removeFixture(fixture: Fixture) {
+        renderTargets.remove(fixture)?.let { renderTarget ->
+            logger.debug { "Removing fixture ${fixture.title}" }
+            renderManager.removeRenderTarget(renderTarget)
+            renderTarget.release()
+            totalFixtures--
+        } ?: throw IllegalStateException("huh? can't remove unknown fixture $fixture")
+    }
+
+    fun activeSetChanged(activeSet: ActiveSet) {
+        if (activeSet != currentActiveSet) {
+            currentActiveSet = activeSet
+            activeSetChanged = true
+        }
+    }
+
+    fun maybeUpdateRenderPlans(feedResolver: FeedResolver): Boolean {
+        var remapFixtures = incorporateFixtureChanges()
+
+        // Maybe build new shaders.
+        if (this.activeSetChanged) {
+            val activeSet = currentActiveSet
+
+            val elapsedMs = timeSync {
+                val patchResolution = PatchResolver(renderTargets.values, activeSet)
+                currentRenderPlan = patchResolution.createRenderPlan(renderManager, feedResolver)
+            }
+
+            logger.info {
+                "New render plan created; ${currentRenderPlan?.programs?.size ?: 0} programs, " +
+                        "${getFixtureCount()} fixtures; took ${elapsedMs}ms"
+            }
+
+            remapFixtures = true
+            this.activeSetChanged = false
+        }
+
+        if (remapFixtures) {
+            clearRenderTargets()
+
+            currentRenderPlan?.let {
+                remap(it)
             }
         }
+
+        return remapFixtures
     }
 
-    private fun addReceiver(receiver: ShowRunner.FixtureReceiver) {
-        val fixture = receiver.fixture
-        val fixtureRenderPlan = fixtureRenderPlans.getOrPut(fixture) {
-            renderEngine.addFixture(fixture)
-        }
-        fixtureRenderPlan.receivers.add(receiver)
-
-        totalFixtureReceivers++
+    fun hasActiveRenderPlan(): Boolean {
+        return currentRenderPlan != null
     }
 
-    private fun removeReceiver(receiver: ShowRunner.FixtureReceiver) {
-        val fixture = receiver.fixture
-        val fixtureRenderPlan = fixtureRenderPlans[fixture]
-            ?: throw IllegalStateException("huh? no SurfaceBinder for $fixture")
+    data class FixturesChanges(val added: Collection<Fixture>, val removed: Collection<Fixture>)
 
-        if (!fixtureRenderPlan.receivers.remove(receiver)) {
-            throw IllegalStateException("huh? receiver not registered for $fixture")
-        }
-
-        if (fixtureRenderPlan.receivers.isEmpty()) {
-            renderEngine.removeFixture(fixtureRenderPlan)
-            fixtureRenderPlan.release()
-            fixtureRenderPlans.remove(fixture)
-        }
-
-        totalFixtureReceivers--
+    companion object {
+        private val logger = Logger<FixtureManager>()
     }
 }
