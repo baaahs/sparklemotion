@@ -3,6 +3,7 @@ package baaahs.plugin.beatlink
 import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.ShowPlayer
+import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
@@ -15,8 +16,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.Plugin
 import baaahs.plugin.PluginBuilder
 import baaahs.plugin.PluginContext
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.plugin.classSerializer
+import baaahs.show.*
 import baaahs.show.mutable.MutableDataSourcePort
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -28,6 +29,7 @@ class BeatLinkPlugin internal constructor(
 ) : Plugin {
     override val packageName: String = id
     override val title: String = "Beat Link"
+
     private val clock = pluginContext.clock
 
     override fun resolveDataSource(inputPort: InputPort): DataSource {
@@ -75,6 +77,16 @@ class BeatLinkPlugin internal constructor(
         TODO("Not yet implemented")
     }
 
+    override fun getAddControlMenuItems(): List<AddControlMenuItem> = listOf(
+        AddControlMenuItem("New BeatLink Control…", CommonIcons.BeatLinkControl) { mutableShow ->
+            MutableBeatLinkControl()
+        }
+    )
+
+    override fun getControlSerializers() =
+        listOf(
+            classSerializer(BeatLinkControl.serializer())
+        )
 
     @Serializable
     @SerialName("baaahs.BeatLink:BeatLink")

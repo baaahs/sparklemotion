@@ -6,6 +6,7 @@ import baaahs.app.ui.Editable
 import baaahs.camelize
 import baaahs.show.live.*
 import baaahs.show.mutable.*
+import baaahs.ui.Icon
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
@@ -32,6 +33,12 @@ interface Control : Editable {
         }
     }
 }
+
+data class AddControlMenuItem(
+    val label: String,
+    val icon: Icon,
+    val createControlFn: (mutableShow: MutableShow) -> MutableControl
+)
 
 @Serializable
 @SerialName("baaahs.Core:Gadget")

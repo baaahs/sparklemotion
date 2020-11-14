@@ -125,49 +125,18 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
             attrs.getContentAnchorEl = null
             attrs.anchorEl(showAddMenuForAnchorEl)
             attrs.open = true
-            attrs.onClose = { event, reason -> showAddMenuFor = null }
+            attrs.onClose = { _, _ -> showAddMenuFor = null }
 
-            menuItem {
-                attrs.onClickFunction = {
-                    appContext.openEditor(AddButtonToPanelBucket(panelBucket))
+            appContext.plugins.addControlMenuItems.forEach { addControlMenuItem ->
+                menuItem {
+                    attrs.onClickFunction = {
+                        val editIntent = AddControlToPanelBucket(panelBucket, addControlMenuItem.createControlFn)
+                        appContext.openEditor(editIntent)
+                    }
+
+                    listItemIcon { icon(addControlMenuItem.icon) }
+                    listItemText { +addControlMenuItem.label }
                 }
-
-                listItemIcon { icon(CommonIcons.Button) }
-                listItemText { +"New Button…" }
-            }
-
-            menuItem {
-                attrs.onClickFunction = {
-                    appContext.openEditor(AddButtonGroupToPanelBucket(panelBucket))
-                }
-
-                listItemIcon { icon(CommonIcons.ButtonGroup) }
-                listItemText { +"New Button Group…" }
-            }
-
-            menuItem {
-                attrs.disabled = true
-                attrs.onClickFunction = {}
-
-                listItemIcon { icon(CommonIcons.ColorPalette) }
-                listItemText { +"New Color Palette…" }
-            }
-
-            menuItem {
-                attrs.onClickFunction = {
-                    appContext.openEditor(AddVisualizerToPanelBucket(panelBucket))
-                }
-
-                listItemIcon { icon(CommonIcons.Visualizer) }
-                listItemText { +"New Visualizer…" }
-            }
-
-            menuItem {
-                attrs.disabled = true
-                attrs.onClickFunction = {}
-
-                listItemIcon { icon(CommonIcons.BeatLinkControl) }
-                listItemText { +"New BeatLink Control…" }
             }
         }
     }

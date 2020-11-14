@@ -6,8 +6,7 @@ import baaahs.fixtures.DeviceType
 import baaahs.getBang
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
-import baaahs.show.Control
-import baaahs.show.DataSource
+import baaahs.show.*
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
@@ -15,6 +14,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
 
 @Serializable
 data class PluginRef(
@@ -45,7 +46,7 @@ data class PluginRef(
 
 class Plugins private constructor(
     val pluginContext: PluginContext,
-    plugins: List<Plugin>
+    private val plugins: List<Plugin>
 ) {
     constructor(
         pluginBuilders: List<PluginBuilder>,
@@ -59,16 +60,33 @@ class Plugins private constructor(
 
     private val byPackage: Map<String, Plugin> = plugins.associateBy { it.packageName }
 
+    private val controlSerialModule = SerializersModule {
+        registerSerializers { getControlSerializers() }
+    }
+
+    private inline fun <reified T : Any> SerializersModuleBuilder.registerSerializers(
+        getSerializersFn: Plugin.() -> List<Plugin.ClassSerializer<out T>>
+    ) {
+        polymorphic(T::class) {
+            plugins.forEach { plugin ->
+                plugin.getSerializersFn().forEach { classSerializer ->
+                    classSerializer.register(this)
+                }
+            }
+        }
+    }
+
     val serialModule = SerializersModule {
         include(Gadget.serialModule)
-//        include(portRefModule)
-        include(Control.serialModule)
+        include(controlSerialModule)
         include(DataSource.serialModule)
         include(DeviceType.serialModule)
-//            contextual(DataSource::class, DataSourceSerializer(this@Plugins))
     }
 
     val json = Json { serializersModule = this@Plugins.serialModule }
+
+    val addControlMenuItems: List<AddControlMenuItem>
+        get() = plugins.flatMap { it.getAddControlMenuItems() }
 
     private fun findPlugin(pluginRef: PluginRef): Plugin {
         return byPackage[pluginRef.pluginId]
@@ -79,7 +97,7 @@ class Plugins private constructor(
         val pluginRef = PluginRef.from(name)
         return try {
             if (pluginRef.pluginIdNotSpecified) {
-                byPackage.values
+                plugins
                     .mapNotNull { it.resolveContentType(pluginRef.resourceName) }
                     .firstOrNull()
             } else {
@@ -92,7 +110,7 @@ class Plugins private constructor(
     }
 
     fun suggestContentTypes(inputPort: InputPort): Set<ContentType> {
-        return byPackage.values.map { plugin -> plugin.suggestContentTypes(inputPort) }.flatten().toSet()
+        return plugins.map { plugin -> plugin.suggestContentTypes(inputPort) }.flatten().toSet()
     }
 
     fun resolveDataSource(inputPort: InputPort): DataSource {
@@ -103,7 +121,7 @@ class Plugins private constructor(
         inputPort: InputPort,
         suggestedContentTypes: Set<ContentType> = emptySet()
     ): List<PortLinkOption> {
-        return byPackage.values.map { plugin ->
+        return plugins.map { plugin ->
             plugin.suggestDataSources(inputPort, suggestedContentTypes)
         }.flatten()
     }
@@ -151,7 +169,7 @@ class Plugins private constructor(
     }
 
     operator fun plus(pluginBuilder: PluginBuilder): Plugins {
-        return Plugins(pluginContext, byPackage.values + pluginBuilder.build(pluginContext))
+        return Plugins(pluginContext, plugins + pluginBuilder.build(pluginContext))
     }
 
     fun find(packageName: String): Plugin {
