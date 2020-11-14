@@ -1,6 +1,10 @@
 package baaahs.gl
 
+import baaahs.fixtures.DeviceTypeRenderPlan
+import baaahs.fixtures.ProgramRenderPlan
 import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.render.RenderTarget
 import org.spekframework.spek2.dsl.LifecycleAware
 import org.spekframework.spek2.dsl.Skip
 import org.spekframework.spek2.meta.*
@@ -23,6 +27,11 @@ fun GlslCode.GlslStatement.esc(lineNumbers: Boolean): String {
         buf.append(" # $lineNumber")
     return buf.toString()
 }
+
+fun renderPlanFor(
+    glslProgram: GlslProgram,
+    vararg renderTargets: RenderTarget
+) = DeviceTypeRenderPlan(listOf(ProgramRenderPlan(glslProgram, renderTargets.toList())))
 
 fun expectStatements(
     expected: List<GlslCode.GlslStatement>,

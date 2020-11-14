@@ -5,6 +5,7 @@ object DeadCodeEliminationDefeater {
     fun noDCE() {
         // Entry points to Kotlin code that are only called by JS:
         baaahs.sim.ui.Console(nuffin())
+        baaahs.sim.ui.GeneratedGlslPalette(nuffin())
         baaahs.visualizer.ui.VisualizerPanel(nuffin())
     }
 

@@ -1,11 +1,15 @@
 package baaahs.gl.render
 
 import baaahs.fixtures.DeviceType
+import baaahs.fixtures.DeviceTypeRenderPlan
 import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
 import baaahs.gl.data.Feed
 import baaahs.gl.data.PerPixelEngineFeed
+import baaahs.gl.glsl.FeedResolver
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.patch.LinkedPatch
 import baaahs.model.ModelInfo
 import baaahs.show.DataSource
 import baaahs.util.Logger
@@ -27,6 +31,7 @@ class ModelRenderEngine(
     var nextRectOffset: Int = 0
 
     private val renderTargets: MutableList<RenderTarget> = mutableListOf()
+    private var renderPlan: DeviceTypeRenderPlan? = null
 
     // TODO: These should probably be opened elsewhere.
     private val fixtureFeeds = gl.runInContext {
@@ -78,6 +83,11 @@ class ModelRenderEngine(
         renderTargetsToRemove.add(renderTarget)
     }
 
+    override fun compile(linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
+        logger.info { "Compiling ${linkedPatch.shaderInstance.shader.title} on ${deviceType::class.simpleName}"}
+        return super.compile(linkedPatch, feedResolver)
+    }
+
     override fun resolve(id: String, dataSource: DataSource): Feed? {
         return fixtureFeeds[dataSource]
     }
@@ -96,7 +106,7 @@ class ModelRenderEngine(
         }
     }
 
-    override fun prepare() {
+    override fun beforeFrame() {
         incorporateNewFixtures()
     }
 
@@ -108,13 +118,13 @@ class ModelRenderEngine(
 
     override fun render() {
         gl.setViewport(0, 0, arrangement.pixWidth, arrangement.pixHeight)
-        gl.check { clearColor(0f, .5f, 0f, 1f) }
+        gl.check { clearColor(.1f, .2f, 0f, 1f) }
         gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
         arrangement.render()
     }
 
-    override fun retrieveResults() {
+    override fun afterFrame() {
         copyResultsToCpuBuffer()
     }
 
@@ -140,6 +150,10 @@ class ModelRenderEngine(
 
             pixelCount = newPixelCount
         }
+    }
+
+    fun setRenderPlan(renderPlan: DeviceTypeRenderPlan?) {
+        this.renderPlan = renderPlan
     }
 
     override fun onRelease() {
@@ -195,23 +209,25 @@ class ModelRenderEngine(
         fun render() {
             engineFeeds.values.forEach { it.aboutToRenderFrame(renderTargets) }
 
-            renderTargets
-                .groupBy { it.program }
-                .forEach { (program, renderTargets) ->
-                    if (program != null) {
-                        gl.useProgram(program)
-                        program.aboutToRenderFrame()
+            renderPlan?.forEach { programRenderPlan ->
+                val program = programRenderPlan.program
+                if (program != null) {
+                    gl.useProgram(program)
+                    program.aboutToRenderFrame()
 
-                        quad.prepareToRender(program.vertexAttribLocation) {
-                            renderTargets.forEach { renderTarget ->
-                                program.aboutToRenderFixture(renderTarget)
-                                renderTarget.rects.indices.forEach { i ->
-                                    quad.renderRect(renderTarget.rect0Index + i)
-                                }
-                            }
+                    quad.prepareToRender(program.vertexAttribLocation) {
+                        programRenderPlan.renderTargets.forEach { renderTarget ->
+                            renderTarget.usingProgram(program)
+                            program.aboutToRenderFixture(renderTarget)
+                            quad.renderRects(renderTarget)
                         }
                     }
+                } else {
+                    programRenderPlan.renderTargets.forEach { renderTarget ->
+                        renderTarget.usingProgram(null)
+                    }
                 }
+            }
         }
     }
 
@@ -247,6 +263,12 @@ class ModelRenderEngine(
                 pixelsLeft -= rowPixelsTaken
             }
             return rects
+        }
+
+        fun Quad.renderRects(renderTarget: RenderTarget) {
+            renderTarget.rects.indices.forEach { i ->
+                this.renderRect(renderTarget.rect0Index + i)
+            }
         }
     }
 }

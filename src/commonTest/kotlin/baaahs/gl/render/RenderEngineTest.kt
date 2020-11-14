@@ -14,6 +14,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.renderPlanFor
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
@@ -74,7 +75,8 @@ class RenderEngineTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val renderTarget = renderEngine.addFixture(fakeSurface()).apply { this.program = glslProgram }
+        val renderTarget = renderEngine.addFixture(fakeSurface())
+        renderEngine.setRenderPlan(renderPlanFor(glslProgram, renderTarget))
 
         renderEngine.draw()
 
@@ -101,7 +103,8 @@ class RenderEngineTest {
             """.trimIndent()
 
         val glslProgram = compileAndBind(program)
-        val renderTarget = renderEngine.addFixture(fakeSurface()).apply { this.program = glslProgram }
+        val renderTarget = renderEngine.addFixture(fakeSurface())
+        renderEngine.setRenderPlan(renderPlanFor(glslProgram, renderTarget))
 
         fakeShowPlayer.getGadget<Slider>("blueSlider").value = .1f
         renderEngine.draw()
@@ -137,9 +140,10 @@ class RenderEngineTest {
 
         val glslProgram = compileAndBind(program)
 
-        val renderTarget1 = renderEngine.addFixture(fakeSurface("s1")).apply { this.program = glslProgram }
-        val renderTarget2 = renderEngine.addFixture(fakeSurface("s2", 2)).apply { this.program = glslProgram }
-        val renderTarget3 = renderEngine.addFixture(fakeSurface("s3")).apply { this.program = glslProgram }
+        val renderTarget1 = renderEngine.addFixture(fakeSurface("s1"))
+        val renderTarget2 = renderEngine.addFixture(fakeSurface("s2", 2))
+        val renderTarget3 = renderEngine.addFixture(fakeSurface("s3"))
+        renderEngine.setRenderPlan(renderPlanFor(glslProgram, renderTarget1, renderTarget2, renderTarget3))
 
         renderEngine.draw()
 
@@ -179,8 +183,9 @@ class RenderEngineTest {
 
         val glslProgram = compileAndBind(program)
 
-        val renderTarget1 = renderEngine.addFixture(fakeSurface("s1")).apply { this.program = glslProgram }
-        val renderTarget2 = renderEngine.addFixture(fakeSurface("s2")).apply { this.program = glslProgram }
+        val renderTarget1 = renderEngine.addFixture(fakeSurface("s1"))
+        val renderTarget2 = renderEngine.addFixture(fakeSurface("s2"))
+        renderEngine.setRenderPlan(renderPlanFor(glslProgram, renderTarget1, renderTarget2))
 
         // TODO: yuck, let's not do this [first part]
 //        renderTarget1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))

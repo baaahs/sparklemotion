@@ -23,7 +23,7 @@ abstract class RenderEngine(val gl: GlContext) {
 
     abstract fun resolve(id: String, dataSource: DataSource): Feed?
 
-    fun compile(linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
+    open fun compile(linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
         return GlslProgram(gl, linkedPatch) { id: String, dataSource: DataSource ->
             val feed = resolve(id, dataSource) ?: feedResolver.openFeed(id, dataSource)
 
@@ -38,18 +38,18 @@ abstract class RenderEngine(val gl: GlContext) {
 
     fun draw() {
         gl.runInContext {
-            stats.prepareMs += timeSync { prepare() }
+            stats.prepareMs += timeSync { beforeFrame() }
             bindResults()
             stats.renderMs += timeSync { wrappedRender() }
             stats.finishMs += timeSync { gl.check { finish() } }
-            stats.readPxMs += timeSync { retrieveResults() }
+            stats.readPxMs += timeSync { afterFrame() }
         }
 
         stats.frameCount++
     }
 
     /** This is run from within a GL context. */
-    abstract fun prepare()
+    abstract fun beforeFrame()
 
     /** This is run from within a GL context. */
     abstract fun bindResults()
@@ -64,7 +64,7 @@ abstract class RenderEngine(val gl: GlContext) {
     abstract fun render()
 
     /** This is run from within a GL context. */
-    abstract fun retrieveResults()
+    abstract fun afterFrame()
 
     fun release() {
         gl.runInContext {

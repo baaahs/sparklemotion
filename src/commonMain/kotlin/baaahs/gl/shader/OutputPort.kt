@@ -5,10 +5,10 @@ import baaahs.gl.patch.ContentType
 import baaahs.show.ShaderOutPortRef
 
 data class OutputPort(
-    val dataType: GlslType,
-    val id: String,
-    val description: String?,
-    val contentType: ContentType
+    val contentType: ContentType,
+    val description: String? = contentType.description,
+    val id: String = ShaderOutPortRef.ReturnValue,
+    val dataType: GlslType = contentType.glslType
 ) {
     fun isReturnValue() = id == ShaderOutPortRef.ReturnValue
 }

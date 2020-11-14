@@ -1,10 +1,10 @@
 package baaahs.dmx
 
 import baaahs.Color
-import baaahs.Dmx
 import baaahs.model.MovingHead
+import baaahs.toRadians
 
-class LixadaMiniMovingHead(override val buffer: Dmx.Buffer) : Dmx.DeviceType(9), MovingHead.Buffer {
+class LixadaMiniMovingHead(override val buffer: Dmx.Buffer) : Dmx.Adapter, MovingHead.Buffer {
     override val panChannel get() = Channel.PAN
     override val panFineChannel: Dmx.Channel? get() = null /*Channel.PAN_FINE*/
     override val tiltChannel: Dmx.Channel get() = Channel.TILT
@@ -21,6 +21,11 @@ class LixadaMiniMovingHead(override val buffer: Dmx.Buffer) : Dmx.DeviceType(9),
     override val colorMode: MovingHead.ColorMode get() = MovingHead.ColorMode.RGBW
     override val colorWheelColors: List<Shenzarpy.WheelColor>
         get() = throw UnsupportedOperationException()
+
+    override val panRange: ClosedRange<Float> =
+        toRadians(0f)..toRadians(540f)
+    override val tiltRange: ClosedRange<Float> =
+        toRadians(-110f)..toRadians(110f)
 
     init {
         dimmer = 134 * 256 / 65535f
@@ -47,5 +52,9 @@ class LixadaMiniMovingHead(override val buffer: Dmx.Buffer) : Dmx.DeviceType(9),
         COLOR_RESET;
 
         override val offset = ordinal
+    }
+
+    companion object : Dmx.AdapterBuilder {
+        override fun build(buffer: Dmx.Buffer) = LixadaMiniMovingHead(buffer)
     }
 }

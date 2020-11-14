@@ -1,4 +1,4 @@
-package baaahs
+package baaahs.dmx
 
 interface Dmx {
     abstract class Universe {
@@ -7,7 +7,11 @@ interface Dmx {
         abstract fun allOff()
     }
 
-    class Buffer(private val channels: ByteArray, val baseChannel: Int, val channelCount: Int) {
+    class Buffer(
+        private val channels: ByteArray,
+        val baseChannel: Int,
+        val channelCount: Int
+    ) {
         operator fun get(channel: Channel): Byte = get(channel.offset)
 
         operator fun get(index: Int): Byte {
@@ -24,7 +28,7 @@ interface Dmx {
 
         private fun boundsCheck(index: Int) {
             if (index < 0 || index >= channelCount) {
-                throw Exception("index out of bounds: $index >= ${channelCount}")
+                throw Exception("index out of bounds: $index >= $channelCount")
             }
         }
     }
@@ -33,5 +37,9 @@ interface Dmx {
         val offset: Int
     }
 
-    open class DeviceType(val channelCount: Int)
+    interface Adapter
+
+    interface AdapterBuilder {
+        fun build(buffer: Buffer): Adapter
+    }
 }

@@ -1,13 +1,7 @@
 package baaahs.gl.patch
 
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
-import baaahs.gl.glsl.FeedResolver
-import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.render.RenderManager
 import baaahs.show.ShaderChannel
-import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.LiveShaderInstance.*
 import baaahs.show.mutable.ShowBuilder
@@ -16,10 +10,7 @@ import baaahs.util.Logger
 import kotlin.collections.component1
 import kotlin.collections.component2
 
-class LinkedPatch(
-    val shaderInstance: LiveShaderInstance,
-    val surfaces: Surfaces
-) {
+class LinkedPatch(val shaderInstance: LiveShaderInstance) {
     internal val dataSourceLinks: Set<DataSourceLink>
     private val componentBuilder: CacheBuilder<LiveShaderInstance, Component>
     private val components: List<Component>
@@ -124,14 +115,6 @@ class LinkedPatch(
     fun toFullGlsl(glslVersion: String): String {
         return "#version ${glslVersion}\n\n${toGlsl()}\n"
     }
-
-    fun createProgram(renderManager: RenderManager, feedResolver: FeedResolver): GlslProgram {
-        // TODO: not just PixelArrayDevice!
-        val renderEngine = renderManager.getEngineFor(PixelArrayDevice)
-        return renderEngine.compile(this, feedResolver)
-    }
-
-    fun matches(fixture: Fixture): Boolean = this.surfaces.matches(fixture)
 
     companion object {
         private val logger = Logger("OpenPatch")

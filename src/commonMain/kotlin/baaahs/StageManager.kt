@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.RenderPlan
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
@@ -12,7 +13,6 @@ import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
 import baaahs.show.DataSource
 import baaahs.show.Show
-import baaahs.show.Surfaces
 import baaahs.show.buildEmptyShow
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.CoroutineScope
@@ -28,8 +28,6 @@ class StageManager(
     private val pubSub: PubSub.Server,
     private val storage: Storage,
     private val fixtureManager: FixtureManager,
-    private val dmxUniverse: Dmx.Universe,
-    private val movingHeadManager: MovingHeadManager,
     private val clock: Clock,
     modelInfo: ModelInfo,
     private val coroutineContext: CoroutineContext
@@ -149,7 +147,6 @@ class StageManager(
 
             if (showRunner.renderNextFrame()) {
                 fixtureManager.sendFrame()
-                dmxUniverse.sendFrame()
             }
 
             if (!dontProcrastinate) housekeeping()
@@ -225,11 +222,8 @@ class StageManager(
         val currentShow: Show?
             get() = this@StageManager.showRunner?.show
 
-        val currentGlsl: Map<Surfaces, String>?
+        val currentRenderPlan: RenderPlan?
             get() = this@StageManager.fixtureManager.currentRenderPlan
-                ?.programs?.map { (patch, program) ->
-                    patch.surfaces to program.fragShader.source
-                }?.associate { it }
     }
 }
 

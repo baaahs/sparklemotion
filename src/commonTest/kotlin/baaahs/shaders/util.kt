@@ -3,11 +3,13 @@ package baaahs.shaders
 import baaahs.BrainShader
 import baaahs.Color
 import baaahs.Pixels
+import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.model.Model
 import kotlin.test.expect
 
 private fun <T : BrainShader.Buffer> send(srcBrainShader: BrainShader<T>, srcBuf: T, fixture: Fixture): Pair<BrainShader<T>, T> {
@@ -48,8 +50,12 @@ internal fun <T : BrainShader.Buffer> render(srcBuf: T, fixture: Fixture): Pixel
 internal fun <T : BrainShader.Buffer> render(srcBrainShaderAndBuffer: Pair<BrainShader<T>, T>, fixture: Fixture): Pixels =
     render(srcBrainShaderAndBuffer.second, fixture)
 
-fun fakeFixture(pixelCount: Int) =
-    Fixture(null, pixelCount, emptyList(), PixelArrayDevice, "fake fixture", transport = NullTransport)
+fun fakeFixture(
+    pixelCount: Int,
+    modelEntity: Model.Entity? = null,
+    deviceType: DeviceType = modelEntity?.deviceType ?: PixelArrayDevice
+) =
+    Fixture(modelEntity, pixelCount, emptyList(), deviceType, "Fake ${deviceType.title}", transport = NullTransport)
 
 class FakePixels(override val size: Int) : Pixels {
     private val buf = Array(size) { Color.BLACK }

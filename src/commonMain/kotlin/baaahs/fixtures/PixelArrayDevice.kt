@@ -13,6 +13,8 @@ import baaahs.glsl.Uniform
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugin
 import baaahs.show.DataSource
+import baaahs.show.Shader
+import baaahs.show.ShaderType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -30,8 +32,29 @@ object PixelArrayDevice : DeviceType {
         ResultParam("Pixel Color", ColorResultType)
     )
 
+    override val resultContentType: ContentType
+        get() = ContentType.ColorStream
+
+    override val errorIndicatorShader: Shader
+        get() = Shader(
+            "Ω Guru Meditation Error Ω",
+            ShaderType.Paint,
+            /**language=glsl*/
+            """
+                uniform float time;
+                void main() {
+                    gl_FragColor = (mod(time, 2.) < 1.)
+                        ? vec4(.75, 0., 0., 1.)
+                        : vec4(.25, 0., 0., 1.);
+                }
+            """.trimIndent()
+        )
+
+
     fun getColorResults(resultViews: List<ResultView>) =
         resultViews[0] as ColorResultType.ColorResultView
+
+    override fun toString(): String = id
 }
 
 @Serializable

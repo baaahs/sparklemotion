@@ -1,12 +1,9 @@
 package baaahs
 
 import baaahs.fixtures.FixtureManager
-import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
-import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.RenderManager
 import baaahs.show.Show
-import baaahs.show.live.ActiveSet
 import baaahs.show.live.OpenShow
 import baaahs.util.Logger
 
@@ -23,7 +20,7 @@ class ShowRunner(
     private val autoWirer: AutoWirer
 ) {
     private var showState: ShowState = initialShowState ?: openShow.getShowState()
-    private var activeSetChanged: Boolean = true
+    private var activePatchSetChanged: Boolean = true
 
     // TODO: Get beat sync working again.
 //    // Continuous from [0.0 ... 3.0] (0 is first beat in a measure, 3 is last)
@@ -53,7 +50,7 @@ class ShowRunner(
 
     fun switchTo(newShowState: ShowState) {
         this.showState = newShowState
-        activeSetChanged = true
+        activePatchSetChanged = true
     }
 
     /** @return `true` if a frame was rendered and should be sent to fixtures. */
@@ -65,12 +62,12 @@ class ShowRunner(
     }
 
     fun onSelectedPatchesChanged() {
-        activeSetChanged = true
+        activePatchSetChanged = true
     }
 
     fun housekeeping(): Boolean {
-        if (activeSetChanged) {
-            fixtureManager.activeSetChanged(openShow.activeSet())
+        if (activePatchSetChanged) {
+            fixtureManager.activePatchSetChanged(openShow.activePatchSet())
         }
 
         return fixtureManager.maybeUpdateRenderPlans { id, dataSource ->
@@ -90,8 +87,3 @@ class ShowRunner(
         val logger = Logger("ShowRunner")
     }
 }
-
-class RenderPlan(
-    val programs: List<Pair<LinkedPatch, GlslProgram>>,
-    val activeSet: ActiveSet
-)

@@ -35,6 +35,10 @@ class CompiledShader(
         }
     }
 
+    fun release() {
+        gl.runInContext { gl.check { deleteShader(shaderId) } }
+    }
+
     companion object {
         val logger = Logger("CompiledShader")
     }

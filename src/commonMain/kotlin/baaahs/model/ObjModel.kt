@@ -12,6 +12,7 @@ abstract class ObjModel(private val objResourceName: String) : Model() {
     lateinit var surfaces: List<Surface>
 
     override val allSurfaces get() = surfaces
+    override val allEntities: List<Entity> get() = allSurfaces + movingHeads
     private val surfacesByName = mutableMapOf<String, Surface>()
 
     abstract fun createSurface(name: String, faces: List<Face>, lines: List<Line>): Surface
