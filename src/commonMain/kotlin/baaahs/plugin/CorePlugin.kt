@@ -1,6 +1,7 @@
 package baaahs.plugin
 
 import baaahs.*
+import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.fixtures.PixelLocationFeed
 import baaahs.gadgets.ColorPicker
@@ -13,11 +14,8 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
-import baaahs.show.UpdateMode
-import baaahs.show.mutable.MutableDataSourcePort
-import baaahs.show.mutable.MutableGadgetControl
+import baaahs.show.*
+import baaahs.show.mutable.*
 import baaahs.util.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -91,6 +89,36 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             ?: error("unknown plugin resource $resourceName")
         return dataSourceBuilder.build(inputPort)
     }
+
+    override fun getAddControlMenuItems(): List<AddControlMenuItem> = listOf(
+        AddControlMenuItem("New Button…", CommonIcons.Button) { mutableShow ->
+            MutableButtonControl(ButtonControl("New Button"), mutableShow)
+        },
+
+        AddControlMenuItem("New Button Group…", CommonIcons.ButtonGroup) { mutableShow ->
+            MutableButtonGroupControl(
+                "New Button Group",
+                ButtonGroupControl.Direction.Horizontal,
+                mutableShow = mutableShow
+            )
+        },
+
+        AddControlMenuItem("New Color Palette…", CommonIcons.ColorPalette) { mutableShow ->
+            TODO("not implemented")
+        },
+
+        AddControlMenuItem("New Visualizer…", CommonIcons.Visualizer) { mutableShow ->
+            MutableVisualizerControl()
+        }
+    )
+
+    override fun getControlSerializers() =
+        listOf(
+            classSerializer(GadgetControl.serializer()),
+            classSerializer(ButtonControl.serializer()),
+            classSerializer(ButtonGroupControl.serializer()),
+            classSerializer(VisualizerControl.serializer())
+        )
 
 
     /**

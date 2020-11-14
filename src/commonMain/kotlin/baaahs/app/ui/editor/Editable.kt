@@ -2,9 +2,11 @@ package baaahs.app.ui
 
 import baaahs.app.ui.editor.EditableManager
 import baaahs.show.ButtonControl
-import baaahs.show.ButtonGroupControl
 import baaahs.show.live.ControlDisplay
-import baaahs.show.mutable.*
+import baaahs.show.mutable.MutableButtonControl
+import baaahs.show.mutable.MutableButtonGroupControl
+import baaahs.show.mutable.MutableControl
+import baaahs.show.mutable.MutableShow
 import baaahs.ui.Icon
 import baaahs.ui.Renderer
 
@@ -88,46 +90,15 @@ data class AddButtonToButtonGroupEditIntent(
     }
 }
 
-data class AddButtonToPanelBucket(
-    private val panelBucket: ControlDisplay.PanelBuckets.PanelBucket
-) : AddToContainerEditIntent<MutableButtonControl>() {
-    override fun createControl(mutableShow: MutableShow): MutableButtonControl {
-        return MutableButtonControl(ButtonControl("New Button"), mutableShow)
+class AddControlToPanelBucket<MC : MutableControl>(
+    private val panelBucket: ControlDisplay.PanelBuckets.PanelBucket,
+    private val createControlFn: (mutableShow: MutableShow) -> MC
+) : AddToContainerEditIntent<MC>() {
+    override fun createControl(mutableShow: MutableShow): MC {
+        return createControlFn(mutableShow)
     }
 
-    override fun addToContainer(mutableShow: MutableShow, mutableControl: MutableButtonControl) {
-        mutableShow.findPatchHolder(panelBucket.section.container)
-            .editControlLayout(panelBucket.panelTitle)
-            .add(mutableControl)
-    }
-}
-
-data class AddButtonGroupToPanelBucket(
-    private val panelBucket: ControlDisplay.PanelBuckets.PanelBucket
-) : AddToContainerEditIntent<MutableButtonGroupControl>() {
-    override fun createControl(mutableShow: MutableShow): MutableButtonGroupControl {
-        return MutableButtonGroupControl(
-            "New Button Group",
-            ButtonGroupControl.Direction.Horizontal,
-            mutableShow = mutableShow
-        )
-    }
-
-    override fun addToContainer(mutableShow: MutableShow, mutableControl: MutableButtonGroupControl) {
-        mutableShow.findPatchHolder(panelBucket.section.container)
-            .editControlLayout(panelBucket.panelTitle)
-            .add(mutableControl)
-    }
-}
-
-data class AddVisualizerToPanelBucket(
-    private val panelBucket: ControlDisplay.PanelBuckets.PanelBucket
-) : AddToContainerEditIntent<MutableVisualizerControl>() {
-    override fun createControl(mutableShow: MutableShow): MutableVisualizerControl {
-        return MutableVisualizerControl()
-    }
-
-    override fun addToContainer(mutableShow: MutableShow, mutableControl: MutableVisualizerControl) {
+    override fun addToContainer(mutableShow: MutableShow, mutableControl: MC) {
         mutableShow.findPatchHolder(panelBucket.section.container)
             .editControlLayout(panelBucket.panelTitle)
             .add(mutableControl)
