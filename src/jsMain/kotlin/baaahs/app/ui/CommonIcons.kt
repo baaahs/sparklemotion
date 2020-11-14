@@ -17,6 +17,7 @@ actual fun getCommonIcons() = object : PlatformIcons {
     override val DistortionShader get() = icon(Icons.Map)
     override val PaintShader get() = icon(Icons.Image)
     override val FilterShader get() = icon(Icons.FilterBAndW)
+    override val MoverShader get() = icon(Icons.OpenWith)
 
     override val BeatLinkControl get() = icon(Icons.AvTimer)
     override val Button get() = icon(Icons.CropLandscape)

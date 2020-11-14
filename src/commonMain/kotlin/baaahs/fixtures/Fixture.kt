@@ -19,4 +19,6 @@ class Fixture(
 ) {
     val title: String get() =
         "$name: ${deviceType.title} with $pixelCount pixels at ${transport.name}"
+
+    override fun toString() = "Fixture[${hashCode()} $title]"
 }

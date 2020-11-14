@@ -7,7 +7,9 @@ import styles from "../SheepVisualizerWindow/SheepVisualizerWindow.scss";
 const SimulatorSettingsWindow = (props) => {
   const {state} = React.useContext(store);
   const Console = baaahs.sim.ui.Console;
-  const [isOpen, setIsOpen] = React.useState(false);
+  const GeneratedGlslPalette = baaahs.sim.ui.GeneratedGlslPalette;
+  const [isConsoleOpen, setIsConsoleOpen] = React.useState(false);
+  const [isGlslPaletteOpen, setIsGlslPaletteOpen] = React.useState(false);
   const simulator = state.simulator.facade;
 
   return (
@@ -17,15 +19,27 @@ const SimulatorSettingsWindow = (props) => {
           control={
             <Switch
               size="small"
-              checked={isOpen}
-              onChange={() => setIsOpen(!isOpen)}
+              checked={isConsoleOpen}
+              onChange={() => setIsConsoleOpen(!isConsoleOpen)}
             />
           }
           label="Open"
         />
+
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={isGlslPaletteOpen}
+              onChange={() => setIsGlslPaletteOpen(!isGlslPaletteOpen)}
+            />
+          }
+          label="Show GLSL"
+        />
       </div>
 
-      {isOpen ? <Console simulator={simulator}/> : <div/>}
+      {isConsoleOpen ? <Console simulator={simulator}/> : <div/>}
+      {isGlslPaletteOpen ? <GeneratedGlslPalette pinky={simulator.pinky}/> : <div/>}
     </div>
   );
 };

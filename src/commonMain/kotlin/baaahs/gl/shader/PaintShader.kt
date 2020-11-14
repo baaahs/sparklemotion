@@ -5,7 +5,6 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
-import baaahs.show.ShaderOutPortRef
 import baaahs.show.ShaderType
 
 abstract class PaintShader(
@@ -68,8 +67,7 @@ class ShaderToyPaintShader(
             InputPort("iChannel3", GlslType.Sampler2D, "Channel 3", ContentType.Media)
         ).associateBy { it.id }
 
-        val outputPort: OutputPort =
-            OutputPort(GlslType.Vec4, ShaderOutPortRef.ReturnValue, "Output Color", ContentType.ColorStream)
+        val outputPort: OutputPort = OutputPort(ContentType.ColorStream, "Output Color")
     }
 
     override val entryPointName: String
@@ -127,7 +125,7 @@ class GenericPaintShader(
         ).associateBy { it.id }
 
         val outputPort =
-            OutputPort(GlslType.Vec4, "gl_FragColor", "Output Color", ContentType.ColorStream)
+            OutputPort(ContentType.ColorStream, "Output Color", "gl_FragColor")
     }
 
     override val proFormaInputPorts: List<InputPort>

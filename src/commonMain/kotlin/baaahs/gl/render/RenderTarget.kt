@@ -15,20 +15,24 @@ class RenderTarget(
     resultBuffers: List<ResultBuffer>
 ) {
     var program: GlslProgram? = null
+        private set
 
     val resultViews = resultBuffers.map { it.getView(pixel0Index, pixelCount) }
-
-    fun useProgram(program: GlslProgram?) {
-        if (program != null && this.program != null)
-            throw IllegalStateException("buffer already bound")
-        this.program = program
-    }
 
     fun sendFrame() {
         fixture.transport.send(fixture, resultViews)
     }
 
     fun release() {
-        useProgram(null)
+        program = null
+    }
+
+    /** Only call me from [RenderEngine]! */
+    internal fun usingProgram(program: GlslProgram?) {
+        this.program = program
+    }
+
+    override fun toString(): String {
+        return "RenderTarget(fixture=$fixture, rect0Index=$rect0Index, rects=$rects, pixel0Index=$pixel0Index)"
     }
 }

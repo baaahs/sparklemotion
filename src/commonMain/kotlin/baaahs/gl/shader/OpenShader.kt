@@ -5,8 +5,10 @@ import baaahs.RefCounter
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
+import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
+import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.unknown
 import kotlin.collections.set
@@ -16,14 +18,14 @@ interface OpenShader : RefCounted {
     val src: String get() = glslCode.src
     val glslCode: GlslCode
     val title: String
-    val shaderType: ShaderType
     val entryPointName: String
     val entryPoint: GlslFunction
         get() = glslCode.findFunction(entryPointName)
 
     val inputPorts: List<InputPort>
     val outputPort: OutputPort
-//    TODO val inputDefaults: Map<String, InputDefault>
+    val defaultPriority: Int
+    val defaultUpstreams: Map<ContentType, ShaderChannel>
 
     fun findInputPort(portId: String): InputPort
     fun toGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
@@ -51,6 +53,12 @@ interface OpenShader : RefCounted {
                             ?: toInputPort(it)
                     }
         }
+
+        abstract val shaderType: ShaderType
+        override val defaultPriority: Int
+            get() = shaderType.priority
+        override val defaultUpstreams: Map<ContentType, ShaderChannel>
+            get() = shaderType.defaultUpstreams
 
         protected fun toInputPort(glslVar: GlslCode.GlslVar): InputPort {
             return glslVar.toInputPort(plugins)

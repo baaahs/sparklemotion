@@ -12,6 +12,8 @@
 .toolbar {
   flex: 0 0 auto;
   padding: 0 16px;
+  justify-content: space-between;
+  display: flex;
 }
 
 .sheepView {

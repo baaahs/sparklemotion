@@ -1,56 +1,53 @@
 package baaahs.gl.patch
 
 import baaahs.show.ShaderChannel
-import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.OpenPatch
-import baaahs.show.mutable.MutablePatch
 import baaahs.util.Logger
 
-class PortDiagram {
-    private var surfaces: Surfaces? = null
-    private var level = 0
-    private val mutablePatch = MutablePatch()
-    private val candidates = hashMapOf<Pair<ShaderChannel, ContentType>, MutableList<ChannelEntry>>()
-    private val resolved = hashMapOf<Pair<ShaderChannel, ContentType>, LiveShaderInstance>()
+class PortDiagram(val patches: List<OpenPatch>) {
+    private val candidates: Map<Lookup, List<ChannelEntry>>
+    private val resolved = hashMapOf<Lookup, LiveShaderInstance>()
 
-    private fun addToChannel(shaderChannel: ShaderChannel, contentType: ContentType, shaderInstance: LiveShaderInstance, level: Int) {
-        candidates.getOrPut(shaderChannel to contentType) { arrayListOf() }
-            .add(
-                ChannelEntry(
-                    shaderInstance,
-                    shaderInstance.priority,
-                    level
+    init {
+        val candidates = hashMapOf<Lookup, MutableList<ChannelEntry>>()
+        var level = 0
+
+        fun addToChannel(shaderChannel: ShaderChannel, contentType: ContentType, shaderInstance: LiveShaderInstance, level: Int) {
+            candidates.getOrPut(shaderChannel to contentType) { arrayListOf() }
+                .add(
+                    ChannelEntry(
+                        shaderInstance,
+                        shaderInstance.priority,
+                        level
+                    )
                 )
-            )
-    }
-
-    fun add(patch: OpenPatch) {
-        if (surfaces == null) {
-            surfaces = patch.surfaces
-            mutablePatch.surfaces = patch.surfaces
-        } else if (surfaces != patch.surfaces) {
-            error("Surface mismatch: $surfaces != ${patch.surfaces}")
         }
 
-        patch.shaderInstances.forEach { liveShaderInstance ->
-            if (liveShaderInstance.shaderChannel != null) {
-                val outputPort = liveShaderInstance.shader.outputPort
-                addToChannel(liveShaderInstance.shaderChannel, outputPort.contentType, liveShaderInstance, level)
+        fun add(patch: OpenPatch) {
+            patch.shaderInstances.forEach { liveShaderInstance ->
+                if (liveShaderInstance.shaderChannel != null) {
+                    val outputPort = liveShaderInstance.shader.outputPort
+                    addToChannel(liveShaderInstance.shaderChannel, outputPort.contentType, liveShaderInstance, level)
+                }
             }
+
+            level++
         }
 
-        level++
+        patches.forEach { add(it) }
+
+        this.candidates = candidates
     }
 
     fun resolvePatch(shaderChannel: ShaderChannel, contentType: ContentType): LinkedPatch? {
         return Resolver().resolve(shaderChannel, contentType)
-            ?.let { LinkedPatch(it, surfaces!!) }
+            ?.let { LinkedPatch(it) }
     }
 
     inner class Resolver {
         private val channelIterators =
-            hashMapOf<Pair<ShaderChannel, ContentType>, Iterator<LiveShaderInstance>>()
+            hashMapOf<Lookup, Iterator<LiveShaderInstance>>()
 
         fun resolve(shaderChannel: ShaderChannel, contentType: ContentType): LiveShaderInstance? {
             return resolveNext(shaderChannel, contentType).also {
@@ -92,7 +89,7 @@ class PortDiagram {
     }
 
     class ChannelEntry(val shaderInstance: LiveShaderInstance, val priority: Float, val level: Int) {
-        val typePriority: Int get() = shaderInstance.shader.shaderType.priority
+        val typePriority: Int get() = shaderInstance.shader.defaultPriority
 
         override fun toString(): String {
             return "ChannelEntry(shaderInstance=${shaderInstance.shader.title}, priority=$priority, level=$level)"
@@ -103,3 +100,5 @@ class PortDiagram {
         private val logger = Logger("PortDiagram")
     }
 }
+
+private typealias Lookup = Pair<ShaderChannel, ContentType>

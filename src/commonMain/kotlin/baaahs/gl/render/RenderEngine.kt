@@ -38,18 +38,18 @@ abstract class RenderEngine(val gl: GlContext) {
 
     fun draw() {
         gl.runInContext {
-            stats.prepareMs += timeSync { prepare() }
+            stats.prepareMs += timeSync { beforeFrame() }
             bindResults()
             stats.renderMs += timeSync { wrappedRender() }
             stats.finishMs += timeSync { gl.check { finish() } }
-            stats.readPxMs += timeSync { retrieveResults() }
+            stats.readPxMs += timeSync { afterFrame() }
         }
 
         stats.frameCount++
     }
 
     /** This is run from within a GL context. */
-    abstract fun prepare()
+    abstract fun beforeFrame()
 
     /** This is run from within a GL context. */
     abstract fun bindResults()
@@ -64,7 +64,7 @@ abstract class RenderEngine(val gl: GlContext) {
     abstract fun render()
 
     /** This is run from within a GL context. */
-    abstract fun retrieveResults()
+    abstract fun afterFrame()
 
     fun release() {
         gl.runInContext {

@@ -2,11 +2,9 @@ package baaahs.gl.shader
 
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
-import baaahs.gl.glsl.LinkException
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
-import baaahs.show.ShaderOutPortRef
 import baaahs.show.ShaderType
 
 class MoverShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
@@ -21,8 +19,7 @@ class MoverShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenSh
             InputPort("time", GlslType.Float, "Time", ContentType.Time)
         ).associateBy { it.id }
 
-        val outputPort =
-            OutputPort(GlslType.Vec4, ShaderOutPortRef.ReturnValue, "Moving Head Output", ContentType.PanAndTilt)
+        val outputPort = OutputPort(ContentType.PanAndTilt)
     }
 
     override val shaderType: ShaderType
