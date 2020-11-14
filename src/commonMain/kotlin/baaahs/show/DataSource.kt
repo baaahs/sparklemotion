@@ -6,10 +6,10 @@ import baaahs.gl.data.Feed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
-import baaahs.plugin.BeatLinkPlugin
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugin
 import baaahs.plugin.Plugins
+import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.show.mutable.MutableGadgetControl
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic

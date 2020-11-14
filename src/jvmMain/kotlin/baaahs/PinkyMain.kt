@@ -6,8 +6,10 @@ import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
-import baaahs.plugin.BeatLinkPlugin
 import baaahs.plugin.Plugins
+import baaahs.plugin.beatlink.BeatLinkBeatSource
+import baaahs.plugin.beatlink.BeatLinkPlugin
+import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Logger

@@ -7,9 +7,9 @@ import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.glsl.Shaders
-import baaahs.plugin.BeatLinkPlugin
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
+import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.mutable.EditingShader.State

@@ -1,5 +1,6 @@
-package baaahs
+package baaahs.plugin.beatlink
 
+import baaahs.FakeClock
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.expect

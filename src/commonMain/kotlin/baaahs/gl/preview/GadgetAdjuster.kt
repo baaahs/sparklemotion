@@ -1,7 +1,7 @@
 package baaahs.gl.preview
 
-import baaahs.Clock
 import baaahs.gadgets.Slider
+import baaahs.util.Clock
 
 class GadgetAdjuster(val gadgets: List<ShaderBuilder.GadgetPreview>, val clock: Clock) {
     fun adjustGadgets() {

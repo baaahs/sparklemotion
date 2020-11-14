@@ -1,5 +1,7 @@
-package baaahs
+package baaahs.plugin.beatlink
 
+import baaahs.util.Clock
+import baaahs.util.Time
 import kotlinx.serialization.Serializable
 import kotlin.math.PI
 import kotlin.math.max
@@ -73,8 +75,3 @@ interface BeatSource {
     }
 }
 
-typealias Time = Double
-
-interface Clock {
-    fun now(): Time
-}
