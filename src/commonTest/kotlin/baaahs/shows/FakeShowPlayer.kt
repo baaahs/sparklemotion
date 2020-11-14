@@ -33,7 +33,7 @@ class FakeShowPlayer(
     }
 
     override fun openFeed(id: String, dataSource: DataSource): Feed =
-        feeds.getOrPut(dataSource) { dataSource.createFeed(this, plugins, id) }
+        feeds.getOrPut(dataSource) { dataSource.createFeed(this, id) }
 
     override fun useFeed(dataSource: DataSource): Feed =
         feeds.getBang(dataSource, "feed")

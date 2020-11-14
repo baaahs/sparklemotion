@@ -6,8 +6,6 @@ import baaahs.gl.data.Feed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
-import baaahs.plugin.Plugin
-import baaahs.plugin.Plugins
 import baaahs.show.mutable.MutableGadgetControl
 
 
@@ -34,13 +32,7 @@ interface DataSource {
     fun getContentType(): ContentType
     fun getVarName(id: String): String = "in_$id"
 
-    // TODO: We shouldn't need to pass in the [Plugin] here; when plugins handle their own serialization,
-    //  then the [DataSource] could be created with whatever dependencies it needs.
-    fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed
-
-    fun createFeed(showPlayer: ShowPlayer, plugins: Plugins, id: String): Feed {
-        return createFeed(showPlayer, plugins.find(pluginPackage), id)
-    }
+    fun createFeed(showPlayer: ShowPlayer, id: String): Feed
 
     /** Yuck. Merge this with [createFeed]. */
     fun createFixtureFeed(): Feed = error("unsupported")

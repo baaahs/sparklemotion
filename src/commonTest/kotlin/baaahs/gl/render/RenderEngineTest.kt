@@ -266,7 +266,7 @@ class RenderEngineTest {
             if (dataSource is CorePlugin.GadgetDataSource<*>) {
                 fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
             }
-            dataSource.createFeed(fakeShowPlayer, autoWirer.plugins, id)
+            dataSource.createFeed(fakeShowPlayer, id)
         }
     }
 

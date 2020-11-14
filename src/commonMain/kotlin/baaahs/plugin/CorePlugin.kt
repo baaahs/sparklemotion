@@ -152,7 +152,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override fun getType(): GlslType = GlslType.Vec2
         override fun getContentType(): ContentType = ContentType.Resolution
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed =
@@ -179,7 +179,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override fun getType(): GlslType = GlslType.Vec2
         override fun getContentType(): ContentType = ContentType.Resolution
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed, GlslProgram.ResolutionListener {
@@ -218,7 +218,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override fun getType(): GlslType = GlslType.Float
         override fun getContentType(): ContentType = ContentType.Time
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed {
@@ -249,7 +249,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override fun getContentType(): ContentType = ContentType.PixelCoordinatesTexture
         override fun suggestId(): String = "pixelCoordsTexture"
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             PixelLocationFeed(getVarName(id))
     }
 
@@ -269,7 +269,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override fun isImplicit(): Boolean = true
         override fun getVarName(id: String): String = "gl_FragCoord"
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
             return object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed {
@@ -310,7 +310,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override fun getType(): GlslType = modelInfoType
         override fun getContentType(): ContentType = ContentType.ModelInfo
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
             return object : Feed, RefCounted by RefCounter() {
                 private val varPrefix = getVarName(id)
 
@@ -353,7 +353,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
 
         fun set(gadget: T, uniform: Uniform)
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
             val gadget = showPlayer.useGadget<T>(this)
                 ?: run {
                     logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
@@ -458,7 +458,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override fun getContentType(): ContentType = ContentType.XyCoordinate
         override fun suggestId(): String = "$gadgetTitle XY Pad".camelize()
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
             return object : Feed, RefCounted by RefCounter() {
 //                val xControl = showPlayer.useGadget<Slider>("${varPrefix}_x")
 //                val yControl = showPlayer.useGadget<Slider>("${varPrefix}_y")
@@ -586,7 +586,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override fun getContentType(): ContentType = ContentType.ColorStream
         override fun suggestId(): String = "$imageTitle Image".camelize()
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed =

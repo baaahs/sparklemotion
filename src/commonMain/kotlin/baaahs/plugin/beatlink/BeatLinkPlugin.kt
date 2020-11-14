@@ -19,9 +19,13 @@ import baaahs.plugin.PluginContext
 import baaahs.plugin.classSerializer
 import baaahs.show.*
 import baaahs.show.mutable.MutableDataSourcePort
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 class BeatLinkPlugin internal constructor(
     internal val beatSource: BeatSource,
@@ -32,8 +36,12 @@ class BeatLinkPlugin internal constructor(
 
     private val clock = pluginContext.clock
 
+    // We'll just make one up-front. We only ever want one (because equality
+    // is using object identity), and there's no overhead.
+    internal val beatLinkDataSource = BeatLinkDataSource()
+
     override fun resolveDataSource(inputPort: InputPort): DataSource {
-        return BeatLinkDataSource()
+        return beatLinkDataSource
     }
 
     override fun suggestContentTypes(inputPort: InputPort): Collection<ContentType> {
@@ -62,7 +70,7 @@ class BeatLinkPlugin internal constructor(
         ) {
             return listOf(
                 PortLinkOption(
-                    MutableDataSourcePort(BeatLinkDataSource()),
+                    MutableDataSourcePort(beatLinkDataSource),
                     wasPurposeBuilt = true,
                     isExactContentType = inputPort.contentType == beatDataContentType,
                     isPluginSuggestion = true
@@ -90,31 +98,37 @@ class BeatLinkPlugin internal constructor(
 
     override fun getDataSourceSerializers() =
         listOf(
-            classSerializer(BeatLinkDataSource.serializer())
+            classSerializer(beatLinkDataSourceSerializer)
         )
+
+    private val beatLinkDataSourceSerializer = object : KSerializer<BeatLinkDataSource> {
+        override val descriptor: SerialDescriptor
+            get() = buildClassSerialDescriptor("baaahs.plugin.beatlink.BeatLinkDataSource") {}
+
+        override fun serialize(encoder: Encoder, value: BeatLinkDataSource) {
+            encoder.beginStructure(descriptor).endStructure(descriptor)
+        }
+
+        override fun deserialize(decoder: Decoder): BeatLinkDataSource {
+            decoder.beginStructure(descriptor).endStructure(descriptor)
+            return beatLinkDataSource
+        }
+    }
 
     @Serializable
     @SerialName("baaahs.BeatLink:BeatLink")
-    data class BeatLinkDataSource(@Transient val `_`: Boolean = true) : DataSource {
-        companion object : DataSourceBuilder<BeatLinkDataSource> {
-            override val resourceName: String get() = "BeatLink"
-            override fun build(inputPort: InputPort): BeatLinkDataSource =
-                BeatLinkDataSource()
-        }
-
+    inner class BeatLinkDataSource internal constructor(): DataSource {
         override val pluginPackage: String get() = id
         override val title: String get() = "BeatLink"
         override fun getType(): GlslType = GlslType.Float
         override fun getContentType(): ContentType = beatDataContentType
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): baaahs.gl.data.Feed {
-            plugin as BeatLinkPlugin
-
+        override fun createFeed(showPlayer: ShowPlayer, id: String): baaahs.gl.data.Feed {
             return object : baaahs.gl.data.Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed =
                         SingleUniformFeed(glslProgram, this@BeatLinkDataSource, id) { uniform ->
-                            uniform.set(plugin.beatSource.getBeatData().fractionTillNextBeat(plugin.clock))
+                            uniform.set(beatSource.getBeatData().fractionTillNextBeat(clock))
                         }
                 }
 
