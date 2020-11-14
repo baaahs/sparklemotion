@@ -8,8 +8,9 @@ import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.model.Model
 import baaahs.net.Network
-import baaahs.plugin.BeatLinkPlugin
 import baaahs.plugin.Plugins
+import baaahs.plugin.beatlink.BeatLinkPlugin
+import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.show.Show
 import baaahs.show.live.OpenShow

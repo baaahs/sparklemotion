@@ -1,8 +1,8 @@
 package baaahs.sim
 
-import baaahs.BeatData
-import baaahs.BeatSource
 import baaahs.SoundAnalyzer
+import baaahs.plugin.beatlink.BeatData
+import baaahs.plugin.beatlink.BeatSource
 import baaahs.util.Logger
 import baaahs.window
 import kotlinx.coroutines.GlobalScope

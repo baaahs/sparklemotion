@@ -5,6 +5,8 @@ import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.model.Model
 import baaahs.model.MovingHead
+import baaahs.util.Clock
+import baaahs.util.Time
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import org.spekframework.spek2.dsl.GroupBody

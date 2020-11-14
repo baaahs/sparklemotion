@@ -10,6 +10,8 @@ import baaahs.models.SheepModel
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.TestNetwork
 import baaahs.plugin.Plugins
+import baaahs.plugin.beatlink.BeatData
+import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.BrainHelloMessage
 import baaahs.proto.Type
 import baaahs.show.SampleData

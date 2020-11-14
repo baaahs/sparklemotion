@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.plugin.beatlink.BeatData
+import baaahs.plugin.beatlink.BeatLinkBeatSource
 import baaahs.proto.Ports
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*

@@ -1,6 +1,5 @@
-package baaahs.plugin
+package baaahs.plugin.beatlink
 
-import baaahs.BeatSource
 import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.ShowPlayer
@@ -13,14 +12,16 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.plugin.Plugin
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.util.Clock
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
-class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: baaahs.Clock) : Plugin {
+class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: Clock) : Plugin {
     override val packageName: String = id
     override val title: String = "Beat Link"
 
@@ -105,7 +106,7 @@ class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: ba
     class DataFeed(
         private val id: String,
         private val beatSource: BeatSource,
-        private val clock: baaahs.Clock
+        private val clock: Clock
     )
 
     companion object {
@@ -113,4 +114,3 @@ class BeatLinkPlugin(internal val beatSource: BeatSource, internal val clock: ba
         val beatDataContentType = ContentType("Beat Link", GlslType.Float)
     }
 }
-
