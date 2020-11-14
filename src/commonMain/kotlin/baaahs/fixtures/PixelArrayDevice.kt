@@ -11,7 +11,6 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
 import baaahs.plugin.CorePlugin
-import baaahs.plugin.Plugin
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.ShaderType
@@ -65,7 +64,7 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
     override fun getType(): GlslType = GlslType.Vec3
     override fun getContentType(): ContentType = ContentType.XyzCoordinate
 
-    override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
+    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
         return createFixtureFeed()
     }
 

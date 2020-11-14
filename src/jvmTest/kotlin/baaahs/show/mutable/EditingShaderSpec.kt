@@ -27,6 +27,9 @@ import kotlin.test.expect
 object EditingShaderSpec : Spek({
     describe<EditingShader> {
         val plugins by value { testPlugins() + BeatLinkPlugin.Builder(StubBeatSource()) }
+        val beatLinkDataSource by value {
+            (plugins.find(BeatLinkPlugin.id) as BeatLinkPlugin).beatLinkDataSource
+        }
         val autoWirer by value { AutoWirer(plugins) }
         val scaleUniform by value { "uniform float theScale;" }
         val paintShader by value {
@@ -176,7 +179,7 @@ object EditingShaderSpec : Spek({
 
                     it("should create an appropriate data source") {
                         expect(
-                            MutableDataSourcePort(BeatLinkPlugin.BeatLinkDataSource())
+                            MutableDataSourcePort(beatLinkDataSource)
                         ) { mutableShaderInstance.incomingLinks["theScale"] }
                     }
                 }
@@ -186,7 +189,7 @@ object EditingShaderSpec : Spek({
 
                     it("should create an appropriate data source") {
                         expect(
-                            MutableDataSourcePort(BeatLinkPlugin.BeatLinkDataSource())
+                            MutableDataSourcePort(beatLinkDataSource)
                         ) { mutableShaderInstance.incomingLinks["theScale"] }
                     }
                 }
