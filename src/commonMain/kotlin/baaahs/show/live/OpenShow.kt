@@ -41,8 +41,8 @@ class OpenShow(
     fun edit(block: MutableShow.() -> Unit = {}): MutableShow =
         MutableShow(show).apply(block)
 
-    fun activeSet(): ActiveSet {
-        val builder = ActiveSetBuilder()
+    fun activePatchSet(): ActivePatchSet {
+        val builder = ActivePatchSetBuilder()
         addTo(builder, 0)
         return builder.build()
     }
@@ -87,35 +87,33 @@ class OpenShow(
     }
 }
 
-data class ActiveSet(val items: List<ActiveSetBuilder.Item>) {
-    fun getPatchHolders(): List<OpenPatchHolder> {
-        return items.map { it.patchHolder }
+data class ActivePatchSet(val activePatches: List<OpenPatch>)
+
+class ActivePatchSetBuilder {
+    private val items = arrayListOf<Item>()
+    private var nextSerial = 0
+
+    fun add(patchHolder: OpenPatchHolder, depth: Int, layoutContainerId: String = "") {
+        items.add(Item(patchHolder, depth, layoutContainerId, nextSerial++))
     }
 
-    fun getActivePatches() : List<OpenPatch> {
-        return getPatchHolders().flatMap { it.patches }
-    }
-}
-
-class ActiveSetBuilder {
-    val items = arrayListOf<Item>()
-    var nextSerial = 0
-
-    fun add(patchHolder: OpenPatchHolder, depth: Int, panelId: String = "") {
-        items.add(Item(patchHolder, depth, panelId, nextSerial++))
-    }
-
-    fun build(): ActiveSet {
-        return ActiveSet(
+    fun build(): ActivePatchSet {
+        return ActivePatchSet(
             items.sortedWith(
                 compareBy<Item> { it.depth }
-                    .thenBy { it.panelId }
+                    .thenBy { it.layoutContainerId }
                     .thenBy { it.serial }
-            )
+            ).map { it.patchHolder }
+                .flatMap { it.patches }
         )
     }
 
-    data class Item(val patchHolder: OpenPatchHolder, val depth: Int, val panelId: String, val serial: Int)
+    private data class Item(
+        val patchHolder: OpenPatchHolder,
+        val depth: Int,
+        val layoutContainerId: String,
+        val serial: Int
+    )
 }
 
 abstract class OpenShowVisitor {

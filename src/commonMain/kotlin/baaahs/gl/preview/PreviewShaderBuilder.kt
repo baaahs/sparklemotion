@@ -106,6 +106,7 @@ class PreviewShaderBuilder(
                 ShaderType.Distortion -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
                 ShaderType.Paint -> arrayOf(screenCoordsProjection, openShader)
                 ShaderType.Filter -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
+                ShaderType.Mover -> arrayOf(openShader)
             }
 
             val defaultPorts = when (shader.type) {
@@ -200,8 +201,20 @@ object ProjectionPreviewDevice: DeviceType {
         get() = listOf(
             ResultParam("Vertex Location", Vec2ResultType)
         )
+    override val resultContentType: ContentType
+        get() = ContentType.UvCoordinateStream
+
+    override val errorIndicatorShader: Shader
+        get() = Shader(
+            "Ω Guru Meditation Error Ω",
+            ShaderType.Paint,
+            /**language=glsl*/
+            ""
+        )
 
     fun getVertexLocations(resultViews: List<ResultView>): Vec2ResultType.Vec2ResultView {
         return resultViews[0] as Vec2ResultType.Vec2ResultView
     }
+
+    override fun toString(): String = id
 }

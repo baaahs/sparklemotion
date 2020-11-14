@@ -2,6 +2,7 @@ package baaahs.gl.render
 
 import baaahs.TestModel
 import baaahs.describe
+import baaahs.englishize
 import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
@@ -11,12 +12,15 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.override
+import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.renderPlanFor
 import baaahs.gl.shader.PaintShader
 import baaahs.only
 import baaahs.plugin.Plugins
 import baaahs.show.DataSource
-import baaahs.show.Surfaces
+import baaahs.show.Shader
+import baaahs.show.ShaderType
 import baaahs.show.UpdateMode
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.link
@@ -87,7 +91,7 @@ object ModelRenderEngineSpec : Spek({
             val incomingLinks by value { mapOf("gl_FragCoord" to dataSource.link("coord")) }
             val linkedPatch by value {
                 val liveShaderInstance = LiveShaderInstance(openShader, incomingLinks, null, 0f)
-                LinkedPatch(liveShaderInstance, Surfaces.AllSurfaces)
+                LinkedPatch(liveShaderInstance)
             }
             val program by value {
                 renderEngine.compile(linkedPatch) { _, dataSource -> dataSource.createFixtureFeed() }
@@ -145,13 +149,20 @@ object ModelRenderEngineSpec : Spek({
 
             context("when a fixtures are added") {
                 val fixture1Target by value {
-                    renderEngine.addFixture(testFixture(deviceType, 1, 0f)).also { it.program = initialProgram[0] }
+                    renderEngine.addFixture(testFixture(deviceType, 1, 0f))
                 }
                 val fixture2Target by value {
-                    renderEngine.addFixture(testFixture(deviceType, 2, 0.1f)).also { it.program = initialProgram[0] }
+                    renderEngine.addFixture(testFixture(deviceType, 2, 0.1f))
                 }
                 val addTwoFixtures by value { { fixture1Target.run { }; fixture2Target.run { } } }
-                val drawTwoFrames by value { { renderEngine.draw(); renderEngine.draw() } }
+                val renderPlan by value { renderPlanFor(initialProgram[0]!!, fixture1Target, fixture2Target) }
+                val drawTwoFrames by value {
+                    {
+                        renderEngine.setRenderPlan(renderPlan)
+                        renderEngine.draw()
+                        renderEngine.draw()
+                    }
+                }
 
                 beforeEachTest { addTwoFixtures() }
 
@@ -219,9 +230,7 @@ object ModelRenderEngineSpec : Spek({
 
                             beforeEachTest {
                                 // This causes program to be compiled finally.
-                                fixture1Target.program = program
-                                fixture2Target.program = program
-
+                                renderEngine.setRenderPlan(renderPlanFor(program, fixture1Target, fixture2Target))
                                 renderEngine.draw()
                                 renderEngine.draw()
                             }
@@ -251,11 +260,17 @@ private fun testFixture(deviceType: DeviceTypeForTest, pixelCount: Int, initial:
 private fun someVectors(count: Int, initial: Float = 0f): List<Vector3F> =
     (0 until count).map { Vector3F(initial + count / 10f, 0f, 0f) }
 
-class DeviceTypeForTest(vararg fixtureDataSources: DataSource) : DeviceType {
-    override val id: String get() = error("not implemented")
-    override val title: String get() = error("not implemented")
+class DeviceTypeForTest(
+    vararg fixtureDataSources: DataSource,
+    override val resultContentType: ContentType = ContentType.ColorStream,
+    override val id: String = "testDevice",
+    override val title: String = id.englishize()
+) : DeviceType {
     override val dataSources: List<DataSource> = fixtureDataSources.toList()
     override val resultParams: List<ResultParam> get() = emptyList()
+    override val errorIndicatorShader: Shader
+        get() = Shader("Ω Guru Meditation Error Ω", ShaderType.Paint, "")
+    override fun toString(): String = id
 }
 
 fun Boolean.truify(): Boolean {

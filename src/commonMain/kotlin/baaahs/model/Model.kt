@@ -9,7 +9,7 @@ abstract class Model : ModelInfo {
     abstract val name: String
     abstract val movingHeads: List<MovingHead>
     abstract val allSurfaces: List<Surface>
-    val allEntities: List<Entity> get() = allSurfaces + movingHeads
+    abstract val allEntities: List<Entity>
 
     abstract val geomVertices: List<Vector3F>
 

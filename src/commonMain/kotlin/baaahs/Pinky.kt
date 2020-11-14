@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.api.ws.WebSocketRouter
+import baaahs.dmx.Dmx
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.glsl.CompilationException
@@ -53,12 +54,10 @@ class Pinky(
 
     private val pubSub: PubSub.Server = PubSub.Server(httpServer, coroutineContext)
 //    private val gadgetManager = GadgetManager(pubSub)
-    private val movingHeadManager = MovingHeadManager(fs, pubSub, model.movingHeads)
     internal val fixtureManager = FixtureManager(renderManager)
 
     var stageManager: StageManager = StageManager(
-        plugins, renderManager, pubSub, storage, fixtureManager, dmxUniverse, movingHeadManager, clock, model,
-        coroutineContext
+        plugins, renderManager, pubSub, storage, fixtureManager, clock, model, coroutineContext
     )
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {
@@ -76,6 +75,7 @@ class Pinky(
     private val udpSocket = link.listenUdp(Ports.PINKY, this)
     private val brainManager =
         BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats)
+    private val movingHeadManager = MovingHeadManager(fixtureManager, dmxUniverse, model.movingHeads, fs)
 
     private val serverNotices = arrayListOf<ServerNotice>()
     private val serverNoticesChannel = pubSub.publish(Topics.serverNotices, serverNotices) {

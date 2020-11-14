@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.dmx.Dmx
 import baaahs.dmx.DmxDevice
 import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager

@@ -4,9 +4,11 @@ import baaahs.getBang
 import baaahs.gl.GlContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
+import baaahs.show.Shader
 import com.danielgergely.kgl.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
@@ -22,6 +24,8 @@ interface DeviceType {
     val title: String
     val dataSources: List<DataSource>
     val resultParams: List<ResultParam>
+    val resultContentType: ContentType
+    val errorIndicatorShader: Shader
 
     companion object {
         private val knownDeviceTypes = listOf(

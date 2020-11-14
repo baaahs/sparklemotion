@@ -1,16 +1,22 @@
 package baaahs.gl.patch
 
+import baaahs.TestModel
+import baaahs.fixtures.PixelArrayDevice
+import baaahs.getBang
+import baaahs.gl.render.RenderManager
 import baaahs.glsl.Shaders
+import baaahs.only
 import baaahs.plugin.Plugins
+import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
-import baaahs.show.Surfaces
 import baaahs.show.live.OpenButtonControl
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
+import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -78,8 +84,15 @@ object PatchLayeringSpec : Spek({
             }
 
             it("merges layered patches into a single patch") {
-                val patchResolution = PatchResolver(emptyList(), show.activeSet())
-                val portDiagram = patchResolution.portDiagrams[Surfaces.AllSurfaces]!!
+                val model = TestModel
+                val renderManager = RenderManager(model) { FakeGlContext() }
+                val fixture = model.allEntities.first()
+                val renderTarget = renderManager.addFixture(fakeFixture(1, fixture))
+                val patchResolution = PatchResolver(renderManager, listOf(renderTarget), show.activePatchSet())
+                val portDiagram = patchResolution.portDiagrams
+                    .getBang(PixelArrayDevice, "device type")
+                    .only("port diagram to render targets")
+                    .first
                 val linkedPatch = portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)!!
                 expect(
                     /** language=glsl */

@@ -13,6 +13,7 @@ actual fun getCommonIcons(): PlatformIcons = object : PlatformIcons {
     override val DistortionShader: Icon = FakeIcon
     override val FilterShader: Icon = FakeIcon
     override val PaintShader: Icon = FakeIcon
+    override val MoverShader: Icon = FakeIcon
     override val ProjectionShader: Icon = FakeIcon
     override val BeatLinkControl: Icon = FakeIcon
     override val Button: Icon = FakeIcon

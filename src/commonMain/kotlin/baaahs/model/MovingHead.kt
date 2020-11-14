@@ -1,7 +1,7 @@
 package baaahs.model
 
 import baaahs.Color
-import baaahs.Dmx
+import baaahs.dmx.Dmx
 import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.DeviceType
 import baaahs.fixtures.MovingHeadDevice
@@ -11,8 +11,8 @@ import kotlinx.serialization.Serializable
 class MovingHead(
     override val name: String,
     override val description: String,
-    val origin: Vector3F
-    /*, val heading: Vector3F*/
+    val origin: Vector3F,
+    val heading: Vector3F
 ) : Model.Entity {
     enum class ColorMode {
         ColorWheel,
@@ -35,9 +35,13 @@ class MovingHead(
             get() = getFloat(panChannel, panFineChannel)
             set(value) = setFloat(panChannel, panFineChannel, value)
 
+        val panRange: ClosedRange<Float>
+
         var tilt: Float
             get() = getFloat(tiltChannel, tiltFineChannel)
             set(value) = setFloat(tiltChannel, tiltFineChannel, value)
+
+        val tiltRange: ClosedRange<Float>
 
         var dimmer: Float
             get() = getFloat(dimmerChannel)

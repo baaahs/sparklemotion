@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.fixtures.DeviceType
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.model.Model
@@ -40,6 +41,12 @@ class FakeClock(var time: Time = 0.0) : Clock {
     override fun now(): Time = time
 }
 
+class FakeModelEntity(
+    override val name: String,
+    override val deviceType: DeviceType = PixelArrayDevice,
+    override val description: String = name
+) : Model.Entity
+
 class TestModelSurface(
     name: String,
     expectedPixelCount: Int? = 1,
@@ -48,12 +55,15 @@ class TestModelSurface(
     override fun allVertices(): Collection<Vector3F> = vertices
 }
 
+fun fakeModel(entities: List<Model.Entity>) = ModelForTest(entities)
+
 object TestModel : ModelForTest(listOf(TestModelSurface("Panel")))
 
 open class ModelForTest(private val entities: List<Entity>) : Model() {
     override val name: String = "Test Model"
     override val movingHeads: List<MovingHead> get() = entities.filterIsInstance<MovingHead>()
     override val allSurfaces: List<Surface> get() = entities.filterIsInstance<Surface>()
+    override val allEntities: List<Entity> get() = entities
     override val geomVertices: List<Vector3F> = emptyList()
 
     override val center: Vector3F

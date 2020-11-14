@@ -17,6 +17,8 @@ class GlslProgram(
     private val linkedPatch: LinkedPatch,
     engineFeedResolver: EngineFeedResolver
 ) {
+    val title: String get() = linkedPatch.shaderInstance.shader.title
+
     private val vertexShader =
         gl.createVertexShader(
             "#version ${gl.glslVersion}\n${GlslProgram.vertexShader}"
@@ -91,7 +93,16 @@ class GlslProgram(
 
     fun release() {
         feeds.forEach { it.release() }
-//        TODO gl.runInContext { gl.check { deleteProgram } }
+
+        gl.runInContext {
+            gl.useProgram(this)
+//            TODO: gl.check { detachShader(vertexShader) }
+            vertexShader.release()
+//            TODO: gl.check { detachShader(fragShader) }
+            fragShader.release()
+
+        }
+//        TODO gl.runInContext { gl.check { deleteProgram(id) } }
     }
 
     fun getUniform(name: String): Uniform? = gl.runInContext {

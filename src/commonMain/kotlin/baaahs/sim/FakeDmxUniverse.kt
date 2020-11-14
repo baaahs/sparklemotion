@@ -1,6 +1,6 @@
 package baaahs.sim
 
-import baaahs.Dmx
+import baaahs.dmx.Dmx
 
 class FakeDmxUniverse : Dmx.Universe() {
     private val channelsOut = ByteArray(512)

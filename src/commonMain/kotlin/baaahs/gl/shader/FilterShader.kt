@@ -6,7 +6,6 @@ import baaahs.gl.glsl.LinkException
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
-import baaahs.show.ShaderOutPortRef
 import baaahs.show.ShaderType
 
 class FilterShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
@@ -24,8 +23,7 @@ class FilterShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenS
 //                        varying vec2 surfacePosition; TODO
         ).associateBy { it.id }
 
-        val outputPort =
-            OutputPort(GlslType.Vec4, ShaderOutPortRef.ReturnValue, "Output Color", ContentType.ColorStream)
+        val outputPort = OutputPort(ContentType.ColorStream)
     }
 
     override val shaderType: ShaderType
