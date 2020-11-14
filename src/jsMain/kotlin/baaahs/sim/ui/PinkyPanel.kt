@@ -4,18 +4,7 @@ import baaahs.Pinky
 import baaahs.ui.*
 import baaahs.ui.SimulatorStyles.beatsDiv
 import baaahs.util.percent
-import external.react_draggable.Draggable
 import kotlinx.css.*
-import kotlinx.html.id
-import kotlinx.html.js.onChangeFunction
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.paper.enums.PaperStyle
-import materialui.components.paper.paper
-import materialui.components.portal.portal
-import materialui.components.switches.switch
-import materialui.components.typography.typographyH6
-import materialui.icon
-import materialui.icons.Icons
 import react.*
 import react.dom.*
 import styled.StyleSheet
@@ -33,31 +22,6 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
         val pinky = props.pinky
 
         if (state.showGlsl) {
-            portal {
-                Draggable {
-                    val randomStyleForHandle = "PinkyPanelHandle"
-                    attrs.handle = ".$randomStyleForHandle"
-
-                    div(+Styles.glslCodeSheet) {
-                        div(+Styles.dragHandle and randomStyleForHandle) {
-                            icon(Icons.DragIndicator)
-                        }
-
-                        paper(Styles.glslCodePaper on PaperStyle.root) {
-                            attrs.elevation = 3
-
-                            typographyH6 { +"Generated GLSL" }
-
-                            div(+Styles.glslCodeDiv) {
-                                props.pinky.stageManager.currentGlsl?.forEach { (surfaceName, glsl) ->
-                                    header { +surfaceName }
-                                    pre { +glsl }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         val currentShowTitle = pinky.stageManager.currentShow?.title
@@ -65,7 +29,6 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
             css { +SimulatorStyles.section }
             b { +"Pinky:" }
             div {
-                attrs.id = "pinkyView" // TODO: kill
                 +"Current Show: "
                 b {
                     if (currentShowTitle == null) {
@@ -74,17 +37,6 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
                         +currentShowTitle
                     }
                 }
-            }
-
-            formControlLabel {
-                attrs.control {
-                    switch {
-                        attrs["size"] = "small"
-                        attrs.checked = state.showGlsl
-                        attrs.onChangeFunction = { state.showGlsl = !state.showGlsl}
-                    }
-                }
-                attrs.label { +"Show GLSL" }
             }
 
             br { }

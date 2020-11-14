@@ -6,10 +6,11 @@ import baaahs.getBang
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.shader.OpenShader
 import baaahs.show.DataSource
+import baaahs.show.Shader
 import baaahs.show.Show
 import baaahs.util.CacheBuilder
 
-class ShowOpener(
+open class ShowOpener(
     private val glslAnalyzer: GlslAnalyzer,
     private val show: Show,
     private val showPlayer: ShowPlayer
@@ -21,7 +22,7 @@ class ShowOpener(
     override val allControls: List<OpenControl> get() = openControlCache.all.values.toList()
 
     private val openShaders = CacheBuilder<String, OpenShader> { shaderId ->
-        glslAnalyzer.openShader(show.shaders.getBang(shaderId, "shaders"))
+        openShader(show.shaders.getBang(shaderId, "shaders"))
     }
 
     private val resolver = ShaderInstanceResolver(
@@ -48,6 +49,9 @@ class ShowOpener(
             .also { if (showState != null) it.applyState(showState) }
             .also { it.applyConstraints() }
     }
+
+    open fun openShader(shader: Shader) =
+        glslAnalyzer.openShader(shader)
 
     override fun release() {
 //        allControls.forEach { it.release() }

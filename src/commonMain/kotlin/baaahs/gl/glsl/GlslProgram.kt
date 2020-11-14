@@ -93,7 +93,16 @@ class GlslProgram(
 
     fun release() {
         feeds.forEach { it.release() }
-//        TODO gl.runInContext { gl.check { deleteProgram } }
+
+        gl.runInContext {
+            gl.useProgram(this)
+//            TODO: gl.check { detachShader(vertexShader) }
+            vertexShader.release()
+//            TODO: gl.check { detachShader(fragShader) }
+            fragShader.release()
+
+        }
+//        TODO gl.runInContext { gl.check { deleteProgram(id) } }
     }
 
     fun getUniform(name: String): Uniform? = gl.runInContext {

@@ -1,27 +1,24 @@
 package baaahs.fixtures
 
-import baaahs.RenderPlan
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.patch.ContentType
-import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
-import baaahs.show.live.ActiveSet
+import baaahs.show.live.ActivePatchSet
 import baaahs.timeSync
 import baaahs.util.Logger
 
 class FixtureManager(
-    private val renderManager: RenderManager
+    private val renderManager: RenderManager,
+    private val renderTargets: MutableMap<Fixture, RenderTarget> = hashMapOf()
 ) {
     private val frameListeners: MutableList<() -> Unit> = arrayListOf()
     private val changedFixtures = mutableListOf<FixturesChanges>()
-    private val renderTargets: MutableMap<Fixture, RenderTarget> = hashMapOf()
     private var totalFixtures = 0
 
-    private var currentActiveSet: ActiveSet = ActiveSet(emptyList())
-    private var activeSetChanged = false
+    private var currentActivePatchSet: ActivePatchSet = ActivePatchSet(emptyList())
+    private var activePatchSetChanged = false
     internal var currentRenderPlan: RenderPlan? = null
 
     fun addFrameListener(callback: () -> Unit) {
@@ -49,22 +46,7 @@ class FixtureManager(
         return anyChanges
     }
 
-    fun remap(renderPlan: RenderPlan) {
-        renderTargets.forEach { (fixture, renderTarget) ->
-            renderPlan.programs.forEach { (deviceType, patches) ->
-                if (fixture.deviceType == deviceType) {
-                    patches.forEach { (patch, program) ->
-                        if (patch.matches(fixture)) {
-                            renderTarget.useProgram(program)
-                        }
-
-                    }
-                }
-            }
-        }
-    }
-
-    fun clearRenderTargets() {
+    private fun clearRenderTargets() {
         renderTargets.values.forEach { it.release() }
     }
 
@@ -98,10 +80,10 @@ class FixtureManager(
         } ?: throw IllegalStateException("huh? can't remove unknown fixture $fixture")
     }
 
-    fun activeSetChanged(activeSet: ActiveSet) {
-        if (activeSet != currentActiveSet) {
-            currentActiveSet = activeSet
-            activeSetChanged = true
+    fun activePatchSetChanged(activePatchSet: ActivePatchSet) {
+        if (activePatchSet != currentActivePatchSet) {
+            currentActivePatchSet = activePatchSet
+            activePatchSetChanged = true
         }
     }
 
@@ -109,28 +91,28 @@ class FixtureManager(
         var remapFixtures = incorporateFixtureChanges()
 
         // Maybe build new shaders.
-        if (this.activeSetChanged) {
-            val activeSet = currentActiveSet
+        // TODO: In the remapFixtures case, this would benefit from reusing cached artifacts.
+        if (this.activePatchSetChanged || remapFixtures) {
+            val activePatchSet = currentActivePatchSet
 
             val elapsedMs = timeSync {
-                val patchResolution = PatchResolver(renderTargets.values, activeSet)
-                currentRenderPlan = patchResolution.createRenderPlan(renderManager, feedResolver)
+                val patchResolution = PatchResolver(renderManager, renderTargets.values, activePatchSet)
+                currentRenderPlan = patchResolution.createRenderPlan(feedResolver)
             }
 
             logger.info {
-                "New render plan created; ${currentRenderPlan?.programs?.size ?: 0} programs, " +
-                        "${getFixtureCount()} fixtures; took ${elapsedMs}ms"
+                "New render plan created: ${currentRenderPlan?.describe() ?: "none!"}; took ${elapsedMs}ms"
             }
 
             remapFixtures = true
-            this.activeSetChanged = false
+            this.activePatchSetChanged = false
         }
 
         if (remapFixtures) {
             clearRenderTargets()
 
-            currentRenderPlan?.let {
-                remap(it)
+            currentRenderPlan?.let { renderPlan ->
+                renderManager.setRenderPlan(renderPlan)
             }
         }
 
@@ -147,3 +129,20 @@ class FixtureManager(
         private val logger = Logger<FixtureManager>()
     }
 }
+
+class RenderPlan(
+    val deviceTypes: Map<DeviceType, DeviceTypeRenderPlan>
+) : Map<DeviceType, DeviceTypeRenderPlan> by deviceTypes {
+    fun describe() = "${deviceTypes.size} devices, " +
+            "${deviceTypes.values.map { it.programs.count() }.sum()} programs, " +
+            "${deviceTypes.values.map { it.programs.map { it.renderTargets.count() }.sum() }.sum()} fixtures"
+}
+
+class DeviceTypeRenderPlan(
+    val programs: List<ProgramRenderPlan>,
+) : Iterable<ProgramRenderPlan> by programs
+
+class ProgramRenderPlan(
+    val program: GlslProgram?,
+    val renderTargets: List<RenderTarget>
+)

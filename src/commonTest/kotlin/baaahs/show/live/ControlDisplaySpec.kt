@@ -83,7 +83,7 @@ object ControlDisplaySpec : Spek({
                 expect(
                     (openShow.patches + scene1Button.patches + backdrop11Button.patches).prettyPrint()
                 ) {
-                    openShow.activeSet().getActivePatches().prettyPrint()
+                    openShow.activePatchSet().activePatches.prettyPrint()
                 }
             }
         }

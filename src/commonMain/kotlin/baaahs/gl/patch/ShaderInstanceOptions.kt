@@ -31,7 +31,7 @@ class ShaderInstanceOptions(
         parentMutablePatch?.mutableShaderInstances?.forEach { shaderInstance ->
             val openShader = glslAnalyzer.openShader(shaderInstance.mutableShader.build())
 
-            openShader.shaderType.defaultUpstreams.forEach { (contentType, shaderChannel) ->
+            openShader.defaultUpstreams.forEach { (contentType, shaderChannel) ->
                 shaderChannels.getOrPut(contentType) { mutableSetOf() }
                     .add(MutableShaderChannel(shaderChannel.id))
             }

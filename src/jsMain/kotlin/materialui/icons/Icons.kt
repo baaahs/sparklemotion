@@ -41,6 +41,7 @@ external object Icons {
     val NotInterested: Icon
     val NotificationImportant: Icon
     val OpenInBrowser: Icon
+    val OpenWith: Icon
     val Palette: Icon
     val PowerInput: Icon
     val Redo: Icon

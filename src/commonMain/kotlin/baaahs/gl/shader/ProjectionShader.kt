@@ -5,7 +5,6 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
-import baaahs.show.ShaderOutPortRef
 import baaahs.show.ShaderType
 
 class ProjectionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
@@ -18,8 +17,7 @@ class ProjectionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : O
             InputPort("previewResolution", GlslType.Vec2, "Preview Resolution", ContentType.PreviewResolution)
         ).associateBy { it.id }
 
-        val outputPort =
-            OutputPort(GlslType.Vec2, ShaderOutPortRef.ReturnValue, "U/V Coordinate", ContentType.UvCoordinateStream)
+        val outputPort = OutputPort(ContentType.UvCoordinateStream)
 
     }
 

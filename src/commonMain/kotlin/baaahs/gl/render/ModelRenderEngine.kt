@@ -1,6 +1,7 @@
 package baaahs.gl.render
 
 import baaahs.fixtures.DeviceType
+import baaahs.fixtures.DeviceTypeRenderPlan
 import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
@@ -30,6 +31,7 @@ class ModelRenderEngine(
     var nextRectOffset: Int = 0
 
     private val renderTargets: MutableList<RenderTarget> = mutableListOf()
+    private var renderPlan: DeviceTypeRenderPlan? = null
 
     // TODO: These should probably be opened elsewhere.
     private val fixtureFeeds = gl.runInContext {
@@ -104,7 +106,7 @@ class ModelRenderEngine(
         }
     }
 
-    override fun prepare() {
+    override fun beforeFrame() {
         incorporateNewFixtures()
     }
 
@@ -122,7 +124,7 @@ class ModelRenderEngine(
         arrangement.render()
     }
 
-    override fun retrieveResults() {
+    override fun afterFrame() {
         copyResultsToCpuBuffer()
     }
 
@@ -148,6 +150,10 @@ class ModelRenderEngine(
 
             pixelCount = newPixelCount
         }
+    }
+
+    fun setRenderPlan(renderPlan: DeviceTypeRenderPlan?) {
+        this.renderPlan = renderPlan
     }
 
     override fun onRelease() {
@@ -203,24 +209,25 @@ class ModelRenderEngine(
         fun render() {
             engineFeeds.values.forEach { it.aboutToRenderFrame(renderTargets) }
 
-            renderTargets
-                .groupBy { it.program }
-                .forEach { (program, renderTargets) ->
-                    if (program != null) {
-//                        logger.info { "Using ${program.title} on ${deviceType::class.simpleName}"}
-                        gl.useProgram(program)
-                        program.aboutToRenderFrame()
+            renderPlan?.forEach { programRenderPlan ->
+                val program = programRenderPlan.program
+                if (program != null) {
+                    gl.useProgram(program)
+                    program.aboutToRenderFrame()
 
-                        quad.prepareToRender(program.vertexAttribLocation) {
-                            renderTargets.forEach { renderTarget ->
-                                program.aboutToRenderFixture(renderTarget)
-                                renderTarget.rects.indices.forEach { i ->
-                                    quad.renderRect(renderTarget.rect0Index + i)
-                                }
-                            }
+                    quad.prepareToRender(program.vertexAttribLocation) {
+                        programRenderPlan.renderTargets.forEach { renderTarget ->
+                            renderTarget.usingProgram(program)
+                            program.aboutToRenderFixture(renderTarget)
+                            quad.renderRects(renderTarget)
                         }
                     }
+                } else {
+                    programRenderPlan.renderTargets.forEach { renderTarget ->
+                        renderTarget.usingProgram(null)
+                    }
                 }
+            }
         }
     }
 
@@ -256,6 +263,12 @@ class ModelRenderEngine(
                 pixelsLeft -= rowPixelsTaken
             }
             return rects
+        }
+
+        fun Quad.renderRects(renderTarget: RenderTarget) {
+            renderTarget.rects.indices.forEach { i ->
+                this.renderRect(renderTarget.rect0Index + i)
+            }
         }
     }
 }

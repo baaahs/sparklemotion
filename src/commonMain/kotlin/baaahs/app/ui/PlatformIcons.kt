@@ -1,6 +1,5 @@
 package baaahs.app.ui
 
-import baaahs.show.ShaderType
 import baaahs.ui.Icon
 
 
@@ -15,10 +14,11 @@ interface PlatformIcons {
     val Settings: Icon
     val None: Icon
 
+    val ProjectionShader: Icon
     val DistortionShader: Icon
     val FilterShader: Icon
     val PaintShader: Icon
-    val ProjectionShader: Icon
+    val MoverShader: Icon
 
     val BeatLinkControl: Icon
     val Button: Icon

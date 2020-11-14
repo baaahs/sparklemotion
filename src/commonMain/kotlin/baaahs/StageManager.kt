@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.RenderPlan
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
@@ -12,7 +13,6 @@ import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
 import baaahs.show.DataSource
 import baaahs.show.Show
-import baaahs.show.Surfaces
 import baaahs.show.buildEmptyShow
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.CoroutineScope
@@ -222,16 +222,8 @@ class StageManager(
         val currentShow: Show?
             get() = this@StageManager.showRunner?.show
 
-        val currentGlsl: List<Pair<String, String>>?
-            get() {
-                val glsls = arrayListOf<Pair<String, String>>()
-                this@StageManager.fixtureManager.currentRenderPlan?.programs?.forEach { (deviceType, entries) ->
-                        entries.map { (patch, program) ->
-                            glsls.add("${deviceType::class.simpleName} (${patch.surfaces.name})" to program.fragShader.source)
-                        }
-                    }
-                return glsls
-            }
+        val currentRenderPlan: RenderPlan?
+            get() = this@StageManager.fixtureManager.currentRenderPlan
     }
 }
 

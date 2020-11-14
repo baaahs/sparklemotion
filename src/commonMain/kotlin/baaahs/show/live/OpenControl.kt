@@ -21,7 +21,7 @@ interface OpenControl {
     fun getState(): Map<String, JsonElement>? = gadget?.state
     fun applyState(state: Map<String, JsonElement>) = gadget?.applyState(state)
     fun controlledDataSources(): Set<DataSource> = emptySet()
-    fun addTo(activeSetBuilder: ActiveSetBuilder, panelId: String, depth: Int) {}
+    fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panelId: String, depth: Int) {}
     fun applyConstraints() {}
     fun toNewMutable(mutableShow: MutableShow): MutableControl
     fun getRenderer(controlProps: ControlProps): Renderer
@@ -60,9 +60,9 @@ class OpenButtonControl(
 
     override fun isActive(): Boolean = isPressed
 
-    override fun addTo(activeSetBuilder: ActiveSetBuilder, panelId: String, depth: Int) {
+    override fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panelId: String, depth: Int) {
         if (isPressed) {
-            addTo(activeSetBuilder, depth)
+            addTo(activePatchSetBuilder, depth)
         }
     }
 
@@ -121,8 +121,8 @@ class OpenButtonGroupControl(
         }
     }
 
-    override fun addTo(activeSetBuilder: ActiveSetBuilder, panelId: String, depth: Int) {
-        buttons.forEach { it.addTo(activeSetBuilder, panelId, depth + 1) }
+    override fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panelId: String, depth: Int) {
+        buttons.forEach { it.addTo(activePatchSetBuilder, panelId, depth + 1) }
     }
 
     fun createDropTarget(controlDisplay: ControlDisplay) =

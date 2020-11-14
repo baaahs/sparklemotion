@@ -4,7 +4,10 @@ import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.fixtures.*
 import baaahs.gl.data.Feed
-import baaahs.gl.glsl.*
+import baaahs.gl.glsl.FeedResolver
+import baaahs.gl.glsl.GlslError
+import baaahs.gl.glsl.GlslException
+import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
@@ -201,7 +204,17 @@ object ProjectionPreviewDevice: DeviceType {
     override val resultContentType: ContentType
         get() = ContentType.UvCoordinateStream
 
+    override val errorIndicatorShader: Shader
+        get() = Shader(
+            "Ω Guru Meditation Error Ω",
+            ShaderType.Paint,
+            /**language=glsl*/
+            ""
+        )
+
     fun getVertexLocations(resultViews: List<ResultView>): Vec2ResultType.Vec2ResultView {
         return resultViews[0] as Vec2ResultType.Vec2ResultView
     }
+
+    override fun toString(): String = id
 }

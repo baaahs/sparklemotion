@@ -12,7 +12,6 @@ import info.laht.threekt.cameras.PerspectiveCamera
 import info.laht.threekt.core.Geometry
 import info.laht.threekt.core.Object3D
 import info.laht.threekt.geometries.ConeBufferGeometry
-import info.laht.threekt.geometries.CylinderBufferGeometry
 import info.laht.threekt.geometries.SphereBufferGeometry
 import info.laht.threekt.materials.MeshBasicMaterial
 import info.laht.threekt.materials.PointsMaterial
@@ -160,6 +159,8 @@ class Visualizer(model: Model) : JsMapperUi.StatusListener {
         return VizMovingHead(movingHead, dmxUniverse)
     }
 
+    val coneLength = 1000.0
+
     inner class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniverse) {
         private val dmxChannelMapping = Config.findDmxChannelMapping(movingHead)
         private val adapter = run {
@@ -176,8 +177,8 @@ class Visualizer(model: Model) : JsMapperUi.StatusListener {
             opacity = .75
             depthTest = false
         }
-        private val innerConeGeometry = ConeBufferGeometry(20, 1000)
-            .also { it.applyMatrix(Matrix4().makeTranslation(0.0, -500.0, 0.0)) }
+        private val innerConeGeometry = ConeBufferGeometry(20, coneLength, openEnded = true)
+            .also { it.applyMatrix(Matrix4().makeTranslation(0.0, -coneLength / 2, 0.0)) }
         private val innerCone = Mesh(innerConeGeometry, innerConeMaterial)
 
         private val outerConeMaterial = MeshBasicMaterial().apply {
@@ -188,8 +189,8 @@ class Visualizer(model: Model) : JsMapperUi.StatusListener {
             blending = THREE.AdditiveBlending
             depthTest = false
         }
-        private val outerConeGeometry = ConeBufferGeometry(50, 1000)
-            .also { it.applyMatrix(Matrix4().makeTranslation(0.0, -500.0, 0.0)) }
+        private val outerConeGeometry = ConeBufferGeometry(50, coneLength, openEnded = true)
+            .also { it.applyMatrix(Matrix4().makeTranslation(0.0, -coneLength / 2, 0.0)) }
         private val outerCone = Mesh(outerConeGeometry, outerConeMaterial)
 
         private val materials = listOf(innerConeMaterial, outerConeMaterial)

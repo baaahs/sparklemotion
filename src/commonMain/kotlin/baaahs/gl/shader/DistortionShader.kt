@@ -6,7 +6,6 @@ import baaahs.gl.glsl.LinkException
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
-import baaahs.show.ShaderOutPortRef
 import baaahs.show.ShaderType
 
 class DistortionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
@@ -24,8 +23,7 @@ class DistortionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : O
 //                        varying vec2 surfacePosition; TODO
         ).associateBy { it.id }
 
-        val outputPort: OutputPort =
-            OutputPort(GlslType.Vec2, ShaderOutPortRef.ReturnValue, "U/V Coordinate", ContentType.UvCoordinateStream)
+        val outputPort: OutputPort = OutputPort(ContentType.UvCoordinateStream)
     }
 
     override val shaderType: ShaderType
