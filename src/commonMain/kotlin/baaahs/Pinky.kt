@@ -77,7 +77,7 @@ class Pinky(
     // This needs to go last-ish, otherwise we start getting network traffic too early.
     private val udpSocket = link.listenUdp(Ports.PINKY, this)
     private val brainManager =
-        BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats)
+        BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats, clock)
     private val movingHeadManager = MovingHeadManager(fixtureManager, dmxUniverse, model.movingHeads, fs)
 
     private val serverNotices = arrayListOf<ServerNotice>()

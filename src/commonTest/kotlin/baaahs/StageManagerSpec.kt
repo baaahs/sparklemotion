@@ -2,12 +2,12 @@ package baaahs
 
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.render.RenderManager
+import baaahs.gl.testPlugins
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.models.SheepModel
-import baaahs.plugin.Plugins
 import baaahs.show.SampleData
 import baaahs.show.mutable.MutableShow
 import baaahs.shows.FakeGlContext
@@ -25,7 +25,7 @@ object StageManagerSpec : Spek({
         val panel17 = SheepModel.Panel("17")
         val model = SheepModel().apply { surfaces = listOf(panel17) } as Model
 
-        val plugins by value { Plugins.safe() }
+        val plugins by value { testPlugins() }
         val fakeFs by value { FakeFs() }
         val pubSub by value { TestPubSub() }
         val fakeGlslContext by value { FakeGlContext() }

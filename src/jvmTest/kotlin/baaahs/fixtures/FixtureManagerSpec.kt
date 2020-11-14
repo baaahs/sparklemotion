@@ -12,8 +12,8 @@ import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
+import baaahs.gl.testPlugins
 import baaahs.model.Model
-import baaahs.plugin.Plugins
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
@@ -75,7 +75,7 @@ object FixtureManagerSpec : Spek({
                 }
 
                 val openShow by value {
-                    val glslAnalyzer = GlslAnalyzer(Plugins.safe())
+                    val glslAnalyzer = GlslAnalyzer(testPlugins())
                     object : ShowOpener(glslAnalyzer, show, FakeShowPlayer(model)) {
                         override fun openShader(shader: Shader): OpenShader {
                             val contentType = when (shader.title) {

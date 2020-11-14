@@ -3,13 +3,13 @@ package baaahs
 import baaahs.geom.Matrix4
 import baaahs.gl.override
 import baaahs.gl.render.RenderManager
+import baaahs.gl.testPlugins
 import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.models.SheepModel
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.TestNetwork
-import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatData
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.BrainHelloMessage
@@ -50,7 +50,7 @@ object PinkySpec : Spek({
                 PermissiveFirmwareDaddy(),
                 StubSoundAnalyzer(),
                 renderManager = fakeGlslContext.runInContext { RenderManager(model) { fakeGlslContext } },
-                plugins = Plugins.safe(),
+                plugins = testPlugins(),
                 pinkyMainDispatcher = object : CoroutineDispatcher() {
                     override fun dispatch(context: CoroutineContext, block: Runnable) {
                         block.run()
@@ -72,7 +72,7 @@ object PinkySpec : Spek({
                     val surfaceData = MappingSession.SurfaceData(
                         brainId.uuid, surface.name, emptyList(), null, null, null
                     )
-                    val mappingSessionPath = Storage(fakeFs, Plugins.safe()).saveSession(
+                    val mappingSessionPath = Storage(fakeFs, testPlugins()).saveSession(
                         MappingSession(
                             0.0, listOf(surfaceData),
                             Matrix4(emptyArray()), null, notes = "Simulated pixels"

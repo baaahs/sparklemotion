@@ -8,7 +8,6 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
-import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.shows.FakeGlContext
@@ -23,7 +22,7 @@ import kotlin.test.expect
 object PreviewShaderBuilderSpec : Spek({
     describe<PreviewShaderBuilder> {
         val shader by value { Shaders.checkerboard }
-        val autoWirer by value { AutoWirer(Plugins.safe()) }
+        val autoWirer by value { AutoWirer(testPlugins()) }
         val testCoroutineContext by value { TestCoroutineContext("global") }
         val previewShaderBuilder by value {
             PreviewShaderBuilder(shader, autoWirer, ModelInfo.Empty, CoroutineScope(testCoroutineContext))

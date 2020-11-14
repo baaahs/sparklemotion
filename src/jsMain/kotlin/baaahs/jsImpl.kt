@@ -1,10 +1,11 @@
 package baaahs
 
+import baaahs.util.Clock
+import baaahs.util.JsClock
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import org.w3c.dom.get
 import org.w3c.xhr.XMLHttpRequest
-import kotlin.js.Date
 
 actual fun doRunBlocking(block: suspend () -> Unit) {
     GlobalScope.promise { block() }
@@ -25,7 +26,7 @@ actual fun getResource(name: String): String {
     throw Exception("failed to load resource ${name}: ${xhr.status} ${xhr.responseText}")
 }
 
-actual fun getTimeMillis(): Long = Date.now().toLong()
+actual val internalTimerClock: Clock = JsClock
 
 actual fun decodeBase64(s: String): ByteArray {
     return window.atob(s).encodeToByteArray()

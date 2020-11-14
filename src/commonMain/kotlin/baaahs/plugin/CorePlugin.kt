@@ -24,7 +24,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.*
 
-class CorePlugin : Plugin {
+class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     override val packageName: String = id
     override val title: String = "SparkleMotion Core"
 
@@ -180,11 +180,13 @@ class CorePlugin : Plugin {
         override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                    override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                        SingleUniformFeed(glslProgram, this@TimeDataSource, id) { uniform ->
-                            val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
+                    override fun bind(glslProgram: GlslProgram): ProgramFeed {
+                        val clock = showPlayer.plugins.pluginContext.clock
+                        return SingleUniformFeed(glslProgram, this@TimeDataSource, id) { uniform ->
+                            val thisTime = clock.now().toFloat()
                             uniform.set(thisTime)
                         }
+                    }
                 }
 
                 override fun release() = Unit
@@ -556,8 +558,10 @@ class CorePlugin : Plugin {
             }
     }
 
-    companion object {
-        val id = "baaahs.Core"
+    companion object : PluginBuilder {
+        override val id = "baaahs.Core"
+
+        override fun build(pluginContext: PluginContext) = CorePlugin(pluginContext)
 
         val contentTypesByGlslType =
             ContentType.coreTypes.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })

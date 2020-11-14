@@ -8,7 +8,9 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.show.Control
 import baaahs.show.DataSource
+import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.Time
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -41,7 +43,20 @@ data class PluginRef(
     }
 }
 
-class Plugins(plugins: List<Plugin>) {
+class Plugins private constructor(
+    val pluginContext: PluginContext,
+    plugins: List<Plugin>
+) {
+    constructor(
+        pluginBuilders: List<PluginBuilder>,
+        pluginContext: PluginContext
+    ) : this(pluginContext, pluginBuilders.map { it.build(pluginContext) })
+
+    constructor(
+        vararg pluginBuilders: PluginBuilder,
+        pluginContext: PluginContext
+    ) : this(pluginContext, pluginBuilders.map { it.build(pluginContext) })
+
     private val byPackage: Map<String, Plugin> = plugins.associateBy { it.packageName }
 
     val serialModule = SerializersModule {
@@ -135,8 +150,8 @@ class Plugins(plugins: List<Plugin>) {
         TODO("not implemented")
     }
 
-    operator fun plus(plugin: Plugin): Plugins {
-        return Plugins(byPackage.values + plugin)
+    operator fun plus(pluginBuilder: PluginBuilder): Plugins {
+        return Plugins(pluginContext, byPackage.values + pluginBuilder.build(pluginContext))
     }
 
     fun find(packageName: String): Plugin {
@@ -144,8 +159,17 @@ class Plugins(plugins: List<Plugin>) {
     }
 
     companion object {
-        fun safe(): Plugins = Plugins(listOf(CorePlugin()))
+        fun safe(pluginContext: PluginContext): Plugins =
+            Plugins(listOf(CorePlugin), pluginContext)
+
         val default = CorePlugin.id
+
+        /** Don't use me except from [baaahs.show.SampleData] and [baaahs.glsl.GuruMeditationError]. */
+        internal val dummyContext = PluginContext(ZeroClock())
+
+        private class ZeroClock : Clock {
+            override fun now(): Time = 0.0
+        }
 
         private val logger = Logger("Plugins")
     }

@@ -1,14 +1,17 @@
 package baaahs.show.mutable
 
-import baaahs.*
+import baaahs.StubBeatSource
 import baaahs.app.ui.editor.LinkOption
 import baaahs.app.ui.editor.PortLinkOption
+import baaahs.describe
+import baaahs.expectEmptyMap
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.ShaderBuilder
+import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
+import baaahs.only
 import baaahs.plugin.CorePlugin
-import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.show.Shader
 import baaahs.show.ShaderType
@@ -23,7 +26,7 @@ import kotlin.test.expect
 // TODO: move back to commonTest when mockk supports multiplatform.
 object EditingShaderSpec : Spek({
     describe<EditingShader> {
-        val plugins by value { Plugins.safe() + BeatLinkPlugin(StubBeatSource(), FakeClock()) }
+        val plugins by value { testPlugins() + BeatLinkPlugin.Builder(StubBeatSource()) }
         val autoWirer by value { AutoWirer(plugins) }
         val scaleUniform by value { "uniform float theScale;" }
         val paintShader by value {

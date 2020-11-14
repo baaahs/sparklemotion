@@ -6,6 +6,7 @@ import baaahs.getBang
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.shader.OpenShader
+import baaahs.gl.testPlugins
 import baaahs.model.ModelInfo
 import baaahs.plugin.Plugins
 import baaahs.show.DataSource
@@ -15,7 +16,7 @@ class FakeShowPlayer(
     override val modelInfo: ModelInfo = ModelInfo.Empty
 ) : ShowPlayer {
     override val plugins: Plugins
-        get() = Plugins.safe()
+        get() = testPlugins()
 
     private val shaders = mutableMapOf<Shader, OpenShader>()
     private val feeds = mutableMapOf<DataSource, Feed>()
@@ -25,9 +26,9 @@ class FakeShowPlayer(
 
     override fun openShader(shader: Shader, addToCache: Boolean): OpenShader {
         return if (addToCache) {
-            shaders.getOrPut(shader) { GlslAnalyzer(Plugins.safe()).openShader(shader) }
+            shaders.getOrPut(shader) { GlslAnalyzer(testPlugins()).openShader(shader) }
         } else {
-            shaders[shader] ?: GlslAnalyzer(Plugins.safe()).openShader(shader)
+            shaders[shader] ?: GlslAnalyzer(testPlugins()).openShader(shader)
         }
     }
 

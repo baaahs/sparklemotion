@@ -16,8 +16,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.renderPlanFor
 import baaahs.gl.shader.PaintShader
+import baaahs.gl.testPlugins
 import baaahs.only
-import baaahs.plugin.Plugins
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.ShaderType
@@ -87,7 +87,7 @@ object ModelRenderEngineSpec : Spek({
                     void main(void) { gl_FragColor = doesntMatter(gl_FragCoord); }
                 """.trimIndent()
             }
-            val openShader by value { GlslAnalyzer(Plugins.safe()).openShader(shaderText) as PaintShader }
+            val openShader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) as PaintShader }
             val incomingLinks by value { mapOf("gl_FragCoord" to dataSource.link("coord")) }
             val linkedPatch by value {
                 val liveShaderInstance = LiveShaderInstance(openShader, incomingLinks, null, 0f)
