@@ -88,6 +88,11 @@ class BeatLinkPlugin internal constructor(
             classSerializer(BeatLinkControl.serializer())
         )
 
+    override fun getDataSourceSerializers() =
+        listOf(
+            classSerializer(BeatLinkDataSource.serializer())
+        )
+
     @Serializable
     @SerialName("baaahs.BeatLink:BeatLink")
     data class BeatLinkDataSource(@Transient val `_`: Boolean = true) : DataSource {

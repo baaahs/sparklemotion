@@ -34,6 +34,7 @@ interface Plugin {
     fun getAddControlMenuItems(): List<AddControlMenuItem>
 
     fun getControlSerializers(): List<ClassSerializer<out Control>>
+    fun getDataSourceSerializers(): List<ClassSerializer<out DataSource>>
 
     class ClassSerializer<T : Any>(val klass: KClass<T>, val serializer: KSerializer<T>) {
         fun register(polymorphicModuleBuilder: PolymorphicModuleBuilder<T>) {
