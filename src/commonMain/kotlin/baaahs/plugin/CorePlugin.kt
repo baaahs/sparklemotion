@@ -120,6 +120,19 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             classSerializer(VisualizerControl.serializer())
         )
 
+    override fun getDataSourceSerializers() =
+        listOf(
+            classSerializer(ResolutionDataSource.serializer()),
+            classSerializer(PreviewResolutionDataSource.serializer()),
+            classSerializer(TimeDataSource.serializer()),
+            classSerializer(PixelCoordsTextureDataSource.serializer()),
+            classSerializer(ModelInfoDataSource.serializer()),
+            classSerializer(SliderDataSource.serializer()),
+            classSerializer(ColorPickerDataSource.serializer()),
+            classSerializer(ColorPickerDataSource.serializer()),
+            classSerializer(RadioButtonStripDataSource.serializer()),
+            classSerializer(XyPadDataSource.serializer())
+    )
 
     /**
      * Sparkle Motion always uses a resolution of (1, 1), except for previews, which

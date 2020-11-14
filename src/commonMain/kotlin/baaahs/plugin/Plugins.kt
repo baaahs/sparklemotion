@@ -64,6 +64,10 @@ class Plugins private constructor(
         registerSerializers { getControlSerializers() }
     }
 
+    private val dataSourceSerialModule = SerializersModule {
+        registerSerializers { getDataSourceSerializers() }
+    }
+
     private inline fun <reified T : Any> SerializersModuleBuilder.registerSerializers(
         getSerializersFn: Plugin.() -> List<Plugin.ClassSerializer<out T>>
     ) {
@@ -79,7 +83,7 @@ class Plugins private constructor(
     val serialModule = SerializersModule {
         include(Gadget.serialModule)
         include(controlSerialModule)
-        include(DataSource.serialModule)
+        include(dataSourceSerialModule)
         include(DeviceType.serialModule)
     }
 
