@@ -2,9 +2,9 @@ package baaahs.gl.patch
 
 import baaahs.gl.expects
 import baaahs.gl.override
+import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
-import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
@@ -20,7 +20,7 @@ import kotlin.test.expect
 
 object AutoWirerSpec : Spek({
     describe("AutoWirer") {
-        val autoWirer by value { AutoWirer(Plugins.safe()) }
+        val autoWirer by value { AutoWirer(testPlugins()) }
 
         describe(".autoWire") {
             val shaderText by value {

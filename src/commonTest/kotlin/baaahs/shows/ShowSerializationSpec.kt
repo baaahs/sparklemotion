@@ -3,8 +3,8 @@ package baaahs.shows
 import baaahs.Gadget
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
+import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
-import baaahs.plugin.Plugins
 import baaahs.show.*
 import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
@@ -13,7 +13,7 @@ import org.spekframework.spek2.style.specification.describe
 @Suppress("unused")
 object ShowSerializationSpec : Spek({
     describe("Show serialization") {
-        val plugins by value { Plugins.safe() }
+        val plugins by value { testPlugins() }
         val jsonPrettyPrint by value {
             Json {
                 prettyPrint = true
@@ -209,7 +209,7 @@ private fun jsonFor(shaderInstance: ShaderInstance) = buildJsonObject {
 fun expectJson(expected: JsonElement, block: () -> JsonElement) {
     val json = Json {
         prettyPrint = true
-        serializersModule = Plugins.safe().serialModule
+        serializersModule = testPlugins().serialModule
     }
     fun JsonElement.toStr() = json.encodeToString(JsonElement.serializer(), this)
     kotlin.test.expect(expected.toStr()) { block().toStr() }

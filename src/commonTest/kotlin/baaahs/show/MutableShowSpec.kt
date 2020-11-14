@@ -1,8 +1,8 @@
 package baaahs.show
 
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.testPlugins
 import baaahs.only
-import baaahs.plugin.Plugins
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
@@ -13,7 +13,7 @@ import kotlin.test.expect
 
 object MutableShowSpec : Spek({
     describe("MutableShow") {
-        val autoWirer by value { AutoWirer(Plugins.safe()) }
+        val autoWirer by value { AutoWirer(testPlugins()) }
 
         val shader0 by value { autoWirer.testPatch("shader 0") }
         val shader1a by value { autoWirer.testPatch("shader 1a") }

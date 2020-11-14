@@ -12,7 +12,9 @@ import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.PixelBrainShader
+import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.asMillis
 
 class BrainManager(
     private val fixtureManager: FixtureManager,
@@ -21,6 +23,7 @@ class BrainManager(
     private val mappingResults: MappingResults,
     private val udpSocket: Network.UdpSocket,
     private val networkStats: Pinky.NetworkStats,
+    private val clock: Clock,
     private val surfacePixelStrategy: SurfacePixelStrategy = LinearSurfacePixelStrategy()
 ) {
     internal val activeBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
@@ -201,14 +204,14 @@ class BrainManager(
     /** If we want a pong back from a [BrainShaderMessage], send this. */
     private fun generatePongPayload(): ByteArray {
         return ByteArrayWriter().apply {
-            writeLong(getTimeMillis())
+            writeLong(clock.now().asMillis())
         }.toBytes()
     }
 
     fun receivedPing(fromAddress: Network.Address, message: PingMessage) {
         if (message.isPong) {
             val originalSentAt = ByteArrayReader(message.data).readLong()
-            val elapsedMs = getTimeMillis() - originalSentAt
+            val elapsedMs = clock.now().asMillis() - originalSentAt
             logger.debug { "Shader pong from $fromAddress took ${elapsedMs}ms" }
         }
     }

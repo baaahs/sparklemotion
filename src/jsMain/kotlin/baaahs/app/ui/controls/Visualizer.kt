@@ -19,7 +19,7 @@ val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
     val rootEl = ref<Element>()
     val visualizer by state {
         val model = appContext.webClient.model
-        baaahs.visualizer.Visualizer(model)
+        baaahs.visualizer.Visualizer(model, appContext.clock)
             .also { viz ->
                 model.allSurfaces.forEach { surface ->
                     val vizSurface = viz.addSurface(SurfaceGeometry(surface))

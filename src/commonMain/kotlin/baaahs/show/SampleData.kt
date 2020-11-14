@@ -44,7 +44,7 @@ object SampleData {
         })
     }
 
-    private val plugins = Plugins.safe()
+    private val plugins = Plugins.safe(Plugins.dummyContext)
     private val autoWirer = AutoWirer(plugins)
 
     private val uvShader = wireUp(Shaders.cylindricalProjection)

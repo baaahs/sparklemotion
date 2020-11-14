@@ -4,6 +4,7 @@ import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.show.DataSource
+import baaahs.util.Clock
 
 interface Plugin {
     val packageName: String
@@ -25,3 +26,12 @@ interface Plugin {
         inputPort: InputPort
     ): DataSource?
 }
+
+interface PluginBuilder {
+    val id: String
+    fun build(pluginContext: PluginContext): Plugin
+}
+
+class PluginContext(
+    val clock: Clock
+)

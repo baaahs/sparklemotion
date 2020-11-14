@@ -1,9 +1,10 @@
 package baaahs.net
 
-import baaahs.getTimeMillis
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.util.JsClock
 import baaahs.util.Logger
+import baaahs.util.asMillis
 
 internal class BrowserUdpProxy(
     link: Network.Link, address: BrowserNetwork.BrowserAddress, port: Int
@@ -106,7 +107,7 @@ internal class BrowserUdpProxy(
     }
 
     private fun log(s: String) {
-        println("[${getTimeMillis()}] $s")
+        println("[${JsClock.now().asMillis()}] $s")
     }
 
     private fun msgId(data: ByteArray): String {
