@@ -29,7 +29,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">FixtureManager</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager)/renderManager">renderManager</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.render/-render-manager/index.html"><span class="identifier">RenderManager</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">FixtureManager</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, kotlin.collections.MutableMap((baaahs.fixtures.Fixture, baaahs.gl.render.RenderTarget)))/renderManager">renderManager</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.render/-render-manager/index.html"><span class="identifier">RenderManager</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, kotlin.collections.MutableMap((baaahs.fixtures.Fixture, baaahs.gl.render.RenderTarget)))/renderTargets">renderTargets</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="../-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.gl.render/-render-target/index.html"><span class="identifier">RenderTarget</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;hashMapOf()<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -38,17 +38,17 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="active-set-changed.html">activeSetChanged</a></h4>
+<h4><a href="active-patch-set-changed.html">activePatchSetChanged</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">activeSetChanged</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$activeSetChanged(baaahs.show.live.ActiveSet)/activeSet">activeSet</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-active-set/index.html"><span class="identifier">ActiveSet</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">activePatchSetChanged</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$activePatchSetChanged(baaahs.show.live.ActivePatchSet)/activePatchSet">activePatchSet</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-active-patch-set/index.html"><span class="identifier">ActivePatchSet</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
-<h4><a href="clear-render-targets.html">clearRenderTargets</a></h4>
+<h4><a href="add-frame-listener.html">addFrameListener</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">clearRenderTargets</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">addFrameListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$addFrameListener(kotlin.Function0((kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -84,13 +84,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">maybeUpdateRenderPlans</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$maybeUpdateRenderPlans(baaahs.gl.glsl.FeedResolver)/feedResolver">feedResolver</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-feed-resolver/index.html"><span class="identifier">FeedResolver</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="remap.html">remap</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">remap</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$remap(baaahs.RenderPlan)/renderPlan">renderPlan</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-render-plan/index.html"><span class="identifier">RenderPlan</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
