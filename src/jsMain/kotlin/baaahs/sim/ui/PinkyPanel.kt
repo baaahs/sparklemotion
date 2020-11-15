@@ -2,16 +2,12 @@ package baaahs.sim.ui
 
 import baaahs.Pinky
 import baaahs.ui.*
-import baaahs.ui.SimulatorStyles.beatsDiv
-import baaahs.util.percent
 import kotlinx.css.*
 import react.*
 import react.dom.*
 import styled.StyleSheet
 import styled.css
 import styled.styledDiv
-import styled.styledSpan
-import kotlin.math.roundToInt
 
 class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPanelState>(props), Observer {
     override fun observing(props: PinkyPanelProps, state: PinkyPanelState): List<Observable?> {
@@ -46,32 +42,7 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
                 +"${pinky.brains.size}"
             }
 
-            styledDiv {
-                css { +beatsDiv }
-
-                val beatData = pinky.beatData
-                val beat = beatData.beatWithinMeasure(pinky.clock).toInt()
-                val bpm = beatData.bpm
-                val beatConfidence = beatData.confidence
-
-                b { +"Beats: " }
-                span { // beatConfidenceElement
-                    +"[confidence: ${beatConfidence.percent()}]"
-                }
-                br { }
-                styledDiv { +"1"; if (beat == 0) css { +"selected" } }
-                styledDiv { +"2"; if (beat == 1) css { +"selected" } }
-                styledDiv { +"3"; if (beat == 2) css { +"selected" } }
-                styledDiv { +"4"; if (beat == 3) css { +"selected" } }
-                styledSpan {
-                    css {
-                        +"bpmDisplay"
-                        if (beat % 1 == 0) +"bpmDisplay-beatOn" else +"bpmDisplay-beatOff"
-                    }
-                    +"${bpm.roundToInt()} BPM"
-                }
-
-                br { }
+            div {
                 b { +"Data to Brains:" }
                 br { }
 

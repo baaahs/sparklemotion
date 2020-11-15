@@ -129,7 +129,6 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             classSerializer(ModelInfoDataSource.serializer()),
             classSerializer(SliderDataSource.serializer()),
             classSerializer(ColorPickerDataSource.serializer()),
-            classSerializer(ColorPickerDataSource.serializer()),
             classSerializer(RadioButtonStripDataSource.serializer()),
             classSerializer(XyPadDataSource.serializer())
     )

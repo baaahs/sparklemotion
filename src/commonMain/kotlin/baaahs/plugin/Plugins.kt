@@ -16,6 +16,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
+import kotlin.reflect.KClass
 
 @Serializable
 data class PluginRef(
@@ -69,12 +70,12 @@ class Plugins private constructor(
     }
 
     private inline fun <reified T : Any> SerializersModuleBuilder.registerSerializers(
-        getSerializersFn: Plugin.() -> List<Plugin.ClassSerializer<out T>>
+        getSerializersFn: Plugin.() -> List<SerializerRegistrar<out T>>
     ) {
         polymorphic(T::class) {
             plugins.forEach { plugin ->
                 plugin.getSerializersFn().forEach { classSerializer ->
-                    classSerializer.register(this)
+                    with(classSerializer) { register(this@polymorphic) }
                 }
             }
         }
@@ -91,6 +92,13 @@ class Plugins private constructor(
 
     val addControlMenuItems: List<AddControlMenuItem>
         get() = plugins.flatMap { it.getAddControlMenuItems() }
+
+    fun <T: Plugin > findPlugin(pluginKlass: KClass<T>): T {
+        @Suppress("UNCHECKED_CAST")
+        return plugins.find { it::class == pluginKlass } as T
+    }
+
+    inline fun <reified T : Plugin> findPlugin(): T = findPlugin(T::class)
 
     private fun findPlugin(pluginRef: PluginRef): Plugin {
         return byPackage[pluginRef.pluginId]

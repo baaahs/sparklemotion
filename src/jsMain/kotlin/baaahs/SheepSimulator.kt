@@ -64,14 +64,13 @@ class SheepSimulator(val model: Model) {
         model,
         network,
         dmxUniverse,
-        bridgeClient.beatSource,
         clock,
         fs,
         PermissiveFirmwareDaddy(),
         bridgeClient.soundAnalyzer,
         renderManager = RenderManager(model) { GlBase.manager.createContext() },
-        pinkyMainDispatcher = Dispatchers.Main,
-        plugins = plugins
+        plugins = plugins,
+        pinkyMainDispatcher = Dispatchers.Main
     )
     private val brains: MutableList<Brain> = mutableListOf()
 
