@@ -5,10 +5,7 @@ import baaahs.ui.Observable
 import baaahs.util.Clock
 import baaahs.util.Time
 import kotlinx.serialization.Serializable
-import kotlin.math.PI
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.sin
+import kotlin.math.*
 
 @Serializable
 data class BeatData(
@@ -51,7 +48,7 @@ data class BeatData(
 
     fun millisTillNextBeat(clock: Clock): Int {
         val elapsedSinceStartOfMeasure = (clock.now() - measureStartTime)
-        return (beatIntervalSec - elapsedSinceStartOfMeasure % beatIntervalSec).toInt()
+        return ((beatIntervalSec - elapsedSinceStartOfMeasure % beatIntervalSec) * 1000).roundToInt()
     }
 
     // TODO: make these into pluggable strategies that can be selected by shows.
