@@ -7,6 +7,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.MutableGadgetControl
+import kotlinx.serialization.Polymorphic
 
 
 interface DataSourceBuilder<T : DataSource> {
@@ -21,6 +22,7 @@ interface DataSourceBuilder<T : DataSource> {
     fun build(inputPort: InputPort): T
 }
 
+@Polymorphic
 interface DataSource {
     val pluginPackage: String
     /** Short English name for this datasource. */

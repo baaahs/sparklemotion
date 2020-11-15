@@ -80,7 +80,7 @@ class PinkyMain(private val args: Args) {
         val pinky = runBlocking(pinkyMainDispatcher) {
             val renderManager = RenderManager(model) { GlBase.manager.createContext() }
             Pinky(
-                model, network, dmxUniverse, beatSource, clock, fs,
+                model, network, dmxUniverse, clock, fs,
                 daddy, soundAnalyzer, switchShowAfterIdleSeconds = args.switchShowAfter,
                 adjustShowAfterIdleSeconds = args.adjustShowAfter,
                 renderManager = renderManager,

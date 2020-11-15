@@ -18,6 +18,7 @@ import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
+import baaahs.ui.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Runnable
@@ -44,7 +45,6 @@ object PinkySpec : Spek({
                 model,
                 network,
                 FakeDmxUniverse(),
-                StubBeatSource(),
                 FakeClock(),
                 fakeFs,
                 PermissiveFirmwareDaddy(),
@@ -195,7 +195,7 @@ object PinkySpec : Spek({
     }
 })
 
-class StubBeatSource : BeatSource {
+class StubBeatSource : Observable(), BeatSource {
     override fun getBeatData(): BeatData = BeatData(0.0, 0, confidence = 0f)
 }
 

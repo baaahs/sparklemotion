@@ -13,19 +13,11 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
-import baaahs.plugin.Plugin
-import baaahs.plugin.PluginBuilder
-import baaahs.plugin.PluginContext
-import baaahs.plugin.classSerializer
+import baaahs.plugin.*
 import baaahs.show.*
 import baaahs.show.mutable.MutableDataSourcePort
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.descriptors.*
 
 class BeatLinkPlugin internal constructor(
     internal val beatSource: BeatSource,
@@ -98,24 +90,9 @@ class BeatLinkPlugin internal constructor(
 
     override fun getDataSourceSerializers() =
         listOf(
-            classSerializer(beatLinkDataSourceSerializer)
+            objectSerializer("baaahs.BeatLink:BeatLink", beatLinkDataSource)
         )
 
-    private val beatLinkDataSourceSerializer = object : KSerializer<BeatLinkDataSource> {
-        override val descriptor: SerialDescriptor
-            get() = buildClassSerialDescriptor("baaahs.plugin.beatlink.BeatLinkDataSource") {}
-
-        override fun serialize(encoder: Encoder, value: BeatLinkDataSource) {
-            encoder.beginStructure(descriptor).endStructure(descriptor)
-        }
-
-        override fun deserialize(decoder: Decoder): BeatLinkDataSource {
-            decoder.beginStructure(descriptor).endStructure(descriptor)
-            return beatLinkDataSource
-        }
-    }
-
-    @Serializable
     @SerialName("baaahs.BeatLink:BeatLink")
     inner class BeatLinkDataSource internal constructor(): DataSource {
         override val pluginPackage: String get() = id

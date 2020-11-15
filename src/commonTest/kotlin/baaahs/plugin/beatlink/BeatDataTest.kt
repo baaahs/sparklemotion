@@ -44,4 +44,10 @@ class BeatDataTest {
         expect(-1f) { BeatData(0.0, 0).fractionTillNextBeat(FakeClock(0.0)) }
         expect(-1f) { BeatData(0.0, 0).fractionTillNextBeat(FakeClock(0.0)) }
     }
+
+    @Test
+    fun testMillisTillNextBeat() {
+        expect(75) { BeatData(0.0, 100).millisTillNextBeat(FakeClock(0.025)) }
+        expect(75) { BeatData(0.0, 100).millisTillNextBeat(FakeClock(0.325)) }
+    }
 }

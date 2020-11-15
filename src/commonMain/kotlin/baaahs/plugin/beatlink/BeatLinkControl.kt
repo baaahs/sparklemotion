@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-@SerialName("baaahs.BeatLink")
+@SerialName("baaahs.BeatLink:BeatLink")
 data class BeatLinkControl(@Transient private val `_`: Boolean = false) : Control {
     override val title: String get() = "BeatLink"
 
