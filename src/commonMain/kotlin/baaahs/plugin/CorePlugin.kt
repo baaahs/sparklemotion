@@ -223,7 +223,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed {
                         val clock = showPlayer.plugins.pluginContext.clock
                         return SingleUniformFeed(glslProgram, this@TimeDataSource, id) { uniform ->
-                            val thisTime = clock.now().toFloat()
+                            val thisTime = (clock.now() % 10000.0).toFloat()
                             uniform.set(thisTime)
                         }
                     }
