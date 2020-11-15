@@ -30,7 +30,6 @@ class MovingHeadManager(
 
             override fun send(fixture: Fixture, resultViews: List<ResultView>) {
                 val panAndTilt = MovingHeadDevice.getResults(resultViews)[0]
-                logger.info { "Pan and tilt on ${movingHead.name} -> $panAndTilt" }
                 adapter.pan = panAndTilt.x
                 adapter.tilt = panAndTilt.y
 
