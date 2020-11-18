@@ -132,7 +132,7 @@ interface BeatLinkPluginArgs : PluginArgs {
     override fun createPlugin(pluginContext: PluginContext): Plugin {
         val beatSource = when(enableBeatLink) {
             true -> when (pluginContext.mode) {
-                PluginMode.Client -> createBeatSourceClient(pluginContext, this)
+                PluginMode.Client -> PubSubBeatSource(pluginContext, this)
                 PluginMode.Server -> createPlatformBeatSource(pluginContext, this)
             }
             false -> {
@@ -147,3 +147,4 @@ interface BeatLinkPluginArgs : PluginArgs {
 expect fun provideArgs(argsProvider: ArgsProvider): BeatLinkPluginArgs
 
 expect fun createPlatformBeatSource(pluginContext: PluginContext, args: BeatLinkPluginArgs): BeatSource
+

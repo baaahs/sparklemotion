@@ -183,12 +183,12 @@ class Plugins(
         fun findAllBuilders(): List<PluginBuilder<*>> = listOf(CorePlugin, BeatLinkPlugin)
 
         fun safe(pluginContext: PluginContext): Plugins =
-            Plugins(pluginContext, listOf(CorePlugin.build(pluginContext, Unit)))
+            Plugins(pluginContext, listOf(CorePlugin(pluginContext)))
 
         val default = CorePlugin.id
 
         /** Don't use me except from [baaahs.show.SampleData] and [baaahs.glsl.GuruMeditationError]. */
-        internal val dummyContext = PluginContext(ZeroClock())
+        internal val dummyContext = PluginContext(ZeroClock(), PluginMode.Server)
 
         private class ZeroClock : Clock {
             override fun now(): Time = 0.0

@@ -601,11 +601,12 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     companion object : PluginBuilder<Unit> {
         override val id = "baaahs.Core"
 
-        override fun registerArgs(argsProvider: ArgsProvider) {
-        }
-
-        override fun build(pluginContext: PluginContext, args: Unit): Plugin {
-            return CorePlugin(pluginContext)
+        override fun createArgs(argsProvider: ArgsProvider): PluginArgs {
+            return object : PluginArgs {
+                override fun createPlugin(pluginContext: PluginContext): Plugin {
+                    return CorePlugin(pluginContext)
+                }
+            }
         }
 
         val contentTypesByGlslType =
