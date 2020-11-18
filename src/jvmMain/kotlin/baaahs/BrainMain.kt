@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.net.JvmNetwork
+import baaahs.util.SystemClock
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
@@ -29,7 +30,7 @@ class BrainMain(private val args: Args) {
 
         val network = JvmNetwork()
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
-        val brain = Brain(brainId, network, JvmPixelsDisplay(2000), model)
+        val brain = Brain(brainId, network, JvmPixelsDisplay(2000), SystemClock)
 
         val mySurface = if (args.anonymous) {
             null

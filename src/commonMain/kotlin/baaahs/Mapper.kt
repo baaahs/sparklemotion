@@ -15,7 +15,9 @@ import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.shaders.SolidBrainShader
+import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.asMillis
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -30,7 +32,8 @@ class Mapper(
     model: Model,
     private val mapperUi: MapperUi,
     private val mediaDevices: MediaDevices,
-    private val pinkyAddress: Network.Address
+    private val pinkyAddress: Network.Address,
+    private val clock: Clock
 ) : Network.UdpListener, MapperUi.Listener, CoroutineScope by MainScope() {
     // TODO: getCamera should just return max available size?
     lateinit var camera: MediaDevices.Camera
@@ -646,12 +649,12 @@ class Mapper(
 
                 var sleepUntil = Double.MAX_VALUE
 
-                val nowMs = getTimeMillis().toDouble()
+                val now = clock.now()
 
                 outstanding.values.removeAll {
-                    if (it.failAt < nowMs) {
+                    if (it.failAt < now) {
                         logger.debug {
-                            "Timed out waiting after ${nowMs - it.sentAt}ms for ${it.brainToMap.brainId}" +
+                            "Timed out waiting after ${now - it.sentAt}s for ${it.brainToMap.brainId}" +
                                 " pong ${it.key.stringify()}"
                         }
                         it.failed()
@@ -659,22 +662,22 @@ class Mapper(
                     } else {
                         if (sleepUntil > it.failAt) sleepUntil = it.failAt
 
-                        if (it.retryAt < nowMs) {
+                        if (it.retryAt < now) {
                             logger.warn {
-                                "Haven't heard from ${it.brainToMap.brainId} after ${nowMs - it.sentAt}ms," +
+                                "Haven't heard from ${it.brainToMap.brainId} after ${now - it.sentAt}s," +
                                         " retrying (attempt ${++it.retryCount})..."
                             }
                             it.attemptDelivery()
-                            it.retryAt = nowMs + retryAfterMillis
+                            it.retryAt = now + retryAfterMillis
                         }
                         if (sleepUntil > it.retryAt) sleepUntil = it.retryAt
                         false
                     }
                 }
 
-                val timeoutMs = sleepUntil - nowMs
-//                logger.debug { "Before pongs.receive() withTimeout(${timeoutMs}ms)" }
-                val pong = withTimeoutOrNull(timeoutMs.toLong()) {
+                val timeoutSec = sleepUntil - now
+//                logger.debug { "Before pongs.receive() withTimeout(${timeoutSec}s)" }
+                val pong = withTimeoutOrNull(timeoutSec.asMillis()) {
                     pongs.receive()
                 }
 
@@ -706,7 +709,7 @@ class Mapper(
     inner class DeliveryAttempt(val brainToMap: BrainToMap, val buffer: BrainShader.Buffer) {
         private val tag = Random.nextBytes(8)
         val key get() = tag.toList()
-        val sentAt = getTimeMillis().toDouble()
+        val sentAt = clock.now()
         var retryAt = 0.0
         var failAt = 0.0
         var retryCount = 0
@@ -716,11 +719,11 @@ class Mapper(
         }
 
         fun succeeded() {
-            logger.debug { "${brainToMap.brainId} shader message pong after ${getTimeMillis() - sentAt}ms" }
+            logger.debug { "${brainToMap.brainId} shader message pong after ${clock.now() - sentAt}s" }
         }
 
         fun failed() {
-            logger.error { "${brainToMap.brainId} shader message pong not received after ${getTimeMillis() - sentAt}ms" }
+            logger.error { "${brainToMap.brainId} shader message pong not received after ${clock.now() - sentAt}s" }
         }
     }
 

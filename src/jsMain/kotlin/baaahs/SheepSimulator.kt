@@ -10,11 +10,13 @@ import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.net.Network
-import baaahs.plugin.BeatLinkPlugin
+import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
+import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.proto.Ports
 import baaahs.shows.BakedInShaders
 import baaahs.sim.*
+import baaahs.util.JsClock
 import baaahs.visualizer.SurfaceGeometry
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
@@ -22,7 +24,6 @@ import baaahs.visualizer.VizPixels
 import decodeQueryParams
 import info.laht.threekt.math.Vector3
 import kotlinx.coroutines.*
-import kotlin.js.Date
 
 class SheepSimulator(val model: Model) {
     @Suppress("unused")
@@ -30,8 +31,9 @@ class SheepSimulator(val model: Model) {
 
     private val queryParams = decodeQueryParams(document.location!!)
     val network = FakeNetwork()
+    val clock = JsClock
     private val dmxUniverse = FakeDmxUniverse()
-    val visualizer = Visualizer(model)
+    val visualizer = Visualizer(model, clock)
     private val mapperFs = FakeFs("Temporary Mapping Files")
     private val fs = MergedFs(BrowserSandboxFs("Browser Data"), mapperFs, "Browser Data")
     val filesystems = listOf(fs)
@@ -55,21 +57,20 @@ class SheepSimulator(val model: Model) {
         }
     }
 
-    val clock = JsClock()
-
-    val plugins = Plugins.safe() + BeatLinkPlugin(bridgeClient.beatSource, clock)
+    val pluginContext = PluginContext(clock)
+    val plugins = Plugins.safe(pluginContext) +
+            BeatLinkPlugin.Builder(bridgeClient.beatSource)
     private val pinky = Pinky(
         model,
         network,
         dmxUniverse,
-        bridgeClient.beatSource,
         clock,
         fs,
         PermissiveFirmwareDaddy(),
         bridgeClient.soundAnalyzer,
         renderManager = RenderManager(model) { GlBase.manager.createContext() },
-        pinkyMainDispatcher = Dispatchers.Main,
-        plugins = plugins
+        plugins = plugins,
+        pinkyMainDispatcher = Dispatchers.Main
     )
     private val brains: MutableList<Brain> = mutableListOf()
 
@@ -90,21 +91,21 @@ class SheepSimulator(val model: Model) {
         launcher.add("Mapper") {
             val mapperUi = JsMapperUi(visualizer)
             val mediaDevices = FakeMediaDevices(visualizer)
-            val mapper = Mapper(network, model, mapperUi, mediaDevices, pinky.address)
+            val mapper = Mapper(network, model, mapperUi, mediaDevices, pinky.address, clock)
             mapperScope.launch { mapper.start() }
 
             mapperUi
         }
 
         launcher.add("Admin UI") {
-            AdminUi(network, pinky.address, model)
+            AdminUi(network, pinky.address, model, clock)
         }
 
         simSurfaces.forEach { simSurface ->
             val vizPanel = visualizer.addSurface(simSurface.surfaceGeometry)
             vizPanel.vizPixels = VizPixels(vizPanel, simSurface.pixelPositions)
 
-            val brain = Brain(simSurface.brainId.uuid, network, vizPanel.vizPixels ?: NullPixels, model)
+            val brain = Brain(simSurface.brainId.uuid, network, vizPanel.vizPixels ?: NullPixels, clock)
             brains.add(brain)
 
             brainScope.launch { randomDelay(1000); brain.run() }
@@ -186,9 +187,4 @@ class SheepSimulator(val model: Model) {
         val brains: List<Brain.Facade>
             get() = this@SheepSimulator.brains.map { it.facade }
     }
-}
-
-
-class JsClock : Clock {
-    override fun now(): Time = Date.now() / 1000.0
 }

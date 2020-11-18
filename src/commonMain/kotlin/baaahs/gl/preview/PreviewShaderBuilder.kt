@@ -147,7 +147,7 @@ class PreviewShaderBuilder(
                     showPlayer.registerGadget(dataSource.suggestId(), it.gadget, dataSource)
                 }
 
-                dataSource.createFeed(showPlayer, autoWirer.plugins, id)
+                dataSource.createFeed(showPlayer, id)
                     .also { feeds.add(it) }
             }
         }

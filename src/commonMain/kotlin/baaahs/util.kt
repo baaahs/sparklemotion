@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.util.Clock
+import baaahs.util.asMillis
 import kotlinx.coroutines.delay
 import kotlin.math.PI
 import kotlin.math.max
@@ -48,23 +50,26 @@ fun Int.boundedBy(range: IntRange): Int {
 }
 
 
-expect fun getTimeMillis(): Long
+expect val internalTimerClock: Clock
+
 expect fun doRunBlocking(block: suspend () -> Unit)
 
 expect fun getResource(name: String): String
 
 expect fun decodeBase64(s: String): ByteArray
 
-internal suspend fun time(function: suspend () -> Unit): Int {
-    val now = getTimeMillis()
+internal suspend fun time(function: suspend () -> Unit) = internalTimerClock.time(function)
+internal suspend fun Clock.time(function: suspend () -> Unit): Int {
+    val then = now()
     function.invoke()
-    return (getTimeMillis() - now).toInt()
+    return (now() - then).asMillis().toInt()
 }
 
-internal fun timeSync(function: () -> Unit): Int {
-    val now = getTimeMillis()
+internal fun timeSync(function: () -> Unit) = internalTimerClock.timeSync(function)
+internal fun Clock.timeSync(function: () -> Unit): Int {
+    val then = now()
     function.invoke()
-    return (getTimeMillis() - now).toInt()
+    return (now() - then).asMillis().toInt()
 }
 
 fun String.camelize(): String =

@@ -5,6 +5,7 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.gl.render.RenderManager
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
+import baaahs.util.Clock
 import baaahs.util.Logger
 
 class ShowRunner(

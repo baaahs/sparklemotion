@@ -15,8 +15,8 @@ import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.renderPlanFor
+import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
-import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.shows.FakeShowPlayer
@@ -255,8 +255,8 @@ class RenderEngineTest {
     }
 
     private fun compileAndBind(program: String): GlslProgram {
-        val autoWirer = AutoWirer(Plugins.safe())
-        val shader = GlslAnalyzer(Plugins.safe()).import(program)
+        val autoWirer = AutoWirer(testPlugins())
+        val shader = GlslAnalyzer(testPlugins()).import(program)
         val linkedPatch = autoWirer
             .autoWire(directXyProjection, shader)
             .acceptSuggestedLinkOptions()
@@ -266,7 +266,7 @@ class RenderEngineTest {
             if (dataSource is CorePlugin.GadgetDataSource<*>) {
                 fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
             }
-            dataSource.createFeed(fakeShowPlayer, autoWirer.plugins, id)
+            dataSource.createFeed(fakeShowPlayer, id)
         }
     }
 

@@ -2,10 +2,10 @@ package baaahs.gl.glsl
 
 import baaahs.gl.expectValue
 import baaahs.gl.override
+import baaahs.gl.testPlugins
 import baaahs.gl.undefined
 import baaahs.only
 import baaahs.plugin.PluginRef
-import baaahs.plugin.Plugins
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import org.spekframework.spek2.Spek
@@ -17,7 +17,7 @@ object GlslCodeSpec : Spek({
         val text by value { undefined<String>() }
         val comments by value { emptyList<String>() }
         val statement by value {
-            GlslAnalyzer(Plugins.safe()).findStatements(
+            GlslAnalyzer(testPlugins()).findStatements(
                 comments.joinToString("\n") { "// $it" } + "\n" + text
             ).only("statement")
         }

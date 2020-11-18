@@ -1,9 +1,9 @@
 package baaahs.gl.patch
 
 import baaahs.gl.override
+import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
-import baaahs.plugin.Plugins
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderChannel
@@ -35,7 +35,7 @@ object GlslGenerationSpec : Spek({
                 }
                 """.trimIndent()
         }
-        val autoWirer by value { AutoWirer(Plugins.safe()) }
+        val autoWirer by value { AutoWirer(testPlugins()) }
         val glslAnalyzer by value { autoWirer.glslAnalyzer }
         val mainShader by value { glslAnalyzer.import(shaderText) }
         val mutablePatch by value { MutablePatch { } }

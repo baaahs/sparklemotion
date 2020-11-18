@@ -2,11 +2,12 @@ package baaahs
 
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
-import baaahs.model.ModelInfo
 import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.proto.*
+import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.Time
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -15,13 +16,13 @@ class Brain(
     val id: String,
     private val network: Network,
     private val pixels: Pixels,
-    private val modelInfo: ModelInfo
+    private val clock: Clock
 ) : Network.UdpListener {
     val facade = Facade()
 
     private lateinit var link: Network.Link
     private lateinit var udpSocket: Network.UdpSocket
-    private var lastInstructionsReceivedAtMs: Long = 0
+    private var lastInstructionsReceivedAt: Time? = null
     private var modelElementName : String? = null
         set(value) { field = value; facade.notifyChanged() }
     private var pixelCount: Int = SparkleMotion.MAX_PIXEL_COUNT
@@ -39,7 +40,7 @@ class Brain(
     }
 
     private suspend fun reset() {
-        lastInstructionsReceivedAtMs = 0
+        lastInstructionsReceivedAt = null
         modelElementName = null
         pixelCount = SparkleMotion.MAX_PIXEL_COUNT
         pixelLocations = emptyList()
@@ -60,10 +61,10 @@ class Brain(
 
     private suspend fun sendHello() {
         while (true) {
-            val elapsedSinceMessageMs = getTimeMillis() - lastInstructionsReceivedAtMs
-            if (elapsedSinceMessageMs > 10000) {
-                if (lastInstructionsReceivedAtMs != 0L) {
-                    logger.info { "$id: haven't heard from Pinky in ${elapsedSinceMessageMs}ms" }
+            val elapsedSinceMessage = clock.now() - (lastInstructionsReceivedAt ?: 0.0)
+            if (elapsedSinceMessage > 100) {
+                if (lastInstructionsReceivedAt != null) {
+                    logger.info { "$id: haven't heard from Pinky in ${elapsedSinceMessage}s" }
                 }
                 udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, modelElementName))
             }
@@ -73,8 +74,7 @@ class Brain(
     }
 
     override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
-        val now = getTimeMillis()
-        lastInstructionsReceivedAtMs = now
+        lastInstructionsReceivedAt = clock.now()
 
         val reader = ByteArrayReader(bytes)
 

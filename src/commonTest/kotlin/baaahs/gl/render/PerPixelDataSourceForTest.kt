@@ -10,7 +10,6 @@ import baaahs.gl.data.*
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
-import baaahs.plugin.Plugin
 import baaahs.show.DataSource
 import baaahs.show.UpdateMode
 
@@ -26,7 +25,7 @@ class PerPixelDataSourceForTest(val updateMode: UpdateMode) : DataSource {
 
     var counter = 0f
 
-    override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
         error("not implemented")
 
     override fun createFixtureFeed(): Feed = TestFeed().also { feeds.add(it) }

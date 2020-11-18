@@ -4,9 +4,9 @@ import baaahs.TestModel
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
 import baaahs.gl.render.RenderManager
+import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
-import baaahs.plugin.Plugins
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
@@ -24,7 +24,7 @@ import kotlin.test.expect
 
 object PatchLayeringSpec : Spek({
     describe("Layering of patch links") {
-        val autoWirer by value { AutoWirer(Plugins.safe()) }
+        val autoWirer by value { AutoWirer(testPlugins()) }
 
         fun autoWire(vararg shaders: Shader): MutablePatch {
             return autoWirer.autoWire(*shaders).acceptSuggestedLinkOptions().resolve()

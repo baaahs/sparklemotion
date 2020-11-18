@@ -1,6 +1,10 @@
 package baaahs
 
+import baaahs.plugin.beatlink.BeatData
+import baaahs.plugin.beatlink.BeatLinkBeatSource
 import baaahs.proto.Ports
+import baaahs.ui.addObserver
+import baaahs.util.SystemClock
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.http.cio.websocket.CloseReason.Codes.*
@@ -66,8 +70,9 @@ object SimulatorBridge {
     }
 
     fun run() {
-        val beatLinkBeatSource = BeatLinkBeatSource(SystemClock())
-        beatLinkBeatSource.listen { beatData ->
+        val beatLinkBeatSource = BeatLinkBeatSource(SystemClock)
+        beatLinkBeatSource.addObserver {
+            val beatData = beatLinkBeatSource.getBeatData()
             sendToClients("beatData", json.encodeToJsonElement(BeatData.serializer(), beatData))
         }
         beatLinkBeatSource.start()

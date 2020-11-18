@@ -6,11 +6,15 @@ import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
-import baaahs.plugin.BeatLinkPlugin
+import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
+import baaahs.plugin.beatlink.BeatLinkBeatSource
+import baaahs.plugin.beatlink.BeatLinkPlugin
+import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Logger
+import baaahs.util.SystemClock
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
@@ -57,7 +61,7 @@ class PinkyMain(private val args: Args) {
 
         val dmxUniverse = findDmxUniverse()
 
-        val clock = SystemClock()
+        val clock = SystemClock
         val beatSource = if (args.enableBeatLink) {
             BeatLinkBeatSource(clock).also { it.start() }
         } else {
@@ -69,12 +73,14 @@ class PinkyMain(private val args: Args) {
         val soundAnalyzer = JvmSoundAnalyzer()
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
 
-        val plugins = Plugins.safe() + BeatLinkPlugin(beatSource, clock)
+        val pluginContext = PluginContext(clock)
+        val plugins = Plugins.safe(pluginContext) +
+                BeatLinkPlugin.Builder(beatSource)
 
         val pinky = runBlocking(pinkyMainDispatcher) {
             val renderManager = RenderManager(model) { GlBase.manager.createContext() }
             Pinky(
-                model, network, dmxUniverse, beatSource, clock, fs,
+                model, network, dmxUniverse, clock, fs,
                 daddy, soundAnalyzer, switchShowAfterIdleSeconds = args.switchShowAfter,
                 adjustShowAfterIdleSeconds = args.adjustShowAfter,
                 renderManager = renderManager,

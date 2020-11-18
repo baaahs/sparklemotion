@@ -1,10 +1,13 @@
-package baaahs
+package baaahs.plugin.beatlink
 
+import baaahs.FakeClock
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.expect
 
 class BeatDataTest {
+    val realisticTime = 1605473794.0
+
     @Test
     fun calculateBpm() {
         expect(120f) { BeatData(0.0, 500).bpm }
@@ -42,5 +45,14 @@ class BeatDataTest {
         expect(-1f) { BeatData(0.0, 0).timeSinceMeasure(FakeClock(0.0)) }
         expect(-1f) { BeatData(0.0, 0).fractionTillNextBeat(FakeClock(0.0)) }
         expect(-1f) { BeatData(0.0, 0).fractionTillNextBeat(FakeClock(0.0)) }
+    }
+
+    @Test
+    fun testMillisTillNextBeat() {
+        expect(75) { BeatData(0.0, 100).millisTillNextBeat(FakeClock(0.025)) }
+        expect(75) { BeatData(0.0, 100).millisTillNextBeat(FakeClock(0.325)) }
+
+        expect(75) { BeatData(0.0, 100).millisTillNextBeat(FakeClock(realisticTime + 0.025)) }
+        expect(75) { BeatData(0.0, 100).millisTillNextBeat(FakeClock(realisticTime + 0.325)) }
     }
 }

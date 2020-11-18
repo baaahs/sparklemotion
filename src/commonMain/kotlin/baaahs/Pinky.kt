@@ -18,6 +18,7 @@ import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.proto.*
 import baaahs.show.Show
+import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
 import kotlinx.coroutines.*
@@ -28,7 +29,6 @@ class Pinky(
     val model: Model,
     val network: Network,
     val dmxUniverse: Dmx.Universe,
-    val beatSource: BeatSource,
     val clock: Clock,
     fs: Fs,
     val firmwareDaddy: FirmwareDaddy,
@@ -46,7 +46,6 @@ class Pinky(
     private val link = FragmentingUdpLink(network.link("pinky"))
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
 
-    private val beatDisplayer = PinkyBeatDisplayer(beatSource)
     private var mapperIsRunning = false
 
     private val pinkyJob = SupervisorJob()
@@ -74,7 +73,7 @@ class Pinky(
     // This needs to go last-ish, otherwise we start getting network traffic too early.
     private val udpSocket = link.listenUdp(Ports.PINKY, this)
     private val brainManager =
-        BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats)
+        BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats, clock)
     private val movingHeadManager = MovingHeadManager(fixtureManager, dmxUniverse, model.movingHeads, fs)
 
     private val serverNotices = arrayListOf<ServerNotice>()
@@ -176,8 +175,6 @@ class Pinky(
 
     private suspend fun launchDaemonJobs(): Job {
         return CoroutineScope(coroutineContext).launch {
-            launch { beatDisplayer.run() }
-
             launch {
                 while (true) {
                     if (mapperIsRunning) {
@@ -234,22 +231,6 @@ class Pinky(
                     logger.debug { "Mapper isRunning=${message.isRunning}" }
                     mapperIsRunning = message.isRunning
                 }
-            }
-        }
-    }
-
-    inner class PinkyBeatDisplayer(private val beatSource: BeatSource) {
-        private var previousBeatData = beatSource.getBeatData()
-
-        suspend fun run() {
-            while (true) {
-                val beatData = beatSource.getBeatData()
-                if (beatData != previousBeatData) {
-                    facade.notifyChanged()
-                    previousBeatData = beatData
-                }
-
-                delay(10)
             }
         }
     }
@@ -347,9 +328,6 @@ class Pinky(
 
         val brains: List<BrainManager.BrainTransport>
             get() = this@Pinky.brainManager.activeBrains.values.toList()
-
-        val beatData: BeatData
-            get() = this@Pinky.beatSource.getBeatData()
 
         val clock: Clock
             get() = this@Pinky.clock

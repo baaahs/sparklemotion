@@ -2,8 +2,8 @@ package baaahs.show.live
 
 import baaahs.describe
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.testPlugins
 import baaahs.only
-import baaahs.plugin.Plugins
 import baaahs.show.Layout
 import baaahs.show.Layouts
 import baaahs.show.mutable.MutableConstPort
@@ -20,7 +20,7 @@ object OpenShowSpec : Spek({
         val show by value { mutableShow.build(ShowBuilder()) }
 
         val showPlayer by value { FakeShowPlayer() }
-        val autoWirer by value { AutoWirer(Plugins.safe()) }
+        val autoWirer by value { AutoWirer(testPlugins()) }
         val showOpener by value { ShowOpener(autoWirer.glslAnalyzer, show, showPlayer) }
         val openShow by value { showOpener.openShow() }
 

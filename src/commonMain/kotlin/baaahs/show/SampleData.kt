@@ -6,6 +6,8 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
+import baaahs.plugin.beatlink.BeatLinkPlugin
+import baaahs.plugin.beatlink.BeatSource
 import baaahs.show.ButtonGroupControl.Direction.Horizontal
 import baaahs.show.ButtonGroupControl.Direction.Vertical
 import baaahs.show.mutable.MutableDataSourcePort
@@ -44,7 +46,10 @@ object SampleData {
         })
     }
 
-    private val plugins = Plugins.safe()
+    val plugins = Plugins.safe(Plugins.dummyContext) +
+            BeatLinkPlugin.Builder(BeatSource.None)
+    val beatLinkPlugin = plugins.findPlugin<BeatLinkPlugin>()
+
     private val autoWirer = AutoWirer(plugins)
 
     private val uvShader = wireUp(Shaders.cylindricalProjection)
@@ -232,6 +237,19 @@ object SampleData {
 
         addButton("More Controls", "Wobbly") {
             addPatch(wireUp(Shaders.ripple))
+        }
+    }.getShow()
+
+    val sampleShowWithBeatLink: Show get() = MutableShow(sampleShow).apply {
+        addPatch {
+            addShaderInstance(Shader("BeatLink", ShaderType.Paint, """
+                uniform float beat;
+                void main(void) {
+                    gl_FragColor = vec4(beat, 0., 0., 1.);
+                }
+            """.trimIndent())) {
+                link("beat", MutableDataSourcePort(beatLinkPlugin.beatLinkDataSource))
+            }
         }
     }.getShow()
 

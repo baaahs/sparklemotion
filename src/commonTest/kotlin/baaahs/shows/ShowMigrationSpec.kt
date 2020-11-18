@@ -2,8 +2,8 @@ package baaahs.shows
 
 import baaahs.describe
 import baaahs.gl.override
+import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
-import baaahs.plugin.Plugins
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
 import baaahs.toBeSpecified
@@ -13,7 +13,7 @@ import kotlin.test.expect
 
 object ShowMigrationSpec : Spek({
     describe<ShowMigrator> {
-        val json by value { Json { serializersModule = Plugins.safe().serialModule } }
+        val json by value { Json { serializersModule = testPlugins().serialModule } }
         val fromJson by value<JsonObject> { toBeSpecified() }
         val show by value { json.decodeFromJsonElement(ShowMigrator, fromJson) }
 
