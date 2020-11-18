@@ -75,7 +75,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Versions.serializationRuntime}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationRuntime}")
                 implementation("com.soywiz.korlibs.klock:klock:1.12.0")
                 api("com.danielgergely.kgl:kgl-metadata:${Versions.kgl}")
             }
@@ -154,7 +154,7 @@ kotlin {
                 implementation("org.jetbrains:kotlin-react:${Versions.kotlinReact}")
                 implementation("org.jetbrains:kotlin-react-dom:${Versions.kotlinReact}")
                 implementation("org.jetbrains:kotlin-styled:${Versions.kotlinStyled}")
-                implementation(npm("styled-components", "^4.4.1"))
+                implementation(npm("styled-components", Versions.styledComponents))
                 implementation(npm("inline-style-prefixer", "^6.0.0"))
 
                 implementation(npm("babel-loader", "^8.0.6"))
@@ -169,8 +169,8 @@ kotlin {
                 implementation(npm("chroma-js", "^2.0.3"))
                 implementation(npm("css-loader", "^2.1.1"))
 
-                implementation("net.subroh0508.kotlinmaterialui:core:0.5.0")
-                implementation("net.subroh0508.kotlinmaterialui:lab:0.5.0")
+                implementation("net.subroh0508.kotlinmaterialui:core:${Versions.kotlinMaterialUi}")
+                implementation("net.subroh0508.kotlinmaterialui:lab:${Versions.kotlinMaterialUi}")
                 implementation(npm("@material-ui/core", "~4.11"))
                 implementation(npm("@material-ui/icons", "~4.9.1"))
 
@@ -184,6 +184,7 @@ kotlin {
                 implementation(npm("raf-schd", "^4.0.2"))
                 implementation(npm("react-redux", "^7.2.0"))
                 implementation(npm("use-memo-one", "^1.1.1"))
+                implementation(npm("memoize-one", "^5.1.1"))
                 // </react-beautiful-dnd bug workaround>
 
                 implementation(npm("react-compound-slider", "^2.0.0"))
