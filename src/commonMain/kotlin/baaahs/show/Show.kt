@@ -14,6 +14,7 @@ import baaahs.show.mutable.VisitationLog
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -79,8 +80,12 @@ data class Surfaces(
     val name: String,
     /** Set of [DeviceType]s that this object matches. If the set is empty, every DeviceType matches. */
     @Contextual
-    val deviceTypes: Set<DeviceType> = emptySet()
+    val deviceTypes: Set<DeviceType> = emptySet(),
+    private val match: String? = null
 ) {
+    @Transient
+    val regex = match?.let { Regex(match) }
+
     fun matches(fixture: Fixture): Boolean {
         return true
     }
