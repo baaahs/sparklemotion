@@ -57,7 +57,7 @@ abstract class BaseShowPlayer(
 
     override fun openFeed(id: String, dataSource: DataSource): Feed {
         return feeds.getOrPut(dataSource) {
-            dataSource.createFeed(this, plugins, id)
+            dataSource.createFeed(this, id)
         }
     }
 

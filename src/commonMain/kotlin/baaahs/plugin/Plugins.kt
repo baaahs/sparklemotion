@@ -6,13 +6,17 @@ import baaahs.fixtures.DeviceType
 import baaahs.getBang
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
-import baaahs.show.Control
-import baaahs.show.DataSource
+import baaahs.show.*
+import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.Time
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
+import kotlin.reflect.KClass
 
 @Serializable
 data class PluginRef(
@@ -41,19 +45,60 @@ data class PluginRef(
     }
 }
 
-class Plugins(plugins: List<Plugin>) {
+class Plugins private constructor(
+    val pluginContext: PluginContext,
+    private val plugins: List<Plugin>
+) {
+    constructor(
+        pluginBuilders: List<PluginBuilder>,
+        pluginContext: PluginContext
+    ) : this(pluginContext, pluginBuilders.map { it.build(pluginContext) })
+
+    constructor(
+        vararg pluginBuilders: PluginBuilder,
+        pluginContext: PluginContext
+    ) : this(pluginContext, pluginBuilders.map { it.build(pluginContext) })
+
     private val byPackage: Map<String, Plugin> = plugins.associateBy { it.packageName }
+
+    private val controlSerialModule = SerializersModule {
+        registerSerializers { getControlSerializers() }
+    }
+
+    private val dataSourceSerialModule = SerializersModule {
+        registerSerializers { getDataSourceSerializers() }
+    }
+
+    private inline fun <reified T : Any> SerializersModuleBuilder.registerSerializers(
+        getSerializersFn: Plugin.() -> List<SerializerRegistrar<out T>>
+    ) {
+        polymorphic(T::class) {
+            plugins.forEach { plugin ->
+                plugin.getSerializersFn().forEach { classSerializer ->
+                    with(classSerializer) { register(this@polymorphic) }
+                }
+            }
+        }
+    }
 
     val serialModule = SerializersModule {
         include(Gadget.serialModule)
-//        include(portRefModule)
-        include(Control.serialModule)
-        include(DataSource.serialModule)
+        include(controlSerialModule)
+        include(dataSourceSerialModule)
         include(DeviceType.serialModule)
-//            contextual(DataSource::class, DataSourceSerializer(this@Plugins))
     }
 
     val json = Json { serializersModule = this@Plugins.serialModule }
+
+    val addControlMenuItems: List<AddControlMenuItem>
+        get() = plugins.flatMap { it.getAddControlMenuItems() }
+
+    fun <T: Plugin > findPlugin(pluginKlass: KClass<T>): T {
+        @Suppress("UNCHECKED_CAST")
+        return plugins.find { it::class == pluginKlass } as T
+    }
+
+    inline fun <reified T : Plugin> findPlugin(): T = findPlugin(T::class)
 
     private fun findPlugin(pluginRef: PluginRef): Plugin {
         return byPackage[pluginRef.pluginId]
@@ -64,7 +109,7 @@ class Plugins(plugins: List<Plugin>) {
         val pluginRef = PluginRef.from(name)
         return try {
             if (pluginRef.pluginIdNotSpecified) {
-                byPackage.values
+                plugins
                     .mapNotNull { it.resolveContentType(pluginRef.resourceName) }
                     .firstOrNull()
             } else {
@@ -77,7 +122,7 @@ class Plugins(plugins: List<Plugin>) {
     }
 
     fun suggestContentTypes(inputPort: InputPort): Set<ContentType> {
-        return byPackage.values.map { plugin -> plugin.suggestContentTypes(inputPort) }.flatten().toSet()
+        return plugins.map { plugin -> plugin.suggestContentTypes(inputPort) }.flatten().toSet()
     }
 
     fun resolveDataSource(inputPort: InputPort): DataSource {
@@ -88,7 +133,7 @@ class Plugins(plugins: List<Plugin>) {
         inputPort: InputPort,
         suggestedContentTypes: Set<ContentType> = emptySet()
     ): List<PortLinkOption> {
-        return byPackage.values.map { plugin ->
+        return plugins.map { plugin ->
             plugin.suggestDataSources(inputPort, suggestedContentTypes)
         }.flatten()
     }
@@ -135,8 +180,8 @@ class Plugins(plugins: List<Plugin>) {
         TODO("not implemented")
     }
 
-    operator fun plus(plugin: Plugin): Plugins {
-        return Plugins(byPackage.values + plugin)
+    operator fun plus(pluginBuilder: PluginBuilder): Plugins {
+        return Plugins(pluginContext, plugins + pluginBuilder.build(pluginContext))
     }
 
     fun find(packageName: String): Plugin {
@@ -144,8 +189,17 @@ class Plugins(plugins: List<Plugin>) {
     }
 
     companion object {
-        fun safe(): Plugins = Plugins(listOf(CorePlugin()))
+        fun safe(pluginContext: PluginContext): Plugins =
+            Plugins(listOf(CorePlugin), pluginContext)
+
         val default = CorePlugin.id
+
+        /** Don't use me except from [baaahs.show.SampleData] and [baaahs.glsl.GuruMeditationError]. */
+        internal val dummyContext = PluginContext(ZeroClock())
+
+        private class ZeroClock : Clock {
+            override fun now(): Time = 0.0
+        }
 
         private val logger = Logger("Plugins")
     }

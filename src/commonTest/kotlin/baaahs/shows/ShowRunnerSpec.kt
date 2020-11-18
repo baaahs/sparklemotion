@@ -5,10 +5,10 @@ import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.render.RenderManager
+import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.mapper.Storage
 import baaahs.plugin.CorePlugin
-import baaahs.plugin.Plugins
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
 import baaahs.show.ShaderType
@@ -35,7 +35,7 @@ object ShowRunnerSpec : Spek({
 
         val fakeGlslContext by value { FakeGlContext() }
         val model by value { TestModel }
-        val autoWirer by value { AutoWirer(Plugins.safe()) }
+        val autoWirer by value { AutoWirer(testPlugins()) }
         val fixtures by value { listOf(fakeFixture(100)) }
         val mutableShow by value {
             MutableShow("test show") {
@@ -79,7 +79,7 @@ object ShowRunnerSpec : Spek({
         val stageManager by value {
             val fs = FakeFs()
             StageManager(
-                Plugins.safe(), renderManager, pubSub, Storage(fs, Plugins.safe()), fixtureManager,
+                testPlugins(), renderManager, pubSub, Storage(fs, testPlugins()), fixtureManager,
                 FakeClock(), model, testCoroutineContext)
         }
 

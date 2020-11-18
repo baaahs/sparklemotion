@@ -1,6 +1,5 @@
 package baaahs.app.ui
 
-import baaahs.JsClock
 import baaahs.ShowEditorState
 import baaahs.ShowPlayer
 import baaahs.app.ui.editor.EditableManager
@@ -12,6 +11,7 @@ import baaahs.io.Fs
 import baaahs.show.SampleData
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
+import baaahs.util.JsClock
 import baaahs.util.UndoStack
 import baaahs.window
 import external.ErrorBoundary
@@ -85,7 +85,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.autoWirer = AutoWirer(webClient.plugins)
             this.allStyles = AllStyles(theme)
             this.prompt = { prompt = it }
-            this.clock = JsClock()
+            this.clock = JsClock
 
             this.openEditor = { editIntent ->
                 editableManager.openEditor(webClient.show!!, editIntent)

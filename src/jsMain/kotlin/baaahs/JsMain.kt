@@ -9,6 +9,7 @@ import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
 import baaahs.sim.ui.WebClientWindow
 import baaahs.util.ConsoleFormatters
+import baaahs.util.JsClock
 import decodeQueryParams
 import kotlinext.js.jsObject
 import org.w3c.dom.get
@@ -51,7 +52,7 @@ fun main(args: Array<String>) {
 
             val mapperUi = JsMapperUi();
             val mediaDevices = RealMediaDevices()
-            val mapper = Mapper(network, model, mapperUi, mediaDevices, pinkyAddress);
+            val mapper = Mapper(network, model, mapperUi, mediaDevices, pinkyAddress, JsClock);
             render(mapperUi.render(), contentDiv);
             mapper.start();
         }

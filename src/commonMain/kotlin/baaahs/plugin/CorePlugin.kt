@@ -1,6 +1,7 @@
 package baaahs.plugin
 
 import baaahs.*
+import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.fixtures.PixelLocationFeed
 import baaahs.gadgets.ColorPicker
@@ -13,18 +14,15 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
-import baaahs.show.UpdateMode
-import baaahs.show.mutable.MutableDataSourcePort
-import baaahs.show.mutable.MutableGadgetControl
+import baaahs.show.*
+import baaahs.show.mutable.*
 import baaahs.util.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.*
 
-class CorePlugin : Plugin {
+class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     override val packageName: String = id
     override val title: String = "SparkleMotion Core"
 
@@ -92,6 +90,48 @@ class CorePlugin : Plugin {
         return dataSourceBuilder.build(inputPort)
     }
 
+    override fun getAddControlMenuItems(): List<AddControlMenuItem> = listOf(
+        AddControlMenuItem("New Button…", CommonIcons.Button) { mutableShow ->
+            MutableButtonControl(ButtonControl("New Button"), mutableShow)
+        },
+
+        AddControlMenuItem("New Button Group…", CommonIcons.ButtonGroup) { mutableShow ->
+            MutableButtonGroupControl(
+                "New Button Group",
+                ButtonGroupControl.Direction.Horizontal,
+                mutableShow = mutableShow
+            )
+        },
+
+        AddControlMenuItem("New Color Palette…", CommonIcons.ColorPalette) { mutableShow ->
+            TODO("not implemented")
+        },
+
+        AddControlMenuItem("New Visualizer…", CommonIcons.Visualizer) { mutableShow ->
+            MutableVisualizerControl()
+        }
+    )
+
+    override fun getControlSerializers() =
+        listOf(
+            classSerializer(GadgetControl.serializer()),
+            classSerializer(ButtonControl.serializer()),
+            classSerializer(ButtonGroupControl.serializer()),
+            classSerializer(VisualizerControl.serializer())
+        )
+
+    override fun getDataSourceSerializers() =
+        listOf(
+            classSerializer(ResolutionDataSource.serializer()),
+            classSerializer(PreviewResolutionDataSource.serializer()),
+            classSerializer(TimeDataSource.serializer()),
+            classSerializer(PixelCoordsTextureDataSource.serializer()),
+            classSerializer(ModelInfoDataSource.serializer()),
+            classSerializer(SliderDataSource.serializer()),
+            classSerializer(ColorPickerDataSource.serializer()),
+            classSerializer(RadioButtonStripDataSource.serializer()),
+            classSerializer(XyPadDataSource.serializer())
+    )
 
     /**
      * Sparkle Motion always uses a resolution of (1, 1), except for previews, which
@@ -111,7 +151,7 @@ class CorePlugin : Plugin {
         override fun getType(): GlslType = GlslType.Vec2
         override fun getContentType(): ContentType = ContentType.Resolution
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed =
@@ -138,7 +178,7 @@ class CorePlugin : Plugin {
         override fun getType(): GlslType = GlslType.Vec2
         override fun getContentType(): ContentType = ContentType.Resolution
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed, GlslProgram.ResolutionListener {
@@ -177,14 +217,16 @@ class CorePlugin : Plugin {
         override fun getType(): GlslType = GlslType.Float
         override fun getContentType(): ContentType = ContentType.Time
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                    override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                        SingleUniformFeed(glslProgram, this@TimeDataSource, id) { uniform ->
-                            val thisTime = (getTimeMillis() and 0x7ffffff).toFloat() / 1000.0f
+                    override fun bind(glslProgram: GlslProgram): ProgramFeed {
+                        val clock = showPlayer.plugins.pluginContext.clock
+                        return SingleUniformFeed(glslProgram, this@TimeDataSource, id) { uniform ->
+                            val thisTime = (clock.now() % 10000.0).toFloat()
                             uniform.set(thisTime)
                         }
+                    }
                 }
 
                 override fun release() = Unit
@@ -206,7 +248,7 @@ class CorePlugin : Plugin {
         override fun getContentType(): ContentType = ContentType.PixelCoordinatesTexture
         override fun suggestId(): String = "pixelCoordsTexture"
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             PixelLocationFeed(getVarName(id))
     }
 
@@ -226,7 +268,7 @@ class CorePlugin : Plugin {
         override fun isImplicit(): Boolean = true
         override fun getVarName(id: String): String = "gl_FragCoord"
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
             return object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed {
@@ -267,7 +309,7 @@ class CorePlugin : Plugin {
         override fun getType(): GlslType = modelInfoType
         override fun getContentType(): ContentType = ContentType.ModelInfo
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
             return object : Feed, RefCounted by RefCounter() {
                 private val varPrefix = getVarName(id)
 
@@ -310,7 +352,7 @@ class CorePlugin : Plugin {
 
         fun set(gadget: T, uniform: Uniform)
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
             val gadget = showPlayer.useGadget<T>(this)
                 ?: run {
                     logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
@@ -415,7 +457,7 @@ class CorePlugin : Plugin {
         override fun getContentType(): ContentType = ContentType.XyCoordinate
         override fun suggestId(): String = "$gadgetTitle XY Pad".camelize()
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
             return object : Feed, RefCounted by RefCounter() {
 //                val xControl = showPlayer.useGadget<Slider>("${varPrefix}_x")
 //                val yControl = showPlayer.useGadget<Slider>("${varPrefix}_y")
@@ -543,7 +585,7 @@ class CorePlugin : Plugin {
         override fun getContentType(): ContentType = ContentType.ColorStream
         override fun suggestId(): String = "$imageTitle Image".camelize()
 
-        override fun createFeed(showPlayer: ShowPlayer, plugin: Plugin, id: String): Feed =
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed =
@@ -556,8 +598,10 @@ class CorePlugin : Plugin {
             }
     }
 
-    companion object {
-        val id = "baaahs.Core"
+    companion object : PluginBuilder {
+        override val id = "baaahs.Core"
+
+        override fun build(pluginContext: PluginContext) = CorePlugin(pluginContext)
 
         val contentTypesByGlslType =
             ContentType.coreTypes.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })

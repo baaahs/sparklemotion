@@ -1,8 +1,9 @@
 package baaahs.sim
 
-import baaahs.BeatData
-import baaahs.BeatSource
 import baaahs.SoundAnalyzer
+import baaahs.plugin.beatlink.BeatData
+import baaahs.plugin.beatlink.BeatSource
+import baaahs.ui.Observable
 import baaahs.util.Logger
 import baaahs.window
 import kotlinx.coroutines.GlobalScope
@@ -21,14 +22,18 @@ class BridgeClient(private val url: String) {
     private val l = window.location
     private lateinit var webSocket: WebSocket
     private var everConnected = false
+    val beatSource = BridgedBeatSource()
+
     private var beatData = BeatData(0.0, 0, confidence = 0f)
+        set(value) {
+            field = value
+            beatSource.notifyChanged()
+        }
 
     private var soundAnalysisFrequences: FloatArray = floatArrayOf()
-
-    val beatSource = BridgedBeatSource()
     val soundAnalyzer = BridgedSoundAnalyzer()
 
-    inner class BridgedBeatSource : BeatSource {
+    inner class BridgedBeatSource : Observable(), BeatSource {
         override fun getBeatData(): BeatData = beatData
     }
 

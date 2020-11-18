@@ -6,10 +6,9 @@ import baaahs.app.ui.Editable
 import baaahs.camelize
 import baaahs.show.live.*
 import baaahs.show.mutable.*
+import baaahs.ui.Icon
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
 
 interface Control : Editable {
     override val title: String
@@ -19,19 +18,13 @@ interface Control : Editable {
     fun createMutable(mutableShow: MutableShow): MutableControl
 
     fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl
-
-    companion object {
-        val serialModule = SerializersModule {
-            polymorphic(Control::class) {
-//        CorePlugin.NoOp::class with CorePlugin.NoOp.serializer()
-                subclass(GadgetControl::class, GadgetControl.serializer())
-                subclass(ButtonControl::class, ButtonControl.serializer())
-                subclass(ButtonGroupControl::class, ButtonGroupControl.serializer())
-                subclass(VisualizerControl::class, VisualizerControl.serializer())
-            }
-        }
-    }
 }
+
+data class AddControlMenuItem(
+    val label: String,
+    val icon: Icon,
+    val createControlFn: (mutableShow: MutableShow) -> MutableControl
+)
 
 @Serializable
 @SerialName("baaahs.Core:Gadget")

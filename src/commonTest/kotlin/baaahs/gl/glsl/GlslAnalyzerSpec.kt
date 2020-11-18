@@ -6,9 +6,9 @@ import baaahs.gl.glsl.GlslCode.*
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
-import baaahs.plugin.Plugins
 import baaahs.toBeSpecified
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -18,7 +18,7 @@ object GlslAnalyzerSpec : Spek({
     describe("ShaderFragment") {
         context("given some GLSL code") {
             val shaderText by value<String> { toBeSpecified() }
-            val glslAnalyzer by value { GlslAnalyzer(Plugins.safe()) }
+            val glslAnalyzer by value { GlslAnalyzer(testPlugins()) }
             val importedShader by value { glslAnalyzer.import(shaderText) }
             val glslCode by value { glslAnalyzer.analyze(importedShader.src) }
 

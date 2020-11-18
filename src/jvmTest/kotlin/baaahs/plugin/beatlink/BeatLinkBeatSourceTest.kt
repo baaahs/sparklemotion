@@ -1,9 +1,10 @@
-package baaahs
+package baaahs.plugin.beatlink
 
+import baaahs.FakeClock
 import io.mockk.every
 import io.mockk.mockk
 import org.deepsymmetry.beatlink.Beat
-import org.junit.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertNotEquals
@@ -49,8 +50,8 @@ class BeatLinkBeatSourceTest {
 
         fakeClock.time += 0.490
         beatSource.newBeat(mockBeat(123.4, 3))
-        assertEquals(10.003, beatSource.currentBeat.measureStartTime, 0.0009)
-        assertEquals(486, beatSource.currentBeat.beatIntervalMs)
+        Assert.assertEquals(10.003, beatSource.currentBeat.measureStartTime, 0.0009)
+        Assert.assertEquals(486, beatSource.currentBeat.beatIntervalMs)
     }
 
     @Test
@@ -61,8 +62,8 @@ class BeatLinkBeatSourceTest {
         fakeClock.time += 0.486
         beatSource.newBeat(mockBeat(123.5, 2))
         assertNotEquals(10.0, beatSource.currentBeat.measureStartTime)
-        assertEquals(10.0, beatSource.currentBeat.measureStartTime, 0.0009)
-        assertEquals(485, beatSource.currentBeat.beatIntervalMs)
+        Assert.assertEquals(10.0, beatSource.currentBeat.measureStartTime, 0.0009)
+        Assert.assertEquals(485, beatSource.currentBeat.beatIntervalMs)
     }
 
     private fun mockBeat(_effectiveTempo: Double, _beatWithinBar: Int, _deviceNumber: Int = 1): Beat {

@@ -6,8 +6,8 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
+import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
-import baaahs.plugin.Plugins
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePatch
@@ -21,7 +21,7 @@ import kotlin.test.expect
 object FilterShaderSpec : Spek({
     describe("FilterShader") {
         val shaderText by value<String> { toBeSpecified() }
-        val shader by value { GlslAnalyzer(Plugins.safe()).openShader(shaderText) as FilterShader }
+        val shader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) as FilterShader }
         val namespace by value { GlslCode.Namespace("p0") }
 
         context("cross-fade between shaders") {
@@ -68,7 +68,7 @@ object FilterShaderSpec : Spek({
             }
 
             context("in a patch using a shader channel") {
-                val autoWirer by value { AutoWirer(Plugins.safe()) }
+                val autoWirer by value { AutoWirer(testPlugins()) }
                 val otherChannel by value { ShaderChannel("other") }
                 val linkedPatch by value {
                     MutablePatch {

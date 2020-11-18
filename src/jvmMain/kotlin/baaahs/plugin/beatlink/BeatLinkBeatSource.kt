@@ -1,6 +1,9 @@
-package baaahs
+package baaahs.plugin.beatlink
 
+import baaahs.ui.Observable
+import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.Time
 import org.deepsymmetry.beatlink.*
 import kotlin.concurrent.thread
 import kotlin.math.abs
@@ -12,13 +15,14 @@ import kotlin.math.abs
  * 1) The CDJ that is currently on-air (has its fader up on the mixer)
  * 2) If more than one CDJ is on-air, pick the CDJ that is the Tempo Master
  */
-class BeatLinkBeatSource(private val clock: Clock) : BeatSource, BeatListener, OnAirListener {
+class BeatLinkBeatSource(
+    private val clock: Clock
+) : Observable(), BeatSource, BeatListener, OnAirListener {
 
     var currentBeat: BeatData = BeatData(0.0, 0, confidence = 0f)
 
     private val logger = Logger("BeatLinkBeatSource")
     private val currentlyAudibleChannels: MutableSet<Int> = hashSetOf()
-    private val listeners = mutableListOf<(BeatData) -> Unit>()
     private var lastBeatAt: Time? = null
 
     fun start() {
@@ -71,6 +75,7 @@ class BeatLinkBeatSource(private val clock: Clock) : BeatSource, BeatListener, O
                 lastBeatAt?.let {
                     if (it < clock.now() - currentBeat.beatIntervalMs * currentBeat.beatsPerMeasure) {
                         currentBeat = currentBeat.copy(confidence = currentBeat.confidence * .9f)
+                        notifyChanged()
                     }
                 }
             }
@@ -108,7 +113,7 @@ class BeatLinkBeatSource(private val clock: Clock) : BeatSource, BeatListener, O
             ) {
                 currentBeat = BeatData(measureStartTime, beatIntervalMs, confidence = 1.0f)
                 logger.debug { "${beat.deviceName} on channel ${beat.deviceNumber}: Setting bpm from beat ${beat.beatWithinBar}" }
-                notifyListeners()
+                notifyChanged()
             }
             lastBeatAt = now
         } else {
@@ -118,13 +123,5 @@ class BeatLinkBeatSource(private val clock: Clock) : BeatSource, BeatListener, O
 
     override fun getBeatData(): BeatData {
         return currentBeat
-    }
-
-    fun listen(callback: (BeatData) -> Unit) {
-        listeners.add(callback)
-    }
-
-    private fun notifyListeners() {
-        listeners.forEach { it(currentBeat) }
     }
 }

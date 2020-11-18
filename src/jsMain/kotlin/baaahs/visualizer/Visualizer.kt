@@ -4,8 +4,10 @@ import baaahs.*
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
+import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
+import baaahs.util.asMillis
 import info.laht.threekt.THREE
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.cameras.PerspectiveCamera
@@ -30,7 +32,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(model: Model) : JsMapperUi.StatusListener {
+class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusListener {
     val facade = Facade()
 
     private var container: HTMLDivElement? = null
@@ -267,9 +269,9 @@ class Visualizer(model: Model) : JsMapperUi.StatusListener {
 
         controls?.update()
 
-        val startMs = getTimeMillis()
+        val startTime = clock.now()
         renderer.render(scene, camera)
-        facade.framerate.elapsed((getTimeMillis() - startMs).toInt())
+        facade.framerate.elapsed((clock.now() - startTime).asMillis().toInt())
 
         frameListeners.forEach { f -> f.onFrameReady(scene, camera) }
         rendererListeners.forEach { value -> value() }

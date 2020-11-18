@@ -22,7 +22,8 @@ class GuruMeditationError(deviceType: DeviceType) {
     val linkedPatch: LinkedPatch
 
     init {
-        val autoWirer = AutoWirer(Plugins.safe())
+        val plugins = Plugins.safe(Plugins.dummyContext)
+        val autoWirer = AutoWirer(plugins)
         val showBuilder = ShowBuilder()
         val mutablePatch = autoWirer.autoWire(shader)
             .acceptSuggestedLinkOptions()
@@ -31,8 +32,8 @@ class GuruMeditationError(deviceType: DeviceType) {
             addPatch(mutablePatch)
         }.build(showBuilder)
 
-        @Suppress("CAST_NEVER_SUCCEEDS")
-        val openShow = ShowOpener(autoWirer.glslAnalyzer, show, FakeShowPlayer).openShow()
+        val showPlayer = FakeShowPlayer(plugins)
+        val openShow = ShowOpener(autoWirer.glslAnalyzer, show, showPlayer).openShow()
         feeds = openShow.feeds
         val openPatch = openShow.patches.only("patch")
         linkedPatch = PatchResolver.buildPortDiagram(openPatch)
@@ -41,7 +42,7 @@ class GuruMeditationError(deviceType: DeviceType) {
     }
 }
 
-private object FakeShowPlayer : BaseShowPlayer(Plugins.safe(), ModelInfo.Empty) {
+private class FakeShowPlayer(plugins: Plugins) : BaseShowPlayer(plugins, ModelInfo.Empty) {
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?): Unit = error("not implemented")
     override fun <T : Gadget> useGadget(id: String): T = error("not implemented")
 }

@@ -3,8 +3,8 @@ package baaahs.show.live
 import baaahs.ShowState
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
-import baaahs.plugin.Plugins
 import baaahs.show.*
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutablePatch
@@ -131,4 +131,4 @@ fun ControlDisplay.renderBuckets(panelName: String): List<ControlDisplay.PanelBu
     return buckets
 }
 
-val autoWirer = AutoWirer(Plugins.safe())
+val autoWirer = AutoWirer(testPlugins())
