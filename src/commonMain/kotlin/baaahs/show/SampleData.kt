@@ -46,8 +46,9 @@ object SampleData {
         })
     }
 
-    val plugins = Plugins.safe(Plugins.dummyContext) +
-            BeatLinkPlugin.Builder(BeatSource.None)
+    val pluginContext = Plugins.dummyContext
+    val plugins = Plugins.safe(pluginContext) +
+            BeatLinkPlugin(BeatSource.None, pluginContext)
     val beatLinkPlugin = plugins.findPlugin<BeatLinkPlugin>()
 
     private val autoWirer = AutoWirer(plugins)

@@ -302,7 +302,7 @@ val dokka by tasks.getting(DokkaTask::class) {
 
 tasks.create<JavaExec>("runPinkyJvm") {
     dependsOn("compileKotlinJvm")
-    dependsOn("jsBrowserDevelopmentWebpack")
+//    dependsOn("jsBrowserDevelopmentWebpack")
     main = "baaahs.PinkyMainKt"
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")

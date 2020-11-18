@@ -13,7 +13,7 @@ val WebClientWindow = xComponent<AppIndexProps>("WebClientWindow") { props_DO_NO
     val simulator = contextState.simulator
     val webClient = memo {
         with(simulator) {
-            WebClient(network, pinkyAddress, plugins)
+            WebClient.build(network, pinkyAddress)
         }
     }
 

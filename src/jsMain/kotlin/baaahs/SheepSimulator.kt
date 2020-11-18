@@ -58,8 +58,9 @@ class SheepSimulator(val model: Model) {
     }
 
     val pluginContext = PluginContext(clock)
-    val plugins = Plugins.safe(pluginContext) +
-            BeatLinkPlugin.Builder(bridgeClient.beatSource)
+    val pluginBuilders = Plugins.findAllBuilders()
+
+
     private val pinky = Pinky(
         model,
         network,

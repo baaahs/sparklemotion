@@ -6,11 +6,7 @@ import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
-import baaahs.plugin.PluginContext
-import baaahs.plugin.Plugins
-import baaahs.plugin.beatlink.BeatLinkBeatSource
-import baaahs.plugin.beatlink.BeatLinkPlugin
-import baaahs.plugin.beatlink.BeatSource
+import baaahs.plugin.*
 import baaahs.proto.Ports
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Logger
@@ -33,9 +29,13 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 @ObsoleteCoroutinesApi
-fun main(args: Array<String>) {
+fun main(argv: Array<String>) {
     mainBody(PinkyMain::class.simpleName) {
-        PinkyMain(ArgParser(args).parseInto(PinkyMain::Args)).run()
+        val pluginBuilders = Plugins.findAllBuilders()
+        val args = ArgParser(argv).parseInto { argParser ->
+            PinkyMain.Args(argParser, pluginBuilders)
+        }
+        PinkyMain(args).run()
     }
 }
 
@@ -62,20 +62,16 @@ class PinkyMain(private val args: Args) {
         val dmxUniverse = findDmxUniverse()
 
         val clock = SystemClock
-        val beatSource = if (args.enableBeatLink) {
-            BeatLinkBeatSource(clock).also { it.start() }
-        } else {
-            BeatSource.None
-        }
+        val pluginContext = PluginContext(clock, PluginMode.Server)
+        val plugins = Plugins(
+            pluginContext,
+            args.pluginArgs.map { it.createPlugin(pluginContext) }
+        )
 
         val fwUrlBase = "http://${network.link("pinky").myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw"
         val daddy = DirectoryDaddy(RealFs("Sparkle Motion Firmware", fwDir), fwUrlBase)
         val soundAnalyzer = JvmSoundAnalyzer()
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
-
-        val pluginContext = PluginContext(clock)
-        val plugins = Plugins.safe(pluginContext) +
-                BeatLinkPlugin.Builder(beatSource)
 
         val pinky = runBlocking(pinkyMainDispatcher) {
             val renderManager = RenderManager(model) { GlBase.manager.createContext() }
@@ -177,7 +173,7 @@ class PinkyMain(private val args: Args) {
         return FakeDmxUniverse()
     }
 
-    class Args(parser: ArgParser) {
+    class Args(parser: ArgParser, pluginBuilders: List<PluginBuilder<*>>) {
         val model by parser.storing("model").default(Pluggables.defaultModel)
 
         val showName by parser.storing("show").default<String?>(null)
@@ -192,8 +188,8 @@ class PinkyMain(private val args: Args) {
             transform = { if (isNullOrEmpty()) null else toInt() })
             .default<Int?>(null)
 
-        val enableBeatLink by parser.flagging("Enable beat detection").default(true)
-
         val simulateBrains by parser.flagging("Simulate connected brains").default(false)
+
+        val pluginArgs = pluginBuilders.map { it.createArgs(ArgsProvider(parser)) }
     }
 }

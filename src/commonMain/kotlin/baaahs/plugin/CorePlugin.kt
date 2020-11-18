@@ -598,10 +598,15 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             }
     }
 
-    companion object : PluginBuilder {
+    companion object : PluginBuilder<Unit> {
         override val id = "baaahs.Core"
 
-        override fun build(pluginContext: PluginContext) = CorePlugin(pluginContext)
+        override fun registerArgs(argsProvider: ArgsProvider) {
+        }
+
+        override fun build(pluginContext: PluginContext, args: Unit): Plugin {
+            return CorePlugin(pluginContext)
+        }
 
         val contentTypesByGlslType =
             ContentType.coreTypes.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })

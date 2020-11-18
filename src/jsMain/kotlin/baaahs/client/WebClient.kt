@@ -8,7 +8,9 @@ import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.model.Model
 import baaahs.net.Network
+import baaahs.plugin.ArgsProvider
 import baaahs.plugin.PluginContext
+import baaahs.plugin.PluginMode
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
@@ -17,6 +19,7 @@ import baaahs.show.Show
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableShow
+import baaahs.sim.FakeNetwork
 import baaahs.util.JsClock
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
@@ -24,7 +27,7 @@ import kotlinx.serialization.modules.SerializersModule
 import react.ReactElement
 import react.createElement
 
-class WebClient(
+class WebClient private constructor(
     network: Network,
     pinkyAddress: Network.Address,
     private val plugins: Plugins = createPlugins()
@@ -39,7 +42,6 @@ class WebClient(
         pubSub.addStateChangeListener(pubSubListener)
     }
 
-    private val glslContext = GlBase.jsManager.createContext()
     private val model = Pluggables.getModel()
 
     private var show: Show? = null
@@ -225,8 +227,13 @@ class WebClient(
     }
 
     companion object {
-        fun createPlugins() =
-            Plugins.safe(PluginContext(JsClock)) +
-                    BeatLinkPlugin.Builder(BeatSource.None)
+        fun createPlugins(): Plugins {
+            val argsProvider = ArgsProvider()
+            val pluginContext = PluginContext(JsClock, PluginMode.Client)
+            val plugins = Plugins.findAllBuilders()
+                .map { it.createArgs(argsProvider) }
+                .map { it.createPlugin(pluginContext) }
+            return Plugins(pluginContext, plugins)
+        }
     }
 }

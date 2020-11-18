@@ -94,7 +94,7 @@ class BeatLinkPlugin internal constructor(
         )
 
     @SerialName("baaahs.BeatLink:BeatLink")
-    inner class BeatLinkDataSource internal constructor(): DataSource {
+    inner class BeatLinkDataSource internal constructor() : DataSource {
         override val pluginPackage: String get() = id
         override val title: String get() = "BeatLink"
         override fun getType(): GlslType = GlslType.Float
@@ -116,16 +116,34 @@ class BeatLinkPlugin internal constructor(
         }
     }
 
-    companion object {
-        val id = "baaahs.BeatLink"
+    companion object : PluginBuilder<BeatLinkPluginArgs> {
+        override val id = "baaahs.BeatLink"
         val beatDataContentType = ContentType("Beat Link", GlslType.Float)
-    }
 
-    class Builder(internal val beatSource: BeatSource) : PluginBuilder {
-        override val id = BeatLinkPlugin.id
-
-        override fun build(pluginContext: PluginContext): Plugin {
-            return BeatLinkPlugin(beatSource, pluginContext)
+        override fun createArgs(argsProvider: ArgsProvider): PluginArgs {
+            return provideArgs(argsProvider)
         }
     }
 }
+
+interface BeatLinkPluginArgs : PluginArgs {
+    val enableBeatLink: Boolean
+
+    override fun createPlugin(pluginContext: PluginContext): Plugin {
+        val beatSource = when(enableBeatLink) {
+            true -> when (pluginContext.mode) {
+                PluginMode.Client -> createBeatSourceClient(pluginContext, this)
+                PluginMode.Server -> createPlatformBeatSource(pluginContext, this)
+            }
+            false -> {
+                BeatSource.None
+            }
+        }
+
+        return BeatLinkPlugin(beatSource, pluginContext)
+    }
+}
+
+expect fun provideArgs(argsProvider: ArgsProvider): BeatLinkPluginArgs
+
+expect fun createPlatformBeatSource(pluginContext: PluginContext, args: BeatLinkPluginArgs): BeatSource

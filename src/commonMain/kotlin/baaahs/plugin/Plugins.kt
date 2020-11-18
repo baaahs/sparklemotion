@@ -6,6 +6,7 @@ import baaahs.fixtures.DeviceType
 import baaahs.getBang
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.show.*
 import baaahs.util.Clock
 import baaahs.util.Logger
@@ -45,20 +46,10 @@ data class PluginRef(
     }
 }
 
-class Plugins private constructor(
+class Plugins(
     val pluginContext: PluginContext,
     private val plugins: List<Plugin>
 ) {
-    constructor(
-        pluginBuilders: List<PluginBuilder>,
-        pluginContext: PluginContext
-    ) : this(pluginContext, pluginBuilders.map { it.build(pluginContext) })
-
-    constructor(
-        vararg pluginBuilders: PluginBuilder,
-        pluginContext: PluginContext
-    ) : this(pluginContext, pluginBuilders.map { it.build(pluginContext) })
-
     private val byPackage: Map<String, Plugin> = plugins.associateBy { it.packageName }
 
     private val controlSerialModule = SerializersModule {
@@ -180,8 +171,8 @@ class Plugins private constructor(
         TODO("not implemented")
     }
 
-    operator fun plus(pluginBuilder: PluginBuilder): Plugins {
-        return Plugins(pluginContext, plugins + pluginBuilder.build(pluginContext))
+    operator fun plus(plugin: Plugin): Plugins {
+        return Plugins(pluginContext, plugins + plugin)
     }
 
     fun find(packageName: String): Plugin {
@@ -189,8 +180,10 @@ class Plugins private constructor(
     }
 
     companion object {
+        fun findAllBuilders(): List<PluginBuilder<*>> = listOf(CorePlugin, BeatLinkPlugin)
+
         fun safe(pluginContext: PluginContext): Plugins =
-            Plugins(listOf(CorePlugin), pluginContext)
+            Plugins(pluginContext, listOf(CorePlugin.build(pluginContext, Unit)))
 
         val default = CorePlugin.id
 

@@ -69,11 +69,22 @@ inline fun <reified T : Any> classSerializer(serializer: KSerializer<T>) =
 inline fun <reified T : Any> objectSerializer(serialName: String, t: T) =
     classSerializer(ObjectSerializer(serialName, t))
 
-interface PluginBuilder {
+interface PluginBuilder<T : Any> {
     val id: String
-    fun build(pluginContext: PluginContext): Plugin
+
+    fun createArgs(argsProvider: ArgsProvider): PluginArgs
+}
+
+interface PluginArgs {
+    fun createPlugin(pluginContext: PluginContext): Plugin
 }
 
 class PluginContext(
-    val clock: Clock
+    val clock: Clock,
+    val mode: PluginMode
 )
+
+enum class PluginMode {
+    Client,
+    Server
+}
