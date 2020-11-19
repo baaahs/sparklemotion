@@ -16,14 +16,10 @@ import org.spekframework.spek2.style.specification.describe
 object ShowSerializationSpec : Spek({
     describe("Show serialization") {
         val plugins by value { SampleData.plugins }
-        val jsonPrettyPrint by value {
-            Json {
-                prettyPrint = true
-                serializersModule = plugins.serialModule
-            }
-        }
+        val jsonWithDefaults by value { Json(plugins.json) { encodeDefaults = true } }
+        val jsonPrettyPrint by value { Json(plugins.json) { prettyPrint = true } }
         val origShow by value { SampleData.sampleShowWithBeatLink }
-        val showJson by value { origShow.toJson(plugins) }
+        val showJson by value { origShow.toJson(jsonWithDefaults) }
 
         context("to json") {
             it("serializes") {
@@ -34,7 +30,8 @@ object ShowSerializationSpec : Spek({
         context("fromJson") {
             it("deserializes equally") {
                 plugins.expectJson(forJson(origShow)) {
-                    val jsonStr = jsonPrettyPrint.encodeToString(JsonElement.serializer(), origShow.toJson(plugins))
+                    val jsonStr = jsonPrettyPrint.encodeToString(
+                        JsonElement.serializer(), origShow.toJson(jsonWithDefaults))
                     forJson(Show.fromJson(plugins, jsonStr))
                 }
             }
