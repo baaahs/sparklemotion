@@ -41,8 +41,8 @@ data class Show(
     val controls: Map<String, Control>  = emptyMap(),
     val dataSources: Map<String, DataSource> = emptyMap()
 ) : PatchHolder, ShowContext, Editable {
-    fun toJson(plugins: Plugins): JsonElement {
-        return plugins.json.encodeToJsonElement(serializer(), this)
+    fun toJson(json: Json): JsonElement {
+        return json.encodeToJsonElement(serializer(), this)
     }
 
     override fun getControl(id: String): Control = controls.getBang(id, "control")

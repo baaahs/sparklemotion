@@ -100,7 +100,7 @@ class TestCoroutineContext constructor(private val name: String?) : CoroutineCon
             }, timeMillis.coerceAtMost(MAX_DELAY))
         }
 
-        override fun invokeOnTimeout(timeMillis: Long, block: Runnable): DisposableHandle {
+        override fun invokeOnTimeout(timeMillis: Long, block: Runnable, context: CoroutineContext): DisposableHandle {
             handler.postDelayed(block, timeMillis.coerceAtMost(MAX_DELAY))
             return object : DisposableHandle {
                 override fun dispose() {

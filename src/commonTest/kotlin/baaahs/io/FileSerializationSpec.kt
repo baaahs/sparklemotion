@@ -32,7 +32,10 @@ object FileSerializationSpec : Spek({
 
         val serverJson by value {
             val fsServerSideSerializer = FsServerSideSerializer()
-            Json { serializersModule = fsServerSideSerializer.serialModule }
+            Json {
+                encodeDefaults = true
+                serializersModule = fsServerSideSerializer.serialModule
+            }
         }
 
         context("server-side serializer") {
