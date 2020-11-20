@@ -1,6 +1,5 @@
 package baaahs.app.ui.editor
 
-import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderCard
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutablePatch
@@ -25,11 +24,13 @@ import materialui.icons.Icons
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
-import react.*
+import react.RBuilder
+import react.RHandler
+import react.RProps
+import react.child
 import react.dom.div
 
 val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
-    val appContext = useContext(appContext)
     val styles = EditableStyles
 
     val handleShaderSelect: CacheBuilder<MutableShaderInstance, () -> Unit> =

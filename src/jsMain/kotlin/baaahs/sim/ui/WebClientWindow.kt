@@ -8,7 +8,7 @@ import baaahs.ui.xComponent
 import external.ErrorBoundary
 import react.useContext
 
-val WebClientWindow = xComponent<AppIndexProps>("WebClientWindow") { props_DO_NOT_USE ->
+val WebClientWindow = xComponent<AppIndexProps>("WebClientWindow") { _ ->
     val contextState = useContext(store).state
     val simulator = contextState.simulator
     val webClient = memo {
