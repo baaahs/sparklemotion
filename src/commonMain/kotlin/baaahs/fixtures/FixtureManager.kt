@@ -1,5 +1,6 @@
 package baaahs.fixtures
 
+import baaahs.elapsedSync
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.PatchResolver
@@ -87,21 +88,27 @@ class FixtureManager(
         }
     }
 
+    val renderPlanCache = mutableMapOf<ActivePatchSet, RenderPlan>()
+
     fun maybeUpdateRenderPlans(feedResolver: FeedResolver): Boolean {
         var remapFixtures = incorporateFixtureChanges()
+        if (remapFixtures) renderPlanCache.clear()
 
         // Maybe build new shaders.
         // TODO: In the remapFixtures case, this would benefit from reusing cached artifacts.
         if (this.activePatchSetChanged || remapFixtures) {
             val activePatchSet = currentActivePatchSet
 
-            val elapsedMs = timeSync {
-                val patchResolution = PatchResolver(renderManager, renderTargets.values, activePatchSet)
-                currentRenderPlan = patchResolution.createRenderPlan(feedResolver)
-            }
-
-            logger.info {
-                "New render plan created: ${currentRenderPlan?.describe() ?: "none!"}; took ${elapsedMs}ms"
+            val cachedRenderPlan = renderPlanCache[activePatchSet]
+            if (cachedRenderPlan != null) {
+                currentRenderPlan = cachedRenderPlan
+            } else {
+                val elapsedMs = timeSync {
+                    val patchResolution = PatchResolver(renderManager, renderTargets.values, activePatchSet)
+                    currentRenderPlan = patchResolution.createRenderPlan(feedResolver)
+                        .also { renderPlanCache[activePatchSet] = it }
+                }
+                logger.info { "New render plan created: ${currentRenderPlan?.describe() ?: "none!"}; took ${elapsedMs}ms" }
             }
 
             remapFixtures = true

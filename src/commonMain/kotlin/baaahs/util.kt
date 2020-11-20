@@ -72,6 +72,16 @@ internal fun Clock.timeSync(function: () -> Unit): Int {
     return (now() - then).asMillis().toInt()
 }
 
+internal fun <T> elapsedSync(message: String, function: () -> T) = internalTimerClock.elapsedSync(message, function)
+internal fun <T> Clock.elapsedSync(message: String, function: () -> T): T {
+    val then = now()
+    try {
+        return function.invoke()
+    } finally {
+        println("$message: ${(now() - then).asMillis().toInt()}ms elapsed")
+    }
+}
+
 fun String.camelize(): String =
     replace(Regex("([A-Z]+)"), " $1")
         .split(Regex("[^A-Za-z0-9]+"))
