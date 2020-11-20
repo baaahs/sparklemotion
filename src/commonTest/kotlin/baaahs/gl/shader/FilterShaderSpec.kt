@@ -14,9 +14,11 @@ import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShaderOutPort
 import baaahs.toBeSpecified
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 object FilterShaderSpec : Spek({
     describe("FilterShader") {
@@ -40,31 +42,29 @@ object FilterShaderSpec : Spek({
             }
 
             it("finds magic uniforms") {
-                expect(listOf(
-                    InputPort("gl_FragColor", GlslType.Vec4, "Input Color", ContentType.ColorStream),
-                    InputPort("fade", GlslType.Float, "Fade"),
-                    InputPort("otherColorStream", GlslType.Vec4, "Other Color Stream", ContentType.ColorStream)
-                )) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                expect(shader.inputPorts.map { it.copy(glslVar = null) })
+                    .containsExactly(
+                        InputPort("gl_FragColor", GlslType.Vec4, "Input Color", ContentType.ColorStream),
+                        InputPort("fade", GlslType.Float, "Fade"),
+                        InputPort("otherColorStream", GlslType.Vec4, "Other Color Stream", ContentType.ColorStream)
+                    )
             }
 
             it("generates function declarations") {
-                expect(
+                expect(shader.toGlsl(
+                    namespace, mapOf(
+                        "resolution" to "in_resolution",
+                        "blueness" to "aquamarinity",
+                        "identity" to "p0_identity",
+                        "gl_FragColor" to "sm_result"
+                    )).trim()).toBe(
                     """
                         #line 4
                          
                         vec4 p0_mainFilter(vec4 colorIn) {
                             return mix(colorIn, p0_otherColorStream, p0_fade);
                         }
-                    """.trimIndent()
-                ) {
-                    shader.toGlsl(
-                        namespace, mapOf(
-                            "resolution" to "in_resolution",
-                            "blueness" to "aquamarinity",
-                            "identity" to "p0_identity",
-                            "gl_FragColor" to "sm_result"
-                        )).trim()
-                }
+                    """.trimIndent())
             }
 
             context("in a patch using a shader channel") {
@@ -88,7 +88,7 @@ object FilterShaderSpec : Spek({
                 }
 
                 it("accepts color streams from multiple shaders") {
-                    expect("""
+                    expect(linkedPatch!!.toFullGlsl("*")).toBe("""
                         #version *
 
                         #ifdef GL_ES
@@ -141,14 +141,18 @@ object FilterShaderSpec : Spek({
                         }
 
 
-                    """.trimIndent()) { linkedPatch!!.toFullGlsl("*") }
+                    """.trimIndent())
                 }
             }
 
             it("generates invocation GLSL") {
-                expect("resultVar = p0_mainFilter(boof)") {
-                    shader.invocationGlsl(namespace, "resultVar", mapOf("gl_FragColor" to "boof"))
-                }
+                expect(
+                    shader.invocationGlsl(
+                        namespace,
+                        "resultVar",
+                        mapOf("gl_FragColor" to "boof")
+                    )
+                ).toBe("resultVar = p0_mainFilter(boof)")
             }
         }
     }

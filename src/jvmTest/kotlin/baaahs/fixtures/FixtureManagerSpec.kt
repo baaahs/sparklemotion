@@ -22,8 +22,10 @@ import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutableShow
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
-import kotlin.test.expect
 
 object FixtureManagerSpec : Spek({
     describe<FixtureManager> {
@@ -93,7 +95,7 @@ object FixtureManagerSpec : Spek({
                 beforeEachTest {
                     fixtureManager.activePatchSetChanged(activePatchSet)
                     val updated = fixtureManager.maybeUpdateRenderPlans { _, _ -> null }
-                    expect(true) { updated }
+                    expect(updated).toBe(true)
                 }
 
                 val renderPlan by value { fixtureManager.currentRenderPlan!! }
@@ -104,27 +106,29 @@ object FixtureManagerSpec : Spek({
                     val fogMachineProgram = fogMachinePrograms.only("program")
                     val vuzuvelaProgram = vuzuvelaPrograms.only("program")
 
-                    expect(listOf(fogMachine1, fogMachine2)) { fogMachineProgram.renderTargets.map { it.fixture } }
-                    expect(listOf(vuzuvela1, vuzuvela2)) { vuzuvelaProgram.renderTargets.map { it.fixture } }
+                    expect(fogMachineProgram.renderTargets.map { it.fixture })
+                        .containsExactly(fogMachine1,fogMachine2)
+                    expect(vuzuvelaProgram.renderTargets.map { it.fixture })
+                        .containsExactly(vuzuvela1,vuzuvela2)
 
-                    expect("Pea Soup") { fogMachineProgram.program!!.title }
-                    expect("Din") { vuzuvelaProgram.program!!.title }
+                    expect(fogMachineProgram.program!!.title).toBe("Pea Soup")
+                    expect(vuzuvelaProgram.program!!.title).toBe("Din")
                 }
 
                 context("when more fixtures are added") {
                     override(initialFixtures) { listOf(fogMachine1) }
 
                     beforeEachTest {
-                        expect(setOf(fogMachineDevice)) { renderPlan.keys }
+                        expect(renderPlan.keys).toBe(setOf(fogMachineDevice))
 
                         fixtureManager.fixturesChanged(listOf(vuzuvela1), emptyList())
                         val updated = fixtureManager.maybeUpdateRenderPlans { _, _ -> null }
-                        expect(true) { updated }
+                        expect(updated).toBe(true)
                     }
 
                     it("updates the RenderPlan to include the new fixture") {
                         val newRenderPlan = fixtureManager.currentRenderPlan!!
-                        expect(setOf(fogMachineDevice, vuzuvelaDevice)) { newRenderPlan.keys }
+                        expect(newRenderPlan.keys).toBe(setOf(fogMachineDevice, vuzuvelaDevice))
                     }
                 }
             }

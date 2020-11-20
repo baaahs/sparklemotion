@@ -10,9 +10,11 @@ import baaahs.toBeSpecified
 import baaahs.ui.Draggable
 import baaahs.ui.DropTarget
 import baaahs.unknown
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 object ControlDragNDropSpec : Spek({
     describe("Control Drag & Drop") {
@@ -57,7 +59,7 @@ object ControlDragNDropSpec : Spek({
         val draggedControl by value { toBeSpecified<Draggable>() }
 
         it("has the expected initial state") {
-            expect(
+            expect(openShow.fakeRender(controlDisplay)).toBe(
                 """
                     Panel 1:
                       |Show| scenesButtonGroup[*scene1Button*, scene2Button], buttonAButton, buttonBButton
@@ -72,7 +74,7 @@ object ControlDragNDropSpec : Spek({
                       |Scene 1| slider1SliderControl
                       |Backdrop 1.1|
                 """.trimIndent()
-            ) { openShow.fakeRender(controlDisplay) }
+            )
         }
 
         context("when a button is dragged") {
@@ -83,16 +85,15 @@ object ControlDragNDropSpec : Spek({
                 override(toDropTarget) { fromDropTarget }
 
                 it("can be dropped back in the same bucket") {
-                    expect(true) { draggedControl.willMoveTo(toDropTarget) }
-                    expect(true) { toDropTarget.willAccept(draggedControl) }
+                    expect(draggedControl.willMoveTo(toDropTarget)).toBe(true)
+                    expect(toDropTarget.willAccept(draggedControl)).toBe(true)
                 }
 
                 it("reorders controls in the parent") {
                     dragNDrop.doMove(fromDropTarget, 1, fromDropTarget, 2)
 
-                    expect(
-                        listOf("scenesButtonGroup", "buttonBButton", "buttonAButton")
-                    ) { editHandler.updatedShow.controlLayout["Panel 1"] }
+                    expect(editHandler.updatedShow.controlLayout.getBang("Panel 1", "panels"))
+                        .containsExactly("scenesButtonGroup", "buttonBButton", "buttonAButton")
                 }
             }
 
@@ -100,14 +101,14 @@ object ControlDragNDropSpec : Spek({
                 override(toDropTarget) { findBucket("Panel 1", "Scene 1") }
 
                 it("can be dropped back into another bucket") {
-                    expect(true) { draggedControl.willMoveTo(toDropTarget) }
-                    expect(true) { toDropTarget.willAccept(draggedControl) }
+                    expect(draggedControl.willMoveTo(toDropTarget)).toBe(true)
+                    expect(toDropTarget.willAccept(draggedControl)).toBe(true)
                 }
 
                 it("removes the control from prior parent and adds it to the new parent") {
                     dragNDrop.doMove(fromDropTarget, 1, toDropTarget, 0)
 
-                    expect(
+                    expect(renderEditedShow()).toBe(
                         """
                             Panel 1:
                               |Show| scenesButtonGroup[*scene1Button*, scene2Button], buttonBButton
@@ -122,7 +123,7 @@ object ControlDragNDropSpec : Spek({
                               |Scene 1| slider1SliderControl
                               |Backdrop 1.1|
                         """.trimIndent()
-                    ) { renderEditedShow() }
+                    )
                 }
             }
 
@@ -133,14 +134,14 @@ object ControlDragNDropSpec : Spek({
                 }
 
                 it("can be dropped into a button group") {
-                    expect(true) { draggedControl.willMoveTo(toDropTarget) }
-                    expect(true) { toDropTarget.willAccept(draggedControl) }
+                    expect(draggedControl.willMoveTo(toDropTarget)).toBe(true)
+                    expect(toDropTarget.willAccept(draggedControl)).toBe(true)
                 }
 
                 it("removes the control from prior parent and adds it to the new parent") {
                     dragNDrop.doMove(fromDropTarget, 1, toDropTarget, 0)
 
-                    expect(
+                    expect(renderEditedShow()).toBe(
                         """
                             Panel 1:
                               |Show| scenesButtonGroup[buttonAButton, *scene1Button*, scene2Button], buttonBButton
@@ -155,7 +156,7 @@ object ControlDragNDropSpec : Spek({
                               |Scene 1| slider1SliderControl
                               |Backdrop 1.1|
                         """.trimIndent()
-                    ) { renderEditedShow() }
+                    )
                 }
             }
 
@@ -167,14 +168,14 @@ object ControlDragNDropSpec : Spek({
                 override(toDropTarget) { findBucket("Panel 1", "Scene 1") }
 
                 it("can be dropped") {
-                    expect(true) { draggedControl.willMoveTo(toDropTarget) }
-                    expect(true) { toDropTarget.willAccept(draggedControl) }
+                    expect(draggedControl.willMoveTo(toDropTarget)).toBe(true)
+                    expect(toDropTarget.willAccept(draggedControl)).toBe(true)
                 }
 
                 it("removes the control from prior parent and adds it to the new parent") {
                     dragNDrop.doMove(fromDropTarget, 1, toDropTarget, 0)
 
-                    expect(
+                    expect(renderEditedShow()).toBe(
                         """
                             Panel 1:
                               |Show| scenesButtonGroup[*scene1Button*], buttonAButton, buttonBButton
@@ -189,7 +190,7 @@ object ControlDragNDropSpec : Spek({
                               |Scene 1| slider1SliderControl
                               |Backdrop 1.1|
                         """.trimIndent()
-                    ) { renderEditedShow() }
+                    )
                 }
             }
         }

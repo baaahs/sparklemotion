@@ -18,9 +18,10 @@ import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 object PatchLayeringSpec : Spek({
     describe("Layering of patch links") {
@@ -94,8 +95,8 @@ object PatchLayeringSpec : Spek({
                     .only("port diagram to render targets")
                     .first
                 val linkedPatch = portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)!!
-                expect(
-                    /** language=glsl */
+                expect(linkedPatch.toGlsl()).toBe(
+                    /**language=glsl*/
                     """
                         #ifdef GL_ES
                         precision mediump float;
@@ -171,8 +172,7 @@ object PatchLayeringSpec : Spek({
                           sm_result = p2_brightnessFilteri_result;
                         }
                         
-                    """.trimIndent()
-                ) { linkedPatch.toGlsl() }
+                    """.trimIndent())
             }
         }
     }

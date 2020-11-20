@@ -19,13 +19,15 @@ import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.ui.Observable
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Runnable
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.coroutines.CoroutineContext
-import kotlin.test.expect
 
 @Suppress("unused")
 @InternalCoroutinesApi
@@ -99,12 +101,13 @@ object PinkySpec : Spek({
 
                 it("should notify show of anonymous surface") {
                     val fixture = renderTargets.keys.only()
-                    expect(null) { fixture.modelEntity }
+                    expect(fixture.modelEntity).toBe(null)
                 }
 
                 it("should send pixels but not not send mapping to the brain") {
                     val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
-                    expect(listOf(Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send no mapping packet.
+                    expect(packetTypes)
+                        .containsExactly(Type.BRAIN_PANEL_SHADE) // Should send no mapping packet.
                 }
             }
 
@@ -116,13 +119,14 @@ object PinkySpec : Spek({
 
                     it("should notify show") {
                         val fixture = renderTargets.keys.only()
-                        expect(panel17) { fixture.modelEntity }
-                        expect(panel17.name) { fixture.name }
+                        expect(fixture.modelEntity).toBe(panel17)
+                        expect(fixture.name).toBe(panel17.name)
                     }
 
                     it("should send pixels but not mapping to the brain") {
                         val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
-                        expect(listOf(Type.BRAIN_PANEL_SHADE)) { packetTypes } // Should send no mapping packet.
+                        expect(packetTypes)
+                            .containsExactly(Type.BRAIN_PANEL_SHADE) // Should send no mapping packet.
                     }
                 }
 
@@ -131,14 +135,13 @@ object PinkySpec : Spek({
 
                     it("should notify show") {
                         val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
-                        expect(
-                            listOf(Type.BRAIN_MAPPING, Type.BRAIN_PANEL_SHADE)
-                        ) { packetTypes } // Should send a mapping packet.
+                        expect(packetTypes)
+                            .containsExactly(Type.BRAIN_MAPPING,Type.BRAIN_PANEL_SHADE) // Should send a mapping packet.
                     }
 
                     it("should send mapping and pixels to the brain") {
                         val fixture = renderTargets.keys.only()
-                        expect(panel17) { fixture.modelEntity }
+                        expect(fixture.modelEntity).toBe(panel17)
                     }
 
                     context("then when the brain re-sends its hello with its newfound mapping") {
@@ -149,9 +152,9 @@ object PinkySpec : Spek({
                             pinky.updateFixtures()
                             pinky.renderAndSendNextFrame()
                             pinky.renderAndSendNextFrame()
-                            expect(1) { renderTargets.size }
+                            expect(renderTargets.size).toBe(1)
                             val fixture = renderTargets.keys.only()
-                            expect(panel17) { fixture.modelEntity }
+                            expect(fixture.modelEntity).toBe(panel17)
                         }
                     }
 
@@ -174,16 +177,16 @@ object PinkySpec : Spek({
                             pinky.renderAndSendNextFrame()
                             pinky.renderAndSendNextFrame()
 
-                            expect(1) { renderTargets.size }
-                            expect(panel17) { renderTargets.keys.only().modelEntity }
+                            expect(renderTargets.size).toBe(1)
+                            expect(renderTargets.keys.only().modelEntity).toBe(panel17)
 
                             pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
                             pinky.updateFixtures()
                             pinky.renderAndSendNextFrame()
                             pinky.renderAndSendNextFrame()
-                            expect(1) { renderTargets.size }
+                            expect(renderTargets.size).toBe(1)
                             val fixture = renderTargets.keys.only()
-                            expect(panel17) { fixture.modelEntity }
+                            expect(fixture.modelEntity).toBe(panel17)
                         }
                     }
                 }

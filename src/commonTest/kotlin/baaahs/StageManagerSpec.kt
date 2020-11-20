@@ -12,12 +12,14 @@ import baaahs.show.SampleData
 import baaahs.show.mutable.MutableShow
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeFs
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Runnable
 import org.spekframework.spek2.Spek
 import kotlin.coroutines.CoroutineContext
-import kotlin.test.expect
 
 @InternalCoroutinesApi
 object StageManagerSpec : Spek({
@@ -83,8 +85,10 @@ object StageManagerSpec : Spek({
 //        }
 
         it("a pubsub update is received on both clients") {
-            expect(listOf("update showEditorState: Sample Show")) { editingClient.log }
-            expect(listOf("update showEditorState: Sample Show")) { otherClient.log }
+            expect(editingClient.log)
+                .containsExactly("update showEditorState: Sample Show")
+            expect(otherClient.log)
+                .containsExactly("update showEditorState: Sample Show")
         }
 
         context("when a ShowEditorState change arrives from a client") {
@@ -106,11 +110,13 @@ object StageManagerSpec : Spek({
             }
 
             it("no additional pubsub updates are received by the editing client") {
-                expect(emptyList()) { editingClient.log }
+                expect(editingClient.log)
+                    .isEmpty()
             }
 
             it("a pubsub update is received by the other client") {
-                expect(listOf("update showEditorState: Edited show")) { otherClient.log }
+                expect(otherClient.log)
+                    .containsExactly("update showEditorState: Edited show")
             }
         }
     }

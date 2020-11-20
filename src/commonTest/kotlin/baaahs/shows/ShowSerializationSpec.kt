@@ -8,6 +8,8 @@ import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkControl
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.show.*
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -218,5 +220,5 @@ fun Plugins.expectJson(expected: JsonElement, block: () -> JsonElement) {
         serializersModule = serialModule
     }
     fun JsonElement.toStr() = json.encodeToString(JsonElement.serializer(), this)
-    kotlin.test.expect(expected.toStr()) { block().toStr() }
+    expect(block().toStr()).toBe(expected.toStr())
 }

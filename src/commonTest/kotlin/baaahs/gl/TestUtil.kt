@@ -9,12 +9,13 @@ import baaahs.gl.render.RenderTarget
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.util.Clock
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.dsl.LifecycleAware
 import org.spekframework.spek2.dsl.Skip
 import org.spekframework.spek2.meta.*
 import org.spekframework.spek2.style.specification.Suite
 import kotlin.test.assertEquals
-import kotlin.test.expect
 
 fun testPlugins(clock: Clock = FakeClock(0.0)) =
     Plugins.safe(PluginContext(clock))
@@ -69,7 +70,7 @@ fun <K, V> expects(expected: Map<K, V>, block: () -> Map<K, V>) {
 @Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
 fun <T> Suite.expectValue(expected: T, skip: Skip = Skip.No, actual: () -> T) {
     delegate.test("should equal", skip, delegate.defaultTimeout) {
-        expect(expected, actual)
+        expect(actual()).toBe(expected)
     }
 }
 

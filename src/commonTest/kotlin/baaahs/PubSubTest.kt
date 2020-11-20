@@ -1,6 +1,8 @@
 package baaahs
 
 import baaahs.sim.FakeNetwork
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import ext.Second
 import ext.TestCoroutineContext
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +13,6 @@ import kotlinx.serialization.builtins.serializer
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.expect
 
 @InternalCoroutinesApi
 class PubSubTest {
@@ -120,9 +121,9 @@ class PubSubTest {
 
     @Test
     fun beforeConnectionIsMade_isConnectedShouldBeFalse() {
-        expect(false) { client1.isConnected }
+        expect(client1.isConnected).toBe(false)
         testCoroutineContext.runAll()
-        expect(true) { client1.isConnected }
+        expect(client1.isConnected).toBe(true)
     }
 
     @Test
@@ -135,7 +136,7 @@ class PubSubTest {
     @Test
     fun whenConnectionIsReset_ShouldNotifyListenerOfStateChange() {
         testCoroutineContext.runAll()
-        expect(true) { client1.isConnected }
+        expect(client1.isConnected).toBe(true)
 
         client1.addStateChangeListener { client1Log.add("isConnected was changed to ${client1.isConnected}") }
 
@@ -147,24 +148,24 @@ class PubSubTest {
 
     @Test
     fun whenConnectionIsReset_attemptToReconnectEverySecond() {
-        expect(1) { client1Network.tcpConnections.size }
+        expect(client1Network.tcpConnections.size).toBe(1)
 
         // trigger a connection reset
         client1Network.webSocketListeners[0].reset(client1Network.tcpConnections[0])
-        expect(false) { client1.isConnected }
+        expect(client1.isConnected).toBe(false)
 
-        expect(1) { client1Network.tcpConnections.size }
+        expect(client1Network.tcpConnections.size).toBe(1)
 
         // don't attempt a new connection until a second has passed
         testCoroutineContext.triggerActions()
-        expect(1) { client1Network.tcpConnections.size }
+        expect(client1Network.tcpConnections.size).toBe(1)
 
         testCoroutineContext.advanceTimeBy(2, Second())
         testCoroutineContext.triggerActions()
 
         // assert that there was a new outgoing connection
-        expect(2) { client1Network.tcpConnections.size }
-        expect(true) { client1.isConnected }
+        expect(client1Network.tcpConnections.size).toBe(2)
+        expect(client1.isConnected).toBe(true)
     }
 
     @Test
@@ -175,26 +176,26 @@ class PubSubTest {
             serverLog.add("topic1 changed: $it")
         }
 
-        expect(1) { client1Network.tcpConnections.size }
+        expect(client1Network.tcpConnections.size).toBe(1)
         testCoroutineContext.triggerActions()
         client1Log.assertContents("topic1 changed: value")
 
         // trigger a connection reset
         client1Network.webSocketListeners[0].reset(client1Network.tcpConnections[0])
-        expect(false) { client1.isConnected }
+        expect(client1.isConnected).toBe(false)
 
-        expect(1) { client1Network.tcpConnections.size }
+        expect(client1Network.tcpConnections.size).toBe(1)
 
         // don't attempt a new connection until a second has passed
         testCoroutineContext.triggerActions()
-        expect(1) { client1Network.tcpConnections.size }
+        expect(client1Network.tcpConnections.size).toBe(1)
 
         testCoroutineContext.advanceTimeBy(2, Second())
         testCoroutineContext.triggerActions()
 
         // assert that there was a new outgoing connection
-        expect(2) { client1Network.tcpConnections.size }
-        expect(true) { client1.isConnected }
+        expect(client1Network.tcpConnections.size).toBe(2)
+        expect(client1.isConnected).toBe(true)
 
         serverTopicObserver.onChange("new value")
         testCoroutineContext.triggerActions()

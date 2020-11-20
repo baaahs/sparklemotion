@@ -1,6 +1,8 @@
 package baaahs.plugin.beatlink
 
 import baaahs.FakeClock
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import io.mockk.every
 import io.mockk.mockk
 import org.deepsymmetry.beatlink.Beat
@@ -8,7 +10,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertNotEquals
-import kotlin.test.expect
 
 class BeatLinkBeatSourceTest {
     private lateinit var fakeClock: FakeClock
@@ -22,21 +23,21 @@ class BeatLinkBeatSourceTest {
 
     @Test
     fun beforeAnyBeatsReceived_currentBeatIsZero() {
-        expect(BeatData(0.0, 0, confidence = 0f)) { beatSource.currentBeat }
+        expect(beatSource.currentBeat).toBe(BeatData(0.0, 0, confidence = 0f))
     }
 
     @Test
     fun whenNewBeatIsReceived_beatDataIsUpdated() {
         beatSource.channelsOnAir(hashSetOf(1))
         beatSource.newBeat(mockBeat(123.4, 1))
-        expect(BeatData(10.0, 486, confidence = 1f)) { beatSource.currentBeat }
+        expect(beatSource.currentBeat).toBe(BeatData(10.0, 486, confidence = 1f))
     }
 
     @Test
     fun whenMidBarNewBeatIsReceived_beatDataIsUpdated() {
         beatSource.channelsOnAir(hashSetOf(1))
         beatSource.newBeat(mockBeat(123.4, 2))
-        expect(BeatData(10.0 - 60 / 123.4, 486, confidence = 1f)) { beatSource.currentBeat }
+        expect(beatSource.currentBeat).toBe(BeatData(10.0 - 60 / 123.4, 486, confidence = 1f))
     }
 
     @Test
@@ -46,7 +47,7 @@ class BeatLinkBeatSourceTest {
 
         fakeClock.time += 0.486
         beatSource.newBeat(mockBeat(123.4, 2))
-        expect(BeatData(10.0, 486, confidence = 1f)) { beatSource.currentBeat }
+        expect(beatSource.currentBeat).toBe(BeatData(10.0, 486, confidence = 1f))
 
         fakeClock.time += 0.490
         beatSource.newBeat(mockBeat(123.4, 3))

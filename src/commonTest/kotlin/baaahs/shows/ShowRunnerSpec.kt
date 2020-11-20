@@ -17,12 +17,13 @@ import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.*
 import ext.TestCoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.serialization.json.JsonPrimitive
 import org.spekframework.spek2.Spek
-import kotlin.test.expect
 
 @InternalCoroutinesApi
 @Suppress("unused")
@@ -99,12 +100,12 @@ object ShowRunnerSpec : Spek({
                 val pixelCoordsTextureUnit = fakeProgram.getUniform("in_pixelCoordsTexture") as Int
                 val textureConfig = fakeGlslContext.getTextureConfig(pixelCoordsTextureUnit)
 
-                expect(100 to 1) { textureConfig.width to textureConfig.height }
-                expect(GL_RGB32F) { textureConfig.internalFormat }
-                expect(GL_RGB) { textureConfig.format }
-                expect(GL_FLOAT) { textureConfig.type }
-                expect(GL_NEAREST) { textureConfig.params[GL_TEXTURE_MIN_FILTER] }
-                expect(GL_NEAREST) { textureConfig.params[GL_TEXTURE_MAG_FILTER] }
+                expect(textureConfig.width to textureConfig.height).toBe(100 to 1)
+                expect(textureConfig.internalFormat).toBe(GL_RGB32F)
+                expect(textureConfig.format).toBe(GL_RGB)
+                expect(textureConfig.type).toBe(GL_FLOAT)
+                expect(textureConfig.params[GL_TEXTURE_MIN_FILTER]).toBe(GL_NEAREST)
+                expect(textureConfig.params[GL_TEXTURE_MAG_FILTER]).toBe(GL_NEAREST)
             }
 
             context("for vec4 uniforms") {
@@ -128,13 +129,13 @@ object ShowRunnerSpec : Spek({
                 }
 
                 it("wires it up as a color picker") {
-                    expect("Color") { colorPickerGadget.title }
-                    expect(Color.WHITE) { colorPickerGadget.initialValue }
+                    expect(colorPickerGadget.title).toBe("Color")
+                    expect(colorPickerGadget.initialValue).toBe(Color.WHITE)
                 }
 
                 it("sets the uniform from the gadget's initial value") {
                     val colorUniform = fakeProgram.getUniform("in_colorColorPicker")
-                    expect(arrayListOf(1f, 1f, 1f, 1f)) { colorUniform }
+                    expect(colorUniform).toBe(arrayListOf(1f, 1f, 1f, 1f))
                 }
 
                 it("sets the uniform when the gadget value changes") {
@@ -142,7 +143,7 @@ object ShowRunnerSpec : Spek({
 
                     stageManager.renderAndSendNextFrame()
                     val colorUniform = fakeProgram.getUniform("in_colorColorPicker")
-                    expect(arrayListOf(1f, 1f, 0f, 1f)) { colorUniform }
+                    expect(colorUniform).toBe(arrayListOf(1f, 1f, 0f, 1f))
                 }
             }
         }
