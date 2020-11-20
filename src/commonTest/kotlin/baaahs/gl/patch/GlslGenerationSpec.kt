@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.gl.kexpect
 import baaahs.gl.override
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
@@ -8,8 +9,6 @@ import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShaderOutPort
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
@@ -58,7 +57,7 @@ object GlslGenerationSpec : Spek({
             }
 
             it("generates GLSL") {
-                expect(glsl).toBe(
+                kexpect(glsl).toBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -69,8 +68,13 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
+                        // Data source: Blueness Slider
                         uniform float in_bluenessSlider;
+
+                        // Data source: Resolution
                         uniform vec2 in_resolution;
+
+                        // Data source: Time
                         uniform float in_time;
 
                         // Shader: This Shader's Name; namespace: p0
@@ -97,7 +101,9 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
-                          p0_thisShaderSName_main(); // This Shader's Name
+                          // Invoke This Shader's Name
+                          p0_thisShaderSName_main();
+
                           sm_result = p0_thisShaderSName_gl_FragColor;
                         }
                     """.trimIndent())
@@ -142,7 +148,8 @@ object GlslGenerationSpec : Spek({
                 linkedPatch.shaderInstance.incomingLinks.forEach { (port, link) ->
                     println("port $port -> $link")
                 }
-                expect(glsl).toBe(
+
+                kexpect(glsl).toBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -153,8 +160,13 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
+                        // Data source: Blueness Slider
                         uniform float in_bluenessSlider;
+
+                        // Data source: Resolution
                         uniform vec2 in_resolution;
+
+                        // Data source: Time
                         uniform float in_time;
 
                         // Shader: This Shader's Name; namespace: p0
@@ -181,7 +193,9 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
-                          p0_thisShaderSName_mainImage(p0_thisShaderSNamei_result, gl_FragCoord.xy); // This Shader's Name
+                          // Invoke This Shader's Name
+                          p0_thisShaderSName_mainImage(p0_thisShaderSNamei_result, gl_FragCoord.xy);
+
                           sm_result = p0_thisShaderSNamei_result;
                         }
                     """.trimIndent())
@@ -228,7 +242,7 @@ object GlslGenerationSpec : Spek({
             }
 
             it("generates GLSL") {
-                expect(glsl).toBe(
+                kexpect(glsl).toBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -244,10 +258,19 @@ object GlslGenerationSpec : Spek({
                             vec3 extents;
                         };
                         
+                        // Data source: Blueness Slider
                         uniform float in_bluenessSlider;
+
+                        // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
+
+                        // Data source: Pixel Coordinates Texture
                         uniform sampler2D in_pixelCoordsTexture;
+
+                        // Data source: Resolution
                         uniform vec2 in_resolution;
+
+                        // Data source: Time
                         uniform float in_time;
 
                         // Shader: Cylindrical Projection; namespace: p0
@@ -302,8 +325,12 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy); // Cylindrical Projection
-                          p1_thisShaderSName_main(); // This Shader's Name
+                          // Invoke Cylindrical Projection
+                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy);
+
+                          // Invoke This Shader's Name
+                          p1_thisShaderSName_main();
+
                           sm_result = p1_thisShaderSName_gl_FragColor;
                         }
                     """.trimIndent())
@@ -359,7 +386,7 @@ object GlslGenerationSpec : Spek({
             }
 
             it("generates GLSL") {
-                expect(glsl).toBe(
+                kexpect(glsl).toBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -370,6 +397,7 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
+                        // Data source: Fade Slider
                         uniform float in_fadeSlider;
 
                         // Shader: Main Paint Shader; namespace: p0
@@ -405,9 +433,15 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
-                          p0_mainPaintShader_main(); // Main Paint Shader
-                          p1_otherPaintShader_mainImage(p1_otherPaintShaderi_result, sm_FragCoord.xy); // Other Paint Shader
-                          p2_crossFadeShaderi_result = p2_crossFadeShader_mainFilter(p0_mainPaintShader_gl_FragColor); // Cross-fade shader
+                          // Invoke Main Paint Shader
+                          p0_mainPaintShader_main();
+
+                          // Invoke Other Paint Shader
+                          p1_otherPaintShader_mainImage(p1_otherPaintShaderi_result, sm_FragCoord.xy);
+
+                          // Invoke Cross-fade shader
+                          p2_crossFadeShaderi_result = p2_crossFadeShader_mainFilter(p0_mainPaintShader_gl_FragColor);
+
                           sm_result = p2_crossFadeShaderi_result;
                         }
                     """.trimIndent())
@@ -418,7 +452,7 @@ object GlslGenerationSpec : Spek({
 
                 it("should report an error to the user BUT IT CURRENTLY DOESNT") {
                     // TODO: WRONG WRONG WRONG we should tell the user that something's wrong?
-                    expect(glsl).toBe(
+                    kexpect(glsl).toBe(
                         /**language=glsl*/
                         """
                             #ifdef GL_ES
@@ -429,6 +463,7 @@ object GlslGenerationSpec : Spek({
 
                             layout(location = 0) out vec4 sm_result;
 
+                            // Data source: Fade Slider
                             uniform float in_fadeSlider;
 
                             // Shader: Main Paint Shader; namespace: p0
@@ -454,8 +489,12 @@ object GlslGenerationSpec : Spek({
 
                             #line 10001
                             void main() {
-                              p0_mainPaintShader_main(); // Main Paint Shader
-                              p1_crossFadeShaderi_result = p1_crossFadeShader_mainFilter(p0_mainPaintShader_gl_FragColor); // Cross-fade shader
+                              // Invoke Main Paint Shader
+                              p0_mainPaintShader_main();
+
+                              // Invoke Cross-fade shader
+                              p1_crossFadeShaderi_result = p1_crossFadeShader_mainFilter(p0_mainPaintShader_gl_FragColor);
+
                               sm_result = p1_crossFadeShaderi_result;
                             }
                         """.trimIndent())
