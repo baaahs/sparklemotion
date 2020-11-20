@@ -6,11 +6,12 @@ import baaahs.gl.testPlugins
 import baaahs.gl.undefined
 import baaahs.only
 import baaahs.plugin.PluginRef
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 object GlslCodeSpec : Spek({
     describe("statements") {
@@ -51,8 +52,8 @@ object GlslCodeSpec : Spek({
                 override(comments) { listOf(" @type color-stream", " @something else") }
 
                 it("makes hint tags available") {
-                    expect("color-stream") { variable.hint?.tags?.get("type") }
-                    expect("else") { variable.hint?.tags?.get("something") }
+                    expect(variable.hint?.tags?.get("type")).toBe("color-stream")
+                    expect(variable.hint?.tags?.get("something")).toBe("else")
                 }
             }
         }
@@ -105,15 +106,13 @@ object GlslCodeSpec : Spek({
             }
 
             it("should return a GlslStruct") {
-                expect(
-                    GlslCode.GlslStruct(
-                        "MovingHead",
-                        mapOf("pan" to GlslType.Float, "tilt" to GlslType.Float),
-                        null,
-                        false,
-                        text
-                    )
-                ) { struct }
+                expect(struct).toBe(GlslCode.GlslStruct(
+                                        "MovingHead",
+                                        mapOf("pan" to GlslType.Float, "tilt" to GlslType.Float),
+                                        null,
+                                        false,
+                                        text
+                                    ))
             }
 
             context("also declaring a variable") {
@@ -127,15 +126,13 @@ object GlslCodeSpec : Spek({
                 }
 
                 it("should return a GlslStruct") {
-                    expect(
-                        GlslCode.GlslStruct(
-                            "MovingHead",
-                            mapOf("pan" to GlslType.Float, "tilt" to GlslType.Float),
-                            "movingHead",
-                            false,
-                            text
-                        )
-                    ) { struct }
+                    expect(struct).toBe(GlslCode.GlslStruct(
+                                                "MovingHead",
+                                                mapOf("pan" to GlslType.Float, "tilt" to GlslType.Float),
+                                                "movingHead",
+                                                false,
+                                                text
+                                            ))
                 }
             }
         }
@@ -152,18 +149,18 @@ object GlslCodeSpec : Spek({
             }
 
             it("parses hints") {
-                expect(PluginRef("whatever.package.Plugin", "Thing")) { glslVar.hint!!.pluginRef }
-                expect(buildJsonObject {
-                    put("key", "value")
-                    put("key2", "value2")
-                }) { glslVar.hint!!.config }
+                expect(glslVar.hint!!.pluginRef).toBe(PluginRef("whatever.package.Plugin", "Thing"))
+                expect(glslVar.hint!!.config).toBe(buildJsonObject {
+                                    put("key", "value")
+                                    put("key2", "value2")
+                                })
             }
 
             context("when package is unspecified") {
                 override(hintClassStr) { "Thing" }
 
                 it("defaults to baaahs.Core") {
-                    expect(PluginRef("baaahs.Core", "Thing")) { glslVar.hint!!.pluginRef }
+                    expect(glslVar.hint!!.pluginRef).toBe(PluginRef("baaahs.Core", "Thing"))
                 }
             }
 
@@ -171,15 +168,14 @@ object GlslCodeSpec : Spek({
                 override(hintClassStr) { "FooPlugin:Thing" }
 
                 it("defaults to baaahs.Core") {
-                    expect(PluginRef("baaahs.FooPlugin", "Thing")) { glslVar.hint!!.pluginRef }
+                    expect(glslVar.hint!!.pluginRef).toBe(PluginRef("baaahs.FooPlugin", "Thing"))
                 }
             }
         }
 
         it("englishizes camel case names") {
-            expect("A Man A Plan AAARGH Panama I Say") {
-                GlslCode.GlslVar(GlslType.Vec3, "aManAPlanAAARGHPanamaISay").displayName()
-            }
+            expect(GlslCode.GlslVar(GlslType.Vec3, "aManAPlanAAARGHPanamaISay").displayName())
+                .toBe("A Man A Plan AAARGH Panama I Say")
         }
     }
 })

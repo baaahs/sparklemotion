@@ -9,8 +9,9 @@ import baaahs.glsl.Shaders
 import baaahs.only
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
-import kotlin.test.expect
 
 object CorePluginSpek : Spek({
     describe<CorePlugin.TimeDataSource> {
@@ -33,7 +34,7 @@ object CorePluginSpek : Spek({
             gl.runInContext { programFeed.setOnProgram() }
 
             val glProgram = gl.programs.only("program")
-            expect(7890.1234f) { glProgram.getUniform("in_time") }
+            expect(glProgram.getUniform("in_time")).toBe(7890.1234f)
         }
     }
 })

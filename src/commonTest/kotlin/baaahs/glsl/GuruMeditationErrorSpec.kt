@@ -4,8 +4,9 @@ import baaahs.describe
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeKgl
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
-import kotlin.test.expect
 
 object GuruMeditationErrorSpec : Spek({
     describe<GuruMeditationError> {
@@ -13,9 +14,8 @@ object GuruMeditationErrorSpec : Spek({
         val guruMeditationError by value { GuruMeditationError(PixelArrayDevice) }
 
         it("should create a RenderPlan") {
-            expect(PixelArrayDevice.errorIndicatorShader) {
-                guruMeditationError.linkedPatch.shaderInstance.shader.shader
-            }
+            expect(guruMeditationError.linkedPatch.shaderInstance.shader.shader)
+                .toBe(PixelArrayDevice.errorIndicatorShader)
         }
     }
 })

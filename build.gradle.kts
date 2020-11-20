@@ -86,6 +86,7 @@ kotlin {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
                 implementation("spek:spek-dsl:${Versions.spek}")
+                implementation("ch.tutteli.atrium:${Versions.atriumApi}-common:${Versions.atrium}")
             }
         }
 
@@ -129,11 +130,12 @@ kotlin {
                 implementation(kotlin("test-junit"))
                 implementation(kotlin("test-junit5"))
 
-                runtimeOnly("org.junit.vintage:junit-vintage-engine:5.6.2")
+                runtimeOnly("org.junit.vintage:junit-vintage-engine:${Versions.junit}")
                 runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.spek}")
                 runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
 
-                implementation("io.mockk:mockk:1.10.2")
+                implementation("io.mockk:mockk:${Versions.mockk}")
+                implementation("ch.tutteli.atrium:${Versions.atriumApi}:${Versions.atrium}")
 
                 // For RunOpenGLTests:
                 implementation("org.junit.platform:junit-platform-launcher:1.6.2")
@@ -210,7 +212,7 @@ kotlin {
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                implementation("ch.tutteli.atrium:atrium-fluent-en_GB-js:${Versions.atrium}")
+                implementation("ch.tutteli.atrium:${Versions.atriumApi}-js:${Versions.atrium}")
             }
         }
 

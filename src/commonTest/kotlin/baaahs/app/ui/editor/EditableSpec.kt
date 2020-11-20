@@ -4,8 +4,9 @@ import baaahs.app.ui.ControlEditIntent
 import baaahs.describe
 import baaahs.show.mutable.MutableButtonControl
 import baaahs.show.mutable.MutableShow
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
-import kotlin.test.expect
 
 object EditableSpec : Spek({
     describe<ControlEditIntent> {
@@ -35,7 +36,7 @@ object EditableSpec : Spek({
 
             it("provides an appropriate refreshed edit intent for the undo stack") {
                 val newEditIntent = (editableManager.session!!.editIntent as ControlEditIntent)
-                expect("newTitleForButtonButton") { newEditIntent.controlId }
+                expect(newEditIntent.controlId).toBe("newTitleForButtonButton")
             }
         }
     }

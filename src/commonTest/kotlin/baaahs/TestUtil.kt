@@ -7,6 +7,9 @@ import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.util.Clock
 import baaahs.util.Time
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import org.spekframework.spek2.dsl.GroupBody
@@ -15,18 +18,17 @@ import org.spekframework.spek2.meta.*
 import org.spekframework.spek2.style.specification.Suite
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
-import kotlin.test.expect
 
 @Suppress("UNCHECKED_CAST")
 fun <T> nuffin(): T = null as T
 
 fun MutableList<String>.assertEmpty() {
-    expect(emptyList<String>()) { this }
+    expect(this).isEmpty()
     this.clear()
 }
 
-fun MutableList<String>.assertContents(vararg s: String) {
-    expect(s.toList()) { this }
+fun MutableList<String>.assertContents(s: String) {
+    expect(this).containsExactly(s)
     this.clear()
 }
 

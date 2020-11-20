@@ -1,8 +1,9 @@
 package baaahs;
 
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.expect
 
 public class ColorTest {
     @Test
@@ -26,20 +27,20 @@ public class ColorTest {
 
     @Test
     fun testFromRGBString() {
-        expect(Color.from(0xfffefdfc.toInt())) { Color.from("#fefdfc") }
+        expect(Color.from("#fefdfc")).toBe(Color.from(0xfffefdfc.toInt()))
 
-        expect(Color.from(0xffeeddcc.toInt())) { Color.from("#edc") }
+        expect(Color.from("#edc")).toBe(Color.from(0xffeeddcc.toInt()))
     }
 
     @Test
     fun testFromARGBString() {
-        expect(Color.from(0xfffefdfc.toInt())) { Color.from("#fffefdfc") }
-        expect(Color.from(0xf7fefdfc.toInt())) { Color.from("#f7fefdfc") }
-        expect(Color.from(0x00fefdfc)) { Color.from("#00fefdfc") }
+        expect(Color.from("#fffefdfc")).toBe(Color.from(0xfffefdfc.toInt()))
+        expect(Color.from("#f7fefdfc")).toBe(Color.from(0xf7fefdfc.toInt()))
+        expect(Color.from("#00fefdfc")).toBe(Color.from(0x00fefdfc))
 
-        expect(Color.from(0xffeeddcc.toInt())) { Color.from("#fedc") }
-        expect(Color.from(0x77eeddcc)) { Color.from("#7edc") }
-        expect(Color.from(0x00eeddcc)) { Color.from("#0edc") }
+        expect(Color.from("#fedc")).toBe(Color.from(0xffeeddcc.toInt()))
+        expect(Color.from("#7edc")).toBe(Color.from(0x77eeddcc))
+        expect(Color.from("#0edc")).toBe(Color.from(0x00eeddcc))
     }
 
     @Test

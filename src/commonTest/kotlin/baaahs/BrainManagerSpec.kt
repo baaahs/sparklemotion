@@ -6,10 +6,11 @@ import baaahs.gl.override
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.mapper.MappingResults
 import baaahs.proto.BrainHelloMessage
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import mockk
 import org.spekframework.spek2.Spek
 import kotlin.random.Random
-import kotlin.test.expect
 
 object BrainManagerSpec : Spek({
     describe<BrainManager> {
@@ -43,11 +44,9 @@ object BrainManagerSpec : Spek({
                 override(resultsByBrainId) { mapOf(BrainId(brainId) to mappingInfo) }
 
                 it("should create a fixture") {
-                    expect(surface) { subject.modelEntity }
-                    expect(2) { subject.pixelCount }
-                    expect(
-                        LinearSurfacePixelStrategy(Random(1)).forKnownSurface(2, surface, TestModel)
-                    ) { subject.pixelLocations }
+                    expect(subject.modelEntity).toBe(surface)
+                    expect(subject.pixelCount).toBe(2)
+                    expect(subject.pixelLocations).toBe(LinearSurfacePixelStrategy(Random(1)).forKnownSurface(2, surface, TestModel))
                 }
             }
 
@@ -56,11 +55,9 @@ object BrainManagerSpec : Spek({
                 override(resultsBySurfaceName) { mapOf(msgSurfaceName to mappingInfo) }
 
                 it("should create a fixture") {
-                    expect(surface) { subject.modelEntity }
-                    expect(2) { subject.pixelCount }
-                    expect(
-                        LinearSurfacePixelStrategy(Random(1)).forKnownSurface(2, surface, TestModel)
-                    ) { subject.pixelLocations }
+                    expect(subject.modelEntity).toBe(surface)
+                    expect(subject.pixelCount).toBe(2)
+                    expect(subject.pixelLocations).toBe(LinearSurfacePixelStrategy(Random(1)).forKnownSurface(2, surface, TestModel))
                 }
             }
         }

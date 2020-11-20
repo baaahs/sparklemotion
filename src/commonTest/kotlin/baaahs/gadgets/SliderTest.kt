@@ -1,10 +1,11 @@
 package baaahs.gadgets
 
 import baaahs.serializationRoundTrip
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.expect
 
 class SliderTest {
     @Test
@@ -13,11 +14,11 @@ class SliderTest {
         slider.value = .75f
 
         val otherSlider = serializationRoundTrip(Slider.serializer(), slider)
-        expect("name") { otherSlider.title }
-        expect(.25f) { otherSlider.value }
+        expect(otherSlider.title).toBe("name")
+        expect(otherSlider.value).toBe(.25f)
 
         otherSlider.state.putAll(slider.state)
-        expect(.75f) { otherSlider.value }
+        expect(otherSlider.value).toBe(.75f)
     }
 
     @Test

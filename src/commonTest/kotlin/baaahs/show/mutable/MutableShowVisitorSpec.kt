@@ -4,8 +4,9 @@ import baaahs.describe
 import baaahs.show.DataSource
 import baaahs.show.SampleData
 import baaahs.show.Surfaces
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
-import kotlin.test.expect
 
 object MutableShowVisitorSpec : Spek({
     val show by value { MutableShow(SampleData.sampleShow) }
@@ -20,7 +21,7 @@ object MutableShowVisitorSpec : Spek({
             it("should visit things but only once") {
                 show.accept(visitor)
 
-                expect(
+                expect(visitorCounts).toBe(
                     mapOf(
                         "Some patch holder" to 8, // These represent distinct items that don't have distinguishing short names.
                         "Some patch" to 6, // These represent distinct items that don't have distinguishing short names.
@@ -69,7 +70,7 @@ object MutableShowVisitorSpec : Spek({
                         "Shader Ripple" to 1,
                         "Control Wobbly" to 1
                     )
-                ) { visitorCounts }
+                )
             }
         }
     }
