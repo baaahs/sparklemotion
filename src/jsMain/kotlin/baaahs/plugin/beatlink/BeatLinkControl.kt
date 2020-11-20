@@ -24,7 +24,7 @@ import styled.css
 import styled.styledDiv
 import kotlin.math.roundToInt
 
-private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl") { props ->
+private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl") { _ ->
     val appContext = useContext(appContext)
     val clock = appContext.clock
     val beatSource = appContext.plugins.findPlugin<BeatLinkPlugin>().beatSource

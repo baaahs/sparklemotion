@@ -55,7 +55,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                     this.path = path
                     onDragStart = { console.log("MosaicWindow.onDragStart") }
                     onDragEnd = { type -> console.log("MosaicWindow.onDragEnd", type) }
-                    renderToolbar = { props: MosaicWindowProps<*>, draggable: Boolean? ->
+                    renderToolbar = { props: MosaicWindowProps<*>, _: Boolean? ->
                         div { +props.title }
                     }
                 }
@@ -154,8 +154,10 @@ external interface ShowLayoutProps : RProps {
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>): ReactElement =
     child(ShowLayout, handler = handler)
 
+@Suppress("UNCHECKED_CAST")
 fun <T> RBuilder.mosaic(handler: MosaicControlledProps<T>.() -> Unit): ReactElement =
     child(Mosaic::class as KClass<out Component<MosaicControlledProps<T>, *>>) { attrs { handler() } }
 
+@Suppress("UNCHECKED_CAST")
 fun <T> RBuilder.mosaicWindow(handler: MosaicWindowProps<T>.() -> Unit): ReactElement =
     child(MosaicWindow::class as KClass<out Component<MosaicWindowProps<T>, *>>) { attrs { handler() } }

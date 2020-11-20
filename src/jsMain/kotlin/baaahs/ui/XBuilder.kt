@@ -150,7 +150,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     fun eventHandler(name: String, vararg watch: Any?, block: (Event) -> Unit): (Event) -> Unit {
-        return handler(name, watch = *watch, block = block)
+        return handler(name, watch = watch, block = block)
     }
 
     fun eventHandler(block: Function<*>): (Event) -> Unit {

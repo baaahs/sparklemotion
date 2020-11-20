@@ -51,12 +51,12 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
     var showModifiedWarning by state { false }
 
-    val handleFormSubmit = useCallback { event: Event ->
+    val handleFormSubmit = useCallback { _: Event ->
         if (props.editableManager.isModified()) {
             props.editableManager.applyChanges()
         }
     }
-    val handleDrawerClose = useCallback { event: Event ->
+    val handleDrawerClose = useCallback { _: Event ->
         if (props.editableManager.isModified()) {
             showModifiedWarning = true
         } else {
@@ -64,11 +64,11 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
         }
     }
 
-    val handleUndo = useCallback { event: Event -> props.editableManager.undo() }
-    val handleRedo = useCallback { event: Event -> props.editableManager.redo() }
+    val handleUndo = useCallback { _: Event -> props.editableManager.undo() }
+    val handleRedo = useCallback { _: Event -> props.editableManager.redo() }
 
-    val handleClose = useCallback { event: Event -> props.editableManager.close() }
-    val handleApply = useCallback { event: Event -> props.editableManager.applyChanges() }
+    val handleClose = useCallback { _: Event -> props.editableManager.close() }
+    val handleApply = useCallback { _: Event -> props.editableManager.applyChanges() }
 
     val editorPanels = props.editableManager.editorPanels
     val selectedPanel = props.editableManager.selectedPanel

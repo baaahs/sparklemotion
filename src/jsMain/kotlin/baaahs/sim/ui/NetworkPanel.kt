@@ -43,7 +43,7 @@ class NetworkPanel(props: NetworkPanelProps) : BComponent<NetworkPanelProps, RSt
                         css { +networkPacketLossRate }
                         if (network != null) {
                             attrs.onClickFunction = {
-                                network.packetLossRate = kotlin.browser.window.prompt(
+                                network.packetLossRate = baaahs.window.prompt(
                                     "Packet loss rate (%):", "${(network.packetLossRate * 100).toInt()}"
                                 )!!.toFloat() / 100
                             }

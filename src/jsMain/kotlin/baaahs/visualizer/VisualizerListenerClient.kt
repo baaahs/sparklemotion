@@ -57,7 +57,6 @@ class VisualizerListenerClient(
                     val vizPixels = vizSurface.vizPixels
                     vizPixels?.let {
                         val minPixCount = min(vizPixels.size, pixelCount)
-                        var byteOff = 0
                         for (i in 0 until minPixCount) {
                             vizPixels[i] = Color.parseWithoutAlpha(reader)
                         }
