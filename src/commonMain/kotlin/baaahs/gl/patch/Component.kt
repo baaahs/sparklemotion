@@ -4,18 +4,26 @@ import baaahs.gl.glsl.GlslCode
 import baaahs.show.live.LiveShaderInstance
 import baaahs.util.Logger
 
-class Component(
+interface Component {
+    val title: String
+    val outputVar: String?
+
+    fun appendDeclarations(buf: StringBuilder)
+    fun appendInvokeAndSet(buf: StringBuilder, prefix: String)
+}
+
+class ShaderComponent(
+    val id: String,
     val index: Int,
-    instanceNode: LinkedPatch.InstanceNode,
-    findUpstreamComponent: (LiveShaderInstance) -> Component
-) {
-    private val shaderInstance = instanceNode.liveShaderInstance
-    val title: String get() = shaderInstance.shader.title
+    private val shaderInstance: LiveShaderInstance,
+    findUpstreamComponent: (ProgramNode) -> Component
+): Component {
+    override val title: String get() = shaderInstance.shader.title
     private val prefix = "p$index"
-    private val namespace = GlslCode.Namespace(prefix + "_" + instanceNode.shaderShortName)
+    private val namespace = GlslCode.Namespace(prefix + "_" + id)
     private val portMap: Map<String, String>
     private val resultInReturnValue: Boolean
-    private var resultVar: String
+    private val resultVar: String
 
     init {
         val tmpPortMap = hashMapOf<String, String>()
@@ -24,6 +32,7 @@ class Component(
             when (fromLink) {
                 is LiveShaderInstance.ShaderOutLink -> {
                     val upstreamComponent = findUpstreamComponent(fromLink.shaderInstance)
+                    upstreamComponent as ShaderComponent
                     val outputPort = fromLink.shaderInstance.shader.outputPort
                     tmpPortMap[toPortId] =
                         if (outputPort.isReturnValue()) {
@@ -60,47 +69,30 @@ class Component(
         resultInReturnValue = usesReturnValue
     }
 
-    var outputVar: String = resultVar
-    private var resultRedirected = false
+    override val outputVar: String = resultVar
 
     private val resolvedPortMap get() =
         portMap + mapOf(shaderInstance.shader.outputPort.id to outputVar)
 
-    fun redirectOutputTo(varName: String) {
-        outputVar = varName
-        resultRedirected = true
-    }
-
-    fun appendStructs(buf: StringBuilder) {
-        shaderInstance.shader.glslCode.structs.forEach { struct ->
-            // TODO: we really ought to namespace structs, but that's not straightforward because
-            // multiple shaders might share a uniform input (e.g. ModelInfo).
-
-//                val qualifiedName = namespace.qualify(struct.name)
-//                val structText = struct.fullText.replace(struct.name, qualifiedName)
-            val structText = struct.fullText
-            buf.append(structText, "\n\n")
-        }
-    }
-
-    fun appendDeclaratoryLines(buf: StringBuilder) {
+    override fun appendDeclarations(buf: StringBuilder) {
         val openShader = shaderInstance.shader
 
         buf.append("// Shader: ", openShader.title, "; namespace: ", prefix, "\n")
         buf.append("// ", openShader.title, "\n")
 
-        if (!resultRedirected) {
-            buf.append("\n")
-            with(openShader.outputPort) {
-                buf.append("${dataType.glslLiteral} $resultVar = ${contentType.initializer(dataType)};\n")
-            }
+        buf.append("\n")
+        with(openShader.outputPort) {
+            buf.append("${dataType.glslLiteral} $resultVar = ${contentType.initializer(dataType)};\n")
         }
 
         buf.append(openShader.toGlsl(namespace, resolvedPortMap), "\n")
     }
 
-    fun invokeAndSetResultGlsl(): String {
-        return shaderInstance.shader.invocationGlsl(namespace, resultVar, resolvedPortMap)
+    override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {
+        buf.append(prefix, "// Invoke ", title, "\n")
+        val invocationGlsl = shaderInstance.shader.invocationGlsl(namespace, resultVar, resolvedPortMap)
+        buf.append(prefix, invocationGlsl, ";\n")
+        buf.append("\n")
     }
 
     companion object {

@@ -15,7 +15,7 @@ import baaahs.show.UpdateMode
 
 class PerPixelDataSourceForTest(val updateMode: UpdateMode) : DataSource {
     override val pluginPackage: String get() = error("not implemented")
-    override val title: String get() = error("not implemented")
+    override val title: String get() = "Per Pixel Data Source For Test"
     override fun getType(): GlslType = GlslType.Float
     override fun getContentType(): ContentType = error("not implemented")
 
