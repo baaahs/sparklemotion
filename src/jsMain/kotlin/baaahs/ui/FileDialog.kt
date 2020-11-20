@@ -89,7 +89,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
         selectedFile?.let { props.onSelect(it) }; Unit
     }
 
-    val handleClose = useCallback(props.onCancel) { _: Event, reason: String ->
+    val handleClose = useCallback(props.onCancel) { _: Event, _: String ->
         props.onCancel()
     }
 
