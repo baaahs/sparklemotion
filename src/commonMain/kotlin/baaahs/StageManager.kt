@@ -173,10 +173,10 @@ class StageManager(
                 include(remoteFsSerializer.serialModule)
                 include(plugins.serialModule)
             })
-            pubSub.listenOnCommandChannel(commands.newShow) { command, reply -> handleNewShow(command) }
-            pubSub.listenOnCommandChannel(commands.switchToShow) { command, reply -> handleSwitchToShow(command.file) }
-            pubSub.listenOnCommandChannel(commands.saveShow) { command, reply -> handleSaveShow() }
-            pubSub.listenOnCommandChannel(commands.saveAsShow) { command, reply ->
+            pubSub.listenOnCommandChannel(commands.newShow) { command, _ -> handleNewShow(command) }
+            pubSub.listenOnCommandChannel(commands.switchToShow) { command, _ -> handleSwitchToShow(command.file) }
+            pubSub.listenOnCommandChannel(commands.saveShow) { command, _ -> handleSaveShow() }
+            pubSub.listenOnCommandChannel(commands.saveAsShow) { command, _ ->
                 val saveAsFile = storage.resolve(command.file.fullPath)
                 handleSaveAsShow(saveAsFile)
                 updateRunningShowPath(saveAsFile)
