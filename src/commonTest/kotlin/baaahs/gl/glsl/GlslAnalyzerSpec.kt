@@ -10,9 +10,11 @@ import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
 import baaahs.toBeSpecified
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 object GlslAnalyzerSpec : Spek({
     describe("ShaderFragment") {
@@ -56,7 +58,7 @@ object GlslAnalyzerSpec : Spek({
                 }
 
                 it("finds the title") {
-                    expect("This Shader's Name") { importedShader.title }
+                    expect(importedShader.title).toBe("This Shader's Name")
                 }
 
                 it("finds statements including line numbers") {
@@ -127,43 +129,38 @@ object GlslAnalyzerSpec : Spek({
                 }
 
                 it("finds the global variables") {
-                    expect(
-                        listOf(
+                    expect(glslCode.globalVars.toList())
+                        .containsExactly(
                             GlslVar(
                                 GlslType.Float, "time",
                                 fullText = "uniform float time;", isUniform = true, lineNumber = 5,
                                 comments = listOf(" trailing comment")
-                            ),
-                            GlslVar(
+                            ), GlslVar(
                                 GlslType.Vec2, "resolution",
                                 fullText = " \n\n\n\nuniform vec2  resolution;", isUniform = true, lineNumber = 5,
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
-                            ),
-                            GlslVar(
+                            ), GlslVar(
                                 GlslType.from("struct MovingHead {\n    float pan;\n    float tilt;\n}"),
                                 "leftEye",
                                 fullText = "uniform MovingHead leftEye;", lineNumber = 12,
                                 comments = listOf(" @@AnotherClass key=value key2=value2")
                             )
                         )
-                    ) { glslCode.globalVars.toList() }
                 }
 
                 it("finds the functions") {
-                    expect(
-                        listOf(
+                    expect(glslCode.functions.map { it.prettify() })
+                        .containsExactly(
                             "void mainFunc(out vec4 fragColor, in vec2 fragCoord)",
                             "void main()"
                         )
-                    ) { glslCode.functions.map { it.prettify() } }
                 }
 
                 it("finds the structs") {
-                    expect(
-                        listOf(
+                    expect(glslCode.structs.map { it.fullText })
+                        .containsExactly(
                             "\nuniform struct MovingHead {\n    float pan;\n    float tilt;\n} leftEye;"
                         )
-                    ) { glslCode.structs.map { it.fullText } }
                 }
 
                 context("with #ifdefs") {
@@ -200,27 +197,23 @@ object GlslAnalyzerSpec : Spek({
                     }
 
                     it("finds the global variables and performs substitutions") {
-                        expect(
-                            listOf(
-                                GlslVar(
-                                    GlslType.Float, "shouldBeDefined",
-                                    fullText = "\n\n\nuniform float shouldBeDefined;", isUniform = true, lineNumber = 5
-                                ),
-                                GlslVar(
-                                    GlslType.Vec2, "shouldBeThis",
-                                    fullText = "\n\n\n\n\nuniform vec2 shouldBeThis;", isUniform = true, lineNumber = 9
-                                )
+                        expect(glslCode.globalVars.toList()).containsExactly(
+                            GlslVar(
+                                GlslType.Float, "shouldBeDefined",
+                                fullText = "\n\n\nuniform float shouldBeDefined;", isUniform = true, lineNumber = 5
+                            ),
+                            GlslVar(
+                                GlslType.Vec2, "shouldBeThis",
+                                fullText = "\n\n\n\n\nuniform vec2 shouldBeThis;", isUniform = true, lineNumber = 9
                             )
-                        ) { glslCode.globalVars.toList() }
+                        )
                     }
 
                     it("finds the functions and performs substitutions") {
-                        expect(
-                            listOf(
-                                "void mainFunc(out vec4 fragColor, in vec2 fragCoord)",
-                                "void main()"
-                            )
-                        ) { glslCode.functions.map { it.prettify() } }
+                        expect(glslCode.functions.map { it.prettify() }).containsExactly(
+                            "void mainFunc(out vec4 fragColor, in vec2 fragCoord)",
+                            "void main()"
+                        )
                     }
 
                     context("with define macros") {
@@ -247,16 +240,17 @@ object GlslAnalyzerSpec : Spek({
 
                             val glsl = glslFunction.toGlsl(GlslCode.Namespace("ns"), emptySet(), emptyMap())
 
-                            expect(
-                                "#line 6\n" +
-                                        "void ns_main() {\n" +
-                                        "\n" +
-                                        "\n" +
-                                        "\n" +
-                                        "    gl_FragColor = smoothstep(0., 1., abs(length(gl_FragCoord)-resolution.x)-.02 );\n" +
-                                        "    gl_FragColor = smoothstep(0., 1., abs(length((gl_FragCoord / 1.0))-resolution.x)-.02 );\n" +
-                                        "}\n".trimIndent()
-                            ) { glsl.trim() }
+                            expect(glsl.trim())
+                                .toBe(
+                                    "#line 6\n" +
+                                            "void ns_main() {\n" +
+                                            "\n" +
+                                            "\n" +
+                                            "\n" +
+                                            "    gl_FragColor = smoothstep(0., 1., abs(length(gl_FragCoord)-resolution.x)-.02 );\n" +
+                                            "    gl_FragColor = smoothstep(0., 1., abs(length((gl_FragCoord / 1.0))-resolution.x)-.02 );\n" +
+                                            "}\n".trimIndent()
+                                )
                         }
                     }
                 }
@@ -270,12 +264,11 @@ object GlslAnalyzerSpec : Spek({
                     }
 
                     it("finds both functions") {
-                        expect(
-                            listOf(
+                        expect(glslCode.functions.map { it.prettify() })
+                            .containsExactly(
                                 "vec3 mod289(in vec3 x)",
                                 "vec4 mod289(in vec4 x)"
                             )
-                        ) { glslCode.functions.map { it.prettify() } }
                     }
                 }
             }
@@ -302,18 +295,17 @@ object GlslAnalyzerSpec : Spek({
                     }
 
                     it("finds the entry point function") {
-                        expect("main") { shader.entryPoint.name }
+                        expect(shader.entryPoint.name).toBe("main")
                     }
 
                     it("creates inputs for implicit uniforms") {
-                        expect(
-                            listOf(
+                        expect(shader.inputPorts.map { it.copy(glslVar = null) })
+                            .containsExactly(
                                 InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream),
                                 InputPort("time", GlslType.Float, "Time", ContentType.Time),
                                 InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
                                 InputPort("blueness", GlslType.Float, "Blueness")
                             )
-                        ) { shader.inputPorts.map { it.copy(glslVar = null) } }
                     }
                 }
 
@@ -335,7 +327,7 @@ object GlslAnalyzerSpec : Spek({
                     }
 
                     it("identifies mainImage() as the entry point") {
-                        expect("mainImage") { shader.entryPoint.name }
+                        expect(shader.entryPoint.name).toBe("mainImage")
                     }
 
                     it("creates inputs for implicit uniforms") {
@@ -354,7 +346,7 @@ object GlslAnalyzerSpec : Spek({
                     override(shaderText) { Shaders.cylindricalProjection.src }
 
                     it("identifies mainImage() as the entry point") {
-                        expect("mainProjection") { shader.entryPoint.name }
+                        expect(shader.entryPoint.name).toBe("mainProjection")
                     }
 
                     it("creates inputs for implicit uniforms") {
@@ -377,15 +369,14 @@ object GlslAnalyzerSpec : Spek({
                 override(shaderText) { "const vec3 baseColor = vec3(0.0,0.09,0.18);\n" }
 
                 it("handles const initializers") {
-                    expect(
-                        GlslVar(
-                            GlslType.Vec3, "baseColor", "const vec3 baseColor = vec3(0.0,0.09,0.18);",
-                            isConst = true,
-                            lineNumber = 1
+                    expect(glslCode.statements.only("statement"))
+                        .toBe(
+                            GlslVar(
+                                GlslType.Vec3, "baseColor", "const vec3 baseColor = vec3(0.0,0.09,0.18);",
+                                isConst = true,
+                                lineNumber = 1
+                            )
                         )
-                    ) {
-                        glslCode.statements.only("statement")
-                    }
                 }
             }
         }
@@ -396,14 +387,14 @@ private fun GlslFunction.prettify() =
     "${returnType.glslLiteral} ${name}(${params.joinToString(", ") { it.prettify() }})"
 
 private fun GlslParam.prettify(): String = "${
-        when (isIn to isOut) {
-            false to false -> ""
-            true to false -> "in "
-            false to true -> "out "
-            true to true -> "inout "
-            else -> error("huh?")
-        }
-    }${type.glslLiteral} ${name}${
-        if (comments.isNotEmpty()) " /* ${comments.joinToString(" ")} */" else ""
-    }"
+    when (isIn to isOut) {
+        false to false -> ""
+        true to false -> "in "
+        false to true -> "out "
+        true to true -> "inout "
+        else -> error("huh?")
+    }
+}${type.glslLiteral} ${name}${
+    if (comments.isNotEmpty()) " /* ${comments.joinToString(" ")} */" else ""
+}"
 

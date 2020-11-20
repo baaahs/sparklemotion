@@ -6,8 +6,11 @@ import baaahs.gl.testPlugins
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeShowPlayer
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
-import kotlin.test.expect
 
 object ControlDisplaySpec : Spek({
     describe<ControlDisplay> {
@@ -29,17 +32,15 @@ object ControlDisplaySpec : Spek({
 
         context("empty show") {
             it("renders all empty sections") {
-                expect(
-                    """
+                expect(openShow.fakeRender(controlDisplay)).toBe("""
                     Panel 1:
                       |Show|
                     Panel 2:
                       |Show|
                     Panel 3:
                       |Show|
-                """.trimIndent()
-                ) { openShow.fakeRender(controlDisplay) }
-                expect(emptyList()) { controlDisplay.unplacedControls }
+                """.trimIndent())
+                expect(controlDisplay.unplacedControls).isEmpty()
             }
         }
 
@@ -53,8 +54,7 @@ object ControlDisplaySpec : Spek({
             val backdrop11Button by value { backdrops1ButtonGroup.buttons.first() }
 
             it("renders controls correctly") {
-                expect(
-                    """
+                expect(openShow.fakeRender(controlDisplay)).toBe("""
                         Panel 1:
                           |Show| scenesButtonGroup[*scene1Button*, scene2Button]
                           |Scene 1|
@@ -67,24 +67,20 @@ object ControlDisplaySpec : Spek({
                           |Show|
                           |Scene 1| slider1SliderControl
                           |Backdrop 1.1|
-                    """.trimIndent()
-                ) { openShow.fakeRender(controlDisplay) }
+                    """.trimIndent())
             }
 
             it("lists controls that aren't visible on screen as unplaced") {
-                expect(
-                    setOf("slider2SliderControl", "backdrop21Button", "backdrop22Button", "backdropsButtonGroup2")
-                ) { controlDisplay.unplacedControls.map { it.id }.toSet() }
+                expect(controlDisplay.unplacedControls.map { it.id }.toSet())
+                    .toBe(setOf("slider2SliderControl", "backdrop21Button", "backdrop22Button", "backdropsButtonGroup2"))
             }
 
             it("has the first item in the button group selected by default") {
-                expect(listOf(true, false)) { scenesButtonGroup.buttons.map { it.isPressed } }
+                expect(scenesButtonGroup.buttons.map { it.isPressed })
+                    .containsExactly(true,false)
 
-                expect(
-                    (openShow.patches + scene1Button.patches + backdrop11Button.patches).prettyPrint()
-                ) {
-                    openShow.activePatchSet().activePatches.prettyPrint()
-                }
+                expect(openShow.activePatchSet().activePatches.prettyPrint())
+                    .toBe((openShow.patches + scene1Button.patches + backdrop11Button.patches).prettyPrint())
             }
         }
     }

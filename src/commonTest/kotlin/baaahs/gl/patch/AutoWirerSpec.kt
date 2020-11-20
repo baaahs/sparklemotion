@@ -14,9 +14,11 @@ import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShaderInstance
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 object AutoWirerSpec : Spek({
     describe("AutoWirer") {
@@ -51,34 +53,32 @@ object AutoWirerSpec : Spek({
             val liveShaderInstance by value { linkedPatch.shaderInstance }
 
             it("creates a reasonable guess patch") {
-                expect(
-                    listOf(
-                        MutableShaderInstance(
-                            MutableShader(paintShader),
-                            hashMapOf(
-                                "time" to MutableDataSourcePort(CorePlugin.TimeDataSource()),
-                                "blueness" to MutableDataSourcePort(
-                                    CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
-                                ),
-                                "resolution" to MutableDataSourcePort(CorePlugin.ResolutionDataSource()),
-                                "gl_FragCoord" to MutableShaderChannel(ShaderChannel.Main.id)
+                expect(patch.mutableShaderInstances).containsExactly(
+                    MutableShaderInstance(
+                        MutableShader(paintShader),
+                        hashMapOf(
+                            "time" to MutableDataSourcePort(CorePlugin.TimeDataSource()),
+                            "blueness" to MutableDataSourcePort(
+                                CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
                             ),
-                            shaderChannel = MutableShaderChannel(ShaderChannel.Main.id),
-                            priority = 0f
-                        )
+                            "resolution" to MutableDataSourcePort(CorePlugin.ResolutionDataSource()),
+                            "gl_FragCoord" to MutableShaderChannel(ShaderChannel.Main.id)
+                        ),
+                        shaderChannel = MutableShaderChannel(ShaderChannel.Main.id),
+                        priority = 0f
                     )
-                ) { patch.mutableShaderInstances }
+                )
             }
 
             it("builds a linked patch") {
-                expect(
-                    mapOf(
-                        "gl_FragCoord" to LiveShaderInstance.NoOpLink,
-                        "time" to CorePlugin.TimeDataSource().link("time"),
-                        "resolution" to CorePlugin.ResolutionDataSource().link("resolution"),
-                        "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).link("bluenessSlider")
+                expect(liveShaderInstance.incomingLinks)
+                    .toBe(
+                        mapOf(
+                            "gl_FragCoord" to LiveShaderInstance.NoOpLink,
+                            "time" to CorePlugin.TimeDataSource().link("time"),
+                            "resolution" to CorePlugin.ResolutionDataSource().link("resolution"),
+                            "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).link("bluenessSlider"))
                     )
-                ) { liveShaderInstance.incomingLinks }
             }
 
             context("with a ShaderToy shader") {

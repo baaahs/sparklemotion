@@ -10,7 +10,8 @@ import baaahs.fixtures.PixelArrayDevice
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
-import kotlin.test.expect
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 
 private fun <T : BrainShader.Buffer> send(srcBrainShader: BrainShader<T>, srcBuf: T, fixture: Fixture): Pair<BrainShader<T>, T> {
     val writer = ByteArrayWriter()
@@ -19,7 +20,7 @@ private fun <T : BrainShader.Buffer> send(srcBrainShader: BrainShader<T>, srcBuf
     val bytes = writer.toBytes()
 
     val reader = ByteArrayReader(bytes)
-    expect(srcBrainShader.idBrain.ordinal.toByte()) { reader.readByte() }
+    expect(reader.readByte()).toBe(srcBrainShader.idBrain.ordinal.toByte())
 
     @Suppress("UNCHECKED_CAST")
     val dstBrainShader: BrainShader<T> = srcBrainShader.idBrain.reader.parse(reader) as BrainShader<T>

@@ -1,7 +1,8 @@
 package baaahs.io
 
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import kotlin.test.Test
-import kotlin.test.expect
 
 class IoTest {
     @Test
@@ -10,7 +11,8 @@ class IoTest {
         writer.writeBytes(byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8))
 
         val reader = ByteArrayReader(writer.toBytes())
-        expect(byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8).toList()) { reader.readBytes().toList() }
+        expect(reader.readBytes().toList())
+            .toBe(byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8).toList())
     }
 
     @Test
@@ -19,6 +21,7 @@ class IoTest {
         writer.writeBytes(byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8), 6)
 
         val reader = ByteArrayReader(writer.toBytes())
-        expect(byteArrayOf(7, 8).toList()) { reader.readBytes().toList() }
+        expect(reader.readBytes().toList())
+            .toBe(byteArrayOf(7, 8).toList())
     }
 }

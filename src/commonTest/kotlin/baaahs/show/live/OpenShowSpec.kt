@@ -10,9 +10,20 @@ import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeShowPlayer
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.json.buildJsonObject
 import org.spekframework.spek2.Spek
-import kotlin.test.expect
+import kotlin.collections.emptyList
+import kotlin.collections.first
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.mapOf
+import kotlin.collections.plus
+import kotlin.collections.set
+import kotlin.collections.setOf
 
 object OpenShowSpec : Spek({
     describe<OpenShow> {
@@ -37,9 +48,9 @@ object OpenShowSpec : Spek({
 
         context("empty show") {
             it("creates an empty OpenShow") {
-                expect("Show") { openShow.title }
+                expect(openShow.title).toBe("Show")
 
-                expect(emptyList()) { openShow.activePatchSet().activePatches }
+                expect(openShow.activePatchSet().activePatches).isEmpty()
             }
         }
 
@@ -62,16 +73,18 @@ object OpenShowSpec : Spek({
             val scenesButtonGroup by value { panel1.first() as OpenButtonGroupControl }
 
             it("creates an OpenShow") {
-                expect("Scenes") { scenesButtonGroup.title }
-                expect(listOf("First Scene", "Second Scene")) { scenesButtonGroup.buttons.map { it.title } }
+                expect(scenesButtonGroup.title)
+                    .toBe("Scenes")
+                expect(scenesButtonGroup.buttons.map { it.title })
+                    .containsExactly("First Scene","Second Scene")
             }
 
             it("has the first item in the button group selected by default") {
-                expect(listOf(true, false)) { scenesButtonGroup.buttons.map { it.isPressed } }
+                expect(scenesButtonGroup.buttons.map { it.isPressed })
+                    .containsExactly(true,false)
 
-                expect(openShow.patches + scenesButtonGroup.buttons[0].patches) {
-                    openShow.activePatchSet().activePatches
-                }
+                expect(openShow.activePatchSet().activePatches)
+                    .toBe(openShow.patches + scenesButtonGroup.buttons[0].patches)
             }
         }
 
@@ -85,9 +98,8 @@ object OpenShowSpec : Spek({
             }
 
             it("ignores links to unknown ports") {
-                expect(
-                    setOf("gl_FragCoord", "time")
-                ) { openShow.patches.only().shaderInstances.only().incomingLinks.keys }
+                expect(openShow.patches.only().shaderInstances.only().incomingLinks.keys)
+                    .toBe(setOf("gl_FragCoord", "time"))
             }
         }
     }

@@ -1,8 +1,9 @@
 package baaahs.util
 
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 object UndoStackSpec : Spek({
     describe("UndoStack") {
@@ -11,28 +12,28 @@ object UndoStackSpec : Spek({
         val editor by value { FakeEditor("base", undoStack) }
 
         it("starts empty") {
-            expect(false) { editor.undo() }
-            expect(false) { editor.redo() }
+            expect(editor.undo()).toBe(false)
+            expect(editor.redo()).toBe(false)
         }
 
         context("when a change is pushed") {
             beforeEachTest { editor.change("first change") }
 
             it("can be undone") {
-                expect(true) { editor.undo() }
-                expect("base") { editor.contents }
-                expect(false) { undoStack.canUndo() }
+                expect(editor.undo()).toBe(true)
+                expect(editor.contents).toBe("base")
+                expect(undoStack.canUndo()).toBe(false)
             }
 
             it("redo isn't available") {
-                expect(false) { editor.redo() }
+                expect(editor.redo()).toBe(false)
             }
 
             it("can be undone and redone") {
-                expect(true) { editor.undo() }
-                expect(true) { editor.redo() }
-                expect("first change") { editor.contents }
-                expect(false) { editor.redo() }
+                expect(editor.undo()).toBe(true)
+                expect(editor.redo()).toBe(true)
+                expect(editor.contents).toBe("first change")
+                expect(editor.redo()).toBe(false)
             }
 
             context("multiple changes") {
@@ -42,36 +43,36 @@ object UndoStackSpec : Spek({
                 }
 
                 it("can be undone and redone") {
-                    expect("third change") { editor.contents }
-                    expect(true) { editor.undo() }
-                    expect(true) { editor.undo() }
-                    expect(true) { editor.undo() }
-                    expect("base") { editor.contents }
-                    expect(false) { editor.undo() }
-                    expect(true) { editor.redo() }
-                    expect(true) { editor.redo() }
-                    expect(true) { editor.redo() }
-                    expect("third change") { editor.contents }
-                    expect(false) { editor.redo() }
+                    expect(editor.contents).toBe("third change")
+                    expect(editor.undo()).toBe(true)
+                    expect(editor.undo()).toBe(true)
+                    expect(editor.undo()).toBe(true)
+                    expect(editor.contents).toBe("base")
+                    expect(editor.undo()).toBe(false)
+                    expect(editor.redo()).toBe(true)
+                    expect(editor.redo()).toBe(true)
+                    expect(editor.redo()).toBe(true)
+                    expect(editor.contents).toBe("third change")
+                    expect(editor.redo()).toBe(false)
                 }
 
                 it("changes discard redo") {
-                    expect(true) { editor.undo() }
-                    expect(true) { editor.undo() }
-                    expect("first change") { editor.contents }
+                    expect(editor.undo()).toBe(true)
+                    expect(editor.undo()).toBe(true)
+                    expect(editor.contents).toBe("first change")
                     editor.change("another change")
-                    expect(false) { editor.redo() }
+                    expect(editor.redo()).toBe(false)
                 }
 
                 context("when capacity is exceeded") {
                     beforeEachTest { editor.change("fourth change") }
 
                     it("drops eldest history") {
-                        expect(true) { editor.undo() }
-                        expect(true) { editor.undo() }
-                        expect(true) { editor.undo() }
-                        expect(false) { editor.undo() }
-                        expect("first change") { editor.contents }
+                        expect(editor.undo()).toBe(true)
+                        expect(editor.undo()).toBe(true)
+                        expect(editor.undo()).toBe(true)
+                        expect(editor.undo()).toBe(false)
+                        expect(editor.contents).toBe("first change")
                     }
                 }
             }

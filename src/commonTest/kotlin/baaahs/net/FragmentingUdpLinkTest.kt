@@ -1,9 +1,10 @@
 package baaahs.net
 
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import kotlin.random.Random
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.expect
 
 class FragmentingUdpLinkTest {
     private val port = 1234
@@ -30,9 +31,9 @@ class FragmentingUdpLinkTest {
         val smallPayload = byteArrayOf(0, 1, 2, 3)
         send(smallPayload)
 
-        expect(1) { receivedPayloads.size }
-        expect(smallPayload.toList()) { receivedPayloads.first().toList() }
-        expect(1) { recvTestLink.receviedPackets.size }
+        expect(receivedPayloads.size).toBe(1)
+        expect(receivedPayloads.first().toList()).toBe(smallPayload.toList())
+        expect(recvTestLink.receviedPackets.size).toBe(1)
     }
 
     @Test
@@ -40,9 +41,9 @@ class FragmentingUdpLinkTest {
         val mediumPayload = Random.nextBytes((1400 * 4.5).toInt())
         send(mediumPayload)
 
-        expect(1) { receivedPayloads.size }
-        expect(mediumPayload.toList()) { receivedPayloads.first().toList() }
-        expect(5) { recvTestLink.receviedPackets.size }
+        expect(receivedPayloads.size).toBe(1)
+        expect(receivedPayloads.first().toList()).toBe(mediumPayload.toList())
+        expect(recvTestLink.receviedPackets.size).toBe(5)
     }
 
     @Test
@@ -50,9 +51,9 @@ class FragmentingUdpLinkTest {
         val mediumPayload = Random.nextBytes(100_000)
         send(mediumPayload)
 
-        expect(1) { receivedPayloads.size }
-        expect(mediumPayload.toList()) { receivedPayloads.first().toList() }
-        expect(73) { recvTestLink.receviedPackets.size }
+        expect(receivedPayloads.size).toBe(1)
+        expect(receivedPayloads.first().toList()).toBe(mediumPayload.toList())
+        expect(recvTestLink.receviedPackets.size).toBe(73)
     }
 
     /////////////////////////

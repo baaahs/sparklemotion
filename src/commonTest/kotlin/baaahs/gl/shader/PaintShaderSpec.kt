@@ -8,9 +8,10 @@ import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.testPlugins
 import baaahs.toBeSpecified
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 object PaintShaderSpec : Spek({
     describe("PaintShader") {
@@ -55,7 +56,18 @@ object PaintShaderSpec : Spek({
 
             it("generates function declarations") {
                 expect(
-                    """
+                    shader.toGlsl(
+                        namespace,
+                        mapOf(
+                            "resolution" to "in_resolution",
+                            "blueness" to "aquamarinity",
+                            "identity" to "p0_identity",
+                            "gl_FragColor" to "sm_result"
+                        )
+                    ).trim()
+                )
+                    .toBe(
+                        """
                         #line 8
                         int p0_someGlobalVar;
                         
@@ -71,20 +83,12 @@ object PaintShaderSpec : Spek({
                             sm_result = vec4(uv.xy, p0_identity(aquamarinity), 1.);
                         }
                     """.trimIndent()
-                ) {
-                    shader.toGlsl(
-                        namespace, mapOf(
-                            "resolution" to "in_resolution",
-                            "blueness" to "aquamarinity",
-                            "identity" to "p0_identity",
-                            "gl_FragColor" to "sm_result"
-                        )
-                    ).trim()
-                }
+                    )
             }
 
             it("generates invocation GLSL") {
-                expect("p0_main()") { shader.invocationGlsl(namespace, "resultVar") }
+                expect(shader.invocationGlsl(namespace, "resultVar"))
+                    .toBe("p0_main()")
             }
         }
 
@@ -124,7 +128,18 @@ object PaintShaderSpec : Spek({
 
             it("generates function declarations") {
                 expect(
-                    """
+                    shader.toGlsl(
+                        namespace, mapOf(
+                            "iResolution" to "in_resolution",
+                            "iMouse" to "in_mouse",
+                            "iTime" to "in_time",
+                            "blueness" to "aquamarinity",
+                            "identity" to "p0_identity"
+                        )
+                    ).trim()
+                )
+                    .toBe(
+                        """
                         #line 5
                         int p0_someGlobalVar;
                         
@@ -140,23 +155,12 @@ object PaintShaderSpec : Spek({
                             fragColor = vec4(uv.xy / in_mouse, p0_identity(aquamarinity), 1.);
                         }
                     """.trimIndent()
-                ) {
-                    shader.toGlsl(
-                        namespace, mapOf(
-                            "iResolution" to "in_resolution",
-                            "iMouse" to "in_mouse",
-                            "iTime" to "in_time",
-                            "blueness" to "aquamarinity",
-                            "identity" to "p0_identity"
-                        )
-                    ).trim()
-                }
+                    )
             }
 
             it("generates invocation GLSL") {
-                expect("p0_mainImage(resultVar, sm_FragCoord.xy)") {
-                    shader.invocationGlsl(namespace, "resultVar")
-                }
+                expect(shader.invocationGlsl(namespace, "resultVar"))
+                    .toBe("p0_mainImage(resultVar, sm_FragCoord.xy)")
             }
         }
     }
