@@ -11,12 +11,15 @@ import baaahs.model.ModelInfo
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.shows.FakeGlContext
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import ext.TestCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
 import kotlin.test.assertNotNull
-import kotlin.test.expect
 
 @InternalCoroutinesApi
 object PreviewShaderBuilderSpec : Spek({
@@ -30,7 +33,7 @@ object PreviewShaderBuilderSpec : Spek({
         val renderEngine by value { PreviewRenderEngine(FakeGlContext(), 100, 100) }
 
         it("is in Unbuilt state") {
-            expect(ShaderBuilder.State.Unbuilt) { previewShaderBuilder.state }
+            expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Unbuilt)
         }
 
         context("when startBuilding() is called") {
@@ -39,14 +42,14 @@ object PreviewShaderBuilderSpec : Spek({
             }
 
             it("is in Linking state") {
-                expect(ShaderBuilder.State.Linking) { previewShaderBuilder.state }
+                expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linking)
             }
 
             context("after idle") {
                 beforeEachTest { testCoroutineContext.runAll() }
 
                 it("is in Linked state") {
-                    expect(ShaderBuilder.State.Linked) { previewShaderBuilder.state }
+                    expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linked)
                 }
 
                 it("has a previewPatch") {
@@ -58,7 +61,7 @@ object PreviewShaderBuilderSpec : Spek({
                 }
 
                 it("has no gadgets yet") {
-                    expect(emptyList()) { previewShaderBuilder.gadgets }
+                    expect(previewShaderBuilder.gadgets).isEmpty()
                 }
 
                 context("when there's a problem parsing hints") {
@@ -72,7 +75,7 @@ object PreviewShaderBuilderSpec : Spek({
                     }
 
                     it("should report an error right away") {
-                        expect(ShaderBuilder.State.Errors) { previewShaderBuilder.state }
+                        expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Errors)
                     }
                 }
 
@@ -80,20 +83,19 @@ object PreviewShaderBuilderSpec : Spek({
                     beforeEachTest { previewShaderBuilder.startCompile(renderEngine) }
 
                     it("is in Compiling state") {
-                        expect(ShaderBuilder.State.Compiling) { previewShaderBuilder.state }
+                        expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Compiling)
                     }
 
                     context("after idle") {
                         beforeEachTest { testCoroutineContext.runAll() }
 
                         it("is in Success state") {
-                            expect(ShaderBuilder.State.Success) { previewShaderBuilder.state }
+                            expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Success)
                         }
 
                         it("has gadgets") {
-                            expect(listOf(
-                                Slider("Checkerboard Size", .1f, .001f, 1f),
-                            )) { previewShaderBuilder.gadgets.map { it.gadget } }
+                            expect(previewShaderBuilder.gadgets.map { it.gadget })
+                                .containsExactly(Slider("Checkerboard Size", .1f, .001f, 1f))
                         }
                     }
                 }

@@ -1,16 +1,17 @@
 package baaahs.util
 
 import baaahs.camelize
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 object UtilSpec : Spek({
     describe("baaahs.util") {
         describe("String.camelize") {
             it("camelizes") {
-                expect("someString") { "Some String".camelize() }
-                expect("someAbcString") { "Some_ABC  String!".camelize() }
+                expect("Some String".camelize()).toBe("someString")
+                expect("Some_ABC  String!".camelize()).toBe("someAbcString")
             }
         }
     }

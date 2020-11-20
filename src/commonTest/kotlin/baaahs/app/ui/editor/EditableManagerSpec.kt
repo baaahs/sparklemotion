@@ -13,10 +13,13 @@ import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.addObserver
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
-import kotlin.test.expect
 
 object EditableManagerSpec : Spek({
     describe<EditableManager> {
@@ -32,11 +35,11 @@ object EditableManagerSpec : Spek({
 
         context("when there's no active session") {
             it("isEditing() is false") {
-                expect(false) { editableManager.isEditing() }
+                expect(editableManager.isEditing()).toBe(false)
             }
 
             it("editorPanels is empty") {
-                expect(emptyList()) { editableManager.editorPanels }
+                expect(editableManager.editorPanels).isEmpty()
             }
         }
 
@@ -50,21 +53,20 @@ object EditableManagerSpec : Spek({
             }
 
             it("isEditing() is true") {
-                expect(true) { editableManager.isEditing() }
+                expect(editableManager.isEditing()).toBe(true)
             }
 
             it("editorPanels comes from the show") {
-                expect(arrayListOf("Properties", "Patches")) {
-                    editableManager.editorPanels.map { it.title }
-                }
+                expect(editableManager.editorPanels.map { it.title })
+                    .toBe(arrayListOf("Properties", "Patches"))
             }
 
             it("selectedPanel defaults to the first") {
-                expect("Properties") { editableManager.selectedPanel?.title }
+                expect(editableManager.selectedPanel?.title).toBe("Properties")
             }
 
             it("creates a MutableShow") {
-                expect(baseShow) { editableManager.session!!.mutableShow.getShow() }
+                expect(editableManager.session!!.mutableShow.getShow()).toBe(baseShow)
             }
 
             it("finds the relevant MutableEditable") {
@@ -76,7 +78,7 @@ object EditableManagerSpec : Spek({
             }
 
             it("is not modified") {
-                expect(false) { editableManager.isModified() }
+                expect(editableManager.isModified()).toBe(false)
             }
 
             context("when a change has been made to the editable") {
@@ -86,13 +88,12 @@ object EditableManagerSpec : Spek({
                 }
 
                 it("pushes the changed show onto the undo stack") {
-                    expect(
-                        listOf("Sample Show", "different title")
-                    ) { editableManager.undoStack.stack.map { it.show.title } }
+                    expect(editableManager.undoStack.stack.map { it.show.title })
+                        .containsExactly("Sample Show", "different title")
                 }
 
                 it("is modified") {
-                    expect(true) { editableManager.isModified() }
+                    expect(editableManager.isModified()).toBe(true)
                 }
 
                 context("when changes are applied") {
@@ -104,17 +105,16 @@ object EditableManagerSpec : Spek({
                     }
 
                     it("calls onApply callback with new show") {
-                        expect(listOf("different title")) { showUpdates.map { it.title } }
+                        expect(showUpdates.map { it.title }).containsExactly("different title")
                     }
 
                     it("still has the same undo stack") {
-                        expect(
-                            listOf("Sample Show", "different title")
-                        ) { editableManager.undoStack.stack.map { it.show.title } }
+                        expect(editableManager.undoStack.stack.map { it.show.title })
+                            .containsExactly("Sample Show","different title")
                     }
 
                     it("is not modified") {
-                        expect(false) { editableManager.isModified() }
+                        expect(editableManager.isModified()).toBe(false)
                     }
 
                     it("has a different MutableShow") {
@@ -127,7 +127,7 @@ object EditableManagerSpec : Spek({
                         }
 
                         it("is modified") {
-                            expect(true) { editableManager.isModified() }
+                            expect(editableManager.isModified()).toBe(true)
                         }
 
                         context("and user clicks Redo") {
@@ -136,7 +136,7 @@ object EditableManagerSpec : Spek({
                             }
 
                             it("is not modified") {
-                                expect(false) { editableManager.isModified() }
+                                expect(editableManager.isModified()).toBe(false)
                             }
                         }
                     }
@@ -152,21 +152,20 @@ object EditableManagerSpec : Spek({
                 val mutableButton by value { session.mutableEditable as MutableButtonControl }
 
                 it("creates a new empty button") {
-                    expect("New Button") { mutableButton.title }
+                    expect(mutableButton.title).toBe("New Button")
                 }
 
                 it("adds the new button to the MutableButtonGroup") {
-                    expect(listOf("Pleistocene", "Holocene", "New Button")) {
-                        mutableButtonGroup.buttons.map { it.title }
-                    }
+                    expect(mutableButtonGroup.buttons.map { it.title })
+                        .containsExactly("Pleistocene","Holocene","New Button")
                 }
 
                 it("returns the new button as the MutableEditable") {
-                    expect(mutableButtonGroup.buttons.last()) { session.mutableEditable }
+                    expect(session.mutableEditable).toBe(mutableButtonGroup.buttons.last())
                 }
 
                 it("is modified because a button has been added to the button group") {
-                    expect(true) { editableManager.isModified() }
+                    expect(editableManager.isModified()).toBe(true)
                 }
 
                 context("when a change has been made to the editable") {
@@ -176,7 +175,8 @@ object EditableManagerSpec : Spek({
                     }
 
                     it("pushes the changed show with the same edit intent onto the undo stack") {
-                        expect(listOf(editIntent, editIntent)) { editableManager.undoStack.stack.map { it.editIntent } }
+                        expect(editableManager.undoStack.stack.map { it.editIntent })
+                            .containsExactly(editIntent,editIntent)
                     }
 
                     context("when changes are applied") {
@@ -187,18 +187,17 @@ object EditableManagerSpec : Spek({
                         val savedButtonId by value { newShow.findControlIdByTitle("My new button") }
 
                         it("still has the same undo stack") {
-                            expect(
-                                listOf(editIntent, editIntent)
-                            ) { editableManager.undoStack.stack.map { it.editIntent } }
+                            expect(editableManager.undoStack.stack.map { it.editIntent })
+                                .containsExactly(editIntent,editIntent)
                         }
 
                         it("is not modified") {
-                            expect(false) { editableManager.isModified() }
+                            expect(editableManager.isModified()).toBe(false)
                         }
 
                         it("has a new EditIntent which modifies the now-existing button") {
                             val newEditIntent = editableManager.session!!.editIntent
-                            expect(ControlEditIntent(savedButtonId)) { newEditIntent }
+                            expect(newEditIntent).toBe(ControlEditIntent(savedButtonId))
                         }
                     }
                 }

@@ -18,9 +18,26 @@ import baaahs.show.ShaderType
 import baaahs.show.mutable.EditingShader.State
 import baaahs.ui.Observer
 import baaahs.ui.addObserver
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import io.mockk.*
 import org.spekframework.spek2.Spek
-import kotlin.test.expect
+import kotlin.collections.List
+import kotlin.collections.arrayListOf
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.emptyList
+import kotlin.collections.forEach
+import kotlin.collections.joinToString
+import kotlin.collections.map
+import kotlin.collections.mapOf
+import kotlin.collections.mapValues
+import kotlin.collections.set
+import kotlin.collections.setOf
+import kotlin.collections.sortedWith
+import kotlin.collections.toSet
 
 // Currently in jvmTest so we can use mockk.
 // TODO: move back to commonTest when mockk supports multiplatform.
@@ -88,7 +105,7 @@ object EditingShaderSpec : Spek({
 
         context("at initialization") {
             it("is in Building state") {
-                expect(State.Building) { editingShader.state }
+                expect(editingShader.state).toBe(State.Building)
             }
 
             it("starts building the shader") {
@@ -96,11 +113,11 @@ object EditingShaderSpec : Spek({
             }
 
             it("has no gadgets") {
-                expect(emptyList()) { editingShader.gadgets }
+                expect(editingShader.gadgets).isEmpty()
             }
 
             it("should not have notified observers yet") {
-                expect(emptyList<State>()) { notifiedStates }
+                expect(notifiedStates).isEmpty()
             }
 
             it("has no incoming links") {
@@ -117,25 +134,25 @@ object EditingShaderSpec : Spek({
 
                 context("of a successful build") {
                     it("should notify our observers") {
-                        expect(listOf(State.Success)) { notifiedStates }
+                        expect(notifiedStates).containsExactly(State.Success)
                     }
                 }
 
                 context("that it's still building") {
                     override(builderState) { ShaderBuilder.State.Compiling }
                     it("should not notify our observers") {
-                        expect(emptyList<State>()) { notifiedStates }
+                        expect(notifiedStates).isEmpty()
                     }
                 }
 
                 context("of a failure to build") {
                     override(builderState) { ShaderBuilder.State.Errors }
                     it("should not notify our observers again") {
-                        expect(listOf(State.Errors)) { notifiedStates }
+                        expect(notifiedStates).containsExactly(State.Errors)
                     }
 
                     it("should return null for ShaderInstanceOptions") {
-                        expect(null) { editingShader.getShaderInstanceOptions() }
+                        expect(editingShader.getShaderInstanceOptions()).toBe(null)
                     }
                 }
             }
@@ -149,28 +166,25 @@ object EditingShaderSpec : Spek({
 
             context("when the shader instance had no previous incoming links") {
                 it("should set some reasonable defaults") {
-                    expect(
-                        mapOf(
+                    expect(mutableShaderInstance.incomingLinks.mapValues { (_, port) -> port.title })
+                        .toBe(mapOf(
                             "gl_FragColor" to "Main Channel",
                             "theScale" to "The Scale Slider",
                             "time" to "Time"
-                        )
-                    ) { mutableShaderInstance.incomingLinks.mapValues { (_, port) -> port.title } }
+                        ))
                 }
 
                 it("should create an appropriate data source") {
-                    expect(
-                        MutableDataSourcePort(CorePlugin.SliderDataSource("The Scale", 1f, 0f, 1f))
-                    ) { mutableShaderInstance.incomingLinks["theScale"] }
+                    expect(mutableShaderInstance.incomingLinks["theScale"])
+                        .toBe(MutableDataSourcePort(CorePlugin.SliderDataSource("The Scale", 1f, 0f, 1f)))
                 }
 
                 context("when hints are provided") {
                     override(scaleUniform) { "uniform float theScale; // @@Slider min=.25 max=4 default=1" }
 
                     it("should create an appropriate data source") {
-                        expect(
-                            MutableDataSourcePort(CorePlugin.SliderDataSource("The Scale", 1f, .25f, 4f))
-                        ) { mutableShaderInstance.incomingLinks["theScale"] }
+                        expect(mutableShaderInstance.incomingLinks["theScale"])
+                            .toBe(MutableDataSourcePort(CorePlugin.SliderDataSource("The Scale", 1f, .25f, 4f)))
                     }
                 }
 
@@ -178,9 +192,8 @@ object EditingShaderSpec : Spek({
                     override(scaleUniform) { "uniform float theScale; // @@baaahs.BeatLink:BeatLink" }
 
                     it("should create an appropriate data source") {
-                        expect(
-                            MutableDataSourcePort(beatLinkDataSource)
-                        ) { mutableShaderInstance.incomingLinks["theScale"] }
+                        expect(mutableShaderInstance.incomingLinks["theScale"])
+                            .toBe(MutableDataSourcePort(beatLinkDataSource))
                     }
                 }
 
@@ -188,9 +201,8 @@ object EditingShaderSpec : Spek({
                     override(scaleUniform) { "uniform float theScale; // @type beat-link" }
 
                     it("should create an appropriate data source") {
-                        expect(
-                            MutableDataSourcePort(beatLinkDataSource)
-                        ) { mutableShaderInstance.incomingLinks["theScale"] }
+                        expect(mutableShaderInstance.incomingLinks["theScale"])
+                            .toBe(MutableDataSourcePort(beatLinkDataSource))
                     }
                 }
             }
@@ -204,21 +216,18 @@ object EditingShaderSpec : Spek({
                 }
 
                 it("shouldn't change it") {
-                    expect("Custom slider Slider") { mutableShaderInstance.incomingLinks["theScale"]!!.title }
+                    expect(mutableShaderInstance.incomingLinks["theScale"]!!.title)
+                        .toBe("Custom slider Slider")
                 }
 
                 it("should be listed in link options") {
-                    expect(
-                        """
+                    expect(editingShader.linkOptionsFor("theScale").stringify()).toBe("""
                             Data Source:
                             * BeatLink
                             * Custom slider Slider
                             * The Scale Slider
                             * Time
-                        """.trimIndent()
-                    ) {
-                        editingShader.linkOptionsFor("theScale").stringify()
-                    }
+                        """.trimIndent())
                 }
             }
 
@@ -239,7 +248,8 @@ object EditingShaderSpec : Spek({
                 }
 
                 it("shouldn't modify it") {
-                    expect("custom slider Slider") { mutableShaderInstance.incomingLinks["theScale"]!!.title }
+                    expect(mutableShaderInstance.incomingLinks["theScale"]!!.title)
+                        .toBe("custom slider Slider")
                 }
 
                 // TODO: ... unless its type doesn't make any sense now.
@@ -247,51 +257,41 @@ object EditingShaderSpec : Spek({
 
             context("incoming link suggestions") {
                 it("suggests link options for each input port") {
-                    expect(setOf("theScale", "time", "gl_FragColor")) {
-                        editingShader.openShader!!.inputPorts.map { it.id }.toSet()
-                    }
+                    expect(editingShader.openShader!!.inputPorts.map { it.id }.toSet())
+                        .toBe(setOf("theScale", "time", "gl_FragColor"))
                 }
 
                 it("suggests reasonable link options for scale") {
-                    expect(
-                        """
+                    expect(editingShader.linkOptionsFor("theScale").stringify())
+                        .toBe("""
                             Data Source:
                             * BeatLink
                             * The Scale Slider
                             * Time
-                        """.trimIndent()
-                    ) {
-                        editingShader.linkOptionsFor("theScale").stringify()
-                    }
+                        """.trimIndent())
                 }
 
                 it("suggests reasonable link options for time") {
-                    expect(
-                        """
+                    expect(editingShader.linkOptionsFor("time").stringify())
+                        .toBe("""
                             Data Source:
                             * BeatLink
                             * Time
                             * Time Slider
-                        """.trimIndent()
-                    ) {
-                        editingShader.linkOptionsFor("time").stringify()
-                    }
+                        """.trimIndent())
                 }
 
                 it("suggests reasonable link options for input color") {
                     // Should never include ourself.
-                    expect(
-                        """
+                    expect(editingShader.linkOptionsFor("gl_FragColor").stringify())
+                        .toBe("""
                             Channel:
                             * Main Channel
                             Data Source:
                             * Input Color ColorPicker
                             Shader Output:
                             * Shader "Paint" output
-                        """.trimIndent()
-                    ) {
-                        editingShader.linkOptionsFor("gl_FragColor").stringify()
-                    }
+                        """.trimIndent())
                 }
 
                 context("when another patch has shader on a different shader channel") {
@@ -302,8 +302,8 @@ object EditingShaderSpec : Spek({
                     context("and its result type matches this input's type") {
                         it("should include that shader channel as an option") {
                             // Should never include ourself.
-                            expect(
-                                """
+                            expect(editingShader.linkOptionsFor("gl_FragColor").stringify())
+                                .toBe("""
                                     Channel:
                                     * Main Channel
                                     * Other Channel
@@ -311,10 +311,7 @@ object EditingShaderSpec : Spek({
                                     * Input Color ColorPicker
                                     Shader Output:
                                     * Shader "Paint" output
-                                """.trimIndent()
-                            ) {
-                                editingShader.linkOptionsFor("gl_FragColor").stringify()
-                            }
+                                """.trimIndent())
                         }
                     }
 
@@ -322,18 +319,15 @@ object EditingShaderSpec : Spek({
                         override(otherShaderInShow) { Shaders.flipY } // distortion
 
                         it("shouldn't include that shader channel as an option") {
-                            expect(
-                                """
+                            expect(editingShader.linkOptionsFor("gl_FragColor").stringify())
+                                .toBe("""
                                     Channel:
                                     * Main Channel
                                     Data Source:
                                     * Input Color ColorPicker
                                     Shader Output:
                                     * Shader "Paint" output
-                                """.trimIndent()
-                            ) {
-                                editingShader.linkOptionsFor("gl_FragColor").stringify()
-                            }
+                                """.trimIndent())
                         }
 
                     }

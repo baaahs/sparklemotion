@@ -2,10 +2,12 @@ package baaahs.gadgets
 
 import baaahs.Color
 import baaahs.serializationRoundTrip
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.expect
 
 class PalettePickerTest {
     @Test
@@ -14,11 +16,11 @@ class PalettePickerTest {
         palettePicker.colors = listOf(Color(654321), Color(234156))
 
         val otherPalettePicker = serializationRoundTrip(PalettePicker.serializer(), palettePicker)
-        expect("name") { otherPalettePicker.title }
-        expect(listOf(Color(123456))) { otherPalettePicker.colors }
+        expect(otherPalettePicker.title).toBe("name")
+        expect(otherPalettePicker.colors).containsExactly(Color(123456))
 
         otherPalettePicker.state.putAll(palettePicker.state)
-        expect(listOf(Color(654321), Color(234156))) { otherPalettePicker.colors }
+        expect(otherPalettePicker.colors).containsExactly(Color(654321),Color(234156))
     }
 
     @Test

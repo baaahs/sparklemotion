@@ -7,9 +7,17 @@ import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
+import kotlin.collections.associate
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.mapOf
+import kotlin.collections.set
+import kotlin.collections.setOf
+import kotlin.collections.toSet
 
 object MutableShowSpec : Spek({
     describe("MutableShow") {
@@ -49,20 +57,18 @@ object MutableShowSpec : Spek({
 //            }
 
             it("has the expected initial shaders") {
-                expect(
-                    setOf("shader 0", "shader 1a", "shader 2a", "shader 2b", "shader 2c")
-                ) { show.shaders.values.map { it.title }.toSet() }
+                expect(show.shaders.values.map { it.title }.toSet())
+                    .toBe(setOf("shader 0", "shader 1a", "shader 2a", "shader 2b", "shader 2c"))
             }
 
             it("has the expected initial datasources") {
-                expect(
-                    setOf("Time", "Resolution", "Blueness Slider")
-                ) { show.dataSources.values.map { it.title }.toSet() }
+                expect(show.dataSources.values.map { it.title }.toSet())
+                    .toBe(setOf("Time", "Resolution", "Blueness Slider"))
             }
         }
 
         it("leaves everything as-is if no changes are made") {
-            expect(show) { baseShow }
+            expect(baseShow).toBe(show)
         }
 
         context("editing a shader instance") {
@@ -76,9 +82,8 @@ object MutableShowSpec : Spek({
                 it("should retain them, I guess?") {
                     val id = show.patches.only().shaderInstanceIds.only()
                     val shaderInstance = show.shaderInstances[id]!!
-                    expect(
-                        setOf("nonsense", "time", "blueness", "resolution", "gl_FragCoord")
-                    ) { shaderInstance.incomingLinks.keys }
+                    expect(shaderInstance.incomingLinks.keys)
+                        .toBe(setOf("nonsense", "time", "blueness", "resolution", "gl_FragCoord"))
                 }
             }
         }
@@ -209,7 +214,14 @@ object MutableShowSpec : Spek({
                 mutableShow.addPatch(autoWirer.testPatch("show shader 1a"))
                 mutableShow.addPatch(autoWirer.testPatch("show shader 1b"))
 
-                expect(
+                expect(show.patches.map { patch ->
+                    patch.surfaces to
+                            patch.shaderInstanceIds.map {
+                                show.shaderInstances[it]?.shaderId?.let { shaderId ->
+                                    show.shaders[shaderId]?.title
+                                } ?: "?!?"
+                            }
+                }.associate { it }).toBe(
                     mapOf(
                         Surfaces.AllSurfaces to listOf(
                             "shader 0",
@@ -217,16 +229,7 @@ object MutableShowSpec : Spek({
                             "show shader 1b"
                         )
                     )
-                ) {
-                    show.patches.map { patch ->
-                        patch.surfaces to
-                                patch.shaderInstanceIds.map {
-                                    show.shaderInstances[it]?.shaderId?.let { shaderId ->
-                                        show.shaders[shaderId]?.title
-                                    } ?: "?!?"
-                                }
-                    }.associate { it }
-                }
+                )
             }
         }
     }

@@ -229,7 +229,7 @@ data class Color(val argb: Int) {
         private fun asInt(f: Float): Int = (bounded(f) * 255).toInt()
 
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Color", PrimitiveKind.INT)
-        override fun serialize(encoder: Encoder, obj: Color) = encoder.encodeInt(obj.argb)
+        override fun serialize(encoder: Encoder, value: Color) = encoder.encodeInt(value.argb)
         override fun deserialize(decoder: Decoder): Color = Color(decoder.decodeInt())
     }
 }

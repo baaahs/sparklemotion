@@ -8,9 +8,10 @@ import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShaderOutPort
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 object GlslGenerationSpec : Spek({
     describe("Generation of GLSL from patches") {
@@ -57,7 +58,8 @@ object GlslGenerationSpec : Spek({
             }
 
             it("generates GLSL") {
-                expect(
+                expect(glsl).toBe(
+                    /**language=glsl*/
                     """
                         #ifdef GL_ES
                         precision mediump float;
@@ -98,8 +100,7 @@ object GlslGenerationSpec : Spek({
                           p0_thisShaderSName_main(); // This Shader's Name
                           sm_result = p0_thisShaderSName_gl_FragColor;
                         }
-                    """.trimIndent()
-                ) { glsl }
+                    """.trimIndent())
             }
         }
 
@@ -141,7 +142,8 @@ object GlslGenerationSpec : Spek({
                 linkedPatch.shaderInstance.incomingLinks.forEach { (port, link) ->
                     println("port $port -> $link")
                 }
-                expect(
+                expect(glsl).toBe(
+                    /**language=glsl*/
                     """
                         #ifdef GL_ES
                         precision mediump float;
@@ -182,8 +184,7 @@ object GlslGenerationSpec : Spek({
                           p0_thisShaderSName_mainImage(p0_thisShaderSNamei_result, gl_FragCoord.xy); // This Shader's Name
                           sm_result = p0_thisShaderSNamei_result;
                         }
-                    """.trimIndent()
-                ) { glsl }
+                    """.trimIndent())
             }
         }
 
@@ -227,7 +228,7 @@ object GlslGenerationSpec : Spek({
             }
 
             it("generates GLSL") {
-                expect(
+                expect(glsl).toBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -305,8 +306,7 @@ object GlslGenerationSpec : Spek({
                           p1_thisShaderSName_main(); // This Shader's Name
                           sm_result = p1_thisShaderSName_gl_FragColor;
                         }
-                    """.trimIndent()
-                ) { glsl }
+                    """.trimIndent())
             }
         }
 
@@ -359,7 +359,7 @@ object GlslGenerationSpec : Spek({
             }
 
             it("generates GLSL") {
-                expect(
+                expect(glsl).toBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -410,8 +410,7 @@ object GlslGenerationSpec : Spek({
                           p2_crossFadeShaderi_result = p2_crossFadeShader_mainFilter(p0_mainPaintShader_gl_FragColor); // Cross-fade shader
                           sm_result = p2_crossFadeShaderi_result;
                         }
-                    """.trimIndent()
-                ) { glsl }
+                    """.trimIndent())
             }
 
             context("when there's no paint shader on the other channel") {
@@ -419,7 +418,7 @@ object GlslGenerationSpec : Spek({
 
                 it("should report an error to the user BUT IT CURRENTLY DOESNT") {
                     // TODO: WRONG WRONG WRONG we should tell the user that something's wrong?
-                    expect(
+                    expect(glsl).toBe(
                         /**language=glsl*/
                         """
                             #ifdef GL_ES
@@ -459,8 +458,7 @@ object GlslGenerationSpec : Spek({
                               p1_crossFadeShaderi_result = p1_crossFadeShader_mainFilter(p0_mainPaintShader_gl_FragColor); // Cross-fade shader
                               sm_result = p1_crossFadeShaderi_result;
                             }
-                        """.trimIndent()
-                    ) { glsl }
+                        """.trimIndent())
                 }
             }
         }

@@ -1,6 +1,9 @@
 package baaahs.io
 
 import baaahs.sim.FakeFs
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.verbs.expect
 import ext.TestCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -8,7 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.expect
 
 @InternalCoroutinesApi
 object FileSerializationSpec : Spek({
@@ -32,32 +34,35 @@ object FileSerializationSpec : Spek({
 
         val serverJson by value {
             val fsServerSideSerializer = FsServerSideSerializer()
-            Json { serializersModule = fsServerSideSerializer.serialModule }
+            Json {
+                encodeDefaults = true
+                serializersModule = fsServerSideSerializer.serialModule
+            }
         }
 
         context("server-side serializer") {
             it("sends Fs objects by id ref") {
                 val actualFile1Json = serverJson.encodeToJsonElement(Fs.File.serializer(), actualFile1)
-                expect(buildJsonObject {
+                expect(actualFile1Json).toBe(buildJsonObject {
                     put("fs", buildJsonObject { put("name", actualFile1.fs.name); put("fsId", 0) })
                     put("pathParts", buildJsonArray { add("some"); add("file.txt") })
                     put("isDirectory", JsonNull)
-                }) { actualFile1Json }
+                })
 
                 val actualFile2Json = serverJson.encodeToJsonElement(Fs.File.serializer(), actualFile2)
-                expect(buildJsonObject {
+                expect(actualFile2Json).toBe(buildJsonObject {
                     put("fs", buildJsonObject { put("name", actualFile2.fs.name); put("fsId", 1) })
                     put("pathParts", buildJsonArray { add("another"); add("file.txt") })
                     put("isDirectory", JsonNull)
-                }) { actualFile2Json }
+                })
 
                 val thirdFile = actualFile1.parent!!.resolve("foo.txt")
                 val thirdFileJson = serverJson.encodeToJsonElement(Fs.File.serializer(), thirdFile)
-                expect(buildJsonObject {
+                expect(thirdFileJson).toBe(buildJsonObject {
                     put("fs", buildJsonObject { put("name", thirdFile.fs.name); put("fsId", 0) })
                     put("pathParts", buildJsonArray { add("some"); add("foo.txt") })
                     put("isDirectory", JsonNull)
-                }) { thirdFileJson }
+                })
             }
         }
 
@@ -70,7 +75,7 @@ object FileSerializationSpec : Spek({
                     put("pathParts", buildJsonArray { add("some"); add("file.txt") })
                     put("isDirectory", JsonNull)
                 })
-                expect("some/file.txt") { remoteFile1.fullPath }
+                expect(remoteFile1.fullPath).toBe("some/file.txt")
 
                 val resultFiles = mutableListOf<Fs.File>()
                 CoroutineScope(testCoroutineContext).launch {
@@ -78,7 +83,7 @@ object FileSerializationSpec : Spek({
                 }
                 testCoroutineContext.runAll()
 
-                expect(listOf("fake/response.txt")) { resultFiles.map { it.fullPath } }
+                expect(resultFiles.map { it.fullPath }).containsExactly("fake/response.txt")
             }
         }
 
@@ -89,8 +94,8 @@ object FileSerializationSpec : Spek({
             val serverSideFile by value { serverJson.decodeFromString(Fs.File.serializer(), jsonFromClient) }
 
             it("converts file to RemoteFs and back again to actual Fs") {
-                expect(actualFile1.fullPath) { serverSideFile.fullPath }
-                expect(actualFile1.fs) { serverSideFile.fs }
+                expect(serverSideFile.fullPath).toBe(actualFile1.fullPath)
+                expect(serverSideFile.fs).toBe(actualFile1.fs)
             }
         }
     }
