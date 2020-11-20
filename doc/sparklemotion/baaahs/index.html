@@ -27,28 +27,6 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-beat-data/index.html">BeatData</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">BeatData</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-beat-link-beat-source/index.html">BeatLinkBeatSource</a></h4>
-</td>
-<td>
-<p>Listens to all connected CDJs' beat and tempo updates.</p>
-<code><span class="keyword">class </span><span class="identifier">BeatLinkBeatSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-beat-source/index.html"><span class="identifier">BeatSource</span></a><span class="symbol">, </span><span class="identifier">BeatListener</span><span class="symbol">, </span><span class="identifier">OnAirListener</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-beat-source/index.html">BeatSource</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">BeatSource</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-brain/index.html">Brain</a></h4>
 </td>
 <td>
@@ -102,13 +80,6 @@
 </td>
 <td>
 <code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ClientData</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-clock/index.html">Clock</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">Clock</span></code></td>
 </tr>
 <tr>
 <td>
@@ -174,13 +145,6 @@
 </td>
 <td>
 <code><span class="keyword">interface </span><span class="identifier">HostedWebApp</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-js-clock/index.html">JsClock</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JsClock</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-clock/index.html"><span class="identifier">Clock</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -415,20 +379,6 @@
 </tr>
 <tr>
 <td>
-<h4><a href="-system-clock/index.html">SystemClock</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">SystemClock</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-clock/index.html"><span class="identifier">Clock</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-time.html">Time</a></h4>
-</td>
-<td>
-<code><span class="keyword">typealias </span><span class="identifier">Time</span>&nbsp;<span class="symbol">=</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-topics/index.html">Topics</a></h4>
 </td>
 <td>
@@ -499,6 +449,13 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">GadgetDataSerializer</span><span class="symbol">: </span><span class="identifier">KSerializer</span><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="internal-timer-clock.html">internalTimerClock</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">internalTimerClock</span><span class="symbol">: </span><a href="../baaahs.util/-clock/index.html"><span class="identifier">Clock</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -589,13 +546,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">getResource</span><span class="symbol">(</span><span class="identifier" id="baaahs$getResource(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-time-millis.html">getTimeMillis</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getTimeMillis</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html"><span class="identifier">Long</span></a></code></td>
 </tr>
 <tr>
 <td>

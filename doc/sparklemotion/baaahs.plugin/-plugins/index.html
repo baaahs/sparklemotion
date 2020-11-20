@@ -17,7 +17,8 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">Plugins</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.Plugins$<init>(kotlin.collections.List((baaahs.plugin.Plugin)))/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-plugin/index.html"><span class="identifier">Plugin</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">Plugins</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.Plugins$<init>(kotlin.collections.List((baaahs.plugin.PluginBuilder)), baaahs.plugin.PluginContext)/pluginBuilders">pluginBuilders</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-plugin-builder/index.html"><span class="identifier">PluginBuilder</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.Plugins$<init>(kotlin.collections.List((baaahs.plugin.PluginBuilder)), baaahs.plugin.PluginContext)/pluginContext">pluginContext</span><span class="symbol">:</span>&nbsp;<a href="../-plugin-context/index.html"><span class="identifier">PluginContext</span></a><span class="symbol">)</span></code><br/>
+<code><span class="identifier">Plugins</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.plugin.Plugins$<init>(kotlin.Array((baaahs.plugin.PluginBuilder)), baaahs.plugin.PluginContext)/pluginBuilders">pluginBuilders</span><span class="symbol">:</span>&nbsp;<a href="../-plugin-builder/index.html"><span class="identifier">PluginBuilder</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.Plugins$<init>(kotlin.Array((baaahs.plugin.PluginBuilder)), baaahs.plugin.PluginContext)/pluginContext">pluginContext</span><span class="symbol">:</span>&nbsp;<a href="../-plugin-context/index.html"><span class="identifier">PluginContext</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,10 +27,24 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="add-control-menu-items.html">addControlMenuItems</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">addControlMenuItems</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-add-control-menu-item/index.html"><span class="identifier">AddControlMenuItem</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="json.html">json</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">json</span><span class="symbol">: </span><span class="identifier">Json</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="plugin-context.html">pluginContext</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">pluginContext</span><span class="symbol">: </span><a href="../-plugin-context/index.html"><span class="identifier">PluginContext</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -66,10 +81,18 @@
 </tr>
 <tr>
 <td>
+<h4><a href="find-plugin.html">findPlugin</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-plugin/index.html"><span class="identifier">Plugin</span></a><span class="symbol">&gt;</span> <span class="identifier">findPlugin</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.Plugins$findPlugin(kotlin.reflect.KClass((baaahs.plugin.Plugins.findPlugin.T)))/pluginKlass">pluginKlass</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html"><span class="identifier">KClass</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code><br/>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-plugin/index.html"><span class="identifier">Plugin</span></a><span class="symbol">&gt;</span> <span class="identifier">findPlugin</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="plus.html">plus</a></h4>
 </td>
 <td>
-<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">plus</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.Plugins$plus(baaahs.plugin.Plugin)/plugin">plugin</span><span class="symbol">:</span>&nbsp;<a href="../-plugin/index.html"><span class="identifier">Plugin</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plugins</span></a></code></td>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="identifier">plus</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.Plugins$plus(baaahs.plugin.PluginBuilder)/pluginBuilder">pluginBuilder</span><span class="symbol">:</span>&nbsp;<a href="../-plugin-builder/index.html"><span class="identifier">PluginBuilder</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plugins</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -121,7 +144,7 @@
 <h4><a href="safe.html">safe</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">safe</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plugins</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">safe</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.Plugins.Companion$safe(baaahs.plugin.PluginContext)/pluginContext">pluginContext</span><span class="symbol">:</span>&nbsp;<a href="../-plugin-context/index.html"><span class="identifier">PluginContext</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plugins</span></a></code></td>
 </tr>
 </tbody>
 </table>

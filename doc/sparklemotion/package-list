@@ -18,6 +18,7 @@ $dokka.location:baaahs.ui$truncate(kotlin.String, kotlin.Int)baaahs.ui/kotlin.-
 $dokka.location:baaahs.ui$truncateStrings(kotlin.Array((kotlin.Any)), kotlin.Int)baaahs.ui/kotlin.-array/truncate-strings.html
 $dokka.location:baaahs.ui$value#org.w3c.dom.events.EventTargetbaaahs.ui/org.w3c.dom.events.-event-target/value.html
 $dokka.location:baaahs.ui$withEvent(kotlin.Function((kotlin.Any)))baaahs.ui/kotlin.-function/with-event.html
+$dokka.location:baaahs.util$asMillis(kotlin.Double)baaahs.util/kotlin.-double/as-millis.html
 $dokka.location:baaahs.util$percent(kotlin.Float)baaahs.util/kotlin.-float/percent.html
 $dokka.location:baaahs.util$putWithUniqueId(kotlin.collections.MutableMap((kotlin.String, baaahs.util.putWithUniqueId.V)), kotlin.String, baaahs.util.putWithUniqueId.V)baaahs.util/kotlin.collections.-mutable-map/put-with-unique-id.html
 $dokka.location:baaahs.util$round(kotlin.Double)baaahs.util/kotlin.-double/round.html
@@ -54,6 +55,7 @@ baaahs.model
 baaahs.models
 baaahs.net
 baaahs.plugin
+baaahs.plugin.beatlink
 baaahs.proto
 baaahs.shaders
 baaahs.show

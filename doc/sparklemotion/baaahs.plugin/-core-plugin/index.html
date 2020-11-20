@@ -21,6 +21,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-companion/index.html">Companion</a></h4>
+</td>
+<td>
+<code><span class="keyword">companion</span> <span class="keyword">object </span><span class="identifier">Companion</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-plugin-builder/index.html"><span class="identifier">PluginBuilder</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-gadget-data-source/index.html">GadgetDataSource</a></h4>
 </td>
 <td>
@@ -115,7 +122,7 @@ use <a href="-preview-resolution-data-source/index.html">PreviewResolutionDataSo
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">CorePlugin</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">CorePlugin</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.CorePlugin$<init>(baaahs.plugin.PluginContext)/pluginContext">pluginContext</span><span class="symbol">:</span>&nbsp;<a href="../-plugin-context/index.html"><span class="identifier">PluginContext</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -147,6 +154,27 @@ use <a href="-preview-resolution-data-source/index.html">PreviewResolutionDataSo
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">findDataSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.CorePlugin$findDataSource(kotlin.String, baaahs.gl.shader.InputPort)/resourceName">resourceName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.CorePlugin$findDataSource(kotlin.String, baaahs.gl.shader.InputPort)/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-add-control-menu-items.html">getAddControlMenuItems</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getAddControlMenuItems</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-add-control-menu-item/index.html"><span class="identifier">AddControlMenuItem</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-control-serializers.html">getControlSerializers</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getControlSerializers</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-data-source-serializers.html">getDataSourceSerializers</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getDataSourceSerializers</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -208,6 +236,18 @@ use <a href="-preview-resolution-data-source/index.html">PreviewResolutionDataSo
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">supportedContentTypes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-data-source-builder/index.html"><span class="identifier">DataSourceBuilder</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="build.html">build</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">build</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.CorePlugin.Companion$build(baaahs.plugin.PluginContext)/pluginContext">pluginContext</span><span class="symbol">:</span>&nbsp;<a href="../-plugin-context/index.html"><span class="identifier">PluginContext</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">CorePlugin</span></a></code></td>
 </tr>
 </tbody>
 </table>

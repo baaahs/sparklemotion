@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ObjectSerializer - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.plugin</a>&nbsp;/&nbsp;<a href="./index.html">ObjectSerializer</a><br/>
+<br/>
+<h1>ObjectSerializer</h1>
+<code><span class="keyword">class </span><span class="identifier">ObjectSerializer</span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">KSerializer</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">ObjectSerializer</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.ObjectSerializer$<init>(kotlin.String, baaahs.plugin.ObjectSerializer.T)/serialName">serialName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.ObjectSerializer$<init>(kotlin.String, baaahs.plugin.ObjectSerializer.T)/objectInstance">objectInstance</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="descriptor.html">descriptor</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">descriptor</span><span class="symbol">: </span><span class="identifier">SerialDescriptor</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="deserialize.html">deserialize</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">deserialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.ObjectSerializer$deserialize(kotlinx.serialization.encoding.Decoder)/decoder">decoder</span><span class="symbol">:</span>&nbsp;<span class="identifier">Decoder</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="serialize.html">serialize</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">serialize</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.ObjectSerializer$serialize(kotlinx.serialization.encoding.Encoder, baaahs.plugin.ObjectSerializer.T)/encoder">encoder</span><span class="symbol">:</span>&nbsp;<span class="identifier">Encoder</span><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.ObjectSerializer$serialize(kotlinx.serialization.encoding.Encoder, baaahs.plugin.ObjectSerializer.T)/value">value</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

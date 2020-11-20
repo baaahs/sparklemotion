@@ -1,0 +1,131 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>BeatLinkPlugin - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.plugin.beatlink</a>&nbsp;/&nbsp;<a href="./index.html">BeatLinkPlugin</a><br/>
+<br/>
+<h1>BeatLinkPlugin</h1>
+<code><span class="keyword">class </span><span class="identifier">BeatLinkPlugin</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.plugin/-plugin/index.html"><span class="identifier">Plugin</span></a></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-beat-link-data-source/index.html">BeatLinkDataSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">BeatLinkDataSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-builder/index.html">Builder</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">Builder</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.plugin/-plugin-builder/index.html"><span class="identifier">PluginBuilder</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="package-name.html">packageName</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">packageName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="title.html">title</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="find-data-source.html">findDataSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findDataSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.beatlink.BeatLinkPlugin$findDataSource(kotlin.String, baaahs.gl.shader.InputPort)/resourceName">resourceName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.beatlink.BeatLinkPlugin$findDataSource(kotlin.String, baaahs.gl.shader.InputPort)/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-add-control-menu-items.html">getAddControlMenuItems</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getAddControlMenuItems</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-add-control-menu-item/index.html"><span class="identifier">AddControlMenuItem</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-control-serializers.html">getControlSerializers</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getControlSerializers</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.plugin/-serializer-registrar/index.html"><span class="identifier">SerializerRegistrar</span></a><span class="symbol">&lt;</span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-data-source-serializers.html">getDataSourceSerializers</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getDataSourceSerializers</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.plugin/-serializer-registrar/index.html"><span class="identifier">SerializerRegistrar</span></a><span class="symbol">&lt;</span><span class="identifier">BeatLinkDataSource</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="resolve-content-type.html">resolveContentType</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">resolveContentType</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.beatlink.BeatLinkPlugin$resolveContentType(kotlin.String)/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="resolve-data-source.html">resolveDataSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">resolveDataSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.beatlink.BeatLinkPlugin$resolveDataSource(baaahs.gl.shader.InputPort)/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="suggest-content-types.html">suggestContentTypes</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">suggestContentTypes</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.beatlink.BeatLinkPlugin$suggestContentTypes(baaahs.gl.shader.InputPort)/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="suggest-data-sources.html">suggestDataSources</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">suggestDataSources</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.beatlink.BeatLinkPlugin$suggestDataSources(baaahs.gl.shader.InputPort, kotlin.collections.Set((baaahs.gl.patch.ContentType)))/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.beatlink.BeatLinkPlugin$suggestDataSources(baaahs.gl.shader.InputPort, kotlin.collections.Set((baaahs.gl.patch.ContentType)))/suggestedContentTypes">suggestedContentTypes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.app.ui.editor/-port-link-option/index.html"><span class="identifier">PortLinkOption</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="beat-data-content-type.html">beatDataContentType</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">beatDataContentType</span><span class="symbol">: </span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="id.html">id</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

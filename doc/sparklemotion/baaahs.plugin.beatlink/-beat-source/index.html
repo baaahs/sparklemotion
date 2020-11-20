@@ -1,0 +1,62 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>BeatSource - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.plugin.beatlink</a>&nbsp;/&nbsp;<a href="./index.html">BeatSource</a><br/>
+<br/>
+<h1>BeatSource</h1>
+<code><span class="keyword">interface </span><span class="identifier">BeatSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-i-observable/index.html"><span class="identifier">IObservable</span></a></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-none/index.html">None</a></h4>
+</td>
+<td>
+<code><span class="keyword">object </span><span class="identifier">None</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-observable/index.html"><span class="identifier">Observable</span></a><span class="symbol">, </span><a href="./index.html"><span class="identifier">BeatSource</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="get-beat-data.html">getBeatData</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getBeatData</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-beat-data/index.html"><span class="identifier">BeatData</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Extension Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../../baaahs.ui/add-observer.html">addObserver</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-i-observable/index.html"><span class="identifier">IObservable</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">addObserver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Boolean, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/fireImmediately">fireImmediately</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Boolean, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.ui/-removable-observer/index.html"><span class="identifier">RemovableObserver</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-beat-link-beat-source/index.html">BeatLinkBeatSource</a></h4>
+</td>
+<td>
+<p>Listens to all connected CDJs' beat and tempo updates.</p>
+<code><span class="keyword">class </span><span class="identifier">BeatLinkBeatSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-observable/index.html"><span class="identifier">Observable</span></a><span class="symbol">, </span><a href="./index.html"><span class="identifier">BeatSource</span></a><span class="symbol">, </span><span class="identifier">BeatListener</span><span class="symbol">, </span><span class="identifier">OnAirListener</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
