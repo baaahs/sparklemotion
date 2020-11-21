@@ -22,6 +22,8 @@ import react.dom.i
 import react.dom.pre
 
 val GeneratedGlslPalette = xComponent<GeneratedGlslPaletteProps>("GeneratedGlslPalette") { props ->
+    observe(props.pinky.stageManager)
+
     portal {
         Draggable {
             val randomStyleForHandle = "PinkyPanelHandle"
