@@ -42,7 +42,7 @@ class PortDiagram(val patches: List<OpenPatch>) {
 
     fun resolvePatch(shaderChannel: ShaderChannel, contentType: ContentType): LinkedPatch? {
         return Resolver().resolve(shaderChannel, contentType)
-            ?.let { LinkedPatch(it) }
+            ?.let { ProgramLinker(it).buildLinkedPatch() }
     }
 
     inner class Resolver {

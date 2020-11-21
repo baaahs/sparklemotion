@@ -13,7 +13,7 @@ import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
-import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.renderPlanFor
 import baaahs.gl.shader.PaintShader
 import baaahs.gl.testPlugins
@@ -94,7 +94,7 @@ object ModelRenderEngineSpec : Spek({
             val incomingLinks by value { mapOf("gl_FragCoord" to dataSource.link("coord")) }
             val linkedPatch by value {
                 val liveShaderInstance = LiveShaderInstance(openShader, incomingLinks, null, 0f)
-                LinkedPatch(liveShaderInstance)
+                ProgramLinker(liveShaderInstance).buildLinkedPatch()
             }
             val program by value {
                 renderEngine.compile(linkedPatch) { _, dataSource -> dataSource.createFixtureFeed() }
