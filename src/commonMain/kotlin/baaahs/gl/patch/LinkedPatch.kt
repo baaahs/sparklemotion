@@ -3,33 +3,13 @@ package baaahs.gl.patch
 import baaahs.gl.glsl.GlslCode
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.LiveShaderInstance.DataSourceLink
-import baaahs.util.Logger
 
-class LinkedPatch(val shaderInstance: LiveShaderInstance) {
-    private val components: List<Component>
-    val dataSourceLinks: Set<DataSourceLink>
+class LinkedPatch(
+    val shaderInstance: LiveShaderInstance,
+    private val components: List<Component>,
+    val dataSourceLinks: Set<DataSourceLink>,
     private var structs: Set<GlslCode.GlslStruct>
-
-    init {
-        val programBuilder = ProgramBuilder()
-        programBuilder.visit(shaderInstance)
-        components = programBuilder.calculateComponents()
-        dataSourceLinks = programBuilder.dataSourceLinks
-        structs = programBuilder.structs
-    }
-
-    class InstanceNode(
-        val programNode: ProgramNode,
-        val id: String,
-        var maxObservedDepth: Int = 0
-    ) {
-        var index: Int = -1
-
-        fun atDepth(depth: Int) {
-            if (depth > maxObservedDepth) maxObservedDepth = depth
-        }
-    }
-
+) {
     fun toGlsl(): String {
         val buf = StringBuilder()
         buf.append("#ifdef GL_ES\n")
@@ -67,9 +47,5 @@ class LinkedPatch(val shaderInstance: LiveShaderInstance) {
 
     fun toFullGlsl(glslVersion: String): String {
         return "#version ${glslVersion}\n\n${toGlsl()}\n"
-    }
-
-    companion object {
-        private val logger = Logger("OpenPatch")
     }
 }

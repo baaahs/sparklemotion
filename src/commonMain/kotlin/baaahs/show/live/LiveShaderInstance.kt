@@ -18,18 +18,18 @@ class LiveShaderInstance(
         shader.release()
     }
 
-    override fun asInstanceNode(programBuilder: ProgramBuilder): LinkedPatch.InstanceNode {
-        val shaderShortName = programBuilder.showBuilder.idFor(shader.shader)
-        return LinkedPatch.InstanceNode(this, shaderShortName)
+    override fun asLinkNode(programLinker: ProgramLinker): LinkNode {
+        val shaderShortName = programLinker.idFor(shader.shader)
+        return LinkNode(this, shaderShortName)
     }
 
-    override fun traverse(programBuilder: ProgramBuilder, depth: Int) {
-        programBuilder.visit(shader)
+    override fun traverse(programLinker: ProgramLinker, depth: Int) {
+        programLinker.visit(shader)
 
         incomingLinks.forEach { (_, link) ->
             when (link) {
-                is DataSourceLink -> programBuilder.visit(link)
-                is ShaderOutLink -> programBuilder.visit(link.shaderInstance)
+                is DataSourceLink -> programLinker.visit(link)
+                is ShaderOutLink -> programLinker.visit(link.shaderInstance)
             }
         }
     }
@@ -50,12 +50,12 @@ class LiveShaderInstance(
     data class ShaderOutLink(val shaderInstance: LiveShaderInstance) : Link
 
     data class DataSourceLink(val dataSource: DataSource, val varName: String) : Link, ProgramNode {
-        override fun asInstanceNode(programBuilder: ProgramBuilder): LinkedPatch.InstanceNode {
-            return LinkedPatch.InstanceNode(this, varName)
+        override fun asLinkNode(programLinker: ProgramLinker): LinkNode {
+            return LinkNode(this, varName)
         }
 
-        override fun traverse(programBuilder: ProgramBuilder, depth: Int) {
-            programBuilder.dataSourceLinks.add(this)
+        override fun traverse(programLinker: ProgramLinker, depth: Int) {
+            programLinker.dataSourceLinks.add(this)
         }
 
         override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
