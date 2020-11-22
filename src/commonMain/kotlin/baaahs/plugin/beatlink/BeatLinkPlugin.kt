@@ -32,10 +32,6 @@ class BeatLinkPlugin internal constructor(
     // is using object identity), and there's no overhead.
     internal val beatLinkDataSource = BeatLinkDataSource()
 
-    override fun resolveDataSource(inputPort: InputPort): DataSource {
-        return beatLinkDataSource
-    }
-
     override fun suggestContentTypes(inputPort: InputPort): Collection<ContentType> {
         val glslType = inputPort.type
         val isStream = inputPort.glslVar?.isVarying ?: false
@@ -52,45 +48,52 @@ class BeatLinkPlugin internal constructor(
         }
     }
 
-    override fun suggestDataSources(
-        inputPort: InputPort,
-        suggestedContentTypes: Set<ContentType>
-    ): List<PortLinkOption> {
-        if ((inputPort.contentType == beatDataContentType
-                    || suggestedContentTypes.contains(beatDataContentType))
-            || (inputPort.type == GlslType.Float && inputPort.glslVar?.isVarying != true)
-        ) {
-            return listOf(
-                PortLinkOption(
-                    MutableDataSourcePort(beatLinkDataSource),
-                    wasPurposeBuilt = true,
-                    isExactContentType = inputPort.contentType == beatDataContentType,
-                    isPluginSuggestion = true
-                )
-            )
-        } else {
-            return emptyList()
-        }
-    }
+    override val addControlMenuItems: List<AddControlMenuItem>
+        get() = listOf(
+            AddControlMenuItem("New BeatLink Control…", CommonIcons.BeatLinkControl) { mutableShow ->
+                MutableBeatLinkControl()
+            }
+        )
 
-    override fun findDataSource(resourceName: String, inputPort: InputPort): DataSource? {
-        TODO("Not yet implemented")
-    }
-
-    override fun getAddControlMenuItems(): List<AddControlMenuItem> = listOf(
-        AddControlMenuItem("New BeatLink Control…", CommonIcons.BeatLinkControl) { mutableShow ->
-            MutableBeatLinkControl()
-        }
-    )
-
-    override fun getControlSerializers() =
-        listOf(
+    override val controlSerializers
+        get() = listOf(
             classSerializer(BeatLinkControl.serializer())
         )
 
-    override fun getDataSourceSerializers() =
-        listOf(
+    override val dataSourceSerializers
+        get() = listOf(
             objectSerializer("baaahs.BeatLink:BeatLink", beatLinkDataSource)
+        )
+
+    override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
+        get() = listOf(
+            object : DataSourceBuilder<BeatLinkDataSource> {
+                override val resourceName: String get() = "BeatLink"
+                override val contentType: ContentType get() = beatDataContentType
+
+                override fun suggestDataSources(
+                    inputPort: InputPort,
+                    suggestedContentTypes: Set<ContentType>
+                ): List<PortLinkOption> {
+                    if ((inputPort.contentType == beatDataContentType
+                                || suggestedContentTypes.contains(beatDataContentType))
+                        || (inputPort.type == GlslType.Float && inputPort.glslVar?.isVarying != true)
+                    ) {
+                        return listOf(
+                            PortLinkOption(
+                                MutableDataSourcePort(beatLinkDataSource),
+                                wasPurposeBuilt = true,
+                                isExactContentType = inputPort.contentType == beatDataContentType,
+                                isPluginSuggestion = true
+                            )
+                        )
+                    } else {
+                        return emptyList()
+                    }
+                }
+
+                override fun build(inputPort: InputPort): BeatLinkDataSource = beatLinkDataSource
+            }
         )
 
     @SerialName("baaahs.BeatLink:BeatLink")

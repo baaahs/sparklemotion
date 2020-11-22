@@ -2,7 +2,6 @@ package baaahs.plugin
 
 import baaahs.*
 import baaahs.app.ui.CommonIcons
-import baaahs.app.ui.editor.PortLinkOption
 import baaahs.fixtures.PixelLocationFeed
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.RadioButtonStrip
@@ -26,12 +25,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     override val packageName: String = id
     override val title: String = "SparkleMotion Core"
 
-    override fun resolveDataSource(inputPort: InputPort): DataSource {
-        val pluginRef = inputPort.pluginRef!!
-        val dataSourceBuilder = dataSourceBuildersByName[pluginRef.resourceName]
-            ?: error("unknown resource \"${pluginRef.resourceName}\"")
-        return dataSourceBuilder.build(inputPort)
-    }
+    override val dataSourceBuilders get() = CorePlugin.dataSourceBuilders
 
     override fun suggestContentTypes(inputPort: InputPort): Collection<ContentType> {
         val glslType = inputPort.type
@@ -46,51 +40,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         }
     }
 
-    private fun DataSource.appearsToBePurposeBuiltFor(inputPort: InputPort) =
-        title.camelize().toLowerCase().contains(inputPort.id.toLowerCase())
-
-    override fun suggestDataSources(
-        inputPort: InputPort,
-        suggestedContentTypes: Set<ContentType>
-    ): List<PortLinkOption> {
-        val suggestions = (setOf(inputPort.contentType) + suggestedContentTypes).map { contentType ->
-            supportedContentTypes[contentType]?.build(inputPort)
-                ?.let { dataSource ->
-                    PortLinkOption(
-                        MutableDataSourcePort(dataSource),
-                        wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
-                        isPluginSuggestion = true,
-                        isExactContentType = dataSource.getContentType() == inputPort.contentType
-                    )
-                }
-        }.filterNotNull()
-
-        return if (suggestions.isNotEmpty()) {
-            suggestions
-        } else {
-            supportedContentTypes.values.map {
-                it.suggestDataSources(inputPort).map { dataSource ->
-                    PortLinkOption(
-                        MutableDataSourcePort(dataSource),
-                        wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
-                        isPluginSuggestion = true,
-                        isExactContentType = dataSource.getContentType() == inputPort.contentType
-                    )
-                }
-            }.flatten()
-        }
-    }
-
-    override fun findDataSource(
-        resourceName: String,
-        inputPort: InputPort
-    ): DataSource? {
-        val dataSourceBuilder = dataSourceBuildersByName[resourceName]
-            ?: error("unknown plugin resource $resourceName")
-        return dataSourceBuilder.build(inputPort)
-    }
-
-    override fun getAddControlMenuItems(): List<AddControlMenuItem> = listOf(
+    override val addControlMenuItems: List<AddControlMenuItem> get() = listOf(
         AddControlMenuItem("New Button…", CommonIcons.Button) { mutableShow ->
             MutableButtonControl(ButtonControl("New Button"), mutableShow)
         },
@@ -112,16 +62,16 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         }
     )
 
-    override fun getControlSerializers() =
-        listOf(
+    override val controlSerializers
+        get() = listOf(
             classSerializer(GadgetControl.serializer()),
             classSerializer(ButtonControl.serializer()),
             classSerializer(ButtonGroupControl.serializer()),
             classSerializer(VisualizerControl.serializer())
         )
 
-    override fun getDataSourceSerializers() =
-        listOf(
+    override val dataSourceSerializers
+        get() = listOf(
             classSerializer(ResolutionDataSource.serializer()),
             classSerializer(PreviewResolutionDataSource.serializer()),
             classSerializer(TimeDataSource.serializer()),
@@ -131,7 +81,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             classSerializer(ColorPickerDataSource.serializer()),
             classSerializer(RadioButtonStripDataSource.serializer()),
             classSerializer(XyPadDataSource.serializer())
-    )
+        )
 
     /**
      * Sparkle Motion always uses a resolution of (1, 1), except for previews, which
@@ -142,6 +92,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     data class ResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<ResolutionDataSource> {
             override val resourceName: String get() = "Resolution"
+            override val contentType: ContentType get() = ContentType.Resolution
             override fun build(inputPort: InputPort): ResolutionDataSource =
                 ResolutionDataSource()
         }
@@ -169,6 +120,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<PreviewResolutionDataSource> {
             override val resourceName: String get() = "Preview Resolution"
+            override val contentType: ContentType get() = ContentType.Resolution
             override fun build(inputPort: InputPort): PreviewResolutionDataSource =
                 PreviewResolutionDataSource()
         }
@@ -208,6 +160,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     data class TimeDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<TimeDataSource> {
             override val resourceName: String get() = "Time"
+            override val contentType: ContentType get() = ContentType.Time
             override fun build(inputPort: InputPort): TimeDataSource =
                 TimeDataSource()
         }
@@ -238,6 +191,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     data class PixelCoordsTextureDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<PixelCoordsTextureDataSource> {
             override val resourceName: String get() = "PixelCoords"
+            override val contentType: ContentType get() = ContentType.PixelCoordinatesTexture
+
             override fun build(inputPort: InputPort): PixelCoordsTextureDataSource =
                 PixelCoordsTextureDataSource()
         }
@@ -257,6 +212,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     data class ScreenUvCoordDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<ScreenUvCoordDataSource> {
             override val resourceName: String get() = "Screen U/V Coordinate"
+            override val contentType: ContentType get() = ContentType.UvCoordinateStream
             override fun build(inputPort: InputPort): ScreenUvCoordDataSource =
                 ScreenUvCoordDataSource()
         }
@@ -294,6 +250,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<ModelInfoDataSource> {
             override val resourceName: String get() = "Model Info"
+            override val contentType: ContentType get() = ContentType.ModelInfo
             private val modelInfoType = ContentType.ModelInfo.glslType
 
             // TODO: dataType should be something like "{vec3,vec3}" probably.
@@ -393,6 +350,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     ) : GadgetDataSource<Slider> {
         companion object : DataSourceBuilder<SliderDataSource> {
             override val resourceName: String get() = "Slider"
+            override val contentType: ContentType get() = ContentType.Float
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Float)
@@ -443,6 +401,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     ) : DataSource {
         companion object : DataSourceBuilder<XyPadDataSource> {
             override val resourceName: String get() = "XyPad"
+            override val contentType: ContentType get() = ContentType.XyCoordinate
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Vec2)
@@ -489,6 +448,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     ) : GadgetDataSource<ColorPicker> {
         companion object : DataSourceBuilder<ColorPickerDataSource> {
             override val resourceName: String get() = "ColorPicker"
+            override val contentType: ContentType get() = ContentType.Color
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Vec4)
@@ -531,6 +491,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     ) : GadgetDataSource<RadioButtonStrip> {
         companion object : DataSourceBuilder<RadioButtonStripDataSource> {
             override val resourceName: String get() = "Radio Button Strip"
+            override val contentType: ContentType get() = ContentType.Int
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Int)
@@ -572,6 +533,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     data class ImageDataSource(val imageTitle: String) : DataSource {
         companion object : DataSourceBuilder<ImageDataSource> {
             override val resourceName: String get() = "Image"
+            override val contentType: ContentType get() = ContentType.ColorStream
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Sampler2D)
 
@@ -606,22 +568,16 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         val contentTypesByGlslType =
             ContentType.coreTypes.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })
 
-        val supportedContentTypes = mapOf(
-            ContentType.PixelCoordinatesTexture to PixelCoordsTextureDataSource,
-//            ContentType.UvCoordinateStream to ScreenUvCoordDataSource,
-            ContentType.ModelInfo to ModelInfoDataSource,
-//            UvCoordinate,
-            ContentType.Mouse to XyPadDataSource,
-//            XyzCoordinate,
-            ContentType.Color to ColorPickerDataSource,
-            ContentType.Time to TimeDataSource,
-            ContentType.Resolution to ResolutionDataSource,
-            ContentType.PreviewResolution to PreviewResolutionDataSource,
-            ContentType.Float to SliderDataSource
-//            Int,
-//            Unknown
+        private val dataSourceBuilders = listOf(
+            PixelCoordsTextureDataSource,
+            ModelInfoDataSource,
+            XyPadDataSource,
+            ColorPickerDataSource,
+            TimeDataSource,
+            ResolutionDataSource,
+            PreviewResolutionDataSource,
+            SliderDataSource
         )
-        val dataSourceBuildersByName = supportedContentTypes.values.associateBy { it.resourceName }
 
         private val logger = Logger("CorePlugin")
     }

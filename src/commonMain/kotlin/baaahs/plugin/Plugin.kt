@@ -1,11 +1,11 @@
 package baaahs.plugin
 
-import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.show.AddControlMenuItem
 import baaahs.show.Control
 import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
 import baaahs.util.Clock
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -21,26 +21,14 @@ interface Plugin {
     val packageName: String
     val title: String
 
-    fun resolveDataSource(inputPort: InputPort): DataSource
-
-    fun suggestDataSources(
-        inputPort: InputPort,
-        suggestedContentTypes: Set<ContentType>
-    ): List<PortLinkOption>
-
     fun resolveContentType(type: String): ContentType?
 
     fun suggestContentTypes(inputPort: InputPort): Collection<ContentType>
 
-    fun findDataSource(
-        resourceName: String,
-        inputPort: InputPort
-    ): DataSource?
-
-    fun getAddControlMenuItems(): List<AddControlMenuItem>
-
-    fun getControlSerializers(): List<SerializerRegistrar<out Control>>
-    fun getDataSourceSerializers(): List<SerializerRegistrar<out DataSource>>
+    val addControlMenuItems: List<AddControlMenuItem>
+    val controlSerializers: List<SerializerRegistrar<out Control>>
+    val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
+    val dataSourceSerializers: List<SerializerRegistrar<out DataSource>>
 }
 
 class SerializerRegistrar<T : Any>(val klass: KClass<T>, val serializer: KSerializer<T>) {

@@ -32,11 +32,12 @@ class PortLinkOption(
     val priority: Int get() =
         pack(
             isPluginRef,
-            wasPurposeBuilt,
+            wasPurposeBuilt && isExactContentType,
             isShaderChannel,
             isLocalShaderOut,
             isPluginSuggestion,
             isExactContentType,
+            wasPurposeBuilt,
             isDefaultBinding
         )
 
