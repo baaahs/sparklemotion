@@ -1,7 +1,6 @@
 package baaahs.plugin
 
 import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.InputPort
 import baaahs.show.AddControlMenuItem
 import baaahs.show.Control
 import baaahs.show.DataSource
@@ -23,9 +22,8 @@ interface Plugin {
 
     fun resolveContentType(type: String): ContentType?
 
-    fun suggestContentTypes(inputPort: InputPort): Collection<ContentType>
-
     val addControlMenuItems: List<AddControlMenuItem>
+    val contentTypes: List<ContentType>
     val controlSerializers: List<SerializerRegistrar<out Control>>
     val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
     val dataSourceSerializers: List<SerializerRegistrar<out DataSource>>

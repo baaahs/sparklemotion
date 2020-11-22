@@ -32,15 +32,6 @@ class BeatLinkPlugin internal constructor(
     // is using object identity), and there's no overhead.
     internal val beatLinkDataSource = BeatLinkDataSource()
 
-    override fun suggestContentTypes(inputPort: InputPort): Collection<ContentType> {
-        val glslType = inputPort.type
-        val isStream = inputPort.glslVar?.isVarying ?: false
-        return if (glslType == GlslType.Float && !isStream)
-            listOf(beatDataContentType)
-        else
-            emptyList()
-    }
-
     override fun resolveContentType(type: String): ContentType? {
         return when (type) {
             "beat-link" -> beatDataContentType
@@ -54,6 +45,8 @@ class BeatLinkPlugin internal constructor(
                 MutableBeatLinkControl()
             }
         )
+    override val contentTypes: List<ContentType>
+        get() = listOf(beatDataContentType)
 
     override val controlSerializers
         get() = listOf(
@@ -121,7 +114,7 @@ class BeatLinkPlugin internal constructor(
 
     companion object {
         val id = "baaahs.BeatLink"
-        val beatDataContentType = ContentType("Beat Link", GlslType.Float)
+        val beatDataContentType = ContentType("beat-link", "Beat Link", GlslType.Float)
     }
 
     class Builder(internal val beatSource: BeatSource) : PluginBuilder {

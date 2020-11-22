@@ -10,6 +10,10 @@ import baaahs.util.Time
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
+import ch.tutteli.atrium.creating.Expect
+import ch.tutteli.atrium.logic._logicAppend
+import ch.tutteli.atrium.logic.notToBe
+import ch.tutteli.atrium.logic.toBe
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import org.spekframework.spek2.dsl.GroupBody
@@ -17,6 +21,8 @@ import org.spekframework.spek2.dsl.Skip
 import org.spekframework.spek2.meta.*
 import org.spekframework.spek2.style.specification.Suite
 import org.spekframework.spek2.style.specification.describe
+import kotlin.reflect.KFunction
+import kotlin.reflect.KProperty
 import kotlin.test.assertEquals
 
 @Suppress("UNCHECKED_CAST")
@@ -85,6 +91,18 @@ inline fun <reified T> GroupBody.describe(skip: Skip = Skip.No, noinline body: S
     describe(T::class.toString(), skip, body)
 }
 
+@Synonym(SynonymType.GROUP)
+@Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
+fun GroupBody.describe(fn: KFunction<*>, skip: Skip = Skip.No, body: Suite.() -> Unit) {
+    describe(fn.toString(), skip, body)
+}
+
+@Synonym(SynonymType.GROUP)
+@Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
+fun GroupBody.describe(prop: KProperty<*>, skip: Skip = Skip.No, body: Suite.() -> Unit) {
+    describe(prop.toString(), skip, body)
+}
+
 fun expectEmptySet(block: () -> Set<*>) {
     val collection = block()
     assertEquals(0, collection.size, "Expected 0 items but have: $collection")
@@ -99,3 +117,6 @@ fun expectEmptyMap(block: () -> Map<*, *>) {
     val collection = block()
     assertEquals(0, collection.size, "Expected 0 items but have: ${collection.keys}")
 }
+
+fun <T> Expect<T>.toEqual(expected: T): Expect<T> = _logicAppend { toBe(expected) }
+fun <T> Expect<T>.toNotEqual(expected: T): Expect<T> = _logicAppend { notToBe(expected) }
