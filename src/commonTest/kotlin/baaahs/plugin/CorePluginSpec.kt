@@ -13,7 +13,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
-object CorePluginSpek : Spek({
+object CorePluginSpec : Spek({
     describe<CorePlugin.TimeDataSource> {
         val clock by value { FakeClock(0.0) }
         val dataSource by value { CorePlugin.TimeDataSource() }

@@ -36,10 +36,10 @@ object FixtureManagerSpec : Spek({
         val fixtureManager by value { FixtureManager(renderManager, renderTargets) } // Maintain stable fixture order for test.
 
         context("when fixtures of multiple types have been added") {
-            val fogginess by value { ContentType("Fogginess", GlslType.Float) }
+            val fogginess by value { ContentType("fogginess", "Fogginess", GlslType.Float) }
             val fogMachineDevice by value { DeviceTypeForTest(id = "fogMachine", resultContentType = fogginess) }
 
-            val deafeningness by value { ContentType("Deafeningness", GlslType.Float) }
+            val deafeningness by value { ContentType("deafeningness", "Deafeningness", GlslType.Float) }
             val vuzuvelaDevice by value { DeviceTypeForTest(id = "vuzuvela", resultContentType = deafeningness) }
 
             val fogMachine1 by value { fakeFixture(1, FakeModelEntity("fog1", fogMachineDevice)) }

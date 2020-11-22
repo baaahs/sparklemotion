@@ -25,13 +25,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     override val packageName: String = id
     override val title: String = "SparkleMotion Core"
 
+    override val contentTypes: List<ContentType> get() = ContentType.coreTypes
     override val dataSourceBuilders get() = CorePlugin.dataSourceBuilders
-
-    override fun suggestContentTypes(inputPort: InputPort): Collection<ContentType> {
-        val glslType = inputPort.type
-        val isStream = inputPort.glslVar?.isVarying ?: false
-        return contentTypesByGlslType[glslType to isStream] ?: emptyList()
-    }
 
     override fun resolveContentType(type: String): ContentType? {
         return when (type) {
@@ -564,9 +559,6 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val id = "baaahs.Core"
 
         override fun build(pluginContext: PluginContext) = CorePlugin(pluginContext)
-
-        val contentTypesByGlslType =
-            ContentType.coreTypes.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })
 
         private val dataSourceBuilders = listOf(
             PixelCoordsTextureDataSource,

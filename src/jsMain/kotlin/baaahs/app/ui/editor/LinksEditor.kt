@@ -43,7 +43,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                     tdCell {
                         b { +inputPort.title }
                         br {}
-                        code { +"(${inputPort.contentType?.description ?: inputPort.type.glslLiteral})" }
+                        code { +"(${inputPort.contentType?.title ?: inputPort.type.glslLiteral})" }
                     }
 
                     tdCell {

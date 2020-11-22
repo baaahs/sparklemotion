@@ -9,7 +9,6 @@ import baaahs.gl.shader.InputPort
 import baaahs.show.*
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.util.Clock
-import baaahs.util.Logger
 import baaahs.util.Time
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -64,6 +63,8 @@ class Plugins private constructor(
 
     val addControlMenuItems: List<AddControlMenuItem> = plugins.flatMap { it.addControlMenuItems }
 
+    private val contentTypes = ContentTypes()
+
     private val controlSerialModule = SerializersModule {
         registerSerializers { controlSerializers }
     }
@@ -72,7 +73,7 @@ class Plugins private constructor(
         registerSerializers { dataSourceSerializers }
     }
 
-    private val dataSourceBuilders = DataSourceBuilders(plugins)
+    private val dataSourceBuilders = DataSourceBuilders()
 
     private inline fun <reified T : Any> SerializersModuleBuilder.registerSerializers(
         getSerializersFn: Plugin.() -> List<SerializerRegistrar<out T>>
@@ -108,23 +109,13 @@ class Plugins private constructor(
     }
 
     fun resolveContentType(name: String): ContentType? {
-        val pluginRef = PluginRef.from(name)
-        return try {
-            if (pluginRef.pluginIdNotSpecified) {
-                plugins
-                    .mapNotNull { it.resolveContentType(pluginRef.resourceName) }
-                    .firstOrNull()
-            } else {
-                findPlugin(pluginRef).resolveContentType(pluginRef.resourceName)
-            }
-        } catch (e: Exception) {
-            logger.debug { "Failed to resolve content type $name: ${e.message}" }
-            null
-        }
+        return contentTypes.byId[name]
     }
 
     fun suggestContentTypes(inputPort: InputPort): Set<ContentType> {
-        return plugins.map { plugin -> plugin.suggestContentTypes(inputPort) }.flatten().toSet()
+        val glslType = inputPort.type
+        val isStream = inputPort.glslVar?.isVarying ?: false
+        return (contentTypes.byGlslType[glslType to isStream] ?: emptyList()).toSet()
     }
 
     fun resolveDataSource(inputPort: InputPort): DataSource {
@@ -189,11 +180,9 @@ class Plugins private constructor(
         private class ZeroClock : Clock {
             override fun now(): Time = 0.0
         }
-
-        private val logger = Logger("Plugins")
     }
 
-    class DataSourceBuilders(plugins: List<Plugin>) {
+    inner class DataSourceBuilders {
         private val withPlugin = plugins.flatMap { plugin -> plugin.dataSourceBuilders.map { plugin to it } }
 
         val all = withPlugin.map { it.second }
@@ -203,5 +192,11 @@ class Plugins private constructor(
         }
 
         val byContentType = all.groupBy { builder -> builder.contentType }
+    }
+
+    inner class ContentTypes {
+        val all = plugins.flatMap { it.contentTypes }.toSet()
+        val byId = all.associateBy { it.id }
+        val byGlslType = all.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })
     }
 }

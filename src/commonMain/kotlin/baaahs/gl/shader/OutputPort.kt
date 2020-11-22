@@ -6,7 +6,7 @@ import baaahs.show.ShaderOutPortRef
 
 data class OutputPort(
     val contentType: ContentType,
-    val description: String? = contentType.description,
+    val description: String? = contentType.title,
     val id: String = ShaderOutPortRef.ReturnValue,
     val dataType: GlslType = contentType.glslType
 ) {
