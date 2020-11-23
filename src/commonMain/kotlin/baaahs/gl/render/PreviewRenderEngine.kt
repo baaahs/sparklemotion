@@ -40,7 +40,7 @@ class PreviewRenderEngine(
     override fun bindResults() {
     }
 
-    override fun render() {
+    public override fun render() {
         val program = program ?: return
 
         gl.useProgram(program)
