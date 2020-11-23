@@ -75,3 +75,11 @@ fun <T> Suite.expectValue(expected: T, skip: Skip = Skip.No, actual: () -> T) {
 }
 
 fun <T> undefined(): T = throw NotImplementedError("value not given")
+
+
+// This is because atrium doesn't trigger IntelliJ's nice diff compare popup. :-(
+internal fun <T> kexpect(actual: T): ToBe<T> = ToBe(actual)
+
+internal class ToBe<T>(private val actual: T) {
+    fun toBe(expected: T) = assertEquals(expected, actual)
+}

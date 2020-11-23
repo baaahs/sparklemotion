@@ -1,11 +1,13 @@
 package baaahs.show
 
 import baaahs.ShowPlayer
+import baaahs.app.ui.editor.PortLinkOption
 import baaahs.camelize
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutableGadgetControl
 import kotlinx.serialization.Polymorphic
 
@@ -13,14 +15,32 @@ import kotlinx.serialization.Polymorphic
 interface DataSourceBuilder<T : DataSource> {
     /** The unique ID for this resource within a plugin. Should be CamelCase alphanums, like a class name. */
     val resourceName: String
-    fun suggestDataSources(inputPort: InputPort): List<T> {
+
+    val contentType: ContentType
+
+    fun suggestDataSources(
+        inputPort: InputPort,
+        suggestedContentTypes: Set<ContentType> = emptySet()
+    ): List<PortLinkOption> {
         return if (looksValid(inputPort)) {
-            listOf(build(inputPort))
+            listOf(build(inputPort)).map { dataSource ->
+                PortLinkOption(
+                    MutableDataSourcePort(dataSource),
+                    wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
+                    isPluginSuggestion = true,
+                    isExactContentType = dataSource.contentType == inputPort.contentType
+                )
+            }
         } else emptyList()
     }
+
     fun looksValid(inputPort: InputPort): Boolean = false
+
     fun build(inputPort: InputPort): T
 }
+
+internal fun DataSource.appearsToBePurposeBuiltFor(inputPort: InputPort) =
+    title.camelize().toLowerCase().contains(inputPort.id.toLowerCase())
 
 @Polymorphic
 interface DataSource {
@@ -31,13 +51,10 @@ interface DataSource {
     // TODO: kill this
     fun isImplicit(): Boolean = false
     fun getType(): GlslType
-    fun getContentType(): ContentType
+    val contentType: ContentType
     fun getVarName(id: String): String = "in_$id"
 
     fun createFeed(showPlayer: ShowPlayer, id: String): Feed
-
-    /** Yuck. Merge this with [createFeed]. */
-    fun createFixtureFeed(): Feed = error("unsupported")
 
     fun suggestId(): String = title.camelize()
 

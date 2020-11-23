@@ -5,13 +5,11 @@ import baaahs.fixtures.DeviceTypeRenderPlan
 import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
 import baaahs.gl.data.PerPixelEngineFeed
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedPatch
 import baaahs.model.ModelInfo
-import baaahs.show.DataSource
 import baaahs.util.Logger
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
@@ -32,15 +30,6 @@ class ModelRenderEngine(
 
     private val renderTargets: MutableList<RenderTarget> = mutableListOf()
     private var renderPlan: DeviceTypeRenderPlan? = null
-
-    // TODO: These should probably be opened elsewhere.
-    private val fixtureFeeds = gl.runInContext {
-        deviceType.dataSources
-            .associateWith { dataSource ->
-                dataSource.createFixtureFeed()
-                    .also { cachedEngineFeed(it) }
-            }
-    }
 
     private val resultBuffers = gl.runInContext {
         deviceType.resultParams
@@ -86,10 +75,6 @@ class ModelRenderEngine(
     override fun compile(linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
         logger.info { "Compiling ${linkedPatch.shaderInstance.shader.title} on ${deviceType::class.simpleName}"}
         return super.compile(linkedPatch, feedResolver)
-    }
-
-    override fun resolve(id: String, dataSource: DataSource): Feed? {
-        return fixtureFeeds[dataSource]
     }
 
     override fun onBind(engineFeed: EngineFeed) {
@@ -158,7 +143,6 @@ class ModelRenderEngine(
 
     override fun onRelease() {
         arrangement.release()
-        fixtureFeeds.values.forEach { it.release() }
         resultBuffers.forEach { it.release() }
         frameBuffer.release()
     }

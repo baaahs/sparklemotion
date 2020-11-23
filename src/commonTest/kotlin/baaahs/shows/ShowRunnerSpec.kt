@@ -134,7 +134,7 @@ object ShowRunnerSpec : Spek({
                 }
 
                 it("sets the uniform from the gadget's initial value") {
-                    val colorUniform = fakeProgram.getUniform("in_colorColorPicker")
+                    val colorUniform = fakeProgram.getUniform<List<Float>>("in_colorColorPicker")
                     expect(colorUniform).toBe(arrayListOf(1f, 1f, 1f, 1f))
                 }
 
@@ -142,7 +142,7 @@ object ShowRunnerSpec : Spek({
                     colorPickerGadget.color = Color.YELLOW
 
                     stageManager.renderAndSendNextFrame()
-                    val colorUniform = fakeProgram.getUniform("in_colorColorPicker")
+                    val colorUniform = fakeProgram.getUniform<List<Float>>("in_colorColorPicker")
                     expect(colorUniform).toBe(arrayListOf(1f, 1f, 0f, 1f))
                 }
             }

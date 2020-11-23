@@ -62,19 +62,16 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
     override val pluginPackage: String get() = CorePlugin.id
     override val title: String get() = "Pixel Location"
     override fun getType(): GlslType = GlslType.Vec3
-    override fun getContentType(): ContentType = ContentType.XyzCoordinate
+    override val contentType: ContentType
+        get() = ContentType.XyzCoordinate
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-        return createFixtureFeed()
-    }
-
-    override fun createFixtureFeed(): Feed {
-        return PixelLocationFeed()
+        return PixelLocationFeed(getVarName(id))
     }
 }
 
 class PixelLocationFeed(
-    private val id: String = "fixture_pixelCoordsTexture",
+    private val id: String,
     private val refCounter: RefCounter = RefCounter()
 ) : Feed, RefCounted by refCounter {
     override fun bind(gl: GlContext): EngineFeed = EngineFeed(gl)
