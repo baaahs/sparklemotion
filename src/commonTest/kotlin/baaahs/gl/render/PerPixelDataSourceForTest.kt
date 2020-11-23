@@ -17,7 +17,8 @@ class PerPixelDataSourceForTest(val updateMode: UpdateMode) : DataSource {
     override val pluginPackage: String get() = error("not implemented")
     override val title: String get() = "Per Pixel Data Source For Test"
     override fun getType(): GlslType = GlslType.Float
-    override fun getContentType(): ContentType = error("not implemented")
+    override val contentType: ContentType
+        get() = error("not implemented")
 
     val feeds = mutableListOf<TestFeed>()
     val engineFeeds = mutableListOf<TestEngineFeed>()

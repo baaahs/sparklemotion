@@ -58,7 +58,7 @@ abstract class RenderEngine(val gl: GlContext) {
     }
 
     /** This is run from within a GL context. */
-    abstract fun render()
+    protected abstract fun render()
 
     /** This is run from within a GL context. */
     abstract fun afterFrame()

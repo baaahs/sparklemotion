@@ -75,6 +75,8 @@ class Plugins private constructor(
 
     private val dataSourceBuilders = DataSourceBuilders()
 
+    private val deviceTypes = DeviceTypes()
+
     private inline fun <reified T : Any> SerializersModuleBuilder.registerSerializers(
         getSerializersFn: Plugin.() -> List<SerializerRegistrar<out T>>
     ) {
@@ -103,11 +105,6 @@ class Plugins private constructor(
 
     inline fun <reified T : Plugin> findPlugin(): T = findPlugin(T::class)
 
-    private fun findPlugin(pluginRef: PluginRef): Plugin {
-        return byPackage[pluginRef.pluginId]
-            ?: error("unknown plugin \"${pluginRef.pluginId}\"")
-    }
-
     fun resolveContentType(name: String): ContentType? {
         return contentTypes.byId[name]
     }
@@ -128,18 +125,19 @@ class Plugins private constructor(
         inputPort: InputPort,
         suggestedContentTypes: Set<ContentType> = emptySet()
     ): List<PortLinkOption> {
-        val suggestions = (setOf(inputPort.contentType) + suggestedContentTypes).flatMap { contentType ->
-            dataSourceBuilders.byContentType[contentType]?.map {
-                it.build(inputPort)
-                    .let { dataSource ->
-                        PortLinkOption(
-                            MutableDataSourcePort(dataSource),
-                            wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
-                            isPluginSuggestion = true,
-                            isExactContentType = dataSource.getContentType() == inputPort.contentType
-                        )
-                    }
-            } ?: emptyList()
+        val suggestions = (setOfNotNull(inputPort.contentType) + suggestedContentTypes).flatMap { contentType ->
+            val dataSourceCandidates =
+                dataSourceBuilders.buildForContentType(contentType, inputPort) +
+                        deviceTypes.dataSourcesFor(contentType)
+
+            dataSourceCandidates.map { dataSource ->
+                PortLinkOption(
+                    MutableDataSourcePort(dataSource),
+                    wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
+                    isPluginSuggestion = true,
+                    isExactContentType = dataSource.contentType == inputPort.contentType
+                )
+            }
         }
 
         return if (suggestions.isNotEmpty()) {
@@ -182,6 +180,12 @@ class Plugins private constructor(
         }
     }
 
+    inner class ContentTypes {
+        val all = plugins.flatMap { it.contentTypes }.toSet()
+        val byId = all.associateBy { it.id }
+        val byGlslType = all.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })
+    }
+
     inner class DataSourceBuilders {
         private val withPlugin = plugins.flatMap { plugin -> plugin.dataSourceBuilders.map { plugin to it } }
 
@@ -192,11 +196,24 @@ class Plugins private constructor(
         }
 
         val byContentType = all.groupBy { builder -> builder.contentType }
+
+        fun buildForContentType(
+            contentType: ContentType?,
+            inputPort: InputPort
+        ) = (
+                dataSourceBuilders.byContentType[contentType]
+                    ?.map { it.build(inputPort) }
+                    ?: emptyList()
+                )
     }
 
-    inner class ContentTypes {
-        val all = plugins.flatMap { it.contentTypes }.toSet()
-        val byId = all.associateBy { it.id }
-        val byGlslType = all.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })
+    inner class DeviceTypes {
+        val all = plugins.flatMap { it.deviceTypes }
+
+        fun dataSourcesFor(contentType: ContentType): List<DataSource> {
+            return all.flatMap { deviceType ->
+                deviceType.dataSources.filter { dataSource -> dataSource.contentType == contentType }
+            }
+        }
     }
 }

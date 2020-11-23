@@ -18,6 +18,8 @@ class FakeGlContext(private val kgl: FakeKgl = FakeKgl()) : GlContext(kgl, "1234
         return kgl.getTextureConfig(textureUnit)
             ?: error("no texture bound on unit $textureUnit")
     }
+
+    fun findProgram(id: Program) = kgl.programs[id as Int]
 }
 
 // Until mockk works on JS:
@@ -49,8 +51,9 @@ class FakeKgl : Kgl {
             })
         }
 
-        fun getUniform(name: String): Any? {
-            return uniforms[uniformIdsByName.getBang(name, "uniform")]
+        @Suppress("UNCHECKED_CAST")
+        fun <T> getUniform(name: String): T {
+            return uniforms[uniformIdsByName.getBang(name, "uniform")] as T
         }
 
         fun uniformNames() = uniformIdsByName.keys.toSet()

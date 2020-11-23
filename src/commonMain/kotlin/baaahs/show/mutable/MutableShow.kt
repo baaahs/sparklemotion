@@ -309,7 +309,7 @@ class MutablePatch {
     }
 
     /** Build a [LinkedPatch] independent of an [baaahs.show.live.OpenShow]. */
-    fun openForPreview(autoWirer: AutoWirer): LinkedPatch? {
+    fun openForPreview(autoWirer: AutoWirer, resultContentType: ContentType = ContentType.ColorStream): LinkedPatch? {
         val showBuilder = ShowBuilder()
         build(showBuilder)
 
@@ -323,7 +323,7 @@ class MutablePatch {
         val openPatch = OpenPatch(resolvedShaderInstances.values.toList(), surfaces)
 
         val portDiagram = PatchResolver.buildPortDiagram(openPatch)
-        return portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)
+        return portDiagram.resolvePatch(ShaderChannel.Main, resultContentType)
     }
 
     fun addShaderInstance(mutableShaderInstance: MutableShaderInstance): MutablePatch {

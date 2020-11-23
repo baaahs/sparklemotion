@@ -1,10 +1,18 @@
 package baaahs
 
-import baaahs.fixtures.DeviceType
-import baaahs.fixtures.PixelArrayDevice
+import baaahs.fixtures.*
 import baaahs.geom.Vector3F
+import baaahs.gl.glsl.GlslAnalyzer
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.patch.ProgramLinker
+import baaahs.gl.render.ModelRenderEngine
+import baaahs.gl.render.RenderTarget
+import baaahs.gl.testPlugins
 import baaahs.model.Model
 import baaahs.model.MovingHead
+import baaahs.show.live.LiveShaderInstance
+import baaahs.shows.FakeGlContext
+import baaahs.shows.FakeShowPlayer
 import baaahs.util.Clock
 import baaahs.util.Time
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -82,6 +90,40 @@ open class ModelForTest(private val entities: List<Entity>) : Model() {
         get() = Vector3F(1f, 1f, 1f)
 }
 
+class TestRenderContext(
+    vararg val modelEntities: Model.Entity = arrayOf(FakeModelEntity("device1"))
+) {
+    val model = fakeModel(modelEntities.toList())
+    val deviceType = modelEntities.map { it.deviceType }.distinct().only("device type")
+    val gl = FakeGlContext()
+    val renderEngine = ModelRenderEngine(gl, model, deviceType, minTextureWidth = 1)
+    val glslAnalyzer = GlslAnalyzer(testPlugins())
+    val showPlayer = FakeShowPlayer()
+    val renderTargets = mutableListOf<RenderTarget>()
+
+    fun createProgram(shaderSrc: String, incomingLinks: Map<String, LiveShaderInstance.DataSourceLink>): GlslProgram {
+        val openShader = glslAnalyzer.openShader(shaderSrc)
+        val liveShaderInstance = LiveShaderInstance(openShader, incomingLinks, null, 0f)
+        val linkedPatch = ProgramLinker(liveShaderInstance).buildLinkedPatch()
+        return renderEngine.compile(linkedPatch) { id, dataSource -> dataSource.createFeed(showPlayer, id) }
+    }
+
+    fun addFixtures() {
+        renderTargets.addAll(
+            modelEntities.map { entity ->
+                renderEngine.addFixture(Fixture(entity, 1, emptyList(), deviceType, transport = NullTransport))
+            }
+        )
+    }
+
+    fun applyProgram(program: GlslProgram) {
+        renderEngine.setRenderPlan(
+            DeviceTypeRenderPlan(
+                listOf(ProgramRenderPlan(program, renderTargets))
+            )
+        )
+    }
+}
 
 expect fun assumeTrue(boolean: Boolean)
 
