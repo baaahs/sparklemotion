@@ -1,0 +1,51 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ProgramNode - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gl.patch</a>&nbsp;/&nbsp;<a href="./index.html">ProgramNode</a><br/>
+<br/>
+<h1>ProgramNode</h1>
+<code><span class="keyword">interface </span><span class="identifier">ProgramNode</span></code>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="as-link-node.html">asLinkNode</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">asLinkNode</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.ProgramNode$asLinkNode(baaahs.gl.patch.ProgramLinker)/programLinker">programLinker</span><span class="symbol">:</span>&nbsp;<a href="../-program-linker/index.html"><span class="identifier">ProgramLinker</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-link-node/index.html"><span class="identifier">LinkNode</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="build-component.html">buildComponent</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">buildComponent</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.ProgramNode$buildComponent(kotlin.String, kotlin.Int, kotlin.Function1((baaahs.gl.patch.ProgramNode, baaahs.gl.patch.Component)))/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.ProgramNode$buildComponent(kotlin.String, kotlin.Int, kotlin.Function1((baaahs.gl.patch.ProgramNode, baaahs.gl.patch.Component)))/index">index</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.ProgramNode$buildComponent(kotlin.String, kotlin.Int, kotlin.Function1((baaahs.gl.patch.ProgramNode, baaahs.gl.patch.Component)))/findUpstreamComponent">findUpstreamComponent</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="./index.html"><span class="identifier">ProgramNode</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="../-component/index.html"><span class="identifier">Component</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-component/index.html"><span class="identifier">Component</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="traverse.html">traverse</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">traverse</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.ProgramNode$traverse(baaahs.gl.patch.ProgramLinker, kotlin.Int)/programLinker">programLinker</span><span class="symbol">:</span>&nbsp;<a href="../-program-linker/index.html"><span class="identifier">ProgramLinker</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.ProgramNode$traverse(baaahs.gl.patch.ProgramLinker, kotlin.Int)/depth">depth</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../../baaahs.show.live/-live-shader-instance/index.html">LiveShaderInstance</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">LiveShaderInstance</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">ProgramNode</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
