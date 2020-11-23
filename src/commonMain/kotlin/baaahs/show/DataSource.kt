@@ -56,9 +56,6 @@ interface DataSource {
 
     fun createFeed(showPlayer: ShowPlayer, id: String): Feed
 
-    /** Yuck. Merge this with [createFeed]. */
-    fun createFixtureFeed(): Feed = error("unsupported")
-
     fun suggestId(): String = title.camelize()
 
     fun buildControl(): MutableGadgetControl? = null

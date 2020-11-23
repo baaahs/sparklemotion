@@ -26,11 +26,9 @@ class PerPixelDataSourceForTest(val updateMode: UpdateMode) : DataSource {
     var counter = 0f
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
-        error("not implemented")
+        TestFeed(id).also { feeds.add(it) }
 
-    override fun createFixtureFeed(): Feed = TestFeed().also { feeds.add(it) }
-
-    inner class TestFeed : Feed, RefCounted by RefCounter() {
+    inner class TestFeed(val id: String) : Feed, RefCounted by RefCounter() {
         var released = false
         override fun bind(gl: GlContext): EngineFeed = TestEngineFeed(gl).also { engineFeeds.add(it) }
         override fun release() = run { super.release(); released = released.truify() }
