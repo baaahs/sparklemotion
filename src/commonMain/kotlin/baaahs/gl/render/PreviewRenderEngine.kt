@@ -2,9 +2,7 @@ package baaahs.gl.render
 
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
 import baaahs.gl.glsl.GlslProgram
-import baaahs.show.DataSource
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 
@@ -33,10 +31,6 @@ class PreviewRenderEngine(
         program?.setResolution()
     }
 
-    override fun resolve(id: String, dataSource: DataSource): Feed? {
-        return null
-    }
-
     override fun onBind(engineFeed: EngineFeed) {
     }
 
@@ -46,7 +40,7 @@ class PreviewRenderEngine(
     override fun bindResults() {
     }
 
-    override fun render() {
+    public override fun render() {
         val program = program ?: return
 
         gl.useProgram(program)

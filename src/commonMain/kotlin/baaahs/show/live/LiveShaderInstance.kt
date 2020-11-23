@@ -1,7 +1,7 @@
 package baaahs.show.live
 
 import baaahs.getBang
-import baaahs.gl.patch.PortDiagram
+import baaahs.gl.patch.*
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.show.*
@@ -13,13 +13,29 @@ class LiveShaderInstance(
     val incomingLinks: Map<String, Link>,
     val shaderChannel: ShaderChannel?,
     val priority: Float
-) {
-    fun findDataSourceRefs(): List<DataSourceRef> {
-        return incomingLinks.values.filterIsInstance<DataSourceRef>()
-    }
-
+): ProgramNode {
     fun release() {
         shader.release()
+    }
+
+    override fun asLinkNode(programLinker: ProgramLinker): LinkNode {
+        val shaderShortName = programLinker.idFor(shader.shader)
+        return LinkNode(this, shaderShortName)
+    }
+
+    override fun traverse(programLinker: ProgramLinker, depth: Int) {
+        programLinker.visit(shader)
+
+        incomingLinks.forEach { (_, link) ->
+            when (link) {
+                is DataSourceLink -> programLinker.visit(link)
+                is ShaderOutLink -> programLinker.visit(link.shaderInstance)
+            }
+        }
+    }
+
+    override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
+        return ShaderComponent(id, index, this, findUpstreamComponent)
     }
 
     override fun toString(): String {
@@ -32,7 +48,37 @@ class LiveShaderInstance(
     }
 
     data class ShaderOutLink(val shaderInstance: LiveShaderInstance) : Link
-    data class DataSourceLink(val dataSource: DataSource, val varName: String) : Link
+
+    data class DataSourceLink(val dataSource: DataSource, val varName: String) : Link, ProgramNode {
+        override fun asLinkNode(programLinker: ProgramLinker): LinkNode {
+            return LinkNode(this, varName)
+        }
+
+        override fun traverse(programLinker: ProgramLinker, depth: Int) {
+            programLinker.dataSourceLinks.add(this)
+        }
+
+        override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
+            return object : Component {
+                override val title: String
+                    get() = dataSource.title
+                override val outputVar: String?
+                    get() = null
+
+                override fun appendDeclarations(buf: StringBuilder) {
+                    if (!dataSource.isImplicit()) {
+                        buf.append("// Data source: ", dataSource.title, "\n")
+                        dataSource.appendDeclaration(buf, varName)
+                        buf.append("\n")
+                    }
+                }
+
+                override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {
+                }
+            }
+        }
+    }
+
     data class ShaderChannelLink(val shaderChannel: ShaderChannel) : Link {
         override fun finalResolve(
             inputPort: InputPort,

@@ -13,7 +13,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
-object CorePluginSpek : Spek({
+object CorePluginSpec : Spek({
     describe<CorePlugin.TimeDataSource> {
         val clock by value { FakeClock(0.0) }
         val dataSource by value { CorePlugin.TimeDataSource() }
@@ -34,7 +34,7 @@ object CorePluginSpek : Spek({
             gl.runInContext { programFeed.setOnProgram() }
 
             val glProgram = gl.programs.only("program")
-            expect(glProgram.getUniform("in_time")).toBe(7890.1234f)
+            expect(glProgram.getUniform<Float>("in_time")).toBe(7890.1234f)
         }
     }
 })

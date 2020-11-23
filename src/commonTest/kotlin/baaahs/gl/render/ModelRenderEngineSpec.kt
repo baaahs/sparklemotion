@@ -13,7 +13,7 @@ import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
-import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.renderPlanFor
 import baaahs.gl.shader.PaintShader
 import baaahs.gl.testPlugins
@@ -25,7 +25,7 @@ import baaahs.show.UpdateMode
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.link
 import baaahs.shows.FakeGlContext
-import baaahs.shows.FakeKgl.Companion.contents
+import baaahs.shows.FakeShowPlayer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -48,19 +48,10 @@ object ModelRenderEngineSpec : Spek({
         context("when engine has just been started") {
             beforeEachTest { renderEngine.run { /* No-op. */ } }
 
-            it("should bind EngineFeeds for each data source") {
-                expect(fixtureDataSource.feeds.size).toBe(1)
-                expect(fixtureDataSource.engineFeeds.size).toBe(1)
+            it("should have no feeds open yet") {
+                expect(fixtureDataSource.feeds.size).toBe(0)
+                expect(fixtureDataSource.engineFeeds.size).toBe(0)
                 expect(fixtureDataSource.programFeeds.size).toBe(0)
-            }
-
-            context("when the data source is per-pixel") {
-                override(dataSource) { pixelDataSource }
-
-                it("should allocate a texture to hold per-pixel data") {
-                    expect(texture.width to texture.height).toBe(1 to 1)
-                    expect((texture.buffer as FloatBuffer).contents()).toBe(List(1) { 0f })
-                }
             }
 
             context("when the engine is released") {
@@ -69,15 +60,6 @@ object ModelRenderEngineSpec : Spek({
                 it("should release Feeds and EngineFeeds") {
                     expect(fixtureDataSource.feeds.all { it.released }).toBe(true)
                     expect(fixtureDataSource.engineFeeds.all { it.released }).toBe(true)
-                }
-
-                context("when the data source is per-pixel") {
-                    override(dataSource) { pixelDataSource }
-
-                    it("should release the texture") {
-                        expect(texture.isDeleted).toBe(true)
-                        expect(gl.allocatedTextureUnits).isEmpty()
-                    }
                 }
             }
         }
@@ -94,10 +76,10 @@ object ModelRenderEngineSpec : Spek({
             val incomingLinks by value { mapOf("gl_FragCoord" to dataSource.link("coord")) }
             val linkedPatch by value {
                 val liveShaderInstance = LiveShaderInstance(openShader, incomingLinks, null, 0f)
-                LinkedPatch(liveShaderInstance)
+                ProgramLinker(liveShaderInstance).buildLinkedPatch()
             }
             val program by value {
-                renderEngine.compile(linkedPatch) { _, dataSource -> dataSource.createFixtureFeed() }
+                renderEngine.compile(linkedPatch) { id, dataSource -> dataSource.createFeed(FakeShowPlayer(), id) }
             }
             val initialProgram by value<Array<GlslProgram?>> { arrayOf(program) } // Array is a workaround for a bug in by value.
             val fakeGlProgram by value { gl.programs.only("program") }
@@ -144,9 +126,17 @@ object ModelRenderEngineSpec : Spek({
             context("when the engine is released") {
                 beforeEachTest { renderEngine.release() }
 
-                it("should release Feeds and EngineFeeds") {
-                    expect(fixtureDataSource.feeds.all { it.released }).toBe(true)
+                it("should release EngineFeeds") {
                     expect(fixtureDataSource.engineFeeds.all { it.released }).toBe(true)
+                }
+
+                context("when the data source is per-pixel") {
+                    override(dataSource) { pixelDataSource }
+
+                    it("should release the texture") {
+                        expect(texture.isDeleted).toBe(true)
+                        expect(gl.allocatedTextureUnits).isEmpty()
+                    }
                 }
             }
 

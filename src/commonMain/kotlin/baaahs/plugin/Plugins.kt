@@ -7,8 +7,8 @@ import baaahs.getBang
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.show.*
+import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.util.Clock
-import baaahs.util.Logger
 import baaahs.util.Time
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -61,13 +61,21 @@ class Plugins private constructor(
 
     private val byPackage: Map<String, Plugin> = plugins.associateBy { it.packageName }
 
+    val addControlMenuItems: List<AddControlMenuItem> = plugins.flatMap { it.addControlMenuItems }
+
+    private val contentTypes = ContentTypes()
+
     private val controlSerialModule = SerializersModule {
-        registerSerializers { getControlSerializers() }
+        registerSerializers { controlSerializers }
     }
 
     private val dataSourceSerialModule = SerializersModule {
-        registerSerializers { getDataSourceSerializers() }
+        registerSerializers { dataSourceSerializers }
     }
+
+    private val dataSourceBuilders = DataSourceBuilders()
+
+    private val deviceTypes = DeviceTypes()
 
     private inline fun <reified T : Any> SerializersModuleBuilder.registerSerializers(
         getSerializersFn: Plugin.() -> List<SerializerRegistrar<out T>>
@@ -90,9 +98,6 @@ class Plugins private constructor(
 
     val json = Json { serializersModule = this@Plugins.serialModule }
 
-    val addControlMenuItems: List<AddControlMenuItem>
-        get() = plugins.flatMap { it.getAddControlMenuItems() }
-
     fun <T: Plugin > findPlugin(pluginKlass: KClass<T>): T {
         @Suppress("UNCHECKED_CAST")
         return plugins.find { it::class == pluginKlass } as T
@@ -100,76 +105,49 @@ class Plugins private constructor(
 
     inline fun <reified T : Plugin> findPlugin(): T = findPlugin(T::class)
 
-    private fun findPlugin(pluginRef: PluginRef): Plugin {
-        return byPackage[pluginRef.pluginId]
-            ?: error("unknown plugin \"${pluginRef.pluginId}\"")
-    }
-
     fun resolveContentType(name: String): ContentType? {
-        val pluginRef = PluginRef.from(name)
-        return try {
-            if (pluginRef.pluginIdNotSpecified) {
-                plugins
-                    .mapNotNull { it.resolveContentType(pluginRef.resourceName) }
-                    .firstOrNull()
-            } else {
-                findPlugin(pluginRef).resolveContentType(pluginRef.resourceName)
-            }
-        } catch (e: Exception) {
-            logger.debug { "Failed to resolve content type $name: ${e.message}" }
-            null
-        }
+        return contentTypes.byId[name]
     }
 
     fun suggestContentTypes(inputPort: InputPort): Set<ContentType> {
-        return plugins.map { plugin -> plugin.suggestContentTypes(inputPort) }.flatten().toSet()
+        val glslType = inputPort.type
+        val isStream = inputPort.glslVar?.isVarying ?: false
+        return (contentTypes.byGlslType[glslType to isStream] ?: emptyList()).toSet()
     }
 
     fun resolveDataSource(inputPort: InputPort): DataSource {
-        return findPlugin(inputPort.pluginRef ?: error("no plugin specified")).resolveDataSource(inputPort)
+        val pluginRef = inputPort.pluginRef ?: error("no plugin specified")
+        val builder = dataSourceBuilders.byPluginRef[pluginRef] ?: error("unknown plugin resource $pluginRef")
+        return builder.build(inputPort)
     }
 
     fun suggestDataSources(
         inputPort: InputPort,
         suggestedContentTypes: Set<ContentType> = emptySet()
     ): List<PortLinkOption> {
-        return plugins.map { plugin ->
-            plugin.suggestDataSources(inputPort, suggestedContentTypes)
-        }.flatten()
-    }
+        val suggestions = (setOfNotNull(inputPort.contentType) + suggestedContentTypes).flatMap { contentType ->
+            val dataSourceCandidates =
+                dataSourceBuilders.buildForContentType(contentType, inputPort) +
+                        deviceTypes.dataSourcesFor(contentType)
 
-    // name would be in form:
-    //   [baaahs.Core:]resolution
-    //   [baaahs.Core:]time
-    //   [baaahs.Core:]pixelCoords
-    //   com.example.Plugin:data
-    //   baaahs.SoundAnalysis:coq
-    fun findDataSource(inputPort: InputPort): DataSource? {
-        val pluginRef = inputPort.pluginRef
-//        val (plugin, arg) = if (pluginRef != null) {
-//            pluginRef
-//        } else {
-//            PluginType()
-//        }
-//        val result = pluginId?.let { Regex("(([\\w.]+):)?(\\w+)").matchEntire(it) }
-        val plugin = byPackage[pluginRef!!.pluginId]
-
-        val dataSource = pluginRef.resourceName.let {
-            plugin!!.findDataSource(it, inputPort)
+            dataSourceCandidates.map { dataSource ->
+                PortLinkOption(
+                    MutableDataSourcePort(dataSource),
+                    wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
+                    isPluginSuggestion = true,
+                    isExactContentType = dataSource.contentType == inputPort.contentType
+                )
+            }
         }
 
-        dataSource?.let {
-//            val supportedTypes = dataSourceProvider.supportedTypes
-//            if (!supportedTypes.contains(inputPort.type)) {
-//                throw CompiledShader.LinkException(
-//                    "can't set uniform ${inputPort.type} ${inputPort.title}: expected $supportedTypes)"
-//                )
-//            }
+        return if (suggestions.isNotEmpty()) {
+            suggestions
+        } else {
+            dataSourceBuilders.all.map {
+                it.suggestDataSources(inputPort, suggestedContentTypes)
+            }.flatten()
         }
-        return dataSource
     }
-
-//    fun createDataSourceProvider(dataSourceDescription: DataSourceDescription): DataSourceProvider?
 
     private fun getPlugin(packageName: String): Plugin {
         return byPackage[packageName]
@@ -200,7 +178,42 @@ class Plugins private constructor(
         private class ZeroClock : Clock {
             override fun now(): Time = 0.0
         }
+    }
 
-        private val logger = Logger("Plugins")
+    inner class ContentTypes {
+        val all = plugins.flatMap { it.contentTypes }.toSet()
+        val byId = all.associateBy { it.id }
+        val byGlslType = all.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })
+    }
+
+    inner class DataSourceBuilders {
+        private val withPlugin = plugins.flatMap { plugin -> plugin.dataSourceBuilders.map { plugin to it } }
+
+        val all = withPlugin.map { it.second }
+
+        val byPluginRef = withPlugin.associate { (plugin, builder) ->
+            PluginRef(plugin.packageName, builder.resourceName) to builder
+        }
+
+        val byContentType = all.groupBy { builder -> builder.contentType }
+
+        fun buildForContentType(
+            contentType: ContentType?,
+            inputPort: InputPort
+        ) = (
+                dataSourceBuilders.byContentType[contentType]
+                    ?.map { it.build(inputPort) }
+                    ?: emptyList()
+                )
+    }
+
+    inner class DeviceTypes {
+        val all = plugins.flatMap { it.deviceTypes }
+
+        fun dataSourcesFor(contentType: ContentType): List<DataSource> {
+            return all.flatMap { deviceType ->
+                deviceType.dataSources.filter { dataSource -> dataSource.contentType == contentType }
+            }
+        }
     }
 }

@@ -21,12 +21,9 @@ abstract class RenderEngine(val gl: GlContext) {
         return engineFeeds.getOrPut(feed) { bindFeed(feed) }
     }
 
-    abstract fun resolve(id: String, dataSource: DataSource): Feed?
-
     open fun compile(linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
         return GlslProgram(gl, linkedPatch) { id: String, dataSource: DataSource ->
-            val feed = resolve(id, dataSource) ?: feedResolver.openFeed(id, dataSource)
-
+            val feed = feedResolver.openFeed(id, dataSource)
             feed?.let { cachedEngineFeed(it)}
         }
     }
@@ -61,7 +58,7 @@ abstract class RenderEngine(val gl: GlContext) {
     }
 
     /** This is run from within a GL context. */
-    abstract fun render()
+    protected abstract fun render()
 
     /** This is run from within a GL context. */
     abstract fun afterFrame()

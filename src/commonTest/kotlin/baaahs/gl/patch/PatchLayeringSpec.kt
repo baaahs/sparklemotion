@@ -3,6 +3,7 @@ package baaahs.gl.patch
 import baaahs.TestModel
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
+import baaahs.gl.kexpect
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
@@ -18,8 +19,6 @@ import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
@@ -95,7 +94,7 @@ object PatchLayeringSpec : Spek({
                     .only("port diagram to render targets")
                     .first
                 val linkedPatch = portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)!!
-                expect(linkedPatch.toGlsl()).toBe(
+                kexpect(linkedPatch.toGlsl()).toBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -111,8 +110,13 @@ object PatchLayeringSpec : Spek({
                             vec3 extents;
                         };
                         
+                        // Data source: Brightness Slider
                         uniform float in_brightnessSlider;
+
+                        // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
+
+                        // Data source: Pixel Coordinates Texture
                         uniform sampler2D in_pixelCoordsTexture;
 
                         // Shader: Cylindrical Projection; namespace: p0
@@ -166,9 +170,15 @@ object PatchLayeringSpec : Spek({
 
                         #line 10001
                         void main() {
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy); // Cylindrical Projection
-                          p1_orangeShader_main(); // Orange Shader
-                          p2_brightnessFilteri_result = p2_brightnessFilter_mainFilter(p1_orangeShader_gl_FragColor); // Brightness Filter
+                          // Invoke Cylindrical Projection
+                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy);
+
+                          // Invoke Orange Shader
+                          p1_orangeShader_main();
+
+                          // Invoke Brightness Filter
+                          p2_brightnessFilteri_result = p2_brightnessFilter_mainFilter(p1_orangeShader_gl_FragColor);
+
                           sm_result = p2_brightnessFilteri_result;
                         }
                         

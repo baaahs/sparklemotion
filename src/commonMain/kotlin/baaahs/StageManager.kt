@@ -90,7 +90,7 @@ class StageManager(
         showRunner?.onSelectedPatchesChanged()
 
         // Start housekeeping early -- as soon as we see a change -- in hopes of avoiding jank.
-        showRunner?.housekeeping()
+        if (showRunner?.housekeeping() == true) facade.notifyChanged()
     }
 
     @Suppress("UNCHECKED_CAST")

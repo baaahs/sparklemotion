@@ -9,9 +9,7 @@ import baaahs.show.ShaderType
 
 class MoverShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
     companion object {
-        val proFormaInputPorts = listOf(
-            InputPort("gl_FragColor", GlslType.Vec4, "Input Color", ContentType.ColorStream)
-        )
+        val proFormaInputPorts = emptyList<InputPort>()
 
         val wellKnownInputPorts = listOf(
             InputPort("position", GlslType.Vec3, "Position", ContentType.XyzCoordinate),

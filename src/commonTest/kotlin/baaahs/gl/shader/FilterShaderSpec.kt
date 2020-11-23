@@ -3,6 +3,7 @@ package baaahs.gl.shader
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
+import baaahs.gl.kexpect
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
@@ -88,7 +89,7 @@ object FilterShaderSpec : Spek({
                 }
 
                 it("accepts color streams from multiple shaders") {
-                    expect(linkedPatch!!.toFullGlsl("*")).toBe("""
+                    kexpect(linkedPatch!!.toFullGlsl("*")).toBe("""
                         #version *
 
                         #ifdef GL_ES
@@ -98,7 +99,6 @@ object FilterShaderSpec : Spek({
                         // SparkleMotion-generated GLSL
 
                         layout(location = 0) out vec4 sm_result;
-
 
                         // Shader: Solid Blue; namespace: p0
                         // Solid Blue
@@ -134,9 +134,15 @@ object FilterShaderSpec : Spek({
 
                         #line 10001
                         void main() {
-                          p0_solidBlue_mainImage(p0_solidBluei_result, sm_FragCoord.xy); // Solid Blue
-                          p1_solidRed_mainImage(p1_solidRedi_result, sm_FragCoord.xy); // Solid Red
-                          p2_fadeFilteri_result = p2_fadeFilter_mainFilter(p1_solidRedi_result); // Fade Filter
+                          // Invoke Solid Blue
+                          p0_solidBlue_mainImage(p0_solidBluei_result, sm_FragCoord.xy);
+
+                          // Invoke Solid Red
+                          p1_solidRed_mainImage(p1_solidRedi_result, sm_FragCoord.xy);
+
+                          // Invoke Fade Filter
+                          p2_fadeFilteri_result = p2_fadeFilter_mainFilter(p1_solidRedi_result);
+
                           sm_result = p2_fadeFilteri_result;
                         }
 
