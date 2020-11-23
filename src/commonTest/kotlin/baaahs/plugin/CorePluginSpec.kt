@@ -34,7 +34,7 @@ object CorePluginSpec : Spek({
             gl.runInContext { programFeed.setOnProgram() }
 
             val glProgram = gl.programs.only("program")
-            expect(glProgram.getUniform("in_time")).toBe(7890.1234f)
+            expect(glProgram.getUniform<Float>("in_time")).toBe(7890.1234f)
         }
     }
 })

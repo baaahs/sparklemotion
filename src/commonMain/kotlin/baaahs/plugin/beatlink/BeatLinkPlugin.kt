@@ -32,13 +32,6 @@ class BeatLinkPlugin internal constructor(
     // is using object identity), and there's no overhead.
     internal val beatLinkDataSource = BeatLinkDataSource()
 
-    override fun resolveContentType(type: String): ContentType? {
-        return when (type) {
-            "beat-link" -> beatDataContentType
-            else -> null
-        }
-    }
-
     override val addControlMenuItems: List<AddControlMenuItem>
         get() = listOf(
             AddControlMenuItem("New BeatLink Control…", CommonIcons.BeatLinkControl) { mutableShow ->
@@ -94,7 +87,8 @@ class BeatLinkPlugin internal constructor(
         override val pluginPackage: String get() = id
         override val title: String get() = "BeatLink"
         override fun getType(): GlslType = GlslType.Float
-        override fun getContentType(): ContentType = beatDataContentType
+        override val contentType: ContentType
+            get() = beatDataContentType
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): baaahs.gl.data.Feed {
             return object : baaahs.gl.data.Feed, RefCounted by RefCounter() {

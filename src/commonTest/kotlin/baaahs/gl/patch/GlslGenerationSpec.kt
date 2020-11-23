@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.fixtures.MovingHeadInfoDataSource
 import baaahs.gl.kexpect
 import baaahs.gl.override
 import baaahs.gl.testPlugins
@@ -11,6 +12,7 @@ import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShaderOutPort
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
+import kotlin.test.fail
 
 object GlslGenerationSpec : Spek({
     describe("Generation of GLSL from patches") {
@@ -33,13 +35,17 @@ object GlslGenerationSpec : Spek({
                     someGlobalVar = anotherFunc(someConstVar);
                     gl_FragColor = vec4(uv.xy, blueness, 1.);
                 }
-                """.trimIndent()
+            """.trimIndent()
         }
         val autoWirer by value { AutoWirer(testPlugins()) }
         val glslAnalyzer by value { autoWirer.glslAnalyzer }
         val mainShader by value { glslAnalyzer.import(shaderText) }
         val mutablePatch by value { MutablePatch { } }
-        val linkedPatch by value { mutablePatch.openForPreview(autoWirer)!! }
+        val resultContentType by value { ContentType.ColorStream }
+        val linkedPatch by value {
+            mutablePatch.openForPreview(autoWirer, resultContentType)
+                ?: fail("openForPreview returned null, maybe no shaders on mutablePatch?")
+        }
         val glsl by value { linkedPatch.toGlsl().trim() }
 
         context("with screen coordinates for preview") {
@@ -499,6 +505,72 @@ object GlslGenerationSpec : Spek({
                             }
                         """.trimIndent())
                 }
+            }
+        }
+
+        context("with a shader using a struct input") {
+            override(shaderText) {
+                /**language=glsl*/
+                """
+                    struct MovingHeadInfo {
+                        vec3 origin;            
+                        vec3 heading; // in Euler angles
+                    };
+                    
+                    uniform MovingHeadInfo movingHeadInfo;
+                    
+                    vec4 mainMover() {
+                        return vec4(movingHeadInfo.origin.xy, movingHeadInfo.heading.xy);
+                    }
+                """.trimIndent()
+            }
+            override(resultContentType) { ContentType.PanAndTilt }
+
+            beforeEachTest {
+                mutablePatch.addShaderInstance(mainShader) {
+                    link("movingHeadInfo", MovingHeadInfoDataSource())
+                }
+            }
+
+            it("generates GLSL") {
+                kexpect(glsl).toBe(
+                    /**language=glsl*/
+                    """
+                        #ifdef GL_ES
+                        precision mediump float;
+                        #endif
+
+                        // SparkleMotion-generated GLSL
+
+                        layout(location = 0) out vec4 sm_result;
+
+                        struct MovingHeadInfo {
+                            vec3 origin;            
+                            vec3 heading; // in Euler angles
+                        };
+
+                        // Data source: Moving Head Info
+                        uniform MovingHeadInfo in_movingHeadInfo;
+
+                        // Shader: Untitled Mover Shader; namespace: p0
+                        // Untitled Mover Shader
+
+                        vec4 p0_untitledMoverShaderi_result = vec4(0.);
+
+                        #line 8
+                        vec4 p0_untitledMoverShader_mainMover() {
+                            return vec4(in_movingHeadInfo.origin.xy, in_movingHeadInfo.heading.xy);
+                        }
+
+
+                        #line 10001
+                        void main() {
+                          // Invoke Untitled Mover Shader
+                          p0_untitledMoverShaderi_result = p0_untitledMoverShader_mainMover();
+
+                          sm_result = p0_untitledMoverShaderi_result;
+                        }
+                    """.trimIndent())
             }
         }
     }

@@ -123,7 +123,7 @@ enum class ShaderType(
         """.trimIndent()
     ) {
         override fun matches(glslCode: GlslCode): Boolean {
-            return glslCode.functionNames.contains("mainFilter")
+            return glslCode.functionNames.contains("mainMover")
         }
 
         override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins) =

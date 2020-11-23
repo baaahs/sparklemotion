@@ -28,7 +28,7 @@ interface DataSourceBuilder<T : DataSource> {
                     MutableDataSourcePort(dataSource),
                     wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
                     isPluginSuggestion = true,
-                    isExactContentType = dataSource.getContentType() == inputPort.contentType
+                    isExactContentType = dataSource.contentType == inputPort.contentType
                 )
             }
         } else emptyList()
@@ -51,7 +51,7 @@ interface DataSource {
     // TODO: kill this
     fun isImplicit(): Boolean = false
     fun getType(): GlslType
-    fun getContentType(): ContentType
+    val contentType: ContentType
     fun getVarName(id: String): String = "in_$id"
 
     fun createFeed(showPlayer: ShowPlayer, id: String): Feed

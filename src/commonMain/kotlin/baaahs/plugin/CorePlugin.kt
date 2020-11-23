@@ -2,7 +2,7 @@ package baaahs.plugin
 
 import baaahs.*
 import baaahs.app.ui.CommonIcons
-import baaahs.fixtures.PixelLocationFeed
+import baaahs.fixtures.*
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.RadioButtonStrip
 import baaahs.gadgets.Slider
@@ -25,15 +25,12 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     override val packageName: String = id
     override val title: String = "SparkleMotion Core"
 
-    override val contentTypes: List<ContentType> get() = ContentType.coreTypes
-    override val dataSourceBuilders get() = CorePlugin.dataSourceBuilders
+    override val contentTypes: List<ContentType> get() =
+        dataSourceBuilders.map { it.contentType } +
+                deviceTypes.map { it.resultContentType } +
+                deviceTypes.flatMap { it.dataSources.map { dataSource -> dataSource.contentType } }
 
-    override fun resolveContentType(type: String): ContentType? {
-        return when (type) {
-            "color-stream" -> ContentType.ColorStream
-            else -> null
-        }
-    }
+    override val dataSourceBuilders get() = CorePlugin.dataSourceBuilders
 
     override val addControlMenuItems: List<AddControlMenuItem> get() = listOf(
         AddControlMenuItem("New Button…", CommonIcons.Button) { mutableShow ->
@@ -75,7 +72,14 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             classSerializer(SliderDataSource.serializer()),
             classSerializer(ColorPickerDataSource.serializer()),
             classSerializer(RadioButtonStripDataSource.serializer()),
-            classSerializer(XyPadDataSource.serializer())
+            classSerializer(XyPadDataSource.serializer()),
+            classSerializer(MovingHeadInfoDataSource.serializer())
+        )
+
+    override val deviceTypes: List<DeviceType>
+        get() = listOf(
+            PixelArrayDevice,
+            MovingHeadDevice
         )
 
     /**
@@ -95,7 +99,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val pluginPackage: String get() = id
         override val title: String get() = "Resolution"
         override fun getType(): GlslType = GlslType.Vec2
-        override fun getContentType(): ContentType = ContentType.Resolution
+        override val contentType: ContentType
+            get() = ContentType.Resolution
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
@@ -123,7 +128,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val pluginPackage: String get() = id
         override val title: String get() = "PreviewResolution"
         override fun getType(): GlslType = GlslType.Vec2
-        override fun getContentType(): ContentType = ContentType.Resolution
+        override val contentType: ContentType
+            get() = ContentType.Resolution
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
@@ -163,7 +169,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val pluginPackage: String get() = id
         override val title: String get() = "Time"
         override fun getType(): GlslType = GlslType.Float
-        override fun getContentType(): ContentType = ContentType.Time
+        override val contentType: ContentType
+            get() = ContentType.Time
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
@@ -195,7 +202,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val pluginPackage: String get() = id
         override val title: String get() = "Pixel Coordinates Texture"
         override fun getType(): GlslType = GlslType.Sampler2D
-        override fun getContentType(): ContentType = ContentType.PixelCoordinatesTexture
+        override val contentType: ContentType
+            get() = ContentType.PixelCoordinatesTexture
         override fun suggestId(): String = "pixelCoordsTexture"
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
@@ -215,7 +223,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val pluginPackage: String get() = id
         override val title: String get() = "Screen U/V Coordinate"
         override fun getType(): GlslType = GlslType.Vec2
-        override fun getContentType(): ContentType = ContentType.UvCoordinateStream
+        override val contentType: ContentType
+            get() = ContentType.UvCoordinateStream
         override fun isImplicit(): Boolean = true
         override fun getVarName(id: String): String = "gl_FragCoord"
 
@@ -259,7 +268,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val pluginPackage: String get() = id
         override val title: String get() = "Model Info"
         override fun getType(): GlslType = modelInfoType
-        override fun getContentType(): ContentType = ContentType.ModelInfo
+        override val contentType: ContentType
+            get() = ContentType.ModelInfo
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
             return object : Feed, RefCounted by RefCounter() {
@@ -376,7 +386,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val pluginPackage: String get() = id
         override val title: String get() = "$gadgetTitle $resourceName"
         override fun getType(): GlslType = GlslType.Float
-        override fun getContentType(): ContentType = ContentType.Float
+        override val contentType: ContentType
+            get() = ContentType.Float
         override fun suggestId(): String = "$gadgetTitle Slider".camelize()
 
         override fun createGadget(): Slider =
@@ -408,7 +419,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val pluginPackage: String get() = id
         override val title: String get() = "XY Pad"
         override fun getType(): GlslType = GlslType.Vec2
-        override fun getContentType(): ContentType = ContentType.XyCoordinate
+        override val contentType: ContentType
+            get() = ContentType.XyCoordinate
         override fun suggestId(): String = "$gadgetTitle XY Pad".camelize()
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
@@ -461,7 +473,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val pluginPackage: String get() = id
         override val title: String get() = "$gadgetTitle $resourceName"
         override fun getType(): GlslType = GlslType.Vec4
-        override fun getContentType(): ContentType = ContentType.Color
+        override val contentType: ContentType
+            get() = ContentType.Color
         override fun suggestId(): String = "$gadgetTitle Color Picker".camelize()
 
         override fun createGadget(): ColorPicker = ColorPicker(gadgetTitle, initialValue)
@@ -512,7 +525,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val pluginPackage: String get() = id
         override val title: String get() = resourceName
         override fun getType(): GlslType = GlslType.Int
-        override fun getContentType(): ContentType = ContentType.Int
+        override val contentType: ContentType
+            get() = ContentType.Int
 
         override fun createGadget(): RadioButtonStrip {
             return RadioButtonStrip(gadgetTitle, options, initialSelectionIndex)
@@ -539,7 +553,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val pluginPackage: String get() = id
         override val title: String get() = "Image"
         override fun getType(): GlslType = GlslType.Sampler2D
-        override fun getContentType(): ContentType = ContentType.ColorStream
+        override val contentType: ContentType
+            get() = ContentType.ColorStream
         override fun suggestId(): String = "$imageTitle Image".camelize()
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
@@ -568,7 +583,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             TimeDataSource,
             ResolutionDataSource,
             PreviewResolutionDataSource,
-            SliderDataSource
+            SliderDataSource,
+            MovingHeadInfoDataSource
         )
 
         private val logger = Logger("CorePlugin")

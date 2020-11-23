@@ -1,5 +1,6 @@
 package baaahs.plugin
 
+import baaahs.fixtures.DeviceType
 import baaahs.gl.patch.ContentType
 import baaahs.show.AddControlMenuItem
 import baaahs.show.Control
@@ -20,13 +21,13 @@ interface Plugin {
     val packageName: String
     val title: String
 
-    fun resolveContentType(type: String): ContentType?
-
     val addControlMenuItems: List<AddControlMenuItem>
     val contentTypes: List<ContentType>
     val controlSerializers: List<SerializerRegistrar<out Control>>
     val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
     val dataSourceSerializers: List<SerializerRegistrar<out DataSource>>
+    val deviceTypes: List<DeviceType>
+        get() = emptyList()
 }
 
 class SerializerRegistrar<T : Any>(val klass: KClass<T>, val serializer: KSerializer<T>) {

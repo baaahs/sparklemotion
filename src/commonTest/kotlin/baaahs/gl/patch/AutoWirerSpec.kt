@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.fixtures.MovingHeadInfoDataSource
 import baaahs.gl.expects
 import baaahs.gl.override
 import baaahs.gl.testPlugins
@@ -46,8 +47,8 @@ object AutoWirerSpec : Spek({
                 }
                 """.trimIndent()
             }
-            val paintShader by value { autoWirer.glslAnalyzer.import(shaderText) }
-            val shaders by value { arrayOf(paintShader) }
+            val mainShader by value { autoWirer.glslAnalyzer.import(shaderText) }
+            val shaders by value { arrayOf(mainShader) }
             val patch by value { autoWirer.autoWire(*shaders).acceptSuggestedLinkOptions().resolve() }
             val linkedPatch by value { patch.openForPreview(autoWirer)!! }
             val liveShaderInstance by value { linkedPatch.shaderInstance }
@@ -55,7 +56,7 @@ object AutoWirerSpec : Spek({
             it("creates a reasonable guess patch") {
                 expect(patch.mutableShaderInstances).containsExactly(
                     MutableShaderInstance(
-                        MutableShader(paintShader),
+                        MutableShader(mainShader),
                         hashMapOf(
                             "time" to MutableDataSourcePort(CorePlugin.TimeDataSource()),
                             "blueness" to MutableDataSourcePort(
@@ -106,7 +107,7 @@ object AutoWirerSpec : Spek({
                     expects(
                         listOf(
                             MutableShaderInstance(
-                                MutableShader(paintShader),
+                                MutableShader(mainShader),
                                 hashMapOf(
                                     "iTime" to MutableDataSourcePort(CorePlugin.TimeDataSource()),
                                     "blueness" to MutableDataSourcePort(
@@ -141,13 +142,13 @@ object AutoWirerSpec : Spek({
                 val uvShader = cylindricalProjection
                 val uvShaderInst by value { MutableShaderInstance(MutableShader(uvShader)) }
 
-                override(shaders) { arrayOf(paintShader, uvShader) }
+                override(shaders) { arrayOf(mainShader, uvShader) }
 
                 it("creates a reasonable guess patch") {
                     expects(
                         listOf(
                             MutableShaderInstance(
-                                MutableShader(paintShader),
+                                MutableShader(mainShader),
                                 hashMapOf(
                                     "time" to MutableDataSourcePort(CorePlugin.TimeDataSource()),
                                     "resolution" to MutableDataSourcePort(CorePlugin.ResolutionDataSource()),
@@ -234,6 +235,36 @@ object AutoWirerSpec : Spek({
                             )
                         )
                     ) { patch.mutableShaderInstances }
+                }
+            }
+
+            context("with a shader for a non-PixelArrayDevice fixture") {
+                override(shaderText) {
+                    /**language=glsl*/
+                    """
+                        struct MovingHeadInfo {
+                            vec3 origin;
+                            vec3 heading;
+                        };
+                        
+                        uniform MovingHeadInfo movingHeadInfo;
+                        
+                        vec4 mainMover() {
+                            return vec4(movingHeadInfo.heading.xy, movingHeadInfo.origin.xy);
+                        }
+                    """.trimIndent()
+                }
+
+                it("creates a reasonable guess patch") {
+                    expect(patch.mutableShaderInstances)
+                        .containsExactly(
+                            MutableShaderInstance(
+                                MutableShader(mainShader),
+                                hashMapOf(
+                                    "movingHeadInfo" to MutableDataSourcePort(MovingHeadInfoDataSource())
+                                )
+                            )
+                        )
                 }
             }
         }

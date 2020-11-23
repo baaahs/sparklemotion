@@ -8,7 +8,8 @@ sealed class GlslType constructor(val glslLiteral: String) {
 
     open fun defaultInitializer(): String = "$glslLiteral(0.)"
 
-    class OtherGlslType(glslLiteral: String) : GlslType(glslLiteral)
+    private class OtherGlslType(glslLiteral: String) : GlslType(glslLiteral)
+    private class Struct(val glslStruct: GlslCode.GlslStruct) : GlslType(glslStruct.name)
 
     object Float : GlslType("float")
     object Vec2 : GlslType("vec2")
@@ -24,9 +25,14 @@ sealed class GlslType constructor(val glslLiteral: String) {
 
     companion object {
         val types = mutableMapOf<String, GlslType>()
+        val structTypes = mutableMapOf<GlslCode.GlslStruct, GlslType>()
 
         fun from(glsl: String): GlslType {
             return types.getOrPut(glsl) { OtherGlslType(glsl) }
+        }
+
+        fun from(glslStruct: GlslCode.GlslStruct): GlslType {
+            return structTypes.getOrPut(glslStruct) { Struct(glslStruct) }
         }
     }
 }
