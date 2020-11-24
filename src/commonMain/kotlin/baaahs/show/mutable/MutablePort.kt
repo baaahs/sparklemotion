@@ -27,6 +27,7 @@ data class MutableDataSourcePort(val dataSource: DataSource) : MutablePort {
         if (log.dataSources.add(this)) visitor.visit(dataSource)
     }
 }
+fun DataSource.editor() = MutableDataSourcePort(this)
 
 class MutableShaderOutPort(var mutableShaderInstance: MutableShaderInstance) : MutablePort {
     override fun toRef(showBuilder: ShowBuilder): PortRef =
@@ -79,6 +80,7 @@ data class MutableShaderChannel(val id: String) : MutablePort {
         }
     }
 }
+fun ShaderChannel.editor() = MutableShaderChannel(this.id)
 
 data class MutableOutputPort(private val portId: String) : MutablePort {
     override val title: String get() = "$portId Output"

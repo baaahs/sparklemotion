@@ -360,8 +360,6 @@ class MutablePatch {
     fun getEditorPanel() = PatchEditorPanel(this)
 }
 
-fun DataSource.editor() = MutableDataSourcePort(this)
-
 data class MutableShader(
     var title: String,
     var type: ShaderType,
@@ -386,7 +384,7 @@ data class MutableShader(
 data class MutableShaderInstance(
     val mutableShader: MutableShader,
     val incomingLinks: MutableMap<String, MutablePort> = hashMapOf(),
-    var shaderChannel: MutableShaderChannel = MutableShaderChannel(ShaderChannel.Main.id),
+    var shaderChannel: MutableShaderChannel = ShaderChannel.Main.editor(),
     var priority: Float = 0f
 ) {
     val id = randomId("MutableShaderInstance")
