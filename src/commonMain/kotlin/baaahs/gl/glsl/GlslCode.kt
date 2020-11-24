@@ -127,13 +127,13 @@ class GlslCode(
             }
             val structType = GlslType.from("struct $name {\n$fieldsStr\n}")
             val fullText = "${if (isUniform) "uniform " else ""}$name $varName;"
-            return GlslVar(structType, varName!!, fullText, lineNumber = lineNumber, comments = comments)
+            return GlslVar(varName!!, structType, fullText, lineNumber = lineNumber, comments = comments)
         }
     }
 
     data class GlslVar(
-        val type: GlslType,
         override val name: String,
+        val type: GlslType,
         override val fullText: String = "",
         val isConst: Boolean = false,
         val isUniform: Boolean = false,
@@ -143,13 +143,13 @@ class GlslCode(
     ) : GlslStatement {
         override fun stripSource() = copy(fullText = "", lineNumber = null)
 
-        val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
+        val title get() = name.englishize()
 
-        fun displayName() = name.englishize()
+        val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
 
         fun toInputPort(plugins: Plugins): InputPort {
             return InputPort(
-                name, type, displayName(),
+                name, type, title,
                 pluginRef = hint?.pluginRef,
                 pluginConfig = hint?.config,
                 contentType = hint?.contentType(plugins),
@@ -221,8 +221,8 @@ class GlslCode(
     }
 
     data class GlslFunction(
-        val returnType: GlslType,
         override val name: String,
+        val returnType: GlslType,
         val params: List<GlslParam>,
         override val fullText: String,
         override val lineNumber: Int? = null,

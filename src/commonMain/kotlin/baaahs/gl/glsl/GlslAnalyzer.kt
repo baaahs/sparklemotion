@@ -278,7 +278,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
                             "uniform" -> isUniform = true
                             "varying" -> isVarying = true
                         }
-                        GlslVar(GlslType.from(type), name, text, isConst, isUniform, isVarying, lineNumber, comments)
+                        GlslVar(name, GlslType.from(type), text, isConst, isUniform, isVarying, lineNumber, comments)
                     }
             }
 
@@ -384,7 +384,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
             }
 
             override fun createStatement(): GlslStatement =
-                GlslFunction(returnType, name, params, textAsString, lineNumber, comments)
+                GlslFunction(name, returnType, params, textAsString, lineNumber, comments)
 
             inner class Params(
                 recipientOfNextComment: Statement? = null

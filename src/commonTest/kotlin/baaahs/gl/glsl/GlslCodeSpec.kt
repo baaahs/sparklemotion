@@ -28,23 +28,23 @@ object GlslCodeSpec : Spek({
 
             context("unqualified") {
                 override(text) { "int i;" }
-                expectValue(GlslCode.GlslVar(GlslType.Int, "i", "int i;")) { variable }
+                expectValue(GlslCode.GlslVar("i", GlslType.Int, "int i;")) { variable }
             }
 
             context("const") {
                 override(text) { "const int i = 3;" }
-                expectValue(GlslCode.GlslVar(GlslType.Int, "i", "const int i = 3;", isConst = true)) { variable }
+                expectValue(GlslCode.GlslVar("i", GlslType.Int, "const int i = 3;", isConst = true)) { variable }
             }
 
             context("uniform") {
                 override(text) { "uniform vec3 vector;" }
-                expectValue(GlslCode.GlslVar(GlslType.Vec3, "vector", "uniform vec3 vector;", isUniform = true)) { variable }
+                expectValue(GlslCode.GlslVar("vector", GlslType.Vec3, "uniform vec3 vector;", isUniform = true)) { variable }
             }
 
             // For now, `varying` on a global var indicates that it's a streamed content type. Maybe worth reconsidering.
             context("varying") {
                 override(text) { "varying vec4 otherColor;" }
-                expectValue(GlslCode.GlslVar(GlslType.Vec4, "otherColor", "varying vec4 otherColor;", isVarying = true)) { variable }
+                expectValue(GlslCode.GlslVar("otherColor", GlslType.Vec4, "varying vec4 otherColor;", isVarying = true)) { variable }
             }
 
             context("hints") {
@@ -65,7 +65,7 @@ object GlslCodeSpec : Spek({
                 override(text) { "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }" }
                 expectValue(
                     GlslCode.GlslFunction(
-                        GlslType.Float, "rand",
+                        "rand", GlslType.Float,
                         listOf(GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 2)),
                         "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }"
                     )
@@ -76,7 +76,7 @@ object GlslCodeSpec : Spek({
                 override(text) { "float zero( void ) { return 0.; }" }
                 expectValue(
                     GlslCode.GlslFunction(
-                        GlslType.Float, "zero", emptyList(),
+                        "zero", GlslType.Float, emptyList(),
                         "float zero( void ) { return 0.; }"
                     )
                 ) { function }
@@ -86,7 +86,7 @@ object GlslCodeSpec : Spek({
                 override(text) { "float zero( void ) { return 0.; }" }
                 expectValue(
                     GlslCode.GlslFunction(
-                        GlslType.Float, "zero", emptyList(),
+                        "zero", GlslType.Float, emptyList(),
                         "float zero( void ) { return 0.; }"
                     )
                 ) { function }
@@ -143,7 +143,7 @@ object GlslCodeSpec : Spek({
             val hintClassStr by value { "whatever.package.Plugin:Thing" }
             val glslVar by value {
                 GlslCode.GlslVar(
-                    GlslType.Float, "varName", isUniform = true,
+                    "varName", GlslType.Float, isUniform = true,
                     comments = listOf(" @@$hintClassStr", "  key=value", "  key2=value2")
                 )
             }
@@ -174,7 +174,7 @@ object GlslCodeSpec : Spek({
         }
 
         it("englishizes camel case names") {
-            expect(GlslCode.GlslVar(GlslType.Vec3, "aManAPlanAAARGHPanamaISay").displayName())
+            expect(GlslCode.GlslVar("aManAPlanAAARGHPanamaISay", GlslType.Vec3).title)
                 .toBe("A Man A Plan AAARGH Panama I Say")
         }
     }
