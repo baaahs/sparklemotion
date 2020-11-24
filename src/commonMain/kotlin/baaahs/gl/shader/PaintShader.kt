@@ -92,7 +92,7 @@ class ShaderToyPaintShader(
             if (iVars.contains(k)) v else null
         }
 
-        val explicitUniforms = glslCode.uniforms.map { toInputPort(it) }
+        val explicitUniforms = glslCode.uniforms.map { it.toInputPort(plugins) }
 
         explicitUniforms + implicitUniforms + proFormaInputPorts
     }

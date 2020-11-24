@@ -51,7 +51,7 @@ class GlslCode(
         findFunctionOrNull(name) ?: error(unknown("function", name, functions.map { it.name }))
 
     companion object {
-        private val logger = Logger("GlslCode")
+        private val logger = Logger<GlslCode>()
 
         fun replaceCodeWords(originalText: String, replaceFn: (String) -> String): String {
             val buf = StringBuilder()
@@ -131,21 +131,12 @@ class GlslCode(
         }
     }
 
-    data class GlslVar(
-        override val name: String,
-        val type: GlslType,
-        override val fullText: String = "",
-        val isConst: Boolean = false,
-        val isUniform: Boolean = false,
-        val isVarying: Boolean = false,
-        override val lineNumber: Int? = null,
-        override val comments: List<String> = emptyList()
-    ) : GlslStatement {
-        override fun stripSource() = copy(fullText = "", lineNumber = null)
-
-        val title get() = name.englishize()
-
-        val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
+    interface GlslArgSite {
+        val name: String
+        val title: String
+        val type: GlslType
+        val isVarying: Boolean
+        val hint: Hint?
 
         fun toInputPort(plugins: Plugins): InputPort {
             return InputPort(
@@ -153,9 +144,26 @@ class GlslCode(
                 pluginRef = hint?.pluginRef,
                 pluginConfig = hint?.config,
                 contentType = hint?.contentType(plugins),
-                glslVar = this
+                glslArgSite = this
             )
         }
+    }
+
+    data class GlslVar(
+        override val name: String,
+        override val type: GlslType,
+        override val fullText: String = "",
+        val isConst: Boolean = false,
+        val isUniform: Boolean = false,
+        override val isVarying: Boolean = false,
+        override val lineNumber: Int? = null,
+        override val comments: List<String> = emptyList()
+    ) : GlslStatement, GlslArgSite {
+        override fun stripSource() = copy(fullText = "", lineNumber = null)
+
+        override val title get() = name.englishize()
+
+        override val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
     }
 
     class Hint(
@@ -234,14 +242,16 @@ class GlslCode(
     }
 
     data class GlslParam(
-        val name: String,
-        val type: GlslType,
+        override val name: String,
+        override val type: GlslType,
         val isIn: Boolean = false,
         val isOut: Boolean = false,
         val lineNumber: Int? = null,
         val comments: List<String> = emptyList()
-    ) {
-        val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
+    ) : GlslArgSite {
+        override val title: String get() = name.englishize()
+        override val isVarying: Boolean get() = true
+        override val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
     }
 
     class Namespace(private val prefix: String) {

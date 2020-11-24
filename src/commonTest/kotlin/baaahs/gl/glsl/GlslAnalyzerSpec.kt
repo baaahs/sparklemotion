@@ -332,7 +332,7 @@ object GlslAnalyzerSpec : Spek({
                     }
 
                     it("creates inputs for implicit uniforms") {
-                        expect(shader.inputPorts.map { it.copy(glslVar = null) })
+                        expect(shader.inputPorts.map { it.copy(glslArgSite = null) })
                             .containsExactly(
                                 InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream),
                                 InputPort("time", GlslType.Float, "Time", ContentType.Time),
@@ -371,7 +371,7 @@ object GlslAnalyzerSpec : Spek({
                                 InputPort("iTime", GlslType.Float, "Time", ContentType.Time),
                                 InputPort("sm_FragCoord", GlslType.Vec2, "Coordinates", ContentType.UvCoordinateStream)
                             )
-                        ) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                        ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
                     }
                 }
 
@@ -393,7 +393,7 @@ object GlslAnalyzerSpec : Spek({
                                 ),
                                 InputPort("modelInfo", ContentType.ModelInfo.glslType, "Model Info", null)
                             )
-                        ) { shader.inputPorts.map { it.copy(glslVar = null) } }
+                        ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
                     }
                 }
             }

@@ -111,7 +111,7 @@ class Plugins private constructor(
 
     fun suggestContentTypes(inputPort: InputPort): Set<ContentType> {
         val glslType = inputPort.type
-        val isStream = inputPort.glslVar?.isVarying ?: false
+        val isStream = inputPort.glslArgSite?.isVarying ?: false
         return (contentTypes.byGlslType[glslType to isStream] ?: emptyList()).toSet()
     }
 
