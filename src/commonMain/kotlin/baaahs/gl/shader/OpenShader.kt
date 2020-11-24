@@ -27,7 +27,11 @@ interface OpenShader : RefCounted {
     val defaultPriority: Int
     val defaultUpstreams: Map<ContentType, ShaderChannel>
 
-    fun findInputPort(portId: String): InputPort
+    fun findInputPortOrNull(portId: String): InputPort?
+    fun findInputPort(portId: String): InputPort =
+        findInputPortOrNull(portId)
+            ?: error(unknown("input port", portId, inputPorts))
+
     fun toGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
     fun invocationGlsl(
         namespace: Namespace,
@@ -60,10 +64,8 @@ interface OpenShader : RefCounted {
         override val defaultUpstreams: Map<ContentType, ShaderChannel>
             get() = shaderType.defaultUpstreams
 
-        override fun findInputPort(portId: String): InputPort {
-            return inputPorts.find { it.id == portId }
-                ?: error(unknown("input port", portId, inputPorts))
-        }
+        override fun findInputPortOrNull(portId: String): InputPort? =
+            inputPorts.find { it.id == portId }
 
         override fun toGlsl(namespace: Namespace, portMap: Map<String, String>): String {
             val buf = StringBuilder()
@@ -77,8 +79,12 @@ interface OpenShader : RefCounted {
                 }
             }
 
+            val uniformGlobalsMap = portMap.filter { (id, _) ->
+                findInputPortOrNull(id)?.isGlobal ?: false || outputPort.id == id
+            }
+
             val symbolsToNamespace = glslCode.symbolNames.toSet()
-            val symbolMap = portMap + nonUniformGlobalsMap
+            val symbolMap = uniformGlobalsMap + nonUniformGlobalsMap
             glslCode.functions.forEach { glslFunction ->
                 buf.append(glslFunction.toGlsl(namespace, symbolsToNamespace, symbolMap))
                 buf.append("\n")

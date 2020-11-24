@@ -334,7 +334,7 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(shader.inputPorts.map { it.copy(glslArgSite = null) })
                             .containsExactly(
-                                InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream),
+                                InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream, isImplicit = true),
                                 InputPort("time", GlslType.Float, "Time", ContentType.Time),
                                 InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
                                 InputPort("blueness", GlslType.Float, "Blueness")
@@ -367,8 +367,8 @@ object GlslAnalyzerSpec : Spek({
                         expects(
                             listOf(
                                 InputPort("blueness", GlslType.Float, "Blueness"),
-                                InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution),
-                                InputPort("iTime", GlslType.Float, "Time", ContentType.Time),
+                                InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution, isImplicit = true),
+                                InputPort("iTime", GlslType.Float, "Time", ContentType.Time, isImplicit = true),
                                 InputPort("sm_FragCoord", GlslType.Vec2, "Coordinates", ContentType.UvCoordinateStream)
                             )
                         ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }

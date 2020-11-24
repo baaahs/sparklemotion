@@ -50,6 +50,11 @@ class GlslCode(
     fun findFunction(name: String) =
         findFunctionOrNull(name) ?: error(unknown("function", name, functions.map { it.name }))
 
+    // TODO: We ought to ignore e.g. local variables, or strings that only appear in comments.
+    fun refersToGlobal(name: String): Boolean {
+        return src.contains(name)
+    }
+
     companion object {
         private val logger = Logger<GlslCode>()
 
@@ -136,6 +141,7 @@ class GlslCode(
         val title: String
         val type: GlslType
         val isVarying: Boolean
+        val isGlobalInput: Boolean
         val hint: Hint?
 
         fun toInputPort(plugins: Plugins): InputPort {
@@ -159,11 +165,11 @@ class GlslCode(
         override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList()
     ) : GlslStatement, GlslArgSite {
-        override fun stripSource() = copy(fullText = "", lineNumber = null)
-
         override val title get() = name.englishize()
-
+        override val isGlobalInput: Boolean get() = isUniform || isVarying
         override val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
+
+        override fun stripSource() = copy(fullText = "", lineNumber = null)
     }
 
     class Hint(
@@ -239,6 +245,13 @@ class GlslCode(
         val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
 
         override fun stripSource() = copy(lineNumber = null)
+
+        fun invocationGlsl(namespace: Namespace, resultVar: String, portMap: Map<String, String>): String {
+            val args = params.joinToString(", ") { glslParam ->
+                portMap[glslParam.name] ?: "/* huh? ${glslParam.name} */"
+            }
+            return namespace.qualify(name) + "($args)"
+        }
     }
 
     data class GlslParam(
@@ -251,6 +264,7 @@ class GlslCode(
     ) : GlslArgSite {
         override val title: String get() = name.englishize()
         override val isVarying: Boolean get() = true
+        override val isGlobalInput: Boolean get() = false
         override val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
     }
 

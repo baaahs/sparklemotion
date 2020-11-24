@@ -26,7 +26,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     override val title: String = "SparkleMotion Core"
 
     override val contentTypes: List<ContentType> get() =
-        dataSourceBuilders.map { it.contentType } +
+        ContentType.coreTypes +
+                dataSourceBuilders.map { it.contentType } +
                 deviceTypes.map { it.resultContentType } +
                 deviceTypes.flatMap { it.dataSources.map { dataSource -> dataSource.contentType } }
 

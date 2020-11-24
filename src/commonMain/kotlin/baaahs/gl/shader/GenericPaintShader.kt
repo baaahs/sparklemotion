@@ -12,9 +12,8 @@ class GenericPaintShader(
     plugins: Plugins
 ) : PaintShader(shader, glslCode, plugins) {
     companion object {
-        val proFormaInputPorts = listOf(
-            InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream)
-        )
+        val glFragCoordInputPort = InputPort(
+            "gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream, isImplicit = true)
 
         val wellKnownInputPorts = listOf(
             InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
@@ -28,11 +27,22 @@ class GenericPaintShader(
     }
 
     override val proFormaInputPorts: List<InputPort>
-        get() = GenericPaintShader.proFormaInputPorts
+        get() = if (glslCode.refersToGlobal("gl_FragCoord")) listOf(glFragCoordInputPort) else emptyList()
+
     override val wellKnownInputPorts: Map<String, InputPort>
         get() = GenericPaintShader.wellKnownInputPorts
     override val outputPort: OutputPort
         get() = GenericPaintShader.outputPort
+
+    override val inputPorts: List<InputPort> by lazy {
+        proFormaInputPorts +
+                (glslCode.globalInputVars + entryPoint.params.filter { !it.isOut })
+                    .map {
+                        wellKnownInputPorts[it.name]
+                            ?.copy(type = it.type, glslArgSite = it)
+                            ?: it.toInputPort(plugins)
+                    }
+    }
 
     override val entryPointName: String get() = "main"
 
@@ -41,6 +51,6 @@ class GenericPaintShader(
         resultVar: String,
         portMap: Map<String, String>
     ): String {
-        return namespace.qualify(entryPoint.name) + "()"
+        return entryPoint.invocationGlsl(namespace, resultVar, portMap)
     }
 }
