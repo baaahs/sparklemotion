@@ -15,8 +15,12 @@ data class InputPort(
     val pluginConfig: JsonObject? = null,
     val glslArgSite: GlslCode.GlslArgSite? = null,
     val varName: String = id,
+
+    /** There's no declaration for this input, e.g. gl_FragCoord. */
     val isImplicit: Boolean = false
 ) {
+    val isGlobal: Boolean get() = glslArgSite?.isGlobalInput ?: isImplicit
+
     fun hasPluginRef() = pluginRef != null
 
     fun suggestVarName(): String {

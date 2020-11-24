@@ -153,7 +153,7 @@ class FakeOpenShader(
     override val defaultUpstreams: Map<ContentType, ShaderChannel>
         get() = TODO("not implemented")
 
-    override fun findInputPort(portId: String): InputPort {
+    override fun findInputPortOrNull(portId: String): InputPort? {
         TODO("not implemented")
     }
 

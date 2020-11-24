@@ -79,6 +79,36 @@ object AutoWirerSpec : Spek({
                     )
             }
 
+            context("with a uv-coordinate input port") {
+                override(shaderText) {
+                    /**language=glsl*/
+                    """
+                        uniform vec2  resolution;
+                        vec2 anotherFunc(vec2 fragCoord) { return fragCoord; }
+                        void main(vec2 fragCoord) {
+                            vec2 uv = anotherFunc(fragCoord) / resolution.xy;
+                            fragColor = vec4(uv.xy, 0., 1.);
+                        }
+                    """.trimIndent()
+                }
+
+                it("should pull from something") {
+                    expects(
+                        listOf(
+                            MutableShaderInstance(
+                                MutableShader(mainShader),
+                                hashMapOf(
+                                    "fragCoord" to ShaderChannel.Main.editor(),
+                                    "resolution" to CorePlugin.ResolutionDataSource().editor(),
+                                ),
+                                shaderChannel = ShaderChannel.Main.editor(),
+                                priority = 0f
+                            )
+                        )
+                    ) { patch.mutableShaderInstances }
+                }
+            }
+
             context("with a ShaderToy shader") {
                 override(shaderText) {
                     /**language=glsl*/

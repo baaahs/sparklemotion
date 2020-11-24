@@ -119,6 +119,68 @@ object GlslGenerationSpec : Spek({
             }
         }
 
+        context("with param input ports") {
+            override(shaderText) {
+                /**language=glsl*/
+                """
+                    uniform vec2  resolution;
+                    vec2 anotherFunc(vec2 fragCoord) { return fragCoord; }
+                    void main(vec2 fragCoord) {
+                        vec2 uv = anotherFunc(fragCoord) / resolution.xy;
+                        gl_FragColor = vec4(uv.xy, 0., 1.);
+                    }
+                """.trimIndent()
+            }
+
+            beforeEachTest {
+                mutablePatch.addShaderInstance(mainShader) {
+                    link("resolution", CorePlugin.ResolutionDataSource())
+                    link("fragCoord", CorePlugin.ScreenUvCoordDataSource())
+                    shaderChannel = ShaderChannel.Main.editor()
+                }
+            }
+
+            it("generates GLSL") {
+                kexpect(glsl).toBe(
+                    /**language=glsl*/
+                    """
+                        #ifdef GL_ES
+                        precision mediump float;
+                        #endif
+
+                        // SparkleMotion-generated GLSL
+
+                        layout(location = 0) out vec4 sm_result;
+
+                        // Data source: Resolution
+                        uniform vec2 in_resolution;
+
+                        // Shader: Untitled Paint Shader; namespace: p0
+                        // Untitled Paint Shader
+
+                        vec4 p0_untitledPaintShader_gl_FragColor = vec4(0., 0., 0., 1.);
+
+                        #line 2
+                        vec2 p0_untitledPaintShader_anotherFunc(vec2 fragCoord) { return fragCoord; }
+
+                        #line 3
+                        void p0_untitledPaintShader_main(vec2 fragCoord) {
+                            vec2 uv = p0_untitledPaintShader_anotherFunc(fragCoord) / in_resolution.xy;
+                            p0_untitledPaintShader_gl_FragColor = vec4(uv.xy, 0., 1.);
+                        }
+
+
+                        #line 10001
+                        void main() {
+                          // Invoke Untitled Paint Shader
+                          p0_untitledPaintShader_main(gl_FragCoord);
+
+                          sm_result = p0_untitledPaintShader_gl_FragColor;
+                        }
+                    """.trimIndent())
+            }
+        }
+
         context("with a ShaderToy paint shader") {
             override(shaderText) {
                 /**language=glsl*/

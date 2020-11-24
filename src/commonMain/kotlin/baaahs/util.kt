@@ -94,6 +94,6 @@ fun randomId(prefix: String): String {
 }
 
 // Workaround for https://youtrack.jetbrains.com/issue/KT-38501.
-fun debugger() {
-    println("Debugger breakpoint")
+fun debugger(arg: String) {
+    println("Debugger breakpoint: $arg")
 }

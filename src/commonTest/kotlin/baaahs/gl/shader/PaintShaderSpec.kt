@@ -45,7 +45,7 @@ object PaintShaderSpec : Spek({
             it("finds magic uniforms") {
                 expects(
                     listOf(
-                        InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream),
+                        InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream, isImplicit = true),
                         InputPort("time", GlslType.Float, "Time", ContentType.Time),
                         InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
                         InputPort("mouse", GlslType.Vec2, "Mouse", ContentType.Mouse),
@@ -90,6 +90,64 @@ object PaintShaderSpec : Spek({
                 expect(shader.invocationGlsl(namespace, "resultVar"))
                     .toBe("p0_main()")
             }
+
+            context("using entry point parameters") {
+                override(shaderText) {
+                    /**language=glsl*/
+                        """
+                            uniform float time;
+                            void main(vec2 uv) { gl_FragColor = vec4(uv.xy, 0., 1.); }
+                        """.trimIndent()
+                }
+
+                it("identifies uniform and param input ports and excludes gl_FragCoord") {
+                    expects(
+                        listOf(
+                            InputPort("time", GlslType.Float, "Time", ContentType.Time,
+                                glslArgSite = GlslCode.GlslVar(
+                                    "time", GlslType.Float, "uniform float time;", isUniform = true, lineNumber = 1)
+                            ),
+                            InputPort("uv", GlslType.Vec2, "Uv",
+                                glslArgSite = GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 2))
+                        )
+                    ) { shader.inputPorts }
+                }
+
+                it("generates invocation GLSL") {
+                    expect(shader.invocationGlsl(namespace, "resultVar", mapOf(
+                        "uv" to "uvArg"
+                    )))
+                        .toBe("p0_main(uvArg)")
+                }
+
+                context("with a type annotation") {
+                    override(shaderText) {
+                        /**language=glsl*/
+                        """
+                            uniform float time;
+                            void main(
+                                vec2 uv // @type uv-coordinate
+                            ) {
+                                gl_FragColor = vec4(uv.xy, 0., 1.);
+                            }
+                        """.trimIndent()
+                    }
+
+                    it("identifies the param's content type properly") {
+                        expects(
+                            listOf(
+                                InputPort("time", GlslType.Float, "Time", ContentType.Time,
+                                    glslArgSite = GlslCode.GlslVar(
+                                        "time", GlslType.Float, "uniform float time;", isUniform = true, lineNumber = 1)
+                                ),
+                                InputPort("uv", GlslType.Vec2, "Uv", ContentType.UvCoordinate,
+                                    glslArgSite = GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 3,
+                                    comments = listOf(" @type uv-coordinate")))
+                            )
+                        ) { shader.inputPorts }
+                    }
+                }
+            }
         }
 
         context("ShaderToy shaders") {
@@ -117,9 +175,9 @@ object PaintShaderSpec : Spek({
                     expects(
                         listOf(
                             InputPort("blueness", GlslType.Float, "Blueness"),
-                            InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution),
-                            InputPort("iTime", GlslType.Float, "Time", ContentType.Time),
-                            InputPort("iMouse", GlslType.Vec2, "Mouse", ContentType.Mouse),
+                            InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution, isImplicit = true),
+                            InputPort("iTime", GlslType.Float, "Time", ContentType.Time, isImplicit = true),
+                            InputPort("iMouse", GlslType.Vec2, "Mouse", ContentType.Mouse, isImplicit = true),
                             InputPort("sm_FragCoord", GlslType.Vec2, "Coordinates", ContentType.UvCoordinateStream)
                         )
                     ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }

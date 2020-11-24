@@ -56,7 +56,7 @@ class ShaderToyPaintShader(
             InputPort("iChannel1", GlslType.Sampler2D, "Channel 1", ContentType.Media),
             InputPort("iChannel2", GlslType.Sampler2D, "Channel 2", ContentType.Media),
             InputPort("iChannel3", GlslType.Sampler2D, "Channel 3", ContentType.Media)
-        ).associateBy { it.id }
+        ).map { it.copy(isImplicit = true) }.associateBy { it.id }
 
         val outputPort: OutputPort = OutputPort(ContentType.ColorStream, "Output Color")
     }
