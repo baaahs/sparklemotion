@@ -71,58 +71,59 @@ object GlslAnalyzerSpec : Spek({
                                 listOf("This Shader's Name", "Other stuff.")
                             ),
                             GlslVar(
-                                GlslType.Float,
                                 "time",
+                                GlslType.Float,
                                 "uniform float time;",
+                                isUniform = true,
                                 lineNumber = 5,
-                                comments = listOf(" trailing comment"),
-                                isUniform = true
+                                comments = listOf(" trailing comment")
                             ),
                             GlslVar(
-                                GlslType.Vec2,
                                 "resolution",
-                                "\n\n\n\nuniform vec2  resolution;", lineNumber = 5,
-                                comments = listOf(" @@HintClass", "   key=value", "   key2=value2"),
-                                isUniform = true
+                                GlslType.Vec2,
+                                "\n\n\n\nuniform vec2  resolution;",
+                                isUniform = true,
+                                lineNumber = 5,
+                                comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
                             ),
                             GlslVar(
+                                "leftEye",
                                 GlslType.from(
                                     "struct MovingHead {\n" +
                                             "    float pan;\n" +
                                             "    float tilt;\n" +
                                             "}"
                                 ),
-                                "leftEye",
                                 "uniform struct MovingHead {\n" +
                                         "    float pan;\n" +
                                         "    float tilt;\n" +
                                         "} leftEye;",
+                                isUniform = true,
                                 lineNumber = 12,
-                                comments = listOf("@@AnotherClass key=value key2=value2"),
-                                isUniform = true
+                                comments = listOf("@@AnotherClass key=value key2=value2")
                             ),
                             GlslFunction(
-                                GlslType.Void,
                                 "mainFunc",
-                                lineNumber = 18,
+                                GlslType.Void,
+                                params = listOf(
+                                    GlslParam("fragColor", GlslType.Vec4, isOut = true),
+                                    GlslParam("fragCoord", GlslType.Vec2, isIn = true)
+                                ),
                                 fullText = "void mainFunc( out vec4 fragColor, in vec2 fragCoord )\n" +
                                         "{\n" +
                                         "    vec2 uv = fragCoord.xy / resolution.xy;\n" +
                                         "    fragColor = vec4(uv.xy, 0., 1.);\n" +
                                         "}",
-                                params = listOf(
-                                    GlslParam("fragColor", GlslType.Vec4, isOut = true),
-                                    GlslParam("fragCoord", GlslType.Vec2, isIn = true)
-                                )
+                                lineNumber = 18
                             ),
                             GlslFunction(
-                                GlslType.Void,
                                 "mainFunc",
-                                lineNumber = 24,
+                                GlslType.Void,
                                 params = emptyList(),
                                 fullText = "void main() {\n" +
                                         "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
-                                        "}"
+                                        "}",
+                                lineNumber = 24
                             )
                         ), { glslAnalyzer.findStatements(shaderText) }, true
                     )
@@ -132,16 +133,16 @@ object GlslAnalyzerSpec : Spek({
                     expect(glslCode.globalVars.toList())
                         .containsExactly(
                             GlslVar(
-                                GlslType.Float, "time",
+                                "time", GlslType.Float,
                                 fullText = "uniform float time;", isUniform = true, lineNumber = 5,
                                 comments = listOf(" trailing comment")
                             ), GlslVar(
-                                GlslType.Vec2, "resolution",
+                                "resolution", GlslType.Vec2,
                                 fullText = " \n\n\n\nuniform vec2  resolution;", isUniform = true, lineNumber = 5,
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
                             ), GlslVar(
-                                GlslType.from("struct MovingHead {\n    float pan;\n    float tilt;\n}"),
                                 "leftEye",
+                                GlslType.from("struct MovingHead {\n    float pan;\n    float tilt;\n}"),
                                 fullText = "uniform MovingHead leftEye;", lineNumber = 12,
                                 comments = listOf(" @@AnotherClass key=value key2=value2")
                             )
@@ -199,11 +200,11 @@ object GlslAnalyzerSpec : Spek({
                     it("finds the global variables and performs substitutions") {
                         expect(glslCode.globalVars.toList()).containsExactly(
                             GlslVar(
-                                GlslType.Float, "shouldBeDefined",
+                                "shouldBeDefined", GlslType.Float,
                                 fullText = "\n\n\nuniform float shouldBeDefined;", isUniform = true, lineNumber = 5
                             ),
                             GlslVar(
-                                GlslType.Vec2, "shouldBeThis",
+                                "shouldBeThis", GlslType.Vec2,
                                 fullText = "\n\n\n\n\nuniform vec2 shouldBeThis;", isUniform = true, lineNumber = 9
                             )
                         )
@@ -285,19 +286,19 @@ object GlslAnalyzerSpec : Spek({
                         expectStatements(
                             listOf(
                                 GlslVar(
-                                    GlslType.Float,
                                     "time",
+                                    GlslType.Float,
                                     "uniform float time;", lineNumber = 1,
                                     comments = listOf(" @type time1"),
                                     isUniform = true
                                 ),
                                 GlslFunction(
-                                    GlslType.Void,
                                     "mainMain",
-                                    lineNumber = 1, // TODO: 1 seems wrong here, shouldn't it be 3?
+                                    GlslType.Void,
+                                    params = emptyList(), // TODO: 1 seems wrong here, shouldn't it be 3?
                                     fullText = "float mainMain() { return time + sin(time); }\n",
-                                    comments = listOf(" @type time2"),
-                                    params = emptyList()
+                                    lineNumber = 1,
+                                    comments = listOf(" @type time2")
                                 ),
                             ), { glslAnalyzer.findStatements(shaderText) }, true
                         )
@@ -404,7 +405,7 @@ object GlslAnalyzerSpec : Spek({
                     expect(glslCode.statements.only("statement"))
                         .toBe(
                             GlslVar(
-                                GlslType.Vec3, "baseColor", "const vec3 baseColor = vec3(0.0,0.09,0.18);",
+                                "baseColor", GlslType.Vec3, "const vec3 baseColor = vec3(0.0,0.09,0.18);",
                                 isConst = true,
                                 lineNumber = 1
                             )
