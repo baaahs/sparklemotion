@@ -63,7 +63,7 @@ class BeatLinkPlugin internal constructor(
                 ): List<PortLinkOption> {
                     if ((inputPort.contentType == beatDataContentType
                                 || suggestedContentTypes.contains(beatDataContentType))
-                        || (inputPort.type == GlslType.Float && inputPort.glslVar?.isVarying != true)
+                        || (inputPort.type == GlslType.Float && inputPort.glslArgSite?.isVarying != true)
                     ) {
                         return listOf(
                             PortLinkOption(

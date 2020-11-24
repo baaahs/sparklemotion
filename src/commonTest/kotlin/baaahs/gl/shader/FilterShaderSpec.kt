@@ -43,7 +43,7 @@ object FilterShaderSpec : Spek({
             }
 
             it("finds magic uniforms") {
-                expect(shader.inputPorts.map { it.copy(glslVar = null) })
+                expect(shader.inputPorts.map { it.copy(glslArgSite = null) })
                     .containsExactly(
                         InputPort("gl_FragColor", GlslType.Vec4, "Input Color", ContentType.ColorStream),
                         InputPort("fade", GlslType.Float, "Fade"),

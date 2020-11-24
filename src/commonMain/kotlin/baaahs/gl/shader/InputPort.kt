@@ -13,7 +13,7 @@ data class InputPort(
     val contentType: ContentType? = null,
     val pluginRef: PluginRef? = null,
     val pluginConfig: JsonObject? = null,
-    val glslVar: GlslCode.GlslVar? = null,
+    val glslArgSite: GlslCode.GlslArgSite? = null,
     val varName: String = id,
     val isImplicit: Boolean = false
 ) {
@@ -26,6 +26,6 @@ data class InputPort(
 
     fun dataTypeIs(glslType: GlslType, isStreaming: Boolean = false): Boolean {
         return type == glslType
-                && (glslVar?.isVarying ?: false) == isStreaming
+                && (glslArgSite?.isVarying ?: false) == isStreaming
     }
 }

@@ -49,8 +49,8 @@ interface OpenShader : RefCounted {
             proFormaInputPorts +
                     glslCode.globalInputVars.map {
                         wellKnownInputPorts[it.name]
-                            ?.copy(type = it.type, glslVar = it)
-                            ?: toInputPort(it)
+                            ?.copy(type = it.type, glslArgSite = it)
+                            ?: it.toInputPort(plugins)
                     }
         }
 
@@ -59,10 +59,6 @@ interface OpenShader : RefCounted {
             get() = shaderType.priority
         override val defaultUpstreams: Map<ContentType, ShaderChannel>
             get() = shaderType.defaultUpstreams
-
-        protected fun toInputPort(glslVar: GlslCode.GlslVar): InputPort {
-            return glslVar.toInputPort(plugins)
-        }
 
         override fun findInputPort(portId: String): InputPort {
             return inputPorts.find { it.id == portId }
