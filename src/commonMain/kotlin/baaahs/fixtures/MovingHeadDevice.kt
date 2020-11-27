@@ -88,7 +88,7 @@ data class MovingHeadInfoDataSource(@Transient val `_`: Boolean = true) : DataSo
     companion object : DataSourceBuilder<MovingHeadInfoDataSource> {
         override val resourceName: String get() = "baaahs.Core.MovingHeadInfo"
         override val contentType: ContentType get() = movingHeadInfoContentType
-        override val serializer get() = classSerializer(serializer())
+        override val serializerRegistrar get() = classSerializer(serializer())
 
         override fun build(inputPort: InputPort): MovingHeadInfoDataSource {
             return MovingHeadInfoDataSource()

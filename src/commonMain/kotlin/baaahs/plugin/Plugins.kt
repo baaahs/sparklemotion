@@ -72,8 +72,8 @@ class Plugins private constructor(
 
     private val dataSourceSerialModule = SerializersModule {
         registerSerializers {
-            dataSourceBuilders.map { it.serializer } +
-                    deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializer } }
+            dataSourceBuilders.map { it.serializerRegistrar } +
+                    deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializerRegistrar } }
         }
     }
 

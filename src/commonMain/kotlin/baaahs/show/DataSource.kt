@@ -17,7 +17,7 @@ interface DataSourceBuilder<T : DataSource> {
     /** The unique ID for this resource within a plugin. Should be CamelCase alphanums, like a class name. */
     val resourceName: String
     val contentType: ContentType
-    val serializer: SerializerRegistrar<T>
+    val serializerRegistrar: SerializerRegistrar<T>
 
     fun suggestDataSources(
         inputPort: InputPort,

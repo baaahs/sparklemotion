@@ -77,7 +77,7 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
             get() = "PixelLocation"
         override val contentType: ContentType
             get() = ContentType.XyzCoordinate.stream()
-        override val serializer: SerializerRegistrar<PixelLocationDataSource>
+        override val serializerRegistrar: SerializerRegistrar<PixelLocationDataSource>
             get() = classSerializer(serializer())
 
         override fun build(inputPort: InputPort): PixelLocationDataSource =
