@@ -2,7 +2,6 @@ package baaahs.gl.shader
 
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
-import baaahs.gl.glsl.LinkException
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
@@ -15,7 +14,6 @@ class DistortionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : O
         )
 
         val wellKnownInputPorts = listOf(
-            InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream),
             InputPort("intensity", GlslType.Float, "Intensity", ContentType.Float), // TODO: ContentType.ZeroToOne
             InputPort("time", GlslType.Float, "Time", ContentType.Time),
             InputPort("startTime", GlslType.Float, "Activated Time", ContentType.Time),
@@ -36,17 +34,8 @@ class DistortionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : O
     override val wellKnownInputPorts
         get() = DistortionShader.wellKnownInputPorts
     override val defaultInputPortsByType: Map<Pair<GlslType, Boolean>, InputPort>
-        get() = listOf(InputPort("uv", GlslType.Vec2, "U/V Coordinate", ContentType.UvCoordinateStream))
+        get() = listOf(InputPort("uv", GlslType.Vec2, "Upstream U/V Coordinate", ContentType.UvCoordinateStream))
             .associateBy { it.type to (it.contentType?.isStream ?: false) }
     override val outputPort: OutputPort
         get() = DistortionShader.outputPort
-
-    override fun invocationGlsl(
-        namespace: GlslCode.Namespace,
-        resultVar: String,
-        portMap: Map<String, String>
-    ): String {
-        val inVar = portMap["gl_FragCoord"] ?: throw LinkException("No input for shader \"$title\"")
-        return resultVar + " = " + namespace.qualify(entryPoint.name) + "($inVar.xy)"
-    }
 }
