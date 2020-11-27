@@ -46,16 +46,13 @@ class BeatLinkPlugin internal constructor(
             classSerializer(BeatLinkControl.serializer())
         )
 
-    override val dataSourceSerializers
-        get() = listOf(
-            objectSerializer("baaahs.BeatLink:BeatLink", beatLinkDataSource)
-        )
-
     override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
         get() = listOf(
             object : DataSourceBuilder<BeatLinkDataSource> {
                 override val resourceName: String get() = "BeatLink"
                 override val contentType: ContentType get() = beatDataContentType
+                override val serializer get() =
+                    objectSerializer("baaahs.BeatLink:BeatLink", beatLinkDataSource)
 
                 override fun suggestDataSources(
                     inputPort: InputPort,

@@ -29,7 +29,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         ContentType.coreTypes +
                 dataSourceBuilders.map { it.contentType } +
                 deviceTypes.map { it.resultContentType } +
-                deviceTypes.flatMap { it.dataSources.map { dataSource -> dataSource.contentType } }
+                deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.contentType } }
 
     override val dataSourceBuilders get() = CorePlugin.dataSourceBuilders
 
@@ -63,21 +63,6 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             classSerializer(VisualizerControl.serializer())
         )
 
-    override val dataSourceSerializers
-        get() = listOf(
-            classSerializer(ResolutionDataSource.serializer()),
-            classSerializer(PreviewResolutionDataSource.serializer()),
-            classSerializer(TimeDataSource.serializer()),
-            classSerializer(PixelCoordsTextureDataSource.serializer()),
-            classSerializer(ModelInfoDataSource.serializer()),
-            classSerializer(RasterCoordinateDataSource.serializer()),
-            classSerializer(SliderDataSource.serializer()),
-            classSerializer(ColorPickerDataSource.serializer()),
-            classSerializer(RadioButtonStripDataSource.serializer()),
-            classSerializer(XyPadDataSource.serializer()),
-            classSerializer(MovingHeadInfoDataSource.serializer())
-        )
-
     override val deviceTypes: List<DeviceType>
         get() = listOf(
             PixelArrayDevice,
@@ -94,6 +79,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<ResolutionDataSource> {
             override val resourceName: String get() = "Resolution"
             override val contentType: ContentType get() = ContentType.Resolution
+            override val serializer get() = classSerializer(serializer())
+
             override fun build(inputPort: InputPort): ResolutionDataSource =
                 ResolutionDataSource()
         }
@@ -123,6 +110,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<PreviewResolutionDataSource> {
             override val resourceName: String get() = "Preview Resolution"
             override val contentType: ContentType get() = ContentType.PreviewResolution
+            override val serializer get() = classSerializer(serializer())
             override fun build(inputPort: InputPort): PreviewResolutionDataSource =
                 PreviewResolutionDataSource()
         }
@@ -164,6 +152,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<TimeDataSource> {
             override val resourceName: String get() = "Time"
             override val contentType: ContentType get() = ContentType.Time
+            override val serializer get() = classSerializer(serializer())
             override fun build(inputPort: InputPort): TimeDataSource =
                 TimeDataSource()
         }
@@ -196,6 +185,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<PixelCoordsTextureDataSource> {
             override val resourceName: String get() = "PixelCoords"
             override val contentType: ContentType get() = ContentType.PixelCoordinatesTexture
+            override val serializer get() = classSerializer(serializer())
 
             override fun build(inputPort: InputPort): PixelCoordsTextureDataSource =
                 PixelCoordsTextureDataSource()
@@ -218,6 +208,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<ScreenUvCoordDataSource> {
             override val resourceName: String get() = "Screen U/V Coordinate"
             override val contentType: ContentType get() = ContentType.UvCoordinateStream
+            override val serializer get() = classSerializer(serializer())
             override fun build(inputPort: InputPort): ScreenUvCoordDataSource =
                 ScreenUvCoordDataSource()
         }
@@ -257,6 +248,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<ModelInfoDataSource> {
             override val resourceName: String get() = "Model Info"
             override val contentType: ContentType get() = ContentType.ModelInfo
+            override val serializer get() = classSerializer(serializer())
             private val modelInfoType = ContentType.ModelInfo.glslType
 
             // TODO: dataType should be something like "{vec3,vec3}" probably.
@@ -310,6 +302,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<RasterCoordinateDataSource> {
             override val resourceName: String get() = "Raster Coordinate"
             override val contentType: ContentType get() = ContentType.RasterCoordinate
+            override val serializer get() = classSerializer(serializer())
             override fun build(inputPort: InputPort): RasterCoordinateDataSource =
                 RasterCoordinateDataSource()
         }
@@ -387,6 +380,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<SliderDataSource> {
             override val resourceName: String get() = "Slider"
             override val contentType: ContentType get() = ContentType.Float
+            override val serializer get() = classSerializer(serializer())
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Float)
@@ -439,6 +433,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<XyPadDataSource> {
             override val resourceName: String get() = "XyPad"
             override val contentType: ContentType get() = ContentType.XyCoordinate
+            override val serializer get() = classSerializer(serializer())
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Vec2)
@@ -487,6 +482,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<ColorPickerDataSource> {
             override val resourceName: String get() = "ColorPicker"
             override val contentType: ContentType get() = ContentType.Color
+            override val serializer get() = classSerializer(serializer())
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Vec4)
@@ -531,6 +527,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<RadioButtonStripDataSource> {
             override val resourceName: String get() = "Radio Button Strip"
             override val contentType: ContentType get() = ContentType.Int
+            override val serializer get() = classSerializer(serializer())
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Int)
@@ -574,6 +571,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<ImageDataSource> {
             override val resourceName: String get() = "Image"
             override val contentType: ContentType get() = ContentType.ColorStream
+            override val serializer get() = classSerializer(serializer())
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Sampler2D)
 

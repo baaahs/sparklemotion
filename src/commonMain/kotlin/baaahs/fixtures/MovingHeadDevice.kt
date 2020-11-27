@@ -15,6 +15,7 @@ import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.model.MovingHead
 import baaahs.plugin.CorePlugin
+import baaahs.plugin.classSerializer
 import baaahs.show.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -24,9 +25,8 @@ object MovingHeadDevice : DeviceType {
     override val id: String get() = "MovingHead"
     override val title: String get() = "Moving Head"
 
-    override val dataSources: List<DataSource> get() = listOf(
-        MovingHeadInfoDataSource()
-    )
+    override val dataSourceBuilders: List<DataSourceBuilder<*>>
+        get() = listOf(MovingHeadInfoDataSource)
 
     override val resultParams: List<ResultParam> get() = listOf(
         ResultParam("Pan/Tilt", Vec2ResultType)
@@ -87,8 +87,8 @@ data class MovingHeadInfoDataSource(@Transient val `_`: Boolean = true) : DataSo
 
     companion object : DataSourceBuilder<MovingHeadInfoDataSource> {
         override val resourceName: String get() = "baaahs.Core.MovingHeadInfo"
-
         override val contentType: ContentType get() = movingHeadInfoContentType
+        override val serializer get() = classSerializer(serializer())
 
         override fun build(inputPort: InputPort): MovingHeadInfoDataSource {
             return MovingHeadInfoDataSource()

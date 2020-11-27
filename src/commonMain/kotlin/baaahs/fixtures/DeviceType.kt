@@ -7,7 +7,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
-import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import com.danielgergely.kgl.*
 import kotlinx.serialization.KSerializer
@@ -22,7 +22,7 @@ import kotlin.reflect.KClass
 interface DeviceType {
     val id: String
     val title: String
-    val dataSources: List<DataSource>
+    val dataSourceBuilders: List<DataSourceBuilder<*>>
     val resultParams: List<ResultParam>
     val resultContentType: ContentType
     val errorIndicatorShader: Shader

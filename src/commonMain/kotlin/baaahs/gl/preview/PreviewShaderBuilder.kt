@@ -13,6 +13,7 @@ import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableConstPort
@@ -197,7 +198,7 @@ class PreviewShaderBuilder(
 object ProjectionPreviewDevice: DeviceType {
     override val id: String get() = "ProjectionPreview"
     override val title: String get() = "Projection Preview"
-    override val dataSources: List<DataSource> get() = PixelArrayDevice.dataSources
+    override val dataSourceBuilders: List<DataSourceBuilder<*>> get() = PixelArrayDevice.dataSourceBuilders
     override val resultParams: List<ResultParam>
         get() = listOf(
             ResultParam("Vertex Location", Vec2ResultType)
