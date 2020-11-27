@@ -45,9 +45,9 @@ object FilterShaderSpec : Spek({
             it("finds magic uniforms") {
                 expect(shader.inputPorts.map { it.copy(glslArgSite = null) })
                     .containsExactly(
-                        InputPort("gl_FragColor", GlslType.Vec4, "Input Color", ContentType.ColorStream),
                         InputPort("fade", GlslType.Float, "Fade"),
-                        InputPort("otherColorStream", GlslType.Vec4, "Other Color Stream", ContentType.ColorStream)
+                        InputPort("otherColorStream", GlslType.Vec4, "Upstream Color", ContentType.ColorStream),
+                        InputPort("colorIn", GlslType.Vec4, "Upstream Color", ContentType.ColorStream)
                     )
             }
 
@@ -81,7 +81,7 @@ object FilterShaderSpec : Spek({
                         }
 
                         addShaderInstance(shader.shader) {
-                            link("gl_FragColor", MutableShaderOutPort(redInstance))
+                            link("colorIn", MutableShaderOutPort(redInstance))
                             link("otherColorStream", MutableShaderChannel(otherChannel.id))
                             link("fade", MutableConstPort(".5", GlslType.Float))
                         }
@@ -156,7 +156,7 @@ object FilterShaderSpec : Spek({
                     shader.invocationGlsl(
                         namespace,
                         "resultVar",
-                        mapOf("gl_FragColor" to "boof")
+                        mapOf("colorIn" to "boof")
                     )
                 ).toBe("resultVar = p0_mainFilter(boof)")
             }

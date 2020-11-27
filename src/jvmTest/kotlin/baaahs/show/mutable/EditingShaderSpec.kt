@@ -165,7 +165,7 @@ object EditingShaderSpec : Spek({
                 it("should set some reasonable defaults") {
                     expect(mutableShaderInstance.incomingLinks.mapValues { (_, port) -> port.title })
                         .toBe(mapOf(
-                            "gl_FragColor" to "Main Channel",
+                            "inColor" to "Main Channel",
                             "theScale" to "The Scale Slider",
                             "time" to "Time"
                         ))
@@ -253,9 +253,13 @@ object EditingShaderSpec : Spek({
             }
 
             context("incoming link suggestions") {
+                override(autoWirer) {
+                    AutoWirer(plugins)
+                }
+
                 it("suggests link options for each input port") {
                     expect(editingShader.openShader!!.inputPorts.map { it.id }.toSet())
-                        .toBe(setOf("theScale", "time", "gl_FragColor"))
+                        .toBe(setOf("theScale", "time", "inColor"))
                 }
 
                 it("suggests reasonable link options for scale") {
@@ -280,12 +284,12 @@ object EditingShaderSpec : Spek({
 
                 it("suggests reasonable link options for input color") {
                     // Should never include ourself.
-                    expect(editingShader.linkOptionsFor("gl_FragColor").stringify())
+                    expect(editingShader.linkOptionsFor("inColor").stringify())
                         .toBe("""
                             Channel:
                             * Main Channel
                             Data Source:
-                            * Input Color ColorPicker
+                            * Upstream Color ColorPicker
                             Shader Output:
                             * Shader "Paint" output
                         """.trimIndent())
@@ -299,13 +303,13 @@ object EditingShaderSpec : Spek({
                     context("and its result type matches this input's type") {
                         it("should include that shader channel as an option") {
                             // Should never include ourself.
-                            expect(editingShader.linkOptionsFor("gl_FragColor").stringify())
+                            expect(editingShader.linkOptionsFor("inColor").stringify())
                                 .toBe("""
                                     Channel:
                                     * Main Channel
                                     * Other Channel
                                     Data Source:
-                                    * Input Color ColorPicker
+                                    * Upstream Color ColorPicker
                                     Shader Output:
                                     * Shader "Paint" output
                                 """.trimIndent())
@@ -316,12 +320,12 @@ object EditingShaderSpec : Spek({
                         override(otherShaderInShow) { Shaders.flipY } // distortion
 
                         it("shouldn't include that shader channel as an option") {
-                            expect(editingShader.linkOptionsFor("gl_FragColor").stringify())
+                            expect(editingShader.linkOptionsFor("inColor").stringify())
                                 .toBe("""
                                     Channel:
                                     * Main Channel
                                     Data Source:
-                                    * Input Color ColorPicker
+                                    * Upstream Color ColorPicker
                                     Shader Output:
                                     * Shader "Paint" output
                                 """.trimIndent())

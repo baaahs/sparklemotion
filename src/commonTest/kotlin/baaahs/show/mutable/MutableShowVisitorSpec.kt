@@ -1,11 +1,10 @@
 package baaahs.show.mutable
 
 import baaahs.describe
+import baaahs.gl.expects
 import baaahs.show.DataSource
 import baaahs.show.SampleData
 import baaahs.show.Surfaces
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
 object MutableShowVisitorSpec : Spek({
@@ -21,7 +20,7 @@ object MutableShowVisitorSpec : Spek({
             it("should visit things but only once") {
                 show.accept(visitor)
 
-                expect(visitorCounts).toBe(
+                expects(
                     mapOf(
                         "Some patch holder" to 8, // These represent distinct items that don't have distinguishing short names.
                         "Some patch" to 6, // These represent distinct items that don't have distinguishing short names.
@@ -31,6 +30,7 @@ object MutableShowVisitorSpec : Spek({
                         "Shader channel main" to 1,
                         "Data source Model Info" to 1,
                         "Data source Pixel Coordinates Texture" to 1,
+                        "Data source Raster Coordinate" to 1,
                         "Shader instance Darkness" to 1,
                         "Shader Darkness" to 1,
                         "Shader instance Brightness" to 1,
@@ -70,7 +70,7 @@ object MutableShowVisitorSpec : Spek({
                         "Shader Ripple" to 1,
                         "Control Wobbly" to 1
                     )
-                )
+                ) { visitorCounts }
             }
         }
     }

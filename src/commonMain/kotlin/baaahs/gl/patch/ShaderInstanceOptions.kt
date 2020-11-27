@@ -59,7 +59,7 @@ class ShaderInstanceOptions(
                 exactContentType?.let { expanded - exactContentType } ?: expanded
             }
             val contentTypes =
-                (exactContentType?.let { listOf(it) } ?: emptyList()) + expandedContentTypes
+                listOfNotNull(exactContentType) + expandedContentTypes
 
             contentTypes.forEach { contentType ->
                 defaultPorts[contentType]?.let { defaultPort ->

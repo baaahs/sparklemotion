@@ -447,7 +447,7 @@ object GlslGenerationSpec : Spek({
 
                 mutablePatch.addShaderInstance(mainShader) {
                     link("fade", CorePlugin.SliderDataSource("Fade", 0f, 0f, 1f, null))
-                    link("gl_FragColor", MutableShaderChannel("main"))
+                    link("inColor", MutableShaderChannel("main"))
                     link("inColor2", MutableShaderChannel("other"))
                 }
             }

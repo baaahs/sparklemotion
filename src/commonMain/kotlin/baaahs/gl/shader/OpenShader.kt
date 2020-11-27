@@ -5,6 +5,7 @@ import baaahs.RefCounter
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
@@ -33,11 +34,12 @@ interface OpenShader : RefCounted {
             ?: error(unknown("input port", portId, inputPorts))
 
     fun toGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
+
     fun invocationGlsl(
         namespace: Namespace,
         resultVar: String,
         portMap: Map<String, String> = emptyMap()
-    ): String
+    ): String = entryPoint.invocationGlsl(namespace, resultVar, portMap)
 
     abstract class Base(
         final override val shader: Shader,
@@ -46,16 +48,23 @@ interface OpenShader : RefCounted {
     ) : OpenShader, RefCounted by RefCounter() {
         override val title: String get() = shader.title
 
-        abstract val proFormaInputPorts: List<InputPort>
+        open val implicitInputPorts: List<InputPort> = emptyList()
+
+        private val proFormaInputPorts: List<InputPort>
+            get() = implicitInputPorts.mapNotNull { ifRefersTo(it)?.copy(isImplicit = true) }
+
         abstract val wellKnownInputPorts: Map<String, InputPort>
+        open val defaultInputPortsByType: Map<Pair<GlslType, Boolean>, InputPort> = emptyMap()
 
         override val inputPorts: List<InputPort> by lazy {
             proFormaInputPorts +
-                    glslCode.globalInputVars.map {
-                        wellKnownInputPorts[it.name]
-                            ?.copy(type = it.type, glslArgSite = it)
-                            ?: it.toInputPort(plugins)
-                    }
+                    (glslCode.globalInputVars + entryPoint.params.filter { it.isIn })
+                        .map {
+                            wellKnownInputPorts[it.name]?.copy(type = it.type, glslArgSite = it)
+                                ?: defaultInputPortsByType[it.type to it.isVarying]
+                                    ?.copy(id = it.name, varName = it.name, glslArgSite = it)
+                                ?: it.toInputPort(plugins)
+                        }
         }
 
         abstract val shaderType: ShaderType
@@ -66,6 +75,9 @@ interface OpenShader : RefCounted {
 
         override fun findInputPortOrNull(portId: String): InputPort? =
             inputPorts.find { it.id == portId }
+
+        fun ifRefersTo(inputPort: InputPort) =
+            if (glslCode.refersToGlobal(inputPort.id)) inputPort else null
 
         override fun toGlsl(namespace: Namespace, portMap: Map<String, String>): String {
             val buf = StringBuilder()

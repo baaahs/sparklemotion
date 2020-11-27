@@ -70,6 +70,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             classSerializer(TimeDataSource.serializer()),
             classSerializer(PixelCoordsTextureDataSource.serializer()),
             classSerializer(ModelInfoDataSource.serializer()),
+            classSerializer(RasterCoordinateDataSource.serializer()),
             classSerializer(SliderDataSource.serializer()),
             classSerializer(ColorPickerDataSource.serializer()),
             classSerializer(RadioButtonStripDataSource.serializer()),
@@ -301,6 +302,35 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
                 override fun release() = Unit
             }
         }
+    }
+
+    @Serializable
+    @SerialName("baaahs.Core:RasterCoordinate")
+    data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : DataSource {
+        companion object : DataSourceBuilder<RasterCoordinateDataSource> {
+            override val resourceName: String get() = "Raster Coordinate"
+            override val contentType: ContentType get() = ContentType.RasterCoordinate
+            override fun build(inputPort: InputPort): RasterCoordinateDataSource =
+                RasterCoordinateDataSource()
+        }
+
+        override val pluginPackage: String get() = id
+        override val title: String get() = "Raster Coordinate"
+        override fun getType(): GlslType = GlslType.Vec2
+        override val contentType: ContentType
+            get() = ContentType.RasterCoordinate
+
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
+            object : Feed, RefCounted by RefCounter() {
+                override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
+                    override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {}
+                }
+
+                override fun release() = Unit
+            }
+
+        override fun isImplicit(): Boolean = true
+        override fun getVarName(id: String): String = "gl_FragCoord"
     }
 
     interface GadgetDataSource<T : Gadget> : DataSource {
@@ -585,7 +615,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             ResolutionDataSource,
             PreviewResolutionDataSource,
             SliderDataSource,
-            MovingHeadInfoDataSource
+            MovingHeadInfoDataSource,
+            RasterCoordinateDataSource
         )
 
         private val logger = Logger("CorePlugin")

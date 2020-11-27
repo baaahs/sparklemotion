@@ -63,8 +63,9 @@ class ShaderToyPaintShader(
 
     override val entryPointName: String
         get() = "mainImage"
-    override val proFormaInputPorts: List<InputPort>
-        get() = ShaderToyPaintShader.proFormaInputPorts
+
+    override val implicitInputPorts: List<InputPort>
+        get() = proFormaInputPorts
     override val wellKnownInputPorts: Map<String, InputPort>
         get() = ShaderToyPaintShader.wellKnownInputPorts
     override val outputPort: OutputPort

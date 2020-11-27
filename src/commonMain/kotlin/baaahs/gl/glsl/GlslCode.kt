@@ -247,10 +247,15 @@ class GlslCode(
         override fun stripSource() = copy(lineNumber = null)
 
         fun invocationGlsl(namespace: Namespace, resultVar: String, portMap: Map<String, String>): String {
+            val assignment = if (returnType != GlslType.Void) {
+                "$resultVar = "
+            } else ""
+
             val args = params.joinToString(", ") { glslParam ->
                 portMap[glslParam.name] ?: "/* huh? ${glslParam.name} */"
             }
-            return namespace.qualify(name) + "($args)"
+
+            return assignment + namespace.qualify(name) + "($args)"
         }
     }
 
