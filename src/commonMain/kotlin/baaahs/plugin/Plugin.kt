@@ -25,7 +25,6 @@ interface Plugin {
     val contentTypes: List<ContentType>
     val controlSerializers: List<SerializerRegistrar<out Control>>
     val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
-    val dataSourceSerializers: List<SerializerRegistrar<out DataSource>>
     val deviceTypes: List<DeviceType>
         get() = emptyList()
 }

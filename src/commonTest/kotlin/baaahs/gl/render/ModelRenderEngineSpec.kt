@@ -15,13 +15,13 @@ import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.renderPlanFor
+import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.PaintShader
 import baaahs.gl.testPlugins
 import baaahs.only
-import baaahs.show.DataSource
+import baaahs.plugin.SerializerRegistrar
+import baaahs.show.*
 import baaahs.show.Shader
-import baaahs.show.ShaderType
-import baaahs.show.UpdateMode
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.show.live.link
 import baaahs.shows.FakeGlContext
@@ -257,12 +257,21 @@ private fun someVectors(count: Int, initial: Float = 0f): List<Vector3F> =
     (0 until count).map { Vector3F(initial + count / 10f, 0f, 0f) }
 
 class DeviceTypeForTest(
-    vararg fixtureDataSources: DataSource,
+    vararg val fixtureDataSources: DataSource,
     override val resultContentType: ContentType = ContentType.ColorStream,
     override val id: String = "testDevice",
     override val title: String = id.englishize()
 ) : DeviceType {
-    override val dataSources: List<DataSource> = fixtureDataSources.toList()
+    override val dataSourceBuilders: List<DataSourceBuilder<*>>
+        get() = fixtureDataSources.map { dataSource ->
+            object : DataSourceBuilder<DataSource> {
+                override val resourceName: String get() = "resName$dataSource"
+                override val contentType: ContentType get() = dataSource.contentType
+                override val serializer: SerializerRegistrar<DataSource> get() = TODO("not implemented")
+                override fun build(inputPort: InputPort): DataSource = dataSource
+            }
+        }
+
     override val resultParams: List<ResultParam> get() = emptyList()
     override val errorIndicatorShader: Shader
         get() = Shader("Ω Guru Meditation Error Ω", ShaderType.Paint, "")

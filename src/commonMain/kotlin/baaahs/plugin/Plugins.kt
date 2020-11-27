@@ -71,7 +71,10 @@ class Plugins private constructor(
     }
 
     private val dataSourceSerialModule = SerializersModule {
-        registerSerializers { dataSourceSerializers }
+        registerSerializers {
+            dataSourceBuilders.map { it.serializer } +
+                    deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializer } }
+        }
     }
 
     private val dataSourceBuilders = DataSourceBuilders()
@@ -129,7 +132,7 @@ class Plugins private constructor(
         val suggestions = (setOfNotNull(inputPort.contentType) + suggestedContentTypes).flatMap { contentType ->
             val dataSourceCandidates =
                 dataSourceBuilders.buildForContentType(contentType, inputPort) +
-                        deviceTypes.dataSourcesFor(contentType)
+                        deviceTypes.buildForContentType(contentType, inputPort)
 
             dataSourceCandidates.map { dataSource ->
                 PortLinkOption(
@@ -223,10 +226,10 @@ class Plugins private constructor(
     inner class DeviceTypes {
         val all = plugins.flatMap { it.deviceTypes }
 
-        fun dataSourcesFor(contentType: ContentType): List<DataSource> {
+        fun buildForContentType(contentType: ContentType, inputPort: InputPort): List<DataSource> {
             return all.flatMap { deviceType ->
-                deviceType.dataSources.filter { dataSource -> dataSource.contentType == contentType }
-            }
+                deviceType.dataSourceBuilders.filter { dataSource -> dataSource.contentType == contentType }
+            }.map { it.build(inputPort) }
         }
     }
 }

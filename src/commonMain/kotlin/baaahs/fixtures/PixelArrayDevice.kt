@@ -9,9 +9,13 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderTarget
+import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
 import baaahs.plugin.CorePlugin
+import baaahs.plugin.SerializerRegistrar
+import baaahs.plugin.classSerializer
 import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import kotlinx.serialization.SerialName
@@ -23,9 +27,8 @@ object PixelArrayDevice : DeviceType {
     override val id: String get() = "PixelArray"
     override val title: String get() = "Pixel Array"
 
-    override val dataSources: List<DataSource> = listOf(
-//        PixelLocationDataSource()
-    )
+    override val dataSourceBuilders: List<DataSourceBuilder<*>>
+        get() = listOf(PixelLocationDataSource)
 
     override val resultParams: List<ResultParam> = listOf(
         ResultParam("Pixel Color", ColorResultType)
@@ -67,6 +70,18 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
         return PixelLocationFeed(getVarName(id))
+    }
+
+    companion object : DataSourceBuilder<PixelLocationDataSource> {
+        override val resourceName: String
+            get() = "PixelLocation"
+        override val contentType: ContentType
+            get() = ContentType.XyzCoordinate.stream()
+        override val serializer: SerializerRegistrar<PixelLocationDataSource>
+            get() = classSerializer(serializer())
+
+        override fun build(inputPort: InputPort): PixelLocationDataSource =
+            PixelLocationDataSource()
     }
 }
 
