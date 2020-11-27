@@ -267,7 +267,7 @@ class DeviceTypeForTest(
             object : DataSourceBuilder<DataSource> {
                 override val resourceName: String get() = "resName$dataSource"
                 override val contentType: ContentType get() = dataSource.contentType
-                override val serializer: SerializerRegistrar<DataSource> get() = TODO("not implemented")
+                override val serializerRegistrar: SerializerRegistrar<DataSource> get() = TODO("not implemented")
                 override fun build(inputPort: InputPort): DataSource = dataSource
             }
         }
