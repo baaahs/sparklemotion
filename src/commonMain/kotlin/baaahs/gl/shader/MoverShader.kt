@@ -9,8 +9,6 @@ import baaahs.show.ShaderType
 
 class MoverShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
     companion object {
-        val proFormaInputPorts = emptyList<InputPort>()
-
         val wellKnownInputPorts = listOf(
             InputPort("position", GlslType.Vec3, "Position", ContentType.XyzCoordinate),
             InputPort("orientation", GlslType.Vec3, "Orientation", ContentType.XyzCoordinate),
@@ -25,8 +23,6 @@ class MoverShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenSh
 
     override val entryPointName: String get() = "mainMover"
 
-    override val proFormaInputPorts: List<InputPort>
-        get() = MoverShader.proFormaInputPorts
     override val wellKnownInputPorts: Map<String, InputPort>
         get() = MoverShader.wellKnownInputPorts
     override val outputPort: OutputPort

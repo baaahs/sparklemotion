@@ -4,6 +4,7 @@ import baaahs.Gadget
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.fixtures.DeviceType
 import baaahs.getBang
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.show.*
@@ -112,7 +113,7 @@ class Plugins private constructor(
     fun suggestContentTypes(inputPort: InputPort): Set<ContentType> {
         val glslType = inputPort.type
         val isStream = inputPort.glslArgSite?.isVarying ?: false
-        return (contentTypes.byGlslType[glslType to isStream] ?: emptyList()).toSet()
+        return contentTypes.matchingType(glslType, isStream)
     }
 
     fun resolveDataSource(inputPort: InputPort): DataSource {
@@ -181,6 +182,18 @@ class Plugins private constructor(
     }
 
     inner class ContentTypes {
+        /**
+         * Since e.g. a single color could satisfy a color-stream, we'll widen suggested content types
+         * to include non-stream types, if [includeNonStream] is true.
+         */
+        fun matchingType(glslType: GlslType, isStream: Boolean, includeNonStream: Boolean = true): Set<ContentType> {
+            val exactMatches = byGlslType[glslType to isStream] ?: emptyList()
+            val broaderMatches = if (isStream && includeNonStream) {
+                byGlslType[glslType to false] ?: emptyList()
+            } else emptyList()
+            return (exactMatches + broaderMatches).toSet()
+        }
+
         val all = plugins.flatMap { it.contentTypes }.toSet()
         val byId = all.associateBy { it.id }
         val byGlslType = all.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })

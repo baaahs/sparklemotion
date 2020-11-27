@@ -3,13 +3,12 @@ package baaahs.shows
 import baaahs.Gadget
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
+import baaahs.gl.kexpect
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkControl
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.show.*
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -161,6 +160,11 @@ fun jsonFor(dataSource: DataSource): JsonElement {
                 put("type", "baaahs.Core:ModelInfo")
             }
         }
+        is CorePlugin.RasterCoordinateDataSource -> {
+            buildJsonObject {
+                put("type", "baaahs.Core:RasterCoordinate")
+            }
+        }
         is BeatLinkPlugin.BeatLinkDataSource -> buildJsonObject {
             put("type", "baaahs.BeatLink:BeatLink")
         }
@@ -220,5 +224,5 @@ fun Plugins.expectJson(expected: JsonElement, block: () -> JsonElement) {
         serializersModule = serialModule
     }
     fun JsonElement.toStr() = json.encodeToString(JsonElement.serializer(), this)
-    expect(block().toStr()).toBe(expected.toStr())
+    kexpect(block().toStr()).toBe(expected.toStr())
 }

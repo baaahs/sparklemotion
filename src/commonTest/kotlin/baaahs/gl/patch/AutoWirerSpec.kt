@@ -186,7 +186,8 @@ object AutoWirerSpec : Spek({
                                 incomingLinks.putAll(
                                     mapOf(
                                         "pixelCoordsTexture" to CorePlugin.PixelCoordsTextureDataSource().editor(),
-                                        "modelInfo" to CorePlugin.ModelInfoDataSource().editor()
+                                        "modelInfo" to CorePlugin.ModelInfoDataSource().editor(),
+                                        "rasterCoord" to CorePlugin.RasterCoordinateDataSource().editor()
                                     )
                                 )
                                 shaderChannel = ShaderChannel.Main.editor()
@@ -217,7 +218,7 @@ object AutoWirerSpec : Spek({
                                 MutableShader(filterShader),
                                 hashMapOf(
                                     "brightness" to CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f, null).editor(),
-                                    "gl_FragColor" to ShaderChannel.Main.editor()
+                                    "colorIn" to ShaderChannel.Main.editor()
                                 ),
                                 shaderChannel = ShaderChannel.Main.editor()
                             )
@@ -246,7 +247,7 @@ object AutoWirerSpec : Spek({
                             MutableShaderInstance(
                                 MutableShader(filterShader),
                                 hashMapOf(
-                                    "gl_FragCoord" to ShaderChannel.Main.editor()
+                                    "uvIn" to ShaderChannel.Main.editor()
                                 ),
                                 shaderChannel = ShaderChannel.Main.editor()
                             )
