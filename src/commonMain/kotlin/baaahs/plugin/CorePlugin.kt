@@ -120,7 +120,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<PreviewResolutionDataSource> {
             override val resourceName: String get() = "Preview Resolution"
-            override val contentType: ContentType get() = ContentType.Resolution
+            override val contentType: ContentType get() = ContentType.PreviewResolution
             override fun build(inputPort: InputPort): PreviewResolutionDataSource =
                 PreviewResolutionDataSource()
         }
@@ -129,7 +129,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val title: String get() = "PreviewResolution"
         override fun getType(): GlslType = GlslType.Vec2
         override val contentType: ContentType
-            get() = ContentType.Resolution
+            get() = ContentType.PreviewResolution
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
