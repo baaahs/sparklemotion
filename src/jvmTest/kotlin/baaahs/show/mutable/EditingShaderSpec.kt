@@ -1,46 +1,41 @@
 package baaahs.show.mutable
 
-import baaahs.StubBeatSource
+import baaahs.*
 import baaahs.app.ui.editor.LinkOption
 import baaahs.app.ui.editor.PortLinkOption
-import baaahs.describe
-import baaahs.expectEmptyMap
+import baaahs.gl.kexpect
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
+import baaahs.gl.render.PreviewRenderEngine
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
-import baaahs.only
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.mutable.EditingShader.State
+import baaahs.shows.FakeGlContext
 import baaahs.ui.Observer
 import baaahs.ui.addObserver
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import com.danielgergely.kgl.GL_FRAGMENT_SHADER
+import ext.TestCoroutineContext
 import io.mockk.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
-import kotlin.collections.List
-import kotlin.collections.arrayListOf
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.emptyList
-import kotlin.collections.forEach
-import kotlin.collections.joinToString
-import kotlin.collections.map
-import kotlin.collections.mapOf
-import kotlin.collections.mapValues
 import kotlin.collections.set
-import kotlin.collections.setOf
-import kotlin.collections.sortedWith
-import kotlin.collections.toSet
 
 // Currently in jvmTest so we can use mockk.
 // TODO: move back to commonTest when mockk supports multiplatform.
+@InternalCoroutinesApi
 object EditingShaderSpec : Spek({
     describe<EditingShader> {
         val plugins by value { testPlugins() + BeatLinkPlugin.Builder(StubBeatSource()) }
@@ -79,6 +74,7 @@ object EditingShaderSpec : Spek({
         val mutableShow by value { MutableShow("show") { addPatch(mutablePatch) } }
         val observerSlot by value { slot<Observer>() }
         val mockShaderBuilder by value { mockk<ShaderBuilder>() }
+        val getShaderBuilder by value<(Shader) -> ShaderBuilder> { { _ -> mockShaderBuilder } }
         val button by value { mutableShow.addButton("panel", "button") {} }
         val otherPatchInShow by value { MutablePatch { addShaderInstance(otherShaderInShow) } }
 
@@ -95,9 +91,8 @@ object EditingShaderSpec : Spek({
         val beforeBuildingShader by value { { } }
         val editingShader by value {
             beforeBuildingShader()
-            EditingShader(mutableShow, mutablePatch, mutableShaderInstance, autoWirer) {
-                mockShaderBuilder
-            }.also { it.addObserver { notifiedStates.add(it.state) } }
+            EditingShader(mutableShow, mutablePatch, mutableShaderInstance, autoWirer, getShaderBuilder)
+                .also { it.addObserver { notifiedStates.add(it.state) } }
         }
         beforeEachTest {
             editingShader.let {} // Make sure it's warmed up.
@@ -329,9 +324,79 @@ object EditingShaderSpec : Spek({
                                     * Shader "Paint" output
                                 """.trimIndent())
                         }
-
                     }
                 }
+            }
+        }
+
+        context("preview") {
+            val context by value { TestCoroutineContext("test") }
+            override(shaderInEdit) { paintShader }
+            override(getShaderBuilder) {
+                { shader: Shader -> PreviewShaderBuilder(shader, autoWirer, TestModel, CoroutineScope(context)) }
+            }
+            val gl by value { FakeGlContext() }
+            val renderEngine by value { PreviewRenderEngine(gl, 1, 1) }
+
+            it("generates something TODO") {
+                editingShader.shaderBuilder.startCompile(renderEngine)
+                expect(editingShader.state).toBe(State.Building)
+                context.runAll()
+                expect(editingShader.state).toBe(State.Success)
+
+                val fakeProgram = gl.programs[0]
+                val fragShader = fakeProgram.shaders[GL_FRAGMENT_SHADER]?.src
+                kexpect(fragShader).toBe("""
+                    #version 1234
+
+                    #ifdef GL_ES
+                    precision mediump float;
+                    #endif
+
+                    // SparkleMotion-generated GLSL
+
+                    layout(location = 0) out vec4 sm_result;
+
+                    // Data source: PreviewResolution
+                    uniform vec2 in_previewResolution;
+
+                    // Data source: Time
+                    uniform float in_time;
+
+                    // Shader: Screen Coords; namespace: p0
+                    // Screen Coords
+
+                    vec2 p0_screenCoordsi_result = vec2(0.);
+
+                    #line 3
+                    vec2 p0_screenCoords_mainProjection(vec2 fragCoords) {
+                      return fragCoords / in_previewResolution;
+                    }
+
+                    // Shader: Paint; namespace: p1
+                    // Paint
+
+                    vec4 p1_paint_gl_FragColor = vec4(0., 0., 0., 1.);
+
+                    #line 2
+                    void p1_paint_main(void) {
+                        p1_paint_gl_FragColor = vec4(p0_screenCoordsi_result.x, p0_screenCoordsi_result.y, mod(in_time, 1.), 1.);
+                    }
+
+
+                    #line 10001
+                    void main() {
+                      // Invoke Screen Coords
+                      p0_screenCoordsi_result = p0_screenCoords_mainProjection(gl_FragCoord.xy);
+
+                      // Invoke Paint
+                      p1_paint_main();
+
+                      sm_result = p1_paint_gl_FragColor;
+                    }
+
+
+                """.trimIndent())
             }
         }
     }

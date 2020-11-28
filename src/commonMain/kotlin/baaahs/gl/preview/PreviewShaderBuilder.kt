@@ -115,6 +115,7 @@ class PreviewShaderBuilder(
             }
 
             previewPatch = autoWirer.autoWire(*shaders, defaultPorts = defaultPorts)
+//                .dumpOptions()
                 .acceptSuggestedLinkOptions()
                 .resolve()
             linkedPatch = previewPatch?.openForPreview(autoWirer)
