@@ -4,6 +4,7 @@ import baaahs.show.Shader
 import baaahs.show.Surfaces
 import baaahs.show.mutable.*
 import baaahs.unknown
+import baaahs.util.Logger
 
 class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShaderInstance>) {
     fun editShader(shader: Shader): UnresolvedShaderInstance {
@@ -52,8 +53,26 @@ class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShad
         return MutablePatch(shaderInstances.values.toList(), Surfaces.AllSurfaces)
     }
 
+    fun dumpOptions(): UnresolvedPatch {
+        logger.info { "Unresolved Patch:" }
+        unresolvedShaderInstances.forEach { unresolvedShaderInstance ->
+            logger.info { "* ${unresolvedShaderInstance.mutableShader.title}" }
+            unresolvedShaderInstance.incomingLinksOptions.forEach { (inputPort, linkOptions) ->
+                logger.info { "  ${inputPort.id} (${inputPort.contentType}) ->" }
+                linkOptions.forEach { linkOption ->
+                    logger.info { "    * ${linkOption.title}"}
+                }
+            }
+        }
+        return this
+    }
+
     fun acceptSuggestedLinkOptions(): UnresolvedPatch {
         unresolvedShaderInstances.forEach { it.takeFirstIfAmbiguous() }
         return this
+    }
+
+    companion object {
+        private val logger = Logger<UnresolvedPatch>()
     }
 }
