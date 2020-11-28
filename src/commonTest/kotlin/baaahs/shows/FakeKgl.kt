@@ -26,6 +26,7 @@ class FakeGlContext(private val kgl: FakeKgl = FakeKgl()) : GlContext(kgl, "1234
 class FakeKgl : Kgl {
     var nestLevel = 0
 
+    internal val shaders = arrayListOf(FakeShader(0)) // 1-based
     internal val programs = arrayListOf(FakeProgram()) // 1-based
     private var activeProgram: FakeProgram? = null
 
@@ -40,7 +41,12 @@ class FakeKgl : Kgl {
         if (nestLevel == 0) error("ran GL command outside of context!")
     }
 
+    inner class FakeShader(val type: Int) {
+        var src: String? = null
+    }
+
     inner class FakeProgram {
+        val shaders = mutableMapOf<Int, FakeShader>()
         private val uniformIdsByName = mutableMapOf<String, Int>()
         val renders = mutableListOf<RenderState>()
 
@@ -95,7 +101,13 @@ class FakeKgl : Kgl {
         activeTextureUnit = texture - GL_TEXTURE0
     }
 
-    override fun attachShader(programId: Program, shaderId: Shader) { checkContext() }
+    override fun attachShader(programId: Program, shaderId: Shader) {
+        checkContext()
+
+        val fakeProgram = programs[programId as Int]
+        val fakeShader = shaders[shaderId as Int]
+        fakeProgram.shaders[fakeShader.type] = fakeShader
+    }
 
     override fun bindAttribLocation(programId: Program, index: Int, name: String) { checkContext() }
 
@@ -151,7 +163,8 @@ class FakeKgl : Kgl {
 
     override fun createShader(type: Int): Shader? {
         checkContext()
-        return fake(1)
+        shaders.add(FakeShader(type))
+        return fake(shaders.size - 1)
     }
 
     override fun createTexture(): Texture {
@@ -276,7 +289,11 @@ class FakeKgl : Kgl {
 
     override fun renderbufferStorage(target: Int, internalformat: Int, width: Int, height: Int) { checkContext() }
 
-    override fun shaderSource(shaderId: Shader, source: String) { checkContext() }
+    override fun shaderSource(shaderId: Shader, source: String) {
+        checkContext()
+        val fakeShader = shaders[shaderId as Int]
+        fakeShader.src = source
+    }
 
     override fun texImage2D(target: Int, level: Int, internalFormat: Int, border: Int, resource: TextureResource) { checkContext() }
 
