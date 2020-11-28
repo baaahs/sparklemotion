@@ -31,7 +31,6 @@ import materialui.components.tabs.tabs
 import materialui.components.textfield.textField
 import materialui.components.typography.typographyH6
 import materialui.icon
-import materialui.useTheme
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import react.*
@@ -43,8 +42,7 @@ private enum class PageTabs {
 
 val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstanceEditor") { props ->
     val appContext = useContext(appContext)
-    val theme = useTheme()
-    val shaderEditorStyles = memo(theme) { ShaderEditorStyles(theme) }
+    val shaderEditorStyles = appContext.allStyles.shaderEditor
 
     var selectedTab by state { PageTabs.Properties }
     @Suppress("UNCHECKED_CAST")

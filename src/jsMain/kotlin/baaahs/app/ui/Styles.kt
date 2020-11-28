@@ -1,5 +1,6 @@
 package baaahs.app.ui
 
+import baaahs.app.ui.editor.ShaderEditorStyles
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
@@ -13,6 +14,7 @@ import styled.StyleSheet
 
 class AllStyles(val theme: MuiTheme) {
     val appUi by lazy { ThemeStyles(theme) }
+    val shaderEditor by lazy { ShaderEditorStyles(theme) }
 }
 
 private fun linearRepeating(
