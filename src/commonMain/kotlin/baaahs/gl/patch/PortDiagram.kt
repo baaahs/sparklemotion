@@ -1,11 +1,19 @@
 package baaahs.gl.patch
 
+import baaahs.gl.shader.InputPort
+import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.OpenPatch
 import baaahs.util.Logger
 
-class PortDiagram(val patches: List<OpenPatch>) {
+class PortDiagram(
+    dataSources: Map<String, DataSource>,
+    val patches: List<OpenPatch>
+) {
+    private val dataSourceChannelLinks = dataSources.map { (id, dataSource) ->
+        (id to dataSource.contentType) to LiveShaderInstance.DataSourceLink(dataSource, id)
+    }.associate { it }
     private val candidates: Map<Lookup, List<ChannelEntry>>
     private val resolved = hashMapOf<Lookup, LiveShaderInstance>()
 
@@ -84,6 +92,33 @@ class PortDiagram(val patches: List<OpenPatch>) {
                     shaderChannel,
                     shaderInstance.priority
                 )
+            }
+        }
+
+        fun tryDataSource(shaderChannel: ShaderChannel, contentType: ContentType): LiveShaderInstance.DataSourceLink? {
+            return dataSourceChannelLinks[shaderChannel.id to contentType]
+        }
+
+        fun resolveChannel(inputPort: InputPort, shaderChannel: ShaderChannel): LiveShaderInstance.Link? {
+            val contentType = inputPort.contentType
+                ?: return null.also {
+                    // TODO: This should probably show a user-visible error.
+                    logger.error {
+                        "No content type specified for port ${inputPort.id};" +
+                                " it's required to resolve on channel ${shaderChannel.id}" }
+                }
+            val resolved = resolve(shaderChannel, contentType)
+            return if (resolved != null)
+                LiveShaderInstance.ShaderOutLink(resolved)
+            else {
+                tryDataSource(shaderChannel, contentType)
+                    ?: run {
+                        // TODO: This should probably show a user-visible error.
+                        logger.error {
+                            "No upstream shader found for port ${inputPort.id}" +
+                                    " (${inputPort.contentType}) on channel ${shaderChannel.id}" }
+                        null
+                    }
             }
         }
     }

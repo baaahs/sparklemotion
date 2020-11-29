@@ -35,12 +35,6 @@ class AutoWirer(
         parentMutableShow: MutableShow? = null,
         defaultPorts: Map<ContentType, MutablePort> = emptyMap()
     ): UnresolvedPatch {
-        val locallyAvailable: MutableMap<ContentType, MutableSet<MutablePort>> = mutableMapOf()
-
-        defaultPorts.forEach { (contentType, port) ->
-            locallyAvailable[contentType] = hashSetOf(port)
-        }
-
         val siblingsPatch = MutablePatch {
             shaders.forEach { addShaderInstance(it.shader) }
         }
@@ -50,6 +44,7 @@ class AutoWirer(
             shaders.associateWith { openShader ->
                 val shaderInstanceOptions = ShaderInstanceOptions(
                     openShader,
+// TODO                   parentMutableShow = parentMutableShow,
                     parentMutablePatch = siblingsPatch,
                     defaultPorts = defaultPorts,
                     currentLinks = emptyMap(),

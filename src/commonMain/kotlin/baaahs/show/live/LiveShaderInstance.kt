@@ -58,6 +58,14 @@ class LiveShaderInstance(
             programLinker.dataSourceLinks.add(this)
         }
 
+        override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): Link {
+            return resolver.resolveChannel(
+                inputPort.copy(contentType = dataSource.contentType),
+                ShaderChannel(varName)
+            )
+                ?: this
+        }
+
         override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
             return object : Component {
                 override val title: String
@@ -83,25 +91,8 @@ class LiveShaderInstance(
         override fun finalResolve(
             inputPort: InputPort,
             resolver: PortDiagram.Resolver
-        ): Link {
-            val contentType = inputPort.contentType
-                ?: return NoOpLink.also {
-                    // TODO: This should probably show a user-visible error.
-                    logger.error {
-                        "No content type specified for port ${inputPort.id};" +
-                                " it's required to resolve on channel ${shaderChannel.id}" }
-                }
-            val resolved = resolver.resolve(shaderChannel, contentType)
-            return if (resolved != null)
-                ShaderOutLink(resolved)
-            else {
-                // TODO: This should probably show a user-visible error.
-                logger.error {
-                    "No upstream shader found for port ${inputPort.id}" +
-                            " (${inputPort.contentType}) on channel ${shaderChannel.id}" }
-                NoOpLink
-            }
-        }
+        ): Link = resolver.resolveChannel(inputPort, shaderChannel)
+            ?: NoOpLink
     }
     data class ConstLink(val glsl: String) : Link
     object NoOpLink : Link

@@ -3,7 +3,6 @@ package baaahs.glsl
 import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.fixtures.DeviceType
-import baaahs.gl.data.Feed
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
@@ -18,7 +17,6 @@ import baaahs.show.mutable.ShowBuilder
 
 class GuruMeditationError(deviceType: DeviceType) {
     private val shader = deviceType.errorIndicatorShader
-    private val feeds: Map<DataSource, Feed>
     val linkedPatch: LinkedPatch
 
     init {
@@ -34,9 +32,8 @@ class GuruMeditationError(deviceType: DeviceType) {
 
         val showPlayer = FakeShowPlayer(plugins)
         val openShow = ShowOpener(autoWirer.glslAnalyzer, show, showPlayer).openShow()
-        feeds = openShow.feeds
         val openPatch = openShow.patches.only("patch")
-        linkedPatch = PatchResolver.buildPortDiagram(openPatch)
+        linkedPatch = PatchResolver.buildPortDiagram(openShow.allDataSources, openPatch)
             .resolvePatch(ShaderChannel.Main, deviceType.resultContentType)
             ?: error("Couldn't build guru meditation error patch.")
     }

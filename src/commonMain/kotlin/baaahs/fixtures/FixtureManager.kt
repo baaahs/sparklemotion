@@ -1,11 +1,11 @@
 package baaahs.fixtures
 
-import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.PatchResolver
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.show.live.ActivePatchSet
+import baaahs.show.live.OpenShow
 import baaahs.timeSync
 import baaahs.util.Logger
 
@@ -87,7 +87,7 @@ class FixtureManager(
         }
     }
 
-    fun maybeUpdateRenderPlans(feedResolver: FeedResolver): Boolean {
+    fun maybeUpdateRenderPlans(openShow: OpenShow): Boolean {
         var remapFixtures = incorporateFixtureChanges()
 
         // Maybe build new shaders.
@@ -96,8 +96,8 @@ class FixtureManager(
             val activePatchSet = currentActivePatchSet
 
             val elapsedMs = timeSync {
-                val patchResolution = PatchResolver(renderManager, renderTargets.values, activePatchSet)
-                currentRenderPlan = patchResolution.createRenderPlan(feedResolver)
+                val patchResolution = PatchResolver(openShow, renderManager, renderTargets.values, activePatchSet)
+                currentRenderPlan = patchResolution.createRenderPlan()
             }
 
             logger.info {
