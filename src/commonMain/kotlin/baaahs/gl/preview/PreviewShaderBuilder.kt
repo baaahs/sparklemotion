@@ -102,6 +102,7 @@ class PreviewShaderBuilder(
             val openShader = analyze(shader)
             this.openShader = openShader
             val shaders: Array<OpenShader> = when (shader.type) {
+                ShaderType.Unknown -> arrayOf(openShader)
                 ShaderType.Projection -> arrayOf(openShader, pixelUvIdentity)
                 ShaderType.Distortion -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
                 ShaderType.Paint -> arrayOf(screenCoordsProjection, openShader)

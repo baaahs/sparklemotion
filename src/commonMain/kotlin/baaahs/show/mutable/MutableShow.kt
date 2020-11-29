@@ -322,7 +322,7 @@ class MutablePatch {
                 .getResolvedShaderInstances()
         val openPatch = OpenPatch(resolvedShaderInstances.values.toList(), surfaces)
 
-        val portDiagram = PatchResolver.buildPortDiagram(openPatch)
+        val portDiagram = PatchResolver.buildPortDiagram(showBuilder.getDataSources(), openPatch)
         return portDiagram.resolvePatch(ShaderChannel.Main, resultContentType)
     }
 

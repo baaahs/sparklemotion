@@ -16,6 +16,44 @@ enum class ShaderType(
     val icon: Icon,
     val template: String
 ) {
+    Unknown(
+        0, emptyMap(),
+        ContentType.Unknown, CommonIcons.None,
+        """
+            ---
+        """.trimIndent()
+    ) {
+        override fun matches(glslCode: GlslCode): Boolean {
+            return glslCode.functionNames.contains("mainMain")
+        }
+
+        override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins): OpenShader {
+            return object : OpenShader.Base(shader, glslCode, plugins) {
+                override val proFormaInputPorts: List<InputPort>
+                    get() = emptyList()
+                override val wellKnownInputPorts: Map<String, InputPort>
+                    get() = emptyMap()
+                override val shaderType: ShaderType
+                    get() = Unknown
+                override val entryPointName: String
+                    get() = "mainMain"
+                override val outputPort: OutputPort =
+                    OutputPort(
+                        entryPoint.hint?.contentType(plugins)
+                            ?: ContentType.Unknown
+                    )
+
+                override fun invocationGlsl(
+                    namespace: GlslCode.Namespace,
+                    resultVar: String,
+                    portMap: Map<String, String>
+                ): String {
+                    return resultVar + " = " + namespace.qualify(entryPoint.name) + "()"
+                }
+            }
+        }
+    },
+
     Projection(
         0, emptyMap(),
         ContentType.UvCoordinateStream, CommonIcons.ProjectionShader,
