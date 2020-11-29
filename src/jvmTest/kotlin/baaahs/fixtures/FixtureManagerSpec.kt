@@ -94,7 +94,7 @@ object FixtureManagerSpec : Spek({
 
                 beforeEachTest {
                     fixtureManager.activePatchSetChanged(activePatchSet)
-                    val updated = fixtureManager.maybeUpdateRenderPlans { _, _ -> null }
+                    val updated = fixtureManager.maybeUpdateRenderPlans(openShow)
                     expect(updated).toBe(true)
                 }
 
@@ -122,7 +122,7 @@ object FixtureManagerSpec : Spek({
                         expect(renderPlan.keys).toBe(setOf(fogMachineDevice))
 
                         fixtureManager.fixturesChanged(listOf(vuzuvela1), emptyList())
-                        val updated = fixtureManager.maybeUpdateRenderPlans { _, _ -> null }
+                        val updated = fixtureManager.maybeUpdateRenderPlans(openShow)
                         expect(updated).toBe(true)
                     }
 

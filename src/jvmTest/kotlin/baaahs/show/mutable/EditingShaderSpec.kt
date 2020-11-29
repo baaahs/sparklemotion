@@ -21,6 +21,7 @@ import baaahs.ui.Observer
 import baaahs.ui.addObserver
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.GL_FRAGMENT_SHADER
@@ -146,8 +147,8 @@ object EditingShaderSpec : Spek({
                         expect(notifiedStates).containsExactly(State.Errors)
                     }
 
-                    it("should return null for ShaderInstanceOptions") {
-                        expect(editingShader.getShaderInstanceOptions()).toBe(null)
+                    it("should still return ShaderInstanceOptions") {
+                        expect(editingShader.getShaderInstanceOptions()).notToBeNull()
                     }
                 }
             }

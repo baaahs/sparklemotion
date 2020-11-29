@@ -143,7 +143,7 @@ class GlslCode(
     ) : GlslStatement {
         override fun stripSource() = copy(fullText = "", lineNumber = null)
 
-        val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
+        val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
 
         fun displayName() = name.englishize()
 
@@ -152,7 +152,7 @@ class GlslCode(
                 name, type, displayName(),
                 pluginRef = hint?.pluginRef,
                 pluginConfig = hint?.config,
-                contentType = hint?.tag("type")?.let { plugins.resolveContentType(it) },
+                contentType = hint?.contentType(plugins),
                 glslVar = this
             )
         }
@@ -165,7 +165,13 @@ class GlslCode(
     ) {
         fun tag(name: String) = tags[name]
 
+        fun contentType(plugins: Plugins) =
+            tag("type")?.let { plugins.resolveContentType(it) }
+
         companion object {
+            fun from(comments: List<String>, lineNumber: Int? = null): Hint? =
+                parse(comments.joinToString(" ") { it.trim() }, lineNumber)
+
             fun parse(commentString: String, lineNumber: Int? = null): Hint? {
                 var pluginRef: PluginRef? = null
                 var config: JsonObject? = null
@@ -220,10 +226,11 @@ class GlslCode(
         val params: List<GlslParam>,
         override val fullText: String,
         override val lineNumber: Int? = null,
-        val symbols: Set<String> = emptySet(),
         override val comments: List<String> = emptyList()
     ) : GlslStatement {
-        override fun stripSource() = copy(lineNumber = null, symbols = emptySet())
+        val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
+
+        override fun stripSource() = copy(lineNumber = null)
     }
 
     data class GlslParam(
@@ -234,7 +241,7 @@ class GlslCode(
         val lineNumber: Int? = null,
         val comments: List<String> = emptyList()
     ) {
-        val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }) }
+        val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
     }
 
     class Namespace(private val prefix: String) {
