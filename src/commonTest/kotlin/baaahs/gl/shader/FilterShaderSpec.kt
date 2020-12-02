@@ -83,7 +83,7 @@ object FilterShaderSpec : Spek({
                         addShaderInstance(shader.shader) {
                             link("gl_FragColor", MutableShaderOutPort(redInstance))
                             link("otherColorStream", MutableShaderChannel(otherChannel.id))
-                            link("fade", MutableConstPort(".5"))
+                            link("fade", MutableConstPort(".5", GlslType.Float))
                         }
                     }.openForPreview(autoWirer)
                 }

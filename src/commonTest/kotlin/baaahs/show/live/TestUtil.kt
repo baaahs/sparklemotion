@@ -24,7 +24,7 @@ fun AutoWirer.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap(
             }
         }
     }
-    return unresolvedPatch.acceptSuggestedLinkOptions().resolve()
+    return unresolvedPatch.acceptSuggestedLinkOptions().confirm()
 }
 
 fun fakeShader(title: String, type: ShaderType = ShaderType.Paint) =

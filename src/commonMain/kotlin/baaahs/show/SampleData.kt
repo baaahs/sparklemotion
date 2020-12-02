@@ -52,7 +52,7 @@ object SampleData {
 
     private val autoWirer = AutoWirer(plugins)
 
-    private val uvShader = wireUp(Shaders.cylindricalProjection)
+    private val uvShader get() = wireUp(Shaders.cylindricalProjection)
 
     private val showDefaultPaint = autoWirer.autoWire(
         Shader(
@@ -67,7 +67,7 @@ object SampleData {
         )
     )
         .acceptSuggestedLinkOptions()
-        .resolve()
+        .confirm()
 
     private val brightnessFilter = autoWirer.autoWire(
         Shader(
@@ -85,7 +85,7 @@ object SampleData {
         )
     )
         .acceptSuggestedLinkOptions()
-        .resolve()
+        .confirm()
 
     private val saturationFilter = autoWirer.autoWire(
         Shader(
@@ -128,7 +128,7 @@ object SampleData {
         )
     )
         .acceptSuggestedLinkOptions()
-        .resolve()
+        .confirm()
 
     private val redYellowGreenPatch = autoWirer.autoWire(
         Shader(
@@ -144,7 +144,7 @@ object SampleData {
         )
     )
         .acceptSuggestedLinkOptions()
-        .resolve()
+        .confirm()
 
     private val blueAquaGreenPatch = autoWirer.autoWire(
         Shader(
@@ -161,11 +161,11 @@ object SampleData {
         )
     )
         .acceptSuggestedLinkOptions()
-        .resolve()
+        .confirm()
 
     private val fireBallPatch = autoWirer.autoWire(FixtureShaders.fireBallGlsl)
         .acceptSuggestedLinkOptions()
-        .resolve()
+        .confirm()
 
     val defaultLayout = Layout(stdLayout)
     val layouts = Layouts(
@@ -187,7 +187,8 @@ object SampleData {
         "Checkerboard Size", .1f, .001f, 1f, null
     )
 
-    val sampleShow: Show get() = MutableShow("Sample Show").apply {
+    val sampleShow: Show get() = MutableShow("Sample Show") {
+        println("Initialize sampleShow!")
         editLayouts {
             copyFrom(layouts)
         }
@@ -265,6 +266,6 @@ object SampleData {
         }
         return unresolvedPatch
             .acceptSuggestedLinkOptions()
-            .resolve()
+            .confirm()
     }
 }

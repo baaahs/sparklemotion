@@ -1,5 +1,6 @@
 package baaahs.fixtures
 
+import baaahs.getBang
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.PatchResolver
 import baaahs.gl.render.RenderManager
@@ -96,8 +97,11 @@ class FixtureManager(
             val activePatchSet = currentActivePatchSet
 
             val elapsedMs = timeSync {
-                val patchResolution = PatchResolver(openShow, renderManager, renderTargets.values, activePatchSet)
-                currentRenderPlan = patchResolution.createRenderPlan()
+                val patchResolution = PatchResolver(
+                    openShow.allDataSources, renderManager, renderTargets.values, activePatchSet)
+                currentRenderPlan = patchResolution.createRenderPlan { _, dataSource ->
+                    openShow.feeds.getBang(dataSource, "data feed")
+                }
             }
 
             logger.info {

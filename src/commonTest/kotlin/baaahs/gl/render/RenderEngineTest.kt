@@ -260,7 +260,7 @@ class RenderEngineTest {
         val linkedPatch = autoWirer
             .autoWire(directXyProjection, shader)
             .acceptSuggestedLinkOptions()
-            .resolve()
+            .confirm()
             .openForPreview(autoWirer)!!
         return renderEngine.compile(linkedPatch) { id, dataSource ->
             if (dataSource is CorePlugin.GadgetDataSource<*>) {

@@ -73,7 +73,7 @@ class ModelRenderEngine(
     }
 
     override fun compile(linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
-        logger.info { "Compiling ${linkedPatch.shaderInstance.shader.title} on ${deviceType::class.simpleName}"}
+        logger.info { "Compiling ${linkedPatch.rootNode.title} on ${deviceType::class.simpleName}"}
         return super.compile(linkedPatch, feedResolver)
     }
 

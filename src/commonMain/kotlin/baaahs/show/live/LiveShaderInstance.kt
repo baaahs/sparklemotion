@@ -1,9 +1,11 @@
 package baaahs.show.live
 
 import baaahs.getBang
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.*
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
+import baaahs.gl.shader.OutputPort
 import baaahs.show.*
 import baaahs.util.CacheBuilder
 import baaahs.util.Logger
@@ -13,29 +15,18 @@ class LiveShaderInstance(
     val incomingLinks: Map<String, Link>,
     val shaderChannel: ShaderChannel?,
     val priority: Float
-): ProgramNode {
+) {
     fun release() {
         shader.release()
     }
 
-    override fun asLinkNode(programLinker: ProgramLinker): LinkNode {
-        val shaderShortName = programLinker.idFor(shader.shader)
-        return LinkNode(this, shaderShortName)
-    }
-
-    override fun traverse(programLinker: ProgramLinker, depth: Int) {
-        programLinker.visit(shader)
-
-        incomingLinks.forEach { (_, link) ->
-            when (link) {
-                is DataSourceLink -> programLinker.visit(link)
-                is ShaderOutLink -> programLinker.visit(link.shaderInstance)
-            }
+    fun finalResolve(resolver: PortDiagram.Resolver): ProgramNode {
+        val resolvedIncomingLinks = incomingLinks.mapValues { (portId, link) ->
+            val inputPort = shader.findInputPort(portId)
+            resolver.resolveLink(inputPort, link)
         }
-    }
 
-    override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
-        return ShaderComponent(id, index, this, findUpstreamComponent)
+        return LinkedShaderInstance(shader, resolvedIncomingLinks, shaderChannel, priority)
     }
 
     override fun toString(): String {
@@ -44,27 +35,30 @@ class LiveShaderInstance(
 
 
     interface Link {
-        fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): Link = this
+        fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode
     }
 
-    data class ShaderOutLink(val shaderInstance: LiveShaderInstance) : Link
+    data class ShaderOutLink(val shaderInstance: LiveShaderInstance) : Link {
+        override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode {
+            return shaderInstance.finalResolve(resolver)
+        }
+    }
 
     data class DataSourceLink(val dataSource: DataSource, val varName: String) : Link, ProgramNode {
-        override fun asLinkNode(programLinker: ProgramLinker): LinkNode {
-            return LinkNode(this, varName)
-        }
+        override val title: String get() = dataSource.title
+        override val outputPort: OutputPort get() = OutputPort(dataSource.contentType)
+
+        override fun getNodeId(programLinker: ProgramLinker): String = varName
 
         override fun traverse(programLinker: ProgramLinker, depth: Int) {
-            programLinker.dataSourceLinks.add(this)
+            programLinker.visit(this)
         }
 
-        override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): Link {
-            return resolver.resolveChannel(
+        override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode =
+            resolver.resolveChannel(
                 inputPort.copy(contentType = dataSource.contentType),
                 ShaderChannel(varName)
             )
-                ?: this
-        }
 
         override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
             return object : Component {
@@ -83,22 +77,23 @@ class LiveShaderInstance(
 
                 override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {
                 }
+
+                override fun getExpression(): String {
+                    return dataSource.getVarName(varName)
+                }
             }
         }
     }
 
     data class ShaderChannelLink(val shaderChannel: ShaderChannel) : Link {
-        override fun finalResolve(
-            inputPort: InputPort,
-            resolver: PortDiagram.Resolver
-        ): Link = resolver.resolveChannel(inputPort, shaderChannel)
-            ?: NoOpLink
+        override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode =
+            resolver.resolveChannel(inputPort, shaderChannel)
     }
-    data class ConstLink(val glsl: String) : Link
-    object NoOpLink : Link
 
-    companion object {
-        private val logger = Logger<LiveShaderInstance>()
+    data class ConstLink(val glsl: String, val type: GlslType) : Link {
+        override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode {
+            return ConstNode(glsl, OutputPort(ContentType.Unknown, dataType = type))
+        }
     }
 }
 
@@ -140,7 +135,7 @@ class ShaderInstanceResolver(
                     is DataSourceRef -> findDataSource(portRef.dataSourceId).link(portRef.dataSourceId)
                     is ShaderChannelRef -> LiveShaderInstance.ShaderChannelLink(portRef.shaderChannel)
                     is OutputPortRef -> TODO()
-                    is ConstPortRef -> LiveShaderInstance.ConstLink(portRef.glsl)
+                    is ConstPortRef -> LiveShaderInstance.ConstLink(portRef.glsl, GlslType.from(portRef.type))
                 }
             }
 

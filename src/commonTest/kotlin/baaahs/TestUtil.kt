@@ -5,12 +5,13 @@ import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ProgramLinker
+import baaahs.gl.patch.ProgramNode
 import baaahs.gl.render.ModelRenderEngine
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.testPlugins
 import baaahs.model.Model
 import baaahs.model.MovingHead
-import baaahs.show.live.LiveShaderInstance
+import baaahs.show.live.LinkedShaderInstance
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import baaahs.util.Clock
@@ -101,9 +102,9 @@ class TestRenderContext(
     val showPlayer = FakeShowPlayer()
     val renderTargets = mutableListOf<RenderTarget>()
 
-    fun createProgram(shaderSrc: String, incomingLinks: Map<String, LiveShaderInstance.DataSourceLink>): GlslProgram {
+    fun createProgram(shaderSrc: String, incomingLinks: Map<String, ProgramNode>): GlslProgram {
         val openShader = glslAnalyzer.openShader(shaderSrc)
-        val liveShaderInstance = LiveShaderInstance(openShader, incomingLinks, null, 0f)
+        val liveShaderInstance = LinkedShaderInstance(openShader, incomingLinks, null, 0f)
         val linkedPatch = ProgramLinker(liveShaderInstance).buildLinkedPatch()
         return renderEngine.compile(linkedPatch) { id, dataSource -> dataSource.createFeed(showPlayer, id) }
     }

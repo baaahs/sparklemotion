@@ -25,7 +25,7 @@ class GuruMeditationError(deviceType: DeviceType) {
         val showBuilder = ShowBuilder()
         val mutablePatch = autoWirer.autoWire(shader)
             .acceptSuggestedLinkOptions()
-            .resolve()
+            .confirm()
         val show = MutableShow("error").apply {
             addPatch(mutablePatch)
         }.build(showBuilder)

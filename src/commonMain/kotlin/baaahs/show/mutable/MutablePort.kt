@@ -2,6 +2,7 @@ package baaahs.show.mutable
 
 import baaahs.app.ui.CommonIcons
 import baaahs.englishize
+import baaahs.gl.glsl.GlslType
 import baaahs.show.*
 import baaahs.ui.Icon
 
@@ -90,13 +91,13 @@ data class MutableOutputPort(private val portId: String) : MutablePort {
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {}
 }
 
-data class MutableConstPort(private val glsl: String) : MutablePort {
+data class MutableConstPort(private val glsl: String, private val type: GlslType) : MutablePort {
     override val title: String get() = "const($glsl)"
     override val icon: Icon get() = error("not implemented")
     override val groupName: String get() = error("not implemented")
 
     override fun toRef(showBuilder: ShowBuilder): PortRef =
-        ConstPortRef(glsl)
+        ConstPortRef(glsl, type.glslLiteral)
 
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {}
 }

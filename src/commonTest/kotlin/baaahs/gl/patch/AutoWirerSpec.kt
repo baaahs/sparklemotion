@@ -9,7 +9,7 @@ import baaahs.plugin.CorePlugin
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
-import baaahs.show.live.LiveShaderInstance
+import baaahs.show.live.LinkedShaderInstance
 import baaahs.show.live.link
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutableShader
@@ -49,9 +49,9 @@ object AutoWirerSpec : Spek({
             }
             val mainShader by value { autoWirer.glslAnalyzer.import(shaderText) }
             val shaders by value { arrayOf(mainShader) }
-            val patch by value { autoWirer.autoWire(*shaders).acceptSuggestedLinkOptions().resolve() }
+            val patch by value { autoWirer.autoWire(*shaders).acceptSuggestedLinkOptions().confirm() }
             val linkedPatch by value { patch.openForPreview(autoWirer)!! }
-            val liveShaderInstance by value { linkedPatch.shaderInstance }
+            val rootProgramNode by value { linkedPatch.rootNode as LinkedShaderInstance }
 
             it("creates a reasonable guess patch") {
                 expect(patch.mutableShaderInstances).containsExactly(
@@ -72,10 +72,10 @@ object AutoWirerSpec : Spek({
             }
 
             it("builds a linked patch") {
-                expect(liveShaderInstance.incomingLinks)
+                expect(rootProgramNode.incomingLinks)
                     .toBe(
                         mapOf(
-                            "gl_FragCoord" to LiveShaderInstance.NoOpLink,
+                            "gl_FragCoord" to DefaultValueNode(ContentType.UvCoordinateStream),
                             "time" to CorePlugin.TimeDataSource().link("time"),
                             "resolution" to CorePlugin.ResolutionDataSource().link("resolution"),
                             "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).link("bluenessSlider"))
@@ -124,7 +124,7 @@ object AutoWirerSpec : Spek({
                 }
 
                 it("builds a linked patch") {
-                    liveShaderInstance.incomingLinks.forEach { (port, link) ->
+                    rootProgramNode.incomingLinks.forEach { (port, link) ->
                         println("port $port -> $link")
                     }
                     expects(
@@ -132,9 +132,9 @@ object AutoWirerSpec : Spek({
                             "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).link("bluenessSlider"),
                             "iResolution" to CorePlugin.ResolutionDataSource().link("resolution"),
                             "iTime" to CorePlugin.TimeDataSource().link("time"),
-                            "sm_FragCoord" to LiveShaderInstance.NoOpLink
+                            "sm_FragCoord" to DefaultValueNode(ContentType.UvCoordinateStream)
                         )
-                    ) { liveShaderInstance.incomingLinks }
+                    ) { rootProgramNode.incomingLinks }
                 }
             }
 

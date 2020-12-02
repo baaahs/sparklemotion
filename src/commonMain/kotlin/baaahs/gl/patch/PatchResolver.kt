@@ -5,8 +5,8 @@ import baaahs.fixtures.DeviceType
 import baaahs.fixtures.DeviceTypeRenderPlan
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.fixtures.RenderPlan
-import baaahs.getBang
 import baaahs.gl.glsl.CompilationException
+import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslException
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
@@ -15,21 +15,17 @@ import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenPatch
-import baaahs.show.live.OpenShow
 
 class PatchResolver(
-    private val openShow: OpenShow,
+    private val dataSources: Map<String, DataSource>,
     private val renderManager: RenderManager,
     private val renderTargets: Collection<RenderTarget>,
     private val activePatchSet: ActivePatchSet
 ) {
-    init {
-
-    }
     val portDiagrams =
         renderTargets
             .groupBy { it.fixture.deviceType }
-            .mapValues { (_, renderTargets) ->
+            .mapValues { (deviceType, renderTargets) ->
                 val patchSetsByKey = mutableMapOf<String, PatchSet>()
                 val renderTargetsByKey = mutableMapOf<String, MutableList<RenderTarget>>()
 
@@ -44,18 +40,18 @@ class PatchResolver(
                 }
 
                 patchSetsByKey.map { (key, patchSet) ->
-                    PortDiagram(openShow.allDataSources, patchSet) to
+                    PortDiagram(dataSources, patchSet) to
                             renderTargetsByKey[key]!! as List<RenderTarget>
                 }
             }
 
-    fun createRenderPlan(): RenderPlan {
+    fun createRenderPlan(feedResolver: FeedResolver): RenderPlan {
         return RenderPlan(
             portDiagrams.mapValues { (deviceType, devicePortDiagrams) ->
                 val programsRenderPlans = devicePortDiagrams.map { (portDiagram, renderTargets) ->
                     val linkedPatch = portDiagram.resolvePatch(ShaderChannel.Main, deviceType.resultContentType)
                     val program = linkedPatch?.let {
-                        buildProgram(it, deviceType)
+                        buildProgram(it, deviceType, feedResolver)
                     }
 
                     ProgramRenderPlan(program, renderTargets)
@@ -66,13 +62,10 @@ class PatchResolver(
         )
     }
 
-    private val feedResolver =  { id: String, dataSource: DataSource ->
-        openShow.feeds.getBang(dataSource, "data feed")
-    }
-
     private fun buildProgram(
         linkedPatch: LinkedPatch,
-        deviceType: DeviceType
+        deviceType: DeviceType,
+        feedResolver: FeedResolver
     ) = try {
         renderManager.compile(deviceType, linkedPatch, feedResolver)
     } catch (e: GlslException) {

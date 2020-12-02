@@ -12,9 +12,14 @@ class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShad
             ?: error("Couldn't find shader \"${shader.title}\"")
     }
 
+    fun editAll(callback: UnresolvedShaderInstance.() -> Unit): UnresolvedPatch {
+        unresolvedShaderInstances.forEach { it.callback() }
+        return this
+    }
+
     fun isAmbiguous() = unresolvedShaderInstances.any { it.isAmbiguous() }
 
-    fun resolve(): MutablePatch {
+    fun confirm(): MutablePatch {
         if (isAmbiguous()) {
             error("ambiguous! " +
                     unresolvedShaderInstances
@@ -30,7 +35,7 @@ class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShad
                 it.incomingLinksOptions.entries.associate { (port, fromPortOptions) ->
                     port.id to
                             (fromPortOptions.firstOrNull()?.getMutablePort()
-                                ?: MutableConstPort(port.type.defaultInitializer()))
+                                ?: MutableConstPort(port.type.defaultInitializer(), port.type))
                 }.toMutableMap(),
                 MutableShaderChannel(it.shaderChannel.id),
                 it.priority

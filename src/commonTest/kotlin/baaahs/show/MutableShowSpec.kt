@@ -1,5 +1,6 @@
 package baaahs.show
 
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.testPlugins
 import baaahs.only
@@ -11,13 +12,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.collections.associate
-import kotlin.collections.listOf
-import kotlin.collections.map
-import kotlin.collections.mapOf
 import kotlin.collections.set
-import kotlin.collections.setOf
-import kotlin.collections.toSet
 
 object MutableShowSpec : Spek({
     describe("MutableShow") {
@@ -76,7 +71,7 @@ object MutableShowSpec : Spek({
 
             context("when weird port mappings are added") {
                 beforeEachTest {
-                    editor.incomingLinks["nonsense"] = MutableConstPort("invalid")
+                    editor.incomingLinks["nonsense"] = MutableConstPort("invalid", GlslType.from("?unknown?"))
                 }
 
                 it("should retain them, I guess?") {
@@ -255,7 +250,7 @@ private fun AutoWirer.testPatch(title: String): MutablePatch {
         """.trimIndent()
     )
 
-    return autoWire(shader).acceptSuggestedLinkOptions().resolve()
+    return autoWire(shader).acceptSuggestedLinkOptions().confirm()
 }
 
 //private fun Show.desc(): List<String> =

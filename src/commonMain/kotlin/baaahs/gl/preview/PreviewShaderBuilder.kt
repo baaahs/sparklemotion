@@ -4,10 +4,7 @@ import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.fixtures.*
 import baaahs.gl.data.Feed
-import baaahs.gl.glsl.FeedResolver
-import baaahs.gl.glsl.GlslError
-import baaahs.gl.glsl.GlslException
-import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.glsl.*
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
@@ -112,13 +109,13 @@ class PreviewShaderBuilder(
 
             val defaultPorts = when (shader.type) {
                 ShaderType.Projection -> emptyMap()
-                else -> mapOf(ContentType.UvCoordinateStream to MutableConstPort("gl_FragCoord"))
+                else -> mapOf(ContentType.UvCoordinateStream to MutableConstPort("gl_FragCoord", GlslType.Vec2))
             }
 
             previewPatch = autoWirer.autoWire(*shaders, defaultPorts = defaultPorts)
 //                .dumpOptions()
                 .acceptSuggestedLinkOptions()
-                .resolve()
+                .confirm()
             linkedPatch = previewPatch?.openForPreview(autoWirer)
             state = ShaderBuilder.State.Linked
         } catch (e: GlslException) {
