@@ -1,6 +1,7 @@
 package baaahs.show.live
 
 import baaahs.describe
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.testPlugins
 import baaahs.only
@@ -16,14 +17,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.json.buildJsonObject
 import org.spekframework.spek2.Spek
-import kotlin.collections.emptyList
-import kotlin.collections.first
-import kotlin.collections.listOf
-import kotlin.collections.map
-import kotlin.collections.mapOf
-import kotlin.collections.plus
 import kotlin.collections.set
-import kotlin.collections.setOf
 
 object OpenShowSpec : Spek({
     describe<OpenShow> {
@@ -92,7 +86,8 @@ object OpenShowSpec : Spek({
             beforeEachTest {
                 mutableShow.addPatch(
                     autoWirer.wireUp(fakeShader("Weird Shader")).apply {
-                        mutableShaderInstances.only().incomingLinks["nonsense"] = MutableConstPort("invalid")
+                        mutableShaderInstances.only().incomingLinks["nonsense"] =
+                            MutableConstPort("invalid", GlslType.Companion.from("?huh?"))
                     }
                 )
             }

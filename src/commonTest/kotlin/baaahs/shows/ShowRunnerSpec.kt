@@ -43,7 +43,7 @@ object ShowRunnerSpec : Spek({
                 addPatch(
                     autoWirer.autoWire(Shaders.cylindricalProjection, Shaders.blue)
                         .acceptSuggestedLinkOptions()
-                        .resolve()
+                        .confirm()
                 )
                 addButtonGroup(
                     "Panel", "Scenes"
@@ -56,7 +56,7 @@ object ShowRunnerSpec : Spek({
                                 addPatch(
                                     autoWirer.autoWire(Shader("Untitled", ShaderType.Paint, shaderSrc))
                                         .acceptSuggestedLinkOptions()
-                                        .resolve()
+                                        .confirm()
                                 )
                             }
                         }

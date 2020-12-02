@@ -3,17 +3,22 @@ package baaahs.gl.patch
 import baaahs.getBang
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.shader.OpenShader
+import baaahs.gl.shader.OutputPort
 import baaahs.show.Shader
+import baaahs.show.live.LinkedShaderInstance
 import baaahs.show.live.LiveShaderInstance
 import baaahs.show.mutable.ShowBuilder
 import baaahs.util.CacheBuilder
 
-class ProgramLinker(private val liveShaderInstance: LiveShaderInstance) {
+class ProgramLinker(
+    private val rootNode: ProgramNode,
+    private val warnings: List<String> = emptyList()
+) {
     private val linkNodes: MutableMap<ProgramNode, LinkNode> = mutableMapOf()
-    val dataSourceLinks = hashSetOf<LiveShaderInstance.DataSourceLink>()
-    val showBuilder: ShowBuilder = ShowBuilder()
+    private val dataSourceLinks = hashSetOf<LiveShaderInstance.DataSourceLink>()
+    private val showBuilder: ShowBuilder = ShowBuilder()
     private var curDepth = 0
-    internal val structs = hashSetOf<GlslCode.GlslStruct>()
+    private val structs = hashSetOf<GlslCode.GlslStruct>()
 
     private val componentBuilder: CacheBuilder<ProgramNode, Component> = CacheBuilder {
         val instanceNode = linkNodes.getBang(it, "instance node")
@@ -25,12 +30,11 @@ class ProgramLinker(private val liveShaderInstance: LiveShaderInstance) {
     private fun findUpstreamComponent(programNode: ProgramNode): Component =
         componentBuilder.getBang(programNode, "program node")
 
-
     fun visit(programNode: ProgramNode) {
         var newlyCreated = false
         linkNodes.getOrPut(programNode) {
             newlyCreated = true
-            programNode.asLinkNode(this)
+            LinkNode(programNode, programNode.getNodeId(this))
         }.also {
             it.atDepth(curDepth)
 
@@ -45,7 +49,11 @@ class ProgramLinker(private val liveShaderInstance: LiveShaderInstance) {
         }
     }
 
-    init { visit(liveShaderInstance) }
+    fun visit(dataSourceLink: LiveShaderInstance.DataSourceLink) {
+        dataSourceLinks.add(dataSourceLink)
+    }
+
+    init { visit(rootNode) }
 
     fun buildLinkedPatch(): LinkedPatch {
         var pIndex = 0
@@ -55,11 +63,9 @@ class ProgramLinker(private val liveShaderInstance: LiveShaderInstance) {
                     .thenBy { it.id }
             )
             .forEach { instanceNode ->
-                instanceNode.index = when (instanceNode.programNode) {
-                    is LiveShaderInstance.DataSourceLink -> -1
-                    is LiveShaderInstance -> pIndex++
-                    else -> error("huh?")
-                }
+                instanceNode.index =
+                    if (instanceNode.programNode is LinkedShaderInstance)
+                        pIndex++ else -1
             }
 
         val components = linkNodes.values
@@ -69,7 +75,7 @@ class ProgramLinker(private val liveShaderInstance: LiveShaderInstance) {
             )
             .map { componentBuilder[it.programNode] }
 
-        return LinkedPatch(liveShaderInstance, components, dataSourceLinks, structs)
+        return LinkedPatch(rootNode, components, dataSourceLinks, structs, warnings)
     }
 
     fun visit(openShader: OpenShader) {
@@ -80,11 +86,66 @@ class ProgramLinker(private val liveShaderInstance: LiveShaderInstance) {
 }
 
 interface ProgramNode {
-    fun asLinkNode(programLinker: ProgramLinker): LinkNode
+    val title: String
+    val outputPort: OutputPort
+
+    fun getNodeId(programLinker: ProgramLinker): String
 
     fun traverse(programLinker: ProgramLinker, depth: Int = 0)
 
     fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component
+}
+
+data class DefaultValueNode(
+    val contentType: ContentType
+) : ProgramNode, Component {
+    override val title: String = "Default value for $contentType"
+    override val outputVar: String? = null
+    override val outputPort: OutputPort = OutputPort(contentType)
+
+    override fun getNodeId(programLinker: ProgramLinker): String = "n/a"
+
+    override fun appendDeclarations(buf: StringBuilder) {
+    }
+
+    override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {
+    }
+
+    override fun getExpression(): String {
+        return contentType.glslType.defaultInitializer()
+    }
+
+    override fun traverse(programLinker: ProgramLinker, depth: Int) {
+    }
+
+    override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
+        return this
+    }
+}
+
+data class ConstNode(val glsl: String, override val outputPort: OutputPort) : ProgramNode, Component {
+    override val title: String get() = "const($glsl)"
+    override val outputVar: String? get() = TODO("not implemented")
+    override fun getNodeId(programLinker: ProgramLinker): String = "n/a"
+
+    override fun traverse(programLinker: ProgramLinker, depth: Int) {
+    }
+
+    override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
+        return this
+    }
+
+    override fun appendDeclarations(buf: StringBuilder) {
+    }
+
+    override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {
+    }
+
+    override fun getExpression(): String {
+        return "($glsl)"
+    }
+
+    override fun toString(): String = "ConstNode(glsl='$glsl', outputPort=$outputPort)"
 }
 
 class LinkNode(

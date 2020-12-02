@@ -1,7 +1,7 @@
 package baaahs.gl.patch
 
 import baaahs.gl.glsl.GlslCode
-import baaahs.show.live.LiveShaderInstance
+import baaahs.show.live.LinkedShaderInstance
 import baaahs.util.Logger
 
 interface Component {
@@ -10,14 +10,16 @@ interface Component {
 
     fun appendDeclarations(buf: StringBuilder)
     fun appendInvokeAndSet(buf: StringBuilder, prefix: String)
+
+    fun getExpression(): String
 }
 
 class ShaderComponent(
     val id: String,
     val index: Int,
-    private val shaderInstance: LiveShaderInstance,
+    private val shaderInstance: LinkedShaderInstance,
     findUpstreamComponent: (ProgramNode) -> Component
-): Component {
+) : Component {
     override val title: String get() = shaderInstance.shader.title
     private val prefix = "p$index"
     private val namespace = GlslCode.Namespace(prefix + "_" + id)
@@ -29,30 +31,8 @@ class ShaderComponent(
         val tmpPortMap = hashMapOf<String, String>()
 
         shaderInstance.incomingLinks.forEach { (toPortId, fromLink) ->
-            when (fromLink) {
-                is LiveShaderInstance.ShaderOutLink -> {
-                    val upstreamComponent = findUpstreamComponent(fromLink.shaderInstance)
-                    upstreamComponent as ShaderComponent
-                    val outputPort = fromLink.shaderInstance.shader.outputPort
-                    tmpPortMap[toPortId] =
-                        if (outputPort.isReturnValue()) {
-                            upstreamComponent.resultVar
-                        } else {
-                            upstreamComponent.namespace.qualify(outputPort.id)
-                        }
-                }
-                is LiveShaderInstance.DataSourceLink -> {
-                    tmpPortMap[toPortId] = fromLink.dataSource.getVarName(fromLink.varName)
-                }
-                is LiveShaderInstance.ShaderChannelLink -> {
-                    logger.warn { "Unexpected unresolved $fromLink for $toPortId" }
-                }
-                is LiveShaderInstance.ConstLink -> {
-                    tmpPortMap[toPortId] = "(" + fromLink.glsl + ")"
-                }
-                is LiveShaderInstance.NoOpLink -> {
-                }
-            }
+            val upstreamComponent = findUpstreamComponent(fromLink)
+            tmpPortMap[toPortId] = upstreamComponent.getExpression()
         }
 
         var usesReturnValue = false
@@ -93,6 +73,15 @@ class ShaderComponent(
         val invocationGlsl = shaderInstance.shader.invocationGlsl(namespace, resultVar, resolvedPortMap)
         buf.append(prefix, invocationGlsl, ";\n")
         buf.append("\n")
+    }
+
+    override fun getExpression(): String {
+        val outputPort = shaderInstance.shader.outputPort
+        return if (outputPort.isReturnValue()) {
+            resultVar
+        } else {
+            namespace.qualify(outputPort.id)
+        }
     }
 
     companion object {

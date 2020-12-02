@@ -11,22 +11,21 @@ import baaahs.gl.glsl.GlslException
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.GuruMeditationError
+import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenPatch
 
 class PatchResolver(
+    private val dataSources: Map<String, DataSource>,
     private val renderManager: RenderManager,
     private val renderTargets: Collection<RenderTarget>,
     private val activePatchSet: ActivePatchSet
 ) {
-    init {
-
-    }
     val portDiagrams =
         renderTargets
             .groupBy { it.fixture.deviceType }
-            .mapValues { (_, renderTargets) ->
+            .mapValues { (deviceType, renderTargets) ->
                 val patchSetsByKey = mutableMapOf<String, PatchSet>()
                 val renderTargetsByKey = mutableMapOf<String, MutableList<RenderTarget>>()
 
@@ -41,7 +40,8 @@ class PatchResolver(
                 }
 
                 patchSetsByKey.map { (key, patchSet) ->
-                    PortDiagram(patchSet) to renderTargetsByKey[key]!! as List<RenderTarget>
+                    PortDiagram(dataSources, patchSet) to
+                            renderTargetsByKey[key]!! as List<RenderTarget>
                 }
             }
 
@@ -80,7 +80,8 @@ class PatchResolver(
     }
 
     companion object {
-        fun buildPortDiagram(vararg patches: OpenPatch) = PortDiagram(patches.toList())
+        fun buildPortDiagram(dataSources: Map<String, DataSource>, vararg patches: OpenPatch) =
+            PortDiagram(dataSources, patches.toList())
     }
 }
 

@@ -1,14 +1,14 @@
 package baaahs.gl.patch
 
 import baaahs.gl.glsl.GlslCode
-import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.LiveShaderInstance.DataSourceLink
 
 class LinkedPatch(
-    val shaderInstance: LiveShaderInstance,
+    val rootNode: ProgramNode,
     private val components: List<Component>,
     val dataSourceLinks: Set<DataSourceLink>,
-    private var structs: Set<GlslCode.GlslStruct>
+    private var structs: Set<GlslCode.GlslStruct>,
+    val warnings: List<String>
 ) {
     fun toGlsl(): String {
         val buf = StringBuilder()
@@ -18,7 +18,7 @@ class LinkedPatch(
         buf.append("\n")
         buf.append("// SparkleMotion-generated GLSL\n")
         buf.append("\n")
-        with(shaderInstance.shader.outputPort) {
+        with(rootNode.outputPort) {
             buf.append("layout(location = 0) out ${dataType.glslLiteral} sm_result;\n")
         }
         buf.append("\n")

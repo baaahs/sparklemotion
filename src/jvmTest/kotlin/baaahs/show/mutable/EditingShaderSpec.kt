@@ -21,6 +21,7 @@ import baaahs.ui.Observer
 import baaahs.ui.addObserver
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.GL_FRAGMENT_SHADER
@@ -35,6 +36,7 @@ import kotlin.collections.set
 
 // Currently in jvmTest so we can use mockk.
 // TODO: move back to commonTest when mockk supports multiplatform.
+@Suppress("unused")
 @InternalCoroutinesApi
 object EditingShaderSpec : Spek({
     describe<EditingShader> {
@@ -66,7 +68,7 @@ object EditingShaderSpec : Spek({
             )
         }
         val shaderInEdit by value { filterShader }
-        val otherShaderInPatch by value { paintShader }
+        val otherShaderInPatch by value<Shader?> { paintShader }
         val otherShaderInShow by value { Shaders.red }
 
         val mutableShaderInstance by value { MutableShaderInstance(MutableShader(shaderInEdit)) }
@@ -74,12 +76,12 @@ object EditingShaderSpec : Spek({
         val mutableShow by value { MutableShow("show") { addPatch(mutablePatch) } }
         val observerSlot by value { slot<Observer>() }
         val mockShaderBuilder by value { mockk<ShaderBuilder>() }
-        val getShaderBuilder by value<(Shader) -> ShaderBuilder> { { _ -> mockShaderBuilder } }
+        val getShaderBuilder by value<(Shader) -> ShaderBuilder> { { mockShaderBuilder } }
         val button by value { mutableShow.addButton("panel", "button") {} }
         val otherPatchInShow by value { MutablePatch { addShaderInstance(otherShaderInShow) } }
 
         beforeEachTest {
-            mutablePatch.addShaderInstance(otherShaderInPatch)
+            otherShaderInPatch?.let { mutablePatch.addShaderInstance(it) }
             button.addPatch(otherPatchInShow)
             every { mockShaderBuilder.addObserver(capture(observerSlot)) } answers { observerSlot.captured }
             every { mockShaderBuilder.startBuilding() } just runs
@@ -146,8 +148,8 @@ object EditingShaderSpec : Spek({
                         expect(notifiedStates).containsExactly(State.Errors)
                     }
 
-                    it("should return null for ShaderInstanceOptions") {
-                        expect(editingShader.getShaderInstanceOptions()).toBe(null)
+                    it("should still return ShaderInstanceOptions") {
+                        expect(editingShader.getShaderInstanceOptions()).notToBeNull()
                     }
                 }
             }
@@ -332,13 +334,14 @@ object EditingShaderSpec : Spek({
         context("preview") {
             val context by value { TestCoroutineContext("test") }
             override(shaderInEdit) { paintShader }
+            override(otherShaderInPatch) { null }
             override(getShaderBuilder) {
                 { shader: Shader -> PreviewShaderBuilder(shader, autoWirer, TestModel, CoroutineScope(context)) }
             }
             val gl by value { FakeGlContext() }
             val renderEngine by value { PreviewRenderEngine(gl, 1, 1) }
 
-            it("generates something TODO") {
+            it("generates valid GLSL") {
                 editingShader.shaderBuilder.startCompile(renderEngine)
                 expect(editingShader.state).toBe(State.Building)
                 context.runAll()

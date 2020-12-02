@@ -16,17 +16,19 @@ class AutoWirer(
 ) {
     fun autoWire(
         vararg shaders: Shader,
-        defaultPorts: Map<ContentType, MutablePort> = emptyMap()
+        defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
+        shaderChannel: ShaderChannel = ShaderChannel.Main
     ): UnresolvedPatch {
         val openShaders = shaders.associate { it to glslAnalyzer.openShader(it) }
-        return autoWire(openShaders.values, defaultPorts = defaultPorts)
+        return autoWire(openShaders.values, defaultPorts = defaultPorts, shaderChannel = shaderChannel)
     }
 
     fun autoWire(
         vararg shaders: OpenShader,
-        defaultPorts: Map<ContentType, MutablePort> = emptyMap()
-    ): UnresolvedPatch {
-        return autoWire(shaders.toList(), defaultPorts = defaultPorts)
+        defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
+        shaderChannel: ShaderChannel = ShaderChannel.Main
+        ): UnresolvedPatch {
+        return autoWire(shaders.toList(), defaultPorts = defaultPorts, shaderChannel = shaderChannel)
     }
 
     fun autoWire(
@@ -35,12 +37,6 @@ class AutoWirer(
         parentMutableShow: MutableShow? = null,
         defaultPorts: Map<ContentType, MutablePort> = emptyMap()
     ): UnresolvedPatch {
-        val locallyAvailable: MutableMap<ContentType, MutableSet<MutablePort>> = mutableMapOf()
-
-        defaultPorts.forEach { (contentType, port) ->
-            locallyAvailable[contentType] = hashSetOf(port)
-        }
-
         val siblingsPatch = MutablePatch {
             shaders.forEach { addShaderInstance(it.shader) }
         }
@@ -50,6 +46,7 @@ class AutoWirer(
             shaders.associateWith { openShader ->
                 val shaderInstanceOptions = ShaderInstanceOptions(
                     openShader,
+// TODO                   parentMutableShow = parentMutableShow,
                     parentMutablePatch = siblingsPatch,
                     defaultPorts = defaultPorts,
                     currentLinks = emptyMap(),
