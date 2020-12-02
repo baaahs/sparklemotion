@@ -17,26 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">ProgramLinker</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.ProgramLinker$<init>(baaahs.show.live.LiveShaderInstance)/liveShaderInstance">liveShaderInstance</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-live-shader-instance/index.html"><span class="identifier">LiveShaderInstance</span></a><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="data-source-links.html">dataSourceLinks</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">dataSourceLinks</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-hash-set/index.html"><span class="identifier">HashSet</span></a><span class="symbol">&lt;</span><span class="identifier">DataSourceLink</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="show-builder.html">showBuilder</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">showBuilder</span><span class="symbol">: </span><a href="../../baaahs.show.mutable/-show-builder/index.html"><span class="identifier">ShowBuilder</span></a></code></td>
+<code><span class="identifier">ProgramLinker</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.ProgramLinker$<init>(baaahs.gl.patch.ProgramNode, kotlin.collections.List((kotlin.String)))/rootNode">rootNode</span><span class="symbol">:</span>&nbsp;<a href="../-program-node/index.html"><span class="identifier">ProgramNode</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.ProgramLinker$<init>(baaahs.gl.patch.ProgramNode, kotlin.collections.List((kotlin.String)))/warnings">warnings</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyList()<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -63,6 +44,7 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">visit</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.ProgramLinker$visit(baaahs.gl.patch.ProgramNode)/programNode">programNode</span><span class="symbol">:</span>&nbsp;<a href="../-program-node/index.html"><span class="identifier">ProgramNode</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">visit</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.ProgramLinker$visit(baaahs.show.live.LiveShaderInstance.DataSourceLink)/dataSourceLink">dataSourceLink</span><span class="symbol">:</span>&nbsp;<span class="identifier">DataSourceLink</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
 <code><span class="keyword">fun </span><span class="identifier">visit</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.ProgramLinker$visit(baaahs.gl.shader.OpenShader)/openShader">openShader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
