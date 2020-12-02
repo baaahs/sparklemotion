@@ -29,8 +29,6 @@ enum class ShaderType(
 
         override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins): OpenShader {
             return object : OpenShader.Base(shader, glslCode, plugins) {
-                override val proFormaInputPorts: List<InputPort>
-                    get() = emptyList()
                 override val wellKnownInputPorts: Map<String, InputPort>
                     get() = emptyMap()
                 override val shaderType: ShaderType
