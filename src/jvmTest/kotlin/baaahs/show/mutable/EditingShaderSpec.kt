@@ -376,7 +376,9 @@ object EditingShaderSpec : Spek({
                     vec2 p0_screenCoordsi_result = vec2(0.);
 
                     #line 3
-                    vec2 p0_screenCoords_mainProjection(vec2 fragCoords) {
+                    vec2 p0_screenCoords_mainProjection(
+                        vec2 fragCoords 
+                    ) {
                       return fragCoords / in_previewResolution;
                     }
 

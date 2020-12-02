@@ -139,7 +139,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
         val textAsString get() = text.toString()
         fun textIsEmpty() = text.isEmpty()
 
-        fun appendText(value: String) {
+        open fun appendText(value: String) {
             text.append(value)
         }
 
@@ -393,6 +393,10 @@ class GlslAnalyzer(private val plugins: Plugins) {
                 var type: GlslType? = null
                 var name: String? = null
 
+                override fun appendText(value: String) {
+                    this@Function.appendText(value)
+                }
+
                 override fun visitText(value: String): ParseState {
                     val trimmed = value.trim()
                     if (trimmed.isNotEmpty()) {
@@ -413,15 +417,19 @@ class GlslAnalyzer(private val plugins: Plugins) {
                 override fun visitComma(): ParseState {
                     addParam()
                     appendText(",")
-                    this@Function.appendText(textAsString)
                     return Params(this)
                 }
 
                 override fun visitRightParen(): ParseState {
                     addParam()
                     appendText(")")
-                    this@Function.appendText(textAsString)
                     return this@Function
+                }
+
+                override fun visitNewline(): ParseState {
+                    appendText("\n")
+                    receiveSubsequentComments()
+                    return this
                 }
 
                 override fun createStatement(): GlslStatement {

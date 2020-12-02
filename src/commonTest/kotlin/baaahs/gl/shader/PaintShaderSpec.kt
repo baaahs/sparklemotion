@@ -141,7 +141,7 @@ object PaintShaderSpec : Spek({
                                         "time", GlslType.Float, "uniform float time;", isUniform = true, lineNumber = 1)
                                 ),
                                 InputPort("uv", GlslType.Vec2, "Uv", ContentType.UvCoordinate,
-                                    glslArgSite = GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 3,
+                                    glslArgSite = GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 2,
                                     comments = listOf(" @type uv-coordinate")))
                             )
                         ) { shader.inputPorts }
