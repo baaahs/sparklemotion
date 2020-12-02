@@ -183,7 +183,9 @@ class PreviewShaderBuilder(
                 "Screen Coords", ShaderType.Projection, """
                     uniform vec2 previewResolution;
                     
-                    vec2 mainProjection(vec2 fragCoords) {
+                    vec2 mainProjection(
+                        vec2 fragCoords // @type raster-coordinate
+                    ) {
                       return fragCoords / previewResolution;
                     }
                 """.trimIndent()

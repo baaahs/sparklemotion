@@ -35,6 +35,9 @@ class DistortionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : O
         get() = DistortionShader.implicitInputPorts
     override val wellKnownInputPorts
         get() = DistortionShader.wellKnownInputPorts
+    override val defaultInputPortsByType: Map<Pair<GlslType, Boolean>, InputPort>
+        get() = listOf(InputPort("uv", GlslType.Vec2, "U/V Coordinate", ContentType.UvCoordinateStream))
+            .associateBy { it.type to (it.contentType?.isStream ?: false) }
     override val outputPort: OutputPort
         get() = DistortionShader.outputPort
 
