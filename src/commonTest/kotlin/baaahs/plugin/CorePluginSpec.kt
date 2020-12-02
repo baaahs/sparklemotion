@@ -24,7 +24,7 @@ object CorePluginSpec : Spek({
         val program by value {
             val autoWirer = AutoWirer(plugins)
             val linkedPatch = autoWirer.autoWire(Shaders.red).acceptSuggestedLinkOptions()
-                .resolve().openForPreview(autoWirer)!!
+                .confirm().openForPreview(autoWirer)!!
             GlslProgram(gl, linkedPatch) { _, _ -> null }
         }
         val programFeed by value { glFeed.bind(program) }

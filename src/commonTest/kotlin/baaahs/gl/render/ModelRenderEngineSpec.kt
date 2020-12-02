@@ -22,7 +22,7 @@ import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 import baaahs.show.UpdateMode
-import baaahs.show.live.LiveShaderInstance
+import baaahs.show.live.LinkedShaderInstance
 import baaahs.show.live.link
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
@@ -75,8 +75,8 @@ object ModelRenderEngineSpec : Spek({
             val openShader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) as PaintShader }
             val incomingLinks by value { mapOf("gl_FragCoord" to dataSource.link("coord")) }
             val linkedPatch by value {
-                val liveShaderInstance = LiveShaderInstance(openShader, incomingLinks, null, 0f)
-                ProgramLinker(liveShaderInstance).buildLinkedPatch()
+                val rootNode = LinkedShaderInstance(openShader, incomingLinks, null, 0f)
+                ProgramLinker(rootNode).buildLinkedPatch()
             }
             val program by value {
                 renderEngine.compile(linkedPatch) { id, dataSource -> dataSource.createFeed(FakeShowPlayer(), id) }

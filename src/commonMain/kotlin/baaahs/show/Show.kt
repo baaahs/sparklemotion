@@ -1,5 +1,6 @@
 package baaahs.show
 
+import baaahs.SparkleMotion
 import baaahs.app.ui.Editable
 import baaahs.camelize
 import baaahs.fixtures.DeviceType
@@ -65,7 +66,16 @@ data class Show(
 data class Patch(
     val shaderInstanceIds: List<String>,
     val surfaces: Surfaces
-)
+) {
+    init { if (SparkleMotion.EXTRA_ASSERTIONS) shaderInstanceIds.assertNoDuplicates() }
+}
+
+fun <T> List<T>.assertNoDuplicates(items: String = "items") {
+    val duplicates = groupBy { it }.mapValues { (_, v) -> v.size }.filterValues { it > 1 }
+    if (duplicates.isNotEmpty()) {
+        throw error("duplicate $items: $duplicates")
+    }
+}
 
 @Serializable
 data class EventBinding(

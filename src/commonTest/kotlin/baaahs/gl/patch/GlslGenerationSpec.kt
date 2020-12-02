@@ -10,6 +10,8 @@ import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShaderOutPort
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.fail
@@ -151,10 +153,6 @@ object GlslGenerationSpec : Spek({
             }
 
             it("generates GLSL") {
-                linkedPatch.shaderInstance.incomingLinks.forEach { (port, link) ->
-                    println("port $port -> $link")
-                }
-
                 kexpect(glsl).toBe(
                     /**language=glsl*/
                     """
@@ -456,7 +454,15 @@ object GlslGenerationSpec : Spek({
             context("when there's no paint shader on the other channel") {
                 override(otherShaderActualChannel) { "notOther" }
 
-                it("should report an error to the user BUT IT CURRENTLY DOESNT") {
+                it("should give a warning") {
+                    expect(linkedPatch.warnings).containsExactly(
+                        "No upstream shader found, using default for color-stream.\n" +
+                                "Stack:\n" +
+                                "    Resolving Track[main/color-stream] -> [Cross-fade shader].inColor2 (color-stream)"
+                    )
+                }
+
+                it("should use default for that content type") {
                     // TODO: WRONG WRONG WRONG we should tell the user that something's wrong?
                     kexpect(glsl).toBe(
                         /**language=glsl*/
@@ -489,7 +495,7 @@ object GlslGenerationSpec : Spek({
 
                             #line 5
                             vec4 p1_crossFadeShader_mainFilter(vec4 inColor) {
-                                return mix(inColor, p1_crossFadeShader_inColor2, in_fadeSlider);
+                                return mix(inColor, vec4(0.), in_fadeSlider);
                             }
 
 

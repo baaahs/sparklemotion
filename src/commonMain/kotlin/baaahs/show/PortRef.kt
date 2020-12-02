@@ -1,6 +1,7 @@
 package baaahs.show
 
 import baaahs.getBang
+import baaahs.gl.glsl.GlslType
 import baaahs.show.mutable.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -44,7 +45,7 @@ data class OutputPortRef(val portId: String) : PortRef() {
 }
 
 @Serializable @SerialName("const")
-data class ConstPortRef(val glsl: String) : PortRef() {
+data class ConstPortRef(val glsl: String, val type: String) : PortRef() {
     override fun dereference(mutableShow: MutableShow): MutablePort =
-        MutableConstPort(glsl)
+        MutableConstPort(glsl, GlslType.from(type))
 }
