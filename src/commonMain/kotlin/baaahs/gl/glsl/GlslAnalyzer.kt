@@ -181,6 +181,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
         open fun visitEof(): ParseState = this
 
         open fun addComment(comment: String) {}
+        open fun receiveSubsequentComments() {}
 
         private abstract class Statement(
             context: Context,
@@ -234,7 +235,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
             }
 
             override fun visitNewline(): ParseState {
-                recipientOfNextComment = null
+                receiveSubsequentComments()
 
                 return if (textIsEmpty() && comments.isEmpty()) {
                     // Skip leading newlines.
@@ -248,6 +249,10 @@ class GlslAnalyzer(private val plugins: Plugins) {
             override fun visitEof(): ParseState {
                 if (!isEmpty()) finishStatement()
                 return UnidentifiedStatement(context, this)
+            }
+
+            override fun receiveSubsequentComments() {
+                recipientOfNextComment = null
             }
 
             override fun addComment(comment: String) {
@@ -379,7 +384,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
             }
 
             override fun createStatement(): GlslStatement =
-                GlslFunction(returnType, name, params, textAsString, lineNumber, emptySet(), comments)
+                GlslFunction(returnType, name, params, textAsString, lineNumber, comments)
 
             inner class Params(
                 recipientOfNextComment: Statement? = null
@@ -463,6 +468,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
             override fun visitNewline(): ParseState {
                 recipientOfComment.addComment(commentText.toString())
                 recipientOfComment.visitText("\n")
+                nextParseState.receiveSubsequentComments()
                 return nextParseState
             }
         }

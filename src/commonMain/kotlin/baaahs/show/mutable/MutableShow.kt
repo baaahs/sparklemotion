@@ -1,6 +1,7 @@
 package baaahs.show.mutable
 
 import baaahs.ShowState
+import baaahs.SparkleMotion
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
 import baaahs.app.ui.editor.*
@@ -71,6 +72,7 @@ abstract class MutablePatchHolder(
         val existingPatch = patches.find { it.surfaces == mutablePatch.surfaces }
         if (existingPatch != null) {
             existingPatch.mutableShaderInstances.addAll(mutablePatch.mutableShaderInstances)
+            if (SparkleMotion.EXTRA_ASSERTIONS) existingPatch.mutableShaderInstances.assertNoDuplicates()
         } else {
             patches.add(mutablePatch)
         }
@@ -276,14 +278,16 @@ class MutablePatch {
         mutableShaderInstances: List<MutableShaderInstance> = emptyList(),
         surfaces: Surfaces = Surfaces.AllSurfaces
     ) {
+        if (SparkleMotion.EXTRA_ASSERTIONS) mutableShaderInstances.assertNoDuplicates()
         this.mutableShaderInstances = mutableShaderInstances.toMutableList()
         this.surfaces = surfaces
     }
 
     constructor(basePatch: Patch, show: MutableShow) {
-        this.mutableShaderInstances = basePatch.shaderInstanceIds.map { shaderInstanceId ->
+        mutableShaderInstances = basePatch.shaderInstanceIds.map { shaderInstanceId ->
             show.findShaderInstance(shaderInstanceId)
         }.toMutableList()
+        if (SparkleMotion.EXTRA_ASSERTIONS) mutableShaderInstances.assertNoDuplicates()
 
         this.surfaces = basePatch.surfaces
     }
@@ -322,12 +326,13 @@ class MutablePatch {
                 .getResolvedShaderInstances()
         val openPatch = OpenPatch(resolvedShaderInstances.values.toList(), surfaces)
 
-        val portDiagram = PatchResolver.buildPortDiagram(openPatch)
+        val portDiagram = PatchResolver.buildPortDiagram(showBuilder.getDataSources(), openPatch)
         return portDiagram.resolvePatch(ShaderChannel.Main, resultContentType)
     }
 
     fun addShaderInstance(mutableShaderInstance: MutableShaderInstance): MutablePatch {
         mutableShaderInstances.add(mutableShaderInstance)
+        if (SparkleMotion.EXTRA_ASSERTIONS) mutableShaderInstances.assertNoDuplicates()
         return this
     }
 
@@ -339,6 +344,7 @@ class MutablePatch {
         val mutableShaderInstance = MutableShaderInstance(shader)
         mutableShaderInstance.block()
         mutableShaderInstances.add(mutableShaderInstance)
+        if (SparkleMotion.EXTRA_ASSERTIONS) mutableShaderInstances.assertNoDuplicates()
         return mutableShaderInstance
     }
 

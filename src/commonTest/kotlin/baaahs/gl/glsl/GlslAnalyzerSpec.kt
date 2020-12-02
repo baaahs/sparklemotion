@@ -271,6 +271,38 @@ object GlslAnalyzerSpec : Spek({
                             )
                     }
                 }
+
+                context("with a comment before a function") {
+                    override(shaderText) {
+                        """
+                            uniform float time; // @type time1
+                            // @type time2
+                            float mainMain() { return time + sin(time); }
+                        """.trimIndent()
+                    }
+
+                    it("attaches the comment to that function") {
+                        expectStatements(
+                            listOf(
+                                GlslVar(
+                                    GlslType.Float,
+                                    "time",
+                                    "uniform float time;", lineNumber = 1,
+                                    comments = listOf(" @type time1"),
+                                    isUniform = true
+                                ),
+                                GlslFunction(
+                                    GlslType.Void,
+                                    "mainMain",
+                                    lineNumber = 1, // TODO: 1 seems wrong here, shouldn't it be 3?
+                                    fullText = "float mainMain() { return time + sin(time); }\n",
+                                    comments = listOf(" @type time2"),
+                                    params = emptyList()
+                                ),
+                            ), { glslAnalyzer.findStatements(shaderText) }, true
+                        )
+                    }
+                }
             }
 
             context("#asShader") {
