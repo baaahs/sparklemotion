@@ -24,12 +24,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
-interface ShowContext {
-    fun getControl(id: String): Control
-    fun getDataSource(id: String): DataSource
-    fun getShader(id: String): Shader
-}
-
 @Serializable
 data class Show(
     override val title: String,
@@ -41,16 +35,16 @@ data class Show(
     val shaderInstances: Map<String, ShaderInstance> = emptyMap(),
     val controls: Map<String, Control>  = emptyMap(),
     val dataSources: Map<String, DataSource> = emptyMap()
-) : PatchHolder, ShowContext, Editable {
+) : PatchHolder, Editable {
     fun toJson(json: Json): JsonElement {
         return json.encodeToJsonElement(serializer(), this)
     }
 
-    override fun getControl(id: String): Control = controls.getBang(id, "control")
+    fun getControl(id: String): Control = controls.getBang(id, "control")
 
-    override fun getDataSource(id: String): DataSource = dataSources.getBang(id, "data source")
+    fun getDataSource(id: String): DataSource = dataSources.getBang(id, "data source")
 
-    override fun getShader(id: String): Shader = shaders.getBang(id, "shader")
+    fun getShader(id: String): Shader = shaders.getBang(id, "shader")
 
     companion object {
         val EmptyShow = Show("Empty Show")
