@@ -25,6 +25,10 @@ interface PlatformIcons {
     val ButtonGroup: Icon
     val ColorPalette: Icon
     val Visualizer: Icon
+
+    val Info: Icon
+    val Warning: Icon
+    val Error: Icon
 }
 
 expect fun getCommonIcons(): PlatformIcons

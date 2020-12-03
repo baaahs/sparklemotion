@@ -3,7 +3,6 @@ package baaahs.show.live
 import baaahs.*
 import baaahs.show.DataSource
 import baaahs.show.Show
-import baaahs.show.ShowContext
 import baaahs.show.mutable.MutableShow
 import baaahs.util.Logger
 
@@ -20,13 +19,11 @@ interface OpenContext {
 class OpenShow(
     private val show: Show,
     private val showPlayer: ShowPlayer,
-    private val openContext: OpenContext
+    private val openContext: OpenContext,
+    val problems: List<ShowProblem>
 ) : OpenPatchHolder(show, openContext), RefCounted by RefCounter() {
     val id = randomId("show")
     val layouts get() = show.layouts
-    val showContext: ShowContext
-        get() = show
-
     val allDataSources = show.dataSources
     val allControls: List<OpenControl> = openContext.allControls
 

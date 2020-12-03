@@ -34,6 +34,7 @@ external object Icons {
     val Help: Icon
     val HelpOutline: Icon
     val Image: Icon
+    val Info: Icon
     val Input: Icon
     val InsertDriveFile: Icon
     val Map: Icon

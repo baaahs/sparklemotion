@@ -252,7 +252,8 @@ class GlslCode(
             } else ""
 
             val args = params.joinToString(", ") { glslParam ->
-                portMap[glslParam.name] ?: "/* huh? ${glslParam.name} */"
+                portMap[glslParam.name]
+                    ?: "/* huh? ${glslParam.name} */"
             }
 
             return assignment + namespace.qualify(name) + "($args)"

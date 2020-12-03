@@ -1,7 +1,6 @@
 package baaahs
 
 import baaahs.fixtures.FixtureManager
-import baaahs.gl.patch.AutoWirer
 import baaahs.gl.render.RenderManager
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
@@ -12,38 +11,17 @@ class ShowRunner(
     val show: Show,
     initialShowState: ShowState? = null,
     private val openShow: OpenShow,
-//    private val beatSource: BeatSource,
-//    private val dmxUniverse: Dmx.Universe,
-//    private val movingHeadManager: MovingHeadManager,
     internal val clock: Clock,
     private val renderManager: RenderManager,
     private val fixtureManager: FixtureManager,
-    private val autoWirer: AutoWirer
+    private val updateProblems: (List<ShowProblem>) -> Unit
 ) {
     private var showState: ShowState = initialShowState ?: openShow.getShowState()
     private var activePatchSetChanged: Boolean = true
 
-    // TODO: Get beat sync working again.
-//    // Continuous from [0.0 ... 3.0] (0 is first beat in a measure, 3 is last)
-//    val currentBeat: Float
-//        get() = beatSource.getBeatData().beatWithinMeasure(clock)
-
-//    private fun getDmxBuffer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
-//        dmxUniverse.writer(baseChannel, channelCount)
-//
-//    // TODO: Get moving heads working again.
-//    fun getMovingHeadBuffer(movingHead: MovingHead): MovingHead.Buffer {
-//        val baseChannel = Config.DMX_DEVICES[movingHead.name] ?: error("no DMX device for ${movingHead.name}")
-//        val movingHeadBuffer = Shenzarpy(getDmxBuffer(baseChannel, 16))
-//
-//        movingHeadManager.listen(movingHead) { updated ->
-//            println("Moving head ${movingHead.name} moved to ${updated.x} ${updated.y}")
-//            movingHeadBuffer.pan = updated.x / 255f
-//            movingHeadBuffer.tilt = updated.y / 255f
-//        }
-//
-//        return movingHeadBuffer
-//    }
+    init {
+        updateProblems(openShow.problems)
+    }
 
     fun getShowState(): ShowState {
         return showState
@@ -72,10 +50,6 @@ class ShowRunner(
         }
 
         return fixtureManager.maybeUpdateRenderPlans(openShow)
-    }
-
-    fun shutDown() {
-        // TODO gadgetManager.clear()
     }
 
     fun release() {

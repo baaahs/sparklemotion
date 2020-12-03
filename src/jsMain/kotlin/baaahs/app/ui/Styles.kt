@@ -117,6 +117,30 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
         fontSize = 0.6.rem
     }
 
+    val appToolbarProblemsIcon by css {
+        transform.translateY(1.em)
+
+        ".infoSeverity" { color = Color.darkGray }
+        ".warnSeverity" { color = Color.orange }
+        ".errorSeverity" { color = Color.red }
+    }
+
+    val showProblem by css {
+        margin = "auto"
+
+        +"infoSeverity" { color = Color.darkGray }
+        +"warnSeverity" { color = Color.orange }
+        +"errorSeverity" { color = Color.red }
+    }
+
+    val showProblemsDialogContent by css {
+        display = Display.grid
+        gap = Gap(1.em.value)
+        gridTemplateColumns = GridTemplateColumns(GridAutoRows.auto, GridAutoRows.auto)
+
+        h4 { margin = "unset" }
+    }
+
     val appToolbarHelpIcon by css {
         transform.translateY(1.em)
     }
