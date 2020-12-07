@@ -9,12 +9,13 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
+import baaahs.gl.shader.FilterShader
+import baaahs.gl.shader.GenericPaintShader
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 import baaahs.show.mutable.EditingShader.State
 import baaahs.shows.FakeGlContext
 import baaahs.ui.Observer
@@ -48,7 +49,7 @@ object EditingShaderSpec : Spek({
         val scaleUniform by value { "uniform float theScale;" }
         val paintShader by value {
             Shader(
-                "Paint", ShaderType.Paint, """
+                "Paint", GenericPaintShader, """
                 uniform float time;
                 void main(void) {
                     gl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, mod(time, 1.), 1.);
@@ -58,7 +59,7 @@ object EditingShaderSpec : Spek({
         }
         val filterShader by value {
             Shader(
-                "Filter", ShaderType.Filter, """
+                "Filter", FilterShader, """
                 $scaleUniform
                 uniform float time;
                 vec4 mainFilter(vec4 inColor) {

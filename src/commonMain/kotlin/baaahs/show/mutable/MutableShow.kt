@@ -2,6 +2,7 @@ package baaahs.show.mutable
 
 import baaahs.ShowState
 import baaahs.SparkleMotion
+import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
 import baaahs.app.ui.editor.*
@@ -11,9 +12,11 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
 import baaahs.gl.shader.OpenShader
+import baaahs.gl.shader.ShaderPrototype
 import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.live.*
+import baaahs.ui.Icon
 import baaahs.util.CacheBuilder
 import baaahs.util.UniqueIds
 
@@ -362,14 +365,17 @@ class MutablePatch {
 
 data class MutableShader(
     var title: String,
-    var type: ShaderType,
+    var prototype: ShaderPrototype?,
+    var resultContentType: ContentType,
     /**language=glsl*/
     var src: String
 ) {
-    constructor(shader: Shader) : this(shader.title, shader.type, shader.src)
+    val icon: Icon = prototype?.icon ?: CommonIcons.UnknownShader
+
+    constructor(shader: Shader) : this(shader.title, shader.prototype, shader.resultContentType, shader.src)
 
     fun build(): Shader {
-        return Shader(title, type, src)
+        return Shader(title, prototype, resultContentType, src)
     }
 
     fun accept(visitor: MutableShowVisitor, log: VisitationLog = VisitationLog()) {
@@ -377,7 +383,7 @@ data class MutableShader(
     }
 
     override fun toString(): String {
-        return "MutableShader(title='$title', type=$type, src='[${src.length} chars]')"
+        return "MutableShader(title='$title', prototype=$prototype, resultContentType=${resultContentType.id} src='[${src.length} chars]')"
     }
 }
 
@@ -432,7 +438,7 @@ data class MutableShaderInstance(
 
     companion object {
         val defaultOrder = compareBy<MutableShaderInstance>(
-            { it.mutableShader.type.priority },
+            { it.mutableShader.prototype?.shaderType?.priority ?: 0 },
             { it.mutableShader.title }
         )
     }

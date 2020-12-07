@@ -13,10 +13,11 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
+@Suppress("unused")
 object PaintShaderSpec : Spek({
     describe("PaintShader") {
         val shaderText by value<String> { toBeSpecified() }
-        val shader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) as PaintShader }
+        val shader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) }
         val namespace by value { GlslCode.Namespace("p0") }
 
         context("generic shaders") {
@@ -175,10 +176,10 @@ object PaintShaderSpec : Spek({
                     expects(
                         listOf(
                             InputPort("blueness", GlslType.Float, "Blueness"),
+                            InputPort("fragCoord", GlslType.Vec2, "U/V Coordinates", ContentType.UvCoordinateStream),
                             InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution, isImplicit = true),
                             InputPort("iTime", GlslType.Float, "Time", ContentType.Time, isImplicit = true),
-                            InputPort("iMouse", GlslType.Vec2, "Mouse", ContentType.Mouse, isImplicit = true),
-                            InputPort("sm_FragCoord", GlslType.Vec2, "Coordinates", ContentType.UvCoordinateStream)
+                            InputPort("iMouse", GlslType.Vec2, "Mouse", ContentType.Mouse, isImplicit = true)
                         )
                     ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
                 }
@@ -192,7 +193,8 @@ object PaintShaderSpec : Spek({
                             "iMouse" to "in_mouse",
                             "iTime" to "in_time",
                             "blueness" to "aquamarinity",
-                            "identity" to "p0_identity"
+                            "identity" to "p0_identity",
+                            "fragCoord" to "gl_FragCoord.xy"
                         )
                     ).trim()
                 )
@@ -217,8 +219,8 @@ object PaintShaderSpec : Spek({
             }
 
             it("generates invocation GLSL") {
-                expect(shader.invocationGlsl(namespace, "resultVar"))
-                    .toBe("p0_mainImage(resultVar, sm_FragCoord.xy)")
+                expect(shader.invocationGlsl(namespace, "resultVar", mapOf("fragCoord" to "gl_FragCoord.xy")))
+                    .toBe("p0_mainImage(resultVar, gl_FragCoord.xy)")
             }
         }
     }

@@ -3,6 +3,8 @@ package baaahs.show
 import baaahs.Color
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.shader.FilterShader
+import baaahs.gl.shader.GenericPaintShader
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
@@ -57,7 +59,7 @@ object SampleData {
     private val showDefaultPaint = autoWirer.autoWire(
         Shader(
             "Darkness",
-            ShaderType.Paint,
+            GenericPaintShader,
             /**language=glsl*/
             """
                 void main(void) {
@@ -72,7 +74,7 @@ object SampleData {
     private val brightnessFilter = autoWirer.autoWire(
         Shader(
             "Brightness",
-            ShaderType.Filter,
+            FilterShader,
             /**language=glsl*/
             """
                 uniform float brightness; // @@Slider min=0 max=1.25 default=1
@@ -90,7 +92,7 @@ object SampleData {
     private val saturationFilter = autoWirer.autoWire(
         Shader(
             "Saturation",
-            ShaderType.Filter,
+            FilterShader,
             /**language=glsl*/
             """
                 uniform float saturation; // @@Slider min=0 max=1.25 default=1
@@ -133,7 +135,7 @@ object SampleData {
     private val redYellowGreenPatch = autoWirer.autoWire(
         Shader(
             "GLSL Hue Test Pattern",
-            ShaderType.Paint,
+            GenericPaintShader,
             /**language=glsl*/
             """
                 uniform vec2 resolution;
@@ -149,7 +151,7 @@ object SampleData {
     private val blueAquaGreenPatch = autoWirer.autoWire(
         Shader(
             "Another GLSL Hue Test Pattern",
-            ShaderType.Paint,
+            GenericPaintShader,
             /**language=glsl*/
             """
                 uniform vec2 resolution;
@@ -243,7 +245,7 @@ object SampleData {
 
     val sampleShowWithBeatLink: Show get() = MutableShow(sampleShow).apply {
         addPatch {
-            addShaderInstance(Shader("BeatLink", ShaderType.Paint, """
+            addShaderInstance(Shader("BeatLink", GenericPaintShader, """
                 uniform float beat;
                 void main(void) {
                     gl_FragColor = vec4(beat, 0., 0., 1.);

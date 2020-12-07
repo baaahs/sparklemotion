@@ -6,6 +6,8 @@ import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
 import baaahs.gl.kexpect
 import baaahs.gl.render.RenderManager
+import baaahs.gl.shader.FilterShader
+import baaahs.gl.shader.GenericPaintShader
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
@@ -13,7 +15,6 @@ import baaahs.shaders.fakeFixture
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
-import baaahs.show.ShaderType
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenButtonControl
 import baaahs.show.live.ShowOpener
@@ -39,13 +40,13 @@ object PatchResolverSpec : Spek({
         val uvShader = Shaders.cylindricalProjection
         val blackShader by value {
             Shader(
-                "Black Shader", ShaderType.Paint,
+                "Black Shader", GenericPaintShader,
                 "void main() {\n  gl_FragColor = vec4(0.);\n}"
             )
         }
         val orangeShader by value {
             Shader(
-                "Orange Shader", ShaderType.Paint,
+                "Orange Shader", GenericPaintShader,
                 "uniform float time;\n" +
                         "void main() {\n" +
                         "  gl_FragColor = vec4(1., .5, time, gl_FragCoord.x);\n" +
@@ -54,7 +55,7 @@ object PatchResolverSpec : Spek({
         }
         val brightnessFilter by value {
             Shader(
-                "Brightness Filter", ShaderType.Filter,
+                "Brightness Filter", FilterShader,
                 "uniform float brightness; // @@Slider min=0 max=1 default=1\n" +
                         "vec4 mainFilter(vec4 colorIn) {\n" +
                         "  return colorIn * brightness;\n" +
@@ -63,10 +64,10 @@ object PatchResolverSpec : Spek({
         }
         val wobblyTimeFilter by value {
             Shader(
-                "Wobbly Time Filter", ShaderType.Unknown,
+                "Wobbly Time Filter", prototype = null, resultContentType = ContentType.Time,
                 "uniform float time; // @type time\n" +
                         "// @type time\n" +
-                        "float mainMain() { return time + sin(time); }"
+                        "float main() { return time + sin(time); }"
             )
         }
         val mutableShow by value {
@@ -281,7 +282,7 @@ object PatchResolverSpec : Spek({
 
                         #line 1
                          
-                        float p1_wobblyTimeFilter_mainMain() { return in_time + sin(in_time); }
+                        float p1_wobblyTimeFilter_main() { return in_time + sin(in_time); }
 
                         // Shader: Orange Shader; namespace: p2
                         // Orange Shader
@@ -310,7 +311,7 @@ object PatchResolverSpec : Spek({
                           p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy);
 
                           // Invoke Wobbly Time Filter
-                          p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_mainMain();
+                          p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();
 
                           // Invoke Orange Shader
                           p2_orangeShader_main();
@@ -334,7 +335,7 @@ object PatchResolverSpec : Spek({
                     addPatch(
                         autoWire(
                             Shader(
-                                "Main Shader", ShaderType.Paint,
+                                "Main Shader", GenericPaintShader,
                                 "uniform float time;\n" +
                                         "void main() {\n" +
                                         "  gl_FragColor = vec4(time, time, time, gl_FragCoord.x);\n" +
@@ -345,7 +346,7 @@ object PatchResolverSpec : Spek({
                     addPatch(
                         autoWirer.autoWire(
                             Shader(
-                                "Fade", ShaderType.Filter, """
+                                "Fade", FilterShader, """
                                     uniform float fade;
                                     varying vec4 otherColorStream; // @type color-stream
                 
@@ -430,7 +431,7 @@ object PatchResolverSpec : Spek({
 
                         #line 1
                          
-                        float p1_wobblyTimeFilter_mainMain() { return in_time + sin(in_time); }
+                        float p1_wobblyTimeFilter_main() { return in_time + sin(in_time); }
 
                         // Shader: Main Shader; namespace: p2
                         // Main Shader
@@ -470,7 +471,7 @@ object PatchResolverSpec : Spek({
                           p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy);
 
                           // Invoke Wobbly Time Filter
-                          p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_mainMain();
+                          p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();
 
                           // Invoke Main Shader
                           p2_mainShader_main();

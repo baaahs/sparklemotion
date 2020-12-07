@@ -266,7 +266,7 @@ class ShowRunnerTest {
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
         stageManager.renderAndSendNextFrame() // Creates show and registers a buffer for surface1.
 
-        fixtureManager.fixturesChanged(listOf(), listOf(surface1Fixture))
+        fixtureManager.fixturesChanged(emptyList(), listOf(surface1Fixture))
         stageManager.renderAndSendNextFrame() // Removes old buffer for surface1.
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())

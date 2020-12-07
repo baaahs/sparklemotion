@@ -47,8 +47,10 @@ class GlslCode(
 
     fun findFunctionOrNull(name: String) =
         functions.find { it.name == name}
+
     fun findFunction(name: String) =
-        findFunctionOrNull(name) ?: error(unknown("function", name, functions.map { it.name }))
+        findFunctionOrNull(name)
+            ?: error(unknown("function", name, functions.map { it.name }))
 
     // TODO: We ought to ignore e.g. local variables, or strings that only appear in comments.
     fun refersToGlobal(name: String): Boolean {
@@ -252,8 +254,11 @@ class GlslCode(
             } else ""
 
             val args = params.joinToString(", ") { glslParam ->
-                portMap[glslParam.name]
-                    ?: "/* huh? ${glslParam.name} */"
+                if (glslParam.isOut)
+                    resultVar
+                else
+                    portMap[glslParam.name]
+                        ?: "/* huh? ${glslParam.name} */"
             }
 
             return assignment + namespace.qualify(name) + "($args)"

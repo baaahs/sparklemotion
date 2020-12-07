@@ -15,10 +15,10 @@ import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.renderPlanFor
+import baaahs.gl.shader.ProjectionShader
 import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 import baaahs.shows.FakeShowPlayer
 import kotlin.math.abs
 import kotlin.random.Random
@@ -286,7 +286,7 @@ class RenderEngineTest {
         Color(abs(redI - other.redI), abs(greenI - other.greenI), abs(blueI - other.blueI), abs(alphaI - other.alphaI))
 }
 
-private val directXyProjection = Shader("Direct XY Projection", ShaderType.Projection,
+private val directXyProjection = Shader("Direct XY Projection", ProjectionShader,
     /**language=glsl*/
     """
         // Direct XY Projection

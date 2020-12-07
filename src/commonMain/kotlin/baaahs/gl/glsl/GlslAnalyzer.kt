@@ -1,23 +1,28 @@
 package baaahs.gl.glsl
 
 import baaahs.gl.glsl.GlslCode.*
+import baaahs.gl.shader.GenericShaderPrototype
+import baaahs.gl.shader.MatchLevel
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 
 class GlslAnalyzer(private val plugins: Plugins) {
     fun import(src: String, defaultTitle: String? = null): Shader {
         val glslCode = analyze(src)
-        val type = ShaderType.values().firstOrNull { it.matches(glslCode) }
-            ?: ShaderType.Paint // Reasonable guess?
+        val prototype = plugins.shaderPrototypes.all
+            .map { it to it.matches(glslCode) }
+            .filter { (_, match) -> match != MatchLevel.NoMatch }
+            .maxByOrNull { (_, match) -> match }?.first
 
-        val title = Regex("^// (.*)").find(src)?.groupValues?.get(1)
+        val effectivePrototype = prototype ?: GenericShaderPrototype
+        val title = effectivePrototype.findTitle(glslCode)
+            ?: defaultTitle
+            ?: prototype?.let { "Untitled ${it.title} Shader" }
+            ?: "Untitled Shader"
+        val resultContentType = effectivePrototype.findOutputPort(glslCode, plugins).contentType
 
-        return Shader(
-            title ?: defaultTitle ?: "Untitled ${type.name} Shader",
-            type,
-            src)
+        return Shader(title, prototype, resultContentType, src)
     }
 
     fun analyze(glslSrc: String): GlslCode {
@@ -36,8 +41,8 @@ class GlslAnalyzer(private val plugins: Plugins) {
     }
 
     fun openShader(shader: Shader): OpenShader {
-        val glslObj = analyze(shader.src)
-        return shader.type.open(shader, glslObj, plugins)
+        val glslCode = analyze(shader.src)
+        return OpenShader.Base(shader, glslCode, shader.prototype, plugins)
     }
 
     private class Context {

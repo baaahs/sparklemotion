@@ -15,13 +15,15 @@ import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.renderPlanFor
+import baaahs.gl.shader.GenericShaderPrototype
 import baaahs.gl.shader.InputPort
-import baaahs.gl.shader.PaintShader
 import baaahs.gl.testPlugins
 import baaahs.only
 import baaahs.plugin.SerializerRegistrar
-import baaahs.show.*
+import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
+import baaahs.show.UpdateMode
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.show.live.link
 import baaahs.shows.FakeGlContext
@@ -72,7 +74,7 @@ object ModelRenderEngineSpec : Spek({
                     void main(void) { gl_FragColor = doesntMatter(gl_FragCoord); }
                 """.trimIndent()
             }
-            val openShader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) as PaintShader }
+            val openShader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) }
             val incomingLinks by value { mapOf("gl_FragCoord" to dataSource.link("coord")) }
             val linkedPatch by value {
                 val rootNode = LinkedShaderInstance(openShader, incomingLinks, null, 0f)
@@ -274,7 +276,7 @@ class DeviceTypeForTest(
 
     override val resultParams: List<ResultParam> get() = emptyList()
     override val errorIndicatorShader: Shader
-        get() = Shader("Ω Guru Meditation Error Ω", ShaderType.Paint, "")
+        get() = Shader("Ω Guru Meditation Error Ω", GenericShaderPrototype, "")
     override fun toString(): String = id
 }
 

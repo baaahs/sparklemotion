@@ -36,7 +36,7 @@ class MutableShaderOutPort(var mutableShaderInstance: MutableShaderInstance) : M
     private val mutableShader get() = mutableShaderInstance.mutableShader
 
     override val title: String get() = "Shader \"${mutableShader.title}\" output"
-    override val icon: Icon get() = mutableShader.type.icon
+    override val icon: Icon get() = mutableShader.icon
     override val groupName: String get() = "Shader Output:"
 
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) = visitor.visit(mutableShaderInstance)

@@ -5,13 +5,13 @@ import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.render.RenderManager
+import baaahs.gl.shader.GenericPaintShader
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.mapper.Storage
 import baaahs.plugin.CorePlugin
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
@@ -54,7 +54,7 @@ object ShowRunnerSpec : Spek({
                         ) {
                             addButton("test patchset") {
                                 addPatch(
-                                    autoWirer.autoWire(Shader("Untitled", ShaderType.Paint, shaderSrc))
+                                    autoWirer.autoWire(Shader("Untitled", GenericPaintShader, shaderSrc))
                                         .acceptSuggestedLinkOptions()
                                         .confirm()
                                 )

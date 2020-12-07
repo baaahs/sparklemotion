@@ -98,6 +98,8 @@ class LiveShaderInstance(
                     get() = dataSource.title
                 override val outputVar: String?
                     get() = null
+                override val resultType: GlslType
+                    get() = dataSource.getType()
 
                 override fun appendDeclarations(buf: StringBuilder) {
                     if (!dataSource.isImplicit()) {

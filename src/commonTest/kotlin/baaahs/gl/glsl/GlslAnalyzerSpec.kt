@@ -239,7 +239,7 @@ object GlslAnalyzerSpec : Spek({
                         it("handles nested macro expansions") {
                             val glslFunction = glslCode.functions.only()
 
-                            val glsl = glslFunction.toGlsl(GlslCode.Namespace("ns"), emptySet(), emptyMap())
+                            val glsl = glslFunction.toGlsl(Namespace("ns"), emptySet(), emptyMap())
 
                             expect(glsl.trim())
                                 .toBe(
@@ -261,6 +261,7 @@ object GlslAnalyzerSpec : Spek({
                         """
                             vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
                             vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                            void main() {}
                         """.trimIndent()
                     }
 
@@ -268,7 +269,8 @@ object GlslAnalyzerSpec : Spek({
                         expect(glslCode.functions.map { it.prettify() })
                             .containsExactly(
                                 "vec3 mod289(in vec3 x)",
-                                "vec4 mod289(in vec4 x)"
+                                "vec4 mod289(in vec4 x)",
+                                "void main()"
                             )
                     }
                 }
@@ -278,7 +280,7 @@ object GlslAnalyzerSpec : Spek({
                         """
                             uniform float time; // @type time1
                             // @type time2
-                            float mainMain() { return time + sin(time); }
+                            float main() { return time + sin(time); }
                         """.trimIndent()
                     }
 
@@ -293,10 +295,10 @@ object GlslAnalyzerSpec : Spek({
                                     isUniform = true
                                 ),
                                 GlslFunction(
-                                    "mainMain",
+                                    "main",
                                     GlslType.Void,
                                     params = emptyList(), // TODO: 1 seems wrong here, shouldn't it be 3?
-                                    fullText = "float mainMain() { return time + sin(time); }\n",
+                                    fullText = "float main() { return time + sin(time); }\n",
                                     lineNumber = 1,
                                     comments = listOf(" @type time2")
                                 ),
@@ -367,9 +369,9 @@ object GlslAnalyzerSpec : Spek({
                         expects(
                             listOf(
                                 InputPort("blueness", GlslType.Float, "Blueness"),
+                                InputPort("fragCoord", GlslType.Vec2, "U/V Coordinates", ContentType.UvCoordinateStream),
                                 InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution, isImplicit = true),
-                                InputPort("iTime", GlslType.Float, "Time", ContentType.Time, isImplicit = true),
-                                InputPort("sm_FragCoord", GlslType.Vec2, "Coordinates", ContentType.UvCoordinateStream)
+                                InputPort("iTime", GlslType.Float, "Time", ContentType.Time, isImplicit = true)
                             )
                         ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
                     }
@@ -392,7 +394,7 @@ object GlslAnalyzerSpec : Spek({
                                     "modelInfo", ContentType.ModelInfo.glslType,
                                     "Model Info", null),
                                 InputPort(
-                                    "rasterCoord", ContentType.RasterCoordinate.glslType,
+                                    "rasterCoord", GlslType.Vec2,
                                     "Raster Coordinate", ContentType.RasterCoordinate),
                             )
                         ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
@@ -401,10 +403,10 @@ object GlslAnalyzerSpec : Spek({
             }
 
             context("const initializers") {
-                override(shaderText) { "const vec3 baseColor = vec3(0.0,0.09,0.18);\n" }
+                override(shaderText) { "const vec3 baseColor = vec3(0.0,0.09,0.18);\nvoid main() {}" }
 
                 it("handles const initializers") {
-                    expect(glslCode.statements.only("statement"))
+                    expect(glslCode.globalVars.only("global var"))
                         .toBe(
                             GlslVar(
                                 "baseColor", GlslType.Vec3, "const vec3 baseColor = vec3(0.0,0.09,0.18);",

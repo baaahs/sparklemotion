@@ -45,7 +45,7 @@ class ShaderInstanceOptions(
 
         parentMutableShow?.accept(object : MutableShowVisitor {
             override fun visit(mutableShaderInstance: MutableShaderInstance) {
-                val contentType = mutableShaderInstance.mutableShader.type.resultContentType
+                val contentType = mutableShaderInstance.mutableShader.resultContentType
                 shaderChannels.getOrPut(contentType, ::mutableSetOf)
                     .add(mutableShaderInstance.shaderChannel)
             }

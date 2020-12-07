@@ -9,6 +9,7 @@ class ContentType(
     val isStream: Boolean = false,
     /** If false, this content type won't be suggested for matching GLSL types, it must be explicitly specified. */
     val suggest: Boolean = true,
+    private val typeAdaptations: Map<GlslType, (String) -> String> = emptyMap(),
     private val defaultInitializer: ((GlslType) -> String)? = null
 ) {
     fun initializer(dataType: GlslType): String =
@@ -20,7 +21,15 @@ class ContentType(
      */
     fun stream(): ContentType {
         if (isStream) error("Already a stream!")
-        return ContentType("$id-stream", "$title Stream", glslType, true, suggest, defaultInitializer)
+        return ContentType(
+            "$id-stream", "$title Stream", glslType, true, suggest,
+            typeAdaptations, defaultInitializer
+        )
+    }
+
+    fun adapt(expression: String, toType: GlslType): String {
+        return typeAdaptations[toType]?.invoke(expression)
+            ?: expression
     }
 
     override fun toString(): String = "ContentType($id [$glslType])"
@@ -46,13 +55,17 @@ class ContentType(
 
 
     companion object {
-        val PixelCoordinatesTexture = ContentType("pixel-coords-texture", "Pixel Coordinates Texture", GlslType.Sampler2D, suggest = true)
+        val PixelCoordinatesTexture =
+            ContentType("pixel-coords-texture", "Pixel Coordinates Texture", GlslType.Sampler2D, suggest = true)
         val PreviewResolution = ContentType("preview-resolution", "Preview Resolution", GlslType.Vec2, suggest = false)
-        val RasterCoordinate = ContentType("raster-coordinate", "Raster Coordinate", GlslType.Vec2, suggest = false)
+        val RasterCoordinate = ContentType("raster-coordinate", "Raster Coordinate", GlslType.Vec4, suggest = false)
         val Resolution = ContentType("resolution", "Resolution", GlslType.Vec2, suggest = false)
         val Unknown = ContentType("unknown", "Unknown", GlslType.Void, suggest = false)
 
-        val UvCoordinate = ContentType("uv-coordinate", "U/V Coordinate", GlslType.Vec2)
+        val UvCoordinate = ContentType(
+            "uv-coordinate", "U/V Coordinate", GlslType.Vec2,
+            typeAdaptations = mapOf(GlslType.Vec4 to { "$it.xy" })
+        )
         val UvCoordinateStream = UvCoordinate.stream()
         val XyCoordinate = ContentType("xy-coordinate", "X/Y Coordinate", GlslType.Vec2)
         val ModelInfo = ContentType("model-info", "Model Info", GlslType.from("ModelInfo"))

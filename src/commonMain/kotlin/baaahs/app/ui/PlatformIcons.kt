@@ -19,6 +19,7 @@ interface PlatformIcons {
     val FilterShader: Icon
     val PaintShader: Icon
     val MoverShader: Icon
+    val UnknownShader: Icon
 
     val BeatLinkControl: Icon
     val Button: Icon

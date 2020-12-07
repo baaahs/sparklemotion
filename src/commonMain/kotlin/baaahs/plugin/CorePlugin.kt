@@ -11,7 +11,7 @@ import baaahs.gl.data.*
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.*
 import baaahs.glsl.Uniform
 import baaahs.show.*
 import baaahs.show.mutable.*
@@ -67,6 +67,17 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         get() = listOf(
             PixelArrayDevice,
             MovingHeadDevice
+        )
+
+    override val shaderPrototypes
+        get() = listOf(
+            GenericShaderPrototype,
+            ProjectionShader,
+            DistortionShader,
+            GenericPaintShader,
+            ShaderToyPaintShader,
+            FilterShader,
+            MoverShader
         )
 
     /**
@@ -203,46 +214,6 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     }
 
     @Serializable
-    @SerialName("baaahs.Core:ScreenUvCoord")
-    data class ScreenUvCoordDataSource(@Transient val `_`: Boolean = true) : DataSource {
-        companion object : DataSourceBuilder<ScreenUvCoordDataSource> {
-            override val resourceName: String get() = "Screen U/V Coordinate"
-            override val contentType: ContentType get() = ContentType.UvCoordinateStream
-            override val serializerRegistrar get() = classSerializer(serializer())
-            override fun build(inputPort: InputPort): ScreenUvCoordDataSource =
-                ScreenUvCoordDataSource()
-        }
-
-        override val pluginPackage: String get() = id
-        override val title: String get() = "Screen U/V Coordinate"
-        override fun getType(): GlslType = GlslType.Vec2
-        override val contentType: ContentType
-            get() = ContentType.UvCoordinateStream
-        override fun isImplicit(): Boolean = true
-        override fun getVarName(id: String): String = "gl_FragCoord"
-
-        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-            return object : Feed, RefCounted by RefCounter() {
-                override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                    override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                        return object : ProgramFeed {
-                            override val isValid: Boolean get() = true
-
-                            override fun setOnProgram() {
-                                // No-op.
-                            }
-                        }
-                    }
-
-                    override fun release() = Unit
-                }
-
-                override fun release() = Unit
-            }
-        }
-    }
-
-    @Serializable
     @SerialName("baaahs.Core:ModelInfo")
     data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<ModelInfoDataSource> {
@@ -309,7 +280,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
 
         override val pluginPackage: String get() = id
         override val title: String get() = "Raster Coordinate"
-        override fun getType(): GlslType = GlslType.Vec2
+        override fun getType(): GlslType = GlslType.Vec4
         override val contentType: ContentType
             get() = ContentType.RasterCoordinate
 

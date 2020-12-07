@@ -1,17 +1,21 @@
 package baaahs.show
 
 import baaahs.SparkleMotion
+import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.Editable
 import baaahs.camelize
 import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.getBang
+import baaahs.gl.patch.ContentType
+import baaahs.gl.shader.ShaderPrototype
 import baaahs.plugin.Plugins
 import baaahs.show.ButtonGroupControl.Direction
 import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.MutableShowVisitor
 import baaahs.show.mutable.VisitationLog
+import baaahs.ui.Icon
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -109,13 +113,21 @@ data class Layout(
     val rootNode: JsonObject
 )
 
+/** If [prototype] is `null`, [GenericShaderPrototype] is used. */
 @Serializable
 data class Shader(
     val title: String,
-    val type: ShaderType,
+    val prototype: ShaderPrototype?,
+    @Contextual
+    val resultContentType: ContentType,
     /**language=glsl*/
     val src: String
 ) {
+    constructor(title: String, prototype: ShaderPrototype, src: String) :
+            this(title, prototype, prototype.outputPort.contentType, src)
+
+    val icon: Icon get() = prototype?.icon ?: CommonIcons.UnknownShader
+
     fun suggestId(): String = title.camelize()
 }
 

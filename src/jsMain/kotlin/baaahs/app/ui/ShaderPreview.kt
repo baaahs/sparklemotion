@@ -49,7 +49,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     onMount(canvas.current) {
         val canvasEl = canvas.current ?: return@onMount
 
-        val preview = if (props.shader?.type == ShaderType.Projection) {
+        val preview = if (props.shader?.prototype?.shaderType == ShaderType.Projection) {
             val canvas2d = canvasEl
             val canvas3d = document.createElement("canvas") as HTMLCanvasElement
             val glslContext = GlBase.jsManager.createContext(canvas3d)

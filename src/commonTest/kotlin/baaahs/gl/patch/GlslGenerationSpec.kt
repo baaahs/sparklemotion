@@ -7,10 +7,7 @@ import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderChannel
-import baaahs.show.mutable.MutableShaderOutPort
-import baaahs.show.mutable.editor
+import baaahs.show.mutable.*
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -54,7 +51,7 @@ object GlslGenerationSpec : Spek({
         context("with screen coordinates for preview") {
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
-                    link("gl_FragCoord", CorePlugin.ScreenUvCoordDataSource())
+                    link("fragCoord", CorePlugin.RasterCoordinateDataSource())
                     link("resolution", CorePlugin.ResolutionDataSource())
                     link("time", CorePlugin.TimeDataSource())
                     link(
@@ -135,7 +132,7 @@ object GlslGenerationSpec : Spek({
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
                     link("resolution", CorePlugin.ResolutionDataSource())
-                    link("fragCoord", CorePlugin.ScreenUvCoordDataSource())
+                    link("fragCoord", CorePlugin.RasterCoordinateDataSource())
                     shaderChannel = ShaderChannel.Main.editor()
                 }
             }
@@ -210,7 +207,7 @@ object GlslGenerationSpec : Spek({
                     )
                     link("iResolution", CorePlugin.ResolutionDataSource())
                     link("iTime", CorePlugin.TimeDataSource())
-                    link("sm_FragCoord", CorePlugin.ScreenUvCoordDataSource())
+                    link("fragCoord", CorePlugin.RasterCoordinateDataSource())
                     shaderChannel = ShaderChannel.Main.editor()
                 }
             }
@@ -442,6 +439,7 @@ object GlslGenerationSpec : Spek({
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainPaintShader)
                 mutablePatch.addShaderInstance(otherPaintShader) {
+                    link("fragCoord", MutableDataSourcePort(CorePlugin.RasterCoordinateDataSource()))
                     shaderChannel = MutableShaderChannel.from(otherShaderActualChannel)
                 }
 
@@ -504,7 +502,7 @@ object GlslGenerationSpec : Spek({
                           p0_mainPaintShader_main();
 
                           // Invoke Other Paint Shader
-                          p1_otherPaintShader_mainImage(p1_otherPaintShaderi_result, sm_FragCoord.xy);
+                          p1_otherPaintShader_mainImage(p1_otherPaintShaderi_result, gl_FragCoord.xy);
 
                           // Invoke Cross-fade shader
                           p2_crossFadeShaderi_result = p2_crossFadeShader_mainFilter(p0_mainPaintShader_gl_FragColor);
