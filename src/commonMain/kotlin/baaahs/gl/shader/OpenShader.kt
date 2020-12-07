@@ -5,7 +5,6 @@ import baaahs.RefCounter
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
-import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
@@ -19,9 +18,7 @@ interface OpenShader : RefCounted {
     val src: String get() = glslCode.src
     val glslCode: GlslCode
     val title: String
-    val entryPointName: String
     val entryPoint: GlslFunction
-        get() = glslCode.findFunction(entryPointName)
 
     val inputPorts: List<InputPort>
     val outputPort: OutputPort
@@ -39,22 +36,23 @@ interface OpenShader : RefCounted {
         namespace: Namespace,
         resultVar: String,
         portMap: Map<String, String> = emptyMap()
-    ): String = entryPoint.invocationGlsl(namespace, resultVar, portMap)
+    ): String
 
-    abstract class Base(
-        final override val shader: Shader,
-        final override val glslCode: GlslCode,
+    class Base(
+        override val shader: Shader,
+        override val glslCode: GlslCode,
+        prototype: ShaderPrototype?,
         private val plugins: Plugins
     ) : OpenShader, RefCounted by RefCounter() {
+        private val prototype = prototype ?: GenericShaderPrototype
         override val title: String get() = shader.title
-
-        open val implicitInputPorts: List<InputPort> = emptyList()
+        override val entryPoint: GlslFunction = this.prototype.findEntryPoint(glslCode)
 
         private val proFormaInputPorts: List<InputPort>
-            get() = implicitInputPorts.mapNotNull { ifRefersTo(it)?.copy(isImplicit = true) }
+            get() = prototype.implicitInputPorts.mapNotNull { ifRefersTo(it)?.copy(isImplicit = true) }
 
-        abstract val wellKnownInputPorts: Map<String, InputPort>
-        open val defaultInputPortsByType: Map<Pair<GlslType, Boolean>, InputPort> = emptyMap()
+        private val wellKnownInputPorts = this.prototype.wellKnownInputPorts.associateBy { it.id }
+        private val defaultInputPortsByType = this.prototype.defaultInputPortsByType
 
         override val inputPorts: List<InputPort> by lazy {
             proFormaInputPorts +
@@ -64,14 +62,16 @@ interface OpenShader : RefCounted {
                                 ?: defaultInputPortsByType[it.type to it.isVarying]
                                     ?.copy(id = it.name, varName = it.name, glslArgSite = it)
                                 ?: it.toInputPort(plugins)
-                        }
+                        } +
+                    this.prototype.findMagicInputPorts(glslCode)
         }
-
-        abstract val shaderType: ShaderType
+        override val outputPort: OutputPort
+            get() = prototype.findOutputPort(glslCode, plugins)
+        val shaderType: ShaderType = this.prototype.shaderType
         override val defaultPriority: Int
             get() = shaderType.priority
         override val defaultUpstreams: Map<ContentType, ShaderChannel>
-            get() = shaderType.defaultUpstreams
+            get() = prototype.defaultUpstreams
 
         override fun findInputPortOrNull(portId: String): InputPort? =
             inputPorts.find { it.id == portId }
@@ -92,7 +92,9 @@ interface OpenShader : RefCounted {
             }
 
             val uniformGlobalsMap = portMap.filter { (id, _) ->
-                findInputPortOrNull(id)?.isGlobal ?: false || outputPort.id == id
+                val inputPort = findInputPortOrNull(id)
+
+                inputPort?.isGlobal == true || outputPort.id == id
             }
 
             val symbolsToNamespace = glslCode.symbolNames.toSet()
@@ -103,6 +105,10 @@ interface OpenShader : RefCounted {
             }
 
             return buf.toString()
+        }
+
+        override fun invocationGlsl(namespace: Namespace, resultVar: String, portMap: Map<String, String>): String {
+            return prototype.invocationGlsl(namespace, resultVar, portMap, entryPoint)
         }
 
         override fun equals(other: Any?): Boolean =

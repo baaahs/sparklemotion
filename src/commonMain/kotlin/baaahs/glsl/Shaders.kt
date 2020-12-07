@@ -1,10 +1,12 @@
 package baaahs.glsl
 
+import baaahs.gl.shader.DistortionShader
+import baaahs.gl.shader.ProjectionShader
+import baaahs.gl.shader.ShaderToyPaintShader
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 
 object Shaders {
-    val smpteColorBars = Shader("SMTPE Color Bars", ShaderType.Paint, """
+    val smpteColorBars = Shader("SMTPE Color Bars", ShaderToyPaintShader, """
         // Robby Kraft
         // from https://www.shadertoy.com/view/XlGXRz
 
@@ -66,19 +68,19 @@ object Shaders {
         }
     """.trimIndent())
 
-    val red = Shader("Solid Red", ShaderType.Paint, """
+    val red = Shader("Solid Red", ShaderToyPaintShader, """
         void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             fragColor = (1., 0., 0., 1.);
         }
     """.trimIndent())
 
-    val blue = Shader("Solid Blue", ShaderType.Paint, """
+    val blue = Shader("Solid Blue", ShaderToyPaintShader, """
         void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             fragColor = (0., 0., 1., 1.);
         }
     """.trimIndent())
 
-    val checkerboard = Shader("Checkerboard", ShaderType.Paint, """
+    val checkerboard = Shader("Checkerboard", ShaderToyPaintShader, """
         uniform float checkerboardSize = 10.0; // @@Slider min=.001 max=1 default=.1
 
         void mainImage(out vec4 fragColor, in vec2 fragCoord) {
@@ -88,7 +90,7 @@ object Shaders {
         }
     """.trimIndent())
 
-    val ripple = Shader("Ripple", ShaderType.Distortion, """
+    val ripple = Shader("Ripple", DistortionShader, """
         uniform float time;
 
         vec2 mainDistortion(vec2 uvIn) {
@@ -98,13 +100,13 @@ object Shaders {
         }
     """.trimIndent())
 
-    val flipY = Shader("Flip Y", ShaderType.Distortion, """
+    val flipY = Shader("Flip Y", DistortionShader, """
         vec2 mainDistortion(vec2 uvIn) {
           return vec2(uvIn.x, 1. - uvIn.y);
         }
     """.trimIndent())
 
-    val cylindricalProjection = Shader("Cylindrical Projection", ShaderType.Projection,
+    val cylindricalProjection = Shader("Cylindrical Projection", ProjectionShader,
         /**language=glsl*/
         """
             // Cylindrical Projection
@@ -140,7 +142,7 @@ object Shaders {
         """.trimIndent()
     )
 
-    val pixelUvIdentity = Shader("Pixel U/V Identity", ShaderType.Paint, """
+    val pixelUvIdentity = Shader("Pixel U/V Identity", ShaderToyPaintShader, """
         void mainImage(out vec4 fragColor, in vec2 fragCoord) {
             fragColor = vec4(fragCoord.x, fragCoord.y, 0., 1.);
         }

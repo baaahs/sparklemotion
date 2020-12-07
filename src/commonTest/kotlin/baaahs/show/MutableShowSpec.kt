@@ -2,6 +2,7 @@ package baaahs.show
 
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.shader.GenericPaintShader
 import baaahs.gl.testPlugins
 import baaahs.only
 import baaahs.show.mutable.MutableConstPort
@@ -232,7 +233,7 @@ object MutableShowSpec : Spek({
 
 private fun AutoWirer.testPatch(title: String): MutablePatch {
     val shader = Shader(
-        title, ShaderType.Paint, """
+        title, GenericPaintShader, """
             // $title
             uniform float time;
             uniform vec2  resolution;

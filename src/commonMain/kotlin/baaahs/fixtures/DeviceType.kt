@@ -15,9 +15,7 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.modules.SerializersModule
 import kotlin.math.min
-import kotlin.reflect.KClass
 
 interface DeviceType {
     val id: String
@@ -26,22 +24,6 @@ interface DeviceType {
     val resultParams: List<ResultParam>
     val resultContentType: ContentType
     val errorIndicatorShader: Shader
-
-    companion object {
-        private val knownDeviceTypes = listOf(
-            PixelArrayDevice, MovingHeadDevice
-        ).associateBy { it.id }
-
-        val serialModule = SerializersModule {
-            val serializer = Serializer(knownDeviceTypes)
-
-            contextual(DeviceType::class, serializer)
-            knownDeviceTypes.values.forEach { deviceType ->
-                @Suppress("UNCHECKED_CAST")
-                contextual(deviceType::class as KClass<DeviceType>, serializer)
-            }
-        }
-    }
 
     class Serializer(private val knownDeviceTypes: Map<String, DeviceType>) : KSerializer<DeviceType> {
         override val descriptor: SerialDescriptor

@@ -2,6 +2,7 @@ package baaahs.plugin
 
 import baaahs.fixtures.DeviceType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.shader.ShaderPrototype
 import baaahs.show.AddControlMenuItem
 import baaahs.show.Control
 import baaahs.show.DataSource
@@ -22,10 +23,21 @@ interface Plugin {
     val title: String
 
     val addControlMenuItems: List<AddControlMenuItem>
+        get() = emptyList()
+
     val contentTypes: List<ContentType>
+        get() = emptyList()
+
     val controlSerializers: List<SerializerRegistrar<out Control>>
+        get() = emptyList()
+
     val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
+        get() = emptyList()
+
     val deviceTypes: List<DeviceType>
+        get() = emptyList()
+
+    val shaderPrototypes: List<ShaderPrototype>
         get() = emptyList()
 }
 

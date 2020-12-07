@@ -9,7 +9,9 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.RenderEngine
+import baaahs.gl.shader.GenericShaderPrototype
 import baaahs.gl.shader.OpenShader
+import baaahs.gl.shader.ProjectionShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.show.DataSource
@@ -99,7 +101,8 @@ class PreviewShaderBuilder(
         try {
             val openShader = analyze(shader)
             this.openShader = openShader
-            val shaders: Array<OpenShader> = when (shader.type) {
+            val shaderType = shader.prototype?.shaderType ?: ShaderType.Unknown
+            val shaders: Array<OpenShader> = when (shaderType) {
                 ShaderType.Unknown -> arrayOf(openShader)
                 ShaderType.Projection -> arrayOf(openShader, pixelUvIdentity)
                 ShaderType.Distortion -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
@@ -108,7 +111,7 @@ class PreviewShaderBuilder(
                 ShaderType.Mover -> arrayOf(openShader)
             }
 
-            val defaultPorts = when (shader.type) {
+            val defaultPorts = when (shaderType) {
                 ShaderType.Projection -> emptyMap()
                 else -> mapOf(ContentType.UvCoordinateStream to MutableConstPort("gl_FragCoord", GlslType.Vec2))
             }
@@ -181,7 +184,7 @@ class PreviewShaderBuilder(
 
         private val screenCoordsProjection by lazy {
             Shader(
-                "Screen Coords", ShaderType.Projection, """
+                "Screen Coords", ProjectionShader, """
                     uniform vec2 previewResolution;
                     
                     vec2 mainProjection(
@@ -209,7 +212,7 @@ object ProjectionPreviewDevice: DeviceType {
     override val errorIndicatorShader: Shader
         get() = Shader(
             "Ω Guru Meditation Error Ω",
-            ShaderType.Paint,
+            GenericShaderPrototype,
             /**language=glsl*/
             ""
         )

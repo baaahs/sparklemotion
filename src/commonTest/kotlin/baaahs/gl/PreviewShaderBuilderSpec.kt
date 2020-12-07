@@ -6,10 +6,10 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
+import baaahs.gl.shader.FilterShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 import baaahs.shows.FakeGlContext
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
@@ -66,7 +66,7 @@ object PreviewShaderBuilderSpec : Spek({
 
                 context("when there's a problem parsing hints") {
                     override(shader) {
-                        Shader("Shader", ShaderType.Filter, """
+                        Shader("Shader", FilterShader, """
                             uniform float foo; // @@something.bad
                             vec4 mainFilter(vec4 inColor) {
                                 return inColor;

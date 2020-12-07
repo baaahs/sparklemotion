@@ -1,9 +1,10 @@
 package baaahs.show
 
+import baaahs.gl.patch.ContentType
 import kotlinx.serialization.json.*
 
 object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
-    private const val currentVersion = 1
+    private const val currentVersion = 2
     private const val versionKey = "version"
 
     override fun transformDeserialize(element: JsonElement): JsonElement {
@@ -20,6 +21,10 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
             FromV0.apply(newJson)
         }
 
+        if (fromVersion < 2) {
+            FromV1.apply(newJson)
+        }
+
         return newJson.toJsonObj()
     }
 
@@ -32,6 +37,17 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
 
     private fun Map<String, JsonElement>.toJsonObj(): JsonObject = buildJsonObject {
         forEach { (k, v) -> put(k, v) }
+    }
+
+    fun MutableMap<String, JsonElement>.mapObjsInDict(
+        key: String,
+        callback: (id: String, item: MutableMap<String, JsonElement>) -> Unit
+    ) {
+        (this[key] as JsonObject?)?.mapValues { (id, obj) ->
+            val objMap = (obj as JsonObject).toMutableMap()
+            callback(id, objMap)
+            objMap.toJsonObj()
+        }?.also { this[key] = it.toJsonObj() }
     }
 
     object FromV0 {
@@ -50,9 +66,7 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
         )
 
         fun apply(newJson: MutableMap<String, JsonElement>) {
-            newJson["dataSources"] = (newJson["dataSources"] as JsonObject).mapValues { (_, v) ->
-                val dataSource = (v as JsonObject).toMutableMap()
-
+            newJson.mapObjsInDict("dataSources") { _, dataSource ->
                 val type = dataSource["type"]?.jsonPrimitive?.contentOrNull
                 if (type == "baaahs.plugin.CorePlugin.ModelInfoDataSource") {
                     dataSource.remove("structType")
@@ -61,9 +75,48 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
                 if (type != null) {
                     dataSourceTypeMap[type]?.let { dataSource["type"] = JsonPrimitive(it) }
                 }
+            }
+        }
+    }
 
-                dataSource.toJsonObj()
-            }.toJsonObj()
+    object FromV1 {
+        private val shaderTypeToPrototypeMap = mapOf(
+            "Projection" to "baaahs.Core:Projection",
+            "Distortion" to "baaahs.Core:Distortion",
+            "Filter" to "baaahs.Core:Filter",
+            "Mover" to "baaahs.Core:Mover",
+            "Unknown" to null
+        )
+
+        private val shaderTypeToResultContentTypeMap = mapOf(
+            "Projection" to ContentType.UvCoordinateStream,
+            "Distortion" to ContentType.UvCoordinateStream,
+            "Paint" to ContentType.ColorStream,
+            "Filter" to ContentType.ColorStream,
+            "Mover" to ContentType.PanAndTilt,
+            "Unknown" to ContentType.Unknown
+        )
+
+        fun apply(newJson: MutableMap<String, JsonElement>) {
+            newJson.mapObjsInDict("shaders") { _, shader ->
+                val type = shader.remove("type")?.jsonPrimitive?.contentOrNull
+
+                val prototype = if (type == "Paint") {
+                    val src = shader["src"]?.jsonPrimitive?.contentOrNull
+                    if (src?.contains("mainImage") == true) {
+                        "baaahs.Core:Paint/ShaderToy"
+                    } else {
+                        "baaahs.Core:Paint"
+                    }
+                } else shaderTypeToPrototypeMap[type]
+
+                val resultContentType = shaderTypeToResultContentTypeMap[type]
+                    ?: error("Unknown shader type \"$type\"")
+
+                shader["prototype"] = prototype?.let { buildJsonObject { put("type", prototype) } }
+                    ?: JsonNull
+                shader["resultContentType"] = JsonPrimitive(resultContentType.id)
+            }
         }
     }
 }

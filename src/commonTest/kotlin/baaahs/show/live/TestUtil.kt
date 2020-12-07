@@ -3,9 +3,15 @@ package baaahs.show.live
 import baaahs.ShowState
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.shader.GenericPaintShader
+import baaahs.gl.shader.ProjectionShader
+import baaahs.gl.shader.ShaderPrototype
 import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
-import baaahs.show.*
+import baaahs.show.Layout
+import baaahs.show.Layouts
+import baaahs.show.Shader
+import baaahs.show.Show
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePort
@@ -27,8 +33,8 @@ fun AutoWirer.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap(
     return unresolvedPatch.acceptSuggestedLinkOptions().confirm()
 }
 
-fun fakeShader(title: String, type: ShaderType = ShaderType.Paint) =
-    Shader(title, type, type.template)
+fun fakeShader(title: String, prototype: ShaderPrototype = GenericPaintShader) =
+    Shader(title, prototype, prototype.template)
 
 class FakeEditHandler : EditHandler {
     val calls = arrayListOf<List<Any>>()
@@ -90,7 +96,7 @@ fun MutableShow.addFixtureControls() {
     val slider1 = CorePlugin.SliderDataSource("slider1", 0f, 0f, 1f, 1f)
     val slider2 = CorePlugin.SliderDataSource("slider2", 0f, 0f, 1f, 1f)
 
-    addPatch(autoWirer.wireUp(fakeShader("Show Projection", ShaderType.Projection)))
+    addPatch(autoWirer.wireUp(fakeShader("Show Projection", ProjectionShader)))
 
     addButtonGroup("Panel 1", "Scenes") {
         addButton("Scene 1") {

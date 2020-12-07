@@ -3,12 +3,13 @@ package baaahs.gl.patch
 import baaahs.fixtures.MovingHeadInfoDataSource
 import baaahs.gl.expects
 import baaahs.gl.override
+import baaahs.gl.shader.DistortionShader
+import baaahs.gl.shader.FilterShader
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
-import baaahs.show.ShaderType
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.show.live.link
 import baaahs.show.mutable.MutableShader
@@ -139,7 +140,7 @@ object AutoWirerSpec : Spek({
                                     "iTime" to CorePlugin.TimeDataSource().editor(),
                                     "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).editor(),
                                     "iResolution" to CorePlugin.ResolutionDataSource().editor(),
-                                    "sm_FragCoord" to ShaderChannel.Main.editor()
+                                    "fragCoord" to ShaderChannel.Main.editor()
                                 ),
                                 shaderChannel = ShaderChannel.Main.editor(),
                                 priority = 0f
@@ -157,7 +158,7 @@ object AutoWirerSpec : Spek({
                             "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).link("bluenessSlider"),
                             "iResolution" to CorePlugin.ResolutionDataSource().link("resolution"),
                             "iTime" to CorePlugin.TimeDataSource().link("time"),
-                            "sm_FragCoord" to DefaultValueNode(ContentType.UvCoordinateStream)
+                            "fragCoord" to DefaultValueNode(ContentType.UvCoordinateStream)
                         )
                     ) { rootProgramNode.incomingLinks }
                 }
@@ -200,7 +201,7 @@ object AutoWirerSpec : Spek({
             context("with a filter shader") {
                 val filterShader = Shader(
                     "Brightness Filter",
-                    ShaderType.Filter,
+                    FilterShader,
                     """
                         uniform float brightness; // @@Slider min=0 max=1 default=1
                         vec4 mainFilter(vec4 colorIn) {
@@ -230,7 +231,7 @@ object AutoWirerSpec : Spek({
             context("with a distortion shader") {
                 val filterShader = Shader(
                     "Flip Y",
-                    ShaderType.Distortion,
+                    DistortionShader,
                     """
                         vec2 mainDistortion(vec2 uvIn) {
                           return vec2(uvIn.x, 1.0 - uvIn.y);

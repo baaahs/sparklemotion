@@ -9,6 +9,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.render.DeviceTypeForTest
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
+import baaahs.gl.shader.GenericPaintShader
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
@@ -17,7 +18,6 @@ import baaahs.model.Model
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
-import baaahs.show.ShaderType
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutableShow
 import baaahs.shows.FakeGlContext
@@ -60,14 +60,14 @@ object FixtureManagerSpec : Spek({
                         addPatch {
                             addShaderInstance(
                                 Shader(
-                                    "Pea Soup", ShaderType.Paint, """
+                                    "Pea Soup", GenericPaintShader, """
                                     vec4 main() { return vec4(0.); }
                                 """.trimIndent()
                                 )
                             )
                             addShaderInstance(
                                 Shader(
-                                    "Din", ShaderType.Paint, """
+                                    "Din", GenericPaintShader, """
                                     vec4 main() { return vec4(0.); }
                                 """.trimIndent()
                                 )
@@ -141,11 +141,11 @@ class FakeOpenShader(
     override val title: String
 ) : OpenShader, RefCounted by RefCounter() {
     override val shader: Shader
-        get() = Shader(title, ShaderType.Paint /* not necessarily true */, "fake src for $title")
+        get() = Shader(title, GenericPaintShader /* not necessarily true */, "fake src for $title")
     override val glslCode: GlslCode
         get() = GlslCode(shader.src, emptyList())
-    override val entryPointName: String
-        get() = "entryPoint"
+    override val entryPoint: GlslCode.GlslFunction
+        get() = TODO("not implemented")
     override val inputPorts: List<InputPort>
         get() = emptyList()
     override val defaultPriority: Int

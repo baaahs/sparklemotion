@@ -206,7 +206,10 @@ private fun jsonFor(portRef: PortRef): JsonObject {
 
 private fun jsonFor(shader: Shader) = buildJsonObject {
     put("title", shader.title)
-    put("type", shader.type.name)
+    put("prototype",
+        shader.prototype?.let { buildJsonObject { put("type", shader.prototype?.id) } }
+            ?: JsonNull)
+    put("resultContentType", shader.resultContentType.id)
     put("src", shader.src)
 }
 

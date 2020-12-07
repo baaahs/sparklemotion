@@ -64,10 +64,10 @@ data class PatchEditorPanel(
     ) : EditorPanel {
         override val title: String
             get() = mutableShaderInstance.mutableShader.title
-        override val listSubhead: String?
+        override val listSubhead: String
             get() = "Shaders"
-        override val icon: Icon?
-            get() = mutableShaderInstance.mutableShader.type.icon
+        override val icon: Icon
+            get() = mutableShaderInstance.mutableShader.icon
 
         override fun getRenderer(editableManager: EditableManager): Renderer =
             editorPanelViews.forShaderInstance(editableManager, mutablePatch, mutableShaderInstance)

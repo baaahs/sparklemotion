@@ -9,11 +9,9 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
+import baaahs.plugin.CorePlugin
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.MutableConstPort
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderChannel
-import baaahs.show.mutable.MutableShaderOutPort
+import baaahs.show.mutable.*
 import baaahs.toBeSpecified
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -21,10 +19,11 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
+@Suppress("unused")
 object FilterShaderSpec : Spek({
     describe("FilterShader") {
         val shaderText by value<String> { toBeSpecified() }
-        val shader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) as FilterShader }
+        val shader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) }
         val namespace by value { GlslCode.Namespace("p0") }
 
         context("cross-fade between shaders") {
@@ -74,9 +73,12 @@ object FilterShaderSpec : Spek({
                 val linkedPatch by value {
                     MutablePatch {
                         val redInstance =
-                            addShaderInstance(Shaders.red) {}
+                            addShaderInstance(Shaders.red) {
+                                link("fragCoord", MutableDataSourcePort(CorePlugin.RasterCoordinateDataSource()))
+                            }
 
                         addShaderInstance(Shaders.blue) {
+                            link("fragCoord", MutableDataSourcePort(CorePlugin.RasterCoordinateDataSource()))
                             shaderChannel = MutableShaderChannel(otherChannel.id)
                         }
 
@@ -135,10 +137,10 @@ object FilterShaderSpec : Spek({
                         #line 10001
                         void main() {
                           // Invoke Solid Blue
-                          p0_solidBlue_mainImage(p0_solidBluei_result, sm_FragCoord.xy);
+                          p0_solidBlue_mainImage(p0_solidBluei_result, gl_FragCoord.xy);
 
                           // Invoke Solid Red
-                          p1_solidRed_mainImage(p1_solidRedi_result, sm_FragCoord.xy);
+                          p1_solidRed_mainImage(p1_solidRedi_result, gl_FragCoord.xy);
 
                           // Invoke Fade Filter
                           p2_fadeFilteri_result = p2_fadeFilter_mainFilter(p1_solidRedi_result);
