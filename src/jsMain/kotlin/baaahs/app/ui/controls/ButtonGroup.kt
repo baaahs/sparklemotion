@@ -5,6 +5,7 @@ import baaahs.app.ui.appContext
 import baaahs.show.ButtonGroupControl
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenButtonGroupControl
+import baaahs.show.live.OpenControl
 import baaahs.ui.*
 import external.Direction
 import external.copyFrom
@@ -99,7 +100,7 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                                     attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
                                 }
 
-                                icon(Icons.Edit)
+                                editIconWithBadge(buttonControl as OpenControl, editMode)
                             }
                             div(+Styles.dragHandle) {
                                 copyFrom(sceneDragProvided.dragHandleProps)

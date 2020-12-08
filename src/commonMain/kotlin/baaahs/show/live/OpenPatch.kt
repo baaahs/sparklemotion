@@ -8,14 +8,16 @@ class OpenPatch(
     val shaderInstances: List<LiveShaderInstance>,
     val surfaces: Surfaces
 ) {
-    val serial = nextSerial++
-
     constructor(patch: Patch, openContext: OpenContext): this(
         patch.shaderInstanceIds.map {
             openContext.getShaderInstance(it)
         },
         patch.surfaces
     )
+
+    val serial = nextSerial++
+
+    val problems get() = shaderInstances.flatMap { it.problems }
 
     override fun toString(): String {
         return "OpenPatch(shaderInstances=$shaderInstances, surfaces=$surfaces)"

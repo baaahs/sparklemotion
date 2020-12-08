@@ -16,7 +16,7 @@ object GenericShaderPrototype : ShaderPrototype("baaahs.Core:Generic") {
     override val title: String = "Generic"
     override val shaderType: ShaderType get() = ShaderType.Unknown
     override val entryPointName: String = "main"
-    override val icon: Icon = CommonIcons.None
+    override val icon: Icon = CommonIcons.UnknownShader
     override val suggestNew: Boolean = false
     override val template: String get() = error("not implemented")
 

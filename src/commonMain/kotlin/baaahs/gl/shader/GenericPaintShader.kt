@@ -51,7 +51,7 @@ object GenericPaintShader : ShaderPrototype("baaahs.Core:Paint") {
     override fun validate(glslCode: GlslCode): List<GlslError> {
         return super.validate(glslCode) +
                 if (!glslCode.refersToGlobal("gl_FragColor"))
-                    GlslError("Shader doesn't write to gl_FragColor.", findEntryPoint(glslCode).lineNumber)
+                    GlslError("Shader doesn't write to gl_FragColor.", findEntryPointOrNull(glslCode)?.lineNumber)
                         .listOf()
                 else emptyList()
     }

@@ -5,6 +5,8 @@ import baaahs.RefCounter
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
+import baaahs.gl.glsl.GlslError
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
@@ -15,6 +17,7 @@ import kotlin.collections.set
 
 interface OpenShader : RefCounted {
     val shader: Shader
+    val errors: List<GlslError>
     val src: String get() = glslCode.src
     val glslCode: GlslCode
     val title: String
@@ -41,18 +44,19 @@ interface OpenShader : RefCounted {
     class Base(
         override val shader: Shader,
         override val glslCode: GlslCode,
-        prototype: ShaderPrototype?,
         private val plugins: Plugins
     ) : OpenShader, RefCounted by RefCounter() {
-        private val prototype = prototype ?: GenericShaderPrototype
+        private val prototype = shader.effectivePrototype
+        override val errors: List<GlslError> = prototype.validate(glslCode)
         override val title: String get() = shader.title
-        override val entryPoint: GlslFunction = this.prototype.findEntryPoint(glslCode)
+        override val entryPoint: GlslFunction = prototype.findEntryPointOrNull(glslCode)
+            ?: GlslFunction("invalid", GlslType.Void, emptyList(), "")
 
         private val proFormaInputPorts: List<InputPort>
             get() = prototype.implicitInputPorts.mapNotNull { ifRefersTo(it)?.copy(isImplicit = true) }
 
-        private val wellKnownInputPorts = this.prototype.wellKnownInputPorts.associateBy { it.id }
-        private val defaultInputPortsByType = this.prototype.defaultInputPortsByType
+        private val wellKnownInputPorts = prototype.wellKnownInputPorts.associateBy { it.id }
+        private val defaultInputPortsByType = prototype.defaultInputPortsByType
 
         override val inputPorts: List<InputPort> by lazy {
             proFormaInputPorts +
@@ -63,11 +67,12 @@ interface OpenShader : RefCounted {
                                     ?.copy(id = it.name, varName = it.name, glslArgSite = it)
                                 ?: it.toInputPort(plugins)
                         } +
-                    this.prototype.findMagicInputPorts(glslCode)
+                    prototype.findMagicInputPorts(glslCode)
         }
         override val outputPort: OutputPort
             get() = prototype.findOutputPort(glslCode, plugins)
-        val shaderType: ShaderType = this.prototype.shaderType
+        val shaderType: ShaderType
+            get() = prototype.shaderType
         override val defaultPriority: Int
             get() = shaderType.priority
         override val defaultUpstreams: Map<ContentType, ShaderChannel>

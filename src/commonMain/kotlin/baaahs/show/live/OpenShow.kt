@@ -20,9 +20,19 @@ class OpenShow(
     private val show: Show,
     private val showPlayer: ShowPlayer,
     private val openContext: OpenContext,
-    val problems: List<ShowProblem>
 ) : OpenPatchHolder(show, openContext), RefCounted by RefCounter() {
     val id = randomId("show")
+    val allProblems: List<ShowProblem>
+        get() = run {
+            arrayListOf<ShowProblem>().apply {
+                object : OpenShowVisitor() {
+                    override fun visitPatchHolder(openPatchHolder: OpenPatchHolder) {
+                        addAll(openPatchHolder.problems)
+                        super.visitPatchHolder(openPatchHolder)
+                    }
+                }.apply { visitShow(this@OpenShow) }
+            }
+        }
     val layouts get() = show.layouts
     val allDataSources = show.dataSources
     val allControls: List<OpenControl> = openContext.allControls

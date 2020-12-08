@@ -20,7 +20,7 @@ class ShowRunner(
     private var activePatchSetChanged: Boolean = true
 
     init {
-        updateProblems(openShow.problems)
+        updateProblems(openShow.allProblems)
     }
 
     fun getShowState(): ShowState {

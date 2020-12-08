@@ -3,6 +3,7 @@ package baaahs.fixtures
 import baaahs.*
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
@@ -142,6 +143,8 @@ class FakeOpenShader(
 ) : OpenShader, RefCounted by RefCounter() {
     override val shader: Shader
         get() = Shader(title, GenericPaintShader /* not necessarily true */, "fake src for $title")
+    override val errors: List<GlslError>
+        get() = emptyList()
     override val glslCode: GlslCode
         get() = GlslCode(shader.src, emptyList())
     override val entryPoint: GlslCode.GlslFunction

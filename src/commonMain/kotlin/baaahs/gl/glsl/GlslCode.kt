@@ -12,11 +12,11 @@ import kotlinx.serialization.json.put
 
 class GlslCode(
     val src: String,
-    val statements: List<GlslStatement>
+    private val statements: List<GlslStatement>
 ) {
-    internal val globalVarNames = hashSetOf<String>()
-    internal val functionNames = hashSetOf<String>()
-    internal val structNames = hashSetOf<String>()
+    val globalVarNames = hashSetOf<String>()
+    val functionNames = hashSetOf<String>()
+    val structNames = hashSetOf<String>()
 
     init {
         statements.forEach {

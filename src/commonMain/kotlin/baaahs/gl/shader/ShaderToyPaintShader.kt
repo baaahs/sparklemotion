@@ -92,17 +92,21 @@ object ShaderToyPaintShader : ShaderPrototype("baaahs.Core:Paint/ShaderToy") {
     override val icon: Icon = CommonIcons.PaintShader
 
     override fun validate(glslCode: GlslCode): List<GlslError> {
-        val entryPoint = findEntryPoint(glslCode)
-        val haveCoordInArg = entryPoint.params.any { it.isIn && it.type == GlslType.Vec2 }
-        val haveColorOutArg = entryPoint.params.any { it.isOut && it.type == GlslType.Vec4 }
-        return super.validate(glslCode) +
-                if (!haveCoordInArg || !haveColorOutArg)
-                    GlslError(
-                        "Missing arguments. " +
-                                "Signature should be \"void mainImage(in vec2 fragCoord, out vec4 fragColor)\".",
-                        row = entryPoint.lineNumber
-                    ).listOf()
-                else emptyList()
+        val errors = super.validate(glslCode)
+
+        val entryPoint = findEntryPointOrNull(glslCode)
+        return if (entryPoint != null) {
+            val haveCoordInArg = entryPoint.params.any { it.isIn && it.type == GlslType.Vec2 }
+            val haveColorOutArg = entryPoint.params.any { it.isOut && it.type == GlslType.Vec4 }
+            return errors +
+                    if (!haveCoordInArg || !haveColorOutArg)
+                        GlslError(
+                            "Missing arguments. " +
+                                    "Signature should be \"void mainImage(in vec2 fragCoord, out vec4 fragColor)\".",
+                            row = entryPoint.lineNumber
+                        ).listOf()
+                    else emptyList()
+        } else errors
     }
 
     override val template: String get() = error("nope")

@@ -124,8 +124,15 @@ object ShaderToyPaintShaderSpec : Spek({
 
         context("shaders without a mainImage function") {
             override(src) { "void main(void) { ... };" }
+
             it("is not a match") {
                 expect(prototype.matches(glslCode)).toEqual(MatchLevel.NoMatch)
+            }
+
+            it("fails to validate") {
+                expect(prototype.validate(glslCode)).containsExactly(
+                    GlslError("No entry point function \"mainImage()\" among [main]")
+                )
             }
         }
     }
