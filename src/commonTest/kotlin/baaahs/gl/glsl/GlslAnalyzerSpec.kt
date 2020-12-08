@@ -400,6 +400,14 @@ object GlslAnalyzerSpec : Spek({
                         ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
                     }
                 }
+
+                context("with invalid shader") {
+                    override(shaderText) { "" }
+
+                    it("provides a fake entry point function") {
+                        expect(shader.entryPoint.name).toBe("invalid")
+                    }
+                }
             }
 
             context("const initializers") {

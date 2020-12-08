@@ -1,6 +1,7 @@
 package baaahs.gl.glsl
 
 import baaahs.gl.glsl.GlslCode.*
+import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.GenericShaderPrototype
 import baaahs.gl.shader.MatchLevel
 import baaahs.gl.shader.OpenShader
@@ -10,6 +11,10 @@ import baaahs.show.Shader
 class GlslAnalyzer(private val plugins: Plugins) {
     fun import(src: String, defaultTitle: String? = null): Shader {
         val glslCode = analyze(src)
+        return import(glslCode, defaultTitle)
+    }
+
+    fun import(glslCode: GlslCode, defaultTitle: String? = null): Shader {
         val prototype = plugins.shaderPrototypes.all
             .map { it to it.matches(glslCode) }
             .filter { (_, match) -> match != MatchLevel.NoMatch }
@@ -20,13 +25,15 @@ class GlslAnalyzer(private val plugins: Plugins) {
             ?: defaultTitle
             ?: prototype?.let { "Untitled ${it.title} Shader" }
             ?: "Untitled Shader"
-        val resultContentType = effectivePrototype.findOutputPort(glslCode, plugins).contentType
+        val resultContentType = try {
+            effectivePrototype.findOutputPort(glslCode, plugins).contentType
+        } catch (e: Exception) { ContentType.Unknown }
 
-        return Shader(title, prototype, resultContentType, src)
+        return Shader(title, prototype, resultContentType, glslCode.src)
     }
 
-    fun analyze(glslSrc: String): GlslCode {
-        return GlslCode(glslSrc, findStatements(glslSrc))
+    fun analyze(src: String): GlslCode {
+        return GlslCode(src, findStatements(src))
     }
 
     internal fun findStatements(glslSrc: String): List<GlslStatement> {
@@ -35,14 +42,19 @@ class GlslAnalyzer(private val plugins: Plugins) {
         return context.statements
     }
 
-    fun openShader(shaderText: String): OpenShader {
-        val shader = import(shaderText)
-        return openShader(shader)
+    fun openShader(src: String): OpenShader {
+        val glslCode = analyze(src)
+        val shader = import(glslCode)
+        return openShader(shader, glslCode)
     }
 
     fun openShader(shader: Shader): OpenShader {
         val glslCode = analyze(shader.src)
-        return OpenShader.Base(shader, glslCode, shader.prototype, plugins)
+        return openShader(shader, glslCode)
+    }
+
+    private fun openShader(shader: Shader, glslCode: GlslCode): OpenShader.Base {
+        return OpenShader.Base(shader, glslCode, plugins)
     }
 
     private class Context {

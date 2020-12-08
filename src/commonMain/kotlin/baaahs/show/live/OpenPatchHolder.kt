@@ -8,6 +8,7 @@ open class OpenPatchHolder(
 ) {
     val title = patchHolder.title
     val patches = patchHolder.patches.map { OpenPatch(it, openContext) }
+    val problems get() = patches.flatMap { it.problems }
 
     val controlLayout: Map<String, List<OpenControl>> =
         patchHolder.controlLayout.mapValues { (_, controlRefs) ->

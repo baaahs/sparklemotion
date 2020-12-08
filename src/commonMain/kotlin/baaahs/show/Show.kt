@@ -1,13 +1,13 @@
 package baaahs.show
 
 import baaahs.SparkleMotion
-import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.Editable
 import baaahs.camelize
 import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.gl.patch.ContentType
+import baaahs.gl.shader.GenericShaderPrototype
 import baaahs.gl.shader.ShaderPrototype
 import baaahs.plugin.Plugins
 import baaahs.show.ButtonGroupControl.Direction
@@ -126,7 +126,9 @@ data class Shader(
     constructor(title: String, prototype: ShaderPrototype, src: String) :
             this(title, prototype, prototype.outputPort.contentType, src)
 
-    val icon: Icon get() = prototype?.icon ?: CommonIcons.UnknownShader
+    val effectivePrototype get() = prototype ?: GenericShaderPrototype
+
+    val icon: Icon get() = effectivePrototype.icon
 
     fun suggestId(): String = title.camelize()
 }

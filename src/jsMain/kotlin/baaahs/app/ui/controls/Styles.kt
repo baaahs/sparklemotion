@@ -31,7 +31,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val editButton by css {
         opacity = 0
-        backgroundColor = Color.white // TODO: should be based on theme.
         transition(::opacity, duration = 0.25.s, timing = Timing.linear)
         position = Position.absolute
         right = 2.px
@@ -44,13 +43,20 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         }
     }
 
+    val editButtonWarningBadge by css {
+        backgroundColor = Color.orange
+    }
+
+    val editButtonErrorBadge by css {
+        backgroundColor = Color.red
+    }
+
     val visualizerCard by css {
         display = Display.flex
         flex(1.0, 0.0)
     }
 
     val dragHandle by css {
-        backgroundColor = Color.white // TODO: should be based on theme.
         opacity = 0
         transition(::opacity, duration = 0.25.s, timing = Timing.linear)
         position = Position.absolute

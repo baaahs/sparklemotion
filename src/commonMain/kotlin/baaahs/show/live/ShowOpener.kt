@@ -32,9 +32,6 @@ open class ShowOpener(
     )
 
     private val allShaderInstances = resolver.getResolvedShaderInstances()
-    private val problems = allShaderInstances.flatMap { (_, shaderInstance) ->
-        shaderInstance.problems
-    }
 
     override fun findControl(id: String): OpenControl? =
         if (show.controls.containsKey(id)) openControlCache[id] else null
@@ -48,7 +45,7 @@ open class ShowOpener(
         allShaderInstances.getBang(it, "shader instance")
 
     fun openShow(showState: ShowState? = null): OpenShow {
-        return OpenShow(show, showPlayer, this, problems)
+        return OpenShow(show, showPlayer, this)
             .also { if (showState != null) it.applyState(showState) }
             .also { it.applyConstraints() }
     }

@@ -17,9 +17,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = ObjectSerializer::class)
 @Polymorphic
-abstract class ShaderPrototype(
-    val id: String
-) {
+abstract class ShaderPrototype(val id: String) {
     abstract val serializerRegistrar: SerializerRegistrar<out ShaderPrototype>
 
     abstract val title: String
@@ -41,11 +39,18 @@ abstract class ShaderPrototype(
     }
 
     open fun validate(glslCode: GlslCode): List<GlslError> {
-        val entryPoint = findEntryPoint(glslCode)
-        return if (entryPoint.params.count { it.isOut } > 1)
-            GlslError("Multiple out parameters aren't allowed on $entryPointName().", row = entryPoint.lineNumber)
-                .listOf()
-        else emptyList()
+        val entryPoint = findEntryPointOrNull(glslCode)
+        return when {
+            entryPoint == null -> {
+                GlslError("No entry point function \"$entryPointName()\" among ${glslCode.functionNames}")
+                    .listOf()
+            }
+            entryPoint.params.count { it.isOut } > 1 -> {
+                GlslError("Multiple out parameters aren't allowed on $entryPointName().", entryPoint.lineNumber)
+                    .listOf()
+            }
+            else -> emptyList()
+        }
     }
 
     open fun invocationGlsl(
@@ -61,6 +66,10 @@ abstract class ShaderPrototype(
 
     fun findEntryPoint(glslCode: GlslCode): GlslCode.GlslFunction {
         return glslCode.findFunction(entryPointName)
+    }
+
+    fun findEntryPointOrNull(glslCode: GlslCode): GlslCode.GlslFunction? {
+        return glslCode.findFunctionOrNull(entryPointName)
     }
 
     open fun findOutputPort(glslCode: GlslCode, plugins: Plugins): OutputPort = outputPort
