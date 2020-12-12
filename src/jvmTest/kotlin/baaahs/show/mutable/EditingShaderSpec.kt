@@ -378,9 +378,9 @@ object EditingShaderSpec : Spek({
 
                     #line 3
                     vec2 p0_screenCoords_mainProjection(
-                        vec2 fragCoords 
+                        vec4 fragCoords 
                     ) {
-                      return fragCoords / in_previewResolution;
+                      return fragCoords.xy / in_previewResolution;
                     }
 
                     // Shader: Paint; namespace: p1
@@ -397,7 +397,7 @@ object EditingShaderSpec : Spek({
                     #line 10001
                     void main() {
                       // Invoke Screen Coords
-                      p0_screenCoordsi_result = p0_screenCoords_mainProjection(gl_FragCoord.xy);
+                      p0_screenCoordsi_result = p0_screenCoords_mainProjection(gl_FragCoord);
 
                       // Invoke Paint
                       p1_paint_main();

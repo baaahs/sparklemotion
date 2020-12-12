@@ -61,9 +61,20 @@ interface DataSource {
 
     fun buildControl(): MutableGadgetControl? = null
 
-    fun appendDeclaration(buf: StringBuilder, varName: String) {
+    fun appendDeclaration(buf: StringBuilder, id: String) {
         if (!isImplicit())
-            buf.append("uniform ${getType().glslLiteral} ${getVarName(varName)};\n")
+            buf.append("uniform ${getType().glslLiteral} ${getVarName(id)};\n")
+    }
+
+    fun invocationGlsl(varName: String): String? = null
+
+    fun appendInvokeAndSet(buf: StringBuilder, prefix: String, varName: String) {
+        val invocationGlsl = invocationGlsl(varName)
+        if (invocationGlsl != null) {
+            buf.append(prefix, "// Invoke ", title, "\n")
+            buf.append(prefix, invocationGlsl, ";\n")
+            buf.append("\n")
+        }
     }
 }
 

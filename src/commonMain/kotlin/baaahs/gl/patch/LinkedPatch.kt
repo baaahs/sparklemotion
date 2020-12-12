@@ -24,7 +24,7 @@ class LinkedPatch(
         buf.append("\n")
 
         structs.sortedBy { it.name }.forEach { struct ->
-            buf.append(struct.fullText, "\n\n")
+            buf.append(struct.fullText.trim(), "\n\n")
         }
 
         components.forEach { component ->

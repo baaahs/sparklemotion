@@ -1,6 +1,7 @@
 package baaahs.shows
 
 import baaahs.Gadget
+import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
 import baaahs.gl.kexpect
@@ -153,6 +154,11 @@ fun jsonFor(dataSource: DataSource): JsonElement {
         is CorePlugin.PixelCoordsTextureDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:PixelCoordsTexture")
+            }
+        }
+        is PixelLocationDataSource -> {
+            buildJsonObject {
+                put("type", "baaahs.Core:PixelLocation")
             }
         }
         is CorePlugin.ModelInfoDataSource -> {

@@ -55,6 +55,7 @@ class ContentType(
 
 
     companion object {
+        @Deprecated("Obsolete")
         val PixelCoordinatesTexture =
             ContentType("pixel-coords-texture", "Pixel Coordinates Texture", GlslType.Sampler2D, suggest = true)
         val PreviewResolution = ContentType("preview-resolution", "Preview Resolution", GlslType.Vec2, suggest = false)

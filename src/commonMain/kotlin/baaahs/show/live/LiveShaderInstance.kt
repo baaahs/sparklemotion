@@ -110,6 +110,7 @@ class LiveShaderInstance(
                 }
 
                 override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {
+                    dataSource.appendInvokeAndSet(buf, prefix, varName)
                 }
 
                 override fun getExpression(): String {

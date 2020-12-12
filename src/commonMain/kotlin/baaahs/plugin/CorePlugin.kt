@@ -190,6 +190,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             }
     }
 
+    @Deprecated("Obsolete, going away soon.")
     @Serializable
     @SerialName("baaahs.Core:PixelCoordsTexture")
     data class PixelCoordsTextureDataSource(@Transient val `_`: Boolean = true) : DataSource {
@@ -197,7 +198,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             override val resourceName: String get() = "PixelCoords"
             override val contentType: ContentType get() = ContentType.PixelCoordinatesTexture
             override val serializerRegistrar get() = classSerializer(serializer())
-
+            override fun looksValid(inputPort: InputPort): Boolean = false
             override fun build(inputPort: InputPort): PixelCoordsTextureDataSource =
                 PixelCoordsTextureDataSource()
         }
@@ -210,7 +211,14 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override fun suggestId(): String = "pixelCoordsTexture"
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
-            PixelLocationFeed(getVarName(id))
+            object : Feed, RefCounted by RefCounter() {
+                override fun release() = super.release()
+                override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
+                    override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed {
+                        override val isValid: Boolean get() = false
+                    }
+                }
+            }
     }
 
     @Serializable
@@ -271,7 +279,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     @SerialName("baaahs.Core:RasterCoordinate")
     data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<RasterCoordinateDataSource> {
-            override val resourceName: String get() = "Raster Coordinate"
+            override val resourceName: String get() = "RasterCoordinate"
             override val contentType: ContentType get() = ContentType.RasterCoordinate
             override val serializerRegistrar get() = classSerializer(serializer())
             override fun build(inputPort: InputPort): RasterCoordinateDataSource =

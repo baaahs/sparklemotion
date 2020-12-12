@@ -69,7 +69,24 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
         get() = ContentType.XyzCoordinate
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-        return PixelLocationFeed(getVarName(id))
+        return PixelLocationFeed(getVarName(id), "ds_${id}_texture")
+    }
+
+    override fun appendDeclaration(buf: StringBuilder, id: String) {
+        val textureUniformId = """ds_${id}_texture"""
+        val varName = getVarName(id)
+        buf.append("""
+            uniform sampler2D $textureUniformId;
+            vec3 ds_${id}_getPixelCoords(vec2 rasterCoord) {
+                return texelFetch($textureUniformId, ivec2(rasterCoord.xy), 0).xyz;
+            }
+            vec3 $varName;
+            
+        """.trimIndent())
+    }
+
+    override fun invocationGlsl(varName: String): String {
+        return "${getVarName(varName)} = ds_${varName}_getPixelCoords(gl_FragCoord.xy)"
     }
 
     companion object : DataSourceBuilder<PixelLocationDataSource> {
@@ -87,8 +104,10 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
 
 class PixelLocationFeed(
     private val id: String,
+    private val textureUniformId: String,
     private val refCounter: RefCounter = RefCounter()
 ) : Feed, RefCounted by refCounter {
+
     override fun bind(gl: GlContext): EngineFeed = EngineFeed(gl)
 
     inner class EngineFeed(gl: GlContext) : PerPixelEngineFeed {
@@ -111,7 +130,8 @@ class PixelLocationFeed(
 
         inner class ProgramFeed(glslProgram: GlslProgram) : PerPixelProgramFeed(updateMode) {
             override val buffer: ParamBuffer get() = this@EngineFeed.buffer
-            override val uniform: Uniform = glslProgram.getUniform(id) ?: error("no uniform $id")
+            override val uniform: Uniform = glslProgram.getUniform(textureUniformId)
+                ?: error("no uniform $textureUniformId")
             override val isValid: Boolean get() = true
         }
     }

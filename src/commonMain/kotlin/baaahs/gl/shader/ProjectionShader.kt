@@ -1,7 +1,6 @@
 package baaahs.gl.shader
 
 import baaahs.app.ui.CommonIcons
-import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.objectSerializer
@@ -14,11 +13,13 @@ object ProjectionShader : ShaderPrototype("baaahs.Core:Projection") {
     override val serializerRegistrar = objectSerializer(id, this)
 
     override val wellKnownInputPorts = listOf(
-        InputPort("pixelCoordsTexture", GlslType.Sampler2D, "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
         InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
-        InputPort("previewResolution", GlslType.Vec2, "Preview Resolution", ContentType.PreviewResolution),
-        InputPort("rasterCoord", GlslType.Vec4, "Raster Coordinate", ContentType.RasterCoordinate)
+        InputPort("previewResolution", GlslType.Vec2, "Preview Resolution", ContentType.PreviewResolution)
     )
+
+    override val defaultInputPortsByType: Map<Pair<GlslType, Boolean>, InputPort>
+        get() = listOf(InputPort("location", GlslType.Vec3, "Pixel XYZ Coordinate", ContentType.XyzCoordinate.stream()))
+            .associateBy { it.type to (it.contentType?.isStream ?: false) }
 
     override val outputPort get() = OutputPort(ContentType.UvCoordinateStream)
 
@@ -28,15 +29,6 @@ object ProjectionShader : ShaderPrototype("baaahs.Core:Projection") {
     override val entryPointName: String = "mainProjection"
 
     override val icon: Icon = CommonIcons.ProjectionShader
-
-    override fun invocationGlsl(
-        namespace: GlslCode.Namespace,
-        resultVar: String,
-        portMap: Map<String, String>,
-        entryPoint: GlslCode.GlslFunction
-    ): String {
-        return resultVar + " = " + namespace.qualify(entryPoint.name) + "(gl_FragCoord.xy)"
-    }
 
     override val template: String = """
         uniform sampler2D pixelCoordsTexture;
@@ -54,11 +46,7 @@ object ProjectionShader : ShaderPrototype("baaahs.Core:Projection") {
         }
         
         vec2 mainProjection(vec2 rasterCoord) {
-            int rasterX = int(rasterCoord.x);
-            int rasterY = int(rasterCoord.y);
-            
-            vec3 pixelCoord = texelFetch(pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
-            return project(pixelCoord);
+            return texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
         }
     """.trimIndent()
     override val title: String = "Projection"

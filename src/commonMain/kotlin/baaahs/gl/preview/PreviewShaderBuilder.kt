@@ -182,19 +182,18 @@ class PreviewShaderBuilder(
     companion object {
         private val logger = Logger("ShaderEditor")
 
-        private val screenCoordsProjection by lazy {
+        private val screenCoordsProjection =
             Shader(
                 "Screen Coords", ProjectionShader, """
                     uniform vec2 previewResolution;
                     
                     vec2 mainProjection(
-                        vec2 fragCoords // @type raster-coordinate
+                        vec4 fragCoords // @@baaahs.Core:RasterCoordinate @type raster-coordinate
                     ) {
-                      return fragCoords / previewResolution;
+                      return fragCoords.xy / previewResolution;
                     }
                 """.trimIndent()
             )
-        }
     }
 }
 
