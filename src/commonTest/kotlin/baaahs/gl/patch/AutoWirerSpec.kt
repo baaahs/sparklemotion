@@ -1,6 +1,7 @@
 package baaahs.gl.patch
 
 import baaahs.fixtures.MovingHeadInfoDataSource
+import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.expects
 import baaahs.gl.override
 import baaahs.gl.shader.DistortionShader
@@ -186,9 +187,8 @@ object AutoWirerSpec : Spek({
                             uvShaderInst.apply {
                                 incomingLinks.putAll(
                                     mapOf(
-                                        "pixelCoordsTexture" to CorePlugin.PixelCoordsTextureDataSource().editor(),
                                         "modelInfo" to CorePlugin.ModelInfoDataSource().editor(),
-                                        "rasterCoord" to CorePlugin.RasterCoordinateDataSource().editor()
+                                        "pixelLocation" to PixelLocationDataSource().editor()
                                     )
                                 )
                                 shaderChannel = ShaderChannel.Main.editor()

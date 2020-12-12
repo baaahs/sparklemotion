@@ -97,7 +97,7 @@ object ShowRunnerSpec : Spek({
 
         context("port wiring") {
             it("wires up UV texture stuff") {
-                val pixelCoordsTextureUnit = fakeProgram.getUniform("in_pixelCoordsTexture") as Int
+                val pixelCoordsTextureUnit = fakeProgram.getUniform("ds_pixelLocation_texture") as Int
                 val textureConfig = fakeGlslContext.getTextureConfig(pixelCoordsTextureUnit)
 
                 expect(textureConfig.width to textureConfig.height).toBe(100 to 1)

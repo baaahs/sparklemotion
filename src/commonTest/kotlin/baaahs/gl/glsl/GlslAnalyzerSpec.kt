@@ -388,14 +388,11 @@ object GlslAnalyzerSpec : Spek({
                         expects(
                             listOf(
                                 InputPort(
-                                    "pixelCoordsTexture", GlslType.Sampler2D,
-                                    "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
-                                InputPort(
                                     "modelInfo", ContentType.ModelInfo.glslType,
                                     "Model Info", null),
                                 InputPort(
-                                    "rasterCoord", GlslType.Vec2,
-                                    "Raster Coordinate", ContentType.RasterCoordinate),
+                                    "pixelLocation", GlslType.Vec3,
+                                    "Pixel XYZ Coordinate", ContentType.XyzCoordinate.stream()),
                             )
                         ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
                     }

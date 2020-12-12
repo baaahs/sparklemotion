@@ -1,6 +1,7 @@
 package baaahs.gl.patch
 
 import baaahs.fixtures.MovingHeadInfoDataSource
+import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.kexpect
 import baaahs.gl.override
 import baaahs.gl.testPlugins
@@ -112,7 +113,8 @@ object GlslGenerationSpec : Spek({
 
                           sm_result = p0_thisShaderSName_gl_FragColor;
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
             }
         }
 
@@ -174,7 +176,8 @@ object GlslGenerationSpec : Spek({
 
                           sm_result = p0_untitledPaintShader_gl_FragColor;
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
             }
         }
 
@@ -262,7 +265,8 @@ object GlslGenerationSpec : Spek({
 
                           sm_result = p0_thisShaderSNamei_result;
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
             }
         }
 
@@ -270,36 +274,16 @@ object GlslGenerationSpec : Spek({
             beforeEachTest {
                 mutablePatch.apply {
                     addShaderInstance(cylindricalProjection) {
-                        link(
-                            "pixelCoordsTexture",
-                            CorePlugin.PixelCoordsTextureDataSource()
-                        )
-                        link(
-                            "modelInfo",
-                            CorePlugin.ModelInfoDataSource()
-                        )
+                        link("pixelLocation", PixelLocationDataSource())
+                        link("modelInfo", CorePlugin.ModelInfoDataSource())
                         shaderChannel = ShaderChannel.Main.editor()
                     }
 
                     addShaderInstance(mainShader) {
-                        link(
-                            "gl_FragCoord",
-                            MutableShaderOutPort(
-                                findShaderInstanceFor(cylindricalProjection)
-                            )
-                        )
+                        link("gl_FragCoord", MutableShaderOutPort(findShaderInstanceFor(cylindricalProjection)))
                         link("resolution", CorePlugin.ResolutionDataSource())
                         link("time", CorePlugin.TimeDataSource())
-                        link(
-                            "blueness",
-                            CorePlugin.SliderDataSource(
-                                "Blueness",
-                                0f,
-                                0f,
-                                1f,
-                                null
-                            )
-                        )
+                        link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
                         shaderChannel = ShaderChannel.Main.editor()
                     }
                 }
@@ -328,8 +312,12 @@ object GlslGenerationSpec : Spek({
                         // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
 
-                        // Data source: Pixel Coordinates Texture
-                        uniform sampler2D in_pixelCoordsTexture;
+                        // Data source: Pixel Location
+                        uniform sampler2D ds_pixelLocation_texture;
+                        vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
+                            return texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                        }
+                        vec3 in_pixelLocation;
 
                         // Data source: Resolution
                         uniform vec2 in_resolution;
@@ -342,11 +330,11 @@ object GlslGenerationSpec : Spek({
 
                         vec2 p0_cylindricalProjectioni_result = vec2(0.);
 
-                        #line 12
+                        #line 10
                         const float p0_cylindricalProjection_PI = 3.141592654;
 
-                        #line 14
-                        vec2 p0_cylindricalProjection_project(vec3 pixelLocation) {
+                        #line 12
+                        vec2 p0_cylindricalProjection_mainProjection(vec3 pixelLocation) {
                             vec3 pixelOffset = pixelLocation - in_modelInfo.center;
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
@@ -354,15 +342,6 @@ object GlslGenerationSpec : Spek({
                             float u = theta / (2.0f * p0_cylindricalProjection_PI);                         // u in range [0,1)
                             float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
                             return vec2(u, v);
-                        }
-
-                        #line 24
-                        vec2 p0_cylindricalProjection_mainProjection(vec2 rasterCoord) {
-                            int rasterX = int(rasterCoord.x);
-                            int rasterY = int(rasterCoord.y);
-                            
-                            vec3 pixelCoord = texelFetch(in_pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
-                            return p0_cylindricalProjection_project(pixelCoord);
                         }
 
                         // Shader: This Shader's Name; namespace: p1
@@ -389,15 +368,19 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
+                          // Invoke Pixel Location
+                          in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
+
                           // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy);
+                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(in_pixelLocation);
 
                           // Invoke This Shader's Name
                           p1_thisShaderSName_main();
 
                           sm_result = p1_thisShaderSName_gl_FragColor;
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
             }
         }
 
@@ -509,7 +492,8 @@ object GlslGenerationSpec : Spek({
 
                           sm_result = p2_crossFadeShaderi_result;
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
             }
 
             context("when there's no paint shader on the other channel") {
@@ -570,7 +554,8 @@ object GlslGenerationSpec : Spek({
 
                               sm_result = p1_crossFadeShaderi_result;
                             }
-                        """.trimIndent())
+                        """.trimIndent()
+                    )
                 }
             }
         }
@@ -637,7 +622,8 @@ object GlslGenerationSpec : Spek({
 
                           sm_result = p0_untitledMoverShaderi_result;
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
             }
         }
     }

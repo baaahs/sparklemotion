@@ -127,8 +127,12 @@ object PatchResolverSpec : Spek({
                         // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
 
-                        // Data source: Pixel Coordinates Texture
-                        uniform sampler2D in_pixelCoordsTexture;
+                        // Data source: Pixel Location
+                        uniform sampler2D ds_pixelLocation_texture;
+                        vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
+                            return texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                        }
+                        vec3 in_pixelLocation;
 
                         // Data source: Time
                         uniform float in_time;
@@ -138,11 +142,11 @@ object PatchResolverSpec : Spek({
 
                         vec2 p0_cylindricalProjectioni_result = vec2(0.);
 
-                        #line 12
+                        #line 10
                         const float p0_cylindricalProjection_PI = 3.141592654;
 
-                        #line 14
-                        vec2 p0_cylindricalProjection_project(vec3 pixelLocation) {
+                        #line 12
+                        vec2 p0_cylindricalProjection_mainProjection(vec3 pixelLocation) {
                             vec3 pixelOffset = pixelLocation - in_modelInfo.center;
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
@@ -150,15 +154,6 @@ object PatchResolverSpec : Spek({
                             float u = theta / (2.0f * p0_cylindricalProjection_PI);                         // u in range [0,1)
                             float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
                             return vec2(u, v);
-                        }
-
-                        #line 24
-                        vec2 p0_cylindricalProjection_mainProjection(vec2 rasterCoord) {
-                            int rasterX = int(rasterCoord.x);
-                            int rasterY = int(rasterCoord.y);
-                            
-                            vec3 pixelCoord = texelFetch(in_pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
-                            return p0_cylindricalProjection_project(pixelCoord);
                         }
 
                         // Shader: Orange Shader; namespace: p1
@@ -184,8 +179,11 @@ object PatchResolverSpec : Spek({
 
                         #line 10001
                         void main() {
+                          // Invoke Pixel Location
+                          in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
+
                           // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy);
+                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(in_pixelLocation);
 
                           // Invoke Orange Shader
                           p1_orangeShader_main();
@@ -241,8 +239,12 @@ object PatchResolverSpec : Spek({
                         // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
 
-                        // Data source: Pixel Coordinates Texture
-                        uniform sampler2D in_pixelCoordsTexture;
+                        // Data source: Pixel Location
+                        uniform sampler2D ds_pixelLocation_texture;
+                        vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
+                            return texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                        }
+                        vec3 in_pixelLocation;
 
                         // Data source: Time
                         uniform float in_time;
@@ -252,11 +254,11 @@ object PatchResolverSpec : Spek({
 
                         vec2 p0_cylindricalProjectioni_result = vec2(0.);
 
-                        #line 12
+                        #line 10
                         const float p0_cylindricalProjection_PI = 3.141592654;
 
-                        #line 14
-                        vec2 p0_cylindricalProjection_project(vec3 pixelLocation) {
+                        #line 12
+                        vec2 p0_cylindricalProjection_mainProjection(vec3 pixelLocation) {
                             vec3 pixelOffset = pixelLocation - in_modelInfo.center;
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
@@ -264,15 +266,6 @@ object PatchResolverSpec : Spek({
                             float u = theta / (2.0f * p0_cylindricalProjection_PI);                         // u in range [0,1)
                             float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
                             return vec2(u, v);
-                        }
-
-                        #line 24
-                        vec2 p0_cylindricalProjection_mainProjection(vec2 rasterCoord) {
-                            int rasterX = int(rasterCoord.x);
-                            int rasterY = int(rasterCoord.y);
-                            
-                            vec3 pixelCoord = texelFetch(in_pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
-                            return p0_cylindricalProjection_project(pixelCoord);
                         }
 
                         // Shader: Wobbly Time Filter; namespace: p1
@@ -307,8 +300,11 @@ object PatchResolverSpec : Spek({
 
                         #line 10001
                         void main() {
+                          // Invoke Pixel Location
+                          in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
+
                           // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy);
+                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(in_pixelLocation);
 
                           // Invoke Wobbly Time Filter
                           p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();
@@ -390,8 +386,12 @@ object PatchResolverSpec : Spek({
                         // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
 
-                        // Data source: Pixel Coordinates Texture
-                        uniform sampler2D in_pixelCoordsTexture;
+                        // Data source: Pixel Location
+                        uniform sampler2D ds_pixelLocation_texture;
+                        vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
+                            return texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                        }
+                        vec3 in_pixelLocation;
 
                         // Data source: Time
                         uniform float in_time;
@@ -401,11 +401,11 @@ object PatchResolverSpec : Spek({
 
                         vec2 p0_cylindricalProjectioni_result = vec2(0.);
 
-                        #line 12
+                        #line 10
                         const float p0_cylindricalProjection_PI = 3.141592654;
 
-                        #line 14
-                        vec2 p0_cylindricalProjection_project(vec3 pixelLocation) {
+                        #line 12
+                        vec2 p0_cylindricalProjection_mainProjection(vec3 pixelLocation) {
                             vec3 pixelOffset = pixelLocation - in_modelInfo.center;
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
@@ -413,15 +413,6 @@ object PatchResolverSpec : Spek({
                             float u = theta / (2.0f * p0_cylindricalProjection_PI);                         // u in range [0,1)
                             float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
                             return vec2(u, v);
-                        }
-
-                        #line 24
-                        vec2 p0_cylindricalProjection_mainProjection(vec2 rasterCoord) {
-                            int rasterX = int(rasterCoord.x);
-                            int rasterY = int(rasterCoord.y);
-                            
-                            vec3 pixelCoord = texelFetch(in_pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
-                            return p0_cylindricalProjection_project(pixelCoord);
                         }
 
                         // Shader: Wobbly Time Filter; namespace: p1
@@ -467,8 +458,11 @@ object PatchResolverSpec : Spek({
 
                         #line 10001
                         void main() {
+                          // Invoke Pixel Location
+                          in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
+
                           // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy);
+                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(in_pixelLocation);
 
                           // Invoke Wobbly Time Filter
                           p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();

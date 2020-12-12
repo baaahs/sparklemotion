@@ -300,16 +300,8 @@ private val directXyProjection = Shader("Direct XY Projection", ProjectionShader
         };
         uniform ModelInfo modelInfo;
 
-        vec2 project(vec3 pixelLocation) {
+        vec2 main(vec3 pixelLocation) {
             return vec2(pixelLocation.x, pixelLocation.y);
-        }
-
-        vec2 mainProjection(vec2 rasterCoord) {
-            int rasterX = int(rasterCoord.x);
-            int rasterY = int(rasterCoord.y);
-            
-            vec3 pixelCoord = texelFetch(pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
-            return project(pixelCoord);
         }
     """.trimIndent()
 )
