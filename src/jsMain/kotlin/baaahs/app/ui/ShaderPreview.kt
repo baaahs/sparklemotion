@@ -98,7 +98,9 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         val observer = builder.addObserver(fireImmediately = true) {
             when (it.state) {
                 ShaderBuilder.State.Linked -> {
-                    it.startCompile(shaderPreview!!.renderEngine)
+                    shaderPreview?.let { shaderPreview ->
+                        it.startCompile(shaderPreview.renderEngine)
+                    }
                 }
                 ShaderBuilder.State.Success -> {
                     val gadgetAdjuster =
@@ -107,7 +109,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                         if (props.adjustGadgets) gadgetAdjuster.adjustGadgets()
                     }
 
-                    shaderPreview!!.setProgram(it.glslProgram!!)
+                    shaderPreview?.setProgram(it.glslProgram)
                 }
                 else -> {
                 }

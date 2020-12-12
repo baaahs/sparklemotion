@@ -27,7 +27,7 @@ class QuadPreview(
         renderEngine.release()
     }
 
-    override fun setProgram(program: GlslProgram) {
+    override fun setProgram(program: GlslProgram?) {
         renderEngine.useProgram(program)
     }
 
