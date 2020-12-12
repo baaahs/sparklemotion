@@ -46,7 +46,7 @@ class ProjectionPreview(
         projectionProgram?.release()
     }
 
-    override fun setProgram(program: GlslProgram) {
+    override fun setProgram(program: GlslProgram?) {
         renderEngine.setRenderPlan(
             DeviceTypeRenderPlan(
                 listOf(ProgramRenderPlan(program, renderTargets.values.toList()))
