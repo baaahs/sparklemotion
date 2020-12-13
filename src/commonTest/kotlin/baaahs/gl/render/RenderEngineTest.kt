@@ -300,7 +300,7 @@ private val directXyProjection = Shader("Direct XY Projection", ProjectionShader
         };
         uniform ModelInfo modelInfo;
 
-        vec2 main(vec3 pixelLocation) {
+        vec2 mainProjection(vec3 pixelLocation) {
             return vec2(pixelLocation.x, pixelLocation.y);
         }
     """.trimIndent()
