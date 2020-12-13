@@ -48,11 +48,11 @@ object GlslCodeSpec : Spek({
             }
 
             context("hints") {
-                override(text) { "varying vec4 otherColor; // @type color-stream @something else" }
-                override(comments) { listOf(" @type color-stream", " @something else") }
+                override(text) { "varying vec4 otherColor; // @type color @something else" }
+                override(comments) { listOf(" @type color", " @something else") }
 
                 it("makes hint tags available") {
-                    expect(variable.hint?.tags?.get("type")).toBe("color-stream")
+                    expect(variable.hint?.tags?.get("type")).toBe("color")
                     expect(variable.hint?.tags?.get("something")).toBe("else")
                 }
             }

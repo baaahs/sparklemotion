@@ -5,6 +5,7 @@ import baaahs.app.ui.editor.PortLinkOption
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
 import baaahs.gl.kexpect
+import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.render.RenderManager
 import baaahs.gl.shader.FilterShader
 import baaahs.gl.shader.GenericPaintShader
@@ -344,7 +345,7 @@ object PatchResolverSpec : Spek({
                             Shader(
                                 "Fade", FilterShader, """
                                     uniform float fade;
-                                    varying vec4 otherColorStream; // @type color-stream
+                                    varying vec4 otherColorStream; // @type color
                 
                                     vec4 mainFilter(vec4 colorIn) {
                                         return mix(colorIn, otherColorStream, fade);
@@ -496,5 +497,5 @@ private fun generateLinkedPatch(dataSources: Map<String, DataSource>, activePatc
         .getBang(PixelArrayDevice, "device type")
         .only("port diagram to render targets")
         .first
-    return portDiagram.resolvePatch(ShaderChannel.Main, ContentType.ColorStream)!!
+    return portDiagram.resolvePatch(ShaderChannel.Main, Color)!!
 }

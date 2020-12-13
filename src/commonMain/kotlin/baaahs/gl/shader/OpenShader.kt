@@ -63,7 +63,7 @@ interface OpenShader : RefCounted {
                     (glslCode.globalInputVars + entryPoint.params.filter { it.isIn })
                         .map {
                             wellKnownInputPorts[it.name]?.copy(type = it.type, glslArgSite = it)
-                                ?: defaultInputPortsByType[it.type to it.isVarying]
+                                ?: defaultInputPortsByType[it.type]
                                     ?.copy(id = it.name, varName = it.name, glslArgSite = it)
                                 ?: it.toInputPort(plugins)
                         } +

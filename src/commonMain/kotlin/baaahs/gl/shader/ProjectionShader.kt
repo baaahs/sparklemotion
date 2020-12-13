@@ -17,11 +17,12 @@ object ProjectionShader : ShaderPrototype("baaahs.Core:Projection") {
         InputPort("previewResolution", GlslType.Vec2, "Preview Resolution", ContentType.PreviewResolution)
     )
 
-    override val defaultInputPortsByType: Map<Pair<GlslType, Boolean>, InputPort>
-        get() = listOf(InputPort("location", GlslType.Vec3, "Pixel XYZ Coordinate", ContentType.XyzCoordinate.stream()))
-            .associateBy { it.type to (it.contentType?.isStream ?: false) }
+    override val defaultInputPortsByType: Map<GlslType, InputPort>
+        get() = listOf(
+            InputPort("location", GlslType.Vec3, "Pixel XYZ Coordinate", ContentType.XyzCoordinate)
+        ).associateBy { it.type  }
 
-    override val outputPort get() = OutputPort(ContentType.UvCoordinateStream)
+    override val outputPort get() = OutputPort(ContentType.UvCoordinate)
 
     override val shaderType: ShaderType
         get() = ShaderType.Projection

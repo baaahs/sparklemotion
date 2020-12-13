@@ -19,7 +19,7 @@ object DistortionShader : ShaderPrototype("baaahs.Core:Distortion") {
     override val entryPointName: String get() = "mainDistortion"
 
     override val implicitInputPorts: List<InputPort> = listOf(
-        InputPort("gl_FragCoord", GlslType.Vec2, "U/V Coordinates", ContentType.UvCoordinateStream)
+        InputPort("gl_FragCoord", GlslType.Vec2, "U/V Coordinates", ContentType.UvCoordinate)
     )
     override val title: String = "Distortion"
 
@@ -31,15 +31,16 @@ object DistortionShader : ShaderPrototype("baaahs.Core:Distortion") {
 //                        varying vec2 surfacePosition; TODO
     )
 
-    override val defaultInputPortsByType: Map<Pair<GlslType, Boolean>, InputPort>
-        get() = listOf(InputPort("uv", GlslType.Vec2, "Upstream U/V Coordinate", ContentType.UvCoordinateStream))
-            .associateBy { it.type to (it.contentType?.isStream ?: false) }
+    override val defaultInputPortsByType: Map<GlslType, InputPort>
+        get() = listOf(
+            InputPort("uv", GlslType.Vec2, "Upstream U/V Coordinate", ContentType.UvCoordinate)
+        ).associateBy { it.type }
 
     override val outputPort: OutputPort
-        get() = OutputPort(ContentType.UvCoordinateStream)
+        get() = OutputPort(ContentType.UvCoordinate)
     override val icon: Icon = CommonIcons.DistortionShader
     override val defaultUpstreams: Map<ContentType, ShaderChannel> =
-        mapOf(ContentType.UvCoordinateStream to ShaderChannel.Main)
+        mapOf(ContentType.UvCoordinate to ShaderChannel.Main)
 
     override val template: String = """
         uniform float scale; // @@Slider min=0.25 max=4 default=1

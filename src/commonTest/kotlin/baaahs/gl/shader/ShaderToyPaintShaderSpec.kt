@@ -5,7 +5,7 @@ import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.override
-import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testPlugins
 import baaahs.show.ShaderOutPortRef
 import baaahs.toEqual
@@ -34,13 +34,13 @@ object ShaderToyPaintShaderSpec : Spek({
 
             it("finds the input port") {
                 expect(openShader.inputPorts.str()).containsExactly(
-                    "fragCoord uv-coordinate-stream/vec2"
+                    "fragCoord uv-coordinate/vec2"
                 )
             }
 
             it("finds the output port") {
                 expect(openShader.outputPort).toEqual(
-                    OutputPort(ContentType.ColorStream, description = "Output Color", id = ShaderOutPortRef.ReturnValue)
+                    OutputPort(Color, description = "Output Color", id = ShaderOutPortRef.ReturnValue)
                 )
             }
 
@@ -69,7 +69,7 @@ object ShaderToyPaintShaderSpec : Spek({
 
                 it("finds the input port") {
                     expect(openShader.inputPorts.str()).containsExactly(
-                        "fragCoord uv-coordinate-stream/vec2",
+                        "fragCoord uv-coordinate/vec2",
                         "intensity ???/float"
                     )
                 }
@@ -86,7 +86,7 @@ object ShaderToyPaintShaderSpec : Spek({
 
                 it("finds the input port") {
                     expect(openShader.inputPorts.str()).contains.inAnyOrder.only.values(
-                        "fragCoord uv-coordinate-stream/vec2",
+                        "fragCoord uv-coordinate/vec2",
                         "intensity ???/float"
                     )
                 }

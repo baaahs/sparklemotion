@@ -28,8 +28,7 @@ data class InputPort(
         return id.decapitalize() + postfix.capitalize()
     }
 
-    fun dataTypeIs(glslType: GlslType, isStreaming: Boolean = false): Boolean {
+    fun dataTypeIs(glslType: GlslType): Boolean {
         return type == glslType
-                && (glslArgSite?.isVarying ?: false) == isStreaming
     }
 }

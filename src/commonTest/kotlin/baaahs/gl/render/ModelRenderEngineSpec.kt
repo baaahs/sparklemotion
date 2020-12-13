@@ -13,6 +13,7 @@ import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.renderPlanFor
 import baaahs.gl.shader.GenericShaderPrototype
@@ -260,7 +261,7 @@ private fun someVectors(count: Int, initial: Float = 0f): List<Vector3F> =
 
 class DeviceTypeForTest(
     vararg val fixtureDataSources: DataSource,
-    override val resultContentType: ContentType = ContentType.ColorStream,
+    override val resultContentType: ContentType = Color,
     override val id: String = "testDevice",
     override val title: String = id.englishize()
 ) : DeviceType {

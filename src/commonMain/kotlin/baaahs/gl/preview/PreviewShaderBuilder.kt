@@ -113,7 +113,7 @@ class PreviewShaderBuilder(
 
             val defaultPorts = when (shaderType) {
                 ShaderType.Projection -> emptyMap()
-                else -> mapOf(ContentType.UvCoordinateStream to MutableConstPort("gl_FragCoord", GlslType.Vec2))
+                else -> mapOf(ContentType.UvCoordinate to MutableConstPort("gl_FragCoord", GlslType.Vec2))
             }
 
             previewPatch = autoWirer.autoWire(*shaders, defaultPorts = defaultPorts)
@@ -206,7 +206,7 @@ object ProjectionPreviewDevice: DeviceType {
             ResultParam("Vertex Location", Vec2ResultType)
         )
     override val resultContentType: ContentType
-        get() = ContentType.UvCoordinateStream
+        get() = ContentType.UvCoordinate
 
     override val errorIndicatorShader: Shader
         get() = Shader(

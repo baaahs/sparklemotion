@@ -19,8 +19,8 @@ object FilterShader : ShaderPrototype("baaahs.Core:Filter") {
     override val entryPointName: String get() = "mainFilter"
 
     override val implicitInputPorts: List<InputPort> = listOf(
-        InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream),
-        InputPort("gl_FragColor", GlslType.Vec4, "Input Color", ContentType.ColorStream)
+        InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinate),
+        InputPort("gl_FragColor", GlslType.Vec4, "Input Color", ContentType.Color)
     )
 
     override val wellKnownInputPorts = listOf(
@@ -31,17 +31,16 @@ object FilterShader : ShaderPrototype("baaahs.Core:Filter") {
 //                        varying vec2 surfacePosition; TODO
     )
 
-    override val defaultInputPortsByType: Map<Pair<GlslType, Boolean>, InputPort> = listOf(
-            InputPort("uv", GlslType.Vec2, "U/V Coordinates", ContentType.UvCoordinateStream),
-            InputPort("color", GlslType.Vec4, "Upstream Color", ContentType.ColorStream)
-    )
-            .associateBy { it.type to (it.contentType?.isStream ?: false) }
+    override val defaultInputPortsByType: Map<GlslType, InputPort> = listOf(
+        InputPort("uv", GlslType.Vec2, "U/V Coordinates", ContentType.UvCoordinate),
+        InputPort("color", GlslType.Vec4, "Upstream Color", ContentType.Color)
+    ).associateBy { it.type }
 
     override val defaultUpstreams: Map<ContentType, ShaderChannel> =
-        mapOf(ContentType.ColorStream to ShaderChannel.Main)
+        mapOf(ContentType.Color to ShaderChannel.Main)
     override val title: String = "Filter"
     override val outputPort: OutputPort
-        get() = OutputPort(ContentType.ColorStream)
+        get() = OutputPort(ContentType.Color)
     override val icon: Icon = CommonIcons.FilterShader
 
     override val template: String = """

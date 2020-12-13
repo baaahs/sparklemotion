@@ -58,11 +58,11 @@ class BeatLinkPlugin internal constructor(
                     inputPort: InputPort,
                     suggestedContentTypes: Set<ContentType>
                 ): List<PortLinkOption> {
-                    if ((inputPort.contentType == beatDataContentType
-                                || suggestedContentTypes.contains(beatDataContentType))
-                        || (inputPort.type == GlslType.Float && inputPort.glslArgSite?.isVarying != true)
+                    return if (inputPort.contentType == beatDataContentType
+                        || suggestedContentTypes.contains(beatDataContentType)
+                        || inputPort.type == GlslType.Float
                     ) {
-                        return listOf(
+                        listOf(
                             PortLinkOption(
                                 MutableDataSourcePort(beatLinkDataSource),
                                 wasPurposeBuilt = true,
@@ -70,9 +70,7 @@ class BeatLinkPlugin internal constructor(
                                 isPluginSuggestion = true
                             )
                         )
-                    } else {
-                        return emptyList()
-                    }
+                    } else emptyList()
                 }
 
                 override fun build(inputPort: InputPort): BeatLinkDataSource = beatLinkDataSource

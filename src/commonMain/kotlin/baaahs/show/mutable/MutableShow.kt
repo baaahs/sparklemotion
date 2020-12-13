@@ -316,7 +316,7 @@ class MutablePatch {
     }
 
     /** Build a [LinkedPatch] independent of an [baaahs.show.live.OpenShow]. */
-    fun openForPreview(autoWirer: AutoWirer, resultContentType: ContentType = ContentType.ColorStream): LinkedPatch? {
+    fun openForPreview(autoWirer: AutoWirer, resultContentType: ContentType = ContentType.Color): LinkedPatch? {
         val showBuilder = ShowBuilder()
         build(showBuilder)
 
