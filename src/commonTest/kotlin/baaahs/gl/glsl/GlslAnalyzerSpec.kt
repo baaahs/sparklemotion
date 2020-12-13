@@ -5,6 +5,7 @@ import baaahs.gl.expects
 import baaahs.gl.glsl.GlslCode.*
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ContentType.Companion.UvCoordinate
 import baaahs.gl.shader.InputPort
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
@@ -336,7 +337,7 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(shader.inputPorts.map { it.copy(glslArgSite = null) })
                             .containsExactly(
-                                InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream, isImplicit = true),
+                                InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", UvCoordinate, isImplicit = true),
                                 InputPort("time", GlslType.Float, "Time", ContentType.Time),
                                 InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
                                 InputPort("blueness", GlslType.Float, "Blueness")
@@ -369,7 +370,7 @@ object GlslAnalyzerSpec : Spek({
                         expects(
                             listOf(
                                 InputPort("blueness", GlslType.Float, "Blueness"),
-                                InputPort("fragCoord", GlslType.Vec2, "U/V Coordinates", ContentType.UvCoordinateStream),
+                                InputPort("fragCoord", GlslType.Vec2, "U/V Coordinates", UvCoordinate),
                                 InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution, isImplicit = true),
                                 InputPort("iTime", GlslType.Float, "Time", ContentType.Time, isImplicit = true)
                             )
@@ -392,7 +393,7 @@ object GlslAnalyzerSpec : Spek({
                                     "Model Info", null),
                                 InputPort(
                                     "pixelLocation", GlslType.Vec3,
-                                    "Pixel XYZ Coordinate", ContentType.XyzCoordinate.stream()),
+                                    "Pixel XYZ Coordinate", ContentType.XyzCoordinate),
                             )
                         ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
                     }

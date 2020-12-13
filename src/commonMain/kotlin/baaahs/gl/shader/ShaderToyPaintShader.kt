@@ -60,14 +60,14 @@ object ShaderToyPaintShader : ShaderPrototype("baaahs.Core:Paint/ShaderToy") {
         InputPort("iChannel3", GlslType.Sampler2D, "Channel 3", ContentType.Media)
     ).map { it.copy(isImplicit = true) }
 
-    override val defaultInputPortsByType: Map<Pair<GlslType, Boolean>, InputPort> = listOf(
-        InputPort("sm_FragCoord", GlslType.Vec2, "U/V Coordinates", ContentType.UvCoordinateStream)
-    ).associateBy { it.type to (it.contentType?.isStream ?: false) }
+    override val defaultInputPortsByType: Map<GlslType, InputPort> = listOf(
+        InputPort("sm_FragCoord", GlslType.Vec2, "U/V Coordinates", ContentType.UvCoordinate)
+    ).associateBy { it.type }
 
     private val iPortsById = wellKnownInputPorts.associateBy { it.id }
 
     override val outputPort: OutputPort
-        get() = OutputPort(ContentType.ColorStream, "Output Color")
+        get() = OutputPort(ContentType.Color, "Output Color")
 
     override fun findMagicInputPorts(glslCode: GlslCode): List<InputPort> {
         // ShaderToy shaders have a set of uniforms that are automatically declared;
@@ -84,7 +84,7 @@ object ShaderToyPaintShader : ShaderPrototype("baaahs.Core:Paint/ShaderToy") {
     override val title: String = "Paint"
     override val suggestNew: Boolean = false
     override val defaultUpstreams: Map<ContentType, ShaderChannel> =
-        mapOf(ContentType.UvCoordinateStream to ShaderChannel.Main)
+        mapOf(ContentType.UvCoordinate to ShaderChannel.Main)
 
     override val shaderType: ShaderType
         get() = ShaderType.Paint

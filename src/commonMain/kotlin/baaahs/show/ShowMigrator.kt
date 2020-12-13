@@ -89,10 +89,10 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
         )
 
         private val shaderTypeToResultContentTypeMap = mapOf(
-            "Projection" to ContentType.UvCoordinateStream,
-            "Distortion" to ContentType.UvCoordinateStream,
-            "Paint" to ContentType.ColorStream,
-            "Filter" to ContentType.ColorStream,
+            "Projection" to ContentType.UvCoordinate,
+            "Distortion" to ContentType.UvCoordinate,
+            "Paint" to ContentType.Color,
+            "Filter" to ContentType.Color,
             "Mover" to ContentType.PanAndTilt,
             "Unknown" to ContentType.Unknown
         )

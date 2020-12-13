@@ -6,6 +6,7 @@ import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ContentType.Companion.UvCoordinate
 import baaahs.gl.testPlugins
 import baaahs.toBeSpecified
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -46,7 +47,7 @@ object PaintShaderSpec : Spek({
             it("finds magic uniforms") {
                 expects(
                     listOf(
-                        InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream, isImplicit = true),
+                        InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", UvCoordinate, isImplicit = true),
                         InputPort("time", GlslType.Float, "Time", ContentType.Time),
                         InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
                         InputPort("mouse", GlslType.Vec2, "Mouse", ContentType.Mouse),
@@ -176,7 +177,7 @@ object PaintShaderSpec : Spek({
                     expects(
                         listOf(
                             InputPort("blueness", GlslType.Float, "Blueness"),
-                            InputPort("fragCoord", GlslType.Vec2, "U/V Coordinates", ContentType.UvCoordinateStream),
+                            InputPort("fragCoord", GlslType.Vec2, "U/V Coordinates", UvCoordinate),
                             InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution, isImplicit = true),
                             InputPort("iTime", GlslType.Float, "Time", ContentType.Time, isImplicit = true),
                             InputPort("iMouse", GlslType.Vec2, "Mouse", ContentType.Mouse, isImplicit = true)

@@ -35,7 +35,7 @@ object PixelArrayDevice : DeviceType {
     )
 
     override val resultContentType: ContentType
-        get() = ContentType.ColorStream
+        get() = ContentType.Color
 
     override val errorIndicatorShader: Shader
         get() = Shader(
@@ -93,7 +93,7 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
         override val resourceName: String
             get() = "PixelLocation"
         override val contentType: ContentType
-            get() = ContentType.XyzCoordinate.stream()
+            get() = ContentType.XyzCoordinate
         override val serializerRegistrar: SerializerRegistrar<PixelLocationDataSource>
             get() = classSerializer(serializer())
 

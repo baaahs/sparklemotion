@@ -4,6 +4,7 @@ import baaahs.fixtures.MovingHeadInfoDataSource
 import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.kexpect
 import baaahs.gl.override
+import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
@@ -42,7 +43,7 @@ object GlslGenerationSpec : Spek({
         val glslAnalyzer by value { autoWirer.glslAnalyzer }
         val mainShader by value { glslAnalyzer.import(shaderText) }
         val mutablePatch by value { MutablePatch { } }
-        val resultContentType by value { ContentType.ColorStream }
+        val resultContentType by value { Color }
         val linkedPatch by value {
             mutablePatch.openForPreview(autoWirer, resultContentType)
                 ?: fail("openForPreview returned null, maybe no shaders on mutablePatch?")
@@ -390,7 +391,7 @@ object GlslGenerationSpec : Spek({
             override(shaderText) {
                 """
                     // Cross-fade shader
-                    varying vec4 inColor2; // @type color-stream
+                    varying vec4 inColor2; // @type color
                     uniform float fade;
 
                     vec4 mainFilter(vec4 inColor) {
@@ -501,9 +502,9 @@ object GlslGenerationSpec : Spek({
 
                 it("should give a warning") {
                     expect(linkedPatch.warnings).containsExactly(
-                        "No upstream shader found, using default for color-stream.\n" +
+                        "No upstream shader found, using default for color.\n" +
                                 "Stack:\n" +
-                                "    Resolving Track[main/color-stream] -> [Cross-fade shader].inColor2 (color-stream)"
+                                "    Resolving Track[main/color] -> [Cross-fade shader].inColor2 (color)"
                     )
                 }
 

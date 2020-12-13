@@ -4,6 +4,7 @@ import baaahs.fixtures.MovingHeadInfoDataSource
 import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.expects
 import baaahs.gl.override
+import baaahs.gl.patch.ContentType.Companion.UvCoordinate
 import baaahs.gl.shader.DistortionShader
 import baaahs.gl.shader.FilterShader
 import baaahs.gl.testPlugins
@@ -74,7 +75,7 @@ object AutoWirerSpec : Spek({
                 expect(rootProgramNode.incomingLinks)
                     .toBe(
                         mapOf(
-                            "gl_FragCoord" to DefaultValueNode(ContentType.UvCoordinateStream),
+                            "gl_FragCoord" to DefaultValueNode(UvCoordinate),
                             "time" to CorePlugin.TimeDataSource().link("time"),
                             "resolution" to CorePlugin.ResolutionDataSource().link("resolution"),
                             "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).link("bluenessSlider"))
@@ -159,7 +160,7 @@ object AutoWirerSpec : Spek({
                             "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).link("bluenessSlider"),
                             "iResolution" to CorePlugin.ResolutionDataSource().link("resolution"),
                             "iTime" to CorePlugin.TimeDataSource().link("time"),
-                            "fragCoord" to DefaultValueNode(ContentType.UvCoordinateStream)
+                            "fragCoord" to DefaultValueNode(UvCoordinate)
                         )
                     ) { rootProgramNode.incomingLinks }
                 }

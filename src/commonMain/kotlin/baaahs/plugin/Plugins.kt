@@ -117,8 +117,7 @@ class Plugins private constructor(
 
     fun suggestContentTypes(inputPort: InputPort): Set<ContentType> {
         val glslType = inputPort.type
-        val isStream = inputPort.glslArgSite?.isVarying ?: false
-        return contentTypes.matchingType(glslType, isStream)
+        return contentTypes.matchingType(glslType)
     }
 
     fun resolveDataSource(inputPort: InputPort): DataSource {
@@ -189,7 +188,7 @@ class Plugins private constructor(
     inner class ContentTypes {
         val all = plugins.flatMap { it.contentTypes }.toSet()
         internal val byId = all.associateBy { it.id }
-        private val byGlslType = all.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })
+        private val byGlslType = all.filter { it.suggest }.groupBy({ it.glslType }, { it })
 
         val serialModule = SerializersModule {
             contextual(ContentType::class, object : KSerializer<ContentType> {
@@ -207,16 +206,9 @@ class Plugins private constructor(
             })
         }
 
-        /**
-         * Since e.g. a single color could satisfy a color-stream, we'll widen suggested content types
-         * to include non-stream types, if [includeNonStream] is true.
-         */
-        fun matchingType(glslType: GlslType, isStream: Boolean, includeNonStream: Boolean = true): Set<ContentType> {
-            val exactMatches = byGlslType[glslType to isStream] ?: emptyList()
-            val broaderMatches = if (isStream && includeNonStream) {
-                byGlslType[glslType to false] ?: emptyList()
-            } else emptyList()
-            return (exactMatches + broaderMatches).toSet()
+        fun matchingType(glslType: GlslType): Set<ContentType> {
+            val exactMatches = byGlslType[glslType] ?: emptyList()
+            return exactMatches.toSet()
         }
     }
 

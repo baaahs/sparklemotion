@@ -5,7 +5,7 @@ import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.override
-import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testPlugins
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -33,13 +33,13 @@ object GenericPaintShaderSpec : Spek({
 
             it("finds the input port") {
                 expect(openShader.inputPorts.str()).containsExactly(
-                    "gl_FragCoord uv-coordinate-stream/vec4"
+                    "gl_FragCoord uv-coordinate/vec4"
                 )
             }
 
             it("finds the output port") {
                 expect(openShader.outputPort).toEqual(
-                    OutputPort(ContentType.ColorStream, description = "Output Color", id = "gl_FragColor"))
+                    OutputPort(Color, description = "Output Color", id = "gl_FragColor"))
             }
 
             it("generates an invocation statement") {
@@ -65,7 +65,7 @@ object GenericPaintShaderSpec : Spek({
 
                 it("finds the input port") {
                     expect(openShader.inputPorts.str()).containsExactly(
-                        "gl_FragCoord uv-coordinate-stream/vec4",
+                        "gl_FragCoord uv-coordinate/vec4",
                         "intensity ???/float"
                     )
                 }

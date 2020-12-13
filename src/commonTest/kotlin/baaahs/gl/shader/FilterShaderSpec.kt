@@ -6,7 +6,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.kexpect
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
-import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
@@ -33,7 +33,7 @@ object FilterShaderSpec : Spek({
                     // Fade Filter
                     
                     uniform float fade;
-                    varying vec4 otherColorStream; // @type color-stream
+                    varying vec4 otherColorStream; // @type color
 
                     vec4 mainFilter(vec4 colorIn) {
                         return mix(colorIn, otherColorStream, fade);
@@ -45,8 +45,8 @@ object FilterShaderSpec : Spek({
                 expect(shader.inputPorts.map { it.copy(glslArgSite = null) })
                     .containsExactly(
                         InputPort("fade", GlslType.Float, "Fade"),
-                        InputPort("otherColorStream", GlslType.Vec4, "Upstream Color", ContentType.ColorStream),
-                        InputPort("colorIn", GlslType.Vec4, "Upstream Color", ContentType.ColorStream)
+                        InputPort("otherColorStream", GlslType.Vec4, "Upstream Color", Color),
+                        InputPort("colorIn", GlslType.Vec4, "Upstream Color", Color)
                     )
             }
 

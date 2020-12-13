@@ -17,7 +17,7 @@ object GenericPaintShader : ShaderPrototype("baaahs.Core:Paint") {
     override val serializerRegistrar = objectSerializer(id, this)
 
     override val implicitInputPorts = listOf(
-        InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream)
+        InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinate)
     )
 
     override val wellKnownInputPorts = listOf(
@@ -28,7 +28,7 @@ object GenericPaintShader : ShaderPrototype("baaahs.Core:Paint") {
         )
 
     override val defaultUpstreams: Map<ContentType, ShaderChannel> =
-        mapOf(ContentType.UvCoordinateStream to ShaderChannel.Main)
+        mapOf(ContentType.UvCoordinate to ShaderChannel.Main)
     override val title: String = "Paint"
 
     override val shaderType: ShaderType
@@ -46,7 +46,7 @@ object GenericPaintShader : ShaderPrototype("baaahs.Core:Paint") {
 
 
     override val outputPort: OutputPort
-        get() = OutputPort(ContentType.ColorStream, "Output Color", "gl_FragColor")
+        get() = OutputPort(ContentType.Color, "Output Color", "gl_FragColor")
 
     override fun validate(glslCode: GlslCode): List<GlslError> {
         return super.validate(glslCode) +

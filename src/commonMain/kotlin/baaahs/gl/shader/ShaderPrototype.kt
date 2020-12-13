@@ -23,7 +23,7 @@ abstract class ShaderPrototype(val id: String) {
     abstract val title: String
     open val implicitInputPorts: List<InputPort> = emptyList()
     open val wellKnownInputPorts: List<InputPort> = emptyList()
-    open val defaultInputPortsByType: Map<Pair<GlslType, Boolean>, InputPort> = emptyMap()
+    open val defaultInputPortsByType: Map<GlslType, InputPort> = emptyMap()
     open val defaultUpstreams: Map<ContentType, ShaderChannel> = emptyMap()
     abstract val shaderType: ShaderType
     abstract val outputPort: OutputPort

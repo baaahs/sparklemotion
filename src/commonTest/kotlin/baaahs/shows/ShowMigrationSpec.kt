@@ -3,6 +3,8 @@ package baaahs.shows
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ContentType.Companion.Color
+import baaahs.gl.patch.ContentType.Companion.UvCoordinate
 import baaahs.gl.shader.*
 import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
@@ -96,11 +98,11 @@ object ShowMigrationSpec : Spek({
             }
 
             it("sets resultContentType from shaderType") {
-                expect(show.shaders["proj"]!!.resultContentType).toBe(ContentType.UvCoordinateStream)
-                expect(show.shaders["dist"]!!.resultContentType).toBe(ContentType.UvCoordinateStream)
-                expect(show.shaders["genericPaint"]!!.resultContentType).toBe(ContentType.ColorStream)
-                expect(show.shaders["toyPaint"]!!.resultContentType).toBe(ContentType.ColorStream)
-                expect(show.shaders["filter"]!!.resultContentType).toBe(ContentType.ColorStream)
+                expect(show.shaders["proj"]!!.resultContentType).toBe(UvCoordinate)
+                expect(show.shaders["dist"]!!.resultContentType).toBe(UvCoordinate)
+                expect(show.shaders["genericPaint"]!!.resultContentType).toBe(Color)
+                expect(show.shaders["toyPaint"]!!.resultContentType).toBe(Color)
+                expect(show.shaders["filter"]!!.resultContentType).toBe(Color)
                 expect(show.shaders["mover"]!!.resultContentType).toBe(ContentType.PanAndTilt)
                 expect(show.shaders["unknown"]!!.resultContentType).toBe(ContentType.Unknown)
             }
