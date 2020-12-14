@@ -220,11 +220,13 @@ object EditingShaderSpec : Spek({
 
                 it("should be listed in link options") {
                     expect(editingShader.linkOptionsFor("theScale").stringify()).toBe("""
+                            Channel:
+                            - Main Channel
                             Data Source:
-                            * BeatLink
-                            * Custom slider Slider
+                            - BeatLink
+                            - Custom slider Slider
                             * The Scale Slider
-                            * Time
+                            - Time
                         """.trimIndent())
                 }
             }
@@ -266,20 +268,24 @@ object EditingShaderSpec : Spek({
                 it("suggests reasonable link options for scale") {
                     expect(editingShader.linkOptionsFor("theScale").stringify())
                         .toBe("""
+                            Channel:
+                            - Main Channel
                             Data Source:
-                            * BeatLink
+                            - BeatLink
                             * The Scale Slider
-                            * Time
+                            - Time
                         """.trimIndent())
                 }
 
                 it("suggests reasonable link options for time") {
                     expect(editingShader.linkOptionsFor("time").stringify())
                         .toBe("""
+                            Channel:
+                            - Main Channel
                             Data Source:
-                            * BeatLink
+                            - BeatLink
                             * Time
-                            * Time Slider
+                            - Time Slider
                         """.trimIndent())
                 }
 
@@ -290,9 +296,9 @@ object EditingShaderSpec : Spek({
                             Channel:
                             * Main Channel
                             Data Source:
-                            * Upstream Color ColorPicker
+                            - Upstream Color ColorPicker
                             Shader Output:
-                            * Shader "Paint" output
+                            - Shader "Paint" output
                         """.trimIndent())
                 }
 
@@ -308,11 +314,11 @@ object EditingShaderSpec : Spek({
                                 .toBe("""
                                     Channel:
                                     * Main Channel
-                                    * Other Channel
+                                    - Other Channel
                                     Data Source:
-                                    * Upstream Color ColorPicker
+                                    - Upstream Color ColorPicker
                                     Shader Output:
-                                    * Shader "Paint" output
+                                    - Shader "Paint" output
                                 """.trimIndent())
                         }
                     }
@@ -326,9 +332,9 @@ object EditingShaderSpec : Spek({
                                     Channel:
                                     * Main Channel
                                     Data Source:
-                                    * Upstream Color ColorPicker
+                                    - Upstream Color ColorPicker
                                     Shader Output:
-                                    * Shader "Paint" output
+                                    - Shader "Paint" output
                                 """.trimIndent())
                         }
                     }
@@ -424,7 +430,8 @@ fun List<LinkOption>?.stringify(): String {
             groupName = linkOption.groupName
             groupName?.let { lines.add(it) }
         }
-        lines.add("* ${linkOption.title}")
+        val selected = if (linkOption == first()) "*" else "-"
+        lines.add("$selected ${linkOption.title}")
     }
     return lines.joinToString("\n")
 }

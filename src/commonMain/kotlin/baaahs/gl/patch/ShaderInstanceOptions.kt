@@ -62,15 +62,23 @@ class ShaderInstanceOptions(
                 listOfNotNull(exactContentType) + expandedContentTypes
 
             contentTypes.forEach { contentType ->
-                defaultPorts[contentType]?.let { defaultPort ->
-                    options.add(
+                val defaultPort = defaultPorts[contentType]
+                options.add(
+                    if (defaultPort != null) {
                         PortLinkOption(
                             defaultPort,
                             isExactContentType = contentType == exactContentType,
+                            isLocalShaderOut = true,
+                            isDefaultBinding = true
+                        )
+                    } else {
+                        PortLinkOption(
+                            MutableShaderChannel(shaderChannel.id),
+                            isExactContentType = contentType == exactContentType,
                             isDefaultBinding = true,
                         )
-                    )
-                }
+                    }
+                )
             }
 
             contentTypes.forEach { contentType ->
