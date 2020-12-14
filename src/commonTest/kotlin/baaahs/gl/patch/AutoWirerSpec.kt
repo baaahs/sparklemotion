@@ -9,6 +9,7 @@ import baaahs.gl.shader.DistortionShader
 import baaahs.gl.shader.FilterShader
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
+import baaahs.only
 import baaahs.plugin.CorePlugin
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
@@ -54,21 +55,37 @@ object AutoWirerSpec : Spek({
             val patch by value { autoWirer.autoWire(*shaders).acceptSuggestedLinkOptions().confirm() }
             val linkedPatch by value { patch.openForPreview(autoWirer)!! }
             val rootProgramNode by value { linkedPatch.rootNode as LinkedShaderInstance }
+            val mutableLinks by value { patch.mutableShaderInstances.only().incomingLinks }
+            val links by value { rootProgramNode.incomingLinks }
 
-            it("creates a reasonable guess patch") {
-                expect(patch.mutableShaderInstances).containsExactly(
-                    MutableShaderInstance(
-                        MutableShader(mainShader),
-                        hashMapOf(
-                            "time" to CorePlugin.TimeDataSource().editor(),
-                            "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).editor(),
-                            "resolution" to CorePlugin.ResolutionDataSource().editor(),
-                            "gl_FragCoord" to ShaderChannel.Main.editor()
-                        ),
-                        shaderChannel = ShaderChannel.Main.editor(),
-                        priority = 0f
-                    )
-                )
+            it("picks TimeDataSource for time") {
+                expect(mutableLinks["time"])
+                    .toBe(CorePlugin.TimeDataSource().editor())
+
+                expect(links["time"])
+                    .toBe(CorePlugin.TimeDataSource().link("time"))
+            }
+
+            it("picks ResolutionDataSource for resolution") {
+                expect(mutableLinks["resolution"])
+                    .toBe(CorePlugin.ResolutionDataSource().editor())
+
+                expect(links["resolution"])
+                    .toBe(CorePlugin.ResolutionDataSource().link("resolution"))
+            }
+
+            it("picks a Slider for blueness") {
+                expect(links["blueness"])
+                    .toBe(CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
+                        .link("bluenessSlider"))
+            }
+
+            it("picks Main channel for gl_FragCoord") {
+                expect(mutableLinks["gl_FragCoord"])
+                    .toBe(ShaderChannel.Main.editor())
+
+                expect(links["gl_FragCoord"])
+                    .toBe(DefaultValueNode(UvCoordinate))
             }
 
             it("builds a linked patch") {
