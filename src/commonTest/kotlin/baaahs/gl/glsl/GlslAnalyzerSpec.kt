@@ -41,9 +41,9 @@ object GlslAnalyzerSpec : Spek({
                     uniform vec2  resolution;
                     
                     // @@AnotherClass key=value key2=value2
-                    uniform struct MovingHead {
-                        float pan;
-                        float tilt;
+                    uniform struct MovingHeadInfo {
+                        vec3 origin;
+                        vec3 heading;
                     } leftEye;
 
                     void mainFunc( out vec4 fragColor, in vec2 fragCoord )
@@ -89,15 +89,12 @@ object GlslAnalyzerSpec : Spek({
                             ),
                             GlslVar(
                                 "leftEye",
-                                GlslType.from(
-                                    "struct MovingHead {\n" +
-                                            "    float pan;\n" +
-                                            "    float tilt;\n" +
-                                            "}"
-                                ),
-                                "uniform struct MovingHead {\n" +
-                                        "    float pan;\n" +
-                                        "    float tilt;\n" +
+                                GlslType.Struct(
+                                    "MovingHeadInfo",
+                                    mapOf("origin" to GlslType.Vec3, "heading" to GlslType.Vec3)),
+                                "uniform struct MovingHeadInfo {\n" +
+                                        "    vec3 origin;\n" +
+                                        "    vec3 heading;\n" +
                                         "} leftEye;",
                                 isUniform = true,
                                 lineNumber = 12,
@@ -143,8 +140,11 @@ object GlslAnalyzerSpec : Spek({
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
                             ), GlslVar(
                                 "leftEye",
-                                GlslType.from("struct MovingHead {\n    float pan;\n    float tilt;\n}"),
-                                fullText = "uniform MovingHead leftEye;", lineNumber = 12,
+                                GlslType.Struct(
+                                    "MovingHeadInfo",
+                                    mapOf("origin" to GlslType.Vec3, "heading" to GlslType.Vec3)
+                                ),
+                                fullText = "uniform MovingHeadInfo leftEye;", lineNumber = 12,
                                 comments = listOf(" @@AnotherClass key=value key2=value2")
                             )
                         )
@@ -161,7 +161,7 @@ object GlslAnalyzerSpec : Spek({
                 it("finds the structs") {
                     expect(glslCode.structs.map { it.fullText })
                         .containsExactly(
-                            "\nuniform struct MovingHead {\n    float pan;\n    float tilt;\n} leftEye;"
+                            "\nuniform struct MovingHeadInfo {\n    vec3 origin;\n    vec3 heading;\n} leftEye;"
                         )
                 }
 

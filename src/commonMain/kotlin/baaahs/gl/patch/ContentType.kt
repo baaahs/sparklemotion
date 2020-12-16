@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 
 class ContentType(
@@ -53,7 +54,7 @@ class ContentType(
             typeAdaptations = mapOf(GlslType.Vec4 to { "$it.xy" })
         )
         val XyCoordinate = ContentType("xy-coordinate", "X/Y Coordinate", GlslType.Vec2)
-        val ModelInfo = ContentType("model-info", "Model Info", GlslType.from("ModelInfo"))
+        val ModelInfo = ContentType("model-info", "Model Info", MoreTypes.ModelInfo.glslType)
         val Mouse = ContentType("mouse", "Mouse", GlslType.Vec2)
         val XyzCoordinate = ContentType("xyz-coordinate", "X/Y/Z Coordinate", GlslType.Vec3)
         val Color = ContentType("color", "Color", GlslType.Vec4) { type ->
@@ -86,5 +87,25 @@ class ContentType(
 
             PanAndTilt
         )
+    }
+}
+
+object MoreTypes {
+    object ModelInfo {
+        val struct = GlslCode.GlslStruct(
+            "ModelInfo",
+            mapOf(
+                "center" to GlslType.Vec3,
+                "extents" to GlslType.Vec3,
+            ),
+            fullText = """
+                    struct ModelInfo {
+                        vec3 center;            
+                        vec3 extents;
+                    }
+                """.trimIndent(),
+            varName = null
+        )
+        val glslType = GlslType.Struct(struct)
     }
 }

@@ -48,8 +48,8 @@ fun expectStatements(
     checkLineNumbers: Boolean = false
 ) {
     assertEquals(
-        expected.map { it.esc(checkLineNumbers) }.joinToString("\n"),
-        actual().map { it.esc(checkLineNumbers) }.joinToString("\n")
+        expected.joinToString("\n") { it.esc(checkLineNumbers) },
+        actual().joinToString("\n") { it.esc(checkLineNumbers) }
     )
 }
 
