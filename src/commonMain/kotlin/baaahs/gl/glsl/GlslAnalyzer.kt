@@ -65,6 +65,12 @@ class GlslAnalyzer(private val plugins: Plugins) {
         var lineNumber = 1
         var lineNumberForError = 1
 
+        val structs = mutableMapOf<String, GlslStruct>()
+
+        fun findType(name: String): GlslType =
+            structs[name]?.let { GlslType.Struct(it) }
+                ?: GlslType.from(name)
+
         fun parse(
             text: String,
             initialState: ParseState,
@@ -295,7 +301,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
                             "uniform" -> isUniform = true
                             "varying" -> isVarying = true
                         }
-                        GlslVar(name, GlslType.from(type), text, isConst, isUniform, isVarying, lineNumber, comments)
+                        GlslVar(name, context.findType(type), text, isConst, isUniform, isVarying, lineNumber, comments)
                     }
             }
 
@@ -380,6 +386,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
                         val varNameOrNull = if (varName.isBlank()) null else varName
                         GlslStruct(name, fields, varNameOrNull, uniform.isNotBlank(),
                             text, lineNumber, comments)
+                            .also { context.structs[name] = it }
                     }
             }
         }
@@ -396,7 +403,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
                 if (tokensSoFar.size != 2)
                     throw context.glslError("unexpected tokens $tokensSoFar in function")
 
-                returnType = GlslType.from(tokensSoFar[0])
+                returnType = context.findType(tokensSoFar[0])
                 name = tokensSoFar[1]
             }
 

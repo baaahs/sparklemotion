@@ -16,13 +16,13 @@ class GlslCode(
 ) {
     val globalVarNames = hashSetOf<String>()
     val functionNames = hashSetOf<String>()
-    val structNames = hashSetOf<String>()
+    val structsByName = mutableMapOf<String, GlslStruct>()
 
     init {
         statements.forEach {
             when (it) {
                 is GlslStruct -> {
-                    structNames.add(it.name)
+                    structsByName[it.name] = it
                     it.varName?.let { varName -> globalVarNames += varName }
                 }
                 is GlslVar -> globalVarNames.add(it.name)
@@ -35,7 +35,7 @@ class GlslCode(
             }
         }
     }
-    val symbolNames = globalVarNames + functionNames + structNames
+    val symbolNames = globalVarNames + functionNames + structsByName.keys
     val globalVars: Collection<GlslVar> get() =
         statements.filterIsInstance<GlslVar>() +
                 structs.filter { it.varName != null }
@@ -129,10 +129,7 @@ class GlslCode(
         override fun stripSource() = copy(fullText = "", lineNumber = null)
 
         fun getSyntheticVar(): GlslVar {
-            val fieldsStr = fields.entries.joinToString("\n") { (name, type) ->
-                "    ${type.glslLiteral} $name;"
-            }
-            val structType = GlslType.from("struct $name {\n$fieldsStr\n}")
+            val structType = GlslType.Struct(this)
             val fullText = "${if (isUniform) "uniform " else ""}$name $varName;"
             return GlslVar(varName!!, structType, fullText, lineNumber = lineNumber, comments = comments)
         }

@@ -62,7 +62,8 @@ object MovingHeadDevice : DeviceType {
 val movingHeadInfoStruct = GlslCode.GlslStruct(
     "MovingHeadInfo",
     mapOf(
-        "location" to GlslType.Vec3,
+        "origin" to GlslType.Vec3,
+        "heading" to GlslType.Vec3
     ),
     fullText = """
             struct MovingHeadInfo {
@@ -73,7 +74,7 @@ val movingHeadInfoStruct = GlslCode.GlslStruct(
     varName = null
 )
 
-val movingHeadInfoType = GlslType.from(movingHeadInfoStruct)
+val movingHeadInfoType = GlslType.Struct(movingHeadInfoStruct)
 val movingHeadInfoContentType = ContentType("moving-head-info", "Moving Head Info", movingHeadInfoType)
 
 @Serializable
