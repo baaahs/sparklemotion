@@ -7,22 +7,50 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
 import baaahs.show.ShaderChannel
+import baaahs.show.live.OpenPatch
+import baaahs.show.live.OpenShow
+import baaahs.show.live.OpenShowVisitor
 import baaahs.show.mutable.*
 import baaahs.util.Logger
 
-class ChannelsInfo(
-    parentMutableShow: MutableShow? = null,
-    parentMutablePatch: MutablePatch? = null,
-    glslAnalyzer: GlslAnalyzer
-) {
-    internal val shaderChannels: MutableMap<ContentType, MutableSet<MutableShaderChannel>> = mutableMapOf()
+class ChannelsInfo {
+    constructor(
+        parentShow: OpenShow? = null,
+        parentPatch: OpenPatch? = null
+    ) {
+        val shaderChannels = mutableMapOf<ContentType, MutableSet<MutableShaderChannel>>()
+        parentPatch?.shaderInstances?.forEach { shaderInstance ->
+            val openShader = shaderInstance.shader
 
-    operator fun get(contentType: ContentType): Set<MutableShaderChannel>? {
-        return shaderChannels[contentType]
+            openShader.defaultUpstreams.forEach { (contentType, shaderChannel) ->
+                shaderChannels.getOrPut(contentType, ::mutableSetOf)
+                    .add(MutableShaderChannel(shaderChannel.id))
+            }
+        }
+
+        parentShow?.let {
+            object : OpenShowVisitor() {
+                override fun visitPatch(openPatch: OpenPatch) {
+                    super.visitPatch(openPatch)
+
+                    openPatch.shaderInstances.forEach { shaderInstance ->
+                        val contentType = shaderInstance.shader.outputPort.contentType
+                        shaderChannels.getOrPut(contentType, ::mutableSetOf)
+                            .add(shaderInstance.shaderChannel.toMutable())
+                    }
+                }
+            }.visitShow(parentShow)
+        }
+
+        this.shaderChannels = shaderChannels
     }
 
-    init {
-        // Gather shader output ports.
+    constructor(
+        parentMutableShow: MutableShow? = null,
+        parentMutablePatch: MutablePatch? = null,
+        glslAnalyzer: GlslAnalyzer
+    ) {
+        val shaderChannels = mutableMapOf<ContentType, MutableSet<MutableShaderChannel>>()
         parentMutablePatch?.mutableShaderInstances?.forEach { shaderInstance ->
             val openShader = glslAnalyzer.openShader(shaderInstance.mutableShader.build())
 
@@ -31,7 +59,6 @@ class ChannelsInfo(
                     .add(MutableShaderChannel(shaderChannel.id))
             }
         }
-
         parentMutableShow?.accept(object : MutableShowVisitor {
             override fun visit(mutableShaderInstance: MutableShaderInstance) {
                 val contentType = mutableShaderInstance.mutableShader.resultContentType
@@ -39,7 +66,15 @@ class ChannelsInfo(
                     .add(mutableShaderInstance.shaderChannel)
             }
         })
+        this.shaderChannels = shaderChannels
     }
+
+    internal val shaderChannels: MutableMap<ContentType, MutableSet<MutableShaderChannel>>
+
+    operator fun get(contentType: ContentType): Set<MutableShaderChannel>? {
+        return shaderChannels[contentType]
+    }
+
 }
 
 class ShaderInstanceOptions(

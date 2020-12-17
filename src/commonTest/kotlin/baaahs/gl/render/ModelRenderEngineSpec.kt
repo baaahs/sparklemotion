@@ -21,10 +21,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.testPlugins
 import baaahs.only
 import baaahs.plugin.SerializerRegistrar
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.show.*
 import baaahs.show.Shader
-import baaahs.show.UpdateMode
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.show.live.link
 import baaahs.shows.FakeGlContext
@@ -78,7 +76,7 @@ object ModelRenderEngineSpec : Spek({
             val openShader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) }
             val incomingLinks by value { mapOf("gl_FragCoord" to dataSource.link("coord")) }
             val linkedPatch by value {
-                val rootNode = LinkedShaderInstance(openShader, incomingLinks, null, 0f)
+                val rootNode = LinkedShaderInstance(openShader, incomingLinks, ShaderChannel.Main, 0f)
                 ProgramLinker(rootNode).buildLinkedPatch()
             }
             val program by value {
