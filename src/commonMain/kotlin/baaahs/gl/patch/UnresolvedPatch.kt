@@ -2,8 +2,10 @@ package baaahs.gl.patch
 
 import baaahs.show.Shader
 import baaahs.show.Surfaces
-import baaahs.show.mutable.*
-import baaahs.unknown
+import baaahs.show.mutable.MutableConstPort
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderChannel
+import baaahs.show.mutable.MutableShaderInstance
 import baaahs.util.Logger
 
 class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShaderInstance>) {
@@ -28,7 +30,7 @@ class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShad
             )
         }
 
-        // First pass: create a shader instance editor for each shader.
+        // Create a shader instance editor for each shader.
         val shaderInstances = unresolvedShaderInstances.associate {
             it.mutableShader.build() to MutableShaderInstance(
                 it.mutableShader,
@@ -40,19 +42,6 @@ class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShad
                 MutableShaderChannel(it.shaderChannel.id),
                 it.priority
             )
-        }
-
-        // Second pass: resolve references between shaders to the correct instance editor.
-        shaderInstances.values.forEach { shaderInstance ->
-            shaderInstance.incomingLinks.forEach { (toPortId, fromPort) ->
-                if (fromPort is UnresolvedShaderOutPort) {
-                    val fromShader = fromPort.unresolvedShaderInstance.mutableShader.build()
-                    val fromShaderInstance = shaderInstances[fromShader]
-                        ?: error(unknown("shader instance editor", fromShader, shaderInstances.keys))
-                    shaderInstance.incomingLinks[toPortId] =
-                        MutableShaderOutPort(fromShaderInstance)
-                }
-            }
         }
 
         return MutablePatch(shaderInstances.values.toList(), Surfaces.AllSurfaces)

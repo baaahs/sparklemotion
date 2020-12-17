@@ -7,7 +7,6 @@ import baaahs.gl.glsl.GlslError
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testPlugins
-import baaahs.show.ShaderOutPortRef
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.*
 import ch.tutteli.atrium.api.verbs.expect
@@ -40,7 +39,7 @@ object ShaderToyPaintShaderSpec : Spek({
 
             it("finds the output port") {
                 expect(openShader.outputPort).toEqual(
-                    OutputPort(Color, description = "Output Color", id = ShaderOutPortRef.ReturnValue)
+                    OutputPort(Color, description = "Output Color", id = OutputPort.ReturnValue)
                 )
             }
 

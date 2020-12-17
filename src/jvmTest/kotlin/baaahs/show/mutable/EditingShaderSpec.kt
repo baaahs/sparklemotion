@@ -297,8 +297,6 @@ object EditingShaderSpec : Spek({
                             * Main Channel
                             Data Source:
                             - Upstream Color ColorPicker
-                            Shader Output:
-                            - Shader "Paint" output
                         """.trimIndent())
                 }
 
@@ -317,8 +315,6 @@ object EditingShaderSpec : Spek({
                                     - Other Channel
                                     Data Source:
                                     - Upstream Color ColorPicker
-                                    Shader Output:
-                                    - Shader "Paint" output
                                 """.trimIndent())
                         }
                     }
@@ -333,8 +329,6 @@ object EditingShaderSpec : Spek({
                                     * Main Channel
                                     Data Source:
                                     - Upstream Color ColorPicker
-                                    Shader Output:
-                                    - Shader "Paint" output
                                 """.trimIndent())
                         }
                     }

@@ -41,16 +41,18 @@ class AutoWirer(
             shaders.forEach { addShaderInstance(it.shader) }
         }
 
+        val channelsInfo = ChannelsInfo(
+            null, // TODO: test with parentMutableShow?
+            siblingsPatch, glslAnalyzer)
+
         // First pass: gather shader output ports.
         val shaderInstances =
             shaders.associateWith { openShader ->
                 val shaderInstanceOptions = ShaderInstanceOptions(
                     openShader,
-// TODO                   parentMutableShow = parentMutableShow,
-                    parentMutablePatch = siblingsPatch,
+                    channelsInfo = channelsInfo,
                     defaultPorts = defaultPorts,
                     currentLinks = emptyMap(),
-                    glslAnalyzer = glslAnalyzer,
                     plugins = plugins
                 )
 
@@ -68,22 +70,4 @@ class AutoWirer(
 
         return UnresolvedPatch(shaderInstances.values.toList())
     }
-
-    fun autoWire(
-        shader: OpenShader,
-        shaderChannel: ShaderChannel = ShaderChannel.Main,
-        parentMutableShow: MutableShow? = null,
-        parentMutablePatch: MutablePatch? = null,
-        defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-        currentLinks: Map<String, MutablePort> = emptyMap()
-    ): ShaderInstanceOptions = ShaderInstanceOptions(
-        shader,
-        shaderChannel,
-        parentMutableShow,
-        parentMutablePatch,
-        defaultPorts,
-        currentLinks,
-        glslAnalyzer,
-        plugins
-    )
 }

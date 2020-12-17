@@ -29,35 +29,6 @@ data class MutableDataSourcePort(val dataSource: DataSource) : MutablePort {
 }
 fun DataSource.editor() = MutableDataSourcePort(this)
 
-class MutableShaderOutPort(var mutableShaderInstance: MutableShaderInstance) : MutablePort {
-    override fun toRef(showBuilder: ShowBuilder): PortRef =
-        ShaderOutPortRef(showBuilder.idFor(mutableShaderInstance.build(showBuilder)))
-
-    private val mutableShader get() = mutableShaderInstance.mutableShader
-
-    override val title: String get() = "Shader \"${mutableShader.title}\" output"
-    override val icon: Icon get() = mutableShader.icon
-    override val groupName: String get() = "Shader Output:"
-
-    override fun accept(visitor: MutableShowVisitor, log: VisitationLog) = visitor.visit(mutableShaderInstance)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is MutableShaderOutPort) return false
-
-        // Optimize equality check, they should be identical.
-        if (mutableShaderInstance !== other.mutableShaderInstance) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return mutableShaderInstance.id.hashCode()
-    }
-
-    override fun toString(): String = "ShaderOutPortEditor(shader=${mutableShaderInstance.mutableShader.title})"
-}
-
 data class MutableShaderChannel(val id: String) : MutablePort {
     override val title: String get() = "${id.englishize()} Channel"
     override val icon: Icon get() = CommonIcons.ShaderChannel

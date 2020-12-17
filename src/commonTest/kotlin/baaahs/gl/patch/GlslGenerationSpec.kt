@@ -9,7 +9,10 @@ import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.*
+import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderChannel
+import baaahs.show.mutable.editor
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -281,7 +284,7 @@ object GlslGenerationSpec : Spek({
                     }
 
                     addShaderInstance(mainShader) {
-                        link("gl_FragCoord", MutableShaderOutPort(findShaderInstanceFor(cylindricalProjection)))
+                        link("gl_FragCoord", ShaderChannel.Main.toMutable())
                         link("resolution", CorePlugin.ResolutionDataSource())
                         link("time", CorePlugin.TimeDataSource())
                         link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
