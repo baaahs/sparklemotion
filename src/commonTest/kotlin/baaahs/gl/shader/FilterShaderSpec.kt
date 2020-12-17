@@ -11,7 +11,10 @@ import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.*
+import baaahs.show.mutable.MutableConstPort
+import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderChannel
 import baaahs.toBeSpecified
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -83,7 +86,7 @@ object FilterShaderSpec : Spek({
                         }
 
                         addShaderInstance(shader.shader) {
-                            link("colorIn", MutableShaderOutPort(redInstance))
+                            link("colorIn", ShaderChannel.Main.toMutable())
                             link("otherColorStream", MutableShaderChannel(otherChannel.id))
                             link("fade", MutableConstPort(".5", GlslType.Float))
                         }

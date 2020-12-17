@@ -2,11 +2,13 @@ package baaahs.show.mutable
 
 import baaahs.app.ui.editor.LinkOption
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.patch.ChannelsInfo
 import baaahs.gl.patch.ShaderInstanceOptions
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.shader.InputPort
 import baaahs.randomId
 import baaahs.show.Shader
+import baaahs.show.ShaderChannel
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
 import baaahs.util.Logger
@@ -91,11 +93,13 @@ class EditingShader(
             val showBuilder = ShowBuilder()
             parentMutablePatch.build(showBuilder)
 
-            shaderInstanceOptions = autoWirer.autoWire(
+            val channelsInfo = ChannelsInfo(parentMutableShow, parentMutablePatch, autoWirer.glslAnalyzer)
+            shaderInstanceOptions = ShaderInstanceOptions(
                 currentOpenShader,
-                parentMutablePatch = parentMutablePatch,
-                parentMutableShow = parentMutableShow,
-                currentLinks = mutableShaderInstance.incomingLinks
+                ShaderChannel.Main,
+                channelsInfo,
+                currentLinks = mutableShaderInstance.incomingLinks,
+                plugins = autoWirer.plugins
             )
         }
         return shaderInstanceOptions

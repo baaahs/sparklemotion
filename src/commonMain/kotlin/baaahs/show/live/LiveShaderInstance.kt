@@ -170,7 +170,6 @@ class ShaderInstanceResolver(
             }
             .mapValues { (_, portRef) ->
                 when (portRef) {
-                    is ShaderOutPortRef -> LiveShaderInstance.ShaderOutLink(resolve(portRef.shaderInstanceId))
                     is DataSourceRef -> findDataSource(portRef.dataSourceId).link(portRef.dataSourceId)
                     is ShaderChannelRef -> LiveShaderInstance.ShaderChannelLink(portRef.shaderChannel)
                     is OutputPortRef -> TODO()

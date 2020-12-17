@@ -194,10 +194,6 @@ private fun jsonFor(portRef: PortRef): JsonObject {
             put("type", "datasource")
             put("dataSourceId", portRef.dataSourceId)
         }
-        is ShaderOutPortRef -> buildJsonObject {
-            put("type", "shader-out")
-            put("shaderInstanceId", portRef.shaderInstanceId)
-        }
         is ShaderChannelRef -> buildJsonObject {
             put("type", "shader-channel")
             put("shaderChannel", portRef.shaderChannel.id)

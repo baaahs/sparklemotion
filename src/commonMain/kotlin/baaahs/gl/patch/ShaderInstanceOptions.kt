@@ -10,23 +10,18 @@ import baaahs.show.ShaderChannel
 import baaahs.show.mutable.*
 import baaahs.util.Logger
 
-class ShaderInstanceOptions(
-    shader: OpenShader,
-    val shaderChannel: ShaderChannel = ShaderChannel.Main,
+class ChannelsInfo(
     parentMutableShow: MutableShow? = null,
     parentMutablePatch: MutablePatch? = null,
-    defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-    currentLinks: Map<String, MutablePort>,
-    glslAnalyzer: GlslAnalyzer,
-    private val plugins: Plugins
+    glslAnalyzer: GlslAnalyzer
 ) {
-    val shaderChannels: List<MutableShaderChannel>
-    val inputPortLinkOptions: Map<String, List<LinkOption>>
+    internal val shaderChannels: MutableMap<ContentType, MutableSet<MutableShaderChannel>> = mutableMapOf()
+
+    operator fun get(contentType: ContentType): Set<MutableShaderChannel>? {
+        return shaderChannels[contentType]
+    }
 
     init {
-        val shaderOutsInPatch: MutableMap<ContentType, MutableSet<MutableShaderInstance>> = mutableMapOf()
-        val shaderChannels: MutableMap<ContentType, MutableSet<MutableShaderChannel>> = mutableMapOf()
-
         // Gather shader output ports.
         parentMutablePatch?.mutableShaderInstances?.forEach { shaderInstance ->
             val openShader = glslAnalyzer.openShader(shaderInstance.mutableShader.build())
@@ -35,12 +30,6 @@ class ShaderInstanceOptions(
                 shaderChannels.getOrPut(contentType, ::mutableSetOf)
                     .add(MutableShaderChannel(shaderChannel.id))
             }
-
-            // Never include this shader in its own suggestions.
-            if (openShader.shader == shader.shader) return@forEach
-
-            shaderOutsInPatch.getOrPut(openShader.outputPort.contentType, ::mutableSetOf)
-                .add(shaderInstance)
         }
 
         parentMutableShow?.accept(object : MutableShowVisitor {
@@ -50,7 +39,21 @@ class ShaderInstanceOptions(
                     .add(mutableShaderInstance.shaderChannel)
             }
         })
+    }
+}
 
+class ShaderInstanceOptions(
+    shader: OpenShader,
+    val shaderChannel: ShaderChannel = ShaderChannel.Main,
+    channelsInfo: ChannelsInfo,
+    defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
+    currentLinks: Map<String, MutablePort>,
+    private val plugins: Plugins
+) {
+    val shaderChannels: List<MutableShaderChannel>
+    val inputPortLinkOptions: Map<String, List<LinkOption>>
+
+    init {
         fun suggestLinksFor(inputPort: InputPort): ArrayList<PortLinkOption> {
             val options = arrayListOf<PortLinkOption>()
 
@@ -82,19 +85,7 @@ class ShaderInstanceOptions(
             }
 
             contentTypes.forEach { contentType ->
-                shaderOutsInPatch[contentType]?.let { shaderInstances ->
-                    shaderInstances.forEach { shaderInstance ->
-                        options.add(
-                            PortLinkOption(
-                                MutableShaderOutPort(shaderInstance),
-                                isLocalShaderOut = true,
-                                isExactContentType = contentType == exactContentType
-                            )
-                        )
-                    }
-                }
-
-                shaderChannels[contentType]?.forEach { shaderChannel ->
+                channelsInfo[contentType]?.forEach { shaderChannel ->
                     options.add(
                         PortLinkOption(
                             shaderChannel,
@@ -133,7 +124,7 @@ class ShaderInstanceOptions(
             inputPort.id to sortedOptions
         }
 
-        this.shaderChannels = shaderChannels.values.flatten().toList().sortedBy { it.title }
+        this.shaderChannels = channelsInfo.shaderChannels.values.flatten().toList().sortedBy { it.title }
         this.inputPortLinkOptions = map
     }
 
