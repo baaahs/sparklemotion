@@ -5,10 +5,11 @@ import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.MutablePatch
+import baaahs.show.Surfaces
+import baaahs.show.live.LiveShaderInstance
+import baaahs.show.live.OpenPatch
 import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShader
-import baaahs.show.mutable.MutableShow
 
 class AutoWirer(
     val plugins: Plugins,
@@ -20,7 +21,7 @@ class AutoWirer(
         shaderChannel: ShaderChannel = ShaderChannel.Main
     ): UnresolvedPatch {
         val openShaders = shaders.associate { it to glslAnalyzer.openShader(it) }
-        return autoWire(openShaders.values, defaultPorts = defaultPorts, shaderChannel = shaderChannel)
+        return autoWire(openShaders.values, shaderChannel = shaderChannel, defaultPorts = defaultPorts)
     }
 
     fun autoWire(
@@ -28,22 +29,21 @@ class AutoWirer(
         defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
         shaderChannel: ShaderChannel = ShaderChannel.Main
         ): UnresolvedPatch {
-        return autoWire(shaders.toList(), defaultPorts = defaultPorts, shaderChannel = shaderChannel)
+        return autoWire(shaders.toList(), shaderChannel = shaderChannel, defaultPorts = defaultPorts)
     }
 
     fun autoWire(
         shaders: Collection<OpenShader>,
         shaderChannel: ShaderChannel = ShaderChannel.Main,
-        parentMutableShow: MutableShow? = null,
         defaultPorts: Map<ContentType, MutablePort> = emptyMap()
     ): UnresolvedPatch {
-        val siblingsPatch = MutablePatch {
-            shaders.forEach { addShaderInstance(it.shader) }
-        }
+        val siblingsPatch = OpenPatch(shaders.map {
+            LiveShaderInstance(it, emptyMap(), shaderChannel, 0f)
+        }, Surfaces.AllSurfaces)
 
         val channelsInfo = ChannelsInfo(
             null, // TODO: test with parentMutableShow?
-            siblingsPatch, glslAnalyzer)
+            siblingsPatch)
 
         // First pass: gather shader output ports.
         val shaderInstances =

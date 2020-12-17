@@ -15,7 +15,7 @@ import baaahs.util.Logger
 class LiveShaderInstance(
     val shader: OpenShader,
     val incomingLinks: Map<String, Link>,
-    val shaderChannel: ShaderChannel?,
+    val shaderChannel: ShaderChannel,
     val priority: Float,
     val extraLinks: Set<String> = emptySet(),
     val missingLinks: Set<String> = emptySet()
