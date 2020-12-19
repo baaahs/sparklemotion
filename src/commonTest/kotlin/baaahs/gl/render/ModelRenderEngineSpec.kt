@@ -261,7 +261,14 @@ class DeviceTypeForTest(
     vararg val fixtureDataSources: DataSource,
     override val resultContentType: ContentType = Color,
     override val id: String = "testDevice",
-    override val title: String = id.englishize()
+    override val title: String = id.englishize(),
+    override val likelyPipelines: List<Pair<ContentType, ContentType>> =
+        with(ContentType) {
+            listOf(
+                XyzCoordinate to UvCoordinate,
+                UvCoordinate to Color
+            )
+        }
 ) : DeviceType {
     override val dataSourceBuilders: List<DataSourceBuilder<*>>
         get() = fixtureDataSources.map { dataSource ->

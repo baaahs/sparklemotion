@@ -4,7 +4,6 @@ import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.objectSerializer
-import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.ui.Icon
 import kotlinx.serialization.SerialName
@@ -39,8 +38,6 @@ object DistortionShader : ShaderPrototype("baaahs.Core:Distortion") {
     override val outputPort: OutputPort
         get() = OutputPort(ContentType.UvCoordinate)
     override val icon: Icon = CommonIcons.DistortionShader
-    override val defaultUpstreams: Map<ContentType, ShaderChannel> =
-        mapOf(ContentType.UvCoordinate to ShaderChannel.Main)
 
     override val template: String = """
         uniform float scale; // @@Slider min=0.25 max=4 default=1

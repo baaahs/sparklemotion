@@ -7,7 +7,6 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.listOf
 import baaahs.plugin.objectSerializer
-import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.ui.Icon
 import kotlinx.serialization.SerialName
@@ -83,8 +82,6 @@ object ShaderToyPaintShader : ShaderPrototype("baaahs.Core:Paint/ShaderToy") {
 
     override val title: String = "Paint"
     override val suggestNew: Boolean = false
-    override val defaultUpstreams: Map<ContentType, ShaderChannel> =
-        mapOf(ContentType.UvCoordinate to ShaderChannel.Main)
 
     override val shaderType: ShaderType
         get() = ShaderType.Paint

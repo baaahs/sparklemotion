@@ -38,6 +38,11 @@ object MovingHeadDevice : DeviceType {
     override val resultContentType: ContentType
         get() = ContentType.PanAndTilt
 
+    override val likelyPipelines: List<Pair<ContentType, ContentType>>
+        get() = with(ContentType) {
+            listOf(XyzCoordinate to PanAndTilt)
+        }
+
     override val errorIndicatorShader: Shader
         get() = Shader(
             "Ω Guru Meditation Error Ω",

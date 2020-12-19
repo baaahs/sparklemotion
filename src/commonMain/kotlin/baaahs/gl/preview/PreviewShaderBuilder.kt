@@ -208,6 +208,9 @@ object ProjectionPreviewDevice: DeviceType {
     override val resultContentType: ContentType
         get() = ContentType.UvCoordinate
 
+    override val likelyPipelines: List<Pair<ContentType, ContentType>>
+        get() = emptyList()
+
     override val errorIndicatorShader: Shader
         get() = Shader(
             "Ω Guru Meditation Error Ω",

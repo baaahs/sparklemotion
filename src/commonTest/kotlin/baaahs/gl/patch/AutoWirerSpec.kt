@@ -1,12 +1,12 @@
 package baaahs.gl.patch
 
+import baaahs.englishize
 import baaahs.fixtures.MovingHeadInfoDataSource
 import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.expects
 import baaahs.gl.override
-import baaahs.gl.patch.ContentType.Companion.UvCoordinate
-import baaahs.gl.shader.DistortionShader
-import baaahs.gl.shader.FilterShader
+import baaahs.gl.render.DeviceTypeForTest
+import baaahs.gl.shader.*
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.only
@@ -27,8 +27,86 @@ import org.spekframework.spek2.style.specification.describe
 object AutoWirerSpec : Spek({
     describe("AutoWirer") {
         val autoWirer by value { AutoWirer(testPlugins()) }
+        val deviceType by value {
+            DeviceTypeForTest(
+                likelyPipelines = listOf(
+                    ContentType.XyzCoordinate to ContentType.UvCoordinate,
+                    ContentType.UvCoordinate to ContentType.Color
+                )
+            )
+        }
 
         describe(".autoWire") {
+            val portId by value { "brightness" }
+            val portContentType by value { ContentType.Float }
+            val portGlslType by value { portContentType.glslType }
+            val outContentType by value { ContentType.Color }
+            val mainShader by value {
+                FakeOpenShader(
+                    listOf(InputPort(portId, portGlslType, portId.englishize(), portContentType)),
+                    OutputPort(outContentType)
+                )
+            }
+            val shaders by value { arrayOf<OpenShader>(mainShader) }
+            val shaderChannel by value { ShaderChannel.Main }
+            val suggestions by value {
+                autoWirer.autoWire(*shaders, shaderChannel = shaderChannel, deviceTypes = listOf(deviceType))
+            }
+            val patch by value { suggestions.acceptSuggestedLinkOptions().confirm() }
+            val mutableLinks by value { patch.mutableShaderInstances.only().incomingLinks }
+            val portLink by value { mutableLinks[portId] }
+
+            context("for content types of artifacts in potential render pipelines") {
+                override(portId) { "uv" }
+                override(portContentType) { ContentType.UvCoordinate }
+
+                it("suggests the shader's channel") {
+                    expect(portLink).toBe(ShaderChannel.Main.editor())
+                }
+
+                context("even when it's on on a different channel") {
+                    override(shaderChannel) { ShaderChannel("other") }
+
+                    it("suggests the main channel") {
+                        expect(portLink).toBe(ShaderChannel.Main.editor())
+                    }
+                }
+            }
+
+            context("when there's a good datasource match") {
+                context("for time") {
+                    override(portId) { "time" }
+                    override(portContentType) { ContentType.Time }
+
+                    it("suggests a Slider data source channel link") {
+                        expect(portLink)
+                            .toBe(CorePlugin.TimeDataSource().editor())
+                    }
+                }
+
+                context("for an arbitrary float") {
+                    override(portId) { "brightness" }
+                    override(portContentType) { ContentType.Float }
+
+                    it("suggests a Slider data source channel link") {
+                        expect(portLink)
+                            .toBe(CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f).editor())
+                    }
+                }
+
+// TODO:                context("for an arbitrary unknown/float") {
+// TODO:                    override(portId) { "brightness" }
+// TODO:                    override(portContentType) { ContentType.unknown(Float) }
+//
+// TODO:                    it("suggests a Slider data source channel link") {
+// TODO:                        expect(portLink)
+// TODO:                            .toBe(CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f).editor())
+// TODO:                    }
+// TODO:                }
+            }
+        }
+
+        describe(".autoWire integration") {
             val shaderText by value {
                 /**language=glsl*/
                 """
@@ -52,7 +130,10 @@ object AutoWirerSpec : Spek({
             }
             val mainShader by value { autoWirer.glslAnalyzer.import(shaderText) }
             val shaders by value { arrayOf(mainShader) }
-            val patch by value { autoWirer.autoWire(*shaders).acceptSuggestedLinkOptions().confirm() }
+            val patch by value {
+                autoWirer.autoWire(*shaders, deviceTypes = listOf(deviceType))
+                    .acceptSuggestedLinkOptions().confirm()
+            }
             val linkedPatch by value { patch.openForPreview(autoWirer)!! }
             val rootProgramNode by value { linkedPatch.rootNode as LinkedShaderInstance }
             val mutableLinks by value { patch.mutableShaderInstances.only().incomingLinks }
@@ -76,8 +157,10 @@ object AutoWirerSpec : Spek({
 
             it("picks a Slider for blueness") {
                 expect(links["blueness"])
-                    .toBe(CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
-                        .link("bluenessSlider"))
+                    .toBe(
+                        CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
+                            .link("bluenessSlider")
+                    )
             }
 
             it("picks Main channel for gl_FragCoord") {
@@ -85,17 +168,19 @@ object AutoWirerSpec : Spek({
                     .toBe(ShaderChannel.Main.editor())
 
                 expect(links["gl_FragCoord"])
-                    .toBe(DefaultValueNode(UvCoordinate))
+                    .toBe(DefaultValueNode(ContentType.UvCoordinate))
             }
 
             it("builds a linked patch") {
                 expect(rootProgramNode.incomingLinks)
                     .toBe(
                         mapOf(
-                            "gl_FragCoord" to DefaultValueNode(UvCoordinate),
+                            "gl_FragCoord" to DefaultValueNode(ContentType.UvCoordinate),
                             "time" to CorePlugin.TimeDataSource().link("time"),
                             "resolution" to CorePlugin.ResolutionDataSource().link("resolution"),
-                            "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).link("bluenessSlider"))
+                            "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
+                                .link("bluenessSlider")
+                        )
                     )
             }
 
@@ -174,10 +259,11 @@ object AutoWirerSpec : Spek({
                     }
                     expects(
                         mapOf(
-                            "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null).link("bluenessSlider"),
+                            "blueness" to CorePlugin.SliderDataSource("Blueness", 1f, 0f, 1f, null)
+                                .link("bluenessSlider"),
                             "iResolution" to CorePlugin.ResolutionDataSource().link("resolution"),
                             "iTime" to CorePlugin.TimeDataSource().link("time"),
-                            "fragCoord" to DefaultValueNode(UvCoordinate)
+                            "fragCoord" to DefaultValueNode(ContentType.UvCoordinate)
                         )
                     ) { rootProgramNode.incomingLinks }
                 }
@@ -236,7 +322,8 @@ object AutoWirerSpec : Spek({
                             MutableShaderInstance(
                                 MutableShader(filterShader),
                                 hashMapOf(
-                                    "brightness" to CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f, null).editor(),
+                                    "brightness" to CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f, null)
+                                        .editor(),
                                     "colorIn" to ShaderChannel.Main.editor()
                                 ),
                                 shaderChannel = ShaderChannel.Main.editor()

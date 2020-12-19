@@ -112,7 +112,7 @@ object ShowRunnerSpec : Spek({
                 override(shaderSrc) {
                     /**language=glsl*/
                     """
-                    uniform vec4 color;
+                    uniform vec4 color; // @type color
                     void main() { gl_FragColor = color; }
                     """.trimIndent()
                 }
