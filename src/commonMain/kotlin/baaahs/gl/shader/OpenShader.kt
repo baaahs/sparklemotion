@@ -7,10 +7,8 @@ import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslType
-import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.unknown
 import kotlin.collections.set
@@ -26,7 +24,6 @@ interface OpenShader : RefCounted {
     val inputPorts: List<InputPort>
     val outputPort: OutputPort
     val defaultPriority: Int
-    val defaultUpstreams: Map<ContentType, ShaderChannel>
 
     fun findInputPortOrNull(portId: String): InputPort?
     fun findInputPort(portId: String): InputPort =
@@ -75,8 +72,6 @@ interface OpenShader : RefCounted {
             get() = prototype.shaderType
         override val defaultPriority: Int
             get() = shaderType.priority
-        override val defaultUpstreams: Map<ContentType, ShaderChannel>
-            get() = prototype.defaultUpstreams
 
         override fun findInputPortOrNull(portId: String): InputPort? =
             inputPorts.find { it.id == portId }

@@ -36,6 +36,13 @@ object PixelArrayDevice : DeviceType {
 
     override val resultContentType: ContentType
         get() = ContentType.Color
+    override val likelyPipelines: List<Pair<ContentType, ContentType>>
+        get() = with(ContentType) {
+            listOf(
+                XyzCoordinate to UvCoordinate,
+                UvCoordinate to Color
+            )
+        }
 
     override val errorIndicatorShader: Shader
         get() = Shader(

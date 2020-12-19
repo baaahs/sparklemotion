@@ -7,7 +7,6 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.listOf
 import baaahs.plugin.objectSerializer
-import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.ui.Icon
 import kotlinx.serialization.SerialName
@@ -27,8 +26,6 @@ object GenericPaintShader : ShaderPrototype("baaahs.Core:Paint") {
 //                        varying vec2 surfacePosition; TODO
         )
 
-    override val defaultUpstreams: Map<ContentType, ShaderChannel> =
-        mapOf(ContentType.UvCoordinate to ShaderChannel.Main)
     override val title: String = "Paint"
 
     override val shaderType: ShaderType

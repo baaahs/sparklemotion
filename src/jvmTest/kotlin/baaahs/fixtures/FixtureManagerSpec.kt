@@ -18,7 +18,6 @@ import baaahs.gl.testPlugins
 import baaahs.model.Model
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutableShow
 import baaahs.shows.FakeGlContext
@@ -152,8 +151,6 @@ class FakeOpenShader(
     override val inputPorts: List<InputPort>
         get() = emptyList()
     override val defaultPriority: Int
-        get() = TODO("not implemented")
-    override val defaultUpstreams: Map<ContentType, ShaderChannel>
         get() = TODO("not implemented")
 
     override fun findInputPortOrNull(portId: String): InputPort? {

@@ -93,7 +93,7 @@ class EditingShader(
             val showBuilder = ShowBuilder()
             parentMutablePatch.build(showBuilder)
 
-            val channelsInfo = ChannelsInfo(parentMutableShow, parentMutablePatch, autoWirer.glslAnalyzer)
+            val channelsInfo = ChannelsInfo(parentMutableShow, emptyList())
             shaderInstanceOptions = ShaderInstanceOptions(
                 currentOpenShader,
                 ShaderChannel.Main,

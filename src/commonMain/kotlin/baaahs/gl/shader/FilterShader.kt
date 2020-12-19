@@ -4,7 +4,6 @@ import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.objectSerializer
-import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.ui.Icon
 import kotlinx.serialization.SerialName
@@ -36,8 +35,6 @@ object FilterShader : ShaderPrototype("baaahs.Core:Filter") {
         InputPort("color", GlslType.Vec4, "Upstream Color", ContentType.Color)
     ).associateBy { it.type }
 
-    override val defaultUpstreams: Map<ContentType, ShaderChannel> =
-        mapOf(ContentType.Color to ShaderChannel.Main)
     override val title: String = "Filter"
     override val outputPort: OutputPort
         get() = OutputPort(ContentType.Color)

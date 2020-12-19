@@ -97,7 +97,11 @@ object PatchResolverSpec : Spek({
                     }
 
                     addButton("Main", "Orange") {
-                        addPatch(autoWire(orangeShader))
+                        addPatch(autoWire(orangeShader).apply {
+                            this.mutableShaderInstances.first().incomingLinks.forEach { (k, v) ->
+                                println("$k = $v")
+                            }
+                        })
                     }
                 }
             }

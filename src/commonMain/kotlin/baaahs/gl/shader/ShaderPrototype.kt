@@ -3,12 +3,10 @@ package baaahs.gl.shader
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslType
-import baaahs.gl.patch.ContentType
 import baaahs.listOf
 import baaahs.plugin.ObjectSerializer
 import baaahs.plugin.Plugins
 import baaahs.plugin.SerializerRegistrar
-import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableShader
 import baaahs.ui.Icon
@@ -24,7 +22,6 @@ abstract class ShaderPrototype(val id: String) {
     open val implicitInputPorts: List<InputPort> = emptyList()
     open val wellKnownInputPorts: List<InputPort> = emptyList()
     open val defaultInputPortsByType: Map<GlslType, InputPort> = emptyMap()
-    open val defaultUpstreams: Map<ContentType, ShaderChannel> = emptyMap()
     abstract val shaderType: ShaderType
     abstract val outputPort: OutputPort
     abstract val entryPointName: String

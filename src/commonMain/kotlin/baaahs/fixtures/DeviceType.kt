@@ -23,6 +23,7 @@ interface DeviceType {
     val dataSourceBuilders: List<DataSourceBuilder<*>>
     val resultParams: List<ResultParam>
     val resultContentType: ContentType
+    val likelyPipelines: List<Pair<ContentType, ContentType>>
     val errorIndicatorShader: Shader
 
     class Serializer(private val knownDeviceTypes: Map<String, DeviceType>) : KSerializer<DeviceType> {

@@ -77,7 +77,7 @@ class Plugins private constructor(
 
     private val dataSourceBuilders = DataSourceBuilders()
 
-    private val deviceTypes = DeviceTypes()
+    val deviceTypes = DeviceTypes()
 
     val shaderPrototypes = ShaderPrototypes()
 
