@@ -3,6 +3,7 @@ package baaahs.gl.preview
 import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.fixtures.*
+import baaahs.getValue
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
 import baaahs.gl.patch.AutoWirer
@@ -42,6 +43,7 @@ interface ShaderBuilder : IObservable {
     /** Contrary to expectations, linking happens before compiling in this world. */
     enum class State {
         Unbuilt,
+        Analyzing,
         Linking,
         Linked,
         Compiling,
@@ -89,8 +91,17 @@ class PreviewShaderBuilder(
     private val smpteColorBars by lazy { analyze(Shaders.smpteColorBars) }
 
     override fun startBuilding() {
-        state = ShaderBuilder.State.Linking
+        state = ShaderBuilder.State.Analyzing
         notifyChanged()
+
+        coroutineScope.launch {
+            analyze()
+        }
+    }
+
+    fun analyze() {
+        openShader = analyze(shader)
+        state = ShaderBuilder.State.Linking
 
         coroutineScope.launch {
             link()
@@ -99,8 +110,7 @@ class PreviewShaderBuilder(
 
     fun link() {
         try {
-            val openShader = analyze(shader)
-            this.openShader = openShader
+            val openShader = openShader!!
             val shaderType = shader.prototype?.shaderType ?: ShaderType.Unknown
             val shaders: Array<OpenShader> = when (shaderType) {
                 ShaderType.Unknown -> arrayOf(openShader)

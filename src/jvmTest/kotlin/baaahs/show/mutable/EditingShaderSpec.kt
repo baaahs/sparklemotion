@@ -346,12 +346,22 @@ object EditingShaderSpec : Spek({
             val gl by value { FakeGlContext() }
             val renderEngine by value { PreviewRenderEngine(gl, 1, 1) }
 
-            it("generates valid GLSL") {
+            beforeEachTest {
+                // Run through the shader building steps.
+                expect(editingShader.shaderBuilder.state).toBe(ShaderBuilder.State.Analyzing)
+                expect(editingShader.state).toBe(State.Building)
+                context.runAll()
+
+                expect(editingShader.shaderBuilder.state).toBe(ShaderBuilder.State.Linked)
+                expect(editingShader.state).toBe(State.Building)
                 editingShader.shaderBuilder.startCompile(renderEngine)
+
                 expect(editingShader.state).toBe(State.Building)
                 context.runAll()
                 expect(editingShader.state).toBe(State.Success)
+            }
 
+            it("generates valid GLSL") {
                 val fakeProgram = gl.programs[0]
                 val fragShader = fakeProgram.shaders[GL_FRAGMENT_SHADER]?.src
                 kexpect(fragShader).toBe("""

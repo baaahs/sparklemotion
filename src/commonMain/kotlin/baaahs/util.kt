@@ -7,6 +7,7 @@ import kotlin.math.PI
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
+import kotlin.reflect.KProperty
 
 fun <E> Collection<E>.only(description: String = "item"): E {
     if (size != 1)
@@ -99,3 +100,6 @@ fun <T : Any?> T.listOf() = listOf(this)
 fun debugger(arg: String = "?") {
     println("Debugger breakpoint: $arg")
 }
+
+// Workaround for https://youtrack.jetbrains.com/issue/KT-41471.
+operator fun <T> Lazy<T>.getValue(thisRef: Any?, property: KProperty<*>) = value
