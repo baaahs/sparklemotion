@@ -141,6 +141,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
         when (builder?.state ?: ShaderBuilder.State.Unbuilt) {
             ShaderBuilder.State.Unbuilt,
+            ShaderBuilder.State.Analyzing,
             ShaderBuilder.State.Linking,
             ShaderBuilder.State.Linked,
             ShaderBuilder.State.Compiling -> {
