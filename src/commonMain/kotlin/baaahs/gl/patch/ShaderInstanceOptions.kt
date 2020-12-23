@@ -43,15 +43,21 @@ class ChannelsInfo {
 
     constructor(
         parentMutableShow: MutableShow? = null,
-        deviceTypes: Collection<DeviceType>
+        deviceTypes: Collection<DeviceType>,
+        autoWirer: AutoWirer
     ) {
         val shaderChannels = shaderChannelsFromDeviceTypes(deviceTypes)
 
         parentMutableShow?.accept(object : MutableShowVisitor {
             override fun visit(mutableShaderInstance: MutableShaderInstance) {
-                val contentType = mutableShaderInstance.mutableShader.resultContentType
-                shaderChannels.getOrPut(contentType, ::mutableSetOf)
-                    .add(mutableShaderInstance.shaderChannel)
+                try {
+                    val shader = mutableShaderInstance.mutableShader.build()
+                    val contentType = autoWirer.glslAnalyzer.openShader(shader).outputPort.contentType
+                    shaderChannels.getOrPut(contentType, ::mutableSetOf)
+                        .add(mutableShaderInstance.shaderChannel)
+                } catch (e: Exception) {
+                    // It's okay, just ignore it.
+                }
             }
         })
         this.shaderChannels = shaderChannels
@@ -90,11 +96,8 @@ class ShaderInstanceOptions(
             val options = arrayListOf<PortLinkOption>()
 
             val exactContentType = inputPort.contentType
-            val expandedContentTypes = plugins.suggestContentTypes(inputPort).let { expanded ->
-                exactContentType?.let { expanded - exactContentType } ?: expanded
-            }
-            val contentTypes =
-                listOfNotNull(exactContentType) + expandedContentTypes
+            val expandedContentTypes = plugins.suggestContentTypes(inputPort) - exactContentType
+            val contentTypes = listOfNotNull(exactContentType) + expandedContentTypes
 
             contentTypes.forEach { contentType ->
                 val defaultPort = defaultPorts[contentType]
@@ -114,14 +117,23 @@ class ShaderInstanceOptions(
                         )
                     }
                 )
-            }
 
-            contentTypes.forEach { contentType ->
                 channelsInfo[contentType]?.forEach { mutableShaderChannel ->
                     options.add(
                         PortLinkOption(
                             // TODO: this is dumb and broken.
                             mutableShaderChannel,
+                            isShaderChannel = true,
+                            isExactContentType = contentType == exactContentType
+                        )
+                    )
+                }
+
+                if (contentType == shader.outputPort.contentType) {
+                    options.add(
+                        PortLinkOption(
+                            shaderChannel.toMutable(),
+                            createsFilter = true,
                             isShaderChannel = true,
                             isExactContentType = contentType == exactContentType
                         )

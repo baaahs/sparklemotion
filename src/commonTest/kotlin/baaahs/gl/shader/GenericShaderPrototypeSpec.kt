@@ -2,13 +2,15 @@ package baaahs.gl.shader
 
 import baaahs.describe
 import baaahs.gl.glsl.GlslAnalyzer
-import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
-import baaahs.gl.patch.ContentType.Companion.Color
+import baaahs.gl.patch.ContentType
 import baaahs.gl.testPlugins
 import baaahs.toEqual
+import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
@@ -17,21 +19,18 @@ object GenericShaderPrototypeSpec : Spek({
     describe<GenericShaderPrototypeSpec> {
         val src by value {
             """
-                // @type time
+                // @return time
                 float main(
                     float time // @type time
                 ) { return time + sin(time); }
             """.trimIndent()
         }
         val prototype by value { GenericShaderPrototype }
-        val openShader by value { GlslAnalyzer(testPlugins()).openShader(src) }
-        val glslCode by value { openShader.glslCode }
-        val invocationStatement by value {
-            openShader.invocationGlsl(
-                GlslCode.Namespace("p"), "toResultVar",
-                mapOf("time" to "timeVal", "intensity" to "intensityVal")
-            )
-        }
+        val plugins by value { testPlugins() }
+        val analyzer by value { GlslAnalyzer(plugins) }
+        val shaderAnalysis by value { analyzer.validate(src) }
+        val glslCode by value { shaderAnalysis.glslCode }
+        val openShader by value { analyzer.openShader(shaderAnalysis) }
 
         context("shaders having a main() function") {
             it("is a poor match (so this one acts as a fallback)") {
@@ -39,18 +38,32 @@ object GenericShaderPrototypeSpec : Spek({
             }
 
             it("finds the input port") {
-                expect(openShader.inputPorts.str()).containsExactly(
-                    "time time/float"
+                expect(shaderAnalysis.inputPorts.str()).containsExactly(
+                    "time time:float (Time)"
                 )
             }
 
-            it("finds the output port") {
-                expect(openShader.outputPort).toEqual(
-                    OutputPort(Color, description = "Output Color", id = "gl_FragColor"))
+            context("when a shader refers to gl_FragColor") {
+                override(src) { "void main() { gl_FragColor = vec4(0.); }" }
+
+                it("finds the output port") {
+                    expect(shaderAnalysis.outputPorts).containsExactly(
+                        OutputPort(ContentType.Color, description = "Output Color", id = "gl_FragColor")
+                    )
+                }
             }
 
-            it("generates an invocation statement") {
-                expect(invocationStatement).toEqual("toResultVar = p_main(timeVal)")
+            context("when a shader refers to gl_FragCoord") {
+                override(src) { "vec4 main() { return vec4(gl_FragCoord.xy, 0., 0.); }" }
+
+                it("includes it as an input port") {
+                    expect(openShader.inputPorts).containsExactly(
+                        InputPort(
+                            "gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4,
+                            "Coordinates", isImplicit = true
+                        )
+                    )
+                }
             }
 
             context("with additional parameters") {
@@ -62,13 +75,9 @@ object GenericShaderPrototypeSpec : Spek({
 
                 it("finds the input port") {
                     expect(openShader.inputPorts.str()).containsExactly(
-                        "gl_FragCoord uv-coordinate/vec4",
-                        "intensity ???/float"
+                        "gl_FragCoord uv-coordinate:vec4 (Coordinates)",
+                        "intensity unknown/float:float (Intensity)"
                     )
-                }
-
-                it("generates an invocation statement") {
-                    expect(invocationStatement).toEqual("p_main(intensityVal)")
                 }
             }
 
@@ -78,8 +87,10 @@ object GenericShaderPrototypeSpec : Spek({
                 }
 
                 it("fails to validate") {
-                    expect(prototype.validate(glslCode)).containsExactly(
-                        GlslError("Multiple out parameters aren't allowed on main().", row = 1)
+                    expect(shaderAnalysis.isValid).toBe(false)
+
+                    expect(shaderAnalysis.errors).contains(
+                        GlslError("Too many output ports found: [fragColor, gl_FragColor, other].", row = 1)
                     )
                 }
             }

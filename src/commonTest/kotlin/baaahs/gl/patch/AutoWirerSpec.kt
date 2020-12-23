@@ -1,18 +1,20 @@
 package baaahs.gl.patch
 
-import baaahs.englishize
 import baaahs.fixtures.MovingHeadInfoDataSource
 import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.expects
 import baaahs.gl.override
 import baaahs.gl.render.DeviceTypeForTest
-import baaahs.gl.shader.*
+import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.OpenShader
+import baaahs.gl.shader.OutputPort
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.only
 import baaahs.plugin.CorePlugin
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
+import baaahs.show.live.FakeOpenShader
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.show.live.link
 import baaahs.show.mutable.MutableShader
@@ -22,6 +24,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
+import org.spekframework.spek2.dsl.Skip
 import org.spekframework.spek2.style.specification.describe
 
 object AutoWirerSpec : Spek({
@@ -43,7 +46,7 @@ object AutoWirerSpec : Spek({
             val outContentType by value { ContentType.Color }
             val mainShader by value {
                 FakeOpenShader(
-                    listOf(InputPort(portId, portGlslType, portId.englishize(), portContentType)),
+                    listOf(InputPort(portId, portContentType, portGlslType)),
                     OutputPort(outContentType)
                 )
             }
@@ -74,13 +77,29 @@ object AutoWirerSpec : Spek({
             }
 
             context("when there's a good datasource match") {
-                context("for time") {
+                context("e.g. for time") {
                     override(portId) { "time" }
                     override(portContentType) { ContentType.Time }
 
-                    it("suggests a Slider data source channel link") {
-                        expect(portLink)
-                            .toBe(CorePlugin.TimeDataSource().editor())
+                    it("suggests the data source's channel") {
+                        expect(portLink).toBe(CorePlugin.TimeDataSource().editor())
+                    }
+
+                    // TODO: get these working?
+                    context("when the output type matches", skip = Skip.Yes("Not working yet")) {
+                        override(outContentType) { portContentType }
+
+                        it("suggests the data source's channel") {
+                            expect(portLink).toBe(CorePlugin.TimeDataSource().editor())
+                        }
+
+                        context("and the shader's channel matches the data source's channel") {
+                            override(shaderChannel) { ShaderChannel("time") }
+
+                            it("suggests the data source's channel") {
+                                expect(portLink).toBe(CorePlugin.TimeDataSource().editor())
+                            }
+                        }
                     }
                 }
 
@@ -103,6 +122,22 @@ object AutoWirerSpec : Spek({
 // TODO:                            .toBe(CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f).editor())
 // TODO:                    }
 // TODO:                }
+            }
+
+            context("when input port's content type matches the shader's output type") {
+                override(outContentType) { portContentType }
+
+                it("suggests pulling from the shader channel, making it a filter") {
+                    expect(portLink).toBe(ShaderChannel.Main.editor())
+                }
+
+                context("when shader is on another channel") {
+                    override(shaderChannel) { ShaderChannel("other") }
+
+                    it("suggests pulling from that shader channel, making it a filter") {
+                        expect(portLink).toBe(ShaderChannel("other").editor())
+                    }
+                }
             }
         }
 
@@ -190,9 +225,10 @@ object AutoWirerSpec : Spek({
                     """
                         uniform vec2  resolution;
                         vec2 anotherFunc(vec2 fragCoord) { return fragCoord; }
+                        // @param fragCoord uv-coordinate
                         void main(vec2 fragCoord) {
                             vec2 uv = anotherFunc(fragCoord) / resolution.xy;
-                            fragColor = vec4(uv.xy, 0., 1.);
+                            gl_FragColor = vec4(uv.xy, 0., 1.);
                         }
                     """.trimIndent()
                 }
@@ -303,16 +339,19 @@ object AutoWirerSpec : Spek({
             }
 
             context("with a filter shader") {
-                val filterShader = Shader(
-                    "Brightness Filter",
-                    FilterShader,
-                    """
-                        uniform float brightness; // @@Slider min=0 max=1 default=1
-                        vec4 mainFilter(vec4 colorIn) {
-                          colorOut = colorIn * brightness;
-                        }
-                    """.trimIndent()
-                )
+                val filterShader by value {
+                    Shader(
+                        "Brightness Filter",
+                        """
+                            uniform float brightness; // @@Slider min=0 max=1 default=1
+                            
+                            // @param colorIn color
+                            void main(vec4 colorIn) {
+                              gl_FragColor = colorIn * brightness;
+                            }
+                        """.trimIndent()
+                    )
+                }
 
                 override(shaders) { arrayOf(filterShader) }
 
@@ -336,9 +375,10 @@ object AutoWirerSpec : Spek({
             context("with a distortion shader") {
                 val filterShader = Shader(
                     "Flip Y",
-                    DistortionShader,
                     """
-                        vec2 mainDistortion(vec2 uvIn) {
+                        // @return uv-coordinate
+                        // @param uvIn uv-coordinate
+                        vec2 main(vec2 uvIn) {
                           return vec2(uvIn.x, 1.0 - uvIn.y);
                         }
                     """.trimIndent()
@@ -373,7 +413,7 @@ object AutoWirerSpec : Spek({
                         
                         uniform MovingHeadInfo movingHeadInfo;
                         
-                        vec4 mainMover() {
+                        vec4 main() {
                             return vec4(movingHeadInfo.heading.xy, movingHeadInfo.origin.xy);
                         }
                     """.trimIndent()

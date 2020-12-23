@@ -7,11 +7,10 @@ import baaahs.getBang
 import baaahs.gl.kexpect
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.render.RenderManager
-import baaahs.gl.shader.FilterShader
-import baaahs.gl.shader.GenericPaintShader
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
+import baaahs.plugin.CorePlugin
 import baaahs.shaders.fakeFixture
 import baaahs.show.DataSource
 import baaahs.show.Shader
@@ -19,10 +18,7 @@ import baaahs.show.ShaderChannel
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenButtonControl
 import baaahs.show.live.ShowOpener
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderChannel
-import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.ShowBuilder
+import baaahs.show.mutable.*
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import org.spekframework.spek2.Spek
@@ -41,34 +37,44 @@ object PatchResolverSpec : Spek({
         val uvShader = Shaders.cylindricalProjection
         val blackShader by value {
             Shader(
-                "Black Shader", GenericPaintShader,
-                "void main() {\n  gl_FragColor = vec4(0.);\n}"
+                "Black Shader", "void main() {\n  gl_FragColor = vec4(0.);\n}"
             )
         }
         val orangeShader by value {
             Shader(
-                "Orange Shader", GenericPaintShader,
-                "uniform float time;\n" +
-                        "void main() {\n" +
-                        "  gl_FragColor = vec4(1., .5, time, gl_FragCoord.x);\n" +
-                        "}"
+                "Orange Shader",
+                /**language=glsl*/
+                """
+                    uniform float time;
+                    void main() {
+                      gl_FragColor = vec4(1., .5, time, gl_FragCoord.x);
+                    }
+                """.trimIndent()
             )
         }
         val brightnessFilter by value {
             Shader(
-                "Brightness Filter", FilterShader,
-                "uniform float brightness; // @@Slider min=0 max=1 default=1\n" +
-                        "vec4 mainFilter(vec4 colorIn) {\n" +
-                        "  return colorIn * brightness;\n" +
-                        "}"
+                "Brightness Filter",
+                /**language=glsl*/
+                """
+                    uniform float brightness; // @@Slider min=0 max=1 default=1
+                    // @return color
+                    // @param colorIn color
+                    vec4 main(vec4 colorIn) {
+                      return colorIn * brightness;
+                    }
+                """.trimIndent()
             )
         }
         val wobblyTimeFilter by value {
             Shader(
-                "Wobbly Time Filter", prototype = null, resultContentType = ContentType.Time,
-                "uniform float time; // @type time\n" +
-                        "// @type time\n" +
-                        "float main() { return time + sin(time); }"
+                "Wobbly Time Filter",
+                /**language=glsl*/
+                src = """
+                    uniform float time; // @type time
+                    // @return time
+                    float main() { return time + sin(time); }
+                """.trimIndent()
             )
         }
         val mutableShow by value {
@@ -150,8 +156,8 @@ object PatchResolverSpec : Spek({
                         #line 10
                         const float p0_cylindricalProjection_PI = 3.141592654;
 
-                        #line 12
-                        vec2 p0_cylindricalProjection_mainProjection(vec3 pixelLocation) {
+                        #line 14
+                        vec2 p0_cylindricalProjection_main(vec3 pixelLocation) {
                             vec3 pixelOffset = pixelLocation - in_modelInfo.center;
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
@@ -176,8 +182,8 @@ object PatchResolverSpec : Spek({
 
                         vec4 p2_brightnessFilteri_result = vec4(0., 0., 0., 1.);
 
-                        #line 1
-                         vec4 p2_brightnessFilter_mainFilter(vec4 colorIn) {
+                        #line 3
+                        vec4 p2_brightnessFilter_main(vec4 colorIn) {
                           return colorIn * in_brightnessSlider;
                         }
 
@@ -188,13 +194,13 @@ object PatchResolverSpec : Spek({
                           in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
 
                           // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(in_pixelLocation);
+                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
 
                           // Invoke Orange Shader
                           p1_orangeShader_main();
 
                           // Invoke Brightness Filter
-                          p2_brightnessFilteri_result = p2_brightnessFilter_mainFilter(p1_orangeShader_gl_FragColor);
+                          p2_brightnessFilteri_result = p2_brightnessFilter_main(p1_orangeShader_gl_FragColor);
 
                           sm_result = p2_brightnessFilteri_result;
                         }
@@ -207,12 +213,10 @@ object PatchResolverSpec : Spek({
                 beforeEachTest {
                     mutableShow.apply {
                         addButton("Main", "Time Wobble") {
-                            addPatch(
-                                autoWire(wobblyTimeFilter).apply {
-                                    mutableShaderInstances.only("shader instance")
-                                        .shaderChannel = MutableShaderChannel("time")
-                                }
-                            )
+                            addPatch(autoWire(wobblyTimeFilter, shaderChannel = ShaderChannel("time")).apply {
+                                mutableShaderInstances.only("shader instance")
+                                    .incomingLinks["time"] = MutableDataSourcePort(CorePlugin.TimeDataSource())
+                            })
                         }
                     }
                 }
@@ -262,8 +266,8 @@ object PatchResolverSpec : Spek({
                         #line 10
                         const float p0_cylindricalProjection_PI = 3.141592654;
 
-                        #line 12
-                        vec2 p0_cylindricalProjection_mainProjection(vec3 pixelLocation) {
+                        #line 14
+                        vec2 p0_cylindricalProjection_main(vec3 pixelLocation) {
                             vec3 pixelOffset = pixelLocation - in_modelInfo.center;
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
@@ -278,8 +282,7 @@ object PatchResolverSpec : Spek({
 
                         float p1_wobblyTimeFilteri_result = float(0.);
 
-                        #line 1
-                         
+                        #line 2
                         float p1_wobblyTimeFilter_main() { return in_time + sin(in_time); }
 
                         // Shader: Orange Shader; namespace: p2
@@ -297,8 +300,8 @@ object PatchResolverSpec : Spek({
 
                         vec4 p3_brightnessFilteri_result = vec4(0., 0., 0., 1.);
 
-                        #line 1
-                         vec4 p3_brightnessFilter_mainFilter(vec4 colorIn) {
+                        #line 3
+                        vec4 p3_brightnessFilter_main(vec4 colorIn) {
                           return colorIn * in_brightnessSlider;
                         }
 
@@ -309,7 +312,7 @@ object PatchResolverSpec : Spek({
                           in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
 
                           // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(in_pixelLocation);
+                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
 
                           // Invoke Wobbly Time Filter
                           p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();
@@ -318,7 +321,7 @@ object PatchResolverSpec : Spek({
                           p2_orangeShader_main();
 
                           // Invoke Brightness Filter
-                          p3_brightnessFilteri_result = p3_brightnessFilter_mainFilter(p2_orangeShader_gl_FragColor);
+                          p3_brightnessFilteri_result = p3_brightnessFilter_main(p2_orangeShader_gl_FragColor);
 
                           sm_result = p3_brightnessFilteri_result;
                         }
@@ -336,22 +339,29 @@ object PatchResolverSpec : Spek({
                     addPatch(
                         autoWire(
                             Shader(
-                                "Main Shader", GenericPaintShader,
-                                "uniform float time;\n" +
-                                        "void main() {\n" +
-                                        "  gl_FragColor = vec4(time, time, time, gl_FragCoord.x);\n" +
-                                        "}"
+                                "A Main Shader",
+                                /**language=glsl*/
+                                """
+                                    uniform float time;
+                                    void main() {
+                                      gl_FragColor = vec4(time, time, time, gl_FragCoord.x);
+                                    }
+                                """.trimIndent()
                             ), shaderChannel = ShaderChannel("main")
                         )
                     )
                     addPatch(
                         autoWirer.autoWire(
                             Shader(
-                                "Fade", FilterShader, """
+                                "Fade",
+                                /**language=glsl*/
+                                """
                                     uniform float fade;
                                     varying vec4 otherColorStream; // @type color
                 
-                                    vec4 mainFilter(vec4 colorIn) {
+                                    // @return color
+                                    // @param colorIn color
+                                    vec4 main(vec4 colorIn) {
                                         return mix(colorIn, otherColorStream, fade);
                                     }
                                 """.trimIndent()
@@ -409,8 +419,8 @@ object PatchResolverSpec : Spek({
                         #line 10
                         const float p0_cylindricalProjection_PI = 3.141592654;
 
-                        #line 12
-                        vec2 p0_cylindricalProjection_mainProjection(vec3 pixelLocation) {
+                        #line 14
+                        vec2 p0_cylindricalProjection_main(vec3 pixelLocation) {
                             vec3 pixelOffset = pixelLocation - in_modelInfo.center;
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
@@ -425,18 +435,17 @@ object PatchResolverSpec : Spek({
 
                         float p1_wobblyTimeFilteri_result = float(0.);
 
-                        #line 1
-                         
+                        #line 2
                         float p1_wobblyTimeFilter_main() { return in_time + sin(in_time); }
 
-                        // Shader: Main Shader; namespace: p2
-                        // Main Shader
+                        // Shader: A Main Shader; namespace: p2
+                        // A Main Shader
 
-                        vec4 p2_mainShader_gl_FragColor = vec4(0., 0., 0., 1.);
+                        vec4 p2_aMainShader_gl_FragColor = vec4(0., 0., 0., 1.);
 
                         #line 2
-                        void p2_mainShader_main() {
-                          p2_mainShader_gl_FragColor = vec4(p1_wobblyTimeFilteri_result, p1_wobblyTimeFilteri_result, p1_wobblyTimeFilteri_result, p0_cylindricalProjectioni_result.x);
+                        void p2_aMainShader_main() {
+                          p2_aMainShader_gl_FragColor = vec4(p1_wobblyTimeFilteri_result, p1_wobblyTimeFilteri_result, p1_wobblyTimeFilteri_result, p0_cylindricalProjectioni_result.x);
                         }
 
                         // Shader: Orange Shader; namespace: p3
@@ -454,9 +463,8 @@ object PatchResolverSpec : Spek({
 
                         vec4 p4_fadei_result = vec4(0., 0., 0., 1.);
 
-                        #line 2
-                         
-                        vec4 p4_fade_mainFilter(vec4 colorIn) {
+                        #line 5
+                        vec4 p4_fade_main(vec4 colorIn) {
                             return mix(colorIn, p3_orangeShader_gl_FragColor, in_fadeSlider);
                         }
 
@@ -467,19 +475,19 @@ object PatchResolverSpec : Spek({
                           in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
 
                           // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(in_pixelLocation);
+                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
 
                           // Invoke Wobbly Time Filter
                           p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();
 
-                          // Invoke Main Shader
-                          p2_mainShader_main();
+                          // Invoke A Main Shader
+                          p2_aMainShader_main();
 
                           // Invoke Orange Shader
                           p3_orangeShader_main();
 
                           // Invoke Fade
-                          p4_fadei_result = p4_fade_mainFilter(p2_mainShader_gl_FragColor);
+                          p4_fadei_result = p4_fade_main(p2_aMainShader_gl_FragColor);
 
                           sm_result = p4_fadei_result;
                         }

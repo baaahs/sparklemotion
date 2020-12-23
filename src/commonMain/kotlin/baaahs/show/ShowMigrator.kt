@@ -80,42 +80,9 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
     }
 
     object FromV1 {
-        private val shaderTypeToPrototypeMap = mapOf(
-            "Projection" to "baaahs.Core:Projection",
-            "Distortion" to "baaahs.Core:Distortion",
-            "Filter" to "baaahs.Core:Filter",
-            "Mover" to "baaahs.Core:Mover",
-            "Unknown" to null
-        )
-
-        private val shaderTypeToResultContentTypeMap = mapOf(
-            "Projection" to ContentType.UvCoordinate,
-            "Distortion" to ContentType.UvCoordinate,
-            "Paint" to ContentType.Color,
-            "Filter" to ContentType.Color,
-            "Mover" to ContentType.PanAndTilt,
-            "Unknown" to ContentType.Unknown
-        )
-
         fun apply(newJson: MutableMap<String, JsonElement>) {
             newJson.mapObjsInDict("shaders") { _, shader ->
-                val type = shader.remove("type")?.jsonPrimitive?.contentOrNull
-
-                val prototype = if (type == "Paint") {
-                    val src = shader["src"]?.jsonPrimitive?.contentOrNull
-                    if (src?.contains("mainImage") == true) {
-                        "baaahs.Core:Paint/ShaderToy"
-                    } else {
-                        "baaahs.Core:Paint"
-                    }
-                } else shaderTypeToPrototypeMap[type]
-
-                val resultContentType = shaderTypeToResultContentTypeMap[type]
-                    ?: error("Unknown shader type \"$type\"")
-
-                shader["prototype"] = prototype?.let { buildJsonObject { put("type", prototype) } }
-                    ?: JsonNull
-                shader["resultContentType"] = JsonPrimitive(resultContentType.id)
+                shader.remove("type")?.jsonPrimitive?.contentOrNull
             }
         }
     }

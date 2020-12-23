@@ -57,12 +57,28 @@ class ShaderEditorStyles(private val theme: MuiTheme) : StyleSheet("app-ui-edito
     }
 
     val shaderProperties by css {
-        display = Display.flex
-        flexDirection = FlexDirection.column
+        display = Display.grid
+        gridTemplateColumns = GridTemplateColumns("50% 50%")
+        gridTemplateAreas = GridTemplateAreas("\"name name\" \"priority channel\" \"returnType returnType\"")
+        gap = Gap(1.em.value)
+        alignContent = Align.start
 
-        child("*") {
-            important(::paddingBottom, 1.em)
-        }
+    }
+
+    val shaderName by css {
+        declarations["gridArea"] = "name"
+    }
+
+    val shaderPriority by css {
+        declarations["gridArea"] = "priority"
+    }
+
+    val shaderChannel by css {
+        declarations["gridArea"] = "channel"
+    }
+
+    val shaderReturnType by css {
+        declarations["gridArea"] = "returnType"
     }
 
     val tab by css {

@@ -15,7 +15,6 @@ import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.renderPlanFor
-import baaahs.gl.shader.ProjectionShader
 import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
 import baaahs.show.Shader
@@ -286,13 +285,12 @@ class RenderEngineTest {
         Color(abs(redI - other.redI), abs(greenI - other.greenI), abs(blueI - other.blueI), abs(alphaI - other.alphaI))
 }
 
-private val directXyProjection = Shader("Direct XY Projection", ProjectionShader,
+private val directXyProjection = Shader(
+    "Direct XY Projection",
     /**language=glsl*/
     """
         // Direct XY Projection
         // !SparkleMotion:internal
-
-        uniform sampler2D pixelCoordsTexture;
 
         struct ModelInfo {
             vec3 center;
@@ -300,7 +298,9 @@ private val directXyProjection = Shader("Direct XY Projection", ProjectionShader
         };
         uniform ModelInfo modelInfo;
 
-        vec2 mainProjection(vec3 pixelLocation) {
+        // @return uv-coordinate
+        // @param pixelLocation xyz-coordinate
+        vec2 main(vec3 pixelLocation) {
             return vec2(pixelLocation.x, pixelLocation.y);
         }
     """.trimIndent()

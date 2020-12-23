@@ -13,12 +13,14 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
 @Suppress("unused")
-object ShaderToyPaintShaderSpec : Spek({
-    describe<ShaderToyPaintShaderSpec> {
+object ShaderToyShaderPrototypeSpec : Spek({
+    describe<ShaderToyShaderPrototypeSpec> {
         val src by value { "void mainImage(out vec4 fragColor, in vec2 fragCoord) { ... };" }
-        val prototype by value { ShaderToyPaintShader }
-        val openShader by value { GlslAnalyzer(testPlugins()).openShader(src) }
-        val glslCode by value { openShader.glslCode }
+        val prototype by value { ShaderToyShaderPrototype }
+        val plugins by value { testPlugins() }
+        val shaderAnalysis by value { GlslAnalyzer(plugins).validate(src) }
+        val glslCode by value { shaderAnalysis.glslCode }
+        val openShader by value { OpenShader.Base(shaderAnalysis, PaintShader) }
         val invocationStatement by value {
             openShader.invocationGlsl(
                 GlslCode.Namespace("p"), "toResultVar",
@@ -33,13 +35,13 @@ object ShaderToyPaintShaderSpec : Spek({
 
             it("finds the input port") {
                 expect(openShader.inputPorts.str()).containsExactly(
-                    "fragCoord uv-coordinate/vec2"
+                    "fragCoord uv-coordinate:vec2 (U/V Coordinates)"
                 )
             }
 
             it("finds the output port") {
                 expect(openShader.outputPort).toEqual(
-                    OutputPort(Color, description = "Output Color", id = OutputPort.ReturnValue)
+                    OutputPort(Color, description = "Output Color", id = "fragColor", isParam = true)
                 )
             }
 
@@ -68,8 +70,8 @@ object ShaderToyPaintShaderSpec : Spek({
 
                 it("finds the input port") {
                     expect(openShader.inputPorts.str()).containsExactly(
-                        "fragCoord uv-coordinate/vec2",
-                        "intensity ???/float"
+                        "fragCoord uv-coordinate:vec2 (U/V Coordinates)",
+                        "intensity unknown/float:float (Intensity)"
                     )
                 }
 
@@ -85,8 +87,25 @@ object ShaderToyPaintShaderSpec : Spek({
 
                 it("finds the input port") {
                     expect(openShader.inputPorts.str()).contains.inAnyOrder.only.values(
-                        "fragCoord uv-coordinate/vec2",
-                        "intensity ???/float"
+                        "fragCoord uv-coordinate:vec2 (U/V Coordinates)",
+                        "intensity unknown/float:float (Intensity)"
+                    )
+                }
+            }
+
+            context("with ShaderToy magic uniforms") {
+                override(src) {
+                    """
+                        void mainImage(in vec2 fragCoord, out vec4 fragColor) { iResolution iTime iMouse };" }
+                    """.trimIndent()
+                }
+
+                it("identifies the uniforms and maps them to the correct content types") {
+                    expect(openShader.inputPorts.str()).contains.inAnyOrder.only.values(
+                        "fragCoord uv-coordinate:vec2 (U/V Coordinates)",
+                        "iResolution resolution:vec3 (Resolution)",
+                        "iTime time:float (Time)",
+                        "iMouse mouse:vec4 (Mouse)"
                     )
                 }
             }
@@ -97,20 +116,24 @@ object ShaderToyPaintShaderSpec : Spek({
                 }
 
                 it("fails to validate") {
-                    expect(prototype.validate(glslCode)).containsExactly(
-                        GlslError("Multiple out parameters aren't allowed on mainImage().", row = 2)
+                    expect(shaderAnalysis.isValid).toBe(false)
+
+                    expect(shaderAnalysis.errors).contains(
+                        GlslError("Too many output ports found: [fragColor, other].", row = 2)
                     )
                 }
             }
 
             context("with missing parameters") {
                 override(src) { "void mainImage() { ... };" }
+
                 it("is still a match") {
                     expect(prototype.matches(glslCode)).toEqual(MatchLevel.Good)
                 }
 
                 it("fails validation") {
-                    expect(prototype.validate(glslCode)).containsExactly(
+                    expect(shaderAnalysis.isValid).toBe(false)
+                    expect(shaderAnalysis.errors).containsExactly(
                         GlslError(
                             "Missing arguments. " +
                                     "Signature should be \"void mainImage(in vec2 fragCoord, out vec4 fragColor)\".",
@@ -129,8 +152,9 @@ object ShaderToyPaintShaderSpec : Spek({
             }
 
             it("fails to validate") {
-                expect(prototype.validate(glslCode)).containsExactly(
-                    GlslError("No entry point function \"mainImage()\" among [main]")
+                expect(shaderAnalysis.isValid).toBe(false)
+                expect(shaderAnalysis.errors).containsExactly(
+                    GlslError("No output port found.")
                 )
             }
         }
@@ -139,6 +163,6 @@ object ShaderToyPaintShaderSpec : Spek({
 
 fun List<InputPort>.str(): List<String> {
     return map {
-        with(it) { "$id ${contentType?.id ?: "???"}/${type.glslLiteral}" }
+        with(it) { "$id ${contentType.id}:${type.glslLiteral} ($title)" }
     }
 }

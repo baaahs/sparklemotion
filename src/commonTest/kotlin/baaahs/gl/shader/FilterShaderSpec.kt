@@ -1,169 +1,59 @@
 package baaahs.gl.shader
 
+import baaahs.describe
 import baaahs.gl.glsl.GlslAnalyzer
-import baaahs.gl.glsl.GlslCode
-import baaahs.gl.glsl.GlslType
-import baaahs.gl.kexpect
 import baaahs.gl.override
-import baaahs.gl.patch.AutoWirer
-import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testPlugins
-import baaahs.glsl.Shaders
-import baaahs.plugin.CorePlugin
-import baaahs.show.ShaderChannel
-import baaahs.show.mutable.MutableConstPort
-import baaahs.show.mutable.MutableDataSourcePort
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderChannel
+import baaahs.show.ShaderType
 import baaahs.toBeSpecified
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 
 @Suppress("unused")
 object FilterShaderSpec : Spek({
-    describe("FilterShader") {
-        val shaderText by value<String> { toBeSpecified() }
-        val shader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) }
-        val namespace by value { GlslCode.Namespace("p0") }
+    describe<FilterShader> {
+        val shaderText by value { toBeSpecified<String>() }
+        val analyzer by value { GlslAnalyzer(testPlugins()) }
+        val shaderAnalysis by value { analyzer.validate(shaderText) }
+        val openShader by value { analyzer.openShader(shaderText) }
+        val shaderType by value { FilterShader }
 
-        context("cross-fade between shaders") {
+        context("when return type and any input are color") {
             override(shaderText) {
-                /**language=glsl*/
                 """
-                    // Fade Filter
-                    
-                    uniform float fade;
-                    varying vec4 otherColorStream; // @type color
-
-                    vec4 mainFilter(vec4 colorIn) {
-                        return mix(colorIn, otherColorStream, fade);
-                    }
+                    // @return color
+                    // @param inColor color
+                    vec4 main(vec4 inColor) { ... }
                 """.trimIndent()
             }
 
-            it("finds magic uniforms") {
-                expect(shader.inputPorts.map { it.copy(glslArgSite = null) })
-                    .containsExactly(
-                        InputPort("fade", GlslType.Float, "Fade"),
-                        InputPort("otherColorStream", GlslType.Vec4, "Upstream Color", Color),
-                        InputPort("colorIn", GlslType.Vec4, "Upstream Color", Color)
-                    )
+            it("#match returns MatchAndFilter") {
+                expect(shaderType.matches(shaderAnalysis))
+                    .toEqual(ShaderType.MatchLevel.MatchAndFilter)
+            }
+        }
+
+        context("when return type is color and no input is color") {
+            override(shaderText) {
+                """
+                    // @return color
+                    vec4 main(vec4 foo) { ... }
+                """.trimIndent()
             }
 
-            it("generates function declarations") {
-                expect(shader.toGlsl(
-                    namespace, mapOf(
-                        "resolution" to "in_resolution",
-                        "blueness" to "aquamarinity",
-                        "identity" to "p0_identity",
-                        "gl_FragColor" to "sm_result"
-                    )).trim()).toBe(
-                    """
-                        #line 4
-                         
-                        vec4 p0_mainFilter(vec4 colorIn) {
-                            return mix(colorIn, p0_otherColorStream, p0_fade);
-                        }
-                    """.trimIndent())
+            it("#match returns NoMatch") {
+                expect(shaderType.matches(shaderAnalysis))
+                    .toEqual(ShaderType.MatchLevel.NoMatch)
             }
+        }
 
-            context("in a patch using a shader channel") {
-                val autoWirer by value { AutoWirer(testPlugins()) }
-                val otherChannel by value { ShaderChannel("other") }
-                val linkedPatch by value {
-                    MutablePatch {
-                        val redInstance =
-                            addShaderInstance(Shaders.red) {
-                                link("fragCoord", MutableDataSourcePort(CorePlugin.RasterCoordinateDataSource()))
-                            }
+        context("#template") {
+            override(shaderText) { shaderType.newShaderFromTemplate().src }
 
-                        addShaderInstance(Shaders.blue) {
-                            link("fragCoord", MutableDataSourcePort(CorePlugin.RasterCoordinateDataSource()))
-                            shaderChannel = MutableShaderChannel(otherChannel.id)
-                        }
-
-                        addShaderInstance(shader.shader) {
-                            link("colorIn", ShaderChannel.Main.toMutable())
-                            link("otherColorStream", MutableShaderChannel(otherChannel.id))
-                            link("fade", MutableConstPort(".5", GlslType.Float))
-                        }
-                    }.openForPreview(autoWirer)
-                }
-
-                it("accepts color streams from multiple shaders") {
-                    kexpect(linkedPatch!!.toFullGlsl("*")).toBe("""
-                        #version *
-
-                        #ifdef GL_ES
-                        precision mediump float;
-                        #endif
-
-                        // SparkleMotion-generated GLSL
-
-                        layout(location = 0) out vec4 sm_result;
-
-                        // Shader: Solid Blue; namespace: p0
-                        // Solid Blue
-
-                        vec4 p0_solidBluei_result = vec4(0., 0., 0., 1.);
-
-                        #line 1
-                        void p0_solidBlue_mainImage(out vec4 fragColor, in vec2 fragCoord) {
-                            fragColor = (0., 0., 1., 1.);
-                        }
-
-                        // Shader: Solid Red; namespace: p1
-                        // Solid Red
-
-                        vec4 p1_solidRedi_result = vec4(0., 0., 0., 1.);
-
-                        #line 1
-                        void p1_solidRed_mainImage(out vec4 fragColor, in vec2 fragCoord) {
-                            fragColor = (1., 0., 0., 1.);
-                        }
-
-                        // Shader: Fade Filter; namespace: p2
-                        // Fade Filter
-
-                        vec4 p2_fadeFilteri_result = vec4(0., 0., 0., 1.);
-
-                        #line 4
-                         
-                        vec4 p2_fadeFilter_mainFilter(vec4 colorIn) {
-                            return mix(colorIn, p0_solidBluei_result, (.5));
-                        }
-
-
-                        #line 10001
-                        void main() {
-                          // Invoke Solid Blue
-                          p0_solidBlue_mainImage(p0_solidBluei_result, gl_FragCoord.xy);
-
-                          // Invoke Solid Red
-                          p1_solidRed_mainImage(p1_solidRedi_result, gl_FragCoord.xy);
-
-                          // Invoke Fade Filter
-                          p2_fadeFilteri_result = p2_fadeFilter_mainFilter(p1_solidRedi_result);
-
-                          sm_result = p2_fadeFilteri_result;
-                        }
-
-
-                    """.trimIndent())
-                }
-            }
-
-            it("generates invocation GLSL") {
-                expect(
-                    shader.invocationGlsl(
-                        namespace,
-                        "resultVar",
-                        mapOf("colorIn" to "boof")
-                    )
-                ).toBe("resultVar = p0_mainFilter(boof)")
+            it("generates a filter shader") {
+                expect(openShader.shaderType)
+                    .toEqual(shaderType)
             }
         }
     }

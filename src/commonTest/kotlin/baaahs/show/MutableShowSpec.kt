@@ -1,14 +1,15 @@
 package baaahs.show
 
 import baaahs.gl.glsl.GlslType
+import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
-import baaahs.gl.shader.GenericPaintShader
+import baaahs.gl.patch.ContentType
+import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.OutputPort
 import baaahs.gl.testPlugins
 import baaahs.only
-import baaahs.show.mutable.MutableConstPort
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.ShowBuilder
+import baaahs.show.live.FakeOpenShader
+import baaahs.show.mutable.*
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -80,6 +81,47 @@ object MutableShowSpec : Spek({
                     val shaderInstance = show.shaderInstances[id]!!
                     expect(shaderInstance.incomingLinks.keys)
                         .toBe(setOf("nonsense", "time", "blueness", "resolution", "gl_FragCoord"))
+                }
+            }
+
+            context(".isFilter") {
+                val inputPorts by value { listOf<InputPort>() }
+                val outputPort by value { OutputPort(ContentType.Color) }
+                val openShader by value { FakeOpenShader(inputPorts, outputPort) }
+                val mutableShader by value { MutableShader("Test shader", "Src for shader") }
+                val incomingLinks by value { mutableMapOf<String, MutablePort>() }
+                val shaderChannel by value { ShaderChannel.Main.toMutable() }
+                val instance by value { MutableShaderInstance(mutableShader, incomingLinks, shaderChannel) }
+
+                context("with no input port links") {
+                    it("isn't a filter") { expect(instance.isFilter(openShader)).toBe(false) }
+                }
+
+                context("when an input port's content type matches the return content type") {
+                    override(inputPorts) { listOf(InputPort("color", ContentType.Color)) }
+                    override(incomingLinks) { mapOf("color" to MutableConstPort("foo", GlslType.Vec4)) }
+
+                    it("isn't a filter") { expect(instance.isFilter(openShader)).toBe(false) }
+
+                    context("linked to a shader channel") {
+                        override(incomingLinks) { mapOf("color" to ShaderChannel.Main.toMutable()) }
+
+                        context("on the same channel") {
+                            it("is a filter") { expect(instance.isFilter(openShader)).toBe(true) }
+                        }
+
+                        context("on a different channel") {
+                            override(shaderChannel) { ShaderChannel("other").toMutable() }
+                            it("isn't a filter") { expect(instance.isFilter(openShader)).toBe(false) }
+                        }
+                    }
+                }
+
+                context("when the return content type doesn't match any of the input ports") {
+                    override(outputPort) { OutputPort(ContentType.XyCoordinate) }
+                    it("is a filter") {
+                        expect(instance.isFilter(openShader)).toBe(false)
+                    }
                 }
             }
         }
@@ -233,7 +275,8 @@ object MutableShowSpec : Spek({
 
 private fun AutoWirer.testPatch(title: String): MutablePatch {
     val shader = Shader(
-        title, GenericPaintShader, """
+        title,
+        """
             // $title
             uniform float time;
             uniform vec2  resolution;

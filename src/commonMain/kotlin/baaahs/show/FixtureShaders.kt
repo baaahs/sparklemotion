@@ -1,11 +1,9 @@
 package baaahs.show
 
-import baaahs.gl.shader.GenericPaintShader
-
 object FixtureShaders {
     val fireBallGlsl = Shader(
         "Fire Ball",
-        GenericPaintShader,
+        /**language=glsl*/
         """
             // Fire Ball
             // From http://glslsandbox.com/e#61108.0
