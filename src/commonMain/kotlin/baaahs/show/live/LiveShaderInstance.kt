@@ -16,11 +16,19 @@ class LiveShaderInstance(
     val shader: OpenShader,
     val incomingLinks: Map<String, Link>,
     val shaderChannel: ShaderChannel,
-    val priority: Float,
+    val priority: Float = 0f,
     val extraLinks: Set<String> = emptySet(),
     val missingLinks: Set<String> = emptySet()
 ) {
     val title get() = shader.title
+
+    val isFilter: Boolean get() = with (shader) {
+        inputPorts.any {
+            it.contentType == outputPort.contentType && incomingLinks[it.id]?.let { link ->
+                link is ShaderChannelLink && link.shaderChannel == shaderChannel
+            } == true
+        }
+    }
 
     val problems: List<ShowProblem> get() =
         arrayListOf<ShowProblem>().apply {
@@ -41,6 +49,12 @@ class LiveShaderInstance(
                         severity = Severity.ERROR
                     )
                 )
+            }
+            if (shader.outputPort.contentType.isUnknown()) {
+                add(
+                    ShowProblem(
+                    "Result content type is unknown for shader \"$title\".", severity = Severity.ERROR
+                ))
             }
         }
 
@@ -127,7 +141,7 @@ class LiveShaderInstance(
 
     data class ConstLink(val glsl: String, val type: GlslType) : Link {
         override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode {
-            return ConstNode(glsl, OutputPort(ContentType.Unknown, dataType = type))
+            return ConstNode(glsl, OutputPort(ContentType.unknown(type), dataType = type))
         }
     }
 }

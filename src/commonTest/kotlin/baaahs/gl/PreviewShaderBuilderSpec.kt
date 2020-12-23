@@ -6,7 +6,6 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
-import baaahs.gl.shader.FilterShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.show.Shader
@@ -76,12 +75,14 @@ object PreviewShaderBuilderSpec : Spek({
                     context("when there's a problem parsing hints") {
                         override(shader) {
                             Shader(
-                                "Shader", FilterShader, """
-                            uniform float foo; // @@something.bad
-                            vec4 mainFilter(vec4 inColor) {
-                                return inColor;
-                            }
-                        """.trimIndent()
+                                "Shader",
+                                /**language=glsl*/
+                                """
+                                    uniform float foo; // @@something.bad
+                                    vec4 main(vec4 inColor) {
+                                        return inColor;
+                                    }
+                                """.trimIndent()
                             )
                         }
 

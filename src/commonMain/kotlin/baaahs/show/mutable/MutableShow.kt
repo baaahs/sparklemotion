@@ -1,29 +1,18 @@
 package baaahs.show.mutable
 
-import baaahs.ShowState
-import baaahs.SparkleMotion
-import baaahs.app.ui.CommonIcons
+import baaahs.*
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
 import baaahs.app.ui.editor.*
-import baaahs.getBang
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
 import baaahs.gl.shader.OpenShader
-import baaahs.gl.shader.ShaderPrototype
-import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.live.*
-import baaahs.ui.Icon
 import baaahs.util.CacheBuilder
 import baaahs.util.UniqueIds
-
-class PatchHolderEditContext(
-    val mutableShow: MutableShow,
-    val mutablePatchHolder: MutablePatchHolder
-)
 
 interface EditHandler {
     fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean = true)
@@ -365,17 +354,13 @@ class MutablePatch {
 
 data class MutableShader(
     var title: String,
-    var prototype: ShaderPrototype?,
-    var resultContentType: ContentType,
     /**language=glsl*/
     var src: String
 ) {
-    val icon: Icon = prototype?.icon ?: CommonIcons.UnknownShader
-
-    constructor(shader: Shader) : this(shader.title, shader.prototype, shader.resultContentType, shader.src)
+    constructor(shader: Shader) : this(shader.title, shader.src)
 
     fun build(): Shader {
-        return Shader(title, prototype, resultContentType, src)
+        return Shader(title, src)
     }
 
     fun accept(visitor: MutableShowVisitor, log: VisitationLog = VisitationLog()) {
@@ -383,7 +368,7 @@ data class MutableShader(
     }
 
     override fun toString(): String {
-        return "MutableShader(title='$title', prototype=$prototype, resultContentType=${resultContentType.id} src='[${src.length} chars]')"
+        return "MutableShader(title='$title', src='[${src.length} chars]')"
     }
 }
 
@@ -436,11 +421,16 @@ data class MutableShaderInstance(
     fun getEditorPanel(patchEditorPanel: PatchEditorPanel): EditorPanel =
         patchEditorPanel.ShaderInstanceEditorPanel(this)
 
+    fun isFilter(openShader: OpenShader): Boolean = with(openShader) {
+        inputPorts.any {
+            it.contentType == outputPort.contentType && incomingLinks[it.id]?.let { link ->
+                link is MutableShaderChannel && link.id == shaderChannel.id
+            } == true
+        }
+    }
+
     companion object {
-        val defaultOrder = compareBy<MutableShaderInstance>(
-            { it.mutableShader.prototype?.shaderType?.priority ?: 0 },
-            { it.mutableShader.title }
-        )
+        val defaultOrder = compareBy<MutableShaderInstance> { it.mutableShader.title }
     }
 }
 

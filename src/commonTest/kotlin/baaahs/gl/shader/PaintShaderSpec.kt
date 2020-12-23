@@ -1,14 +1,16 @@
 package baaahs.gl.shader
 
+import baaahs.describe
 import baaahs.gl.expects
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
-import baaahs.gl.patch.ContentType.Companion.UvCoordinate
 import baaahs.gl.testPlugins
+import baaahs.show.ShaderType
 import baaahs.toBeSpecified
+import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -16,6 +18,65 @@ import org.spekframework.spek2.style.specification.describe
 
 @Suppress("unused")
 object PaintShaderSpec : Spek({
+    describe<PaintShader> {
+        val shaderText by value { toBeSpecified<String>() }
+        val analyzer by value { GlslAnalyzer(testPlugins()) }
+        val shaderAnalysis by value { analyzer.validate(shaderText) }
+        val openShader by value { analyzer.openShader(shaderText) }
+        val shaderType by value { PaintShader }
+
+        context("when return type is color") {
+            override(shaderText) {
+                """
+                    // @return color
+                    // @param uvIn uv-coordinate
+                    vec4 main(vec4 uvIn) { ... }
+                """.trimIndent()
+            }
+
+            it("#match returns Match") {
+                expect(shaderType.matches(shaderAnalysis))
+                    .toEqual(ShaderType.MatchLevel.Match)
+            }
+        }
+
+        context("when using gl_FragColor and gl_FragCoord") {
+            override(shaderText) {
+                """
+                    void main() { gl_FragColor = gl_FragCoord; }
+                """.trimIndent()
+            }
+
+            it("#match returns Match") {
+                expect(shaderType.matches(shaderAnalysis))
+                    .toEqual(ShaderType.MatchLevel.Match)
+            }
+        }
+
+        context("when return type isn't color") {
+            override(shaderText) {
+                """
+                    vec4 main(vec4 foo) { ... }
+                """.trimIndent()
+            }
+
+            it("#match returns NoMatch") {
+                expect(shaderType.matches(shaderAnalysis))
+                    .toEqual(ShaderType.MatchLevel.NoMatch)
+            }
+        }
+
+        context("#template") {
+            override(shaderText) { shaderType.newShaderFromTemplate().src }
+
+            it("generates a paint shader") {
+                expect(openShader.shaderType)
+                    .toEqual(shaderType)
+            }
+        }
+    }
+
+    // TODO: This should be in GenericShaderPrototype probably;.
     describe("PaintShader") {
         val shaderText by value<String> { toBeSpecified() }
         val shader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) }
@@ -47,11 +108,17 @@ object PaintShaderSpec : Spek({
             it("finds magic uniforms") {
                 expects(
                     listOf(
-                        InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", UvCoordinate, isImplicit = true),
-                        InputPort("time", GlslType.Float, "Time", ContentType.Time),
-                        InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
-                        InputPort("mouse", GlslType.Vec2, "Mouse", ContentType.Mouse),
-                        InputPort("blueness", GlslType.Float, "Blueness")
+                        InputPort(
+                            "gl_FragCoord",
+                            ContentType.UvCoordinate,
+                            GlslType.Vec4,
+                            "Coordinates",
+                            isImplicit = true
+                        ),
+                        InputPort("time", ContentType.Time, GlslType.Float, "Time"),
+                        InputPort("resolution", ContentType.Resolution, GlslType.Vec2, "Resolution"),
+                        InputPort("mouse", ContentType.Mouse, GlslType.Vec2, "Mouse"),
+                        InputPort("blueness", ContentType.unknown(GlslType.Float), GlslType.Float, "Blueness")
                     )
                 ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
             }
@@ -98,6 +165,7 @@ object PaintShaderSpec : Spek({
                     /**language=glsl*/
                         """
                             uniform float time;
+                            // @param uv uv-coordinate
                             void main(vec2 uv) { gl_FragColor = vec4(uv.xy, 0., 1.); }
                         """.trimIndent()
                 }
@@ -105,12 +173,15 @@ object PaintShaderSpec : Spek({
                 it("identifies uniform and param input ports and excludes gl_FragCoord") {
                     expects(
                         listOf(
-                            InputPort("time", GlslType.Float, "Time", ContentType.Time,
+                            InputPort(
+                                "time", ContentType.Time, GlslType.Float, "Time",
                                 glslArgSite = GlslCode.GlslVar(
                                     "time", GlslType.Float, "uniform float time;", isUniform = true, lineNumber = 1)
                             ),
-                            InputPort("uv", GlslType.Vec2, "Uv",
-                                glslArgSite = GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 2))
+                            InputPort(
+                                "uv", ContentType.UvCoordinate, GlslType.Vec2, "Uv",
+                                glslArgSite = GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 3)
+                            )
                         )
                     ) { shader.inputPorts }
                 }
@@ -138,13 +209,16 @@ object PaintShaderSpec : Spek({
                     it("identifies the param's content type properly") {
                         expects(
                             listOf(
-                                InputPort("time", GlslType.Float, "Time", ContentType.Time,
+                                InputPort(
+                                    "time", ContentType.Time, GlslType.Float, "Time",
                                     glslArgSite = GlslCode.GlslVar(
                                         "time", GlslType.Float, "uniform float time;", isUniform = true, lineNumber = 1)
                                 ),
-                                InputPort("uv", GlslType.Vec2, "Uv", ContentType.UvCoordinate,
+                                InputPort(
+                                    "uv", ContentType.UvCoordinate, GlslType.Vec2, "Uv",
                                     glslArgSite = GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 2,
-                                    comments = listOf(" @type uv-coordinate")))
+                                    comments = listOf(" @type uv-coordinate"))
+                                )
                             )
                         ) { shader.inputPorts }
                     }
@@ -176,11 +250,17 @@ object PaintShaderSpec : Spek({
                 it("finds magic uniforms") {
                     expects(
                         listOf(
-                            InputPort("blueness", GlslType.Float, "Blueness"),
-                            InputPort("fragCoord", GlslType.Vec2, "U/V Coordinates", UvCoordinate),
-                            InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution, isImplicit = true),
-                            InputPort("iTime", GlslType.Float, "Time", ContentType.Time, isImplicit = true),
-                            InputPort("iMouse", GlslType.Vec2, "Mouse", ContentType.Mouse, isImplicit = true)
+                            InputPort("blueness", ContentType.unknown(GlslType.Float), GlslType.Float, "Blueness"),
+                            InputPort("fragCoord", ContentType.UvCoordinate, GlslType.Vec2, "U/V Coordinates"),
+                            InputPort(
+                                "iResolution",
+                                ContentType.Resolution,
+                                GlslType.Vec3,
+                                "Resolution",
+                                isImplicit = true
+                            ),
+                            InputPort("iTime", ContentType.Time, GlslType.Float, "Time", isImplicit = true),
+                            InputPort("iMouse", ContentType.Mouse, GlslType.Vec4, "Mouse", isImplicit = true)
                         )
                     ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
                 }

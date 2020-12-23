@@ -7,6 +7,7 @@ import baaahs.gl.testPlugins
 import baaahs.only
 import baaahs.show.Layout
 import baaahs.show.Layouts
+import baaahs.show.Shader
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
@@ -85,7 +86,9 @@ object OpenShowSpec : Spek({
         context("when a shader instance has weird incoming links") {
             beforeEachTest {
                 mutableShow.addPatch(
-                    autoWirer.wireUp(fakeShader("Weird Shader")).apply {
+                    autoWirer.wireUp(
+                        Shader("Weird Shader", "uniform float time;\nvoid main() { gl_FragColor = gl_FragCoord + time; }")
+                    ).apply {
                         mutableShaderInstances.only().incomingLinks["nonsense"] =
                             MutableConstPort("invalid", GlslType.Companion.from("?huh?"))
                     }

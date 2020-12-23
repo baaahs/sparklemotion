@@ -128,6 +128,8 @@ object GlslGenerationSpec : Spek({
                 """
                     uniform vec2  resolution;
                     vec2 anotherFunc(vec2 fragCoord) { return fragCoord; }
+                    
+                    // @param fragCoord uv-coordinate
                     void main(vec2 fragCoord) {
                         vec2 uv = anotherFunc(fragCoord) / resolution.xy;
                         gl_FragColor = vec4(uv.xy, 0., 1.);
@@ -158,27 +160,27 @@ object GlslGenerationSpec : Spek({
                         // Data source: Resolution
                         uniform vec2 in_resolution;
 
-                        // Shader: Untitled Paint Shader; namespace: p0
-                        // Untitled Paint Shader
+                        // Shader: Untitled Shader; namespace: p0
+                        // Untitled Shader
 
-                        vec4 p0_untitledPaintShader_gl_FragColor = vec4(0., 0., 0., 1.);
+                        vec4 p0_untitledShader_gl_FragColor = vec4(0., 0., 0., 1.);
 
                         #line 2
-                        vec2 p0_untitledPaintShader_anotherFunc(vec2 fragCoord) { return fragCoord; }
+                        vec2 p0_untitledShader_anotherFunc(vec2 fragCoord) { return fragCoord; }
 
-                        #line 3
-                        void p0_untitledPaintShader_main(vec2 fragCoord) {
-                            vec2 uv = p0_untitledPaintShader_anotherFunc(fragCoord) / in_resolution.xy;
-                            p0_untitledPaintShader_gl_FragColor = vec4(uv.xy, 0., 1.);
+                        #line 5
+                        void p0_untitledShader_main(vec2 fragCoord) {
+                            vec2 uv = p0_untitledShader_anotherFunc(fragCoord) / in_resolution.xy;
+                            p0_untitledShader_gl_FragColor = vec4(uv.xy, 0., 1.);
                         }
 
 
                         #line 10001
                         void main() {
-                          // Invoke Untitled Paint Shader
-                          p0_untitledPaintShader_main(gl_FragCoord);
+                          // Invoke Untitled Shader
+                          p0_untitledShader_main(gl_FragCoord.xy);
 
-                          sm_result = p0_untitledPaintShader_gl_FragColor;
+                          sm_result = p0_untitledShader_gl_FragColor;
                         }
                     """.trimIndent()
                 )
@@ -243,7 +245,7 @@ object GlslGenerationSpec : Spek({
                         // Shader: This Shader's Name; namespace: p0
                         // This Shader's Name
 
-                        vec4 p0_thisShaderSNamei_result = vec4(0., 0., 0., 1.);
+                        vec4 p0_thisShaderSName_fragColor = vec4(0., 0., 0., 1.);
 
                         #line 5
                         int p0_thisShaderSName_someGlobalVar;
@@ -265,9 +267,9 @@ object GlslGenerationSpec : Spek({
                         #line 10001
                         void main() {
                           // Invoke This Shader's Name
-                          p0_thisShaderSName_mainImage(p0_thisShaderSNamei_result, gl_FragCoord.xy);
+                          p0_thisShaderSName_mainImage(p0_thisShaderSName_fragColor, gl_FragCoord.xy);
 
-                          sm_result = p0_thisShaderSNamei_result;
+                          sm_result = p0_thisShaderSName_fragColor;
                         }
                     """.trimIndent()
                 )
@@ -337,8 +339,8 @@ object GlslGenerationSpec : Spek({
                         #line 10
                         const float p0_cylindricalProjection_PI = 3.141592654;
 
-                        #line 12
-                        vec2 p0_cylindricalProjection_mainProjection(vec3 pixelLocation) {
+                        #line 14
+                        vec2 p0_cylindricalProjection_main(vec3 pixelLocation) {
                             vec3 pixelOffset = pixelLocation - in_modelInfo.center;
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
@@ -376,7 +378,7 @@ object GlslGenerationSpec : Spek({
                           in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
 
                           // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(in_pixelLocation);
+                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
 
                           // Invoke This Shader's Name
                           p1_thisShaderSName_main();
@@ -394,10 +396,12 @@ object GlslGenerationSpec : Spek({
             override(shaderText) {
                 """
                     // Cross-fade shader
-                    varying vec4 inColor2; // @type color
                     uniform float fade;
 
-                    vec4 mainFilter(vec4 inColor) {
+                    // @return color
+                    // @param inColor color
+                    // @param inColor2 color
+                    vec4 main(vec4 inColor, vec4 inColor2) {
                         return mix(inColor, inColor2, fade);
                     }
                 """.trimIndent()
@@ -406,20 +410,22 @@ object GlslGenerationSpec : Spek({
             val mainPaintShader by value {
                 glslAnalyzer.import(
                     """
-                    void main( void ) {
-                        gl_FragColor = vec4(1., 0., 0., 1.);
-                    }
-                """.trimIndent(), "Main Paint Shader"
+                        // Main Paint Shader
+                        void main( void ) {
+                            gl_FragColor = vec4(1., 0., 0., 1.);
+                        }
+                    """.trimIndent()
                 )
             }
 
             val otherPaintShader by value {
                 glslAnalyzer.import(
                     """
-                    void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-                        fragColor = vec4(0., 1., 0., 1.);
-                    }
-                """.trimIndent(), "Other Paint Shader"
+                        // Other Paint Shader
+                        void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+                            fragColor = vec4(0., 1., 0., 1.);
+                        }
+                    """.trimIndent()
                 )
             }
 
@@ -457,7 +463,7 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p0_mainPaintShader_gl_FragColor = vec4(0., 0., 0., 1.);
 
-                        #line 1
+                        #line 2
                         void p0_mainPaintShader_main( void ) {
                             p0_mainPaintShader_gl_FragColor = vec4(1., 0., 0., 1.);
                         }
@@ -465,9 +471,9 @@ object GlslGenerationSpec : Spek({
                         // Shader: Other Paint Shader; namespace: p1
                         // Other Paint Shader
 
-                        vec4 p1_otherPaintShaderi_result = vec4(0., 0., 0., 1.);
+                        vec4 p1_otherPaintShader_fragColor = vec4(0., 0., 0., 1.);
 
-                        #line 1
+                        #line 2
                         void p1_otherPaintShader_mainImage( out vec4 fragColor, in vec2 fragCoord ) {
                             fragColor = vec4(0., 1., 0., 1.);
                         }
@@ -477,9 +483,9 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p2_crossFadeShaderi_result = vec4(0., 0., 0., 1.);
 
-                        #line 5
-                        vec4 p2_crossFadeShader_mainFilter(vec4 inColor) {
-                            return mix(inColor, p1_otherPaintShaderi_result, in_fadeSlider);
+                        #line 7
+                        vec4 p2_crossFadeShader_main(vec4 inColor, vec4 inColor2) {
+                            return mix(inColor, inColor2, in_fadeSlider);
                         }
 
 
@@ -489,10 +495,10 @@ object GlslGenerationSpec : Spek({
                           p0_mainPaintShader_main();
 
                           // Invoke Other Paint Shader
-                          p1_otherPaintShader_mainImage(p1_otherPaintShaderi_result, gl_FragCoord.xy);
+                          p1_otherPaintShader_mainImage(p1_otherPaintShader_fragColor, gl_FragCoord.xy);
 
                           // Invoke Cross-fade shader
-                          p2_crossFadeShaderi_result = p2_crossFadeShader_mainFilter(p0_mainPaintShader_gl_FragColor);
+                          p2_crossFadeShaderi_result = p2_crossFadeShader_main(p0_mainPaintShader_gl_FragColor, p1_otherPaintShader_fragColor);
 
                           sm_result = p2_crossFadeShaderi_result;
                         }
@@ -532,7 +538,7 @@ object GlslGenerationSpec : Spek({
 
                             vec4 p0_mainPaintShader_gl_FragColor = vec4(0., 0., 0., 1.);
 
-                            #line 1
+                            #line 2
                             void p0_mainPaintShader_main( void ) {
                                 p0_mainPaintShader_gl_FragColor = vec4(1., 0., 0., 1.);
                             }
@@ -542,9 +548,9 @@ object GlslGenerationSpec : Spek({
 
                             vec4 p1_crossFadeShaderi_result = vec4(0., 0., 0., 1.);
 
-                            #line 5
-                            vec4 p1_crossFadeShader_mainFilter(vec4 inColor) {
-                                return mix(inColor, vec4(0.), in_fadeSlider);
+                            #line 7
+                            vec4 p1_crossFadeShader_main(vec4 inColor, vec4 inColor2) {
+                                return mix(inColor, inColor2, in_fadeSlider);
                             }
 
 
@@ -554,7 +560,7 @@ object GlslGenerationSpec : Spek({
                               p0_mainPaintShader_main();
 
                               // Invoke Cross-fade shader
-                              p1_crossFadeShaderi_result = p1_crossFadeShader_mainFilter(p0_mainPaintShader_gl_FragColor);
+                              p1_crossFadeShaderi_result = p1_crossFadeShader_main(p0_mainPaintShader_gl_FragColor, vec4(0.));
 
                               sm_result = p1_crossFadeShaderi_result;
                             }
@@ -575,7 +581,8 @@ object GlslGenerationSpec : Spek({
                     
                     uniform MovingHeadInfo movingHeadInfo;
                     
-                    vec4 mainMover() {
+                    // @return pan-tilt
+                    vec4 main() {
                         return vec4(movingHeadInfo.origin.xy, movingHeadInfo.heading.xy);
                     }
                 """.trimIndent()
@@ -608,23 +615,23 @@ object GlslGenerationSpec : Spek({
                         // Data source: Moving Head Info
                         uniform MovingHeadInfo in_movingHeadInfo;
 
-                        // Shader: Untitled Mover Shader; namespace: p0
-                        // Untitled Mover Shader
+                        // Shader: Untitled Shader; namespace: p0
+                        // Untitled Shader
 
-                        vec4 p0_untitledMoverShaderi_result = vec4(0.);
+                        vec4 p0_untitledShaderi_result = vec4(0.);
 
-                        #line 8
-                        vec4 p0_untitledMoverShader_mainMover() {
+                        #line 9
+                        vec4 p0_untitledShader_main() {
                             return vec4(in_movingHeadInfo.origin.xy, in_movingHeadInfo.heading.xy);
                         }
 
 
                         #line 10001
                         void main() {
-                          // Invoke Untitled Mover Shader
-                          p0_untitledMoverShaderi_result = p0_untitledMoverShader_mainMover();
+                          // Invoke Untitled Shader
+                          p0_untitledShaderi_result = p0_untitledShader_main();
 
-                          sm_result = p0_untitledMoverShaderi_result;
+                          sm_result = p0_untitledShaderi_result;
                         }
                     """.trimIndent()
                 )

@@ -39,7 +39,7 @@ class ShaderComponent(
             var expression = upstreamComponent.getExpression()
             val type = upstreamComponent.resultType
             if (inputPort.type != type) {
-                expression = inputPort.contentType?.adapt(expression, type) ?: expression
+                expression = inputPort.contentType.adapt(expression, type)
             }
             tmpPortMap[toPortId] = expression
         }

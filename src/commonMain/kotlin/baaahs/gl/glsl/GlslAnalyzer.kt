@@ -1,38 +1,26 @@
 package baaahs.gl.glsl
 
 import baaahs.gl.glsl.GlslCode.*
-import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.GenericShaderPrototype
-import baaahs.gl.shader.MatchLevel
-import baaahs.gl.shader.OpenShader
+import baaahs.gl.shader.*
+import baaahs.only
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
+import baaahs.show.ShaderType
 
 class GlslAnalyzer(private val plugins: Plugins) {
-    fun import(src: String, defaultTitle: String? = null): Shader {
-        val glslCode = analyze(src)
-        return import(glslCode, defaultTitle)
+    fun pickPrototype(src: String): ShaderPrototype {
+        return pickPrototype(parse(src))
     }
 
-    fun import(glslCode: GlslCode, defaultTitle: String? = null): Shader {
-        val prototype = plugins.shaderPrototypes.all
+    fun pickPrototype(glslCode: GlslCode): ShaderPrototype {
+        return plugins.shaderPrototypes.all
             .map { it to it.matches(glslCode) }
             .filter { (_, match) -> match != MatchLevel.NoMatch }
             .maxByOrNull { (_, match) -> match }?.first
-
-        val effectivePrototype = prototype ?: GenericShaderPrototype
-        val title = effectivePrototype.findTitle(glslCode)
-            ?: defaultTitle
-            ?: prototype?.let { "Untitled ${it.title} Shader" }
-            ?: "Untitled Shader"
-        val resultContentType = try {
-            effectivePrototype.findOutputPort(glslCode, plugins).contentType
-        } catch (e: Exception) { ContentType.Unknown }
-
-        return Shader(title, prototype, resultContentType, glslCode.src)
+            ?: GenericShaderPrototype
     }
 
-    fun analyze(src: String): GlslCode {
+    fun parse(src: String): GlslCode {
         return GlslCode(src, findStatements(src))
     }
 
@@ -42,19 +30,51 @@ class GlslAnalyzer(private val plugins: Plugins) {
         return context.statements
     }
 
+    fun import(src: String): Shader {
+        val glslCode = parse(src)
+        return validate(glslCode).shader
+    }
+
+    fun validate(src: String): ShaderAnalysis {
+        return validate(parse(src))
+    }
+
+    fun validate(glslCode: GlslCode, shader: Shader? = null): ShaderAnalysis {
+        val prototype = pickPrototype(glslCode)
+        return prototype.analyze(glslCode, plugins, shader)
+    }
+
     fun openShader(src: String): OpenShader {
-        val glslCode = analyze(src)
-        val shader = import(glslCode)
-        return openShader(shader, glslCode)
+        return openShader(parse(src))
     }
 
     fun openShader(shader: Shader): OpenShader {
-        val glslCode = analyze(shader.src)
-        return openShader(shader, glslCode)
+        return openShader(parse(shader.src), shader)
     }
 
-    private fun openShader(shader: Shader, glslCode: GlslCode): OpenShader.Base {
-        return OpenShader.Base(shader, glslCode, plugins)
+    private fun openShader(glslCode: GlslCode, shader: Shader? = null): OpenShader {
+        val shaderAnalysis = validate(glslCode, shader)
+        return openShader(shaderAnalysis)
+    }
+
+    fun openShader(shaderAnalysis: ShaderAnalysis): OpenShader.Base {
+        if (!shaderAnalysis.isValid)
+            throw error(
+                "Shader \"${shaderAnalysis.shader.title}\" not valid:" +
+                        " ${shaderAnalysis.errors.joinToString(" ") { it.message }}"
+            )
+
+        val shaderType = plugins.shaderTypes.all
+            .map { it to it.matches(shaderAnalysis) }
+            .filter { (_, match) -> match != ShaderType.MatchLevel.NoMatch }
+            .maxByOrNull { (_, match) -> match }?.first
+            ?: ShaderType.Unknown
+
+        return with(shaderAnalysis) {
+            OpenShader.Base(this.shader, shaderAnalysis.glslCode,
+                entryPoint!!, inputPorts, outputPorts.only(),
+                shaderType, shaderPrototype)
+        }
     }
 
     private class Context {
@@ -377,15 +397,17 @@ class GlslAnalyzer(private val plugins: Plugins) {
                                 val trimmed = member.trim()
                                 if (trimmed.isEmpty()) return@forEach
                                 val parts = trimmed.split(Regex("\\s+"))
-                                when(parts.size) {
+                                when (parts.size) {
                                     0 -> return@forEach
                                     2 -> fields[parts[1]] = GlslType.from(parts[0])
                                     else -> throw AnalysisException("illegal struct member \"$member\"", lineNumber)
                                 }
                             }
                         val varNameOrNull = if (varName.isBlank()) null else varName
-                        GlslStruct(name, fields, varNameOrNull, uniform.isNotBlank(),
-                            text, lineNumber, comments)
+                        GlslStruct(
+                            name, fields, varNameOrNull, uniform.isNotBlank(),
+                            text, lineNumber, comments
+                        )
                             .also { context.structs[name] = it }
                     }
             }
@@ -473,14 +495,16 @@ class GlslAnalyzer(private val plugins: Plugins) {
                         throw context.glslError("No name for parameter in ${this@Function.name}().")
                     }
 
-                    params.add(GlslParam(
-                        name,
-                        type,
-                        isIn = qualifier == null || qualifier == "in" || qualifier == "inout",
-                        isOut = qualifier == "out" || qualifier == "inout",
-                        lineNumber = lineNumber,
-                        comments = comments
-                    ))
+                    params.add(
+                        GlslParam(
+                            name,
+                            type,
+                            isIn = qualifier == null || qualifier == "in" || qualifier == "inout",
+                            isOut = qualifier == "out" || qualifier == "inout",
+                            lineNumber = lineNumber,
+                            comments = comments
+                        )
+                    )
                 }
             }
         }
@@ -503,6 +527,11 @@ class GlslAnalyzer(private val plugins: Plugins) {
                 nextParseState.receiveSubsequentComments()
                 return nextParseState
             }
+
+            override fun visitEof(): ParseState {
+                recipientOfComment.addComment(commentText.toString())
+                return super.visitEof()
+            }
         }
 
         private class Directive(context: Context, val priorParseState: ParseState) : ParseState(context) {
@@ -514,6 +543,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
                     this
                 }
             }
+
             override fun visitNewline(): ParseState {
                 context.lineNumberForError -= 1
 
@@ -540,7 +570,8 @@ class GlslAnalyzer(private val plugins: Plugins) {
         }
 
         class MacroDeclaration(context: Context, val priorParseState: ParseState) : ParseState(context) {
-            enum class Mode { Initial, HaveName, InArgs, InReplacement}
+            enum class Mode { Initial, HaveName, InArgs, InReplacement }
+
             private var mode = Mode.Initial
             private var name: String? = null
             private var args: MutableList<String>? = null

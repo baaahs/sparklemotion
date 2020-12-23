@@ -5,6 +5,7 @@ import baaahs.app.ui.editor.PortLinkOption
 import baaahs.fixtures.DeviceType
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
+import baaahs.gl.glsl.LinkException
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.*
 import baaahs.show.*
@@ -29,8 +30,7 @@ data class PluginRef(
     /** A unique ID for plugin. Should be lowercase alphanums and dots, like a package name. */
     val pluginId: String,
     /** A unique ID for a resource within a plugin. Should be CamelCase alphanums, like a class name. */
-    val resourceName: String,
-    val pluginIdNotSpecified: Boolean = false
+    val resourceName: String
 ) {
     fun toRef() = "$pluginId:$resourceName"
 
@@ -43,9 +43,15 @@ data class PluginRef(
             val result = Regex("(([\\w.]+):)?(\\w+)").matchEntire(identString)
             return if (result != null) {
                 val (_, pluginId, resourceName) = result.destructured
-                PluginRef(pluginId, resourceName)
+                if (pluginId.isEmpty()) {
+                    PluginRef(Plugins.default, resourceName)
+                } else if (!pluginId.contains(".")) {
+                    PluginRef("baaahs.$pluginId", resourceName)
+                } else {
+                    PluginRef(pluginId, resourceName)
+                }
             } else {
-                PluginRef(Plugins.default, identString, pluginIdNotSpecified = true)
+                PluginRef(Plugins.default, identString)
             }
         }
     }
@@ -80,6 +86,7 @@ class Plugins private constructor(
     val deviceTypes = DeviceTypes()
 
     val shaderPrototypes = ShaderPrototypes()
+    val shaderTypes = ShaderTypes()
 
     private inline fun <reified T : Any> SerializersModuleBuilder.registerSerializers(
         getSerializersFn: Plugin.() -> List<SerializerRegistrar<out T>>
@@ -98,7 +105,6 @@ class Plugins private constructor(
         include(contentTypes.serialModule)
         include(controlSerialModule)
         include(dataSourceBuilders.serialModule)
-        include(shaderPrototypes.serialModel)
         include(deviceTypes.serialModule)
     }
 
@@ -115,6 +121,13 @@ class Plugins private constructor(
         return contentTypes.byId[name]
     }
 
+    fun resolveContentType(glslType: GlslType): ContentType {
+        return if (glslType is GlslType.Struct)
+            contentTypes.all.firstOrNull() { it.glslType == glslType }
+                ?: ContentType.unknown(glslType)
+        else ContentType.unknown(glslType)
+    }
+
     fun suggestContentTypes(inputPort: InputPort): Set<ContentType> {
         val glslType = inputPort.type
         return contentTypes.matchingType(glslType)
@@ -122,7 +135,8 @@ class Plugins private constructor(
 
     fun resolveDataSource(inputPort: InputPort): DataSource {
         val pluginRef = inputPort.pluginRef ?: error("no plugin specified")
-        val builder = dataSourceBuilders.byPluginRef[pluginRef] ?: error("unknown plugin resource $pluginRef")
+        val builder = dataSourceBuilders.byPluginRef[pluginRef]
+            ?: throw LinkException("unknown plugin resource $pluginRef", inputPort.glslArgSite?.lineNumber)
         return builder.build(inputPort)
     }
 
@@ -141,6 +155,8 @@ class Plugins private constructor(
                     wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
                     isPluginSuggestion = true,
                     isExactContentType = dataSource.contentType == inputPort.contentType
+                            // TODO: This is dodgy. Trying to get Slider to win over channel ref.
+                            || inputPort.contentType.isUnknown()
                 )
             }
         }
@@ -262,9 +278,9 @@ class Plugins private constructor(
 
     inner class ShaderPrototypes {
         val all = plugins.flatMap { it.shaderPrototypes }
+    }
 
-        val serialModel = SerializersModule {
-            registerSerializers { shaderPrototypes.map { it.serializerRegistrar } }
-        }
+    inner class ShaderTypes {
+        val all = plugins.flatMap { it.shaderTypes }
     }
 }

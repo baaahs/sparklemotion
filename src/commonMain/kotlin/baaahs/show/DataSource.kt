@@ -41,7 +41,7 @@ interface DataSourceBuilder<T : DataSource> {
 }
 
 internal fun DataSource.appearsToBePurposeBuiltFor(inputPort: InputPort) =
-    title.camelize().toLowerCase().contains(inputPort.id.toLowerCase())
+    title.camelize().toLowerCase().contains(inputPort.title.camelize().toLowerCase())
 
 @Polymorphic
 interface DataSource {

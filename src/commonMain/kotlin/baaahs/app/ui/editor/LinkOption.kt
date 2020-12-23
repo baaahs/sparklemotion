@@ -21,7 +21,8 @@ class PortLinkOption(
     val isLocalShaderOut: Boolean = false,
     val isPluginSuggestion: Boolean = false,
     val isExactContentType: Boolean = false,
-    val isDefaultBinding: Boolean = false
+    val isDefaultBinding: Boolean = false,
+    val createsFilter: Boolean = false
 ): LinkOption {
     override val title get() = mutablePort.title
     override val icon get() = mutablePort.icon
@@ -32,12 +33,14 @@ class PortLinkOption(
     val priority: Int get() =
         pack(
             isPluginRef,
+            createsFilter && isExactContentType,
             wasPurposeBuilt && isExactContentType,
             isShaderChannel,
             isLocalShaderOut,
             isPluginSuggestion,
             isExactContentType,
             wasPurposeBuilt,
+            createsFilter,
             isDefaultBinding
         )
 

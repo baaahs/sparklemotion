@@ -5,7 +5,6 @@ import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.override
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.render.RenderManager
-import baaahs.gl.shader.GenericPaintShader
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.mapper.Storage
@@ -54,7 +53,7 @@ object ShowRunnerSpec : Spek({
                         ) {
                             addButton("test patchset") {
                                 addPatch(
-                                    autoWirer.autoWire(Shader("Untitled", GenericPaintShader, shaderSrc))
+                                    autoWirer.autoWire(Shader("Untitled", shaderSrc))
                                         .acceptSuggestedLinkOptions()
                                         .confirm()
                                 )
@@ -112,7 +111,7 @@ object ShowRunnerSpec : Spek({
                 override(shaderSrc) {
                     /**language=glsl*/
                     """
-                    uniform vec4 color; // @type color
+                    uniform vec4 color; // @@ColorPicker
                     void main() { gl_FragColor = color; }
                     """.trimIndent()
                 }

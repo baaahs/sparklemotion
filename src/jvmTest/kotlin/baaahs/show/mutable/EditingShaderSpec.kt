@@ -9,8 +9,6 @@ import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
-import baaahs.gl.shader.FilterShader
-import baaahs.gl.shader.GenericPaintShader
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
@@ -49,7 +47,7 @@ object EditingShaderSpec : Spek({
         val scaleUniform by value { "uniform float theScale;" }
         val paintShader by value {
             Shader(
-                "Paint", GenericPaintShader, """
+                "Paint", """
                 uniform float time;
                 void main(void) {
                     gl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, mod(time, 1.), 1.);
@@ -59,13 +57,15 @@ object EditingShaderSpec : Spek({
         }
         val filterShader by value {
             Shader(
-                "Filter", FilterShader, """
-                $scaleUniform
-                uniform float time;
-                vec4 mainFilter(vec4 inColor) {
-                    return inColor * theScale + time * 0.;
-                }
-            """.trimIndent()
+                "Filter", """
+                    $scaleUniform
+                    uniform float time;
+                    // @return color
+                    // @param inColor color
+                    vec4 main(vec4 inColor) {
+                        return inColor * theScale + time * 0.;
+                    }
+                """.trimIndent()
             )
         }
         val shaderInEdit by value { filterShader }
@@ -296,7 +296,7 @@ object EditingShaderSpec : Spek({
                             Channel:
                             * Main Channel
                             Data Source:
-                            - Upstream Color ColorPicker
+                            - In Color ColorPicker
                         """.trimIndent())
                 }
 
@@ -314,7 +314,7 @@ object EditingShaderSpec : Spek({
                                     * Main Channel
                                     - Other Channel
                                     Data Source:
-                                    - Upstream Color ColorPicker
+                                    - In Color ColorPicker
                                 """.trimIndent())
                         }
                     }
@@ -328,7 +328,7 @@ object EditingShaderSpec : Spek({
                                     Channel:
                                     * Main Channel
                                     Data Source:
-                                    - Upstream Color ColorPicker
+                                    - In Color ColorPicker
                                 """.trimIndent())
                         }
                     }
@@ -387,7 +387,7 @@ object EditingShaderSpec : Spek({
                     vec2 p0_screenCoordsi_result = vec2(0.);
 
                     #line 3
-                    vec2 p0_screenCoords_mainProjection(
+                    vec2 p0_screenCoords_main(
                         vec4 fragCoords 
                     ) {
                       return fragCoords.xy / in_previewResolution;
@@ -407,7 +407,7 @@ object EditingShaderSpec : Spek({
                     #line 10001
                     void main() {
                       // Invoke Screen Coords
-                      p0_screenCoordsi_result = p0_screenCoords_mainProjection(gl_FragCoord);
+                      p0_screenCoordsi_result = p0_screenCoords_main(gl_FragCoord);
 
                       // Invoke Paint
                       p1_paint_main();

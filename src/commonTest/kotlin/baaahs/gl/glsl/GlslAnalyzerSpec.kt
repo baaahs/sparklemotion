@@ -1,12 +1,14 @@
 package baaahs.gl.glsl
 
+import baaahs.describe
 import baaahs.gl.expectStatements
 import baaahs.gl.expects
 import baaahs.gl.glsl.GlslCode.*
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
-import baaahs.gl.patch.ContentType.Companion.UvCoordinate
+import baaahs.gl.shader.GenericShaderPrototype
 import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.ShaderToyShaderPrototype
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
@@ -15,17 +17,15 @@ import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import kotlin.test.fail
 
 object GlslAnalyzerSpec : Spek({
-    describe("ShaderFragment") {
+    describe<GlslAnalyzer> {
         context("given some GLSL code") {
-            val shaderText by value<String> { toBeSpecified() }
             val glslAnalyzer by value { GlslAnalyzer(testPlugins()) }
-            val importedShader by value { glslAnalyzer.import(shaderText) }
-            val glslCode by value { glslAnalyzer.analyze(importedShader.src) }
+            val shaderText by value<String> { toBeSpecified() }
 
-            context("#analyze") {
+            context("#parse") {
                 override(shaderText) {
                     /**language=glsl*/
                     """
@@ -57,10 +57,7 @@ object GlslAnalyzerSpec : Spek({
                     }
                     """.trimIndent()
                 }
-
-                it("finds the title") {
-                    expect(importedShader.title).toBe("This Shader's Name")
-                }
+                val glslCode by value { glslAnalyzer.parse(shaderText) }
 
                 it("finds statements including line numbers") {
                     expectStatements(
@@ -280,7 +277,7 @@ object GlslAnalyzerSpec : Spek({
                     override(shaderText) {
                         """
                             uniform float time; // @type time1
-                            // @type time2
+                            // @return time2
                             float main() { return time + sin(time); }
                         """.trimIndent()
                     }
@@ -301,7 +298,7 @@ object GlslAnalyzerSpec : Spek({
                                     params = emptyList(), // TODO: 1 seems wrong here, shouldn't it be 3?
                                     fullText = "float main() { return time + sin(time); }\n",
                                     lineNumber = 1,
-                                    comments = listOf(" @type time2")
+                                    comments = listOf(" @return time2")
                                 ),
                             ), { glslAnalyzer.findStatements(shaderText) }, true
                         )
@@ -309,7 +306,65 @@ object GlslAnalyzerSpec : Spek({
                 }
             }
 
-            context("#asShader") {
+            context("#pickPrototype") {
+                override(shaderText) { "void main() {}" }
+
+                val prototype by value { glslAnalyzer.pickPrototype(shaderText) }
+
+                it("is generic") {
+                    expect(prototype).toBe(GenericShaderPrototype)
+                }
+
+                context("for shaders having a mainImage function") {
+                    override(shaderText) { "void mainImage() {}" }
+
+                    it("is ShaderToy") {
+                        expect(prototype).toBe(ShaderToyShaderPrototype)
+                    }
+                }
+            }
+
+            context("#validate") {
+                val validationResult by value { glslAnalyzer.validate(shaderText) }
+
+                context("when there are problems in the shader") {
+                    override(shaderText) {
+                        """
+                            uniform float foo; // @type unknown-type
+                            vec4 main(vec4 inColor) {
+                                return inColor;
+                            }
+                        """.trimIndent()
+                    }
+
+                    it("should report them in the ValidationResult") {
+                        expect(validationResult.errors.toSet()).containsExactly(
+                            GlslError("Input port \"foo\" content type is \"unknown/float\"", 1),
+                            GlslError("Input port \"inColor\" content type is \"unknown/vec4\"", 2),
+                            GlslError("Output port \"[return value]\" content type is \"unknown/vec4\"", 1)
+                        )
+                    }
+                }
+            }
+
+            context("#import") {
+                val importedShader by value { glslAnalyzer.import(shaderText) }
+                override(shaderText) {
+                    /**language=glsl*/
+                    """
+                    // This Shader's Name
+                    // Other stuff.
+                    
+                    void main() { }
+                    """.trimIndent()
+                }
+
+                it("finds the title") {
+                    expect(importedShader.title).toBe("This Shader's Name")
+                }
+            }
+
+            context("#openShader") {
                 val shader by value { glslAnalyzer.openShader(shaderText) }
 
                 context("with generic shader") {
@@ -337,10 +392,16 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(shader.inputPorts.map { it.copy(glslArgSite = null) })
                             .containsExactly(
-                                InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", UvCoordinate, isImplicit = true),
-                                InputPort("time", GlslType.Float, "Time", ContentType.Time),
-                                InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
-                                InputPort("blueness", GlslType.Float, "Blueness")
+                                InputPort(
+                                    "gl_FragCoord",
+                                    ContentType.UvCoordinate,
+                                    GlslType.Vec4,
+                                    "Coordinates",
+                                    isImplicit = true
+                                ),
+                                InputPort("time", ContentType.Time, GlslType.Float, "Time"),
+                                InputPort("resolution", ContentType.Resolution, GlslType.Vec2, "Resolution"),
+                                InputPort("blueness", ContentType.unknown(GlslType.Float), GlslType.Float, "Blueness")
                             )
                     }
                 }
@@ -369,10 +430,16 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expects(
                             listOf(
-                                InputPort("blueness", GlslType.Float, "Blueness"),
-                                InputPort("fragCoord", GlslType.Vec2, "U/V Coordinates", UvCoordinate),
-                                InputPort("iResolution", GlslType.Vec3, "Resolution", ContentType.Resolution, isImplicit = true),
-                                InputPort("iTime", GlslType.Float, "Time", ContentType.Time, isImplicit = true)
+                                InputPort("blueness", ContentType.unknown(GlslType.Float), GlslType.Float, "Blueness"),
+                                InputPort("fragCoord", ContentType.UvCoordinate, GlslType.Vec2, "U/V Coordinates"),
+                                InputPort(
+                                    "iResolution",
+                                    ContentType.Resolution,
+                                    GlslType.Vec3,
+                                    "Resolution",
+                                    isImplicit = true
+                                ),
+                                InputPort("iTime", ContentType.Time, GlslType.Float, "Time", isImplicit = true)
                             )
                         ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
                     }
@@ -382,18 +449,20 @@ object GlslAnalyzerSpec : Spek({
                     override(shaderText) { Shaders.cylindricalProjection.src }
 
                     it("identifies mainImage() as the entry point") {
-                        expect(shader.entryPoint.name).toBe("mainProjection")
+                        expect(shader.entryPoint.name).toBe("main")
                     }
 
                     it("creates inputs for implicit uniforms") {
                         expects(
                             listOf(
                                 InputPort(
-                                    "modelInfo", ContentType.ModelInfo.glslType,
-                                    "Model Info", null),
+                                    "modelInfo", ContentType.ModelInfo,
+                                    ContentType.ModelInfo.glslType, "Model Info"
+                                ),
                                 InputPort(
-                                    "pixelLocation", GlslType.Vec3,
-                                    "Pixel XYZ Coordinate", ContentType.XyzCoordinate),
+                                    "pixelLocation", ContentType.XyzCoordinate,
+                                    GlslType.Vec3, "Pixel Location"
+                                ),
                             )
                         ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
                     }
@@ -403,13 +472,18 @@ object GlslAnalyzerSpec : Spek({
                     override(shaderText) { "" }
 
                     it("provides a fake entry point function") {
-                        expect(shader.entryPoint.name).toBe("invalid")
+                        try {
+                            shader.let {}
+                            fail("should have failed")
+                        } catch (e: Exception) {
+                        }
                     }
                 }
             }
 
             context("const initializers") {
                 override(shaderText) { "const vec3 baseColor = vec3(0.0,0.09,0.18);\nvoid main() {}" }
+                val glslCode by value { glslAnalyzer.parse(shaderText) }
 
                 it("handles const initializers") {
                     expect(glslCode.globalVars.only("global var"))

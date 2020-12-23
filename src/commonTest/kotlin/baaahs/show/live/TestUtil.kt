@@ -3,15 +3,10 @@ package baaahs.show.live
 import baaahs.ShowState
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.patch.AutoWirer
-import baaahs.gl.shader.GenericPaintShader
-import baaahs.gl.shader.ProjectionShader
-import baaahs.gl.shader.ShaderPrototype
+import baaahs.gl.shader.*
 import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
-import baaahs.show.Layout
-import baaahs.show.Layouts
-import baaahs.show.Shader
-import baaahs.show.Show
+import baaahs.show.*
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePort
@@ -33,8 +28,8 @@ fun AutoWirer.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap(
     return unresolvedPatch.acceptSuggestedLinkOptions().confirm()
 }
 
-fun fakeShader(title: String, prototype: ShaderPrototype = GenericPaintShader) =
-    Shader(title, prototype, prototype.template)
+fun fakeShader(title: String, type: ShaderType = PaintShader) =
+    type.newShaderFromTemplate().apply { this.title = title }.build()
 
 class FakeEditHandler : EditHandler {
     val calls = arrayListOf<List<Any>>()

@@ -9,9 +9,9 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.ProjectionPreview
 import baaahs.gl.render.QuadPreview
 import baaahs.gl.render.ShaderPreview
+import baaahs.gl.shader.ProjectionShader
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 import baaahs.ui.addObserver
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
@@ -49,7 +49,13 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     onMount(canvas.current) {
         val canvasEl = canvas.current ?: return@onMount
 
-        val preview = if (props.shader?.prototype?.shaderType == ShaderType.Projection) {
+        val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
+            // TODO: This is duplicating work that happens later in PreviewShaderBuilder, which is rotten.
+            appContext.autoWirer.glslAnalyzer.openShader(props.shader!!.src)
+                .shaderType
+        }
+
+        val preview = if (shaderType == ProjectionShader) {
             val canvas2d = canvasEl
             val canvas3d = document.createElement("canvas") as HTMLCanvasElement
             val glslContext = GlBase.jsManager.createContext(canvas3d)

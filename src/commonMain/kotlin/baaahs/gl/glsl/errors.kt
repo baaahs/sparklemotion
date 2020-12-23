@@ -5,13 +5,13 @@ abstract class GlslException(message: String) : Exception(message) {
 }
 
 class LinkException(
-    message: String, row: Int = -1
+    message: String, row: Int? = null
 ) : GlslException("Shader link error: $message") {
     override val errors = listOf(GlslError(message, row))
 }
 
 class AnalysisException(
-    message: String, row: Int = -1
+    message: String, row: Int? = null
 ) : GlslException("Shader analysis error: $message") {
     override val errors = listOf(GlslError(message, row))
 }

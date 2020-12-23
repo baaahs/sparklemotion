@@ -20,6 +20,10 @@ class ContentType(
             ?: expression
     }
 
+    fun isUnknown(): Boolean {
+        return id == "unknown" || id.startsWith("unknown/")
+    }
+
     override fun toString(): String = "ContentType($id [$glslType])"
 
     override fun equals(other: Any?): Boolean {
@@ -41,6 +45,10 @@ class ContentType(
 
 
     companion object {
+        fun unknown(type: GlslType): ContentType {
+            return ContentType("unknown/${type.glslLiteral}", "Unknown ${type.glslLiteral}", suggest = false, glslType = type)
+        }
+
         @Deprecated("Obsolete")
         val PixelCoordinatesTexture =
             ContentType("pixel-coords-texture", "Pixel Coordinates Texture", GlslType.Sampler2D, suggest = true)

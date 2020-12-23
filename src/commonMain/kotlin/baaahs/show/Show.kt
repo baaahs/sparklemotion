@@ -6,16 +6,12 @@ import baaahs.camelize
 import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.getBang
-import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.GenericShaderPrototype
-import baaahs.gl.shader.ShaderPrototype
 import baaahs.plugin.Plugins
 import baaahs.show.ButtonGroupControl.Direction
 import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.MutableShowVisitor
 import baaahs.show.mutable.VisitationLog
-import baaahs.ui.Icon
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -113,23 +109,12 @@ data class Layout(
     val rootNode: JsonObject
 )
 
-/** If [prototype] is `null`, [GenericShaderPrototype] is used. */
 @Serializable
 data class Shader(
     val title: String,
-    val prototype: ShaderPrototype?,
-    @Contextual
-    val resultContentType: ContentType,
     /**language=glsl*/
     val src: String
 ) {
-    constructor(title: String, prototype: ShaderPrototype, src: String) :
-            this(title, prototype, prototype.outputPort.contentType, src)
-
-    val effectivePrototype get() = prototype ?: GenericShaderPrototype
-
-    val icon: Icon get() = effectivePrototype.icon
-
     fun suggestId(): String = title.camelize()
 }
 
@@ -139,12 +124,7 @@ data class ShaderInstance(
     val incomingLinks: Map<String, PortRef>,
     val shaderChannel: ShaderChannel = ShaderChannel.Main,
     val priority: Float = 0f
-) {
-
-    fun findDataSourceRefs(): List<DataSourceRef> {
-        return incomingLinks.values.filterIsInstance<DataSourceRef>()
-    }
-}
+)
 
 @Serializable(with = ShaderChannel.ShaderChannelSerializer::class)
 data class ShaderChannel(val id: String) {

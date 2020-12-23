@@ -2,15 +2,12 @@ package baaahs.shows
 
 import baaahs.describe
 import baaahs.gl.override
-import baaahs.gl.patch.ContentType
-import baaahs.gl.patch.ContentType.Companion.Color
-import baaahs.gl.patch.ContentType.Companion.UvCoordinate
-import baaahs.gl.shader.*
 import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
 import baaahs.toBeSpecified
+import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.json.*
@@ -21,6 +18,7 @@ object ShowMigrationSpec : Spek({
         val json by value { Json { serializersModule = testPlugins().serialModule } }
         val fromJson by value<JsonObject> { toBeSpecified() }
         val show by value { json.decodeFromJsonElement(ShowMigrator, fromJson) }
+        val newJson by value { json.encodeToJsonElement(Show.serializer(), show) }
 
         context("from v0") {
             override(fromJson) {
@@ -62,49 +60,25 @@ object ShowMigrationSpec : Spek({
                     put("version", 1)
                     put("title", "Show")
                     put("shaders", buildJsonObject {
-                        put("proj", buildJsonObject {
-                            put("title", "1"); put("type", "Projection"); put("src", "// nothing")
-                        })
-                        put("dist", buildJsonObject {
-                            put("title", "1"); put("type", "Distortion"); put("src", "// nothing")
-                        })
-                        put("genericPaint", buildJsonObject {
-                            put("title", "1"); put("type", "Paint"); put("src", "// nothing")
-                        })
-                        put("toyPaint", buildJsonObject {
-                            put("title", "1"); put("type", "Paint"); put("src", "void mainImage() {}")
-                        })
-                        put("filter", buildJsonObject {
-                            put("title", "1"); put("type", "Filter"); put("src", "// nothing")
-                        })
-                        put("mover", buildJsonObject {
-                            put("title", "1"); put("type", "Mover"); put("src", "// nothing")
-                        })
-                        put("unknown", buildJsonObject {
-                            put("title", "1"); put("type", "Unknown"); put("src", "// nothing")
+                        put("shader1", buildJsonObject {
+                            put("title", "1"); put("type", "Anything"); put("src", "// nothing")
                         })
                     })
                 }
             }
 
-            it("sets prototype from shaderType") {
-                expect(show.shaders["proj"]!!.prototype).toBe(ProjectionShader)
-                expect(show.shaders["dist"]!!.prototype).toBe(DistortionShader)
-                expect(show.shaders["genericPaint"]!!.prototype).toBe(GenericPaintShader)
-                expect(show.shaders["toyPaint"]!!.prototype).toBe(ShaderToyPaintShader)
-                expect(show.shaders["filter"]!!.prototype).toBe(FilterShader)
-                expect(show.shaders["mover"]!!.prototype).toBe(MoverShader)
-                expect(show.shaders["unknown"]!!.prototype).toBe(null)
-            }
-
-            it("sets resultContentType from shaderType") {
-                expect(show.shaders["proj"]!!.resultContentType).toBe(UvCoordinate)
-                expect(show.shaders["dist"]!!.resultContentType).toBe(UvCoordinate)
-                expect(show.shaders["genericPaint"]!!.resultContentType).toBe(Color)
-                expect(show.shaders["toyPaint"]!!.resultContentType).toBe(Color)
-                expect(show.shaders["filter"]!!.resultContentType).toBe(Color)
-                expect(show.shaders["mover"]!!.resultContentType).toBe(ContentType.PanAndTilt)
-                expect(show.shaders["unknown"]!!.resultContentType).toBe(ContentType.Unknown)
+            it("drops Shader.type") {
+                expect(
+                    newJson
+                        .jsonObject["shaders"]!!
+                        .jsonObject["shader1"]!!
+                        .jsonObject
+                ).toEqual(
+                    buildJsonObject {
+                        put("title", JsonPrimitive("1"))
+                        put("src", JsonPrimitive("// nothing"))
+                    }
+                )
             }
         }
 

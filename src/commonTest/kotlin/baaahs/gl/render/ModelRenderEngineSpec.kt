@@ -16,7 +16,6 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.renderPlanFor
-import baaahs.gl.shader.GenericShaderPrototype
 import baaahs.gl.shader.InputPort
 import baaahs.gl.testPlugins
 import baaahs.only
@@ -280,9 +279,10 @@ class DeviceTypeForTest(
             }
         }
 
-    override val resultParams: List<ResultParam> get() = emptyList()
+    override val resultParams: List<ResultParam>
+        get() = emptyList()
     override val errorIndicatorShader: Shader
-        get() = Shader("Ω Guru Meditation Error Ω", GenericShaderPrototype, "")
+        get() = Shader("Ω Guru Meditation Error Ω", "")
     override fun toString(): String = id
 }
 

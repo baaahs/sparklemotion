@@ -1,5 +1,6 @@
 package baaahs.gl.shader
 
+import baaahs.englishize
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -8,9 +9,9 @@ import kotlinx.serialization.json.JsonObject
 
 data class InputPort(
     val id: String,
-    val type: GlslType,
-    val title: String,
-    val contentType: ContentType? = null,
+    val contentType: ContentType,
+    val type: GlslType = contentType.glslType,
+    val title: String = id.englishize(),
     val pluginRef: PluginRef? = null,
     val pluginConfig: JsonObject? = null,
     val glslArgSite: GlslCode.GlslArgSite? = null,

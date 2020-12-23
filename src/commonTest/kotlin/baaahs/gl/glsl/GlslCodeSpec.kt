@@ -6,6 +6,8 @@ import baaahs.gl.testPlugins
 import baaahs.gl.undefined
 import baaahs.only
 import baaahs.plugin.PluginRef
+import baaahs.toEqual
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.json.buildJsonObject
@@ -16,12 +18,7 @@ import org.spekframework.spek2.style.specification.describe
 object GlslCodeSpec : Spek({
     describe("statements") {
         val text by value { undefined<String>() }
-        val comments by value { emptyList<String>() }
-        val statements by value {
-            GlslAnalyzer(testPlugins()).findStatements(
-                comments.joinToString("\n") { "// $it" } + "\n" + text
-            )
-        }
+        val statements by value { GlslAnalyzer(testPlugins()).findStatements(text) }
         val statement by value { statements.only("statement") }
 
         context("variables") {
@@ -62,13 +59,58 @@ object GlslCodeSpec : Spek({
                 ) { variable }
             }
 
-            context("hints") {
+            context("tag hints") {
                 override(text) { "varying vec4 otherColor; // @type color @something else" }
-                override(comments) { listOf(" @type color", " @something else") }
 
                 it("makes hint tags available") {
-                    expect(variable.hint?.tags?.get("type")).toBe("color")
-                    expect(variable.hint?.tags?.get("something")).toBe("else")
+                    expect(variable.hint?.tag("type")).toBe("color")
+                    expect(variable.hint?.tag("something")).toBe("else")
+                }
+
+                it("returns null for non-existent tags") {
+                    expect(variable.hint?.tag("nope")).toBe(null)
+                    expect(variable.hint?.tags("nope")).toBe(emptyList())
+                }
+
+                context("when tags are repeated") {
+                    override(text) { "// @thing abc\n// @thing def\nvec4 otherColor;" }
+
+                    it("each is available via tags()") {
+                        expect(variable.hint!!.tags("thing"))
+                            .containsExactly("abc", "def")
+                    }
+
+                    it("tag() returns the first") {
+                        expect(variable.hint!!.tag("thing"))
+                            .toEqual("abc")
+                    }
+                }
+
+                context("with a plugin reference") {
+                    override(text) { "varying vec4 otherColor; // @@ColorPicker default=orange palette=pastels" }
+
+                    it("builds a PluginRef") {
+                        expect(variable.hint?.pluginRef)
+                            .toEqual(PluginRef("baaahs.Core", "ColorPicker"))
+                    }
+
+                    context("when plugin id is fully specified") {
+                        override(text) { "varying vec4 otherColor; // @@foo.Plugin:ColorPicker default=orange palette=pastels" }
+
+                        it("builds a PluginRef") {
+                            expect(variable.hint?.pluginRef)
+                                .toEqual(PluginRef("foo.Plugin", "ColorPicker"))
+                        }
+                    }
+
+                    context("when plugin id is partially specified") {
+                        override(text) { "varying vec4 otherColor; // @@Plugin:ColorPicker default=orange palette=pastels" }
+
+                        it("builds a PluginRef") {
+                            expect(variable.hint?.pluginRef)
+                                .toEqual(PluginRef("baaahs.Plugin", "ColorPicker"))
+                        }
+                    }
                 }
             }
         }
@@ -81,7 +123,7 @@ object GlslCodeSpec : Spek({
                 expectValue(
                     GlslCode.GlslFunction(
                         "rand", GlslType.Float,
-                        listOf(GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 2)),
+                        listOf(GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 1)),
                         "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }"
                     )
                 ) { function }
@@ -124,7 +166,7 @@ object GlslCodeSpec : Spek({
                         expect(function).toBe(
                             GlslCode.GlslFunction(
                                 "rand", GlslType.Struct(expectedStruct),
-                                listOf(GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 3)),
+                                listOf(GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 2)),
                                 "SomeStruct rand(vec2 uv) { return xxx; }"
                             )
                         )
@@ -138,7 +180,7 @@ object GlslCodeSpec : Spek({
                         expect(function).toBe(
                             GlslCode.GlslFunction(
                                 "rand", GlslType.Int,
-                                listOf(GlslCode.GlslParam("someStruct", GlslType.Struct(expectedStruct), isIn = true, lineNumber = 3)),
+                                listOf(GlslCode.GlslParam("someStruct", GlslType.Struct(expectedStruct), isIn = true, lineNumber = 2)),
                                 "int rand(SomeStruct someStruct) { return xxx; }"
                             )
                         )
@@ -189,7 +231,7 @@ object GlslCodeSpec : Spek({
                             GlslType.Struct(expectedStruct.copy(lineNumber = 2)),
                             "uniform MovingHead movingHead;",
                             isUniform = true,
-                            lineNumber = 7
+                            lineNumber = 6
                         )
                     )
             }
@@ -230,18 +272,22 @@ object GlslCodeSpec : Spek({
             }
 
             it("parses hints") {
-                expect(glslVar.hint!!.pluginRef).toBe(PluginRef("whatever.package.Plugin", "Thing"))
-                expect(glslVar.hint!!.config).toBe(buildJsonObject {
-                    put("key", "value")
-                    put("key2", "value2")
-                })
+                expect(glslVar.hint!!.pluginRef)
+                    .toBe(PluginRef("whatever.package.Plugin", "Thing"))
+
+                expect(glslVar.hint!!.config)
+                    .toBe(buildJsonObject {
+                        put("key", "value")
+                        put("key2", "value2")
+                    })
             }
 
             context("when package is unspecified") {
                 override(hintClassStr) { "Thing" }
 
                 it("defaults to baaahs.Core") {
-                    expect(glslVar.hint!!.pluginRef).toBe(PluginRef("baaahs.Core", "Thing"))
+                    expect(glslVar.hint!!.pluginRef)
+                        .toBe(PluginRef("baaahs.Core", "Thing"))
                 }
             }
 
@@ -249,7 +295,8 @@ object GlslCodeSpec : Spek({
                 override(hintClassStr) { "FooPlugin:Thing" }
 
                 it("defaults to baaahs.Core") {
-                    expect(glslVar.hint!!.pluginRef).toBe(PluginRef("baaahs.FooPlugin", "Thing"))
+                    expect(glslVar.hint!!.pluginRef)
+                        .toBe(PluginRef("baaahs.FooPlugin", "Thing"))
                 }
             }
         }

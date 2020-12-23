@@ -1,7 +1,10 @@
 package baaahs.gl.glsl
 
 import baaahs.englishize
+import baaahs.getValue
+import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.findContentType
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
 import baaahs.unknown
@@ -96,8 +99,23 @@ class GlslCode(
             symbolsToNamespace: Set<String>,
             symbolMap: Map<String, String>
         ): String {
-            return "${lineNumber?.let { "\n#line $lineNumber\n" }}" +
-                    replaceCodeWords(fullText) {
+            // Chomp leading whitespace.
+            var newlineCount = 0
+            var i = 0
+            loop@ while (i < fullText.length) {
+                when (fullText[i]) {
+                    '\n' -> newlineCount++
+                    ' ', '\t' -> {}
+                    else -> break@loop
+                }
+                i++
+            }
+
+            val trimmedText = fullText.substring(i)
+            val trimmedLineNumber = lineNumber?.plus(newlineCount)
+
+            return "${trimmedLineNumber?.let { "\n#line $trimmedLineNumber\n" }}" +
+                    replaceCodeWords(trimmedText) {
                         symbolMap[it]
                             ?: if (it == name || symbolsToNamespace.contains(it)) {
                                 namespace.qualify(it)
@@ -142,16 +160,23 @@ class GlslCode(
         val isVarying: Boolean
         val isGlobalInput: Boolean
         val hint: Hint?
+        val lineNumber: Int?
 
-        fun toInputPort(plugins: Plugins): InputPort {
+        fun toInputPort(plugins: Plugins, parent: GlslFunction?): InputPort {
             return InputPort(
-                name, type, title,
+                name,
+                contentType = findContentType(plugins, parent)
+                    ?: plugins.resolveContentType(type),
+                type = type,
+                title = title,
                 pluginRef = hint?.pluginRef,
                 pluginConfig = hint?.config,
-                contentType = hint?.contentType(plugins),
                 glslArgSite = this
             )
         }
+
+        fun findContentType(plugins: Plugins, parent: GlslFunction?) =
+            hint?.contentType(plugins)
     }
 
     data class GlslVar(
@@ -174,12 +199,19 @@ class GlslCode(
     class Hint(
         val pluginRef: PluginRef?,
         val config: JsonObject?,
-        val tags: Map<String, String>
+        private val tags: List<Pair<String, String>>,
+        val lineNumber: Int? = null
     ) {
-        fun tag(name: String) = tags[name]
+        fun tag(name: String) =
+            tags.find { it.first == name }?.second
 
-        fun contentType(plugins: Plugins) =
-            tag("type")?.let { plugins.resolveContentType(it) }
+        fun tags(tagName: String): List<String> =
+            tags.filter { it.first == tagName }.map { it.second }
+
+        fun contentType(plugins: Plugins) = contentType("type", plugins)
+
+        fun contentType(tagName: String, plugins: Plugins) =
+            tag(tagName)?.let { plugins.resolveContentType(it) }
 
         companion object {
             fun from(comments: List<String>, lineNumber: Int? = null): Hint? =
@@ -188,7 +220,7 @@ class GlslCode(
             fun parse(commentString: String, lineNumber: Int? = null): Hint? {
                 var pluginRef: PluginRef? = null
                 var config: JsonObject? = null
-                val tags = mutableMapOf<String, String>()
+                val tags = arrayListOf<Pair<String, String>>()
 
                 Regex("@(@?[^@]+)").findAll(commentString).forEach { match ->
                     val tag = match.groupValues[1].trim()
@@ -198,17 +230,7 @@ class GlslCode(
 
                         val parts = string.split(" ")
                         val type = parts.first()
-                        pluginRef = Regex("(?:([\\w.]+\\.)?([A-Z]\\w+):)?(\\w+)").matchEntire(type)?.let {
-                            val (pluginPackage, pluginClass, resourceName) = it.destructured
-                            PluginRef(
-                                "${pluginPackage.ifEmpty { "baaahs." }}${pluginClass.ifEmpty { "Core" }}",
-                                resourceName
-                            )
-                        } ?: throw AnalysisException(
-                            "don't understand hint: $string",
-                            lineNumber ?: -1
-                        )
-
+                        pluginRef = PluginRef.from(type)
                         config = buildJsonObject {
                             parts.subList(1, parts.size).forEach { s ->
                                 val kv = s.split("=")
@@ -220,14 +242,14 @@ class GlslCode(
                         val parts = tag.split(Regex("\\s"), limit = 2)
                         when (parts.size) {
                             0 -> {} // No-op.
-                            1 -> tags[parts[0]] = parts[0]
-                            2 -> tags[parts[0]] = parts[1].trim()
+                            1 -> tags.add(parts[0] to parts[0])
+                            2 -> tags.add(parts[0] to parts[1].trim())
                         }
                     }
                 }
 
                 return if (pluginRef != null || config != null || tags.isNotEmpty()) {
-                    Hint(pluginRef, config, tags)
+                    Hint(pluginRef, config, tags, lineNumber)
                 } else null
             }
         }
@@ -267,13 +289,18 @@ class GlslCode(
         override val type: GlslType,
         val isIn: Boolean = false,
         val isOut: Boolean = false,
-        val lineNumber: Int? = null,
+        override val lineNumber: Int? = null,
         val comments: List<String> = emptyList()
     ) : GlslArgSite {
         override val title: String get() = name.englishize()
         override val isVarying: Boolean get() = true
         override val isGlobalInput: Boolean get() = false
         override val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
+
+        override fun findContentType(plugins: Plugins, parent: GlslFunction?): ContentType? {
+            return super.findContentType(plugins, parent)
+                ?: parent?.findContentType(this, plugins)
+        }
     }
 
     class Namespace(private val prefix: String) {

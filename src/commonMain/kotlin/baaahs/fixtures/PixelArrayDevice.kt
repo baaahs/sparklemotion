@@ -9,7 +9,6 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderTarget
-import baaahs.gl.shader.GenericPaintShader
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
 import baaahs.plugin.CorePlugin
@@ -47,7 +46,6 @@ object PixelArrayDevice : DeviceType {
     override val errorIndicatorShader: Shader
         get() = Shader(
             "Ω Guru Meditation Error Ω",
-            GenericPaintShader,
             /**language=glsl*/
             """
                 uniform float time;

@@ -72,10 +72,14 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     override val shaderPrototypes
         get() = listOf(
             GenericShaderPrototype,
+            ShaderToyShaderPrototype
+        )
+
+    override val shaderTypes: List<ShaderType>
+        get() = listOf(
             ProjectionShader,
             DistortionShader,
-            GenericPaintShader,
-            ShaderToyPaintShader,
+            PaintShader,
             FilterShader,
             MoverShader
         )
@@ -119,7 +123,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     @SerialName("baaahs.Core:PreviewResolution")
     data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<PreviewResolutionDataSource> {
-            override val resourceName: String get() = "Preview Resolution"
+            override val resourceName: String get() = "PreviewResolution"
             override val contentType: ContentType get() = ContentType.PreviewResolution
             override val serializerRegistrar get() = classSerializer(serializer())
             override fun build(inputPort: InputPort): PreviewResolutionDataSource =
@@ -569,7 +573,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                        SingleUniformFeed(glslProgram, this@ImageDataSource, id) { uniform ->
+                        SingleUniformFeed(glslProgram, this@ImageDataSource, id) {
                             // no-op
                         }
                 }

@@ -67,7 +67,7 @@ data class PatchEditorPanel(
         override val listSubhead: String
             get() = "Shaders"
         override val icon: Icon
-            get() = mutableShaderInstance.mutableShader.icon
+            get() = CommonIcons.UnknownShader // TODO: Derive this via ShaderType.
 
         override fun getRenderer(editableManager: EditableManager): Renderer =
             editorPanelViews.forShaderInstance(editableManager, mutablePatch, mutableShaderInstance)

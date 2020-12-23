@@ -10,7 +10,8 @@ import baaahs.util.Logger
 
 class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShaderInstance>) {
     fun editShader(shader: Shader): UnresolvedShaderInstance {
-        return unresolvedShaderInstances.find { it.mutableShader.build() == shader }
+        // TODO: src == src is probably the wrong check here:
+        return unresolvedShaderInstances.find { it.mutableShader.src == shader.src }
             ?: error("Couldn't find shader \"${shader.title}\"")
     }
 
