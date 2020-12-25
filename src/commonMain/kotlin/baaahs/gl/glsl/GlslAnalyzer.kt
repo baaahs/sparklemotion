@@ -8,16 +8,16 @@ import baaahs.show.Shader
 import baaahs.show.ShaderType
 
 class GlslAnalyzer(private val plugins: Plugins) {
-    fun pickPrototype(src: String): ShaderPrototype {
-        return pickPrototype(parse(src))
+    fun detectDialect(src: String): ShaderDialect {
+        return detectDialect(parse(src))
     }
 
-    fun pickPrototype(glslCode: GlslCode): ShaderPrototype {
-        return plugins.shaderPrototypes.all
+    fun detectDialect(glslCode: GlslCode): ShaderDialect {
+        return plugins.shaderDialects.all
             .map { it to it.matches(glslCode) }
             .filter { (_, match) -> match != MatchLevel.NoMatch }
             .maxByOrNull { (_, match) -> match }?.first
-            ?: GenericShaderPrototype
+            ?: GenericShaderDialect
     }
 
     fun parse(src: String): GlslCode {
@@ -40,8 +40,8 @@ class GlslAnalyzer(private val plugins: Plugins) {
     }
 
     fun validate(glslCode: GlslCode, shader: Shader? = null): ShaderAnalysis {
-        val prototype = pickPrototype(glslCode)
-        return prototype.analyze(glslCode, plugins, shader)
+        val dialect = detectDialect(glslCode)
+        return dialect.analyze(glslCode, plugins, shader)
     }
 
     fun openShader(src: String): OpenShader {
@@ -73,7 +73,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
         return with(shaderAnalysis) {
             OpenShader.Base(this.shader, shaderAnalysis.glslCode,
                 entryPoint!!, inputPorts, outputPorts.only(),
-                shaderType, shaderPrototype)
+                shaderType, shaderDialect)
         }
     }
 

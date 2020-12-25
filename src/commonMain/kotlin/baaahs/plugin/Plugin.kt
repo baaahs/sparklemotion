@@ -2,7 +2,7 @@ package baaahs.plugin
 
 import baaahs.fixtures.DeviceType
 import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.ShaderPrototype
+import baaahs.gl.shader.ShaderDialect
 import baaahs.show.*
 import baaahs.util.Clock
 import kotlinx.serialization.InternalSerializationApi
@@ -34,7 +34,7 @@ interface Plugin {
     val deviceTypes: List<DeviceType>
         get() = emptyList()
 
-    val shaderPrototypes: List<ShaderPrototype>
+    val shaderDialects: List<ShaderDialect>
         get() = emptyList()
 
     val shaderTypes: List<ShaderType>

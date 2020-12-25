@@ -5,7 +5,7 @@ import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 
-abstract class ShaderPrototype(val id: String) {
+abstract class ShaderDialect(val id: String) {
 
     abstract val title: String
 

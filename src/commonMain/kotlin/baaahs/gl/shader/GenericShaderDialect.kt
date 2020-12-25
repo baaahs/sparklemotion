@@ -6,7 +6,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.listOf
 import baaahs.plugin.Plugins
 
-object GenericShaderPrototype : HintedShaderPrototype("baaahs.Core:Generic") {
+object GenericShaderDialect : HintedShaderDialect("baaahs.Core:Generic") {
     override val title: String = "Generic"
     override val entryPointName: String = "main"
 
