@@ -9,6 +9,18 @@
 <br/>
 <h1>PixelLocationDataSource</h1>
 <code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PixelLocationDataSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-companion/index.html">Companion</a></h4>
+</td>
+<td>
+<code><span class="keyword">companion</span> <span class="keyword">object </span><span class="identifier">Companion</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source-builder/index.html"><span class="identifier">DataSourceBuilder</span></a><span class="symbol">&lt;</span><a href="./index.html"><span class="identifier">PixelLocationDataSource</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -60,6 +72,13 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="append-declaration.html">appendDeclaration</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">appendDeclaration</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.PixelLocationDataSource$appendDeclaration(java.lang.StringBuilder, kotlin.String)/buf">buf</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-string-builder/index.html"><span class="identifier">StringBuilder</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.PixelLocationDataSource$appendDeclaration(java.lang.StringBuilder, kotlin.String)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="create-feed.html">createFeed</a></h4>
 </td>
 <td>
@@ -71,6 +90,52 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">getType</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.glsl/-glsl-type/index.html"><span class="identifier">GlslType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="invocation-glsl.html">invocationGlsl</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">invocationGlsl</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.PixelLocationDataSource$invocationGlsl(kotlin.String)/varName">varName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="content-type.html">contentType</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">contentType</span><span class="symbol">: </span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="resource-name.html">resourceName</a></h4>
+</td>
+<td>
+<p>The unique ID for this resource within a plugin. Should be CamelCase alphanums, like a class name.</p>
+<code><span class="keyword">val </span><span class="identifier">resourceName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="serializer-registrar.html">serializerRegistrar</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">serializerRegistrar</span><span class="symbol">: </span><a href="../../baaahs.plugin/-serializer-registrar/index.html"><span class="identifier">SerializerRegistrar</span></a><span class="symbol">&lt;</span><a href="./index.html"><span class="identifier">PixelLocationDataSource</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="build.html">build</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">build</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.PixelLocationDataSource.Companion$build(baaahs.gl.shader.InputPort)/inputPort">inputPort</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">PixelLocationDataSource</span></a></code></td>
 </tr>
 </tbody>
 </table>

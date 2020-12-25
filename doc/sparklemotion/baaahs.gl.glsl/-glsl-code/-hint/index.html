@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">Hint</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$<init>(baaahs.plugin.PluginRef, kotlinx.serialization.json.JsonObject, kotlin.collections.Map((kotlin.String, )))/pluginRef">pluginRef</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.plugin/-plugin-ref/index.html"><span class="identifier">PluginRef</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$<init>(baaahs.plugin.PluginRef, kotlinx.serialization.json.JsonObject, kotlin.collections.Map((kotlin.String, )))/config">config</span><span class="symbol">:</span>&nbsp;<span class="identifier">JsonObject</span><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$<init>(baaahs.plugin.PluginRef, kotlinx.serialization.json.JsonObject, kotlin.collections.Map((kotlin.String, )))/tags">tags</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">Hint</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$<init>(baaahs.plugin.PluginRef, kotlinx.serialization.json.JsonObject, kotlin.collections.List((kotlin.Pair((kotlin.String, )))), kotlin.Int)/pluginRef">pluginRef</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.plugin/-plugin-ref/index.html"><span class="identifier">PluginRef</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$<init>(baaahs.plugin.PluginRef, kotlinx.serialization.json.JsonObject, kotlin.collections.List((kotlin.Pair((kotlin.String, )))), kotlin.Int)/config">config</span><span class="symbol">:</span>&nbsp;<span class="identifier">JsonObject</span><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$<init>(baaahs.plugin.PluginRef, kotlinx.serialization.json.JsonObject, kotlin.collections.List((kotlin.Pair((kotlin.String, )))), kotlin.Int)/tags">tags</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$<init>(baaahs.plugin.PluginRef, kotlinx.serialization.json.JsonObject, kotlin.collections.List((kotlin.Pair((kotlin.String, )))), kotlin.Int)/lineNumber">lineNumber</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -33,17 +33,17 @@
 </tr>
 <tr>
 <td>
+<h4><a href="line-number.html">lineNumber</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">lineNumber</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="plugin-ref.html">pluginRef</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">pluginRef</span><span class="symbol">: </span><a href="../../../baaahs.plugin/-plugin-ref/index.html"><span class="identifier">PluginRef</span></a><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="tags.html">tags</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">tags</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -55,7 +55,8 @@
 <h4><a href="content-type.html">contentType</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">contentType</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$contentType(baaahs.plugin.Plugins)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">?</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">contentType</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$contentType(baaahs.plugin.Plugins)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">?</span></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">contentType</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$contentType(kotlin.String, baaahs.plugin.Plugins)/tagName">tagName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$contentType(kotlin.String, baaahs.plugin.Plugins)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>
@@ -63,6 +64,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">tag</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$tag(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="tags.html">tags</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">tags</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode.Hint$tags(kotlin.String)/tagName">tagName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>

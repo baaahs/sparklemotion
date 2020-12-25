@@ -17,35 +17,28 @@
 <h4><a href="add-control-menu-items.html">addControlMenuItems</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">addControlMenuItems</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-add-control-menu-item/index.html"><span class="identifier">AddControlMenuItem</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">addControlMenuItems</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-add-control-menu-item/index.html"><span class="identifier">AddControlMenuItem</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="content-types.html">contentTypes</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">contentTypes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">contentTypes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="control-serializers.html">controlSerializers</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">controlSerializers</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-serializer-registrar/index.html"><span class="identifier">SerializerRegistrar</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="../../baaahs.show/-control/index.html"><span class="identifier">Control</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">controlSerializers</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-serializer-registrar/index.html"><span class="identifier">SerializerRegistrar</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="../../baaahs.show/-control/index.html"><span class="identifier">Control</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="data-source-builders.html">dataSourceBuilders</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">dataSourceBuilders</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source-builder/index.html"><span class="identifier">DataSourceBuilder</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="data-source-serializers.html">dataSourceSerializers</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">dataSourceSerializers</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-serializer-registrar/index.html"><span class="identifier">SerializerRegistrar</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">dataSourceBuilders</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source-builder/index.html"><span class="identifier">DataSourceBuilder</span></a><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -60,6 +53,20 @@
 </td>
 <td>
 <code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">packageName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shader-prototypes.html">shaderPrototypes</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">shaderPrototypes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.shader/-shader-prototype/index.html"><span class="identifier">ShaderPrototype</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shader-types.html">shaderTypes</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">shaderTypes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>

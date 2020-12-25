@@ -17,7 +17,7 @@
 <h4><a href="-base/index.html">Base</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Base</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><a href="../../baaahs/-ref-counted/index.html"><span class="identifier">RefCounted</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">Base</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><a href="../../baaahs/-ref-counted/index.html"><span class="identifier">RefCounted</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,31 +26,10 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="default-priority.html">defaultPriority</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">defaultPriority</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="default-upstreams.html">defaultUpstreams</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">defaultUpstreams</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="entry-point.html">entryPoint</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">entryPoint</span><span class="symbol">: </span><span class="identifier">GlslFunction</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="entry-point-name.html">entryPointName</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">entryPointName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">entryPoint</span><span class="symbol">: </span><span class="identifier">GlslFunction</span></code></td>
 </tr>
 <tr>
 <td>
@@ -82,6 +61,20 @@
 </tr>
 <tr>
 <td>
+<h4><a href="shader-prototype.html">shaderPrototype</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">shaderPrototype</span><span class="symbol">: </span><a href="../-shader-prototype/index.html"><span class="identifier">ShaderPrototype</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shader-type.html">shaderType</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">shaderType</span><span class="symbol">: </span><a href="../../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="src.html">src</a></h4>
 </td>
 <td>
@@ -104,7 +97,14 @@
 <h4><a href="find-input-port.html">findInputPort</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">findInputPort</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader$findInputPort(kotlin.String)/portId">portId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-input-port/index.html"><span class="identifier">InputPort</span></a></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">findInputPort</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader$findInputPort(kotlin.String)/portId">portId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-input-port/index.html"><span class="identifier">InputPort</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="find-input-port-or-null.html">findInputPortOrNull</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">findInputPortOrNull</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader$findInputPortOrNull(kotlin.String)/portId">portId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>

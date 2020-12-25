@@ -8,7 +8,7 @@
 <a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.gl.shader</a>&nbsp;/&nbsp;<a href="../index.html">OpenShader</a>&nbsp;/&nbsp;<a href="./index.html">Base</a><br/>
 <br/>
 <h1>Base</h1>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">Base</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><a href="../../../baaahs/-ref-counted/index.html"><span class="identifier">RefCounted</span></a></code>
+<code><span class="keyword">class </span><span class="identifier">Base</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><a href="../../../baaahs/-ref-counted/index.html"><span class="identifier">RefCounted</span></a></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -17,7 +17,8 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">Base</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.plugin.Plugins)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.plugin.Plugins)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.gl.glsl/-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.plugin.Plugins)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">Base</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$<init>(baaahs.gl.glsl.ShaderAnalysis, baaahs.show.ShaderType)/shaderAnalysis">shaderAnalysis</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.gl.glsl/-shader-analysis/index.html"><span class="identifier">ShaderAnalysis</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$<init>(baaahs.gl.glsl.ShaderAnalysis, baaahs.show.ShaderType)/shaderType">shaderType</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a><span class="symbol">)</span></code><br/>
+<code><span class="identifier">Base</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.collections.List((baaahs.gl.shader.InputPort)), baaahs.gl.shader.OutputPort, baaahs.show.ShaderType, baaahs.gl.shader.ShaderPrototype)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.collections.List((baaahs.gl.shader.InputPort)), baaahs.gl.shader.OutputPort, baaahs.show.ShaderType, baaahs.gl.shader.ShaderPrototype)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.gl.glsl/-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.collections.List((baaahs.gl.shader.InputPort)), baaahs.gl.shader.OutputPort, baaahs.show.ShaderType, baaahs.gl.shader.ShaderPrototype)/entryPoint">entryPoint</span><span class="symbol">:</span>&nbsp;<span class="identifier">GlslFunction</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.collections.List((baaahs.gl.shader.InputPort)), baaahs.gl.shader.OutputPort, baaahs.show.ShaderType, baaahs.gl.shader.ShaderPrototype)/inputPorts">inputPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.collections.List((baaahs.gl.shader.InputPort)), baaahs.gl.shader.OutputPort, baaahs.show.ShaderType, baaahs.gl.shader.ShaderPrototype)/outputPort">outputPort</span><span class="symbol">:</span>&nbsp;<a href="../../-output-port/index.html"><span class="identifier">OutputPort</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.collections.List((baaahs.gl.shader.InputPort)), baaahs.gl.shader.OutputPort, baaahs.show.ShaderType, baaahs.gl.shader.ShaderPrototype)/shaderType">shaderType</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$<init>(baaahs.show.Shader, baaahs.gl.glsl.GlslCode, baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.collections.List((baaahs.gl.shader.InputPort)), baaahs.gl.shader.OutputPort, baaahs.show.ShaderType, baaahs.gl.shader.ShaderPrototype)/shaderPrototype">shaderPrototype</span><span class="symbol">:</span>&nbsp;<a href="../../-shader-prototype/index.html"><span class="identifier">ShaderPrototype</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,17 +27,10 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="default-priority.html">defaultPriority</a></h4>
+<h4><a href="entry-point.html">entryPoint</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">defaultPriority</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="default-upstreams.html">defaultUpstreams</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">defaultUpstreams</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<a href="../../../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">entryPoint</span><span class="symbol">: </span><span class="identifier">GlslFunction</span></code></td>
 </tr>
 <tr>
 <td>
@@ -50,14 +44,14 @@
 <h4><a href="input-ports.html">inputPorts</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">inputPorts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">inputPorts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
-<h4><a href="pro-forma-input-ports.html">proFormaInputPorts</a></h4>
+<h4><a href="output-port.html">outputPort</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">proFormaInputPorts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">outputPort</span><span class="symbol">: </span><a href="../../-output-port/index.html"><span class="identifier">OutputPort</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -68,24 +62,24 @@
 </tr>
 <tr>
 <td>
+<h4><a href="shader-prototype.html">shaderPrototype</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">shaderPrototype</span><span class="symbol">: </span><a href="../../-shader-prototype/index.html"><span class="identifier">ShaderPrototype</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="shader-type.html">shaderType</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">shaderType</span><span class="symbol">: </span><a href="../../../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a></code></td>
+<code><span class="keyword">val </span><span class="identifier">shaderType</span><span class="symbol">: </span><a href="../../../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="title.html">title</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="well-known-input-ports.html">wellKnownInputPorts</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">wellKnownInputPorts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 </tbody>
 </table>
@@ -97,35 +91,28 @@
 <h4><a href="equals.html">equals</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">equals</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$equals(kotlin.Any)/other">other</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="find-input-port.html">findInputPort</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">findInputPort</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$findInputPort(kotlin.String)/portId">portId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../-input-port/index.html"><span class="identifier">InputPort</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">equals</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$equals(kotlin.Any)/other">other</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="hash-code.html">hashCode</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">hashCode</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">hashCode</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="invocation-glsl.html">invocationGlsl</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">invocationGlsl</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$invocationGlsl(baaahs.gl.glsl.GlslCode.Namespace, kotlin.String, kotlin.collections.Map((kotlin.String, )))/namespace">namespace</span><span class="symbol">:</span>&nbsp;<span class="identifier">Namespace</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$invocationGlsl(baaahs.gl.glsl.GlslCode.Namespace, kotlin.String, kotlin.collections.Map((kotlin.String, )))/resultVar">resultVar</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$invocationGlsl(baaahs.gl.glsl.GlslCode.Namespace, kotlin.String, kotlin.collections.Map((kotlin.String, )))/portMap">portMap</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="to-glsl.html">toGlsl</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">toGlsl</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$toGlsl(baaahs.gl.glsl.GlslCode.Namespace, kotlin.collections.Map((kotlin.String, )))/namespace">namespace</span><span class="symbol">:</span>&nbsp;<span class="identifier">Namespace</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$toGlsl(baaahs.gl.glsl.GlslCode.Namespace, kotlin.collections.Map((kotlin.String, )))/portMap">portMap</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="to-input-port.html">toInputPort</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">toInputPort</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$toInputPort(baaahs.gl.glsl.GlslCode.GlslVar)/glslVar">glslVar</span><span class="symbol">:</span>&nbsp;<span class="identifier">GlslVar</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../-input-port/index.html"><span class="identifier">InputPort</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">toGlsl</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$toGlsl(baaahs.gl.glsl.GlslCode.Namespace, kotlin.collections.Map((kotlin.String, )))/namespace">namespace</span><span class="symbol">:</span>&nbsp;<span class="identifier">Namespace</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OpenShader.Base$toGlsl(baaahs.gl.glsl.GlslCode.Namespace, kotlin.collections.Map((kotlin.String, )))/portMap">portMap</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 </tbody>
 </table>

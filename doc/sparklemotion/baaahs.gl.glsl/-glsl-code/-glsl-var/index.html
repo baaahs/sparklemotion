@@ -8,7 +8,7 @@
 <a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.gl.glsl</a>&nbsp;/&nbsp;<a href="../index.html">GlslCode</a>&nbsp;/&nbsp;<a href="./index.html">GlslVar</a><br/>
 <br/>
 <h1>GlslVar</h1>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslVar</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">GlslStatement</span></code>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GlslVar</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">GlslStatement</span><span class="symbol">, </span><span class="identifier">GlslArgSite</span></code>
 <h3>Constructors</h3>
 <table>
 <tbody>
@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">GlslVar</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(baaahs.gl.glsl.GlslType, kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/type">type</span><span class="symbol">:</span>&nbsp;<a href="../../-glsl-type/index.html"><span class="identifier">GlslType</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(baaahs.gl.glsl.GlslType, kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(baaahs.gl.glsl.GlslType, kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/fullText">fullText</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;""<span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(baaahs.gl.glsl.GlslType, kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/isConst">isConst</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(baaahs.gl.glsl.GlslType, kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/isUniform">isUniform</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(baaahs.gl.glsl.GlslType, kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/isVarying">isVarying</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(baaahs.gl.glsl.GlslType, kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/lineNumber">lineNumber</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(baaahs.gl.glsl.GlslType, kotlin.String, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/comments">comments</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyList()<span class="symbol">)</span></code></td>
+<code><span class="identifier">GlslVar</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(kotlin.String, baaahs.gl.glsl.GlslType, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(kotlin.String, baaahs.gl.glsl.GlslType, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/type">type</span><span class="symbol">:</span>&nbsp;<a href="../../-glsl-type/index.html"><span class="identifier">GlslType</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(kotlin.String, baaahs.gl.glsl.GlslType, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/fullText">fullText</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;""<span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(kotlin.String, baaahs.gl.glsl.GlslType, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/isConst">isConst</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(kotlin.String, baaahs.gl.glsl.GlslType, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/isUniform">isUniform</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(kotlin.String, baaahs.gl.glsl.GlslType, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/isVarying">isVarying</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(kotlin.String, baaahs.gl.glsl.GlslType, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/lineNumber">lineNumber</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$<init>(kotlin.String, baaahs.gl.glsl.GlslType, kotlin.String, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean, kotlin.Int, kotlin.collections.List((kotlin.String)))/comments">comments</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyList()<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -54,6 +54,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="is-global-input.html">isGlobalInput</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">isGlobalInput</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="is-uniform.html">isUniform</a></h4>
 </td>
 <td>
@@ -82,6 +89,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="title.html">title</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="type.html">type</a></h4>
 </td>
 <td>
@@ -94,24 +108,10 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="display-name.html">displayName</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">displayName</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="strip-source.html">stripSource</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">stripSource</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">GlslVar</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="to-input-port.html">toInputPort</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">toInputPort</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslCode.GlslVar$toInputPort(baaahs.plugin.Plugins)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a></code></td>
 </tr>
 </tbody>
 </table>

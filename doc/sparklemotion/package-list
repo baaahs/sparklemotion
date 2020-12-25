@@ -5,6 +5,7 @@ $dokka.location:baaahs$camelize(kotlin.String)baaahs/kotlin.-string/camelize.ht
 $dokka.location:baaahs$disabled#org.w3c.dom.Elementbaaahs/org.w3c.dom.-element/disabled.html
 $dokka.location:baaahs$englishize(kotlin.String)baaahs/kotlin.-string/englishize.html
 $dokka.location:baaahs$getBang(kotlin.collections.Map((baaahs.getBang.K, baaahs.getBang.V)), baaahs.getBang.K, kotlin.String)baaahs/kotlin.collections.-map/get-bang.html
+$dokka.location:baaahs$getValue(kotlin.Lazy((baaahs.getValue.T)), kotlin.Any, kotlin.reflect.KProperty((kotlin.Any)))baaahs/kotlin.-lazy/get-value.html
 $dokka.location:baaahs$only(kotlin.collections.Collection((baaahs.only.E)), kotlin.String)baaahs/kotlin.collections.-collection/only.html
 $dokka.location:baaahs$replacing(kotlin.collections.List((baaahs.replacing.T)), kotlin.Int, baaahs.replacing.T)baaahs/kotlin.collections.-list/replacing.html
 $dokka.location:baaahs.app.ui.editor$targetEl(org.w3c.dom.events.Event)baaahs.app.ui.editor/org.w3c.dom.events.-event/target-el.html

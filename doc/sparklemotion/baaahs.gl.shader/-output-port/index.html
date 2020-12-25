@@ -17,13 +17,20 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">OutputPort</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OutputPort$<init>(baaahs.gl.patch.ContentType, kotlin.String, kotlin.String, baaahs.gl.glsl.GlslType)/contentType">contentType</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OutputPort$<init>(baaahs.gl.patch.ContentType, kotlin.String, kotlin.String, baaahs.gl.glsl.GlslType)/description">description</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;contentType.title<span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OutputPort$<init>(baaahs.gl.patch.ContentType, kotlin.String, kotlin.String, baaahs.gl.glsl.GlslType)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;ShaderOutPortRef.ReturnValue<span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OutputPort$<init>(baaahs.gl.patch.ContentType, kotlin.String, kotlin.String, baaahs.gl.glsl.GlslType)/dataType">dataType</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-glsl-type/index.html"><span class="identifier">GlslType</span></a>&nbsp;<span class="symbol">=</span>&nbsp;contentType.glslType<span class="symbol">)</span></code></td>
+<code><span class="identifier">OutputPort</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.OutputPort$<init>(baaahs.gl.patch.ContentType, kotlin.String, kotlin.String, baaahs.gl.glsl.GlslType, kotlin.Boolean, kotlin.Int)/contentType">contentType</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OutputPort$<init>(baaahs.gl.patch.ContentType, kotlin.String, kotlin.String, baaahs.gl.glsl.GlslType, kotlin.Boolean, kotlin.Int)/description">description</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;contentType.title<span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OutputPort$<init>(baaahs.gl.patch.ContentType, kotlin.String, kotlin.String, baaahs.gl.glsl.GlslType, kotlin.Boolean, kotlin.Int)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;ReturnValue<span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OutputPort$<init>(baaahs.gl.patch.ContentType, kotlin.String, kotlin.String, baaahs.gl.glsl.GlslType, kotlin.Boolean, kotlin.Int)/dataType">dataType</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-glsl-type/index.html"><span class="identifier">GlslType</span></a>&nbsp;<span class="symbol">=</span>&nbsp;contentType.glslType<span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OutputPort$<init>(baaahs.gl.patch.ContentType, kotlin.String, kotlin.String, baaahs.gl.glsl.GlslType, kotlin.Boolean, kotlin.Int)/isParam">isParam</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.OutputPort$<init>(baaahs.gl.patch.ContentType, kotlin.String, kotlin.String, baaahs.gl.glsl.GlslType, kotlin.Boolean, kotlin.Int)/lineNumber">lineNumber</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
 <h3>Properties</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="arg-site-name.html">argSiteName</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">argSiteName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="content-type.html">contentType</a></h4>
@@ -52,6 +59,20 @@
 <td>
 <code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
+<tr>
+<td>
+<h4><a href="is-param.html">isParam</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">isParam</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="line-number.html">lineNumber</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">lineNumber</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">?</span></code></td>
+</tr>
 </tbody>
 </table>
 <h3>Functions</h3>
@@ -63,6 +84,18 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">isReturnValue</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-return-value.html">ReturnValue</a></h4>
+</td>
+<td>
+<code><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">ReturnValue</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 </tbody>
 </table>
