@@ -8,7 +8,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 
-object ShaderToyShaderPrototype : HintedShaderPrototype("baaahs.Core:ShaderToy") {
+object ShaderToyShaderDialect : HintedShaderDialect("baaahs.Core:ShaderToy") {
 
     override val entryPointName: String = "mainImage"
 

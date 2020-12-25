@@ -6,9 +6,9 @@ import baaahs.gl.expects
 import baaahs.gl.glsl.GlslCode.*
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.GenericShaderPrototype
+import baaahs.gl.shader.GenericShaderDialect
 import baaahs.gl.shader.InputPort
-import baaahs.gl.shader.ShaderToyShaderPrototype
+import baaahs.gl.shader.ShaderToyShaderDialect
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
@@ -306,20 +306,20 @@ object GlslAnalyzerSpec : Spek({
                 }
             }
 
-            context("#pickPrototype") {
+            context("#detectDialect") {
                 override(shaderText) { "void main() {}" }
 
-                val prototype by value { glslAnalyzer.pickPrototype(shaderText) }
+                val dialect by value { glslAnalyzer.detectDialect(shaderText) }
 
                 it("is generic") {
-                    expect(prototype).toBe(GenericShaderPrototype)
+                    expect(dialect).toBe(GenericShaderDialect)
                 }
 
                 context("for shaders having a mainImage function") {
                     override(shaderText) { "void mainImage() {}" }
 
                     it("is ShaderToy") {
-                        expect(prototype).toBe(ShaderToyShaderPrototype)
+                        expect(dialect).toBe(ShaderToyShaderDialect)
                     }
                 }
             }

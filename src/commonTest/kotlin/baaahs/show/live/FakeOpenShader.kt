@@ -6,7 +6,7 @@ import baaahs.gl.glsl.GlslCode
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
-import baaahs.gl.shader.ShaderPrototype
+import baaahs.gl.shader.ShaderDialect
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 
@@ -36,6 +36,6 @@ class FakeOpenShader(
     override val shaderType: ShaderType
         get() = TODO("not implemented")
 
-    override val shaderPrototype: ShaderPrototype
+    override val shaderDialect: ShaderDialect
         get() = TODO("not implemented")
 }

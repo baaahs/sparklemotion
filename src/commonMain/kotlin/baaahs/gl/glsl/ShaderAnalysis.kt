@@ -2,13 +2,13 @@ package baaahs.gl.glsl
 
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
-import baaahs.gl.shader.ShaderPrototype
+import baaahs.gl.shader.ShaderDialect
 import baaahs.show.Shader
 
 interface ShaderAnalysis {
     val glslCode: GlslCode
 
-    val shaderPrototype: ShaderPrototype
+    val shaderDialect: ShaderDialect
 
     val entryPoint: GlslCode.GlslFunction?
 

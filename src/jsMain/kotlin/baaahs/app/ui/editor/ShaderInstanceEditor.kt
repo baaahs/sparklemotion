@@ -6,7 +6,10 @@ import baaahs.app.ui.shaderPreview
 import baaahs.englishize
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.*
+import baaahs.show.mutable.EditingShader
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShaderChannel
+import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.*
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
@@ -200,7 +203,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                             }
                             br {}
                             if (openShader != null) {
-                                +"Type: ${openShader.shaderType.title} (${openShader.shaderPrototype.title})"
+                                +"Type: ${openShader.shaderType.title} (${openShader.shaderDialect.title})"
                             }
                         }
                     }
