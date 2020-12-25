@@ -19,12 +19,17 @@ interface PlatformIcons {
     val FilterShader: Icon
     val PaintShader: Icon
     val MoverShader: Icon
+    val UnknownShader: Icon
 
     val BeatLinkControl: Icon
     val Button: Icon
     val ButtonGroup: Icon
     val ColorPalette: Icon
     val Visualizer: Icon
+
+    val Info: Icon
+    val Warning: Icon
+    val Error: Icon
 }
 
 expect fun getCommonIcons(): PlatformIcons

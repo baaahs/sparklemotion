@@ -1,49 +1,35 @@
 package baaahs.gl.shader
 
-import baaahs.gl.glsl.GlslCode
+import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.GlslType
-import baaahs.gl.glsl.LinkException
+import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
-import baaahs.plugin.Plugins
-import baaahs.show.Shader
+import baaahs.gl.preview.PreviewShaders
+import baaahs.plugin.objectSerializer
 import baaahs.show.ShaderType
+import baaahs.ui.Icon
+import kotlinx.serialization.SerialName
 
-class DistortionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
-    companion object {
-        val proFormaInputPorts = listOf(
-            InputPort("gl_FragCoord", GlslType.Vec2, "U/V Coordinates", ContentType.UvCoordinateStream)
-        )
+object DistortionShader : ShaderType {
+    override val title: String = "Distortion"
 
-        val wellKnownInputPorts = listOf(
-            InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream),
-            InputPort("intensity", GlslType.Float, "Intensity", ContentType.Float), // TODO: ContentType.ZeroToOne
-            InputPort("time", GlslType.Float, "Time", ContentType.Time),
-            InputPort("startTime", GlslType.Float, "Activated Time", ContentType.Time),
-            InputPort("endTime", GlslType.Float, "Deactivated Time", ContentType.Time)
-//                        varying vec2 surfacePosition; TODO
-        ).associateBy { it.id }
+    override val icon: Icon = CommonIcons.DistortionShader
 
-        val outputPort: OutputPort = OutputPort(ContentType.UvCoordinateStream)
+    override val template: String = """
+        uniform float scale; // @@Slider min=0.25 max=4 default=1
+
+        vec2 main(vec2 uvIn) {
+          return (uvIn - .5) / scale + .5;
+        }
+    """.trimIndent()
+
+    override fun matches(shaderAnalysis: ShaderAnalysis): ShaderType.MatchLevel {
+        return if (shaderAnalysis.outputPorts.firstOrNull()?.contentType == ContentType.UvCoordinate
+            && shaderAnalysis.inputPorts.any { it.contentType == ContentType.UvCoordinate })
+            ShaderType.MatchLevel.MatchAndFilter else ShaderType.MatchLevel.NoMatch
     }
 
-    override val shaderType: ShaderType
-        get() = ShaderType.Distortion
-
-    override val entryPointName: String get() = "mainDistortion"
-
-    override val proFormaInputPorts
-        get() = DistortionShader.proFormaInputPorts
-    override val wellKnownInputPorts
-        get() = DistortionShader.wellKnownInputPorts
-    override val outputPort: OutputPort
-        get() = DistortionShader.outputPort
-
-    override fun invocationGlsl(
-        namespace: GlslCode.Namespace,
-        resultVar: String,
-        portMap: Map<String, String>
-    ): String {
-        val inVar = portMap["gl_FragCoord"] ?: throw LinkException("No input for shader \"$title\"")
-        return resultVar + " = " + namespace.qualify(entryPoint.name) + "($inVar.xy)"
+    override fun pickPreviewShaders(openShader: OpenShader, previewShaders: PreviewShaders): List<OpenShader> {
+        return listOf(previewShaders.screenCoordsProjection, openShader, previewShaders.smpteColorBars)
     }
 }

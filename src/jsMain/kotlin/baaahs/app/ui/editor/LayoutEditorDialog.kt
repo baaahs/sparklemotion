@@ -46,7 +46,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         return json.parseToJsonElement(layoutJson.getValue()) as JsonObject
     }
 
-    val checkLayout = baaahs.ui.useCallback() {
+    val checkLayout = baaahs.ui.useCallback {
         if (changed.current) {
             errorMessage = try {
                 panelNames = getPanelNames(getLayoutJson())
@@ -63,7 +63,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         withCleanup { window.clearInterval(interval) }
     }
 
-    val handleApply = baaahs.ui.useCallback(props.onApply) { event: Event ->
+    val handleApply = baaahs.ui.useCallback(props.onApply) { _: Event ->
         val layoutJson = getLayoutJson()
         val layouts = Layouts(
             getPanelNames(layoutJson),
@@ -73,10 +73,10 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
     }
 
     val handleClose =
-        baaahs.ui.useCallback(props.onClose) { event: Event, reason: String -> props.onClose() }
+        baaahs.ui.useCallback(props.onClose) { _: Event, _: String -> props.onClose() }
 
     val handleCancel =
-        baaahs.ui.useCallback(props.onClose) { event: Event -> props.onClose() }
+        baaahs.ui.useCallback(props.onClose) { _: Event -> props.onClose() }
 
     val jsonStr = props.layouts.map["default"]?.let {
         json.encodeToString(JsonElement.serializer(), it.rootNode)
@@ -102,7 +102,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
             styledDiv {
                 css { +previewBar }
 
-                +(errorMessage ?: "Panels: ${panelNames}")
+                +(errorMessage ?: "Panels: $panelNames")
             }
 
             tabs {

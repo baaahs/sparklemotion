@@ -8,6 +8,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.RenderTarget
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
+import baaahs.show.mutable.MutableShaderInstance
 import baaahs.util.Clock
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
@@ -47,21 +48,36 @@ fun expectStatements(
     checkLineNumbers: Boolean = false
 ) {
     assertEquals(
-        expected.map { it.esc(checkLineNumbers) }.joinToString("\n"),
-        actual().map { it.esc(checkLineNumbers) }.joinToString("\n")
+        expected.joinToString("\n") { it.esc(checkLineNumbers) },
+        actual().joinToString("\n") { it.esc(checkLineNumbers) }
     )
 }
 
 fun <T> expects(expected: Collection<T>, block: () -> Collection<T>) {
     val actual = block()
+    fun T.prettier() =
+        if (this is MutableShaderInstance) {
+            "MutableShaderInstance(\n" +
+                    "    mutableShader=$mutableShader\n" +
+                    "    incomingLinks=\n" +
+                    "${incomingLinks.prettier("        ")}\n" +
+                    "    shaderChannel=$shaderChannel\n" +
+                    "    priority=$priority\n" +
+                    ")"
+        } else this.toString()
+
     if (actual != expected)
-        assertEquals(expected.joinToString("\n"), actual.joinToString("\n"))
+        assertEquals(
+            expected.joinToString("\n") { it.prettier() },
+            actual.joinToString("\n") { it.prettier() }
+        )
 }
+
+fun Map<*, *>.prettier(pfx: String = "") =
+    entries.sortedBy { (k, _) -> k.toString() }.joinToString("\n") { (k, v) -> "$pfx$k: $v" }
 
 fun <K, V> expects(expected: Map<K, V>, block: () -> Map<K, V>) {
     val actual = block()
-    fun Map<*, *>.prettier() =
-        entries.sortedBy { (k, _) -> k.toString() }.joinToString("\n") { (k, v) -> "$k = $v" }
     if (actual != expected)
         assertEquals(expected.prettier(), actual.prettier())
 }

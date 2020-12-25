@@ -46,26 +46,23 @@ class BeatLinkPlugin internal constructor(
             classSerializer(BeatLinkControl.serializer())
         )
 
-    override val dataSourceSerializers
-        get() = listOf(
-            objectSerializer("baaahs.BeatLink:BeatLink", beatLinkDataSource)
-        )
-
     override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
         get() = listOf(
             object : DataSourceBuilder<BeatLinkDataSource> {
                 override val resourceName: String get() = "BeatLink"
                 override val contentType: ContentType get() = beatDataContentType
+                override val serializerRegistrar get() =
+                    objectSerializer("baaahs.BeatLink:BeatLink", beatLinkDataSource)
 
                 override fun suggestDataSources(
                     inputPort: InputPort,
                     suggestedContentTypes: Set<ContentType>
                 ): List<PortLinkOption> {
-                    if ((inputPort.contentType == beatDataContentType
-                                || suggestedContentTypes.contains(beatDataContentType))
-                        || (inputPort.type == GlslType.Float && inputPort.glslVar?.isVarying != true)
+                    return if (inputPort.contentType == beatDataContentType
+                        || suggestedContentTypes.contains(beatDataContentType)
+                        || inputPort.type == GlslType.Float
                     ) {
-                        return listOf(
+                        listOf(
                             PortLinkOption(
                                 MutableDataSourcePort(beatLinkDataSource),
                                 wasPurposeBuilt = true,
@@ -73,9 +70,7 @@ class BeatLinkPlugin internal constructor(
                                 isPluginSuggestion = true
                             )
                         )
-                    } else {
-                        return emptyList()
-                    }
+                    } else emptyList()
                 }
 
                 override fun build(inputPort: InputPort): BeatLinkDataSource = beatLinkDataSource

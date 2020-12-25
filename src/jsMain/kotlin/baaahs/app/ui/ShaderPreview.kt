@@ -9,9 +9,9 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.ProjectionPreview
 import baaahs.gl.render.QuadPreview
 import baaahs.gl.render.ShaderPreview
+import baaahs.gl.shader.ProjectionShader
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 import baaahs.ui.addObserver
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
@@ -49,7 +49,13 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     onMount(canvas.current) {
         val canvasEl = canvas.current ?: return@onMount
 
-        val preview = if (props.shader?.type == ShaderType.Projection) {
+        val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
+            // TODO: This is duplicating work that happens later in PreviewShaderBuilder, which is rotten.
+            appContext.autoWirer.glslAnalyzer.openShader(props.shader!!.src)
+                .shaderType
+        }
+
+        val preview = if (shaderType == ProjectionShader) {
             val canvas2d = canvasEl
             val canvas3d = document.createElement("canvas") as HTMLCanvasElement
             val glslContext = GlBase.jsManager.createContext(canvas3d)
@@ -84,7 +90,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     }
 
     val builder = memo(gl, props.shader, props.previewShaderBuilder) {
-        gl?.let { gl ->
+        gl?.let {
             props.previewShaderBuilder
                 ?: PreviewShaderBuilder(props.shader!!, appContext.autoWirer, appContext.webClient.model)
         }
@@ -98,7 +104,9 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         val observer = builder.addObserver(fireImmediately = true) {
             when (it.state) {
                 ShaderBuilder.State.Linked -> {
-                    it.startCompile(shaderPreview!!.renderEngine)
+                    shaderPreview?.let { shaderPreview ->
+                        it.startCompile(shaderPreview.renderEngine)
+                    }
                 }
                 ShaderBuilder.State.Success -> {
                     val gadgetAdjuster =
@@ -107,7 +115,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                         if (props.adjustGadgets) gadgetAdjuster.adjustGadgets()
                     }
 
-                    shaderPreview!!.setProgram(it.glslProgram!!)
+                    shaderPreview?.setProgram(it.glslProgram)
                 }
                 else -> {
                 }
@@ -139,6 +147,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
         when (builder?.state ?: ShaderBuilder.State.Unbuilt) {
             ShaderBuilder.State.Unbuilt,
+            ShaderBuilder.State.Analyzing,
             ShaderBuilder.State.Linking,
             ShaderBuilder.State.Linked,
             ShaderBuilder.State.Compiling -> {

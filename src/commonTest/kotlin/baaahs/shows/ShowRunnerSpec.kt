@@ -11,7 +11,6 @@ import baaahs.mapper.Storage
 import baaahs.plugin.CorePlugin
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
@@ -54,7 +53,7 @@ object ShowRunnerSpec : Spek({
                         ) {
                             addButton("test patchset") {
                                 addPatch(
-                                    autoWirer.autoWire(Shader("Untitled", ShaderType.Paint, shaderSrc))
+                                    autoWirer.autoWire(Shader("Untitled", shaderSrc))
                                         .acceptSuggestedLinkOptions()
                                         .confirm()
                                 )
@@ -97,7 +96,7 @@ object ShowRunnerSpec : Spek({
 
         context("port wiring") {
             it("wires up UV texture stuff") {
-                val pixelCoordsTextureUnit = fakeProgram.getUniform("in_pixelCoordsTexture") as Int
+                val pixelCoordsTextureUnit = fakeProgram.getUniform("ds_pixelLocation_texture") as Int
                 val textureConfig = fakeGlslContext.getTextureConfig(pixelCoordsTextureUnit)
 
                 expect(textureConfig.width to textureConfig.height).toBe(100 to 1)
@@ -112,7 +111,7 @@ object ShowRunnerSpec : Spek({
                 override(shaderSrc) {
                     /**language=glsl*/
                     """
-                    uniform vec4 color;
+                    uniform vec4 color; // @@ColorPicker
                     void main() { gl_FragColor = color; }
                     """.trimIndent()
                 }

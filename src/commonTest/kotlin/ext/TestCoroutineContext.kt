@@ -77,6 +77,7 @@ class TestCoroutineContext constructor(private val name: String?) : CoroutineCon
         handler.cancelAllActions()
     }
 
+    fun processOneEvent() = handler.processOneEvent()
     fun runAll() = handler.runAll()
 
     override fun toString() = name ?: handler.toString()
@@ -175,6 +176,14 @@ private class TestHandler {
         }
 
         return nextEventTime
+    }
+
+    fun processOneEvent() {
+        val current = queue.peek()
+        if (current != null) {
+            queue.remove(current)
+            current.run()
+        }
     }
 
     private fun triggerActions(targetTime: Long) {

@@ -31,11 +31,9 @@ class PortDiagram(
 
         fun add(patch: OpenPatch) {
             patch.shaderInstances.forEach { liveShaderInstance ->
-                if (liveShaderInstance.shaderChannel != null) {
-                    val outputPort = liveShaderInstance.shader.outputPort
-                    val track = Track(liveShaderInstance.shaderChannel, outputPort.contentType)
-                    addToChannel(track, liveShaderInstance, level)
-                }
+                val outputPort = liveShaderInstance.shader.outputPort
+                val track = Track(liveShaderInstance.shaderChannel, outputPort.contentType)
+                addToChannel(track, liveShaderInstance, level)
             }
 
             level++
@@ -66,13 +64,16 @@ class PortDiagram(
         }
     }
 
-    private class Candidates(entries: List<ChannelEntry>) {
-        val sortedEntries = entries.sortedWith(
-            compareByDescending<ChannelEntry> { it.typePriority }
-                .thenByDescending { it.priority }
+    internal class Candidates(entries: List<ChannelEntry>) {
+        companion object {
+            val comparator =
+                compareByDescending<ChannelEntry> { it.priority }
+                .thenByDescending { it.typePriority }
                 .thenByDescending { it.level }
-                .thenByDescending { it.shaderInstance.shader.title }
-        )
+                .thenBy { it.shaderInstance.shader.title }
+        }
+
+        private val sortedEntries = entries.sortedWith(comparator)
 
         fun iterator(): Iterator<LiveShaderInstance> {
             return sortedEntries
@@ -89,7 +90,7 @@ class PortDiagram(
         override fun toString(): String {
             return "Resolving $track" +
                     (instance?.let { " -> [${it.shader.title}]"} ?: "") +
-                    (resolvingInputPort?.let { ".${it.id} (${it.contentType?.id ?: "unknown content type"})"} ?: "")
+                    (resolvingInputPort?.let { ".${it.id} (${it.contentType.id})"} ?: "")
         }
     }
 
@@ -106,10 +107,6 @@ class PortDiagram(
 
         fun resolveChannel(inputPort: InputPort, shaderChannel: ShaderChannel): ProgramNode {
             val contentType = inputPort.contentType
-                ?: throw ResolveException(
-                    "attempt to resolve a channel for a port with no content type",
-                    message = "resolveChannel(inputPort=${inputPort.id}, channel=${shaderChannel.id}))"
-                )
 
             val track = Track(shaderChannel, contentType)
             return resolve(track)
@@ -198,7 +195,7 @@ class PortDiagram(
     }
 
     class ChannelEntry(val shaderInstance: LiveShaderInstance, val priority: Float, val level: Int) {
-        val typePriority: Int get() = shaderInstance.shader.defaultPriority
+        val typePriority: Int get() = if (shaderInstance.isFilter) 1 else 0
 
         override fun toString(): String {
             return "ChannelEntry(shaderInstance=${shaderInstance.shader.title}, priority=$priority, level=$level)"

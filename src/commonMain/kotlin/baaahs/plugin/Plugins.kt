@@ -4,13 +4,20 @@ import baaahs.Gadget
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.fixtures.DeviceType
 import baaahs.getBang
+import baaahs.gl.glsl.GlslType
+import baaahs.gl.glsl.LinkException
 import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.*
 import baaahs.show.*
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.util.Clock
 import baaahs.util.Time
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.modules.SerializersModule
@@ -23,8 +30,7 @@ data class PluginRef(
     /** A unique ID for plugin. Should be lowercase alphanums and dots, like a package name. */
     val pluginId: String,
     /** A unique ID for a resource within a plugin. Should be CamelCase alphanums, like a class name. */
-    val resourceName: String,
-    val pluginIdNotSpecified: Boolean = false
+    val resourceName: String
 ) {
     fun toRef() = "$pluginId:$resourceName"
 
@@ -37,9 +43,15 @@ data class PluginRef(
             val result = Regex("(([\\w.]+):)?(\\w+)").matchEntire(identString)
             return if (result != null) {
                 val (_, pluginId, resourceName) = result.destructured
-                PluginRef(pluginId, resourceName)
+                if (pluginId.isEmpty()) {
+                    PluginRef(Plugins.default, resourceName)
+                } else if (!pluginId.contains(".")) {
+                    PluginRef("baaahs.$pluginId", resourceName)
+                } else {
+                    PluginRef(pluginId, resourceName)
+                }
             } else {
-                PluginRef(Plugins.default, identString, pluginIdNotSpecified = true)
+                PluginRef(Plugins.default, identString)
             }
         }
     }
@@ -69,13 +81,12 @@ class Plugins private constructor(
         registerSerializers { controlSerializers }
     }
 
-    private val dataSourceSerialModule = SerializersModule {
-        registerSerializers { dataSourceSerializers }
-    }
-
     private val dataSourceBuilders = DataSourceBuilders()
 
-    private val deviceTypes = DeviceTypes()
+    val deviceTypes = DeviceTypes()
+
+    val shaderPrototypes = ShaderPrototypes()
+    val shaderTypes = ShaderTypes()
 
     private inline fun <reified T : Any> SerializersModuleBuilder.registerSerializers(
         getSerializersFn: Plugin.() -> List<SerializerRegistrar<out T>>
@@ -91,9 +102,10 @@ class Plugins private constructor(
 
     val serialModule = SerializersModule {
         include(Gadget.serialModule)
+        include(contentTypes.serialModule)
         include(controlSerialModule)
-        include(dataSourceSerialModule)
-        include(DeviceType.serialModule)
+        include(dataSourceBuilders.serialModule)
+        include(deviceTypes.serialModule)
     }
 
     val json = Json { serializersModule = this@Plugins.serialModule }
@@ -109,15 +121,22 @@ class Plugins private constructor(
         return contentTypes.byId[name]
     }
 
+    fun resolveContentType(glslType: GlslType): ContentType {
+        return if (glslType is GlslType.Struct)
+            contentTypes.all.firstOrNull() { it.glslType == glslType }
+                ?: ContentType.unknown(glslType)
+        else ContentType.unknown(glslType)
+    }
+
     fun suggestContentTypes(inputPort: InputPort): Set<ContentType> {
         val glslType = inputPort.type
-        val isStream = inputPort.glslVar?.isVarying ?: false
-        return (contentTypes.byGlslType[glslType to isStream] ?: emptyList()).toSet()
+        return contentTypes.matchingType(glslType)
     }
 
     fun resolveDataSource(inputPort: InputPort): DataSource {
         val pluginRef = inputPort.pluginRef ?: error("no plugin specified")
-        val builder = dataSourceBuilders.byPluginRef[pluginRef] ?: error("unknown plugin resource $pluginRef")
+        val builder = dataSourceBuilders.byPluginRef[pluginRef]
+            ?: throw LinkException("unknown plugin resource $pluginRef", inputPort.glslArgSite?.lineNumber)
         return builder.build(inputPort)
     }
 
@@ -128,7 +147,7 @@ class Plugins private constructor(
         val suggestions = (setOfNotNull(inputPort.contentType) + suggestedContentTypes).flatMap { contentType ->
             val dataSourceCandidates =
                 dataSourceBuilders.buildForContentType(contentType, inputPort) +
-                        deviceTypes.dataSourcesFor(contentType)
+                        deviceTypes.buildForContentType(contentType, inputPort)
 
             dataSourceCandidates.map { dataSource ->
                 PortLinkOption(
@@ -136,6 +155,8 @@ class Plugins private constructor(
                     wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
                     isPluginSuggestion = true,
                     isExactContentType = dataSource.contentType == inputPort.contentType
+                            // TODO: This is dodgy. Trying to get Slider to win over channel ref.
+                            || inputPort.contentType.isUnknown()
                 )
             }
         }
@@ -182,8 +203,29 @@ class Plugins private constructor(
 
     inner class ContentTypes {
         val all = plugins.flatMap { it.contentTypes }.toSet()
-        val byId = all.associateBy { it.id }
-        val byGlslType = all.filter { it.suggest }.groupBy({ it.glslType to it.isStream }, { it })
+        internal val byId = all.associateBy { it.id }
+        private val byGlslType = all.filter { it.suggest }.groupBy({ it.glslType }, { it })
+
+        val serialModule = SerializersModule {
+            contextual(ContentType::class, object : KSerializer<ContentType> {
+                override val descriptor: SerialDescriptor
+                    get() = String.serializer().descriptor
+
+                override fun deserialize(decoder: Decoder): ContentType {
+                    val id = decoder.decodeString()
+                    return byId[id] ?: error("Unknown content type \"$id\"")
+                }
+
+                override fun serialize(encoder: Encoder, value: ContentType) {
+                    encoder.encodeString(value.id)
+                }
+            })
+        }
+
+        fun matchingType(glslType: GlslType): Set<ContentType> {
+            val exactMatches = byGlslType[glslType] ?: emptyList()
+            return exactMatches.toSet()
+        }
     }
 
     inner class DataSourceBuilders {
@@ -196,6 +238,13 @@ class Plugins private constructor(
         }
 
         val byContentType = all.groupBy { builder -> builder.contentType }
+
+        val serialModule = SerializersModule {
+            registerSerializers {
+                dataSourceBuilders.map { it.serializerRegistrar } +
+                        deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializerRegistrar } }
+            }
+        }
 
         fun buildForContentType(
             contentType: ContentType?,
@@ -210,10 +259,28 @@ class Plugins private constructor(
     inner class DeviceTypes {
         val all = plugins.flatMap { it.deviceTypes }
 
-        fun dataSourcesFor(contentType: ContentType): List<DataSource> {
-            return all.flatMap { deviceType ->
-                deviceType.dataSources.filter { dataSource -> dataSource.contentType == contentType }
+        val serialModule = SerializersModule {
+            val serializer = DeviceType.Serializer(all.associateBy { it.id })
+
+            contextual(DeviceType::class, serializer)
+            all.forEach { deviceType ->
+                @Suppress("UNCHECKED_CAST")
+                contextual(deviceType::class as KClass<DeviceType>, serializer)
             }
         }
+
+        fun buildForContentType(contentType: ContentType, inputPort: InputPort): List<DataSource> {
+            return all.flatMap { deviceType ->
+                deviceType.dataSourceBuilders.filter { dataSource -> dataSource.contentType == contentType }
+            }.map { it.build(inputPort) }
+        }
+    }
+
+    inner class ShaderPrototypes {
+        val all = plugins.flatMap { it.shaderPrototypes }
+    }
+
+    inner class ShaderTypes {
+        val all = plugins.flatMap { it.shaderTypes }
     }
 }

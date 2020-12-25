@@ -56,7 +56,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         CacheBuilder { type ->
             {
                 newPatchMenuAnchor = null
-                val newShaderInstance = props.mutablePatch.addShaderInstance(type.shaderFromTemplate())
+                val newShaderInstance = props.mutablePatch.addShaderInstance(type.newShaderFromTemplate())
                 handleShaderSelect[newShaderInstance].invoke()
                 props.editableManager.onChange()
             }
@@ -96,12 +96,12 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
             attrs.open = newPatchMenuAnchor != null
             attrs.onClose = handleNewPatchMenuClose
 
-            ShaderType.values().forEach { type ->
+            appContext.plugins.shaderTypes.all.forEach { type ->
                 menuItem {
                     attrs.onClickFunction = handleNewShaderMenuClick[type]
 
                     listItemIcon { icon(type.icon) }
-                    listItemText { +"New ${type.name} Shader…" }
+                    listItemText { +"New ${type.title} Shader…" }
                 }
             }
 

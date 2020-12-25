@@ -11,7 +11,7 @@ import baaahs.show.ShaderChannel
 class LinkedShaderInstance(
     val shader: OpenShader,
     val incomingLinks: Map<String, ProgramNode>,
-    val shaderChannel: ShaderChannel?,
+    val shaderChannel: ShaderChannel,
     val priority: Float
 ) : ProgramNode {
     override val title: String get() = shader.title

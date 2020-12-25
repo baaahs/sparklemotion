@@ -47,7 +47,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
 
         cardHeader {
             attrs.avatar {
-                avatar { icon(shader.type.icon) }
+                avatar { CommonIcons.UnknownShader /* TODO: Derive this via ShaderType. */ }
             }
             attrs.title { +shader.title }
 //                                attrs.subheader { +"${shader.type.name} Shader" }
@@ -65,7 +65,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
                 attrs.display = TypographyDisplay.block
                 attrs.variant = TypographyVariant.body2
                 attrs.color = TypographyColor.textSecondary
-                +"${shader.type.name} Shader"
+                +"${null /* TODO: Fix this! */ ?: "Unknown"} Shader"
             }
 
             iconButton {

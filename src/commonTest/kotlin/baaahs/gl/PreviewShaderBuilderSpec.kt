@@ -9,8 +9,8 @@ import baaahs.gl.render.PreviewRenderEngine
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 import baaahs.shows.FakeGlContext
+import baaahs.toNotEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -41,61 +41,74 @@ object PreviewShaderBuilderSpec : Spek({
                 previewShaderBuilder.startBuilding()
             }
 
-            it("is in Linking state") {
-                expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linking)
+            it("is in Analyzing state") {
+                expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Analyzing)
             }
 
             context("after idle") {
-                beforeEachTest { testCoroutineContext.runAll() }
+                beforeEachTest { testCoroutineContext.processOneEvent() }
 
-                it("is in Linked state") {
-                    expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linked)
+                it("is in Linking state") {
+                    expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linking)
+                    expect(previewShaderBuilder.openShader).toNotEqual(null)
                 }
 
-                it("has a previewPatch") {
-                    assertNotNull(previewShaderBuilder.previewPatch)
-                }
+                context("after idle") {
+                    beforeEachTest { testCoroutineContext.runAll() }
 
-                it("has a linkedPatch") {
-                    assertNotNull(previewShaderBuilder.linkedPatch)
-                }
-
-                it("has no gadgets yet") {
-                    expect(previewShaderBuilder.gadgets).isEmpty()
-                }
-
-                context("when there's a problem parsing hints") {
-                    override(shader) {
-                        Shader("Shader", ShaderType.Filter, """
-                            uniform float foo; // @@something.bad
-                            vec4 mainFilter(vec4 inColor) {
-                                return inColor;
-                            }
-                        """.trimIndent())
+                    it("is in Linked state") {
+                        expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linked)
                     }
 
-                    it("should report an error right away") {
-                        expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Errors)
-                    }
-                }
-
-                context("when startCompile() is called") {
-                    beforeEachTest { previewShaderBuilder.startCompile(renderEngine) }
-
-                    it("is in Compiling state") {
-                        expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Compiling)
+                    it("has a previewPatch") {
+                        assertNotNull(previewShaderBuilder.previewPatch)
                     }
 
-                    context("after idle") {
-                        beforeEachTest { testCoroutineContext.runAll() }
+                    it("has a linkedPatch") {
+                        assertNotNull(previewShaderBuilder.linkedPatch)
+                    }
 
-                        it("is in Success state") {
-                            expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Success)
+                    it("has no gadgets yet") {
+                        expect(previewShaderBuilder.gadgets).isEmpty()
+                    }
+
+                    context("when there's a problem parsing hints") {
+                        override(shader) {
+                            Shader(
+                                "Shader",
+                                /**language=glsl*/
+                                """
+                                    uniform float foo; // @@something.bad
+                                    vec4 main(vec4 inColor) {
+                                        return inColor;
+                                    }
+                                """.trimIndent()
+                            )
                         }
 
-                        it("has gadgets") {
-                            expect(previewShaderBuilder.gadgets.map { it.gadget })
-                                .containsExactly(Slider("Checkerboard Size", .1f, .001f, 1f))
+                        it("should report an error right away") {
+                            expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Errors)
+                        }
+                    }
+
+                    context("when startCompile() is called") {
+                        beforeEachTest { previewShaderBuilder.startCompile(renderEngine) }
+
+                        it("is in Compiling state") {
+                            expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Compiling)
+                        }
+
+                        context("after idle") {
+                            beforeEachTest { testCoroutineContext.runAll() }
+
+                            it("is in Success state") {
+                                expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Success)
+                            }
+
+                            it("has gadgets") {
+                                expect(previewShaderBuilder.gadgets.map { it.gadget })
+                                    .containsExactly(Slider("Checkerboard Size", .1f, .001f, 1f))
+                            }
                         }
                     }
                 }

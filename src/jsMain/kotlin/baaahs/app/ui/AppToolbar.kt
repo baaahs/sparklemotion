@@ -1,6 +1,8 @@
 package baaahs.app.ui
 
+import baaahs.Severity
 import baaahs.ShowEditorState
+import baaahs.app.ui.controls.editIconWithBadge
 import baaahs.ui.*
 import baaahs.util.UndoStack
 import kotlinx.css.opacity
@@ -13,10 +15,15 @@ import materialui.components.appbar.appBar
 import materialui.components.appbar.enums.AppBarPosition
 import materialui.components.appbar.enums.AppBarStyle
 import materialui.components.button.enums.ButtonColor
+import materialui.components.dialog.dialog
+import materialui.components.dialogcontent.dialogContent
+import materialui.components.dialogtitle.dialogTitle
 import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.iconbutton.enums.IconButtonEdge
 import materialui.components.iconbutton.enums.IconButtonStyle
 import materialui.components.iconbutton.iconButton
+import materialui.components.link.enums.LinkStyle
+import materialui.components.link.link
 import materialui.components.switches.switch
 import materialui.components.toolbar.toolbar
 import materialui.components.typography.enums.TypographyStyle
@@ -27,6 +34,7 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.b
 import react.dom.div
+import react.dom.h4
 import react.dom.i
 import styled.css
 import styled.styledDiv
@@ -55,7 +63,12 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
         Unit
     }
 
-    val show = webClient.show
+    val show = webClient.openShow
+    val showProblemsSeverity = webClient.showProblems.map { it.severity }.max()
+
+    var showProblemsDialogIsOpen by state { false }
+    val toggleProblems = useCallback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
+    val closeProblems = useCallback { _: Event, _: String -> showProblemsDialogIsOpen = false }
 
     appBar(themeStyles.appToolbar on AppBarStyle.root) {
         attrs.position = AppBarPosition.relative
@@ -76,8 +89,9 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                 if (show != null && props.editMode) {
                     div(+themeStyles.editButton) {
-                        icon(Icons.Edit)
                         attrs.onClickFunction = handleShowEditButtonClick.withEvent()
+
+                        editIconWithBadge(show, props.editMode)
                     }
                 }
             }
@@ -133,6 +147,34 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     }
                 }
 
+                div(+themeStyles.appToolbarProblemsIcon) {
+                    if (showProblemsSeverity != null) {
+                        val iconClass = showProblemsSeverity.cssClass
+                        link(iconClass on LinkStyle.root) {
+                            attrs.onClickFunction = toggleProblems.withEvent()
+                            icon(showProblemsSeverity.icon)
+                        }
+                    }
+                }
+                if (showProblemsDialogIsOpen) {
+                    dialog {
+                        attrs.open = true
+                        attrs.onClose = closeProblems
+
+                        dialogTitle { +"Show Problems" }
+                        dialogContent(+themeStyles.showProblemsDialogContent) {
+                            webClient.showProblems.sortedByDescending { it.severity }.forEach { problem ->
+                                val iconClass = "${themeStyles.showProblem.name} ${problem.severity.cssClass}"
+                                div(iconClass) { icon(problem.severity.icon) }
+                                div {
+                                    h4 { +problem.title }
+                                    problem.message?.let { div { +it } }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 help {
                     attrs.divClass = themeStyles.appToolbarHelpIcon.name
                     attrs.inject(HelpText.appToolbar)
@@ -141,6 +183,8 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
         }
     }
 }
+
+private val Severity.cssClass get() = name.toLowerCase() + "Severity"
 
 external interface AppToolbarProps : RProps {
     var editMode: Boolean

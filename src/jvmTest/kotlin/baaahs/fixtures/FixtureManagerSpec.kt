@@ -1,23 +1,23 @@
 package baaahs.fixtures
 
-import baaahs.*
+import baaahs.FakeModelEntity
+import baaahs.describe
+import baaahs.fakeModel
 import baaahs.gl.glsl.GlslAnalyzer
-import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.DeviceTypeForTest
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
-import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.testPlugins
 import baaahs.model.Model
+import baaahs.only
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
-import baaahs.show.ShaderType
+import baaahs.show.live.FakeOpenShader
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutableShow
 import baaahs.shows.FakeGlContext
@@ -60,16 +60,17 @@ object FixtureManagerSpec : Spek({
                         addPatch {
                             addShaderInstance(
                                 Shader(
-                                    "Pea Soup", ShaderType.Paint, """
-                                    vec4 main() { return vec4(0.); }
-                                """.trimIndent()
+                                    "Pea Soup",
+                                    """
+                                        vec4 main() { return vec4(0.); }
+                                    """.trimIndent()
                                 )
                             )
                             addShaderInstance(
                                 Shader(
-                                    "Din", ShaderType.Paint, """
-                                    vec4 main() { return vec4(0.); }
-                                """.trimIndent()
+                                    "Din", """
+                                        vec4 main() { return vec4(0.); }
+                                    """.trimIndent()
                                 )
                             )
                         }
@@ -85,7 +86,7 @@ object FixtureManagerSpec : Spek({
                                 "Din" -> deafeningness
                                 else -> error("unknown shader")
                             }
-                            return FakeOpenShader(OutputPort(contentType), shader.title)
+                            return FakeOpenShader(emptyList(), OutputPort(contentType), shader.title)
                         }
                     }.openShow()
                 }
@@ -135,37 +136,3 @@ object FixtureManagerSpec : Spek({
         }
     }
 })
-
-class FakeOpenShader(
-    override val outputPort: OutputPort,
-    override val title: String
-) : OpenShader, RefCounted by RefCounter() {
-    override val shader: Shader
-        get() = Shader(title, ShaderType.Paint /* not necessarily true */, "fake src for $title")
-    override val glslCode: GlslCode
-        get() = GlslCode(shader.src, emptyList())
-    override val entryPointName: String
-        get() = "entryPoint"
-    override val inputPorts: List<InputPort>
-        get() = emptyList()
-    override val defaultPriority: Int
-        get() = TODO("not implemented")
-    override val defaultUpstreams: Map<ContentType, ShaderChannel>
-        get() = TODO("not implemented")
-
-    override fun findInputPort(portId: String): InputPort {
-        TODO("not implemented")
-    }
-
-    override fun toGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String {
-        return "glslFor($title);\n"
-    }
-
-    override fun invocationGlsl(
-        namespace: GlslCode.Namespace,
-        resultVar: String,
-        portMap: Map<String, String>
-    ): String {
-        return "invocationGlslFor($title);\n"
-    }
-}

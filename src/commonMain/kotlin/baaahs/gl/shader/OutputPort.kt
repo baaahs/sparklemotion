@@ -2,13 +2,20 @@ package baaahs.gl.shader
 
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
-import baaahs.show.ShaderOutPortRef
 
 data class OutputPort(
     val contentType: ContentType,
     val description: String? = contentType.title,
-    val id: String = ShaderOutPortRef.ReturnValue,
-    val dataType: GlslType = contentType.glslType
+    val id: String = ReturnValue,
+    val dataType: GlslType = contentType.glslType,
+    val isParam: Boolean = false,
+    val lineNumber: Int? = null
 ) {
-    fun isReturnValue() = id == ShaderOutPortRef.ReturnValue
+    val argSiteName: String = if (isReturnValue()) "[return value]" else id
+
+    fun isReturnValue() = id == ReturnValue
+
+    companion object {
+        const val ReturnValue = "_"
+    }
 }

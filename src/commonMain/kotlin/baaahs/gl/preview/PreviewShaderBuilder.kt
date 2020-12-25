@@ -3,6 +3,7 @@ package baaahs.gl.preview
 import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.fixtures.*
+import baaahs.getValue
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
 import baaahs.gl.patch.AutoWirer
@@ -13,8 +14,8 @@ import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePatch
 import baaahs.ui.IObservable
@@ -39,6 +40,7 @@ interface ShaderBuilder : IObservable {
     /** Contrary to expectations, linking happens before compiling in this world. */
     enum class State {
         Unbuilt,
+        Analyzing,
         Linking,
         Linked,
         Compiling,
@@ -81,11 +83,20 @@ class PreviewShaderBuilder(
     val feeds = mutableListOf<Feed>()
 
     private fun analyze(shader: Shader) = autoWirer.glslAnalyzer.openShader(shader)
-    private val screenCoordsProjection by lazy { analyze(PreviewShaderBuilder.screenCoordsProjection) }
-    private val pixelUvIdentity by lazy { analyze(Shaders.pixelUvIdentity) }
-    private val smpteColorBars by lazy { analyze(Shaders.smpteColorBars) }
+
+    private val previewShaders = PreviewShaders(autoWirer)
 
     override fun startBuilding() {
+        state = ShaderBuilder.State.Analyzing
+        notifyChanged()
+
+        coroutineScope.launch {
+            analyze()
+        }
+    }
+
+    fun analyze() {
+        openShader = analyze(shader)
         state = ShaderBuilder.State.Linking
         notifyChanged()
 
@@ -96,23 +107,14 @@ class PreviewShaderBuilder(
 
     fun link() {
         try {
-            val openShader = analyze(shader)
-            this.openShader = openShader
-            val shaders: Array<OpenShader> = when (shader.type) {
-                ShaderType.Unknown -> arrayOf(openShader)
-                ShaderType.Projection -> arrayOf(openShader, pixelUvIdentity)
-                ShaderType.Distortion -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
-                ShaderType.Paint -> arrayOf(screenCoordsProjection, openShader)
-                ShaderType.Filter -> arrayOf(screenCoordsProjection, openShader, smpteColorBars)
-                ShaderType.Mover -> arrayOf(openShader)
-            }
+            val openShader = openShader!!
+            val shaderType = openShader.shaderType
+            val shaders = shaderType.pickPreviewShaders(openShader, previewShaders)
+            val defaultPorts = if (shaderType.injectUvCoordinateForPreview) {
+                mapOf(ContentType.UvCoordinate to MutableConstPort("gl_FragCoord", GlslType.Vec2))
+            } else emptyMap()
 
-            val defaultPorts = when (shader.type) {
-                ShaderType.Projection -> emptyMap()
-                else -> mapOf(ContentType.UvCoordinateStream to MutableConstPort("gl_FragCoord", GlslType.Vec2))
-            }
-
-            previewPatch = autoWirer.autoWire(*shaders, defaultPorts = defaultPorts)
+            previewPatch = autoWirer.autoWire(*(shaders.toTypedArray()), defaultPorts = defaultPorts)
 //                .dumpOptions()
                 .acceptSuggestedLinkOptions()
                 .confirm()
@@ -178,36 +180,49 @@ class PreviewShaderBuilder(
     companion object {
         private val logger = Logger("ShaderEditor")
 
-        private val screenCoordsProjection by lazy {
+        val screenCoordsProjection: Shader =
             Shader(
-                "Screen Coords", ShaderType.Projection, """
-                    uniform vec2 previewResolution;
+                "Screen Coords",
+                /**language=glsl*/
+                """
+                    uniform vec2 previewResolution; // @@baaahs.Core:PreviewResolution @type preview-resolution
                     
-                    vec2 mainProjection(vec2 fragCoords) {
-                      return fragCoords / previewResolution;
+                    // @return uv-coordinate
+                    vec2 main(
+                        vec4 fragCoords // @@baaahs.Core:RasterCoordinate @type raster-coordinate
+                    ) {
+                      return fragCoords.xy / previewResolution;
                     }
                 """.trimIndent()
             )
-        }
     }
+}
+
+class PreviewShaders(val autoWirer: AutoWirer) {
+    private fun analyze(shader: Shader) = autoWirer.glslAnalyzer.openShader(shader)
+
+    val screenCoordsProjection by lazy { analyze(PreviewShaderBuilder.screenCoordsProjection) }
+    val pixelUvIdentity by lazy { analyze(Shaders.pixelUvIdentity) }
+    val smpteColorBars by lazy { analyze(Shaders.smpteColorBars) }
 }
 
 object ProjectionPreviewDevice: DeviceType {
     override val id: String get() = "ProjectionPreview"
     override val title: String get() = "Projection Preview"
-    override val dataSources: List<DataSource> get() = PixelArrayDevice.dataSources
+    override val dataSourceBuilders: List<DataSourceBuilder<*>> get() = PixelArrayDevice.dataSourceBuilders
     override val resultParams: List<ResultParam>
         get() = listOf(
             ResultParam("Vertex Location", Vec2ResultType)
         )
     override val resultContentType: ContentType
-        get() = ContentType.UvCoordinateStream
+        get() = ContentType.UvCoordinate
+
+    override val likelyPipelines: List<Pair<ContentType, ContentType>>
+        get() = emptyList()
 
     override val errorIndicatorShader: Shader
         get() = Shader(
             "Ω Guru Meditation Error Ω",
-            ShaderType.Paint,
-            /**language=glsl*/
             ""
         )
 

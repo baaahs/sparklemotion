@@ -1,42 +1,32 @@
 package baaahs.gl.shader
 
-import baaahs.gl.glsl.GlslCode
+import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.GlslType
+import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
-import baaahs.plugin.Plugins
-import baaahs.show.Shader
+import baaahs.gl.preview.PreviewShaders
+import baaahs.plugin.objectSerializer
 import baaahs.show.ShaderType
+import baaahs.ui.Icon
+import kotlinx.serialization.SerialName
 
-class MoverShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
-    companion object {
-        val proFormaInputPorts = emptyList<InputPort>()
+object MoverShader : ShaderType {
+    override val title: String = "Mover"
 
-        val wellKnownInputPorts = listOf(
-            InputPort("position", GlslType.Vec3, "Position", ContentType.XyzCoordinate),
-            InputPort("orientation", GlslType.Vec3, "Orientation", ContentType.XyzCoordinate),
-            InputPort("time", GlslType.Float, "Time", ContentType.Time)
-        ).associateBy { it.id }
+    override val icon: Icon = CommonIcons.None
 
-        val outputPort = OutputPort(ContentType.PanAndTilt)
+    override val template: String = """
+        vec4 main() {
+            return vec4(0., .5);
+        }
+    """.trimIndent()
+
+    override fun matches(shaderAnalysis: ShaderAnalysis): ShaderType.MatchLevel {
+        return if (shaderAnalysis.outputPorts.firstOrNull()?.contentType == ContentType.PanAndTilt)
+            ShaderType.MatchLevel.Match else ShaderType.MatchLevel.NoMatch
     }
 
-    override val shaderType: ShaderType
-        get() = ShaderType.Mover
-
-    override val entryPointName: String get() = "mainMover"
-
-    override val proFormaInputPorts: List<InputPort>
-        get() = MoverShader.proFormaInputPorts
-    override val wellKnownInputPorts: Map<String, InputPort>
-        get() = MoverShader.wellKnownInputPorts
-    override val outputPort: OutputPort
-        get() = MoverShader.outputPort
-
-    override fun invocationGlsl(
-        namespace: GlslCode.Namespace,
-        resultVar: String,
-        portMap: Map<String, String>
-    ): String {
-        return resultVar + " = " + namespace.qualify(entryPoint.name) + "()"
+    override fun pickPreviewShaders(openShader: OpenShader, previewShaders: PreviewShaders): List<OpenShader> {
+        return listOf(openShader)
     }
 }

@@ -7,6 +7,7 @@ import baaahs.gl.data.Feed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.plugin.SerializerRegistrar
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutableGadgetControl
 import kotlinx.serialization.Polymorphic
@@ -15,8 +16,8 @@ import kotlinx.serialization.Polymorphic
 interface DataSourceBuilder<T : DataSource> {
     /** The unique ID for this resource within a plugin. Should be CamelCase alphanums, like a class name. */
     val resourceName: String
-
     val contentType: ContentType
+    val serializerRegistrar: SerializerRegistrar<T>
 
     fun suggestDataSources(
         inputPort: InputPort,
@@ -40,7 +41,7 @@ interface DataSourceBuilder<T : DataSource> {
 }
 
 internal fun DataSource.appearsToBePurposeBuiltFor(inputPort: InputPort) =
-    title.camelize().toLowerCase().contains(inputPort.id.toLowerCase())
+    title.camelize().toLowerCase().contains(inputPort.title.camelize().toLowerCase())
 
 @Polymorphic
 interface DataSource {
@@ -60,9 +61,20 @@ interface DataSource {
 
     fun buildControl(): MutableGadgetControl? = null
 
-    fun appendDeclaration(buf: StringBuilder, varName: String) {
+    fun appendDeclaration(buf: StringBuilder, id: String) {
         if (!isImplicit())
-            buf.append("uniform ${getType().glslLiteral} ${getVarName(varName)};\n")
+            buf.append("uniform ${getType().glslLiteral} ${getVarName(id)};\n")
+    }
+
+    fun invocationGlsl(varName: String): String? = null
+
+    fun appendInvokeAndSet(buf: StringBuilder, prefix: String, varName: String) {
+        val invocationGlsl = invocationGlsl(varName)
+        if (invocationGlsl != null) {
+            buf.append(prefix, "// Invoke ", title, "\n")
+            buf.append(prefix, invocationGlsl, ";\n")
+            buf.append("\n")
+        }
     }
 }
 

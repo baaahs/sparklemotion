@@ -57,7 +57,6 @@ object SampleData {
     private val showDefaultPaint = autoWirer.autoWire(
         Shader(
             "Darkness",
-            ShaderType.Paint,
             /**language=glsl*/
             """
                 void main(void) {
@@ -72,12 +71,11 @@ object SampleData {
     private val brightnessFilter = autoWirer.autoWire(
         Shader(
             "Brightness",
-            ShaderType.Filter,
             /**language=glsl*/
             """
                 uniform float brightness; // @@Slider min=0 max=1.25 default=1
     
-                vec4 mainFilter(vec4 inColor) {
+                vec4 main(vec4 inColor) {
                     vec4 clampedColor = clamp(inColor, 0., 1.);
                     return vec4(clampedColor.rgb * brightness, clampedColor.a);
                 }
@@ -90,7 +88,6 @@ object SampleData {
     private val saturationFilter = autoWirer.autoWire(
         Shader(
             "Saturation",
-            ShaderType.Filter,
             /**language=glsl*/
             """
                 uniform float saturation; // @@Slider min=0 max=1.25 default=1
@@ -116,7 +113,7 @@ object SampleData {
                     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
                 }
                 
-                vec4 mainFilter(vec4 inColor) {
+                vec4 main(vec4 inColor) {
                     if (saturation == 1.) return inColor;
     
                     vec4 clampedColor = clamp(inColor, 0., 1.);
@@ -133,7 +130,6 @@ object SampleData {
     private val redYellowGreenPatch = autoWirer.autoWire(
         Shader(
             "GLSL Hue Test Pattern",
-            ShaderType.Paint,
             /**language=glsl*/
             """
                 uniform vec2 resolution;
@@ -149,7 +145,6 @@ object SampleData {
     private val blueAquaGreenPatch = autoWirer.autoWire(
         Shader(
             "Another GLSL Hue Test Pattern",
-            ShaderType.Paint,
             /**language=glsl*/
             """
                 uniform vec2 resolution;
@@ -243,12 +238,16 @@ object SampleData {
 
     val sampleShowWithBeatLink: Show get() = MutableShow(sampleShow).apply {
         addPatch {
-            addShaderInstance(Shader("BeatLink", ShaderType.Paint, """
-                uniform float beat;
-                void main(void) {
-                    gl_FragColor = vec4(beat, 0., 0., 1.);
-                }
-            """.trimIndent())) {
+            addShaderInstance(Shader(
+                "BeatLink",
+                /**language=glsl*/
+                """
+                    uniform float beat;
+                    void main(void) {
+                        gl_FragColor = vec4(beat, 0., 0., 1.);
+                    }
+                """.trimIndent()
+            )) {
                 link("beat", MutableDataSourcePort(beatLinkPlugin.beatLinkDataSource))
             }
         }

@@ -3,7 +3,7 @@ package baaahs.show
 object FixtureShaders {
     val fireBallGlsl = Shader(
         "Fire Ball",
-        ShaderType.Paint,
+        /**language=glsl*/
         """
             // Fire Ball
             // From http://glslsandbox.com/e#61108.0

@@ -9,7 +9,12 @@ sealed class GlslType constructor(val glslLiteral: String) {
     open fun defaultInitializer(): String = "$glslLiteral(0.)"
 
     private class OtherGlslType(glslLiteral: String) : GlslType(glslLiteral)
-    private class Struct(val glslStruct: GlslCode.GlslStruct) : GlslType(glslStruct.name)
+    data class Struct(
+        val name: String,
+        val fields: Map<String, GlslType>
+    ) : GlslType(name) {
+        constructor(glslStruct: GlslCode.GlslStruct) : this(glslStruct.name, glslStruct.fields)
+    }
 
     object Float : GlslType("float")
     object Vec2 : GlslType("vec2")
@@ -19,20 +24,28 @@ sealed class GlslType constructor(val glslLiteral: String) {
     object Sampler2D : GlslType("sampler2D")
     object Void : GlslType("void")
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is GlslType) return false
+
+        if (glslLiteral != other.glslLiteral) return false
+
+        return true
+    }
+
+    override fun hashCode(): kotlin.Int {
+        return glslLiteral.hashCode()
+    }
+
     override fun toString(): String {
         return "GlslType($glslLiteral)"
     }
 
     companion object {
         val types = mutableMapOf<String, GlslType>()
-        val structTypes = mutableMapOf<GlslCode.GlslStruct, GlslType>()
 
         fun from(glsl: String): GlslType {
             return types.getOrPut(glsl) { OtherGlslType(glsl) }
-        }
-
-        fun from(glslStruct: GlslCode.GlslStruct): GlslType {
-            return structTypes.getOrPut(glslStruct) { Struct(glslStruct) }
         }
     }
 }

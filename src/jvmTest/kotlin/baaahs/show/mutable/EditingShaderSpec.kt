@@ -14,7 +14,6 @@ import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 import baaahs.show.mutable.EditingShader.State
 import baaahs.shows.FakeGlContext
 import baaahs.ui.Observer
@@ -48,7 +47,7 @@ object EditingShaderSpec : Spek({
         val scaleUniform by value { "uniform float theScale;" }
         val paintShader by value {
             Shader(
-                "Paint", ShaderType.Paint, """
+                "Paint", """
                 uniform float time;
                 void main(void) {
                     gl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, mod(time, 1.), 1.);
@@ -58,13 +57,15 @@ object EditingShaderSpec : Spek({
         }
         val filterShader by value {
             Shader(
-                "Filter", ShaderType.Filter, """
-                $scaleUniform
-                uniform float time;
-                vec4 mainFilter(vec4 inColor) {
-                    return inColor * theScale + time * 0.;
-                }
-            """.trimIndent()
+                "Filter", """
+                    $scaleUniform
+                    uniform float time;
+                    // @return color
+                    // @param inColor color
+                    vec4 main(vec4 inColor) {
+                        return inColor * theScale + time * 0.;
+                    }
+                """.trimIndent()
             )
         }
         val shaderInEdit by value { filterShader }
@@ -165,7 +166,7 @@ object EditingShaderSpec : Spek({
                 it("should set some reasonable defaults") {
                     expect(mutableShaderInstance.incomingLinks.mapValues { (_, port) -> port.title })
                         .toBe(mapOf(
-                            "gl_FragColor" to "Main Channel",
+                            "inColor" to "Main Channel",
                             "theScale" to "The Scale Slider",
                             "time" to "Time"
                         ))
@@ -219,11 +220,13 @@ object EditingShaderSpec : Spek({
 
                 it("should be listed in link options") {
                     expect(editingShader.linkOptionsFor("theScale").stringify()).toBe("""
+                            Channel:
+                            - Main Channel
                             Data Source:
-                            * BeatLink
-                            * Custom slider Slider
+                            - BeatLink
+                            - Custom slider Slider
                             * The Scale Slider
-                            * Time
+                            - Time
                         """.trimIndent())
                 }
             }
@@ -253,41 +256,47 @@ object EditingShaderSpec : Spek({
             }
 
             context("incoming link suggestions") {
+                override(autoWirer) {
+                    AutoWirer(plugins)
+                }
+
                 it("suggests link options for each input port") {
                     expect(editingShader.openShader!!.inputPorts.map { it.id }.toSet())
-                        .toBe(setOf("theScale", "time", "gl_FragColor"))
+                        .toBe(setOf("theScale", "time", "inColor"))
                 }
 
                 it("suggests reasonable link options for scale") {
                     expect(editingShader.linkOptionsFor("theScale").stringify())
                         .toBe("""
+                            Channel:
+                            - Main Channel
                             Data Source:
-                            * BeatLink
+                            - BeatLink
                             * The Scale Slider
-                            * Time
+                            - Time
                         """.trimIndent())
                 }
 
                 it("suggests reasonable link options for time") {
                     expect(editingShader.linkOptionsFor("time").stringify())
                         .toBe("""
+                            Channel:
+                            - Main Channel
                             Data Source:
-                            * BeatLink
+                            - BeatLink
                             * Time
-                            * Time Slider
+                            - Time Slider
                         """.trimIndent())
                 }
 
                 it("suggests reasonable link options for input color") {
                     // Should never include ourself.
-                    expect(editingShader.linkOptionsFor("gl_FragColor").stringify())
+                    expect(editingShader.linkOptionsFor("inColor").stringify())
                         .toBe("""
                             Channel:
                             * Main Channel
                             Data Source:
-                            * Input Color ColorPicker
-                            Shader Output:
-                            * Shader "Paint" output
+                            - In Color ColorPicker
                         """.trimIndent())
                 }
 
@@ -299,15 +308,13 @@ object EditingShaderSpec : Spek({
                     context("and its result type matches this input's type") {
                         it("should include that shader channel as an option") {
                             // Should never include ourself.
-                            expect(editingShader.linkOptionsFor("gl_FragColor").stringify())
+                            expect(editingShader.linkOptionsFor("inColor").stringify())
                                 .toBe("""
                                     Channel:
                                     * Main Channel
-                                    * Other Channel
+                                    - Other Channel
                                     Data Source:
-                                    * Input Color ColorPicker
-                                    Shader Output:
-                                    * Shader "Paint" output
+                                    - In Color ColorPicker
                                 """.trimIndent())
                         }
                     }
@@ -316,14 +323,12 @@ object EditingShaderSpec : Spek({
                         override(otherShaderInShow) { Shaders.flipY } // distortion
 
                         it("shouldn't include that shader channel as an option") {
-                            expect(editingShader.linkOptionsFor("gl_FragColor").stringify())
+                            expect(editingShader.linkOptionsFor("inColor").stringify())
                                 .toBe("""
                                     Channel:
                                     * Main Channel
                                     Data Source:
-                                    * Input Color ColorPicker
-                                    Shader Output:
-                                    * Shader "Paint" output
+                                    - In Color ColorPicker
                                 """.trimIndent())
                         }
                     }
@@ -341,12 +346,22 @@ object EditingShaderSpec : Spek({
             val gl by value { FakeGlContext() }
             val renderEngine by value { PreviewRenderEngine(gl, 1, 1) }
 
-            it("generates valid GLSL") {
+            beforeEachTest {
+                // Run through the shader building steps.
+                expect(editingShader.shaderBuilder.state).toBe(ShaderBuilder.State.Analyzing)
+                expect(editingShader.state).toBe(State.Building)
+                context.runAll()
+
+                expect(editingShader.shaderBuilder.state).toBe(ShaderBuilder.State.Linked)
+                expect(editingShader.state).toBe(State.Building)
                 editingShader.shaderBuilder.startCompile(renderEngine)
+
                 expect(editingShader.state).toBe(State.Building)
                 context.runAll()
                 expect(editingShader.state).toBe(State.Success)
+            }
 
+            it("generates valid GLSL") {
                 val fakeProgram = gl.programs[0]
                 val fragShader = fakeProgram.shaders[GL_FRAGMENT_SHADER]?.src
                 kexpect(fragShader).toBe("""
@@ -372,8 +387,10 @@ object EditingShaderSpec : Spek({
                     vec2 p0_screenCoordsi_result = vec2(0.);
 
                     #line 3
-                    vec2 p0_screenCoords_mainProjection(vec2 fragCoords) {
-                      return fragCoords / in_previewResolution;
+                    vec2 p0_screenCoords_main(
+                        vec4 fragCoords 
+                    ) {
+                      return fragCoords.xy / in_previewResolution;
                     }
 
                     // Shader: Paint; namespace: p1
@@ -390,7 +407,7 @@ object EditingShaderSpec : Spek({
                     #line 10001
                     void main() {
                       // Invoke Screen Coords
-                      p0_screenCoordsi_result = p0_screenCoords_mainProjection(gl_FragCoord.xy);
+                      p0_screenCoordsi_result = p0_screenCoords_main(gl_FragCoord);
 
                       // Invoke Paint
                       p1_paint_main();
@@ -417,7 +434,8 @@ fun List<LinkOption>?.stringify(): String {
             groupName = linkOption.groupName
             groupName?.let { lines.add(it) }
         }
-        lines.add("* ${linkOption.title}")
+        val selected = if (linkOption == first()) "*" else "-"
+        lines.add("$selected ${linkOption.title}")
     }
     return lines.joinToString("\n")
 }

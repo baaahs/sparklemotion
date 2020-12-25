@@ -1,5 +1,6 @@
 package baaahs.gl.shader
 
+import baaahs.englishize
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -8,15 +9,19 @@ import kotlinx.serialization.json.JsonObject
 
 data class InputPort(
     val id: String,
-    val type: GlslType,
-    val title: String,
-    val contentType: ContentType? = null,
+    val contentType: ContentType,
+    val type: GlslType = contentType.glslType,
+    val title: String = id.englishize(),
     val pluginRef: PluginRef? = null,
     val pluginConfig: JsonObject? = null,
-    val glslVar: GlslCode.GlslVar? = null,
+    val glslArgSite: GlslCode.GlslArgSite? = null,
     val varName: String = id,
+
+    /** There's no declaration for this input, e.g. gl_FragCoord. */
     val isImplicit: Boolean = false
 ) {
+    val isGlobal: Boolean get() = glslArgSite?.isGlobalInput ?: isImplicit
+
     fun hasPluginRef() = pluginRef != null
 
     fun suggestVarName(): String {
@@ -24,8 +29,7 @@ data class InputPort(
         return id.decapitalize() + postfix.capitalize()
     }
 
-    fun dataTypeIs(glslType: GlslType, isStreaming: Boolean = false): Boolean {
+    fun dataTypeIs(glslType: GlslType): Boolean {
         return type == glslType
-                && (glslVar?.isVarying ?: false) == isStreaming
     }
 }

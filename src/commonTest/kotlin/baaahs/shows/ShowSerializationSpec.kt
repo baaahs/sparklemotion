@@ -1,15 +1,15 @@
 package baaahs.shows
 
 import baaahs.Gadget
+import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
+import baaahs.gl.kexpect
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkControl
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.show.*
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -156,9 +156,19 @@ fun jsonFor(dataSource: DataSource): JsonElement {
                 put("type", "baaahs.Core:PixelCoordsTexture")
             }
         }
+        is PixelLocationDataSource -> {
+            buildJsonObject {
+                put("type", "baaahs.Core:PixelLocation")
+            }
+        }
         is CorePlugin.ModelInfoDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:ModelInfo")
+            }
+        }
+        is CorePlugin.RasterCoordinateDataSource -> {
+            buildJsonObject {
+                put("type", "baaahs.Core:RasterCoordinate")
             }
         }
         is BeatLinkPlugin.BeatLinkDataSource -> buildJsonObject {
@@ -184,10 +194,6 @@ private fun jsonFor(portRef: PortRef): JsonObject {
             put("type", "datasource")
             put("dataSourceId", portRef.dataSourceId)
         }
-        is ShaderOutPortRef -> buildJsonObject {
-            put("type", "shader-out")
-            put("shaderInstanceId", portRef.shaderInstanceId)
-        }
         is ShaderChannelRef -> buildJsonObject {
             put("type", "shader-channel")
             put("shaderChannel", portRef.shaderChannel.id)
@@ -202,7 +208,6 @@ private fun jsonFor(portRef: PortRef): JsonObject {
 
 private fun jsonFor(shader: Shader) = buildJsonObject {
     put("title", shader.title)
-    put("type", shader.type.name)
     put("src", shader.src)
 }
 
@@ -220,5 +225,5 @@ fun Plugins.expectJson(expected: JsonElement, block: () -> JsonElement) {
         serializersModule = serialModule
     }
     fun JsonElement.toStr() = json.encodeToString(JsonElement.serializer(), this)
-    expect(block().toStr()).toBe(expected.toStr())
+    kexpect(block().toStr()).toBe(expected.toStr())
 }

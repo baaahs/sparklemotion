@@ -2,10 +2,8 @@ package baaahs.plugin
 
 import baaahs.fixtures.DeviceType
 import baaahs.gl.patch.ContentType
-import baaahs.show.AddControlMenuItem
-import baaahs.show.Control
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.gl.shader.ShaderPrototype
+import baaahs.show.*
 import baaahs.util.Clock
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -22,11 +20,24 @@ interface Plugin {
     val title: String
 
     val addControlMenuItems: List<AddControlMenuItem>
+        get() = emptyList()
+
     val contentTypes: List<ContentType>
+        get() = emptyList()
+
     val controlSerializers: List<SerializerRegistrar<out Control>>
+        get() = emptyList()
+
     val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
-    val dataSourceSerializers: List<SerializerRegistrar<out DataSource>>
+        get() = emptyList()
+
     val deviceTypes: List<DeviceType>
+        get() = emptyList()
+
+    val shaderPrototypes: List<ShaderPrototype>
+        get() = emptyList()
+
+    val shaderTypes: List<ShaderType>
         get() = emptyList()
 }
 

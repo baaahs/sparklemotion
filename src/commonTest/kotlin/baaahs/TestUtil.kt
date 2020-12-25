@@ -11,6 +11,7 @@ import baaahs.gl.render.RenderTarget
 import baaahs.gl.testPlugins
 import baaahs.model.Model
 import baaahs.model.MovingHead
+import baaahs.show.ShaderChannel
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
@@ -104,7 +105,7 @@ class TestRenderContext(
 
     fun createProgram(shaderSrc: String, incomingLinks: Map<String, ProgramNode>): GlslProgram {
         val openShader = glslAnalyzer.openShader(shaderSrc)
-        val liveShaderInstance = LinkedShaderInstance(openShader, incomingLinks, null, 0f)
+        val liveShaderInstance = LinkedShaderInstance(openShader, incomingLinks, ShaderChannel.Main, 0f)
         val linkedPatch = ProgramLinker(liveShaderInstance).buildLinkedPatch()
         return renderEngine.compile(linkedPatch) { id, dataSource -> dataSource.createFeed(showPlayer, id) }
     }

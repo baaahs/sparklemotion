@@ -2,6 +2,7 @@ package baaahs.gl.patch
 
 import baaahs.getBang
 import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.show.Shader
@@ -101,6 +102,7 @@ data class DefaultValueNode(
 ) : ProgramNode, Component {
     override val title: String = "Default value for $contentType"
     override val outputVar: String? = null
+    override val resultType: GlslType get() = contentType.glslType
     override val outputPort: OutputPort = OutputPort(contentType)
 
     override fun getNodeId(programLinker: ProgramLinker): String = "n/a"
@@ -125,7 +127,9 @@ data class DefaultValueNode(
 
 data class ConstNode(val glsl: String, override val outputPort: OutputPort) : ProgramNode, Component {
     override val title: String get() = "const($glsl)"
-    override val outputVar: String? get() = TODO("not implemented")
+    override val outputVar: String get() = TODO("not implemented")
+    override val resultType: GlslType get() = outputPort.dataType
+
     override fun getNodeId(programLinker: ProgramLinker): String = "n/a"
 
     override fun traverse(programLinker: ProgramLinker, depth: Int) {
