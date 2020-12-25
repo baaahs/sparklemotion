@@ -31,7 +31,7 @@ open class ShowOpener(
         show.dataSources
     )
 
-    val allShaderInstances = resolver.getResolvedShaderInstances()
+    private val allShaderInstances = resolver.getResolvedShaderInstances()
 
     override fun findControl(id: String): OpenControl? =
         if (show.controls.containsKey(id)) openControlCache[id] else null

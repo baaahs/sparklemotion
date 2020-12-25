@@ -8,7 +8,7 @@ interface ShaderPreview {
     fun start()
     fun stop()
     fun destroy()
-    fun setProgram(program: GlslProgram)
+    fun setProgram(program: GlslProgram?)
     fun render()
     fun resize(width: Int, height: Int)
 }

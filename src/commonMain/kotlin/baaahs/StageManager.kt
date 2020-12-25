@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.app.ui.CommonIcons
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.RenderPlan
 import baaahs.gl.patch.AutoWirer
@@ -14,6 +15,7 @@ import baaahs.plugin.Plugins
 import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.buildEmptyShow
+import baaahs.ui.Icon
 import baaahs.util.Clock
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.CoroutineScope
@@ -48,6 +50,8 @@ class StageManager(
     @Suppress("unused")
     private val clientData =
         pubSub.state(Topics.createClientData(fsSerializer), ClientData(storage.fs.rootFile))
+
+    private val showProblems = pubSub.publish(Topics.showProblems, emptyList()) {}
 
     private val showEditSession = ShowEditSession(fsSerializer)
     private val showEditorStateChannel: PubSub.Channel<ShowEditorState?> =
@@ -108,7 +112,9 @@ class StageManager(
     ) {
         val newShowRunner = newShow?.let {
             val openShow = openShow(newShow, newShowState)
-            ShowRunner(newShow, newShowState, openShow, clock, renderManager, fixtureManager, autoWirer)
+            ShowRunner(newShow, newShowState, openShow, clock, renderManager, fixtureManager) { problems ->
+                this.showProblems.onChange(problems)
+            }
         }
 
         showRunner?.release()
@@ -285,4 +291,18 @@ class SaveShowCommand {
 class SaveAsShowCommand(val file: Fs.File) {
     @Serializable
     class Response
+}
+
+@Serializable
+data class ShowProblem(
+    val title: String,
+    val message: String? = null,
+    val severity: Severity = Severity.ERROR,
+    val id: String = randomId("error")
+)
+
+enum class Severity(val icon: Icon) {
+    INFO(CommonIcons.Info),
+    WARN(CommonIcons.Warning),
+    ERROR(CommonIcons.Error)
 }

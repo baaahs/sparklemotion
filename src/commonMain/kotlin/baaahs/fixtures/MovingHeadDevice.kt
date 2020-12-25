@@ -15,7 +15,11 @@ import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.model.MovingHead
 import baaahs.plugin.CorePlugin
-import baaahs.show.*
+import baaahs.plugin.classSerializer
+import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
+import baaahs.show.Shader
+import baaahs.show.UpdateMode
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -24,9 +28,8 @@ object MovingHeadDevice : DeviceType {
     override val id: String get() = "MovingHead"
     override val title: String get() = "Moving Head"
 
-    override val dataSources: List<DataSource> get() = listOf(
-        MovingHeadInfoDataSource()
-    )
+    override val dataSourceBuilders: List<DataSourceBuilder<*>>
+        get() = listOf(MovingHeadInfoDataSource)
 
     override val resultParams: List<ResultParam> get() = listOf(
         ResultParam("Pan/Tilt", Vec2ResultType)
@@ -34,10 +37,14 @@ object MovingHeadDevice : DeviceType {
     override val resultContentType: ContentType
         get() = ContentType.PanAndTilt
 
+    override val likelyPipelines: List<Pair<ContentType, ContentType>>
+        get() = with(ContentType) {
+            listOf(XyzCoordinate to PanAndTilt)
+        }
+
     override val errorIndicatorShader: Shader
         get() = Shader(
             "Ω Guru Meditation Error Ω",
-            ShaderType.Mover,
             /**language=glsl*/
             """
                 uniform float time;
@@ -58,7 +65,8 @@ object MovingHeadDevice : DeviceType {
 val movingHeadInfoStruct = GlslCode.GlslStruct(
     "MovingHeadInfo",
     mapOf(
-        "location" to GlslType.Vec3,
+        "origin" to GlslType.Vec3,
+        "heading" to GlslType.Vec3
     ),
     fullText = """
             struct MovingHeadInfo {
@@ -69,7 +77,7 @@ val movingHeadInfoStruct = GlslCode.GlslStruct(
     varName = null
 )
 
-val movingHeadInfoType = GlslType.from(movingHeadInfoStruct)
+val movingHeadInfoType = GlslType.Struct(movingHeadInfoStruct)
 val movingHeadInfoContentType = ContentType("moving-head-info", "Moving Head Info", movingHeadInfoType)
 
 @Serializable
@@ -87,8 +95,8 @@ data class MovingHeadInfoDataSource(@Transient val `_`: Boolean = true) : DataSo
 
     companion object : DataSourceBuilder<MovingHeadInfoDataSource> {
         override val resourceName: String get() = "baaahs.Core.MovingHeadInfo"
-
         override val contentType: ContentType get() = movingHeadInfoContentType
+        override val serializerRegistrar get() = classSerializer(serializer())
 
         override fun build(inputPort: InputPort): MovingHeadInfoDataSource {
             return MovingHeadInfoDataSource()

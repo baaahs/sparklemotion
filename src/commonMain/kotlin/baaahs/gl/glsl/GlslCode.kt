@@ -1,7 +1,10 @@
 package baaahs.gl.glsl
 
 import baaahs.englishize
+import baaahs.getValue
+import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.findContentType
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
 import baaahs.unknown
@@ -12,17 +15,17 @@ import kotlinx.serialization.json.put
 
 class GlslCode(
     val src: String,
-    val statements: List<GlslStatement>
+    private val statements: List<GlslStatement>
 ) {
-    internal val globalVarNames = hashSetOf<String>()
-    internal val functionNames = hashSetOf<String>()
-    internal val structNames = hashSetOf<String>()
+    val globalVarNames = hashSetOf<String>()
+    val functionNames = hashSetOf<String>()
+    val structsByName = mutableMapOf<String, GlslStruct>()
 
     init {
         statements.forEach {
             when (it) {
                 is GlslStruct -> {
-                    structNames.add(it.name)
+                    structsByName[it.name] = it
                     it.varName?.let { varName -> globalVarNames += varName }
                 }
                 is GlslVar -> globalVarNames.add(it.name)
@@ -35,7 +38,7 @@ class GlslCode(
             }
         }
     }
-    val symbolNames = globalVarNames + functionNames + structNames
+    val symbolNames = globalVarNames + functionNames + structsByName.keys
     val globalVars: Collection<GlslVar> get() =
         statements.filterIsInstance<GlslVar>() +
                 structs.filter { it.varName != null }
@@ -47,11 +50,18 @@ class GlslCode(
 
     fun findFunctionOrNull(name: String) =
         functions.find { it.name == name}
+
     fun findFunction(name: String) =
-        findFunctionOrNull(name) ?: error(unknown("function", name, functions.map { it.name }))
+        findFunctionOrNull(name)
+            ?: error(unknown("function", name, functions.map { it.name }))
+
+    // TODO: We ought to ignore e.g. local variables, or strings that only appear in comments.
+    fun refersToGlobal(name: String): Boolean {
+        return src.contains(name)
+    }
 
     companion object {
-        private val logger = Logger("GlslCode")
+        private val logger = Logger<GlslCode>()
 
         fun replaceCodeWords(originalText: String, replaceFn: (String) -> String): String {
             val buf = StringBuilder()
@@ -89,8 +99,23 @@ class GlslCode(
             symbolsToNamespace: Set<String>,
             symbolMap: Map<String, String>
         ): String {
-            return "${lineNumber?.let { "\n#line $lineNumber\n" }}" +
-                    replaceCodeWords(fullText) {
+            // Chomp leading whitespace.
+            var newlineCount = 0
+            var i = 0
+            loop@ while (i < fullText.length) {
+                when (fullText[i]) {
+                    '\n' -> newlineCount++
+                    ' ', '\t' -> {}
+                    else -> break@loop
+                }
+                i++
+            }
+
+            val trimmedText = fullText.substring(i)
+            val trimmedLineNumber = lineNumber?.plus(newlineCount)
+
+            return "${trimmedLineNumber?.let { "\n#line $trimmedLineNumber\n" }}" +
+                    replaceCodeWords(trimmedText) {
                         symbolMap[it]
                             ?: if (it == name || symbolsToNamespace.contains(it)) {
                                 namespace.qualify(it)
@@ -122,51 +147,71 @@ class GlslCode(
         override fun stripSource() = copy(fullText = "", lineNumber = null)
 
         fun getSyntheticVar(): GlslVar {
-            val fieldsStr = fields.entries.joinToString("\n") { (name, type) ->
-                "    ${type.glslLiteral} $name;"
-            }
-            val structType = GlslType.from("struct $name {\n$fieldsStr\n}")
+            val structType = GlslType.Struct(this)
             val fullText = "${if (isUniform) "uniform " else ""}$name $varName;"
-            return GlslVar(structType, varName!!, fullText, lineNumber = lineNumber, comments = comments)
+            return GlslVar(varName!!, structType, fullText, lineNumber = lineNumber, comments = comments)
         }
     }
 
+    interface GlslArgSite {
+        val name: String
+        val title: String
+        val type: GlslType
+        val isVarying: Boolean
+        val isGlobalInput: Boolean
+        val hint: Hint?
+        val lineNumber: Int?
+
+        fun toInputPort(plugins: Plugins, parent: GlslFunction?): InputPort {
+            return InputPort(
+                name,
+                contentType = findContentType(plugins, parent)
+                    ?: plugins.resolveContentType(type),
+                type = type,
+                title = title,
+                pluginRef = hint?.pluginRef,
+                pluginConfig = hint?.config,
+                glslArgSite = this
+            )
+        }
+
+        fun findContentType(plugins: Plugins, parent: GlslFunction?) =
+            hint?.contentType(plugins)
+    }
+
     data class GlslVar(
-        val type: GlslType,
         override val name: String,
+        override val type: GlslType,
         override val fullText: String = "",
         val isConst: Boolean = false,
         val isUniform: Boolean = false,
-        val isVarying: Boolean = false,
+        override val isVarying: Boolean = false,
         override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList()
-    ) : GlslStatement {
+    ) : GlslStatement, GlslArgSite {
+        override val title get() = name.englishize()
+        override val isGlobalInput: Boolean get() = isUniform || isVarying
+        override val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
+
         override fun stripSource() = copy(fullText = "", lineNumber = null)
-
-        val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
-
-        fun displayName() = name.englishize()
-
-        fun toInputPort(plugins: Plugins): InputPort {
-            return InputPort(
-                name, type, displayName(),
-                pluginRef = hint?.pluginRef,
-                pluginConfig = hint?.config,
-                contentType = hint?.contentType(plugins),
-                glslVar = this
-            )
-        }
     }
 
     class Hint(
         val pluginRef: PluginRef?,
         val config: JsonObject?,
-        val tags: Map<String, String>
+        private val tags: List<Pair<String, String>>,
+        val lineNumber: Int? = null
     ) {
-        fun tag(name: String) = tags[name]
+        fun tag(name: String) =
+            tags.find { it.first == name }?.second
 
-        fun contentType(plugins: Plugins) =
-            tag("type")?.let { plugins.resolveContentType(it) }
+        fun tags(tagName: String): List<String> =
+            tags.filter { it.first == tagName }.map { it.second }
+
+        fun contentType(plugins: Plugins) = contentType("type", plugins)
+
+        fun contentType(tagName: String, plugins: Plugins) =
+            tag(tagName)?.let { plugins.resolveContentType(it) }
 
         companion object {
             fun from(comments: List<String>, lineNumber: Int? = null): Hint? =
@@ -175,7 +220,7 @@ class GlslCode(
             fun parse(commentString: String, lineNumber: Int? = null): Hint? {
                 var pluginRef: PluginRef? = null
                 var config: JsonObject? = null
-                val tags = mutableMapOf<String, String>()
+                val tags = arrayListOf<Pair<String, String>>()
 
                 Regex("@(@?[^@]+)").findAll(commentString).forEach { match ->
                     val tag = match.groupValues[1].trim()
@@ -185,17 +230,7 @@ class GlslCode(
 
                         val parts = string.split(" ")
                         val type = parts.first()
-                        pluginRef = Regex("(?:([\\w.]+\\.)?([A-Z]\\w+):)?(\\w+)").matchEntire(type)?.let {
-                            val (pluginPackage, pluginClass, resourceName) = it.destructured
-                            PluginRef(
-                                "${pluginPackage.ifEmpty { "baaahs." }}${pluginClass.ifEmpty { "Core" }}",
-                                resourceName
-                            )
-                        } ?: throw AnalysisException(
-                            "don't understand hint: $string",
-                            lineNumber ?: -1
-                        )
-
+                        pluginRef = PluginRef.from(type)
                         config = buildJsonObject {
                             parts.subList(1, parts.size).forEach { s ->
                                 val kv = s.split("=")
@@ -207,22 +242,22 @@ class GlslCode(
                         val parts = tag.split(Regex("\\s"), limit = 2)
                         when (parts.size) {
                             0 -> {} // No-op.
-                            1 -> tags[parts[0]] = parts[0]
-                            2 -> tags[parts[0]] = parts[1].trim()
+                            1 -> tags.add(parts[0] to parts[0])
+                            2 -> tags.add(parts[0] to parts[1].trim())
                         }
                     }
                 }
 
                 return if (pluginRef != null || config != null || tags.isNotEmpty()) {
-                    Hint(pluginRef, config, tags)
+                    Hint(pluginRef, config, tags, lineNumber)
                 } else null
             }
         }
     }
 
     data class GlslFunction(
-        val returnType: GlslType,
         override val name: String,
+        val returnType: GlslType,
         val params: List<GlslParam>,
         override val fullText: String,
         override val lineNumber: Int? = null,
@@ -231,17 +266,41 @@ class GlslCode(
         val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
 
         override fun stripSource() = copy(lineNumber = null)
+
+        fun invocationGlsl(namespace: Namespace, resultVar: String, portMap: Map<String, String>): String {
+            val assignment = if (returnType != GlslType.Void) {
+                "$resultVar = "
+            } else ""
+
+            val args = params.joinToString(", ") { glslParam ->
+                if (glslParam.isOut)
+                    resultVar
+                else
+                    portMap[glslParam.name]
+                        ?: "/* huh? ${glslParam.name} */"
+            }
+
+            return assignment + namespace.qualify(name) + "($args)"
+        }
     }
 
     data class GlslParam(
-        val name: String,
-        val type: GlslType,
+        override val name: String,
+        override val type: GlslType,
         val isIn: Boolean = false,
         val isOut: Boolean = false,
-        val lineNumber: Int? = null,
+        override val lineNumber: Int? = null,
         val comments: List<String> = emptyList()
-    ) {
-        val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
+    ) : GlslArgSite {
+        override val title: String get() = name.englishize()
+        override val isVarying: Boolean get() = true
+        override val isGlobalInput: Boolean get() = false
+        override val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
+
+        override fun findContentType(plugins: Plugins, parent: GlslFunction?): ContentType? {
+            return super.findContentType(plugins, parent)
+                ?: parent?.findContentType(this, plugins)
+        }
     }
 
     class Namespace(private val prefix: String) {

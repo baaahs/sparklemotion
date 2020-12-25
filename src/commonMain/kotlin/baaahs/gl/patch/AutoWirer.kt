@@ -1,14 +1,17 @@
 package baaahs.gl.patch
 
+import baaahs.fixtures.DeviceType
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
-import baaahs.show.mutable.MutablePatch
+import baaahs.show.Surfaces
+import baaahs.show.live.LiveShaderInstance
+import baaahs.show.live.OpenPatch
+import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShader
-import baaahs.show.mutable.MutableShow
 
 class AutoWirer(
     val plugins: Plugins,
@@ -17,42 +20,42 @@ class AutoWirer(
     fun autoWire(
         vararg shaders: Shader,
         defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-        shaderChannel: ShaderChannel = ShaderChannel.Main
+        shaderChannel: ShaderChannel = ShaderChannel.Main,
+        deviceTypes: Collection<DeviceType> = emptyList()
     ): UnresolvedPatch {
         val openShaders = shaders.associate { it to glslAnalyzer.openShader(it) }
-        return autoWire(openShaders.values, defaultPorts = defaultPorts, shaderChannel = shaderChannel)
+        return autoWire(openShaders.values, shaderChannel, defaultPorts, deviceTypes)
     }
 
     fun autoWire(
         vararg shaders: OpenShader,
         defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-        shaderChannel: ShaderChannel = ShaderChannel.Main
-        ): UnresolvedPatch {
-        return autoWire(shaders.toList(), defaultPorts = defaultPorts, shaderChannel = shaderChannel)
+        shaderChannel: ShaderChannel = ShaderChannel.Main,
+        deviceTypes: Collection<DeviceType> = emptyList()
+    ): UnresolvedPatch {
+        return autoWire(shaders.toList(), shaderChannel, defaultPorts, deviceTypes)
     }
 
     fun autoWire(
         shaders: Collection<OpenShader>,
         shaderChannel: ShaderChannel = ShaderChannel.Main,
-        parentMutableShow: MutableShow? = null,
-        defaultPorts: Map<ContentType, MutablePort> = emptyMap()
+        defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
+        deviceTypes: Collection<DeviceType> = emptyList()
     ): UnresolvedPatch {
-        val siblingsPatch = MutablePatch {
-            shaders.forEach { addShaderInstance(it.shader) }
-        }
+        val siblingsPatch = OpenPatch(shaders.map {
+            LiveShaderInstance(it, emptyMap(), shaderChannel, 0f)
+        }, Surfaces.AllSurfaces)
+
+        val parentShow = null as OpenShow? // TODO: test with non-null?
+        val channelsInfo = ChannelsInfo(
+            parentShow, if (deviceTypes.isEmpty()) plugins.deviceTypes.all else deviceTypes
+        )
 
         // First pass: gather shader output ports.
         val shaderInstances =
             shaders.associateWith { openShader ->
-                val shaderInstanceOptions = ShaderInstanceOptions(
-                    openShader,
-// TODO                   parentMutableShow = parentMutableShow,
-                    parentMutablePatch = siblingsPatch,
-                    defaultPorts = defaultPorts,
-                    currentLinks = emptyMap(),
-                    glslAnalyzer = glslAnalyzer,
-                    plugins = plugins
-                )
+                val shaderInstanceOptions =
+                    ShaderInstanceOptions(openShader, shaderChannel, channelsInfo, defaultPorts, emptyMap(), plugins)
 
                 val unresolvedShaderInstance = UnresolvedShaderInstance(
                     MutableShader(openShader.shader),
@@ -68,22 +71,4 @@ class AutoWirer(
 
         return UnresolvedPatch(shaderInstances.values.toList())
     }
-
-    fun autoWire(
-        shader: OpenShader,
-        shaderChannel: ShaderChannel = ShaderChannel.Main,
-        parentMutableShow: MutableShow? = null,
-        parentMutablePatch: MutablePatch? = null,
-        defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-        currentLinks: Map<String, MutablePort> = emptyMap()
-    ): ShaderInstanceOptions = ShaderInstanceOptions(
-        shader,
-        shaderChannel,
-        parentMutableShow,
-        parentMutablePatch,
-        defaultPorts,
-        currentLinks,
-        glslAnalyzer,
-        plugins
-    )
 }

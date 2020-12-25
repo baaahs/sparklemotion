@@ -5,13 +5,13 @@ abstract class GlslException(message: String) : Exception(message) {
 }
 
 class LinkException(
-    message: String, row: Int = -1
+    message: String, row: Int? = null
 ) : GlslException("Shader link error: $message") {
     override val errors = listOf(GlslError(message, row))
 }
 
 class AnalysisException(
-    message: String, row: Int = -1
+    message: String, row: Int? = null
 ) : GlslException("Shader analysis error: $message") {
     override val errors = listOf(GlslError(message, row))
 }
@@ -39,4 +39,13 @@ class CompilationException(
     }
 }
 
-data class GlslError(val message: String, val row: Int = -1, val fileId: Int = -1)
+data class GlslError(val message: String, val row: Int = NO_LINE, val fileId: Int = -1) {
+    constructor(message: String) :
+            this(message, NO_LINE)
+    constructor(message: String, row: Int? = null, fileId: Int? = null) :
+            this(message, row ?: NO_LINE, fileId ?: -1)
+
+    companion object {
+        const val NO_LINE = -1
+    }
+}

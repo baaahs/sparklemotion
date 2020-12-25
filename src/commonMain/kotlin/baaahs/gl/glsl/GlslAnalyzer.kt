@@ -1,27 +1,27 @@
 package baaahs.gl.glsl
 
 import baaahs.gl.glsl.GlslCode.*
-import baaahs.gl.shader.OpenShader
+import baaahs.gl.shader.*
+import baaahs.only
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.ShaderType
 
 class GlslAnalyzer(private val plugins: Plugins) {
-    fun import(src: String, defaultTitle: String? = null): Shader {
-        val glslCode = analyze(src)
-        val type = ShaderType.values().firstOrNull { it.matches(glslCode) }
-            ?: ShaderType.Paint // Reasonable guess?
-
-        val title = Regex("^// (.*)").find(src)?.groupValues?.get(1)
-
-        return Shader(
-            title ?: defaultTitle ?: "Untitled ${type.name} Shader",
-            type,
-            src)
+    fun pickPrototype(src: String): ShaderPrototype {
+        return pickPrototype(parse(src))
     }
 
-    fun analyze(glslSrc: String): GlslCode {
-        return GlslCode(glslSrc, findStatements(glslSrc))
+    fun pickPrototype(glslCode: GlslCode): ShaderPrototype {
+        return plugins.shaderPrototypes.all
+            .map { it to it.matches(glslCode) }
+            .filter { (_, match) -> match != MatchLevel.NoMatch }
+            .maxByOrNull { (_, match) -> match }?.first
+            ?: GenericShaderPrototype
+    }
+
+    fun parse(src: String): GlslCode {
+        return GlslCode(src, findStatements(src))
     }
 
     internal fun findStatements(glslSrc: String): List<GlslStatement> {
@@ -30,14 +30,51 @@ class GlslAnalyzer(private val plugins: Plugins) {
         return context.statements
     }
 
-    fun openShader(shaderText: String): OpenShader {
-        val shader = import(shaderText)
-        return openShader(shader)
+    fun import(src: String): Shader {
+        val glslCode = parse(src)
+        return validate(glslCode).shader
+    }
+
+    fun validate(src: String): ShaderAnalysis {
+        return validate(parse(src))
+    }
+
+    fun validate(glslCode: GlslCode, shader: Shader? = null): ShaderAnalysis {
+        val prototype = pickPrototype(glslCode)
+        return prototype.analyze(glslCode, plugins, shader)
+    }
+
+    fun openShader(src: String): OpenShader {
+        return openShader(parse(src))
     }
 
     fun openShader(shader: Shader): OpenShader {
-        val glslObj = analyze(shader.src)
-        return shader.type.open(shader, glslObj, plugins)
+        return openShader(parse(shader.src), shader)
+    }
+
+    private fun openShader(glslCode: GlslCode, shader: Shader? = null): OpenShader {
+        val shaderAnalysis = validate(glslCode, shader)
+        return openShader(shaderAnalysis)
+    }
+
+    fun openShader(shaderAnalysis: ShaderAnalysis): OpenShader.Base {
+        if (!shaderAnalysis.isValid)
+            throw error(
+                "Shader \"${shaderAnalysis.shader.title}\" not valid:" +
+                        " ${shaderAnalysis.errors.joinToString(" ") { it.message }}"
+            )
+
+        val shaderType = plugins.shaderTypes.all
+            .map { it to it.matches(shaderAnalysis) }
+            .filter { (_, match) -> match != ShaderType.MatchLevel.NoMatch }
+            .maxByOrNull { (_, match) -> match }?.first
+            ?: ShaderType.Unknown
+
+        return with(shaderAnalysis) {
+            OpenShader.Base(this.shader, shaderAnalysis.glslCode,
+                entryPoint!!, inputPorts, outputPorts.only(),
+                shaderType, shaderPrototype)
+        }
     }
 
     private class Context {
@@ -47,6 +84,12 @@ class GlslAnalyzer(private val plugins: Plugins) {
         val enabledStack = mutableListOf<Boolean>()
         var lineNumber = 1
         var lineNumberForError = 1
+
+        val structs = mutableMapOf<String, GlslStruct>()
+
+        fun findType(name: String): GlslType =
+            structs[name]?.let { GlslType.Struct(it) }
+                ?: GlslType.from(name)
 
         fun parse(
             text: String,
@@ -139,7 +182,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
         val textAsString get() = text.toString()
         fun textIsEmpty() = text.isEmpty()
 
-        fun appendText(value: String) {
+        open fun appendText(value: String) {
             text.append(value)
         }
 
@@ -278,7 +321,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
                             "uniform" -> isUniform = true
                             "varying" -> isVarying = true
                         }
-                        GlslVar(GlslType.from(type), name, text, isConst, isUniform, isVarying, lineNumber, comments)
+                        GlslVar(name, context.findType(type), text, isConst, isUniform, isVarying, lineNumber, comments)
                     }
             }
 
@@ -354,15 +397,18 @@ class GlslAnalyzer(private val plugins: Plugins) {
                                 val trimmed = member.trim()
                                 if (trimmed.isEmpty()) return@forEach
                                 val parts = trimmed.split(Regex("\\s+"))
-                                when(parts.size) {
+                                when (parts.size) {
                                     0 -> return@forEach
                                     2 -> fields[parts[1]] = GlslType.from(parts[0])
                                     else -> throw AnalysisException("illegal struct member \"$member\"", lineNumber)
                                 }
                             }
                         val varNameOrNull = if (varName.isBlank()) null else varName
-                        GlslStruct(name, fields, varNameOrNull, uniform.isNotBlank(),
-                            text, lineNumber, comments)
+                        GlslStruct(
+                            name, fields, varNameOrNull, uniform.isNotBlank(),
+                            text, lineNumber, comments
+                        )
+                            .also { context.structs[name] = it }
                     }
             }
         }
@@ -379,12 +425,12 @@ class GlslAnalyzer(private val plugins: Plugins) {
                 if (tokensSoFar.size != 2)
                     throw context.glslError("unexpected tokens $tokensSoFar in function")
 
-                returnType = GlslType.from(tokensSoFar[0])
+                returnType = context.findType(tokensSoFar[0])
                 name = tokensSoFar[1]
             }
 
             override fun createStatement(): GlslStatement =
-                GlslFunction(returnType, name, params, textAsString, lineNumber, comments)
+                GlslFunction(name, returnType, params, textAsString, lineNumber, comments)
 
             inner class Params(
                 recipientOfNextComment: Statement? = null
@@ -392,6 +438,10 @@ class GlslAnalyzer(private val plugins: Plugins) {
                 var qualifier: String? = null
                 var type: GlslType? = null
                 var name: String? = null
+
+                override fun appendText(value: String) {
+                    this@Function.appendText(value)
+                }
 
                 override fun visitText(value: String): ParseState {
                     val trimmed = value.trim()
@@ -413,15 +463,19 @@ class GlslAnalyzer(private val plugins: Plugins) {
                 override fun visitComma(): ParseState {
                     addParam()
                     appendText(",")
-                    this@Function.appendText(textAsString)
                     return Params(this)
                 }
 
                 override fun visitRightParen(): ParseState {
                     addParam()
                     appendText(")")
-                    this@Function.appendText(textAsString)
                     return this@Function
+                }
+
+                override fun visitNewline(): ParseState {
+                    appendText("\n")
+                    receiveSubsequentComments()
+                    return this
                 }
 
                 override fun createStatement(): GlslStatement {
@@ -441,14 +495,16 @@ class GlslAnalyzer(private val plugins: Plugins) {
                         throw context.glslError("No name for parameter in ${this@Function.name}().")
                     }
 
-                    params.add(GlslParam(
-                        name,
-                        type,
-                        isIn = qualifier == null || qualifier == "in" || qualifier == "inout",
-                        isOut = qualifier == "out" || qualifier == "inout",
-                        lineNumber = lineNumber,
-                        comments = comments
-                    ))
+                    params.add(
+                        GlslParam(
+                            name,
+                            type,
+                            isIn = qualifier == null || qualifier == "in" || qualifier == "inout",
+                            isOut = qualifier == "out" || qualifier == "inout",
+                            lineNumber = lineNumber,
+                            comments = comments
+                        )
+                    )
                 }
             }
         }
@@ -471,6 +527,11 @@ class GlslAnalyzer(private val plugins: Plugins) {
                 nextParseState.receiveSubsequentComments()
                 return nextParseState
             }
+
+            override fun visitEof(): ParseState {
+                recipientOfComment.addComment(commentText.toString())
+                return super.visitEof()
+            }
         }
 
         private class Directive(context: Context, val priorParseState: ParseState) : ParseState(context) {
@@ -482,6 +543,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
                     this
                 }
             }
+
             override fun visitNewline(): ParseState {
                 context.lineNumberForError -= 1
 
@@ -508,7 +570,8 @@ class GlslAnalyzer(private val plugins: Plugins) {
         }
 
         class MacroDeclaration(context: Context, val priorParseState: ParseState) : ParseState(context) {
-            enum class Mode { Initial, HaveName, InArgs, InReplacement}
+            enum class Mode { Initial, HaveName, InArgs, InReplacement }
+
             private var mode = Mode.Initial
             private var name: String? = null
             private var args: MutableList<String>? = null

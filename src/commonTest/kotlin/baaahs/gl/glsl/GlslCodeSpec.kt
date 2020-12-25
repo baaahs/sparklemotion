@@ -6,6 +6,8 @@ import baaahs.gl.testPlugins
 import baaahs.gl.undefined
 import baaahs.only
 import baaahs.plugin.PluginRef
+import baaahs.toEqual
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.json.buildJsonObject
@@ -16,44 +18,99 @@ import org.spekframework.spek2.style.specification.describe
 object GlslCodeSpec : Spek({
     describe("statements") {
         val text by value { undefined<String>() }
-        val comments by value { emptyList<String>() }
-        val statement by value {
-            GlslAnalyzer(testPlugins()).findStatements(
-                comments.joinToString("\n") { "// $it" } + "\n" + text
-            ).only("statement")
-        }
+        val statements by value { GlslAnalyzer(testPlugins()).findStatements(text) }
+        val statement by value { statements.only("statement") }
 
         context("variables") {
             val variable by value { (statement as GlslCode.GlslVar).copy(lineNumber = null) }
 
             context("unqualified") {
                 override(text) { "int i;" }
-                expectValue(GlslCode.GlslVar(GlslType.Int, "i", "int i;")) { variable }
+                expectValue(GlslCode.GlslVar("i", GlslType.Int, "int i;")) { variable }
             }
 
             context("const") {
                 override(text) { "const int i = 3;" }
-                expectValue(GlslCode.GlslVar(GlslType.Int, "i", "const int i = 3;", isConst = true)) { variable }
+                expectValue(GlslCode.GlslVar("i", GlslType.Int, "const int i = 3;", isConst = true)) { variable }
             }
 
             context("uniform") {
                 override(text) { "uniform vec3 vector;" }
-                expectValue(GlslCode.GlslVar(GlslType.Vec3, "vector", "uniform vec3 vector;", isUniform = true)) { variable }
+                expectValue(
+                    GlslCode.GlslVar(
+                        "vector",
+                        GlslType.Vec3,
+                        "uniform vec3 vector;",
+                        isUniform = true
+                    )
+                ) { variable }
             }
 
             // For now, `varying` on a global var indicates that it's a streamed content type. Maybe worth reconsidering.
             context("varying") {
                 override(text) { "varying vec4 otherColor;" }
-                expectValue(GlslCode.GlslVar(GlslType.Vec4, "otherColor", "varying vec4 otherColor;", isVarying = true)) { variable }
+                expectValue(
+                    GlslCode.GlslVar(
+                        "otherColor",
+                        GlslType.Vec4,
+                        "varying vec4 otherColor;",
+                        isVarying = true
+                    )
+                ) { variable }
             }
 
-            context("hints") {
-                override(text) { "varying vec4 otherColor; // @type color-stream @something else" }
-                override(comments) { listOf(" @type color-stream", " @something else") }
+            context("tag hints") {
+                override(text) { "varying vec4 otherColor; // @type color @something else" }
 
                 it("makes hint tags available") {
-                    expect(variable.hint?.tags?.get("type")).toBe("color-stream")
-                    expect(variable.hint?.tags?.get("something")).toBe("else")
+                    expect(variable.hint?.tag("type")).toBe("color")
+                    expect(variable.hint?.tag("something")).toBe("else")
+                }
+
+                it("returns null for non-existent tags") {
+                    expect(variable.hint?.tag("nope")).toBe(null)
+                    expect(variable.hint?.tags("nope")).toBe(emptyList())
+                }
+
+                context("when tags are repeated") {
+                    override(text) { "// @thing abc\n// @thing def\nvec4 otherColor;" }
+
+                    it("each is available via tags()") {
+                        expect(variable.hint!!.tags("thing"))
+                            .containsExactly("abc", "def")
+                    }
+
+                    it("tag() returns the first") {
+                        expect(variable.hint!!.tag("thing"))
+                            .toEqual("abc")
+                    }
+                }
+
+                context("with a plugin reference") {
+                    override(text) { "varying vec4 otherColor; // @@ColorPicker default=orange palette=pastels" }
+
+                    it("builds a PluginRef") {
+                        expect(variable.hint?.pluginRef)
+                            .toEqual(PluginRef("baaahs.Core", "ColorPicker"))
+                    }
+
+                    context("when plugin id is fully specified") {
+                        override(text) { "varying vec4 otherColor; // @@foo.Plugin:ColorPicker default=orange palette=pastels" }
+
+                        it("builds a PluginRef") {
+                            expect(variable.hint?.pluginRef)
+                                .toEqual(PluginRef("foo.Plugin", "ColorPicker"))
+                        }
+                    }
+
+                    context("when plugin id is partially specified") {
+                        override(text) { "varying vec4 otherColor; // @@Plugin:ColorPicker default=orange palette=pastels" }
+
+                        it("builds a PluginRef") {
+                            expect(variable.hint?.pluginRef)
+                                .toEqual(PluginRef("baaahs.Plugin", "ColorPicker"))
+                        }
+                    }
                 }
             }
         }
@@ -65,8 +122,8 @@ object GlslCodeSpec : Spek({
                 override(text) { "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }" }
                 expectValue(
                     GlslCode.GlslFunction(
-                        GlslType.Float, "rand",
-                        listOf(GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 2)),
+                        "rand", GlslType.Float,
+                        listOf(GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 1)),
                         "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }"
                     )
                 ) { function }
@@ -76,7 +133,7 @@ object GlslCodeSpec : Spek({
                 override(text) { "float zero( void ) { return 0.; }" }
                 expectValue(
                     GlslCode.GlslFunction(
-                        GlslType.Float, "zero", emptyList(),
+                        "zero", GlslType.Float, emptyList(),
                         "float zero( void ) { return 0.; }"
                     )
                 ) { function }
@@ -86,15 +143,69 @@ object GlslCodeSpec : Spek({
                 override(text) { "float zero( void ) { return 0.; }" }
                 expectValue(
                     GlslCode.GlslFunction(
-                        GlslType.Float, "zero", emptyList(),
+                        "zero", GlslType.Float, emptyList(),
                         "float zero( void ) { return 0.; }"
                     )
                 ) { function }
             }
+
+            context("using a struct in its signature") {
+                override(function) { (statements[1] as GlslCode.GlslFunction).copy(lineNumber = null) }
+                val expectedStruct by value {
+                    GlslCode.GlslStruct(
+                        "SomeStruct", mapOf("a" to GlslType.Int),
+                        fullText = "struct SomeStruct { int a };", varName = null,
+                        lineNumber = 2
+                    )
+                }
+
+                context("as the return value") {
+                    override(text) { "struct SomeStruct { int a };\nSomeStruct rand(vec2 uv) { return xxx; }" }
+
+                    it("has the struct return type") {
+                        expect(function).toBe(
+                            GlslCode.GlslFunction(
+                                "rand", GlslType.Struct(expectedStruct),
+                                listOf(GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 2)),
+                                "SomeStruct rand(vec2 uv) { return xxx; }"
+                            )
+                        )
+                    }
+                }
+
+                context("as a param") {
+                    override(text) { "struct SomeStruct { int a };\nint rand(SomeStruct someStruct) { return xxx; }" }
+
+                    it("has the struct return type") {
+                        expect(function).toBe(
+                            GlslCode.GlslFunction(
+                                "rand", GlslType.Int,
+                                listOf(GlslCode.GlslParam("someStruct", GlslType.Struct(expectedStruct), isIn = true, lineNumber = 2)),
+                                "int rand(SomeStruct someStruct) { return xxx; }"
+                            )
+                        )
+                    }
+                }
+            }
+
         }
 
         context("struct") {
-            val struct by value { (statement as GlslCode.GlslStruct).copy(lineNumber = null) }
+            val struct by value { (statements[0] as GlslCode.GlslStruct).copy(lineNumber = null) }
+            val expectedStruct by value {
+                GlslCode.GlslStruct(
+                    "MovingHead",
+                    mapOf("pan" to GlslType.Float, "tilt" to GlslType.Float),
+                    null,
+                    false,
+                    """
+                        struct MovingHead {
+                            float pan; // in radians
+                            float tilt; // in radians
+                        };
+                    """.trimIndent()
+                )
+            }
 
             override(text) {
                 """
@@ -102,17 +213,27 @@ object GlslCodeSpec : Spek({
                         float pan; // in radians
                         float tilt; // in radians
                     };
+                    
+                    uniform MovingHead movingHead;
                 """.trimIndent()
             }
 
             it("should return a GlslStruct") {
-                expect(struct).toBe(GlslCode.GlslStruct(
-                                        "MovingHead",
-                                        mapOf("pan" to GlslType.Float, "tilt" to GlslType.Float),
-                                        null,
-                                        false,
-                                        text
-                                    ))
+                expect(struct).toBe(expectedStruct)
+                expect(struct.varName).toBe(null)
+            }
+
+            it("should apply the same struct type to uniforms") {
+                expect((statements[1] as GlslCode.GlslVar))
+                    .toBe(
+                        GlslCode.GlslVar(
+                            "movingHead",
+                            GlslType.Struct(expectedStruct.copy(lineNumber = 2)),
+                            "uniform MovingHead movingHead;",
+                            isUniform = true,
+                            lineNumber = 6
+                        )
+                    )
             }
 
             context("also declaring a variable") {
@@ -126,13 +247,15 @@ object GlslCodeSpec : Spek({
                 }
 
                 it("should return a GlslStruct") {
-                    expect(struct).toBe(GlslCode.GlslStruct(
-                                                "MovingHead",
-                                                mapOf("pan" to GlslType.Float, "tilt" to GlslType.Float),
-                                                "movingHead",
-                                                false,
-                                                text
-                                            ))
+                    expect(struct).toBe(
+                        GlslCode.GlslStruct(
+                            "MovingHead",
+                            mapOf("pan" to GlslType.Float, "tilt" to GlslType.Float),
+                            "movingHead",
+                            false,
+                            text
+                        )
+                    )
                 }
             }
         }
@@ -143,24 +266,28 @@ object GlslCodeSpec : Spek({
             val hintClassStr by value { "whatever.package.Plugin:Thing" }
             val glslVar by value {
                 GlslCode.GlslVar(
-                    GlslType.Float, "varName", isUniform = true,
+                    "varName", GlslType.Float, isUniform = true,
                     comments = listOf(" @@$hintClassStr", "  key=value", "  key2=value2")
                 )
             }
 
             it("parses hints") {
-                expect(glslVar.hint!!.pluginRef).toBe(PluginRef("whatever.package.Plugin", "Thing"))
-                expect(glslVar.hint!!.config).toBe(buildJsonObject {
-                                    put("key", "value")
-                                    put("key2", "value2")
-                                })
+                expect(glslVar.hint!!.pluginRef)
+                    .toBe(PluginRef("whatever.package.Plugin", "Thing"))
+
+                expect(glslVar.hint!!.config)
+                    .toBe(buildJsonObject {
+                        put("key", "value")
+                        put("key2", "value2")
+                    })
             }
 
             context("when package is unspecified") {
                 override(hintClassStr) { "Thing" }
 
                 it("defaults to baaahs.Core") {
-                    expect(glslVar.hint!!.pluginRef).toBe(PluginRef("baaahs.Core", "Thing"))
+                    expect(glslVar.hint!!.pluginRef)
+                        .toBe(PluginRef("baaahs.Core", "Thing"))
                 }
             }
 
@@ -168,13 +295,14 @@ object GlslCodeSpec : Spek({
                 override(hintClassStr) { "FooPlugin:Thing" }
 
                 it("defaults to baaahs.Core") {
-                    expect(glslVar.hint!!.pluginRef).toBe(PluginRef("baaahs.FooPlugin", "Thing"))
+                    expect(glslVar.hint!!.pluginRef)
+                        .toBe(PluginRef("baaahs.FooPlugin", "Thing"))
                 }
             }
         }
 
         it("englishizes camel case names") {
-            expect(GlslCode.GlslVar(GlslType.Vec3, "aManAPlanAAARGHPanamaISay").displayName())
+            expect(GlslCode.GlslVar("aManAPlanAAARGHPanamaISay", GlslType.Vec3).title)
                 .toBe("A Man A Plan AAARGH Panama I Say")
         }
     }

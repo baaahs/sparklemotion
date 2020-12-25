@@ -11,7 +11,7 @@ import baaahs.gl.data.*
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.*
 import baaahs.glsl.Uniform
 import baaahs.show.*
 import baaahs.show.mutable.*
@@ -26,9 +26,10 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     override val title: String = "SparkleMotion Core"
 
     override val contentTypes: List<ContentType> get() =
-        dataSourceBuilders.map { it.contentType } +
+        ContentType.coreTypes +
+                dataSourceBuilders.map { it.contentType } +
                 deviceTypes.map { it.resultContentType } +
-                deviceTypes.flatMap { it.dataSources.map { dataSource -> dataSource.contentType } }
+                deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.contentType } }
 
     override val dataSourceBuilders get() = CorePlugin.dataSourceBuilders
 
@@ -62,24 +63,25 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             classSerializer(VisualizerControl.serializer())
         )
 
-    override val dataSourceSerializers
-        get() = listOf(
-            classSerializer(ResolutionDataSource.serializer()),
-            classSerializer(PreviewResolutionDataSource.serializer()),
-            classSerializer(TimeDataSource.serializer()),
-            classSerializer(PixelCoordsTextureDataSource.serializer()),
-            classSerializer(ModelInfoDataSource.serializer()),
-            classSerializer(SliderDataSource.serializer()),
-            classSerializer(ColorPickerDataSource.serializer()),
-            classSerializer(RadioButtonStripDataSource.serializer()),
-            classSerializer(XyPadDataSource.serializer()),
-            classSerializer(MovingHeadInfoDataSource.serializer())
-        )
-
     override val deviceTypes: List<DeviceType>
         get() = listOf(
             PixelArrayDevice,
             MovingHeadDevice
+        )
+
+    override val shaderPrototypes
+        get() = listOf(
+            GenericShaderPrototype,
+            ShaderToyShaderPrototype
+        )
+
+    override val shaderTypes: List<ShaderType>
+        get() = listOf(
+            ProjectionShader,
+            DistortionShader,
+            PaintShader,
+            FilterShader,
+            MoverShader
         )
 
     /**
@@ -92,6 +94,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<ResolutionDataSource> {
             override val resourceName: String get() = "Resolution"
             override val contentType: ContentType get() = ContentType.Resolution
+            override val serializerRegistrar get() = classSerializer(serializer())
+
             override fun build(inputPort: InputPort): ResolutionDataSource =
                 ResolutionDataSource()
         }
@@ -119,8 +123,9 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     @SerialName("baaahs.Core:PreviewResolution")
     data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<PreviewResolutionDataSource> {
-            override val resourceName: String get() = "Preview Resolution"
+            override val resourceName: String get() = "PreviewResolution"
             override val contentType: ContentType get() = ContentType.PreviewResolution
+            override val serializerRegistrar get() = classSerializer(serializer())
             override fun build(inputPort: InputPort): PreviewResolutionDataSource =
                 PreviewResolutionDataSource()
         }
@@ -162,6 +167,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<TimeDataSource> {
             override val resourceName: String get() = "Time"
             override val contentType: ContentType get() = ContentType.Time
+            override val serializerRegistrar get() = classSerializer(serializer())
             override fun build(inputPort: InputPort): TimeDataSource =
                 TimeDataSource()
         }
@@ -188,13 +194,15 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             }
     }
 
+    @Deprecated("Obsolete, going away soon.")
     @Serializable
     @SerialName("baaahs.Core:PixelCoordsTexture")
     data class PixelCoordsTextureDataSource(@Transient val `_`: Boolean = true) : DataSource {
         companion object : DataSourceBuilder<PixelCoordsTextureDataSource> {
             override val resourceName: String get() = "PixelCoords"
             override val contentType: ContentType get() = ContentType.PixelCoordinatesTexture
-
+            override val serializerRegistrar get() = classSerializer(serializer())
+            override fun looksValid(inputPort: InputPort): Boolean = false
             override fun build(inputPort: InputPort): PixelCoordsTextureDataSource =
                 PixelCoordsTextureDataSource()
         }
@@ -207,46 +215,14 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override fun suggestId(): String = "pixelCoordsTexture"
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
-            PixelLocationFeed(getVarName(id))
-    }
-
-    @Serializable
-    @SerialName("baaahs.Core:ScreenUvCoord")
-    data class ScreenUvCoordDataSource(@Transient val `_`: Boolean = true) : DataSource {
-        companion object : DataSourceBuilder<ScreenUvCoordDataSource> {
-            override val resourceName: String get() = "Screen U/V Coordinate"
-            override val contentType: ContentType get() = ContentType.UvCoordinateStream
-            override fun build(inputPort: InputPort): ScreenUvCoordDataSource =
-                ScreenUvCoordDataSource()
-        }
-
-        override val pluginPackage: String get() = id
-        override val title: String get() = "Screen U/V Coordinate"
-        override fun getType(): GlslType = GlslType.Vec2
-        override val contentType: ContentType
-            get() = ContentType.UvCoordinateStream
-        override fun isImplicit(): Boolean = true
-        override fun getVarName(id: String): String = "gl_FragCoord"
-
-        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-            return object : Feed, RefCounted by RefCounter() {
+            object : Feed, RefCounted by RefCounter() {
+                override fun release() = super.release()
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                    override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                        return object : ProgramFeed {
-                            override val isValid: Boolean get() = true
-
-                            override fun setOnProgram() {
-                                // No-op.
-                            }
-                        }
+                    override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed {
+                        override val isValid: Boolean get() = false
                     }
-
-                    override fun release() = Unit
                 }
-
-                override fun release() = Unit
             }
-        }
     }
 
     @Serializable
@@ -255,6 +231,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<ModelInfoDataSource> {
             override val resourceName: String get() = "Model Info"
             override val contentType: ContentType get() = ContentType.ModelInfo
+            override val serializerRegistrar get() = classSerializer(serializer())
             private val modelInfoType = ContentType.ModelInfo.glslType
 
             // TODO: dataType should be something like "{vec3,vec3}" probably.
@@ -300,6 +277,36 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
                 override fun release() = Unit
             }
         }
+    }
+
+    @Serializable
+    @SerialName("baaahs.Core:RasterCoordinate")
+    data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : DataSource {
+        companion object : DataSourceBuilder<RasterCoordinateDataSource> {
+            override val resourceName: String get() = "RasterCoordinate"
+            override val contentType: ContentType get() = ContentType.RasterCoordinate
+            override val serializerRegistrar get() = classSerializer(serializer())
+            override fun build(inputPort: InputPort): RasterCoordinateDataSource =
+                RasterCoordinateDataSource()
+        }
+
+        override val pluginPackage: String get() = id
+        override val title: String get() = "Raster Coordinate"
+        override fun getType(): GlslType = GlslType.Vec4
+        override val contentType: ContentType
+            get() = ContentType.RasterCoordinate
+
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
+            object : Feed, RefCounted by RefCounter() {
+                override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
+                    override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {}
+                }
+
+                override fun release() = Unit
+            }
+
+        override fun isImplicit(): Boolean = true
+        override fun getVarName(id: String): String = "gl_FragCoord"
     }
 
     interface GadgetDataSource<T : Gadget> : DataSource {
@@ -356,6 +363,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<SliderDataSource> {
             override val resourceName: String get() = "Slider"
             override val contentType: ContentType get() = ContentType.Float
+            override val serializerRegistrar get() = classSerializer(serializer())
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Float)
@@ -408,6 +416,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<XyPadDataSource> {
             override val resourceName: String get() = "XyPad"
             override val contentType: ContentType get() = ContentType.XyCoordinate
+            override val serializerRegistrar get() = classSerializer(serializer())
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Vec2)
@@ -456,6 +465,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<ColorPickerDataSource> {
             override val resourceName: String get() = "ColorPicker"
             override val contentType: ContentType get() = ContentType.Color
+            override val serializerRegistrar get() = classSerializer(serializer())
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Vec4)
@@ -500,6 +510,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         companion object : DataSourceBuilder<RadioButtonStripDataSource> {
             override val resourceName: String get() = "Radio Button Strip"
             override val contentType: ContentType get() = ContentType.Int
+            override val serializerRegistrar get() = classSerializer(serializer())
 
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Int)
@@ -542,7 +553,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     data class ImageDataSource(val imageTitle: String) : DataSource {
         companion object : DataSourceBuilder<ImageDataSource> {
             override val resourceName: String get() = "Image"
-            override val contentType: ContentType get() = ContentType.ColorStream
+            override val contentType: ContentType get() = ContentType.Color
+            override val serializerRegistrar get() = classSerializer(serializer())
             override fun looksValid(inputPort: InputPort): Boolean =
                 inputPort.dataTypeIs(GlslType.Sampler2D)
 
@@ -553,15 +565,15 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
         override val pluginPackage: String get() = id
         override val title: String get() = "Image"
         override fun getType(): GlslType = GlslType.Sampler2D
-        override val contentType: ContentType
-            get() = ContentType.ColorStream
+        override val contentType: ContentType get() = ContentType.Color
+
         override fun suggestId(): String = "$imageTitle Image".camelize()
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                        SingleUniformFeed(glslProgram, this@ImageDataSource, id) { uniform ->
+                        SingleUniformFeed(glslProgram, this@ImageDataSource, id) {
                             // no-op
                         }
                 }
@@ -584,7 +596,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             ResolutionDataSource,
             PreviewResolutionDataSource,
             SliderDataSource,
-            MovingHeadInfoDataSource
+            MovingHeadInfoDataSource,
+            RasterCoordinateDataSource
         )
 
         private val logger = Logger("CorePlugin")

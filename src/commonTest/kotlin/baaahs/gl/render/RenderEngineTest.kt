@@ -18,7 +18,6 @@ import baaahs.gl.renderPlanFor
 import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 import baaahs.shows.FakeShowPlayer
 import kotlin.math.abs
 import kotlin.random.Random
@@ -286,13 +285,12 @@ class RenderEngineTest {
         Color(abs(redI - other.redI), abs(greenI - other.greenI), abs(blueI - other.blueI), abs(alphaI - other.alphaI))
 }
 
-private val directXyProjection = Shader("Direct XY Projection", ShaderType.Projection,
+private val directXyProjection = Shader(
+    "Direct XY Projection",
     /**language=glsl*/
     """
         // Direct XY Projection
         // !SparkleMotion:internal
-
-        uniform sampler2D pixelCoordsTexture;
 
         struct ModelInfo {
             vec3 center;
@@ -300,16 +298,10 @@ private val directXyProjection = Shader("Direct XY Projection", ShaderType.Proje
         };
         uniform ModelInfo modelInfo;
 
-        vec2 project(vec3 pixelLocation) {
+        // @return uv-coordinate
+        // @param pixelLocation xyz-coordinate
+        vec2 main(vec3 pixelLocation) {
             return vec2(pixelLocation.x, pixelLocation.y);
-        }
-
-        vec2 mainProjection(vec2 rasterCoord) {
-            int rasterX = int(rasterCoord.x);
-            int rasterY = int(rasterCoord.y);
-            
-            vec3 pixelCoord = texelFetch(pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
-            return project(pixelCoord);
         }
     """.trimIndent()
 )

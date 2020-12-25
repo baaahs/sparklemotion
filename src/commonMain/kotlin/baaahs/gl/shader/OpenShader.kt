@@ -5,10 +5,9 @@ import baaahs.RefCounter
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
-import baaahs.gl.patch.ContentType
-import baaahs.plugin.Plugins
+import baaahs.gl.glsl.ShaderAnalysis
+import baaahs.only
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
 import baaahs.show.ShaderType
 import baaahs.unknown
 import kotlin.collections.set
@@ -18,56 +17,46 @@ interface OpenShader : RefCounted {
     val src: String get() = glslCode.src
     val glslCode: GlslCode
     val title: String
-    val entryPointName: String
     val entryPoint: GlslFunction
-        get() = glslCode.findFunction(entryPointName)
 
     val inputPorts: List<InputPort>
     val outputPort: OutputPort
-    val defaultPriority: Int
-    val defaultUpstreams: Map<ContentType, ShaderChannel>
 
-    fun findInputPort(portId: String): InputPort
+    val shaderType: ShaderType
+    val shaderPrototype: ShaderPrototype
+
+    fun findInputPortOrNull(portId: String): InputPort? =
+        inputPorts.find { it.id == portId }
+
+    fun findInputPort(portId: String): InputPort =
+        findInputPortOrNull(portId)
+            ?: error(unknown("input port", portId, inputPorts))
+
     fun toGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
+
     fun invocationGlsl(
         namespace: Namespace,
         resultVar: String,
         portMap: Map<String, String> = emptyMap()
     ): String
 
-    abstract class Base(
-        final override val shader: Shader,
-        final override val glslCode: GlslCode,
-        private val plugins: Plugins
+    class Base(
+        override val shader: Shader,
+        override val glslCode: GlslCode,
+        override val entryPoint: GlslFunction,
+        override val inputPorts: List<InputPort>,
+        override val outputPort: OutputPort,
+        override val shaderType: ShaderType,
+        override val shaderPrototype: ShaderPrototype
     ) : OpenShader, RefCounted by RefCounter() {
+
+        constructor(shaderAnalysis: ShaderAnalysis, shaderType: ShaderType) : this(
+            shaderAnalysis.shader, shaderAnalysis.glslCode, shaderAnalysis.entryPoint!!,
+            shaderAnalysis.inputPorts, shaderAnalysis.outputPorts.only(), shaderType,
+            shaderAnalysis.shaderPrototype
+        )
+
         override val title: String get() = shader.title
-
-        abstract val proFormaInputPorts: List<InputPort>
-        abstract val wellKnownInputPorts: Map<String, InputPort>
-
-        override val inputPorts: List<InputPort> by lazy {
-            proFormaInputPorts +
-                    glslCode.globalInputVars.map {
-                        wellKnownInputPorts[it.name]
-                            ?.copy(type = it.type, glslVar = it)
-                            ?: toInputPort(it)
-                    }
-        }
-
-        abstract val shaderType: ShaderType
-        override val defaultPriority: Int
-            get() = shaderType.priority
-        override val defaultUpstreams: Map<ContentType, ShaderChannel>
-            get() = shaderType.defaultUpstreams
-
-        protected fun toInputPort(glslVar: GlslCode.GlslVar): InputPort {
-            return glslVar.toInputPort(plugins)
-        }
-
-        override fun findInputPort(portId: String): InputPort {
-            return inputPorts.find { it.id == portId }
-                ?: error(unknown("input port", portId, inputPorts))
-        }
 
         override fun toGlsl(namespace: Namespace, portMap: Map<String, String>): String {
             val buf = StringBuilder()
@@ -81,14 +70,25 @@ interface OpenShader : RefCounted {
                 }
             }
 
+            val uniformGlobalsMap = portMap.filter { (id, _) ->
+                val inputPort = findInputPortOrNull(id)
+
+                inputPort?.isGlobal == true ||
+                        (outputPort.id == id && !outputPort.isParam)
+            }
+
             val symbolsToNamespace = glslCode.symbolNames.toSet()
-            val symbolMap = portMap + nonUniformGlobalsMap
+            val symbolMap = uniformGlobalsMap + nonUniformGlobalsMap
             glslCode.functions.forEach { glslFunction ->
                 buf.append(glslFunction.toGlsl(namespace, symbolsToNamespace, symbolMap))
                 buf.append("\n")
             }
 
             return buf.toString()
+        }
+
+        override fun invocationGlsl(namespace: Namespace, resultVar: String, portMap: Map<String, String>): String {
+            return entryPoint.invocationGlsl(namespace, resultVar, portMap)
         }
 
         override fun equals(other: Any?): Boolean =

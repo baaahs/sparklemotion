@@ -13,15 +13,15 @@ import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.renderPlanFor
-import baaahs.gl.shader.PaintShader
+import baaahs.gl.shader.InputPort
 import baaahs.gl.testPlugins
 import baaahs.only
-import baaahs.show.DataSource
+import baaahs.plugin.SerializerRegistrar
+import baaahs.show.*
 import baaahs.show.Shader
-import baaahs.show.ShaderType
-import baaahs.show.UpdateMode
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.show.live.link
 import baaahs.shows.FakeGlContext
@@ -72,10 +72,10 @@ object ModelRenderEngineSpec : Spek({
                     void main(void) { gl_FragColor = doesntMatter(gl_FragCoord); }
                 """.trimIndent()
             }
-            val openShader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) as PaintShader }
+            val openShader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) }
             val incomingLinks by value { mapOf("gl_FragCoord" to dataSource.link("coord")) }
             val linkedPatch by value {
-                val rootNode = LinkedShaderInstance(openShader, incomingLinks, null, 0f)
+                val rootNode = LinkedShaderInstance(openShader, incomingLinks, ShaderChannel.Main, 0f)
                 ProgramLinker(rootNode).buildLinkedPatch()
             }
             val program by value {
@@ -257,15 +257,32 @@ private fun someVectors(count: Int, initial: Float = 0f): List<Vector3F> =
     (0 until count).map { Vector3F(initial + count / 10f, 0f, 0f) }
 
 class DeviceTypeForTest(
-    vararg fixtureDataSources: DataSource,
-    override val resultContentType: ContentType = ContentType.ColorStream,
+    vararg val fixtureDataSources: DataSource,
+    override val resultContentType: ContentType = Color,
     override val id: String = "testDevice",
-    override val title: String = id.englishize()
+    override val title: String = id.englishize(),
+    override val likelyPipelines: List<Pair<ContentType, ContentType>> =
+        with(ContentType) {
+            listOf(
+                XyzCoordinate to UvCoordinate,
+                UvCoordinate to Color
+            )
+        }
 ) : DeviceType {
-    override val dataSources: List<DataSource> = fixtureDataSources.toList()
-    override val resultParams: List<ResultParam> get() = emptyList()
+    override val dataSourceBuilders: List<DataSourceBuilder<*>>
+        get() = fixtureDataSources.map { dataSource ->
+            object : DataSourceBuilder<DataSource> {
+                override val resourceName: String get() = "resName$dataSource"
+                override val contentType: ContentType get() = dataSource.contentType
+                override val serializerRegistrar: SerializerRegistrar<DataSource> get() = TODO("not implemented")
+                override fun build(inputPort: InputPort): DataSource = dataSource
+            }
+        }
+
+    override val resultParams: List<ResultParam>
+        get() = emptyList()
     override val errorIndicatorShader: Shader
-        get() = Shader("Ω Guru Meditation Error Ω", ShaderType.Paint, "")
+        get() = Shader("Ω Guru Meditation Error Ω", "")
     override fun toString(): String = id
 }
 

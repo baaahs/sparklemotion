@@ -38,7 +38,7 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
             div(+Styles.editButton) {
                 attrs.onClickFunction = onEditButtonClick
 
-                icon(Icons.Edit)
+                editIconWithBadge(control, props.controlProps.editMode)
             }
         }
 

@@ -7,7 +7,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
-import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import com.danielgergely.kgl.*
 import kotlinx.serialization.KSerializer
@@ -15,33 +15,16 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.modules.SerializersModule
 import kotlin.math.min
-import kotlin.reflect.KClass
 
 interface DeviceType {
     val id: String
     val title: String
-    val dataSources: List<DataSource>
+    val dataSourceBuilders: List<DataSourceBuilder<*>>
     val resultParams: List<ResultParam>
     val resultContentType: ContentType
+    val likelyPipelines: List<Pair<ContentType, ContentType>>
     val errorIndicatorShader: Shader
-
-    companion object {
-        private val knownDeviceTypes = listOf(
-            PixelArrayDevice, MovingHeadDevice
-        ).associateBy { it.id }
-
-        val serialModule = SerializersModule {
-            val serializer = Serializer(knownDeviceTypes)
-
-            contextual(DeviceType::class, serializer)
-            knownDeviceTypes.values.forEach { deviceType ->
-                @Suppress("UNCHECKED_CAST")
-                contextual(deviceType::class as KClass<DeviceType>, serializer)
-            }
-        }
-    }
 
     class Serializer(private val knownDeviceTypes: Map<String, DeviceType>) : KSerializer<DeviceType> {
         override val descriptor: SerialDescriptor

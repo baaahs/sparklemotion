@@ -7,6 +7,7 @@ import kotlin.math.PI
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
+import kotlin.reflect.KProperty
 
 fun <E> Collection<E>.only(description: String = "item"): E {
     if (size != 1)
@@ -93,7 +94,12 @@ fun randomId(prefix: String): String {
             Random.nextInt(0, Int.MAX_VALUE).toString(16)
 }
 
+fun <T : Any?> T.listOf() = listOf(this)
+
 // Workaround for https://youtrack.jetbrains.com/issue/KT-38501.
-fun debugger() {
-    println("Debugger breakpoint")
+fun debugger(arg: String = "?") {
+    println("Debugger breakpoint: $arg")
 }
+
+// Workaround for https://youtrack.jetbrains.com/issue/KT-41471.
+operator fun <T> Lazy<T>.getValue(thisRef: Any?, property: KProperty<*>) = value

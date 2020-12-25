@@ -23,7 +23,6 @@ import kotlinext.js.jsObject
 import kotlinx.serialization.modules.SerializersModule
 import react.ReactElement
 import react.createElement
-
 class WebClient(
     network: Network,
     pinkyAddress: Network.Address,
@@ -81,6 +80,14 @@ class WebClient(
             facade.notifyChanged()
         }
 
+    private val showProblems = arrayListOf<ShowProblem>()
+    init {
+        pubSub.subscribe(Topics.showProblems) {
+            showProblems.clear()
+            showProblems.addAll(it)
+            facade.notifyChanged()
+        }
+    }
 
     private val undoStack = UndoStack<ShowEditorState>()
 
@@ -174,6 +181,9 @@ class WebClient(
         val serverNotices : List<Pinky.ServerNotice>
             get() = this@WebClient.serverNotices
 
+        val showProblems : List<ShowProblem>
+            get() = this@WebClient.showProblems
+
         override fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
             onShowEdit(mutableShow.getShow(), openShow!!.getShowState(), pushToUndoStack)
         }
@@ -230,3 +240,4 @@ class WebClient(
                     BeatLinkPlugin.Builder(BeatSource.None)
     }
 }
+

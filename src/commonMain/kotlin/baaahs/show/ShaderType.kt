@@ -1,177 +1,41 @@
 package baaahs.show
 
 import baaahs.app.ui.CommonIcons
-import baaahs.gl.glsl.AnalysisException
-import baaahs.gl.glsl.GlslCode
-import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.*
-import baaahs.plugin.Plugins
+import baaahs.gl.glsl.ShaderAnalysis
+import baaahs.gl.preview.PreviewShaders
+import baaahs.gl.shader.OpenShader
 import baaahs.show.mutable.MutableShader
 import baaahs.ui.Icon
 
-enum class ShaderType(
-    val priority: Int,
-    val defaultUpstreams: Map<ContentType, ShaderChannel>,
-    val resultContentType: ContentType,
-    val icon: Icon,
+interface ShaderType {
+    val title: String
+    val icon: Icon
     val template: String
-) {
-    Unknown(
-        0, emptyMap(),
-        ContentType.Unknown, CommonIcons.None,
-        """
-            ---
-        """.trimIndent()
-    ) {
-        override fun matches(glslCode: GlslCode): Boolean {
-            return glslCode.functionNames.contains("mainMain")
+    val injectUvCoordinateForPreview: Boolean get() = true
+
+    fun newShaderFromTemplate(): MutableShader {
+        return MutableShader("Untitled $title Shader", template)
+    }
+
+    fun matches(shaderAnalysis: ShaderAnalysis): MatchLevel
+
+    fun pickPreviewShaders(openShader: OpenShader, previewShaders: PreviewShaders): List<OpenShader>
+
+    object Unknown : ShaderType {
+        override val title: String get() = "Unknown"
+        override val icon: Icon get() = CommonIcons.UnknownShader
+        override val template: String get() = error("n/a")
+
+        override fun matches(shaderAnalysis: ShaderAnalysis): MatchLevel = MatchLevel.NoMatch
+
+        override fun pickPreviewShaders(openShader: OpenShader, previewShaders: PreviewShaders): List<OpenShader> {
+            return listOf(openShader)
         }
+    }
 
-        override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins): OpenShader {
-            return object : OpenShader.Base(shader, glslCode, plugins) {
-                override val proFormaInputPorts: List<InputPort>
-                    get() = emptyList()
-                override val wellKnownInputPorts: Map<String, InputPort>
-                    get() = emptyMap()
-                override val shaderType: ShaderType
-                    get() = Unknown
-                override val entryPointName: String
-                    get() = "mainMain"
-                override val outputPort: OutputPort =
-                    OutputPort(
-                        entryPoint.hint?.contentType(plugins)
-                            ?: ContentType.Unknown
-                    )
-
-                override fun invocationGlsl(
-                    namespace: GlslCode.Namespace,
-                    resultVar: String,
-                    portMap: Map<String, String>
-                ): String {
-                    return resultVar + " = " + namespace.qualify(entryPoint.name) + "()"
-                }
-            }
-        }
-    },
-
-    Projection(
-        0, emptyMap(),
-        ContentType.UvCoordinateStream, CommonIcons.ProjectionShader,
-        """
-            uniform sampler2D pixelCoordsTexture;
-            
-            struct ModelInfo {
-                vec3 center;
-                vec3 extents;
-            };
-            uniform ModelInfo modelInfo;
-
-            vec2 project(vec3 pixelLocation) {
-                vec3 start = modelInfo.center - modelInfo.extents / 2.;
-                vec3 rel = (pixelLocation - start) / modelInfo.extents;
-                return rel.xy;
-            }
-            
-            vec2 mainProjection(vec2 rasterCoord) {
-                int rasterX = int(rasterCoord.x);
-                int rasterY = int(rasterCoord.y);
-                
-                vec3 pixelCoord = texelFetch(pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
-                return project(pixelCoord);
-            }
-    """.trimIndent()
-    ) {
-        override fun matches(glslCode: GlslCode) =
-            glslCode.functionNames.contains("mainProjection")
-
-        override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins) =
-            ProjectionShader(shader, glslCode, plugins)
-    },
-
-    Distortion(
-        1,
-        mapOf(ContentType.UvCoordinateStream to ShaderChannel.Main),
-        ContentType.UvCoordinateStream, CommonIcons.DistortionShader,
-        """
-            uniform float scale; // @@Slider min=0.25 max=4 default=1
-    
-            vec2 mainDistortion(vec2 uvIn) {
-              return (uvIn - .5) / scale + .5;
-            }
-        """.trimIndent()
-    ) {
-        override fun matches(glslCode: GlslCode) =
-            glslCode.functionNames.contains("mainDistortion")
-
-        override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins) =
-            DistortionShader(shader, glslCode, plugins)
-    },
-
-    Paint(
-        3,
-        mapOf(ContentType.UvCoordinateStream to ShaderChannel.Main),
-        ContentType.ColorStream, CommonIcons.PaintShader,
-        """
-            uniform float time;
-    
-            void main(void) {
-                gl_FragColor = vec4(gl_FragCoord.x, gl_FragCoord.y, mod(time, 1.), 1.);
-            }
-        """.trimIndent()
-    ) {
-        override fun matches(glslCode: GlslCode): Boolean {
-            return glslCode.functionNames.contains("main") ||
-                    glslCode.functionNames.contains("mainImage")
-        }
-
-        override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins): PaintShader {
-            if (glslCode.functionNames.contains("main")) {
-                return GenericPaintShader(shader, glslCode, plugins)
-            } else if (glslCode.functionNames.contains("mainImage")) {
-                return ShaderToyPaintShader(shader, glslCode, plugins)
-            } else
-                throw AnalysisException("Can't identify paint shader type.")
-        }
-    },
-
-    Filter(
-        4, mapOf(ContentType.ColorStream to ShaderChannel.Main),
-        ContentType.ColorStream,  CommonIcons.FilterShader,
-        """
-            vec4 mainFilter(vec4 inColor) {
-                return inColor;
-            }
-        """.trimIndent()
-    ) {
-        override fun matches(glslCode: GlslCode): Boolean {
-            return glslCode.functionNames.contains("mainFilter")
-        }
-
-        override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins) =
-            FilterShader(shader, glslCode, plugins)
-    },
-
-    Mover(
-        0, emptyMap(), ContentType.PanAndTilt,
-        CommonIcons.None,
-        """
-            vec4 mainMover() {
-                return vec4(0., .5);
-            }
-        """.trimIndent()
-    ) {
-        override fun matches(glslCode: GlslCode): Boolean {
-            return glslCode.functionNames.contains("mainMover")
-        }
-
-        override fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins) =
-            MoverShader(shader, glslCode, plugins)
-    };
-
-    abstract fun matches(glslCode: GlslCode): Boolean
-    abstract fun open(shader: Shader, glslCode: GlslCode, plugins: Plugins): OpenShader
-
-    fun shaderFromTemplate(): MutableShader {
-        return MutableShader("Untitled $name Shader", this, template)
+    enum class MatchLevel {
+        NoMatch,
+        Match,
+        MatchAndFilter // This is dumb, figure out something better.
     }
 }

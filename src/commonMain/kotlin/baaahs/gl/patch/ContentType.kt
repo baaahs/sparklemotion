@@ -1,26 +1,27 @@
 package baaahs.gl.patch
 
+import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 
 class ContentType(
     val id: String,
     val title: String,
     val glslType: GlslType,
-    val isStream: Boolean = false,
     /** If false, this content type won't be suggested for matching GLSL types, it must be explicitly specified. */
     val suggest: Boolean = true,
+    private val typeAdaptations: Map<GlslType, (String) -> String> = emptyMap(),
     private val defaultInitializer: ((GlslType) -> String)? = null
 ) {
     fun initializer(dataType: GlslType): String =
         defaultInitializer?.invoke(dataType) ?: dataType.defaultInitializer()
 
-    /**
-     * ContentTypes where [isStream] is `true` describe content whose value is determined by,
-     * and may be different for, every pixel.
-     */
-    fun stream(): ContentType {
-        if (isStream) error("Already a stream!")
-        return ContentType("$id-stream", "$title Stream", glslType, true, suggest, defaultInitializer)
+    fun adapt(expression: String, toType: GlslType): String {
+        return typeAdaptations[toType]?.invoke(expression)
+            ?: expression
+    }
+
+    fun isUnknown(): Boolean {
+        return id == "unknown" || id.startsWith("unknown/")
     }
 
     override fun toString(): String = "ContentType($id [$glslType])"
@@ -32,7 +33,6 @@ class ContentType(
         if (id != other.id) return false
         if (title != other.title) return false
         if (glslType != other.glslType) return false
-        if (isStream != other.isStream) return false
 
         return true
     }
@@ -40,28 +40,34 @@ class ContentType(
     override fun hashCode(): Int {
         var result = title.hashCode()
         result = 31 * result + glslType.hashCode()
-        result = 31 * result + isStream.hashCode()
         return result
     }
 
 
     companion object {
-        val PixelCoordinatesTexture = ContentType("pixel-coords-texture", "Pixel Coordinates Texture", GlslType.Sampler2D, suggest = true)
+        fun unknown(type: GlslType): ContentType {
+            return ContentType("unknown/${type.glslLiteral}", "Unknown ${type.glslLiteral}", suggest = false, glslType = type)
+        }
+
+        @Deprecated("Obsolete")
+        val PixelCoordinatesTexture =
+            ContentType("pixel-coords-texture", "Pixel Coordinates Texture", GlslType.Sampler2D, suggest = true)
         val PreviewResolution = ContentType("preview-resolution", "Preview Resolution", GlslType.Vec2, suggest = false)
-        val RasterCoordinate = ContentType("raster-coordinate", "Raster Coordinate", GlslType.Vec2, suggest = false)
+        val RasterCoordinate = ContentType("raster-coordinate", "Raster Coordinate", GlslType.Vec4, suggest = false)
         val Resolution = ContentType("resolution", "Resolution", GlslType.Vec2, suggest = false)
         val Unknown = ContentType("unknown", "Unknown", GlslType.Void, suggest = false)
 
-        val UvCoordinate = ContentType("uv-coordinate", "U/V Coordinate", GlslType.Vec2)
-        val UvCoordinateStream = UvCoordinate.stream()
+        val UvCoordinate = ContentType(
+            "uv-coordinate", "U/V Coordinate", GlslType.Vec2,
+            typeAdaptations = mapOf(GlslType.Vec4 to { "$it.xy" })
+        )
         val XyCoordinate = ContentType("xy-coordinate", "X/Y Coordinate", GlslType.Vec2)
-        val ModelInfo = ContentType("model-info", "Model Info", GlslType.from("ModelInfo"))
+        val ModelInfo = ContentType("model-info", "Model Info", MoreTypes.ModelInfo.glslType)
         val Mouse = ContentType("mouse", "Mouse", GlslType.Vec2)
         val XyzCoordinate = ContentType("xyz-coordinate", "X/Y/Z Coordinate", GlslType.Vec3)
         val Color = ContentType("color", "Color", GlslType.Vec4) { type ->
             if (type == GlslType.Vec4) "vec4(0., 0., 0., 1.)" else type.defaultInitializer()
         }
-        val ColorStream = Color.stream()
         val Time = ContentType("time", "Time", GlslType.Float)
         val Float = ContentType("float", "Float", GlslType.Float)
         val Int = ContentType("int", "Integer", GlslType.Int)
@@ -77,13 +83,11 @@ class ContentType(
             Unknown,
 
             UvCoordinate,
-            UvCoordinateStream,
             XyCoordinate,
             ModelInfo,
             Mouse,
             XyzCoordinate,
             Color,
-            ColorStream,
             Time,
             Float,
             Int,
@@ -91,5 +95,25 @@ class ContentType(
 
             PanAndTilt
         )
+    }
+}
+
+object MoreTypes {
+    object ModelInfo {
+        val struct = GlslCode.GlslStruct(
+            "ModelInfo",
+            mapOf(
+                "center" to GlslType.Vec3,
+                "extents" to GlslType.Vec3,
+            ),
+            fullText = """
+                    struct ModelInfo {
+                        vec3 center;            
+                        vec3 extents;
+                    }
+                """.trimIndent(),
+            varName = null
+        )
+        val glslType = GlslType.Struct(struct)
     }
 }

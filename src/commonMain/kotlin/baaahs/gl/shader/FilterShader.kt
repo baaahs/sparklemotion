@@ -1,50 +1,32 @@
 package baaahs.gl.shader
 
-import baaahs.gl.glsl.GlslCode
-import baaahs.gl.glsl.GlslType
-import baaahs.gl.glsl.LinkException
+import baaahs.app.ui.CommonIcons
+import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
-import baaahs.plugin.Plugins
-import baaahs.show.Shader
+import baaahs.gl.preview.PreviewShaders
 import baaahs.show.ShaderType
+import baaahs.ui.Icon
 
-class FilterShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
-    companion object {
-        val proFormaInputPorts = listOf(
-            InputPort("gl_FragColor", GlslType.Vec4, "Input Color", ContentType.ColorStream)
-        )
+object FilterShader : ShaderType {
+    override val title: String = "Filter"
 
-        val wellKnownInputPorts = listOf(
-            InputPort("gl_FragCoord", GlslType.Vec4, "Coordinates", ContentType.UvCoordinateStream),
-            InputPort("intensity", GlslType.Float, "Intensity", ContentType.Float), // TODO: ContentType.ZeroToOne
-            InputPort("time", GlslType.Float, "Time", ContentType.Time),
-            InputPort("startTime", GlslType.Float, "Activated Time", ContentType.Time),
-            InputPort("endTime", GlslType.Float, "Deactivated Time", ContentType.Time)
-//                        varying vec2 surfacePosition; TODO
-        ).associateBy { it.id }
+    override val icon: Icon = CommonIcons.FilterShader
 
-        val outputPort = OutputPort(ContentType.ColorStream)
+    override val template: String = """
+        // @return color
+        // @param inColor color
+        vec4 main(vec4 inColor) {
+            return inColor;
+        }
+    """.trimIndent()
+
+    override fun matches(shaderAnalysis: ShaderAnalysis): ShaderType.MatchLevel {
+        return if (shaderAnalysis.outputPorts.firstOrNull()?.contentType == ContentType.Color
+            && shaderAnalysis.inputPorts.any { it.contentType == ContentType.Color })
+            ShaderType.MatchLevel.MatchAndFilter else ShaderType.MatchLevel.NoMatch
     }
 
-    override val shaderType: ShaderType
-        get() = ShaderType.Filter
-
-    override val entryPointName: String get() = "mainFilter"
-
-    override val proFormaInputPorts: List<InputPort>
-        get() = FilterShader.proFormaInputPorts
-    override val wellKnownInputPorts: Map<String, InputPort>
-        get() = FilterShader.wellKnownInputPorts
-    override val outputPort: OutputPort
-        get() = FilterShader.outputPort
-
-    override fun invocationGlsl(
-        namespace: GlslCode.Namespace,
-        resultVar: String,
-        portMap: Map<String, String>
-    ): String {
-        val inVar = portMap["gl_FragColor"]
-            ?: throw LinkException("No gl_FragColor input for shader \"$title\"")
-        return resultVar + " = " + namespace.qualify(entryPoint.name) + "($inVar)"
+    override fun pickPreviewShaders(openShader: OpenShader, previewShaders: PreviewShaders): List<OpenShader> {
+        return listOf(previewShaders.screenCoordsProjection, openShader, previewShaders.smpteColorBars)
     }
 }

@@ -1,43 +1,45 @@
 package baaahs.gl.shader
 
-import baaahs.gl.glsl.GlslCode
+import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.GlslType
+import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
-import baaahs.plugin.Plugins
-import baaahs.show.Shader
+import baaahs.gl.preview.PreviewShaders
+import baaahs.plugin.objectSerializer
 import baaahs.show.ShaderType
+import baaahs.ui.Icon
+import kotlinx.serialization.SerialName
 
-class ProjectionShader(shader: Shader, glslCode: GlslCode, plugins: Plugins) : OpenShader.Base(shader, glslCode, plugins) {
-    companion object {
-        val proFormaInputPorts = listOf<InputPort>()
+object ProjectionShader : ShaderType {
+    override val title: String = "Projection"
 
-        val wellKnownInputPorts = listOf(
-            InputPort("pixelCoordsTexture", GlslType.Sampler2D, "U/V Coordinates Texture", ContentType.PixelCoordinatesTexture),
-            InputPort("resolution", GlslType.Vec2, "Resolution", ContentType.Resolution),
-            InputPort("previewResolution", GlslType.Vec2, "Preview Resolution", ContentType.PreviewResolution)
-        ).associateBy { it.id }
+    override val icon: Icon = CommonIcons.ProjectionShader
 
-        val outputPort = OutputPort(ContentType.UvCoordinateStream)
+    override val template: String = """
+        struct ModelInfo {
+            vec3 center;
+            vec3 extents;
+        };
+        uniform ModelInfo modelInfo;
 
+        // @return uv-coordinate
+        // @param pixelLocation xyz-coordinate
+        vec2 main(vec3 pixelLocation) {
+            vec3 start = modelInfo.center - modelInfo.extents / 2.;
+            vec3 rel = (pixelLocation - start) / modelInfo.extents;
+            return rel.xy;
+        }
+    """.trimIndent()
+
+    override val injectUvCoordinateForPreview: Boolean get() = false
+
+    override fun matches(shaderAnalysis: ShaderAnalysis): ShaderType.MatchLevel {
+        return if (shaderAnalysis.outputPorts.firstOrNull()?.contentType == ContentType.UvCoordinate
+            && shaderAnalysis.inputPorts.any { it.contentType == ContentType.XyzCoordinate })
+            ShaderType.MatchLevel.Match else ShaderType.MatchLevel.NoMatch
     }
 
-    override val shaderType: ShaderType = ShaderType.Projection
-
-    override val entryPointName: String
-        get() = "mainProjection"
-    override val proFormaInputPorts: List<InputPort>
-        get() = ProjectionShader.proFormaInputPorts
-    override val wellKnownInputPorts: Map<String, InputPort>
-        get() = ProjectionShader.wellKnownInputPorts
-    override val outputPort: OutputPort
-        get() = ProjectionShader.outputPort
-
-
-    override fun invocationGlsl(
-        namespace: GlslCode.Namespace,
-        resultVar: String,
-        portMap: Map<String, String>
-    ): String {
-        return resultVar + " = " + namespace.qualify(entryPoint.name) + "(gl_FragCoord.xy)"
+    override fun pickPreviewShaders(openShader: OpenShader, previewShaders: PreviewShaders): List<OpenShader> {
+        return listOf(openShader, previewShaders.pixelUvIdentity)
     }
 }

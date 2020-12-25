@@ -1,15 +1,18 @@
 package baaahs.gl.patch
 
 import baaahs.fixtures.MovingHeadInfoDataSource
+import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.kexpect
 import baaahs.gl.override
+import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
 import baaahs.show.ShaderChannel
+import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderChannel
-import baaahs.show.mutable.MutableShaderOutPort
+import baaahs.show.mutable.editor
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -43,7 +46,7 @@ object GlslGenerationSpec : Spek({
         val glslAnalyzer by value { autoWirer.glslAnalyzer }
         val mainShader by value { glslAnalyzer.import(shaderText) }
         val mutablePatch by value { MutablePatch { } }
-        val resultContentType by value { ContentType.ColorStream }
+        val resultContentType by value { Color }
         val linkedPatch by value {
             mutablePatch.openForPreview(autoWirer, resultContentType)
                 ?: fail("openForPreview returned null, maybe no shaders on mutablePatch?")
@@ -53,14 +56,14 @@ object GlslGenerationSpec : Spek({
         context("with screen coordinates for preview") {
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
-                    link("gl_FragCoord", CorePlugin.ScreenUvCoordDataSource())
+                    link("fragCoord", CorePlugin.RasterCoordinateDataSource())
                     link("resolution", CorePlugin.ResolutionDataSource())
                     link("time", CorePlugin.TimeDataSource())
                     link(
                         "blueness",
                         CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null)
                     )
-                    shaderChannel = MutableShaderChannel(ShaderChannel.Main.id)
+                    shaderChannel = ShaderChannel.Main.editor()
                 }
             }
 
@@ -114,7 +117,73 @@ object GlslGenerationSpec : Spek({
 
                           sm_result = p0_thisShaderSName_gl_FragColor;
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
+            }
+        }
+
+        context("with param input ports") {
+            override(shaderText) {
+                /**language=glsl*/
+                """
+                    uniform vec2  resolution;
+                    vec2 anotherFunc(vec2 fragCoord) { return fragCoord; }
+                    
+                    // @param fragCoord uv-coordinate
+                    void main(vec2 fragCoord) {
+                        vec2 uv = anotherFunc(fragCoord) / resolution.xy;
+                        gl_FragColor = vec4(uv.xy, 0., 1.);
+                    }
+                """.trimIndent()
+            }
+
+            beforeEachTest {
+                mutablePatch.addShaderInstance(mainShader) {
+                    link("resolution", CorePlugin.ResolutionDataSource())
+                    link("fragCoord", CorePlugin.RasterCoordinateDataSource())
+                    shaderChannel = ShaderChannel.Main.editor()
+                }
+            }
+
+            it("generates GLSL") {
+                kexpect(glsl).toBe(
+                    /**language=glsl*/
+                    """
+                        #ifdef GL_ES
+                        precision mediump float;
+                        #endif
+
+                        // SparkleMotion-generated GLSL
+
+                        layout(location = 0) out vec4 sm_result;
+
+                        // Data source: Resolution
+                        uniform vec2 in_resolution;
+
+                        // Shader: Untitled Shader; namespace: p0
+                        // Untitled Shader
+
+                        vec4 p0_untitledShader_gl_FragColor = vec4(0., 0., 0., 1.);
+
+                        #line 2
+                        vec2 p0_untitledShader_anotherFunc(vec2 fragCoord) { return fragCoord; }
+
+                        #line 5
+                        void p0_untitledShader_main(vec2 fragCoord) {
+                            vec2 uv = p0_untitledShader_anotherFunc(fragCoord) / in_resolution.xy;
+                            p0_untitledShader_gl_FragColor = vec4(uv.xy, 0., 1.);
+                        }
+
+
+                        #line 10001
+                        void main() {
+                          // Invoke Untitled Shader
+                          p0_untitledShader_main(gl_FragCoord.xy);
+
+                          sm_result = p0_untitledShader_gl_FragColor;
+                        }
+                    """.trimIndent()
+                )
             }
         }
 
@@ -147,8 +216,8 @@ object GlslGenerationSpec : Spek({
                     )
                     link("iResolution", CorePlugin.ResolutionDataSource())
                     link("iTime", CorePlugin.TimeDataSource())
-                    link("sm_FragCoord", CorePlugin.ScreenUvCoordDataSource())
-                    shaderChannel = MutableShaderChannel(ShaderChannel.Main.id)
+                    link("fragCoord", CorePlugin.RasterCoordinateDataSource())
+                    shaderChannel = ShaderChannel.Main.editor()
                 }
             }
 
@@ -176,7 +245,7 @@ object GlslGenerationSpec : Spek({
                         // Shader: This Shader's Name; namespace: p0
                         // This Shader's Name
 
-                        vec4 p0_thisShaderSNamei_result = vec4(0., 0., 0., 1.);
+                        vec4 p0_thisShaderSName_fragColor = vec4(0., 0., 0., 1.);
 
                         #line 5
                         int p0_thisShaderSName_someGlobalVar;
@@ -198,11 +267,12 @@ object GlslGenerationSpec : Spek({
                         #line 10001
                         void main() {
                           // Invoke This Shader's Name
-                          p0_thisShaderSName_mainImage(p0_thisShaderSNamei_result, gl_FragCoord.xy);
+                          p0_thisShaderSName_mainImage(p0_thisShaderSName_fragColor, gl_FragCoord.xy);
 
-                          sm_result = p0_thisShaderSNamei_result;
+                          sm_result = p0_thisShaderSName_fragColor;
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
             }
         }
 
@@ -210,37 +280,17 @@ object GlslGenerationSpec : Spek({
             beforeEachTest {
                 mutablePatch.apply {
                     addShaderInstance(cylindricalProjection) {
-                        link(
-                            "pixelCoordsTexture",
-                            CorePlugin.PixelCoordsTextureDataSource()
-                        )
-                        link(
-                            "modelInfo",
-                            CorePlugin.ModelInfoDataSource()
-                        )
-                        shaderChannel = MutableShaderChannel(ShaderChannel.Main.id)
+                        link("pixelLocation", PixelLocationDataSource())
+                        link("modelInfo", CorePlugin.ModelInfoDataSource())
+                        shaderChannel = ShaderChannel.Main.editor()
                     }
 
                     addShaderInstance(mainShader) {
-                        link(
-                            "gl_FragCoord",
-                            MutableShaderOutPort(
-                                findShaderInstanceFor(cylindricalProjection)
-                            )
-                        )
+                        link("gl_FragCoord", ShaderChannel.Main.toMutable())
                         link("resolution", CorePlugin.ResolutionDataSource())
                         link("time", CorePlugin.TimeDataSource())
-                        link(
-                            "blueness",
-                            CorePlugin.SliderDataSource(
-                                "Blueness",
-                                0f,
-                                0f,
-                                1f,
-                                null
-                            )
-                        )
-                        shaderChannel = MutableShaderChannel(ShaderChannel.Main.id)
+                        link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
+                        shaderChannel = ShaderChannel.Main.editor()
                     }
                 }
             }
@@ -268,8 +318,12 @@ object GlslGenerationSpec : Spek({
                         // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
 
-                        // Data source: Pixel Coordinates Texture
-                        uniform sampler2D in_pixelCoordsTexture;
+                        // Data source: Pixel Location
+                        uniform sampler2D ds_pixelLocation_texture;
+                        vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
+                            return texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                        }
+                        vec3 in_pixelLocation;
 
                         // Data source: Resolution
                         uniform vec2 in_resolution;
@@ -282,11 +336,11 @@ object GlslGenerationSpec : Spek({
 
                         vec2 p0_cylindricalProjectioni_result = vec2(0.);
 
-                        #line 12
+                        #line 10
                         const float p0_cylindricalProjection_PI = 3.141592654;
 
                         #line 14
-                        vec2 p0_cylindricalProjection_project(vec3 pixelLocation) {
+                        vec2 p0_cylindricalProjection_main(vec3 pixelLocation) {
                             vec3 pixelOffset = pixelLocation - in_modelInfo.center;
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
@@ -294,15 +348,6 @@ object GlslGenerationSpec : Spek({
                             float u = theta / (2.0f * p0_cylindricalProjection_PI);                         // u in range [0,1)
                             float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
                             return vec2(u, v);
-                        }
-
-                        #line 24
-                        vec2 p0_cylindricalProjection_mainProjection(vec2 rasterCoord) {
-                            int rasterX = int(rasterCoord.x);
-                            int rasterY = int(rasterCoord.y);
-                            
-                            vec3 pixelCoord = texelFetch(in_pixelCoordsTexture, ivec2(rasterX, rasterY), 0).xyz;
-                            return p0_cylindricalProjection_project(pixelCoord);
                         }
 
                         // Shader: This Shader's Name; namespace: p1
@@ -329,15 +374,19 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
+                          // Invoke Pixel Location
+                          in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
+
                           // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_mainProjection(gl_FragCoord.xy);
+                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
 
                           // Invoke This Shader's Name
                           p1_thisShaderSName_main();
 
                           sm_result = p1_thisShaderSName_gl_FragColor;
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
             }
         }
 
@@ -347,10 +396,12 @@ object GlslGenerationSpec : Spek({
             override(shaderText) {
                 """
                     // Cross-fade shader
-                    varying vec4 inColor2; // @type color-stream
                     uniform float fade;
 
-                    vec4 mainFilter(vec4 inColor) {
+                    // @return color
+                    // @param inColor color
+                    // @param inColor2 color
+                    vec4 main(vec4 inColor, vec4 inColor2) {
                         return mix(inColor, inColor2, fade);
                     }
                 """.trimIndent()
@@ -359,32 +410,35 @@ object GlslGenerationSpec : Spek({
             val mainPaintShader by value {
                 glslAnalyzer.import(
                     """
-                    void main( void ) {
-                        gl_FragColor = vec4(1., 0., 0., 1.);
-                    }
-                """.trimIndent(), "Main Paint Shader"
+                        // Main Paint Shader
+                        void main( void ) {
+                            gl_FragColor = vec4(1., 0., 0., 1.);
+                        }
+                    """.trimIndent()
                 )
             }
 
             val otherPaintShader by value {
                 glslAnalyzer.import(
                     """
-                    void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-                        fragColor = vec4(0., 1., 0., 1.);
-                    }
-                """.trimIndent(), "Other Paint Shader"
+                        // Other Paint Shader
+                        void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+                            fragColor = vec4(0., 1., 0., 1.);
+                        }
+                    """.trimIndent()
                 )
             }
 
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainPaintShader)
                 mutablePatch.addShaderInstance(otherPaintShader) {
+                    link("fragCoord", MutableDataSourcePort(CorePlugin.RasterCoordinateDataSource()))
                     shaderChannel = MutableShaderChannel.from(otherShaderActualChannel)
                 }
 
                 mutablePatch.addShaderInstance(mainShader) {
                     link("fade", CorePlugin.SliderDataSource("Fade", 0f, 0f, 1f, null))
-                    link("gl_FragColor", MutableShaderChannel("main"))
+                    link("inColor", MutableShaderChannel("main"))
                     link("inColor2", MutableShaderChannel("other"))
                 }
             }
@@ -409,7 +463,7 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p0_mainPaintShader_gl_FragColor = vec4(0., 0., 0., 1.);
 
-                        #line 1
+                        #line 2
                         void p0_mainPaintShader_main( void ) {
                             p0_mainPaintShader_gl_FragColor = vec4(1., 0., 0., 1.);
                         }
@@ -417,9 +471,9 @@ object GlslGenerationSpec : Spek({
                         // Shader: Other Paint Shader; namespace: p1
                         // Other Paint Shader
 
-                        vec4 p1_otherPaintShaderi_result = vec4(0., 0., 0., 1.);
+                        vec4 p1_otherPaintShader_fragColor = vec4(0., 0., 0., 1.);
 
-                        #line 1
+                        #line 2
                         void p1_otherPaintShader_mainImage( out vec4 fragColor, in vec2 fragCoord ) {
                             fragColor = vec4(0., 1., 0., 1.);
                         }
@@ -429,9 +483,9 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p2_crossFadeShaderi_result = vec4(0., 0., 0., 1.);
 
-                        #line 5
-                        vec4 p2_crossFadeShader_mainFilter(vec4 inColor) {
-                            return mix(inColor, p1_otherPaintShaderi_result, in_fadeSlider);
+                        #line 7
+                        vec4 p2_crossFadeShader_main(vec4 inColor, vec4 inColor2) {
+                            return mix(inColor, inColor2, in_fadeSlider);
                         }
 
 
@@ -441,14 +495,15 @@ object GlslGenerationSpec : Spek({
                           p0_mainPaintShader_main();
 
                           // Invoke Other Paint Shader
-                          p1_otherPaintShader_mainImage(p1_otherPaintShaderi_result, sm_FragCoord.xy);
+                          p1_otherPaintShader_mainImage(p1_otherPaintShader_fragColor, gl_FragCoord.xy);
 
                           // Invoke Cross-fade shader
-                          p2_crossFadeShaderi_result = p2_crossFadeShader_mainFilter(p0_mainPaintShader_gl_FragColor);
+                          p2_crossFadeShaderi_result = p2_crossFadeShader_main(p0_mainPaintShader_gl_FragColor, p1_otherPaintShader_fragColor);
 
                           sm_result = p2_crossFadeShaderi_result;
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
             }
 
             context("when there's no paint shader on the other channel") {
@@ -456,9 +511,9 @@ object GlslGenerationSpec : Spek({
 
                 it("should give a warning") {
                     expect(linkedPatch.warnings).containsExactly(
-                        "No upstream shader found, using default for color-stream.\n" +
+                        "No upstream shader found, using default for color.\n" +
                                 "Stack:\n" +
-                                "    Resolving Track[main/color-stream] -> [Cross-fade shader].inColor2 (color-stream)"
+                                "    Resolving Track[main/color] -> [Cross-fade shader].inColor2 (color)"
                     )
                 }
 
@@ -483,7 +538,7 @@ object GlslGenerationSpec : Spek({
 
                             vec4 p0_mainPaintShader_gl_FragColor = vec4(0., 0., 0., 1.);
 
-                            #line 1
+                            #line 2
                             void p0_mainPaintShader_main( void ) {
                                 p0_mainPaintShader_gl_FragColor = vec4(1., 0., 0., 1.);
                             }
@@ -493,9 +548,9 @@ object GlslGenerationSpec : Spek({
 
                             vec4 p1_crossFadeShaderi_result = vec4(0., 0., 0., 1.);
 
-                            #line 5
-                            vec4 p1_crossFadeShader_mainFilter(vec4 inColor) {
-                                return mix(inColor, vec4(0.), in_fadeSlider);
+                            #line 7
+                            vec4 p1_crossFadeShader_main(vec4 inColor, vec4 inColor2) {
+                                return mix(inColor, inColor2, in_fadeSlider);
                             }
 
 
@@ -505,11 +560,12 @@ object GlslGenerationSpec : Spek({
                               p0_mainPaintShader_main();
 
                               // Invoke Cross-fade shader
-                              p1_crossFadeShaderi_result = p1_crossFadeShader_mainFilter(p0_mainPaintShader_gl_FragColor);
+                              p1_crossFadeShaderi_result = p1_crossFadeShader_main(p0_mainPaintShader_gl_FragColor, vec4(0.));
 
                               sm_result = p1_crossFadeShaderi_result;
                             }
-                        """.trimIndent())
+                        """.trimIndent()
+                    )
                 }
             }
         }
@@ -525,7 +581,8 @@ object GlslGenerationSpec : Spek({
                     
                     uniform MovingHeadInfo movingHeadInfo;
                     
-                    vec4 mainMover() {
+                    // @return pan-tilt
+                    vec4 main() {
                         return vec4(movingHeadInfo.origin.xy, movingHeadInfo.heading.xy);
                     }
                 """.trimIndent()
@@ -558,25 +615,26 @@ object GlslGenerationSpec : Spek({
                         // Data source: Moving Head Info
                         uniform MovingHeadInfo in_movingHeadInfo;
 
-                        // Shader: Untitled Mover Shader; namespace: p0
-                        // Untitled Mover Shader
+                        // Shader: Untitled Shader; namespace: p0
+                        // Untitled Shader
 
-                        vec4 p0_untitledMoverShaderi_result = vec4(0.);
+                        vec4 p0_untitledShaderi_result = vec4(0.);
 
-                        #line 8
-                        vec4 p0_untitledMoverShader_mainMover() {
+                        #line 9
+                        vec4 p0_untitledShader_main() {
                             return vec4(in_movingHeadInfo.origin.xy, in_movingHeadInfo.heading.xy);
                         }
 
 
                         #line 10001
                         void main() {
-                          // Invoke Untitled Mover Shader
-                          p0_untitledMoverShaderi_result = p0_untitledMoverShader_mainMover();
+                          // Invoke Untitled Shader
+                          p0_untitledShaderi_result = p0_untitledShader_main();
 
-                          sm_result = p0_untitledMoverShaderi_result;
+                          sm_result = p0_untitledShaderi_result;
                         }
-                    """.trimIndent())
+                    """.trimIndent()
+                )
             }
         }
     }

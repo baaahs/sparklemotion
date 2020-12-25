@@ -18,11 +18,11 @@ external object Icons {
     val CloudUpload: Icon
     val Code: Icon
     val CropLandscape: Icon
-    val Delete: Icon
     val Dashboard: Icon
+    val Delete: Icon
     val DeveloperMode: Icon
-    val DragIndicator: Icon
     val DragHandle: Icon
+    val DragIndicator: Icon
     val Edit: Icon
     val Error: Icon
     val ErrorOutline: Icon
@@ -34,6 +34,7 @@ external object Icons {
     val Help: Icon
     val HelpOutline: Icon
     val Image: Icon
+    val Info: Icon
     val Input: Icon
     val InsertDriveFile: Icon
     val Map: Icon
@@ -48,6 +49,7 @@ external object Icons {
     val Save: Icon
     val Settings: Icon
     val SettingsInputComponent: Icon
+    val ShowChart: Icon
     val Undo: Icon
     val ViewModule: Icon
     val Visibility: Icon

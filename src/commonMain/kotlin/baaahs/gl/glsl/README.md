@@ -38,3 +38,17 @@ Port Refs
 
 Shader -> Uniform -> InputPort
   -> PortRef
+
+
+Shader stages:
+
+| _edit_                       | `MutableShader` |
+| `mutableShader.build()`      | `Shader` |
+| `glslAnalyzer.parse()`       | `GlslCode` |
+| `glslAnalyzer.pickPrototype` | `ShaderPrototype` |
+| `glslAnalyzer.validate()`    | `ShaderAnalyzsis` |
+| `glslAnalyzer.openShader()`  | `OpenShader` |
+| `autoWirer.autoWire()`       | `UnresolvedPatch` |
+| `unresolvedPatch.confirm()`  | `MutablePatch`    |
+| `ShowOpener()`               | `OpenPatch`       |
+| `PatchResolver`              | `RenderPlan`      |

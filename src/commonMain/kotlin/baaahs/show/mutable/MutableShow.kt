@@ -1,26 +1,18 @@
 package baaahs.show.mutable
 
-import baaahs.ShowState
-import baaahs.SparkleMotion
+import baaahs.*
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
 import baaahs.app.ui.editor.*
-import baaahs.getBang
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
 import baaahs.gl.shader.OpenShader
-import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.live.*
 import baaahs.util.CacheBuilder
 import baaahs.util.UniqueIds
-
-class PatchHolderEditContext(
-    val mutableShow: MutableShow,
-    val mutablePatchHolder: MutablePatchHolder
-)
 
 interface EditHandler {
     fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean = true)
@@ -313,7 +305,7 @@ class MutablePatch {
     }
 
     /** Build a [LinkedPatch] independent of an [baaahs.show.live.OpenShow]. */
-    fun openForPreview(autoWirer: AutoWirer, resultContentType: ContentType = ContentType.ColorStream): LinkedPatch? {
+    fun openForPreview(autoWirer: AutoWirer, resultContentType: ContentType = ContentType.Color): LinkedPatch? {
         val showBuilder = ShowBuilder()
         build(showBuilder)
 
@@ -360,18 +352,15 @@ class MutablePatch {
     fun getEditorPanel() = PatchEditorPanel(this)
 }
 
-fun DataSource.editor() = MutableDataSourcePort(this)
-
 data class MutableShader(
     var title: String,
-    var type: ShaderType,
     /**language=glsl*/
     var src: String
 ) {
-    constructor(shader: Shader) : this(shader.title, shader.type, shader.src)
+    constructor(shader: Shader) : this(shader.title, shader.src)
 
     fun build(): Shader {
-        return Shader(title, type, src)
+        return Shader(title, src)
     }
 
     fun accept(visitor: MutableShowVisitor, log: VisitationLog = VisitationLog()) {
@@ -379,14 +368,14 @@ data class MutableShader(
     }
 
     override fun toString(): String {
-        return "MutableShader(title='$title', type=$type, src='[${src.length} chars]')"
+        return "MutableShader(title='$title', src='[${src.length} chars]')"
     }
 }
 
 data class MutableShaderInstance(
     val mutableShader: MutableShader,
     val incomingLinks: MutableMap<String, MutablePort> = hashMapOf(),
-    var shaderChannel: MutableShaderChannel = MutableShaderChannel(ShaderChannel.Main.id),
+    var shaderChannel: MutableShaderChannel = ShaderChannel.Main.editor(),
     var priority: Float = 0f
 ) {
     val id = randomId("MutableShaderInstance")
@@ -432,11 +421,16 @@ data class MutableShaderInstance(
     fun getEditorPanel(patchEditorPanel: PatchEditorPanel): EditorPanel =
         patchEditorPanel.ShaderInstanceEditorPanel(this)
 
+    fun isFilter(openShader: OpenShader): Boolean = with(openShader) {
+        inputPorts.any {
+            it.contentType == outputPort.contentType && incomingLinks[it.id]?.let { link ->
+                link is MutableShaderChannel && link.id == shaderChannel.id
+            } == true
+        }
+    }
+
     companion object {
-        val defaultOrder = compareBy<MutableShaderInstance>(
-            { it.mutableShader.type.priority },
-            { it.mutableShader.title }
-        )
+        val defaultOrder = compareBy<MutableShaderInstance> { it.mutableShader.title }
     }
 }
 
