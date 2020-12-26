@@ -100,9 +100,6 @@ class GlslAnalyzer(private val plugins: Plugins) {
             Regex("(.*?)(//|[;{}(,)#\n]|$)").findAll(text).forEach { matchResult ->
                 val (before, token) = matchResult.destructured
 
-                if (!freezeLineNumber && token == "\n") lineNumber++
-                lineNumberForError = lineNumber
-
                 if (before.isNotEmpty()) {
                     // Further tokenize text blocks to isolate symbol strings.
                     Regex("(.*?)([A-Za-z][A-Za-z0-9_]*|$)").findAll(before).forEach { beforeMatch ->
@@ -113,6 +110,10 @@ class GlslAnalyzer(private val plugins: Plugins) {
                             state = state.visit(symbol)
                     }
                 }
+
+                if (!freezeLineNumber && token == "\n") lineNumber++
+                lineNumberForError = lineNumber
+
                 if (token.isNotEmpty()) state = state.visit(token)
             }
             return state
@@ -181,6 +182,11 @@ class GlslAnalyzer(private val plugins: Plugins) {
         private val text = StringBuilder()
         val textAsString get() = text.toString()
         fun textIsEmpty() = text.isEmpty()
+        fun textIsBlank() = text.isBlank()
+
+        fun trimWhitespace() {
+            while (text.lastOrNull() == ' ') text.setLength(text.length - 1)
+        }
 
         open fun appendText(value: String) {
             text.append(value)
@@ -278,9 +284,13 @@ class GlslAnalyzer(private val plugins: Plugins) {
             }
 
             override fun visitNewline(): ParseState {
-                receiveSubsequentComments()
+                recipientOfNextComment?.let {
+                    it.visitNewline()
+                    receiveSubsequentComments()
+                }
 
-                return if (textIsEmpty() && comments.isEmpty()) {
+                return if (textIsBlank()) {
+                    trimWhitespace()
                     // Skip leading newlines.
                     lineNumber = context.lineNumber
                     this
@@ -321,7 +331,10 @@ class GlslAnalyzer(private val plugins: Plugins) {
                             "uniform" -> isUniform = true
                             "varying" -> isVarying = true
                         }
-                        GlslVar(name, context.findType(type), text, isConst, isUniform, isVarying, lineNumber, comments)
+                        val (trimmedText, trimmedLineNumber) = chomp(text, lineNumber)
+                        GlslVar(
+                            name, context.findType(type), trimmedText, isConst, isUniform, isVarying,
+                            trimmedLineNumber, comments)
                     }
             }
 
@@ -523,8 +536,9 @@ class GlslAnalyzer(private val plugins: Plugins) {
 
             override fun visitNewline(): ParseState {
                 recipientOfComment.addComment(commentText.toString())
-                recipientOfComment.visitText("\n")
-                nextParseState.receiveSubsequentComments()
+//                recipientOfComment.visitNewline()
+                nextParseState.visitNewline()
+//                nextParseState.receiveSubsequentComments()
                 return nextParseState
             }
 
@@ -684,5 +698,22 @@ class GlslAnalyzer(private val plugins: Plugins) {
 
     companion object {
         private val wordRegex = Regex("([A-Za-z][A-Za-z0-9_]*)")
+
+        /** Chomp leading whitespace. */
+        private fun chomp(text: String, lineNumber: Int?): Pair<String, Int?> {
+            var newlineCount = 0
+            var i = 0
+            loop@ while (i < text.length) {
+                when (text[i]) {
+                    '\n' -> newlineCount++
+                    ' ', '\t' -> {}
+                    else -> break@loop
+                }
+                i++
+            }
+            val trimmedText = text.substring(i)
+            val trimmedLineNumber = lineNumber?.plus(newlineCount)
+            return trimmedText to trimmedLineNumber
+        }
     }
 }
