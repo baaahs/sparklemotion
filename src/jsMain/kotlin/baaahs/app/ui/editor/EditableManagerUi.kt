@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.PatchHolderEditorHelpText
+import baaahs.app.ui.controls.problemBadge
 import baaahs.ui.*
 import external.ErrorBoundary
 import kotlinx.html.js.onClickFunction
@@ -97,6 +98,10 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                     listItemText {
                         +editorPanel.title
+                    }
+
+                    editorPanel.problemLevel?.let {
+                        problemBadge(it)
                     }
                 }
 

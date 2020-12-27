@@ -108,6 +108,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 
     val problemBadge by css {
         paddingLeft = 1.em
+        filter = "drop-shadow(0px 0px 2px white)"
     }
 
     val editButton by css {
@@ -123,6 +124,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 
     val appToolbarProblemsIcon by css {
         transform.translateY(1.em)
+        filter = "drop-shadow(0px 0px 2px white)"
 
         ".infoSeverity" { color = Color.darkGray }
         ".warnSeverity" { color = Color.orange }

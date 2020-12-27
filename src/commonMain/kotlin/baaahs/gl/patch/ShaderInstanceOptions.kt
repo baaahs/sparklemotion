@@ -3,6 +3,7 @@ package baaahs.gl.patch
 import baaahs.app.ui.editor.LinkOption
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.fixtures.DeviceType
+import baaahs.gl.glsl.LinkException
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
@@ -145,7 +146,7 @@ class ShaderInstanceOptions(
                 try {
                     val dataSource = plugins.resolveDataSource(inputPort)
                     options.add(PortLinkOption(MutableDataSourcePort(dataSource), isPluginRef = true))
-                } catch (e: IllegalStateException) {
+                } catch (e: LinkException) {
                     logger.warn(e) { "Incorrect plugin reference." }
                 }
             }

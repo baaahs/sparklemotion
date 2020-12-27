@@ -54,7 +54,15 @@ class LiveShaderInstance(
                 add(
                     ShowProblem(
                     "Result content type is unknown for shader \"$title\".", severity = Severity.ERROR
-                ))
+                    )
+                )
+            }
+            if (shader.errors.isNotEmpty()) {
+                add(
+                    ShowProblem(
+                        "GLSL errors in shader \"$title\".", severity = Severity.ERROR
+                    )
+                )
             }
         }
 

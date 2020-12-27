@@ -1,6 +1,7 @@
 package baaahs.gl.glsl
 
 import baaahs.gl.glsl.GlslCode.*
+import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.*
 import baaahs.only
 import baaahs.plugin.Plugins
@@ -57,13 +58,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
         return openShader(shaderAnalysis)
     }
 
-    fun openShader(shaderAnalysis: ShaderAnalysis): OpenShader.Base {
-        if (!shaderAnalysis.isValid)
-            throw error(
-                "Shader \"${shaderAnalysis.shader.title}\" not valid:" +
-                        " ${shaderAnalysis.errors.joinToString(" ") { it.message }}"
-            )
-
+    fun openShader(shaderAnalysis: ShaderAnalysis): OpenShader {
         val shaderType = plugins.shaderTypes.all
             .map { it to it.matches(shaderAnalysis) }
             .filter { (_, match) -> match != ShaderType.MatchLevel.NoMatch }
@@ -71,9 +66,20 @@ class GlslAnalyzer(private val plugins: Plugins) {
             ?: ShaderType.Unknown
 
         return with(shaderAnalysis) {
-            OpenShader.Base(this.shader, shaderAnalysis.glslCode,
-                entryPoint!!, inputPorts, outputPorts.only(),
-                shaderType, shaderDialect)
+            if (shaderAnalysis.isValid) {
+                OpenShader.Base(this.shader, shaderAnalysis.glslCode,
+                    entryPoint!!, inputPorts, outputPorts.only(),
+                    shaderType, shaderDialect)
+            } else {
+                OpenShader.Base(this.shader, shaderAnalysis.glslCode,
+                    entryPoint ?: GlslFunction("invalid", GlslType.Void, emptyList(), ""),
+                    inputPorts,
+                    if (outputPorts.size == 1) outputPorts.first() else OutputPort(ContentType.Unknown),
+                    shaderType,
+                    shaderDialect,
+                    errors
+                )
+            }
         }
     }
 

@@ -2,18 +2,26 @@ package baaahs.app.ui.editor
 
 import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.EditingShader
+import baaahs.ui.typographyBody1
+import baaahs.ui.typographyBody2
+import baaahs.ui.typographySubtitle2
 import baaahs.ui.xComponent
+import kotlinx.html.js.onClickFunction
 import materialui.components.circularprogress.circularProgress
+import materialui.components.iconbutton.iconButton
 import materialui.components.table.table
 import materialui.components.tablebody.tableBody
 import materialui.components.tablecell.tdCell
 import materialui.components.tablecell.thCell
 import materialui.components.tablehead.tableHead
 import materialui.components.tablerow.tableRow
+import materialui.components.typography.enums.TypographyColor
+import materialui.components.typography.typography
 import materialui.components.typography.typographyH6
+import materialui.icon
+import materialui.icons.Icons
 import react.*
 import react.dom.b
-import react.dom.br
 import react.dom.code
 
 val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
@@ -32,8 +40,8 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
 
         tableHead {
             tableRow {
-                thCell { +"Port" }
-                thCell { +"Source" }
+                thCell { typographySubtitle2 { +"Port" } }
+                thCell { typographySubtitle2 { +"Source" } }
             }
         }
 
@@ -41,9 +49,14 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
             shaderInputPorts.forEach { inputPort ->
                 tableRow {
                     tdCell {
-                        b { +inputPort.title }
-                        br {}
-                        code { +"(${inputPort.contentType?.title ?: inputPort.type.glslLiteral})" }
+                        typographyBody1 { b { +inputPort.title } }
+                        typographyBody2 {
+                            if (inputPort.contentType.isUnknown()) {
+                                attrs.color = TypographyColor.error
+                            }
+
+                            +"(${inputPort.contentType.title})"
+                        }
                     }
 
                     tdCell {
@@ -52,6 +65,38 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                             attrs.editableManager = props.editableManager
                             attrs.editingShader = props.editingShader
                             attrs.inputPort = inputPort
+                        }
+                    }
+                }
+            }
+
+            val extraLinks = props.editingShader.extraLinks
+            if (extraLinks.isNotEmpty()) {
+                tableRow {
+                    thCell { typographySubtitle2 { +"Unknown Port" } }
+                    thCell { typographySubtitle2 { +"Old Source" } }
+                }
+
+                extraLinks.forEach { (portId, link) ->
+                    tableRow {
+                        tdCell {
+                            typography {
+                                attrs.color = TypographyColor.error
+
+                                code { +portId }
+                            }
+                        }
+
+                        tdCell {
+                            typography { +link.title }
+
+                            iconButton {
+                                attrs.onClickFunction = { _ ->
+                                    props.editingShader.changeInputPortLink(portId, null)
+                                    props.editableManager.onChange()
+                                }
+                                icon(Icons.Delete)
+                            }
                         }
                     }
                 }
