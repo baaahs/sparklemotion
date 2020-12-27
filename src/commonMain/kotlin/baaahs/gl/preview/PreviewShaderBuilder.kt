@@ -99,7 +99,7 @@ class PreviewShaderBuilder(
     }
 
     fun analyze() {
-        val shaderAnalysis = autoWirer.glslAnalyzer.analyze(shader.src)
+        val shaderAnalysis = autoWirer.glslAnalyzer.analyze(shader)
         this.shaderAnalysis = shaderAnalysis
         openShader = autoWirer.glslAnalyzer.openShader(shaderAnalysis)
         state = ShaderBuilder.State.Linking

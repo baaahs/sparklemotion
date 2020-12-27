@@ -13,11 +13,11 @@ import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
 import baaahs.toBeSpecified
+import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
-import kotlin.test.fail
 
 object GlslAnalyzerSpec : Spek({
     describe<GlslAnalyzer> {
@@ -473,11 +473,8 @@ object GlslAnalyzerSpec : Spek({
                     override(shaderText) { "" }
 
                     it("provides a fake entry point function") {
-                        try {
-                            shader.let {}
-                            fail("should have failed")
-                        } catch (e: Exception) {
-                        }
+                        expect(shader.entryPoint.name)
+                            .toEqual("invalid")
                     }
                 }
             }
