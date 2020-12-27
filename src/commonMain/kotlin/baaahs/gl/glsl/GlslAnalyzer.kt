@@ -40,6 +40,10 @@ class GlslAnalyzer(private val plugins: Plugins) {
         return analyze(parse(src))
     }
 
+    fun analyze(shader: Shader): ShaderAnalysis {
+        return analyze(parse(shader.src), shader)
+    }
+
     fun analyze(glslCode: GlslCode, shader: Shader? = null): ShaderAnalysis {
         val dialect = detectDialect(glslCode)
         return dialect.analyze(glslCode, plugins, shader)

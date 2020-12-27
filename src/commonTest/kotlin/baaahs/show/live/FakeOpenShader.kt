@@ -3,6 +3,7 @@ package baaahs.show.live
 import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslError
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
@@ -38,4 +39,7 @@ class FakeOpenShader(
 
     override val shaderDialect: ShaderDialect
         get() = TODO("not implemented")
+
+    override val errors: List<GlslError>
+        get() = emptyList()
 }

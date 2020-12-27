@@ -86,8 +86,9 @@ object PreviewShaderBuilderSpec : Spek({
                             )
                         }
 
-                        it("should report an error right away") {
-                            expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Errors)
+                        it("should not result in a build error") {
+                            expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linked)
+                            expect(previewShaderBuilder.openShader!!.errors).isEmpty()
                         }
                     }
 
