@@ -5,6 +5,7 @@ import baaahs.RefCounter
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
+import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.only
 import baaahs.show.Shader
@@ -24,6 +25,8 @@ interface OpenShader : RefCounted {
 
     val shaderType: ShaderType
     val shaderDialect: ShaderDialect
+
+    val errors: List<GlslError>
 
     fun findInputPortOrNull(portId: String): InputPort? =
         inputPorts.find { it.id == portId }
@@ -47,7 +50,8 @@ interface OpenShader : RefCounted {
         override val inputPorts: List<InputPort>,
         override val outputPort: OutputPort,
         override val shaderType: ShaderType,
-        override val shaderDialect: ShaderDialect
+        override val shaderDialect: ShaderDialect,
+        override val errors: List<GlslError> = emptyList()
     ) : OpenShader, RefCounted by RefCounter() {
 
         constructor(shaderAnalysis: ShaderAnalysis, shaderType: ShaderType) : this(

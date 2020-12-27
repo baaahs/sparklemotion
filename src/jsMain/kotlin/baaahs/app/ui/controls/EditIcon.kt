@@ -18,7 +18,11 @@ fun RBuilder.problemBadge(openControl: OpenControl) {
 }
 
 fun RBuilder.problemBadge(openPatchHolder: OpenPatchHolder, cssClass: RuleSet = Styles.cardProblemBadge) {
-    openPatchHolder.problemLevel?.let { severity ->
+    problemBadge(openPatchHolder.problemLevel, cssClass)
+}
+
+fun RBuilder.problemBadge(problemLevel: Severity?, cssClass: RuleSet = Styles.cardProblemBadge) {
+    problemLevel?.let { severity ->
         val (severityClass, severityIcon) = when (severity) {
             Severity.INFO -> Styles.cardProblemInfo to Icons.Info
             Severity.WARN -> Styles.cardProblemWarning to Icons.Warning

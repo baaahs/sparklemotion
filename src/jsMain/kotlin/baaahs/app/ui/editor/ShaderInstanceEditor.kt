@@ -29,6 +29,8 @@ import materialui.components.tab.tab
 import materialui.components.tabs.enums.TabsStyle
 import materialui.components.tabs.tabs
 import materialui.components.textfield.textField
+import materialui.components.typography.enums.TypographyColor
+import materialui.components.typography.typography
 import materialui.components.typography.typographyH6
 import materialui.icon
 import org.w3c.dom.HTMLInputElement
@@ -36,7 +38,6 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.b
 import react.dom.br
-import react.dom.code
 import react.dom.div
 
 private enum class PageTabs {
@@ -189,22 +190,27 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                         }
 
                         div(+shaderEditorStyles.shaderReturnType) {
-                            b { +"Return type: " }
                             val openShader = editingShader.openShader
-                            code { +(openShader?.outputPort?.contentType?.id ?: "") }
 
-                            val isFilter = openShader?.let {
-                                editingShader.mutableShaderInstance.isFilter(
-                                    it
-                                )
-                            } ?: false
-                            if (isFilter) {
-                                +" (Filter)"
-                            }
-                            br {}
                             if (openShader != null) {
-                                +"Type: ${openShader.shaderType.title} (${openShader.shaderDialect.title})"
+                                val outputPort = openShader.outputPort
+
+                                typography { b { +"Returns: " } }
+                                typography {
+                                    if (outputPort.contentType.isUnknown()) {
+                                        attrs.color = TypographyColor.error
+                                    }
+                                    +outputPort.contentType.title
+                                }
+
+                                br {}
+
+                                typography { b { +"Shader Type: " } }
+                                typography {
+                                    +"${openShader.shaderType.title} (${openShader.shaderDialect.title})"
+                                }
                             }
+
                         }
                     }
 

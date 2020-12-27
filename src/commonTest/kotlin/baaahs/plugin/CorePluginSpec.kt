@@ -4,6 +4,7 @@ import baaahs.FakeClock
 import baaahs.describe
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.patch.ContentType
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
@@ -24,7 +25,7 @@ object CorePluginSpec : Spek({
         val program by value {
             val autoWirer = AutoWirer(plugins)
             val linkedPatch = autoWirer.autoWire(Shaders.red).acceptSuggestedLinkOptions()
-                .confirm().openForPreview(autoWirer)!!
+                .confirm().openForPreview(autoWirer, ContentType.Color)!!
             GlslProgram(gl, linkedPatch) { _, _ -> null }
         }
         val programFeed by value { glFeed.bind(program) }

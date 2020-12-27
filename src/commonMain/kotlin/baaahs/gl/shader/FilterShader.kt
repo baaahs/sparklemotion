@@ -21,9 +21,9 @@ object FilterShader : ShaderType {
     """.trimIndent()
 
     override fun matches(shaderAnalysis: ShaderAnalysis): ShaderType.MatchLevel {
-        return if (shaderAnalysis.outputPorts.firstOrNull()?.contentType == ContentType.Color
-            && shaderAnalysis.inputPorts.any { it.contentType == ContentType.Color })
-            ShaderType.MatchLevel.MatchAndFilter else ShaderType.MatchLevel.NoMatch
+        return if (shaderAnalysis.signatureMatches(ContentType.Color, ContentType.Color))
+            ShaderType.MatchLevel.MatchAndFilter
+        else ShaderType.MatchLevel.NoMatch
     }
 
     override fun pickPreviewShaders(openShader: OpenShader, previewShaders: PreviewShaders): List<OpenShader> {
