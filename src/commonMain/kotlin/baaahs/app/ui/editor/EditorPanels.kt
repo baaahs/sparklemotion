@@ -1,5 +1,6 @@
 package baaahs.app.ui.editor
 
+import baaahs.Severity
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.EditorPanel
 import baaahs.show.mutable.*
@@ -15,7 +16,7 @@ data class GenericPropertiesEditorPanel(
         get() = "Properties"
     override val listSubhead: String?
         get() = null
-    override val icon: Icon?
+    override val icon: Icon
         get() = CommonIcons.Settings
 
     override fun getRenderer(editableManager: EditableManager): Renderer =
@@ -29,7 +30,7 @@ data class PatchHolderEditorPanel(
         get() = "Patches"
     override val listSubhead: String?
         get() = null
-    override val icon: Icon?
+    override val icon: Icon
         get() = CommonIcons.Patch
 
     override fun getNestedEditorPanels(): List<EditorPanel> {
@@ -45,9 +46,9 @@ data class PatchEditorPanel(
 ) : EditorPanel {
     override val title: String
         get() = mutablePatch.surfaces.name
-    override val listSubhead: String?
+    override val listSubhead: String
         get() = "Fixtures"
-    override val icon: Icon?
+    override val icon: Icon
         get() = CommonIcons.Fixture
 
     override fun getNestedEditorPanels(): List<EditorPanel> {
@@ -68,6 +69,8 @@ data class PatchEditorPanel(
             get() = "Shaders"
         override val icon: Icon
             get() = CommonIcons.UnknownShader // TODO: Derive this via ShaderType.
+        override val problemLevel: Severity?
+            get() = super.problemLevel
 
         override fun getRenderer(editableManager: EditableManager): Renderer =
             editorPanelViews.forShaderInstance(editableManager, mutablePatch, mutableShaderInstance)

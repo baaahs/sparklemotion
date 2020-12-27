@@ -29,6 +29,7 @@ interface ShaderBuilder : IObservable {
     val shader: Shader
     val state: State
     val gadgets: List<GadgetPreview>
+    val shaderAnalysis: ShaderAnalysis?
     val openShader: OpenShader?
     val linkedPatch: LinkedPatch?
     val glslProgram: GlslProgram?
@@ -65,6 +66,8 @@ class PreviewShaderBuilder(
         ShaderBuilder.State.Unbuilt
         private set
 
+    override var shaderAnalysis: ShaderAnalysis? = null
+        private set
     override var openShader: OpenShader? = null
         private set
     var previewPatch: MutablePatch? = null
@@ -77,12 +80,12 @@ class PreviewShaderBuilder(
     override val gadgets: List<ShaderBuilder.GadgetPreview> get() = mutableGadgets
     private val mutableGadgets: MutableList<ShaderBuilder.GadgetPreview> = arrayListOf()
 
-    override var glslErrors: List<GlslError> = emptyList()
-        private set
+    override val glslErrors: List<GlslError> get() =
+        (shaderAnalysis?.errors ?: emptyList()) + compileErrors
+
+    private var compileErrors: List<GlslError> = emptyList()
 
     val feeds = mutableListOf<Feed>()
-
-    private fun analyze(shader: Shader) = autoWirer.glslAnalyzer.openShader(shader)
 
     private val previewShaders = PreviewShaders(autoWirer)
 
@@ -96,7 +99,9 @@ class PreviewShaderBuilder(
     }
 
     fun analyze() {
-        openShader = analyze(shader)
+        val shaderAnalysis = autoWirer.glslAnalyzer.analyze(shader)
+        this.shaderAnalysis = shaderAnalysis
+        openShader = autoWirer.glslAnalyzer.openShader(shaderAnalysis)
         state = ShaderBuilder.State.Linking
         notifyChanged()
 
@@ -110,6 +115,7 @@ class PreviewShaderBuilder(
             val openShader = openShader!!
             val shaderType = openShader.shaderType
             val shaders = shaderType.pickPreviewShaders(openShader, previewShaders)
+            val resultContentType = shaderType.previewResultContentType()
             val defaultPorts = if (shaderType.injectUvCoordinateForPreview) {
                 mapOf(ContentType.UvCoordinate to MutableConstPort("gl_FragCoord", GlslType.Vec2))
             } else emptyMap()
@@ -118,14 +124,14 @@ class PreviewShaderBuilder(
 //                .dumpOptions()
                 .acceptSuggestedLinkOptions()
                 .confirm()
-            linkedPatch = previewPatch?.openForPreview(autoWirer)
+            linkedPatch = previewPatch?.openForPreview(autoWirer, resultContentType)
             state = ShaderBuilder.State.Linked
         } catch (e: GlslException) {
-            glslErrors = e.errors
+            compileErrors = e.errors
             state = ShaderBuilder.State.Errors
         } catch (e: Exception) {
             logger.warn(e) { "Failed to analyze shader." }
-            glslErrors = listOf(GlslError(e.message ?: e.toString()))
+            compileErrors = listOf(GlslError(e.message ?: e.toString()))
             state = ShaderBuilder.State.Errors
         }
         notifyChanged()
@@ -159,11 +165,11 @@ class PreviewShaderBuilder(
             glslProgram = linkedPatch?.let { renderEngine.compile(it, feedResolver) }
             state = ShaderBuilder.State.Success
         } catch (e: GlslException) {
-            glslErrors = e.errors
+            compileErrors = e.errors
             state = ShaderBuilder.State.Errors
         } catch (e: Exception) {
             logger.warn(e) { "Failed to compile patch." }
-            glslErrors = listOf(GlslError(e.message ?: e.toString()))
+            compileErrors = listOf(GlslError(e.message ?: e.toString()))
             state = ShaderBuilder.State.Errors
         }
         notifyChanged()

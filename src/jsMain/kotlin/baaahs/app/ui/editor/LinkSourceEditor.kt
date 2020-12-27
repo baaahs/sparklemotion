@@ -2,7 +2,6 @@ package baaahs.app.ui.editor
 
 import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.EditingShader
-import baaahs.ui.asTextNode
 import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
 import materialui.components.divider.divider
@@ -12,6 +11,7 @@ import materialui.components.listitemtext.listItemText
 import materialui.components.listsubheader.listSubheader
 import materialui.components.menuitem.menuItem
 import materialui.components.select.select
+import materialui.components.typography.typography
 import materialui.icon
 import react.RBuilder
 import react.RHandler
@@ -52,7 +52,9 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { p
             if (selected == null) {
                 this@xComponent.logger.warn { "Huh? None of the LinkOptions are active for ${props.inputPort.id}?" }
             }
-            attrs.renderValue<LinkOption> { it.title.asTextNode() }
+            attrs.renderValue<LinkOption> {
+                typography { +it.title }
+            }
             attrs.onChangeFunction = handleChange
             attrs.disabled = props.editingShader.isBuilding()
 

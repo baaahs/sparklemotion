@@ -36,6 +36,16 @@ class EditingShader(
     val openShader get() = shaderBuilder.openShader
     val inputPorts get() = openShader?.inputPorts?.sortedBy { it.title }
 
+    val extraLinks: Map<String, MutablePort>
+        get() {
+            return openShader?.let {
+                val inputPortIds = it.inputPorts.map { port -> port.id }.toSet()
+                mutableShaderInstance.incomingLinks.filter { (id, _) ->
+                    !inputPortIds.contains(id)
+                }
+            } ?: emptyMap()
+        }
+
     init {
         startBuilding()
     }

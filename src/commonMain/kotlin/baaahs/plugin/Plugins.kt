@@ -85,7 +85,7 @@ class Plugins private constructor(
 
     val deviceTypes = DeviceTypes()
 
-    val shaderPrototypes = ShaderPrototypes()
+    val shaderDialects = ShaderDialects()
     val shaderTypes = ShaderTypes()
 
     private inline fun <reified T : Any> SerializersModuleBuilder.registerSerializers(
@@ -276,8 +276,8 @@ class Plugins private constructor(
         }
     }
 
-    inner class ShaderPrototypes {
-        val all = plugins.flatMap { it.shaderPrototypes }
+    inner class ShaderDialects {
+        val all = plugins.flatMap { it.shaderDialects }
     }
 
     inner class ShaderTypes {

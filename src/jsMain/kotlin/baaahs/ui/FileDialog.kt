@@ -183,8 +183,8 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
                     attrs.onClickFunction = handleCancel
                 }
                 button {
-                    +if (props.isSaveAs) "Save" else "Open"
-                    attrs.onClickFunction = handleConfirm
+                        +if (props.isSaveAs) "Save" else "Open"
+                        attrs.onClickFunction = handleConfirm
                     attrs.disabled = selectedFile == null
                 }
             }

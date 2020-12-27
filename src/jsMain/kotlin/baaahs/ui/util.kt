@@ -6,8 +6,15 @@ import external.copyFrom
 import kotlinx.css.CSSBuilder
 import kotlinx.css.RuleSet
 import kotlinx.css.StyledElement
+import kotlinx.html.DIV
+import materialui.components.typography.TypographyElementBuilder
+import materialui.components.typography.TypographyProps
+import materialui.components.typography.enums.TypographyStyle
+import materialui.components.typography.enums.TypographyVariant
+import materialui.components.typography.typography
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
+import react.RBuilder
 import react.RMutableRef
 import react.RProps
 import react.ReactElement
@@ -101,6 +108,30 @@ fun RDOMBuilder<*>.install(droppableProvided: DroppableProvided) {
 
 fun RDOMBuilder<*>.insertPlaceholder(droppableProvided: DroppableProvided) {
     this.childList.add(droppableProvided.placeholder)
+}
+
+inline fun RBuilder.typographySubtitle1(vararg classMap: Pair<TypographyStyle, String>, crossinline block: TypographyElementBuilder<DIV, TypographyProps>.() -> Unit)
+        = typography(*classMap, factory = { DIV(mapOf(), it) }) {
+    attrs.variant = TypographyVariant.subtitle1
+    block()
+}
+
+inline fun RBuilder.typographySubtitle2(vararg classMap: Pair<TypographyStyle, String>, crossinline block: TypographyElementBuilder<DIV, TypographyProps>.() -> Unit)
+        = typography(*classMap, factory = { DIV(mapOf(), it) }) {
+    attrs.variant = TypographyVariant.subtitle2
+    block()
+}
+
+inline fun RBuilder.typographyBody1(vararg classMap: Pair<TypographyStyle, String>, crossinline block: TypographyElementBuilder<DIV, TypographyProps>.() -> Unit)
+        = typography(*classMap, factory = { DIV(mapOf(), it) }) {
+    attrs.variant = TypographyVariant.body1
+    block()
+}
+
+inline fun RBuilder.typographyBody2(vararg classMap: Pair<TypographyStyle, String>, crossinline block: TypographyElementBuilder<DIV, TypographyProps>.() -> Unit)
+        = typography(*classMap, factory = { DIV(mapOf(), it) }) {
+    attrs.variant = TypographyVariant.body2
+    block()
 }
 
 private val logger = Logger("util.kt")

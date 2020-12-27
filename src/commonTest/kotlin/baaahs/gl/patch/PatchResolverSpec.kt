@@ -182,7 +182,7 @@ object PatchResolverSpec : Spek({
 
                         vec4 p2_brightnessFilteri_result = vec4(0., 0., 0., 1.);
 
-                        #line 3
+                        #line 4
                         vec4 p2_brightnessFilter_main(vec4 colorIn) {
                           return colorIn * in_brightnessSlider;
                         }
@@ -282,7 +282,7 @@ object PatchResolverSpec : Spek({
 
                         float p1_wobblyTimeFilteri_result = float(0.);
 
-                        #line 2
+                        #line 3
                         float p1_wobblyTimeFilter_main() { return in_time + sin(in_time); }
 
                         // Shader: Orange Shader; namespace: p2
@@ -300,7 +300,7 @@ object PatchResolverSpec : Spek({
 
                         vec4 p3_brightnessFilteri_result = vec4(0., 0., 0., 1.);
 
-                        #line 3
+                        #line 4
                         vec4 p3_brightnessFilter_main(vec4 colorIn) {
                           return colorIn * in_brightnessSlider;
                         }
@@ -435,7 +435,7 @@ object PatchResolverSpec : Spek({
 
                         float p1_wobblyTimeFilteri_result = float(0.);
 
-                        #line 2
+                        #line 3
                         float p1_wobblyTimeFilter_main() { return in_time + sin(in_time); }
 
                         // Shader: A Main Shader; namespace: p2
@@ -463,7 +463,7 @@ object PatchResolverSpec : Spek({
 
                         vec4 p4_fadei_result = vec4(0., 0., 0., 1.);
 
-                        #line 5
+                        #line 6
                         vec4 p4_fade_main(vec4 colorIn) {
                             return mix(colorIn, p3_orangeShader_gl_FragColor, in_fadeSlider);
                         }

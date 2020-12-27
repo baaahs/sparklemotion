@@ -5,7 +5,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 
-abstract class HintedShaderPrototype(id: String) : ShaderPrototype(id) {
+abstract class HintedShaderDialect(id: String) : ShaderDialect(id) {
     open val implicitInputPorts: List<InputPort> = emptyList()
     open val wellKnownInputPorts: List<InputPort> = emptyList()
     open val defaultInputPortsByType: Map<GlslType, InputPort> = emptyMap()
@@ -26,8 +26,8 @@ abstract class HintedShaderPrototype(id: String) : ShaderPrototype(id) {
         val proFormaInputPorts: List<InputPort> =
             implicitInputPorts.mapNotNull { glslCode.ifRefersTo(it)?.copy(isImplicit = true) }
 
-        val wellKnownInputPorts = this@HintedShaderPrototype.wellKnownInputPorts.associateBy { it.id }
-        val defaultInputPortsByType = this@HintedShaderPrototype.defaultInputPortsByType
+        val wellKnownInputPorts = this@HintedShaderDialect.wellKnownInputPorts.associateBy { it.id }
+        val defaultInputPortsByType = this@HintedShaderDialect.defaultInputPortsByType
 
         val entryPoint = findEntryPointOrNull(glslCode)
 
@@ -60,7 +60,7 @@ abstract class HintedShaderPrototype(id: String) : ShaderPrototype(id) {
 
         return object : ShaderAnalysis {
             override val glslCode = glslCode
-            override val shaderPrototype = this@HintedShaderPrototype
+            override val shaderDialect = this@HintedShaderDialect
             override val entryPoint = entryPoint
             override val inputPorts = inputPorts
             override val outputPorts = outputPorts

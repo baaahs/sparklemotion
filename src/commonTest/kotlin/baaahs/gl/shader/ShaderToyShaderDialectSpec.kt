@@ -13,12 +13,12 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
 @Suppress("unused")
-object ShaderToyShaderPrototypeSpec : Spek({
-    describe<ShaderToyShaderPrototypeSpec> {
+object ShaderToyShaderDialectSpec : Spek({
+    describe<ShaderToyShaderDialectSpec> {
         val src by value { "void mainImage(out vec4 fragColor, in vec2 fragCoord) { ... };" }
-        val prototype by value { ShaderToyShaderPrototype }
+        val dialect by value { ShaderToyShaderDialect }
         val plugins by value { testPlugins() }
-        val shaderAnalysis by value { GlslAnalyzer(plugins).validate(src) }
+        val shaderAnalysis by value { GlslAnalyzer(plugins).analyze(src) }
         val glslCode by value { shaderAnalysis.glslCode }
         val openShader by value { OpenShader.Base(shaderAnalysis, PaintShader) }
         val invocationStatement by value {
@@ -30,7 +30,7 @@ object ShaderToyShaderPrototypeSpec : Spek({
 
         context("shaders having a void mainImage(out vec4, in vec2) function") {
             it("is an good match") {
-                expect(prototype.matches(glslCode)).toEqual(MatchLevel.Good)
+                expect(dialect.matches(glslCode)).toEqual(MatchLevel.Good)
             }
 
             it("finds the input port") {
@@ -53,7 +53,7 @@ object ShaderToyShaderPrototypeSpec : Spek({
                 override(src) { "void mainImage(in vec2 fragCoord, out vec4 fragColor) { ... };" }
 
                 it("is an good match") {
-                    expect(prototype.matches(glslCode)).toEqual(MatchLevel.Good)
+                    expect(dialect.matches(glslCode)).toEqual(MatchLevel.Good)
                 }
 
                 it("generates an invocation statement") {
@@ -65,7 +65,7 @@ object ShaderToyShaderPrototypeSpec : Spek({
                 override(src) { "void mainImage(in vec2 fragCoord, out vec4 fragColor, in float intensity) { ... };" }
 
                 it("is an good match") {
-                    expect(prototype.matches(glslCode)).toEqual(MatchLevel.Good)
+                    expect(dialect.matches(glslCode)).toEqual(MatchLevel.Good)
                 }
 
                 it("finds the input port") {
@@ -128,7 +128,7 @@ object ShaderToyShaderPrototypeSpec : Spek({
                 override(src) { "void mainImage() { ... };" }
 
                 it("is still a match") {
-                    expect(prototype.matches(glslCode)).toEqual(MatchLevel.Good)
+                    expect(dialect.matches(glslCode)).toEqual(MatchLevel.Good)
                 }
 
                 it("fails validation") {
@@ -148,7 +148,7 @@ object ShaderToyShaderPrototypeSpec : Spek({
             override(src) { "void main(void) { ... };" }
 
             it("is not a match") {
-                expect(prototype.matches(glslCode)).toEqual(MatchLevel.NoMatch)
+                expect(dialect.matches(glslCode)).toEqual(MatchLevel.NoMatch)
             }
 
             it("fails to validate") {

@@ -6,18 +6,18 @@ import baaahs.gl.expects
 import baaahs.gl.glsl.GlslCode.*
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.GenericShaderPrototype
+import baaahs.gl.shader.GenericShaderDialect
 import baaahs.gl.shader.InputPort
-import baaahs.gl.shader.ShaderToyShaderPrototype
+import baaahs.gl.shader.ShaderToyShaderDialect
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
 import baaahs.toBeSpecified
+import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
-import kotlin.test.fail
 
 object GlslAnalyzerSpec : Spek({
     describe<GlslAnalyzer> {
@@ -65,7 +65,7 @@ object GlslAnalyzerSpec : Spek({
                             GlslOther(
                                 "unknown",
                                 "precision mediump float;",
-                                lineNumber = 1,
+                                lineNumber = 4,
                                 listOf("This Shader's Name", "Other stuff.")
                             ),
                             GlslVar(
@@ -79,9 +79,9 @@ object GlslAnalyzerSpec : Spek({
                             GlslVar(
                                 "resolution",
                                 GlslType.Vec2,
-                                "\n\n\n\nuniform vec2  resolution;",
+                                "uniform vec2  resolution;",
                                 isUniform = true,
-                                lineNumber = 5,
+                                lineNumber = 10,
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
                             ),
                             GlslVar(
@@ -94,7 +94,7 @@ object GlslAnalyzerSpec : Spek({
                                         "    vec3 heading;\n" +
                                         "} leftEye;",
                                 isUniform = true,
-                                lineNumber = 12,
+                                lineNumber = 13,
                                 comments = listOf("@@AnotherClass key=value key2=value2")
                             ),
                             GlslFunction(
@@ -133,7 +133,7 @@ object GlslAnalyzerSpec : Spek({
                                 comments = listOf(" trailing comment")
                             ), GlslVar(
                                 "resolution", GlslType.Vec2,
-                                fullText = " \n\n\n\nuniform vec2  resolution;", isUniform = true, lineNumber = 5,
+                                fullText = "uniform vec2  resolution;", isUniform = true, lineNumber = 10,
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
                             ), GlslVar(
                                 "leftEye",
@@ -141,7 +141,7 @@ object GlslAnalyzerSpec : Spek({
                                     "MovingHeadInfo",
                                     mapOf("origin" to GlslType.Vec3, "heading" to GlslType.Vec3)
                                 ),
-                                fullText = "uniform MovingHeadInfo leftEye;", lineNumber = 12,
+                                fullText = "uniform MovingHeadInfo leftEye;", lineNumber = 13,
                                 comments = listOf(" @@AnotherClass key=value key2=value2")
                             )
                         )
@@ -156,9 +156,9 @@ object GlslAnalyzerSpec : Spek({
                 }
 
                 it("finds the structs") {
-                    expect(glslCode.structs.map { it.fullText })
+                    expect(glslCode.structs.map { "${it.lineNumber}: ${it.fullText}" })
                         .containsExactly(
-                            "\nuniform struct MovingHeadInfo {\n    vec3 origin;\n    vec3 heading;\n} leftEye;"
+                            "13: uniform struct MovingHeadInfo {\n    vec3 origin;\n    vec3 heading;\n} leftEye;"
                         )
                 }
 
@@ -199,11 +199,12 @@ object GlslAnalyzerSpec : Spek({
                         expect(glslCode.globalVars.toList()).containsExactly(
                             GlslVar(
                                 "shouldBeDefined", GlslType.Float,
-                                fullText = "\n\n\nuniform float shouldBeDefined;", isUniform = true, lineNumber = 5
+                                fullText = "uniform float shouldBeDefined;", isUniform = true, lineNumber = 8
                             ),
                             GlslVar(
                                 "shouldBeThis", GlslType.Vec2,
-                                fullText = "\n\n\n\n\nuniform vec2 shouldBeThis;", isUniform = true, lineNumber = 9
+                                // TODO: 18 is wrong, should be 14!
+                                fullText = "uniform vec2 shouldBeThis;", isUniform = true, lineNumber = 18
                             )
                         )
                     }
@@ -297,7 +298,7 @@ object GlslAnalyzerSpec : Spek({
                                     GlslType.Void,
                                     params = emptyList(), // TODO: 1 seems wrong here, shouldn't it be 3?
                                     fullText = "float main() { return time + sin(time); }\n",
-                                    lineNumber = 1,
+                                    lineNumber = 3,
                                     comments = listOf(" @return time2")
                                 ),
                             ), { glslAnalyzer.findStatements(shaderText) }, true
@@ -306,26 +307,26 @@ object GlslAnalyzerSpec : Spek({
                 }
             }
 
-            context("#pickPrototype") {
+            context("#detectDialect") {
                 override(shaderText) { "void main() {}" }
 
-                val prototype by value { glslAnalyzer.pickPrototype(shaderText) }
+                val dialect by value { glslAnalyzer.detectDialect(shaderText) }
 
                 it("is generic") {
-                    expect(prototype).toBe(GenericShaderPrototype)
+                    expect(dialect).toBe(GenericShaderDialect)
                 }
 
                 context("for shaders having a mainImage function") {
                     override(shaderText) { "void mainImage() {}" }
 
                     it("is ShaderToy") {
-                        expect(prototype).toBe(ShaderToyShaderPrototype)
+                        expect(dialect).toBe(ShaderToyShaderDialect)
                     }
                 }
             }
 
             context("#validate") {
-                val validationResult by value { glslAnalyzer.validate(shaderText) }
+                val validationResult by value { glslAnalyzer.analyze(shaderText) }
 
                 context("when there are problems in the shader") {
                     override(shaderText) {
@@ -341,7 +342,7 @@ object GlslAnalyzerSpec : Spek({
                         expect(validationResult.errors.toSet()).containsExactly(
                             GlslError("Input port \"foo\" content type is \"unknown/float\"", 1),
                             GlslError("Input port \"inColor\" content type is \"unknown/vec4\"", 2),
-                            GlslError("Output port \"[return value]\" content type is \"unknown/vec4\"", 1)
+                            GlslError("Output port \"[return value]\" content type is \"unknown/vec4\"", 2)
                         )
                     }
                 }
@@ -472,11 +473,8 @@ object GlslAnalyzerSpec : Spek({
                     override(shaderText) { "" }
 
                     it("provides a fake entry point function") {
-                        try {
-                            shader.let {}
-                            fail("should have failed")
-                        } catch (e: Exception) {
-                        }
+                        expect(shader.entryPoint.name)
+                            .toEqual("invalid")
                     }
                 }
             }
