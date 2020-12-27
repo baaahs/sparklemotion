@@ -43,12 +43,24 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         }
     }
 
-    val editButtonWarningBadge by css {
-        backgroundColor = Color.orange
+    val cardProblemBadge by css {
+        position = Position.absolute
+        right = .5.em
+        top = .5.em
+        zIndex = 1
+        opacity = .75
     }
 
-    val editButtonErrorBadge by css {
-        backgroundColor = Color.red
+    val cardProblemInfo by css {
+        color = Color.yellowGreen
+    }
+
+    val cardProblemWarning by css {
+        color = Color.orange
+    }
+
+    val cardProblemError by css {
+        color = Color.red
     }
 
     val visualizerCard by css {

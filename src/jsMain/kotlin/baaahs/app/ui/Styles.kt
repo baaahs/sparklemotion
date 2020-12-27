@@ -106,6 +106,10 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
         flexDirection = FlexDirection.row
     }
 
+    val problemBadge by css {
+        paddingLeft = 1.em
+    }
+
     val editButton by css {
         paddingLeft = 1.em
     }

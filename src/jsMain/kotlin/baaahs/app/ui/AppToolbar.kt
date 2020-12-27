@@ -2,7 +2,7 @@ package baaahs.app.ui
 
 import baaahs.Severity
 import baaahs.ShowEditorState
-import baaahs.app.ui.controls.editIconWithBadge
+import baaahs.app.ui.controls.problemBadge
 import baaahs.ui.*
 import baaahs.util.UndoStack
 import kotlinx.css.opacity
@@ -87,11 +87,12 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     if (webClient.showIsModified) i { +" (Unsaved)" }
                 }
 
+                show?.let { problemBadge(show, themeStyles.problemBadge) }
+
                 if (show != null && props.editMode) {
                     div(+themeStyles.editButton) {
+                        icon(Icons.Edit)
                         attrs.onClickFunction = handleShowEditButtonClick.withEvent()
-
-                        editIconWithBadge(show, props.editMode)
                     }
                 }
             }
