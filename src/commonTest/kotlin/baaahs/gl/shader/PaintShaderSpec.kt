@@ -21,7 +21,7 @@ object PaintShaderSpec : Spek({
     describe<PaintShader> {
         val shaderText by value { toBeSpecified<String>() }
         val analyzer by value { GlslAnalyzer(testPlugins()) }
-        val shaderAnalysis by value { analyzer.validate(shaderText) }
+        val shaderAnalysis by value { analyzer.analyze(shaderText) }
         val openShader by value { analyzer.openShader(shaderText) }
         val shaderType by value { PaintShader }
 

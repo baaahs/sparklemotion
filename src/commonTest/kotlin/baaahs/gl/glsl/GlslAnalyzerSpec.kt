@@ -326,7 +326,7 @@ object GlslAnalyzerSpec : Spek({
             }
 
             context("#validate") {
-                val validationResult by value { glslAnalyzer.validate(shaderText) }
+                val validationResult by value { glslAnalyzer.analyze(shaderText) }
 
                 context("when there are problems in the shader") {
                     override(shaderText) {

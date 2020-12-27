@@ -18,7 +18,7 @@ object ShaderToyShaderDialectSpec : Spek({
         val src by value { "void mainImage(out vec4 fragColor, in vec2 fragCoord) { ... };" }
         val dialect by value { ShaderToyShaderDialect }
         val plugins by value { testPlugins() }
-        val shaderAnalysis by value { GlslAnalyzer(plugins).validate(src) }
+        val shaderAnalysis by value { GlslAnalyzer(plugins).analyze(src) }
         val glslCode by value { shaderAnalysis.glslCode }
         val openShader by value { OpenShader.Base(shaderAnalysis, PaintShader) }
         val invocationStatement by value {

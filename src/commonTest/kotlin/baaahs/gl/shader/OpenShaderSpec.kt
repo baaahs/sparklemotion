@@ -16,7 +16,7 @@ object OpenShaderSpec : Spek({
             "void main(float intensity) { gl_FragColor = vec4(gl_FragCoord, 0., 1.); };"
         }
         val plugins by value { testPlugins() }
-        val shaderAnalysis by value { GlslAnalyzer(plugins).validate(src) }
+        val shaderAnalysis by value { GlslAnalyzer(plugins).analyze(src) }
         val openShader by value { GlslAnalyzer(plugins).openShader(shaderAnalysis) }
         val invocationStatement by value {
             openShader.invocationGlsl(
