@@ -21,9 +21,9 @@ object PaintShader : ShaderType {
     """.trimIndent()
 
     override fun matches(shaderAnalysis: ShaderAnalysis): ShaderType.MatchLevel {
-        return if (shaderAnalysis.outputPorts.firstOrNull()?.contentType == ContentType.Color
-            && shaderAnalysis.inputPorts.any { it.contentType == ContentType.UvCoordinate })
-            ShaderType.MatchLevel.Match else ShaderType.MatchLevel.NoMatch
+        return if (shaderAnalysis.outputIs(ContentType.Color))
+            ShaderType.MatchLevel.Match
+        else ShaderType.MatchLevel.NoMatch
     }
 
     override fun pickPreviewShaders(openShader: OpenShader, previewShaders: PreviewShaders): List<OpenShader> {

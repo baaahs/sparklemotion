@@ -45,7 +45,7 @@ Shader stages:
 | _edit_                       | `MutableShader` |
 | `mutableShader.build()`      | `Shader` |
 | `glslAnalyzer.parse()`       | `GlslCode` |
-| `glslAnalyzer.pickPrototype` | `ShaderPrototype` |
+| `glslAnalyzer.detectDialect` | `ShaderDialect` |
 | `glslAnalyzer.validate()`    | `ShaderAnalyzsis` |
 | `glslAnalyzer.openShader()`  | `OpenShader` |
 | `autoWirer.autoWire()`       | `UnresolvedPatch` |

@@ -1,5 +1,7 @@
 package baaahs.show.live
 
+import baaahs.Severity
+import baaahs.getValue
 import baaahs.show.PatchHolder
 
 open class OpenPatchHolder(
@@ -9,6 +11,7 @@ open class OpenPatchHolder(
     val title = patchHolder.title
     val patches = patchHolder.patches.map { OpenPatch(it, openContext) }
     val problems get() = patches.flatMap { it.problems }
+    val problemLevel: Severity? by lazy { problems.maxOfOrNull { it.severity } }
 
     val controlLayout: Map<String, List<OpenControl>> =
         patchHolder.controlLayout.mapValues { (_, controlRefs) ->

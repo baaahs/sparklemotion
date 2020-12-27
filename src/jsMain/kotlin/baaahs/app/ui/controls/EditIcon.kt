@@ -3,49 +3,33 @@ package baaahs.app.ui.controls
 import baaahs.Severity
 import baaahs.show.live.OpenControl
 import baaahs.show.live.OpenPatchHolder
-import baaahs.ui.on
-import kotlinext.js.jsObject
-import materialui.components.badge.badge
-import materialui.components.badge.enums.BadgeColor
-import materialui.components.badge.enums.BadgeStyle
-import materialui.components.badge.enums.BadgeVariant
+import baaahs.ui.and
+import baaahs.ui.unaryPlus
+import kotlinx.css.RuleSet
 import materialui.icon
 import materialui.icons.Icons
 import react.RBuilder
+import react.dom.div
 
-fun RBuilder.editIconWithBadge(
-    openControl: OpenControl,
-    editMode: Boolean
-) {
+fun RBuilder.problemBadge(openControl: OpenControl) {
     if (openControl is OpenPatchHolder) {
-        editIconWithBadge(openControl as OpenPatchHolder, editMode)
-    } else {
-        icon(Icons.Edit)
+        problemBadge(openControl as OpenPatchHolder)
     }
 }
 
-fun RBuilder.editIconWithBadge(
-    openPatchHolder: OpenPatchHolder,
-    editMode: Boolean
-) {
-    if (editMode && openPatchHolder.problems.isNotEmpty()) {
-        val isError = openPatchHolder.problems.any { it.severity >= Severity.ERROR }
-        val badgeStyle = if (isError) Styles.editButtonErrorBadge else Styles.editButtonWarningBadge
-        badge(badgeStyle on BadgeStyle.colorError) {
-            attrs.color = BadgeColor.error
-            attrs.variant = BadgeVariant.dot
-            attrs["anchorOrigin"] = jsObject<AnchorOrigin> {
-                horizontal = "right"
-                vertical = "bottom"
-            }
-            icon(Icons.Edit)
+fun RBuilder.problemBadge(openPatchHolder: OpenPatchHolder, cssClass: RuleSet = Styles.cardProblemBadge) {
+    problemBadge(openPatchHolder.problemLevel, cssClass)
+}
+
+fun RBuilder.problemBadge(problemLevel: Severity?, cssClass: RuleSet = Styles.cardProblemBadge) {
+    problemLevel?.let { severity ->
+        val (severityClass, severityIcon) = when (severity) {
+            Severity.INFO -> Styles.cardProblemInfo to Icons.Info
+            Severity.WARN -> Styles.cardProblemWarning to Icons.Warning
+            Severity.ERROR -> Styles.cardProblemError to Icons.Error
         }
-    } else {
-        icon(Icons.Edit)
+        div(+cssClass and severityClass) {
+            icon(severityIcon)
+        }
     }
-}
-
-external interface AnchorOrigin {
-    var horizontal: String
-    var vertical: String
 }

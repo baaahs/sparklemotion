@@ -99,23 +99,8 @@ class GlslCode(
             symbolsToNamespace: Set<String>,
             symbolMap: Map<String, String>
         ): String {
-            // Chomp leading whitespace.
-            var newlineCount = 0
-            var i = 0
-            loop@ while (i < fullText.length) {
-                when (fullText[i]) {
-                    '\n' -> newlineCount++
-                    ' ', '\t' -> {}
-                    else -> break@loop
-                }
-                i++
-            }
-
-            val trimmedText = fullText.substring(i)
-            val trimmedLineNumber = lineNumber?.plus(newlineCount)
-
-            return "${trimmedLineNumber?.let { "\n#line $trimmedLineNumber\n" }}" +
-                    replaceCodeWords(trimmedText) {
+            return "${lineNumber?.let { "\n#line $lineNumber\n" }}" +
+                    replaceCodeWords(fullText) {
                         symbolMap[it]
                             ?: if (it == name || symbolsToNamespace.contains(it)) {
                                 namespace.qualify(it)

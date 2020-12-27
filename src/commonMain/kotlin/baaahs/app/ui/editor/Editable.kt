@@ -1,5 +1,6 @@
 package baaahs.app.ui
 
+import baaahs.Severity
 import baaahs.app.ui.editor.EditableManager
 import baaahs.show.ButtonControl
 import baaahs.show.live.ControlDisplay
@@ -109,6 +110,8 @@ interface EditorPanel {
     val title: String
     val listSubhead: String?
     val icon: Icon?
+    val problemLevel: Severity? get() = null
+
     fun getNestedEditorPanels(): List<EditorPanel> = emptyList()
     fun getRenderer(editableManager: EditableManager): Renderer
 }

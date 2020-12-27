@@ -69,10 +69,10 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             MovingHeadDevice
         )
 
-    override val shaderPrototypes
+    override val shaderDialects
         get() = listOf(
-            GenericShaderPrototype,
-            ShaderToyShaderPrototype
+            GenericShaderDialect,
+            ShaderToyShaderDialect
         )
 
     override val shaderTypes: List<ShaderType>

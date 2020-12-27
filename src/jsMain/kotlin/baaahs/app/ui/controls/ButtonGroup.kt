@@ -95,12 +95,14 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                             ref = sceneDragProvided.innerRef
                             copyFrom(sceneDragProvided.draggableProps)
 
+                            problemBadge(buttonControl as OpenControl)
+
                             div(+Styles.editButton) {
                                 if (editMode) {
                                     attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
                                 }
 
-                                editIconWithBadge(buttonControl as OpenControl, editMode)
+                                icon(Icons.Edit)
                             }
                             div(+Styles.dragHandle) {
                                 copyFrom(sceneDragProvided.dragHandleProps)

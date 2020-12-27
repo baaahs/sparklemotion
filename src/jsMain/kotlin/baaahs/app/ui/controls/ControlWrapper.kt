@@ -34,11 +34,13 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
             copyFrom(draggableProvided.draggableProps)
         }
 
+        problemBadge(control)
+
         if (!props.disableEdit) {
             div(+Styles.editButton) {
                 attrs.onClickFunction = onEditButtonClick
 
-                editIconWithBadge(control, props.controlProps.editMode)
+                icon(Icons.Edit)
             }
         }
 

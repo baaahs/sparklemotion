@@ -169,7 +169,7 @@ object AutoWirerSpec : Spek({
                 autoWirer.autoWire(*shaders, deviceTypes = listOf(deviceType))
                     .acceptSuggestedLinkOptions().confirm()
             }
-            val linkedPatch by value { patch.openForPreview(autoWirer)!! }
+            val linkedPatch by value { patch.openForPreview(autoWirer, ContentType.Color)!! }
             val rootProgramNode by value { linkedPatch.rootNode as LinkedShaderInstance }
             val mutableLinks by value { patch.mutableShaderInstances.only().incomingLinks }
             val links by value { rootProgramNode.incomingLinks }

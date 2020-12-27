@@ -15,8 +15,8 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
 @Suppress("unused")
-object GenericShaderPrototypeSpec : Spek({
-    describe<GenericShaderPrototypeSpec> {
+object GenericShaderDialectSpec : Spek({
+    describe<GenericShaderDialectSpec> {
         val src by value {
             """
                 // @return time
@@ -25,16 +25,16 @@ object GenericShaderPrototypeSpec : Spek({
                 ) { return time + sin(time); }
             """.trimIndent()
         }
-        val prototype by value { GenericShaderPrototype }
+        val dialect by value { GenericShaderDialect }
         val plugins by value { testPlugins() }
         val analyzer by value { GlslAnalyzer(plugins) }
-        val shaderAnalysis by value { analyzer.validate(src) }
+        val shaderAnalysis by value { analyzer.analyze(src) }
         val glslCode by value { shaderAnalysis.glslCode }
         val openShader by value { analyzer.openShader(shaderAnalysis) }
 
         context("shaders having a main() function") {
             it("is a poor match (so this one acts as a fallback)") {
-                expect(prototype.matches(glslCode)).toEqual(MatchLevel.Poor)
+                expect(dialect.matches(glslCode)).toEqual(MatchLevel.Poor)
             }
 
             it("finds the input port") {
@@ -70,7 +70,7 @@ object GenericShaderPrototypeSpec : Spek({
                 override(src) { "void main(float intensity) { gl_FragColor = vec4(gl_FragCoord, 0., 1.); };" }
 
                 it("continues to be a match") {
-                    expect(prototype.matches(glslCode)).toEqual(MatchLevel.Poor)
+                    expect(dialect.matches(glslCode)).toEqual(MatchLevel.Poor)
                 }
 
                 it("finds the input port") {
@@ -99,7 +99,7 @@ object GenericShaderPrototypeSpec : Spek({
         context("shaders without a main() function") {
             override(src) { "void mainImage(void) { ... };" }
             it("is not a match") {
-                expect(prototype.matches(glslCode)).toEqual(MatchLevel.NoMatch)
+                expect(dialect.matches(glslCode)).toEqual(MatchLevel.NoMatch)
             }
         }
     }

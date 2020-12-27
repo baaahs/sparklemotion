@@ -14,13 +14,13 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
 @Suppress("unused")
-object HintedShaderPrototypeSpec : Spek({
-    describe<HintedShaderPrototype> {
+object HintedShaderDialectSpec : Spek({
+    describe<HintedShaderDialect> {
         val shaderText by value<String> { toBeSpecified() }
-        val prototype by value { HintedShaderPrototypeForTest() }
+        val dialect by value { HintedShaderDialectForTest() }
         val plugins by value { testPlugins() }
         val glslCode by value { GlslAnalyzer(plugins).parse(shaderText) }
-        val shaderAnalysis by value { prototype.analyze(glslCode, plugins, null) }
+        val shaderAnalysis by value { dialect.analyze(glslCode, plugins, null) }
 
         context("determining a method's output ports") {
             context("when there are none") {
@@ -86,7 +86,7 @@ object HintedShaderPrototypeSpec : Spek({
     }
 })
 
-class HintedShaderPrototypeForTest : HintedShaderPrototype("xxx") {
+class HintedShaderDialectForTest : HintedShaderDialect("xxx") {
     override val entryPointName: String = "main"
     override val title: String
         get() = TODO("not implemented")

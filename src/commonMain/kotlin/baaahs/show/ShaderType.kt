@@ -2,6 +2,7 @@ package baaahs.show
 
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.ShaderAnalysis
+import baaahs.gl.patch.ContentType
 import baaahs.gl.preview.PreviewShaders
 import baaahs.gl.shader.OpenShader
 import baaahs.show.mutable.MutableShader
@@ -20,6 +21,18 @@ interface ShaderType {
     fun matches(shaderAnalysis: ShaderAnalysis): MatchLevel
 
     fun pickPreviewShaders(openShader: OpenShader, previewShaders: PreviewShaders): List<OpenShader>
+
+    fun previewResultContentType(): ContentType = ContentType.Color
+
+
+    fun ShaderAnalysis.anyInputIs(contentType: ContentType) =
+        inputPorts.any { it.contentType == contentType }
+
+    fun ShaderAnalysis.outputIs(contentType: ContentType) =
+        outputPorts.firstOrNull()?.contentType == contentType
+
+    fun ShaderAnalysis.signatureMatches(inputContentType: ContentType, outputContentType: ContentType) =
+        outputIs(outputContentType) && anyInputIs(inputContentType)
 
     object Unknown : ShaderType {
         override val title: String get() = "Unknown"

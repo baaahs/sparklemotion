@@ -14,6 +14,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.AutoWirer
+import baaahs.gl.patch.ContentType
 import baaahs.gl.renderPlanFor
 import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
@@ -260,7 +261,7 @@ class RenderEngineTest {
             .autoWire(directXyProjection, shader)
             .acceptSuggestedLinkOptions()
             .confirm()
-            .openForPreview(autoWirer)!!
+            .openForPreview(autoWirer, ContentType.Color)!!
         return renderEngine.compile(linkedPatch) { id, dataSource ->
             if (dataSource is CorePlugin.GadgetDataSource<*>) {
                 fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
