@@ -28,7 +28,7 @@ object GenericShaderDialectSpec : Spek({
         val dialect by value { GenericShaderDialect }
         val plugins by value { testPlugins() }
         val analyzer by value { GlslAnalyzer(plugins) }
-        val shaderAnalysis by value { analyzer.validate(src) }
+        val shaderAnalysis by value { analyzer.analyze(src) }
         val glslCode by value { shaderAnalysis.glslCode }
         val openShader by value { analyzer.openShader(shaderAnalysis) }
 
