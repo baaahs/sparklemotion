@@ -1,4 +1,4 @@
-package baaahs.show
+package baaahs.gl.shader.type
 
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.ShaderAnalysis

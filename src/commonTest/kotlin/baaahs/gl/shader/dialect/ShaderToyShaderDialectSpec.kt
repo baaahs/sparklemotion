@@ -1,4 +1,4 @@
-package baaahs.gl.shader
+package baaahs.gl.shader.dialect
 
 import baaahs.describe
 import baaahs.gl.glsl.GlslAnalyzer
@@ -6,6 +6,10 @@ import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType.Companion.Color
+import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.OpenShader
+import baaahs.gl.shader.OutputPort
+import baaahs.gl.shader.type.PaintShader
 import baaahs.gl.testPlugins
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.*

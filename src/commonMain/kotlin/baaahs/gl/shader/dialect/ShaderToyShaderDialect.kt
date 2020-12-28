@@ -1,10 +1,12 @@
-package baaahs.gl.shader
+package baaahs.gl.shader.dialect
 
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
+import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.OutputPort
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 

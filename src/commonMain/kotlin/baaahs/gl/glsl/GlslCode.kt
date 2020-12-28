@@ -4,7 +4,7 @@ import baaahs.englishize
 import baaahs.getValue
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
-import baaahs.gl.shader.findContentType
+import baaahs.gl.shader.dialect.findContentType
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
 import baaahs.unknown

@@ -1,27 +1,27 @@
-package baaahs.gl.shader
+package baaahs.gl.shader.type
 
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
 import baaahs.gl.preview.PreviewShaders
-import baaahs.show.ShaderType
+import baaahs.gl.shader.OpenShader
 import baaahs.ui.Icon
 
-object FilterShader : ShaderType {
-    override val title: String = "Filter"
+object DistortionShader : ShaderType {
+    override val title: String = "Distortion"
 
-    override val icon: Icon = CommonIcons.FilterShader
+    override val icon: Icon = CommonIcons.DistortionShader
 
     override val template: String = """
-        // @return color
-        // @param inColor color
-        vec4 main(vec4 inColor) {
-            return inColor;
+        uniform float scale; // @@Slider min=0.25 max=4 default=1
+
+        vec2 main(vec2 uvIn) {
+          return (uvIn - .5) / scale + .5;
         }
     """.trimIndent()
 
     override fun matches(shaderAnalysis: ShaderAnalysis): ShaderType.MatchLevel {
-        return if (shaderAnalysis.signatureMatches(ContentType.Color, ContentType.Color))
+        return if (shaderAnalysis.signatureMatches(ContentType.UvCoordinate, ContentType.UvCoordinate))
             ShaderType.MatchLevel.MatchAndFilter
         else ShaderType.MatchLevel.NoMatch
     }

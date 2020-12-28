@@ -1,4 +1,4 @@
-package baaahs.gl.shader
+package baaahs.gl.shader.dialect
 
 import baaahs.describe
 import baaahs.gl.glsl.GlslAnalyzer
@@ -6,6 +6,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ContentType.Companion.Color
+import baaahs.gl.shader.OutputPort
 import baaahs.gl.testPlugins
 import baaahs.toBeSpecified
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly

@@ -12,6 +12,9 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.*
+import baaahs.gl.shader.dialect.GenericShaderDialect
+import baaahs.gl.shader.dialect.ShaderToyShaderDialect
+import baaahs.gl.shader.type.*
 import baaahs.glsl.Uniform
 import baaahs.show.*
 import baaahs.show.mutable.*
