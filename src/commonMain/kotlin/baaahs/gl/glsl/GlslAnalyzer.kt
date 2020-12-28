@@ -3,10 +3,13 @@ package baaahs.gl.glsl
 import baaahs.gl.glsl.GlslCode.*
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.*
+import baaahs.gl.shader.dialect.GenericShaderDialect
+import baaahs.gl.shader.dialect.MatchLevel
+import baaahs.gl.shader.dialect.ShaderDialect
+import baaahs.gl.shader.type.ShaderType
 import baaahs.only
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 
 class GlslAnalyzer(private val plugins: Plugins) {
     fun detectDialect(src: String): ShaderDialect {

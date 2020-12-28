@@ -1,10 +1,10 @@
-package baaahs.gl.shader
+package baaahs.gl.shader.type
 
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
 import baaahs.gl.preview.PreviewShaders
-import baaahs.show.ShaderType
+import baaahs.gl.shader.OpenShader
 import baaahs.ui.Icon
 
 object ProjectionShader : ShaderType {

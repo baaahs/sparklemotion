@@ -7,9 +7,9 @@ import baaahs.gl.glsl.GlslError
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
-import baaahs.gl.shader.ShaderDialect
+import baaahs.gl.shader.dialect.ShaderDialect
+import baaahs.gl.shader.type.ShaderType
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 
 class FakeOpenShader(
     override val inputPorts: List<InputPort>,
