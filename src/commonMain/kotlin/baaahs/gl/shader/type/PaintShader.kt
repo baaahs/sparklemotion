@@ -8,9 +8,9 @@ import baaahs.gl.shader.OpenShader
 import baaahs.ui.Icon
 
 object PaintShader : ShaderType {
-    override val title: String = "Filter"
+    override val title: String = "Paint"
 
-    override val icon: Icon = CommonIcons.FilterShader
+    override val icon: Icon = CommonIcons.PaintShader
 
     override val template: String = """
         // @return color
