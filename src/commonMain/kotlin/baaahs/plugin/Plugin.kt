@@ -2,8 +2,12 @@ package baaahs.plugin
 
 import baaahs.fixtures.DeviceType
 import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.ShaderDialect
-import baaahs.show.*
+import baaahs.gl.shader.dialect.ShaderDialect
+import baaahs.gl.shader.type.ShaderType
+import baaahs.show.AddControlMenuItem
+import baaahs.show.Control
+import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
 import baaahs.util.Clock
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer

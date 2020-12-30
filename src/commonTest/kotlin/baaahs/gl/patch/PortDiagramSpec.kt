@@ -3,7 +3,7 @@ package baaahs.gl.patch
 import baaahs.describe
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.patch.PortDiagram.ChannelEntry
-import baaahs.gl.shader.FilterShader
+import baaahs.gl.shader.type.FilterShader
 import baaahs.gl.testPlugins
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel

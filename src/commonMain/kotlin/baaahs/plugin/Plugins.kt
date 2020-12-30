@@ -133,10 +133,14 @@ class Plugins private constructor(
         return contentTypes.matchingType(glslType)
     }
 
+    fun findDataSourceBuilder(pluginRef: PluginRef): DataSourceBuilder<out DataSource> {
+        return dataSourceBuilders.byPluginRef[pluginRef]
+            ?: throw LinkException("unknown plugin resource $pluginRef")
+    }
+
     fun resolveDataSource(inputPort: InputPort): DataSource {
         val pluginRef = inputPort.pluginRef ?: error("no plugin specified")
-        val builder = dataSourceBuilders.byPluginRef[pluginRef]
-            ?: throw LinkException("unknown plugin resource $pluginRef", inputPort.glslArgSite?.lineNumber)
+        val builder = findDataSourceBuilder(pluginRef)
         return builder.build(inputPort)
     }
 

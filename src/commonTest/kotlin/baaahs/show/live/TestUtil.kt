@@ -3,10 +3,15 @@ package baaahs.show.live
 import baaahs.ShowState
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.patch.AutoWirer
-import baaahs.gl.shader.*
+import baaahs.gl.shader.type.PaintShader
+import baaahs.gl.shader.type.ProjectionShader
+import baaahs.gl.shader.type.ShaderType
 import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
-import baaahs.show.*
+import baaahs.show.Layout
+import baaahs.show.Layouts
+import baaahs.show.Shader
+import baaahs.show.Show
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePort

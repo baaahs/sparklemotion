@@ -1,4 +1,4 @@
-package baaahs.gl.shader
+package baaahs.gl.shader.type
 
 import baaahs.describe
 import baaahs.gl.expects
@@ -7,8 +7,8 @@ import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
+import baaahs.gl.shader.InputPort
 import baaahs.gl.testPlugins
-import baaahs.show.ShaderType
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -35,7 +35,7 @@ object PaintShaderSpec : Spek({
             }
 
             it("#match returns Match") {
-                expect(shaderType.matches(shaderAnalysis))
+                expect(PaintShader.matches(shaderAnalysis))
                     .toEqual(ShaderType.MatchLevel.Match)
             }
         }
@@ -48,7 +48,7 @@ object PaintShaderSpec : Spek({
             }
 
             it("#match returns Match") {
-                expect(shaderType.matches(shaderAnalysis))
+                expect(PaintShader.matches(shaderAnalysis))
                     .toEqual(ShaderType.MatchLevel.Match)
             }
         }
@@ -61,7 +61,7 @@ object PaintShaderSpec : Spek({
             }
 
             it("#match returns NoMatch") {
-                expect(shaderType.matches(shaderAnalysis))
+                expect(PaintShader.matches(shaderAnalysis))
                     .toEqual(ShaderType.MatchLevel.NoMatch)
             }
         }
@@ -176,7 +176,8 @@ object PaintShaderSpec : Spek({
                             InputPort(
                                 "time", ContentType.Time, GlslType.Float, "Time",
                                 glslArgSite = GlslCode.GlslVar(
-                                    "time", GlslType.Float, "uniform float time;", isUniform = true, lineNumber = 1)
+                                    "time", GlslType.Float, "uniform float time;", isUniform = true, lineNumber = 1
+                                )
                             ),
                             InputPort(
                                 "uv", ContentType.UvCoordinate, GlslType.Vec2, "Uv",
@@ -187,9 +188,13 @@ object PaintShaderSpec : Spek({
                 }
 
                 it("generates invocation GLSL") {
-                    expect(shader.invocationGlsl(namespace, "resultVar", mapOf(
-                        "uv" to "uvArg"
-                    )))
+                    expect(
+                        shader.invocationGlsl(
+                            namespace, "resultVar", mapOf(
+                                "uv" to "uvArg"
+                            )
+                        )
+                    )
                         .toBe("p0_main(uvArg)")
                 }
 
@@ -212,12 +217,15 @@ object PaintShaderSpec : Spek({
                                 InputPort(
                                     "time", ContentType.Time, GlslType.Float, "Time",
                                     glslArgSite = GlslCode.GlslVar(
-                                        "time", GlslType.Float, "uniform float time;", isUniform = true, lineNumber = 1)
+                                        "time", GlslType.Float, "uniform float time;", isUniform = true, lineNumber = 1
+                                    )
                                 ),
                                 InputPort(
                                     "uv", ContentType.UvCoordinate, GlslType.Vec2, "Uv",
-                                    glslArgSite = GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 2,
-                                    comments = listOf(" @type uv-coordinate"))
+                                    glslArgSite = GlslCode.GlslParam(
+                                        "uv", GlslType.Vec2, isIn = true, lineNumber = 2,
+                                        comments = listOf(" @type uv-coordinate")
+                                    )
                                 )
                             )
                         ) { shader.inputPorts }

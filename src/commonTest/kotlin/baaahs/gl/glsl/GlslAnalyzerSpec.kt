@@ -6,9 +6,9 @@ import baaahs.gl.expects
 import baaahs.gl.glsl.GlslCode.*
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.GenericShaderDialect
 import baaahs.gl.shader.InputPort
-import baaahs.gl.shader.ShaderToyShaderDialect
+import baaahs.gl.shader.dialect.GenericShaderDialect
+import baaahs.gl.shader.dialect.ShaderToyShaderDialect
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only

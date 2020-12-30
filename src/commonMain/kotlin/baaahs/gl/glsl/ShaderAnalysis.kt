@@ -2,7 +2,7 @@ package baaahs.gl.glsl
 
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
-import baaahs.gl.shader.ShaderDialect
+import baaahs.gl.shader.dialect.ShaderDialect
 import baaahs.show.Shader
 
 interface ShaderAnalysis {
