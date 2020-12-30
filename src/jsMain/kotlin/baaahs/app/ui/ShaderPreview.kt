@@ -9,7 +9,7 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.ProjectionPreview
 import baaahs.gl.render.QuadPreview
 import baaahs.gl.render.ShaderPreview
-import baaahs.gl.shader.ProjectionShader
+import baaahs.gl.shader.type.ProjectionShader
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
 import baaahs.ui.addObserver

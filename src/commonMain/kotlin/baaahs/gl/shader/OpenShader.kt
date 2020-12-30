@@ -7,9 +7,10 @@ import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.ShaderAnalysis
+import baaahs.gl.shader.dialect.ShaderDialect
+import baaahs.gl.shader.type.ShaderType
 import baaahs.only
 import baaahs.show.Shader
-import baaahs.show.ShaderType
 import baaahs.unknown
 import kotlin.collections.set
 

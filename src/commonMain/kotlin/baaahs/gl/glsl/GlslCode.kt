@@ -4,7 +4,7 @@ import baaahs.englishize
 import baaahs.getValue
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
-import baaahs.gl.shader.findContentType
+import baaahs.gl.shader.dialect.findContentType
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
 import baaahs.unknown
@@ -148,9 +148,18 @@ class GlslCode(
         val lineNumber: Int?
 
         fun toInputPort(plugins: Plugins, parent: GlslFunction?): InputPort {
+            val contentTypeFromPlugin = try {
+                hint?.pluginRef
+                    ?.let { plugins.findDataSourceBuilder(it) }
+                    ?.contentType
+            } catch (e: Exception) {
+                null
+            }
+
             return InputPort(
                 name,
-                contentType = findContentType(plugins, parent)
+                contentType = contentTypeFromPlugin
+                    ?: findContentType(plugins, parent)
                     ?: plugins.resolveContentType(type),
                 type = type,
                 title = title,

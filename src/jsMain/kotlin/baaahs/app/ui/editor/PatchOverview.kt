@@ -2,7 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderCard
-import baaahs.show.ShaderType
+import baaahs.gl.shader.type.ShaderType
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.on

@@ -1,4 +1,4 @@
-package baaahs.gl.shader
+package baaahs.gl.shader.dialect
 
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.ShaderAnalysis

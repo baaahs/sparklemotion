@@ -1,10 +1,12 @@
-package baaahs.gl.shader
+package baaahs.gl.shader.dialect
 
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
+import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.OutputPort
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 
@@ -66,7 +68,7 @@ object ShaderToyShaderDialect : HintedShaderDialect("baaahs.Core:ShaderToy") {
 
     override fun adjustInputPorts(inputPorts: List<InputPort>): List<InputPort> {
         return inputPorts.map {
-            if (it.type == GlslType.Vec2 && it.contentType.isUnknown() == true) {
+            if (it.type == GlslType.Vec2 && it.contentType.isUnknown()) {
                 it.copy(contentType = ContentType.UvCoordinate)
             } else it
         }

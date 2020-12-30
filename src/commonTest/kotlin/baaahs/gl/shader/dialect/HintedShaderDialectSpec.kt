@@ -1,4 +1,4 @@
-package baaahs.gl.shader
+package baaahs.gl.shader.dialect
 
 import baaahs.describe
 import baaahs.gl.glsl.GlslAnalyzer
@@ -6,11 +6,18 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ContentType.Companion.Color
+import baaahs.gl.patch.ContentType.Companion.Float
+import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.OutputPort
 import baaahs.gl.testPlugins
+import baaahs.only
+import baaahs.plugin.PluginRef
 import baaahs.toBeSpecified
+import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.serialization.json.buildJsonObject
 import org.spekframework.spek2.Spek
 
 @Suppress("unused")
@@ -36,7 +43,11 @@ object HintedShaderDialectSpec : Spek({
 
                 it("should return it") {
                     expect(shaderAnalysis.outputPorts).containsExactly(
-                        OutputPort(ContentType.unknown(GlslType.Vec4), id = OutputPort.ReturnValue, dataType = GlslType.Vec4)
+                        OutputPort(
+                            ContentType.unknown(GlslType.Vec4),
+                            id = OutputPort.ReturnValue,
+                            dataType = GlslType.Vec4
+                        )
                     )
                 }
 
@@ -58,7 +69,8 @@ object HintedShaderDialectSpec : Spek({
                     expect(shaderAnalysis.outputPorts).containsExactly(
                         OutputPort(
                             ContentType.unknown(GlslType.Vec4),
-                            id = "colorOut", dataType = GlslType.Vec4, isParam = true)
+                            id = "colorOut", dataType = GlslType.Vec4, isParam = true
+                        )
                     )
                 }
 
@@ -80,6 +92,24 @@ object HintedShaderDialectSpec : Spek({
                             OutputPort(Color, id = "colorOut", dataType = GlslType.Vec4, isParam = true)
                         )
                     }
+                }
+            }
+        }
+
+        context("determining a method's input ports") {
+            context("when an in param specifies a plugin datasource") {
+                override(shaderText) { "void main(\n  float arg // @@Slider\n) {}" }
+                val inputPort by value { shaderAnalysis.inputPorts.only("input port") }
+
+                it("should use the data source's content type") {
+                    expect(inputPort.copy(glslArgSite = null))
+                        .toEqual(
+                            InputPort(
+                                "arg", Float,
+                                pluginRef = PluginRef("baaahs.Core", "Slider"),
+                                pluginConfig = buildJsonObject {}
+                            )
+                        )
                 }
             }
         }

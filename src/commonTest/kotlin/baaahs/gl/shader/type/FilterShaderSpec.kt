@@ -1,10 +1,9 @@
-package baaahs.gl.shader
+package baaahs.gl.shader.type
 
 import baaahs.describe
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.override
 import baaahs.gl.testPlugins
-import baaahs.show.ShaderType
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
@@ -29,7 +28,7 @@ object FilterShaderSpec : Spek({
             }
 
             it("#match returns MatchAndFilter") {
-                expect(shaderType.matches(shaderAnalysis))
+                expect(FilterShader.matches(shaderAnalysis))
                     .toEqual(ShaderType.MatchLevel.MatchAndFilter)
             }
         }
@@ -43,7 +42,7 @@ object FilterShaderSpec : Spek({
             }
 
             it("#match returns NoMatch") {
-                expect(shaderType.matches(shaderAnalysis))
+                expect(FilterShader.matches(shaderAnalysis))
                     .toEqual(ShaderType.MatchLevel.NoMatch)
             }
         }
