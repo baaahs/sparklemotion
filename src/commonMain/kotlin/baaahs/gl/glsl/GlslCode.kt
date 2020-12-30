@@ -148,9 +148,18 @@ class GlslCode(
         val lineNumber: Int?
 
         fun toInputPort(plugins: Plugins, parent: GlslFunction?): InputPort {
+            val contentTypeFromPlugin = try {
+                hint?.pluginRef
+                    ?.let { plugins.findDataSourceBuilder(it) }
+                    ?.contentType
+            } catch (e: Exception) {
+                null
+            }
+
             return InputPort(
                 name,
-                contentType = findContentType(plugins, parent)
+                contentType = contentTypeFromPlugin
+                    ?: findContentType(plugins, parent)
                     ?: plugins.resolveContentType(type),
                 type = type,
                 title = title,
