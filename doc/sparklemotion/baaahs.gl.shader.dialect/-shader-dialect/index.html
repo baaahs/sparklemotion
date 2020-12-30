@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ShaderDialect - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gl.shader.dialect</a>&nbsp;/&nbsp;<a href="./index.html">ShaderDialect</a><br/>
+<br/>
+<h1>ShaderDialect</h1>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">ShaderDialect</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">ShaderDialect</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.dialect.ShaderDialect$<init>(kotlin.String)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="id.html">id</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="title.html">title</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="analyze.html">analyze</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">analyze</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.dialect.ShaderDialect$analyze(baaahs.gl.glsl.GlslCode, baaahs.plugin.Plugins, baaahs.show.Shader)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.dialect.ShaderDialect$analyze(baaahs.gl.glsl.GlslCode, baaahs.plugin.Plugins, baaahs.show.Shader)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.dialect.ShaderDialect$analyze(baaahs.gl.glsl.GlslCode, baaahs.plugin.Plugins, baaahs.show.Shader)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.glsl/-shader-analysis/index.html"><span class="identifier">ShaderAnalysis</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="matches.html">matches</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">matches</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.dialect.ShaderDialect$matches(baaahs.gl.glsl.GlslCode)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-match-level/index.html"><span class="identifier">MatchLevel</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-hinted-shader-dialect/index.html">HintedShaderDialect</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">HintedShaderDialect</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">ShaderDialect</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

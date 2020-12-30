@@ -13,52 +13,10 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="-distortion-shader/index.html">DistortionShader</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">DistortionShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-filter-shader/index.html">FilterShader</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">FilterShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-generic-shader-dialect/index.html">GenericShaderDialect</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">GenericShaderDialect</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-hinted-shader-dialect/index.html"><span class="identifier">HintedShaderDialect</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-hinted-shader-dialect/index.html">HintedShaderDialect</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">HintedShaderDialect</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-shader-dialect/index.html"><span class="identifier">ShaderDialect</span></a></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="-input-port/index.html">InputPort</a></h4>
 </td>
 <td>
 <code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">InputPort</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-match-level/index.html">MatchLevel</a></h4>
-</td>
-<td>
-<code><span class="keyword">enum</span> <span class="keyword">class </span><span class="identifier">MatchLevel</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-mover-shader/index.html">MoverShader</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">MoverShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -73,60 +31,6 @@
 </td>
 <td>
 <code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">OutputPort</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-paint-shader/index.html">PaintShader</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">PaintShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-projection-shader/index.html">ProjectionShader</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">ProjectionShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.show/-shader-type/index.html"><span class="identifier">ShaderType</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-dialect/index.html">ShaderDialect</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">ShaderDialect</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-toy-shader-dialect/index.html">ShaderToyShaderDialect</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">ShaderToyShaderDialect</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-hinted-shader-dialect/index.html"><span class="identifier">HintedShaderDialect</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="find-content-type.html">findContentType</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">GlslFunction</span><span class="symbol">.</span><span class="identifier">findContentType</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader$findContentType(baaahs.gl.glsl.GlslCode.GlslFunction, baaahs.gl.glsl.GlslCode.GlslParam, baaahs.plugin.Plugins)/param">param</span><span class="symbol">:</span>&nbsp;<span class="identifier">GlslParam</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader$findContentType(baaahs.gl.glsl.GlslCode.GlslFunction, baaahs.gl.glsl.GlslCode.GlslParam, baaahs.plugin.Plugins)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="find-param-hint.html">findParamHint</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">GlslFunction</span><span class="symbol">.</span><span class="identifier">findParamHint</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader$findParamHint(baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.String, baaahs.plugin.Plugins)/paramName">paramName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader$findParamHint(baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.String, baaahs.plugin.Plugins)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-param-output-ports.html">getParamOutputPorts</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">GlslFunction</span><span class="symbol">.</span><span class="identifier">getParamOutputPorts</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader$getParamOutputPorts(baaahs.gl.glsl.GlslCode.GlslFunction, baaahs.plugin.Plugins)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="-output-port/index.html"><span class="identifier">OutputPort</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>

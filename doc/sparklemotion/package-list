@@ -47,6 +47,8 @@ baaahs.gl.patch
 baaahs.gl.preview
 baaahs.gl.render
 baaahs.gl.shader
+baaahs.gl.shader.dialect
+baaahs.gl.shader.type
 baaahs.glsl
 baaahs.imaging
 baaahs.io
