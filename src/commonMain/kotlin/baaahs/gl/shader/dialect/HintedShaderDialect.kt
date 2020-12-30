@@ -1,5 +1,6 @@
 package baaahs.gl.shader.dialect
 
+import baaahs.getValue
 import baaahs.gl.glsl.*
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -24,12 +25,11 @@ abstract class HintedShaderDialect(id: String) : ShaderDialect(id) {
     open fun adjustInputPorts(inputPorts: List<InputPort>): List<InputPort> = inputPorts
     open fun adjustOutputPorts(outputPorts: List<OutputPort>): List<OutputPort> = outputPorts
 
+    private val wellKnownInputPortsById by lazy { wellKnownInputPorts.associateBy { it.id } }
+
     override fun analyze(glslCode: GlslCode, plugins: Plugins, shader: Shader?): ShaderAnalysis {
         val proFormaInputPorts: List<InputPort> =
             implicitInputPorts.mapNotNull { glslCode.ifRefersTo(it)?.copy(isImplicit = true) }
-
-        val wellKnownInputPorts = this@HintedShaderDialect.wellKnownInputPorts.associateBy { it.id }
-        val defaultInputPortsByType = this@HintedShaderDialect.defaultInputPortsByType
 
         val entryPoint = findEntryPointOrNull(glslCode)
 
@@ -39,10 +39,7 @@ abstract class HintedShaderDialect(id: String) : ShaderDialect(id) {
         val inputPorts = adjustInputPorts(
             proFormaInputPorts +
                     (glslCode.globalInputVars + entryPointParams).map {
-                        wellKnownInputPorts[it.name]?.copy(type = it.type, glslArgSite = it)
-                            ?: defaultInputPortsByType[it.type]
-                                ?.copy(id = it.name, varName = it.name, glslArgSite = it)
-                            ?: it.toInputPort(plugins, entryPoint)
+                        it.resolveInputPort(entryPoint, plugins)
                     } +
                     findMagicInputPorts(glslCode)
         )
@@ -106,6 +103,12 @@ abstract class HintedShaderDialect(id: String) : ShaderDialect(id) {
 
         }
     }
+
+    private fun GlslCode.GlslArgSite.resolveInputPort(entryPoint: GlslCode.GlslFunction?, plugins: Plugins) =
+        (wellKnownInputPortsById[name]?.copy(type = type, glslArgSite = this)
+            ?: defaultInputPortsByType[type]
+                ?.copy(id = name, varName = name, glslArgSite = this)
+            ?: toInputPort(plugins, entryPoint))
 
     private fun GlslCode.ifRefersTo(inputPort: InputPort) =
         if (refersToGlobal(inputPort.id)) inputPort else null

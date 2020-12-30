@@ -68,7 +68,7 @@ object ShaderToyShaderDialect : HintedShaderDialect("baaahs.Core:ShaderToy") {
 
     override fun adjustInputPorts(inputPorts: List<InputPort>): List<InputPort> {
         return inputPorts.map {
-            if (it.type == GlslType.Vec2 && it.contentType.isUnknown() == true) {
+            if (it.type == GlslType.Vec2 && it.contentType.isUnknown()) {
                 it.copy(contentType = ContentType.UvCoordinate)
             } else it
         }
