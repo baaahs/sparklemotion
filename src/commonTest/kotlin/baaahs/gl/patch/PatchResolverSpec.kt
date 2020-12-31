@@ -162,7 +162,7 @@ object PatchResolverSpec : Spek({
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
                             if (theta < 0.0) theta += (2.0f * p0_cylindricalProjection_PI);                 // theta in range [0,2π)
-                            float u = theta / (2.0f * p0_cylindricalProjection_PI);                         // u in range [0,1)
+                            float u = theta / (2.0f * p0_cylindricalProjection_PI) * 2.;                    // u in range [0,1)
                             float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
                             return vec2(u, v);
                         }
@@ -272,7 +272,7 @@ object PatchResolverSpec : Spek({
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
                             if (theta < 0.0) theta += (2.0f * p0_cylindricalProjection_PI);                 // theta in range [0,2π)
-                            float u = theta / (2.0f * p0_cylindricalProjection_PI);                         // u in range [0,1)
+                            float u = theta / (2.0f * p0_cylindricalProjection_PI) * 2.;                    // u in range [0,1)
                             float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
                             return vec2(u, v);
                         }
@@ -425,7 +425,7 @@ object PatchResolverSpec : Spek({
                             vec3 normalDelta = normalize(pixelOffset);
                             float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
                             if (theta < 0.0) theta += (2.0f * p0_cylindricalProjection_PI);                 // theta in range [0,2π)
-                            float u = theta / (2.0f * p0_cylindricalProjection_PI);                         // u in range [0,1)
+                            float u = theta / (2.0f * p0_cylindricalProjection_PI) * 2.;                    // u in range [0,1)
                             float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
                             return vec2(u, v);
                         }
