@@ -35,7 +35,8 @@ import org.w3c.dom.*
 import org.w3c.dom.events.KeyboardEvent
 import react.ReactElement
 import react.createElement
-import three.Matrix4
+import three_ext.Matrix4
+import three_ext.Raycaster
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -436,7 +437,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
             }
 
         private fun findIntersection(x: Float, y: Float): Intersect? {
-            val raycaster = three.Raycaster()
+            val raycaster = Raycaster()
             val pixelVector = Vector2(
                 x / uiWidth * 2 - 1,
                 -(y / uiHeight * 2 - 1)
@@ -538,7 +539,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         y: Int,
         visibleSurfaces: List<MapperUi.VisibleSurface>
     ): MapperUi.VisibleSurface? {
-        val raycaster = three.Raycaster()
+        val raycaster = Raycaster()
         val pixelVector = Vector2(
             x.toFloat() / uiWidth * 2 - 1,
             -(y.toFloat() / uiHeight * 2 - 1)

@@ -24,7 +24,8 @@ import info.laht.threekt.scenes.Scene
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.MouseEvent
-import three.OrbitControls
+import three_ext.OrbitControls
+import three_ext.Raycaster
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -71,7 +72,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     private var obj: Object3D = Object3D()
     private val pointMaterial = PointsMaterial().apply { color.set(0xffffff) }
 
-    private val raycaster = three.Raycaster()
+    private val raycaster = Raycaster()
     private var mouse: Vector2? = null
     private val sphere: Mesh
 

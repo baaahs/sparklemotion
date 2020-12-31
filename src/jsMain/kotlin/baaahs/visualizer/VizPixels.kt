@@ -16,9 +16,9 @@ import info.laht.threekt.scenes.Scene
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.get
 import org.khronos.webgl.set
-import three.BufferGeometryUtils
-import three.Float32BufferAttribute
-import three.Matrix4
+import three_ext.BufferGeometryUtils
+import three_ext.Float32BufferAttribute
+import three_ext.Matrix4
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random

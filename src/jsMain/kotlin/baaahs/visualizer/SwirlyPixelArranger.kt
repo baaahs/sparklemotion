@@ -7,7 +7,7 @@ import info.laht.threekt.core.Geometry
 import info.laht.threekt.math.Line3
 import info.laht.threekt.math.Quaternion
 import info.laht.threekt.math.Vector3
-import three.Matrix4
+import three_ext.Matrix4
 import kotlin.math.*
 import kotlin.random.Random
 
