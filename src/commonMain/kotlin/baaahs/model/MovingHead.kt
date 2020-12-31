@@ -8,54 +8,79 @@ import baaahs.fixtures.MovingHeadDevice
 import baaahs.geom.Vector3F
 import kotlinx.serialization.Serializable
 
-class MovingHead(
+abstract class MovingHead(
     override val name: String,
     override val description: String,
+    val baseDmxChannel: Int,
     val origin: Vector3F,
     val heading: Vector3F
 ) : Model.Entity {
-    enum class ColorMode {
+    abstract val dmxChannelCount: Int
+
+    abstract val colorModel: ColorModel
+    abstract val colorWheelColors: List<Shenzarpy.WheelColor>
+
+    abstract val panChannel: Dmx.Channel
+    abstract val panFineChannel: Dmx.Channel?
+    /** In radians. */
+    abstract val panRange: ClosedRange<Float>
+
+    abstract val tiltChannel: Dmx.Channel
+    abstract val tiltFineChannel: Dmx.Channel?
+    /** In radians. */
+    abstract val tiltRange: ClosedRange<Float>
+
+    abstract val supportsFinePositioning: Boolean
+
+    abstract val dimmerChannel: Dmx.Channel
+
+    enum class ColorModel {
         ColorWheel,
         RGB,
         RGBW
     }
 
+    abstract class BaseBuffer(private val movingHead: MovingHead) : Buffer {
+        override var pan: Float
+            get() = getFloat(movingHead.panChannel, movingHead.panFineChannel)
+            set(value) = setFloat(movingHead.panChannel, movingHead.panFineChannel, value)
+
+        override var tilt: Float
+            get() = getFloat(movingHead.tiltChannel, movingHead.tiltFineChannel)
+            set(value) = setFloat(movingHead.tiltChannel, movingHead.tiltFineChannel, value)
+
+        override var dimmer: Float
+            get() = getFloat(movingHead.dimmerChannel)
+            set(value) = setFloat(movingHead.dimmerChannel, value)
+
+        override val supportsFinePositioning: Boolean
+            get() = movingHead.supportsFinePositioning
+    }
+
     interface Buffer {
-        val buffer: Dmx.Buffer
-        val panChannel: Dmx.Channel
-        val panFineChannel: Dmx.Channel?
-        val tiltChannel: Dmx.Channel
-        val tiltFineChannel: Dmx.Channel?
-        val dimmerChannel: Dmx.Channel
+        val dmxBuffer: Dmx.Buffer
 
         val supportsFinePositioning: Boolean
-            get() = panFineChannel != null && tiltFineChannel != null
 
+        /** In radians. */
         var pan: Float
-            get() = getFloat(panChannel, panFineChannel)
-            set(value) = setFloat(panChannel, panFineChannel, value)
-
-        val panRange: ClosedRange<Float>
-
+        /** In radians. */
         var tilt: Float
-            get() = getFloat(tiltChannel, tiltFineChannel)
-            set(value) = setFloat(tiltChannel, tiltFineChannel, value)
-
-        val tiltRange: ClosedRange<Float>
-
+        /** `0` is completely dimmed, `1` is completely open. */
         var dimmer: Float
-            get() = getFloat(dimmerChannel)
-            set(value) = setFloat(dimmerChannel, value)
 
-        var color: Color
-        val colorMode: ColorMode
-        val colorWheelColors: List<Shenzarpy.WheelColor>
+        val primaryColor: Color
+        val secondaryColor: Color
+        /** `0` indicates just [primaryColor], `.5` indicates a 50/50 mix, and `1.` indicates just [secondaryColor]. */
+        val colorSplit: Float
+        /** Index in [colorWheelColors] from `0` to `colorWheelColors.length`. */
+        val colorWheelPosition: Float
 
-        fun closestColorFor(color: Color): Byte {
+        fun List<Shenzarpy.WheelColor>.closestColorFor(color: Color): Byte {
             var bestMatch = Shenzarpy.WheelColor.WHITE
             var bestDistance = 1f
 
-            colorWheelColors.forEach { wheelColor ->
+            forEach { wheelColor ->
                 val distance = wheelColor.color.distanceTo(color)
                 if (distance < bestDistance) {
                     bestMatch = wheelColor
@@ -66,37 +91,43 @@ class MovingHead(
             return bestMatch.ordinal.toByte()
         }
 
-        private fun getFloat(channel: Dmx.Channel): Float {
-            val byteVal = buffer[channel].toInt() and 0xff
+        fun getFloat(channel: Dmx.Channel): Float {
+            val byteVal = dmxBuffer[channel].toInt() and 0xff
             return ((byteVal shl 8) + byteVal) / 65535f
         }
 
-        private fun getFloat(coarseChannel: Dmx.Channel, fineChannel: Dmx.Channel?): Float {
+        fun getFloat(coarseChannel: Dmx.Channel, fineChannel: Dmx.Channel?): Float {
             if (fineChannel == null) {
                 return getFloat(coarseChannel)
             }
 
-            val firstByte = buffer[coarseChannel].toInt() and 0xff
-            val secondByte = buffer[fineChannel].toInt() and 0xff
+            val firstByte = dmxBuffer[coarseChannel].toInt() and 0xff
+            val secondByte = dmxBuffer[fineChannel].toInt() and 0xff
             val scaled = firstByte * 256 + secondByte
             return scaled / 65535f
         }
 
-        private fun setFloat(channel: Dmx.Channel, value: Float) {
+        fun setFloat(channel: Dmx.Channel, value: Float) {
             val scaled = (value * 65535).toInt()
-            buffer[channel] = (scaled shr 8).toByte()
+            dmxBuffer[channel] = (scaled shr 8).toByte()
         }
 
-        private fun setFloat(coarseChannel: Dmx.Channel, fineChannel: Dmx.Channel?, value: Float) {
+        fun setFloat(coarseChannel: Dmx.Channel, fineChannel: Dmx.Channel?, value: Float) {
             if (fineChannel == null) {
                 return setFloat(coarseChannel, value)
             }
 
             val scaled = (value * 65535).toInt()
-            buffer[coarseChannel] = (scaled shr 8).toByte()
-            buffer[fineChannel] = (scaled and 0xff).toByte()
+            dmxBuffer[coarseChannel] = (scaled shr 8).toByte()
+            dmxBuffer[fineChannel] = (scaled and 0xff).toByte()
         }
     }
+
+    fun newBuffer(universe: Dmx.Universe): Buffer {
+        return newBuffer(universe.writer(baseDmxChannel, dmxChannelCount))
+    }
+
+    abstract fun newBuffer(dmxBuffer: Dmx.Buffer): Buffer
 
     @Serializable
     data class MovingHeadPosition(

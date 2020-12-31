@@ -1,7 +1,6 @@
 package baaahs.visualizer
 
 import baaahs.Color
-import baaahs.Config
 import baaahs.geom.Vector3F
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
@@ -13,62 +12,104 @@ import info.laht.threekt.objects.Mesh
 import info.laht.threekt.scenes.Scene
 
 class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniverse) {
-    private val dmxChannelMapping = Config.findDmxChannelMapping(movingHead)
-    private val adapter = run {
-        val dmxBufferReader = dmxUniverse.reader(dmxChannelMapping.baseChannel, dmxChannelMapping.channelCount) {
+    private val buffer = run {
+        val dmxBufferReader = dmxUniverse.reader(movingHead.baseDmxChannel, movingHead.dmxChannelCount) {
             receivedDmxFrame()
         }
-        dmxChannelMapping.adapter.build(dmxBufferReader) as MovingHead.Buffer
+        movingHead.newBuffer(dmxBufferReader)
+    }
+    private val beam = when (movingHead.colorModel) {
+        MovingHead.ColorModel.ColorWheel -> ColorWheelBeam()
+        MovingHead.ColorModel.RGB -> RgbBeam()
+        MovingHead.ColorModel.RGBW -> RgbBeam()
     }
 
-    val cone = Cone(movingHead.origin, movingHead.heading)
-
     fun addTo(scene: Scene) {
-        cone.addTo(scene)
+        beam.addTo(scene)
     }
 
     private fun receivedDmxFrame() {
-        cone.setColor(adapter.color, adapter.dimmer)
+        beam.receivedDmxFrame()
+    }
 
-        val rotation = Vector3F(
-            adapter.panRange.scale(adapter.pan),
-            0f,
-            adapter.tiltRange.scale(adapter.tilt)
-        )
-        cone.setRotation(rotation)
+    interface Beam {
+        fun addTo(scene: Scene)
+        fun receivedDmxFrame()
+    }
+
+    inner class ColorWheelBeam : Beam {
+        private val primaryCone = Cone(movingHead.origin, movingHead.heading)
+        private val secondaryCone = Cone(movingHead.origin, movingHead.heading)
+
+        override fun addTo(scene: Scene) {
+            primaryCone.addTo(scene)
+            secondaryCone.addTo(scene)
+        }
+
+        override fun receivedDmxFrame() {
+            primaryCone.setColor(buffer.primaryColor, buffer.dimmer)
+            secondaryCone.setColor(buffer.secondaryColor, buffer.dimmer)
+
+            val rotation = Vector3F(
+                movingHead.panRange.scale(buffer.pan),
+                0f,
+                movingHead.tiltRange.scale(buffer.tilt)
+            )
+            primaryCone.setRotation(rotation)
+            secondaryCone.setRotation(rotation)
+        }
+    }
+
+    inner class RgbBeam : Beam {
+        private val cone = Cone(movingHead.origin, movingHead.heading)
+
+        override fun addTo(scene: Scene) {
+            cone.addTo(scene)
+        }
+
+        override fun receivedDmxFrame() {
+            cone.setColor(buffer.primaryColor, buffer.dimmer)
+
+            val rotation = Vector3F(
+                movingHead.panRange.scale(buffer.pan),
+                0f,
+                movingHead.tiltRange.scale(buffer.tilt)
+            )
+            cone.setRotation(rotation)
+        }
     }
 
     class Cone(val origin: Vector3F, val heading: Vector3F) {
         private val coneLength = 1000.0
 
-        private val innerConeBaseOpacity = .75
-        private val innerConeMaterial = MeshBasicMaterial().apply {
+        private val innerBaseOpacity = .75
+        private val innerMaterial = MeshBasicMaterial().apply {
             color.set(0xffff00)
             side = THREE.DoubleSide
             transparent = true
-            opacity = innerConeBaseOpacity
+            opacity = innerBaseOpacity
             depthTest = false
         }
-        private val innerConeGeometry = ConeBufferGeometry(20, coneLength, openEnded = true)
+        private val innerGeometry = ConeBufferGeometry(20, coneLength, openEnded = true)
             .also { it.applyMatrix(Matrix4().makeTranslation(0.0, -coneLength / 2, 0.0)) }
-        private val innerCone = Mesh(innerConeGeometry, innerConeMaterial)
+        private val inner = Mesh(innerGeometry, innerMaterial)
 
-        private val outerConeBaseOpacity = .4
-        private val outerConeMaterial = MeshBasicMaterial().apply {
+        private val outerBaseOpacity = .4
+        private val outerMaterial = MeshBasicMaterial().apply {
             color.set(0xffff00)
             side = THREE.DoubleSide
             transparent = true
-            opacity = outerConeBaseOpacity
+            opacity = outerBaseOpacity
             blending = THREE.AdditiveBlending
             depthTest = false
         }
-        private val outerConeGeometry = ConeBufferGeometry(50, coneLength, openEnded = true)
+        private val outerGeometry = ConeBufferGeometry(50, coneLength, openEnded = true)
             .also { it.applyMatrix(Matrix4().makeTranslation(0.0, -coneLength / 2, 0.0)) }
-        private val outerCone = Mesh(outerConeGeometry, outerConeMaterial)
+        private val outer = Mesh(outerGeometry, outerMaterial)
 
-        private val baseOpacities = listOf(innerConeBaseOpacity, outerConeBaseOpacity)
-        private val materials = listOf(innerConeMaterial, outerConeMaterial)
-        private val cones = listOf(innerCone, outerCone)
+        private val baseOpacities = listOf(innerBaseOpacity, outerBaseOpacity)
+        private val materials = listOf(innerMaterial, outerMaterial)
+        private val cones = listOf(inner, outer)
 
         init {
             cones.forEach { cone ->

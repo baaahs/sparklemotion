@@ -1,29 +1,59 @@
 package baaahs.dmx
 
 import baaahs.Color
+import baaahs.geom.Vector3F
 import baaahs.model.MovingHead
 import baaahs.toRadians
 
-class Shenzarpy(override val buffer: Dmx.Buffer) : Dmx.Adapter, MovingHead.Buffer {
-    override val panChannel get() = Channel.PAN
-    override val panFineChannel: Dmx.Channel get() = Channel.PAN_FINE
-    override val tiltChannel: Dmx.Channel get() = Channel.TILT
-    override val tiltFineChannel: Dmx.Channel get() = Channel.TILT_FINE
-    override val dimmerChannel: Dmx.Channel get() = Channel.DIMMER
-    override var color: Color
-        get() = WheelColor.values[colorWheel.toInt()].color
-        set(value) { colorWheel = closestColorFor(value) }
+class Shenzarpy(
+    name: String,
+    description: String,
+    baseDmxChannel: Int,
+    origin: Vector3F,
+    heading: Vector3F
+) : MovingHead(name, description, baseDmxChannel, origin, heading) {
+    override val dmxChannelCount: Int get() = 16
 
-    override val colorMode: MovingHead.ColorMode get() = MovingHead.ColorMode.ColorWheel
+    override val colorModel: ColorModel get() = ColorModel.ColorWheel
     override val colorWheelColors: List<WheelColor> = WheelColor.values.toList()
 
+    override val panChannel get() = Channel.PAN
+    override val panFineChannel: Dmx.Channel get() = Channel.PAN_FINE
     override val panRange: ClosedRange<Float> =
         toRadians(0f)..toRadians(540f)
+
+    override val tiltChannel: Dmx.Channel get() = Channel.TILT
+    override val tiltFineChannel: Dmx.Channel get() = Channel.TILT_FINE
     override val tiltRange: ClosedRange<Float> =
         toRadians(-110f)..toRadians(110f)
 
-    companion object : Dmx.AdapterBuilder {
-        override fun build(buffer: Dmx.Buffer) = Shenzarpy(buffer)
+    override val supportsFinePositioning: Boolean
+        get() = true
+
+    override val dimmerChannel: Dmx.Channel get() = Channel.DIMMER
+
+    private val colorWheelChannel: Dmx.Channel get() = Channel.COLOR_WHEEL
+
+    override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
+
+    private fun colorAtPosition(position: Float): Color {
+        return colorWheelColors[position.toInt() % colorWheelColors.size].color
+    }
+
+    inner class Buffer(override val dmxBuffer: Dmx.Buffer) : MovingHead.BaseBuffer(this@Shenzarpy) {
+        override val primaryColor: Color get() = colorAtPosition(colorWheelPosition)
+        override val secondaryColor: Color get() = colorAtPosition(colorWheelPosition + .5f)
+        override val colorSplit: Float get() = colorWheelPosition % 1f
+
+        override val colorWheelPosition: Float get() = colorWheel.toInt() / (128f / colorWheelColors.size)
+
+        var colorWheel: Byte
+            get() = dmxBuffer[colorWheelChannel]
+            set(value) { dmxBuffer[colorWheelChannel] = value }
+
+        init {
+            dimmer = 1f
+        }
     }
 
     enum class WheelColor(val color: Color) {
@@ -78,15 +108,5 @@ class Shenzarpy(override val buffer: Dmx.Buffer) : Dmx.Adapter, MovingHead.Buffe
         }
 
         override val offset = ordinal
-    }
-
-    var colorWheel: Byte
-        get() = buffer[Channel.COLOR_WHEEL]
-        set(value) {
-            buffer[Channel.COLOR_WHEEL] = value
-        }
-
-    init {
-        dimmer = 1f
     }
 }
