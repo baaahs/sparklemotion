@@ -108,13 +108,14 @@ object Shaders {
         /**language=glsl*/
         """
             uniform float time;
+            uniform float rippleAmount; // @type float
     
             // @return uv-coordinate
             // @param uvIn uv-coordinate
             vec2 main(vec2 uvIn) {
               vec2 p = -1.0 + 2.0 * uvIn;
               float len = length(p);
-              return uvIn + (p/len)*cos(len*12.0-time*4.0)*0.03;
+              return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * rippleAmount;
             }
         """.trimIndent()
     )
@@ -155,9 +156,30 @@ object Shaders {
                 vec3 normalDelta = normalize(pixelOffset);
                 float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
                 if (theta < 0.0) theta += (2.0f * PI);                 // theta in range [0,2π)
-                float u = theta / (2.0f * PI);                         // u in range [0,1)
+                float u = theta / (2.0f * PI) * 2.;                    // u in range [0,1)
                 float v = (pixelOffset.y + modelInfo.extents.y / 2.0f) / modelInfo.extents.y;
                 return vec2(u, v);
+            }
+        """.trimIndent()
+    )
+
+    val xyProjection = Shader(
+        "XY Projection",
+        /**language=glsl*/
+        """
+            // XY Projection
+
+            struct ModelInfo {
+                vec3 center;
+                vec3 extents;
+            };
+            uniform ModelInfo modelInfo;
+
+            // @return uv-coordinate
+            // @param pixelLocation xyz-coordinate
+            vec2 main(vec3 pixelLocation) {
+                vec3 pixelOffset = (pixelLocation - modelInfo.center) / modelInfo.extents + .5;
+                return vec2(1.-pixelOffset.x, pixelOffset.y);
             }
         """.trimIndent()
     )
