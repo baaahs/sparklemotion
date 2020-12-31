@@ -1,6 +1,6 @@
 @file:JsModule("three")
 @file:JsNonModule
-package three
+package three_ext
 
 import info.laht.threekt.cameras.Camera
 import info.laht.threekt.core.Intersect

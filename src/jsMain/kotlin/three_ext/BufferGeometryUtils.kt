@@ -1,5 +1,5 @@
 @file:JsQualifier("THREE")
-package three
+package three_ext
 
 import info.laht.threekt.core.BufferGeometry
 
