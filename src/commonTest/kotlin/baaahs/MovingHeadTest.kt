@@ -1,38 +1,19 @@
 package baaahs
 
 import baaahs.dmx.Dmx
-import baaahs.dmx.Shenzarpy
-import baaahs.model.MovingHead
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class MovingHeadTest {
     val testMovingHead = TestMovingHead()
+    val buffer = testMovingHead.newBuffer(Dmx.Buffer(ByteArray(16), 0, 16))
 
     @Test
     fun floatValues() {
-        testMovingHead.pan = 0.75f
-        testMovingHead.tilt = 1f
-        assertTrue(0.75f - testMovingHead.pan < 0.001)
-        assertTrue(1f - testMovingHead.tilt < 0.001)
-    }
-
-    class TestMovingHead : MovingHead.Buffer {
-        override val buffer: Dmx.Buffer = Dmx.Buffer(ByteArray(10), 0, 10)
-        override val panChannel: Dmx.Channel get() = TestChannel(1)
-        override val panFineChannel: Dmx.Channel get() = TestChannel(2)
-        override val tiltChannel: Dmx.Channel get() = TestChannel(3)
-        override val tiltFineChannel: Dmx.Channel get() = TestChannel(4)
-        override val dimmerChannel: Dmx.Channel get() = TestChannel(5)
-        override var color: Color
-            get() = Color.BLACK
-            set(_) {}
-        override val panRange: ClosedRange<Float> =
-            toRadians(0f)..toRadians(540f)
-        override val tiltRange: ClosedRange<Float> =
-            toRadians(-110f)..toRadians(110f)
-        override val colorMode: MovingHead.ColorMode get() = MovingHead.ColorMode.ColorWheel
-        override val colorWheelColors: List<Shenzarpy.WheelColor> get() = emptyList()
+        buffer.pan = 0.75f
+        buffer.tilt = 1f
+        assertTrue(0.75f - buffer.pan < 0.001)
+        assertTrue(1f - buffer.tilt < 0.001)
     }
 
     class TestChannel(override val offset: Int) : Dmx.Channel

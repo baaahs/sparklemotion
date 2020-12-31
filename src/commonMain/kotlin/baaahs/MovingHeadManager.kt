@@ -20,9 +20,7 @@ class MovingHeadManager(
     }
 
     private val fixtures = movingHeads.map { movingHead ->
-        val dmxChannelMapping = Config.findDmxChannelMapping(movingHead)
-        val buffer = dmxUniverse.writer(dmxChannelMapping.baseChannel, dmxChannelMapping.channelCount)
-        val adapter = dmxChannelMapping.adapter.build(buffer) as MovingHead.Buffer
+        val adapter = movingHead.newBuffer(dmxUniverse)
 
         Fixture(movingHead, 1, emptyList(), MovingHeadDevice, transport = object : Transport {
             override val name: String
