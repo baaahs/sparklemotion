@@ -10,10 +10,7 @@ import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.show.ButtonGroupControl.Direction.Horizontal
 import baaahs.show.ButtonGroupControl.Direction.Vertical
-import baaahs.show.mutable.MutableDataSourcePort
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutablePort
-import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.*
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
@@ -42,7 +39,14 @@ object SampleData {
             put("splitPercentage", 20)
 
             put("first", "Preview")
-            put("second", "Controls")
+
+            put("second", buildJsonObject {
+                put("direction", "column")
+                put("splitPercentage", 60)
+
+                put("first", "Effects")
+                put("second", "Transition")
+            })
         })
     }
 
@@ -52,7 +56,7 @@ object SampleData {
 
     private val autoWirer = AutoWirer(plugins)
 
-    private val uvShader get() = wireUp(Shaders.cylindricalProjection)
+    private val uvShader get() = wireUp(Shaders.xyProjection)
 
     private val showDefaultPaint = autoWirer.autoWire(
         Shader(
@@ -74,7 +78,9 @@ object SampleData {
             /**language=glsl*/
             """
                 uniform float brightness; // @@Slider min=0 max=1.25 default=1
-    
+                
+                // @return color
+                // @param inColor color
                 vec4 main(vec4 inColor) {
                     vec4 clampedColor = clamp(inColor, 0., 1.);
                     return vec4(clampedColor.rgb * brightness, clampedColor.a);
@@ -113,6 +119,8 @@ object SampleData {
                     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
                 }
                 
+                // @return color
+                // @param inColor color
                 vec4 main(vec4 inColor) {
                     if (saturation == 1.) return inColor;
     
@@ -164,7 +172,7 @@ object SampleData {
 
     val defaultLayout = Layout(stdLayout)
     val layouts = Layouts(
-        listOf("Scenes", "Backdrops", "More Controls", "Preview", "Controls"),
+        listOf("Scenes", "Backdrops", "More Controls", "Preview", "Effects", "Transition"),
         mapOf("default" to defaultLayout)
     )
 
@@ -192,7 +200,6 @@ object SampleData {
         addPatch(showDefaultPaint)
         addPatch(brightnessFilter)
         addPatch(saturationFilter)
-        addPatch(wireUp(Shaders.flipY))
 
         addButtonGroup("Scenes", "Scenes", Horizontal) {
             addButton("Pleistocene") {
@@ -203,17 +210,17 @@ object SampleData {
 
                     addButton("Fire") {
                         addPatch(fireBallPatch)
-                        addControl("Controls", intensity.buildControl())
+                        addControl("Backdrops", intensity.buildControl())
                     }
 
                     addButton("Checkerboard") {
                         addPatch(
                             wireUp(
                                 Shaders.checkerboard,
-                                mapOf("checkerboardSize" to MutableDataSourcePort(checkerboardSize))
+                                mapOf("checkerboardSize" to checkerboardSize.editor())
                             )
                         )
-                        addControl("Controls", checkerboardSize.buildControl())
+                        addControl("Backdrops", checkerboardSize.buildControl())
                     }
                 }
             }
@@ -231,7 +238,7 @@ object SampleData {
         addControl("More Controls", brightness.buildControl())
         addControl("More Controls", saturation.buildControl())
 
-        addButton("More Controls", "Wobbly") {
+        addButton("Effects", "Wobble") {
             addPatch(wireUp(Shaders.ripple))
         }
     }.getShow()
