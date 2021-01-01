@@ -1,12 +1,7 @@
 package baaahs.visualizer
 
 import baaahs.geom.Vector3F
-import info.laht.threekt.core.BufferGeometry
-import info.laht.threekt.core.Face3
-import info.laht.threekt.core.Geometry
-import info.laht.threekt.math.Quaternion
-import info.laht.threekt.math.Triangle
-import info.laht.threekt.math.Vector3
+import three.js.*
 import three_ext.Matrix4
 
 fun Face3.segments() = arrayOf(arrayOf(a, b), arrayOf(b, c), arrayOf(c, a))
@@ -22,11 +17,11 @@ class Rotator(val from: Vector3, val to: Vector3) {
     }
 
     fun rotate(vararg geoms: Geometry) {
-        geoms.forEach { it.applyMatrix(matrix) }
+        geoms.forEach { it.applyMatrix4(matrix) }
     }
 
     fun rotate(vararg geoms: BufferGeometry) {
-        geoms.forEach { it.applyMatrix(matrix) }
+        geoms.forEach { it.applyMatrix4(matrix) }
     }
 
     fun rotate(vararg vectors: Vector3) {

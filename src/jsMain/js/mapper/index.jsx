@@ -1,8 +1,4 @@
 import React, {Component} from 'react';
-import * as THREE from 'three';
-import CameraControls from 'camera-controls';
-
-CameraControls.install({THREE: THREE});
 
 class Mapper extends Component {
     constructor(props) {
@@ -19,10 +15,6 @@ class Mapper extends Component {
         return (
             <div ref={this.contentRef}/>
         );
-    }
-
-    static createCameraControls(uiCamera, domElement) {
-        return new CameraControls(uiCamera, domElement)
     }
 }
 

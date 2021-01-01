@@ -4,12 +4,7 @@ import baaahs.Color
 import baaahs.geom.Vector3F
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
-import info.laht.threekt.THREE
-import info.laht.threekt.geometries.ConeBufferGeometry
-import info.laht.threekt.materials.MeshBasicMaterial
-import info.laht.threekt.math.Matrix4
-import info.laht.threekt.objects.Mesh
-import info.laht.threekt.scenes.Scene
+import three.js.*
 
 class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniverse) {
     private val buffer = run {
@@ -85,26 +80,26 @@ class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniv
         private val innerBaseOpacity = .75
         private val innerMaterial = MeshBasicMaterial().apply {
             color.set(0xffff00)
-            side = THREE.DoubleSide
+            side = DoubleSide
             transparent = true
             opacity = innerBaseOpacity
             depthTest = false
         }
-        private val innerGeometry = ConeBufferGeometry(20, coneLength, openEnded = true)
-            .also { it.applyMatrix(Matrix4().makeTranslation(0.0, -coneLength / 2, 0.0)) }
+        private val innerGeometry = ConeGeometry(20, coneLength, openEnded = true)
+            .also { it.applyMatrix4(Matrix4().makeTranslation(0.0, -coneLength / 2, 0.0)) }
         private val inner = Mesh(innerGeometry, innerMaterial)
 
         private val outerBaseOpacity = .4
         private val outerMaterial = MeshBasicMaterial().apply {
             color.set(0xffff00)
-            side = THREE.DoubleSide
+            side = DoubleSide
             transparent = true
             opacity = outerBaseOpacity
-            blending = THREE.AdditiveBlending
+            blending = AdditiveBlending
             depthTest = false
         }
-        private val outerGeometry = ConeBufferGeometry(50, coneLength, openEnded = true)
-            .also { it.applyMatrix(Matrix4().makeTranslation(0.0, -coneLength / 2, 0.0)) }
+        private val outerGeometry = ConeGeometry(50, coneLength, openEnded = true)
+            .also { it.applyMatrix4(Matrix4().makeTranslation(0.0, -coneLength / 2, 0.0)) }
         private val outer = Mesh(outerGeometry, outerMaterial)
 
         private val baseOpacities = listOf(innerBaseOpacity, outerBaseOpacity)

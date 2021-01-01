@@ -7,9 +7,9 @@ import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.proto.Ports
 import baaahs.util.Logger
-import info.laht.threekt.math.Vector3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import three.js.Vector3
 import kotlin.math.min
 
 class VisualizerListenerClient(

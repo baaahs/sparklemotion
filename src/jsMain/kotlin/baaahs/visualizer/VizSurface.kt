@@ -2,17 +2,7 @@ package baaahs.visualizer
 
 import baaahs.geom.Vector2
 import baaahs.model.Model
-import info.laht.threekt.THREE.FrontSide
-import info.laht.threekt.core.Face3
-import info.laht.threekt.core.Geometry
-import info.laht.threekt.core.Object3D
-import info.laht.threekt.materials.LineBasicMaterial
-import info.laht.threekt.materials.MeshBasicMaterial
-import info.laht.threekt.math.Triangle
-import info.laht.threekt.math.Vector3
-import info.laht.threekt.objects.Line
-import info.laht.threekt.objects.Mesh
-import info.laht.threekt.scenes.Scene
+import three.js.*
 
 class SurfaceGeometry(surface: Model.Surface) {
     val name = surface.name
@@ -33,11 +23,11 @@ class SurfaceGeometry(surface: Model.Surface) {
 
             val faceArea = Triangle(
                 face.a.toVector3(), face.b.toVector3(), face.c.toVector3()
-            ).getArea()
+            ).getArea().toFloat()
             faceAreas.add(faceArea)
             this.area += faceArea
 
-            Face3(localVerts[0], localVerts[1], localVerts[2], Vector3())
+            Face3(localVerts[0], localVerts[1], localVerts[2], Vector3(), three.js.Color(1, 1, 1), 0)
         }.toTypedArray()
         panelGeometry.vertices = panelVertices.toTypedArray()
 
@@ -47,7 +37,7 @@ class SurfaceGeometry(surface: Model.Surface) {
         val faceNormalSum = Vector3()
         panelGeometry.faces.forEachIndexed { index, face ->
             val faceArea = faceAreas[index]
-            faceNormalSum.addScaledVector(face.normal!!, faceArea)
+            faceNormalSum.addScaledVector(face.normal, faceArea.toDouble())
         }
         panelNormal = faceNormalSum.divideScalar(area.toDouble())
 
@@ -74,7 +64,7 @@ class VizSurface(val surfaceGeometry: SurfaceGeometry, val scene: Scene) {
     private val lineMaterial = LineBasicMaterial().apply { color.set(0xaaaaaa) }
     internal var faceMaterial = MeshBasicMaterial().apply { color.set(0x222222) }
     private val mesh = Mesh(surfaceGeometry.geometry, this.faceMaterial)
-    private val lines: List<Line>
+    private val lines: List<Line<*, *>>
     val panelNormal: Vector3 get() = surfaceGeometry.panelNormal
     val geometry: Geometry get() = surfaceGeometry.geometry
 
@@ -97,7 +87,7 @@ class VizSurface(val surfaceGeometry: SurfaceGeometry, val scene: Scene) {
 
         scene.add(this.mesh)
 
-        this.lines = surfaceGeometry.lines.map { line -> Line(line.asDynamic(), lineMaterial) }
+        this.lines = surfaceGeometry.lines.map { line -> Line(line, lineMaterial) }
 
         this.lines.forEach { line ->
             scene.add(line)
