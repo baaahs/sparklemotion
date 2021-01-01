@@ -6,26 +6,11 @@ import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
 import baaahs.util.Framerate
-import baaahs.util.Logger
 import baaahs.util.asMillis
-import info.laht.threekt.cameras.Camera
-import info.laht.threekt.cameras.PerspectiveCamera
-import info.laht.threekt.core.Geometry
-import info.laht.threekt.core.Object3D
-import info.laht.threekt.geometries.SphereBufferGeometry
-import info.laht.threekt.materials.MeshBasicMaterial
-import info.laht.threekt.materials.PointsMaterial
-import info.laht.threekt.math.Vector2
-import info.laht.threekt.math.Vector3
-import info.laht.threekt.objects.Mesh
-import info.laht.threekt.objects.Points
-import info.laht.threekt.renderers.WebGLRenderer
-import info.laht.threekt.scenes.Scene
-import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.MouseEvent
+import three.js.*
 import three_ext.OrbitControls
-import three_ext.Raycaster
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -74,7 +59,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
     private val raycaster = Raycaster()
     private var mouse: Vector2? = null
-    private val sphere: Mesh
+    private val sphere: Mesh<*, *>
 
     private val rendererListeners = mutableListOf<() -> Unit>()
 
@@ -161,9 +146,9 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
     private fun startRender() {
         geom.computeBoundingSphere()
-        this.obj = Points().apply { geometry = geom; material = pointMaterial }
+        this.obj = Points(geom, pointMaterial)
         scene.add(obj)
-        val target = geom.boundingSphere.asDynamic().center.clone()
+        val target = geom.boundingSphere!!.center.clone()
         controls?.target = target
         camera.lookAt(target)
 
@@ -217,7 +202,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
     fun resize() {
         container?.let {
-            val canvas = renderer.domElement as HTMLCanvasElement
+            val canvas = renderer.domElement
             canvas.width = it.offsetWidth
             canvas.height = it.offsetHeight
 
@@ -260,6 +245,5 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
     companion object {
         private const val REFRESH_DELAY = 50 // ms
-        private val logger = Logger<Visualizer>()
     }
 }

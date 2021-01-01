@@ -3,21 +3,6 @@
 @file:Suppress("ABSTRACT_MEMBER_NOT_IMPLEMENTED", "VAR_TYPE_MISMATCH_ON_OVERRIDE", "INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS", "EXTERNAL_DELEGATION", "PackageDirectoryMismatch")
 package three.js
 
-import kotlin.js.*
-import kotlin.js.Json
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
-
 external enum class CullFace {
 
 }
@@ -30,9 +15,20 @@ external enum class Side {
 
 }
 
+external val FrontSide: Side
+external val BackSide: Side
+external val DoubleSide: Side
+
 external enum class Blending {
 
 }
+
+external val NoBlending: Blending
+external val NormalBlending: Blending
+external val AdditiveBlending: Blending
+external val SubtractiveBlending: Blending
+external val MultiplyBlending: Blending
+external val CustomBlending: Blending
 
 external enum class BlendingEquation {
 
@@ -50,9 +46,22 @@ external enum class DepthModes {
 
 }
 
+external val NeverDepth: DepthModes
+external val AlwaysDepth: DepthModes
+external val LessDepth: DepthModes
+external val LessEqualDepth: DepthModes
+external val GreaterEqualDepth: DepthModes
+external val GreaterDepth: DepthModes
+external val NotEqualDepth: DepthModes
+
+
 external enum class Combine {
 
 }
+
+external val MultiplyOperation: Combine
+external val MixOperation: Combine
+external val AddOperation: Combine
 
 external enum class ToneMapping {
 
@@ -110,13 +119,41 @@ external enum class StencilOp {
 
 }
 
+external val ZeroStencilOp: StencilOp
+external val KeepStencilOp: StencilOp
+external val ReplaceStencilOp: StencilOp
+external val IncrementStencilOp: StencilOp
+external val DecrementStencilOp: StencilOp
+external val IncrementWrapStencilOp: StencilOp
+external val DecrementWrapStencilOp: StencilOp
+external val InvertStencilOp: StencilOp
+
 external enum class StencilFunc {
 
 }
 
+external val NeverStencilFunc: StencilFunc
+external val LessStencilFunc: StencilFunc
+external val EqualStencilFunc: StencilFunc
+external val LessEqualStencilFunc: StencilFunc
+external val GreaterStencilFunc: StencilFunc
+external val NotEqualStencilFunc: StencilFunc
+external val GreaterEqualStencilFunc: StencilFunc
+external val AlwaysStencilFunc: StencilFunc
+
 external enum class Usage {
 
 }
+
+external val StaticDrawUsage: Usage
+external val DynamicDrawUsage: Usage
+external val StreamDrawUsage: Usage
+external val StaticReadUsage: Usage
+external val DynamicReadUsage: Usage
+external val StreamReadUsage: Usage
+external val StaticCopyUsage: Usage
+external val DynamicCopyUsage: Usage
+external val StreamCopyUsage: Usage
 
 external enum class GLSLVersion {
 

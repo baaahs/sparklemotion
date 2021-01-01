@@ -77,7 +77,7 @@ object PinkySpec : Spek({
                     val mappingSessionPath = Storage(fakeFs, testPlugins()).saveSession(
                         MappingSession(
                             0.0, listOf(surfaceData),
-                            Matrix4(emptyArray()), null, notes = "Simulated pixels"
+                            Matrix4(doubleArrayOf()), null, notes = "Simulated pixels"
                         )
                     )
                     fakeFs.renameFile(mappingSessionPath, fakeFs.resolve("mapping/${model.name}/$mappingSessionPath"))
