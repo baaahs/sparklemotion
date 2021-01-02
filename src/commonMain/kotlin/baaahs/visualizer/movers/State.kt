@@ -3,7 +3,7 @@ package baaahs.visualizer.movers
 import baaahs.Color
 import baaahs.model.MovingHead
 import kotlin.math.absoluteValue
-import kotlin.math.max
+import kotlin.math.min
 
 data class State(
     val pan: Float = 0f,
@@ -12,24 +12,23 @@ data class State(
     val dimmer: Float = 1f,
     val color: Color = Color.BLACK
 ) {
-    fun moveToward(targetState: State, requestedState: State, movingHead: MovingHead, elapsed: Float): State {
+    fun moveToward(momentumState: State, requestedState: State, movingHead: MovingHead, elapsed: Float): State {
         return State(
-            pan + maxDist(targetState.pan - pan, movingHead.panRange, movingHead.panMotorSpeed, elapsed),
-            tilt + maxDist(targetState.tilt - tilt, movingHead.tiltRange, movingHead.tiltMotorSpeed, elapsed),
-            colorWheelPosition + maxDist(
-                targetState.colorWheelPosition - colorWheelPosition,
-                0f..1f,
-                movingHead.colorWheelMotorSpeed,
-                elapsed
-            ),
+            move(pan, momentumState.pan, movingHead.panMotorSpeed, elapsed),
+            move(tilt, momentumState.tilt, movingHead.tiltMotorSpeed, elapsed),
+            // TODO: The color wheel can spin freely so we should pick the shortest path (e.g. from .9 -> .1).
+            move(colorWheelPosition, momentumState.colorWheelPosition, movingHead.colorWheelMotorSpeed, elapsed),
             requestedState.dimmer,
             requestedState.color
         )
     }
 
-    fun maxDist(targetDist: Float, range: ClosedRange<Float>, motorSpeed: Float, elapsed: Float): Float {
-        val maxDist = range.diff * elapsed / motorSpeed
-        val dist = max(targetDist.absoluteValue, maxDist)
-        return if (targetDist < 0) -dist else dist
+    fun move(startingPoint: Float, destination: Float, motorSpeed: Float, elapsed: Float): Float {
+        if (destination == startingPoint) return startingPoint
+
+        val maxDist = elapsed / motorSpeed
+        val targetDist = destination - startingPoint
+        val dist = min(targetDist.absoluteValue, maxDist)
+        return startingPoint + if (destination < startingPoint) -dist else dist
     }
 }

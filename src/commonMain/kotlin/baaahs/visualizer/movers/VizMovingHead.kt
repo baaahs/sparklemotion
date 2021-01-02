@@ -22,15 +22,15 @@ class VizMovingHead(
 
     private var lastUpdate = clock.now()
     private var currentState = State()
-    private var targetState = State()
+    private var momentumState = State()
 
     fun addTo(scene: VizScene) {
         beam.addTo(scene)
     }
 
     private fun receivedDmxFrame() {
-//        val now = clock.now()
-//        val elapsed = (now - lastUpdate).toFloat()
+        val now = clock.now()
+        val elapsed = (now - lastUpdate).toFloat()
 
         val requestedState = State(
             buffer.pan,
@@ -38,13 +38,13 @@ class VizMovingHead(
             buffer.colorWheelPosition,
             buffer.dimmer
         )
-        beam.update(requestedState)
 
-//        val attainableState = currentState.moveToward(targetState, requestedState, movingHead, elapsed)
-//
-//        lastUpdate = now
-//        currentState = attainableState
-//        targetState = requestedState
+        val attainableState = currentState.moveToward(momentumState, requestedState, movingHead, elapsed)
+        beam.update(attainableState)
+
+        lastUpdate = now
+        currentState = attainableState
+        momentumState = requestedState
     }
 }
 

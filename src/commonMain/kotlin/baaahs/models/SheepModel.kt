@@ -12,20 +12,22 @@ class SheepModel : ObjModel("baaahs-model.obj") {
     override val name: String = "BAAAHS"
     private val pixelsPerPanel = hashMapOf<String, Int>()
 
+    private val wallEyedness = (0.1f * PI / 2).toFloat()
+
     override val movingHeads: List<MovingHead> = arrayListOf(
         Shenzarpy(
             "leftEye",
             "Left Eye",
             1,
             origin = Vector3F(489.0f, 202.361f, 27.5f),
-            heading = Vector3F(0f, 0f, (PI / 2).toFloat())
+            heading = Vector3F(0f, -wallEyedness, (PI / 2).toFloat())
         ),
         Shenzarpy(
             "rightEye",
             "Right Eye",
             17,
             origin = Vector3F(489.0f, 202.361f, -24.5f),
-            heading = Vector3F(0f, 0f, (PI / 2).toFloat())
+            heading = Vector3F(0f, wallEyedness, (PI / 2).toFloat())
         )
     )
 
