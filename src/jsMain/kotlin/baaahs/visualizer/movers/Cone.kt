@@ -2,14 +2,15 @@ package baaahs.visualizer.movers
 
 import baaahs.Color
 import baaahs.model.MovingHead
+import baaahs.visualizer.toVector3
 import three.js.*
 
 class Cone(
     private val movingHead: MovingHead,
-    private val origin: Vector3,
-    private val heading: Vector3,
-    private val clipMode: ClipMode = ClipMode.Solo
+    private val colorMode: ColorMode = ColorMode.Rgb
 ) {
+    private val origin = movingHead.origin.toVector3()
+    private val heading = movingHead.heading.toVector3()
     private val coneLength = 1000.0
 
     private val clipPlane = Plane(Vector3(0, 0, 1), 0)
@@ -21,7 +22,7 @@ class Cone(
         transparent = true
         opacity = innerBaseOpacity
         depthTest = false
-        if (clipMode.isClipped) {
+        if (colorMode.isClipped) {
             clippingPlanes = arrayOf(clipPlane)
         }
     }
@@ -37,7 +38,7 @@ class Cone(
         opacity = outerBaseOpacity
         blending = AdditiveBlending
         depthTest = false
-        if (clipMode.isClipped) {
+        if (colorMode.isClipped) {
             clippingPlanes = arrayOf(clipPlane)
         }
     }
@@ -60,16 +61,19 @@ class Cone(
         cones.forEach { cone -> scene.add(cone) }
     }
 
-    fun update(buffer: MovingHead.Buffer) {
-        val color = clipMode.getColor(buffer)
-        setColor(color, buffer.dimmer)
+    fun update(state: State) {
+        setColor(colorMode.getColor(movingHead, state), state.dimmer)
 
         val rotation = Vector3(
-            movingHead.panRange.scale(buffer.pan),
+            movingHead.panRange.scale(state.pan),
             0f,
-            movingHead.tiltRange.scale(buffer.tilt)
+            movingHead.tiltRange.scale(state.tilt)
         )
-        setRotation(rotation, buffer.colorSplit)
+
+        // `0` indicates just the primary color, `.5` indicates a 50/50 mix, and `1.` indicates
+        // just the adjacent color.
+        val colorSplit = (state.colorWheelPosition * movingHead.colorWheelColors.size) % 1f
+        setRotation(rotation, colorSplit)
     }
 
     fun setColor(color: Color, dimmer: Float) {
@@ -86,11 +90,11 @@ class Cone(
             cone.rotation.setFromVector3(aim)
         }
 
-        if (clipMode.isClipped) {
+        if (colorMode.isClipped) {
             aim.y += (1f - colorSplit - .5f) * .25f
             val planeRotation = Euler().setFromVector3(aim)
             val normal = Vector3(0, 0, 1).applyEuler(planeRotation)
-            if (clipMode == ClipMode.Secondary) normal.negate()
+            if (colorMode == ColorMode.Secondary) normal.negate()
             val planeOrigin = origin.clone()
             planeOrigin.x -= coneLength / 2
             clipPlane.setFromNormalAndCoplanarPoint(normal, planeOrigin)

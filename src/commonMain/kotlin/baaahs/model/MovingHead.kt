@@ -19,20 +19,24 @@ abstract class MovingHead(
 
     abstract val colorModel: ColorModel
     abstract val colorWheelColors: List<Shenzarpy.WheelColor>
+    /** Seconds required to rotate through full color wheel range. */
+    abstract val colorWheelMotorSpeed: Float
+
+    abstract val dimmerChannel: Dmx.Channel
 
     abstract val panChannel: Dmx.Channel
     abstract val panFineChannel: Dmx.Channel?
     /** In radians. */
     abstract val panRange: ClosedRange<Float>
+    /** Seconds required to rotate through full pan range. */
+    abstract val panMotorSpeed: Float
 
     abstract val tiltChannel: Dmx.Channel
     abstract val tiltFineChannel: Dmx.Channel?
     /** In radians. */
     abstract val tiltRange: ClosedRange<Float>
-
-    abstract val supportsFinePositioning: Boolean
-
-    abstract val dimmerChannel: Dmx.Channel
+    /** Seconds required to rotate through full tilt range. */
+    abstract val tiltMotorSpeed: Float
 
     enum class ColorModel {
         ColorWheel,
@@ -52,15 +56,10 @@ abstract class MovingHead(
         override var dimmer: Float
             get() = getFloat(movingHead.dimmerChannel)
             set(value) = setFloat(movingHead.dimmerChannel, value)
-
-        override val supportsFinePositioning: Boolean
-            get() = movingHead.supportsFinePositioning
     }
 
     interface Buffer {
         val dmxBuffer: Dmx.Buffer
-
-        val supportsFinePositioning: Boolean
 
         /** In radians. */
         var pan: Float
@@ -68,11 +67,6 @@ abstract class MovingHead(
         var tilt: Float
         /** `0` is completely dimmed, `1` is completely open. */
         var dimmer: Float
-
-        val primaryColor: Color
-        val secondaryColor: Color
-        /** `0` indicates just [primaryColor], `.5` indicates a 50/50 mix, and `1.` indicates just [secondaryColor]. */
-        val colorSplit: Float
         /** Rotation of color wheel in `(0..1]`. */
         var colorWheelPosition: Float
 

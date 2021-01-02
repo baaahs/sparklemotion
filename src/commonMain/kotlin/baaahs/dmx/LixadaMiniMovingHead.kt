@@ -13,20 +13,22 @@ class LixadaMiniMovingHead(
     heading: Vector3F
 ) : MovingHead(name, description, baseDmxChannel, origin, heading) {
     override val dmxChannelCount: Int get() = 9 // TODO: ?
+
     override val colorModel: ColorModel get() = ColorModel.RGBW
     override val colorWheelColors: List<Shenzarpy.WheelColor> get() = emptyList()
+    override val colorWheelMotorSpeed: Float = 1f
+
+    override val dimmerChannel: Dmx.Channel get() = Channel.DIMMER
 
     override val panChannel get() = Channel.PAN
     override val panFineChannel: Dmx.Channel? get() = null /*Channel.PAN_FINE*/
     override val panRange: ClosedRange<Float> = toRadians(0f)..toRadians(540f)
+    override val panMotorSpeed: Float = 1.5f
 
     override val tiltChannel: Dmx.Channel get() = Channel.TILT
     override val tiltFineChannel: Dmx.Channel? get() = null /*Channel.TILT_FINE*/
     override val tiltRange: ClosedRange<Float> = toRadians(-110f)..toRadians(110f)
-
-    override val supportsFinePositioning: Boolean get() = false
-
-    override val dimmerChannel: Dmx.Channel get() = Channel.DIMMER
+    override val tiltMotorSpeed: Float = 1f
 
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
 
@@ -58,7 +60,7 @@ class LixadaMiniMovingHead(
             dmxBuffer[Channel.BLUE] = 255.toByte()
         }
 
-        override var primaryColor: Color
+        var color: Color
             get() = Color(dmxBuffer[Channel.RED], dmxBuffer[Channel.GREEN], dmxBuffer[Channel.BLUE])
             set(value) {
                 dmxBuffer[Channel.RED] = value.redI.toByte()
@@ -66,8 +68,6 @@ class LixadaMiniMovingHead(
                 dmxBuffer[Channel.BLUE] = value.blueI.toByte()
             }
 
-        override val secondaryColor: Color get() = error("not supported")
-        override val colorSplit: Float get() = error("not supported")
         override var colorWheelPosition: Float get() = error("not supported")
             set(_) = TODO("not implemented")
     }
