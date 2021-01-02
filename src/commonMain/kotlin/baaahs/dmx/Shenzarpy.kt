@@ -4,6 +4,7 @@ import baaahs.Color
 import baaahs.geom.Vector3F
 import baaahs.model.MovingHead
 import baaahs.toRadians
+import kotlin.math.absoluteValue
 
 class Shenzarpy(
     name: String,
@@ -36,16 +37,20 @@ class Shenzarpy(
 
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
 
-    private fun colorAtPosition(position: Float): Color {
-        return colorWheelColors[position.toInt() % colorWheelColors.size].color
+    private fun colorAtPosition(position: Float, next: Boolean = false): Color {
+        var colorIndex = (position.absoluteValue % 1f * colorWheelColors.size).toInt()
+        if (next) colorIndex = (colorIndex + 1) % colorWheelColors.size
+        return colorWheelColors[colorIndex].color
     }
 
     inner class Buffer(override val dmxBuffer: Dmx.Buffer) : MovingHead.BaseBuffer(this@Shenzarpy) {
         override val primaryColor: Color get() = colorAtPosition(colorWheelPosition)
-        override val secondaryColor: Color get() = colorAtPosition(colorWheelPosition + .5f)
-        override val colorSplit: Float get() = colorWheelPosition % 1f
+        override val secondaryColor: Color get() = colorAtPosition(colorWheelPosition, next = true)
+        override val colorSplit: Float get() = (colorWheelPosition * colorWheelColors.size) % 1f
 
-        override val colorWheelPosition: Float get() = colorWheel.toInt() / (128f / colorWheelColors.size)
+        override var colorWheelPosition: Float
+            get() = colorWheel.toInt() / 128f
+            set(value) { colorWheel = (value * 128f).toInt().toByte() }
 
         var colorWheel: Byte
             get() = dmxBuffer[colorWheelChannel]

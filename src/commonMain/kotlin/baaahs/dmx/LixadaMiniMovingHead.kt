@@ -68,6 +68,7 @@ class LixadaMiniMovingHead(
 
         override val secondaryColor: Color get() = error("not supported")
         override val colorSplit: Float get() = error("not supported")
-        override val colorWheelPosition: Float get() = error("not supported")
+        override var colorWheelPosition: Float get() = error("not supported")
+            set(_) = TODO("not implemented")
     }
 }

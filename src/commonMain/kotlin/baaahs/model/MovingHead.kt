@@ -73,8 +73,8 @@ abstract class MovingHead(
         val secondaryColor: Color
         /** `0` indicates just [primaryColor], `.5` indicates a 50/50 mix, and `1.` indicates just [secondaryColor]. */
         val colorSplit: Float
-        /** Index in [colorWheelColors] from `0` to `colorWheelColors.length`. */
-        val colorWheelPosition: Float
+        /** Rotation of color wheel in `(0..1]`. */
+        var colorWheelPosition: Float
 
         fun List<Shenzarpy.WheelColor>.closestColorFor(color: Color): Byte {
             var bestMatch = Shenzarpy.WheelColor.WHITE
