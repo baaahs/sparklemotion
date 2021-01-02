@@ -144,7 +144,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     }
 
     fun addMovingHead(movingHead: MovingHead, dmxUniverse: FakeDmxUniverse): VizMovingHead {
-        return VizMovingHead(movingHead, dmxUniverse, clock).also { it.addTo(scene) }
+        return VizMovingHead(movingHead, dmxUniverse, clock).also { it.addTo(VizScene(scene)) }
     }
 
     private fun startRender() {

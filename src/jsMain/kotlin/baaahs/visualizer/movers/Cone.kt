@@ -2,12 +2,14 @@ package baaahs.visualizer.movers
 
 import baaahs.Color
 import baaahs.model.MovingHead
+import baaahs.visualizer.VizObj
+import baaahs.visualizer.VizScene
 import baaahs.visualizer.toVector3
 import three.js.*
 
-class Cone(
+actual class Cone actual constructor(
     private val movingHead: MovingHead,
-    private val colorMode: ColorMode = ColorMode.Rgb
+    private val colorMode: ColorMode
 ) {
     private val origin = movingHead.origin.toVector3()
     private val heading = movingHead.heading.toVector3()
@@ -57,11 +59,11 @@ class Cone(
         }
     }
 
-    fun addTo(scene: Scene) {
-        cones.forEach { cone -> scene.add(cone) }
+    actual fun addTo(scene: VizScene) {
+        cones.forEach { cone -> scene.add(VizObj(cone)) }
     }
 
-    fun update(state: State) {
+    actual fun update(state: State) {
         setColor(colorMode.getColor(movingHead, state), state.dimmer)
 
         val rotation = Vector3(

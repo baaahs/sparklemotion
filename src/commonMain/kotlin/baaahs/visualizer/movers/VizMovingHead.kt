@@ -4,7 +4,7 @@ import baaahs.Color
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
-import three.js.Scene
+import baaahs.visualizer.VizScene
 import kotlin.math.absoluteValue
 
 class VizMovingHead(
@@ -29,7 +29,7 @@ class VizMovingHead(
     private var currentState = State()
     private var targetState = State()
 
-    fun addTo(scene: Scene) {
+    fun addTo(scene: VizScene) {
         beam.addTo(scene)
     }
 
@@ -73,4 +73,10 @@ fun MovingHead.colorAtPosition(position: Float, next: Boolean = false): Color {
     var colorIndex = (position.absoluteValue % 1f * colorWheelColors.size).toInt()
     if (next) colorIndex = (colorIndex + 1) % colorWheelColors.size
     return colorWheelColors[colorIndex].color
+}
+
+expect class Cone(movingHead: MovingHead, colorMode: ColorMode = ColorMode.Rgb) {
+    fun addTo(scene: VizScene)
+
+    fun update(state: State)
 }
