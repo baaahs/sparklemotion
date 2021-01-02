@@ -1,26 +1,30 @@
 package baaahs.visualizer.movers
 
 import baaahs.FakeClock
+import baaahs.TestMovingHead
 import baaahs.describe
-import baaahs.dmx.Shenzarpy
-import baaahs.geom.Vector3F
 import baaahs.sim.FakeDmxUniverse
-import baaahs.toEqual
 import baaahs.visualizer.VizScene
-import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
-import kotlin.math.absoluteValue
 
 object VizMovingHeadSpec: Spek({
     describe<VizMovingHead> {
-        val movingHead by value { Shenzarpy("fake", "Fake", 1, Vector3F.origin, Vector3F.origin) }
+        val movingHead by value {
+            TestMovingHead(
+                panMotorSpeed = 2f,
+                tiltMotorSpeed = 1f,
+                colorWheelMotorSpeed = 1f
+            )
+        }
         val dmxUniverse by value { FakeDmxUniverse() }
         val fakeClock by value { FakeClock() }
         val beam by value { BeamForTest() }
         val vizMovingHead by value { VizMovingHead(movingHead, dmxUniverse, fakeClock, beam) }
 
         val sendDmxFrame by value<UpdateMoverState> {
-            { pan, tilt, colorWheelPosition, dimmer ->
+            { elapsedTime, pan, tilt, colorWheelPosition, dimmer ->
+                fakeClock.time += elapsedTime
+
                 val buffer = movingHead.newBuffer(dmxUniverse)
                 buffer.pan = pan
                 buffer.tilt = tilt
@@ -34,26 +38,48 @@ object VizMovingHeadSpec: Spek({
 
         context("when a frame requests motor movement") {
             beforeEachTest {
-                fakeClock.time += 1/32f
-                sendDmxFrame(1/128f, 0f, 0f, 1f)
+                sendDmxFrame(1/16f, 1/4f, 0f, 0f, 1f)
             }
 
             it("doesn't move immediately") {
                 beam.currentState.shouldRoughlyEqual(
-                    State(1/128f, 0f, 0f, 1f)
+                    State(0f, 0f, 0f, 1f)
                 )
             }
 
             context("on the next frame") {
                 beforeEachTest {
-                    fakeClock.time += 1/32f
-                    sendDmxFrame(1/128f, 0f, 0f, 1f)
+                    sendDmxFrame(1/16f, 1/4f, 0f, 0f, 1f)
                 }
 
                 it("moves as far as it could have moved in the time between frames") {
                     beam.currentState.shouldRoughlyEqual(
-                        State(1/128f, 0f, 0f, 1f)
+                        State(1/32f, 0f, 0f, 1f)
                     )
+                }
+            }
+
+            context("then moving back") {
+                beforeEachTest {
+                    sendDmxFrame(1/16f, 0f, 0f, 0f, 1f)
+                }
+
+                it("moves as far as it could have moved in the time between frames") {
+                    beam.currentState.shouldRoughlyEqual(
+                        State(1/32f, 0f, 0f, 1f)
+                    )
+                }
+
+                context("after another frame") {
+                    beforeEachTest {
+                        sendDmxFrame(1/16f, 0f, 0f, 0f, 1f)
+                    }
+
+                    it("moves as far as it could have moved in the time between frames") {
+                        beam.currentState.shouldRoughlyEqual(
+                            State(0f, 0f, 0f, 1f)
+                        )
+                    }
                 }
             }
         }
@@ -61,6 +87,7 @@ object VizMovingHeadSpec: Spek({
 })
 
 typealias UpdateMoverState = (
+    elapsedTime: Float,
     pan: Float,
     tilt: Float,
     colorWheelPosition: Float,
@@ -75,18 +102,5 @@ class BeamForTest : Beam {
 
     override fun update(state: State) {
         currentState = state
-    }
-}
-
-fun State.shouldRoughlyEqual(otherState: State, difference: Float = .0001f) {
-    if (
-        (pan - otherState.pan).absoluteValue < difference &&
-        (tilt - otherState.tilt).absoluteValue < difference &&
-        (colorWheelPosition - otherState.colorWheelPosition).absoluteValue < difference &&
-        (dimmer - otherState.dimmer).absoluteValue < difference
-    ) {
-        // cool!
-    } else {
-        expect(this).toEqual(otherState)
     }
 }
