@@ -4,21 +4,12 @@ import baaahs.Color
 import baaahs.Pixels
 import baaahs.geom.Vector2
 import baaahs.resourcesBase
-import info.laht.threekt.THREE
-import info.laht.threekt.core.BufferGeometry
-import info.laht.threekt.geometries.PlaneBufferGeometry
-import info.laht.threekt.loaders.TextureLoader
-import info.laht.threekt.materials.MeshBasicMaterial
-import info.laht.threekt.math.Vector3
-import info.laht.threekt.math.minus
-import info.laht.threekt.objects.Mesh
-import info.laht.threekt.scenes.Scene
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.get
 import org.khronos.webgl.set
-import three.BufferGeometryUtils
-import three.Float32BufferAttribute
-import three.Matrix4
+import three.js.*
+import three_ext.*
+import three_ext.Matrix4
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
@@ -39,29 +30,29 @@ class VizPixels(vizSurface: VizSurface, val positions: Array<Vector3>) : Pixels 
         }
 
         val positionsBufferAttr = Float32BufferAttribute(positionsArray, 3)
-        pixGeometry.addAttribute("position", positionsBufferAttr)
+        pixGeometry.setAttribute("position", positionsBufferAttr)
 
         vertexColorBufferAttr = Float32BufferAttribute(Float32Array(size * 3 * 4), 3)
-        vertexColorBufferAttr.dynamic = true
+        vertexColorBufferAttr.usage = DynamicDrawUsage
 
         val rotator = Rotator(Vector3(0, 0, 1), vizSurface.panelNormal)
         planeGeometry = BufferGeometryUtils.mergeBufferGeometries(positions.map { position ->
-            val geometry = PlaneBufferGeometry(2 + Random.nextFloat() * 8, 2 + Random.nextFloat() * 8)
-            rotator.rotate(geometry)
-            geometry.translate(position.x, position.y, position.z)
-            geometry
+            PlaneBufferGeometry(2 + Random.nextFloat() * 8, 2 + Random.nextFloat() * 8).apply {
+                rotator.rotate(this)
+                translate(position.x, position.y, position.z)
+            }
         }.toTypedArray())
-        planeGeometry.addAttribute("color", vertexColorBufferAttr)
+        planeGeometry.setAttribute("color", vertexColorBufferAttr)
     }
 
     private val pixelsMesh = Mesh(planeGeometry, MeshBasicMaterial().apply {
-        side = THREE.FrontSide
+        side = FrontSide
         transparent = true
-        blending = THREE.AdditiveBlending
+        blending = AdditiveBlending
 //            depthFunc = AlwaysDepth
         depthTest = false
         depthWrite = false
-        vertexColors = THREE.VertexColors
+        vertexColors = true
 
         map = roundLightTx
     })
@@ -126,13 +117,13 @@ class VizPixels(vizSurface: VizSurface, val positions: Array<Vector3>) : Pixels 
         val min = boundingBox.min
         val size = boundingBox.max - boundingBox.min
 
-        val translate = Matrix4().makeTranslation(-min.x, -min.y, -min.z)
-        panelGeom.applyMatrix(translate)
-        pixGeom.applyMatrix(translate)
+        val translate = Matrix4().makeTranslation(-min.x.toDouble(), -min.y.toDouble(), -min.z.toDouble())
+        panelGeom.applyMatrix4(translate)
+        pixGeom.applyMatrix4(translate)
 
-        val scale = Matrix4().makeScale(1.0 / size.x, 1.0 / size.y, 1.0)
-        panelGeom.applyMatrix(scale)
-        pixGeom.applyMatrix(scale)
+        val scale = Matrix4().makeScale(1.0 / size.x.toDouble(), 1.0 / size.y.toDouble(), 1.0)
+        panelGeom.applyMatrix4(scale)
+        pixGeom.applyMatrix4(scale)
 
         val pixelVs = mutableListOf<Vector2>()
         val pixelPositions = pixGeom.getAttribute("position")

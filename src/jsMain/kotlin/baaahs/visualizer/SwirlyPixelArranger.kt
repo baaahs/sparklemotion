@@ -2,12 +2,8 @@ package baaahs.visualizer
 
 import baaahs.SparkleMotion
 import baaahs.geom.Vector2F
-import info.laht.threekt.core.Face3
-import info.laht.threekt.core.Geometry
-import info.laht.threekt.math.Line3
-import info.laht.threekt.math.Quaternion
-import info.laht.threekt.math.Vector3
-import three.Matrix4
+import three.js.*
+import three_ext.Matrix4
 import kotlin.math.*
 import kotlin.random.Random
 
@@ -31,13 +27,13 @@ class SwirlyPixelArranger(private val pixelDensity: Float = 0.2f, private val pi
 
             val panelFaces = panelGeometry.faces
             var curFace = panelFaces[0]
-            var revertToNormal = curFace.normal!!.clone()
+            var revertToNormal = curFace.normal.clone()
             val straightOnNormal = Vector3(0, 0, 1)
-            quaternion.setFromUnitVectors(curFace.normal!!, straightOnNormal)
+            quaternion.setFromUnitVectors(curFace.normal, straightOnNormal)
             val matrix = Matrix4()
             matrix.makeRotationFromQuaternion(quaternion)
-            panelGeometry.applyMatrix(matrix)
-            pixelsGeometry.applyMatrix(matrix)
+            panelGeometry.applyMatrix4(matrix)
+            pixelsGeometry.applyMatrix4(matrix)
 
             val pos = randomLocation(curFace, vertices)
             val nextPos = Vector3()
@@ -64,16 +60,16 @@ class SwirlyPixelArranger(private val pixelDensity: Float = 0.2f, private val pi
 
                         quaternion.setFromUnitVectors(straightOnNormal, revertToNormal)
                         matrix.makeRotationFromQuaternion(quaternion)
-                        panelGeometry.applyMatrix(matrix)
-                        pixelsGeometry.applyMatrix(matrix)
+                        panelGeometry.applyMatrix4(matrix)
+                        pixelsGeometry.applyMatrix4(matrix)
                         nextPos.applyMatrix4(matrix)
 
                         curFace = newFace
-                        revertToNormal = curFace.normal!!.clone()
-                        quaternion.setFromUnitVectors(curFace.normal!!, straightOnNormal)
+                        revertToNormal = curFace.normal.clone()
+                        quaternion.setFromUnitVectors(curFace.normal, straightOnNormal)
                         matrix.makeRotationFromQuaternion(quaternion)
-                        panelGeometry.applyMatrix(matrix)
-                        pixelsGeometry.applyMatrix(matrix)
+                        panelGeometry.applyMatrix4(matrix)
+                        pixelsGeometry.applyMatrix4(matrix)
                         // console.log("pos was", nextPos)
                         nextPos.applyMatrix4(matrix)
                         // console.log("pos is now", nextPos)
@@ -108,13 +104,13 @@ class SwirlyPixelArranger(private val pixelDensity: Float = 0.2f, private val pi
                 pos.copy(nextPos)
                 pixelsSinceEdge++
 
-                pixelI++;
+                pixelI++
             }
 
             quaternion.setFromUnitVectors(straightOnNormal, revertToNormal)
             matrix.makeRotationFromQuaternion(quaternion)
-            panelGeometry.applyMatrix(matrix)
-            pixelsGeometry.applyMatrix(matrix)
+            panelGeometry.applyMatrix4(matrix)
+            pixelsGeometry.applyMatrix4(matrix)
 
             return pixelsGeometry.vertices
         }

@@ -5,13 +5,17 @@ import baaahs.imaging.Image
 import baaahs.imaging.ImageBitmapImage
 import baaahs.visualizer.Visualizer
 import baaahs.window
-import info.laht.threekt.cameras.Camera
-import info.laht.threekt.cameras.PerspectiveCamera
-import info.laht.threekt.renderers.WebGLRenderer
-import info.laht.threekt.scenes.Scene
+import kotlinext.js.jsObject
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.Uint8ClampedArray
-import org.w3c.dom.*
+import org.w3c.dom.FLIPY
+import org.w3c.dom.ImageBitmapOptions
+import org.w3c.dom.ImageData
+import org.w3c.dom.ImageOrientation
+import three.js.Camera
+import three.js.PerspectiveCamera
+import three.js.Scene
+import three.js.WebGLRenderer
 
 class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
     var currentCam: MediaDevices.Camera? = null
@@ -27,11 +31,11 @@ class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
 
     inner class FakeCamera(val width: Int, val height: Int) : MediaDevices.Camera, Visualizer.FrameListener {
         // offscreen renderer for virtual camera:
-        var camRenderer = WebGLRenderer(js("{preserveDrawingBuffer: true}")).apply {
+        var camRenderer = WebGLRenderer(jsObject { preserveDrawingBuffer = true}).apply {
             setSize(width, height)
         }
 
-        private val camCtx = (camRenderer.domElement as HTMLCanvasElement).getContext("webgl")!!
+        private val camCtx = camRenderer.getContext()
         private val altCamera = PerspectiveCamera(45, 1.0, 1, 10000)
         private val pixelBuffer = Uint8ClampedArray(width * height * 4)
         private val imageData = ImageData(pixelBuffer, width, height)

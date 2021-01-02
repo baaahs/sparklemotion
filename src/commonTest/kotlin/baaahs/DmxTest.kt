@@ -1,7 +1,8 @@
 package baaahs;
 
-import baaahs.dmx.Dmx
 import baaahs.dmx.Shenzarpy
+import baaahs.geom.Vector3F
+import baaahs.sim.FakeDmxUniverse
 import kotlin.math.abs
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -9,14 +10,15 @@ import kotlin.test.assertTrue
 class DmxTest {
     @Test
     fun testShenzarpyPan() {
-        val channels = ByteArray(16)
-        val shenzarpy = Shenzarpy(Dmx.Buffer(channels, 0, 16))
+        val shenzarpy = Shenzarpy("x", "x", 0, Vector3F.origin, Vector3F.origin)
+        val universe = FakeDmxUniverse()
+        val buffer = shenzarpy.newBuffer(universe)
 
         val original = toRadians(30f)
-        shenzarpy.pan = original
+        buffer.pan = original
 
         assertTrue {
-            abs(original - shenzarpy.pan) < 0.01
+            abs(original - buffer.pan) < 0.01
         }
     }
 }
