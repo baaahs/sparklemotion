@@ -1,0 +1,105 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ShapePath - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">ShapePath</a><br/>
+<br/>
+<h1>ShapePath</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">ShapePath</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">ShapePath</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="color.html">color</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">color</span><span class="symbol">: </span><a href="../-color/index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="current-path.html">currentPath</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">currentPath</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="sub-paths.html">subPaths</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">subPaths</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="type.html">type</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">type</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="bezier-curve-to.html">bezierCurveTo</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">bezierCurveTo</span><span class="symbol">(</span><span class="identifier" id="three.js.ShapePath$bezierCurveTo(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/aCP1x">aCP1x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ShapePath$bezierCurveTo(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/aCP1y">aCP1y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ShapePath$bezierCurveTo(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/aCP2x">aCP2x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ShapePath$bezierCurveTo(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/aCP2y">aCP2y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ShapePath$bezierCurveTo(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/aX">aX</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ShapePath$bezierCurveTo(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/aY">aY</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShapePath</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="line-to.html">lineTo</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">lineTo</span><span class="symbol">(</span><span class="identifier" id="three.js.ShapePath$lineTo(kotlin.Number, kotlin.Number)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ShapePath$lineTo(kotlin.Number, kotlin.Number)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShapePath</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="move-to.html">moveTo</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">moveTo</span><span class="symbol">(</span><span class="identifier" id="three.js.ShapePath$moveTo(kotlin.Number, kotlin.Number)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ShapePath$moveTo(kotlin.Number, kotlin.Number)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShapePath</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="quadratic-curve-to.html">quadraticCurveTo</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">quadraticCurveTo</span><span class="symbol">(</span><span class="identifier" id="three.js.ShapePath$quadraticCurveTo(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/aCPx">aCPx</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ShapePath$quadraticCurveTo(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/aCPy">aCPy</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ShapePath$quadraticCurveTo(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/aX">aX</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ShapePath$quadraticCurveTo(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/aY">aY</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShapePath</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="spline-thru.html">splineThru</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">splineThru</span><span class="symbol">(</span><span class="identifier" id="three.js.ShapePath$splineThru(kotlin.Array((three.js.Vector2)))/pts">pts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-vector2/index.html"><span class="identifier">Vector2</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ShapePath</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="to-shapes.html">toShapes</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">toShapes</span><span class="symbol">(</span><span class="identifier" id="three.js.ShapePath$toShapes(kotlin.Boolean, kotlin.Boolean)/isCCW">isCCW</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ShapePath$toShapes(kotlin.Boolean, kotlin.Boolean)/noHoles">noHoles</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-shape/index.html"><span class="identifier">Shape</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

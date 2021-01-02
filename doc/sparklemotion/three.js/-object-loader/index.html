@@ -1,0 +1,86 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>ObjectLoader - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">ObjectLoader</a><br/>
+<br/>
+<h1>ObjectLoader</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">ObjectLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-loader/index.html"><span class="identifier">Loader</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">ObjectLoader</span><span class="symbol">(</span><span class="identifier" id="three.js.ObjectLoader$<init>(three.js.LoadingManager)/manager">manager</span><span class="symbol">:</span>&nbsp;<a href="../-loading-manager/index.html"><span class="identifier">LoadingManager</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="load.html">load</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">ObjectType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">&gt;</span> <span class="identifier">load</span><span class="symbol">(</span><span class="identifier" id="three.js.ObjectLoader$load(kotlin.String, kotlin.Function1((three.js.ObjectLoader.load.ObjectType, kotlin.Unit)), kotlin.Function1((, kotlin.Unit)), kotlin.Function1((kotlin.Any, kotlin.Unit)))/url">url</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ObjectLoader$load(kotlin.String, kotlin.Function1((three.js.ObjectLoader.load.ObjectType, kotlin.Unit)), kotlin.Function1((, kotlin.Unit)), kotlin.Function1((kotlin.Any, kotlin.Unit)))/onLoad">onLoad</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">obj</span><span class="symbol">:</span>&nbsp;<span class="identifier">ObjectType</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.ObjectLoader$load(kotlin.String, kotlin.Function1((three.js.ObjectLoader.load.ObjectType, kotlin.Unit)), kotlin.Function1((, kotlin.Unit)), kotlin.Function1((kotlin.Any, kotlin.Unit)))/onProgress">onProgress</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.ObjectLoader$load(kotlin.String, kotlin.Function1((three.js.ObjectLoader.load.ObjectType, kotlin.Unit)), kotlin.Function1((, kotlin.Unit)), kotlin.Function1((kotlin.Any, kotlin.Unit)))/onError">onError</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="keyword">dynamic</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="parse.html">parse</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">&gt;</span> <span class="identifier">parse</span><span class="symbol">(</span><span class="identifier" id="three.js.ObjectLoader$parse(kotlin.Any, kotlin.Function1((three.js.Object3D, kotlin.Unit)))/json">json</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ObjectLoader$parse(kotlin.Any, kotlin.Function1((three.js.Object3D, kotlin.Unit)))/onLoad">onLoad</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">obj</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="parse-animations.html">parseAnimations</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">parseAnimations</span><span class="symbol">(</span><span class="identifier" id="three.js.ObjectLoader$parseAnimations(kotlin.Any)/json">json</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-animation-clip/index.html"><span class="identifier">AnimationClip</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="parse-geometries.html">parseGeometries</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">parseGeometries</span><span class="symbol">(</span><span class="identifier" id="three.js.ObjectLoader$parseGeometries(kotlin.Any)/json">json</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="parse-images.html">parseImages</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">parseImages</span><span class="symbol">(</span><span class="identifier" id="three.js.ObjectLoader$parseImages(kotlin.Any, kotlin.Function0((kotlin.Unit)))/json">json</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ObjectLoader$parseImages(kotlin.Any, kotlin.Function0((kotlin.Unit)))/onLoad">onLoad</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-t$45/index.html"><span class="identifier">T$45</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="parse-materials.html">parseMaterials</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">parseMaterials</span><span class="symbol">(</span><span class="identifier" id="three.js.ObjectLoader$parseMaterials(kotlin.Any, kotlin.Array((three.js.Texture)))/json">json</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ObjectLoader$parseMaterials(kotlin.Any, kotlin.Array((three.js.Texture)))/textures">textures</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-texture/index.html"><span class="identifier">Texture</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-material/index.html"><span class="identifier">Material</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="parse-object.html">parseObject</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">&gt;</span> <span class="identifier">parseObject</span><span class="symbol">(</span><span class="identifier" id="three.js.ObjectLoader$parseObject(kotlin.Any, kotlin.Array((kotlin.Any)), kotlin.Array((three.js.Material)))/data">data</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ObjectLoader$parseObject(kotlin.Any, kotlin.Array((kotlin.Any)), kotlin.Array((three.js.Material)))/geometries">geometries</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.ObjectLoader$parseObject(kotlin.Any, kotlin.Array((kotlin.Any)), kotlin.Array((three.js.Material)))/materials">materials</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-material/index.html"><span class="identifier">Material</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="parse-textures.html">parseTextures</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">parseTextures</span><span class="symbol">(</span><span class="identifier" id="three.js.ObjectLoader$parseTextures(kotlin.Any, kotlin.Any)/json">json</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="three.js.ObjectLoader$parseTextures(kotlin.Any, kotlin.Any)/images">images</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-texture/index.html"><span class="identifier">Texture</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

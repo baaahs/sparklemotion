@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Mesh - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">Mesh</a><br/>
+<br/>
+<h1>Mesh</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Mesh</span><span class="symbol">&lt;</span><span class="identifier">TGeometry</span><span class="symbol">, </span><span class="identifier">TMaterial</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Mesh</span><span class="symbol">(</span><span class="identifier" id="three.js.Mesh$<init>(three.js.Mesh.TGeometry, three.js.Mesh.TMaterial)/geometry">geometry</span><span class="symbol">:</span>&nbsp;<span class="identifier">TGeometry</span>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Mesh$<init>(three.js.Mesh.TGeometry, three.js.Mesh.TMaterial)/material">material</span><span class="symbol">:</span>&nbsp;<span class="identifier">TMaterial</span>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="geometry.html">geometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">geometry</span><span class="symbol">: </span><span class="identifier">TGeometry</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-mesh.html">isMesh</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">isMesh</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="material.html">material</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">material</span><span class="symbol">: </span><span class="identifier">TMaterial</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="morph-target-dictionary.html">morphTargetDictionary</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">morphTargetDictionary</span><span class="symbol">: </span><a href="../-t$20/index.html"><span class="identifier">T$20</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="morph-target-influences.html">morphTargetInfluences</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">morphTargetInfluences</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="type.html">type</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">type</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="raycast.html">raycast</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">raycast</span><span class="symbol">(</span><span class="identifier" id="three.js.Mesh$raycast(three.js.Raycaster, kotlin.Array((three.js.Intersection)))/raycaster">raycaster</span><span class="symbol">:</span>&nbsp;<a href="../-raycaster/index.html"><span class="identifier">Raycaster</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Mesh$raycast(three.js.Raycaster, kotlin.Array((three.js.Intersection)))/intersects">intersects</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-intersection/index.html"><span class="identifier">Intersection</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="update-morph-targets.html">updateMorphTargets</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">updateMorphTargets</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-instanced-mesh/index.html">InstancedMesh</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">InstancedMesh</span><span class="symbol">&lt;</span><span class="identifier">TGeometry</span><span class="symbol">, </span><span class="identifier">TMaterial</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Mesh</span></a><span class="symbol">&lt;</span><span class="identifier">TGeometry</span><span class="symbol">,</span>&nbsp;<span class="identifier">TMaterial</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-skinned-mesh/index.html">SkinnedMesh</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">SkinnedMesh</span><span class="symbol">&lt;</span><span class="identifier">TGeometry</span><span class="symbol">, </span><span class="identifier">TMaterial</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Mesh</span></a><span class="symbol">&lt;</span><span class="identifier">TGeometry</span><span class="symbol">,</span>&nbsp;<span class="identifier">TMaterial</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

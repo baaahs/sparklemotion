@@ -1,0 +1,294 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Box3 - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">Box3</a><br/>
+<br/>
+<h1>Box3</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Box3</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Box3</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$<init>(three.js.Vector3, three.js.Vector3)/min">min</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Box3$<init>(three.js.Vector3, three.js.Vector3)/max">max</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="is-box3.html">isBox3</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">isBox3</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="max.html">max</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">max</span><span class="symbol">: </span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="min.html">min</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">min</span><span class="symbol">: </span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="apply-matrix4.html">applyMatrix4</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">applyMatrix4</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$applyMatrix4(three.js.Matrix4)/matrix">matrix</span><span class="symbol">:</span>&nbsp;<a href="../-matrix4/index.html"><span class="identifier">Matrix4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clamp-point.html">clampPoint</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clampPoint</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$clampPoint(three.js.Vector3, three.js.Vector3)/point">point</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Box3$clampPoint(three.js.Vector3, three.js.Vector3)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clone.html">clone</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clone</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="contains-box.html">containsBox</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">containsBox</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$containsBox(three.js.Box3)/box">box</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Box3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="contains-point.html">containsPoint</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">containsPoint</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$containsPoint(three.js.Vector3)/point">point</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="copy.html">copy</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">copy</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$copy(three.js.Box3)/box">box</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Box3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="distance-to-point.html">distanceToPoint</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">distanceToPoint</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$distanceToPoint(three.js.Vector3)/point">point</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="empty.html">empty</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">empty</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="equals.html">equals</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">equals</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$equals(three.js.Box3)/box">box</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Box3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="expand-by-object.html">expandByObject</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">expandByObject</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$expandByObject(three.js.Object3D)/obj">obj</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="expand-by-point.html">expandByPoint</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">expandByPoint</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$expandByPoint(three.js.Vector3)/point">point</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="expand-by-scalar.html">expandByScalar</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">expandByScalar</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$expandByScalar(kotlin.Number)/scalar">scalar</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="expand-by-vector.html">expandByVector</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">expandByVector</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$expandByVector(three.js.Vector3)/vector">vector</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-bounding-sphere.html">getBoundingSphere</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getBoundingSphere</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$getBoundingSphere(three.js.Sphere)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-sphere/index.html"><span class="identifier">Sphere</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-sphere/index.html"><span class="identifier">Sphere</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-center.html">getCenter</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getCenter</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$getCenter(three.js.Vector3)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-parameter.html">getParameter</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getParameter</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$getParameter(three.js.Vector3, three.js.Vector3)/point">point</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Box3$getParameter(three.js.Vector3, three.js.Vector3)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-size.html">getSize</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getSize</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$getSize(three.js.Vector3)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersect.html">intersect</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersect</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$intersect(three.js.Box3)/box">box</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Box3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersects-box.html">intersectsBox</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectsBox</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$intersectsBox(three.js.Box3)/box">box</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Box3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersects-plane.html">intersectsPlane</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectsPlane</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$intersectsPlane(three.js.Plane)/plane">plane</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersects-sphere.html">intersectsSphere</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectsSphere</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$intersectsSphere(three.js.Sphere)/sphere">sphere</span><span class="symbol">:</span>&nbsp;<a href="../-sphere/index.html"><span class="identifier">Sphere</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersects-triangle.html">intersectsTriangle</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectsTriangle</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$intersectsTriangle(three.js.Triangle)/triangle">triangle</span><span class="symbol">:</span>&nbsp;<a href="../-triangle/index.html"><span class="identifier">Triangle</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-empty.html">isEmpty</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">isEmpty</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-intersection-box.html">isIntersectionBox</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">isIntersectionBox</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$isIntersectionBox(kotlin.Any)/b">b</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-intersection-sphere.html">isIntersectionSphere</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">isIntersectionSphere</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$isIntersectionSphere(kotlin.Any)/s">s</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="make-empty.html">makeEmpty</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">makeEmpty</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set.html">set</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$set(three.js.Vector3, three.js.Vector3)/min">min</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Box3$set(three.js.Vector3, three.js.Vector3)/max">max</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-array.html">setFromArray</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromArray</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$setFromArray(three.js.ArrayLike((kotlin.Number)))/array">array</span><span class="symbol">:</span>&nbsp;<a href="../-array-like.html"><span class="identifier">ArrayLike</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-buffer-attribute.html">setFromBufferAttribute</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromBufferAttribute</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$setFromBufferAttribute(three.js.BufferAttribute)/bufferAttribute">bufferAttribute</span><span class="symbol">:</span>&nbsp;<a href="../-buffer-attribute/index.html"><span class="identifier">BufferAttribute</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-center-and-size.html">setFromCenterAndSize</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromCenterAndSize</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$setFromCenterAndSize(three.js.Vector3, three.js.Vector3)/center">center</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Box3$setFromCenterAndSize(three.js.Vector3, three.js.Vector3)/size">size</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-object.html">setFromObject</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromObject</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$setFromObject(three.js.Object3D)/obj">obj</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-points.html">setFromPoints</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromPoints</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$setFromPoints(kotlin.Array((three.js.Vector3)))/points">points</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="translate.html">translate</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">translate</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$translate(three.js.Vector3)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="union.html">union</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">union</span><span class="symbol">(</span><span class="identifier" id="three.js.Box3$union(three.js.Box3)/box">box</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Box3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Box3</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

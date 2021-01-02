@@ -1,0 +1,348 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Audio - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">Audio</a><br/>
+<br/>
+<h1>Audio</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Audio</span><span class="symbol">&lt;</span><span class="identifier">NodeType</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-audio-node.html"><span class="identifier">AudioNode</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Audio</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$<init>(three.js.AudioListener)/listener">listener</span><span class="symbol">:</span>&nbsp;<a href="../-audio-listener/index.html"><span class="identifier">AudioListener</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="autoplay.html">autoplay</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">autoplay</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="buffer.html">buffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">buffer</span><span class="symbol">: </span><a href="../-audio-buffer.html"><span class="identifier">AudioBuffer</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="context.html">context</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">context</span><span class="symbol">: </span><a href="../-audio-context.html"><span class="identifier">AudioContext</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="detune.html">detune</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">detune</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="duration.html">duration</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">duration</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="filters.html">filters</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">filters</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="gain.html">gain</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">gain</span><span class="symbol">: </span><a href="../-gain-node.html"><span class="identifier">GainNode</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="has-playback-control.html">hasPlaybackControl</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">hasPlaybackControl</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-playing.html">isPlaying</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">isPlaying</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="listener.html">listener</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">listener</span><span class="symbol">: </span><a href="../-audio-listener/index.html"><span class="identifier">AudioListener</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="loop.html">loop</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">loop</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="loop-end.html">loopEnd</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">loopEnd</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="loop-start.html">loopStart</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">loopStart</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="offset.html">offset</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">offset</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="playback-rate.html">playbackRate</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">playbackRate</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="source.html">source</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">source</span><span class="symbol">: </span><a href="../-audio-buffer-source-node.html"><span class="identifier">AudioBufferSourceNode</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="source-type.html">sourceType</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">sourceType</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="type.html">type</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">type</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="connect.html">connect</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">connect</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="disconnect.html">disconnect</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">disconnect</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-detune.html">getDetune</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getDetune</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-filter.html">getFilter</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getFilter</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-filters.html">getFilters</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getFilters</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-loop.html">getLoop</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getLoop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-output.html">getOutput</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getOutput</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">NodeType</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-playback-rate.html">getPlaybackRate</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getPlaybackRate</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-volume.html">getVolume</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getVolume</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-ended.html">onEnded</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">onEnded</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pause.html">pause</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">pause</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="play.html">play</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">play</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$play(kotlin.Number)/delay">delay</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-buffer.html">setBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setBuffer</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$setBuffer(three.js.AudioBuffer)/audioBuffer">audioBuffer</span><span class="symbol">:</span>&nbsp;<a href="../-audio-buffer.html"><span class="identifier">AudioBuffer</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-detune.html">setDetune</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setDetune</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$setDetune(kotlin.Number)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-filter.html">setFilter</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFilter</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$setFilter(kotlin.Any)/filter">filter</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-filters.html">setFilters</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFilters</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$setFilters(kotlin.Array((kotlin.Any)))/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-loop.html">setLoop</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setLoop</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$setLoop(kotlin.Boolean)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-loop-end.html">setLoopEnd</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setLoopEnd</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$setLoopEnd(kotlin.Number)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-loop-start.html">setLoopStart</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setLoopStart</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$setLoopStart(kotlin.Number)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-media-element-source.html">setMediaElementSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setMediaElementSource</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$setMediaElementSource()/mediaElement">mediaElement</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-media-stream-source.html">setMediaStreamSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setMediaStreamSource</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$setMediaStreamSource(three.js.MediaStream)/mediaStream">mediaStream</span><span class="symbol">:</span>&nbsp;<a href="../-media-stream.html"><span class="identifier">MediaStream</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-node-source.html">setNodeSource</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setNodeSource</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$setNodeSource(three.js.AudioBufferSourceNode)/audioNode">audioNode</span><span class="symbol">:</span>&nbsp;<a href="../-audio-buffer-source-node.html"><span class="identifier">AudioBufferSourceNode</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-playback-rate.html">setPlaybackRate</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setPlaybackRate</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$setPlaybackRate(kotlin.Number)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-volume.html">setVolume</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setVolume</span><span class="symbol">(</span><span class="identifier" id="three.js.Audio$setVolume(kotlin.Number)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stop.html">stop</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">stop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><span class="identifier">NodeType</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-positional-audio/index.html">PositionalAudio</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">PositionalAudio</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><a href="../-panner-node.html"><span class="identifier">PannerNode</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

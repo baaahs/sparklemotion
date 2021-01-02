@@ -1,0 +1,105 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Raycaster - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">Raycaster</a><br/>
+<br/>
+<h1>Raycaster</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Raycaster</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Raycaster</span><span class="symbol">(</span><span class="identifier" id="three.js.Raycaster$<init>(three.js.Vector3, three.js.Vector3, kotlin.Number, kotlin.Number)/origin">origin</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Raycaster$<init>(three.js.Vector3, three.js.Vector3, kotlin.Number, kotlin.Number)/direction">direction</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Raycaster$<init>(three.js.Vector3, three.js.Vector3, kotlin.Number, kotlin.Number)/near">near</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Raycaster$<init>(three.js.Vector3, three.js.Vector3, kotlin.Number, kotlin.Number)/far">far</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="camera.html">camera</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">camera</span><span class="symbol">: </span><a href="../-camera/index.html"><span class="identifier">Camera</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="far.html">far</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">far</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="layers.html">layers</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">layers</span><span class="symbol">: </span><a href="../-layers/index.html"><span class="identifier">Layers</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="near.html">near</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">near</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="params.html">params</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">params</span><span class="symbol">: </span><a href="../-raycaster-parameters/index.html"><span class="identifier">RaycasterParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="ray.html">ray</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">ray</span><span class="symbol">: </span><a href="../-ray/index.html"><span class="identifier">Ray</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="intersect-object.html">intersectObject</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectObject</span><span class="symbol">(</span><span class="identifier" id="three.js.Raycaster$intersectObject(three.js.Object3D, kotlin.Boolean, kotlin.Array((three.js.Intersection)))/obj">obj</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Raycaster$intersectObject(three.js.Object3D, kotlin.Boolean, kotlin.Array((three.js.Intersection)))/recursive">recursive</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Raycaster$intersectObject(three.js.Object3D, kotlin.Boolean, kotlin.Array((three.js.Intersection)))/optionalTarget">optionalTarget</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-intersection/index.html"><span class="identifier">Intersection</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-intersection/index.html"><span class="identifier">Intersection</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersect-objects.html">intersectObjects</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectObjects</span><span class="symbol">(</span><span class="identifier" id="three.js.Raycaster$intersectObjects(kotlin.Array((three.js.Object3D)), kotlin.Boolean, kotlin.Array((three.js.Intersection)))/objects">objects</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.Raycaster$intersectObjects(kotlin.Array((three.js.Object3D)), kotlin.Boolean, kotlin.Array((three.js.Intersection)))/recursive">recursive</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Raycaster$intersectObjects(kotlin.Array((three.js.Object3D)), kotlin.Boolean, kotlin.Array((three.js.Intersection)))/optionalTarget">optionalTarget</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-intersection/index.html"><span class="identifier">Intersection</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-intersection/index.html"><span class="identifier">Intersection</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set.html">set</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="three.js.Raycaster$set(three.js.Vector3, three.js.Vector3)/origin">origin</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Raycaster$set(three.js.Vector3, three.js.Vector3)/direction">direction</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-camera.html">setFromCamera</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromCamera</span><span class="symbol">(</span><span class="identifier" id="three.js.Raycaster$setFromCamera(three.js.Vector2, three.js.Camera)/coords">coords</span><span class="symbol">:</span>&nbsp;<a href="../-vector2/index.html"><span class="identifier">Vector2</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Raycaster$setFromCamera(three.js.Vector2, three.js.Camera)/camera">camera</span><span class="symbol">:</span>&nbsp;<a href="../-camera/index.html"><span class="identifier">Camera</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

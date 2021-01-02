@@ -1,0 +1,661 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>WebGLRenderer - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">WebGLRenderer</a><br/>
+<br/>
+<h1>WebGLRenderer</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">WebGLRenderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-renderer/index.html"><span class="identifier">Renderer</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">WebGLRenderer</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$<init>(three.js.WebGLRendererParameters)/parameters">parameters</span><span class="symbol">:</span>&nbsp;<a href="../-web-g-l-renderer-parameters/index.html"><span class="identifier">WebGLRendererParameters</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="auto-clear.html">autoClear</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">autoClear</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="auto-clear-color.html">autoClearColor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">autoClearColor</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="auto-clear-depth.html">autoClearDepth</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">autoClearDepth</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="auto-clear-stencil.html">autoClearStencil</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">autoClearStencil</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="capabilities.html">capabilities</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">capabilities</span><span class="symbol">: </span><a href="../-web-g-l-capabilities/index.html"><span class="identifier">WebGLCapabilities</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clipping-planes.html">clippingPlanes</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">clippingPlanes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="context.html">context</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">context</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="debug.html">debug</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">debug</span><span class="symbol">: </span><a href="../-web-g-l-debug/index.html"><span class="identifier">WebGLDebug</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="dom-element.html">domElement</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">domElement</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="extensions.html">extensions</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">extensions</span><span class="symbol">: </span><a href="../-web-g-l-extensions/index.html"><span class="identifier">WebGLExtensions</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="gamma-factor.html">gammaFactor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">gammaFactor</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="info.html">info</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">info</span><span class="symbol">: </span><a href="../-web-g-l-info/index.html"><span class="identifier">WebGLInfo</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="local-clipping-enabled.html">localClippingEnabled</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">localClippingEnabled</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="max-morph-normals.html">maxMorphNormals</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">maxMorphNormals</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="max-morph-targets.html">maxMorphTargets</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">maxMorphTargets</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="output-encoding.html">outputEncoding</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">outputEncoding</span><span class="symbol">: </span><a href="../-texture-encoding.html"><span class="identifier">TextureEncoding</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="physically-correct-lights.html">physicallyCorrectLights</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">physicallyCorrectLights</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pixel-ratio.html">pixelRatio</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">pixelRatio</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="properties.html">properties</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">properties</span><span class="symbol">: </span><a href="../-web-g-l-properties/index.html"><span class="identifier">WebGLProperties</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="render-lists.html">renderLists</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">renderLists</span><span class="symbol">: </span><a href="../-web-g-l-render-lists/index.html"><span class="identifier">WebGLRenderLists</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shadow-map.html">shadowMap</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">shadowMap</span><span class="symbol">: </span><a href="../-web-g-l-shadow-map/index.html"><span class="identifier">WebGLShadowMap</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shadow-map-cull-face.html">shadowMapCullFace</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">shadowMapCullFace</span><span class="symbol">: </span><a href="../-cull-face.html"><span class="identifier">CullFace</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shadow-map-debug.html">shadowMapDebug</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">shadowMapDebug</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shadow-map-enabled.html">shadowMapEnabled</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">shadowMapEnabled</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shadow-map-type.html">shadowMapType</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">shadowMapType</span><span class="symbol">: </span><a href="../-shadow-map-type.html"><span class="identifier">ShadowMapType</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="sort-objects.html">sortObjects</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">sortObjects</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="state.html">state</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">state</span><span class="symbol">: </span><a href="../-web-g-l-state/index.html"><span class="identifier">WebGLState</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="tone-mapping.html">toneMapping</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">toneMapping</span><span class="symbol">: </span><a href="../-tone-mapping.html"><span class="identifier">ToneMapping</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="tone-mapping-exposure.html">toneMappingExposure</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">toneMappingExposure</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="vr.html">vr</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">vr</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="xr.html">xr</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">xr</span><span class="symbol">: </span><a href="../-web-x-r-manager/index.html"><span class="identifier">WebXRManager</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="animate.html">animate</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">animate</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$animate(kotlin.Function((kotlin.Any)))/callback">callback</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clear.html">clear</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clear</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$clear(kotlin.Boolean, kotlin.Boolean, kotlin.Boolean)/color">color</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$clear(kotlin.Boolean, kotlin.Boolean, kotlin.Boolean)/depth">depth</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$clear(kotlin.Boolean, kotlin.Boolean, kotlin.Boolean)/stencil">stencil</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clear-color.html">clearColor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clearColor</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clear-depth.html">clearDepth</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clearDepth</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clear-stencil.html">clearStencil</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clearStencil</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clear-target.html">clearTarget</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clearTarget</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$clearTarget(three.js.WebGLRenderTarget, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean)/renderTarget">renderTarget</span><span class="symbol">:</span>&nbsp;<a href="../-web-g-l-render-target/index.html"><span class="identifier">WebGLRenderTarget</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$clearTarget(three.js.WebGLRenderTarget, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean)/color">color</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$clearTarget(three.js.WebGLRenderTarget, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean)/depth">depth</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$clearTarget(three.js.WebGLRenderTarget, kotlin.Boolean, kotlin.Boolean, kotlin.Boolean)/stencil">stencil</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="compile.html">compile</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">compile</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$compile(three.js.Object3D, three.js.Camera)/scene">scene</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$compile(three.js.Object3D, three.js.Camera)/camera">camera</span><span class="symbol">:</span>&nbsp;<a href="../-camera/index.html"><span class="identifier">Camera</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="copy-framebuffer-to-texture.html">copyFramebufferToTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">copyFramebufferToTexture</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$copyFramebufferToTexture(three.js.Vector2, three.js.Texture, kotlin.Number)/position">position</span><span class="symbol">:</span>&nbsp;<a href="../-vector2/index.html"><span class="identifier">Vector2</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$copyFramebufferToTexture(three.js.Vector2, three.js.Texture, kotlin.Number)/texture">texture</span><span class="symbol">:</span>&nbsp;<a href="../-texture/index.html"><span class="identifier">Texture</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$copyFramebufferToTexture(three.js.Vector2, three.js.Texture, kotlin.Number)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="copy-texture-to-texture.html">copyTextureToTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">copyTextureToTexture</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$copyTextureToTexture(three.js.Vector2, three.js.Texture, three.js.Texture, kotlin.Number)/position">position</span><span class="symbol">:</span>&nbsp;<a href="../-vector2/index.html"><span class="identifier">Vector2</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$copyTextureToTexture(three.js.Vector2, three.js.Texture, three.js.Texture, kotlin.Number)/srcTexture">srcTexture</span><span class="symbol">:</span>&nbsp;<a href="../-texture/index.html"><span class="identifier">Texture</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$copyTextureToTexture(three.js.Vector2, three.js.Texture, three.js.Texture, kotlin.Number)/dstTexture">dstTexture</span><span class="symbol">:</span>&nbsp;<a href="../-texture/index.html"><span class="identifier">Texture</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$copyTextureToTexture(three.js.Vector2, three.js.Texture, three.js.Texture, kotlin.Number)/level">level</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="dispose.html">dispose</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">dispose</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="enable-scissor-test.html">enableScissorTest</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">enableScissorTest</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$enableScissorTest(kotlin.Any)/boolean">boolean</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="force-context-loss.html">forceContextLoss</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">forceContextLoss</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-active-cube-face.html">getActiveCubeFace</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getActiveCubeFace</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-active-mipmap-level.html">getActiveMipmapLevel</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getActiveMipmapLevel</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-clear-alpha.html">getClearAlpha</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getClearAlpha</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-clear-color.html">getClearColor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getClearColor</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-color/index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-context.html">getContext</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getContext</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-context-attributes.html">getContextAttributes</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getContextAttributes</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-current-render-target.html">getCurrentRenderTarget</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getCurrentRenderTarget</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-render-target.html"><span class="identifier">RenderTarget</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-current-viewport.html">getCurrentViewport</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getCurrentViewport</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$getCurrentViewport(three.js.Vector4)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector4/index.html"><span class="identifier">Vector4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector4/index.html"><span class="identifier">Vector4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-drawing-buffer-size.html">getDrawingBufferSize</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getDrawingBufferSize</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$getDrawingBufferSize(three.js.Vector2)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector2/index.html"><span class="identifier">Vector2</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector2/index.html"><span class="identifier">Vector2</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-max-anisotropy.html">getMaxAnisotropy</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getMaxAnisotropy</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-pixel-ratio.html">getPixelRatio</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getPixelRatio</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-precision.html">getPrecision</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getPrecision</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-render-target.html">getRenderTarget</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getRenderTarget</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-render-target.html"><span class="identifier">RenderTarget</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-scissor.html">getScissor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getScissor</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$getScissor(three.js.Vector4)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector4/index.html"><span class="identifier">Vector4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector4/index.html"><span class="identifier">Vector4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-scissor-test.html">getScissorTest</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getScissorTest</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-size.html">getSize</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getSize</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$getSize(three.js.Vector2)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector2/index.html"><span class="identifier">Vector2</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector2/index.html"><span class="identifier">Vector2</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-viewport.html">getViewport</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getViewport</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$getViewport(three.js.Vector4)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector4/index.html"><span class="identifier">Vector4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector4/index.html"><span class="identifier">Vector4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="init-texture.html">initTexture</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">initTexture</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$initTexture(three.js.Texture)/texture">texture</span><span class="symbol">:</span>&nbsp;<a href="../-texture/index.html"><span class="identifier">Texture</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="read-render-target-pixels.html">readRenderTargetPixels</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">readRenderTargetPixels</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$readRenderTargetPixels(three.js.RenderTarget, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Any, kotlin.Number)/renderTarget">renderTarget</span><span class="symbol">:</span>&nbsp;<a href="../-render-target.html"><span class="identifier">RenderTarget</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$readRenderTargetPixels(three.js.RenderTarget, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Any, kotlin.Number)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$readRenderTargetPixels(three.js.RenderTarget, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Any, kotlin.Number)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$readRenderTargetPixels(three.js.RenderTarget, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Any, kotlin.Number)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$readRenderTargetPixels(three.js.RenderTarget, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Any, kotlin.Number)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$readRenderTargetPixels(three.js.RenderTarget, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Any, kotlin.Number)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$readRenderTargetPixels(three.js.RenderTarget, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Any, kotlin.Number)/activeCubeFaceIndex">activeCubeFaceIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="render.html">render</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">render</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$render(three.js.Object3D, three.js.Camera)/scene">scene</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$render(three.js.Object3D, three.js.Camera)/camera">camera</span><span class="symbol">:</span>&nbsp;<a href="../-camera/index.html"><span class="identifier">Camera</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="render-buffer-direct.html">renderBufferDirect</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">renderBufferDirect</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$renderBufferDirect(three.js.Camera, three.js.Scene, three.js.Geometry, three.js.Material, three.js.Object3D, kotlin.Any)/camera">camera</span><span class="symbol">:</span>&nbsp;<a href="../-camera/index.html"><span class="identifier">Camera</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$renderBufferDirect(three.js.Camera, three.js.Scene, three.js.Geometry, three.js.Material, three.js.Object3D, kotlin.Any)/scene">scene</span><span class="symbol">:</span>&nbsp;<a href="../-scene/index.html"><span class="identifier">Scene</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$renderBufferDirect(three.js.Camera, three.js.Scene, three.js.Geometry, three.js.Material, three.js.Object3D, kotlin.Any)/geometry">geometry</span><span class="symbol">:</span>&nbsp;<a href="../-geometry/index.html"><span class="identifier">Geometry</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$renderBufferDirect(three.js.Camera, three.js.Scene, three.js.Geometry, three.js.Material, three.js.Object3D, kotlin.Any)/material">material</span><span class="symbol">:</span>&nbsp;<a href="../-material/index.html"><span class="identifier">Material</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$renderBufferDirect(three.js.Camera, three.js.Scene, three.js.Geometry, three.js.Material, three.js.Object3D, kotlin.Any)/obj">obj</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$renderBufferDirect(three.js.Camera, three.js.Scene, three.js.Geometry, three.js.Material, three.js.Object3D, kotlin.Any)/geometryGroup">geometryGroup</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">renderBufferDirect</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$renderBufferDirect(three.js.Camera, three.js.Scene, three.js.BufferGeometry, three.js.Material, three.js.Object3D, kotlin.Any)/camera">camera</span><span class="symbol">:</span>&nbsp;<a href="../-camera/index.html"><span class="identifier">Camera</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$renderBufferDirect(three.js.Camera, three.js.Scene, three.js.BufferGeometry, three.js.Material, three.js.Object3D, kotlin.Any)/scene">scene</span><span class="symbol">:</span>&nbsp;<a href="../-scene/index.html"><span class="identifier">Scene</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$renderBufferDirect(three.js.Camera, three.js.Scene, three.js.BufferGeometry, three.js.Material, three.js.Object3D, kotlin.Any)/geometry">geometry</span><span class="symbol">:</span>&nbsp;<a href="../-buffer-geometry/index.html"><span class="identifier">BufferGeometry</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$renderBufferDirect(three.js.Camera, three.js.Scene, three.js.BufferGeometry, three.js.Material, three.js.Object3D, kotlin.Any)/material">material</span><span class="symbol">:</span>&nbsp;<a href="../-material/index.html"><span class="identifier">Material</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$renderBufferDirect(three.js.Camera, three.js.Scene, three.js.BufferGeometry, three.js.Material, three.js.Object3D, kotlin.Any)/obj">obj</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$renderBufferDirect(three.js.Camera, three.js.Scene, three.js.BufferGeometry, three.js.Material, three.js.Object3D, kotlin.Any)/geometryGroup">geometryGroup</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="render-buffer-immediate.html">renderBufferImmediate</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">renderBufferImmediate</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$renderBufferImmediate(three.js.Object3D, three.js.WebGLProgram)/obj">obj</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$renderBufferImmediate(three.js.Object3D, three.js.WebGLProgram)/program">program</span><span class="symbol">:</span>&nbsp;<a href="../-web-g-l-program/index.html"><span class="identifier">WebGLProgram</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="reset-g-l-state.html">resetGLState</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">resetGLState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-animation-loop.html">setAnimationLoop</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setAnimationLoop</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setAnimationLoop(kotlin.Function((kotlin.Any)))/callback">callback</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-clear-alpha.html">setClearAlpha</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setClearAlpha</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setClearAlpha(kotlin.Number)/alpha">alpha</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-clear-color.html">setClearColor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setClearColor</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setClearColor(three.js.Color, kotlin.Number)/color">color</span><span class="symbol">:</span>&nbsp;<a href="../-color/index.html"><span class="identifier">Color</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setClearColor(three.js.Color, kotlin.Number)/alpha">alpha</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setClearColor</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setClearColor(kotlin.String, kotlin.Number)/color">color</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setClearColor(kotlin.String, kotlin.Number)/alpha">alpha</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setClearColor</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setClearColor(kotlin.Number, kotlin.Number)/color">color</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setClearColor(kotlin.Number, kotlin.Number)/alpha">alpha</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-drawing-buffer-size.html">setDrawingBufferSize</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setDrawingBufferSize</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setDrawingBufferSize(kotlin.Number, kotlin.Number, kotlin.Number)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setDrawingBufferSize(kotlin.Number, kotlin.Number, kotlin.Number)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setDrawingBufferSize(kotlin.Number, kotlin.Number, kotlin.Number)/pixelRatio">pixelRatio</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-framebuffer.html">setFramebuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFramebuffer</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setFramebuffer()/value">value</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-opaque-sort.html">setOpaqueSort</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setOpaqueSort</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setOpaqueSort(kotlin.Function((kotlin.Any)))/method">method</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-pixel-ratio.html">setPixelRatio</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setPixelRatio</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setPixelRatio(kotlin.Number)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-render-target.html">setRenderTarget</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setRenderTarget</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setRenderTarget(three.js.RenderTarget, kotlin.Number, kotlin.Number)/renderTarget">renderTarget</span><span class="symbol">:</span>&nbsp;<a href="../-render-target.html"><span class="identifier">RenderTarget</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setRenderTarget(three.js.RenderTarget, kotlin.Number, kotlin.Number)/activeCubeFace">activeCubeFace</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setRenderTarget(three.js.RenderTarget, kotlin.Number, kotlin.Number)/activeMipmapLevel">activeMipmapLevel</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-scissor.html">setScissor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setScissor</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setScissor(three.js.Vector4, kotlin.Number, kotlin.Number, kotlin.Number)/x">x</span><span class="symbol">:</span>&nbsp;<a href="../-vector4/index.html"><span class="identifier">Vector4</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setScissor(three.js.Vector4, kotlin.Number, kotlin.Number, kotlin.Number)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setScissor(three.js.Vector4, kotlin.Number, kotlin.Number, kotlin.Number)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setScissor(three.js.Vector4, kotlin.Number, kotlin.Number, kotlin.Number)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setScissor</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setScissor(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setScissor(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setScissor(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setScissor(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-scissor-test.html">setScissorTest</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setScissorTest</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setScissorTest(kotlin.Boolean)/enable">enable</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-size.html">setSize</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setSize</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setSize(kotlin.Number, kotlin.Number, kotlin.Boolean)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setSize(kotlin.Number, kotlin.Number, kotlin.Boolean)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setSize(kotlin.Number, kotlin.Number, kotlin.Boolean)/updateStyle">updateStyle</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-transparent-sort.html">setTransparentSort</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setTransparentSort</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setTransparentSort(kotlin.Function((kotlin.Any)))/method">method</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-viewport.html">setViewport</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setViewport</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setViewport(three.js.Vector4, kotlin.Number, kotlin.Number, kotlin.Number)/x">x</span><span class="symbol">:</span>&nbsp;<a href="../-vector4/index.html"><span class="identifier">Vector4</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setViewport(three.js.Vector4, kotlin.Number, kotlin.Number, kotlin.Number)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setViewport(three.js.Vector4, kotlin.Number, kotlin.Number, kotlin.Number)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setViewport(three.js.Vector4, kotlin.Number, kotlin.Number, kotlin.Number)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setViewport</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderer$setViewport(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setViewport(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setViewport(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderer$setViewport(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="supports-blend-min-max.html">supportsBlendMinMax</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">supportsBlendMinMax</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="supports-compressed-texture-p-v-r-t-c.html">supportsCompressedTexturePVRTC</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">supportsCompressedTexturePVRTC</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="supports-compressed-texture-s3-t-c.html">supportsCompressedTextureS3TC</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">supportsCompressedTextureS3TC</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="supports-float-textures.html">supportsFloatTextures</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">supportsFloatTextures</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="supports-half-float-textures.html">supportsHalfFloatTextures</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">supportsHalfFloatTextures</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="supports-instanced-arrays.html">supportsInstancedArrays</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">supportsInstancedArrays</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="supports-standard-derivatives.html">supportsStandardDerivatives</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">supportsStandardDerivatives</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="supports-vertex-textures.html">supportsVertexTextures</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">supportsVertexTextures</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-web-g-l1-renderer/index.html">WebGL1Renderer</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">WebGL1Renderer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">WebGLRenderer</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

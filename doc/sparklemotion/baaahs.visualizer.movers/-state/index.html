@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>State - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.visualizer.movers</a>&nbsp;/&nbsp;<a href="./index.html">State</a><br/>
+<br/>
+<h1>State</h1>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">State</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">State</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.movers.State$<init>(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, baaahs.Color)/pan">pan</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0f<span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.movers.State$<init>(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, baaahs.Color)/tilt">tilt</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0f<span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.movers.State$<init>(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, baaahs.Color)/colorWheelPosition">colorWheelPosition</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0f<span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.movers.State$<init>(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, baaahs.Color)/dimmer">dimmer</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a>&nbsp;<span class="symbol">=</span>&nbsp;1f<span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.movers.State$<init>(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, baaahs.Color)/color">color</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-color/index.html"><span class="identifier">Color</span></a>&nbsp;<span class="symbol">=</span>&nbsp;Color.BLACK<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="color.html">color</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">color</span><span class="symbol">: </span><a href="../../baaahs/-color/index.html"><span class="identifier">Color</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="color-wheel-position.html">colorWheelPosition</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">colorWheelPosition</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="dimmer.html">dimmer</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">dimmer</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pan.html">pan</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">pan</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="tilt.html">tilt</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">tilt</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="move.html">move</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">move</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.movers.State$move(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/startingPoint">startingPoint</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.movers.State$move(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/destination">destination</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.movers.State$move(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/motorSpeed">motorSpeed</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.movers.State$move(kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/elapsed">elapsed</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="move-toward.html">moveToward</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">moveToward</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.movers.State$moveToward(baaahs.visualizer.movers.State, baaahs.visualizer.movers.State, baaahs.model.MovingHead, kotlin.Float)/momentumState">momentumState</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">State</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.movers.State$moveToward(baaahs.visualizer.movers.State, baaahs.visualizer.movers.State, baaahs.model.MovingHead, kotlin.Float)/requestedState">requestedState</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">State</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.movers.State$moveToward(baaahs.visualizer.movers.State, baaahs.visualizer.movers.State, baaahs.model.MovingHead, kotlin.Float)/movingHead">movingHead</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-moving-head/index.html"><span class="identifier">MovingHead</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.movers.State$moveToward(baaahs.visualizer.movers.State, baaahs.visualizer.movers.State, baaahs.model.MovingHead, kotlin.Float)/elapsed">elapsed</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">State</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

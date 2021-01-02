@@ -26,6 +26,8 @@ $dokka.location:baaahs.util$putWithUniqueId(kotlin.collections.MutableMap((kotli
 $dokka.location:baaahs.util$round(kotlin.Double)baaahs.util/kotlin.-double/round.html
 $dokka.location:baaahs.visualizer$asKey(kotlin.Array((kotlin.Int)))baaahs.visualizer/kotlin.-array/as-key.html
 $dokka.location:baaahs.visualizer$findOrAdd(kotlin.collections.MutableList((baaahs.visualizer.findOrAdd.T)), baaahs.visualizer.findOrAdd.T)baaahs.visualizer/kotlin.collections.-mutable-list/find-or-add.html
+$dokka.location:baaahs.visualizer.movers$diff#kotlin.ranges.ClosedRange((kotlin.Float))baaahs.visualizer.movers/kotlin.ranges.-closed-range/diff.html
+$dokka.location:baaahs.visualizer.movers$scale(kotlin.ranges.ClosedRange((kotlin.Float)), kotlin.Float)baaahs.visualizer.movers/kotlin.ranges.-closed-range/scale.html
 ReactAce.Ace
 acex
 baaahs
@@ -72,6 +74,7 @@ baaahs.ui
 baaahs.ui.misc
 baaahs.util
 baaahs.visualizer
+baaahs.visualizer.movers
 baaahs.visualizer.ui
 external
 external.markdownit
@@ -81,4 +84,5 @@ external.react_draggable
 materialui
 materialui.components.buttongroup
 materialui.icons
-three
+three.js
+three_ext

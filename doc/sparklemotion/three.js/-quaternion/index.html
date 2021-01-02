@@ -1,0 +1,280 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Quaternion - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">Quaternion</a><br/>
+<br/>
+<h1>Quaternion</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Quaternion</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Quaternion</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$<init>(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$<init>(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$<init>(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$<init>(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/w">w</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="_on-change-callback.html">_onChangeCallback</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">_onChangeCallback</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-quaternion.html">isQuaternion</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">isQuaternion</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="w.html">w</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">w</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="x.html">x</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">x</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="y.html">y</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">y</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="z.html">z</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">z</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="_on-change.html">_onChange</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">_onChange</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$_onChange(kotlin.Function((kotlin.Any)))/callback">callback</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="angle-to.html">angleTo</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">angleTo</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$angleTo(three.js.Quaternion)/q">q</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clone.html">clone</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clone</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="conjugate.html">conjugate</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">conjugate</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="copy.html">copy</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">copy</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$copy(three.js.Quaternion)/q">q</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="dot.html">dot</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">dot</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$dot(three.js.Quaternion)/v">v</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="equals.html">equals</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">equals</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$equals(three.js.Quaternion)/v">v</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="from-array.html">fromArray</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">fromArray</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$fromArray(kotlin.Array((kotlin.Number)), kotlin.Number)/array">array</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$fromArray(kotlin.Array((kotlin.Number)), kotlin.Number)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code><br/>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">fromArray</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$fromArray(three.js.ArrayLike((kotlin.Number)), kotlin.Number)/array">array</span><span class="symbol">:</span>&nbsp;<a href="../-array-like.html"><span class="identifier">ArrayLike</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$fromArray(three.js.ArrayLike((kotlin.Number)), kotlin.Number)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="identity.html">identity</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">identity</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="inverse.html">inverse</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">inverse</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="length.html">length</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">length</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="length-sq.html">lengthSq</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">lengthSq</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="multiply.html">multiply</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">multiply</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$multiply(three.js.Quaternion)/q">q</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="multiply-quaternions.html">multiplyQuaternions</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">multiplyQuaternions</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$multiplyQuaternions(three.js.Quaternion, three.js.Quaternion)/a">a</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$multiplyQuaternions(three.js.Quaternion, three.js.Quaternion)/b">b</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="multiply-vector3.html">multiplyVector3</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">multiplyVector3</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$multiplyVector3(kotlin.Any)/v">v</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="normalize.html">normalize</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">normalize</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="premultiply.html">premultiply</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">premultiply</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$premultiply(three.js.Quaternion)/q">q</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="rotate-towards.html">rotateTowards</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">rotateTowards</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$rotateTowards(three.js.Quaternion, kotlin.Number)/q">q</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$rotateTowards(three.js.Quaternion, kotlin.Number)/step">step</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set.html">set</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$set(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/w">w</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-axis-angle.html">setFromAxisAngle</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromAxisAngle</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$setFromAxisAngle(three.js.Vector3, kotlin.Number)/axis">axis</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$setFromAxisAngle(three.js.Vector3, kotlin.Number)/angle">angle</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-euler.html">setFromEuler</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromEuler</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$setFromEuler(three.js.Euler)/euler">euler</span><span class="symbol">:</span>&nbsp;<a href="../-euler/index.html"><span class="identifier">Euler</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-rotation-matrix.html">setFromRotationMatrix</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromRotationMatrix</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$setFromRotationMatrix(three.js.Matrix4)/m">m</span><span class="symbol">:</span>&nbsp;<a href="../-matrix4/index.html"><span class="identifier">Matrix4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-unit-vectors.html">setFromUnitVectors</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromUnitVectors</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$setFromUnitVectors(three.js.Vector3, three.js.Vector3)/vFrom">vFrom</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$setFromUnitVectors(three.js.Vector3, three.js.Vector3)/vTo">vTo</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="slerp.html">slerp</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">slerp</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$slerp(three.js.Quaternion, kotlin.Number)/qb">qb</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$slerp(three.js.Quaternion, kotlin.Number)/t">t</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="to-array.html">toArray</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">toArray</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$toArray(kotlin.Array((kotlin.Number)), kotlin.Number)/array">array</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$toArray(kotlin.Array((kotlin.Number)), kotlin.Number)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span></code><br/>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">toArray</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion$toArray(three.js.ArrayLike((kotlin.Number)), kotlin.Number)/array">array</span><span class="symbol">:</span>&nbsp;<a href="../-array-like.html"><span class="identifier">ArrayLike</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion$toArray(three.js.ArrayLike((kotlin.Number)), kotlin.Number)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="../-array-like.html"><span class="identifier">ArrayLike</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="multiply-quaternions-flat.html">multiplyQuaternionsFlat</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">multiplyQuaternionsFlat</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion.Companion$multiplyQuaternionsFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number)/dst">dst</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$multiplyQuaternionsFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number)/dstOffset">dstOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$multiplyQuaternionsFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number)/src0">src0</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$multiplyQuaternionsFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number)/srcOffset">srcOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$multiplyQuaternionsFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number)/src1">src1</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$multiplyQuaternionsFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number)/stcOffset1">stcOffset1</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="slerp.html">slerp</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">slerp</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion.Companion$slerp(three.js.Quaternion, three.js.Quaternion, three.js.Quaternion, kotlin.Number)/qa">qa</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$slerp(three.js.Quaternion, three.js.Quaternion, three.js.Quaternion, kotlin.Number)/qb">qb</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$slerp(three.js.Quaternion, three.js.Quaternion, three.js.Quaternion, kotlin.Number)/qm">qm</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Quaternion</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$slerp(three.js.Quaternion, three.js.Quaternion, three.js.Quaternion, kotlin.Number)/t">t</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="slerp-flat.html">slerpFlat</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">slerpFlat</span><span class="symbol">(</span><span class="identifier" id="three.js.Quaternion.Companion$slerpFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Number)/dst">dst</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$slerpFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Number)/dstOffset">dstOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$slerpFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Number)/src0">src0</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$slerpFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Number)/srcOffset">srcOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$slerpFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Number)/src1">src1</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$slerpFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Number)/stcOffset1">stcOffset1</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Quaternion.Companion$slerpFlat(kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Array((kotlin.Number)), kotlin.Number, kotlin.Number)/t">t</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Quaternion</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

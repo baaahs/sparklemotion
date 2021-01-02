@@ -1,0 +1,394 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>MaterialParameters - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">MaterialParameters</a><br/>
+<br/>
+<h1>MaterialParameters</h1>
+<code><span class="keyword">interface </span><span class="identifier">MaterialParameters</span></code>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="alpha-test.html">alphaTest</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">alphaTest</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="blend-dst.html">blendDst</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">blendDst</span><span class="symbol">: </span><a href="../-blending-dst-factor.html"><span class="identifier">BlendingDstFactor</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="blend-dst-alpha.html">blendDstAlpha</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">blendDstAlpha</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="blend-equation.html">blendEquation</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">blendEquation</span><span class="symbol">: </span><a href="../-blending-equation.html"><span class="identifier">BlendingEquation</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="blend-equation-alpha.html">blendEquationAlpha</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">blendEquationAlpha</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="blending.html">blending</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">blending</span><span class="symbol">: </span><a href="../-blending.html"><span class="identifier">Blending</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="blend-src.html">blendSrc</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">blendSrc</span><span class="symbol">: </span><span class="keyword">dynamic</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="blend-src-alpha.html">blendSrcAlpha</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">blendSrcAlpha</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clip-intersection.html">clipIntersection</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">clipIntersection</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clipping-planes.html">clippingPlanes</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">clippingPlanes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-plane/index.html"><span class="identifier">Plane</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clip-shadows.html">clipShadows</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">clipShadows</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="color-write.html">colorWrite</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">colorWrite</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="defines.html">defines</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">defines</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="depth-func.html">depthFunc</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">depthFunc</span><span class="symbol">: </span><a href="../-depth-modes.html"><span class="identifier">DepthModes</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="depth-test.html">depthTest</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">depthTest</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="depth-write.html">depthWrite</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">depthWrite</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="dithering.html">dithering</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">dithering</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="flat-shading.html">flatShading</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">flatShading</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="fog.html">fog</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">fog</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="name.html">name</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="opacity.html">opacity</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">opacity</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="polygon-offset.html">polygonOffset</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">polygonOffset</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="polygon-offset-factor.html">polygonOffsetFactor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">polygonOffsetFactor</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="polygon-offset-units.html">polygonOffsetUnits</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">polygonOffsetUnits</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="precision.html">precision</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">precision</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="premultiplied-alpha.html">premultipliedAlpha</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">premultipliedAlpha</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="shadow-side.html">shadowSide</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">shadowSide</span><span class="symbol">: </span><a href="../-side.html"><span class="identifier">Side</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="side.html">side</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">side</span><span class="symbol">: </span><a href="../-side.html"><span class="identifier">Side</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stencil-fail.html">stencilFail</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">stencilFail</span><span class="symbol">: </span><a href="../-stencil-op.html"><span class="identifier">StencilOp</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stencil-func.html">stencilFunc</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">stencilFunc</span><span class="symbol">: </span><a href="../-stencil-func.html"><span class="identifier">StencilFunc</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stencil-mask.html">stencilMask</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">stencilMask</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stencil-ref.html">stencilRef</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">stencilRef</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stencil-write.html">stencilWrite</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">stencilWrite</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stencil-z-fail.html">stencilZFail</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">stencilZFail</span><span class="symbol">: </span><a href="../-stencil-op.html"><span class="identifier">StencilOp</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stencil-z-pass.html">stencilZPass</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">stencilZPass</span><span class="symbol">: </span><a href="../-stencil-op.html"><span class="identifier">StencilOp</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="tone-mapped.html">toneMapped</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">toneMapped</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="transparent.html">transparent</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">transparent</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="vertex-colors.html">vertexColors</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">vertexColors</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="visible.html">visible</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">visible</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-line-basic-material-parameters/index.html">LineBasicMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">LineBasicMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-mesh-basic-material-parameters/index.html">MeshBasicMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MeshBasicMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-mesh-depth-material-parameters/index.html">MeshDepthMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MeshDepthMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-mesh-distance-material-parameters/index.html">MeshDistanceMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MeshDistanceMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-mesh-lambert-material-parameters/index.html">MeshLambertMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MeshLambertMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-mesh-matcap-material-parameters/index.html">MeshMatcapMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MeshMatcapMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-mesh-normal-material-parameters/index.html">MeshNormalMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MeshNormalMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-mesh-phong-material-parameters/index.html">MeshPhongMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MeshPhongMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-mesh-standard-material-parameters/index.html">MeshStandardMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MeshStandardMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-mesh-toon-material-parameters/index.html">MeshToonMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">MeshToonMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-points-material-parameters/index.html">PointsMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">PointsMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-shader-material-parameters/index.html">ShaderMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ShaderMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-shadow-material-parameters/index.html">ShadowMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">ShadowMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-sprite-material-parameters/index.html">SpriteMaterialParameters</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">SpriteMaterialParameters</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MaterialParameters</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

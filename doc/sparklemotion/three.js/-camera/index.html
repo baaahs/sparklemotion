@@ -1,0 +1,103 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Camera - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">Camera</a><br/>
+<br/>
+<h1>Camera</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Camera</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Camera</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="is-camera.html">isCamera</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">isCamera</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="matrix-world-inverse.html">matrixWorldInverse</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">matrixWorldInverse</span><span class="symbol">: </span><a href="../-matrix4/index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="projection-matrix.html">projectionMatrix</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">projectionMatrix</span><span class="symbol">: </span><a href="../-matrix4/index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="projection-matrix-inverse.html">projectionMatrixInverse</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">projectionMatrixInverse</span><span class="symbol">: </span><a href="../-matrix4/index.html"><span class="identifier">Matrix4</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="get-world-direction.html">getWorldDirection</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getWorldDirection</span><span class="symbol">(</span><span class="identifier" id="three.js.Camera$getWorldDirection(three.js.Vector3)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="update-matrix-world.html">updateMatrixWorld</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">updateMatrixWorld</span><span class="symbol">(</span><span class="identifier" id="three.js.Camera$updateMatrixWorld(kotlin.Boolean)/force">force</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-orthographic-camera/index.html">OrthographicCamera</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">OrthographicCamera</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Camera</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-perspective-camera/index.html">PerspectiveCamera</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">PerspectiveCamera</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Camera</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-stereo-camera/index.html">StereoCamera</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">StereoCamera</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Camera</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

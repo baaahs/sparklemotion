@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>EventDispatcher - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">EventDispatcher</a><br/>
+<br/>
+<h1>EventDispatcher</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">EventDispatcher</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">EventDispatcher</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="add-event-listener.html">addEventListener</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addEventListener</span><span class="symbol">(</span><span class="identifier" id="three.js.EventDispatcher$addEventListener(kotlin.String, kotlin.Function1((three.js.Event, kotlin.Unit)))/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="three.js.EventDispatcher$addEventListener(kotlin.String, kotlin.Function1((three.js.Event, kotlin.Unit)))/listener">listener</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">event</span><span class="symbol">:</span>&nbsp;<a href="../-event/index.html"><span class="identifier">Event</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="dispatch-event.html">dispatchEvent</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">dispatchEvent</span><span class="symbol">(</span><span class="identifier" id="three.js.EventDispatcher$dispatchEvent(three.js.T$7)/event">event</span><span class="symbol">:</span>&nbsp;<a href="../-t$7/index.html"><span class="identifier">T$7</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="has-event-listener.html">hasEventListener</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">hasEventListener</span><span class="symbol">(</span><span class="identifier" id="three.js.EventDispatcher$hasEventListener(kotlin.String, kotlin.Function1((three.js.Event, kotlin.Unit)))/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="three.js.EventDispatcher$hasEventListener(kotlin.String, kotlin.Function1((three.js.Event, kotlin.Unit)))/listener">listener</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">event</span><span class="symbol">:</span>&nbsp;<a href="../-event/index.html"><span class="identifier">Event</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-event-listener.html">removeEventListener</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">removeEventListener</span><span class="symbol">(</span><span class="identifier" id="three.js.EventDispatcher$removeEventListener(kotlin.String, kotlin.Function1((three.js.Event, kotlin.Unit)))/type">type</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="three.js.EventDispatcher$removeEventListener(kotlin.String, kotlin.Function1((three.js.Event, kotlin.Unit)))/listener">listener</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">event</span><span class="symbol">:</span>&nbsp;<a href="../-event/index.html"><span class="identifier">Event</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-animation-mixer/index.html">AnimationMixer</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">AnimationMixer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventDispatcher</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-buffer-geometry/index.html">BufferGeometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">BufferGeometry</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventDispatcher</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-geometry/index.html">Geometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Geometry</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventDispatcher</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-material/index.html">Material</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Material</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventDispatcher</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-object3-d/index.html">Object3D</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Object3D</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventDispatcher</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-texture/index.html">Texture</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Texture</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventDispatcher</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-web-g-l-render-target/index.html">WebGLRenderTarget</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">WebGLRenderTarget</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">EventDispatcher</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -1,0 +1,477 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>BufferGeometry - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">BufferGeometry</a><br/>
+<br/>
+<h1>BufferGeometry</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">BufferGeometry</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-event-dispatcher/index.html"><span class="identifier">EventDispatcher</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">BufferGeometry</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="attributes.html">attributes</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">attributes</span><span class="symbol">: </span><a href="../-t$16/index.html"><span class="identifier">T$16</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="bounding-box.html">boundingBox</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">boundingBox</span><span class="symbol">: </span><a href="../-box3/index.html"><span class="identifier">Box3</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="bounding-sphere.html">boundingSphere</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">boundingSphere</span><span class="symbol">: </span><a href="../-sphere/index.html"><span class="identifier">Sphere</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="drawcalls.html">drawcalls</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">drawcalls</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="draw-range.html">drawRange</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">drawRange</span><span class="symbol">: </span><a href="../-t$19/index.html"><span class="identifier">T$19</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="groups.html">groups</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">groups</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-t$18/index.html"><span class="identifier">T$18</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="id.html">id</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">id</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="--index--.html">index</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">index</span><span class="symbol">: </span><a href="../-buffer-attribute/index.html"><span class="identifier">BufferAttribute</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-buffer-geometry.html">isBufferGeometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">isBufferGeometry</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="morph-attributes.html">morphAttributes</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">morphAttributes</span><span class="symbol">: </span><a href="../-t$17/index.html"><span class="identifier">T$17</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="morph-targets-relative.html">morphTargetsRelative</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">morphTargetsRelative</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="name.html">name</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="offsets.html">offsets</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">offsets</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="type.html">type</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">type</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="user-data.html">userData</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">userData</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="uuid.html">uuid</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">uuid</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="add-attribute.html">addAttribute</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addAttribute</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$addAttribute(kotlin.String, three.js.BufferAttribute)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$addAttribute(kotlin.String, three.js.BufferAttribute)/attribute">attribute</span><span class="symbol">:</span>&nbsp;<a href="../-buffer-attribute/index.html"><span class="identifier">BufferAttribute</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code><br/>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addAttribute</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$addAttribute(kotlin.String, three.js.InterleavedBufferAttribute)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$addAttribute(kotlin.String, three.js.InterleavedBufferAttribute)/attribute">attribute</span><span class="symbol">:</span>&nbsp;<a href="../-interleaved-buffer-attribute/index.html"><span class="identifier">InterleavedBufferAttribute</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code><br/>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addAttribute</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$addAttribute(kotlin.Any, kotlin.Any, kotlin.Any)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$addAttribute(kotlin.Any, kotlin.Any, kotlin.Any)/array">array</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$addAttribute(kotlin.Any, kotlin.Any, kotlin.Any)/itemSize">itemSize</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="add-draw-call.html">addDrawCall</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addDrawCall</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$addDrawCall(kotlin.Any, kotlin.Any, kotlin.Any)/start">start</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$addDrawCall(kotlin.Any, kotlin.Any, kotlin.Any)/count">count</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$addDrawCall(kotlin.Any, kotlin.Any, kotlin.Any)/indexOffset">indexOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="add-group.html">addGroup</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addGroup</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$addGroup(kotlin.Number, kotlin.Number, kotlin.Number)/start">start</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$addGroup(kotlin.Number, kotlin.Number, kotlin.Number)/count">count</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$addGroup(kotlin.Number, kotlin.Number, kotlin.Number)/materialIndex">materialIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="add-index.html">addIndex</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addIndex</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$addIndex(kotlin.Any)/index">index</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="apply-matrix4.html">applyMatrix4</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">applyMatrix4</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$applyMatrix4(three.js.Matrix4)/matrix">matrix</span><span class="symbol">:</span>&nbsp;<a href="../-matrix4/index.html"><span class="identifier">Matrix4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="center.html">center</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">center</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clear-draw-calls.html">clearDrawCalls</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clearDrawCalls</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clear-groups.html">clearGroups</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clearGroups</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clone.html">clone</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clone</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="compute-bounding-box.html">computeBoundingBox</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">computeBoundingBox</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="compute-bounding-sphere.html">computeBoundingSphere</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">computeBoundingSphere</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="compute-vertex-normals.html">computeVertexNormals</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">computeVertexNormals</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="copy.html">copy</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">copy</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$copy(three.js.BufferGeometry)/source">source</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BufferGeometry</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="delete-attribute.html">deleteAttribute</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">deleteAttribute</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$deleteAttribute(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="dispose.html">dispose</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">dispose</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="from-direct-geometry.html">fromDirectGeometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">fromDirectGeometry</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$fromDirectGeometry(three.js.DirectGeometry)/geometry">geometry</span><span class="symbol">:</span>&nbsp;<a href="../-direct-geometry/index.html"><span class="identifier">DirectGeometry</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="from-geometry.html">fromGeometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">fromGeometry</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$fromGeometry(three.js.Geometry, kotlin.Any)/geometry">geometry</span><span class="symbol">:</span>&nbsp;<a href="../-geometry/index.html"><span class="identifier">Geometry</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$fromGeometry(three.js.Geometry, kotlin.Any)/settings">settings</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-attribute.html">getAttribute</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getAttribute</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$getAttribute(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="keyword">dynamic</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-index.html">getIndex</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getIndex</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-buffer-attribute/index.html"><span class="identifier">BufferAttribute</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="look-at.html">lookAt</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">lookAt</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$lookAt(three.js.Vector3)/v">v</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="merge.html">merge</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">merge</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$merge(three.js.BufferGeometry, kotlin.Number)/geometry">geometry</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BufferGeometry</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$merge(three.js.BufferGeometry, kotlin.Number)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="normalize-normals.html">normalizeNormals</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">normalizeNormals</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-attribute.html">removeAttribute</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">removeAttribute</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$removeAttribute(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="rotate-x.html">rotateX</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">rotateX</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$rotateX(kotlin.Number)/angle">angle</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="rotate-y.html">rotateY</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">rotateY</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$rotateY(kotlin.Number)/angle">angle</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="rotate-z.html">rotateZ</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">rotateZ</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$rotateZ(kotlin.Number)/angle">angle</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="scale.html">scale</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">scale</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$scale(kotlin.Number, kotlin.Number, kotlin.Number)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$scale(kotlin.Number, kotlin.Number, kotlin.Number)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$scale(kotlin.Number, kotlin.Number, kotlin.Number)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-attribute.html">setAttribute</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setAttribute</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$setAttribute(kotlin.String, three.js.BufferAttribute)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$setAttribute(kotlin.String, three.js.BufferAttribute)/attribute">attribute</span><span class="symbol">:</span>&nbsp;<a href="../-buffer-attribute/index.html"><span class="identifier">BufferAttribute</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code><br/>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setAttribute</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$setAttribute(kotlin.String, three.js.InterleavedBufferAttribute)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$setAttribute(kotlin.String, three.js.InterleavedBufferAttribute)/attribute">attribute</span><span class="symbol">:</span>&nbsp;<a href="../-interleaved-buffer-attribute/index.html"><span class="identifier">InterleavedBufferAttribute</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-draw-range.html">setDrawRange</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setDrawRange</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$setDrawRange(kotlin.Number, kotlin.Number)/start">start</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$setDrawRange(kotlin.Number, kotlin.Number)/count">count</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-object.html">setFromObject</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromObject</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$setFromObject(three.js.Object3D)/obj">obj</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-points.html">setFromPoints</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromPoints</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$setFromPoints(kotlin.Array((three.js.Vector3)))/points">points</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code><br/>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromPoints</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$setFromPoints(kotlin.Array((three.js.Vector2)))/points">points</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-vector2/index.html"><span class="identifier">Vector2</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-index.html">setIndex</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setIndex</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$setIndex(three.js.BufferAttribute)/index">index</span><span class="symbol">:</span>&nbsp;<a href="../-buffer-attribute/index.html"><span class="identifier">BufferAttribute</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setIndex</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$setIndex(kotlin.Array((kotlin.Number)))/index">index</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="to-j-s-o-n.html">toJSON</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">toJSON</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="to-non-indexed.html">toNonIndexed</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">toNonIndexed</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="translate.html">translate</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">translate</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$translate(kotlin.Number, kotlin.Number, kotlin.Number)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$translate(kotlin.Number, kotlin.Number, kotlin.Number)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.BufferGeometry$translate(kotlin.Number, kotlin.Number, kotlin.Number)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="update-from-object.html">updateFromObject</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">updateFromObject</span><span class="symbol">(</span><span class="identifier" id="three.js.BufferGeometry$updateFromObject(three.js.Object3D)/obj">obj</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-max-index.html">MaxIndex</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">MaxIndex</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-cylinder-buffer-geometry/index.html">CylinderBufferGeometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">CylinderBufferGeometry</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-edges-geometry/index.html">EdgesGeometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">EdgesGeometry</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-extrude-buffer-geometry/index.html">ExtrudeBufferGeometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">ExtrudeBufferGeometry</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-instanced-buffer-geometry/index.html">InstancedBufferGeometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">InstancedBufferGeometry</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-plane-buffer-geometry/index.html">PlaneBufferGeometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">PlaneBufferGeometry</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-polyhedron-buffer-geometry/index.html">PolyhedronBufferGeometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">PolyhedronBufferGeometry</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-sphere-buffer-geometry/index.html">SphereBufferGeometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">SphereBufferGeometry</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-wireframe-geometry/index.html">WireframeGeometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">WireframeGeometry</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">BufferGeometry</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

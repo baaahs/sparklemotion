@@ -1,0 +1,201 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Loader - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">Loader</a><br/>
+<br/>
+<h1>Loader</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Loader</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Loader</span><span class="symbol">(</span><span class="identifier" id="three.js.Loader$<init>(three.js.LoadingManager)/manager">manager</span><span class="symbol">:</span>&nbsp;<a href="../-loading-manager/index.html"><span class="identifier">LoadingManager</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="cross-origin.html">crossOrigin</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">crossOrigin</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="manager.html">manager</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">manager</span><span class="symbol">: </span><a href="../-loading-manager/index.html"><span class="identifier">LoadingManager</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="path.html">path</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">path</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="request-header.html">requestHeader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">requestHeader</span><span class="symbol">: </span><a href="../-t$44/index.html"><span class="identifier">T$44</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="resource-path.html">resourcePath</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">resourcePath</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="load-async.html">loadAsync</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">loadAsync</span><span class="symbol">(</span><span class="identifier" id="three.js.Loader$loadAsync(kotlin.String, kotlin.Function1((, kotlin.Unit)))/url">url</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Loader$loadAsync(kotlin.String, kotlin.Function1((, kotlin.Unit)))/onProgress">onProgress</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-cross-origin.html">setCrossOrigin</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setCrossOrigin</span><span class="symbol">(</span><span class="identifier" id="three.js.Loader$setCrossOrigin(kotlin.String)/crossOrigin">crossOrigin</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-path.html">setPath</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setPath</span><span class="symbol">(</span><span class="identifier" id="three.js.Loader$setPath(kotlin.String)/path">path</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-request-header.html">setRequestHeader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setRequestHeader</span><span class="symbol">(</span><span class="identifier" id="three.js.Loader$setRequestHeader(three.js.T$44)/requestHeader">requestHeader</span><span class="symbol">:</span>&nbsp;<a href="../-t$44/index.html"><span class="identifier">T$44</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-resource-path.html">setResourcePath</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setResourcePath</span><span class="symbol">(</span><span class="identifier" id="three.js.Loader$setResourcePath(kotlin.String)/resourcePath">resourcePath</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-animation-loader/index.html">AnimationLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">AnimationLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-audio-loader/index.html">AudioLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">AudioLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-buffer-geometry-loader/index.html">BufferGeometryLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">BufferGeometryLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-compressed-texture-loader/index.html">CompressedTextureLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">CompressedTextureLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-cube-texture-loader/index.html">CubeTextureLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">CubeTextureLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-data-texture-loader/index.html">DataTextureLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">DataTextureLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-file-loader/index.html">FileLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">FileLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-font-loader/index.html">FontLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">FontLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-image-bitmap-loader/index.html">ImageBitmapLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">ImageBitmapLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-image-loader/index.html">ImageLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">ImageLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-material-loader/index.html">MaterialLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">MaterialLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-object-loader/index.html">ObjectLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">ObjectLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-texture-loader/index.html">TextureLoader</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">TextureLoader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Loader</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

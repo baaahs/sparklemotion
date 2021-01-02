@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>WebGLRenderList - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">WebGLRenderList</a><br/>
+<br/>
+<h1>WebGLRenderList</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">WebGLRenderList</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">WebGLRenderList</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderList$<init>(three.js.WebGLProperties)/properties">properties</span><span class="symbol">:</span>&nbsp;<a href="../-web-g-l-properties/index.html"><span class="identifier">WebGLProperties</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="opaque.html">opaque</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">opaque</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-render-item/index.html"><span class="identifier">RenderItem</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="transparent.html">transparent</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">transparent</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-render-item/index.html"><span class="identifier">RenderItem</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="finish.html">finish</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">finish</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="init.html">init</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">init</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="push.html">push</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">push</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderList$push(three.js.Object3D, three.js.BufferGeometry, three.js.Material, kotlin.Number, kotlin.Number, three.js.Group)/obj">obj</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderList$push(three.js.Object3D, three.js.BufferGeometry, three.js.Material, kotlin.Number, kotlin.Number, three.js.Group)/geometry">geometry</span><span class="symbol">:</span>&nbsp;<a href="../-buffer-geometry/index.html"><span class="identifier">BufferGeometry</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderList$push(three.js.Object3D, three.js.BufferGeometry, three.js.Material, kotlin.Number, kotlin.Number, three.js.Group)/material">material</span><span class="symbol">:</span>&nbsp;<a href="../-material/index.html"><span class="identifier">Material</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderList$push(three.js.Object3D, three.js.BufferGeometry, three.js.Material, kotlin.Number, kotlin.Number, three.js.Group)/groupOrder">groupOrder</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderList$push(three.js.Object3D, three.js.BufferGeometry, three.js.Material, kotlin.Number, kotlin.Number, three.js.Group)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderList$push(three.js.Object3D, three.js.BufferGeometry, three.js.Material, kotlin.Number, kotlin.Number, three.js.Group)/group">group</span><span class="symbol">:</span>&nbsp;<a href="../-group/index.html"><span class="identifier">Group</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="sort.html">sort</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">sort</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderList$sort(kotlin.Function((kotlin.Any)), kotlin.Function((kotlin.Any)))/opaqueSort">opaqueSort</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderList$sort(kotlin.Function((kotlin.Any)), kotlin.Function((kotlin.Any)))/transparentSort">transparentSort</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-function/index.html"><span class="identifier">Function</span></a><span class="symbol">&lt;</span><span class="identifier">*</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="unshift.html">unshift</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">unshift</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLRenderList$unshift(three.js.Object3D, three.js.BufferGeometry, three.js.Material, kotlin.Number, kotlin.Number, three.js.Group)/obj">obj</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderList$unshift(three.js.Object3D, three.js.BufferGeometry, three.js.Material, kotlin.Number, kotlin.Number, three.js.Group)/geometry">geometry</span><span class="symbol">:</span>&nbsp;<a href="../-buffer-geometry/index.html"><span class="identifier">BufferGeometry</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderList$unshift(three.js.Object3D, three.js.BufferGeometry, three.js.Material, kotlin.Number, kotlin.Number, three.js.Group)/material">material</span><span class="symbol">:</span>&nbsp;<a href="../-material/index.html"><span class="identifier">Material</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderList$unshift(three.js.Object3D, three.js.BufferGeometry, three.js.Material, kotlin.Number, kotlin.Number, three.js.Group)/groupOrder">groupOrder</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderList$unshift(three.js.Object3D, three.js.BufferGeometry, three.js.Material, kotlin.Number, kotlin.Number, three.js.Group)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLRenderList$unshift(three.js.Object3D, three.js.BufferGeometry, three.js.Material, kotlin.Number, kotlin.Number, three.js.Group)/group">group</span><span class="symbol">:</span>&nbsp;<a href="../-group/index.html"><span class="identifier">Group</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

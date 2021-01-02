@@ -1,0 +1,105 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Frustum - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">Frustum</a><br/>
+<br/>
+<h1>Frustum</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Frustum</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Frustum</span><span class="symbol">(</span><span class="identifier" id="three.js.Frustum$<init>(three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane)/p0">p0</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Frustum$<init>(three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane)/p1">p1</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Frustum$<init>(three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane)/p2">p2</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Frustum$<init>(three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane)/p3">p3</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Frustum$<init>(three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane)/p4">p4</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Frustum$<init>(three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane)/p5">p5</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="planes.html">planes</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">planes</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-plane/index.html"><span class="identifier">Plane</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="clone.html">clone</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clone</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Frustum</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="contains-point.html">containsPoint</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">containsPoint</span><span class="symbol">(</span><span class="identifier" id="three.js.Frustum$containsPoint(three.js.Vector3)/point">point</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="copy.html">copy</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">copy</span><span class="symbol">(</span><span class="identifier" id="three.js.Frustum$copy(three.js.Frustum)/frustum">frustum</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Frustum</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Frustum</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersects-box.html">intersectsBox</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectsBox</span><span class="symbol">(</span><span class="identifier" id="three.js.Frustum$intersectsBox(three.js.Box3)/box">box</span><span class="symbol">:</span>&nbsp;<a href="../-box3/index.html"><span class="identifier">Box3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersects-object.html">intersectsObject</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectsObject</span><span class="symbol">(</span><span class="identifier" id="three.js.Frustum$intersectsObject(three.js.Object3D)/obj">obj</span><span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersects-sphere.html">intersectsSphere</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectsSphere</span><span class="symbol">(</span><span class="identifier" id="three.js.Frustum$intersectsSphere(three.js.Sphere)/sphere">sphere</span><span class="symbol">:</span>&nbsp;<a href="../-sphere/index.html"><span class="identifier">Sphere</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersects-sprite.html">intersectsSprite</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectsSprite</span><span class="symbol">(</span><span class="identifier" id="three.js.Frustum$intersectsSprite(three.js.Sprite)/sprite">sprite</span><span class="symbol">:</span>&nbsp;<a href="../-sprite/index.html"><span class="identifier">Sprite</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set.html">set</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="three.js.Frustum$set(three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane)/p0">p0</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Frustum$set(three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane)/p1">p1</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Frustum$set(three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane)/p2">p2</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Frustum$set(three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane)/p3">p3</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Frustum$set(three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane)/p4">p4</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Frustum$set(three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane, three.js.Plane)/p5">p5</span><span class="symbol">:</span>&nbsp;<a href="../-plane/index.html"><span class="identifier">Plane</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Frustum</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-projection-matrix.html">setFromProjectionMatrix</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromProjectionMatrix</span><span class="symbol">(</span><span class="identifier" id="three.js.Frustum$setFromProjectionMatrix(three.js.Matrix4)/m">m</span><span class="symbol">:</span>&nbsp;<a href="../-matrix4/index.html"><span class="identifier">Matrix4</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Frustum</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

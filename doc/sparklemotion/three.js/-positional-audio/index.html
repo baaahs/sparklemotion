@@ -1,0 +1,119 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>PositionalAudio - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">PositionalAudio</a><br/>
+<br/>
+<h1>PositionalAudio</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">PositionalAudio</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-audio/index.html"><span class="identifier">Audio</span></a><span class="symbol">&lt;</span><a href="../-panner-node.html"><span class="identifier">PannerNode</span></a><span class="symbol">&gt;</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">PositionalAudio</span><span class="symbol">(</span><span class="identifier" id="three.js.PositionalAudio$<init>(three.js.AudioListener)/listener">listener</span><span class="symbol">:</span>&nbsp;<a href="../-audio-listener/index.html"><span class="identifier">AudioListener</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="panner.html">panner</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">panner</span><span class="symbol">: </span><a href="../-panner-node.html"><span class="identifier">PannerNode</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="get-distance-model.html">getDistanceModel</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getDistanceModel</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-max-distance.html">getMaxDistance</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getMaxDistance</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-output.html">getOutput</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getOutput</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-panner-node.html"><span class="identifier">PannerNode</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-ref-distance.html">getRefDistance</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getRefDistance</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-rolloff-factor.html">getRolloffFactor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getRolloffFactor</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-directional-cone.html">setDirectionalCone</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setDirectionalCone</span><span class="symbol">(</span><span class="identifier" id="three.js.PositionalAudio$setDirectionalCone(kotlin.Number, kotlin.Number, kotlin.Number)/coneInnerAngle">coneInnerAngle</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.PositionalAudio$setDirectionalCone(kotlin.Number, kotlin.Number, kotlin.Number)/coneOuterAngle">coneOuterAngle</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.PositionalAudio$setDirectionalCone(kotlin.Number, kotlin.Number, kotlin.Number)/coneOuterGain">coneOuterGain</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">PositionalAudio</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-distance-model.html">setDistanceModel</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setDistanceModel</span><span class="symbol">(</span><span class="identifier" id="three.js.PositionalAudio$setDistanceModel(kotlin.String)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">PositionalAudio</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-max-distance.html">setMaxDistance</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setMaxDistance</span><span class="symbol">(</span><span class="identifier" id="three.js.PositionalAudio$setMaxDistance(kotlin.Number)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">PositionalAudio</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-ref-distance.html">setRefDistance</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setRefDistance</span><span class="symbol">(</span><span class="identifier" id="three.js.PositionalAudio$setRefDistance(kotlin.Number)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">PositionalAudio</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-rolloff-factor.html">setRolloffFactor</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setRolloffFactor</span><span class="symbol">(</span><span class="identifier" id="three.js.PositionalAudio$setRolloffFactor(kotlin.Number)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">PositionalAudio</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="update-matrix-world.html">updateMatrixWorld</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">updateMatrixWorld</span><span class="symbol">(</span><span class="identifier" id="three.js.PositionalAudio$updateMatrixWorld(kotlin.Boolean)/force">force</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

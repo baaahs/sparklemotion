@@ -1,0 +1,117 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Line - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">Line</a><br/>
+<br/>
+<h1>Line</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Line</span><span class="symbol">&lt;</span><span class="identifier">TGeometry</span><span class="symbol">, </span><span class="identifier">TMaterial</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-object3-d/index.html"><span class="identifier">Object3D</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Line</span><span class="symbol">(</span><span class="identifier" id="three.js.Line$<init>(three.js.Line.TGeometry, three.js.Line.TMaterial, kotlin.Number)/geometry">geometry</span><span class="symbol">:</span>&nbsp;<span class="identifier">TGeometry</span>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Line$<init>(three.js.Line.TGeometry, three.js.Line.TMaterial, kotlin.Number)/material">material</span><span class="symbol">:</span>&nbsp;<span class="identifier">TMaterial</span>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Line$<init>(three.js.Line.TGeometry, three.js.Line.TMaterial, kotlin.Number)/mode">mode</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="geometry.html">geometry</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">geometry</span><span class="symbol">: </span><span class="identifier">TGeometry</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-line.html">isLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">isLine</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="material.html">material</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">material</span><span class="symbol">: </span><span class="identifier">TMaterial</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="morph-target-dictionary.html">morphTargetDictionary</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">morphTargetDictionary</span><span class="symbol">: </span><a href="../-t$20/index.html"><span class="identifier">T$20</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="morph-target-influences.html">morphTargetInfluences</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">morphTargetInfluences</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="type.html">type</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">type</span><span class="symbol">: </span><span class="keyword">dynamic</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="compute-line-distances.html">computeLineDistances</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">computeLineDistances</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Line</span></a><span class="symbol">&lt;</span><span class="identifier">TGeometry</span><span class="symbol">,</span>&nbsp;<span class="identifier">TMaterial</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="raycast.html">raycast</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">raycast</span><span class="symbol">(</span><span class="identifier" id="three.js.Line$raycast(three.js.Raycaster, kotlin.Array((three.js.Intersection)))/raycaster">raycaster</span><span class="symbol">:</span>&nbsp;<a href="../-raycaster/index.html"><span class="identifier">Raycaster</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Line$raycast(three.js.Raycaster, kotlin.Array((three.js.Intersection)))/intersects">intersects</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-intersection/index.html"><span class="identifier">Intersection</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="update-morph-targets.html">updateMorphTargets</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">updateMorphTargets</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-line-loop/index.html">LineLoop</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">LineLoop</span><span class="symbol">&lt;</span><span class="identifier">TGeometry</span><span class="symbol">, </span><span class="identifier">TMaterial</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Line</span></a><span class="symbol">&lt;</span><span class="identifier">TGeometry</span><span class="symbol">,</span>&nbsp;<span class="identifier">TMaterial</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-line-segments/index.html">LineSegments</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">LineSegments</span><span class="symbol">&lt;</span><span class="identifier">TGeometry</span><span class="symbol">, </span><span class="identifier">TMaterial</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Line</span></a><span class="symbol">&lt;</span><span class="identifier">TGeometry</span><span class="symbol">,</span>&nbsp;<span class="identifier">TMaterial</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

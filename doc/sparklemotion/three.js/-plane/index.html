@@ -1,0 +1,203 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Plane - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">Plane</a><br/>
+<br/>
+<h1>Plane</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Plane</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Plane</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$<init>(three.js.Vector3, kotlin.Number)/normal">normal</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.Plane$<init>(three.js.Vector3, kotlin.Number)/constant">constant</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="constant.html">constant</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">constant</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-plane.html">isPlane</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">isPlane</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="normal.html">normal</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">normal</span><span class="symbol">: </span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="apply-matrix4.html">applyMatrix4</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">applyMatrix4</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$applyMatrix4(three.js.Matrix4, three.js.Matrix3)/matrix">matrix</span><span class="symbol">:</span>&nbsp;<a href="../-matrix4/index.html"><span class="identifier">Matrix4</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Plane$applyMatrix4(three.js.Matrix4, three.js.Matrix3)/optionalNormalMatrix">optionalNormalMatrix</span><span class="symbol">:</span>&nbsp;<a href="../-matrix3/index.html"><span class="identifier">Matrix3</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plane</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="clone.html">clone</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clone</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plane</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="coplanar-point.html">coplanarPoint</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">coplanarPoint</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$coplanarPoint(three.js.Vector3)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="copy.html">copy</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">copy</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$copy(three.js.Plane)/plane">plane</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Plane</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plane</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="distance-to-point.html">distanceToPoint</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">distanceToPoint</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$distanceToPoint(three.js.Vector3)/point">point</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="distance-to-sphere.html">distanceToSphere</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">distanceToSphere</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$distanceToSphere(three.js.Sphere)/sphere">sphere</span><span class="symbol">:</span>&nbsp;<a href="../-sphere/index.html"><span class="identifier">Sphere</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="equals.html">equals</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">equals</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$equals(three.js.Plane)/plane">plane</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Plane</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersect-line.html">intersectLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectLine</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$intersectLine(three.js.Line3, three.js.Vector3)/line">line</span><span class="symbol">:</span>&nbsp;<a href="../-line3/index.html"><span class="identifier">Line3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Plane$intersectLine(three.js.Line3, three.js.Vector3)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersects-box.html">intersectsBox</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectsBox</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$intersectsBox(three.js.Box3)/box">box</span><span class="symbol">:</span>&nbsp;<a href="../-box3/index.html"><span class="identifier">Box3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersects-line.html">intersectsLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectsLine</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$intersectsLine(three.js.Line3)/line">line</span><span class="symbol">:</span>&nbsp;<a href="../-line3/index.html"><span class="identifier">Line3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersects-sphere.html">intersectsSphere</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">intersectsSphere</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$intersectsSphere(three.js.Sphere)/sphere">sphere</span><span class="symbol">:</span>&nbsp;<a href="../-sphere/index.html"><span class="identifier">Sphere</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-intersection-line.html">isIntersectionLine</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">isIntersectionLine</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$isIntersectionLine(kotlin.Any)/l">l</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="negate.html">negate</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">negate</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plane</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="normalize.html">normalize</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">normalize</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plane</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="ortho-point.html">orthoPoint</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">orthoPoint</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$orthoPoint(three.js.Vector3, three.js.Vector3)/point">point</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Plane$orthoPoint(three.js.Vector3, three.js.Vector3)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="project-point.html">projectPoint</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">projectPoint</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$projectPoint(three.js.Vector3, three.js.Vector3)/point">point</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Plane$projectPoint(three.js.Vector3, three.js.Vector3)/target">target</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set.html">set</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$set(three.js.Vector3, kotlin.Number)/normal">normal</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Plane$set(three.js.Vector3, kotlin.Number)/constant">constant</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plane</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-components.html">setComponents</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setComponents</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$setComponents(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Plane$setComponents(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Plane$setComponents(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/z">z</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Plane$setComponents(kotlin.Number, kotlin.Number, kotlin.Number, kotlin.Number)/w">w</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plane</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-coplanar-points.html">setFromCoplanarPoints</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromCoplanarPoints</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$setFromCoplanarPoints(three.js.Vector3, three.js.Vector3, three.js.Vector3)/a">a</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Plane$setFromCoplanarPoints(three.js.Vector3, three.js.Vector3, three.js.Vector3)/b">b</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Plane$setFromCoplanarPoints(three.js.Vector3, three.js.Vector3, three.js.Vector3)/c">c</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plane</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-from-normal-and-coplanar-point.html">setFromNormalAndCoplanarPoint</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">setFromNormalAndCoplanarPoint</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$setFromNormalAndCoplanarPoint(three.js.Vector3, three.js.Vector3)/normal">normal</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">, </span><span class="identifier" id="three.js.Plane$setFromNormalAndCoplanarPoint(three.js.Vector3, three.js.Vector3)/point">point</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plane</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="translate.html">translate</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">translate</span><span class="symbol">(</span><span class="identifier" id="three.js.Plane$translate(three.js.Vector3)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="../-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">Plane</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
