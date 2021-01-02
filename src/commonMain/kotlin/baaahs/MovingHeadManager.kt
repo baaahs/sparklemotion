@@ -20,7 +20,7 @@ class MovingHeadManager(
     }
 
     private val fixtures = movingHeads.map { movingHead ->
-        val adapter = movingHead.newBuffer(dmxUniverse)
+        val movingHeadBuffer = movingHead.newBuffer(dmxUniverse)
 
         Fixture(movingHead, 1, emptyList(), MovingHeadDevice, transport = object : Transport {
             override val name: String
@@ -28,10 +28,11 @@ class MovingHeadManager(
 
             override fun send(fixture: Fixture, resultViews: List<ResultView>) {
                 val panAndTilt = MovingHeadDevice.getResults(resultViews)[0]
-                adapter.pan = panAndTilt.x
-                adapter.tilt = panAndTilt.y
+                movingHeadBuffer.pan = panAndTilt.x
+                movingHeadBuffer.tilt = panAndTilt.y
+                movingHeadBuffer.colorWheelPosition = panAndTilt.z
 
-                adapter.dimmer = 1f
+                movingHeadBuffer.dimmer = 1f
             }
         })
     }

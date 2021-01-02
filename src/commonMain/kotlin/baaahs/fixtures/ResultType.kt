@@ -160,11 +160,11 @@ object Vec3ResultType : FloatsResultType(
         }
 
         override fun getView(pixelOffset: Int, pixelCount: Int): ResultView {
-            return Vec3ResultType(this, pixelOffset, pixelCount)
+            return Vec3ResultView(this, pixelOffset, pixelCount)
         }
     }
 
-    class Vec3ResultType(
+    class Vec3ResultView(
         private val buffer: ParamBuffer,
         pixelOffset: Int,
         pixelCount: Int
@@ -191,11 +191,11 @@ object Vec4ResultType : FloatsResultType(4, GlContext.GL_RGBA32F, GL_RGBA) {
         }
 
         override fun getView(pixelOffset: Int, pixelCount: Int): ResultView {
-            return Vec4ParamBuffer(this, pixelOffset, pixelCount)
+            return Vec4ResultView(this, pixelOffset, pixelCount)
         }
     }
 
-    class Vec4ParamBuffer(
+    class Vec4ResultView(
         private val buffer: ParamBuffer,
         pixelOffset: Int,
         pixelCount: Int

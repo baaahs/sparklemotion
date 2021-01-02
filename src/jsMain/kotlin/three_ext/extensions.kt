@@ -8,9 +8,9 @@ operator fun <T> ArrayLike<T>.set(i: Int, t: T) {
 }
 
 operator fun Vector3.plus(other: Vector3): Vector3 {
-    return this.add(other)
+    return this.clone().add(other)
 }
 
 operator fun Vector3.minus(other: Vector3): Vector3 {
-    return this.sub(other)
+    return this.clone().sub(other)
 }

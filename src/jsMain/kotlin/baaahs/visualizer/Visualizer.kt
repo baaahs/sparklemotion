@@ -51,7 +51,9 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
             position.z = 1000.0
         }
     private val scene: Scene = Scene()
-    private val renderer = WebGLRenderer()
+    private val renderer = WebGLRenderer().apply {
+        localClippingEnabled = true
+    }
     private val geom = Geometry()
 
     private var obj: Object3D = Object3D()

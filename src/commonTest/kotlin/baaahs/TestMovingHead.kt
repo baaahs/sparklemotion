@@ -24,6 +24,7 @@ class TestMovingHead : MovingHead("test", "Test", 1, Vector3F.origin, Vector3F.o
         override val primaryColor: Color get() = Color.BLACK
         override val secondaryColor: Color get() = TODO("not implemented")
         override val colorSplit: Float get() = TODO("not implemented")
-        override val colorWheelPosition: Float get() = TODO("not implemented")
+        override var colorWheelPosition: Float get() = TODO("not implemented")
+            set(_) = TODO("not implemented")
     }
 }

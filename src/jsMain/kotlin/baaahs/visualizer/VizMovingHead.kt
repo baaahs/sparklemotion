@@ -1,7 +1,6 @@
 package baaahs.visualizer
 
 import baaahs.Color
-import baaahs.geom.Vector3F
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
 import three.js.*
@@ -33,8 +32,10 @@ class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniv
     }
 
     inner class ColorWheelBeam : Beam {
-        private val primaryCone = Cone(movingHead.origin, movingHead.heading)
-        private val secondaryCone = Cone(movingHead.origin, movingHead.heading)
+        private val coneOrigin = movingHead.origin.toVector3()
+        private val coneHeading = movingHead.heading.toVector3()
+        private val primaryCone = Cone(coneOrigin, coneHeading, ClipMode.Primary)
+        private val secondaryCone = Cone(coneOrigin, coneHeading, ClipMode.Secondary)
 
         override fun addTo(scene: Scene) {
             primaryCone.addTo(scene)
@@ -42,21 +43,16 @@ class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniv
         }
 
         override fun receivedDmxFrame() {
-            primaryCone.setColor(buffer.primaryColor, buffer.dimmer)
-            secondaryCone.setColor(buffer.secondaryColor, buffer.dimmer)
-
-            val rotation = Vector3F(
-                movingHead.panRange.scale(buffer.pan),
-                0f,
-                movingHead.tiltRange.scale(buffer.tilt)
-            )
-            primaryCone.setRotation(rotation)
-            secondaryCone.setRotation(rotation)
+            primaryCone.update(buffer)
+            secondaryCone.update(buffer)
         }
     }
 
     inner class RgbBeam : Beam {
-        private val cone = Cone(movingHead.origin, movingHead.heading)
+        private val cone = Cone(
+            movingHead.origin.toVector3(),
+            movingHead.heading.toVector3()
+        )
 
         override fun addTo(scene: Scene) {
             cone.addTo(scene)
@@ -65,17 +61,23 @@ class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniv
         override fun receivedDmxFrame() {
             cone.setColor(buffer.primaryColor, buffer.dimmer)
 
-            val rotation = Vector3F(
+            val rotation = Vector3(
                 movingHead.panRange.scale(buffer.pan),
                 0f,
                 movingHead.tiltRange.scale(buffer.tilt)
             )
-            cone.setRotation(rotation)
+            cone.setRotation(rotation, buffer.colorSplit)
         }
     }
 
-    class Cone(val origin: Vector3F, val heading: Vector3F) {
+    inner class Cone(
+        private val origin: Vector3,
+        private val heading: Vector3,
+        private val clipMode: ClipMode = ClipMode.Solo
+    ) {
         private val coneLength = 1000.0
+
+        private val clipPlane = Plane(Vector3(0, 0, 1), 0)
 
         private val innerBaseOpacity = .75
         private val innerMaterial = MeshBasicMaterial().apply {
@@ -84,6 +86,9 @@ class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniv
             transparent = true
             opacity = innerBaseOpacity
             depthTest = false
+            if (clipMode.isClipped) {
+                clippingPlanes = arrayOf(clipPlane)
+            }
         }
         private val innerGeometry = ConeGeometry(20, coneLength, openEnded = true)
             .also { it.applyMatrix4(Matrix4().makeTranslation(0.0, -coneLength / 2, 0.0)) }
@@ -97,6 +102,9 @@ class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniv
             opacity = outerBaseOpacity
             blending = AdditiveBlending
             depthTest = false
+            if (clipMode.isClipped) {
+                clippingPlanes = arrayOf(clipPlane)
+            }
         }
         private val outerGeometry = ConeGeometry(50, coneLength, openEnded = true)
             .also { it.applyMatrix4(Matrix4().makeTranslation(0.0, -coneLength / 2, 0.0)) }
@@ -109,12 +117,24 @@ class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniv
         init {
             cones.forEach { cone ->
                 cone.position.set(origin.x - coneLength / 2, origin.y, origin.z)
-                cone.rotation.setFromVector3(heading.toVector3())
+                cone.rotation.setFromVector3(heading)
             }
         }
 
         fun addTo(scene: Scene) {
             cones.forEach { cone -> scene.add(cone) }
+        }
+
+        fun update(buffer: MovingHead.Buffer) {
+            val color = clipMode.getColor(buffer)
+            setColor(color, buffer.dimmer)
+
+            val rotation = Vector3(
+                movingHead.panRange.scale(buffer.pan),
+                0f,
+                movingHead.tiltRange.scale(buffer.tilt)
+            )
+            setRotation(rotation, buffer.colorSplit)
         }
 
         fun setColor(color: Color, dimmer: Float) {
@@ -125,11 +145,31 @@ class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniv
             }
         }
 
-        fun setRotation(rotation: Vector3F) {
+        fun setRotation(rotation: Vector3, colorSplit: Float) {
+            val aim = heading.clone().add(rotation)
             cones.forEach { cone ->
-                cone.rotation.setFromVector3((heading + rotation).toVector3())
+                cone.rotation.setFromVector3(aim)
+            }
+
+            if (clipMode.isClipped) {
+                aim.y += (1f - colorSplit - .5f) * .25f
+                val planeRotation = Euler().setFromVector3(aim)
+                val normal = Vector3(0, 0, 1).applyEuler(planeRotation)
+                if (clipMode == ClipMode.Secondary) normal.negate()
+                val planeOrigin = origin.clone()
+                planeOrigin.x -= coneLength / 2
+                clipPlane.setFromNormalAndCoplanarPoint(normal, planeOrigin)
             }
         }
+    }
+
+    enum class ClipMode(
+        val isClipped: Boolean,
+        val getColor: MovingHead.Buffer.() -> Color
+    ) {
+        Solo(false, { primaryColor }),
+        Primary(true, { primaryColor }),
+        Secondary(true, { secondaryColor })
     }
 
     fun ClosedRange<Float>.scale(value: Float) =
