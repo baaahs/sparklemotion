@@ -22,8 +22,8 @@ import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPixels
 import decodeQueryParams
-import info.laht.threekt.math.Vector3
 import kotlinx.coroutines.*
+import three.js.Vector3
 
 class SheepSimulator(val model: Model) {
     @Suppress("unused")
@@ -150,7 +150,7 @@ class SheepSimulator(val model: Model) {
                             PixelData(Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat()), null, null)
                         }, null, null, null
                     )
-                }, Matrix4(emptyArray()), null, notes = "Simulated pixels")
+                }, Matrix4(doubleArrayOf()), null, notes = "Simulated pixels")
             )
             mapperFs.renameFile(
                 mappingSessionPath,

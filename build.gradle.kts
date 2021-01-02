@@ -149,7 +149,6 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-html-js:${Versions.kotlinxHtml}")
 
-                implementation("com.github.markaren:three.kt:v0.88-ALPHA-7")
                 implementation("com.danielgergely.kgl:kgl-js:${Versions.kgl}")
 
                 // kotlin react:
@@ -167,7 +166,7 @@ kotlin {
                 implementation(npm("@babel/preset-react", "^7.0.0"))
 //                implementation(npm("prettier", "1.19.1"))
 
-                implementation(npm("camera-controls", "^1.12.1"))
+                implementation(npm("camera-controls", "^1.25.3"))
                 implementation(npm("chroma-js", "^2.0.3"))
                 implementation(npm("css-loader", "^2.1.1"))
 
@@ -195,7 +194,7 @@ kotlin {
                 implementation(npm("react-hot-loader", "^4.11.0"))
                 implementation(npm("sass-loader", "^7.1.0"))
                 implementation(npm("style-loader", "^0.23.1"))
-                implementation(npm("three", "^0.102.1"))
+                implementation(npm("three", "^0.120.0", generateExternals = false))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
                 implementation(npm("react-mosaic-component", "^4.0.0"))
                 implementation(npm("react-error-boundary", "^2.2.2"))

@@ -15,11 +15,13 @@ import kotlinext.js.jsObject
 import org.w3c.dom.get
 import react.createElement
 import react.dom.render
+import three_ext.installCameraControls
 
 fun main(args: Array<String>) {
     @Suppress("ConstantConditionIf", "SimplifyBooleanWithConstants")
     if (1 + 1 == 3) noDCE()
     ConsoleFormatters.install()
+    installCameraControls()
 
     val mode = document["sparklemotionMode"] ?: "test"
     println("args = $args, mode = $mode")

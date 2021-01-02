@@ -9,23 +9,10 @@ import baaahs.imaging.NativeBitmap
 import baaahs.jsx.MapperIndex
 import baaahs.model.Model
 import baaahs.visualizer.Rotator
-import info.laht.threekt.cameras.Camera
-import info.laht.threekt.cameras.PerspectiveCamera
-import info.laht.threekt.core.*
-import info.laht.threekt.geometries.SphereBufferGeometry
-import info.laht.threekt.materials.LineBasicMaterial
-import info.laht.threekt.materials.MeshBasicMaterial
-import info.laht.threekt.materials.PointsMaterial
-import info.laht.threekt.math.*
-import info.laht.threekt.math.Color
-import info.laht.threekt.objects.Line
-import info.laht.threekt.objects.Mesh
-import info.laht.threekt.objects.Points
-import info.laht.threekt.renderers.WebGLRenderer
-import info.laht.threekt.scenes.Scene
 import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.dom.clear
 import kotlinx.html.*
 import kotlinx.html.dom.append
 import kotlinx.html.dom.create
@@ -35,11 +22,14 @@ import org.w3c.dom.*
 import org.w3c.dom.events.KeyboardEvent
 import react.ReactElement
 import react.createElement
-import three.Matrix4
+import three.js.*
+import three.js.Color
+import three_ext.CameraControls
+import three_ext.Matrix4
+import three_ext.plus
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
-import kotlin.dom.clear
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -63,10 +53,10 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     private val clock = Clock()
 
     // onscreen renderer for registration UI:
-    private val uiRenderer = WebGLRenderer(js("{alpha: true}"))
+    private val uiRenderer = WebGLRenderer(jsObject { alpha = true })
     private var uiScene = Scene()
     private var uiCamera = PerspectiveCamera(45, width.toDouble() / height, 1, 10000)
-    private var uiControls: dynamic
+    private var uiControls: CameraControls
     private val wireframe = Object3D()
 
     private var selectedSurfaces = mutableListOf<PanelInfo>()
@@ -121,7 +111,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     private val ui2dCtx = ui2dCanvas.context2d()
 
     private val ui3dDiv = screen.first<HTMLCanvasElement>("mapperUi-3d-div")
-    private val ui3dCanvas = uiRenderer.domElement as HTMLCanvasElement
+    private val ui3dCanvas = uiRenderer.domElement
 
     private val diffCanvas = screen.first<HTMLCanvasElement>("mapperUi-diff-canvas")
     private val diffCtx = diffCanvas.context2d()
@@ -154,7 +144,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         uiCamera.position.z = 1000.0
         uiScene.add(uiCamera)
 
-        uiControls = MapperIndex.createCameraControls(uiCamera, uiRenderer.domElement)
+        uiControls = CameraControls(uiCamera, uiRenderer.domElement)
 
         screen.focus()
         screen.addEventListener("keydown", { event -> gotUiKeypress(event as KeyboardEvent) })
@@ -205,7 +195,10 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     private fun updateCameraRotation(angle: Float) {
         cameraZRotation += angle
         uiCamera.up.set(0, 1, 0)
-        uiCamera.up.applyMatrix4(Matrix4().makeRotationZ(cameraZRotation.toDouble()))
+
+        val cameraAngle = Matrix4()
+        val rotated = cameraAngle.makeRotationZ(cameraZRotation.toDouble())
+        uiCamera.up.applyMatrix4(rotated)
     }
 
     private fun selectSurfacesMatching(pattern: String) {
@@ -300,12 +293,12 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
 
             val faceNormalAcc = Vector3()
             val panelFaces = surface.faces.map { face ->
-                val face3 = Face3(face.vertexA, face.vertexB, face.vertexC, Vector3())
+                val face3 = Face3(face.vertexA, face.vertexB, face.vertexC, Vector3(), Color(1, 1, 1))
 
                 // just compute this face's normal
                 geom.faces = arrayOf(face3)
                 geom.computeFaceNormals()
-                faceNormalAcc.add(face3.normal!!)
+                faceNormalAcc.add(face3.normal)
 
                 face3
             }
@@ -349,7 +342,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         uiScene.add(originMarker)
 
         val boundingBox = Box3().setFromObject(wireframe)
-        uiControls.fitTo(boundingBox, false)
+        uiControls.fitToBox(boundingBox, false)
     }
 
     override fun lockUi(): MapperUi.CameraOrientation {
@@ -371,7 +364,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
             val panelPosition = panelInfo.geom.vertices[panelInfo.faces[0].a]
             val dirToCamera = uiCamera.position.clone().sub(panelPosition)
             dirToCamera.normalize()
-            val angle = panelInfo.faces[0].normal!!.dot(dirToCamera)
+            val angle = panelInfo.faces[0].normal.dot(dirToCamera)
             if (angle > 0) {
                 panelInfo.mesh.updateMatrixWorld()
 
@@ -405,10 +398,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
             color = Color(0x00FF00)
             size = 5
         }
-        private val points = Points().apply {
-            geometry = this@VisibleSurface.geom
-            material = this@VisibleSurface.material
-        }
+        private val points = Points(geom, material)
         private val pixels = mutableMapOf<Int, VisiblePixel>()
 
         override fun addPixel(pixelIndex: Int, x: Float, y: Float) {
@@ -426,7 +416,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         override val pixelsInModelSpace: List<Vector3F?>
             get() {
                 val vectors = mutableListOf<Vector3F?>()
-                for (i in 0..(pixels.keys.max()!!)) {
+                for (i in 0..(pixels.keys.maxOrNull()!!)) {
                     val position = pixels[i]?.positionInModel
                     vectors.add(position?.let {
                         Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat())
@@ -435,8 +425,8 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
                 return vectors
             }
 
-        private fun findIntersection(x: Float, y: Float): Intersect? {
-            val raycaster = three.Raycaster()
+        private fun findIntersection(x: Float, y: Float): Intersection? {
+            val raycaster = Raycaster()
             val pixelVector = Vector2(
                 x / uiWidth * 2 - 1,
                 -(y / uiHeight * 2 - 1)
@@ -463,7 +453,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         }
 
         inner class VisiblePixel(val pixelIndex: Int, val cameraX: Float, val cameraY: Float) {
-            private val intersect: Intersect? by lazy { findIntersection(cameraX, cameraY) }
+            private val intersect: Intersection? by lazy { findIntersection(cameraX, cameraY) }
             val positionInModel = intersect?.point
 
             fun addToGeom() {
@@ -492,7 +482,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         MapperUi.CameraOrientation {
         fun createCamera(): PerspectiveCamera {
             return PerspectiveCamera(45, aspect, 1, 10000).apply {
-                matrix.fromArray(cameraMatrix.elements.toDoubleArray())
+                matrix.fromArray(cameraMatrix.elements)
                 // Get back position/rotation/scale attributes.
                 matrix.asDynamic().decompose(position, quaternion, scale)
                 updateMatrixWorld()
@@ -502,8 +492,8 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         companion object {
             fun from(camera: PerspectiveCamera): CameraOrientation {
                 return CameraOrientation(
-                    baaahs.geom.Matrix4(camera.matrix.toArray(js("undefined")).toTypedArray()),
-                    camera.aspect
+                    baaahs.geom.Matrix4(camera.matrix.toArray()),
+                    camera.aspect.toDouble()
                 )
             }
         }
@@ -538,7 +528,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         y: Int,
         visibleSurfaces: List<MapperUi.VisibleSurface>
     ): MapperUi.VisibleSurface? {
-        val raycaster = three.Raycaster()
+        val raycaster = Raycaster()
         val pixelVector = Vector2(
             x.toFloat() / uiWidth * 2 - 1,
             -(y.toFloat() / uiHeight * 2 - 1)
@@ -729,7 +719,7 @@ private fun Box3.project(camera: Camera): Box3 {
 class PanelInfo(
     val name: String,
     val faces: List<Face3>,
-    val mesh: Mesh,
+    val mesh: Mesh<*, *>,
     val geom: Geometry,
     val lineMaterial: LineBasicMaterial
 ) {
@@ -749,7 +739,7 @@ class PanelInfo(
         for (vertex in vertices) {
             boundingBox.expandByPoint(vertex)
         }
-        boundingBox.translate(mesh.getWorldPosition())
+        boundingBox.translate(mesh.getWorldPosition(Vector3()))
     }
 
     val boundingBox get() = _boundingBox.clone()
@@ -761,7 +751,7 @@ class PanelInfo(
     }
 
     private val normalBoundingBox: Box3 by lazy {
-        val worldPos = mesh.getWorldPosition()
+        val worldPos = mesh.getWorldPosition(Vector3())
         val boundingBox = Box3()
         for (vertex in vertices) {
             boundingBox.expandByPoint(toSurfaceNormal(vertex).add(worldPos))
@@ -791,7 +781,7 @@ class PanelInfo(
         lineMaterial.color.g = 1.0
     }
 
-    val center get() = boundingBox.getCenter()
+    val center get() = boundingBox.getCenter(Vector3())
 
     val isMultiFaced get() = faces.size > 1
 
@@ -801,7 +791,7 @@ class PanelInfo(
         for (face in faces) {
             val triangle = Triangle(geom.vertices[face.a], geom.vertices[face.b], geom.vertices[face.c])
             val faceArea = triangle.asDynamic().getArea() as Float
-            faceNormalSum.addScaledVector(face.normal!!, faceArea)
+            faceNormalSum.addScaledVector(face.normal, faceArea)
             totalArea += faceArea
         }
         faceNormalSum.divideScalar(totalArea.toDouble())

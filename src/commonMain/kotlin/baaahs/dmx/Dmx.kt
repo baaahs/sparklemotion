@@ -9,8 +9,8 @@ interface Dmx {
 
     class Buffer(
         private val channels: ByteArray,
-        val baseChannel: Int,
-        val channelCount: Int
+        private val baseChannel: Int,
+        private val channelCount: Int
     ) {
         operator fun get(channel: Channel): Byte = get(channel.offset)
 
@@ -35,11 +35,5 @@ interface Dmx {
 
     interface Channel {
         val offset: Int
-    }
-
-    interface Adapter
-
-    interface AdapterBuilder {
-        fun build(buffer: Buffer): Adapter
     }
 }

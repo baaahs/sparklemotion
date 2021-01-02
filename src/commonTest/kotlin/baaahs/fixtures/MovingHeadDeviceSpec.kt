@@ -1,8 +1,9 @@
+package baaahs.fixtures
+
+import baaahs.TestMovingHead
 import baaahs.TestRenderContext
 import baaahs.describe
-import baaahs.fixtures.MovingHeadInfoDataSource
 import baaahs.geom.Vector3F
-import baaahs.model.MovingHead
 import baaahs.show.live.link
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
@@ -11,12 +12,7 @@ import org.spekframework.spek2.Spek
 @Suppress("unused")
 object MovingHeadInfoDataSourceSpec : Spek({
     describe<MovingHeadInfoDataSource> {
-        val movingHead by value {
-            MovingHead("head1", "",
-                origin = Vector3F(1f, 2f, 3f),
-                heading = Vector3F(4f, 5f, 6f)
-            )
-        }
+        val movingHead by value { TestMovingHead() }
 
         val shaderText by value {
             """
