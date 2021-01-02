@@ -1,10 +1,10 @@
 package baaahs.visualizer.movers
 
 import baaahs.model.MovingHead
-import three.js.Scene
+import baaahs.visualizer.VizScene
 
 interface Beam {
-    fun addTo(scene: Scene)
+    fun addTo(scene: VizScene)
     fun update(state: State)
 }
 
@@ -12,7 +12,7 @@ class ColorWheelBeam(movingHead: MovingHead) : Beam {
     private val primaryCone = Cone(movingHead, ColorMode.Primary)
     private val secondaryCone = Cone(movingHead, ColorMode.Secondary)
 
-    override fun addTo(scene: Scene) {
+    override fun addTo(scene: VizScene) {
         primaryCone.addTo(scene)
         secondaryCone.addTo(scene)
     }
@@ -26,7 +26,7 @@ class ColorWheelBeam(movingHead: MovingHead) : Beam {
 class RgbBeam(movingHead: MovingHead) : Beam {
     private val cone = Cone(movingHead)
 
-    override fun addTo(scene: Scene) {
+    override fun addTo(scene: VizScene) {
         cone.addTo(scene)
     }
 
