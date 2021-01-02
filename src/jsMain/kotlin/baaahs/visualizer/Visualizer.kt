@@ -7,6 +7,7 @@ import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.asMillis
+import baaahs.visualizer.movers.VizMovingHead
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.MouseEvent
 import three.js.*

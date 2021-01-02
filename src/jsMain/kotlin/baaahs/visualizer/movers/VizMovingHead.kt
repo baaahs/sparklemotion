@@ -1,8 +1,9 @@
-package baaahs.visualizer
+package baaahs.visualizer.movers
 
 import baaahs.Color
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
+import baaahs.visualizer.toVector3
 import three.js.*
 
 class VizMovingHead(private val movingHead: MovingHead, dmxUniverse: FakeDmxUniverse) {
