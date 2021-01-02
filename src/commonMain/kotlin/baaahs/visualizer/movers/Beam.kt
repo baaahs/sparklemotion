@@ -6,6 +6,16 @@ import baaahs.visualizer.VizScene
 interface Beam {
     fun addTo(scene: VizScene)
     fun update(state: State)
+
+    companion object {
+        fun selectFor(movingHead: MovingHead): Beam {
+            return when (movingHead.colorModel) {
+                MovingHead.ColorModel.ColorWheel -> ColorWheelBeam(movingHead)
+                MovingHead.ColorModel.RGB -> RgbBeam(movingHead)
+                MovingHead.ColorModel.RGBW -> RgbBeam(movingHead)
+            }
+        }
+    }
 }
 
 class ColorWheelBeam(movingHead: MovingHead) : Beam {

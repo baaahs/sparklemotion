@@ -10,19 +10,14 @@ import kotlin.math.absoluteValue
 class VizMovingHead(
     private val movingHead: MovingHead,
     dmxUniverse: FakeDmxUniverse,
-    private val clock: Clock
+    private val clock: Clock,
+    private val beam: Beam = Beam.selectFor(movingHead)
 ) {
     private val buffer = run {
         val dmxBufferReader = dmxUniverse.reader(movingHead.baseDmxChannel, movingHead.dmxChannelCount) {
             receivedDmxFrame()
         }
         movingHead.newBuffer(dmxBufferReader)
-    }
-
-    private val beam = when (movingHead.colorModel) {
-        MovingHead.ColorModel.ColorWheel -> ColorWheelBeam(movingHead)
-        MovingHead.ColorModel.RGB -> RgbBeam(movingHead)
-        MovingHead.ColorModel.RGBW -> RgbBeam(movingHead)
     }
 
     private var lastUpdate = clock.now()
