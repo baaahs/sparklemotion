@@ -4,7 +4,6 @@ import baaahs.Color
 import baaahs.geom.Vector3F
 import baaahs.model.MovingHead
 import baaahs.toRadians
-import kotlin.math.absoluteValue
 
 class Shenzarpy(
     name: String,
@@ -17,37 +16,26 @@ class Shenzarpy(
 
     override val colorModel: ColorModel get() = ColorModel.ColorWheel
     override val colorWheelColors: List<WheelColor> = WheelColor.values.toList()
+    override val colorWheelMotorSpeed: Float = .3f
+    private val colorWheelChannel: Dmx.Channel get() = Channel.COLOR_WHEEL
+
+    override val dimmerChannel: Dmx.Channel get() = Channel.DIMMER
 
     override val panChannel get() = Channel.PAN
     override val panFineChannel: Dmx.Channel get() = Channel.PAN_FINE
     override val panRange: ClosedRange<Float> =
         toRadians(0f)..toRadians(540f)
+    override val panMotorSpeed: Float = 2.54f
 
     override val tiltChannel: Dmx.Channel get() = Channel.TILT
     override val tiltFineChannel: Dmx.Channel get() = Channel.TILT_FINE
     override val tiltRange: ClosedRange<Float> =
-        toRadians(-110f)..toRadians(110f)
-
-    override val supportsFinePositioning: Boolean
-        get() = true
-
-    override val dimmerChannel: Dmx.Channel get() = Channel.DIMMER
-
-    private val colorWheelChannel: Dmx.Channel get() = Channel.COLOR_WHEEL
+        toRadians(-126f)..toRadians(126f)
+    override val tiltMotorSpeed: Float = 1.3f
 
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
 
-    private fun colorAtPosition(position: Float, next: Boolean = false): Color {
-        var colorIndex = (position.absoluteValue % 1f * colorWheelColors.size).toInt()
-        if (next) colorIndex = (colorIndex + 1) % colorWheelColors.size
-        return colorWheelColors[colorIndex].color
-    }
-
     inner class Buffer(override val dmxBuffer: Dmx.Buffer) : MovingHead.BaseBuffer(this@Shenzarpy) {
-        override val primaryColor: Color get() = colorAtPosition(colorWheelPosition)
-        override val secondaryColor: Color get() = colorAtPosition(colorWheelPosition, next = true)
-        override val colorSplit: Float get() = (colorWheelPosition * colorWheelColors.size) % 1f
-
         override var colorWheelPosition: Float
             get() = colorWheel.toInt() / 128f
             set(value) { colorWheel = (value * 128f).toInt().toByte() }
