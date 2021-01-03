@@ -1,6 +1,5 @@
 package baaahs.gl.patch
 
-import baaahs.fixtures.MovingHeadInfoDataSource
 import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.kexpect
 import baaahs.gl.override
@@ -8,6 +7,7 @@ import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
+import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutablePatch
@@ -574,16 +574,16 @@ object GlslGenerationSpec : Spek({
             override(shaderText) {
                 /**language=glsl*/
                 """
-                    struct MovingHeadInfo {
+                    struct FixtureInfo {
                         vec3 origin;            
                         vec3 heading; // in Euler angles
                     };
                     
-                    uniform MovingHeadInfo movingHeadInfo;
+                    uniform FixtureInfo fixtureInfo;
                     
                     // @return pan-tilt
                     vec4 main() {
-                        return vec4(movingHeadInfo.origin.xy, movingHeadInfo.heading.xy);
+                        return vec4(fixtureInfo.origin.xy, fixtureInfo.heading.xy);
                     }
                 """.trimIndent()
             }
@@ -591,7 +591,7 @@ object GlslGenerationSpec : Spek({
 
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
-                    link("movingHeadInfo", MovingHeadInfoDataSource())
+                    link("fixtureInfo", FixtureInfoDataSource())
                 }
             }
 
@@ -607,13 +607,13 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
-                        struct MovingHeadInfo {
+                        struct FixtureInfo {
                             vec3 origin;
                             vec3 heading;
                         };
 
-                        // Data source: Moving Head Info
-                        uniform MovingHeadInfo in_movingHeadInfo;
+                        // Data source: Fixture Info
+                        uniform FixtureInfo in_fixtureInfo;
 
                         // Shader: Untitled Shader; namespace: p0
                         // Untitled Shader
@@ -622,7 +622,7 @@ object GlslGenerationSpec : Spek({
 
                         #line 9
                         vec4 p0_untitledShader_main() {
-                            return vec4(in_movingHeadInfo.origin.xy, in_movingHeadInfo.heading.xy);
+                            return vec4(in_fixtureInfo.origin.xy, in_fixtureInfo.heading.xy);
                         }
 
 
@@ -659,7 +659,7 @@ object GlslGenerationSpec : Spek({
 
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
-                    link("movingHeadInfo", MovingHeadInfoDataSource())
+                    link("fixtureInfo", FixtureInfoDataSource())
                 }
             }
 
@@ -727,7 +727,7 @@ object GlslGenerationSpec : Spek({
 
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
-                    link("movingHeadInfo", MovingHeadInfoDataSource())
+                    link("fixtureInfo", FixtureInfoDataSource())
                 }
             }
 

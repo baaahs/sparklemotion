@@ -42,7 +42,7 @@ object GlslAnalyzerSpec : Spek({
                     uniform vec2  resolution;
                     
                     // @@AnotherClass key=value key2=value2
-                    uniform struct MovingHeadInfo {
+                    uniform struct FixtureInfo {
                         vec3 origin;
                         vec3 heading;
                     } leftEye;
@@ -88,9 +88,9 @@ object GlslAnalyzerSpec : Spek({
                             GlslVar(
                                 "leftEye",
                                 GlslType.Struct(
-                                    "MovingHeadInfo",
+                                    "FixtureInfo",
                                     mapOf("origin" to GlslType.Vec3, "heading" to GlslType.Vec3)),
-                                "uniform struct MovingHeadInfo {\n" +
+                                "uniform struct FixtureInfo {\n" +
                                         "    vec3 origin;\n" +
                                         "    vec3 heading;\n" +
                                         "} leftEye;",
@@ -139,10 +139,10 @@ object GlslAnalyzerSpec : Spek({
                             ), GlslVar(
                                 "leftEye",
                                 GlslType.Struct(
-                                    "MovingHeadInfo",
+                                    "FixtureInfo",
                                     mapOf("origin" to GlslType.Vec3, "heading" to GlslType.Vec3)
                                 ),
-                                fullText = "uniform MovingHeadInfo leftEye;", lineNumber = 13,
+                                fullText = "uniform FixtureInfo leftEye;", lineNumber = 13,
                                 comments = listOf(" @@AnotherClass key=value key2=value2")
                             )
                         )
@@ -159,7 +159,7 @@ object GlslAnalyzerSpec : Spek({
                 it("finds the structs") {
                     expect(glslCode.structs.map { "${it.lineNumber}: ${it.fullText}" })
                         .containsExactly(
-                            "13: uniform struct MovingHeadInfo {\n    vec3 origin;\n    vec3 heading;\n} leftEye;"
+                            "13: uniform struct FixtureInfo {\n    vec3 origin;\n    vec3 heading;\n} leftEye;"
                         )
                 }
 
