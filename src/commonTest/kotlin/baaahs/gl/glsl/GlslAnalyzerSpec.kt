@@ -15,6 +15,7 @@ import baaahs.only
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.startsWith
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -322,6 +323,24 @@ object GlslAnalyzerSpec : Spek({
                     it("is ShaderToy") {
                         expect(dialect).toBe(ShaderToyShaderDialect)
                     }
+                }
+            }
+
+            context("analyze") {
+                override(shaderText) {
+                    """
+                        struct Whatever {
+                            float a;
+                            float b;
+                        }
+                        void main() { ... };
+                    """.trimIndent()
+                }
+
+                it("catches analyzer exceptions") {
+                    val analysis = glslAnalyzer.analyze(shaderText)
+                    expect(analysis.errors.only().message)
+                        .startsWith("huh? couldn't find a struct")
                 }
             }
 

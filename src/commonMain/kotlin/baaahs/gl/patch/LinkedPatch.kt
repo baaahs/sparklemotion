@@ -1,13 +1,11 @@
 package baaahs.gl.patch
 
-import baaahs.gl.glsl.GlslCode
 import baaahs.show.live.LiveShaderInstance.DataSourceLink
 
 class LinkedPatch(
     val rootNode: ProgramNode,
     private val components: List<Component>,
     val dataSourceLinks: Set<DataSourceLink>,
-    private var structs: Set<GlslCode.GlslStruct>,
     val warnings: List<String>
 ) {
     fun toGlsl(): String {
@@ -23,8 +21,8 @@ class LinkedPatch(
         }
         buf.append("\n")
 
-        structs.sortedBy { it.name }.forEach { struct ->
-            buf.append(struct.fullText.trim(), "\n\n")
+        components.forEach { component ->
+            component.appendStructs(buf)
         }
 
         components.forEach { component ->

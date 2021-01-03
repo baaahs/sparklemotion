@@ -129,6 +129,8 @@ class GlslCode(
         override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList()
     ) : GlslStatement {
+        val glslType: GlslType.Struct = GlslType.Struct(name, fields)
+
         override fun stripSource() = copy(fullText = "", lineNumber = null)
 
         fun getSyntheticVar(): GlslVar {

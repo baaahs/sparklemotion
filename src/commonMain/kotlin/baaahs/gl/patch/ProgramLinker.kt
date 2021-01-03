@@ -76,11 +76,11 @@ class ProgramLinker(
             )
             .map { componentBuilder[it.programNode] }
 
-        return LinkedPatch(rootNode, components, dataSourceLinks, structs, warnings)
+        return LinkedPatch(rootNode, components, dataSourceLinks, warnings)
     }
 
     fun visit(openShader: OpenShader) {
-        structs.addAll(openShader.glslCode.structs)
+        // No-op for now. Previously we collected structs here.
     }
 
     fun idFor(shader: Shader): String = showBuilder.idFor(shader)
@@ -107,6 +107,9 @@ data class DefaultValueNode(
 
     override fun getNodeId(programLinker: ProgramLinker): String = "n/a"
 
+    override fun appendStructs(buf: StringBuilder) {
+    }
+
     override fun appendDeclarations(buf: StringBuilder) {
     }
 
@@ -132,18 +135,15 @@ data class ConstNode(val glsl: String, override val outputPort: OutputPort) : Pr
 
     override fun getNodeId(programLinker: ProgramLinker): String = "n/a"
 
-    override fun traverse(programLinker: ProgramLinker, depth: Int) {
-    }
+    override fun traverse(programLinker: ProgramLinker, depth: Int) {}
 
     override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
         return this
     }
 
-    override fun appendDeclarations(buf: StringBuilder) {
-    }
-
-    override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {
-    }
+    override fun appendStructs(buf: StringBuilder) {}
+    override fun appendDeclarations(buf: StringBuilder) {}
+    override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {}
 
     override fun getExpression(): String {
         return "($glsl)"
