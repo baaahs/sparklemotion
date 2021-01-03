@@ -27,10 +27,10 @@ class MovingHeadManager(
                 get() = "DMX Transport"
 
             override fun send(fixture: Fixture, resultViews: List<ResultView>) {
-                val panAndTilt = MovingHeadDevice.getResults(resultViews)[0]
-                movingHeadBuffer.pan = panAndTilt.x
-                movingHeadBuffer.tilt = panAndTilt.y
-                movingHeadBuffer.colorWheelPosition = panAndTilt.z
+                val params = MovingHeadDevice.getResults(resultViews)[0]
+                movingHeadBuffer.pan = params.x
+                movingHeadBuffer.tilt = params.y
+                movingHeadBuffer.colorWheelPosition = params.z
 
                 movingHeadBuffer.dimmer = 1f
             }

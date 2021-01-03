@@ -2,6 +2,7 @@ package baaahs.fixtures
 
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.core.FixtureInfoDataSource
+import baaahs.plugin.core.MovingHeadParams
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 
@@ -12,15 +13,16 @@ object MovingHeadDevice : DeviceType {
     override val dataSourceBuilders: List<DataSourceBuilder<*>>
         get() = listOf(FixtureInfoDataSource)
 
-    override val resultParams: List<ResultParam> get() = listOf(
-        ResultParam("Pan/Tilt", Vec4ResultType)
-    )
+    override val resultParams: List<ResultParam>
+        get() = listOf(
+            ResultParam("Pan/Tilt", Vec4ResultType)
+        )
     override val resultContentType: ContentType
-        get() = ContentType.PanAndTilt
+        get() = MovingHeadParams.contentType
 
     override val likelyPipelines: List<Pair<ContentType, ContentType>>
         get() = with(ContentType) {
-            listOf(XyzCoordinate to PanAndTilt)
+            listOf(XyzCoordinate to MovingHeadParams.contentType)
         }
 
     override val errorIndicatorShader: Shader
