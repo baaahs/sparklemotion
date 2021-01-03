@@ -570,7 +570,7 @@ object GlslGenerationSpec : Spek({
             }
         }
 
-        context("with a shader using a struct input") {
+        context("with a shader using a struct uniform") {
             override(shaderText) {
                 /**language=glsl*/
                 """
@@ -608,8 +608,8 @@ object GlslGenerationSpec : Spek({
                         layout(location = 0) out vec4 sm_result;
 
                         struct MovingHeadInfo {
-                            vec3 origin;            
-                            vec3 heading; // in Euler angles
+                            vec3 origin;
+                            vec3 heading;
                         };
 
                         // Data source: Moving Head Info
@@ -623,6 +623,143 @@ object GlslGenerationSpec : Spek({
                         #line 9
                         vec4 p0_untitledShader_main() {
                             return vec4(in_movingHeadInfo.origin.xy, in_movingHeadInfo.heading.xy);
+                        }
+
+
+                        #line 10001
+                        void main() {
+                          // Invoke Untitled Shader
+                          p0_untitledShaderi_result = p0_untitledShader_main();
+
+                          sm_result = p0_untitledShaderi_result;
+                        }
+                    """.trimIndent()
+                )
+            }
+        }
+
+        context("with a shader using a struct internally") {
+            override(shaderText) {
+                /**language=glsl*/
+                """
+                    struct AnotherStruct {
+                        float first;
+                        float second;
+                    };
+                    AnotherStruct a;
+                    
+                    // @return pan-tilt
+                    vec4 main() {
+                        AnotherStruct b;
+                        return vec4(a.first, a.second, 0., 0.);
+                    }
+                """.trimIndent()
+            }
+            override(resultContentType) { ContentType.PanAndTilt }
+
+            beforeEachTest {
+                mutablePatch.addShaderInstance(mainShader) {
+                    link("movingHeadInfo", MovingHeadInfoDataSource())
+                }
+            }
+
+            it("generates GLSL") {
+                kexpect(glsl).toBe(
+                    /**language=glsl*/
+                    """
+                        #ifdef GL_ES
+                        precision mediump float;
+                        #endif
+
+                        // SparkleMotion-generated GLSL
+
+                        layout(location = 0) out vec4 sm_result;
+
+                        struct p0_untitledShader_AnotherStruct {
+                            float first;
+                            float second;
+                        };
+
+                        // Shader: Untitled Shader; namespace: p0
+                        // Untitled Shader
+
+                        vec4 p0_untitledShaderi_result = vec4(0.);
+
+                        #line 5
+                        p0_untitledShader_AnotherStruct p0_untitledShader_a;
+
+                        #line 8
+                        vec4 p0_untitledShader_main() {
+                            p0_untitledShader_AnotherStruct b;
+                            return vec4(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
+                        }
+
+
+                        #line 10001
+                        void main() {
+                          // Invoke Untitled Shader
+                          p0_untitledShaderi_result = p0_untitledShader_main();
+
+                          sm_result = p0_untitledShaderi_result;
+                        }
+                    """.trimIndent()
+                )
+            }
+        }
+
+        context("with a shader using a struct internally, declaring a global") {
+            override(shaderText) {
+                /**language=glsl*/
+                """
+                    struct AnotherStruct {
+                        float first;            
+                        float second;
+                    } a;
+                    
+                    // @return pan-tilt
+                    vec4 main() {
+                        AnotherStruct b;
+                        return vec4(a.first, a.second, 0., 0.);
+                    }
+                """.trimIndent()
+            }
+            override(resultContentType) { ContentType.PanAndTilt }
+
+            beforeEachTest {
+                mutablePatch.addShaderInstance(mainShader) {
+                    link("movingHeadInfo", MovingHeadInfoDataSource())
+                }
+            }
+
+            it("generates GLSL") {
+                kexpect(glsl).toBe(
+                    /**language=glsl*/
+                    """
+                        #ifdef GL_ES
+                        precision mediump float;
+                        #endif
+
+                        // SparkleMotion-generated GLSL
+
+                        layout(location = 0) out vec4 sm_result;
+
+                        struct p0_untitledShader_AnotherStruct {
+                            float first;
+                            float second;
+                        };
+
+                        // Shader: Untitled Shader; namespace: p0
+                        // Untitled Shader
+
+                        vec4 p0_untitledShaderi_result = vec4(0.);
+
+                        #line 1
+                        p0_untitledShader_AnotherStruct p0_untitledShader_a;
+
+                        #line 7
+                        vec4 p0_untitledShader_main() {
+                            p0_untitledShader_AnotherStruct b;
+                            return vec4(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
                         }
 
 

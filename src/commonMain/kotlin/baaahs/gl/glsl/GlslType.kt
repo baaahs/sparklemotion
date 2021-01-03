@@ -14,6 +14,20 @@ sealed class GlslType constructor(val glslLiteral: String) {
         val fields: Map<String, GlslType>
     ) : GlslType(name) {
         constructor(glslStruct: GlslCode.GlslStruct) : this(glslStruct.name, glslStruct.fields)
+
+        fun toGlsl(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String {
+            val buf = StringBuilder()
+            buf.append("struct ${namespace?.qualify(name) ?: name} {\n")
+            fields.forEach { (name, type) ->
+                val typeStr = if (type is Struct) {
+                    if (publicStructNames.contains(name)) name else namespace?.qualify(name) ?: name
+                } else type.glslLiteral
+                buf.append("    $typeStr $name;\n")
+            }
+            buf.append("};\n\n")
+
+            return buf.toString()
+        }
     }
 
     object Float : GlslType("float")

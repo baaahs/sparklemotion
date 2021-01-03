@@ -10,6 +10,7 @@ interface Component {
     val outputVar: String?
     val resultType: GlslType
 
+    fun appendStructs(buf: StringBuilder)
     fun appendDeclarations(buf: StringBuilder)
     fun appendInvokeAndSet(buf: StringBuilder, prefix: String)
 
@@ -64,6 +65,20 @@ class ShaderComponent(
 
     private val resolvedPortMap get() =
         portMap + mapOf(shaderInstance.shader.outputPort.id to outputVar)
+
+    override fun appendStructs(buf: StringBuilder) {
+        val openShader = shaderInstance.shader
+        val portGlslTypes = openShader.inputPorts.map { it.contentType.glslType } +
+                openShader.outputPort.contentType.glslType
+        val publicStructs = portGlslTypes
+            .mapNotNull { if (it is GlslType.Struct) { it.name } else null }
+            .toSet()
+        openShader.glslCode.structs.forEach { struct ->
+            if (!portGlslTypes.contains(struct.glslType)) {
+                buf.append(struct.glslType.toGlsl(namespace, publicStructs))
+            }
+        }
+    }
 
     override fun appendDeclarations(buf: StringBuilder) {
         val openShader = shaderInstance.shader

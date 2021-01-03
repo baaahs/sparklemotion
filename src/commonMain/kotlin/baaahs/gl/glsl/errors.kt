@@ -39,6 +39,8 @@ class CompilationException(
     }
 }
 
+class ResourceAllocationException(message: String) : Error(message)
+
 data class GlslError(val message: String, val row: Int = NO_LINE, val fileId: Int = -1) {
     constructor(message: String) :
             this(message, NO_LINE)
