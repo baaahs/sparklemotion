@@ -2,6 +2,7 @@ package baaahs.gl.patch
 
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
+import baaahs.plugin.core.MovingHeadParams
 
 class ContentType(
     val id: String,
@@ -73,8 +74,6 @@ class ContentType(
         val Int = ContentType("int", "Integer", GlslType.Int)
         val Media = ContentType("media", "Media", GlslType.Sampler2D)
 
-        val PanAndTilt = ContentType("pan-tilt", "Pan & Tilt", GlslType.Vec4)
-
         val coreTypes = listOf(
             PixelCoordinatesTexture,
             PreviewResolution,
@@ -93,7 +92,7 @@ class ContentType(
             Int,
             Media,
 
-            PanAndTilt
+            MovingHeadParams.contentType
         )
     }
 }

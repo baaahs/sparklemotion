@@ -2,9 +2,9 @@ package baaahs.gl.shader.type
 
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.ShaderAnalysis
-import baaahs.gl.patch.ContentType
 import baaahs.gl.preview.PreviewShaders
 import baaahs.gl.shader.OpenShader
+import baaahs.plugin.core.MovingHeadParams
 import baaahs.ui.Icon
 
 object MoverShader : ShaderType {
@@ -19,7 +19,7 @@ object MoverShader : ShaderType {
     """.trimIndent()
 
     override fun matches(shaderAnalysis: ShaderAnalysis): ShaderType.MatchLevel {
-        return if (shaderAnalysis.outputIs(ContentType.PanAndTilt))
+        return if (shaderAnalysis.outputIs(MovingHeadParams.contentType))
             ShaderType.MatchLevel.Match
         else ShaderType.MatchLevel.NoMatch
     }

@@ -8,6 +8,7 @@ import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.core.FixtureInfoDataSource
+import baaahs.plugin.core.MovingHeadParams
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutablePatch
@@ -581,13 +582,13 @@ object GlslGenerationSpec : Spek({
                     
                     uniform FixtureInfo fixtureInfo;
                     
-                    // @return pan-tilt
+                    // @return moving-head-params
                     vec4 main() {
                         return vec4(fixtureInfo.origin.xy, fixtureInfo.heading.xy);
                     }
                 """.trimIndent()
             }
-            override(resultContentType) { ContentType.PanAndTilt }
+            override(resultContentType) { MovingHeadParams.contentType }
 
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
@@ -648,14 +649,14 @@ object GlslGenerationSpec : Spek({
                     };
                     AnotherStruct a;
                     
-                    // @return pan-tilt
+                    // @return moving-head-params
                     vec4 main() {
                         AnotherStruct b;
                         return vec4(a.first, a.second, 0., 0.);
                     }
                 """.trimIndent()
             }
-            override(resultContentType) { ContentType.PanAndTilt }
+            override(resultContentType) { MovingHeadParams.contentType }
 
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
@@ -716,14 +717,14 @@ object GlslGenerationSpec : Spek({
                         float second;
                     } a;
                     
-                    // @return pan-tilt
+                    // @return moving-head-params
                     vec4 main() {
                         AnotherStruct b;
                         return vec4(a.first, a.second, 0., 0.);
                     }
                 """.trimIndent()
             }
-            override(resultContentType) { ContentType.PanAndTilt }
+            override(resultContentType) { MovingHeadParams.contentType }
 
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
