@@ -16,6 +16,7 @@ import baaahs.gl.shader.dialect.GenericShaderDialect
 import baaahs.gl.shader.dialect.ShaderToyShaderDialect
 import baaahs.gl.shader.type.*
 import baaahs.glsl.Uniform
+import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.show.*
 import baaahs.show.mutable.*
 import baaahs.util.Logger
@@ -599,7 +600,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             ResolutionDataSource,
             PreviewResolutionDataSource,
             SliderDataSource,
-            MovingHeadInfoDataSource,
+            FixtureInfoDataSource,
             RasterCoordinateDataSource
         )
 
