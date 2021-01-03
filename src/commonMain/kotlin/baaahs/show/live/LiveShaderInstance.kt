@@ -115,37 +115,7 @@ class LiveShaderInstance(
             index: Int,
             findUpstreamComponent: (ProgramNode) -> Component
         ): Component {
-            return object : Component {
-                override val title: String
-                    get() = dataSource.title
-                override val outputVar: String?
-                    get() = null
-                override val resultType: GlslType
-                    get() = dataSource.getType()
-
-                override fun appendStructs(buf: StringBuilder) {
-                    val glslType = dataSource.contentType.glslType
-                    if (glslType is GlslType.Struct) {
-                        buf.append(glslType.toGlsl(null, emptySet()))
-                    }
-                }
-
-                override fun appendDeclarations(buf: StringBuilder) {
-                    if (!dataSource.isImplicit()) {
-                        buf.append("// Data source: ", dataSource.title, "\n")
-                        dataSource.appendDeclaration(buf, varName)
-                        buf.append("\n")
-                    }
-                }
-
-                override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {
-                    dataSource.appendInvokeAndSet(buf, prefix, varName)
-                }
-
-                override fun getExpression(): String {
-                    return dataSource.getVarName(varName)
-                }
-            }
+            return DataSourceComponent(dataSource, varName)
         }
     }
 
