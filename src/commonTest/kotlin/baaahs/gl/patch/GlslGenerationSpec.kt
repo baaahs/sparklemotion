@@ -582,9 +582,19 @@ object GlslGenerationSpec : Spek({
                     
                     uniform FixtureInfo fixtureInfo;
                     
-                    // @return moving-head-params
-                    vec4 main() {
-                        return vec4(fixtureInfo.origin.xy, fixtureInfo.heading.xy);
+                    struct MovingHeadParams {
+                        float pan;
+                        float tilt;
+                        float colorWheel;
+                        float dimmer;
+                    };
+ 
+                    // @param params moving-head-params
+                    void main(out MovingHeadParams params) {
+                        params.pan = fixtureInfo.origin.x;
+                        params.tilt = fixtureInfo.origin.y,
+                        params.colorWheel = fixtureInfo.heading.x,
+                        params.dimmer = fixtureInfo.heading.y;
                     }
                 """.trimIndent()
             }
@@ -608,6 +618,13 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
+                        struct MovingHeadParams {
+                            float pan;
+                            float tilt;
+                            float colorWheel;
+                            float dimmer;
+                        };
+
                         struct FixtureInfo {
                             vec3 origin;
                             vec3 heading;
@@ -619,20 +636,28 @@ object GlslGenerationSpec : Spek({
                         // Shader: Untitled Shader; namespace: p0
                         // Untitled Shader
 
-                        vec4 p0_untitledShaderi_result = vec4(0.);
+                        MovingHeadParams p0_untitledShader_params = MovingHeadParams(0., 0., 0., 1.);
 
-                        #line 9
-                        vec4 p0_untitledShader_main() {
-                            return vec4(in_fixtureInfo.origin.xy, in_fixtureInfo.heading.xy);
+                        #line 16
+                        void p0_untitledShader_main(out MovingHeadParams params) {
+                            params.pan = in_fixtureInfo.origin.x;
+                            params.tilt = in_fixtureInfo.origin.y,
+                            params.colorWheel = in_fixtureInfo.heading.x,
+                            params.dimmer = in_fixtureInfo.heading.y;
                         }
 
 
                         #line 10001
                         void main() {
                           // Invoke Untitled Shader
-                          p0_untitledShaderi_result = p0_untitledShader_main();
+                          p0_untitledShader_main(p0_untitledShader_params);
 
-                          sm_result = p0_untitledShaderi_result;
+                          sm_result = vec4(
+                            p0_untitledShader_params.pan,
+                            p0_untitledShader_params.tilt,
+                            p0_untitledShader_params.colorWheel,
+                            p0_untitledShader_params.dimmer
+                          );
                         }
                     """.trimIndent()
                 )
@@ -648,11 +673,18 @@ object GlslGenerationSpec : Spek({
                         float second;
                     };
                     AnotherStruct a;
-                    
+
+                    struct MovingHeadParams {
+                        float pan;
+                        float tilt;
+                        float colorWheel;
+                        float dimmer;
+                    };
+
                     // @return moving-head-params
-                    vec4 main() {
+                    MovingHeadParams main() {
                         AnotherStruct b;
-                        return vec4(a.first, a.second, 0., 0.);
+                        return MovingHeadParams(a.first, a.second, 0., 0.);
                     }
                 """.trimIndent()
             }
@@ -676,6 +708,13 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
+                        struct MovingHeadParams {
+                            float pan;
+                            float tilt;
+                            float colorWheel;
+                            float dimmer;
+                        };
+                        
                         struct p0_untitledShader_AnotherStruct {
                             float first;
                             float second;
@@ -684,15 +723,15 @@ object GlslGenerationSpec : Spek({
                         // Shader: Untitled Shader; namespace: p0
                         // Untitled Shader
 
-                        vec4 p0_untitledShaderi_result = vec4(0.);
+                        MovingHeadParams p0_untitledShaderi_result = MovingHeadParams(0., 0., 0., 1.);
 
                         #line 5
                         p0_untitledShader_AnotherStruct p0_untitledShader_a;
 
-                        #line 8
-                        vec4 p0_untitledShader_main() {
+                        #line 15
+                        MovingHeadParams p0_untitledShader_main() {
                             p0_untitledShader_AnotherStruct b;
-                            return vec4(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
+                            return MovingHeadParams(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
                         }
 
 
@@ -701,7 +740,12 @@ object GlslGenerationSpec : Spek({
                           // Invoke Untitled Shader
                           p0_untitledShaderi_result = p0_untitledShader_main();
 
-                          sm_result = p0_untitledShaderi_result;
+                          sm_result = vec4(
+                            p0_untitledShaderi_result.pan,
+                            p0_untitledShaderi_result.tilt,
+                            p0_untitledShaderi_result.colorWheel,
+                            p0_untitledShaderi_result.dimmer
+                          );
                         }
                     """.trimIndent()
                 )
@@ -717,14 +761,14 @@ object GlslGenerationSpec : Spek({
                         float second;
                     } a;
                     
-                    // @return moving-head-params
+                    // @return color
                     vec4 main() {
                         AnotherStruct b;
                         return vec4(a.first, a.second, 0., 0.);
                     }
                 """.trimIndent()
             }
-            override(resultContentType) { MovingHeadParams.contentType }
+            override(resultContentType) { Color }
 
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
@@ -752,7 +796,7 @@ object GlslGenerationSpec : Spek({
                         // Shader: Untitled Shader; namespace: p0
                         // Untitled Shader
 
-                        vec4 p0_untitledShaderi_result = vec4(0.);
+                        vec4 p0_untitledShaderi_result = vec4(0., 0., 0., 1.);
 
                         #line 1
                         p0_untitledShader_AnotherStruct p0_untitledShader_a;

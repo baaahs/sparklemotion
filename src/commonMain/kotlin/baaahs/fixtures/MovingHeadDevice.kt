@@ -15,7 +15,7 @@ object MovingHeadDevice : DeviceType {
 
     override val resultParams: List<ResultParam>
         get() = listOf(
-            ResultParam("Pan/Tilt", Vec4ResultType)
+            ResultParam("Moving Head Params", MovingHeadParams.resultType)
         )
     override val resultContentType: ContentType
         get() = MovingHeadParams.contentType
@@ -40,7 +40,7 @@ object MovingHeadDevice : DeviceType {
         )
 
     fun getResults(resultViews: List<ResultView>) =
-        resultViews[0] as Vec4ResultType.Vec4ResultView
+        resultViews[0] as MovingHeadParams.ResultView
 
     override fun toString(): String = id
 }

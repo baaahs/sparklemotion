@@ -56,14 +56,10 @@ class ShaderComponent(
 
     override fun appendStructs(buf: StringBuilder) {
         val openShader = shaderInstance.shader
-        val portGlslTypes = openShader.inputPorts.map { it.contentType.glslType } +
-                openShader.outputPort.contentType.glslType
-        val publicStructs = portGlslTypes
-            .mapNotNull { if (it is GlslType.Struct) { it.name } else null }
-            .toSet()
+        val portStructs = openShader.portStructs
         openShader.glslCode.structs.forEach { struct ->
-            if (!portGlslTypes.contains(struct.glslType)) {
-                buf.append(struct.glslType.toGlsl(namespace, publicStructs))
+            if (!portStructs.contains(struct.glslType)) {
+                buf.append(struct.glslType.toGlsl(namespace, portStructs.map { it.name }.toSet()))
             }
         }
     }

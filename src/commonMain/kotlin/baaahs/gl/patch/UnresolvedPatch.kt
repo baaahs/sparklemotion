@@ -38,7 +38,7 @@ class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShad
                 it.incomingLinksOptions.entries.associate { (port, fromPortOptions) ->
                     port.id to
                             (fromPortOptions.firstOrNull()?.getMutablePort()
-                                ?: MutableConstPort(port.type.defaultInitializer(), port.type))
+                                ?: MutableConstPort(port.type.defaultInitializer, port.type))
                 }.toMutableMap(),
                 MutableShaderChannel(it.shaderChannel.id),
                 it.priority

@@ -280,7 +280,7 @@ object PatchResolverSpec : Spek({
                         // Shader: Wobbly Time Filter; namespace: p1
                         // Wobbly Time Filter
 
-                        float p1_wobblyTimeFilteri_result = float(0.);
+                        float p1_wobblyTimeFilteri_result = 0.;
 
                         #line 3
                         float p1_wobblyTimeFilter_main() { return in_time + sin(in_time); }
@@ -433,7 +433,7 @@ object PatchResolverSpec : Spek({
                         // Shader: Wobbly Time Filter; namespace: p1
                         // Wobbly Time Filter
 
-                        float p1_wobblyTimeFilteri_result = float(0.);
+                        float p1_wobblyTimeFilteri_result = 0.;
 
                         #line 3
                         float p1_wobblyTimeFilter_main() { return in_time + sin(in_time); }
