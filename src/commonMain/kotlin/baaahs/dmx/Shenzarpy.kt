@@ -20,6 +20,7 @@ class Shenzarpy(
     private val colorWheelChannel: Dmx.Channel get() = Channel.COLOR_WHEEL
 
     override val dimmerChannel: Dmx.Channel get() = Channel.DIMMER
+    override val shutterChannel: Dmx.Channel get() = Channel.SHUTTER
 
     override val panChannel get() = Channel.PAN
     override val panFineChannel: Dmx.Channel get() = Channel.PAN_FINE
@@ -46,6 +47,7 @@ class Shenzarpy(
 
         init {
             dimmer = 1f
+            shutter = 255
         }
     }
 

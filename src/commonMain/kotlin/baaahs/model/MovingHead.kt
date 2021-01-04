@@ -23,6 +23,7 @@ abstract class MovingHead(
     abstract val colorWheelMotorSpeed: Float
 
     abstract val dimmerChannel: Dmx.Channel
+    abstract val shutterChannel: Dmx.Channel
 
     abstract val panChannel: Dmx.Channel
     abstract val panFineChannel: Dmx.Channel?
@@ -56,6 +57,9 @@ abstract class MovingHead(
         override var dimmer: Float
             get() = getFloat(movingHead.dimmerChannel)
             set(value) = setFloat(movingHead.dimmerChannel, value)
+        override var shutter: Int
+            get() = dmxBuffer[movingHead.shutterChannel].toInt()
+            set(value) { dmxBuffer[movingHead.shutterChannel] = value.toByte() }
     }
 
     interface Buffer {
@@ -69,6 +73,7 @@ abstract class MovingHead(
         var dimmer: Float
         /** Rotation of color wheel in `(0..1]`. */
         var colorWheelPosition: Float
+        var shutter: Int
 
         fun List<Shenzarpy.WheelColor>.closestColorFor(color: Color): Byte {
             var bestMatch = Shenzarpy.WheelColor.WHITE

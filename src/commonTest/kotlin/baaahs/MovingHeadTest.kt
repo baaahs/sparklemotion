@@ -15,6 +15,4 @@ class MovingHeadTest {
         assertTrue(0.75f - buffer.pan < 0.001)
         assertTrue(1f - buffer.tilt < 0.001)
     }
-
-    class TestChannel(override val offset: Int) : Dmx.Channel
 }

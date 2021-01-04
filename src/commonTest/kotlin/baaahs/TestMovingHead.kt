@@ -12,17 +12,19 @@ class TestMovingHead(
     override val colorWheelColors: List<Shenzarpy.WheelColor> = emptyList(),
     override val colorWheelMotorSpeed: Float = 1f,
 
-    override val dimmerChannel: Dmx.Channel = MovingHeadTest.TestChannel(5),
+    override val dimmerChannel: Dmx.Channel = TestChannel(5),
 
-    override val panChannel: Dmx.Channel = MovingHeadTest.TestChannel(1),
-    override val panFineChannel: Dmx.Channel = MovingHeadTest.TestChannel(2),
+    override val panChannel: Dmx.Channel = TestChannel(1),
+    override val panFineChannel: Dmx.Channel = TestChannel(2),
     override val panRange: ClosedRange<Float> = toRadians(0f)..toRadians(540f),
     override val panMotorSpeed: Float = 1f,
 
-    override val tiltChannel: Dmx.Channel = MovingHeadTest.TestChannel(3),
-    override val tiltFineChannel: Dmx.Channel = MovingHeadTest.TestChannel(4),
+    override val tiltChannel: Dmx.Channel = TestChannel(3),
+    override val tiltFineChannel: Dmx.Channel = TestChannel(4),
     override val tiltRange: ClosedRange<Float> = toRadians(-110f)..toRadians(110f),
-    override val tiltMotorSpeed: Float = 1f
+    override val tiltMotorSpeed: Float = 1f,
+
+    override val shutterChannel: Dmx.Channel = TestChannel(6)
 ) : MovingHead("test", "Test", 1, Vector3F.origin, Vector3F.origin) {
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
 
@@ -37,4 +39,6 @@ class TestMovingHead(
             get() = dmxBuffer[colorWheelChannel]
             set(value) { dmxBuffer[colorWheelChannel] = value }
     }
+
+    class TestChannel(override val offset: Int) : Dmx.Channel
 }
