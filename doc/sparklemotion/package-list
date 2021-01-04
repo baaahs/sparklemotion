@@ -62,6 +62,7 @@ baaahs.models
 baaahs.net
 baaahs.plugin
 baaahs.plugin.beatlink
+baaahs.plugin.core
 baaahs.proto
 baaahs.shaders
 baaahs.show
