@@ -1,6 +1,5 @@
 package baaahs.gl.patch
 
-import baaahs.fixtures.MovingHeadInfoDataSource
 import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.expects
 import baaahs.gl.override
@@ -12,6 +11,7 @@ import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.only
 import baaahs.plugin.CorePlugin
+import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.live.FakeOpenShader
@@ -406,15 +406,15 @@ object AutoWirerSpec : Spek({
                 override(shaderText) {
                     /**language=glsl*/
                     """
-                        struct MovingHeadInfo {
+                        struct FixtureInfo {
                             vec3 origin;
                             vec3 heading;
                         };
                         
-                        uniform MovingHeadInfo movingHeadInfo;
+                        uniform FixtureInfo fixtureInfo;
                         
                         vec4 main() {
-                            return vec4(movingHeadInfo.heading.xy, movingHeadInfo.origin.xy);
+                            return vec4(fixtureInfo.heading.xy, fixtureInfo.origin.xy);
                         }
                     """.trimIndent()
                 }
@@ -425,7 +425,7 @@ object AutoWirerSpec : Spek({
                             MutableShaderInstance(
                                 MutableShader(mainShader),
                                 hashMapOf(
-                                    "movingHeadInfo" to MovingHeadInfoDataSource().editor()
+                                    "fixtureInfo" to FixtureInfoDataSource().editor()
                                 )
                             )
                         )

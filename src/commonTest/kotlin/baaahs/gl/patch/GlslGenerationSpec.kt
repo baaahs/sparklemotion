@@ -1,6 +1,5 @@
 package baaahs.gl.patch
 
-import baaahs.fixtures.MovingHeadInfoDataSource
 import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.kexpect
 import baaahs.gl.override
@@ -8,6 +7,8 @@ import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
+import baaahs.plugin.core.FixtureInfoDataSource
+import baaahs.plugin.core.MovingHeadParams
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutablePatch
@@ -570,28 +571,38 @@ object GlslGenerationSpec : Spek({
             }
         }
 
-        context("with a shader using a struct input") {
+        context("with a shader using a struct uniform") {
             override(shaderText) {
                 /**language=glsl*/
                 """
-                    struct MovingHeadInfo {
+                    struct FixtureInfo {
                         vec3 origin;            
                         vec3 heading; // in Euler angles
                     };
                     
-                    uniform MovingHeadInfo movingHeadInfo;
+                    uniform FixtureInfo fixtureInfo;
                     
-                    // @return pan-tilt
-                    vec4 main() {
-                        return vec4(movingHeadInfo.origin.xy, movingHeadInfo.heading.xy);
+                    struct MovingHeadParams {
+                        float pan;
+                        float tilt;
+                        float colorWheel;
+                        float dimmer;
+                    };
+ 
+                    // @param params moving-head-params
+                    void main(out MovingHeadParams params) {
+                        params.pan = fixtureInfo.origin.x;
+                        params.tilt = fixtureInfo.origin.y,
+                        params.colorWheel = fixtureInfo.heading.x,
+                        params.dimmer = fixtureInfo.heading.y;
                     }
                 """.trimIndent()
             }
-            override(resultContentType) { ContentType.PanAndTilt }
+            override(resultContentType) { MovingHeadParams.contentType }
 
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
-                    link("movingHeadInfo", MovingHeadInfoDataSource())
+                    link("fixtureInfo", FixtureInfoDataSource())
                 }
             }
 
@@ -607,22 +618,193 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
-                        struct MovingHeadInfo {
-                            vec3 origin;            
-                            vec3 heading; // in Euler angles
+                        struct MovingHeadParams {
+                            float pan;
+                            float tilt;
+                            float colorWheel;
+                            float dimmer;
                         };
 
-                        // Data source: Moving Head Info
-                        uniform MovingHeadInfo in_movingHeadInfo;
+                        struct FixtureInfo {
+                            vec3 origin;
+                            vec3 heading;
+                        };
+
+                        // Data source: Fixture Info
+                        uniform FixtureInfo in_fixtureInfo;
 
                         // Shader: Untitled Shader; namespace: p0
                         // Untitled Shader
 
-                        vec4 p0_untitledShaderi_result = vec4(0.);
+                        MovingHeadParams p0_untitledShader_params = MovingHeadParams(0., 0., 0., 1.);
 
-                        #line 9
+                        #line 16
+                        void p0_untitledShader_main(out MovingHeadParams params) {
+                            params.pan = in_fixtureInfo.origin.x;
+                            params.tilt = in_fixtureInfo.origin.y,
+                            params.colorWheel = in_fixtureInfo.heading.x,
+                            params.dimmer = in_fixtureInfo.heading.y;
+                        }
+
+
+                        #line 10001
+                        void main() {
+                          // Invoke Untitled Shader
+                          p0_untitledShader_main(p0_untitledShader_params);
+
+                          sm_result = vec4(
+                            p0_untitledShader_params.pan,
+                            p0_untitledShader_params.tilt,
+                            p0_untitledShader_params.colorWheel,
+                            p0_untitledShader_params.dimmer
+                          );
+                        }
+                    """.trimIndent()
+                )
+            }
+        }
+
+        context("with a shader using a struct internally") {
+            override(shaderText) {
+                /**language=glsl*/
+                """
+                    struct AnotherStruct {
+                        float first;
+                        float second;
+                    };
+                    AnotherStruct a;
+
+                    struct MovingHeadParams {
+                        float pan;
+                        float tilt;
+                        float colorWheel;
+                        float dimmer;
+                    };
+
+                    // @return moving-head-params
+                    MovingHeadParams main() {
+                        AnotherStruct b;
+                        return MovingHeadParams(a.first, a.second, 0., 0.);
+                    }
+                """.trimIndent()
+            }
+            override(resultContentType) { MovingHeadParams.contentType }
+
+            beforeEachTest {
+                mutablePatch.addShaderInstance(mainShader) {
+                    link("fixtureInfo", FixtureInfoDataSource())
+                }
+            }
+
+            it("generates GLSL") {
+                kexpect(glsl).toBe(
+                    /**language=glsl*/
+                    """
+                        #ifdef GL_ES
+                        precision mediump float;
+                        #endif
+
+                        // SparkleMotion-generated GLSL
+
+                        layout(location = 0) out vec4 sm_result;
+
+                        struct MovingHeadParams {
+                            float pan;
+                            float tilt;
+                            float colorWheel;
+                            float dimmer;
+                        };
+                        
+                        struct p0_untitledShader_AnotherStruct {
+                            float first;
+                            float second;
+                        };
+
+                        // Shader: Untitled Shader; namespace: p0
+                        // Untitled Shader
+
+                        MovingHeadParams p0_untitledShaderi_result = MovingHeadParams(0., 0., 0., 1.);
+
+                        #line 5
+                        p0_untitledShader_AnotherStruct p0_untitledShader_a;
+
+                        #line 15
+                        MovingHeadParams p0_untitledShader_main() {
+                            p0_untitledShader_AnotherStruct b;
+                            return MovingHeadParams(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
+                        }
+
+
+                        #line 10001
+                        void main() {
+                          // Invoke Untitled Shader
+                          p0_untitledShaderi_result = p0_untitledShader_main();
+
+                          sm_result = vec4(
+                            p0_untitledShaderi_result.pan,
+                            p0_untitledShaderi_result.tilt,
+                            p0_untitledShaderi_result.colorWheel,
+                            p0_untitledShaderi_result.dimmer
+                          );
+                        }
+                    """.trimIndent()
+                )
+            }
+        }
+
+        context("with a shader using a struct internally, declaring a global") {
+            override(shaderText) {
+                /**language=glsl*/
+                """
+                    struct AnotherStruct {
+                        float first;            
+                        float second;
+                    } a;
+                    
+                    // @return color
+                    vec4 main() {
+                        AnotherStruct b;
+                        return vec4(a.first, a.second, 0., 0.);
+                    }
+                """.trimIndent()
+            }
+            override(resultContentType) { Color }
+
+            beforeEachTest {
+                mutablePatch.addShaderInstance(mainShader) {
+                    link("fixtureInfo", FixtureInfoDataSource())
+                }
+            }
+
+            it("generates GLSL") {
+                kexpect(glsl).toBe(
+                    /**language=glsl*/
+                    """
+                        #ifdef GL_ES
+                        precision mediump float;
+                        #endif
+
+                        // SparkleMotion-generated GLSL
+
+                        layout(location = 0) out vec4 sm_result;
+
+                        struct p0_untitledShader_AnotherStruct {
+                            float first;
+                            float second;
+                        };
+
+                        // Shader: Untitled Shader; namespace: p0
+                        // Untitled Shader
+
+                        vec4 p0_untitledShaderi_result = vec4(0., 0., 0., 1.);
+
+                        #line 1
+                        p0_untitledShader_AnotherStruct p0_untitledShader_a;
+
+                        #line 7
                         vec4 p0_untitledShader_main() {
-                            return vec4(in_movingHeadInfo.origin.xy, in_movingHeadInfo.heading.xy);
+                            p0_untitledShader_AnotherStruct b;
+                            return vec4(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
                         }
 
 

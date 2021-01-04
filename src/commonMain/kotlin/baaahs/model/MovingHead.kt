@@ -12,9 +12,9 @@ abstract class MovingHead(
     override val name: String,
     override val description: String,
     val baseDmxChannel: Int,
-    val origin: Vector3F,
-    val heading: Vector3F
-) : Model.Entity {
+    override val origin: Vector3F,
+    override val heading: Vector3F
+) : Model.Entity, Model.FixtureInfo {
     abstract val dmxChannelCount: Int
 
     abstract val colorModel: ColorModel
