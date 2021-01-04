@@ -19,6 +19,7 @@ class LixadaMiniMovingHead(
     override val colorWheelMotorSpeed: Float = 1f
 
     override val dimmerChannel: Dmx.Channel get() = Channel.DIMMER
+    override val shutterChannel: Dmx.Channel get() = TODO("not implemented")
 
     override val panChannel get() = Channel.PAN
     override val panFineChannel: Dmx.Channel? get() = null /*Channel.PAN_FINE*/
