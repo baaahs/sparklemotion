@@ -57,7 +57,7 @@ class ShowRunnerTest {
         val model = TestModel
         val renderManager = RenderManager(model) { fakeGlslContext }
         fixtureManager = FixtureManager(renderManager)
-        MovingHeadManager(fixtureManager, dmxUniverse, emptyList(), FakeFs())
+        MovingHeadManager(fixtureManager, dmxUniverse, emptyList())
         stageManager = StageManager(
             testPlugins(), renderManager, server, Storage(fs, testPlugins()), fixtureManager,
             FakeClock(), sheepModel, testCoroutineContext

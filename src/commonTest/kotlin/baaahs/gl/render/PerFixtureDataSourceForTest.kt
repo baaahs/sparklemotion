@@ -17,8 +17,7 @@ class PerFixtureDataSourceForTest(val updateMode: UpdateMode) : DataSource {
     override val pluginPackage: String get() = error("not implemented")
     override val title: String get() = "Per Fixture Data Source For Test"
     override fun getType(): GlslType = GlslType.Float
-    override val contentType: ContentType
-        get() = error("not implemented")
+    override val contentType: ContentType get() = ContentType.Unknown
 
     val feeds = mutableListOf<TestFeed>()
     val engineFeeds = mutableListOf<TestEngineFeed>()

@@ -35,19 +35,23 @@ class GlslAnalyzer(private val plugins: Plugins) {
     }
 
     fun import(src: String): Shader {
-        val glslCode = parse(src)
-        return analyze(glslCode).shader
-    }
-
-    fun analyze(src: String): ShaderAnalysis {
-        return analyze(parse(src))
+        return analyze(src).shader
     }
 
     fun analyze(shader: Shader): ShaderAnalysis {
-        return analyze(parse(shader.src), shader)
+        return analyze(shader.src, shader)
     }
 
-    fun analyze(glslCode: GlslCode, shader: Shader? = null): ShaderAnalysis {
+    fun analyze(src: String, shader: Shader? = null): ShaderAnalysis {
+        val glslCode = try {
+            parse(src)
+        } catch (e: GlslException) {
+            return ErrorsShaderAnalysis(src, e, shader ?: Shader("", src))
+        }
+        return analyze(glslCode, shader)
+    }
+
+    private fun analyze(glslCode: GlslCode, shader: Shader? = null): ShaderAnalysis {
         val dialect = detectDialect(glslCode)
         return dialect.analyze(glslCode, plugins, shader)
     }

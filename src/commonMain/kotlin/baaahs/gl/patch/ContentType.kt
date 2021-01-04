@@ -2,6 +2,7 @@ package baaahs.gl.patch
 
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
+import baaahs.plugin.core.MovingHeadParams
 
 class ContentType(
     val id: String,
@@ -10,10 +11,20 @@ class ContentType(
     /** If false, this content type won't be suggested for matching GLSL types, it must be explicitly specified. */
     val suggest: Boolean = true,
     private val typeAdaptations: Map<GlslType, (String) -> String> = emptyMap(),
+    /** If [glslType] is a [GlslType.Struct], we currently need to provide a hint for converting it to a vector. */
+    val outputRepresentation: GlslType = glslType,
     private val defaultInitializer: ((GlslType) -> String)? = null
 ) {
     fun initializer(dataType: GlslType): String =
-        defaultInitializer?.invoke(dataType) ?: dataType.defaultInitializer()
+        defaultInitializer?.invoke(dataType)
+            ?: officialDefaultInitializer(dataType)
+
+    /**
+     * Since [dataType] here comes from a shader declaration, it doesn't have a good defaultInitializer,
+     * so we should use the one from our declared [glslType] instead.
+     */
+    private fun officialDefaultInitializer(dataType: GlslType) =
+        (if (dataType == glslType) glslType else dataType).defaultInitializer
 
     fun adapt(expression: String, toType: GlslType): String {
         return typeAdaptations[toType]?.invoke(expression)
@@ -66,14 +77,12 @@ class ContentType(
         val Mouse = ContentType("mouse", "Mouse", GlslType.Vec2)
         val XyzCoordinate = ContentType("xyz-coordinate", "X/Y/Z Coordinate", GlslType.Vec3)
         val Color = ContentType("color", "Color", GlslType.Vec4) { type ->
-            if (type == GlslType.Vec4) "vec4(0., 0., 0., 1.)" else type.defaultInitializer()
+            if (type == GlslType.Vec4) "vec4(0., 0., 0., 1.)" else type.defaultInitializer
         }
         val Time = ContentType("time", "Time", GlslType.Float)
         val Float = ContentType("float", "Float", GlslType.Float)
         val Int = ContentType("int", "Integer", GlslType.Int)
         val Media = ContentType("media", "Media", GlslType.Sampler2D)
-
-        val PanAndTilt = ContentType("pan-tilt", "Pan & Tilt", GlslType.Vec4)
 
         val coreTypes = listOf(
             PixelCoordinatesTexture,
@@ -93,7 +102,7 @@ class ContentType(
             Int,
             Media,
 
-            PanAndTilt
+            MovingHeadParams.contentType
         )
     }
 }

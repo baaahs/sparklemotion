@@ -2,9 +2,9 @@ package baaahs.gl.shader.type
 
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.ShaderAnalysis
-import baaahs.gl.patch.ContentType
 import baaahs.gl.preview.PreviewShaders
 import baaahs.gl.shader.OpenShader
+import baaahs.plugin.core.MovingHeadParams
 import baaahs.ui.Icon
 
 object MoverShader : ShaderType {
@@ -12,14 +12,25 @@ object MoverShader : ShaderType {
 
     override val icon: Icon = CommonIcons.None
 
+    /**language=glsl*/
     override val template: String = """
-        vec4 main() {
-            return vec4(0., .5);
+        struct MovingHeadParams {
+            float pan;
+            float tilt;
+            float colorWheel;
+            float dimmer;
+        };
+        
+        // @param params moving-head-params
+        void main(out MovingHeadParams params) {
+            params.pan = 0.;
+            params.tilt = .5;
+            params.colorWheel = 0.;
         }
     """.trimIndent()
 
     override fun matches(shaderAnalysis: ShaderAnalysis): ShaderType.MatchLevel {
-        return if (shaderAnalysis.outputIs(ContentType.PanAndTilt))
+        return if (shaderAnalysis.outputIs(MovingHeadParams.contentType))
             ShaderType.MatchLevel.Match
         else ShaderType.MatchLevel.NoMatch
     }

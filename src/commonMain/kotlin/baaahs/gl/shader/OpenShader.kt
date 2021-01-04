@@ -6,6 +6,7 @@ import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
 import baaahs.gl.glsl.GlslError
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.shader.dialect.ShaderDialect
 import baaahs.gl.shader.type.ShaderType
@@ -35,6 +36,10 @@ interface OpenShader : RefCounted {
     fun findInputPort(portId: String): InputPort =
         findInputPortOrNull(portId)
             ?: error(unknown("input port", portId, inputPorts))
+
+    val portStructs: List<GlslType.Struct> get() =
+        (inputPorts.map { it.contentType.glslType } + outputPort.contentType.glslType)
+            .filterIsInstance<GlslType.Struct>()
 
     fun toGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
 
@@ -82,7 +87,7 @@ interface OpenShader : RefCounted {
                         (outputPort.id == id && !outputPort.isParam)
             }
 
-            val symbolsToNamespace = glslCode.symbolNames.toSet()
+            val symbolsToNamespace = glslCode.symbolNames.toSet() - portStructs.map { it.name}
             val symbolMap = uniformGlobalsMap + nonUniformGlobalsMap
             glslCode.functions.forEach { glslFunction ->
                 buf.append(glslFunction.toGlsl(namespace, symbolsToNamespace, symbolMap))

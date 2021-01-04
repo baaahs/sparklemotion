@@ -12,7 +12,10 @@ class CompiledShader(
     internal val source: String
 ) {
     val shaderId: Shader = gl.runInContext {
-        gl.check { createShader(type) ?: throw IllegalStateException() }
+        gl.check {
+            createShader(type)
+                ?: throw ResourceAllocationException("Failed to allocate a GL shader.")
+        }
     }
 
     init {

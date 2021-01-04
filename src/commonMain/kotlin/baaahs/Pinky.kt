@@ -74,7 +74,7 @@ class Pinky(
     private val udpSocket = link.listenUdp(Ports.PINKY, this)
     private val brainManager =
         BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats, clock)
-    private val movingHeadManager = MovingHeadManager(fixtureManager, dmxUniverse, model.movingHeads, fs)
+    private val movingHeadManager = MovingHeadManager(fixtureManager, dmxUniverse, model.movingHeads)
 
     private val serverNotices = arrayListOf<ServerNotice>()
     private val serverNoticesChannel = pubSub.publish(Topics.serverNotices, serverNotices) {

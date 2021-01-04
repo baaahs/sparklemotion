@@ -2,16 +2,13 @@ package baaahs
 
 import baaahs.dmx.Dmx
 import baaahs.fixtures.*
-import baaahs.io.Fs
 import baaahs.model.MovingHead
 import baaahs.util.Logger
-import kotlinx.serialization.json.Json
 
 class MovingHeadManager(
     private val fixtureManager: FixtureManager,
     private val dmxUniverse: Dmx.Universe,
-    movingHeads: List<MovingHead>,
-    private val fs: Fs
+    movingHeads: List<MovingHead>
 ) {
     init {
         fixtureManager.addFrameListener {
@@ -27,37 +24,17 @@ class MovingHeadManager(
                 get() = "DMX Transport"
 
             override fun send(fixture: Fixture, resultViews: List<ResultView>) {
-                val panAndTilt = MovingHeadDevice.getResults(resultViews)[0]
-                movingHeadBuffer.pan = panAndTilt.x
-                movingHeadBuffer.tilt = panAndTilt.y
-                movingHeadBuffer.colorWheelPosition = panAndTilt.z
-
-                movingHeadBuffer.dimmer = 1f
+                val params = MovingHeadDevice.getResults(resultViews)[0]
+                movingHeadBuffer.pan = params.pan
+                movingHeadBuffer.tilt = params.tilt
+                movingHeadBuffer.colorWheelPosition = params.colorWheel
+                movingHeadBuffer.dimmer = params.dimmer
             }
         })
     }
 
-    private val defaultPosition = MovingHead.MovingHeadPosition(127, 127)
-    private val currentPositions = mutableMapOf<MovingHead, MovingHead.MovingHeadPosition>()
-    private val listeners = mutableMapOf<MovingHead, (MovingHead.MovingHeadPosition) -> Unit>()
-
-    private val movingHeadPresets = mutableMapOf<String, MovingHead.MovingHeadPosition>()
-    private val json = Json
-
-    private val presetsFileName = fs.resolve("presets/moving-head-positions.json")
-
     suspend fun start() {
         fixtureManager.fixturesChanged(fixtures, emptyList())
-
-        val presetsJson = fs.loadFile(presetsFileName)
-        if (presetsJson != null) {
-            val map = json.decodeFromString(Topics.movingHeadPresets.serializer, presetsJson)
-            movingHeadPresets.putAll(map)
-        }
-    }
-
-    fun listen(movingHead: MovingHead, onUpdate: (MovingHead.MovingHeadPosition) -> Unit) {
-        listeners[movingHead] = onUpdate
     }
 
     companion object {

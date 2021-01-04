@@ -47,6 +47,11 @@ abstract class Model : ModelInfo {
         val deviceType: DeviceType
     }
 
+    interface FixtureInfo {
+        val origin: Vector3F?
+        val heading: Vector3F?
+    }
+
     /** A named surface in the geometry model. */
     open class Surface(
         override val name: String,

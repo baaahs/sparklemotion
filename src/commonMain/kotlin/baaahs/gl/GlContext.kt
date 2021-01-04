@@ -3,6 +3,7 @@ package baaahs.gl
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.CompiledShader
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.glsl.ResourceAllocationException
 import baaahs.glsl.Uniform
 import baaahs.util.Logger
 import com.danielgergely.kgl.*
@@ -50,7 +51,12 @@ abstract class GlContext(
 
     fun compile(vertexShader: CompiledShader, fragShader: CompiledShader): Program {
         return runInContext {
-            val program = runInContext { check { createProgram() ?: throw IllegalStateException() } }
+            val program = runInContext {
+                check {
+                    createProgram()
+                        ?: throw ResourceAllocationException("Failed to allocate a GL program.")
+                }
+            }
             check { attachShader(program, vertexShader.shaderId) }
             check { attachShader(program, fragShader.shaderId) }
             check { linkProgram(program) }
