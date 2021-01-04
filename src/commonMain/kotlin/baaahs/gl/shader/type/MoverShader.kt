@@ -12,9 +12,20 @@ object MoverShader : ShaderType {
 
     override val icon: Icon = CommonIcons.None
 
+    /**language=glsl*/
     override val template: String = """
-        vec4 main() {
-            return vec4(0., .5);
+        struct MovingHeadParams {
+            float pan;
+            float tilt;
+            float colorWheel;
+            float dimmer;
+        };
+        
+        // @param params moving-head-params
+        void main(out MovingHeadParams params) {
+            params.pan = 0.;
+            params.tilt = .5;
+            params.colorWheel = 0.;
         }
     """.trimIndent()
 

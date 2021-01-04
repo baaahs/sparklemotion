@@ -8,7 +8,6 @@ import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
 import baaahs.gl.data.Feed
 import baaahs.gl.data.ProgramFeed
-import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -25,30 +24,20 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 
-val fixtureInfoStruct = GlslCode.GlslStruct(
+val fixtureInfoStruct = GlslType.Struct(
     "FixtureInfo",
-    mapOf(
-        "origin" to GlslType.Vec3,
-        "heading" to GlslType.Vec3
-    ),
-    fullText = """
-            struct FixtureInfo {
-                vec3 origin;            
-                vec3 heading; // in Euler angles
-            }
-        """.trimIndent(),
-    varName = null
+    "origin" to GlslType.Vec3,
+    "heading" to GlslType.Vec3
 )
 
-val fixtureInfoType = GlslType.Struct(fixtureInfoStruct)
-val fixtureInfoContentType = ContentType("fixture-info", "Fixture Info", fixtureInfoType)
+val fixtureInfoContentType = ContentType("fixture-info", "Fixture Info", fixtureInfoStruct)
 
 @Serializable
 @SerialName("baaahs.Core.FixtureInfo")
 data class FixtureInfoDataSource(@Transient val `_`: Boolean = true) : DataSource {
     override val pluginPackage: String get() = CorePlugin.id
     override val title: String get() = "Fixture Info"
-    override fun getType(): GlslType = fixtureInfoType
+    override fun getType(): GlslType = fixtureInfoStruct
     override val contentType: ContentType
         get() = fixtureInfoContentType
 

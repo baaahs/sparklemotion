@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.gl.glsl.GlslType
 import baaahs.show.live.LiveShaderInstance.DataSourceLink
 
 class LinkedPatch(
@@ -17,9 +18,13 @@ class LinkedPatch(
         buf.append("// SparkleMotion-generated GLSL\n")
         buf.append("\n")
         with(rootNode.outputPort) {
-            buf.append("layout(location = 0) out ${dataType.glslLiteral} sm_result;\n")
+            buf.append("layout(location = 0) out ${contentType.outputRepresentation.glslLiteral} sm_result;\n")
+            buf.append("\n")
+
+            if (contentType.glslType is GlslType.Struct) {
+                buf.append(contentType.glslType.toGlsl(null, emptySet()))
+            }
         }
-        buf.append("\n")
 
         components.forEach { component ->
             component.appendStructs(buf)
@@ -37,7 +42,20 @@ class LinkedPatch(
         }
 
         components.last().outputVar
-            ?.let { buf.append("  sm_result = ", it, ";\n") }
+            ?.let {
+                val resultContentType = rootNode.outputPort.contentType
+                if (resultContentType.outputRepresentation != resultContentType.glslType) {
+                    // Pass struct members through an output-friendly type.
+                    buf.append("  sm_result = ${resultContentType.outputRepresentation.glslLiteral}(")
+                    (resultContentType.glslType as GlslType.Struct).fields.entries.forEachIndexed { index, (name, _) ->
+                        if (index > 0) buf.append(",")
+                        buf.append("\n    $it.$name")
+                    }
+                    buf.append("\n  );\n")
+                } else {
+                    buf.append("  sm_result = ", it, ";\n")
+                }
+            }
 
         buf.append("}\n")
         return buf.toString()

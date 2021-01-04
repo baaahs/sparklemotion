@@ -117,7 +117,7 @@ data class DefaultValueNode(
     }
 
     override fun getExpression(): String {
-        return contentType.glslType.defaultInitializer()
+        return contentType.glslType.defaultInitializer
     }
 
     override fun traverse(programLinker: ProgramLinker, depth: Int) {
