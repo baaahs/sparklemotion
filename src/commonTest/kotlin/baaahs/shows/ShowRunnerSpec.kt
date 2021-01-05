@@ -2,10 +2,11 @@ import baaahs.*
 import baaahs.fixtures.FixtureManager
 import baaahs.gadgets.ColorPicker
 import baaahs.gl.GlContext.Companion.GL_RGB32F
+import baaahs.gl.autoWire
 import baaahs.gl.override
-import baaahs.gl.patch.AutoWirer
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
 import baaahs.mapper.Storage
 import baaahs.plugin.CorePlugin
@@ -35,12 +36,11 @@ object ShowRunnerSpec : Spek({
 
         val fakeGlslContext by value { FakeGlContext() }
         val model by value { TestModel }
-        val autoWirer by value { AutoWirer(testPlugins()) }
         val fixtures by value { listOf(fakeFixture(100)) }
         val mutableShow by value {
             MutableShow("test show") {
                 addPatch(
-                    autoWirer.autoWire(Shaders.cylindricalProjection, Shaders.blue)
+                    testToolchain.autoWire(Shaders.cylindricalProjection, Shaders.blue)
                         .acceptSuggestedLinkOptions()
                         .confirm()
                 )
@@ -53,7 +53,7 @@ object ShowRunnerSpec : Spek({
                         ) {
                             addButton("test patchset") {
                                 addPatch(
-                                    autoWirer.autoWire(Shader("Untitled", shaderSrc))
+                                    testToolchain.autoWire(Shader("Untitled", shaderSrc))
                                         .acceptSuggestedLinkOptions()
                                         .confirm()
                                 )
@@ -79,7 +79,7 @@ object ShowRunnerSpec : Spek({
         val stageManager by value {
             val fs = FakeFs()
             StageManager(
-                testPlugins(), renderManager, pubSub, Storage(fs, testPlugins()), fixtureManager,
+                testToolchain, renderManager, pubSub, Storage(fs, testPlugins()), fixtureManager,
                 FakeClock(), model, testCoroutineContext)
         }
 

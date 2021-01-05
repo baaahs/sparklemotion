@@ -2,7 +2,7 @@ package baaahs.app.ui
 
 import baaahs.ShowPlayer
 import baaahs.client.WebClient
-import baaahs.gl.patch.AutoWirer
+import baaahs.gl.Toolchain
 import baaahs.plugin.Plugins
 import baaahs.ui.Prompt
 import baaahs.ui.ReactBeautifulDragNDrop
@@ -22,7 +22,7 @@ external interface AppContext {
     var dragNDrop: ReactBeautifulDragNDrop
     var webClient: WebClient.Facade
     var plugins: Plugins
-    var autoWirer: AutoWirer
+    var toolchain: Toolchain
     var allStyles: AllStyles
     var prompt: (prompt: Prompt) -> Unit
     var clock: Clock

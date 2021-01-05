@@ -4,6 +4,7 @@ import baaahs.client.WebClient
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
+import baaahs.gl.RootToolchain
 import baaahs.gl.render.RenderManager
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
@@ -84,9 +85,7 @@ class SheepSimulator(val model: Model) {
         }
 
         val launcher = Launcher(document.getElementById("launcher")!!)
-        launcher.add("Web UI") {
-            WebClient(network, pinky.address, plugins)
-        } // .also { delay(1000); it.click() }
+        launcher.add("Web UI") { createWebClient() }
 
         launcher.add("Mapper") {
             val mapperUi = JsMapperUi(visualizer)
@@ -124,6 +123,10 @@ class SheepSimulator(val model: Model) {
         doRunBlocking {
             delay(200000L)
         }
+    }
+
+    fun createWebClient(): WebClient {
+        return WebClient(network, pinkyAddress, RootToolchain(plugins))
     }
 
     private fun prepareSurfaces(): List<SimSurface> {

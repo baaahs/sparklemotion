@@ -6,6 +6,7 @@ import baaahs.app.ui.EditIntent
 import baaahs.app.ui.ShowEditIntent
 import baaahs.describe
 import baaahs.gl.override
+import baaahs.gl.testToolchain
 import baaahs.show.SampleData
 import baaahs.show.Show
 import baaahs.show.mutable.MutableButtonControl
@@ -49,7 +50,7 @@ object EditableManagerSpec : Spek({
             val session: EditableManager.Session by value { editableManager.session!! }
 
             beforeEachTest {
-                editableManager.openEditor(baseShow, editIntent)
+                editableManager.openEditor(baseShow, editIntent, testToolchain)
             }
 
             it("isEditing() is true") {

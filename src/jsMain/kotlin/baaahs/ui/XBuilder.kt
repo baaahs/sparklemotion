@@ -249,7 +249,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
                 try {
                     it.invoke()
                 } catch (e: Exception) {
-                    logger.error("Error in cleanup", e)
+                    logger.error(e) { "Error in cleanup" }
                 }
             }
             cleanups?.clear()

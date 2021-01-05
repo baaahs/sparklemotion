@@ -3,7 +3,6 @@ package baaahs.fixtures
 import baaahs.FakeModelEntity
 import baaahs.describe
 import baaahs.fakeModel
-import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
@@ -12,7 +11,7 @@ import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
-import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
 import baaahs.model.Model
 import baaahs.only
 import baaahs.shaders.fakeFixture
@@ -78,8 +77,7 @@ object FixtureManagerSpec : Spek({
                 }
 
                 val openShow by value {
-                    val glslAnalyzer = GlslAnalyzer(testPlugins())
-                    object : ShowOpener(glslAnalyzer, show, FakeShowPlayer(model)) {
+                    object : ShowOpener(testToolchain, show, FakeShowPlayer(model)) {
                         override fun openShader(shader: Shader): OpenShader {
                             val contentType = when (shader.title) {
                                 "Pea Soup" -> fogginess

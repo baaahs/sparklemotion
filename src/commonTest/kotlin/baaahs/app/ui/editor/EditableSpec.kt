@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.ControlEditIntent
 import baaahs.describe
+import baaahs.gl.testToolchain
 import baaahs.show.mutable.MutableButtonControl
 import baaahs.show.mutable.MutableShow
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -20,7 +21,7 @@ object EditableSpec : Spek({
         val editIntent by value { ControlEditIntent("mainButtonButton") }
         val editableManager by value {
             EditableManager { }
-                .apply { openEditor(baseShow, editIntent) }
+                .apply { openEditor(baseShow, editIntent, testToolchain) }
         }
         val mutableButton by value {
             editableManager.session!!.mutableEditable as MutableButtonControl

@@ -3,18 +3,22 @@ package baaahs.show.live
 import baaahs.ShowPlayer
 import baaahs.ShowState
 import baaahs.getBang
-import baaahs.gl.glsl.GlslAnalyzer
+import baaahs.gl.Toolchain
+import baaahs.gl.openShader
 import baaahs.gl.shader.OpenShader
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.Show
 import baaahs.util.CacheBuilder
+import baaahs.util.Logger
 
 open class ShowOpener(
-    private val glslAnalyzer: GlslAnalyzer,
+    private val toolchain: Toolchain,
     private val show: Show,
     private val showPlayer: ShowPlayer
 ): OpenContext {
+    init { logger.debug { "Opening show ${show.title}" } }
+
     private val openControlCache = CacheBuilder<String, OpenControl> { controlId ->
         show.getControl(controlId).open(controlId, this, showPlayer)
     }
@@ -51,11 +55,15 @@ open class ShowOpener(
     }
 
     open fun openShader(shader: Shader) =
-        glslAnalyzer.openShader(shader)
+        toolchain.openShader(shader)
 
     override fun release() {
 //        allControls.forEach { it.release() }
 //        openShaders.forEach { it.release() }
 //        allShaderInstances.forEach { it.release() }
+    }
+
+    companion object {
+        private val logger = Logger<ShowOpener>()
     }
 }

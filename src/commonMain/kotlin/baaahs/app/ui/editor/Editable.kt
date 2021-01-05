@@ -17,7 +17,7 @@ interface Editable {
 
 interface MutableEditable {
     val title: String
-    fun getEditorPanels(): List<EditorPanel>
+    fun getEditorPanels(editableManager: EditableManager): List<EditorPanel>
 }
 
 interface EditIntent {
@@ -113,5 +113,5 @@ interface EditorPanel {
     val problemLevel: Severity? get() = null
 
     fun getNestedEditorPanels(): List<EditorPanel> = emptyList()
-    fun getRenderer(editableManager: EditableManager): Renderer
+    fun getRenderer(): Renderer
 }

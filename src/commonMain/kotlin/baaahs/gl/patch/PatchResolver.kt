@@ -15,6 +15,7 @@ import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenPatch
+import baaahs.util.Logger
 
 class PatchResolver(
     private val dataSources: Map<String, DataSource>,
@@ -69,7 +70,7 @@ class PatchResolver(
     ) = try {
         renderManager.compile(deviceType, linkedPatch, feedResolver)
     } catch (e: GlslException) {
-        ShowRunner.logger.error("Error preparing program", e)
+        logger.error(e) { "Error preparing program" }
         if (e is CompilationException) {
             e.source?.let { ShowRunner.logger.info { it } }
         }
@@ -80,6 +81,7 @@ class PatchResolver(
     }
 
     companion object {
+        private val logger = Logger<PatchResolver>()
         fun buildPortDiagram(dataSources: Map<String, DataSource>, vararg patches: OpenPatch) =
             PortDiagram(dataSources, patches.toList())
     }

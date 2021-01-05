@@ -3,6 +3,7 @@ package baaahs.app.ui.editor
 import baaahs.app.ui.EditIntent
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
+import baaahs.gl.Toolchain
 import baaahs.show.Show
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.Facade
@@ -51,11 +52,11 @@ class EditableManager(
             return flatList[selectedPanelIndex]
         }
 
-    fun openEditor(baseShow: Show, editIntent: EditIntent) {
+    fun openEditor(baseShow: Show, editIntent: EditIntent, toolchain: Toolchain) {
         if (isEditing()) error("already editing ${session!!.editIntent}")
 
         appliedShow = baseShow
-        session = Session(baseShow, editIntent)
+        session = Session(baseShow, editIntent, toolchain)
         undoStack.reset(ShowAndEditIntent(baseShow, editIntent))
         selectedPanelIndex = 0
         notifyChanged()
@@ -92,7 +93,7 @@ class EditableManager(
     }
 
     private fun switchBaseShow(newShowAndEditIntent: ShowAndEditIntent) {
-        session = Session(newShowAndEditIntent.show, newShowAndEditIntent.editIntent)
+        session = Session(newShowAndEditIntent.show, newShowAndEditIntent.editIntent, session!!.toolchain)
         notifyChanged()
     }
 
@@ -117,7 +118,8 @@ class EditableManager(
 
     internal inner class Session(
         baseShow: Show,
-        val editIntent: EditIntent
+        val editIntent: EditIntent,
+        val toolchain: Toolchain
     ) {
         val mutableShow = MutableShow(baseShow)
         val mutableEditable: MutableEditable = editIntent.findMutableEditable(mutableShow)
@@ -127,7 +129,7 @@ class EditableManager(
             get() = "Editing ${mutableEditable.title}"
 
         fun getEditorPanels(): List<EditorPanel> =
-            mutableEditable.getEditorPanels()
+            mutableEditable.getEditorPanels(this@EditableManager)
 
         fun isChanged(): Boolean {
             return cachedIsChanged

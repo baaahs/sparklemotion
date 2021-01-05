@@ -2,7 +2,6 @@ package baaahs.gl.glsl
 
 import baaahs.gl.expectValue
 import baaahs.gl.override
-import baaahs.gl.testPlugins
 import baaahs.gl.undefined
 import baaahs.only
 import baaahs.plugin.PluginRef
@@ -18,7 +17,7 @@ import org.spekframework.spek2.style.specification.describe
 object GlslCodeSpec : Spek({
     describe("statements") {
         val text by value { undefined<String>() }
-        val statements by value { GlslAnalyzer(testPlugins()).findStatements(text) }
+        val statements by value { GlslParser().findStatements(text) }
         val statement by value { statements.only("statement") }
 
         context("variables") {

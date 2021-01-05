@@ -2,8 +2,7 @@ package baaahs.show.live
 
 import baaahs.describe
 import baaahs.gl.glsl.GlslType
-import baaahs.gl.patch.AutoWirer
-import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
 import baaahs.only
 import baaahs.show.Layout
 import baaahs.show.Layouts
@@ -26,8 +25,7 @@ object OpenShowSpec : Spek({
         val show by value { mutableShow.build(ShowBuilder()) }
 
         val showPlayer by value { FakeShowPlayer() }
-        val autoWirer by value { AutoWirer(testPlugins()) }
-        val showOpener by value { ShowOpener(autoWirer.glslAnalyzer, show, showPlayer) }
+        val showOpener by value { ShowOpener(testToolchain, show, showPlayer) }
         val openShow by value { showOpener.openShow() }
 
         beforeEachTest {
@@ -51,15 +49,15 @@ object OpenShowSpec : Spek({
 
         context("a show with button groups") {
             beforeEachTest {
-                mutableShow.addPatch(autoWirer.wireUp(fakeShader("Show Shader")))
+                mutableShow.addPatch(testToolchain.wireUp(fakeShader("Show Shader")))
 
                 mutableShow.addButtonGroup("Panel 1", "Scenes") {
                     addButton("First Scene") {
-                        addPatch(autoWirer.wireUp(fakeShader("First Scene Shader")))
+                        addPatch(testToolchain.wireUp(fakeShader("First Scene Shader")))
                     }
 
                     addButton("Second Scene") {
-                        addPatch(autoWirer.wireUp(fakeShader("Second Scene Shader")))
+                        addPatch(testToolchain.wireUp(fakeShader("Second Scene Shader")))
                     }
                 }
             }
@@ -86,7 +84,7 @@ object OpenShowSpec : Spek({
         context("when a shader instance has weird incoming links") {
             beforeEachTest {
                 mutableShow.addPatch(
-                    autoWirer.wireUp(
+                    testToolchain.wireUp(
                         Shader("Weird Shader", "uniform float time;\nvoid main() { gl_FragColor = gl_FragCoord + time; }")
                     ).apply {
                         mutableShaderInstances.only().incomingLinks["nonsense"] =

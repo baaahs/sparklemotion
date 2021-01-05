@@ -4,7 +4,8 @@ import baaahs.*
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
 import baaahs.app.ui.editor.*
-import baaahs.gl.patch.AutoWirer
+import baaahs.gl.Toolchain
+import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
@@ -27,10 +28,10 @@ abstract class MutablePatchHolder(
 
     override var title = basePatchHolder.title
 
-    override fun getEditorPanels(): List<EditorPanel> {
+    override fun getEditorPanels(editableManager: EditableManager): List<EditorPanel> {
         return listOf(
-            GenericPropertiesEditorPanel(getPropertiesComponents()),
-            PatchHolderEditorPanel(this)
+            GenericPropertiesEditorPanel(editableManager, getPropertiesComponents()),
+            PatchHolderEditorPanel(editableManager, this)
         )
     }
 
@@ -305,12 +306,12 @@ class MutablePatch {
     }
 
     /** Build a [LinkedPatch] independent of an [baaahs.show.live.OpenShow]. */
-    fun openForPreview(autoWirer: AutoWirer, resultContentType: ContentType): LinkedPatch? {
+    fun openForPreview(toolchain: Toolchain, resultContentType: ContentType): LinkedPatch? {
         val showBuilder = ShowBuilder()
         build(showBuilder)
 
         val openShaders = CacheBuilder<String, OpenShader> { shaderId ->
-            autoWirer.glslAnalyzer.openShader(showBuilder.getShaders().getBang(shaderId, "shader"))
+            toolchain.openShader(showBuilder.getShaders().getBang(shaderId, "shader"))
         }
 
         val resolvedShaderInstances =
@@ -349,7 +350,8 @@ class MutablePatch {
         mutableShaderInstances.remove(mutableShaderInstance)
     }
 
-    fun getEditorPanel() = PatchEditorPanel(this)
+    fun getEditorPanel(editableManager: EditableManager) =
+        PatchEditorPanel(editableManager, this)
 }
 
 data class MutableShader(

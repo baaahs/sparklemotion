@@ -1,6 +1,8 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.editor.EditableStyles
+import baaahs.gl.Toolchain
+import baaahs.gl.openShader
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
@@ -30,6 +32,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
 
     val mutableShaderInstance = props.mutableShaderInstance
     val shader = mutableShaderInstance.mutableShader.build()
+    val openShader = props.toolchain.openShader(shader)
 
     val handleCardClick = eventHandler("select", props.onSelect) { e ->
         props.onSelect()
@@ -47,7 +50,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
 
         cardHeader {
             attrs.avatar {
-                avatar { CommonIcons.UnknownShader /* TODO: Derive this via ShaderType. */ }
+                avatar { openShader.shaderType.icon }
             }
             attrs.title { +shader.title }
 //                                attrs.subheader { +"${shader.type.name} Shader" }
@@ -58,6 +61,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
             attrs.width = styles.cardWidth
             attrs.height = styles.cardWidth
             attrs.adjustGadgets = true
+            attrs.toolchain = props.toolchain
         }
 
         cardActions(styles.shaderCardActions on CardActionsStyle.root) {
@@ -65,7 +69,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
                 attrs.display = TypographyDisplay.block
                 attrs.variant = TypographyVariant.body2
                 attrs.color = TypographyColor.textSecondary
-                +"${null /* TODO: Fix this! */ ?: "Unknown"} Shader"
+                +"${openShader.shaderType.title} Shader"
             }
 
             iconButton {
@@ -81,6 +85,7 @@ external interface ShaderInstanceCardProps : RProps {
     var mutableShaderInstance: MutableShaderInstance
     var onSelect: () -> Unit
     var onDelete: () -> Unit
+    var toolchain: Toolchain
 }
 
 fun RBuilder.shaderCard(handler: RHandler<ShaderInstanceCardProps>) =

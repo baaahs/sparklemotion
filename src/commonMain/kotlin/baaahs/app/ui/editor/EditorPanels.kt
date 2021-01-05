@@ -3,14 +3,21 @@ package baaahs.app.ui.editor
 import baaahs.Severity
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.EditorPanel
+import baaahs.gl.openShader
+import baaahs.severity
+import baaahs.show.live.ShaderInstanceResolver
 import baaahs.show.mutable.*
 import baaahs.ui.Icon
 import baaahs.ui.Renderer
 
 data class GenericPropertiesEditorPanel(
-    val propsEditors: List<PropsEditor>
+    private val editableManager: EditableManager,
+    private val propsEditors: List<PropsEditor>
 ) : EditorPanel {
-    constructor(vararg propsEditors: PropsEditor) : this(propsEditors.toList())
+    constructor(
+        editableManager: EditableManager,
+        vararg propsEditors: PropsEditor
+    ) : this(editableManager, propsEditors.toList())
 
     override val title: String
         get() = "Properties"
@@ -19,11 +26,12 @@ data class GenericPropertiesEditorPanel(
     override val icon: Icon
         get() = CommonIcons.Settings
 
-    override fun getRenderer(editableManager: EditableManager): Renderer =
+    override fun getRenderer(): Renderer =
         editorPanelViews.forGenericPropertiesPanel(editableManager, propsEditors)
 }
 
 data class PatchHolderEditorPanel(
+    private val editableManager: EditableManager,
     private val mutablePatchHolder: MutablePatchHolder
 ) : EditorPanel {
     override val title: String
@@ -34,14 +42,15 @@ data class PatchHolderEditorPanel(
         get() = CommonIcons.Patch
 
     override fun getNestedEditorPanels(): List<EditorPanel> {
-        return mutablePatchHolder.patches.map { mutablePatch -> mutablePatch.getEditorPanel() }
+        return mutablePatchHolder.patches.map { mutablePatch -> mutablePatch.getEditorPanel(editableManager) }
     }
 
-    override fun getRenderer(editableManager: EditableManager): Renderer =
+    override fun getRenderer(): Renderer =
         editorPanelViews.forPatchHolder(editableManager, mutablePatchHolder)
 }
 
 data class PatchEditorPanel(
+    private val editableManager: EditableManager,
     private val mutablePatch: MutablePatch
 ) : EditorPanel {
     override val title: String
@@ -57,22 +66,30 @@ data class PatchEditorPanel(
         }
     }
 
-    override fun getRenderer(editableManager: EditableManager): Renderer =
+    override fun getRenderer(): Renderer =
         editorPanelViews.forPatch(editableManager, mutablePatch)
 
     inner class ShaderInstanceEditorPanel(
         private val mutableShaderInstance: MutableShaderInstance
     ) : EditorPanel {
+        // TODO: This is a clunky way to get our cached toolchain... clean up somehow.
+        val toolchain = editableManager.session!!.toolchain
+        private val openShader = toolchain.openShader(mutableShaderInstance.mutableShader.build())
+        private val liveShaderInstance = run {
+            val shaderInstance = mutableShaderInstance.build(ShowBuilder())
+            ShaderInstanceResolver.build(openShader, shaderInstance, emptyMap())
+        }
+
         override val title: String
             get() = mutableShaderInstance.mutableShader.title
         override val listSubhead: String
             get() = "Shaders"
         override val icon: Icon
-            get() = CommonIcons.UnknownShader // TODO: Derive this via ShaderType.
+            get() = openShader.shaderType.icon
         override val problemLevel: Severity?
-            get() = super.problemLevel
+            by lazy { liveShaderInstance.problems.severity() }
 
-        override fun getRenderer(editableManager: EditableManager): Renderer =
+        override fun getRenderer(): Renderer =
             editorPanelViews.forShaderInstance(editableManager, mutablePatch, mutableShaderInstance)
 
         override fun equals(other: Any?): Boolean {

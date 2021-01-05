@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.show.mutable.*
 import baaahs.ui.Renderer
+import baaahs.ui.renderWrapper
 import baaahs.ui.unaryPlus
 import materialui.components.divider.divider
 import materialui.components.divider.enums.DividerVariant

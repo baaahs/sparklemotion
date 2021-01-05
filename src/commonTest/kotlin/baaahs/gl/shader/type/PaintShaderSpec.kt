@@ -2,13 +2,14 @@ package baaahs.gl.shader.type
 
 import baaahs.describe
 import baaahs.gl.expects
-import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
+import baaahs.gl.openShader
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
-import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
+import baaahs.show.Shader
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -20,9 +21,9 @@ import org.spekframework.spek2.style.specification.describe
 object PaintShaderSpec : Spek({
     describe<PaintShader> {
         val shaderText by value { toBeSpecified<String>() }
-        val analyzer by value { GlslAnalyzer(testPlugins()) }
-        val shaderAnalysis by value { analyzer.analyze(shaderText) }
-        val openShader by value { analyzer.openShader(shaderText) }
+        val shader by value { Shader("Title", shaderText) }
+        val shaderAnalysis by value { testToolchain.analyze(shader) }
+        val openShader by value { testToolchain.openShader(shader) }
         val shaderType by value { PaintShader }
 
         context("when return type is color") {
@@ -79,7 +80,7 @@ object PaintShaderSpec : Spek({
     // TODO: This should be in GenericShaderPrototype probably;.
     describe("PaintShader") {
         val shaderText by value<String> { toBeSpecified() }
-        val shader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) }
+        val openShader by value { testToolchain.openShader(Shader("Title", shaderText)) }
         val namespace by value { GlslCode.Namespace("p0") }
 
         context("generic shaders") {
@@ -120,12 +121,12 @@ object PaintShaderSpec : Spek({
                         InputPort("mouse", ContentType.Mouse, GlslType.Vec2, "Mouse"),
                         InputPort("blueness", ContentType.unknown(GlslType.Float), GlslType.Float, "Blueness")
                     )
-                ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
+                ) { openShader.inputPorts.map { it.copy(glslArgSite = null) } }
             }
 
             it("generates function declarations") {
                 expect(
-                    shader.toGlsl(
+                    openShader.toGlsl(
                         namespace,
                         mapOf(
                             "resolution" to "in_resolution",
@@ -156,7 +157,7 @@ object PaintShaderSpec : Spek({
             }
 
             it("generates invocation GLSL") {
-                expect(shader.invocationGlsl(namespace, "resultVar"))
+                expect(openShader.invocationGlsl(namespace, "resultVar"))
                     .toBe("p0_main()")
             }
 
@@ -184,12 +185,12 @@ object PaintShaderSpec : Spek({
                                 glslArgSite = GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 3)
                             )
                         )
-                    ) { shader.inputPorts }
+                    ) { openShader.inputPorts }
                 }
 
                 it("generates invocation GLSL") {
                     expect(
-                        shader.invocationGlsl(
+                        openShader.invocationGlsl(
                             namespace, "resultVar", mapOf(
                                 "uv" to "uvArg"
                             )
@@ -228,7 +229,7 @@ object PaintShaderSpec : Spek({
                                     )
                                 )
                             )
-                        ) { shader.inputPorts }
+                        ) { openShader.inputPorts }
                     }
                 }
             }
@@ -270,13 +271,13 @@ object PaintShaderSpec : Spek({
                             InputPort("iTime", ContentType.Time, GlslType.Float, "Time", isImplicit = true),
                             InputPort("iMouse", ContentType.Mouse, GlslType.Vec4, "Mouse", isImplicit = true)
                         )
-                    ) { shader.inputPorts.map { it.copy(glslArgSite = null) } }
+                    ) { openShader.inputPorts.map { it.copy(glslArgSite = null) } }
                 }
             }
 
             it("generates function declarations") {
                 expect(
-                    shader.toGlsl(
+                    openShader.toGlsl(
                         namespace, mapOf(
                             "iResolution" to "in_resolution",
                             "iMouse" to "in_mouse",
@@ -308,7 +309,7 @@ object PaintShaderSpec : Spek({
             }
 
             it("generates invocation GLSL") {
-                expect(shader.invocationGlsl(namespace, "resultVar", mapOf("fragCoord" to "gl_FragCoord.xy")))
+                expect(openShader.invocationGlsl(namespace, "resultVar", mapOf("fragCoord" to "gl_FragCoord.xy")))
                     .toBe("p0_mainImage(resultVar, gl_FragCoord.xy)")
             }
         }

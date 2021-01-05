@@ -4,9 +4,10 @@ import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.fixtures.*
 import baaahs.getValue
+import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
-import baaahs.gl.patch.AutoWirer
+import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.RenderEngine
@@ -58,7 +59,7 @@ interface ShaderBuilder : IObservable {
 
 class PreviewShaderBuilder(
     override val shader: Shader,
-    private val autoWirer: AutoWirer,
+    private val toolchain: Toolchain,
     private val modelInfo: ModelInfo,
     private val coroutineScope: CoroutineScope = GlobalScope
 ) : Observable(), ShaderBuilder {
@@ -87,7 +88,7 @@ class PreviewShaderBuilder(
 
     val feeds = mutableListOf<Feed>()
 
-    private val previewShaders = PreviewShaders(autoWirer)
+    private val previewShaders = PreviewShaders(toolchain)
 
     override fun startBuilding() {
         state = ShaderBuilder.State.Analyzing
@@ -99,9 +100,9 @@ class PreviewShaderBuilder(
     }
 
     fun analyze() {
-        val shaderAnalysis = autoWirer.glslAnalyzer.analyze(shader)
+        val shaderAnalysis = toolchain.analyze(shader)
         this.shaderAnalysis = shaderAnalysis
-        openShader = autoWirer.glslAnalyzer.openShader(shaderAnalysis)
+        openShader = toolchain.openShader(shaderAnalysis)
         state = ShaderBuilder.State.Linking
         notifyChanged()
 
@@ -120,11 +121,11 @@ class PreviewShaderBuilder(
                 mapOf(ContentType.UvCoordinate to MutableConstPort("gl_FragCoord", GlslType.Vec2))
             } else emptyMap()
 
-            previewPatch = autoWirer.autoWire(*(shaders.toTypedArray()), defaultPorts = defaultPorts)
+            previewPatch = toolchain.autoWire(shaders, defaultPorts = defaultPorts)
 //                .dumpOptions()
                 .acceptSuggestedLinkOptions()
                 .confirm()
-            linkedPatch = previewPatch?.openForPreview(autoWirer, resultContentType)
+            linkedPatch = previewPatch?.openForPreview(toolchain, resultContentType)
             state = ShaderBuilder.State.Linked
         } catch (e: GlslException) {
             compileErrors = e.errors
@@ -142,7 +143,7 @@ class PreviewShaderBuilder(
         notifyChanged()
 
         coroutineScope.launch {
-            val showPlayer = object : BaseShowPlayer(autoWirer.plugins, modelInfo) {
+            val showPlayer = object : BaseShowPlayer(toolchain, modelInfo) {
                 override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
                     mutableGadgets.add(ShaderBuilder.GadgetPreview(id, gadget, controlledDataSource))
                     super.registerGadget(id, gadget, controlledDataSource)
@@ -204,8 +205,8 @@ class PreviewShaderBuilder(
     }
 }
 
-class PreviewShaders(val autoWirer: AutoWirer) {
-    private fun analyze(shader: Shader) = autoWirer.glslAnalyzer.openShader(shader)
+class PreviewShaders(val toolchain: Toolchain) {
+    private fun analyze(shader: Shader) = toolchain.openShader(shader)
 
     val screenCoordsProjection by lazy { analyze(PreviewShaderBuilder.screenCoordsProjection) }
     val pixelUvIdentity by lazy { analyze(Shaders.pixelUvIdentity) }

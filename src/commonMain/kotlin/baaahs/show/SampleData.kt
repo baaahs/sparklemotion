@@ -2,7 +2,8 @@ package baaahs.show
 
 import baaahs.Color
 import baaahs.app.ui.editor.PortLinkOption
-import baaahs.gl.patch.AutoWirer
+import baaahs.gl.RootToolchain
+import baaahs.gl.autoWire
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
@@ -54,11 +55,11 @@ object SampleData {
             BeatLinkPlugin.Builder(BeatSource.None)
     val beatLinkPlugin = plugins.findPlugin<BeatLinkPlugin>()
 
-    private val autoWirer = AutoWirer(plugins)
+    private val toolchain = RootToolchain(plugins)
 
     private val uvShader get() = wireUp(Shaders.xyProjection)
 
-    private val showDefaultPaint = autoWirer.autoWire(
+    private val showDefaultPaint = toolchain.autoWire(
         Shader(
             "Darkness",
             /**language=glsl*/
@@ -72,7 +73,7 @@ object SampleData {
         .acceptSuggestedLinkOptions()
         .confirm()
 
-    private val brightnessFilter = autoWirer.autoWire(
+    private val brightnessFilter = toolchain.autoWire(
         Shader(
             "Brightness",
             /**language=glsl*/
@@ -91,7 +92,7 @@ object SampleData {
         .acceptSuggestedLinkOptions()
         .confirm()
 
-    private val saturationFilter = autoWirer.autoWire(
+    private val saturationFilter = toolchain.autoWire(
         Shader(
             "Saturation",
             /**language=glsl*/
@@ -135,7 +136,7 @@ object SampleData {
         .acceptSuggestedLinkOptions()
         .confirm()
 
-    private val redYellowGreenPatch = autoWirer.autoWire(
+    private val redYellowGreenPatch = toolchain.autoWire(
         Shader(
             "GLSL Hue Test Pattern",
             /**language=glsl*/
@@ -150,7 +151,7 @@ object SampleData {
         .acceptSuggestedLinkOptions()
         .confirm()
 
-    private val blueAquaGreenPatch = autoWirer.autoWire(
+    private val blueAquaGreenPatch = toolchain.autoWire(
         Shader(
             "Another GLSL Hue Test Pattern",
             /**language=glsl*/
@@ -166,7 +167,7 @@ object SampleData {
         .acceptSuggestedLinkOptions()
         .confirm()
 
-    private val fireBallPatch = autoWirer.autoWire(FixtureShaders.fireBallGlsl)
+    private val fireBallPatch = toolchain.autoWire(FixtureShaders.fireBallGlsl)
         .acceptSuggestedLinkOptions()
         .confirm()
 
@@ -261,7 +262,7 @@ object SampleData {
     }.getShow()
 
     private fun wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {
-        val unresolvedPatch = autoWirer.autoWire(shader)
+        val unresolvedPatch = toolchain.autoWire(shader)
         unresolvedPatch.editShader(shader).apply {
             ports.forEach { (portId, port) ->
                 linkOptionsFor(portId).apply {
