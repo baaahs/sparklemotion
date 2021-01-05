@@ -3,6 +3,7 @@ package baaahs.gl.patch
 import baaahs.app.ui.editor.LinkOption
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.fixtures.DeviceType
+import baaahs.gl.Toolchain
 import baaahs.gl.glsl.LinkException
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
@@ -45,7 +46,7 @@ class ChannelsInfo {
     constructor(
         parentMutableShow: MutableShow? = null,
         deviceTypes: Collection<DeviceType>,
-        autoWirer: AutoWirer
+        toolchain: Toolchain
     ) {
         val shaderChannels = shaderChannelsFromDeviceTypes(deviceTypes)
 
@@ -53,7 +54,7 @@ class ChannelsInfo {
             override fun visit(mutableShaderInstance: MutableShaderInstance) {
                 try {
                     val shader = mutableShaderInstance.mutableShader.build()
-                    val contentType = autoWirer.glslAnalyzer.openShader(shader).outputPort.contentType
+                    val contentType = toolchain.openShader(shader).outputPort.contentType
                     shaderChannels.getOrPut(contentType, ::mutableSetOf)
                         .add(mutableShaderInstance.shaderChannel)
                 } catch (e: Exception) {

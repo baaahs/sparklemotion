@@ -3,9 +3,9 @@ package baaahs.show.mutable
 import baaahs.*
 import baaahs.app.ui.editor.LinkOption
 import baaahs.app.ui.editor.PortLinkOption
+import baaahs.gl.RootToolchain
 import baaahs.gl.kexpect
 import baaahs.gl.override
-import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
@@ -40,10 +40,10 @@ import kotlin.collections.set
 object EditingShaderSpec : Spek({
     describe<EditingShader> {
         val plugins by value { testPlugins() + BeatLinkPlugin.Builder(StubBeatSource()) }
+        val toolchain by value { RootToolchain(plugins) }
         val beatLinkDataSource by value {
             (plugins.find(BeatLinkPlugin.id) as BeatLinkPlugin).beatLinkDataSource
         }
-        val autoWirer by value { AutoWirer(plugins) }
         val scaleUniform by value { "uniform float theScale;" }
         val paintShader by value {
             Shader(
@@ -87,14 +87,14 @@ object EditingShaderSpec : Spek({
             every { mockShaderBuilder.addObserver(capture(observerSlot)) } answers { observerSlot.captured }
             every { mockShaderBuilder.startBuilding() } just runs
             every { mockShaderBuilder.gadgets } returns emptyList()
-            every { mockShaderBuilder.openShader } returns autoWirer.glslAnalyzer.openShader(shaderInEdit)
+            every { mockShaderBuilder.openShader } returns toolchain.openShader(shaderInEdit)
         }
         val notifiedStates by value { arrayListOf<State>() }
 
         val beforeBuildingShader by value { { } }
         val editingShader by value {
             beforeBuildingShader()
-            EditingShader(mutableShow, mutablePatch, mutableShaderInstance, autoWirer, getShaderBuilder)
+            EditingShader(mutableShow, mutablePatch, mutableShaderInstance, toolchain, getShaderBuilder)
                 .also { it.addObserver { notifiedStates.add(it.state) } }
         }
         beforeEachTest {
@@ -256,10 +256,6 @@ object EditingShaderSpec : Spek({
             }
 
             context("incoming link suggestions") {
-                override(autoWirer) {
-                    AutoWirer(plugins)
-                }
-
                 it("suggests link options for each input port") {
                     expect(editingShader.openShader!!.inputPorts.map { it.id }.toSet())
                         .toBe(setOf("theScale", "time", "inColor"))
@@ -341,7 +337,7 @@ object EditingShaderSpec : Spek({
             override(shaderInEdit) { paintShader }
             override(otherShaderInPatch) { null }
             override(getShaderBuilder) {
-                { shader: Shader -> PreviewShaderBuilder(shader, autoWirer, TestModel, CoroutineScope(context)) }
+                { shader: Shader -> PreviewShaderBuilder(shader, toolchain, TestModel, CoroutineScope(context)) }
             }
             val gl by value { FakeGlContext() }
             val renderEngine by value { PreviewRenderEngine(gl, 1, 1) }

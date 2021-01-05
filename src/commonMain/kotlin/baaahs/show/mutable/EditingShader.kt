@@ -1,14 +1,12 @@
 package baaahs.show.mutable
 
 import baaahs.app.ui.editor.LinkOption
-import baaahs.gl.patch.AutoWirer
-import baaahs.gl.patch.ChannelsInfo
+import baaahs.gl.Toolchain
 import baaahs.gl.patch.ShaderInstanceOptions
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.shader.InputPort
 import baaahs.randomId
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
 import baaahs.util.Logger
@@ -17,7 +15,7 @@ class EditingShader(
     private val parentMutableShow: MutableShow,
     private val parentMutablePatch: MutablePatch,
     val mutableShaderInstance: MutableShaderInstance,
-    private val autoWirer: AutoWirer,
+    private val toolchain: Toolchain,
     private val createShaderBuilder: (Shader) -> ShaderBuilder,
 ) : Observable() {
     val id = randomId("EditingShader")
@@ -103,14 +101,7 @@ class EditingShader(
             val showBuilder = ShowBuilder()
             parentMutablePatch.build(showBuilder)
 
-            val channelsInfo = ChannelsInfo(parentMutableShow, emptyList(), autoWirer)
-            shaderInstanceOptions = ShaderInstanceOptions(
-                currentOpenShader,
-                ShaderChannel.Main,
-                channelsInfo,
-                currentLinks = mutableShaderInstance.incomingLinks,
-                plugins = autoWirer.plugins
-            )
+            shaderInstanceOptions = toolchain.wiringOptions(currentOpenShader, parentMutableShow, mutableShaderInstance)
         }
         return shaderInstanceOptions
     }
@@ -155,7 +146,7 @@ class EditingShader(
 
     //    if (it.state == EditingShader.State.Success) {
 //        val shader = it.shaderBuilder.shader
-//        val wiringGuess = appContext.autoWirer.autoWire(shader)
+//        val wiringGuess = appContext.toolchain.autoWire(shader)
 //            .acceptSymbolicChannelLinks()
 //            .takeFirstIfAmbiguous()
 //            .resolve()

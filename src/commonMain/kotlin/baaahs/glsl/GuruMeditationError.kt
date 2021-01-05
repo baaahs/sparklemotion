@@ -3,7 +3,8 @@ package baaahs.glsl
 import baaahs.BaseShowPlayer
 import baaahs.Gadget
 import baaahs.fixtures.DeviceType
-import baaahs.gl.patch.AutoWirer
+import baaahs.gl.RootToolchain
+import baaahs.gl.Toolchain
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
 import baaahs.model.ModelInfo
@@ -21,17 +22,17 @@ class GuruMeditationError(deviceType: DeviceType) {
 
     init {
         val plugins = Plugins.safe(Plugins.dummyContext)
-        val autoWirer = AutoWirer(plugins)
+        val toolchain = RootToolchain(plugins)
         val showBuilder = ShowBuilder()
-        val mutablePatch = autoWirer.autoWire(shader)
+        val mutablePatch = toolchain.autoWire(shader)
             .acceptSuggestedLinkOptions()
             .confirm()
         val show = MutableShow("error").apply {
             addPatch(mutablePatch)
         }.build(showBuilder)
 
-        val showPlayer = FakeShowPlayer(plugins)
-        val openShow = ShowOpener(autoWirer.glslAnalyzer, show, showPlayer).openShow()
+        val showPlayer = FakeShowPlayer(toolchain)
+        val openShow = ShowOpener(toolchain, show, showPlayer).openShow()
         val openPatch = openShow.patches.only("patch")
         linkedPatch = PatchResolver.buildPortDiagram(openShow.allDataSources, openPatch)
             .resolvePatch(ShaderChannel.Main, deviceType.resultContentType)
@@ -39,7 +40,7 @@ class GuruMeditationError(deviceType: DeviceType) {
     }
 }
 
-private class FakeShowPlayer(plugins: Plugins) : BaseShowPlayer(plugins, ModelInfo.Empty) {
+private class FakeShowPlayer(toolchain: Toolchain) : BaseShowPlayer(toolchain, ModelInfo.Empty) {
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?): Unit = error("not implemented")
     override fun <T : Gadget> useGadget(id: String): T = error("not implemented")
 }

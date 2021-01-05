@@ -3,7 +3,7 @@ package baaahs.show.live
 import baaahs.ShowPlayer
 import baaahs.ShowState
 import baaahs.getBang
-import baaahs.gl.glsl.GlslAnalyzer
+import baaahs.gl.Toolchain
 import baaahs.gl.shader.OpenShader
 import baaahs.show.DataSource
 import baaahs.show.Shader
@@ -11,7 +11,7 @@ import baaahs.show.Show
 import baaahs.util.CacheBuilder
 
 open class ShowOpener(
-    private val glslAnalyzer: GlslAnalyzer,
+    private val toolchain: Toolchain,
     private val show: Show,
     private val showPlayer: ShowPlayer
 ): OpenContext {
@@ -51,7 +51,7 @@ open class ShowOpener(
     }
 
     open fun openShader(shader: Shader) =
-        glslAnalyzer.openShader(shader)
+        toolchain.openShader(shader)
 
     override fun release() {
 //        allControls.forEach { it.release() }

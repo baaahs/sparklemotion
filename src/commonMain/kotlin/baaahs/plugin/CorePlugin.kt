@@ -186,7 +186,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                        val clock = showPlayer.plugins.pluginContext.clock
+                        val clock = showPlayer.toolchain.plugins.pluginContext.clock
                         return SingleUniformFeed(glslProgram, this@TimeDataSource, id) { uniform ->
                             val thisTime = (clock.now() % 10000.0).toFloat()
                             uniform.set(thisTime)

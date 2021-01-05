@@ -1,7 +1,9 @@
 package baaahs.gl.patch
 
 import baaahs.fixtures.PixelLocationDataSource
+import baaahs.gl.RootToolchain
 import baaahs.gl.expects
+import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.override
 import baaahs.gl.render.DeviceTypeForTest
 import baaahs.gl.shader.InputPort
@@ -30,6 +32,7 @@ import org.spekframework.spek2.style.specification.describe
 object AutoWirerSpec : Spek({
     describe("AutoWirer") {
         val autoWirer by value { AutoWirer(testPlugins()) }
+        val toolchain by value { RootToolchain(testPlugins(), autoWirer = autoWirer) }
         val deviceType by value {
             DeviceTypeForTest(
                 likelyPipelines = listOf(
@@ -50,10 +53,10 @@ object AutoWirerSpec : Spek({
                     OutputPort(outContentType)
                 )
             }
-            val shaders by value { arrayOf<OpenShader>(mainShader) }
+            val shaders by value { listOf<OpenShader>(mainShader) }
             val shaderChannel by value { ShaderChannel.Main }
             val suggestions by value {
-                autoWirer.autoWire(*shaders, shaderChannel = shaderChannel, deviceTypes = listOf(deviceType))
+                autoWirer.autoWire(shaders, shaderChannel = shaderChannel, deviceTypes = listOf(deviceType))
             }
             val patch by value { suggestions.acceptSuggestedLinkOptions().confirm() }
             val mutableLinks by value { patch.mutableShaderInstances.only().incomingLinks }
@@ -163,13 +166,13 @@ object AutoWirerSpec : Spek({
                 }
                 """.trimIndent()
             }
-            val mainShader by value { autoWirer.glslAnalyzer.import(shaderText) }
+            val mainShader by value { toolchain.glslAnalyzer.import(shaderText) }
             val shaders by value { arrayOf(mainShader) }
             val patch by value {
-                autoWirer.autoWire(*shaders, deviceTypes = listOf(deviceType))
+                autoWirer.autoWire(shaders.open(toolchain.glslAnalyzer), deviceTypes = listOf(deviceType))
                     .acceptSuggestedLinkOptions().confirm()
             }
-            val linkedPatch by value { patch.openForPreview(autoWirer, ContentType.Color)!! }
+            val linkedPatch by value { patch.openForPreview(toolchain, ContentType.Color)!! }
             val rootProgramNode by value { linkedPatch.rootNode as LinkedShaderInstance }
             val mutableLinks by value { patch.mutableShaderInstances.only().incomingLinks }
             val links by value { rootProgramNode.incomingLinks }
@@ -434,3 +437,6 @@ object AutoWirerSpec : Spek({
         }
     }
 })
+
+private fun Array<Shader>.open(glslAnalyzer: GlslAnalyzer): Collection<OpenShader> =
+    map { glslAnalyzer.openShader(it) }
