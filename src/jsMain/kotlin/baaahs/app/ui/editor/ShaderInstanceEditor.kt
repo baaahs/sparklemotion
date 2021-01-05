@@ -48,6 +48,8 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
     val appContext = useContext(appContext)
     val shaderEditorStyles = appContext.allStyles.shaderEditor
 
+    val toolchain = memo { appContext.toolchain }
+
     var selectedTab by state { PageTabs.Properties }
     @Suppress("UNCHECKED_CAST")
     val handleChangeTab = handler("on tab click") { _: Event, value: PageTabs ->
@@ -71,9 +73,9 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                 props.editableManager.currentMutableShow,
                 props.mutablePatch,
                 props.mutableShaderInstance,
-                appContext.toolchain
+                toolchain
             ) { shader ->
-                PreviewShaderBuilder(shader, appContext.toolchain, appContext.webClient.model)
+                PreviewShaderBuilder(shader, toolchain, appContext.webClient.model)
             }
 
         val observer = newEditingShader.addObserver {
