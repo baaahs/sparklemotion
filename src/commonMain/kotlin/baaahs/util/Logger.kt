@@ -5,31 +5,27 @@ import com.soywiz.klock.DateTime
 
 class Logger(val id: String) {
     fun debug(exception: Throwable? = null, message: () -> String) {
-        log(id, "DEBUG", message.invoke(), exception)
+        log(id, LogLevel.DEBUG, message, exception)
     }
 
     fun info(message: () -> String) {
-        log(id, "INFO", message.invoke())
+        log(id, LogLevel.INFO, message)
     }
 
     fun warn(message: () -> String) {
-        log(id, "WARN", message.invoke())
+        log(id, LogLevel.WARN, message)
     }
 
     fun warn(exception: Throwable, message: () -> String) {
-        log(id, "WARN", message.invoke(), exception)
+        log(id, LogLevel.WARN, message, exception)
     }
 
     fun error(message: () -> String) {
-        log(id, "ERROR", message.invoke())
-    }
-
-    fun error(message: String, exception: Throwable) {
-        log(id, "ERROR", message, exception)
+        log(id, LogLevel.ERROR, message)
     }
 
     fun error(exception: Throwable, message: () -> String) {
-        log(id, "ERROR", message.invoke(), exception)
+        log(id, LogLevel.ERROR, message, exception)
     }
 
     fun <T> group(message: String, block: () -> T): T {
@@ -51,8 +47,15 @@ class Logger(val id: String) {
     }
 }
 
+enum class LogLevel {
+    DEBUG,
+    INFO,
+    WARN,
+    ERROR
+}
+
 inline fun <reified T> Logger() = Logger(T::class.simpleName ?: "unknown")
 
-expect fun log(id: String, level: String, message: String, exception: Throwable? = null)
+expect fun log(id: String, level: LogLevel, message: () -> String, exception: Throwable? = null)
 expect fun logGroupBegin(id: String, message: String)
 expect fun logGroupEnd(id: String, message: String)

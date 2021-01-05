@@ -20,6 +20,7 @@ class ShowRunner(
     private var activePatchSetChanged: Boolean = true
 
     init {
+        logger.debug { "Running show ${openShow.title}" }
         updateProblems(openShow.allProblems)
     }
 

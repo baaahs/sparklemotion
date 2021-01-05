@@ -191,7 +191,7 @@ class BrainManager(
                 hadException = true
                 pendingBrains[brainId] = this
 
-                logger.error("Error sending to $brainId, will take offline", e)
+                logger.error(e) { "Error sending to $brainId, will take offline" }
             }
 
             networkStats.packetsSent++

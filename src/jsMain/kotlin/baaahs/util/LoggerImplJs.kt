@@ -1,21 +1,22 @@
 package baaahs.util
 
-actual fun log(id: String, level: String, message: String, exception: Throwable?) {
+actual fun log(id: String, level: LogLevel, message: () -> String, exception: Throwable?) {
+    if (level < LogLevels.levelFor(id)) return
+
     try {
-        logMessage(level, "${Logger.ts()} [] $level  $id - $message", exception)
+        logMessage(level, "${Logger.ts()} [] $level  $id - ${message()}", exception)
     } catch (t: Throwable) {
-        println("!!! Logger bailing")
+        println("!!! Logger bailing: ${t.message}")
     }
 }
 
 
-private fun logMessage(level: String, message: String, exception: Throwable?) {
+private fun logMessage(level: LogLevel, message: String, exception: Throwable?) {
     when (level) {
-        "ERROR" -> console.error(message, exception)
-        "WARN" -> console.warn(message, exception)
-        "INFO" -> console.info(message, exception)
-        "DEBUG" -> console.asDynamic().debug(message, exception)
-        else -> console.log(message, exception)
+        LogLevel.DEBUG -> console.asDynamic().debug(message, exception)
+        LogLevel.INFO -> console.info(message, exception)
+        LogLevel.WARN -> console.warn(message, exception)
+        LogLevel.ERROR -> console.error(message, exception)
     }
 }
 
