@@ -1,6 +1,7 @@
 package baaahs.show
 
 import baaahs.gl.Toolchain
+import baaahs.gl.autoWire
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType

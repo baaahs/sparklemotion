@@ -1,6 +1,7 @@
 package baaahs.gl.shader.type
 
 import baaahs.describe
+import baaahs.gl.openShader
 import baaahs.gl.override
 import baaahs.gl.testToolchain
 import baaahs.show.Shader

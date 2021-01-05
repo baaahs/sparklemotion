@@ -3,6 +3,7 @@ package baaahs.show.live
 import baaahs.ShowState
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.Toolchain
+import baaahs.gl.autoWire
 import baaahs.gl.shader.type.PaintShader
 import baaahs.gl.shader.type.ProjectionShader
 import baaahs.gl.shader.type.ShaderType

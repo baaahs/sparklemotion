@@ -71,6 +71,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
                     attrs.mutableShaderInstance = mutableShaderInstance
                     attrs.onSelect = handleShaderSelect[mutableShaderInstance]
                     attrs.onDelete = handleShaderDelete[mutableShaderInstance]
+                    attrs.toolchain = props.editableManager.session!!.toolchain
                 }
             }
 

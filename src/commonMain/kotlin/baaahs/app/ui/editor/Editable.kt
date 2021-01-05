@@ -113,5 +113,5 @@ interface EditorPanel {
     val problemLevel: Severity? get() = null
 
     fun getNestedEditorPanels(): List<EditorPanel> = emptyList()
-    fun getRenderer(editableManager: EditableManager): Renderer
+    fun getRenderer(): Renderer
 }

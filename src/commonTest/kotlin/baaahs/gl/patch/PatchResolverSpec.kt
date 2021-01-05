@@ -4,6 +4,7 @@ import baaahs.TestModel
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
+import baaahs.gl.autoWire
 import baaahs.gl.kexpect
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.render.RenderManager

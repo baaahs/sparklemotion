@@ -3,6 +3,7 @@ package baaahs
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.openShader
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.patch.ProgramNode
 import baaahs.gl.render.ModelRenderEngine

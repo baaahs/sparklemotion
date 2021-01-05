@@ -5,6 +5,7 @@ import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
 import baaahs.app.ui.editor.*
 import baaahs.gl.Toolchain
+import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver

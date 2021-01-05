@@ -9,12 +9,9 @@ import baaahs.fixtures.NullTransport
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
-import baaahs.gl.GlBase
-import baaahs.gl.GlContext
+import baaahs.gl.*
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
-import baaahs.gl.renderPlanFor
-import baaahs.gl.testToolchain
 import baaahs.plugin.CorePlugin
 import baaahs.show.Shader
 import baaahs.shows.FakeShowPlayer

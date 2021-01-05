@@ -4,6 +4,7 @@ import baaahs.describe
 import baaahs.gl.expects
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
+import baaahs.gl.openShader
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort

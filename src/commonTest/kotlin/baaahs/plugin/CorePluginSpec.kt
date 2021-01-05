@@ -3,6 +3,7 @@ package baaahs.plugin
 import baaahs.FakeClock
 import baaahs.describe
 import baaahs.gl.RootToolchain
+import baaahs.gl.autoWire
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
 import baaahs.gl.testPlugins

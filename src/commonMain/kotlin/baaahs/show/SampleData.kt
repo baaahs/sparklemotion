@@ -3,6 +3,7 @@ package baaahs.show
 import baaahs.Color
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.RootToolchain
+import baaahs.gl.autoWire
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
