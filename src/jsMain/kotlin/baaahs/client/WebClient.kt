@@ -4,6 +4,8 @@ import baaahs.*
 import baaahs.app.ui.AppIndex
 import baaahs.app.ui.AppIndexProps
 import baaahs.gl.GlBase
+import baaahs.gl.RootToolchain
+import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.model.Model
@@ -26,7 +28,7 @@ import react.createElement
 class WebClient(
     network: Network,
     pinkyAddress: Network.Address,
-    private val plugins: Plugins = createPlugins()
+    private val toolchain: Toolchain = RootToolchain(createPlugins())
 ) : HostedWebApp {
     private val facade = Facade()
 
@@ -54,10 +56,10 @@ class WebClient(
         facade.notifyChanged()
     }
 
-    private val showPlayer = ClientShowPlayer(plugins, pubSub, model)
+    private val showPlayer = ClientShowPlayer(toolchain, pubSub, model)
     private val showEditStateChannel =
         pubSub.subscribe(
-            ShowEditorState.createTopic(plugins, remoteFsSerializer)
+            ShowEditorState.createTopic(toolchain.plugins, remoteFsSerializer)
         ) { incoming ->
             switchTo(incoming)
             undoStack.reset(incoming)
@@ -106,7 +108,7 @@ class WebClient(
 
         private val commands = Topics.Commands(SerializersModule {
             include(remoteFsSerializer.serialModule)
-            include(plugins.serialModule)
+            include(toolchain.plugins.serialModule)
         })
         val newShow = pubSub.commandSender(commands.newShow) {}
         val switchToShow = pubSub.commandSender(commands.switchToShow) {}
@@ -152,7 +154,7 @@ class WebClient(
 
     inner class Facade : baaahs.ui.Facade(), EditHandler {
         val plugins: Plugins
-            get() = this@WebClient.plugins
+            get() = this@WebClient.toolchain.plugins
 
         val isConnected: Boolean
             get() = pubSub.isConnected

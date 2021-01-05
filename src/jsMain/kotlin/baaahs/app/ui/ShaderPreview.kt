@@ -51,7 +51,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
         val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
             // TODO: This is duplicating work that happens later in PreviewShaderBuilder, which is rotten.
-            appContext.autoWirer.glslAnalyzer.openShader(props.shader!!.src)
+            appContext.toolchain.openShader(props.shader!!.src)
                 .shaderType
         }
 
@@ -92,7 +92,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val builder = memo(gl, props.shader, props.previewShaderBuilder) {
         gl?.let {
             props.previewShaderBuilder
-                ?: PreviewShaderBuilder(props.shader!!, appContext.autoWirer, appContext.webClient.model)
+                ?: PreviewShaderBuilder(props.shader!!, appContext.toolchain, appContext.webClient.model)
         }
     }
 

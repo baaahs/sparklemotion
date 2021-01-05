@@ -1,11 +1,10 @@
 package baaahs
 
+import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.AnalysisException
-import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.shader.OpenShader
 import baaahs.model.ModelInfo
-import baaahs.plugin.Plugins
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.Show
@@ -14,7 +13,7 @@ import baaahs.show.live.ShowOpener
 import baaahs.util.Logger
 
 interface ShowPlayer {
-    val plugins: Plugins
+    val toolchain: Toolchain
     val modelInfo: ModelInfo
     val dataSources: List<DataSource>
 
@@ -34,7 +33,7 @@ interface ShowPlayer {
     fun openFeed(id: String, dataSource: DataSource): Feed
     fun useFeed(dataSource: DataSource): Feed
     fun openShow(show: Show, showState: ShowState? = null): OpenShow =
-        ShowOpener(GlslAnalyzer(plugins), show, this).openShow(showState)
+        ShowOpener(toolchain, show, this).openShow(showState)
 
     fun releaseUnused()
 
@@ -44,11 +43,9 @@ interface ShowPlayer {
 }
 
 abstract class BaseShowPlayer(
-    final override val plugins: Plugins,
+    final override val toolchain: Toolchain,
     final override val modelInfo: ModelInfo
 ) : ShowPlayer {
-    private val glslAnalyzer = GlslAnalyzer(plugins)
-
     private val feeds = mutableMapOf<DataSource, Feed>()
     private val shaders = mutableMapOf<Shader, OpenShader>()
 
@@ -76,9 +73,9 @@ abstract class BaseShowPlayer(
 
     override fun openShader(shader: Shader, addToCache: Boolean): OpenShader {
         return if (addToCache) {
-            shaders.getOrPut(shader) { glslAnalyzer.openShader(shader) }
+            shaders.getOrPut(shader) { toolchain.openShader(shader) }
         } else {
-            shaders[shader] ?: glslAnalyzer.openShader(shader)
+            shaders[shader] ?: toolchain.openShader(shader)
         }
     }
 

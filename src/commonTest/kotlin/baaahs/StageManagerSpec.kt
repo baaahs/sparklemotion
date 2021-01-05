@@ -9,6 +9,7 @@ import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.models.SheepModel
 import baaahs.show.SampleData
+import baaahs.show.live.toolchain
 import baaahs.show.mutable.MutableShow
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeFs
@@ -36,7 +37,7 @@ object StageManagerSpec : Spek({
 
         val stageManager by value {
             StageManager(
-                plugins,
+                toolchain,
                 renderManager,
                 pubSub.server,
                 Storage(fakeFs, plugins),

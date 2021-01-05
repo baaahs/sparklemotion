@@ -1,7 +1,7 @@
 package baaahs.show.live
 
 import baaahs.describe
-import baaahs.gl.patch.AutoWirer
+import baaahs.gl.RootToolchain
 import baaahs.gl.testPlugins
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
@@ -21,8 +21,8 @@ object ControlDisplaySpec : Spek({
         val show by value { mutableShow.build(ShowBuilder()) }
 
         val showPlayer by value { FakeShowPlayer() }
-        val autoWirer by value { AutoWirer(testPlugins()) }
-        val showOpener by value { ShowOpener(autoWirer.glslAnalyzer, show, showPlayer) }
+        val toolchain by value { RootToolchain(testPlugins()) }
+        val showOpener by value { ShowOpener(toolchain, show, showPlayer) }
         val openShow by value { showOpener.openShow() }
         val editHandler by value { FakeEditHandler() }
         val dragNDrop by value { FakeDragNDrop() }

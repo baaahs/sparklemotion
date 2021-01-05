@@ -2,7 +2,8 @@ package baaahs.show.live
 
 import baaahs.ShowState
 import baaahs.app.ui.editor.PortLinkOption
-import baaahs.gl.patch.AutoWirer
+import baaahs.gl.RootToolchain
+import baaahs.gl.Toolchain
 import baaahs.gl.shader.type.PaintShader
 import baaahs.gl.shader.type.ProjectionShader
 import baaahs.gl.shader.type.ShaderType
@@ -20,7 +21,7 @@ import baaahs.ui.DragNDrop
 import baaahs.ui.DropTarget
 import kotlinx.serialization.json.buildJsonObject
 
-fun AutoWirer.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {
+fun Toolchain.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {
     val unresolvedPatch = autoWire(shader)
     unresolvedPatch.editShader(shader).apply {
         ports.forEach { (portId, port) ->
@@ -96,18 +97,18 @@ fun MutableShow.addFixtureControls() {
     val slider1 = CorePlugin.SliderDataSource("slider1", 0f, 0f, 1f, 1f)
     val slider2 = CorePlugin.SliderDataSource("slider2", 0f, 0f, 1f, 1f)
 
-    addPatch(autoWirer.wireUp(fakeShader("Show Projection", ProjectionShader)))
+    addPatch(toolchain.wireUp(fakeShader("Show Projection", ProjectionShader)))
 
     addButtonGroup("Panel 1", "Scenes") {
         addButton("Scene 1") {
-            addPatch(autoWirer.wireUp(fakeShader("Scene 1 Shader")))
+            addPatch(toolchain.wireUp(fakeShader("Scene 1 Shader")))
 
             addButtonGroup("Panel 2", "Backdrops") {
                 addButton("Backdrop 1.1") {
-                    addPatch(autoWirer.wireUp(fakeShader("Backdrop 1.1 Shader")))
+                    addPatch(toolchain.wireUp(fakeShader("Backdrop 1.1 Shader")))
                 }
                 addButton("Backdrop 1.2") {
-                    addPatch(autoWirer.wireUp(fakeShader("Backdrop 1.2 Shader")))
+                    addPatch(toolchain.wireUp(fakeShader("Backdrop 1.2 Shader")))
                     addControl("Panel 3", slider2.buildControl())
                 }
             }
@@ -115,15 +116,15 @@ fun MutableShow.addFixtureControls() {
         }
 
         addButton("Scene 2") {
-            addPatch(autoWirer.wireUp(fakeShader("Scene 2 Shader")))
+            addPatch(toolchain.wireUp(fakeShader("Scene 2 Shader")))
 
             addButtonGroup("Panel 2", "Backdrops") {
                 addButton("Backdrop 2.1") {
-                    addPatch(autoWirer.wireUp(fakeShader("Backdrop 2.1 Shader")))
+                    addPatch(toolchain.wireUp(fakeShader("Backdrop 2.1 Shader")))
                     addControl("Panel 3", slider2.buildControl())
                 }
                 addButton("Backdrop 2.2") {
-                    addPatch(autoWirer.wireUp(fakeShader("Backdrop 2.2 Shader")))
+                    addPatch(toolchain.wireUp(fakeShader("Backdrop 2.2 Shader")))
                     addControl("Panel 3", slider1.buildControl())
                 }
             }
@@ -137,4 +138,4 @@ fun ControlDisplay.renderBuckets(panelName: String): List<ControlDisplay.PanelBu
     return buckets
 }
 
-val autoWirer = AutoWirer(testPlugins())
+val toolchain = RootToolchain(testPlugins())

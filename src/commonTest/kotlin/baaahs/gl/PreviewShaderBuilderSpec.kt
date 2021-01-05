@@ -2,13 +2,13 @@ package baaahs.gl
 
 import baaahs.describe
 import baaahs.gadgets.Slider
-import baaahs.gl.patch.AutoWirer
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.show.Shader
+import baaahs.show.live.toolchain
 import baaahs.shows.FakeGlContext
 import baaahs.toNotEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -25,10 +25,9 @@ import kotlin.test.assertNotNull
 object PreviewShaderBuilderSpec : Spek({
     describe<PreviewShaderBuilder> {
         val shader by value { Shaders.checkerboard }
-        val autoWirer by value { AutoWirer(testPlugins()) }
         val testCoroutineContext by value { TestCoroutineContext("global") }
         val previewShaderBuilder by value {
-            PreviewShaderBuilder(shader, autoWirer, ModelInfo.Empty, CoroutineScope(testCoroutineContext))
+            PreviewShaderBuilder(shader, toolchain, ModelInfo.Empty, CoroutineScope(testCoroutineContext))
         }
         val renderEngine by value { PreviewRenderEngine(FakeGlContext(), 100, 100) }
 

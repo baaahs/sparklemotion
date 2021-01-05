@@ -9,6 +9,7 @@ import baaahs.mapper.Storage
 import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
 import baaahs.show.SampleData
+import baaahs.show.live.toolchain
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
@@ -59,7 +60,7 @@ class ShowRunnerTest {
         fixtureManager = FixtureManager(renderManager)
         MovingHeadManager(fixtureManager, dmxUniverse, emptyList())
         stageManager = StageManager(
-            testPlugins(), renderManager, server, Storage(fs, testPlugins()), fixtureManager,
+            toolchain, renderManager, server, Storage(fs, testPlugins()), fixtureManager,
             FakeClock(), sheepModel, testCoroutineContext
         )
         stageManager.switchTo(SampleData.sampleShow)

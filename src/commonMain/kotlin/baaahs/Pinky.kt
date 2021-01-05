@@ -4,6 +4,7 @@ import baaahs.api.ws.WebSocketRouter
 import baaahs.dmx.Dmx
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
+import baaahs.gl.RootToolchain
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.render.RenderManager
 import baaahs.io.ByteArrayWriter
@@ -55,8 +56,9 @@ class Pinky(
 //    private val gadgetManager = GadgetManager(pubSub)
     internal val fixtureManager = FixtureManager(renderManager)
 
+    val toolchain = RootToolchain(plugins)
     var stageManager: StageManager = StageManager(
-        plugins, renderManager, pubSub, storage, fixtureManager, clock, model, coroutineContext
+        toolchain, renderManager, pubSub, storage, fixtureManager, clock, model, coroutineContext
     )
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {

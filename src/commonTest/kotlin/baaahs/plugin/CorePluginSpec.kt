@@ -2,8 +2,8 @@ package baaahs.plugin
 
 import baaahs.FakeClock
 import baaahs.describe
+import baaahs.gl.RootToolchain
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
@@ -18,14 +18,13 @@ object CorePluginSpec : Spek({
     describe<CorePlugin.TimeDataSource> {
         val clock by value { FakeClock(0.0) }
         val dataSource by value { CorePlugin.TimeDataSource() }
-        val plugins by value { testPlugins(clock) }
-        val feed by value { dataSource.createFeed(FakeShowPlayer(plugins = plugins), "time") }
+        val toolchain by value { RootToolchain(testPlugins(clock) ) }
+        val feed by value { dataSource.createFeed(FakeShowPlayer(toolchain = toolchain), "time") }
         val gl by value { FakeGlContext() }
         val glFeed by value { feed.bind(gl) }
         val program by value {
-            val autoWirer = AutoWirer(plugins)
-            val linkedPatch = autoWirer.autoWire(Shaders.red).acceptSuggestedLinkOptions()
-                .confirm().openForPreview(autoWirer, ContentType.Color)!!
+            val linkedPatch = toolchain.autoWire(Shaders.red).acceptSuggestedLinkOptions()
+                .confirm().openForPreview(toolchain, ContentType.Color)!!
             GlslProgram(gl, linkedPatch) { _, _ -> null }
         }
         val programFeed by value { glFeed.bind(program) }

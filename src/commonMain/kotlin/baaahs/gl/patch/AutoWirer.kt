@@ -1,10 +1,8 @@
 package baaahs.gl.patch
 
 import baaahs.fixtures.DeviceType
-import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
-import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.Surfaces
 import baaahs.show.live.LiveShaderInstance
@@ -13,29 +11,7 @@ import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShader
 
-class AutoWirer(
-    val plugins: Plugins,
-    val glslAnalyzer: GlslAnalyzer = GlslAnalyzer(plugins)
-) {
-    fun autoWire(
-        vararg shaders: Shader,
-        defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-        shaderChannel: ShaderChannel = ShaderChannel.Main,
-        deviceTypes: Collection<DeviceType> = emptyList()
-    ): UnresolvedPatch {
-        val openShaders = shaders.associate { it to glslAnalyzer.openShader(it) }
-        return autoWire(openShaders.values, shaderChannel, defaultPorts, deviceTypes)
-    }
-
-    fun autoWire(
-        vararg shaders: OpenShader,
-        defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-        shaderChannel: ShaderChannel = ShaderChannel.Main,
-        deviceTypes: Collection<DeviceType> = emptyList()
-    ): UnresolvedPatch {
-        return autoWire(shaders.toList(), shaderChannel, defaultPorts, deviceTypes)
-    }
-
+class AutoWirer(private val plugins: Plugins) {
     fun autoWire(
         shaders: Collection<OpenShader>,
         shaderChannel: ShaderChannel = ShaderChannel.Main,
