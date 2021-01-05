@@ -5,6 +5,7 @@ import baaahs.Gadget
 import baaahs.fixtures.DeviceType
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
+import baaahs.gl.autoWire
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
 import baaahs.model.ModelInfo

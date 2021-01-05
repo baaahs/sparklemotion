@@ -5,6 +5,7 @@ import baaahs.app.ui.editor.PortLinkOption
 import baaahs.fixtures.DeviceType
 import baaahs.gl.Toolchain
 import baaahs.gl.glsl.LinkException
+import baaahs.gl.openShader
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins

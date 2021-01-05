@@ -21,14 +21,6 @@ class FakeShowPlayer(
     override val dataSources: List<DataSource> get() = feeds.keys.toList()
     private val dataSourceGadgets: MutableMap<DataSource, Gadget> = mutableMapOf()
 
-    override fun openShader(shader: Shader, addToCache: Boolean): OpenShader {
-        return if (addToCache) {
-            shaders.getOrPut(shader) { toolchain.openShader(shader) }
-        } else {
-            shaders[shader] ?: toolchain.openShader(shader)
-        }
-    }
-
     override fun openFeed(id: String, dataSource: DataSource): Feed =
         feeds.getOrPut(dataSource) { dataSource.createFeed(this, id) }
 

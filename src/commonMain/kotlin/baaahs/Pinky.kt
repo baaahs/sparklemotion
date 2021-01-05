@@ -57,7 +57,7 @@ class Pinky(
     internal val fixtureManager = FixtureManager(renderManager)
 
     val toolchain = RootToolchain(plugins)
-    var stageManager: StageManager = StageManager(
+    val stageManager: StageManager = StageManager(
         toolchain, renderManager, pubSub, storage, fixtureManager, clock, model, coroutineContext
     )
 

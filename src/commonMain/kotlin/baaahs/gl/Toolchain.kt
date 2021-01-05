@@ -10,6 +10,8 @@ import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.MutableShow
+import baaahs.util.Logger
+import baaahs.util.Stats
 
 interface Toolchain {
     val plugins: Plugins
@@ -20,10 +22,6 @@ interface Toolchain {
 
     fun analyze(shader: Shader): ShaderAnalysis
 
-    fun openShader(shader: Shader): OpenShader {
-        return openShader(analyze(shader))
-    }
-
     fun openShader(shaderAnalysis: ShaderAnalysis): OpenShader
 
     fun wiringOptions(
@@ -33,18 +31,19 @@ interface Toolchain {
     ): ShaderInstanceOptions
 
     fun autoWire(
-        vararg shaders: Shader,
+        shaders: Collection<OpenShader>,
         defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
         shaderChannel: ShaderChannel = ShaderChannel.Main,
         deviceTypes: Collection<DeviceType> = emptyList()
     ): UnresolvedPatch
+}
 
-    fun autoWire(
-        vararg shaders: OpenShader,
-        defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-        shaderChannel: ShaderChannel = ShaderChannel.Main,
-        deviceTypes: Collection<DeviceType> = emptyList()
-    ): UnresolvedPatch
+class ToolchainStats : Stats() {
+    val parse by statistic()
+    val import by statistic()
+    val analyze by statistic()
+    val openShader by statistic()
+    val autoWire by statistic()
 }
 
 class RootToolchain(
@@ -53,13 +52,15 @@ class RootToolchain(
     val glslAnalyzer: GlslAnalyzer = GlslAnalyzer(plugins),
     val autoWirer: AutoWirer = AutoWirer(plugins)
 ) : Toolchain {
-    override fun parse(src: String): GlslCode {
-        return glslParser.parse(src)
+    val stats = ToolchainStats()
+
+    override fun parse(src: String): GlslCode = stats.parse.time {
+        glslParser.parse(src)
     }
 
-    override fun import(src: String): Shader {
+    override fun import(src: String): Shader = stats.import.time {
         val glslCode = parse(src)
-        return glslAnalyzer.analyze(glslCode).shader
+        glslAnalyzer.analyze(glslCode).shader
     }
 
     override fun analyze(shader: Shader): ShaderAnalysis {
@@ -68,20 +69,24 @@ class RootToolchain(
         } catch (e: GlslException) {
             return ErrorsShaderAnalysis(shader.src, e, shader)
         }
-        return glslAnalyzer.analyze(glslCode, shader)
+        return stats.analyze.time {
+            glslAnalyzer.analyze(glslCode, shader)
+        }
     }
 
     override fun openShader(shaderAnalysis: ShaderAnalysis): OpenShader {
-        return glslAnalyzer.openShader(shaderAnalysis)
+        return stats.openShader.time {
+            glslAnalyzer.openShader(shaderAnalysis)
+        }
     }
 
     override fun wiringOptions(
         currentOpenShader: OpenShader,
         parentMutableShow: MutableShow,
         mutableShaderInstance: MutableShaderInstance
-    ): ShaderInstanceOptions {
+    ): ShaderInstanceOptions = stats.autoWire.time {
         val channelsInfo = ChannelsInfo(parentMutableShow, emptyList(), this)
-        return ShaderInstanceOptions(
+        ShaderInstanceOptions(
             currentOpenShader,
             ShaderChannel.Main,
             channelsInfo,
@@ -91,26 +96,19 @@ class RootToolchain(
     }
 
     override fun autoWire(
-        vararg shaders: Shader,
+        shaders: Collection<OpenShader>,
         defaultPorts: Map<ContentType, MutablePort>,
         shaderChannel: ShaderChannel,
         deviceTypes: Collection<DeviceType>
     ): UnresolvedPatch {
-        val openShaders = shaders.associate { it to openShader(it) }
-        return autoWirer.autoWire(openShaders.values, shaderChannel, defaultPorts, deviceTypes)
-    }
-
-    override fun autoWire(
-        vararg shaders: OpenShader,
-        defaultPorts: Map<ContentType, MutablePort>,
-        shaderChannel: ShaderChannel,
-        deviceTypes: Collection<DeviceType>
-    ): UnresolvedPatch {
-        return autoWirer.autoWire(shaders.toList(), shaderChannel, defaultPorts, deviceTypes)
+        return autoWirer.autoWire(shaders, shaderChannel, defaultPorts, deviceTypes)
     }
 }
 
-class CachingToolchain(private val delegate: Toolchain) : Toolchain by delegate {
+class CachingToolchain(
+    private val delegate: Toolchain,
+    private val name: String = "Cache"
+) : Toolchain by delegate {
     var hits = 0
     var misses = 0
 
@@ -131,10 +129,24 @@ class CachingToolchain(private val delegate: Toolchain) : Toolchain by delegate 
     }
 
     override fun analyze(shader: Shader): ShaderAnalysis {
-        return shaderAnalysisCache[shader]?.also { hits++ }
+        return shaderAnalysisCache[shader]?.also { hit(shader) }
             ?: cachedAnalysis(shader)
             ?: shaderAnalysisCache.getOrPut(shader) {
-                uncachedAnalysis(shader).also { misses++ }
+                uncachedAnalysis(shader).also { miss(shader) }
             }
+    }
+
+    private fun hit(shader: Shader) {
+        hits++
+        logger.debug { "$name: hit for ${shader.title} ($hits hits and $misses misses so far)" }
+    }
+
+    private fun miss(shader: Shader) {
+        misses++
+        logger.debug { "$name: miss for ${shader.title} ($hits hits and $misses misses so far)" }
+    }
+
+    companion object {
+        private val logger = Logger<CachingToolchain>()
     }
 }

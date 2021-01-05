@@ -176,25 +176,32 @@ class ShaderInstanceResolver(
                 }
             }
 
-        val ports = shader.inputPorts.map { it.id }
-        val extraLinks = shaderInstance.incomingLinks.keys - ports
-        val missingLinks = ports - shaderInstance.incomingLinks.keys
-
-        return LiveShaderInstance(
-            shader,
-            links,
-            shaderInstance.shaderChannel,
-            shaderInstance.priority,
-            extraLinks = extraLinks,
-            missingLinks = missingLinks.toSet()
-        ).also {
-            liveShaderInstances[id] = it
-        }
+        return build(shader, shaderInstance, links)
+            .also { liveShaderInstances[id] = it }
     }
 
     fun getResolvedShaderInstances() = liveShaderInstances
 
     companion object {
+        fun build(
+            shader: OpenShader,
+            shaderInstance: ShaderInstance,
+            links: Map<String, LiveShaderInstance.Link>
+        ): LiveShaderInstance {
+            val ports = shader.inputPorts.map { it.id }
+            val extraLinks = shaderInstance.incomingLinks.keys - ports
+            val missingLinks = ports - shaderInstance.incomingLinks.keys
+
+            return LiveShaderInstance(
+                shader,
+                links,
+                shaderInstance.shaderChannel,
+                shaderInstance.priority,
+                extraLinks = extraLinks,
+                missingLinks = missingLinks.toSet()
+            );
+        }
+
         private val logger = Logger("ShaderInstanceResolver")
     }
 }

@@ -51,7 +51,7 @@ class GlslAnalyzer(private val plugins: Plugins) {
             .maxByOrNull { (_, match) -> match }?.first
             ?: GenericShaderDialect
 
-    private fun detectShaderType(shaderAnalysis: ShaderAnalysis) =
+    fun detectShaderType(shaderAnalysis: ShaderAnalysis) =
         plugins.shaderTypes.all
             .map { it to it.matches(shaderAnalysis) }
             .filter { (_, match) -> match != ShaderType.MatchLevel.NoMatch }

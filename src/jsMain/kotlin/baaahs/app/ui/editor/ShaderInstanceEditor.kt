@@ -5,6 +5,7 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderPreview
 import baaahs.englishize
 import baaahs.gl.preview.PreviewShaderBuilder
+import baaahs.gl.withCache
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
@@ -48,7 +49,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
     val appContext = useContext(appContext)
     val shaderEditorStyles = appContext.allStyles.shaderEditor
 
-    val toolchain = memo { appContext.toolchain }
+    val toolchain = memo { appContext.toolchain.withCache("Editor") }
 
     var selectedTab by state { PageTabs.Properties }
     @Suppress("UNCHECKED_CAST")
@@ -244,6 +245,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
             attrs.width = ShaderEditorStyles.previewWidth
             attrs.height = ShaderEditorStyles.previewHeight
             attrs.adjustGadgets = adjustGadgets
+            attrs.toolchain = toolchain
         }
     }
 

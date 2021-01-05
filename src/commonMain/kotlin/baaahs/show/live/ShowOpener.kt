@@ -4,6 +4,7 @@ import baaahs.ShowPlayer
 import baaahs.ShowState
 import baaahs.getBang
 import baaahs.gl.Toolchain
+import baaahs.gl.openShader
 import baaahs.gl.shader.OpenShader
 import baaahs.show.DataSource
 import baaahs.show.Shader

@@ -7,6 +7,7 @@ import baaahs.getValue
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
+import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.RenderEngine
@@ -120,7 +121,7 @@ class PreviewShaderBuilder(
                 mapOf(ContentType.UvCoordinate to MutableConstPort("gl_FragCoord", GlslType.Vec2))
             } else emptyMap()
 
-            previewPatch = toolchain.autoWire(*(shaders.toTypedArray()), defaultPorts = defaultPorts)
+            previewPatch = toolchain.autoWire(shaders, defaultPorts = defaultPorts)
 //                .dumpOptions()
                 .acceptSuggestedLinkOptions()
                 .confirm()

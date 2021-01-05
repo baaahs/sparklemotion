@@ -156,6 +156,9 @@ class WebClient(
         val plugins: Plugins
             get() = this@WebClient.toolchain.plugins
 
+        val toolchain: Toolchain
+            get() = this@WebClient.toolchain
+
         val isConnected: Boolean
             get() = pubSub.isConnected
 

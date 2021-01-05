@@ -1,6 +1,7 @@
 package baaahs.gl.patch
 
 import baaahs.describe
+import baaahs.gl.openShader
 import baaahs.gl.patch.PortDiagram.ChannelEntry
 import baaahs.gl.shader.type.FilterShader
 import baaahs.gl.testToolchain

@@ -299,6 +299,8 @@ data class ShowProblem(
     val id: String = randomId("error")
 )
 
+fun Collection<ShowProblem>.severity() = maxOfOrNull { it.severity }
+
 enum class Severity(val icon: Icon) {
     INFO(CommonIcons.Info),
     WARN(CommonIcons.Warning),

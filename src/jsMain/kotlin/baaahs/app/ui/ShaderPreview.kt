@@ -3,6 +3,8 @@ package baaahs.app.ui
 import baaahs.document
 import baaahs.gl.GlBase
 import baaahs.gl.GlContext
+import baaahs.gl.Toolchain
+import baaahs.gl.openShader
 import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
@@ -37,6 +39,8 @@ import kotlin.collections.set
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
+    val toolchain = props.toolchain ?: appContext.toolchain
+
     val canvas = ref<HTMLCanvasElement?> { null }
     var gl by state<GlContext?> { null }
     var shaderPreview by state<ShaderPreview?> { null }
@@ -51,7 +55,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
         val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
             // TODO: This is duplicating work that happens later in PreviewShaderBuilder, which is rotten.
-            appContext.toolchain.openShader(props.shader!!).shaderType
+            toolchain.openShader(props.shader!!).shaderType
         }
 
         val preview = if (shaderType == ProjectionShader) {
@@ -91,7 +95,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val builder = memo(gl, props.shader, props.previewShaderBuilder) {
         gl?.let {
             props.previewShaderBuilder
-                ?: PreviewShaderBuilder(props.shader!!, appContext.toolchain, appContext.webClient.model)
+                ?: PreviewShaderBuilder(props.shader!!, toolchain, appContext.webClient.model)
         }
     }
 
@@ -261,6 +265,7 @@ external interface ShaderPreviewProps : RProps {
     var width: LinearDimension?
     var height: LinearDimension?
     var adjustGadgets: Boolean
+    var toolchain: Toolchain?
 }
 
 fun RBuilder.shaderPreview(handler: RHandler<ShaderPreviewProps>) =
