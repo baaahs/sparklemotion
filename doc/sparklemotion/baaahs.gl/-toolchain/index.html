@@ -1,0 +1,118 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Toolchain - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gl</a>&nbsp;/&nbsp;<a href="./index.html">Toolchain</a><br/>
+<br/>
+<h1>Toolchain</h1>
+<code><span class="keyword">interface </span><span class="identifier">Toolchain</span></code>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="plugins.html">plugins</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">plugins</span><span class="symbol">: </span><a href="../../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="analyze.html">analyze</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">analyze</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.Toolchain$analyze(baaahs.show.Shader)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.glsl/-shader-analysis/index.html"><span class="identifier">ShaderAnalysis</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="auto-wire.html">autoWire</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.Toolchain$autoWire(kotlin.collections.Collection((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.Toolchain$autoWire(kotlin.collections.Collection((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/defaultPorts">defaultPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-port/index.html"><span class="identifier">MutablePort</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">, </span><span class="identifier" id="baaahs.gl.Toolchain$autoWire(kotlin.collections.Collection((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/shaderChannel">shaderChannel</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a>&nbsp;<span class="symbol">=</span>&nbsp;ShaderChannel.Main<span class="symbol">, </span><span class="identifier" id="baaahs.gl.Toolchain$autoWire(kotlin.collections.Collection((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/deviceTypes">deviceTypes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../../baaahs.fixtures/-device-type/index.html"><span class="identifier">DeviceType</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyList()<span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.patch/-unresolved-patch/index.html"><span class="identifier">UnresolvedPatch</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="import.html">import</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">import</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.Toolchain$import(kotlin.String)/src">src</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="open-shader.html">openShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">openShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.Toolchain$openShader(baaahs.gl.glsl.ShaderAnalysis)/shaderAnalysis">shaderAnalysis</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.glsl/-shader-analysis/index.html"><span class="identifier">ShaderAnalysis</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="parse.html">parse</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">parse</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.Toolchain$parse(kotlin.String)/src">src</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.glsl/-glsl-code/index.html"><span class="identifier">GlslCode</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="wiring-options.html">wiringOptions</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">wiringOptions</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.Toolchain$wiringOptions(baaahs.gl.shader.OpenShader, baaahs.show.mutable.MutableShow, baaahs.show.mutable.MutableShaderInstance)/currentOpenShader">currentOpenShader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.Toolchain$wiringOptions(baaahs.gl.shader.OpenShader, baaahs.show.mutable.MutableShow, baaahs.show.mutable.MutableShaderInstance)/parentMutableShow">parentMutableShow</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-show/index.html"><span class="identifier">MutableShow</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.Toolchain$wiringOptions(baaahs.gl.shader.OpenShader, baaahs.show.mutable.MutableShow, baaahs.show.mutable.MutableShaderInstance)/mutableShaderInstance">mutableShaderInstance</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-shader-instance/index.html"><span class="identifier">MutableShaderInstance</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.patch/-shader-instance-options/index.html"><span class="identifier">ShaderInstanceOptions</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Extension Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../auto-wire.html">autoWire</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><a href="./index.html"><span class="identifier">Toolchain</span></a><span class="symbol">.</span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.show.Shader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.show.Shader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/defaultPorts">defaultPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-port/index.html"><span class="identifier">MutablePort</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">, </span><span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.show.Shader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/shaderChannel">shaderChannel</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a>&nbsp;<span class="symbol">=</span>&nbsp;ShaderChannel.Main<span class="symbol">, </span><span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.show.Shader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/deviceTypes">deviceTypes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../../baaahs.fixtures/-device-type/index.html"><span class="identifier">DeviceType</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyList()<span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.patch/-unresolved-patch/index.html"><span class="identifier">UnresolvedPatch</span></a></code><br/>
+<code><span class="keyword">fun </span><a href="./index.html"><span class="identifier">Toolchain</span></a><span class="symbol">.</span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/defaultPorts">defaultPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-port/index.html"><span class="identifier">MutablePort</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">, </span><span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/shaderChannel">shaderChannel</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a>&nbsp;<span class="symbol">=</span>&nbsp;ShaderChannel.Main<span class="symbol">, </span><span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/deviceTypes">deviceTypes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../../baaahs.fixtures/-device-type/index.html"><span class="identifier">DeviceType</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyList()<span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.patch/-unresolved-patch/index.html"><span class="identifier">UnresolvedPatch</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../open-shader.html">openShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><a href="./index.html"><span class="identifier">Toolchain</span></a><span class="symbol">.</span><span class="identifier">openShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl$openShader(baaahs.gl.Toolchain, baaahs.show.Shader)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../with-cache.html">withCache</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><a href="./index.html"><span class="identifier">Toolchain</span></a><span class="symbol">.</span><span class="identifier">withCache</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl$withCache(baaahs.gl.Toolchain, kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-caching-toolchain/index.html"><span class="identifier">CachingToolchain</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-caching-toolchain/index.html">CachingToolchain</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">CachingToolchain</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Toolchain</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-root-toolchain/index.html">RootToolchain</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">RootToolchain</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Toolchain</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

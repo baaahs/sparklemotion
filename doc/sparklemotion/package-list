@@ -8,7 +8,7 @@ $dokka.location:baaahs$getBang(kotlin.collections.Map((baaahs.getBang.K, baaahs.
 $dokka.location:baaahs$getValue(kotlin.Lazy((baaahs.getValue.T)), kotlin.Any, kotlin.reflect.KProperty((kotlin.Any)))baaahs/kotlin.-lazy/get-value.html
 $dokka.location:baaahs$only(kotlin.collections.Collection((baaahs.only.E)), kotlin.String)baaahs/kotlin.collections.-collection/only.html
 $dokka.location:baaahs$replacing(kotlin.collections.List((baaahs.replacing.T)), kotlin.Int, baaahs.replacing.T)baaahs/kotlin.collections.-list/replacing.html
-$dokka.location:baaahs.app.ui.editor$targetEl(org.w3c.dom.events.Event)baaahs.app.ui.editor/org.w3c.dom.events.-event/target-el.html
+$dokka.location:baaahs$severity(kotlin.collections.Collection((baaahs.ShowProblem)))baaahs/kotlin.collections.-collection/severity.html
 $dokka.location:baaahs.show$assertNoDuplicates(kotlin.collections.List((baaahs.show.assertNoDuplicates.T)), kotlin.String)baaahs.show/kotlin.collections.-list/assert-no-duplicates.html
 $dokka.location:baaahs.ui$and(kotlin.String, )baaahs.ui/kotlin.-string/and.html
 $dokka.location:baaahs.ui$and(kotlin.String, kotlin.String)baaahs.ui/kotlin.-string/and.html
