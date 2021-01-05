@@ -1,7 +1,7 @@
 package baaahs.gl.shader.dialect
 
 import baaahs.describe
-import baaahs.gl.glsl.GlslAnalyzer
+import baaahs.gl.glsl.GlslParser
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
@@ -26,7 +26,7 @@ object HintedShaderDialectSpec : Spek({
         val shaderText by value<String> { toBeSpecified() }
         val dialect by value { HintedShaderDialectForTest() }
         val plugins by value { testPlugins() }
-        val glslCode by value { GlslAnalyzer(plugins).parse(shaderText) }
+        val glslCode by value { GlslParser().parse(shaderText) }
         val shaderAnalysis by value { dialect.analyze(glslCode, plugins, null) }
 
         context("determining a method's output ports") {

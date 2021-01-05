@@ -8,13 +8,15 @@ import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ResultParam
 import baaahs.geom.Vector3F
-import baaahs.gl.*
-import baaahs.gl.glsl.GlslAnalyzer
+import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.patch.ProgramLinker
+import baaahs.gl.renderPlanFor
 import baaahs.gl.shader.InputPort
+import baaahs.gl.testToolchain
 import baaahs.only
 import baaahs.plugin.SerializerRegistrar
 import baaahs.show.*
@@ -62,14 +64,16 @@ object ModelRenderEngineSpec : Spek({
         }
 
         context("when a program is compiled") {
-            val shaderText by value {
-                """
-                    uniform float time;
-            
-                    void main(void) { gl_FragColor = doesntMatter(gl_FragCoord); }
-                """.trimIndent()
+            val shader by value {
+                Shader(
+                    "Title", """
+                        uniform float time;
+                
+                        void main(void) { gl_FragColor = doesntMatter(gl_FragCoord); }
+                    """.trimIndent()
+                )
             }
-            val openShader by value { GlslAnalyzer(testPlugins()).openShader(shaderText) }
+            val openShader by value { testToolchain.openShader(shader) }
             val incomingLinks by value { mapOf("gl_FragCoord" to dataSource.link("coord")) }
             val linkedPatch by value {
                 val rootNode = LinkedShaderInstance(openShader, incomingLinks, ShaderChannel.Main, 0f)
