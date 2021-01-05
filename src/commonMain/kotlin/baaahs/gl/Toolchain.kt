@@ -109,3 +109,32 @@ class RootToolchain(
         return autoWirer.autoWire(shaders.toList(), shaderChannel, defaultPorts, deviceTypes)
     }
 }
+
+class CachingToolchain(private val delegate: Toolchain) : Toolchain by delegate {
+    var hits = 0
+    var misses = 0
+
+    private val shaderAnalysisCache = mutableMapOf<Shader, ShaderAnalysis>()
+
+    private fun cachedAnalysis(shader: Shader): ShaderAnalysis? {
+        return shaderAnalysisCache[shader]
+            ?: (delegate as? CachingToolchain)?.cachedAnalysis(shader)
+    }
+
+    private fun uncachedAnalysis(shader: Shader): ShaderAnalysis {
+        return if (delegate is CachingToolchain) {
+            delegate.uncachedAnalysis(shader)
+        } else {
+            // We've gotten to the RootToolchain.
+            delegate.analyze(shader)
+        }
+    }
+
+    override fun analyze(shader: Shader): ShaderAnalysis {
+        return shaderAnalysisCache[shader]?.also { hits++ }
+            ?: cachedAnalysis(shader)
+            ?: shaderAnalysisCache.getOrPut(shader) {
+                uncachedAnalysis(shader).also { misses++ }
+            }
+    }
+}
