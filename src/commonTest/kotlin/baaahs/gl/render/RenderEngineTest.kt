@@ -253,7 +253,7 @@ class RenderEngineTest {
     }
 
     private fun compileAndBind(program: String): GlslProgram {
-        val shader = testToolchain.glslAnalyzer.import(program)
+        val shader = testToolchain.import(program)
         val linkedPatch = testToolchain
             .autoWire(directXyProjection, shader)
             .acceptSuggestedLinkOptions()

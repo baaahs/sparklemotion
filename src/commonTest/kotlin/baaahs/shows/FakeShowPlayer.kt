@@ -5,9 +5,8 @@ import baaahs.ShowPlayer
 import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
-import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.shader.OpenShader
-import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
 import baaahs.model.ModelInfo
 import baaahs.show.DataSource
 import baaahs.show.Shader
@@ -24,9 +23,9 @@ class FakeShowPlayer(
 
     override fun openShader(shader: Shader, addToCache: Boolean): OpenShader {
         return if (addToCache) {
-            shaders.getOrPut(shader) { GlslAnalyzer(testPlugins()).openShader(shader) }
+            shaders.getOrPut(shader) { toolchain.openShader(shader) }
         } else {
-            shaders[shader] ?: GlslAnalyzer(testPlugins()).openShader(shader)
+            shaders[shader] ?: toolchain.openShader(shader)
         }
     }
 

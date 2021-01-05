@@ -1,10 +1,9 @@
 package baaahs.gl.patch
 
 import baaahs.describe
-import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.patch.PortDiagram.ChannelEntry
 import baaahs.gl.shader.type.FilterShader
-import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.live.LiveShaderInstance
@@ -17,9 +16,8 @@ import kotlin.test.assertTrue
 object PortDiagramSpec : Spek({
     describe<PortDiagram> {
         context("shader prioritization") {
-            val analyzer by value { GlslAnalyzer(testPlugins()) }
             fun Shader.enliven(links: Map<String, LiveShaderInstance.Link> = emptyMap()) =
-                LiveShaderInstance(analyzer.openShader(this), links, ShaderChannel.Main, 0f)
+                LiveShaderInstance(testToolchain.openShader(this), links, ShaderChannel.Main, 0f)
 
             val shaderA by value { fakeShader("Shader A").enliven() }
             val shaderB by value { fakeShader("Shader B").enliven() }

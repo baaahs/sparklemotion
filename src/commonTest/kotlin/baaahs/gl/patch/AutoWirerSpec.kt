@@ -1,15 +1,11 @@
 package baaahs.gl.patch
 
 import baaahs.fixtures.PixelLocationDataSource
-import baaahs.gl.RootToolchain
-import baaahs.gl.expects
-import baaahs.gl.glsl.GlslAnalyzer
-import baaahs.gl.override
+import baaahs.gl.*
 import baaahs.gl.render.DeviceTypeForTest
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
-import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.only
 import baaahs.plugin.CorePlugin
@@ -166,10 +162,10 @@ object AutoWirerSpec : Spek({
                 }
                 """.trimIndent()
             }
-            val mainShader by value { toolchain.glslAnalyzer.import(shaderText) }
+            val mainShader by value { toolchain.import(shaderText) }
             val shaders by value { arrayOf(mainShader) }
             val patch by value {
-                autoWirer.autoWire(shaders.open(toolchain.glslAnalyzer), deviceTypes = listOf(deviceType))
+                autoWirer.autoWire(shaders.open(toolchain), deviceTypes = listOf(deviceType))
                     .acceptSuggestedLinkOptions().confirm()
             }
             val linkedPatch by value { patch.openForPreview(toolchain, ContentType.Color)!! }
@@ -438,5 +434,5 @@ object AutoWirerSpec : Spek({
     }
 })
 
-private fun Array<Shader>.open(glslAnalyzer: GlslAnalyzer): Collection<OpenShader> =
-    map { glslAnalyzer.openShader(it) }
+private fun Array<Shader>.open(toolchain: Toolchain): Collection<OpenShader> =
+    map { toolchain.openShader(it) }

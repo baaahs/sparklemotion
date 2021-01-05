@@ -1,9 +1,7 @@
 package baaahs.gl
 
 import baaahs.fixtures.DeviceType
-import baaahs.gl.glsl.GlslAnalyzer
-import baaahs.gl.glsl.GlslCode
-import baaahs.gl.glsl.ShaderAnalysis
+import baaahs.gl.glsl.*
 import baaahs.gl.patch.*
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
@@ -22,7 +20,9 @@ interface Toolchain {
 
     fun analyze(shader: Shader): ShaderAnalysis
 
-    fun openShader(shader: Shader): OpenShader
+    fun openShader(shader: Shader): OpenShader {
+        return openShader(analyze(shader))
+    }
 
     fun openShader(shaderAnalysis: ShaderAnalysis): OpenShader
 
@@ -49,23 +49,26 @@ interface Toolchain {
 
 class RootToolchain(
     override val plugins: Plugins,
+    private val glslParser: GlslParser = GlslParser(),
     val glslAnalyzer: GlslAnalyzer = GlslAnalyzer(plugins),
     val autoWirer: AutoWirer = AutoWirer(plugins)
 ) : Toolchain {
     override fun parse(src: String): GlslCode {
-        return glslAnalyzer.parse(src)
+        return glslParser.parse(src)
     }
 
     override fun import(src: String): Shader {
-        return glslAnalyzer.import(src)
+        val glslCode = parse(src)
+        return glslAnalyzer.analyze(glslCode).shader
     }
 
     override fun analyze(shader: Shader): ShaderAnalysis {
-        return glslAnalyzer.analyze(shader)
-    }
-
-    override fun openShader(shader: Shader): OpenShader {
-        return glslAnalyzer.openShader(shader)
+        val glslCode = try {
+            parse(shader.src)
+        } catch (e: GlslException) {
+            return ErrorsShaderAnalysis(shader.src, e, shader)
+        }
+        return glslAnalyzer.analyze(glslCode, shader)
     }
 
     override fun openShader(shaderAnalysis: ShaderAnalysis): OpenShader {
@@ -93,7 +96,7 @@ class RootToolchain(
         shaderChannel: ShaderChannel,
         deviceTypes: Collection<DeviceType>
     ): UnresolvedPatch {
-        val openShaders = shaders.associate { it to glslAnalyzer.openShader(it) }
+        val openShaders = shaders.associate { it to openShader(it) }
         return autoWirer.autoWire(openShaders.values, shaderChannel, defaultPorts, deviceTypes)
     }
 

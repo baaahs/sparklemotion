@@ -8,7 +8,8 @@ import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
-import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
+import baaahs.show.Shader
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -28,9 +29,9 @@ object GenericShaderDialectSpec : Spek({
             """.trimIndent()
         }
         val dialect by value { GenericShaderDialect }
-        val plugins by value { testPlugins() }
+        val plugins by value { testToolchain.plugins }
         val analyzer by value { GlslAnalyzer(plugins) }
-        val shaderAnalysis by value { analyzer.analyze(src) }
+        val shaderAnalysis by value { testToolchain.analyze(Shader("Shader", src)) }
         val glslCode by value { shaderAnalysis.glslCode }
         val openShader by value { analyzer.openShader(shaderAnalysis) }
 

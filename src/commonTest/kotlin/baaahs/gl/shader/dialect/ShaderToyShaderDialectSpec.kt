@@ -1,7 +1,6 @@
 package baaahs.gl.shader.dialect
 
 import baaahs.describe
-import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.override
@@ -10,7 +9,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.shader.type.PaintShader
-import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
+import baaahs.show.Shader
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.*
 import ch.tutteli.atrium.api.verbs.expect
@@ -20,9 +20,9 @@ import org.spekframework.spek2.Spek
 object ShaderToyShaderDialectSpec : Spek({
     describe<ShaderToyShaderDialectSpec> {
         val src by value { "void mainImage(out vec4 fragColor, in vec2 fragCoord) { ... };" }
+        val shader by value { Shader("Title", src) }
         val dialect by value { ShaderToyShaderDialect }
-        val plugins by value { testPlugins() }
-        val shaderAnalysis by value { GlslAnalyzer(plugins).analyze(src) }
+        val shaderAnalysis by value { testToolchain.analyze(shader) }
         val glslCode by value { shaderAnalysis.glslCode }
         val openShader by value { OpenShader.Base(shaderAnalysis, PaintShader) }
         val invocationStatement by value {

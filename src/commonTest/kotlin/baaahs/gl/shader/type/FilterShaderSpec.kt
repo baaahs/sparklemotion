@@ -1,10 +1,9 @@
 package baaahs.gl.shader.type
 
 import baaahs.describe
-import baaahs.gl.glsl.GlslAnalyzer
-import baaahs.gl.openShader
 import baaahs.gl.override
-import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
+import baaahs.show.Shader
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
@@ -14,9 +13,9 @@ import org.spekframework.spek2.Spek
 object FilterShaderSpec : Spek({
     describe<FilterShader> {
         val shaderText by value { toBeSpecified<String>() }
-        val analyzer by value { GlslAnalyzer(testPlugins()) }
-        val shaderAnalysis by value { analyzer.analyze(shaderText) }
-        val openShader by value { analyzer.openShader(shaderText) }
+        val shader by value { Shader("Shader", shaderText) }
+        val shaderAnalysis by value { testToolchain.analyze(shader) }
+        val openShader by value { testToolchain.openShader(shader) }
         val shaderType by value { FilterShader }
 
         context("when return type and any input are color") {
