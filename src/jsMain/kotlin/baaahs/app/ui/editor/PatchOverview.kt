@@ -36,7 +36,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         CacheBuilder {
             {
                 props.editableManager.openPanel(
-                    it.getEditorPanel(props.mutablePatch.getEditorPanel())
+                    it.getEditorPanel(props.mutablePatch.getEditorPanel(props.editableManager))
                 )
             }
         }
@@ -71,6 +71,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
                     attrs.mutableShaderInstance = mutableShaderInstance
                     attrs.onSelect = handleShaderSelect[mutableShaderInstance]
                     attrs.onDelete = handleShaderDelete[mutableShaderInstance]
+                    attrs.toolchain = props.editableManager.session!!.toolchain
                 }
             }
 

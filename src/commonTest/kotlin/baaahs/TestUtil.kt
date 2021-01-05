@@ -2,15 +2,16 @@ package baaahs
 
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
-import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.openShader
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.patch.ProgramNode
 import baaahs.gl.render.ModelRenderEngine
 import baaahs.gl.render.RenderTarget
-import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
 import baaahs.model.Model
 import baaahs.model.MovingHead
+import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.shows.FakeGlContext
@@ -99,12 +100,11 @@ class TestRenderContext(
     val deviceType = modelEntities.map { it.deviceType }.distinct().only("device type")
     val gl = FakeGlContext()
     val renderEngine = ModelRenderEngine(gl, model, deviceType, minTextureWidth = 1)
-    val glslAnalyzer = GlslAnalyzer(testPlugins())
     val showPlayer = FakeShowPlayer()
     val renderTargets = mutableListOf<RenderTarget>()
 
     fun createProgram(shaderSrc: String, incomingLinks: Map<String, ProgramNode>): GlslProgram {
-        val openShader = glslAnalyzer.openShader(shaderSrc)
+        val openShader = testToolchain.openShader(Shader("Title", shaderSrc))
         val liveShaderInstance = LinkedShaderInstance(openShader, incomingLinks, ShaderChannel.Main, 0f)
         val linkedPatch = ProgramLinker(liveShaderInstance).buildLinkedPatch()
         return renderEngine.compile(linkedPatch) { id, dataSource -> dataSource.createFeed(showPlayer, id) }

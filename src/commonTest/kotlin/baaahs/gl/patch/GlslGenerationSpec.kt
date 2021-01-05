@@ -4,7 +4,7 @@ import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.kexpect
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType.Companion.Color
-import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.core.FixtureInfoDataSource
@@ -43,13 +43,12 @@ object GlslGenerationSpec : Spek({
                 }
             """.trimIndent()
         }
-        val autoWirer by value { AutoWirer(testPlugins()) }
-        val glslAnalyzer by value { autoWirer.glslAnalyzer }
-        val mainShader by value { glslAnalyzer.import(shaderText) }
+        val glslAnalyzer by value { testToolchain.glslAnalyzer }
+        val mainShader by value { testToolchain.import(shaderText) }
         val mutablePatch by value { MutablePatch { } }
         val resultContentType by value { Color }
         val linkedPatch by value {
-            mutablePatch.openForPreview(autoWirer, resultContentType)
+            mutablePatch.openForPreview(testToolchain, resultContentType)
                 ?: fail("openForPreview returned null, maybe no shaders on mutablePatch?")
         }
         val glsl by value { linkedPatch.toGlsl().trim() }
@@ -409,7 +408,7 @@ object GlslGenerationSpec : Spek({
             }
 
             val mainPaintShader by value {
-                glslAnalyzer.import(
+                testToolchain.import(
                     """
                         // Main Paint Shader
                         void main( void ) {
@@ -420,7 +419,7 @@ object GlslGenerationSpec : Spek({
             }
 
             val otherPaintShader by value {
-                glslAnalyzer.import(
+                testToolchain.import(
                     """
                         // Other Paint Shader
                         void mainImage( out vec4 fragColor, in vec2 fragCoord ) {

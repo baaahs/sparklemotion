@@ -6,7 +6,7 @@ import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layoutEditorDialog
 import baaahs.client.WebClient
-import baaahs.gl.patch.AutoWirer
+import baaahs.gl.withCache
 import baaahs.io.Fs
 import baaahs.show.SampleData
 import baaahs.show.mutable.MutableShow
@@ -82,13 +82,15 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.dragNDrop = dragNDrop
             this.webClient = webClient
             this.plugins = webClient.plugins
-            this.autoWirer = AutoWirer(webClient.plugins)
+            this.toolchain = webClient.toolchain
             this.allStyles = AllStyles(theme)
             this.prompt = { prompt = it }
             this.clock = JsClock
 
             this.openEditor = { editIntent ->
-                editableManager.openEditor(webClient.show!!, editIntent)
+                editableManager.openEditor(
+                    webClient.show!!, editIntent, webClient.toolchain.withCache("Edit Session")
+                )
             }
         }
     }

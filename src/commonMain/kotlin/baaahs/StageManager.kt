@@ -3,7 +3,7 @@ package baaahs
 import baaahs.app.ui.CommonIcons
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.RenderPlan
-import baaahs.gl.patch.AutoWirer
+import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
@@ -11,7 +11,6 @@ import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
-import baaahs.plugin.Plugins
 import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.buildEmptyShow
@@ -26,7 +25,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlin.coroutines.CoroutineContext
 
 class StageManager(
-    plugins: Plugins,
+    toolchain: Toolchain,
     private val renderManager: RenderManager,
     private val pubSub: PubSub.Server,
     private val storage: Storage,
@@ -34,9 +33,8 @@ class StageManager(
     private val clock: Clock,
     modelInfo: ModelInfo,
     private val coroutineContext: CoroutineContext
-) : BaseShowPlayer(plugins, modelInfo) {
+) : BaseShowPlayer(toolchain, modelInfo) {
     val facade = Facade()
-    private val autoWirer = AutoWirer(plugins)
     private var showRunner: ShowRunner? = null
     private val gadgets: MutableMap<String, GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
@@ -56,7 +54,7 @@ class StageManager(
     private val showEditSession = ShowEditSession(fsSerializer)
     private val showEditorStateChannel: PubSub.Channel<ShowEditorState?> =
         pubSub.publish(
-            ShowEditorState.createTopic(plugins, fsSerializer),
+            ShowEditorState.createTopic(toolchain.plugins, fsSerializer),
             showEditSession.getShowEditState()
         ) { incoming ->
             val newShow = incoming?.show
@@ -177,7 +175,7 @@ class StageManager(
         init {
             val commands = Topics.Commands(SerializersModule {
                 include(remoteFsSerializer.serialModule)
-                include(plugins.serialModule)
+                include(toolchain.plugins.serialModule)
             })
             pubSub.listenOnCommandChannel(commands.newShow) { command, _ -> handleNewShow(command) }
             pubSub.listenOnCommandChannel(commands.switchToShow) { command, _ -> handleSwitchToShow(command.file) }
@@ -300,6 +298,8 @@ data class ShowProblem(
     val severity: Severity = Severity.ERROR,
     val id: String = randomId("error")
 )
+
+fun Collection<ShowProblem>.severity() = maxOfOrNull { it.severity }
 
 enum class Severity(val icon: Icon) {
     INFO(CommonIcons.Info),

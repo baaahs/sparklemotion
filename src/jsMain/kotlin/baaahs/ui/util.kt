@@ -134,4 +134,12 @@ inline fun RBuilder.typographyBody2(vararg classMap: Pair<TypographyStyle, Strin
     block()
 }
 
+fun renderWrapper(block: RBuilder.() -> Unit): Renderer {
+    return object : Renderer {
+        override fun RBuilder.render() {
+            block()
+        }
+    }
+}
+
 private val logger = Logger("util.kt")

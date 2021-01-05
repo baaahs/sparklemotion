@@ -9,14 +9,9 @@ import baaahs.fixtures.NullTransport
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
-import baaahs.gl.GlBase
-import baaahs.gl.GlContext
-import baaahs.gl.glsl.GlslAnalyzer
+import baaahs.gl.*
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
-import baaahs.gl.renderPlanFor
-import baaahs.gl.testPlugins
 import baaahs.plugin.CorePlugin
 import baaahs.show.Shader
 import baaahs.shows.FakeShowPlayer
@@ -255,13 +250,12 @@ class RenderEngineTest {
     }
 
     private fun compileAndBind(program: String): GlslProgram {
-        val autoWirer = AutoWirer(testPlugins())
-        val shader = GlslAnalyzer(testPlugins()).import(program)
-        val linkedPatch = autoWirer
+        val shader = testToolchain.import(program)
+        val linkedPatch = testToolchain
             .autoWire(directXyProjection, shader)
             .acceptSuggestedLinkOptions()
             .confirm()
-            .openForPreview(autoWirer, ContentType.Color)!!
+            .openForPreview(testToolchain, ContentType.Color)!!
         return renderEngine.compile(linkedPatch) { id, dataSource ->
             if (dataSource is CorePlugin.GadgetDataSource<*>) {
                 fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)

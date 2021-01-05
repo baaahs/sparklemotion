@@ -4,6 +4,7 @@ import baaahs.api.ws.WebSocketRouter
 import baaahs.dmx.Dmx
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
+import baaahs.gl.RootToolchain
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.render.RenderManager
 import baaahs.io.ByteArrayWriter
@@ -55,8 +56,9 @@ class Pinky(
 //    private val gadgetManager = GadgetManager(pubSub)
     internal val fixtureManager = FixtureManager(renderManager)
 
-    var stageManager: StageManager = StageManager(
-        plugins, renderManager, pubSub, storage, fixtureManager, clock, model, coroutineContext
+    val toolchain = RootToolchain(plugins)
+    val stageManager: StageManager = StageManager(
+        toolchain, renderManager, pubSub, storage, fixtureManager, clock, model, coroutineContext
     )
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {
@@ -138,7 +140,7 @@ class Pinky(
                 try {
                     stageManager.renderAndSendNextFrame()
                 } catch (e: Exception) {
-                    logger.error("Error rendering frame for ${stageManager.facade.currentShow?.title}", e)
+                    logger.error(e) { "Error rendering frame for ${stageManager.facade.currentShow?.title}"}
                     if (e is CompilationException) {
                         e.source?.let { logger.info { it } }
                     }

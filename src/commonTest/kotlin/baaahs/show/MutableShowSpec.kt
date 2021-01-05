@@ -1,12 +1,13 @@
 package baaahs.show
 
+import baaahs.gl.Toolchain
+import baaahs.gl.autoWire
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
-import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
-import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
 import baaahs.only
 import baaahs.show.live.FakeOpenShader
 import baaahs.show.mutable.*
@@ -18,11 +19,9 @@ import kotlin.collections.set
 
 object MutableShowSpec : Spek({
     describe("MutableShow") {
-        val autoWirer by value { AutoWirer(testPlugins()) }
-
-        val shader0 by value { autoWirer.testPatch("shader 0") }
-        val shader1a by value { autoWirer.testPatch("shader 1a") }
-        val shader2a by value { autoWirer.testPatch("shader 2a") }
+        val shader0 by value { testToolchain.testPatch("shader 0") }
+        val shader1a by value { testToolchain.testPatch("shader 1a") }
+        val shader2a by value { testToolchain.testPatch("shader 2a") }
 
         val baseMutableShow by value {
             MutableShow("test show").apply {
@@ -33,8 +32,8 @@ object MutableShowSpec : Spek({
                 }
                 addButtonGroup("main", "scene 2") {
                     addButton("patchset 2a") { addPatch(shader2a) }
-                    addButton("patchset 2b") { addPatch(autoWirer.testPatch("shader 2b")) }
-                    addButton("patchset 2c") { addPatch(autoWirer.testPatch("shader 2c")) }
+                    addButton("patchset 2b") { addPatch(testToolchain.testPatch("shader 2b")) }
+                    addButton("patchset 2c") { addPatch(testToolchain.testPatch("shader 2c")) }
                 }
 //                addControl("Scenes", MutableButtonGroupControl("Scenes", ButtonGroupControl.Direction.Horizontal, this))
             }
@@ -130,7 +129,7 @@ object MutableShowSpec : Spek({
 //            beforeEachTest {
 //                mutableShow.apply {
 //                    editScene(1) {
-//                        addButton("patchset 2b") { addPatch(autoWirer.testPatch("shader 2b")) }
+//                        addButton("patchset 2b") { addPatch(toolchain.testPatch("shader 2b")) }
 //                    }
 //                }
 //            }
@@ -163,7 +162,7 @@ object MutableShowSpec : Spek({
 //            beforeEachTest {
 //                baseMutableShow.apply {
 //                    addButtonGroup("scene 3") {
-//                        addButton("patchset 3a") { addPatch(autoWirer.testPatch("shader 3a")) }
+//                        addButton("patchset 3a") { addPatch(toolchain.testPatch("shader 3a")) }
 //                    }
 //                }
 //
@@ -249,8 +248,8 @@ object MutableShowSpec : Spek({
 
         context("editing MutablePatchHolders") {
             it("adds to existing patch for the given surface, if it exists") {
-                mutableShow.addPatch(autoWirer.testPatch("show shader 1a"))
-                mutableShow.addPatch(autoWirer.testPatch("show shader 1b"))
+                mutableShow.addPatch(testToolchain.testPatch("show shader 1a"))
+                mutableShow.addPatch(testToolchain.testPatch("show shader 1b"))
 
                 expect(show.patches.map { patch ->
                     patch.surfaces to
@@ -273,7 +272,7 @@ object MutableShowSpec : Spek({
     }
 })
 
-private fun AutoWirer.testPatch(title: String): MutablePatch {
+private fun Toolchain.testPatch(title: String): MutablePatch {
     val shader = Shader(
         title,
         """

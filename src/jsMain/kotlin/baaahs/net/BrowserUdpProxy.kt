@@ -42,7 +42,7 @@ internal class BrowserUdpProxy(
                 }
             }
         } catch (e: Exception) {
-            logger.error("Error receiving WebSocket command", e)
+            logger.error(e) { "Error receiving WebSocket command" }
             throw e
         }
     }

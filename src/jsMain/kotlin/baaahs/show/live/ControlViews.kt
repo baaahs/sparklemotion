@@ -4,10 +4,10 @@ import baaahs.app.ui.controls.Styles
 import baaahs.app.ui.controls.button
 import baaahs.app.ui.controls.buttonGroup
 import baaahs.app.ui.controls.visualizer
-import baaahs.app.ui.editor.renderWrapper
 import baaahs.gadgets.Slider
 import baaahs.jsx.RangeSlider
 import baaahs.ui.Renderer
+import baaahs.ui.renderWrapper
 import baaahs.ui.unaryPlus
 import react.dom.div
 

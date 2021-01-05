@@ -248,7 +248,7 @@ class Mapper(
                 delay(1000L)
             } catch (e: TimeoutException) {
                 mapperUi.showMessage("Timed out: ${e.message}")
-                logger.error("Timed out", e)
+                logger.error(e) { "Timed out" }
             }
 
             logger.info { "Here's what we learned!" }
