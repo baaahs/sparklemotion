@@ -17,7 +17,7 @@ interface Editable {
 
 interface MutableEditable {
     val title: String
-    fun getEditorPanels(): List<EditorPanel>
+    fun getEditorPanels(editableManager: EditableManager): List<EditorPanel>
 }
 
 interface EditIntent {

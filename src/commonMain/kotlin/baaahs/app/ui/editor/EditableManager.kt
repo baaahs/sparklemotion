@@ -127,7 +127,7 @@ class EditableManager(
             get() = "Editing ${mutableEditable.title}"
 
         fun getEditorPanels(): List<EditorPanel> =
-            mutableEditable.getEditorPanels()
+            mutableEditable.getEditorPanels(this@EditableManager)
 
         fun isChanged(): Boolean {
             return cachedIsChanged

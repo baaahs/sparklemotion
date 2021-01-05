@@ -27,10 +27,10 @@ abstract class MutablePatchHolder(
 
     override var title = basePatchHolder.title
 
-    override fun getEditorPanels(): List<EditorPanel> {
+    override fun getEditorPanels(editableManager: EditableManager): List<EditorPanel> {
         return listOf(
-            GenericPropertiesEditorPanel(getPropertiesComponents()),
-            PatchHolderEditorPanel(this)
+            GenericPropertiesEditorPanel(editableManager, getPropertiesComponents()),
+            PatchHolderEditorPanel(editableManager, this)
         )
     }
 
@@ -349,7 +349,8 @@ class MutablePatch {
         mutableShaderInstances.remove(mutableShaderInstance)
     }
 
-    fun getEditorPanel() = PatchEditorPanel(this)
+    fun getEditorPanel(editableManager: EditableManager) =
+        PatchEditorPanel(editableManager, this)
 }
 
 data class MutableShader(
