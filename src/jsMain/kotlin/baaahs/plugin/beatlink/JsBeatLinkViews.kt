@@ -1,7 +1,7 @@
 package baaahs.plugin.beatlink
 
-import baaahs.app.ui.editor.renderWrapper
 import baaahs.show.live.ControlProps
+import baaahs.ui.renderWrapper
 
 object JsBeatLinkViews : BeatLinkViews {
     override fun forControl(openButtonControl: OpenBeatLinkControl, controlProps: ControlProps) = renderWrapper {
