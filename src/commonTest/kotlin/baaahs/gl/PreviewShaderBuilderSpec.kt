@@ -8,7 +8,6 @@ import baaahs.gl.render.PreviewRenderEngine
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
 import baaahs.show.Shader
-import baaahs.show.live.toolchain
 import baaahs.shows.FakeGlContext
 import baaahs.toNotEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -27,7 +26,7 @@ object PreviewShaderBuilderSpec : Spek({
         val shader by value { Shaders.checkerboard }
         val testCoroutineContext by value { TestCoroutineContext("global") }
         val previewShaderBuilder by value {
-            PreviewShaderBuilder(shader, toolchain, ModelInfo.Empty, CoroutineScope(testCoroutineContext))
+            PreviewShaderBuilder(shader, testToolchain, ModelInfo.Empty, CoroutineScope(testCoroutineContext))
         }
         val renderEngine by value { PreviewRenderEngine(FakeGlContext(), 100, 100) }
 

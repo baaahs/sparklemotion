@@ -14,7 +14,7 @@ import baaahs.show.Shader
 
 class FakeShowPlayer(
     override val modelInfo: ModelInfo = ModelInfo.Empty,
-    override val toolchain: Toolchain = baaahs.show.live.toolchain
+    override val toolchain: Toolchain = baaahs.gl.testToolchain
 ) : ShowPlayer {
     private val shaders = mutableMapOf<Shader, OpenShader>()
     private val feeds = mutableMapOf<DataSource, Feed>()

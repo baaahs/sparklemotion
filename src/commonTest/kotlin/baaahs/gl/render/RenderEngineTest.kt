@@ -14,9 +14,9 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
 import baaahs.gl.renderPlanFor
+import baaahs.gl.testToolchain
 import baaahs.plugin.CorePlugin
 import baaahs.show.Shader
-import baaahs.show.live.toolchain
 import baaahs.shows.FakeShowPlayer
 import kotlin.math.abs
 import kotlin.random.Random
@@ -253,12 +253,12 @@ class RenderEngineTest {
     }
 
     private fun compileAndBind(program: String): GlslProgram {
-        val shader = toolchain.glslAnalyzer.import(program)
-        val linkedPatch = toolchain
+        val shader = testToolchain.glslAnalyzer.import(program)
+        val linkedPatch = testToolchain
             .autoWire(directXyProjection, shader)
             .acceptSuggestedLinkOptions()
             .confirm()
-            .openForPreview(toolchain, ContentType.Color)!!
+            .openForPreview(testToolchain, ContentType.Color)!!
         return renderEngine.compile(linkedPatch) { id, dataSource ->
             if (dataSource is CorePlugin.GadgetDataSource<*>) {
                 fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)

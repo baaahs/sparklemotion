@@ -5,11 +5,11 @@ import baaahs.gadgets.Slider
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
 import baaahs.mapper.Storage
 import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
 import baaahs.show.SampleData
-import baaahs.show.live.toolchain
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
@@ -60,7 +60,7 @@ class ShowRunnerTest {
         fixtureManager = FixtureManager(renderManager)
         MovingHeadManager(fixtureManager, dmxUniverse, emptyList())
         stageManager = StageManager(
-            toolchain, renderManager, server, Storage(fs, testPlugins()), fixtureManager,
+            testToolchain, renderManager, server, Storage(fs, testPlugins()), fixtureManager,
             FakeClock(), sheepModel, testCoroutineContext
         )
         stageManager.switchTo(SampleData.sampleShow)

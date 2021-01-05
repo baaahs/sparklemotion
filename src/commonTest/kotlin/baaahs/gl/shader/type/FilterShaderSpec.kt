@@ -2,6 +2,7 @@ package baaahs.gl.shader.type
 
 import baaahs.describe
 import baaahs.gl.glsl.GlslAnalyzer
+import baaahs.gl.openShader
 import baaahs.gl.override
 import baaahs.gl.testPlugins
 import baaahs.toBeSpecified

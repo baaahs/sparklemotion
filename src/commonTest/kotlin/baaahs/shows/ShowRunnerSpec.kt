@@ -5,12 +5,12 @@ import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.override
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
 import baaahs.mapper.Storage
 import baaahs.plugin.CorePlugin
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
-import baaahs.show.live.toolchain
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
@@ -39,7 +39,7 @@ object ShowRunnerSpec : Spek({
         val mutableShow by value {
             MutableShow("test show") {
                 addPatch(
-                    toolchain.autoWire(Shaders.cylindricalProjection, Shaders.blue)
+                    testToolchain.autoWire(Shaders.cylindricalProjection, Shaders.blue)
                         .acceptSuggestedLinkOptions()
                         .confirm()
                 )
@@ -52,7 +52,7 @@ object ShowRunnerSpec : Spek({
                         ) {
                             addButton("test patchset") {
                                 addPatch(
-                                    toolchain.autoWire(Shader("Untitled", shaderSrc))
+                                    testToolchain.autoWire(Shader("Untitled", shaderSrc))
                                         .acceptSuggestedLinkOptions()
                                         .confirm()
                                 )
@@ -78,7 +78,7 @@ object ShowRunnerSpec : Spek({
         val stageManager by value {
             val fs = FakeFs()
             StageManager(
-                toolchain, renderManager, pubSub, Storage(fs, testPlugins()), fixtureManager,
+                testToolchain, renderManager, pubSub, Storage(fs, testPlugins()), fixtureManager,
                 FakeClock(), model, testCoroutineContext)
         }
 

@@ -11,13 +11,13 @@ import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
+import baaahs.gl.testToolchain
 import baaahs.model.Model
 import baaahs.only
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
 import baaahs.show.live.FakeOpenShader
 import baaahs.show.live.ShowOpener
-import baaahs.show.live.toolchain
 import baaahs.show.mutable.MutableShow
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
@@ -77,7 +77,7 @@ object FixtureManagerSpec : Spek({
                 }
 
                 val openShow by value {
-                    object : ShowOpener(toolchain, show, FakeShowPlayer(model)) {
+                    object : ShowOpener(testToolchain, show, FakeShowPlayer(model)) {
                         override fun openShader(shader: Shader): OpenShader {
                             val contentType = when (shader.title) {
                                 "Pea Soup" -> fogginess
