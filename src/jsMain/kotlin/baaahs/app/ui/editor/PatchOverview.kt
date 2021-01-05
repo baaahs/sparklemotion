@@ -36,7 +36,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         CacheBuilder {
             {
                 props.editableManager.openPanel(
-                    it.getEditorPanel(props.mutablePatch.getEditorPanel())
+                    it.getEditorPanel(props.mutablePatch.getEditorPanel(props.editableManager))
                 )
             }
         }

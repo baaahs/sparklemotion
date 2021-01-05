@@ -8,9 +8,13 @@ import baaahs.ui.Icon
 import baaahs.ui.Renderer
 
 data class GenericPropertiesEditorPanel(
-    val propsEditors: List<PropsEditor>
+    private val editableManager: EditableManager,
+    private val propsEditors: List<PropsEditor>
 ) : EditorPanel {
-    constructor(vararg propsEditors: PropsEditor) : this(propsEditors.toList())
+    constructor(
+        editableManager: EditableManager,
+        vararg propsEditors: PropsEditor
+    ) : this(editableManager, propsEditors.toList())
 
     override val title: String
         get() = "Properties"
@@ -24,6 +28,7 @@ data class GenericPropertiesEditorPanel(
 }
 
 data class PatchHolderEditorPanel(
+    private val editableManager: EditableManager,
     private val mutablePatchHolder: MutablePatchHolder
 ) : EditorPanel {
     override val title: String
@@ -34,7 +39,7 @@ data class PatchHolderEditorPanel(
         get() = CommonIcons.Patch
 
     override fun getNestedEditorPanels(): List<EditorPanel> {
-        return mutablePatchHolder.patches.map { mutablePatch -> mutablePatch.getEditorPanel() }
+        return mutablePatchHolder.patches.map { mutablePatch -> mutablePatch.getEditorPanel(editableManager) }
     }
 
     override fun getRenderer(editableManager: EditableManager): Renderer =
@@ -42,6 +47,7 @@ data class PatchHolderEditorPanel(
 }
 
 data class PatchEditorPanel(
+    private val editableManager: EditableManager,
     private val mutablePatch: MutablePatch
 ) : EditorPanel {
     override val title: String

@@ -32,7 +32,7 @@ data class MutableGadgetControl(
 
     override var asBuiltId: String? = null
 
-    override fun getEditorPanels(): List<EditorPanel> {
+    override fun getEditorPanels(editableManager: EditableManager): List<EditorPanel> {
         return emptyList()
     }
 
@@ -88,9 +88,10 @@ data class MutableButtonGroupControl(
         return control
     }
 
-    override fun getEditorPanels(): List<EditorPanel> {
+    override fun getEditorPanels(editableManager: EditableManager): List<EditorPanel> {
         return listOf(
             GenericPropertiesEditorPanel(
+                editableManager,
                 ButtonGroupPropsEditor(this)
             )
         )
@@ -120,9 +121,10 @@ data class MutableVisualizerControl(
 
     override var asBuiltId: String? = null
 
-    override fun getEditorPanels(): List<EditorPanel> {
+    override fun getEditorPanels(editableManager: EditableManager): List<EditorPanel> {
         return listOf(
             GenericPropertiesEditorPanel(
+                editableManager,
                 VisualizerPropsEditor(this)
             )
         )
