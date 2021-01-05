@@ -4,12 +4,12 @@ import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.kexpect
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType.Companion.Color
+import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.MovingHeadParams
 import baaahs.show.ShaderChannel
-import baaahs.show.live.toolchain
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderChannel
@@ -43,12 +43,12 @@ object GlslGenerationSpec : Spek({
                 }
             """.trimIndent()
         }
-        val glslAnalyzer by value { toolchain.glslAnalyzer }
+        val glslAnalyzer by value { testToolchain.glslAnalyzer }
         val mainShader by value { glslAnalyzer.import(shaderText) }
         val mutablePatch by value { MutablePatch { } }
         val resultContentType by value { Color }
         val linkedPatch by value {
-            mutablePatch.openForPreview(toolchain, resultContentType)
+            mutablePatch.openForPreview(testToolchain, resultContentType)
                 ?: fail("openForPreview returned null, maybe no shaders on mutablePatch?")
         }
         val glsl by value { linkedPatch.toGlsl().trim() }

@@ -56,10 +56,6 @@ class GlslAnalyzer(private val plugins: Plugins) {
         return dialect.analyze(glslCode, plugins, shader)
     }
 
-    fun openShader(src: String): OpenShader {
-        return openShader(parse(src))
-    }
-
     fun openShader(shader: Shader): OpenShader {
         return openShader(parse(shader.src), shader)
     }

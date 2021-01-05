@@ -51,7 +51,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
         val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
             // TODO: This is duplicating work that happens later in PreviewShaderBuilder, which is rotten.
-            appContext.toolchain.openShader(props.shader!!.src)
+            appContext.toolchain.openShader(props.shader!!)
                 .shaderType
         }
 

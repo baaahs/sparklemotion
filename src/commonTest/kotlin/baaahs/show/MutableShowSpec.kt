@@ -6,9 +6,9 @@ import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
+import baaahs.gl.testToolchain
 import baaahs.only
 import baaahs.show.live.FakeOpenShader
-import baaahs.show.live.toolchain
 import baaahs.show.mutable.*
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
@@ -18,9 +18,9 @@ import kotlin.collections.set
 
 object MutableShowSpec : Spek({
     describe("MutableShow") {
-        val shader0 by value { toolchain.testPatch("shader 0") }
-        val shader1a by value { toolchain.testPatch("shader 1a") }
-        val shader2a by value { toolchain.testPatch("shader 2a") }
+        val shader0 by value { testToolchain.testPatch("shader 0") }
+        val shader1a by value { testToolchain.testPatch("shader 1a") }
+        val shader2a by value { testToolchain.testPatch("shader 2a") }
 
         val baseMutableShow by value {
             MutableShow("test show").apply {
@@ -31,8 +31,8 @@ object MutableShowSpec : Spek({
                 }
                 addButtonGroup("main", "scene 2") {
                     addButton("patchset 2a") { addPatch(shader2a) }
-                    addButton("patchset 2b") { addPatch(toolchain.testPatch("shader 2b")) }
-                    addButton("patchset 2c") { addPatch(toolchain.testPatch("shader 2c")) }
+                    addButton("patchset 2b") { addPatch(testToolchain.testPatch("shader 2b")) }
+                    addButton("patchset 2c") { addPatch(testToolchain.testPatch("shader 2c")) }
                 }
 //                addControl("Scenes", MutableButtonGroupControl("Scenes", ButtonGroupControl.Direction.Horizontal, this))
             }
@@ -247,8 +247,8 @@ object MutableShowSpec : Spek({
 
         context("editing MutablePatchHolders") {
             it("adds to existing patch for the given surface, if it exists") {
-                mutableShow.addPatch(toolchain.testPatch("show shader 1a"))
-                mutableShow.addPatch(toolchain.testPatch("show shader 1b"))
+                mutableShow.addPatch(testToolchain.testPatch("show shader 1a"))
+                mutableShow.addPatch(testToolchain.testPatch("show shader 1b"))
 
                 expect(show.patches.map { patch ->
                     patch.surfaces to

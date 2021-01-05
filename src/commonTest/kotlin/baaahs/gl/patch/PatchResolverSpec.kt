@@ -7,6 +7,7 @@ import baaahs.getBang
 import baaahs.gl.kexpect
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.render.RenderManager
+import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
 import baaahs.only
 import baaahs.plugin.CorePlugin
@@ -17,7 +18,6 @@ import baaahs.show.ShaderChannel
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenButtonControl
 import baaahs.show.live.ShowOpener
-import baaahs.show.live.toolchain
 import baaahs.show.mutable.*
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
@@ -28,7 +28,7 @@ import org.spekframework.spek2.style.specification.describe
 object PatchResolverSpec : Spek({
     describe("Layering of patch links") {
         fun autoWire(vararg shaders: Shader, shaderChannel: ShaderChannel = ShaderChannel.Main): MutablePatch {
-            return toolchain.autoWire(*shaders, shaderChannel = shaderChannel)
+            return testToolchain.autoWire(*shaders, shaderChannel = shaderChannel)
                 .acceptSuggestedLinkOptions().confirm()
         }
 
@@ -82,7 +82,7 @@ object PatchResolverSpec : Spek({
         }
         val show by value {
             val show = mutableShow.build(ShowBuilder())
-            ShowOpener(toolchain, show, FakeShowPlayer()).openShow()
+            ShowOpener(testToolchain, show, FakeShowPlayer()).openShow()
         }
         val linkedPatch by value { generateLinkedPatch(show.allDataSources, show.activePatchSet()) }
 
@@ -349,7 +349,7 @@ object PatchResolverSpec : Spek({
                         )
                     )
                     addPatch(
-                        toolchain.autoWire(
+                        testToolchain.autoWire(
                             Shader(
                                 "Fade",
                                 /**language=glsl*/

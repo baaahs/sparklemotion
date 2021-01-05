@@ -22,10 +22,6 @@ interface Toolchain {
 
     fun analyze(shader: Shader): ShaderAnalysis
 
-    fun analyze(src: String, shader: Shader? = null): ShaderAnalysis
-
-    fun openShader(src: String): OpenShader
-
     fun openShader(shader: Shader): OpenShader
 
     fun openShader(shaderAnalysis: ShaderAnalysis): OpenShader
@@ -66,14 +62,6 @@ class RootToolchain(
 
     override fun analyze(shader: Shader): ShaderAnalysis {
         return glslAnalyzer.analyze(shader)
-    }
-
-    override fun analyze(src: String, shader: Shader?): ShaderAnalysis {
-        return glslAnalyzer.analyze(src, shader)
-    }
-
-    override fun openShader(src: String): OpenShader {
-        return glslAnalyzer.openShader(src)
     }
 
     override fun openShader(shader: Shader): OpenShader {

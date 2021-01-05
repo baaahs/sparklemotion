@@ -3,13 +3,13 @@ package baaahs
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
+import baaahs.gl.testToolchain
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.models.SheepModel
 import baaahs.show.SampleData
-import baaahs.show.live.toolchain
 import baaahs.show.mutable.MutableShow
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeFs
@@ -37,7 +37,7 @@ object StageManagerSpec : Spek({
 
         val stageManager by value {
             StageManager(
-                toolchain,
+                testToolchain,
                 renderManager,
                 pubSub.server,
                 Storage(fakeFs, plugins),

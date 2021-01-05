@@ -8,16 +8,13 @@ import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ResultParam
 import baaahs.geom.Vector3F
-import baaahs.gl.GlContext
+import baaahs.gl.*
 import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.patch.ProgramLinker
-import baaahs.gl.renderPlanFor
 import baaahs.gl.shader.InputPort
-import baaahs.gl.testPlugins
 import baaahs.only
 import baaahs.plugin.SerializerRegistrar
 import baaahs.show.*
