@@ -140,7 +140,7 @@ class Pinky(
                 try {
                     stageManager.renderAndSendNextFrame()
                 } catch (e: Exception) {
-                    logger.error("Error rendering frame for ${stageManager.facade.currentShow?.title}", e)
+                    logger.error(e) { "Error rendering frame for ${stageManager.facade.currentShow?.title}"}
                     if (e is CompilationException) {
                         e.source?.let { logger.info { it } }
                     }

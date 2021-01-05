@@ -10,12 +10,15 @@ import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.Show
 import baaahs.util.CacheBuilder
+import baaahs.util.Logger
 
 open class ShowOpener(
     private val toolchain: Toolchain,
     private val show: Show,
     private val showPlayer: ShowPlayer
 ): OpenContext {
+    init { logger.debug { "Opening show ${show.title}" } }
+
     private val openControlCache = CacheBuilder<String, OpenControl> { controlId ->
         show.getControl(controlId).open(controlId, this, showPlayer)
     }
@@ -58,5 +61,9 @@ open class ShowOpener(
 //        allControls.forEach { it.release() }
 //        openShaders.forEach { it.release() }
 //        allShaderInstances.forEach { it.release() }
+    }
+
+    companion object {
+        private val logger = Logger<ShowOpener>()
     }
 }
