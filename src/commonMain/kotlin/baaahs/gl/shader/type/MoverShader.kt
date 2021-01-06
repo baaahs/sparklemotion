@@ -2,6 +2,7 @@ package baaahs.gl.shader.type
 
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.ShaderAnalysis
+import baaahs.gl.patch.ContentType
 import baaahs.gl.preview.PreviewShaders
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.core.MovingHeadParams
@@ -38,4 +39,6 @@ object MoverShader : ShaderType {
     override fun pickPreviewShaders(openShader: OpenShader, previewShaders: PreviewShaders): List<OpenShader> {
         return listOf(openShader)
     }
+
+    override fun previewResultContentType(): ContentType = MovingHeadParams.contentType
 }
