@@ -7,6 +7,7 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.shader.InputPort
 import baaahs.randomId
 import baaahs.show.Shader
+import baaahs.show.ShaderChannel
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
 import baaahs.util.Logger
@@ -104,6 +105,16 @@ class EditingShader(
             shaderInstanceOptions = toolchain.wiringOptions(currentOpenShader, parentMutableShow, mutableShaderInstance)
         }
         return shaderInstanceOptions
+    }
+
+    fun getShaderChannelOptions(excludeMain: Boolean = false): List<MutableShaderChannel> {
+        return mutableListOf<MutableShaderChannel>().apply {
+            getShaderInstanceOptions()?.shaderChannels?.let { addAll(it) }
+            if (excludeMain) removeAll { it.id == ShaderChannel.Main.id }
+            if (none { it.id == mutableShaderInstance.shaderChannel.id }) {
+                add(0, mutableShaderInstance.shaderChannel)
+            }
+        }.sortedBy { it.title }
     }
 
     fun linkOptionsFor(inputPort: InputPort): List<LinkOption>? = linkOptionsFor(inputPort.id)
