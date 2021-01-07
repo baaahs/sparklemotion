@@ -3,13 +3,12 @@ package baaahs.util
 import baaahs.show.live.ShowOpener
 import kotlin.reflect.KClass
 
-object LogLevels {
-    @Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "RemoveExplicitTypeArguments", "unused")
+object LoggerConfig {
     val stringLevels = mapOf<String, LogLevel>(
 
     )
 
-    @Suppress("MemberVisibilityCanBePrivate")
     val classLevels = mapOf<KClass<*>, LogLevel>(
         ShowOpener::class to LogLevel.DEBUG
     )
@@ -19,7 +18,6 @@ object LogLevels {
 
     fun levelFor(id: String) = allLevels[id] ?: LogLevel.WARN
 
-    @Suppress("MemberVisibilityCanBePrivate")
     fun setLevel(id: String, level: String?) {
         if (level == null) {
             allLevels.remove(id)
