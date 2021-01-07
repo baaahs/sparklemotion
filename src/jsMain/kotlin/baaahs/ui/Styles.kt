@@ -73,26 +73,12 @@ object Styles : StyleSheet("ui", isStatic = true) {
         marginTop = .5.em
     }
 
-    val shaderEditorActions by css {
-        display = Display.flex
-        flexDirection = FlexDirection.column
-        flex()
-        minWidth = 10.em
-    }
-
     val textEditor by css {
         width = 100.pct
         height = 100.pct
         display = Display.flex
         flexDirection = FlexDirection.row
         marginTop = .5.em
-    }
-
-    val glslNumber by css {
-        display = Display.block
-        backgroundColor = Color("#0D0")
-        position = Position.absolute
-        zIndex = 10
     }
 
     val fileDialogFileList by css {

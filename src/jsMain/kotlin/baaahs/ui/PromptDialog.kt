@@ -3,6 +3,7 @@ package baaahs.ui
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.js.onKeyUpFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.dialog.dialog
@@ -44,6 +45,11 @@ val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
         event.stopPropagation()
     }
 
+    val handleKeyUp = handler("keyUp", prompt) { event: Event ->
+        if (event.asDynamic().key == "Enter" && isInvalidMessage == null) {
+            handleSubmitClick(event)
+        }
+    }
 
     dialog {
         attrs.open = true
@@ -64,6 +70,7 @@ val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
                     attrs.error = true
                     attrs.helperText = it.asTextNode()
                 }
+                attrs.onKeyUpFunction = handleKeyUp
                 attrs.onChangeFunction = handleChange
             }
         }
