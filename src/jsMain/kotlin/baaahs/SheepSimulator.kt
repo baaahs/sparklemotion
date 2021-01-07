@@ -18,6 +18,7 @@ import baaahs.proto.Ports
 import baaahs.shows.BakedInShaders
 import baaahs.sim.*
 import baaahs.util.JsClock
+import baaahs.util.LoggerConfig
 import baaahs.visualizer.SurfaceGeometry
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
@@ -40,6 +41,8 @@ class SheepSimulator(val model: Model) {
     val filesystems = listOf(fs)
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     init {
+        window.asDynamic().simulator = this
+        window.asDynamic().LoggerConfig = LoggerConfig
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
     }
 

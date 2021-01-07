@@ -1,7 +1,7 @@
 package baaahs.util
 
 actual fun log(id: String, level: LogLevel, message: () -> String, exception: Throwable?) {
-    if (level < LogLevels.levelFor(id)) return
+    if (level < LoggerConfig.levelFor(id)) return
 
     try {
         logMessage(level, "${Logger.ts()} [] $level  $id - ${message()}", exception)

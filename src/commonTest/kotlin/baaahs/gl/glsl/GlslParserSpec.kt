@@ -6,6 +6,7 @@ import baaahs.gl.glsl.GlslCode.*
 import baaahs.gl.override
 import baaahs.only
 import baaahs.toBeSpecified
+import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
@@ -80,7 +81,8 @@ object GlslParserSpec : Spek({
                                 "leftEye",
                                 GlslType.Struct(
                                     "FixtureInfo",
-                                    mapOf("origin" to GlslType.Vec3, "heading" to GlslType.Vec3)),
+                                    mapOf("origin" to GlslType.Vec3, "heading" to GlslType.Vec3)
+                                ),
                                 "uniform struct FixtureInfo {\n" +
                                         "    vec3 origin;\n" +
                                         "    vec3 heading;\n" +
@@ -295,6 +297,72 @@ object GlslParserSpec : Spek({
                                 ),
                             ), { glslParser.findStatements(shaderText) }, true
                         )
+                    }
+                }
+
+                context("block comments") {
+                    override(shaderText) {
+                        """
+                            /* Block comment! @return float */
+                            float main() { return time + sin(time); }
+                        """.trimIndent()
+                    }
+
+                    it("finds the comment") {
+                        expect(glslCode.findFunction("main"))
+                            .toEqual(
+                                GlslFunction(
+                                    "main", GlslType.Float, emptyList(),
+                                    "float main() { return time + sin(time); }", 2,
+                                    comments = listOf(" Block comment! @return float ")
+                                )
+                            )
+                    }
+
+                    context("multi-line") {
+                        override(shaderText) {
+                            """
+                                /**
+                                 * Block comment!
+                                 * @return float
+                                 */
+                                float main() { return time + sin(time); }
+                            """.trimIndent()
+                        }
+
+                        it("finds the comment") {
+                            expect(glslCode.findFunction("main"))
+                                .toEqual(
+                                    GlslFunction(
+                                        "main", GlslType.Float, emptyList(),
+                                        "float main() { return time + sin(time); }", 5,
+                                        comments = listOf("*\n * Block comment!\n * @return float\n ")
+                                    )
+                                )
+                        }
+                    }
+
+                    context("on params") {
+                        override(shaderText) {
+                            """
+                                float main(float time /* @type time */) { return time + sin(time); }
+                            """.trimIndent()
+                        }
+
+                        it("finds the comment") {
+                            expect(glslCode.findFunction("main"))
+                                .toEqual(
+                                    GlslFunction(
+                                        "main", GlslType.Float, listOf(
+                                            GlslParam(
+                                                "time", GlslType.Float, true, false, 1,
+                                                comments = listOf(" @type time ")
+                                            )
+                                        ),
+                                        "float main(float time ) { return time + sin(time); }", 1
+                                    )
+                                )
+                        }
                     }
                 }
             }

@@ -153,16 +153,16 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                                         listItemText { +"${main.id.englishize()} (default)" }
                                     }
 
-                                    val shaderChannels =
-                                        (editingShader.getShaderInstanceOptions()?.shaderChannels ?: emptyList())
-                                            .filter { it.id != main.id }
-
                                     divider {}
+
+                                    val shaderChannels = editingShader.getShaderChannelOptions(excludeMain = true)
                                     shaderChannels.forEach { shaderChannel ->
-                                        menuItem {
-                                            attrs["value"] = shaderChannel.id
-                                            listItemIcon { icon(CommonIcons.ShaderChannel) }
-                                            listItemText { +shaderChannel.id.englishize() }
+                                        if (shaderChannel.id != main.id) {
+                                            menuItem {
+                                                attrs["value"] = shaderChannel.id
+                                                listItemIcon { icon(CommonIcons.ShaderChannel) }
+                                                listItemText { +shaderChannel.id.englishize() }
+                                            }
                                         }
                                     }
 

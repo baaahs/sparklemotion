@@ -31,7 +31,7 @@ class GlslParser {
             freezeLineNumber: Boolean = false
         ): ParseState {
             var state = initialState
-            Regex("(.*?)(//|[;{}(,)#\n]|$)").findAll(text).forEach { matchResult ->
+            Regex("(.*?)(//|/\\*|\\*/|[;{}(,)#\n]|$)").findAll(text).forEach { matchResult ->
                 val (before, token) = matchResult.destructured
 
                 if (before.isNotEmpty()) {
@@ -129,6 +129,8 @@ class GlslParser {
         open fun visit(token: String): ParseState {
             return when (token) {
                 "//" -> visitComment()
+                "/*" -> visitBlockCommentBegin()
+                "*/" -> visitBlockCommentEnd()
                 ";" -> visitSemicolon()
                 "{" -> visitLeftCurlyBrace()
                 "}" -> visitRightCurlyBrace()
@@ -153,6 +155,8 @@ class GlslParser {
         }
 
         open fun visitComment(): ParseState = visitText("//")
+        open fun visitBlockCommentBegin(): ParseState = visitText("/*")
+        open fun visitBlockCommentEnd(): ParseState = visitText("*/")
         open fun visitSemicolon(): ParseState = visitText(";")
         open fun visitLeftCurlyBrace(): ParseState = visitText("{")
         open fun visitRightCurlyBrace(): ParseState = visitText("}")
@@ -180,6 +184,10 @@ class GlslParser {
                 } else {
                     super.visitComment()
                 }
+            }
+
+            override fun visitBlockCommentBegin(): ParseState {
+                return BlockComment(context, recipientOfNextComment ?: this, this)
             }
 
             override fun visitSemicolon(): ParseState {
@@ -471,15 +479,36 @@ class GlslParser {
 
             override fun visitNewline(): ParseState {
                 recipientOfComment.addComment(commentText.toString())
-//                recipientOfComment.visitNewline()
                 nextParseState.visitNewline()
-//                nextParseState.receiveSubsequentComments()
                 return nextParseState
             }
 
             override fun visitEof(): ParseState {
                 recipientOfComment.addComment(commentText.toString())
                 return super.visitEof()
+            }
+        }
+
+        private class BlockComment(
+            context: Context,
+            val recipientOfComment: ParseState,
+            val nextParseState: ParseState
+        ) : ParseState(context) {
+            val commentText = StringBuilder()
+
+            override fun visitText(value: String): ParseState {
+                commentText.append(value)
+                return this
+            }
+
+            override fun visitNewline(): ParseState {
+                nextParseState.visitNewline()
+                return super.visitNewline()
+            }
+
+            override fun visitBlockCommentEnd(): ParseState {
+                recipientOfComment.addComment(commentText.toString())
+                return nextParseState
             }
         }
 
