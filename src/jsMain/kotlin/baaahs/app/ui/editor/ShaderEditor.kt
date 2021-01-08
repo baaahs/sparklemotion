@@ -63,9 +63,8 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         withCleanup { compilationObserver.remove() }
     }
 
-    val shaderRefactor = ref<ShaderRefactor?> { null }
-    onChange("ShaderRefactor", props.editingShader, aceEditor?.editor) {
-        shaderRefactor.current = aceEditor?.editor?.let {
+    val shaderRefactor = memo(props.editingShader, aceEditor?.editor) {
+        aceEditor?.editor?.let {
             ShaderRefactor(props.editingShader, it, appContext) { forceRender() }
         }
     }
@@ -77,10 +76,10 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         }
     }
 
-    val handleCursorChange = useCallback { value: Any, _: Any ->
+    val handleCursorChange = useCallback(shaderRefactor) { value: Any, _: Any ->
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         val selection = value as Selection
-        shaderRefactor.current?.onCursorChange(selection)
+        shaderRefactor?.onCursorChange(selection)
         Unit
     }
 
@@ -88,9 +87,9 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     val showRefactorMenu = useCallback { event: Event -> refactorMenuAnchor = event.target }
     val hideRefactorMenu = useCallback { _: Event?, _: String? -> refactorMenuAnchor = null}
 
-    val extractUniform = useCallback { _: Event ->
+    val extractUniform = useCallback(shaderRefactor) { _: Event ->
         hideRefactorMenu(null, null)
-        shaderRefactor.current?.onExtract()
+        shaderRefactor?.onExtract()
         Unit
     }
 
@@ -100,13 +99,15 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         textEditor {
             attrs.document = glslDoc
             attrs.mode = Modes.glsl
-            attrs.onAceEditor = x.handler("onAceEditor") { incoming: AceEditor -> aceEditor = incoming }
+            attrs.onAceEditor = x.handler("onAceEditor") { incoming: AceEditor ->
+                x.later { aceEditor = incoming }
+            }
             attrs.debounceSeconds = 0.25f
             attrs.onChange = handleSrcChange
             attrs.onCursorChange = handleCursorChange
         }
 
-        shaderRefactor.current?.selectionEndScreenPosition?.let { (x, y) ->
+        shaderRefactor?.selectionEndScreenPosition?.let { (x, y) ->
             div(+styles.editorActionMenuAffordance) {
                 inlineStyles { top = y.px; left = x.px }
                 attrs.onClickFunction = showRefactorMenu
@@ -125,7 +126,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
                 attrs.open = true
                 attrs.onClose = hideRefactorMenu
 
-                shaderRefactor.current?.let {
+                shaderRefactor?.let {
                     it.extractionCandidate?.let { extraction ->
                         menuItem {
                             attrs.onClickFunction = extractUniform
