@@ -11,10 +11,18 @@ import materialui.styles.palette.dark
 import materialui.styles.transitions.create
 import materialui.styles.transitions.sharp
 import styled.StyleSheet
+import styled.injectGlobal
 
 class AllStyles(val theme: MuiTheme) {
     val appUi by lazy { ThemeStyles(theme) }
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
+    val appUiEditor by lazy { baaahs.ui.editor.Styles(theme) }
+
+    fun injectGlobals() {
+        injectGlobal(Styles.global.toString())
+        injectGlobal(appUi.global.toString())
+        injectGlobal(baaahs.app.ui.controls.Styles.global.toString())
+    }
 }
 
 private fun linearRepeating(
