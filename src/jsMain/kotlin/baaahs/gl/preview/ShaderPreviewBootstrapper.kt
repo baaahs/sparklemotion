@@ -2,9 +2,6 @@ package baaahs.gl.preview
 
 import baaahs.document
 import baaahs.gl.GlBase
-import baaahs.gl.render.ProjectionPreview
-import baaahs.gl.render.QuadPreview
-import baaahs.gl.render.ShaderPreview
 import baaahs.model.Model
 import org.w3c.dom.HTMLCanvasElement
 import react.RMutableRef
