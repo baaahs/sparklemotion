@@ -1,17 +1,13 @@
 package baaahs.app.ui
 
 import baaahs.document
-import baaahs.gl.GlBase
 import baaahs.gl.GlContext
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
 import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
-import baaahs.gl.render.ProjectionPreview
-import baaahs.gl.render.QuadPreview
 import baaahs.gl.render.ShaderPreview
-import baaahs.gl.shader.type.ProjectionShader
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
 import baaahs.ui.addObserver
@@ -72,22 +68,10 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
             toolchain.openShader(props.shader!!).shaderType
         }
 
-        val preview = if (shaderType == ProjectionShader) {
-            val canvas2d = canvas
-            val canvas3d = document.createElement("canvas") as HTMLCanvasElement
-            val glslContext = GlBase.jsManager.createContext(canvas3d)
-            gl = glslContext
-
-            ProjectionPreview(canvas2d, glslContext, canvas.width, canvas.height, appContext.webClient.model) {
-                preRenderHook.current()
-            }
-        } else {
-            val glslContext = GlBase.jsManager.createContext(canvas)
-            gl = glslContext
-            QuadPreview(glslContext, canvas.width, canvas.height) {
-                preRenderHook.current()
-            }
-        }
+        val preview = shaderType.shaderPreviewBootstrapper.bootstrap(
+            canvas, appContext.webClient.model, preRenderHook
+        )
+        gl = preview.renderEngine.gl
 
         val intersectionObserver = IntersectionObserver { entries ->
             if (entries.any { it.isIntersecting }) {
