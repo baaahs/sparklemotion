@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">ShaderRefactor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor.ShaderRefactor$<init>(baaahs.show.mutable.EditingShader, acex.T$13, kotlin.Function1((baaahs.ui.Prompt, kotlin.Unit)), kotlin.Function0((kotlin.Unit)))/editingShader">editingShader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.mutable/-editing-shader/index.html"><span class="identifier">EditingShader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.app.ui.editor.ShaderRefactor$<init>(baaahs.show.mutable.EditingShader, acex.T$13, kotlin.Function1((baaahs.ui.Prompt, kotlin.Unit)), kotlin.Function0((kotlin.Unit)))/aceEditor">aceEditor</span><span class="symbol">:</span>&nbsp;<a href="../../acex/-ace-editor.html"><span class="identifier">AceEditor</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.app.ui.editor.ShaderRefactor$<init>(baaahs.show.mutable.EditingShader, acex.T$13, kotlin.Function1((baaahs.ui.Prompt, kotlin.Unit)), kotlin.Function0((kotlin.Unit)))/prompt">prompt</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">prompt</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-prompt/index.html"><span class="identifier">Prompt</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.app.ui.editor.ShaderRefactor$<init>(baaahs.show.mutable.EditingShader, acex.T$13, kotlin.Function1((baaahs.ui.Prompt, kotlin.Unit)), kotlin.Function0((kotlin.Unit)))/onChange">onChange</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">ShaderRefactor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor.ShaderRefactor$<init>(baaahs.show.mutable.EditingShader, acex.Editor, baaahs.app.ui.AppContext, kotlin.Function0((kotlin.Unit)))/editingShader">editingShader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.mutable/-editing-shader/index.html"><span class="identifier">EditingShader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.app.ui.editor.ShaderRefactor$<init>(baaahs.show.mutable.EditingShader, acex.Editor, baaahs.app.ui.AppContext, kotlin.Function0((kotlin.Unit)))/editor">editor</span><span class="symbol">:</span>&nbsp;<a href="../../acex/-editor/index.html"><span class="identifier">Editor</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.app.ui.editor.ShaderRefactor$<init>(baaahs.show.mutable.EditingShader, acex.Editor, baaahs.app.ui.AppContext, kotlin.Function0((kotlin.Unit)))/appContext">appContext</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.app.ui/-app-context/index.html"><span class="identifier">AppContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.app.ui.editor.ShaderRefactor$<init>(baaahs.show.mutable.EditingShader, acex.Editor, baaahs.app.ui.AppContext, kotlin.Function0((kotlin.Unit)))/onChange">onChange</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -30,6 +30,13 @@
 </td>
 <td>
 <code><span class="keyword">var </span><span class="identifier">extractionCandidate</span><span class="symbol">: </span><a href="../-extraction-candidate/index.html"><span class="identifier">ExtractionCandidate</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="selection-end-screen-position.html">selectionEndScreenPosition</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">selectionEndScreenPosition</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -68,13 +75,6 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">glslIllegalRegex</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-regex/index.html"><span class="identifier">Regex</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="glsl-number-class-name.html">glslNumberClassName</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">glslNumberClassName</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
 </tr>
 <tr>
 <td>
