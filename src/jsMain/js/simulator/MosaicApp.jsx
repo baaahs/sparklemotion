@@ -1,4 +1,3 @@
-import {hot} from 'react-hot-loader';
 import styles from './MosaicUI.scss';
 import React, {useContext, useEffect, useState} from 'react';
 import {Mosaic, MosaicWindow, MosaicZeroState} from 'react-mosaic-component';
@@ -114,4 +113,4 @@ const MosaicUI = (props) => {
   );
 };
 
-export default hot(module)(MosaicApp);
+export default MosaicApp;

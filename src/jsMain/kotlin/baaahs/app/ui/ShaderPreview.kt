@@ -29,6 +29,7 @@ import materialui.components.typography.typography
 import materialui.icon
 import materialui.icons.Icons
 import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.*
@@ -41,8 +42,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
     val toolchain = props.toolchain ?: appContext.toolchain
 
-    val canvas = ref<HTMLCanvasElement?> { null }
-    var gl by state<GlContext?> { null }
+    val canvasParent = ref<HTMLDivElement?> { null }
     var shaderPreview by state<ShaderPreview?> { null }
     var errorPopupAnchor by state<EventTarget?> { null }
     val preRenderHook = ref { {} }
@@ -50,27 +50,41 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val width = props.width ?: 150.px
     val height = props.height ?: 150.px
 
-    onMount(canvas.current) {
-        val canvasEl = canvas.current ?: return@onMount
+    val canvas = memo(props.previewShaderBuilder?.openShader?.shaderType) {
+        document.createElement("canvas").apply {
+                this.setAttribute("width", width.toString())
+                this.setAttribute("height", height.toString())
+            } as HTMLCanvasElement
+    }
+    var gl by state<GlContext?> { null }
 
+    onMount(canvasParent.current, canvas) {
+        canvasParent.current?.let { parent ->
+            parent.insertBefore(canvas, parent.firstChild)
+        }
+
+        withCleanup { canvasParent.current?.removeChild(canvas) }
+    }
+
+    onChange("shader type", canvas, props.previewShaderBuilder?.openShader?.shaderType) {
         val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
             // TODO: This is duplicating work that happens later in PreviewShaderBuilder, which is rotten.
             toolchain.openShader(props.shader!!).shaderType
         }
 
         val preview = if (shaderType == ProjectionShader) {
-            val canvas2d = canvasEl
+            val canvas2d = canvas
             val canvas3d = document.createElement("canvas") as HTMLCanvasElement
             val glslContext = GlBase.jsManager.createContext(canvas3d)
             gl = glslContext
 
-            ProjectionPreview(canvas2d, glslContext, canvasEl.width, canvasEl.height, appContext.webClient.model) {
+            ProjectionPreview(canvas2d, glslContext, canvas.width, canvas.height, appContext.webClient.model) {
                 preRenderHook.current()
             }
         } else {
-            val glslContext = GlBase.jsManager.createContext(canvasEl)
+            val glslContext = GlBase.jsManager.createContext(canvas)
             gl = glslContext
-            QuadPreview(glslContext, canvasEl.width, canvasEl.height) {
+            QuadPreview(glslContext, canvas.width, canvas.height) {
                 preRenderHook.current()
             }
         }
@@ -82,7 +96,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                 preview.stop()
             }
         }
-        intersectionObserver.observe(canvasEl)
+        intersectionObserver.observe(canvas)
 
         shaderPreview = preview
 
@@ -132,21 +146,19 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         }
     }
 
-    useResizeListener(canvas) {
+    useResizeListener(canvasParent) {
         // Tell Kotlin controller the window was resized
-        shaderPreview?.resize(canvas.current!!.width, canvas.current!!.height)
+        shaderPreview?.resize(
+            canvasParent.current!!.clientWidth,
+            canvasParent.current!!.clientHeight
+        )
     }
 
     styledDiv {
+        ref = canvasParent
         css { +ShaderPreviewStyles.container }
         css.width = width
         css.height = height
-
-        canvas {
-            ref = canvas
-            attrs.width = width.toString()
-            attrs.height = height.toString()
-        }
 
         when (builder?.state ?: ShaderBuilder.State.Unbuilt) {
             ShaderBuilder.State.Unbuilt,
