@@ -7,7 +7,7 @@ import baaahs.gl.openShader
 import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
-import baaahs.gl.render.ShaderPreview
+import baaahs.gl.preview.ShaderPreview
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
 import baaahs.ui.addObserver

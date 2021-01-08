@@ -1,7 +1,8 @@
-package baaahs.gl.render
+package baaahs.gl.preview
 
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.render.PreviewRenderEngine
 import baaahs.window
 
 class QuadPreview(
