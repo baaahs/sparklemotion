@@ -1,28 +1,26 @@
 package baaahs.app.ui.editor
 
-import acex.AceEditor
-import acex.Point
-import acex.Range
-import acex.Selection
+import acex.*
+import baaahs.app.ui.AppContext
 import baaahs.camelize
 import baaahs.gl.glsl.GlslType
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.Prompt
-import baaahs.ui.Styles
-import baaahs.ui.name
+import baaahs.ui.unaryPlus
 import kotlinext.js.jsObject
 
 class ShaderRefactor(
     private val editingShader: EditingShader,
-    private val aceEditor: AceEditor,
-    private val prompt: (prompt: Prompt) -> Unit,
+    private val editor: Editor,
+    private val appContext: AppContext,
     private val onChange: () -> Unit
 ) {
-    private val editor get() = aceEditor.editor
     private val session get() = editor.session
 
     var extractionCandidate: ExtractionCandidate? = null
     private var glslNumberMarker: Number? = null
+
+    var selectionEndScreenPosition: Pair<Int, Int>? = null
 
     fun onCursorChange(selection: Selection) {
         val session = selection.session
@@ -40,9 +38,12 @@ class ShaderRefactor(
 
         val priorExtractionCandidate = extractionCandidate
 
+        glslNumberMarker?.let { session.removeMarker(it) }
+        glslNumberMarker = null
+
         if (badCharBefore || badCharAfter || !looksLikeFloatOrInt) {
             extractionCandidate = null
-            glslNumberMarker?.let { session.removeMarker(it) }
+            selectionEndScreenPosition = null
         } else {
             val prevRange = extractionCandidate?.range
             if (prevRange == null ||
@@ -53,9 +54,13 @@ class ShaderRefactor(
                 extractionCandidate?.text != candidate
             ) {
                 val range = Range(cursor.row, start, cursor.row, end)
-                glslNumberMarker = session.addMarker(range, glslNumberClassName, "text", false)
+                glslNumberMarker = session.addMarker(
+                    range, +appContext.allStyles.appUiEditor.refactorMarker, "text", false)
 
                 extractionCandidate = ExtractionCandidate(range, candidate)
+                selectionEndScreenPosition = editor.renderer.textToScreenCoordinates(range.end.row, range.end.column).let {
+                    it.pageX.toInt() to it.pageY.toInt()
+                }
             }
         }
 
@@ -65,7 +70,7 @@ class ShaderRefactor(
     fun onExtract() {
         if (extractionCandidate == null) return
 
-        prompt(Prompt(
+        appContext.prompt(Prompt(
             "Extract Input Port",
             "Enter the name of the new port.",
             fieldLabel = "Input Port Name",
@@ -79,11 +84,11 @@ class ShaderRefactor(
                     "A port named \"$portId\" already exists."
                 } else null
             },
-            onSubmit = { name -> onExtractPart2(name) }
+            onSubmit = { name -> doExtract(name) }
         ))
     }
 
-    private fun onExtractPart2(portName: String) {
+    private fun doExtract(portName: String) {
         val uniformName = portName.camelize()
 
         extractionCandidate?.let { extr ->
@@ -113,7 +118,6 @@ class ShaderRefactor(
         val glslNumberRegex = Regex("[0-9.]")
         val glslIllegalRegex = Regex("[A-Za-z_]")
         val glslFloatOrIntRegex = Regex("^([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+|[0-9]+)$")
-        val glslNumberClassName = Styles.glslNumber.name
     }
 }
 

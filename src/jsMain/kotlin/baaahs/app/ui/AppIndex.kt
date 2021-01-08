@@ -45,14 +45,8 @@ import react.*
 import react.dom.code
 import react.dom.div
 import react.dom.p
-import styled.injectGlobal
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
-    onChange("global styles") {
-        injectGlobal(Styles.global.toString())
-        injectGlobal(baaahs.app.ui.controls.Styles.global.toString())
-    }
-
     val webClient = props.webClient
     observe(webClient)
 
@@ -95,8 +89,11 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
-    val themeStyles = myAppContext.allStyles.appUi
-    onChange("theme global styles", themeStyles) { injectGlobal(themeStyles.global.toString()) }
+    val allStyles = myAppContext.allStyles
+    onChange("global styles", allStyles) {
+        allStyles.injectGlobals()
+    }
+    val themeStyles = allStyles.appUi
 
     var appDrawerOpen by state { false }
     var layoutEditorDialogOpen by state { false }

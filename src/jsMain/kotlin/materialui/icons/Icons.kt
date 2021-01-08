@@ -39,6 +39,8 @@ external object Icons {
     val InsertDriveFile: Icon
     val Map: Icon
     val Menu: Icon
+    val MoreHoriz: Icon
+    val MoreVert: Icon
     val NotInterested: Icon
     val NotificationImportant: Icon
     val OpenInBrowser: Icon
