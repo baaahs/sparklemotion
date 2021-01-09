@@ -14,6 +14,23 @@ actual interface ShaderPreviewBootstrapper {
     ): ShaderPreview
 }
 
+actual object MovingHeadPreviewBootstrapper : ShaderPreviewBootstrapper {
+    override fun bootstrap(
+        visibleCanvas: HTMLCanvasElement,
+        model: Model,
+        preRenderHook: RMutableRef<() -> Unit>
+    ): ShaderPreview {
+        @Suppress("UnnecessaryVariable")
+        val canvas2d = visibleCanvas
+        val canvas3d = document.createElement("canvas") as HTMLCanvasElement
+        val glslContext = GlBase.jsManager.createContext(canvas3d)
+
+        return MovingHeadPreview(canvas2d, glslContext, canvas2d.width, canvas2d.height, model) {
+            preRenderHook.current.invoke()
+        }
+    }
+}
+
 actual object ProjectionPreviewBootstrapper : ShaderPreviewBootstrapper {
     override fun bootstrap(
         visibleCanvas: HTMLCanvasElement,

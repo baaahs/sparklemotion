@@ -3,8 +3,8 @@ package baaahs.gl.shader.type
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
+import baaahs.gl.preview.MovingHeadPreviewBootstrapper
 import baaahs.gl.preview.PreviewShaders
-import baaahs.gl.preview.QuadPreviewBootstrapper
 import baaahs.gl.preview.ShaderPreviewBootstrapper
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.core.MovingHeadParams
@@ -33,7 +33,7 @@ object MoverShader : ShaderType {
     """.trimIndent()
 
     override val shaderPreviewBootstrapper: ShaderPreviewBootstrapper
-        get() = QuadPreviewBootstrapper // TODO: Something else.
+        get() = MovingHeadPreviewBootstrapper
 
     override fun matches(shaderAnalysis: ShaderAnalysis): ShaderType.MatchLevel {
         return if (shaderAnalysis.outputIs(MovingHeadParams.contentType))
