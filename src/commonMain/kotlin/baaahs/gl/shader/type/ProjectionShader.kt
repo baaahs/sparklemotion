@@ -4,6 +4,8 @@ import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
 import baaahs.gl.preview.PreviewShaders
+import baaahs.gl.preview.ProjectionPreviewBootstrapper
+import baaahs.gl.preview.ShaderPreviewBootstrapper
 import baaahs.gl.shader.OpenShader
 import baaahs.ui.Icon
 
@@ -29,6 +31,9 @@ object ProjectionShader : ShaderType {
     """.trimIndent()
 
     override val injectUvCoordinateForPreview: Boolean get() = false
+
+    override val shaderPreviewBootstrapper: ShaderPreviewBootstrapper
+        get() = ProjectionPreviewBootstrapper
 
     override fun matches(shaderAnalysis: ShaderAnalysis): ShaderType.MatchLevel {
         return if (shaderAnalysis.signatureMatches(ContentType.XyzCoordinate, ContentType.UvCoordinate))

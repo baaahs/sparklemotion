@@ -1,6 +1,7 @@
-package baaahs.gl.render
+package baaahs.gl.preview
 
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.render.RenderEngine
 
 interface ShaderPreview {
     val renderEngine: RenderEngine

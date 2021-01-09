@@ -3,7 +3,9 @@ package baaahs.gl.shader.type
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
+import baaahs.gl.preview.MovingHeadPreviewBootstrapper
 import baaahs.gl.preview.PreviewShaders
+import baaahs.gl.preview.ShaderPreviewBootstrapper
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.core.MovingHeadParams
 import baaahs.ui.Icon
@@ -29,6 +31,9 @@ object MoverShader : ShaderType {
             params.colorWheel = 0.;
         }
     """.trimIndent()
+
+    override val shaderPreviewBootstrapper: ShaderPreviewBootstrapper
+        get() = MovingHeadPreviewBootstrapper
 
     override fun matches(shaderAnalysis: ShaderAnalysis): ShaderType.MatchLevel {
         return if (shaderAnalysis.outputIs(MovingHeadParams.contentType))
