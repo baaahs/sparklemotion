@@ -225,7 +225,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                     button {
                         +"Apply"
-                        attrs.disabled = !props.editableManager.isModified()
+                        attrs["disabled"] = !props.editableManager.isModified()
                         attrs.color = ButtonColor.primary
                         attrs.onClickFunction = handleApply
                     }

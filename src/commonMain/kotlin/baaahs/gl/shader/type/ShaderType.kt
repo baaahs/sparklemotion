@@ -4,6 +4,8 @@ import baaahs.app.ui.CommonIcons
 import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
 import baaahs.gl.preview.PreviewShaders
+import baaahs.gl.preview.QuadPreviewBootstrapper
+import baaahs.gl.preview.ShaderPreviewBootstrapper
 import baaahs.gl.shader.OpenShader
 import baaahs.show.mutable.MutableShader
 import baaahs.ui.Icon
@@ -13,6 +15,7 @@ interface ShaderType {
     val icon: Icon
     val template: String
     val injectUvCoordinateForPreview: Boolean get() = true
+    val shaderPreviewBootstrapper: ShaderPreviewBootstrapper
 
     fun newShaderFromTemplate(): MutableShader {
         return MutableShader("Untitled $title Shader", template)
@@ -38,6 +41,8 @@ interface ShaderType {
         override val title: String get() = "Unknown"
         override val icon: Icon get() = CommonIcons.UnknownShader
         override val template: String get() = error("n/a")
+        override val shaderPreviewBootstrapper: ShaderPreviewBootstrapper
+            get() = QuadPreviewBootstrapper // TODO: Something else, what?
 
         override fun matches(shaderAnalysis: ShaderAnalysis): MatchLevel = MatchLevel.NoMatch
 

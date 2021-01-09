@@ -1,4 +1,4 @@
-package baaahs.gl.render
+package baaahs.gl.preview
 
 import baaahs.fixtures.DeviceTypeRenderPlan
 import baaahs.fixtures.Fixture
@@ -6,7 +6,7 @@ import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.gl.GlBase
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.preview.ProjectionPreviewDevice
+import baaahs.gl.render.ModelRenderEngine
 import baaahs.model.Model
 import baaahs.window
 import org.w3c.dom.CanvasRenderingContext2D
