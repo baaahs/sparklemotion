@@ -7,7 +7,6 @@ import baaahs.gl.testToolchain
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
-import baaahs.model.Model
 import baaahs.models.SheepModel
 import baaahs.show.SampleData
 import baaahs.show.mutable.MutableShow
@@ -25,8 +24,8 @@ import kotlin.coroutines.CoroutineContext
 @InternalCoroutinesApi
 object StageManagerSpec : Spek({
     describe<StageManager> {
-        val panel17 = SheepModel.Panel("17")
-        val model = SheepModel().apply { surfaces = listOf(panel17) } as Model
+        val panel17 by value { SheepModel.Panel("17") }
+        val model by value { ModelForTest(listOf(panel17)) }
 
         val plugins by value { testPlugins() }
         val fakeFs by value { FakeFs() }

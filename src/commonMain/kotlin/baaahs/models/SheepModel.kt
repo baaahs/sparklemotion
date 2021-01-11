@@ -5,12 +5,19 @@ import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.getResource
 import baaahs.model.MovingHead
+import baaahs.model.ObjLoader
 import baaahs.model.ObjModel
+import baaahs.util.Logger
 import kotlin.math.PI
 
-class SheepModel : ObjModel("baaahs-model.obj") {
+class SheepModel : ObjModel(ObjLoader.loadResource("baaahs-model.obj")) {
     override val name: String = "BAAAHS"
-    private val pixelsPerPanel = hashMapOf<String, Int>()
+
+    private val pixelsPerPanel =
+        getResource("baaahs-panel-info.txt")
+            .split("\n")
+            .map { it.split(Regex("\\s+")) }
+            .associate { it[0] to it[1].toInt() * 60 }
 
     private val wallEyedness = (0.1f * PI / 2).toFloat()
 
@@ -31,15 +38,6 @@ class SheepModel : ObjModel("baaahs-model.obj") {
         )
     )
 
-    override fun load() {
-        getResource("baaahs-panel-info.txt")
-            .split("\n")
-            .map { it.split(Regex("\\s+")) }
-            .forEach { pixelsPerPanel[it[0]] = it[1].toInt() * 60 }
-
-        super.load()
-    }
-
     override fun createSurface(name: String, faces: List<Face>, lines: List<Line>): Surface {
         val expectedPixelCount = pixelsPerPanel[name]
         if (expectedPixelCount == null) {
@@ -49,6 +47,8 @@ class SheepModel : ObjModel("baaahs-model.obj") {
     }
 
     companion object {
+        private val logger = Logger<SheepModel>()
+
         fun Panel(name: String) = Surface(name, name, PixelArrayDevice, null, emptyList(), emptyList())
     }
 }

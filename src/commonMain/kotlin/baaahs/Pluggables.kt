@@ -17,7 +17,7 @@ object Pluggables {
             "SuiGeneris" -> SuiGenerisModel()
             "BAAAHS" -> SheepModel()
             else -> throw IllegalArgumentException("unknown model \"$name\"")
-        }.apply { load() }
+        }
     }
 
     // TODO: not this

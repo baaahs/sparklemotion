@@ -70,7 +70,7 @@ abstract class Model : ModelInfo {
 
     data class Line(val vertices: List<Vector3F>)
 
-    class Face(
+    data class Face(
         private val allVertices: List<Vector3F>,
         val vertexA: Int,
         val vertexB: Int,
