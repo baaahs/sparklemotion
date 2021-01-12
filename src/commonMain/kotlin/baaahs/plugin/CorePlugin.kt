@@ -258,7 +258,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
 
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                        val modelInfo = showPlayer.modelInfo
+                        val modelInfo = showPlayer.model
                         val center by lazy { modelInfo.center }
                         val extents by lazy { modelInfo.extents }
 

@@ -2,17 +2,18 @@ package baaahs.shows
 
 import baaahs.Gadget
 import baaahs.ShowPlayer
+import baaahs.TestModel
 import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.testToolchain
-import baaahs.model.ModelInfo
+import baaahs.model.Model
 import baaahs.show.DataSource
 import baaahs.show.Shader
 
 class FakeShowPlayer(
-    override val modelInfo: ModelInfo = ModelInfo.Empty,
+    override val model: Model = TestModel,
     override val toolchain: Toolchain = testToolchain
 ) : ShowPlayer {
     private val shaders = mutableMapOf<Shader, OpenShader>()

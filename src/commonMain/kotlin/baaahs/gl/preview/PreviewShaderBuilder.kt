@@ -13,7 +13,7 @@ import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.RenderEngine
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
-import baaahs.model.ModelInfo
+import baaahs.model.Model
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
@@ -60,7 +60,7 @@ interface ShaderBuilder : IObservable {
 class PreviewShaderBuilder(
     override val shader: Shader,
     private val toolchain: Toolchain,
-    private val modelInfo: ModelInfo,
+    private val model: Model,
     private val coroutineScope: CoroutineScope = GlobalScope
 ) : Observable(), ShaderBuilder {
     override var state: ShaderBuilder.State =
@@ -143,7 +143,7 @@ class PreviewShaderBuilder(
         notifyChanged()
 
         coroutineScope.launch {
-            val showPlayer = object : BaseShowPlayer(toolchain, modelInfo) {
+            val showPlayer = object : BaseShowPlayer(toolchain, model) {
                 override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
                     mutableGadgets.add(ShaderBuilder.GadgetPreview(id, gadget, controlledDataSource))
                     super.registerGadget(id, gadget, controlledDataSource)

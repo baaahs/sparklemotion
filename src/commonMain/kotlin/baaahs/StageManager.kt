@@ -10,7 +10,7 @@ import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.Storage
-import baaahs.model.ModelInfo
+import baaahs.model.Model
 import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.buildEmptyShow
@@ -31,9 +31,9 @@ class StageManager(
     private val storage: Storage,
     private val fixtureManager: FixtureManager,
     private val clock: Clock,
-    modelInfo: ModelInfo,
+    model: Model,
     private val coroutineContext: CoroutineContext
-) : BaseShowPlayer(toolchain, modelInfo) {
+) : BaseShowPlayer(toolchain, model) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
     private val gadgets: MutableMap<String, GadgetInfo> = mutableMapOf()

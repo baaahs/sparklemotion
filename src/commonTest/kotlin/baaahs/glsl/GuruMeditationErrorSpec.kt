@@ -12,7 +12,7 @@ import org.spekframework.spek2.Spek
 object GuruMeditationErrorSpec : Spek({
     describe<GuruMeditationError> {
         val gl by value { FakeGlContext(FakeKgl()) }
-        val guruMeditationError by value { GuruMeditationError(PixelArrayDevice) }
+        val guruMeditationError by value { GuruMeditationError(PixelArrayDevice, model) }
 
         it("should create a RenderPlan") {
             val rootNode = guruMeditationError.linkedPatch.rootNode as LinkedShaderInstance
