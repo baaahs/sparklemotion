@@ -14,6 +14,8 @@ object DistortionShader : ShaderType {
 
     override val icon: Icon = CommonIcons.DistortionShader
 
+    override val displayOrder: Float = 0.5f
+
     override val template: String = """
         uniform float scale; // @@Slider min=0.25 max=4 default=1
 

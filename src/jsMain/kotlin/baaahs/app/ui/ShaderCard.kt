@@ -50,7 +50,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
 
         cardHeader {
             attrs.avatar {
-                avatar { openShader.shaderType.icon }
+                avatar { icon(openShader.shaderType.icon) }
             }
             attrs.title { +shader.title }
 //                                attrs.subheader { +"${shader.type.name} Shader" }

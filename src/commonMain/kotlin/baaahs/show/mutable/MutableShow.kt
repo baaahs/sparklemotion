@@ -430,10 +430,6 @@ data class MutableShaderInstance(
             } == true
         }
     }
-
-    companion object {
-        val defaultOrder = compareBy<MutableShaderInstance> { it.mutableShader.title }
-    }
 }
 
 
