@@ -7,8 +7,13 @@ import baaahs.gl.shader.OpenShader
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePort
+import baaahs.show.mutable.MutableShader
 
-fun Toolchain.openShader(shader: Shader): OpenShader = openShader(analyze(shader))
+fun Toolchain.openShader(shader: Shader): OpenShader =
+    openShader(analyze(shader))
+
+fun Toolchain.openShader(mutableShader: MutableShader): OpenShader =
+    openShader(analyze(mutableShader.build()))
 
 fun Toolchain.autoWire(
     vararg shaders: Shader,

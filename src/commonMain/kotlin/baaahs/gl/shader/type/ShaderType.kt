@@ -13,6 +13,7 @@ import baaahs.ui.Icon
 interface ShaderType {
     val title: String
     val icon: Icon
+    val displayOrder: Float
     val template: String
     val injectUvCoordinateForPreview: Boolean get() = true
     val shaderPreviewBootstrapper: ShaderPreviewBootstrapper
@@ -40,6 +41,7 @@ interface ShaderType {
     object Unknown : ShaderType {
         override val title: String get() = "Unknown"
         override val icon: Icon get() = CommonIcons.UnknownShader
+        override val displayOrder: Float = Float.MAX_VALUE
         override val template: String get() = error("n/a")
         override val shaderPreviewBootstrapper: ShaderPreviewBootstrapper
             get() = QuadPreviewBootstrapper // TODO: Something else, what?
