@@ -15,6 +15,8 @@ object MoverShader : ShaderType {
 
     override val icon: Icon = CommonIcons.None
 
+    override val displayOrder: Float = 5f
+
     /**language=glsl*/
     override val template: String = """
         struct MovingHeadParams {

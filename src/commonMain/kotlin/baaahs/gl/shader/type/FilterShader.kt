@@ -14,6 +14,8 @@ object FilterShader : ShaderType {
 
     override val icon: Icon = CommonIcons.FilterShader
 
+    override val displayOrder: Float = 1.5f
+
     override val template: String = """
         // @return color
         // @param inColor color
