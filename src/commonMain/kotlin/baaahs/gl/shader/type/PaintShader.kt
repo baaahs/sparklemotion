@@ -14,6 +14,8 @@ object PaintShader : ShaderType {
 
     override val icon: Icon = CommonIcons.PaintShader
 
+    override val displayOrder: Float = 1f
+
     override val template: String = """
         // @return color
         // @param uvIn uv-coordinate

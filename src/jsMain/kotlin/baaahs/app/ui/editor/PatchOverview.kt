@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderCard
+import baaahs.gl.openShader
 import baaahs.gl.shader.type.ShaderType
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
@@ -31,6 +32,7 @@ import react.dom.div
 val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
     val appContext = useContext(appContext)
     val styles = EditableStyles
+    val toolchain = props.editableManager.session!!.toolchain
 
     val handleShaderSelect: CacheBuilder<MutableShaderInstance, () -> Unit> =
         CacheBuilder {
@@ -64,14 +66,20 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
 
     div(+EditableStyles.patchOverview) {
         props.mutablePatch.mutableShaderInstances
-            .sortedWith(MutableShaderInstance.defaultOrder)
-            .forEach { mutableShaderInstance ->
+            .map { it to toolchain.openShader(it.mutableShader) }
+            .sortedWith(
+                compareBy(
+                    { (_, openShader) -> openShader.shaderType.displayOrder },
+                    { (_, openShader) -> openShader.title }
+                )
+            )
+            .forEach { (mutableShaderInstance, _) ->
                 shaderCard {
                     key = mutableShaderInstance.id
                     attrs.mutableShaderInstance = mutableShaderInstance
                     attrs.onSelect = handleShaderSelect[mutableShaderInstance]
                     attrs.onDelete = handleShaderDelete[mutableShaderInstance]
-                    attrs.toolchain = props.editableManager.session!!.toolchain
+                    attrs.toolchain = toolchain
                 }
             }
 

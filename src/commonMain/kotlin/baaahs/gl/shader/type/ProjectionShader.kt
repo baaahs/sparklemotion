@@ -14,6 +14,8 @@ object ProjectionShader : ShaderType {
 
     override val icon: Icon = CommonIcons.ProjectionShader
 
+    override val displayOrder: Float = 0f
+
     override val template: String = """
         struct ModelInfo {
             vec3 center;
