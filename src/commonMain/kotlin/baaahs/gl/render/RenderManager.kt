@@ -8,6 +8,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedPatch
+import baaahs.glsl.GuruMeditationError
 import baaahs.model.Model
 import baaahs.util.Logger
 
@@ -45,6 +46,10 @@ class RenderManager(
                 logger.debug { "No render plan for ${deviceType.title}" }
             }
         }
+    }
+
+    fun guruMeditationError(deviceType: DeviceType, feedResolver: FeedResolver): GlslProgram {
+        return compile(deviceType, GuruMeditationError(deviceType, model).linkedPatch, feedResolver)
     }
 
     companion object {

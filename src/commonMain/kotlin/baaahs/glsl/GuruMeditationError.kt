@@ -8,7 +8,7 @@ import baaahs.gl.Toolchain
 import baaahs.gl.autoWire
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
-import baaahs.model.ModelInfo
+import baaahs.model.Model
 import baaahs.only
 import baaahs.plugin.Plugins
 import baaahs.show.DataSource
@@ -17,7 +17,7 @@ import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 
-class GuruMeditationError(deviceType: DeviceType) {
+class GuruMeditationError(deviceType: DeviceType, model: Model) {
     private val shader = deviceType.errorIndicatorShader
     val linkedPatch: LinkedPatch
 
@@ -32,7 +32,7 @@ class GuruMeditationError(deviceType: DeviceType) {
             addPatch(mutablePatch)
         }.build(showBuilder)
 
-        val showPlayer = FakeShowPlayer(toolchain)
+        val showPlayer = FakeShowPlayer(toolchain, model)
         val openShow = ShowOpener(toolchain, show, showPlayer).openShow()
         val openPatch = openShow.patches.only("patch")
         linkedPatch = PatchResolver.buildPortDiagram(openShow.allDataSources, openPatch)
@@ -41,7 +41,7 @@ class GuruMeditationError(deviceType: DeviceType) {
     }
 }
 
-private class FakeShowPlayer(toolchain: Toolchain) : BaseShowPlayer(toolchain, ModelInfo.Empty) {
+private class FakeShowPlayer(toolchain: Toolchain, model: Model) : BaseShowPlayer(toolchain, model) {
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?): Unit = error("not implemented")
     override fun <T : Gadget> useGadget(id: String): T = error("not implemented")
 }

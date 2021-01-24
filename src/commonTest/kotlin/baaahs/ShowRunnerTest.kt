@@ -44,7 +44,7 @@ class ShowRunnerTest {
     private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
-    private val sheepModel = SheepModel().apply { surfaces = emptyList() }
+    private val sheepModel = ModelForTest(emptyList())
     private lateinit var stageManager: StageManager
     private lateinit var fixtureManager: FixtureManager
 

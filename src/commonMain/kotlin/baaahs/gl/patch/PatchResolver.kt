@@ -10,7 +10,6 @@ import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslException
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
-import baaahs.glsl.GuruMeditationError
 import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
 import baaahs.show.live.ActivePatchSet
@@ -75,9 +74,7 @@ class PatchResolver(
             e.source?.let { ShowRunner.logger.info { it } }
         }
 
-        renderManager.compile(
-            deviceType, GuruMeditationError(deviceType).linkedPatch, feedResolver
-        )
+        renderManager.guruMeditationError(deviceType, feedResolver)
     }
 
     companion object {

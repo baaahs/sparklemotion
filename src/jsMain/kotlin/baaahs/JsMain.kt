@@ -4,7 +4,6 @@ import baaahs.DeadCodeEliminationDefeater.noDCE
 import baaahs.browser.RealMediaDevices
 import baaahs.client.WebClient
 import baaahs.jsx.sim.MosaicApp
-import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
 import baaahs.sim.ui.WebClientWindow
@@ -50,8 +49,6 @@ fun main(args: Array<String>) {
         }
 
         "Mapper" -> {
-            (model as? ObjModel)?.load()
-
             val mapperUi = JsMapperUi();
             val mediaDevices = RealMediaDevices()
             val mapper = Mapper(network, model, mapperUi, mediaDevices, pinkyAddress, JsClock);

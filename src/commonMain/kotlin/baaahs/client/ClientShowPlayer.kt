@@ -2,15 +2,15 @@ package baaahs.client
 
 import baaahs.*
 import baaahs.gl.Toolchain
-import baaahs.model.ModelInfo
+import baaahs.model.Model
 import baaahs.show.DataSource
 import kotlinx.serialization.json.JsonElement
 
 class ClientShowPlayer(
     toolchain: Toolchain,
     private val pubSub: PubSub.Client,
-    modelInfo: ModelInfo
-) : BaseShowPlayer(toolchain, modelInfo) {
+    model: Model
+) : BaseShowPlayer(toolchain, model) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {

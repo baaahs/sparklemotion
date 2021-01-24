@@ -4,7 +4,7 @@ import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.withCache
-import baaahs.model.ModelInfo
+import baaahs.model.Model
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.Show
@@ -13,7 +13,7 @@ import baaahs.show.live.ShowOpener
 
 interface ShowPlayer {
     val toolchain: Toolchain
-    val modelInfo: ModelInfo
+    val model: Model
     val dataSources: List<DataSource>
 
     fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource? = null)
@@ -30,7 +30,7 @@ interface ShowPlayer {
 
 abstract class BaseShowPlayer(
     final override val toolchain: Toolchain,
-    final override val modelInfo: ModelInfo
+    final override val model: Model
 ) : ShowPlayer {
     private val feeds = mutableMapOf<DataSource, Feed>()
     private val shaders = mutableMapOf<Shader, OpenShader>()
