@@ -10,6 +10,7 @@ sealed class GlslType constructor(
     }
 
     private class OtherGlslType(glslLiteral: String) : GlslType(glslLiteral)
+
     class Struct(
         val name: String,
         val fields: Map<String, GlslType>,
@@ -76,6 +77,8 @@ sealed class GlslType constructor(
         }
     }
 
+    class GlslArrayType(memberGlslType: GlslType): GlslType("$memberGlslType[]")
+
     object Float : GlslType("float", "0.")
     object Vec2 : GlslType("vec2")
     object Vec3 : GlslType("vec3")
@@ -83,6 +86,8 @@ sealed class GlslType constructor(
     object Int : GlslType("int", "0")
     object Sampler2D : GlslType("sampler2D")
     object Void : GlslType("void")
+
+    val array: GlslType get() = GlslArrayType(this)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
