@@ -7,8 +7,8 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.DeviceTypeForTest
+import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
-import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.testToolchain
@@ -31,7 +31,7 @@ object FixtureManagerSpec : Spek({
         val modelEntities by value { emptyList<Model.Entity>() }
         val model by value { fakeModel(modelEntities) }
         val renderManager by value { RenderManager(model) { FakeGlContext() } }
-        val renderTargets by value { linkedMapOf<Fixture, RenderTarget>() }
+        val renderTargets by value { linkedMapOf<Fixture, FixtureRenderTarget>() }
         val fixtureManager by value { FixtureManager(renderManager, renderTargets) } // Maintain stable fixture order for test.
 
         context("when fixtures of multiple types have been added") {

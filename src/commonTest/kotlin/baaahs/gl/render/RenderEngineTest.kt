@@ -301,5 +301,5 @@ private val directXyProjection = Shader(
     """.trimIndent()
 )
 
-val RenderTarget.colors: ColorResultType.ColorResultView
+val FixtureRenderTarget.colors: ColorResultType.ColorResultView
     get() = PixelArrayDevice.getColorResults(this.resultViews)

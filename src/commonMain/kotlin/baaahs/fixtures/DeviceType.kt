@@ -5,7 +5,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
-import baaahs.gl.render.RenderTarget
+import baaahs.gl.render.FixtureRenderTarget
 import baaahs.glsl.Uniform
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
@@ -108,7 +108,7 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
     }
 
     fun scoped(
-        renderTarget: RenderTarget,
+        renderTarget: FixtureRenderTarget,
         callback: ((Int) -> Float)? = null
     ) = object : BufferView<Float> {
         val offset = renderTarget.pixel0Index
