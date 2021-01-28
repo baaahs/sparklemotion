@@ -3,6 +3,7 @@ package baaahs.fixtures
 import baaahs.getBang
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.PatchResolver
+import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.show.live.ActivePatchSet
@@ -12,7 +13,7 @@ import baaahs.util.Logger
 
 class FixtureManager(
     private val renderManager: RenderManager,
-    private val renderTargets: MutableMap<Fixture, RenderTarget> = hashMapOf()
+    private val renderTargets: MutableMap<Fixture, FixtureRenderTarget> = hashMapOf()
 ) {
     private val frameListeners: MutableList<() -> Unit> = arrayListOf()
     private val changedFixtures = mutableListOf<FixturesChanges>()
