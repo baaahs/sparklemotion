@@ -8,6 +8,7 @@ import baaahs.fixtures.RenderPlan
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslException
+import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.GuruMeditationError
@@ -18,52 +19,11 @@ import baaahs.show.live.OpenPatch
 import baaahs.util.Logger
 
 class PatchResolver(
-    private val dataSources: Map<String, DataSource>,
-    private val renderManager: RenderManager,
-    private val renderTargets: Collection<RenderTarget>,
-    private val activePatchSet: ActivePatchSet
-) {
-    val portDiagrams =
-        renderTargets
-            .groupBy { it.fixture.deviceType }
-            .mapValues { (deviceType, renderTargets) ->
-                val patchSetsByKey = mutableMapOf<String, PatchSet>()
-                val renderTargetsByKey = mutableMapOf<String, MutableList<RenderTarget>>()
-
-                renderTargets.forEach { renderTarget ->
-                    val patchSet = activePatchSet.activePatches
-                        .filter { patch -> patch.matches(renderTarget.fixture) }
-                    val key = patchSet.joinToString(":") { it.serial.toString(16) }
-
-                    patchSetsByKey[key] = patchSet
-                    renderTargetsByKey.getOrPut(key) { mutableListOf() }
-                        .add(renderTarget)
-                }
-
-                patchSetsByKey.map { (key, patchSet) ->
-                    PortDiagram(dataSources, patchSet) to
-                            renderTargetsByKey[key]!! as List<RenderTarget>
-                }
-            }
-
-    fun createRenderPlan(feedResolver: FeedResolver): RenderPlan {
-        return RenderPlan(
-            portDiagrams.mapValues { (deviceType, devicePortDiagrams) ->
-                val programsRenderPlans = devicePortDiagrams.map { (portDiagram, renderTargets) ->
-                    val linkedPatch = portDiagram.resolvePatch(ShaderChannel.Main, deviceType.resultContentType)
-                    val program = linkedPatch?.let {
-                        buildProgram(it, deviceType, feedResolver)
-                    }
-
-                    ProgramRenderPlan(program, renderTargets)
-                }
-
-                DeviceTypeRenderPlan(programsRenderPlans)
-            }
-        )
-    }
-
-    private fun buildProgram(
+    renderTargets: Collection<RenderTarget>,
+    activePatchSet: ActivePatchSet,
+    private val renderManager: RenderManager
+) : BasePatchResolver(renderTargets, activePatchSet) {
+    override fun buildProgram(
         linkedPatch: LinkedPatch,
         deviceType: DeviceType,
         feedResolver: FeedResolver
@@ -82,9 +42,67 @@ class PatchResolver(
 
     companion object {
         private val logger = Logger<PatchResolver>()
-        fun buildPortDiagram(dataSources: Map<String, DataSource>, vararg patches: OpenPatch) =
-            PortDiagram(dataSources, patches.toList())
+
+        fun buildPortDiagram(vararg patches: OpenPatch) = PortDiagram(patches.toList())
     }
+}
+
+abstract class BasePatchResolver(
+    renderTargets: Collection<RenderTarget>,
+    private val activePatchSet: ActivePatchSet
+) {
+    val portDiagrams =
+        renderTargets
+            .groupBy { it.fixture.deviceType }
+            .mapValues { (_, renderTargets) ->
+                val patchSetsByKey = mutableMapOf<String, PatchSet>()
+                val renderTargetsByKey = mutableMapOf<String, MutableList<RenderTarget>>()
+
+                renderTargets.forEach { renderTarget ->
+                    val patchSet = activePatchSet.activePatches
+                        .filter { patch -> patch.matches(renderTarget.fixture) }
+                    val key = patchSet.joinToString(":") { it.serial.toString(16) }
+
+                    patchSetsByKey[key] = patchSet
+                    renderTargetsByKey.getOrPut(key) { mutableListOf() }
+                        .add(renderTarget)
+                }
+
+                patchSetsByKey.map { (key, patchSet) ->
+                    PortDiagram(patchSet) to
+                            renderTargetsByKey[key]!! as List<RenderTarget>
+                }
+            }
+
+    fun createRenderPlan(
+        dataSources: Map<String, DataSource>,
+        feedResolver: FeedResolver
+    ): RenderPlan {
+        return RenderPlan(
+            portDiagrams.mapValues { (deviceType, devicePortDiagrams) ->
+                val programsRenderPlans = devicePortDiagrams.map { (portDiagram, renderTargets) ->
+                    val linkedPatch = portDiagram.resolvePatch(
+                        ShaderChannel.Main,
+                        deviceType.resultContentType,
+                        dataSources
+                    )
+                    val program = linkedPatch?.let {
+                        buildProgram(it, deviceType, feedResolver)
+                    }
+
+                    ProgramRenderPlan(program, renderTargets)
+                }
+
+                DeviceTypeRenderPlan(programsRenderPlans)
+            }
+        )
+    }
+
+    abstract fun buildProgram(
+        linkedPatch: LinkedPatch,
+        deviceType: DeviceType,
+        feedResolver: FeedResolver
+    ): GlslProgram
 }
 
 private typealias PatchSet = List<OpenPatch>

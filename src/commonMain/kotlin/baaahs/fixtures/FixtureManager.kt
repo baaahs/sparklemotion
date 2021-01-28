@@ -99,8 +99,9 @@ class FixtureManager(
 
             val elapsedMs = timeSync {
                 val patchResolution = PatchResolver(
-                    openShow.allDataSources, renderManager, renderTargets.values, activePatchSet)
-                currentRenderPlan = patchResolution.createRenderPlan { _, dataSource ->
+                    renderTargets.values, activePatchSet, renderManager
+                )
+                currentRenderPlan = patchResolution.createRenderPlan(openShow.allDataSources) { _, dataSource ->
                     openShow.feeds.getBang(dataSource, "data feed")
                 }
             }

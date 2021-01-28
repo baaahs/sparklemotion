@@ -35,8 +35,8 @@ class GuruMeditationError(deviceType: DeviceType) {
         val showPlayer = FakeShowPlayer(toolchain)
         val openShow = ShowOpener(toolchain, show, showPlayer).openShow()
         val openPatch = openShow.patches.only("patch")
-        linkedPatch = PatchResolver.buildPortDiagram(openShow.allDataSources, openPatch)
-            .resolvePatch(ShaderChannel.Main, deviceType.resultContentType)
+        linkedPatch = PatchResolver.buildPortDiagram(openPatch)
+            .resolvePatch(ShaderChannel.Main, deviceType.resultContentType, openShow.allDataSources)
             ?: error("Couldn't build guru meditation error patch.")
     }
 }
