@@ -72,7 +72,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val myAppContext = memo(theme) {
         jsObject<AppContext> {
-            this.showPlayer = props.showPlayer
+            this.showPlayer = props.stageManager
             this.dragNDrop = dragNDrop
             this.webClient = webClient
             this.plugins = webClient.plugins
@@ -362,7 +362,7 @@ external interface AppIndexProps : RProps {
     var id: String
     var webClient: WebClient.Facade
     var undoStack: UndoStack<ShowEditorState>
-    var showPlayer: ShowPlayer
+    var stageManager: ShowPlayer
 }
 
 fun RBuilder.appIndex(handler: RHandler<AppIndexProps>): ReactElement =
