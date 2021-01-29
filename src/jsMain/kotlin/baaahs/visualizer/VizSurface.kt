@@ -62,7 +62,11 @@ class SurfaceGeometry(surface: Model.Surface) {
 class VizSurface(val surfaceGeometry: SurfaceGeometry, val scene: Scene) {
     val name: String get() = surfaceGeometry.name
     private val lineMaterial = LineBasicMaterial().apply { color.set(0xaaaaaa) }
-    internal var faceMaterial = MeshBasicMaterial().apply { color.set(0x222222) }
+    var faceMaterial: Material = MeshBasicMaterial().apply { color.set(0x222222) }
+        set(value) {
+            mesh.material = value
+            field = value
+        }
     private val mesh = Mesh(surfaceGeometry.geometry, this.faceMaterial)
     private val lines: List<Line<*, *>>
     val panelNormal: Vector3 get() = surfaceGeometry.panelNormal
