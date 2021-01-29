@@ -56,7 +56,7 @@ class WebClient(
         facade.notifyChanged()
     }
 
-    private val showPlayer = ClientShowPlayer(toolchain, pubSub, model)
+    private val stageManager = ClientStageManager(toolchain, pubSub, model)
     private val showEditStateChannel =
         pubSub.subscribe(
             ShowEditorState.createTopic(toolchain.plugins, remoteFsSerializer)
@@ -121,7 +121,7 @@ class WebClient(
         val newShowState = showEditorState?.showState
         val newIsUnsaved = showEditorState?.isUnsaved ?: false
         val newFile = showEditorState?.file
-        val newOpenShow = newShow?.let { showPlayer.openShow(newShow, newShowState) }
+        val newOpenShow = newShow?.let { stageManager.openShow(newShow, newShowState) }
         openShow?.release()
         openShow = newOpenShow
         this.show = newShow
@@ -137,7 +137,7 @@ class WebClient(
             this.id = "Client Window"
             this.webClient = facade
             this.undoStack = this@WebClient.undoStack
-            this.showPlayer = this@WebClient.showPlayer
+            this.stageManager = this@WebClient.stageManager
         })
     }
 

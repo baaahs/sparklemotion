@@ -6,7 +6,7 @@ import baaahs.model.ModelInfo
 import baaahs.show.DataSource
 import kotlinx.serialization.json.JsonElement
 
-class ClientShowPlayer(
+class ClientStageManager(
     toolchain: Toolchain,
     private val pubSub: PubSub.Client,
     modelInfo: ModelInfo
