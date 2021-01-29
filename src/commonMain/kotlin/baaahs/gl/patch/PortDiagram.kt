@@ -7,13 +7,7 @@ import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.OpenPatch
 import baaahs.util.Logger
 
-class PortDiagram(
-    dataSources: Map<String, DataSource>,
-    val patches: List<OpenPatch>
-) {
-    private val dataSourceChannelLinks = dataSources.map { (id, dataSource) ->
-        (id to dataSource.contentType) to LiveShaderInstance.DataSourceLink(dataSource, id)
-    }.associate { it }
+class PortDiagram(val patches: List<OpenPatch>) {
     private val candidates: Map<Track, Candidates>
     private val resolvedNodes = hashMapOf<LiveShaderInstance, ProgramNode>()
 
@@ -44,9 +38,13 @@ class PortDiagram(
         this.candidates = candidates.mapValues { (_, entries) -> Candidates(entries) }
     }
 
-    fun resolvePatch(shaderChannel: ShaderChannel, contentType: ContentType): LinkedPatch? {
+    fun resolvePatch(
+        shaderChannel: ShaderChannel,
+        contentType: ContentType,
+        dataSources: Map<String, DataSource>
+    ): LinkedPatch? {
+        val resolver = Resolver(dataSources)
         val track = Track(shaderChannel, contentType)
-        val resolver = Resolver()
         val rootProgramNode = resolver.resolve(track)
 
         return if (rootProgramNode != null) {
@@ -94,7 +92,13 @@ class PortDiagram(
         }
     }
 
-    inner class Resolver {
+    inner class Resolver(
+        dataSources: Map<String, DataSource>
+    ) {
+        private val dataSourceChannelLinks = dataSources.map { (id, dataSource) ->
+            (id to dataSource.contentType) to LiveShaderInstance.DataSourceLink(dataSource, id)
+        }.associate { it }
+
         private val trackResolvers = mutableMapOf<Track, TrackResolver>()
         private val breadcrumbs = mutableListOf<Breadcrumb>()
         private val currentBreadcrumb get() = breadcrumbs.last()

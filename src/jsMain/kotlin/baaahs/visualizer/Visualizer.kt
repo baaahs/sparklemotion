@@ -44,6 +44,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
             }
         }
 
+    private val preRenderListeners = mutableListOf<() -> Unit>()
     private val frameListeners = mutableListOf<FrameListener>()
 
     private var controls: OrbitControls? = null
@@ -63,8 +64,6 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     private val raycaster = Raycaster()
     private var mouse: Vector2? = null
     private val sphere: Mesh<*, *>
-
-    private val rendererListeners = mutableListOf<() -> Unit>()
 
     private var vizPanels = mutableListOf<VizSurface>()
 
@@ -123,6 +122,14 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
     fun removeFrameListener(frameListener: FrameListener) {
         frameListeners.remove(frameListener)
+    }
+
+    fun addPreRenderListener(listener: () -> Unit) {
+        preRenderListeners.add(listener)
+    }
+
+    fun removePreRenderListener(listener: () -> Unit) {
+        preRenderListeners.remove(listener)
     }
 
     fun onMouseDown(event: MouseEvent) {
@@ -191,12 +198,13 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
         controls?.update()
 
+        preRenderListeners.forEach { it.invoke() }
+
         val startTime = clock.now()
         renderer.render(scene, camera)
         facade.framerate.elapsed((clock.now() - startTime).asMillis().toInt())
 
         frameListeners.forEach { f -> f.onFrameReady(scene, camera) }
-        rendererListeners.forEach { value -> value() }
     }
 
 // vector.applyMatrix(object.matrixWorld).project(camera) to get 2d x,y coord

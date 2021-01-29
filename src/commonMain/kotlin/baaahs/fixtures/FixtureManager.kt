@@ -3,6 +3,7 @@ package baaahs.fixtures
 import baaahs.getBang
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.PatchResolver
+import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.show.live.ActivePatchSet
@@ -12,7 +13,7 @@ import baaahs.util.Logger
 
 class FixtureManager(
     private val renderManager: RenderManager,
-    private val renderTargets: MutableMap<Fixture, RenderTarget> = hashMapOf()
+    private val renderTargets: MutableMap<Fixture, FixtureRenderTarget> = hashMapOf()
 ) {
     private val frameListeners: MutableList<() -> Unit> = arrayListOf()
     private val changedFixtures = mutableListOf<FixturesChanges>()
@@ -98,8 +99,9 @@ class FixtureManager(
 
             val elapsedMs = timeSync {
                 val patchResolution = PatchResolver(
-                    openShow.allDataSources, renderManager, renderTargets.values, activePatchSet)
-                currentRenderPlan = patchResolution.createRenderPlan { _, dataSource ->
+                    renderTargets.values, activePatchSet, renderManager
+                )
+                currentRenderPlan = patchResolution.createRenderPlan(openShow.allDataSources) { _, dataSource ->
                     openShow.feeds.getBang(dataSource, "data feed")
                 }
             }

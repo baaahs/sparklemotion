@@ -22,13 +22,13 @@ class ModelRenderEngine(
     private val deviceType: DeviceType,
     private val minTextureWidth: Int = 16
 ) : RenderEngine(gl) {
-    private val renderTargetsToAdd: MutableList<RenderTarget> = mutableListOf()
-    private val renderTargetsToRemove: MutableList<RenderTarget> = mutableListOf()
+    private val renderTargetsToAdd: MutableList<FixtureRenderTarget> = mutableListOf()
+    private val renderTargetsToRemove: MutableList<FixtureRenderTarget> = mutableListOf()
     var pixelCount: Int = 0
     var nextPixelOffset: Int = 0
     var nextRectOffset: Int = 0
 
-    private val renderTargets: MutableList<RenderTarget> = mutableListOf()
+    private val renderTargets: MutableList<FixtureRenderTarget> = mutableListOf()
     private var renderPlan: DeviceTypeRenderPlan? = null
 
     private val resultBuffers = gl.runInContext {
@@ -46,7 +46,7 @@ class ModelRenderEngine(
     // Workaround for compile error on case-insensitive FS:
     init { arrangement = gl.runInContext { Arrangement(0, emptyList()) } }
 
-    fun addFixture(fixture: Fixture): RenderTarget {
+    fun addFixture(fixture: Fixture): FixtureRenderTarget {
         if (fixture.deviceType != deviceType) {
             throw IllegalArgumentException(
                 "This RenderEngine can't accept ${fixture.deviceType} devices, only $deviceType."
@@ -58,7 +58,7 @@ class ModelRenderEngine(
             fbMaxPixWidth,
             fixture
         )
-        val renderTarget = RenderTarget(
+        val renderTarget = FixtureRenderTarget(
             fixture, nextRectOffset, rects, modelInfo, fixture.pixelCount, nextPixelOffset, resultBuffers
         )
         nextPixelOffset += fixture.pixelCount
@@ -68,7 +68,7 @@ class ModelRenderEngine(
         return renderTarget
     }
 
-    fun removeRenderTarget(renderTarget: RenderTarget) {
+    fun removeRenderTarget(renderTarget: FixtureRenderTarget) {
         renderTargetsToRemove.add(renderTarget)
     }
 
@@ -81,7 +81,7 @@ class ModelRenderEngine(
         engineFeed.maybeResizeAndPopulate(arrangement, renderTargets)
     }
 
-    private fun EngineFeed.maybeResizeAndPopulate(arrangement: Arrangement?, renderTargets: List<RenderTarget>) {
+    private fun EngineFeed.maybeResizeAndPopulate(arrangement: Arrangement?, renderTargets: List<FixtureRenderTarget>) {
         if (this is PerPixelEngineFeed) {
             resize(arrangement?.safeWidth ?: 1, arrangement?.safeHeight ?: 1) {
                 renderTargets.forEach { renderTarget ->
@@ -151,7 +151,7 @@ class ModelRenderEngine(
     val Int.bufHeight: Int get() = this / fbMaxPixWidth + 1
     val Int.bufSize: Int get() = bufWidth * bufHeight
 
-    inner class Arrangement(val pixelCount: Int, addedRenderTargets: List<RenderTarget>) {
+    inner class Arrangement(val pixelCount: Int, addedRenderTargets: List<FixtureRenderTarget>) {
         init {
             logger.info { "Creating ${deviceType::class.simpleName} arrangement with $pixelCount pixels" }
         }
@@ -201,6 +201,7 @@ class ModelRenderEngine(
 
                     quad.prepareToRender(program.vertexAttribLocation) {
                         programRenderPlan.renderTargets.forEach { renderTarget ->
+                            renderTarget as FixtureRenderTarget
                             renderTarget.usingProgram(program)
                             program.aboutToRenderFixture(renderTarget)
                             quad.renderRects(renderTarget)
@@ -208,6 +209,7 @@ class ModelRenderEngine(
                     }
                 } else {
                     programRenderPlan.renderTargets.forEach { renderTarget ->
+                        renderTarget as FixtureRenderTarget
                         renderTarget.usingProgram(null)
                     }
                 }
@@ -249,7 +251,7 @@ class ModelRenderEngine(
             return rects
         }
 
-        fun Quad.renderRects(renderTarget: RenderTarget) {
+        fun Quad.renderRects(renderTarget: FixtureRenderTarget) {
             renderTarget.rects.indices.forEach { i ->
                 this.renderRect(renderTarget.rect0Index + i)
             }
