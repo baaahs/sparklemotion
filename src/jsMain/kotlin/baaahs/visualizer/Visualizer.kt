@@ -1,6 +1,6 @@
 package baaahs.visualizer
 
-import baaahs.*
+import baaahs.JsMapperUi
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
@@ -8,6 +8,7 @@ import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.asMillis
 import baaahs.visualizer.movers.VizMovingHead
+import baaahs.window
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.MouseEvent
 import three.js.*
@@ -37,7 +38,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         set(isRunning) {
             field = isRunning
 
-            vizPanels.forEach { panel -> panel.faceMaterial.transparent = !isRunning }
+            vizPanels.forEach { it.mapperIsRunning = isRunning }
 
             if (isRunning) {
                 rotate = false
@@ -66,7 +67,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
     private val rendererListeners = mutableListOf<() -> Unit>()
 
-    private var vizPanels = mutableListOf<VizSurface>()
+    private var vizPanels = mutableListOf<FixtureViz>()
 
     init {
         scene.add(camera)
@@ -218,6 +219,10 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
     override fun mapperStatusChanged(isRunning: Boolean) {
         mapperIsRunning = isRunning
+    }
+
+    interface FixtureViz {
+        var mapperIsRunning: Boolean
     }
 
     interface FrameListener {
