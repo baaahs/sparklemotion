@@ -36,6 +36,7 @@ baaahs.api.ws
 baaahs.app.ui
 baaahs.app.ui.controls
 baaahs.app.ui.editor
+baaahs.app.ui.preview
 baaahs.browser
 baaahs.client
 baaahs.dmx

@@ -17,19 +17,38 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">ActivePatchSet</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.ActivePatchSet$<init>(kotlin.collections.List((baaahs.show.live.OpenPatch)))/activePatches">activePatches</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-open-patch/index.html"><span class="identifier">OpenPatch</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">ActivePatchSet</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.ActivePatchSet$<init>(kotlin.collections.List((baaahs.show.live.OpenPatch)), kotlin.collections.Map((kotlin.String, baaahs.show.DataSource)), kotlin.collections.Map((baaahs.show.DataSource, baaahs.gl.data.Feed)))/activePatches">activePatches</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-open-patch/index.html"><span class="identifier">OpenPatch</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.ActivePatchSet$<init>(kotlin.collections.List((baaahs.show.live.OpenPatch)), kotlin.collections.Map((kotlin.String, baaahs.show.DataSource)), kotlin.collections.Map((baaahs.show.DataSource, baaahs.gl.data.Feed)))/allDataSources">allDataSources</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.ActivePatchSet$<init>(kotlin.collections.List((baaahs.show.live.OpenPatch)), kotlin.collections.Map((kotlin.String, baaahs.show.DataSource)), kotlin.collections.Map((baaahs.show.DataSource, baaahs.gl.data.Feed)))/feeds">feeds</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.gl.data/-feed/index.html"><span class="identifier">Feed</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
-<h3>Properties</h3>
+<h3>Functions</h3>
 <table>
 <tbody>
 <tr>
 <td>
-<h4><a href="active-patches.html">activePatches</a></h4>
+<h4><a href="create-render-plan.html">createRenderPlan</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">activePatches</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-open-patch/index.html"><span class="identifier">OpenPatch</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">createRenderPlan</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.ActivePatchSet$createRenderPlan(baaahs.gl.render.RenderManager, kotlin.collections.Collection((baaahs.gl.render.FixtureRenderTarget)))/renderManager">renderManager</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.render/-render-manager/index.html"><span class="identifier">RenderManager</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.ActivePatchSet$createRenderPlan(baaahs.gl.render.RenderManager, kotlin.collections.Collection((baaahs.gl.render.FixtureRenderTarget)))/renderTargets">renderTargets</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gl.render/-fixture-render-target/index.html"><span class="identifier">FixtureRenderTarget</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.fixtures/-render-plan/index.html"><span class="identifier">RenderPlan</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="for-fixture.html">forFixture</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">forFixture</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.ActivePatchSet$forFixture(baaahs.fixtures.Fixture)/fixture">fixture</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.fixtures/-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-open-patch/index.html"><span class="identifier">OpenPatch</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-empty.html">Empty</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">Empty</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ActivePatchSet</span></a></code></td>
 </tr>
 </tbody>
 </table>
