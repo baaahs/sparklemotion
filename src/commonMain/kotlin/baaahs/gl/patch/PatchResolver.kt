@@ -59,8 +59,7 @@ abstract class BasePatchResolver(
                 val renderTargetsByKey = mutableMapOf<String, MutableList<RenderTarget>>()
 
                 renderTargets.forEach { renderTarget ->
-                    val patchSet = activePatchSet.activePatches
-                        .filter { patch -> patch.matches(renderTarget.fixture) }
+                    val patchSet = activePatchSet.forFixture(renderTarget.fixture)
                     val key = patchSet.joinToString(":") { it.serial.toString(16) }
 
                     patchSetsByKey[key] = patchSet
