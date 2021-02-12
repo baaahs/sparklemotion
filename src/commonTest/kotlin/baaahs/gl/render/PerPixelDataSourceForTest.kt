@@ -40,6 +40,7 @@ class PerPixelDataSourceForTest(val updateMode: UpdateMode) : DataSource {
         override val buffer: FloatsParamBuffer = FloatsParamBuffer("---", 1, gl)
 
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
+            renderTarget as FixtureRenderTarget
             counter++
             buffer.scoped(renderTarget) { pixelIndex ->
                 counter * 10 + pixelIndex

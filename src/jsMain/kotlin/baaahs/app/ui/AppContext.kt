@@ -1,6 +1,6 @@
 package baaahs.app.ui
 
-import baaahs.ShowPlayer
+import baaahs.client.ClientStageManager
 import baaahs.client.WebClient
 import baaahs.gl.Toolchain
 import baaahs.plugin.Plugins
@@ -18,7 +18,7 @@ val appContext = createContext<AppContext>()
  * No need to include them in React watch lists.
  */
 external interface AppContext {
-    var showPlayer: ShowPlayer
+    var showPlayer: ClientStageManager
     var dragNDrop: ReactBeautifulDragNDrop
     var webClient: WebClient.Facade
     var plugins: Plugins

@@ -1,12 +1,12 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.preview.ClientPreview
 import baaahs.jsx.useResizeListener
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenVisualizerControl
 import baaahs.ui.on
 import baaahs.ui.xComponent
-import baaahs.visualizer.SurfaceGeometry
 import materialui.components.card.card
 import materialui.components.paper.enums.PaperStyle
 import org.w3c.dom.Element
@@ -16,24 +16,20 @@ import react.*
 val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
     val appContext = useContext(appContext)
 
+    val clientPreview by state {
+        ClientPreview(appContext.webClient.model, appContext.showPlayer, appContext.clock)
+    }
+
     val rootEl = ref<Element>()
-    val visualizer by state {
-        val model = appContext.webClient.model
-        baaahs.visualizer.Visualizer(model, appContext.clock)
-            .also { viz ->
-                model.allSurfaces.forEach { surface ->
-                    val vizSurface = viz.addSurface(SurfaceGeometry(surface))
-                    // TODO: Bind this to renderer output.
-                }
+    clientPreview.visualizer.rotate = props.visualizerControl.rotate
 
-            }
-            .facade }
-    visualizer.rotate = props.visualizerControl.rotate
-
+    val visualizer = clientPreview.visualizer
     onMount {
         visualizer.container = rootEl.current as HTMLDivElement
+
         withCleanup {
             visualizer.container = null
+            clientPreview.detach()
         }
     }
 

@@ -59,10 +59,10 @@ class SurfaceGeometry(surface: Model.Surface) {
     }
 }
 
-class VizSurface(val surfaceGeometry: SurfaceGeometry, val scene: Scene) {
+class VizSurface(val surfaceGeometry: SurfaceGeometry, val scene: Scene) : Visualizer.FixtureViz {
     val name: String get() = surfaceGeometry.name
     private val lineMaterial = LineBasicMaterial().apply { color.set(0xaaaaaa) }
-    internal var faceMaterial = MeshBasicMaterial().apply { color.set(0x222222) }
+    private var faceMaterial = MeshBasicMaterial().apply { color.set(0x222222) }
     private val mesh = Mesh(surfaceGeometry.geometry, this.faceMaterial)
     private val lines: List<Line<*, *>>
     val panelNormal: Vector3 get() = surfaceGeometry.panelNormal
@@ -93,6 +93,13 @@ class VizSurface(val surfaceGeometry: SurfaceGeometry, val scene: Scene) {
             scene.add(line)
         }
     }
+
+    override var mapperIsRunning: Boolean = false
+        get() = field
+        set(isRunning) {
+            field = isRunning
+            faceMaterial.transparent = !isRunning
+        }
 
     fun getPixelLocationsInPanelSpace(): Array<Vector2>? {
         return vizPixels?.getPixelLocationsInPanelSpace(this)

@@ -1,6 +1,12 @@
 package baaahs.show.live
 
 import baaahs.*
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.RenderPlan
+import baaahs.gl.data.Feed
+import baaahs.gl.patch.PatchResolver
+import baaahs.gl.render.FixtureRenderTarget
+import baaahs.gl.render.RenderManager
 import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.mutable.MutableShow
@@ -49,7 +55,7 @@ class OpenShow(
         MutableShow(show).apply(block)
 
     fun activePatchSet(): ActivePatchSet {
-        val builder = ActivePatchSetBuilder()
+        val builder = ActivePatchSetBuilder(this)
         addTo(builder, 0)
         return builder.build()
     }
@@ -94,9 +100,30 @@ class OpenShow(
     }
 }
 
-data class ActivePatchSet(val activePatches: List<OpenPatch>)
+data class ActivePatchSet(
+    internal val activePatches: List<OpenPatch>,
+    private val allDataSources: Map<String, DataSource>,
+    private val feeds: Map<DataSource, Feed>
+) {
+    fun createRenderPlan(
+        renderManager: RenderManager,
+        renderTargets: Collection<FixtureRenderTarget>
+    ): RenderPlan {
+        val patchResolution = PatchResolver(renderTargets, this, renderManager)
+        return patchResolution.createRenderPlan(allDataSources) { _, dataSource ->
+            feeds.getBang(dataSource, "data feed")
+        }
+    }
 
-class ActivePatchSetBuilder {
+    fun forFixture(fixture: Fixture): List<OpenPatch> =
+        activePatches.filter { patch -> patch.matches(fixture) }
+
+    companion object {
+        val Empty = ActivePatchSet(emptyList(), emptyMap(), emptyMap())
+    }
+}
+
+class ActivePatchSetBuilder(private val openShow: OpenShow) {
     private val items = arrayListOf<Item>()
     private var nextSerial = 0
 
@@ -111,7 +138,9 @@ class ActivePatchSetBuilder {
                     .thenBy { it.layoutContainerId }
                     .thenBy { it.serial }
             ).map { it.patchHolder }
-                .flatMap { it.patches }
+                .flatMap { it.patches },
+            openShow.allDataSources,
+            openShow.feeds
         )
     }
 
