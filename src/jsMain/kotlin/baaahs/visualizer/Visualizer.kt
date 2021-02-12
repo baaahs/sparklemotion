@@ -45,6 +45,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
             }
         }
 
+    private val prerenderListeners = mutableListOf<() -> Unit>()
     private val frameListeners = mutableListOf<FrameListener>()
 
     private var controls: OrbitControls? = null
@@ -58,14 +59,11 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     }
     private val geom = Geometry()
 
-    private var obj: Object3D = Object3D()
     private val pointMaterial = PointsMaterial().apply { color.set(0xffffff) }
 
     private val raycaster = Raycaster()
     private var mouse: Vector2? = null
     private val sphere: Mesh<*, *>
-
-    private val rendererListeners = mutableListOf<() -> Unit>()
 
     private var vizPanels = mutableListOf<FixtureViz>()
 
@@ -118,6 +116,14 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         controls = null
     }
 
+    fun addPrerenderListener(callback: () -> Unit) {
+        prerenderListeners.add(callback)
+    }
+
+    fun removePrerenderListener(callback: () -> Unit) {
+        prerenderListeners.remove(callback)
+    }
+
     fun addFrameListener(frameListener: FrameListener) {
         frameListeners.add(frameListener)
     }
@@ -149,23 +155,26 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     }
 
     private fun startRender() {
-        geom.computeBoundingSphere()
-        this.obj = Points(geom, pointMaterial)
-        scene.add(obj)
-        val target = geom.boundingSphere!!.center.clone()
-        controls?.target = target
-        camera.lookAt(target)
+        pointAtModel()
 
         stopRendering = false
         render()
     }
 
+    private fun pointAtModel() {
+        geom.computeBoundingSphere()
+        scene.add(Points(geom, pointMaterial))
+        val target = geom.boundingSphere!!.center.clone()
+        controls?.target = target
+        camera.lookAt(target)
+    }
+
     fun render() {
         if (stopRendering) return
 
-        window.setTimeout(fun() {
-            window.requestAnimationFrame { render() }
-        }, REFRESH_DELAY)
+        requestAnimationFrame()
+
+        prerenderListeners.forEach { value -> value.invoke() }
 
         mouse?.let { mouseClick ->
             mouse = null
@@ -197,7 +206,12 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         facade.framerate.elapsed((clock.now() - startTime).asMillis().toInt())
 
         frameListeners.forEach { f -> f.onFrameReady(scene, camera) }
-        rendererListeners.forEach { value -> value() }
+    }
+
+    private fun requestAnimationFrame() {
+        window.setTimeout(fun() {
+            window.requestAnimationFrame { render() }
+        }, DEFAULT_REFRESH_DELAY)
     }
 
 // vector.applyMatrix(object.matrixWorld).project(camera) to get 2d x,y coord
@@ -247,11 +261,12 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
         val framerate = Framerate()
 
+        fun onAnimationFrame() = this@Visualizer.render()
         fun resize() = this@Visualizer.resize()
         fun onMouseDown(event: MouseEvent) = this@Visualizer.onMouseDown(event)
     }
 
     companion object {
-        private const val REFRESH_DELAY = 50 // ms
+        private const val DEFAULT_REFRESH_DELAY = 50 // ms
     }
 }

@@ -1,10 +1,10 @@
 package baaahs.app.ui
 
 import baaahs.ShowEditorState
-import baaahs.ShowPlayer
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layoutEditorDialog
+import baaahs.client.ClientStageManager
 import baaahs.client.WebClient
 import baaahs.gl.withCache
 import baaahs.io.Fs
@@ -362,7 +362,7 @@ external interface AppIndexProps : RProps {
     var id: String
     var webClient: WebClient.Facade
     var undoStack: UndoStack<ShowEditorState>
-    var stageManager: ShowPlayer
+    var stageManager: ClientStageManager
 }
 
 fun RBuilder.appIndex(handler: RHandler<AppIndexProps>): ReactElement =
