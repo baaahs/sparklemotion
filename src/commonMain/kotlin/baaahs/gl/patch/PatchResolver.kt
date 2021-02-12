@@ -56,20 +56,20 @@ abstract class BasePatchResolver(
             .groupBy { it.fixture.deviceType }
             .mapValues { (_, renderTargets) ->
                 val patchSetsByKey = mutableMapOf<String, PatchSet>()
-                val renderTargetsByKey = mutableMapOf<String, MutableList<RenderTarget>>()
+                val renderTargetsByPatchSetKey = mutableMapOf<String, MutableList<RenderTarget>>()
 
                 renderTargets.forEach { renderTarget ->
                     val patchSet = activePatchSet.forFixture(renderTarget.fixture)
                     val key = patchSet.joinToString(":") { it.serial.toString(16) }
 
                     patchSetsByKey[key] = patchSet
-                    renderTargetsByKey.getOrPut(key) { mutableListOf() }
+                    renderTargetsByPatchSetKey.getOrPut(key) { mutableListOf() }
                         .add(renderTarget)
                 }
 
                 patchSetsByKey.map { (key, patchSet) ->
                     PortDiagram(patchSet) to
-                            renderTargetsByKey[key]!! as List<RenderTarget>
+                            renderTargetsByPatchSetKey[key]!! as List<RenderTarget>
                 }
             }
 

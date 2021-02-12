@@ -10,8 +10,9 @@ import baaahs.util.Logger
 
 class FixtureManager(
     private val renderManager: RenderManager,
-    private val renderTargets: MutableMap<Fixture, FixtureRenderTarget> = hashMapOf()
+    initialRenderTargets: Map<Fixture, FixtureRenderTarget> = emptyMap()
 ) {
+    private val renderTargets: MutableMap<Fixture, FixtureRenderTarget> = initialRenderTargets.toMutableMap()
     private val frameListeners: MutableList<() -> Unit> = arrayListOf()
     private val changedFixtures = mutableListOf<FixturesChanges>()
     private var totalFixtures = 0
@@ -19,6 +20,7 @@ class FixtureManager(
     private var currentActivePatchSet: ActivePatchSet = ActivePatchSet.Empty
     private var activePatchSetChanged = false
     internal var currentRenderPlan: RenderPlan? = null
+        private set
 
     fun addFrameListener(callback: () -> Unit) {
         frameListeners.add(callback)

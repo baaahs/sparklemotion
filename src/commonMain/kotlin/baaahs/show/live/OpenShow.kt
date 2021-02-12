@@ -107,7 +107,7 @@ data class ActivePatchSet(
 ) {
     fun createRenderPlan(
         renderManager: RenderManager,
-        renderTargets: MutableCollection<FixtureRenderTarget>
+        renderTargets: Collection<FixtureRenderTarget>
     ): RenderPlan {
         val patchResolution = PatchResolver(renderTargets, this, renderManager)
         return patchResolution.createRenderPlan(allDataSources) { _, dataSource ->

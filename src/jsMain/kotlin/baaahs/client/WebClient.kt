@@ -3,7 +3,6 @@ package baaahs.client
 import baaahs.*
 import baaahs.app.ui.AppIndex
 import baaahs.app.ui.AppIndexProps
-import baaahs.gl.GlBase
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
@@ -25,6 +24,7 @@ import kotlinext.js.jsObject
 import kotlinx.serialization.modules.SerializersModule
 import react.ReactElement
 import react.createElement
+
 class WebClient(
     network: Network,
     pinkyAddress: Network.Address,
@@ -40,7 +40,6 @@ class WebClient(
         pubSub.addStateChangeListener(pubSubListener)
     }
 
-    private val glslContext = GlBase.jsManager.createContext()
     private val model = Pluggables.getModel()
 
     private var show: Show? = null
