@@ -8,6 +8,7 @@ import baaahs.gl.data.*
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
@@ -17,6 +18,7 @@ import baaahs.plugin.classSerializer
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
+import baaahs.util.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -119,14 +121,18 @@ class PixelLocationFeed(
         override val buffer = FloatsParamBuffer(id, 3, gl)
 
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
-            val pixelLocations = renderTarget.fixture.pixelLocations
-            buffer.scoped(renderTarget).also { view ->
-                for (pixelIndex in 0 until min(pixelLocations.size, renderTarget.pixelCount)) {
-                    val location = pixelLocations[pixelIndex]
-                    view[pixelIndex, 0] = location.x
-                    view[pixelIndex, 1] = location.y
-                    view[pixelIndex, 2] = location.z
+            if (renderTarget is FixtureRenderTarget) {
+                val pixelLocations = renderTarget.fixture.pixelLocations
+                buffer.scoped(renderTarget).also { view ->
+                    for (pixelIndex in 0 until min(pixelLocations.size, renderTarget.pixelCount)) {
+                        val location = pixelLocations[pixelIndex]
+                        view[pixelIndex, 0] = location.x
+                        view[pixelIndex, 1] = location.y
+                        view[pixelIndex, 2] = location.z
+                    }
                 }
+            } else {
+                logger.warn { "Attempted to set per-pixel data for a non-FixtureRenderTarget, but that's impossible!" }
             }
             Unit
         }
@@ -143,5 +149,9 @@ class PixelLocationFeed(
 
     override fun release() {
         refCounter.release()
+    }
+
+    companion object {
+        private val logger = Logger<PixelLocationFeed>()
     }
 }

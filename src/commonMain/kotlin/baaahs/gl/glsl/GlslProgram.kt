@@ -7,7 +7,6 @@ import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
-import baaahs.show.OutputPortRef
 import baaahs.show.UpdateMode
 import baaahs.util.Logger
 import com.danielgergely.kgl.Kgl
@@ -125,8 +124,6 @@ class GlslProgram(
 
     companion object {
         private val logger = Logger("GlslProgram")
-
-        val PixelColor = OutputPortRef("sm_result")
 
         val vertexShader = """
             precision lowp float;

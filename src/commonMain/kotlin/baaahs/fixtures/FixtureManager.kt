@@ -1,26 +1,26 @@
 package baaahs.fixtures
 
-import baaahs.getBang
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.patch.PatchResolver
+import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.show.live.ActivePatchSet
-import baaahs.show.live.OpenShow
 import baaahs.timeSync
 import baaahs.util.Logger
 
 class FixtureManager(
     private val renderManager: RenderManager,
-    private val renderTargets: MutableMap<Fixture, RenderTarget> = hashMapOf()
+    initialRenderTargets: Map<Fixture, FixtureRenderTarget> = emptyMap()
 ) {
+    private val renderTargets: MutableMap<Fixture, FixtureRenderTarget> = initialRenderTargets.toMutableMap()
     private val frameListeners: MutableList<() -> Unit> = arrayListOf()
     private val changedFixtures = mutableListOf<FixturesChanges>()
     private var totalFixtures = 0
 
-    private var currentActivePatchSet: ActivePatchSet = ActivePatchSet(emptyList())
+    private var currentActivePatchSet: ActivePatchSet = ActivePatchSet.Empty
     private var activePatchSetChanged = false
     internal var currentRenderPlan: RenderPlan? = null
+        private set
 
     fun addFrameListener(callback: () -> Unit) {
         frameListeners.add(callback)
@@ -88,7 +88,7 @@ class FixtureManager(
         }
     }
 
-    fun maybeUpdateRenderPlans(openShow: OpenShow): Boolean {
+    fun maybeUpdateRenderPlans(): Boolean {
         var remapFixtures = incorporateFixtureChanges()
 
         // Maybe build new shaders.
@@ -97,11 +97,7 @@ class FixtureManager(
             val activePatchSet = currentActivePatchSet
 
             val elapsedMs = timeSync {
-                val patchResolution = PatchResolver(
-                    openShow.allDataSources, renderManager, renderTargets.values, activePatchSet)
-                currentRenderPlan = patchResolution.createRenderPlan { _, dataSource ->
-                    openShow.feeds.getBang(dataSource, "data feed")
-                }
+                currentRenderPlan = activePatchSet.createRenderPlan(renderManager, renderTargets.values)
             }
 
             logger.info {

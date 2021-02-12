@@ -13,6 +13,12 @@ import baaahs.show.live.ShowOpener
 
 interface ShowPlayer {
     val toolchain: Toolchain
+
+    /**
+     * This is for [baaahs.plugin.CorePlugin.ModelInfoDataSource], but we should probably find
+     * a better way to get it. Don't add more uses.
+     */
+    @Deprecated("Get it some other way", level = DeprecationLevel.WARNING)
     val modelInfo: ModelInfo
     val dataSources: List<DataSource>
 

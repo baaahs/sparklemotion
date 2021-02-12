@@ -50,7 +50,7 @@ class ShowRunner(
             fixtureManager.activePatchSetChanged(openShow.activePatchSet())
         }
 
-        return fixtureManager.maybeUpdateRenderPlans(openShow)
+        return fixtureManager.maybeUpdateRenderPlans()
     }
 
     fun release() {
