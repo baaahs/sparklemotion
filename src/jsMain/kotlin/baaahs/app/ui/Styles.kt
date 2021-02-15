@@ -229,10 +229,6 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         height = 100.pct
     }
 
-    val buttons by css {
-        backgroundColor = Color.white.withAlpha(.75)
-    }
-
     val layoutControls by css {
         display = Display.inlineFlex
         flex()
