@@ -20,7 +20,6 @@ import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
 import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.iconbutton.enums.IconButtonEdge
-import materialui.components.iconbutton.enums.IconButtonStyle
 import materialui.components.iconbutton.iconButton
 import materialui.components.link.enums.LinkStyle
 import materialui.components.link.link
@@ -106,7 +105,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                         transition("opacity", duration = .5.s, timing = Timing.linear)
                     }
 
-                    iconButton(Styles.buttons on IconButtonStyle.root) {
+                    iconButton {
                         icon(Icons.Undo)
                         attrs["disabled"] = !undoStack.canUndo()
                         attrs.onClickFunction = handleUndo
@@ -114,7 +113,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                         typographyH6 { +"Undo" }
                     }
 
-                    iconButton(Styles.buttons on IconButtonStyle.root) {
+                    iconButton {
                         icon(Icons.Redo)
                         attrs["disabled"] = !undoStack.canRedo()
                         attrs.onClickFunction = handleRedo
@@ -123,13 +122,13 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     }
 
                     if (webClient.showFile == null) {
-                        iconButton(Styles.buttons on IconButtonStyle.root) {
+                        iconButton {
                             icon(Icons.FileCopy)
                             attrs.onClickFunction = props.onSaveShowAs.withEvent()
                             typographyH6 { +"Save As…" }
                         }
                     } else {
-                        iconButton(Styles.buttons on IconButtonStyle.root) {
+                        iconButton {
                             icon(Icons.Save)
                             attrs["disabled"] = !webClient.showIsModified
                             attrs.onClickFunction = props.onSaveShow.withEvent()
