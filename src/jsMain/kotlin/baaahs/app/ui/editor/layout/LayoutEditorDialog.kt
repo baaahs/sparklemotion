@@ -1,4 +1,4 @@
-package baaahs.app.ui.editor
+package baaahs.app.ui.editor.layout
 
 import ReactAce.Ace.reactAce
 import acex.AceEditor

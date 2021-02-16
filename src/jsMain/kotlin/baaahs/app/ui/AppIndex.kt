@@ -3,7 +3,7 @@ package baaahs.app.ui
 import baaahs.ShowEditorState
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.editableManagerUi
-import baaahs.app.ui.editor.layoutEditorDialog
+import baaahs.app.ui.editor.layout.layoutEditorDialog
 import baaahs.client.ClientStageManager
 import baaahs.client.WebClient
 import baaahs.gl.withCache
