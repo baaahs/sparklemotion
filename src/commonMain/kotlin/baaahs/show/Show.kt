@@ -22,7 +22,6 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class Show(
@@ -97,17 +96,6 @@ data class Surfaces(
         val AllSurfaces = Surfaces("All Surfaces", emptySet())
     }
 }
-
-@Serializable
-data class Layouts(
-    val panelNames: List<String> = emptyList(),
-    val map: Map<String, Layout> = emptyMap()
-)
-
-@Serializable
-data class Layout(
-    val rootNode: JsonObject
-)
 
 @Serializable
 data class Shader(
