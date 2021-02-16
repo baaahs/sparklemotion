@@ -6,6 +6,7 @@ import baaahs.ui.Icon
 @Suppress("PropertyName")
 interface PlatformIcons {
     val Add: Icon
+    val Download: Icon
 
     val Fixture: Icon
     val Patch: Icon

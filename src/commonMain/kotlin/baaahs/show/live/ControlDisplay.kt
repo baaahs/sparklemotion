@@ -9,6 +9,7 @@ import baaahs.show.mutable.MutableShow
 import baaahs.ui.DragNDrop
 import baaahs.ui.Draggable
 import baaahs.ui.DropTarget
+import baaahs.util.Logger
 
 class ControlDisplay(
     internal val show: OpenShow,
@@ -91,8 +92,13 @@ class ControlDisplay(
         }
 
         fun addControl(panelName: String, openControl: OpenControl, breadcrumbs: ArrayList<OpenPatchHolder>) {
-            byPanel.getBang(panelName, "panel")
-                .addControl(openControl, breadcrumbs)
+            val panel = byPanel[panelName]
+            if (panel != null) {
+                panel.addControl(openControl, breadcrumbs)
+            } else {
+                // TODO: This should probably show up as a show error.
+                logger.warn { "No panel named \"$panelName\" exists, so ${openControl.id} won't be visible." }
+            }
         }
 
         fun render(panelTitle: String, renderBucket: RenderBucket) {
@@ -261,6 +267,10 @@ class ControlDisplay(
     ) {
         val title: String
             get() = container.title
+    }
+
+    companion object {
+        private val logger = Logger<ControlDisplay>()
     }
 }
 

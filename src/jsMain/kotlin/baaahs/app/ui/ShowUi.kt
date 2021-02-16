@@ -15,7 +15,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 
     // TODO: Pick layout based on device characteristics.
     val currentLayoutName = "default"
-    val currentLayout = show.layouts.map[currentLayoutName] ?: error("no such layout $currentLayoutName")
+    val currentLayout = show.layouts.formats[currentLayoutName] ?: error("no such layout $currentLayoutName")
 
     var controlDisplay by state<ControlDisplay> { nuffin() }
     logger.info { "switch state is ${props.show.getEnabledSwitchState()}" }

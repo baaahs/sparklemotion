@@ -9,6 +9,7 @@ import baaahs.client.WebClient
 import baaahs.gl.withCache
 import baaahs.io.Fs
 import baaahs.show.SampleData
+import baaahs.show.mutable.MutableLayouts
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.util.JsClock
@@ -291,7 +292,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                     attrs.layouts = show.layouts
                                     attrs.onApply = { newLayouts ->
                                         val mutableShow = MutableShow(show).editLayouts {
-                                            copyFrom(newLayouts)
+                                            copyFrom(MutableLayouts(newLayouts))
                                         }
                                         myAppContext.webClient.onShowEdit(mutableShow)
                                     }

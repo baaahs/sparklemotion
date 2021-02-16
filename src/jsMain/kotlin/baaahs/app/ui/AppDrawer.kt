@@ -98,12 +98,13 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                 attrs.button = true
                 attrs.disabled = appContext.webClient.show == null
                 attrs.onClickFunction = handleDownloadShow
-                listItemIcon { icon(Icons.CloudDownload) }
+                listItemIcon { icon(CommonIcons.Download) }
                 listItemText { attrs.primary { +"Download Show" } }
             }
 
             listItem {
                 attrs.button = true
+                attrs.disabled = appContext.webClient.show == null
                 attrs.onClickFunction = props.onCloseShow.withEvent()
                 listItemIcon { icon(Icons.Close) }
                 listItemText { attrs.primary { +"Close" } }
@@ -112,6 +113,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
             divider {}
 
             listItem {
+                attrs.disabled = appContext.webClient.show == null
                 formControlLabel {
                     attrs.control {
                         switch {
@@ -125,7 +127,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
 
             listItem {
                 attrs.button = true
-                attrs.disabled = !props.editMode
+                attrs.disabled = appContext.webClient.show == null
                 attrs.onClickFunction = props.onLayoutEditorDialogToggle.withEvent()
                 listItemIcon { icon(Icons.Dashboard) }
                 listItemText { attrs.primary { +"Layout Editor" } }
