@@ -16,41 +16,6 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 object SampleData {
-    val stdLayout = buildJsonObject {
-        put("direction", "row")
-        put("splitPercentage", 70)
-
-        put("first", buildJsonObject {
-            put("direction", "column")
-            put("splitPercentage", 20)
-
-            put("first", "Scenes")
-
-            put("second", buildJsonObject {
-                put("direction", "column")
-                put("splitPercentage", 60)
-
-                put("first", "Backdrops")
-                put("second", "More Controls")
-            })
-        })
-
-        put("second", buildJsonObject {
-            put("direction", "column")
-            put("splitPercentage", 20)
-
-            put("first", "Preview")
-
-            put("second", buildJsonObject {
-                put("direction", "column")
-                put("splitPercentage", 60)
-
-                put("first", "Effects")
-                put("second", "Transition")
-            })
-        })
-    }
-
     val plugins = Plugins.safe(Plugins.dummyContext) +
             BeatLinkPlugin.Builder(BeatSource.None)
     val beatLinkPlugin = plugins.findPlugin<BeatLinkPlugin>()
@@ -171,9 +136,19 @@ object SampleData {
         .acceptSuggestedLinkOptions()
         .confirm()
 
-    val defaultLayout = Layout(stdLayout)
+    val defaultLayout = Layout(null, listOf(
+        Tab("Main",
+            columns = listOf("3fr", "2fr"),
+            rows = listOf("2fr", "5fr", "3fr"),
+            areas = listOf(
+                "Scenes", "Preview",
+                "Backdrops", "Controls",
+                "More Controls", "Transition"
+            ),
+        )
+    ))
     val layouts = Layouts(
-        listOf("Scenes", "Backdrops", "More Controls", "Preview", "Effects", "Transition"),
+        listOf("Scenes", "Backdrops", "More Controls", "Preview", "Controls", "Transition"),
         mapOf("default" to defaultLayout)
     )
 
@@ -194,7 +169,7 @@ object SampleData {
     val sampleShow: Show get() = MutableShow("Sample Show") {
         println("Initialize sampleShow!")
         editLayouts {
-            copyFrom(layouts)
+            copyFrom(MutableLayouts(layouts))
         }
 
         addPatch(uvShader)

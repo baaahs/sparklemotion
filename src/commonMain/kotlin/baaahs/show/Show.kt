@@ -7,11 +7,7 @@ import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.plugin.Plugins
-import baaahs.show.ButtonGroupControl.Direction
-import baaahs.show.mutable.MutableShaderChannel
-import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.MutableShowVisitor
-import baaahs.show.mutable.VisitationLog
+import baaahs.show.mutable.*
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -145,24 +141,18 @@ fun buildEmptyShow(): Show {
     return MutableShow("Untitled").apply {
         editLayouts {
             copyFrom(
-                Layouts(
-                    listOf("Scenes", "Patches", "More Controls", "Preview", "Controls"),
-                    mapOf("default" to SampleData.defaultLayout)
+                MutableLayouts(
+                    Layouts(
+                        listOf("Controls"),
+                        mapOf(
+                            "default" to Layout(
+                                null,
+                                listOf(Tab("Main", listOf("1fr"), listOf("1fr"), listOf("Controls")))
+                            )
+                        )
+                    )
                 )
             )
-        }
-
-        addButtonGroup(
-            "Scenes", "Scenes", Direction.Horizontal
-        ) {
-            addButton("Scene 1") {
-                addButtonGroup(
-                    "Backdrops", "Backdrops", Direction.Vertical
-                ) {
-                    addButton("All Dark") {
-                    }
-                }
-            }
         }
     }.getShow()
 }

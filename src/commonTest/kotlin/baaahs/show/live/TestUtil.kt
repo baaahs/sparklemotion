@@ -13,13 +13,9 @@ import baaahs.show.Layout
 import baaahs.show.Layouts
 import baaahs.show.Shader
 import baaahs.show.Show
-import baaahs.show.mutable.EditHandler
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutablePort
-import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.*
 import baaahs.ui.DragNDrop
 import baaahs.ui.DropTarget
-import kotlinx.serialization.json.buildJsonObject
 
 fun Toolchain.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {
     val unresolvedPatch = autoWire(shader)
@@ -89,8 +85,8 @@ fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
     return buf.trim().replace(Regex("\\s+\n"), "\n")
 }
 
-fun createLayouts(vararg panelNames: String): Layouts {
-    return Layouts(panelNames.toList(), mapOf("default" to Layout(buildJsonObject { })))
+fun createLayouts(vararg panelNames: String): MutableLayouts {
+    return MutableLayouts(Layouts(panelNames.toList(), mapOf("default" to Layout(null, emptyList()))))
 }
 
 fun MutableShow.addFixtureControls() {

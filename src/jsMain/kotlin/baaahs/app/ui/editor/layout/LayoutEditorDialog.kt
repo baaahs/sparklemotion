@@ -2,32 +2,46 @@ package baaahs.app.ui.editor.layout
 
 import ReactAce.Ace.reactAce
 import acex.AceEditor
+import baaahs.app.ui.appContext
 import baaahs.show.Layout
 import baaahs.show.Layouts
+import baaahs.show.mutable.MutableLayouts
+import baaahs.ui.*
 import baaahs.ui.Styles.previewBar
-import baaahs.ui.xComponent
 import baaahs.window
 import kotlinext.js.jsObject
+import kotlinx.css.Display
+import kotlinx.css.GridTemplateColumns
+import kotlinx.css.display
+import kotlinx.css.gridTemplateColumns
 import kotlinx.html.js.onClickFunction
-import kotlinx.serialization.json.*
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.dialog.dialog
+import materialui.components.dialog.enums.DialogStyle
 import materialui.components.dialogactions.dialogActions
 import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogcontenttext.dialogContentText
 import materialui.components.dialogtitle.dialogTitle
 import materialui.components.tab.tab
 import materialui.components.tabs.tabs
+import materialui.icon
+import materialui.icons.Icons
+import materialui.toggleButton
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.a
-import react.dom.code
-import react.dom.p
+import react.dom.div
 import styled.css
+import styled.inlineStyles
 import styled.styledDiv
 
 val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow") { props ->
+    val appContext = useContext(appContext)
+    val styles = appContext.allStyles.layoutEditor
+
     val aceEditor = ref<AceEditor>()
     val json = memo {
         Json {
@@ -35,21 +49,26 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
             prettyPrint = true
         }
     }
-    var panelNames by state {
-        props.layouts.map["default"]?.rootNode?.let { getPanelNames(it) }
-    }
+    val mutableLayouts by state { MutableLayouts(props.layouts) }
+    var panelNames by state { props.layouts.panelNames }
+    var showCode by state { false }
     var errorMessage by state<String?> { null }
     val changed = ref { false }
 
-    fun getLayoutJson(): JsonObject {
+    val currentFormat = "default"
+    val currentTabIndex = 0
+    val currentTab = mutableLayouts.formats[currentFormat]!!.tabs[currentTabIndex]
+
+    val formatsSerializer = MapSerializer(String.serializer(), Layout.serializer())
+    fun getLayoutsFromJson(): Map<String, Layout> {
         val layoutJson = aceEditor.current.editor.session.getDocument()
-        return json.parseToJsonElement(layoutJson.getValue()) as JsonObject
+        return json.decodeFromString(formatsSerializer, layoutJson.getValue())
     }
 
-    val checkLayout = baaahs.ui.useCallback {
-        if (changed.current) {
+    val checkLayout = useCallback {
+        if (showCode && changed.current) {
             errorMessage = try {
-                panelNames = getPanelNames(getLayoutJson())
+                panelNames = getLayoutsFromJson().getPanelNames().toList().sorted()
                 null
             } catch (e: Exception) {
                 e.message
@@ -63,68 +82,133 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         withCleanup { window.clearInterval(interval) }
     }
 
-    val handleApply = baaahs.ui.useCallback(props.onApply) { _: Event ->
-        val layoutJson = getLayoutJson()
-        val layouts = Layouts(
-            getPanelNames(layoutJson),
-            mapOf("default" to Layout(layoutJson))
-        )
-        props.onApply(layouts)
+    val handleApply = useCallback(props.onApply) { _: Event ->
+        if (showCode) {
+            val layoutsMap = getLayoutsFromJson()
+            val layouts = Layouts(
+                layoutsMap.getPanelNames().toList().sorted(),
+                layoutsMap
+            )
+            props.onApply(layouts)
+        } else {
+            props.onApply(mutableLayouts.build())
+        }
     }
+
+    val handleGridChange = handler("handleGridChange", handleApply) {
+        changed.current = true
+        props.onApply(mutableLayouts.build())
+    }
+
+    val handleShowCodeButton =
+        useCallback { _: Event -> showCode = !showCode }
 
     val handleClose =
-        baaahs.ui.useCallback(props.onClose) { _: Event, _: String -> props.onClose() }
+        useCallback(props.onClose) { _: Event, _: String -> props.onClose() }
 
     val handleCancel =
-        baaahs.ui.useCallback(props.onClose) { _: Event -> props.onClose() }
+        useCallback(props.onClose) { _: Event -> props.onClose() }
 
-    val jsonStr = props.layouts.map["default"]?.let {
-        json.encodeToString(JsonElement.serializer(), it.rootNode)
-    }
-
-
-    dialog {
+    dialog(DraggablePaper.handleClassName on DialogStyle.paper) {
         attrs.open = props.open
         attrs.onClose = handleClose
+        attrs.paperComponent(DraggablePaper::class)
 
-        dialogTitle { +"Edit Layout…" }
+        dialogTitle {
+            +"Edit Layout…"
+
+            toggleButton {
+                attrs["selected"] = showCode
+                attrs.onClickFunction = handleShowCodeButton
+                icon(Icons.Code)
+            }
+        }
 
         dialogContent {
             dialogContentText(null) {
-                +"Eventually there'll be tabs that allow you to provide different layouts for phones/tablets/etc."
-                p {
-                    +"See "
-                    a("https://github.com/nomcopter/react-mosaic") { code { +"nomcopter/react-mosaic" } }
-                    +" for clues about the format."
-                }
+                +"Eventually we'll support tabs, and different layouts for phones/tablets/etc."
             }
 
             styledDiv {
                 css { +previewBar }
 
-                +(errorMessage ?: "Panels: $panelNames")
+                +(errorMessage ?: "Panels: ${panelNames.joinToString(", ")}")
             }
 
-            tabs {
-                tab { attrs.label { +"Default" } }
-            }
+            if (showCode) {
+                val jsonStr = json.encodeToString(formatsSerializer, props.layouts.formats)
 
-            reactAce {
-                ref = aceEditor
-                attrs {
-                    mode = "glsl"
-                    theme = "tomorrow_night_bright"
-                    width = "100%"
-                    height = "30vh"
-                    showGutter = true
-                    this.onChange = { _, _ -> changed.current = true }
-                    defaultValue = jsonStr
-                    name = "LayoutEditorWindow"
-                    setOptions = jsObject {
-                        autoScrollEditorIntoView = true
+                reactAce {
+                    ref = aceEditor
+                    attrs {
+                        mode = "glsl"
+                        theme = "tomorrow_night_bright"
+                        width = "100%"
+                        height = "30vh"
+                        showGutter = true
+                        this.onChange = { _, _ -> changed.current = true }
+                        defaultValue = jsonStr
+                        name = "LayoutEditorWindow"
+                        setOptions = jsObject {
+                            autoScrollEditorIntoView = true
+                        }
+                        editorProps = jsObject {
+                            `$blockScrolling` = true
+                        }
                     }
-                    editorProps = jsObject {
-                        `$blockScrolling` = true
+                }
+            } else {
+                tabs {
+                    attrs.value = currentFormat
+
+                    tab {
+                        attrs.value = "default"
+                        attrs.label { +"Default" }
+                    }
+                }
+
+                div(+styles.editorGrid) {
+                    // grid holder
+                    inlineStyles {
+                        display = Display.grid
+                        gridTemplateColumns = GridTemplateColumns(
+                            MutableList(currentTab.columns.size + 1) { "1fr" }.joinToString(" ")
+                        )
+//                        gridTemplateAreas = GridTemplateAreas(areas.joinToString(" ") { "\"$it\"" })
+//                        gridTemplateColumns = GridTemplateColumns(currentTab.columns.joinToString(" "))
+//                        gridTemplateRows = GridTemplateRows(currentTab.rows.joinToString(" "))
+                    }
+
+                    (-1 until currentTab.rows.size).forEach { rowIndex ->
+                        (-1 until currentTab.columns.size).forEach { columnIndex ->
+                            if (rowIndex == -1 && columnIndex == -1) {
+                                // Empty cell at top-left.
+                                div {}
+                            } else if (rowIndex == -1) {
+                                // Cell along the top.
+                                layoutSizeCell {
+                                    attrs.key = "col$columnIndex"
+                                    attrs.dimen = currentTab.columns[columnIndex]
+                                    attrs.onChange = handleGridChange
+                                }
+                            } else if (columnIndex == -1) {
+                                // Cell along the left.
+                                layoutSizeCell {
+                                    attrs.key = "row$rowIndex"
+                                    attrs.dimen = currentTab.rows[rowIndex]
+                                    attrs.onChange = handleGridChange
+                                }
+                            } else {
+                                layoutAreaCell {
+                                    attrs.key = "area$rowIndex,$columnIndex"
+                                    attrs.layouts = mutableLayouts
+                                    attrs.tab = currentTab
+                                    attrs.columnIndex = columnIndex
+                                    attrs.rowIndex = rowIndex
+                                    attrs.onChange = handleGridChange
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -146,25 +230,14 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
     }
 }
 
-private fun MutableSet<String>.visitNode(json: JsonElement?) {
-    when (json) {
-        is JsonPrimitive -> {
-            if (!this.add(json.contentOrNull ?: error("null panel name"))) {
-                error("panel ${json.contentOrNull} appears twice")
+private fun Map<String, Layout>.getPanelNames(): Set<String> {
+    return mutableSetOf<String>().apply {
+        values.forEach { layout ->
+            layout.tabs.forEach { tab ->
+                addAll(tab.areas)
             }
         }
-        is JsonObject -> {
-            visitNode(json["first"])
-            visitNode(json["second"])
-        }
-        else -> error("unexpected json: $json")
     }
-}
-
-private fun getPanelNames(layoutJson: JsonElement): List<String> {
-    val newPanelNames = mutableSetOf<String>()
-    newPanelNames.visitNode(layoutJson)
-    return newPanelNames.toList().sorted()
 }
 
 external interface LayoutEditorDialogProps : RProps {
