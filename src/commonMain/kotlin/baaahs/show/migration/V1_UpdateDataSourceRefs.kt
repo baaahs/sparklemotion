@@ -1,7 +1,7 @@
 package baaahs.show.migration
 
 import baaahs.show.ShowMigrator
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
@@ -22,16 +22,18 @@ object V1_UpdateDataSourceRefs : ShowMigrator.Migration(1) {
         "baaahs.plugin.CorePlugin.ImageSource" to "baaahs.Core:Image"
     )
 
-    override fun apply(newJson: MutableMap<String, JsonElement>) {
-        newJson.mapObjsInDict("dataSources") { _, dataSource ->
-            val type = dataSource["type"]?.jsonPrimitive?.contentOrNull
-            if (type == "baaahs.plugin.CorePlugin.ModelInfoDataSource") {
-                dataSource.remove("structType")
-            }
+    override fun migrate(from: JsonObject): JsonObject {
+        return from.toMutableMap().apply {
+            mapObjsInDict("dataSources") { _, dataSource ->
+                val type = dataSource["type"]?.jsonPrimitive?.contentOrNull
+                if (type == "baaahs.plugin.CorePlugin.ModelInfoDataSource") {
+                    dataSource.remove("structType")
+                }
 
-            if (type != null) {
-                dataSourceTypeMap[type]?.let { dataSource["type"] = JsonPrimitive(it) }
+                if (type != null) {
+                    dataSourceTypeMap[type]?.let { dataSource["type"] = JsonPrimitive(it) }
+                }
             }
-        }
+        }.toJsonObj()
     }
 }

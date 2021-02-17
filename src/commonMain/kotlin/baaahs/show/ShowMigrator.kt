@@ -6,7 +6,8 @@ import baaahs.util.Logger
 import kotlinx.serialization.json.*
 
 object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
-    private const val currentVersion = 2
+    private val allMigrations = AllMigrations
+    private val currentVersion = allMigrations.maxOf { it.toVersion }
     private const val versionKey = "version"
 
     override fun transformDeserialize(element: JsonElement): JsonElement {
@@ -16,15 +17,17 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
             return element.toMutableMap()
                 .apply { remove(versionKey) }.toJsonObj()
 
-        val newJson = element.toMutableMap()
-        newJson.remove(versionKey)
+        var newJson = element
+            .toMutableMap().apply {
+                remove(versionKey)
+            }.toJsonObj()
 
-        AllMigrations.forEach { migration ->
+        allMigrations.forEach { migration ->
             if (fromVersion < migration.toVersion) {
                 logger.info {
                     "Migrating show from $fromVersion to ${migration.toVersion} (${migration::class.simpleName})."
                 }
-                migration.apply(newJson)
+                newJson = migration.migrate(newJson)
             }
         }
 
@@ -39,7 +42,7 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
     }
 
     abstract class Migration(val toVersion: Int) {
-        abstract fun apply(newJson: MutableMap<String, JsonElement>)
+        abstract fun migrate(from: JsonObject): JsonObject
     }
 
     private val logger = Logger<ShowMigrator>()

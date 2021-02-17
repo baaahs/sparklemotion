@@ -18,3 +18,7 @@ fun MutableMap<String, JsonElement>.mapObjsInDict(
 fun Map<String, JsonElement>.toJsonObj(): JsonObject = buildJsonObject {
     forEach { (k, v) -> put(k, v) }
 }
+
+fun MutableMap<String, JsonElement>.replaceJsonObj(name: String, block: (JsonObject) -> JsonElement) {
+    this[name] = block(this[name] as JsonObject)
+}
