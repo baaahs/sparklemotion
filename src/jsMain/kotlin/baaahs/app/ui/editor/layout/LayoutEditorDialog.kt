@@ -5,6 +5,7 @@ import acex.AceEditor
 import baaahs.app.ui.appContext
 import baaahs.show.Layout
 import baaahs.show.Layouts
+import baaahs.show.PanelConfig
 import baaahs.show.mutable.MutableLayouts
 import baaahs.ui.*
 import baaahs.ui.Styles.previewBar
@@ -50,7 +51,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         }
     }
     val mutableLayouts by state { MutableLayouts(props.layouts) }
-    var panelNames by state { props.layouts.panelNames }
+    var panelNames by state { props.layouts.panels.keys.toList() }
     var showCode by state { false }
     var errorMessage by state<String?> { null }
     val changed = ref { false }
@@ -86,7 +87,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         if (showCode) {
             val layoutsMap = getLayoutsFromJson()
             val layouts = Layouts(
-                layoutsMap.getPanelNames().toList().sorted(),
+                layoutsMap.getPanelNames().toList().sorted().associateWith { PanelConfig() },
                 layoutsMap
             )
             props.onApply(layouts)

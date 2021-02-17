@@ -43,7 +43,7 @@ object ControlDragNDropSpec : Spek({
         }
 
         val panelBuckets by value {
-            openShow.layouts.panelNames.associateWith { panelName ->
+            openShow.layouts.panels.mapValues { (panelName, _) ->
                 controlDisplay.renderBuckets(panelName)
             }
         }

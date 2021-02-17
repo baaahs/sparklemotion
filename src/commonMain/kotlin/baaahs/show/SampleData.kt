@@ -12,8 +12,6 @@ import baaahs.plugin.beatlink.BeatSource
 import baaahs.show.ButtonGroupControl.Direction.Horizontal
 import baaahs.show.ButtonGroupControl.Direction.Vertical
 import baaahs.show.mutable.*
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
 
 object SampleData {
     val plugins = Plugins.safe(Plugins.dummyContext) +
@@ -148,7 +146,8 @@ object SampleData {
         )
     ))
     val layouts = Layouts(
-        listOf("Scenes", "Backdrops", "More Controls", "Preview", "Controls", "Transition"),
+        listOf("Scenes", "Backdrops", "More Controls", "Preview", "Controls", "Transition")
+            .associateWith { PanelConfig() },
         mapOf("default" to defaultLayout)
     )
 

@@ -5,19 +5,19 @@ import baaahs.show.Layouts
 import baaahs.show.Tab
 
 class MutableLayouts(baseLayouts: Layouts) {
-    var panelNames = baseLayouts.panelNames.toMutableList()
+    var panels = baseLayouts.panels.toMutableMap()
     val formats = baseLayouts.formats.mapValues { (_, v) -> MutableLayout(v) }.toMutableMap()
 
     fun copyFrom(layouts: MutableLayouts) {
-        panelNames.clear()
-        panelNames.addAll(layouts.panelNames)
+        panels.clear()
+        panels.putAll(layouts.panels)
 
         formats.clear()
         formats.putAll(layouts.formats)
     }
 
     fun build(): Layouts {
-        return Layouts(panelNames, formats.mapValues { (_, v) -> v.build() })
+        return Layouts(panels, formats.mapValues { (_, v) -> v.build() })
     }
 }
 

@@ -20,8 +20,8 @@ object V3_UpdateLayouts : ShowMigrator.Migration(2) {
         return from.toMutableMap().apply {
             replaceJsonObj("layouts") {
                 buildJsonObject {
-                    put("panelNames", buildJsonArray {
-                        defaultPanels.forEach { add(it) }
+                    put("panels", buildJsonObject {
+                        defaultPanels.forEach { put(it, buildJsonObject { }) }
                     })
 
                     put("formats", buildJsonObject {

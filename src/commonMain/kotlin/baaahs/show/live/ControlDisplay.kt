@@ -3,6 +3,7 @@ package baaahs.show.live
 import baaahs.camelize
 import baaahs.getBang
 import baaahs.show.Layouts
+import baaahs.show.PanelConfig
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
@@ -79,7 +80,7 @@ class ControlDisplay(
     }
 
     inner class AllPanelBuckets(layouts: Layouts) {
-        private val byPanel = layouts.panelNames.associateWith { panelTitle -> PanelBuckets(panelTitle) }
+        private val byPanel = layouts.panels.mapValues { (title, panel) -> PanelBuckets(title, panel) }
         private val sections = mutableListOf<Section>()
         private var serialInt = 0
 
@@ -112,7 +113,8 @@ class ControlDisplay(
     }
 
     inner class PanelBuckets(
-        private val panelTitle: String
+        private val panelTitle: String,
+        panelConfig: PanelConfig
     ) {
         val byContainer =
             mapOf<OpenPatchHolder, PanelBucket>().toMutableMap()

@@ -9,10 +9,7 @@ import baaahs.gl.shader.type.ProjectionShader
 import baaahs.gl.shader.type.ShaderType
 import baaahs.gl.testToolchain
 import baaahs.plugin.CorePlugin
-import baaahs.show.Layout
-import baaahs.show.Layouts
-import baaahs.show.Shader
-import baaahs.show.Show
+import baaahs.show.*
 import baaahs.show.mutable.*
 import baaahs.ui.DragNDrop
 import baaahs.ui.DropTarget
@@ -71,7 +68,7 @@ fun OpenControl.fakeRender(): String {
 fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
     val buf = StringBuilder()
 
-    layouts.panelNames.forEach { panelName ->
+    layouts.panels.keys.forEach { panelName ->
         buf.append("$panelName:\n")
         controlDisplay.render(panelName) { panelBucket ->
             buf.append("  |${panelBucket.section.title}|")
@@ -86,7 +83,12 @@ fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
 }
 
 fun createLayouts(vararg panelNames: String): MutableLayouts {
-    return MutableLayouts(Layouts(panelNames.toList(), mapOf("default" to Layout(null, emptyList()))))
+    return MutableLayouts(
+        Layouts(
+            panelNames.associateWith { PanelConfig() },
+            mapOf("default" to Layout(null, emptyList()))
+        )
+    )
 }
 
 fun MutableShow.addFixtureControls() {

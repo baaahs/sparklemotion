@@ -14,6 +14,7 @@ import baaahs.only
 import baaahs.plugin.CorePlugin
 import baaahs.shaders.fakeFixture
 import baaahs.show.DataSource
+import baaahs.show.PanelConfig
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.live.ActivePatchSet
@@ -78,7 +79,7 @@ object PatchResolverSpec : Spek({
         }
         val mutableShow by value {
             MutableShow("test show") {
-                editLayouts { panelNames = mutableListOf("Main") }
+                editLayouts { panels = mutableMapOf("Main" to PanelConfig()) }
             }
         }
         val show by value {
