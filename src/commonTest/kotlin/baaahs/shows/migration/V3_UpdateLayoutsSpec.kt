@@ -78,14 +78,14 @@ object V3_UpdateLayoutsSpec : Spek({
                     """
                       {
                         "layouts": {
-                          "panelNames": [
-                            "Scenes",
-                            "Preview",
-                            "Backdrops",
-                            "Controls",
-                            "More Controls",
-                            "Transition"
-                          ],
+                          "panels": {
+                            "Scenes": {},
+                            "Preview": {},
+                            "Backdrops": {},
+                            "Controls": {},
+                            "More Controls": {},
+                            "Transition": {}
+                          },
                           "formats": {
                             "default": {
                               "mediaQuery": null,

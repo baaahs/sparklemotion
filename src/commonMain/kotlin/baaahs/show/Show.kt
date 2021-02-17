@@ -143,7 +143,7 @@ fun buildEmptyShow(): Show {
             copyFrom(
                 MutableLayouts(
                     Layouts(
-                        listOf("Controls"),
+                        mapOf("Controls" to PanelConfig()),
                         mapOf(
                             "default" to Layout(
                                 null,

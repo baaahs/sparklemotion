@@ -6,8 +6,12 @@ import baaahs.gl.testToolchain
 import baaahs.only
 import baaahs.show.Layout
 import baaahs.show.Layouts
+import baaahs.show.PanelConfig
 import baaahs.show.Shader
-import baaahs.show.mutable.*
+import baaahs.show.mutable.MutableConstPort
+import baaahs.show.mutable.MutableLayouts
+import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeShowPlayer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
@@ -30,7 +34,7 @@ object OpenShowSpec : Spek({
                 copyFrom(
                     MutableLayouts(
                         Layouts(
-                            listOf("Panel 1", "Panel 2", "Panel 3"),
+                            listOf("Panel 1", "Panel 2", "Panel 3").associateWith { PanelConfig() },
                             mapOf("default" to Layout(null, emptyList()))
                         )
                     )
