@@ -10,6 +10,9 @@ $dokka.location:baaahs$only(kotlin.collections.Collection((baaahs.only.E)), kotl
 $dokka.location:baaahs$replacing(kotlin.collections.List((baaahs.replacing.T)), kotlin.Int, baaahs.replacing.T)baaahs/kotlin.collections.-list/replacing.html
 $dokka.location:baaahs$severity(kotlin.collections.Collection((baaahs.ShowProblem)))baaahs/kotlin.collections.-collection/severity.html
 $dokka.location:baaahs.show$assertNoDuplicates(kotlin.collections.List((baaahs.show.assertNoDuplicates.T)), kotlin.String)baaahs.show/kotlin.collections.-list/assert-no-duplicates.html
+$dokka.location:baaahs.show.migration$mapObjsInDict(kotlin.collections.MutableMap((kotlin.String, kotlinx.serialization.json.JsonElement)), kotlin.String, kotlin.Function2((kotlin.String, kotlin.collections.MutableMap((, kotlinx.serialization.json.JsonElement)), kotlin.Unit)))baaahs.show.migration/kotlin.collections.-mutable-map/map-objs-in-dict.html
+$dokka.location:baaahs.show.migration$replaceJsonObj(kotlin.collections.MutableMap((kotlin.String, kotlinx.serialization.json.JsonElement)), kotlin.String, kotlin.Function1((kotlinx.serialization.json.JsonObject, kotlinx.serialization.json.JsonElement)))baaahs.show.migration/kotlin.collections.-mutable-map/replace-json-obj.html
+$dokka.location:baaahs.show.migration$toJsonObj(kotlin.collections.Map((kotlin.String, kotlinx.serialization.json.JsonElement)))baaahs.show.migration/kotlin.collections.-map/to-json-obj.html
 $dokka.location:baaahs.ui$and(kotlin.String, )baaahs.ui/kotlin.-string/and.html
 $dokka.location:baaahs.ui$and(kotlin.String, kotlin.String)baaahs.ui/kotlin.-string/and.html
 $dokka.location:baaahs.ui$asTextNode(kotlin.String)baaahs.ui/kotlin.-string/as-text-node.html
@@ -36,6 +39,7 @@ baaahs.api.ws
 baaahs.app.ui
 baaahs.app.ui.controls
 baaahs.app.ui.editor
+baaahs.app.ui.editor.layout
 baaahs.app.ui.preview
 baaahs.browser
 baaahs.client
@@ -68,6 +72,7 @@ baaahs.proto
 baaahs.shaders
 baaahs.show
 baaahs.show.live
+baaahs.show.migration
 baaahs.show.mutable
 baaahs.shows
 baaahs.sim

@@ -17,7 +17,8 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">MutableLayouts</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableLayouts$<init>(baaahs.show.Layouts)/baseLayouts">baseLayouts</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-layouts/index.html"><span class="identifier">Layouts</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">MutableLayouts</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableLayouts$<init>(baaahs.show.Layouts)/baseLayouts">baseLayouts</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-layouts/index.html"><span class="identifier">Layouts</span></a><span class="symbol">)</span></code><br/>
+<code><span class="identifier">MutableLayouts</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableLayouts$<init>(kotlin.collections.MutableMap((kotlin.String, baaahs.show.mutable.MutablePanel)), kotlin.collections.MutableMap((kotlin.String, baaahs.show.mutable.MutableLayout)))/panels">panels</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-mutable-panel/index.html"><span class="identifier">MutablePanel</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;mutableMapOf()<span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutableLayouts$<init>(kotlin.collections.MutableMap((kotlin.String, baaahs.show.mutable.MutablePanel)), kotlin.collections.MutableMap((kotlin.String, baaahs.show.mutable.MutableLayout)))/formats">formats</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-mutable-layout/index.html"><span class="identifier">MutableLayout</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;mutableMapOf()<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,17 +27,17 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="map.html">map</a></h4>
+<h4><a href="formats.html">formats</a></h4>
 </td>
 <td>
-<code><span class="keyword">val </span><span class="identifier">map</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-layout/index.html"><span class="identifier">Layout</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">formats</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-mutable-layout/index.html"><span class="identifier">MutableLayout</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
-<h4><a href="panel-names.html">panelNames</a></h4>
+<h4><a href="panels.html">panels</a></h4>
 </td>
 <td>
-<code><span class="keyword">var </span><span class="identifier">panelNames</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html"><span class="identifier">MutableList</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">val </span><span class="identifier">panels</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-mutable-panel/index.html"><span class="identifier">MutablePanel</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -45,17 +46,38 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="add-panel.html">addPanel</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addPanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableLayouts$addPanel(baaahs.show.mutable.MutablePanel)/panel">panel</span><span class="symbol">:</span>&nbsp;<a href="../-mutable-panel/index.html"><span class="identifier">MutablePanel</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="build.html">build</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">build</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-layouts/index.html"><span class="identifier">Layouts</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">build</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableLayouts$build(baaahs.show.mutable.ShowBuilder)/showBuilder">showBuilder</span><span class="symbol">:</span>&nbsp;<a href="../-show-builder/index.html"><span class="identifier">ShowBuilder</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-layouts/index.html"><span class="identifier">Layouts</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="copy-from.html">copyFrom</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">copyFrom</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableLayouts$copyFrom(baaahs.show.Layouts)/layouts">layouts</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-layouts/index.html"><span class="identifier">Layouts</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">copyFrom</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableLayouts$copyFrom(baaahs.show.mutable.MutableLayouts)/layouts">layouts</span><span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">MutableLayouts</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="edit-layout.html">editLayout</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">editLayout</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableLayouts$editLayout(kotlin.String, kotlin.Function1((baaahs.show.mutable.MutableLayout, kotlin.Unit)))/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.mutable.MutableLayouts$editLayout(kotlin.String, kotlin.Function1((baaahs.show.mutable.MutableLayout, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<a href="../-mutable-layout/index.html"><span class="identifier">MutableLayout</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">MutableLayouts</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="find-or-create-panel.html">findOrCreatePanel</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">findOrCreatePanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.mutable.MutableLayouts$findOrCreatePanel(kotlin.String)/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-mutable-panel/index.html"><span class="identifier">MutablePanel</span></a></code></td>
 </tr>
 </tbody>
 </table>
