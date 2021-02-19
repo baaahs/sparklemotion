@@ -22,6 +22,8 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
                 remove(versionKey)
             }.toJsonObj()
 
+        logger.debug { "Migrating from v$fromVersion:\n$newJson" }
+
         allMigrations.forEach { migration ->
             if (fromVersion < migration.toVersion) {
                 logger.info {
@@ -30,6 +32,8 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
                 newJson = migration.migrate(newJson)
             }
         }
+
+        logger.debug { "Migrated to v$currentVersion:\n$newJson" }
 
         return newJson.toJsonObj()
     }

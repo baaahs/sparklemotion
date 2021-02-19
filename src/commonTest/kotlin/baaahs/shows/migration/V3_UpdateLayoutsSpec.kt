@@ -65,7 +65,7 @@ object V3_UpdateLayoutsSpec : Spek({
                       "controlLayout": { "Effects": "whatever" },
                       "controls": {
                         "someControl": {
-                          "controlLayout": { "Something Else": ["another"] }
+                          "controlLayout": { "More Controls": ["another"] }
                         }
                       }
                     }
@@ -79,12 +79,12 @@ object V3_UpdateLayoutsSpec : Spek({
                       {
                         "layouts": {
                           "panels": {
-                            "Scenes": {},
-                            "Preview": {},
-                            "Backdrops": {},
-                            "Controls": {},
-                            "More Controls": {},
-                            "Transition": {}
+                            "scenes": {"title": "Scenes"},
+                            "preview": {"title": "Preview"},
+                            "backdrops": {"title": "Backdrops"},
+                            "controls": {"title": "Controls"},
+                            "moreControls": {"title": "More Controls"},
+                            "transition": {"title":"Transition"}
                           },
                           "formats": {
                             "default": {
@@ -95,19 +95,19 @@ object V3_UpdateLayoutsSpec : Spek({
                                   "columns": [ "3fr", "2fr" ],
                                   "rows": [ "2fr", "5fr", "3fr" ],
                                   "areas": [
-                                    "Scenes", "Preview",
-                                    "Backdrops", "Controls",
-                                    "More Controls", "Transition"
+                                    "scenes", "preview",
+                                    "backdrops", "controls",
+                                    "moreControls", "transition"
                                   ]
                                 }
                               ]
                             }
                           }
                         },
-                        "controlLayout": { "Controls": "whatever" },
+                        "controlLayout": { "controls": "whatever" },
                         "controls": {
                           "someControl": {
-                            "controlLayout": { "Controls": ["another"] }
+                            "controlLayout": { "moreControls": ["another"] }
                           }
                         }
 

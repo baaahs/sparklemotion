@@ -1,5 +1,6 @@
 package baaahs.show.migration
 
+import baaahs.camelize
 import baaahs.show.ShowMigrator
 import kotlinx.serialization.json.*
 
@@ -21,7 +22,9 @@ object V3_UpdateLayouts : ShowMigrator.Migration(3) {
             replaceJsonObj("layouts") {
                 buildJsonObject {
                     put("panels", buildJsonObject {
-                        defaultPanels.forEach { put(it, buildJsonObject { }) }
+                        defaultPanels.forEach {
+                            put(it.suggestId(), buildJsonObject { put("title", it) })
+                        }
                     })
 
                     put("formats", buildJsonObject {
@@ -33,7 +36,7 @@ object V3_UpdateLayouts : ShowMigrator.Migration(3) {
                                     put("columns", buildJsonArray { add("3fr"); add("2fr") })
                                     put("rows", buildJsonArray { add("2fr"); add("5fr"); add("3fr") })
                                     put("areas", buildJsonArray {
-                                        defaultPanels.forEach { add(it) }
+                                        defaultPanels.forEach { add(it.suggestId()) }
                                     })
                                 })
                             })
@@ -52,16 +55,23 @@ object V3_UpdateLayouts : ShowMigrator.Migration(3) {
         }.toJsonObj()
     }
 
-    private fun replaceUnknownPanelNames(controlJson: MutableMap<String, JsonElement>) {
-        controlJson.replaceJsonObj("controlLayout") { controlLayout ->
-            controlLayout.toMutableMap().apply {
-                forEach { (panel, contents) ->
-                    if (!defaultPanels.contains(panel)) {
-                        remove(panel)
-                        this["Controls"] = contents
+    private fun replaceUnknownPanelNames(patchHolder: MutableMap<String, JsonElement>) {
+        if (patchHolder.containsKey("controlLayout")) {
+            patchHolder.replaceJsonObj("controlLayout") { controlLayout ->
+                controlLayout.toMutableMap().apply {
+                    forEach { (panel, contents) ->
+                        if (defaultPanels.contains(panel)) {
+                            remove(panel)
+                            this[panel.suggestId()] = contents
+                        } else {
+                            remove(panel)
+                            this["controls"] = contents
+                        }
                     }
-                }
-            }.toJsonObj()
+                }.toJsonObj()
+            }
         }
     }
+
+    private fun String.suggestId(): String = camelize()
 }
