@@ -1,6 +1,8 @@
 package baaahs.app.ui.editor.layout
 
+import baaahs.ui.important
 import kotlinx.css.*
+import kotlinx.css.properties.LineHeight
 import kotlinx.css.properties.borderBottom
 import kotlinx.css.properties.borderRight
 import materialui.styles.muitheme.MuiTheme
@@ -14,6 +16,10 @@ class LayoutEditorStyles(theme: MuiTheme) : StyleSheet("app-ui-editor-LayoutEdit
         display = Display.grid
         gridTemplateColumns = GridTemplateColumns("auto auto auto")
         gap = Gap(1.em.toString())
+    }
+
+    val listSubheader by css {
+        important(::lineHeight, LineHeight.normal)
     }
 
     val editorGrid by css {
@@ -33,6 +39,7 @@ class LayoutEditorStyles(theme: MuiTheme) : StyleSheet("app-ui-editor-LayoutEdit
         input {
             color = theme.palette.primary.contrastText
             width = 4.em
+            textAlign = TextAlign.right
         }
     }
 
