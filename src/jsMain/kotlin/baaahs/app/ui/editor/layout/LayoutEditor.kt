@@ -1,15 +1,23 @@
 package baaahs.app.ui.editor.layout
 
+import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.MutableTab
+import baaahs.ui.Prompt
 import baaahs.ui.unaryPlus
+import baaahs.ui.value
 import baaahs.ui.xComponent
 import kotlinx.css.Display
 import kotlinx.css.GridTemplateColumns
 import kotlinx.css.display
 import kotlinx.css.gridTemplateColumns
+import kotlinx.html.js.onChangeFunction
+import kotlinx.html.js.onClickFunction
 import materialui.components.tab.tab
 import materialui.components.tabs.tabs
+import materialui.icon
+import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 import styled.inlineStyles
@@ -18,18 +26,57 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layoutEditor
 
-    val currentTabIndex = 0
+    var currentTabIndex by state { 0 }
     val mutableLayouts = props.mutableShow.layouts
-    val currentTab = mutableLayouts.formats[props.format]!!.tabs[currentTabIndex]
-    var panelIds = mutableLayouts.panels.keys
+    val mutableLayout = mutableLayouts.formats[props.format]!!
+    val currentTab = mutableLayout.tabs[currentTabIndex]
+
+    val handleTabChange = handler("handleTabChange") { e: Event ->
+        currentTabIndex = e.target.value.toInt()
+    }
+
+    val handleNewTabClick = handler("handleNewTabClick") { _: Event ->
+        appContext.prompt(
+            Prompt(
+                "Create New Tab",
+                "Enter a name for your new tab.",
+                "",
+                fieldLabel = "Tab Name",
+                cancelButtonLabel = "Cancel",
+                submitButtonLabel = "Create",
+                isValid = { name ->
+                    if (name.isBlank()) return@Prompt "No name given."
+
+                    if (mutableLayout.tabs.any { it.title == name }) {
+                        "Looks like there's already a tab named named \"$name\"."
+                    } else null
+                },
+                onSubmit = { name ->
+                    val newTab = MutableTab(name)
+                    mutableLayout.tabs.add(newTab)
+                    props.onGridChange()
+                }
+            )
+        )
+    }
 
     div {
         tabs {
-            attrs.value = props.format
+            attrs.value = currentTabIndex.toString()
+            attrs.onChangeFunction = handleTabChange
+
+            mutableLayout.tabs.forEachIndexed { index, tab ->
+                tab {
+                    attrs.value = index.toString()
+                    attrs.label { +currentTab.title }
+                }
+            }
 
             tab {
-                attrs.value = "default"
-                attrs.label { +"Default" }
+                attrs.value = currentTabIndex.toString()
+                attrs.icon { icon(CommonIcons.Add) }
+                attrs.disabled = true
+                attrs.onClickFunction = handleNewTabClick
             }
         }
 
