@@ -4,6 +4,7 @@ import baaahs.describe
 import baaahs.gl.testPlugins
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
+import baaahs.show.migration.AllMigrations
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.json.Json
@@ -19,7 +20,8 @@ object ShowMigrationSpec : Spek({
         context("when writing") {
             val toJson by value { json.encodeToJsonElement(ShowMigrator, Show("test")) }
             it("includes version") {
-                expect(toJson.jsonObject["version"]?.jsonPrimitive?.intOrNull).toBe(2)
+                expect(toJson.jsonObject["version"]?.jsonPrimitive?.intOrNull)
+                    .toBe(AllMigrations.last().toVersion)
             }
         }
     }

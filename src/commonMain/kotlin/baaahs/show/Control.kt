@@ -79,7 +79,7 @@ data class ButtonControl(
 @SerialName("baaahs.Core:ButtonGroup")
 data class ButtonGroupControl(
     override val title: String,
-    val direction: Direction,
+    val direction: Direction = Direction.Horizontal,
     val buttonIds: List<String>
 ) : Control {
 
