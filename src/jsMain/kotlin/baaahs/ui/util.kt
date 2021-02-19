@@ -6,6 +6,7 @@ import external.copyFrom
 import kotlinx.css.CSSBuilder
 import kotlinx.css.RuleSet
 import kotlinx.css.StyledElement
+import kotlinx.css.hyphenize
 import kotlinx.html.DIV
 import materialui.components.typography.TypographyElementBuilder
 import materialui.components.typography.TypographyProps
@@ -21,6 +22,7 @@ import react.ReactElement
 import react.dom.RDOMBuilder
 import styled.StyleSheet
 import kotlin.reflect.KProperty
+import kotlinext.js.js
 
 @Suppress("UNCHECKED_CAST")
 fun <T> nuffin(): T = null as T

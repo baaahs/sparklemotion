@@ -27,10 +27,13 @@ object MutableShowSpec : Spek({
             MutableShow("test show").apply {
                 addPatch(shader0)
 
-                addButtonGroup("main", "scene 1") {
+                val mainPanel = MutablePanel(Panel("Main"))
+                editLayouts { panels["main"] = mainPanel }
+
+                addButtonGroup(mainPanel, "scene 1") {
                     addButton("patchset 1a") { addPatch(shader1a) }
                 }
-                addButtonGroup("main", "scene 2") {
+                addButtonGroup(mainPanel, "scene 2") {
                     addButton("patchset 2a") { addPatch(shader2a) }
                     addButton("patchset 2b") { addPatch(testToolchain.testPatch("shader 2b")) }
                     addButton("patchset 2c") { addPatch(testToolchain.testPatch("shader 2c")) }

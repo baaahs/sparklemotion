@@ -1,5 +1,6 @@
 package baaahs.app.ui
 
+import baaahs.app.ui.editor.layout.LayoutEditorStyles
 import baaahs.app.ui.editor.ShaderEditorStyles
 import baaahs.ui.*
 import kotlinx.css.*
@@ -17,6 +18,7 @@ class AllStyles(val theme: MuiTheme) {
     val appUi by lazy { ThemeStyles(theme) }
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
     val appUiEditor by lazy { baaahs.ui.editor.Styles(theme) }
+    val layoutEditor by lazy { LayoutEditorStyles(theme) }
 
     fun injectGlobals() {
         injectGlobal(Styles.global.toString())
@@ -220,17 +222,25 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         overflow = Overflow.hidden
     }
 
+    val showLayout by css {
+        display = Display.grid
+        height = 100.pct
+        gap = Gap(2.px.toString())
+        padding(2.px)
+    }
+
+    val layoutPanelPaper by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+
+        header {
+            lineHeight = 2.em.lh
+        }
+    }
+
     val layoutPanel by css {
         display = Display.flex
         height = 100.pct
-    }
-
-    val fullHeight by css {
-        height = 100.pct
-    }
-
-    val buttons by css {
-        backgroundColor = Color.white.withAlpha(.75)
     }
 
     val layoutControls by css {

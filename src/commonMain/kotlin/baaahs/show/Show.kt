@@ -7,11 +7,7 @@ import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.plugin.Plugins
-import baaahs.show.ButtonGroupControl.Direction
-import baaahs.show.mutable.MutableShaderChannel
-import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.MutableShowVisitor
-import baaahs.show.mutable.VisitationLog
+import baaahs.show.mutable.*
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -22,7 +18,6 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class Show(
@@ -99,17 +94,6 @@ data class Surfaces(
 }
 
 @Serializable
-data class Layouts(
-    val panelNames: List<String> = emptyList(),
-    val map: Map<String, Layout> = emptyMap()
-)
-
-@Serializable
-data class Layout(
-    val rootNode: JsonObject
-)
-
-@Serializable
 data class Shader(
     val title: String,
     /**language=glsl*/
@@ -156,23 +140,11 @@ data class ShaderChannel(val id: String) {
 fun buildEmptyShow(): Show {
     return MutableShow("Untitled").apply {
         editLayouts {
-            copyFrom(
-                Layouts(
-                    listOf("Scenes", "Patches", "More Controls", "Preview", "Controls"),
-                    mapOf("default" to SampleData.defaultLayout)
-                )
-            )
-        }
-
-        addButtonGroup(
-            "Scenes", "Scenes", Direction.Horizontal
-        ) {
-            addButton("Scene 1") {
-                addButtonGroup(
-                    "Backdrops", "Backdrops", Direction.Vertical
-                ) {
-                    addButton("All Dark") {
-                    }
+            editLayout("default") {
+                editTab("Main") {
+                    columns.add(MutableLayoutDimen.decode("1fr"))
+                    rows.add(MutableLayoutDimen.decode("1fr"))
+                    areas.add(findOrCreatePanel("Controls"))
                 }
             }
         }

@@ -8,6 +8,7 @@ import baaahs.gl.patch.PatchResolver
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
 import baaahs.show.DataSource
+import baaahs.show.Panel
 import baaahs.show.Show
 import baaahs.show.mutable.MutableShow
 import baaahs.util.Logger
@@ -18,6 +19,7 @@ interface OpenContext {
     fun findControl(id: String): OpenControl?
     fun getControl(id: String): OpenControl
     fun getDataSource(id: String): DataSource
+    fun getPanel(id: String): Panel
     fun getShaderInstance(it: String): LiveShaderInstance
     fun release()
 }
@@ -42,6 +44,8 @@ class OpenShow(
     val layouts get() = show.layouts
     val allDataSources = show.dataSources
     val allControls: List<OpenControl> = openContext.allControls
+
+    fun getPanel(id: String) = show.layouts.panels.getBang(id, "panel")
 
     val feeds = show.dataSources.entries.associate { (id, dataSource) ->
         val feed = showPlayer.openFeed(id, dataSource)
@@ -162,14 +166,14 @@ abstract class OpenShowVisitor {
             visitPatch(it)
         }
 
-        openPatchHolder.controlLayout.forEach { (panelName, openControls) ->
+        openPatchHolder.controlLayout.forEach { (panel, openControls) ->
             openControls.forEach { openControl ->
-                visitPlacedControl(panelName, openControl)
+                visitPlacedControl(panel, openControl)
             }
         }
     }
 
-    open fun visitPlacedControl(panelName: String, openControl: OpenControl) {
+    open fun visitPlacedControl(panel: Panel, openControl: OpenControl) {
         visitControl(openControl)
     }
 

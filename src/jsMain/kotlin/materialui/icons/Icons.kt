@@ -9,6 +9,7 @@ external object Icons {
     val AddCircleOutline: Icon
     val Airplay: Icon
     val Apps: Icon
+    val ArrowDropDown: Icon
     val AvTimer: Icon
     val CastConnected: Icon
     val ChevronLeft: Icon
@@ -31,6 +32,7 @@ external object Icons {
     val FilterBAndW: Icon
     val FilterList: Icon
     val Folder: Icon
+    val GetApp: Icon
     val Help: Icon
     val HelpOutline: Icon
     val Image: Icon

@@ -5,12 +5,14 @@ import materialui.icons.Icons
 
 actual fun getCommonIcons() = object : PlatformIcons {
     override val Add get() = icon(Icons.AddCircleOutline)
+    override val Download get() = icon(Icons.GetApp)
+
     override val Fixture get() = icon(Icons.Airplay)
     override val Patch get() = icon(Icons.SettingsInputComponent)
-    override val Settings get() = icon(Icons.Settings)
-
     override val DataSource: Icon get() = icon(Icons.Input)
+    override val Layout: Icon get() = icon(Icons.Dashboard)
     override val ShaderChannel: Icon get() = icon(Icons.PowerInput)
+    override val Settings get() = icon(Icons.Settings)
     override val None: Icon get() = icon(Icons.NotInterested)
 
     override val ProjectionShader get() = icon(Icons.CastConnected)

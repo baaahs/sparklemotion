@@ -101,7 +101,7 @@ class AddControlToPanelBucket<MC : MutableControl>(
 
     override fun addToContainer(mutableShow: MutableShow, mutableControl: MC) {
         mutableShow.findPatchHolder(panelBucket.section.container)
-            .editControlLayout(panelBucket.panelTitle)
+            .editControlLayout(panelBucket.panel)
             .add(mutableControl)
     }
 }

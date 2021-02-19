@@ -45,10 +45,12 @@ object ControlDisplaySpec : Spek({
         context("a show with button groups") {
             beforeEachTest { mutableShow.addFixtureControls() }
 
-            val panel1 by value { openShow.controlLayout["Panel 1"] ?: emptyList() }
+            val panel1 by value { openShow.controlLayout[openShow.getPanel("panel1")] ?: emptyList() }
             val scenesButtonGroup by value { panel1.first() as OpenButtonGroupControl }
             val scene1Button by value { scenesButtonGroup.buttons.first() }
-            val backdrops1ButtonGroup by value { scene1Button.controlLayout["Panel 2"]!!.first() as OpenButtonGroupControl }
+            val backdrops1ButtonGroup by value {
+                scene1Button.controlLayout[openShow.getPanel("panel2")]!!.first() as OpenButtonGroupControl
+            }
             val backdrop11Button by value { backdrops1ButtonGroup.buttons.first() }
 
             it("renders controls correctly") {
@@ -85,5 +87,5 @@ object ControlDisplaySpec : Spek({
 })
 
 fun List<OpenPatch>.prettyPrint(): List<String> {
-    return flatMap { it.shaderInstances.map { it.shader.title } }
+    return flatMap { it.shaderInstances.map { instance -> instance.shader.title } }
 }

@@ -9,17 +9,10 @@ import baaahs.gl.shader.type.ProjectionShader
 import baaahs.gl.shader.type.ShaderType
 import baaahs.gl.testToolchain
 import baaahs.plugin.CorePlugin
-import baaahs.show.Layout
-import baaahs.show.Layouts
-import baaahs.show.Shader
-import baaahs.show.Show
-import baaahs.show.mutable.EditHandler
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutablePort
-import baaahs.show.mutable.MutableShow
+import baaahs.show.*
+import baaahs.show.mutable.*
 import baaahs.ui.DragNDrop
 import baaahs.ui.DropTarget
-import kotlinx.serialization.json.buildJsonObject
 
 fun Toolchain.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {
     val unresolvedPatch = autoWire(shader)
@@ -75,9 +68,9 @@ fun OpenControl.fakeRender(): String {
 fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
     val buf = StringBuilder()
 
-    layouts.panelNames.forEach { panelName ->
-        buf.append("$panelName:\n")
-        controlDisplay.render(panelName) { panelBucket ->
+    layouts.panels.values.forEach { panel ->
+        buf.append("${panel.title}:\n")
+        controlDisplay.render(panel) { panelBucket ->
             buf.append("  |${panelBucket.section.title}|")
             if (panelBucket.controls.isNotEmpty()) {
                 buf.append(" ${panelBucket.controls.joinToString(", ") { it.control.fakeRender() }}")
@@ -89,8 +82,13 @@ fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
     return buf.trim().replace(Regex("\\s+\n"), "\n")
 }
 
-fun createLayouts(vararg panelNames: String): Layouts {
-    return Layouts(panelNames.toList(), mapOf("default" to Layout(buildJsonObject { })))
+fun createLayouts(vararg panelNames: String): MutableLayouts {
+    return MutableLayouts(
+        Layouts(
+            panelNames.associateWith { Panel(it) },
+            mapOf("default" to Layout(null, emptyList()))
+        )
+    )
 }
 
 fun MutableShow.addFixtureControls() {
@@ -99,41 +97,44 @@ fun MutableShow.addFixtureControls() {
 
     addPatch(testToolchain.wireUp(fakeShader("Show Projection", ProjectionShader)))
 
-    addButtonGroup("Panel 1", "Scenes") {
+    val panel = layouts.findOrCreatePanel("Panel 1")
+    val panel1 = layouts.findOrCreatePanel("Panel 2")
+    val panel2 = layouts.findOrCreatePanel("Panel 3")
+    addButtonGroup(panel, "Scenes") {
         addButton("Scene 1") {
             addPatch(testToolchain.wireUp(fakeShader("Scene 1 Shader")))
 
-            addButtonGroup("Panel 2", "Backdrops") {
+            addButtonGroup(panel1, "Backdrops") {
                 addButton("Backdrop 1.1") {
                     addPatch(testToolchain.wireUp(fakeShader("Backdrop 1.1 Shader")))
                 }
                 addButton("Backdrop 1.2") {
                     addPatch(testToolchain.wireUp(fakeShader("Backdrop 1.2 Shader")))
-                    addControl("Panel 3", slider2.buildControl())
+                    addControl(panel2, slider2.buildControl())
                 }
             }
-            addControl("Panel 3", slider1.buildControl())
+            addControl(panel2, slider1.buildControl())
         }
 
         addButton("Scene 2") {
             addPatch(testToolchain.wireUp(fakeShader("Scene 2 Shader")))
 
-            addButtonGroup("Panel 2", "Backdrops") {
+            addButtonGroup(panel1, "Backdrops") {
                 addButton("Backdrop 2.1") {
                     addPatch(testToolchain.wireUp(fakeShader("Backdrop 2.1 Shader")))
-                    addControl("Panel 3", slider2.buildControl())
+                    addControl(panel2, slider2.buildControl())
                 }
                 addButton("Backdrop 2.2") {
                     addPatch(testToolchain.wireUp(fakeShader("Backdrop 2.2 Shader")))
-                    addControl("Panel 3", slider1.buildControl())
+                    addControl(panel2, slider1.buildControl())
                 }
             }
         }
     }
 }
 
-fun ControlDisplay.renderBuckets(panelName: String): List<ControlDisplay.PanelBuckets.PanelBucket> {
+fun ControlDisplay.renderBuckets(panel: Panel): List<ControlDisplay.PanelBuckets.PanelBucket> {
     val buckets = arrayListOf<ControlDisplay.PanelBuckets.PanelBucket>()
-    render(panelName) { panelBucket -> buckets.add(panelBucket) }
+    render(panel) { panelBucket -> buckets.add(panelBucket) }
     return buckets
 }

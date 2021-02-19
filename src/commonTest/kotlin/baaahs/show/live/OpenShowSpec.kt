@@ -6,8 +6,10 @@ import baaahs.gl.testToolchain
 import baaahs.only
 import baaahs.show.Layout
 import baaahs.show.Layouts
+import baaahs.show.Panel
 import baaahs.show.Shader
 import baaahs.show.mutable.MutableConstPort
+import baaahs.show.mutable.MutableLayouts
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeShowPlayer
@@ -15,7 +17,6 @@ import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import kotlinx.serialization.json.buildJsonObject
 import org.spekframework.spek2.Spek
 import kotlin.collections.set
 
@@ -31,9 +32,11 @@ object OpenShowSpec : Spek({
         beforeEachTest {
             mutableShow.editLayouts {
                 copyFrom(
-                    Layouts(
-                        listOf("Panel 1", "Panel 2", "Panel 3"),
-                        mapOf("default" to Layout(buildJsonObject { }))
+                    MutableLayouts(
+                        Layouts(
+                            listOf("Panel 1", "Panel 2", "Panel 3").associateWith { Panel(it) },
+                            mapOf("default" to Layout(null, emptyList()))
+                        )
                     )
                 )
             }
@@ -51,7 +54,7 @@ object OpenShowSpec : Spek({
             beforeEachTest {
                 mutableShow.addPatch(testToolchain.wireUp(fakeShader("Show Shader")))
 
-                mutableShow.addButtonGroup("Panel 1", "Scenes") {
+                mutableShow.addButtonGroup(mutableShow.findPanel("Panel 1"), "Scenes") {
                     addButton("First Scene") {
                         addPatch(testToolchain.wireUp(fakeShader("First Scene Shader")))
                     }
@@ -62,19 +65,19 @@ object OpenShowSpec : Spek({
                 }
             }
 
-            val panel1 by value { openShow.controlLayout["Panel 1"] ?: emptyList() }
+            val panel1 by value { openShow.controlLayout[openShow.getPanel("panel1")] ?: emptyList() }
             val scenesButtonGroup by value { panel1.first() as OpenButtonGroupControl }
 
             it("creates an OpenShow") {
                 expect(scenesButtonGroup.title)
                     .toBe("Scenes")
                 expect(scenesButtonGroup.buttons.map { it.title })
-                    .containsExactly("First Scene","Second Scene")
+                    .containsExactly("First Scene", "Second Scene")
             }
 
             it("has the first item in the button group selected by default") {
                 expect(scenesButtonGroup.buttons.map { it.isPressed })
-                    .containsExactly(true,false)
+                    .containsExactly(true, false)
 
                 expect(openShow.activePatchSet().activePatches)
                     .toBe(openShow.patches + scenesButtonGroup.buttons[0].patches)
@@ -85,7 +88,10 @@ object OpenShowSpec : Spek({
             beforeEachTest {
                 mutableShow.addPatch(
                     testToolchain.wireUp(
-                        Shader("Weird Shader", "uniform float time;\nvoid main() { gl_FragColor = gl_FragCoord + time; }")
+                        Shader(
+                            "Weird Shader",
+                            "uniform float time;\nvoid main() { gl_FragColor = gl_FragCoord + time; }"
+                        )
                     ).apply {
                         mutableShaderInstances.only().incomingLinks["nonsense"] =
                             MutableConstPort("invalid", GlslType.Companion.from("?huh?"))
