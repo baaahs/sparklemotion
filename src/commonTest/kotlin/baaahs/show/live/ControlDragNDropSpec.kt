@@ -2,7 +2,9 @@ package baaahs.show.live
 
 import baaahs.getBang
 import baaahs.gl.override
+import baaahs.show.Panel
 import baaahs.show.live.ControlDisplay.PanelBuckets.PanelBucket
+import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeShowPlayer
@@ -18,9 +20,14 @@ import org.spekframework.spek2.style.specification.describe
 
 object ControlDragNDropSpec : Spek({
     describe("Control Drag & Drop") {
+        val panel1 by value { MutablePanel(Panel("Panel 1"))}
         val mutableShow by value {
             MutableShow("Show")
-                .editLayouts { copyFrom(createLayouts("Panel 1", "Panel 2", "Panel 3")) }
+                .editLayouts {
+                    panels["panel1"] = panel1
+                    panels["panel2"] = MutablePanel(Panel("Panel 2"))
+                    panels["panel3"] = MutablePanel(Panel("Panel 3"))
+                }
         }
         val show by value { mutableShow.build(ShowBuilder()) }
 
@@ -38,18 +45,18 @@ object ControlDragNDropSpec : Spek({
 
         beforeEachTest {
             mutableShow.addFixtureControls()
-            mutableShow.addButton("Panel 1", "Button A") {}
-            mutableShow.addButton("Panel 1", "Button B") {}
+            mutableShow.addButton(panel1, "Button A") {}
+            mutableShow.addButton(panel1, "Button B") {}
         }
 
         val panelBuckets by value {
-            openShow.layouts.panels.mapValues { (panelName, _) ->
-                controlDisplay.renderBuckets(panelName)
+            openShow.layouts.panels.mapValues { (_, panel) ->
+                controlDisplay.renderBuckets(panel)
             }
         }
 
-        fun findBucket(panelName: String, sectionTitle: String): PanelBucket {
-            val panelBucket = panelBuckets.getBang(panelName, "Panel")
+        fun findBucket(panelId: String, sectionTitle: String): PanelBucket {
+            val panelBucket = panelBuckets.getBang(panelId, "panel")
             return panelBucket.find { it.section.title == sectionTitle }
                 ?: error(unknown("section", sectionTitle, panelBucket.map { it.section.title }))
         }
@@ -78,7 +85,7 @@ object ControlDragNDropSpec : Spek({
         }
 
         context("when a button is dragged") {
-            override(fromDropTarget) { findBucket("Panel 1", "Show") }
+            override(fromDropTarget) { findBucket("panel1", "Show") }
             override(draggedControl) { fromDropTarget.getDraggable(1) }
 
             context("and dropped within the same DropTarget") {
@@ -92,13 +99,13 @@ object ControlDragNDropSpec : Spek({
                 it("reorders controls in the parent") {
                     dragNDrop.doMove(fromDropTarget, 1, fromDropTarget, 2)
 
-                    expect(editHandler.updatedShow.controlLayout.getBang("Panel 1", "panels"))
+                    expect(editHandler.updatedShow.controlLayout.getBang("panel1", "panels"))
                         .containsExactly("scenesButtonGroup", "buttonBButton", "buttonAButton")
                 }
             }
 
             context("and dropped to another PanelBucket") {
-                override(toDropTarget) { findBucket("Panel 1", "Scene 1") }
+                override(toDropTarget) { findBucket("panel1", "Scene 1") }
 
                 it("can be dropped back into another bucket") {
                     expect(draggedControl.willMoveTo(toDropTarget)).toBe(true)
@@ -165,7 +172,7 @@ object ControlDragNDropSpec : Spek({
                     (openShow.allControls.find { it.id == "scenesButtonGroup" } as OpenButtonGroupControl)
                         .createDropTarget(controlDisplay)
                 }
-                override(toDropTarget) { findBucket("Panel 1", "Scene 1") }
+                override(toDropTarget) { findBucket("panel1", "Scene 1") }
 
                 it("can be dropped") {
                     expect(draggedControl.willMoveTo(toDropTarget)).toBe(true)

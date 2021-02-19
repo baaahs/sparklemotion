@@ -140,19 +140,13 @@ data class ShaderChannel(val id: String) {
 fun buildEmptyShow(): Show {
     return MutableShow("Untitled").apply {
         editLayouts {
-            copyFrom(
-                MutableLayouts(
-                    Layouts(
-                        mapOf("Controls" to PanelConfig()),
-                        mapOf(
-                            "default" to Layout(
-                                null,
-                                listOf(Tab("Main", listOf("1fr"), listOf("1fr"), listOf("Controls")))
-                            )
-                        )
-                    )
-                )
-            )
+            editLayout("default") {
+                editTab("Main") {
+                    columns.add(MutableLayoutDimen.decode("1fr"))
+                    rows.add(MutableLayoutDimen.decode("1fr"))
+                    areas.add(findOrCreatePanel("Controls"))
+                }
+            }
         }
     }.getShow()
 }

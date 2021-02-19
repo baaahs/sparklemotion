@@ -3,7 +3,9 @@ package baaahs.app.ui.editor
 import baaahs.app.ui.ControlEditIntent
 import baaahs.describe
 import baaahs.gl.testToolchain
+import baaahs.show.Panel
 import baaahs.show.mutable.MutableButtonControl
+import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
@@ -13,7 +15,9 @@ object EditableSpec : Spek({
     describe<ControlEditIntent> {
         val baseShow by value {
             MutableShow("test show") {
-                addButton("main", "main button") { }
+                val mainPanel = MutablePanel(Panel("Main"))
+                editLayouts { panels["main"] = mainPanel }
+                addButton(mainPanel, "main button") { }
             }.getShow()
 
                 .also { println("it = ${it}") }

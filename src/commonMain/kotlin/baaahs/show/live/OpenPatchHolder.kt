@@ -3,6 +3,7 @@ package baaahs.show.live
 import baaahs.Severity
 import baaahs.getValue
 import baaahs.severity
+import baaahs.show.Panel
 import baaahs.show.PatchHolder
 
 open class OpenPatchHolder(
@@ -14,16 +15,16 @@ open class OpenPatchHolder(
     val problems get() = patches.flatMap { it.problems }
     val problemLevel: Severity? by lazy { problems.severity() }
 
-    val controlLayout: Map<String, List<OpenControl>> =
-        patchHolder.controlLayout.mapValues { (_, controlRefs) ->
-            controlRefs.map { openContext.getControl(it) }
-        }
+    val controlLayout: Map<Panel, List<OpenControl>> =
+        patchHolder.controlLayout.map { (panelId, controlRefs) ->
+            openContext.getPanel(panelId) to controlRefs.map { openContext.getControl(it) }
+        }.toMap()
 
     fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, depth: Int) {
         activePatchSetBuilder.add(this, depth)
 
-        controlLayout.forEach { (panelId, openControls) ->
-            openControls.forEach { openControl -> openControl.addTo(activePatchSetBuilder, panelId, depth + 1) }
+        controlLayout.forEach { (panel, openControls) ->
+            openControls.forEach { openControl -> openControl.addTo(activePatchSetBuilder, panel, depth + 1) }
         }
     }
 }

@@ -129,7 +129,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                 attrs.button = true
                 attrs.disabled = appContext.webClient.show == null
                 attrs.onClickFunction = props.onLayoutEditorDialogToggle.withEvent()
-                listItemIcon { icon(Icons.Dashboard) }
+                listItemIcon { icon(CommonIcons.Layout) }
                 listItemText { attrs.primary { +"Layout Editor" } }
             }
         }

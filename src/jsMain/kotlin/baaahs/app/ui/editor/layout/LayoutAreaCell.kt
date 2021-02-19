@@ -1,6 +1,7 @@
 package baaahs.app.ui.editor.layout
 
 import baaahs.app.ui.appContext
+import baaahs.getBang
 import baaahs.show.mutable.MutableLayouts
 import baaahs.show.mutable.MutableTab
 import baaahs.ui.unaryPlus
@@ -19,24 +20,23 @@ val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props -
     val styles = appContext.allStyles.layoutEditor
 
     val handlePanelAreaChange = handler("handlePanelAreaChange") { event: Event ->
-        props.tab.areas[props.rowIndex * props.tab.columns.size + props.columnIndex] = event.target.value
+        val panel = props.layouts.panels.getBang(event.target.value, "panel")
+        props.tab.areas[props.rowIndex * props.tab.columns.size + props.columnIndex] = panel
         props.onChange()
         forceRender()
     }
 
     div(+styles.gridAreaEditor) {
         select {
-            attrs.value(props.tab.areas[props.rowIndex * props.tab.columns.size + props.columnIndex])
+            val currentPanel = props.tab.areas[props.rowIndex * props.tab.columns.size + props.columnIndex]
+            val panelId = props.layouts.panels.entries.find { (_, panel) -> panel == currentPanel }!!.key
+            attrs.value(panelId)
             attrs.onChangeFunction = handlePanelAreaChange
 
-            menuItem {
-                attrs["value"] = "-"
-            }
-
-            props.layouts.panels.keys.sorted().forEach { panelName ->
+            props.layouts.panels.entries.sortedBy { (_, v) -> v.title }.forEach { (panelId, panel) ->
                 menuItem {
-                    attrs["value"] = panelName
-                    listItemText { +panelName }
+                    attrs["value"] = panelId
+                    listItemText { +panel.title }
                 }
             }
         }

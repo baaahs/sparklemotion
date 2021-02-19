@@ -134,58 +134,68 @@ object SampleData {
         .acceptSuggestedLinkOptions()
         .confirm()
 
-    val defaultLayout = Layout(null, listOf(
-        Tab("Main",
-            columns = listOf("3fr", "2fr"),
-            rows = listOf("2fr", "5fr", "3fr"),
-            areas = listOf(
-                "Scenes", "Preview",
-                "Backdrops", "Controls",
-                "More Controls", "Transition"
-            ),
-        )
-    ))
-    val layouts = Layouts(
-        listOf("Scenes", "Backdrops", "More Controls", "Preview", "Controls", "Transition")
-            .associateWith { PanelConfig() },
-        mapOf("default" to defaultLayout)
-    )
-
-    val color = CorePlugin.ColorPickerDataSource("Color", Color.WHITE)
-    val brightness = CorePlugin.SliderDataSource(
-        "Brightness", 1f, 0f, 1.25f, null
-    )
-    val saturation = CorePlugin.SliderDataSource(
-        "Saturation", 1f, 0f, 1.25f, null
-    )
-    val intensity = CorePlugin.SliderDataSource(
-        "Intensity", 1f, 0f, 1f, null
-    )
-    val checkerboardSize = CorePlugin.SliderDataSource(
-        "Checkerboard Size", .1f, .001f, 1f, null
-    )
-
     val sampleShow: Show get() = MutableShow("Sample Show") {
         println("Initialize sampleShow!")
+
+        val scenesPanel = MutablePanel("Scenes")
+        val backdropsPanel = MutablePanel("Backdrops")
+        val moreControlsPanel = MutablePanel("More Controls")
+        val previewPanel = MutablePanel("Preview")
+        val controlsPanel = MutablePanel("Controls")
+        val transitionPanel = MutablePanel("Transition")
+
         editLayouts {
-            copyFrom(MutableLayouts(layouts))
+            addPanel(scenesPanel)
+            addPanel(backdropsPanel)
+            addPanel(moreControlsPanel)
+            addPanel(previewPanel)
+            addPanel(controlsPanel)
+            addPanel(transitionPanel)
+
+            editLayout("default") {
+                editTab("Main") {
+                    title = "Main"
+                    columns.addAll(listOf("3fr", "2fr").map { MutableLayoutDimen.decode(it) })
+                    rows.addAll(listOf("2fr", "5fr", "3fr").map { MutableLayoutDimen.decode(it) })
+                    areas.addAll(listOf(
+                        scenesPanel, previewPanel,
+                        backdropsPanel, controlsPanel,
+                        moreControlsPanel, transitionPanel
+                    ))
+                }
+            }
         }
+
+        val color = CorePlugin.ColorPickerDataSource("Color", Color.WHITE)
+        val brightness = CorePlugin.SliderDataSource(
+            "Brightness", 1f, 0f, 1.25f, null
+        )
+        val saturation = CorePlugin.SliderDataSource(
+            "Saturation", 1f, 0f, 1.25f, null
+        )
+        val intensity = CorePlugin.SliderDataSource(
+            "Intensity", 1f, 0f, 1f, null
+        )
+        val checkerboardSize = CorePlugin.SliderDataSource(
+            "Checkerboard Size", .1f, .001f, 1f, null
+        )
 
         addPatch(uvShader)
         addPatch(showDefaultPaint)
         addPatch(brightnessFilter)
         addPatch(saturationFilter)
 
-        addButtonGroup("Scenes", "Scenes", Horizontal) {
+        addButtonGroup(
+            scenesPanel, "Scenes", Horizontal) {
             addButton("Pleistocene") {
-                addButtonGroup("Backdrops", "Backdrops", Vertical) {
+                addButtonGroup(backdropsPanel, "Backdrops", Vertical) {
                     addButton("Red Yellow Green") {
                         addPatch(redYellowGreenPatch)
                     }
 
                     addButton("Fire") {
                         addPatch(fireBallPatch)
-                        addControl("Backdrops", intensity.buildControl())
+                        addControl(backdropsPanel, intensity.buildControl())
                     }
 
                     addButton("Checkerboard") {
@@ -195,13 +205,13 @@ object SampleData {
                                 mapOf("checkerboardSize" to checkerboardSize.editor())
                             )
                         )
-                        addControl("Backdrops", checkerboardSize.buildControl())
+                        addControl(backdropsPanel, checkerboardSize.buildControl())
                     }
                 }
             }
 
             addButton("Holocene") {
-                addButtonGroup("Backdrops", "Backdrops", Vertical) {
+                addButtonGroup(backdropsPanel, "Backdrops", Vertical) {
                     addButton("Blue Aqua Green") {
                         addPatch(blueAquaGreenPatch)
                     }
@@ -209,11 +219,11 @@ object SampleData {
             }
         }
 
-        addControl("More Controls", color.buildControl())
-        addControl("More Controls", brightness.buildControl())
-        addControl("More Controls", saturation.buildControl())
+        addControl(moreControlsPanel, color.buildControl())
+        addControl(moreControlsPanel, brightness.buildControl())
+        addControl(moreControlsPanel, saturation.buildControl())
 
-        addButton("Effects", "Wobble") {
+        addButton(moreControlsPanel, "Wobble") {
             addPatch(wireUp(Shaders.ripple))
         }
     }.getShow()

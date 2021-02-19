@@ -3,7 +3,7 @@ package baaahs.show.live
 import baaahs.camelize
 import baaahs.getBang
 import baaahs.show.Layouts
-import baaahs.show.PanelConfig
+import baaahs.show.Panel
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
@@ -35,9 +35,9 @@ class ControlDisplay(
                 breadcrumbs.removeLast()
             }
 
-            override fun visitPlacedControl(panelName: String, openControl: OpenControl) {
-                allPanelBuckets.addControl(panelName, openControl, breadcrumbs)
-                super.visitPlacedControl(panelName, openControl)
+            override fun visitPlacedControl(panel: Panel, openControl: OpenControl) {
+                allPanelBuckets.addControl(panel, openControl, breadcrumbs)
+                super.visitPlacedControl(panel, openControl)
             }
 
             override fun visitControl(openControl: OpenControl) {
@@ -59,8 +59,8 @@ class ControlDisplay(
     val unplacedControls = (show.allControls + suggestedControls)
         .filter { !placedControls.contains(it) }
 
-    fun render(panelTitle: String, renderBucket: RenderBucket) {
-        allPanelBuckets.render(panelTitle, renderBucket)
+    fun render(panel: Panel, renderBucket: RenderBucket) {
+        allPanelBuckets.render(panel, renderBucket)
     }
 
     fun renderUnplacedControls(block: (index: Int, control: OpenControl) -> Unit) {
@@ -80,43 +80,42 @@ class ControlDisplay(
     }
 
     inner class AllPanelBuckets(layouts: Layouts) {
-        private val byPanel = layouts.panels.mapValues { (title, panel) -> PanelBuckets(title, panel) }
+        private val bucketsByPanel = layouts.panels.map { (_, panel) -> panel to PanelBuckets(panel) }.toMap()
         private val sections = mutableListOf<Section>()
         private var serialInt = 0
 
         fun addTargetPatchHolder(openPatchHolder: OpenPatchHolder, depth: Int) {
             val section = Section(openPatchHolder, depth, serialInt++)
             sections.add(section)
-            byPanel.forEach { (_, panelBuckets) ->
+            bucketsByPanel.forEach { (_, panelBuckets) ->
                 panelBuckets.addSection(section)
             }
         }
 
-        fun addControl(panelName: String, openControl: OpenControl, breadcrumbs: ArrayList<OpenPatchHolder>) {
-            val panel = byPanel[panelName]
-            if (panel != null) {
-                panel.addControl(openControl, breadcrumbs)
+        fun addControl(panel: Panel, openControl: OpenControl, breadcrumbs: ArrayList<OpenPatchHolder>) {
+            val panelBuckets = bucketsByPanel[panel]
+            if (panelBuckets != null) {
+                panelBuckets.addControl(openControl, breadcrumbs)
             } else {
                 // TODO: This should probably show up as a show error.
-                logger.warn { "No panel named \"$panelName\" exists, so ${openControl.id} won't be visible." }
+                logger.warn { "No panel named \"$panel\" exists, so ${openControl.id} won't be visible." }
             }
         }
 
-        fun render(panelTitle: String, renderBucket: RenderBucket) {
-            val panelBuckets = byPanel.getBang(panelTitle, "panel")
+        fun render(panel: Panel, renderBucket: RenderBucket) {
+            val panelBuckets = bucketsByPanel.getBang(panel, "panel")
             panelBuckets.render(sections, renderBucket)
         }
 
         fun release() {
-            byPanel.values.forEach { it.release() }
+            bucketsByPanel.values.forEach { it.release() }
         }
     }
 
     inner class PanelBuckets(
-        private val panelTitle: String,
-        panelConfig: PanelConfig
+        private val panel: Panel
     ) {
-        val byContainer =
+        private val byContainer =
             mapOf<OpenPatchHolder, PanelBucket>().toMutableMap()
 
         fun addSection(section: Section) {
@@ -145,7 +144,7 @@ class ControlDisplay(
         }
 
         inner class PanelBucket(val section: Section) : DropTarget {
-            val panelTitle: String get() = this@PanelBuckets.panelTitle
+            val panel: Panel get() = this@PanelBuckets.panel
 
             val controls = mutableListOf<PlacedControl>()
             override val type: String get() = "ControlContainer"
@@ -162,13 +161,13 @@ class ControlDisplay(
             }
 
             override fun suggestId(): String {
-                return "$panelTitle ${section.title} $type".camelize()
+                return "${panel.title} ${section.title} $type".camelize()
             }
 
             override fun moveDraggable(fromIndex: Int, toIndex: Int) {
                 show.edit {
                     val mutablePatchHolder = findPatchHolder(section.container)
-                    val mutableControls = mutablePatchHolder.editControlLayout(panelTitle)
+                    val mutableControls = mutablePatchHolder.editControlLayout(panel)
                     val mutableControl = mutableControls.removeAt(fromIndex)
                     mutableControls.add(toIndex, mutableControl)
                 }.commit(editHandler)
@@ -186,7 +185,7 @@ class ControlDisplay(
                 draggable as PlaceableControl
                 draggable.mutableShow
                     .findPatchHolder(section.container)
-                    .editControlLayout(panelTitle)
+                    .editControlLayout(panel)
                     .add(index, draggable.mutableControl)
             }
 
@@ -201,7 +200,7 @@ class ControlDisplay(
 
                 override fun remove() {
                     val mutablePatchHolder = mutableShow.findPatchHolder(section.container)
-                    mutableControl = mutablePatchHolder.removeControl(panelTitle, index)
+                    mutableControl = mutablePatchHolder.removeControl(panel, index)
                 }
 
                 override fun onMove() {

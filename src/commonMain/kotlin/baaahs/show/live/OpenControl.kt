@@ -4,10 +4,7 @@ import baaahs.Gadget
 import baaahs.app.ui.ControlEditIntent
 import baaahs.app.ui.EditIntent
 import baaahs.gadgets.Switch
-import baaahs.show.ButtonControl
-import baaahs.show.ButtonGroupControl
-import baaahs.show.DataSource
-import baaahs.show.VisualizerControl
+import baaahs.show.*
 import baaahs.show.mutable.*
 import baaahs.ui.Draggable
 import baaahs.ui.DropTarget
@@ -21,7 +18,7 @@ interface OpenControl {
     fun getState(): Map<String, JsonElement>? = gadget?.state
     fun applyState(state: Map<String, JsonElement>) = gadget?.applyState(state)
     fun controlledDataSources(): Set<DataSource> = emptySet()
-    fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panelId: String, depth: Int) {}
+    fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panel: Panel, depth: Int) {}
     fun applyConstraints() {}
     fun toNewMutable(mutableShow: MutableShow): MutableControl
     fun getRenderer(controlProps: ControlProps): Renderer
@@ -60,7 +57,7 @@ class OpenButtonControl(
 
     override fun isActive(): Boolean = isPressed
 
-    override fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panelId: String, depth: Int) {
+    override fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panel: Panel, depth: Int) {
         if (isPressed) {
             addTo(activePatchSetBuilder, depth)
         }
@@ -121,8 +118,8 @@ class OpenButtonGroupControl(
         }
     }
 
-    override fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panelId: String, depth: Int) {
-        buttons.forEach { it.addTo(activePatchSetBuilder, panelId, depth + 1) }
+    override fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panel: Panel, depth: Int) {
+        buttons.forEach { it.addTo(activePatchSetBuilder, panel, depth + 1) }
     }
 
     fun createDropTarget(controlDisplay: ControlDisplay) =

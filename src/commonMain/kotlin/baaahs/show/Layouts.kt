@@ -1,18 +1,18 @@
 package baaahs.show
 
+import baaahs.camelize
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 @Serializable
 data class Layouts(
-    val panels: Map<String, PanelConfig> = emptyMap(),
+    val panels: Map<String, Panel> = emptyMap(),
     val formats: Map<String, Layout> = emptyMap()
 )
 
 @Serializable
-data class PanelConfig(
-    @Transient val `_`: Boolean = false
-)
+data class Panel(val title: String) {
+    fun suggestId(): String = title.camelize()
+}
 
 @Serializable
 data class Layout(
