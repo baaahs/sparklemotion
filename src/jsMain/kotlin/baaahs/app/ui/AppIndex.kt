@@ -185,7 +185,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handlePromptClose = useCallback { prompt = null }
 
     val forceAppDrawerOpen = webClient.isLoaded && webClient.show == null
-    val renderAppDrawerOpen = appDrawerOpen || forceAppDrawerOpen
+    val renderAppDrawerOpen = appDrawerOpen && !layoutEditorDialogOpen || forceAppDrawerOpen
 
     val appDrawerStateStyle = if (renderAppDrawerOpen)
         themeStyles.appDrawerOpen
