@@ -62,9 +62,23 @@ private fun forJson(show: Show): JsonObject {
         put("title", show.title)
         addPatchHolder(show)
         put("layouts", buildJsonObject {
-            put("panelNames", show.layouts.panelNames.jsonMap { JsonPrimitive(it) })
-            put("map", show.layouts.map.jsonMap {
-                buildJsonObject { put("rootNode", it.rootNode) }
+            put("panels", buildJsonObject {
+                show.layouts.panels.forEach { (title, info) ->
+                    put(title, jsonFor(info))
+                }
+            })
+            put("formats", show.layouts.formats.jsonMap {
+                buildJsonObject {
+                    put("mediaQuery", it.mediaQuery)
+                    put("tabs", it.tabs.jsonMap {
+                        buildJsonObject {
+                            put("title", it.title)
+                            put("columns", it.columns.jsonMap { JsonPrimitive(it) })
+                            put("rows", it.rows.jsonMap { JsonPrimitive(it) })
+                            put("areas", it.areas.jsonMap { JsonPrimitive(it) })
+                        }
+                    })
+                }
             })
         })
         put("shaders", show.shaders.jsonMap { jsonFor(it) })
@@ -75,6 +89,12 @@ private fun forJson(show: Show): JsonObject {
 }
 
 private fun jsonFor(eventBinding: EventBinding) = buildJsonObject { }
+
+fun jsonFor(panel: Panel): JsonElement {
+    return buildJsonObject {
+        put("title", panel.title)
+    }
+}
 
 fun jsonFor(control: Control): JsonElement {
     return when (control) {

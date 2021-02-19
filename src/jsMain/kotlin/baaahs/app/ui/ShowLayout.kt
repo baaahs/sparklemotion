@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.controls.controlWrapper
+import baaahs.getBang
 import baaahs.show.Layout
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
@@ -9,10 +10,12 @@ import baaahs.ui.*
 import external.Direction
 import external.draggable
 import external.droppable
-import external.mosaic.*
+import external.mosaic.Mosaic
+import external.mosaic.MosaicControlledProps
+import external.mosaic.MosaicWindow
+import external.mosaic.MosaicWindowProps
+import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
 import materialui.components.iconbutton.enums.IconButtonStyle
 import materialui.components.iconbutton.iconButton
 import materialui.components.listitemicon.listItemIcon
@@ -27,14 +30,15 @@ import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.div
+import react.dom.header
+import styled.inlineStyles
 import kotlin.reflect.KClass
 
 val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     val appContext = useContext(appContext)
 
-    val handleCreateNode = useCallback { args: Array<Any> ->
-        console.log("ShowLayout:handleCreateNode", args)
-    }
+    var currentTabIndex by state { 0 }
+    val currentTab = props.layout.tabs.getBounded(currentTabIndex)
 
     val editModeStyle =
         if (props.editMode) Styles.editModeOn else Styles.editModeOff
@@ -43,25 +47,47 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     var showAddMenuFor by state<ControlDisplay.PanelBuckets.PanelBucket?> { null }
     var showAddMenuForAnchorEl by state<EventTarget?> { null }
 
-//    <MosiacMenuBar />
-    mosaic<String> {
-        renderTile = { panelTitle, path ->
-            MosaicWindow {
-                attrs {
-                    draggable = false
-//                    additionalControls = if (type === "") additionalControls else emptyArray<String>()
-                    title = panelTitle
-                    createNode = handleCreateNode
-                    this.path = path
-                    onDragStart = { console.log("MosaicWindow.onDragStart") }
-                    onDragEnd = { type -> console.log("MosaicWindow.onDragEnd", type) }
-                    renderToolbar = { props: MosaicWindowProps<*>, _: Boolean? ->
-                        div { +props.title }
-                    }
+    div(+Styles.showLayout) {
+        if (currentTab != null) {
+            val colCount = currentTab.columns.size
+            val rowCount = currentTab.rows.size
+            if (currentTab.areas.size != colCount * rowCount) {
+                error("Invalid layout! " +
+                        "Area count (${currentTab.areas.size} != cell count " +
+                        "($colCount columns * $rowCount rows)")
+            }
+
+            val areas = mutableListOf<String>()
+            currentTab.rows.indices.forEach { rowIndex ->
+                val cols = mutableListOf<String>()
+
+                currentTab.columns.indices.forEach { columnIndex ->
+                    cols.add(currentTab.areas[rowIndex * colCount + columnIndex])
+                }
+                areas.add(cols.joinToString(" ") { it.replace(" ", "") })
+            }
+
+            inlineStyles {
+                gridTemplateAreas = GridTemplateAreas(areas.joinToString(" ") { "\"$it\"" })
+                gridTemplateColumns = GridTemplateColumns(currentTab.columns.joinToString(" "))
+                gridTemplateRows = GridTemplateRows(currentTab.rows.joinToString(" "))
+            }
+        }
+
+
+        currentTab?.areas?.forEach { panelId ->
+            val panel = props.show.layouts.panels.getBang(panelId, "panel")
+            paper(Styles.layoutPanelPaper on PaperStyle.root) {
+                inlineStyles {
+                    put("gridArea", panelId)
+                    // TODO: panel flow direction could change here.
+                    flexDirection = FlexDirection.column
                 }
 
+                header { +panel.title }
+
                 paper(Styles.layoutPanel and editModeStyle on PaperStyle.root) {
-                    props.controlDisplay.render(panelTitle) { panelBucket ->
+                    props.controlDisplay.render(panel) { panelBucket ->
                         droppable({
                             this.droppableId = panelBucket.dropTargetId
                             this.type = panelBucket.type
@@ -106,18 +132,9 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                         }
                     }
                 }
+
             }
         }
-
-        val jsonInst = Json
-        val layoutRoot = props.layout.rootNode
-        val asJson = jsonInst.encodeToString(JsonElement.serializer(), layoutRoot)
-        val layoutRootJs = JSON.parse<dynamic>(asJson)
-        @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE", "UNCHECKED_CAST")
-        value = layoutRootJs as MosaicParent<String>
-        //            onChange = { onChange }
-//            onRelease = { onRelease }
-//            className = "mosaic mosaic-blueprint-theme bp3-dark"
     }
 
     showAddMenuFor?.let { panelBucket ->
@@ -140,6 +157,12 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
             }
         }
     }
+}
+
+private fun <E> List<E>.getBounded(index: Int): E? {
+    if (size == 0) return null
+    if (index > size) return get(size - 1)
+    return get(index)
 }
 
 external interface ShowLayoutProps : RProps {

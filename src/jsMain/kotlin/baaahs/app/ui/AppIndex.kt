@@ -3,13 +3,12 @@ package baaahs.app.ui
 import baaahs.ShowEditorState
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.editableManagerUi
-import baaahs.app.ui.editor.layoutEditorDialog
+import baaahs.app.ui.editor.layout.layoutEditorDialog
 import baaahs.client.ClientStageManager
 import baaahs.client.WebClient
 import baaahs.gl.withCache
 import baaahs.io.Fs
 import baaahs.show.SampleData
-import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.util.JsClock
 import baaahs.util.UndoStack
@@ -288,12 +287,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                 // Layout Editor dialog
                                 layoutEditorDialog {
                                     attrs.open = layoutEditorDialogOpen
-                                    attrs.layouts = show.layouts
-                                    attrs.onApply = { newLayouts ->
-                                        val mutableShow = MutableShow(show).editLayouts {
-                                            copyFrom(newLayouts)
-                                        }
-                                        myAppContext.webClient.onShowEdit(mutableShow)
+                                    attrs.show = show
+                                    attrs.onApply = { newMutableShow ->
+                                        myAppContext.webClient.onShowEdit(newMutableShow)
                                     }
                                     attrs.onClose = handleLayoutEditorDialogClose
                                 }
