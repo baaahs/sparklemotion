@@ -10,6 +10,7 @@ import baaahs.gl.render.PreviewRenderEngine
 import baaahs.glsl.Shaders
 import baaahs.plugin.CorePlugin
 import baaahs.plugin.beatlink.BeatLinkPlugin
+import baaahs.show.Panel
 import baaahs.show.Shader
 import baaahs.show.mutable.EditingShader.State
 import baaahs.shows.FakeGlContext
@@ -75,7 +76,7 @@ object EditingShaderSpec : Spek({
         val observerSlot by value { slot<Observer>() }
         val mockShaderBuilder by value { mockk<ShaderBuilder>() }
         val getShaderBuilder by value<(Shader) -> ShaderBuilder> { { mockShaderBuilder } }
-        val button by value { mutableShow.addButton("panel", "button") {} }
+        val button by value { mutableShow.addButton(MutablePanel(Panel("panel")), "button") {} }
         val otherPatchInShow by value { MutablePatch { addShaderInstance(otherShaderInShow) } }
 
         beforeEachTest {

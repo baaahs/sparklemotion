@@ -11,7 +11,9 @@ import baaahs.glsl.Shaders
 import baaahs.mapper.Storage
 import baaahs.plugin.CorePlugin
 import baaahs.shaders.fakeFixture
+import baaahs.show.Panel
 import baaahs.show.Shader
+import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
@@ -37,19 +39,24 @@ object ShowRunnerSpec : Spek({
         val fakeGlslContext by value { FakeGlContext() }
         val model by value { TestModel }
         val fixtures by value { listOf(fakeFixture(100)) }
+        val panel by value { MutablePanel(Panel("Panel")) }
         val mutableShow by value {
             MutableShow("test show") {
+                editLayouts {
+                    panels["panel"] = panel
+                }
+
                 addPatch(
                     testToolchain.autoWire(Shaders.cylindricalProjection, Shaders.blue)
                         .acceptSuggestedLinkOptions()
                         .confirm()
                 )
                 addButtonGroup(
-                    "Panel", "Scenes"
+                    panel, "Scenes"
                 ) {
                     addButton("test scene") {
                         addButtonGroup(
-                            "Panel", "Backdrops"
+                            panel, "Backdrops"
                         ) {
                             addButton("test patchset") {
                                 addPatch(
@@ -119,7 +126,7 @@ object ShowRunnerSpec : Spek({
                 override(addControls) {
                     {
                         val colorPickerDataSource = CorePlugin.ColorPickerDataSource("Color", Color.WHITE)
-                        mutableShow.addControl("Panel", colorPickerDataSource.buildControl())
+                        mutableShow.addControl(panel, colorPickerDataSource.buildControl())
                     }
                 }
 

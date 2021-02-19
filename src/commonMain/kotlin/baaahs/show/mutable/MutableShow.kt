@@ -46,9 +46,10 @@ abstract class MutablePatchHolder(
 
     internal val controlLayout by lazy {
         basePatchHolder.controlLayout
-            .mapValues { (_, v) ->
-                v.map { mutableShow.findControl(it) }.toMutableList()
-            }.toMutableMap()
+            .map { (panelId, controlIds) ->
+                mutableShow.findPanel(panelId) to
+                        controlIds.map { mutableShow.findControl(it) }.toMutableList()
+            }.toMap(mutableMapOf())
     }
 
     fun addPatch(block: MutablePatch.() -> Unit): MutablePatchHolder {
@@ -77,11 +78,11 @@ abstract class MutablePatchHolder(
         return this
     }
 
-    fun addControl(panel: String, control: MutableControl) {
+    fun addControl(panel: MutablePanel, control: MutableControl) {
         controlLayout.getOrPut(panel) { arrayListOf() }.add(control)
     }
 
-    fun addButton(panel: String, title: String, block: MutableButtonControl.() -> Unit): MutableButtonControl {
+    fun addButton(panel: MutablePanel, title: String, block: MutableButtonControl.() -> Unit): MutableButtonControl {
         val control = MutableButtonControl(ButtonControl(title), mutableShow)
         control.block()
         addControl(panel, control)
@@ -89,7 +90,7 @@ abstract class MutablePatchHolder(
     }
 
     fun addButtonGroup(
-        panel: String,
+        panel: MutablePanel,
         title: String,
         direction: ButtonGroupControl.Direction = ButtonGroupControl.Direction.Horizontal,
         block: MutableButtonGroupControl.() -> Unit
@@ -100,8 +101,8 @@ abstract class MutablePatchHolder(
         return control
     }
 
-    fun removeControl(panel: String, index: Int): MutableControl {
-        return controlLayout.getOrPut(panel) { arrayListOf() }.removeAt(index)
+    fun removeControl(panel: Panel, index: Int): MutableControl {
+        return controlLayout.getOrPut(mutableShow.findPanel(panel)) { arrayListOf() }.removeAt(index)
     }
 
     fun findControlDataSources(): Set<DataSource> {
@@ -110,16 +111,17 @@ abstract class MutablePatchHolder(
         }.toSet()
     }
 
-    fun editControlLayout(panelName: String): MutableList<MutableControl> {
-        return controlLayout.getOrPut(panelName) { mutableListOf() }
+    fun editControlLayout(panel: Panel): MutableList<MutableControl> {
+        return controlLayout.getOrPut(mutableShow.findPanel(panel)) { mutableListOf() }
     }
 
     internal fun buildControlLayout(showBuilder: ShowBuilder): Map<String, List<String>> {
-        return controlLayout.mapValues { (_, v) ->
-            v.map { mutableControl ->
-                mutableControl.buildAndStashId(showBuilder)
-            }
-        }
+        return controlLayout.map { (panel, controls) ->
+            showBuilder.idFor(panel.build()) to
+                    controls.map { mutableControl ->
+                        mutableControl.buildAndStashId(showBuilder)
+                    }
+        }.toMap()
     }
 
     open fun accept(visitor: MutableShowVisitor, log: VisitationLog = VisitationLog()) {
@@ -135,6 +137,8 @@ class MutableShow(
     baseShow: Show
 ) : MutablePatchHolder(baseShow), MutableEditable {
     override val mutableShow: MutableShow get() = this
+
+    internal val layouts = MutableLayouts(baseShow.layouts)
 
     internal val controls = CacheBuilder<String, MutableControl> { id ->
         baseShow.controls.getBang(id, "control").createMutable(this)
@@ -173,8 +177,6 @@ class MutableShow(
         }
     }
 
-    private val mutableLayouts = MutableLayouts(baseShow.layouts)
-
     constructor(title: String, block: MutableShow.() -> Unit = {}) : this(Show(title)) {
         this.block()
     }
@@ -182,7 +184,7 @@ class MutableShow(
     fun invoke(block: MutableShow.() -> Unit) = this.block()
 
     fun editLayouts(block: MutableLayouts.() -> Unit): MutableShow {
-        mutableLayouts.apply(block)
+        layouts.apply(block)
         return this
     }
 
@@ -196,7 +198,7 @@ class MutableShow(
             patches = patches.map { it.build(showBuilder) },
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder),
-            layouts = mutableLayouts.build(),
+            layouts = layouts.build(showBuilder),
             shaders = showBuilder.getShaders(),
             shaderInstances = showBuilder.getShaderInstances(),
             dataSources = showBuilder.getDataSources(),
@@ -226,6 +228,12 @@ class MutableShow(
             else -> error("huh? $openPatchHolder isn't a show or a button?")
         }
     }
+
+    fun findPanel(panelId: String): MutablePanel =
+        layouts.panels.getBang(panelId, "panel")
+
+    fun findPanel(panel: Panel): MutablePanel =
+        layouts.panels.values.find { it.isFor(panel) } ?: error("mutable panel ${panel.title} not found")
 
     fun findShader(shaderId: String): MutableShader =
         shaders.getBang(shaderId, "shader")
@@ -417,10 +425,15 @@ data class MutableShaderInstance(
 
 
 class ShowBuilder {
+    private val panelIds = UniqueIds<Panel>()
     private val controlIds = UniqueIds<Control>()
     private val dataSourceIds = UniqueIds<DataSource>()
     private val shaderIds = UniqueIds<Shader>()
     private val shaderInstanceIds = UniqueIds<ShaderInstance>()
+
+    fun idFor(panel: Panel): String {
+        return panelIds.idFor(panel) { panel.suggestId() }
+    }
 
     fun idFor(control: Control): String {
         return controlIds.idFor(control) { control.suggestId() }

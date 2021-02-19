@@ -1,12 +1,42 @@
 package baaahs.show.mutable
 
+import baaahs.getBang
 import baaahs.show.Layout
 import baaahs.show.Layouts
+import baaahs.show.Panel
 import baaahs.show.Tab
 
-class MutableLayouts(baseLayouts: Layouts) {
-    var panels = baseLayouts.panels.toMutableMap()
-    val formats = baseLayouts.formats.mapValues { (_, v) -> MutableLayout(v) }.toMutableMap()
+class MutableLayouts(
+    val panels: MutableMap<String, MutablePanel> = mutableMapOf(),
+    val formats: MutableMap<String, MutableLayout> = mutableMapOf()
+) {
+    constructor(baseLayouts: Layouts) : this(
+        panels = baseLayouts.panels.mapValues { (_, v) -> MutablePanel(v) }.toMutableMap()
+    ) {
+        baseLayouts.formats.forEach { (id, v) ->
+            formats[id] = MutableLayout(v, panels)
+        }
+    }
+
+    fun editLayout(id: String, block: MutableLayout.() -> Unit): MutableLayouts {
+        formats.getOrPut(id) { MutableLayout(null) }.apply(block)
+        return this
+    }
+
+    fun findOrCreatePanel(title: String): MutablePanel {
+        return panels.values.find { it.title == title }
+            ?: run {
+                val newPanel = Panel(title)
+                return MutablePanel(newPanel).also {
+                    panels[newPanel.suggestId()] = it
+                }
+            }
+    }
+
+    fun addPanel(panel: MutablePanel) {
+        val newPanel = panel.build()
+        panels[newPanel.suggestId()] = panel
+    }
 
     fun copyFrom(layouts: MutableLayouts) {
         panels.clear()
@@ -16,32 +46,73 @@ class MutableLayouts(baseLayouts: Layouts) {
         formats.putAll(layouts.formats)
     }
 
-    fun build(): Layouts {
-        return Layouts(panels, formats.mapValues { (_, v) -> v.build() })
+    fun build(showBuilder: ShowBuilder): Layouts {
+        return Layouts(
+            panels.map { (_, v) ->
+                val builtPanel = v.build()
+                showBuilder.idFor(builtPanel) to builtPanel
+            }.toMap(),
+            formats.mapValues { (_, v) -> v.build(showBuilder) }
+        )
     }
 }
 
-class MutableLayout(baseLayout: Layout) {
-    var mediaQuery: String? = baseLayout.mediaQuery
-    var tabs: MutableList<MutableTab> = baseLayout.tabs.map { MutableTab(it) }.toMutableList()
+class MutablePanel(
+    var title: String,
+    private val basePanel: Panel? = null
+) {
+    constructor(basePanel: Panel) : this(
+        title = basePanel.title,
+        basePanel = basePanel
+    )
 
-    fun build(): Layout {
-        return Layout(mediaQuery, tabs.map { it.build() })
+    fun isFor(panel: Panel) = basePanel == panel
+
+    fun build(): Panel {
+        return Panel(title)
     }
 }
 
-class MutableTab(baseTab: Tab) {
-    val title: String = baseTab.title
-    val columns: MutableList<MutableLayoutDimen> = baseTab.columns.map { MutableLayoutDimen.decode(it) }.toMutableList()
-    val rows: MutableList<MutableLayoutDimen> = baseTab.rows.map { MutableLayoutDimen.decode(it) }.toMutableList()
-    val areas: MutableList<String> = baseTab.areas.toMutableList()
+class MutableLayout(
+    var mediaQuery: String?,
+    var tabs: MutableList<MutableTab> = mutableListOf()
+) {
+    constructor(baseLayout: Layout, panels: Map<String, MutablePanel>) : this(
+        mediaQuery = baseLayout.mediaQuery,
+        tabs = baseLayout.tabs.map { MutableTab(it, panels) }.toMutableList()
+    )
 
-    fun build(): Tab {
+    fun build(showBuilder: ShowBuilder): Layout {
+        return Layout(mediaQuery, tabs.map { it.build(showBuilder) })
+    }
+
+    fun editTab(title: String, block: MutableTab.() -> Unit): MutableLayout {
+        val tab = tabs.find { it.title == title }
+            ?: run { MutableTab(title).also { tabs.add(it) } }
+        tab.apply(block)
+        return this
+    }
+}
+
+class MutableTab(
+    var title: String,
+    val columns: MutableList<MutableLayoutDimen> = mutableListOf(),
+    val rows: MutableList<MutableLayoutDimen> = mutableListOf(),
+    val areas: MutableList<MutablePanel> = mutableListOf()
+) {
+    constructor(baseTab: Tab, panels: Map<String, MutablePanel>) : this(
+        title = baseTab.title,
+        columns = baseTab.columns.map { MutableLayoutDimen.decode(it) }.toMutableList(),
+        rows = baseTab.rows.map { MutableLayoutDimen.decode(it) }.toMutableList(),
+        areas = baseTab.areas.map { panels.getBang(it, "panel") }.toMutableList()
+    )
+
+    fun build(showBuilder: ShowBuilder): Tab {
         return Tab(
             title,
             columns.map { it.build() },
             rows.map { it.build() },
-            areas
+            areas.map { showBuilder.idFor(it.build()) }
         )
     }
 }

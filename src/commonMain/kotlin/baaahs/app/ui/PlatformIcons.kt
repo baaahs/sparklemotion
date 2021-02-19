@@ -11,6 +11,7 @@ interface PlatformIcons {
     val Fixture: Icon
     val Patch: Icon
     val DataSource: Icon
+    val Layout: Icon
     val ShaderChannel: Icon
     val Settings: Icon
     val None: Icon

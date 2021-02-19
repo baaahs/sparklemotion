@@ -14,7 +14,7 @@ import baaahs.only
 import baaahs.plugin.CorePlugin
 import baaahs.shaders.fakeFixture
 import baaahs.show.DataSource
-import baaahs.show.PanelConfig
+import baaahs.show.Panel
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.live.ActivePatchSet
@@ -77,9 +77,10 @@ object PatchResolverSpec : Spek({
                 """.trimIndent()
             )
         }
+        val mainPanel = MutablePanel(Panel("Main"))
         val mutableShow by value {
             MutableShow("test show") {
-                editLayouts { panels = mutableMapOf("Main" to PanelConfig()) }
+                editLayouts { panels["main"] = mainPanel }
             }
         }
         val show by value {
@@ -98,11 +99,11 @@ object PatchResolverSpec : Spek({
                 mutableShow.apply {
                     addPatch(autoWire(uvShader, blackShader))
 
-                    addButton("Main", "Brightness") {
+                    addButton(mainPanel, "Brightness") {
                         addPatch(autoWire(brightnessFilter))
                     }
 
-                    addButton("Main", "Orange") {
+                    addButton(mainPanel, "Orange") {
                         addPatch(autoWire(orangeShader).apply {
                             this.mutableShaderInstances.first().incomingLinks.forEach { (k, v) ->
                                 println("$k = $v")
@@ -212,7 +213,7 @@ object PatchResolverSpec : Spek({
             context("with a data source filter") {
                 beforeEachTest {
                     mutableShow.apply {
-                        addButton("Main", "Time Wobble") {
+                        addButton(mainPanel, "Time Wobble") {
                             addPatch(autoWire(wobblyTimeFilter, shaderChannel = ShaderChannel("time")).apply {
                                 mutableShaderInstances.only("shader instance")
                                     .incomingLinks["time"] = MutableDataSourcePort(CorePlugin.TimeDataSource())

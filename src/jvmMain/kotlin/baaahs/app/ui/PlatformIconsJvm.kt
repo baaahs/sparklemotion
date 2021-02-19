@@ -8,6 +8,7 @@ actual fun getCommonIcons(): PlatformIcons = object : PlatformIcons {
     override val Fixture: Icon = FakeIcon
     override val Patch: Icon = FakeIcon
     override val DataSource: Icon = FakeIcon
+    override val Layout: Icon = FakeIcon
     override val ShaderChannel: Icon = FakeIcon
     override val Settings: Icon = FakeIcon
     override val None: Icon = FakeIcon

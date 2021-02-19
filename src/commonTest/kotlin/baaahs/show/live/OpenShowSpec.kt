@@ -6,7 +6,7 @@ import baaahs.gl.testToolchain
 import baaahs.only
 import baaahs.show.Layout
 import baaahs.show.Layouts
-import baaahs.show.PanelConfig
+import baaahs.show.Panel
 import baaahs.show.Shader
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutableLayouts
@@ -34,7 +34,7 @@ object OpenShowSpec : Spek({
                 copyFrom(
                     MutableLayouts(
                         Layouts(
-                            listOf("Panel 1", "Panel 2", "Panel 3").associateWith { PanelConfig() },
+                            listOf("Panel 1", "Panel 2", "Panel 3").associateWith { Panel(it) },
                             mapOf("default" to Layout(null, emptyList()))
                         )
                     )
@@ -54,7 +54,7 @@ object OpenShowSpec : Spek({
             beforeEachTest {
                 mutableShow.addPatch(testToolchain.wireUp(fakeShader("Show Shader")))
 
-                mutableShow.addButtonGroup("Panel 1", "Scenes") {
+                mutableShow.addButtonGroup(mutableShow.findPanel("Panel 1"), "Scenes") {
                     addButton("First Scene") {
                         addPatch(testToolchain.wireUp(fakeShader("First Scene Shader")))
                     }
@@ -65,7 +65,7 @@ object OpenShowSpec : Spek({
                 }
             }
 
-            val panel1 by value { openShow.controlLayout["Panel 1"] ?: emptyList() }
+            val panel1 by value { openShow.controlLayout[openShow.getPanel("panel1")] ?: emptyList() }
             val scenesButtonGroup by value { panel1.first() as OpenButtonGroupControl }
 
             it("creates an OpenShow") {

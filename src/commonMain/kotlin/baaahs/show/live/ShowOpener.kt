@@ -7,6 +7,7 @@ import baaahs.gl.Toolchain
 import baaahs.gl.openShader
 import baaahs.gl.shader.OpenShader
 import baaahs.show.DataSource
+import baaahs.show.Panel
 import baaahs.show.Shader
 import baaahs.show.Show
 import baaahs.util.CacheBuilder
@@ -44,6 +45,9 @@ open class ShowOpener(
 
     override fun getDataSource(id: String): DataSource =
         show.dataSources.getBang(id, "data source")
+
+    override fun getPanel(id: String): Panel =
+        show.layouts.panels.getBang(id, "panel")
 
     override fun getShaderInstance(it: String): LiveShaderInstance =
         allShaderInstances.getBang(it, "shader instance")

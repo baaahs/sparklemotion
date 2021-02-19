@@ -20,5 +20,5 @@ fun Map<String, JsonElement>.toJsonObj(): JsonObject = buildJsonObject {
 }
 
 fun MutableMap<String, JsonElement>.replaceJsonObj(name: String, block: (JsonObject) -> JsonElement) {
-    this[name] = block(this[name] as JsonObject)
+    this[name] = block((this[name] ?: buildJsonObject { }) as JsonObject)
 }

@@ -4,11 +4,21 @@ import kotlinx.css.*
 import kotlinx.css.properties.borderBottom
 import kotlinx.css.properties.borderRight
 import materialui.styles.muitheme.MuiTheme
+import materialui.styles.palette.contrastText
 import materialui.styles.palette.dark
+import materialui.styles.palette.main
 import styled.StyleSheet
 
 class LayoutEditorStyles(theme: MuiTheme) : StyleSheet("app-ui-editor-LayoutEditorStyles", isStatic = true) {
+    val outerContainer by css {
+        display = Display.grid
+        gridTemplateColumns = GridTemplateColumns("auto auto auto")
+        gap = Gap(1.em.toString())
+    }
+
     val editorGrid by css {
+        marginTop = 1.em
+
         children {
             borderRight(1.px, BorderStyle.solid, theme.palette.primary.dark)
             borderBottom(1.px, BorderStyle.solid, theme.palette.primary.dark)
@@ -17,7 +27,11 @@ class LayoutEditorStyles(theme: MuiTheme) : StyleSheet("app-ui-editor-LayoutEdit
     }
 
     val gridSizeEditor by css {
+        color = theme.palette.primary.contrastText
+        backgroundColor = theme.palette.primary.main
+
         input {
+            color = theme.palette.primary.contrastText
             width = 4.em
         }
     }

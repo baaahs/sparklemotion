@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.controls.controlWrapper
+import baaahs.getBang
 import baaahs.show.Layout
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
@@ -74,18 +75,19 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
         }
 
 
-        currentTab?.areas?.forEach { panelTitle ->
+        currentTab?.areas?.forEach { panelId ->
+            val panel = props.show.layouts.panels.getBang(panelId, "panel")
             paper(Styles.layoutPanelPaper on PaperStyle.root) {
                 inlineStyles {
-                    put("gridArea", panelTitle)
+                    put("gridArea", panelId)
                     // TODO: panel flow direction could change here.
                     flexDirection = FlexDirection.column
                 }
 
-                header { +panelTitle }
+                header { +panel.title }
 
                 paper(Styles.layoutPanel and editModeStyle on PaperStyle.root) {
-                    props.controlDisplay.render(panelTitle) { panelBucket ->
+                    props.controlDisplay.render(panel) { panelBucket ->
                         droppable({
                             this.droppableId = panelBucket.dropTargetId
                             this.type = panelBucket.type

@@ -90,8 +90,10 @@ private fun forJson(show: Show): JsonObject {
 
 private fun jsonFor(eventBinding: EventBinding) = buildJsonObject { }
 
-fun jsonFor(panelConfig: PanelConfig): JsonElement {
-    return buildJsonObject { }
+fun jsonFor(panel: Panel): JsonElement {
+    return buildJsonObject {
+        put("title", panel.title)
+    }
 }
 
 fun jsonFor(control: Control): JsonElement {
