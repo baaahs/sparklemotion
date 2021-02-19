@@ -4,7 +4,7 @@ import baaahs.show.ShowMigrator
 import kotlinx.serialization.json.*
 
 @Suppress("ClassName")
-object V3_UpdateLayouts : ShowMigrator.Migration(2) {
+object V3_UpdateLayouts : ShowMigrator.Migration(3) {
     private val defaultPanels = listOf(
         "Scenes",
         "Preview",
