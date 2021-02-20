@@ -2,7 +2,6 @@ package baaahs.app.ui.editor.layout
 
 import baaahs.app.ui.appContext
 import baaahs.show.mutable.MutableLayoutDimen
-import baaahs.show.mutable.MutableTab
 import baaahs.ui.unaryPlus
 import baaahs.ui.useCallback
 import baaahs.ui.value
@@ -66,11 +65,10 @@ val LayoutSizeCell = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props -
         }
 
         span {
-            +props.dimen.unit
-
             div(+styles.gridSizeMenuAffordance) {
                 attrs.onClickFunction = showGridSizeMenu
 
+                +props.dimen.unit
                 icon(Icons.ArrowDropDown)
             }
         }
@@ -121,17 +119,6 @@ val LayoutSizeCell = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props -
 external interface LayoutSizeCellProps : RProps {
     var dimen: MutableLayoutDimen
     var onChange: () -> Unit
-}
-
-enum class Axis {
-    Column {
-        override fun getDimen(tab: MutableTab, index: Int) = tab.columns[index]
-    },
-    Row {
-        override fun getDimen(tab: MutableTab, index: Int) = tab.rows[index]
-    };
-
-    abstract fun getDimen(tab: MutableTab, index: Int): MutableLayoutDimen
 }
 
 fun RBuilder.layoutSizeCell(handler: RHandler<LayoutSizeCellProps>) =

@@ -12,6 +12,8 @@ import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import kotlinext.js.jsObject
+import kotlinx.css.Float
+import kotlinx.css.float
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.serialization.builtins.MapSerializer
@@ -19,7 +21,9 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
+import materialui.components.button.enums.ButtonSize
 import materialui.components.dialog.dialog
+import materialui.components.dialog.enums.DialogMaxWidth
 import materialui.components.dialog.enums.DialogStyle
 import materialui.components.dialogactions.dialogActions
 import materialui.components.dialogcontent.dialogContent
@@ -30,6 +34,8 @@ import materialui.components.list.list
 import materialui.components.listitem.listItem
 import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
+import materialui.components.listsubheader.enums.ListSubheaderStyle
+import materialui.components.listsubheader.listSubheader
 import materialui.components.textfield.textField
 import materialui.icon
 import materialui.icons.Icons
@@ -38,15 +44,10 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 import react.dom.i
-import kotlin.collections.Map
-import kotlin.collections.Set
-import kotlin.collections.associateWith
+import styled.inlineStyles
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.forEach
-import kotlin.collections.mutableSetOf
 import kotlin.collections.set
-import kotlin.collections.toMutableSet
 
 val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow") { props ->
     val appContext = useContext(appContext)
@@ -125,6 +126,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
 
     dialog(DraggablePaper.handleClassName on DialogStyle.paper) {
         attrs.open = props.open
+        attrs.maxWidth = DialogMaxWidth.lg
         attrs.onClose = handleClose
         attrs.paperComponent(DraggablePaper::class)
 
@@ -132,7 +134,11 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
             +"Edit Layout…"
 
             toggleButton {
+                inlineStyles {
+                    float = Float.right
+                }
                 attrs["selected"] = showCode
+                attrs.size = ButtonSize.small
                 attrs.onClickFunction = handleShowCodeButton
                 icon(Icons.Code)
             }
@@ -153,6 +159,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                         listItemText { +"Panels" }
                     }
 
+                    listSubheader(styles.listSubheader on ListSubheaderStyle.root) { +"Formats:" }
                     mutableLayouts.formats.forEach { (id, layout) ->
                         listItem {
                             attrs.button = true
@@ -166,6 +173,12 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                                 } else +mediaQuery
                             }
                         }
+                    }
+
+                    listItem {
+                        attrs.button = true
+                        attrs.disabled = true
+                        +"New Format…"
                     }
                 }
 
