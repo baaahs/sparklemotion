@@ -59,13 +59,11 @@ object V3_UpdateLayouts : ShowMigrator.Migration(3) {
         if (patchHolder.containsKey("controlLayout")) {
             patchHolder.replaceJsonObj("controlLayout") { controlLayout ->
                 controlLayout.toMutableMap().apply {
-                    forEach { (panel, contents) ->
-                        if (defaultPanels.contains(panel)) {
-                            remove(panel)
-                            this[panel.suggestId()] = contents
+                    keys.toList().forEach { panelName ->
+                        if (defaultPanels.contains(panelName)) {
+                            this[panelName.suggestId()] = remove(panelName)!!
                         } else {
-                            remove(panel)
-                            this["controls"] = contents
+                            this["controls"] = remove(panelName)!!
                         }
                     }
                 }.toJsonObj()
