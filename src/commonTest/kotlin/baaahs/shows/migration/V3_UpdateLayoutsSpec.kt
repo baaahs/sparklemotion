@@ -65,7 +65,10 @@ object V3_UpdateLayoutsSpec : Spek({
                       "controlLayout": { "Effects": "whatever" },
                       "controls": {
                         "someControl": {
-                          "controlLayout": { "More Controls": ["another"] }
+                          "controlLayout": {
+                            "More Controls": ["another"],
+                            "Even More Controls": ["stillAnother"]
+                          }
                         }
                       }
                     }
@@ -107,7 +110,10 @@ object V3_UpdateLayoutsSpec : Spek({
                         "controlLayout": { "controls": "whatever" },
                         "controls": {
                           "someControl": {
-                            "controlLayout": { "moreControls": ["another"] }
+                            "controlLayout": {
+                              "moreControls": ["another"],
+                              "controls": ["stillAnother"]
+                            }
                           }
                         }
 
