@@ -1,7 +1,7 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.editor.layout.LayoutEditorStyles
 import baaahs.app.ui.editor.ShaderEditorStyles
+import baaahs.app.ui.editor.layout.LayoutEditorStyles
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
@@ -13,6 +13,8 @@ import materialui.styles.transitions.create
 import materialui.styles.transitions.sharp
 import styled.StyleSheet
 import styled.injectGlobal
+import kotlin.collections.arrayListOf
+import kotlin.collections.set
 
 class AllStyles(val theme: MuiTheme) {
     val appUi by lazy { ThemeStyles(theme) }
@@ -364,14 +366,13 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
         descendants(baaahs.app.ui.controls.Styles.controlBox) {
             padding(3.px)
-            marginRight = 0.25.em
-            marginBottom = 0.25.em
             border(
                 width = 1.px,
                 style = BorderStyle.solid,
                 color = Color.black.withAlpha(.5),
                 borderRadius = 3.px
             )
+            transform { scale(.9) }
         }
 
         descendants(baaahs.app.ui.controls.Styles.editButton) {
@@ -388,6 +389,12 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
         descendants(baaahs.app.ui.controls.Styles.verticalButtonList) {
             paddingBottom = 1.em
+        }
+
+        descendants(baaahs.app.ui.controls.Styles.buttonGroupCard) {
+            descendants(baaahs.app.ui.controls.Styles.controlButton) {
+                transform { scale(.9) }
+            }
         }
     }
 
