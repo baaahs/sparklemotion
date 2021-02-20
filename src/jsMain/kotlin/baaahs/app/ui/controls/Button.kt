@@ -9,7 +9,7 @@ import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onMouseDownFunction
 import kotlinx.html.js.onMouseUpFunction
-import materialui.toggleButton
+import materialui.lab.components.togglebutton.toggleButton
 import react.RBuilder
 import react.RHandler
 import react.RProps
