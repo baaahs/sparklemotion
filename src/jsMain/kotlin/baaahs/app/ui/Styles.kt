@@ -11,12 +11,14 @@ import materialui.styles.palette.contrastText
 import materialui.styles.palette.dark
 import materialui.styles.transitions.create
 import materialui.styles.transitions.sharp
+import react.useContext
 import styled.StyleSheet
 import styled.injectGlobal
 import kotlin.collections.set
 
 class AllStyles(val theme: MuiTheme) {
     val appUi by lazy { ThemeStyles(theme) }
+    val appUiControls by lazy { baaahs.app.ui.controls.Styles(appUi) }
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
     val appUiEditor by lazy { baaahs.ui.editor.Styles(theme) }
     val layoutEditor by lazy { LayoutEditorStyles(theme) }
@@ -24,7 +26,7 @@ class AllStyles(val theme: MuiTheme) {
 
     fun injectGlobals() {
         injectGlobal(appUi.global.toString())
-        injectGlobal(baaahs.app.ui.controls.Styles.global.toString())
+        injectGlobal(appUiControls.global.toString())
     }
 }
 
@@ -47,6 +49,9 @@ private fun linearRepeating(
 }
 
 class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = true) {
+    val appContext = useContext(baaahs.app.ui.appContext)
+    val styles = appContext.allStyles.simUi
+
     private val drawerWidth = 260.px
 
     val help by css {

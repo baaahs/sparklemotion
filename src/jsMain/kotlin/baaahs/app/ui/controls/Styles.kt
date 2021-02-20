@@ -1,5 +1,6 @@
 package baaahs.app.ui.controls
 
+import baaahs.app.ui.ThemeStyles
 import baaahs.ui.descendants
 import baaahs.ui.name
 import kotlinx.css.*
@@ -8,7 +9,9 @@ import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import styled.StyleSheet
 
-object Styles : StyleSheet("app-ui-controls", isStatic = true) {
+class Styles(
+    private val appUiStyles: ThemeStyles
+) : StyleSheet("app-ui-controls", isStatic = true) {
     val buttonGroupCard by css {
         display = Display.flex
 
@@ -134,7 +137,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val global = CSSBuilder().apply {
-         ".${baaahs.app.ui.Styles.editModeOff.name}" {
+         ".${appUiStyles.editModeOff.name}" {
              ".${editButton.name}" {
                  put("opacity", "0 !important")
              }

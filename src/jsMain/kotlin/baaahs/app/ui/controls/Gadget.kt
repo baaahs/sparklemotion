@@ -1,18 +1,19 @@
 package baaahs.app.ui.controls
 
+import baaahs.app.ui.appContext
 import baaahs.gadgets.Slider
 import baaahs.jsx.RangeSlider
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenGadgetControl
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import react.RBuilder
-import react.RHandler
-import react.RProps
-import react.child
+import react.*
 import react.dom.div
 
 private val Gadget = xComponent<GadgetProps>("Gadget") { props ->
+    val appContext = useContext(appContext)
+    val styles = appContext.allStyles.appUiControls
+
     val gadget = props.gadgetControl.gadget
     val title = gadget.title
 
@@ -21,11 +22,11 @@ private val Gadget = xComponent<GadgetProps>("Gadget") { props ->
             RangeSlider {
                 attrs.gadget = gadget
             }
-            div(+Styles.dataSourceTitle) { +title }
+            div(+styles.dataSourceTitle) { +title }
         }
 
         else -> {
-            div(+Styles.dataSourceLonelyTitle) { +title }
+            div(+styles.dataSourceLonelyTitle) { +title }
         }
     }
 }

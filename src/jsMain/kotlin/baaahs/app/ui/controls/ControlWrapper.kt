@@ -20,6 +20,7 @@ import react.dom.div
 
 val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
     val appContext = useContext(appContext)
+    val styles = appContext.allStyles.appUiControls
 
     val control = props.control
 
@@ -28,7 +29,7 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
         event.preventDefault()
     }
 
-    card(Styles.controlBox on PaperStyle.root) {
+    card(styles.controlBox on PaperStyle.root) {
         props.draggableProvided?.let { draggableProvided ->
             ref = draggableProvided.innerRef
             copyFrom(draggableProvided.draggableProps)
@@ -37,7 +38,7 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
         problemBadge(control)
 
         if (!props.disableEdit) {
-            div(+Styles.editButton) {
+            div(+styles.editButton) {
                 attrs.onClickFunction = onEditButtonClick
 
                 icon(Icons.Edit)
@@ -45,7 +46,7 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
         }
 
         props.draggableProvided?.let { draggableProvided ->
-            div(+Styles.dragHandle) {
+            div(+styles.dragHandle) {
                 copyFrom(draggableProvided.dragHandleProps)
                 icon(Icons.DragIndicator)
             }

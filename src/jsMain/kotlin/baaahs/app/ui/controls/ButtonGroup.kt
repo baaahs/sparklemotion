@@ -27,6 +27,7 @@ import react.dom.div
 
 private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
     val appContext = useContext(appContext)
+    val styles = appContext.allStyles.appUiControls
 
     val buttonGroupControl = props.buttonGroupControl
     val dropTarget = props.controlProps.controlDisplay?.dropTargetFor(buttonGroupControl)
@@ -55,7 +56,7 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
         event.preventDefault()
     }
 
-    card(Styles.buttonGroupCard on PaperStyle.root) {
+    card(styles.buttonGroupCard on PaperStyle.root) {
         droppable({
             if (dropTarget != null) {
                 droppableId = dropTarget.dropTargetId
@@ -69,7 +70,7 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
         }) { sceneDropProvided, _ ->
             toggleButtonGroup(
                 ToggleButtonGroupStyle.root to buttonGroupControl.direction
-                    .decode(Styles.horizontalButtonList, Styles.verticalButtonList).name
+                    .decode(styles.horizontalButtonList, styles.verticalButtonList).name
             ) {
                 install(sceneDropProvided)
 
@@ -89,20 +90,20 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 //                            div {
 //                                +"Handle"
 
-                        div(+Styles.controlButton) {
+                        div(+styles.controlButton) {
                             ref = sceneDragProvided.innerRef
                             copyFrom(sceneDragProvided.draggableProps)
 
                             problemBadge(buttonControl as OpenControl)
 
-                            div(+Styles.editButton) {
+                            div(+styles.editButton) {
                                 if (editMode) {
                                     attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
                                 }
 
                                 icon(Icons.Edit)
                             }
-                            div(+Styles.dragHandle) {
+                            div(+styles.dragHandle) {
                                 copyFrom(sceneDragProvided.dragHandleProps)
                                 icon(Icons.DragIndicator)
                             }

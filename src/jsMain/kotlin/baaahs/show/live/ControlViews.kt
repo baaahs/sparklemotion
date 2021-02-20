@@ -1,6 +1,6 @@
 package baaahs.show.live
 
-import baaahs.app.ui.controls.Styles
+import baaahs.app.ui.appContext
 import baaahs.app.ui.controls.button
 import baaahs.app.ui.controls.buttonGroup
 import baaahs.app.ui.controls.visualizer
@@ -10,9 +10,13 @@ import baaahs.ui.Renderer
 import baaahs.ui.renderWrapper
 import baaahs.ui.unaryPlus
 import react.dom.div
+import react.useContext
 
 actual fun getControlViews(): ControlViews = object : ControlViews {
     override fun forGadget(openGadgetControl: OpenGadgetControl, controlProps: ControlProps): Renderer = renderWrapper {
+        val appContext = useContext(appContext)
+        val styles = appContext.allStyles.appUiControls
+
         val gadget = openGadgetControl.gadget
         val title = gadget.title
 
@@ -21,11 +25,11 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
                 RangeSlider {
                     attrs.gadget = gadget
                 }
-                div(+Styles.dataSourceTitle) { +title }
+                div(+styles.dataSourceTitle) { +title }
             }
 
             else -> {
-                div(+Styles.dataSourceLonelyTitle) { +title }
+                div(+styles.dataSourceLonelyTitle) { +title }
             }
         }
     }
