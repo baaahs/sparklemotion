@@ -1,5 +1,6 @@
 package baaahs.app.ui.controls
 
+import baaahs.ui.descendants
 import baaahs.ui.name
 import kotlinx.css.*
 import kotlinx.css.properties.Timing
@@ -10,6 +11,10 @@ import styled.StyleSheet
 object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     val buttonGroupCard by css {
         display = Display.flex
+
+        descendants(controlButton) {
+            transition(::transform, duration = 0.25.s, timing = Timing.linear)
+        }
     }
 
     val horizontalButtonList by css {
@@ -93,6 +98,8 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
                 cursor = Cursor.move
             }
         }
+
+        transition(::transform, duration = 0.25.s, timing = Timing.linear)
     }
 
     val dataSourceTitle by css {
