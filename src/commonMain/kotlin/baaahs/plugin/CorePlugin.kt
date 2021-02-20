@@ -17,6 +17,8 @@ import baaahs.gl.shader.dialect.ShaderToyShaderDialect
 import baaahs.gl.shader.type.*
 import baaahs.glsl.Uniform
 import baaahs.plugin.core.FixtureInfoDataSource
+import baaahs.plugin.core.MutableTransitionControl
+import baaahs.plugin.core.TransitionControl
 import baaahs.show.*
 import baaahs.show.mutable.*
 import baaahs.util.Logger
@@ -54,6 +56,10 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             TODO("not implemented")
         },
 
+        AddControlMenuItem("New Transition Panel…", CommonIcons.Add) { mutableShow ->
+            MutableTransitionControl()
+        },
+
         AddControlMenuItem("New Visualizer…", CommonIcons.Visualizer) { mutableShow ->
             MutableVisualizerControl()
         }
@@ -64,6 +70,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             classSerializer(GadgetControl.serializer()),
             classSerializer(ButtonControl.serializer()),
             classSerializer(ButtonGroupControl.serializer()),
+            classSerializer(TransitionControl.serializer()),
             classSerializer(VisualizerControl.serializer())
         )
 

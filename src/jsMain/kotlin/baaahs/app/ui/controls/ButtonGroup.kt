@@ -74,7 +74,7 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                 install(sceneDropProvided)
 
                 attrs["orientation"] = buttonGroupControl.direction
-                    .decode(ButtonGroupOrientation.horizontal, ButtonGroupOrientation.vertical)
+                    .decode(ButtonGroupOrientation.horizontal, ButtonGroupOrientation.vertical).name
                 attrs["exclusive"] = true
 //                    attrs["value"] = props.selected // ... but this is busted.
 //                    attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
