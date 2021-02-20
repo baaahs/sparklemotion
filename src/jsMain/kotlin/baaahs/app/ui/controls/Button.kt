@@ -41,6 +41,7 @@ private val Button = xComponent<ButtonProps>("Button") { props ->
             ButtonControl.ActivationType.Toggle ->
                 toggleButton {
                     attrs["value"] = "n/a"
+                    // Yep, for some reason you need to set it directly or it doesn't work.
                     attrs["selected"] = buttonControl.isPressed
                     attrs.onClickFunction = handleToggleClick.withEvent()
 

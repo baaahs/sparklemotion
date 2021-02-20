@@ -1,11 +1,9 @@
 package baaahs.show.live
 
-import baaahs.app.ui.controls.Styles
-import baaahs.app.ui.controls.button
-import baaahs.app.ui.controls.buttonGroup
-import baaahs.app.ui.controls.visualizer
+import baaahs.app.ui.controls.*
 import baaahs.gadgets.Slider
 import baaahs.jsx.RangeSlider
+import baaahs.plugin.core.OpenTransitionControl
 import baaahs.ui.Renderer
 import baaahs.ui.renderWrapper
 import baaahs.ui.unaryPlus
@@ -41,6 +39,13 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
         buttonGroup {
             attrs.controlProps = controlProps
             attrs.buttonGroupControl = openButtonGroupControl
+        }
+    }
+
+    override fun forTransition(openTransitionControl: OpenTransitionControl, controlProps: ControlProps) = renderWrapper {
+        transition {
+            attrs.controlProps = controlProps
+            attrs.transitionControl = openTransitionControl
         }
     }
 
