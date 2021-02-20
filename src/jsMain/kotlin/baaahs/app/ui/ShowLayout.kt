@@ -149,6 +149,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                     attrs.onClickFunction = {
                         val editIntent = AddControlToPanelBucket(panelBucket, addControlMenuItem.createControlFn)
                         appContext.openEditor(editIntent)
+                        showAddMenuFor = null
                     }
 
                     listItemIcon { icon(addControlMenuItem.icon) }
