@@ -92,7 +92,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     onChange("global styles", allStyles) {
         allStyles.injectGlobals()
     }
-    val themeStyles = allStyles.appUi
+    val appUiStyles = allStyles.appUi
 
     var appDrawerOpen by state { false }
     var layoutEditorDialogOpen by state { false }
@@ -188,12 +188,12 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val renderAppDrawerOpen = appDrawerOpen && !layoutEditorDialogOpen || forceAppDrawerOpen
 
     val appDrawerStateStyle = if (renderAppDrawerOpen)
-        themeStyles.appDrawerOpen
+        appUiStyles.appDrawerOpen
     else
-        themeStyles.appDrawerClosed
+        appUiStyles.appDrawerClosed
 
     val editModeStyle =
-        if (editMode) Styles.editModeOn else Styles.editModeOff
+        if (editMode) appUiStyles.editModeOn else appUiStyles.editModeOff
 
     val show = webClient.show
 
@@ -218,7 +218,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         themeProvider(theme) {
             cssBaseline { }
 
-            div(+Styles.root and appDrawerStateStyle and editModeStyle) {
+            div(+appUiStyles.root and appDrawerStateStyle and editModeStyle) {
                 appToolbar {
                     attrs.editMode = editMode
                     attrs.onEditModeChange = handleEditModeChange
@@ -247,7 +247,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     attrs.onCloseShow = handleCloseShow
                 }
 
-                div(+themeStyles.appContent) {
+                div(+appUiStyles.appContent) {
                     backdrop {
                         attrs {
                             open = !webClient.isConnected
@@ -263,7 +263,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     }
 
                     if (show == null) {
-                        paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
+                        paper(appUiStyles.noShowLoadedPaper on PaperStyle.root) {
                             if (webClient.isLoaded) {
                                 icon(Icons.NotificationImportant)
                                 typographyH6 { +"No open show." }
@@ -331,7 +331,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
             webClient.serverNotices.let { serverNotices ->
                 if (serverNotices.isNotEmpty()) {
-                    backdrop(Styles.serverNoticeBackdrop on BackdropStyle.root) {
+                    backdrop(appUiStyles.serverNoticeBackdrop on BackdropStyle.root) {
                         attrs { open = true }
 
                         div {

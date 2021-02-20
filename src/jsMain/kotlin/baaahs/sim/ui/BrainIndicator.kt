@@ -2,10 +2,10 @@ package baaahs.sim.ui
 
 import baaahs.Brain
 import baaahs.Brain.State.*
+import baaahs.app.ui.appContext
 import baaahs.ui.BComponent
 import baaahs.ui.Observable
 import baaahs.ui.Observer
-import baaahs.ui.SimulatorStyles.brainIndicator
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onMouseOverFunction
 import react.*
@@ -18,9 +18,11 @@ class BrainIndicator(props: BrainIndicatorProps) : BComponent<BrainIndicatorProp
     }
 
     override fun RBuilder.render() {
+        val appContext = useContext(appContext)
+        val styles = appContext.allStyles.simUi
         styledDiv {
             css {
-                +brainIndicator
+                +styles.brainIndicator
                 when (props.brain.state) {
                     Unknown -> +"unknown"
                     Link -> +"link"

@@ -19,23 +19,26 @@ import react.*
 import react.dom.div
 
 val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { props ->
+    val appContext = useContext(appContext)
+    val styles = appContext.allStyles.appUi
+
     val unplacedControlPaletteDiv = ref<HTMLElement?>()
 
     val editModeStyle =
-        if (props.editMode) Styles.editModeOn else Styles.editModeOff
+        if (props.editMode) styles.editModeOn else styles.editModeOff
 
     Draggable {
         val randomStyleForHandle = "ControlsPaletteHandle"
         attrs.handle = ".$randomStyleForHandle"
 
-        div(+editModeStyle and Styles.unplacedControlsPalette) {
+        div(+editModeStyle and styles.unplacedControlsPalette) {
             ref = unplacedControlPaletteDiv
 
-            div(+Styles.dragHandle and randomStyleForHandle) {
+            div(+styles.dragHandle and randomStyleForHandle) {
                 icon(Icons.DragIndicator)
             }
 
-            paper(Styles.unplacedControlsPaper on PaperStyle.root) {
+            paper(styles.unplacedControlsPaper on PaperStyle.root) {
                 attrs.elevation = 3
 
                 typographyH6 { +"Unplaced Controls" }
@@ -47,7 +50,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                         this.direction = Direction.vertical.name
                         this.isDropDisabled = !props.editMode
                     }) { droppableProvided, _ ->
-                        div(+Styles.unplacedControlsDroppable) {
+                        div(+styles.unplacedControlsDroppable) {
                             install(droppableProvided)
 
                             props.controlDisplay.renderUnplacedControls { index, unplacedControl ->

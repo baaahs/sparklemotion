@@ -36,18 +36,19 @@ import kotlin.reflect.KClass
 
 val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     val appContext = useContext(appContext)
+    val styles = appContext.allStyles.appUi
 
     var currentTabIndex by state { 0 }
     val currentTab = props.layout.tabs.getBounded(currentTabIndex)
 
     val editModeStyle =
-        if (props.editMode) Styles.editModeOn else Styles.editModeOff
+        if (props.editMode) styles.editModeOn else styles.editModeOff
 
     val handleAddButtonClick = memo { mutableMapOf<String, (Event) -> Unit>() }
     var showAddMenuFor by state<ControlDisplay.PanelBuckets.PanelBucket?> { null }
     var showAddMenuForAnchorEl by state<EventTarget?> { null }
 
-    div(+Styles.showLayout) {
+    div(+styles.showLayout) {
         if (currentTab != null) {
             val colCount = currentTab.columns.size
             val rowCount = currentTab.rows.size
@@ -77,7 +78,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 
         currentTab?.areas?.forEach { panelId ->
             val panel = props.show.layouts.panels.getBang(panelId, "panel")
-            paper(Styles.layoutPanelPaper on PaperStyle.root) {
+            paper(styles.layoutPanelPaper on PaperStyle.root) {
                 inlineStyles {
                     put("gridArea", panelId)
                     // TODO: panel flow direction could change here.
@@ -86,7 +87,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 
                 header { +panel.title }
 
-                paper(Styles.layoutPanel and editModeStyle on PaperStyle.root) {
+                paper(styles.layoutPanel and editModeStyle on PaperStyle.root) {
                     props.controlDisplay.render(panel) { panelBucket ->
                         droppable({
                             this.droppableId = panelBucket.dropTargetId
@@ -94,11 +95,11 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                             this.direction = Direction.horizontal.name
                             this.isDropDisabled = !props.editMode
                         }) { droppableProvided, _ ->
-                            val style = Styles.controlSections[panelBucket.section.depth]
-                            div(+Styles.layoutControls and style) {
+                            val style = styles.controlSections[panelBucket.section.depth]
+                            div(+styles.layoutControls and style) {
                                 install(droppableProvided)
 
-                                div(+Styles.controlPanelHelpText) { +panelBucket.section.title }
+                                div(+styles.controlPanelHelpText) { +panelBucket.section.title }
                                 panelBucket.controls.forEachIndexed { index, placedControl ->
                                     val control = placedControl.control
                                     val draggableId = control.id
@@ -119,7 +120,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 
                                 insertPlaceholder(droppableProvided)
 
-                                iconButton(+Styles.addToSectionButton on IconButtonStyle.root) {
+                                iconButton(+styles.addToSectionButton on IconButtonStyle.root) {
                                     attrs.onClickFunction = handleAddButtonClick.getOrPut(panelBucket.suggestId()) {
                                         { event: Event ->
                                             showAddMenuFor = panelBucket

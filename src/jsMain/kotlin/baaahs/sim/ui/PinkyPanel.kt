@@ -1,11 +1,12 @@
 package baaahs.sim.ui
 
 import baaahs.Pinky
-import baaahs.ui.*
-import kotlinx.css.*
+import baaahs.app.ui.appContext
+import baaahs.ui.BComponent
+import baaahs.ui.Observable
+import baaahs.ui.Observer
 import react.*
 import react.dom.*
-import styled.StyleSheet
 import styled.css
 import styled.styledDiv
 
@@ -15,6 +16,8 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
     }
 
     override fun RBuilder.render() {
+        val appContext = useContext(appContext)
+        val styles = appContext.allStyles.simUi
         val pinky = props.pinky
 
         if (state.showGlsl) {
@@ -22,7 +25,7 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
 
         val currentShowTitle = pinky.stageManager.currentShow?.title
         styledDiv {
-            css { +SimulatorStyles.section }
+            css { +styles.section }
             b { +"Pinky:" }
             div {
                 +"Current Show: "
@@ -65,45 +68,6 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
 
             }
         }
-    }
-}
-
-object Styles : StyleSheet("sim-pinky", isStatic = true) {
-    val glslCodeSheet by css {
-        position = Position.fixed
-        left = 5.em
-        bottom = 5.em
-        zIndex = 100
-        maxHeight = 50.vh
-        maxWidth = 50.em
-        display = Display.flex
-        flexDirection = FlexDirection.column
-
-        hover {
-            descendants(baaahs.app.ui.Styles.dragHandle) {
-                opacity = 1
-            }
-        }
-    }
-
-    val dragHandle by css {
-        position = Position.absolute
-        right = 5.px
-        top = 5.px
-        zIndex = 1
-        cursor = Cursor.move
-    }
-
-    val glslCodePaper by css {
-        padding(1.em)
-        display = Display.flex
-        flexDirection = FlexDirection.column
-    }
-
-    val glslCodeDiv by css {
-        maxHeight = 50.vh
-        maxWidth = 50.em
-        overflow = Overflow.scroll
     }
 }
 

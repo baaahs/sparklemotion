@@ -1,7 +1,10 @@
 package baaahs.sim.ui
 
-import baaahs.ui.*
-import baaahs.ui.SimulatorStyles.section
+import baaahs.app.ui.appContext
+import baaahs.ui.BComponent
+import baaahs.ui.Observable
+import baaahs.ui.Observer
+import baaahs.ui.unaryPlus
 import baaahs.util.Framerate
 import kotlinx.css.*
 import kotlinx.html.id
@@ -24,12 +27,14 @@ class FrameratePanel(props: FrameratePanelProps) : BComponent<FrameratePanelProp
     }
 
     override fun RBuilder.render() {
+        val appContext = useContext(appContext)
+        val styles = appContext.allStyles.simUi
         val pinkyFramerate = props.pinkyFramerate
         val visualizerFramerate = props.visualizerFramerate
 
         styledTable {
             attrs { id = "framerateView" }
-            css { +section }
+            css { +styles.section }
             css { tableLayout = TableLayout.fixed; width = LinearDimension("100%") }
 
             tbody {
@@ -43,20 +48,20 @@ class FrameratePanel(props: FrameratePanelProps) : BComponent<FrameratePanelProp
 
                 tr {
                     td { +"Pinky:" }
-                    td(+SimulatorStyles.dataWithUnit) { +"${pinkyFramerate.fps}fps" }
-                    td(+SimulatorStyles.dataWithUnit) { +"${pinkyFramerate.elapsedMs}ms" }
+                    td(+styles.dataWithUnit) { +"${pinkyFramerate.fps}fps" }
+                    td(+styles.dataWithUnit) { +"${pinkyFramerate.elapsedMs}ms" }
                 }
 
                 tr {
                     td { +"  average:" }
-                    td(+SimulatorStyles.dataWithUnit) { +"${pinkyFramerate.averageFps}fps" }
-                    td(+SimulatorStyles.dataWithUnit) { +"${pinkyFramerate.averageElapsedMs.roundToInt()}ms" }
+                    td(+styles.dataWithUnit) { +"${pinkyFramerate.averageFps}fps" }
+                    td(+styles.dataWithUnit) { +"${pinkyFramerate.averageElapsedMs.roundToInt()}ms" }
                 }
 
                 tr {
                     td { +"Visualizer:" }
-                    td(+SimulatorStyles.dataWithUnit) { +"${visualizerFramerate.fps}fps" }
-                    td(+SimulatorStyles.dataWithUnit) { +"${visualizerFramerate.elapsedMs}ms" }
+                    td(+styles.dataWithUnit) { +"${visualizerFramerate.fps}fps" }
+                    td(+styles.dataWithUnit) { +"${visualizerFramerate.elapsedMs}ms" }
                 }
             }
         }

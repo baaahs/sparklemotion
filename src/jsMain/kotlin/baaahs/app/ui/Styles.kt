@@ -13,7 +13,6 @@ import materialui.styles.transitions.create
 import materialui.styles.transitions.sharp
 import styled.StyleSheet
 import styled.injectGlobal
-import kotlin.collections.arrayListOf
 import kotlin.collections.set
 
 class AllStyles(val theme: MuiTheme) {
@@ -21,9 +20,9 @@ class AllStyles(val theme: MuiTheme) {
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
     val appUiEditor by lazy { baaahs.ui.editor.Styles(theme) }
     val layoutEditor by lazy { LayoutEditorStyles(theme) }
+    val simUi by lazy { baaahs.sim.ui.SimulatorStyles(appUi) }
 
     fun injectGlobals() {
-        injectGlobal(Styles.global.toString())
         injectGlobal(appUi.global.toString())
         injectGlobal(baaahs.app.ui.controls.Styles.global.toString())
     }
@@ -75,6 +74,11 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
                     color = theme.palette.primary.contrastText
                 }
             }
+        }
+
+        ".${editModeOn.name}.${unplacedControlsPalette.name}" {
+            opacity = 1
+            pointerEvents = PointerEvents.auto
         }
     }
 
@@ -208,9 +212,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
             width = 100.pct - drawerWidth
         }
     }
-}
 
-object Styles : StyleSheet("app-ui", isStatic = true) {
     val root by css {
         display = Display.flex
 
@@ -421,13 +423,6 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
         descendants("code") {
             whiteSpace = WhiteSpace.preWrap
-        }
-    }
-
-    val global = CSSBuilder().apply {
-        ".${editModeOn.name}.${unplacedControlsPalette.name}" {
-            opacity = 1
-            pointerEvents = PointerEvents.auto
         }
     }
 }

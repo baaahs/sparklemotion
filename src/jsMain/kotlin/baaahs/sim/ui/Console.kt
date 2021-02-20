@@ -2,18 +2,14 @@ package baaahs.sim.ui
 
 import baaahs.Brain
 import baaahs.SheepSimulator
+import baaahs.app.ui.appContext
 import baaahs.ui.BComponent
 import baaahs.ui.Observable
 import baaahs.ui.Observer
-import baaahs.ui.SimulatorStyles
-import baaahs.ui.SimulatorStyles.console
-import react.RBuilder
-import react.RProps
-import react.RState
+import react.*
 import react.dom.b
 import react.dom.div
 import react.dom.hr
-import react.setState
 import styled.css
 import styled.styledDiv
 
@@ -26,10 +22,12 @@ class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(prop
         setState { selectedBrain = brain }
 
     override fun RBuilder.render() {
+        val appContext = useContext(appContext)
+        val styles = appContext.allStyles.simUi
         val simulator = props.simulator
 
         styledDiv {
-            css { +console }
+            css { +styles.console }
 
             networkPanel {
                 attrs.network = simulator.network
@@ -45,7 +43,7 @@ class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(prop
             }
 
             styledDiv {
-                css { +SimulatorStyles.section }
+                css { +styles.section }
                 b { +"Brains:" }
                 div {
                     simulator.brains.forEach { brain ->

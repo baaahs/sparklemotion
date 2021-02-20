@@ -2,7 +2,6 @@ package baaahs.plugin.beatlink
 
 import baaahs.app.ui.appContext
 import baaahs.show.live.ControlProps
-import baaahs.ui.SimulatorStyles
 import baaahs.ui.addObserver
 import baaahs.ui.on
 import baaahs.ui.xComponent
@@ -26,6 +25,7 @@ import kotlin.math.roundToInt
 
 private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl") { _ ->
     val appContext = useContext(appContext)
+    val styles = appContext.allStyles.simUi
     val clock = appContext.clock
     val beatSource = appContext.plugins.findPlugin<BeatLinkPlugin>().beatSource
 
@@ -81,7 +81,7 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
 
     card(Styles.visualizerCard on PaperStyle.root) {
         styledDiv {
-            css { +SimulatorStyles.beatsDiv }
+            css { +styles.beatsDiv }
 
             b { +"Beats: " }
             +"[confidence: "

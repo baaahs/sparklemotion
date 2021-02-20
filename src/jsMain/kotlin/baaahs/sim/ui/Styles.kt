@@ -1,10 +1,14 @@
-package baaahs.ui
+package baaahs.sim.ui
 
+import baaahs.app.ui.ThemeStyles
+import baaahs.ui.descendants
 import kotlinx.css.*
 import kotlinx.css.properties.border
 import styled.StyleSheet
 
-object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
+class SimulatorStyles(
+    private val appUiStyles: ThemeStyles
+) : StyleSheet("sim-ui", isStatic = true) {
     val console by css {
         color = Color.black
         backgroundColor = Color.white
@@ -85,7 +89,44 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         child(".online") { backgroundColor = Color.orange }
     }
 
-    val dataWithUnit by Styles.css {
+    val dataWithUnit by css {
         textAlign = TextAlign.right
+    }
+
+    val glslCodeSheet by css {
+        position = Position.fixed
+        left = 5.em
+        bottom = 5.em
+        zIndex = 100
+        maxHeight = 50.vh
+        maxWidth = 50.em
+        display = Display.flex
+        flexDirection = FlexDirection.column
+
+        hover {
+            descendants(appUiStyles.dragHandle) {
+                opacity = 1
+            }
+        }
+    }
+
+    val dragHandle by css {
+        position = Position.absolute
+        right = 5.px
+        top = 5.px
+        zIndex = 1
+        cursor = Cursor.move
+    }
+
+    val glslCodePaper by css {
+        padding(1.em)
+        display = Display.flex
+        flexDirection = FlexDirection.column
+    }
+
+    val glslCodeDiv by css {
+        maxHeight = 50.vh
+        maxWidth = 50.em
+        overflow = Overflow.scroll
     }
 }

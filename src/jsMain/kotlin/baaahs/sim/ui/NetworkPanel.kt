@@ -1,8 +1,11 @@
 package baaahs.sim.ui
 
+import baaahs.app.ui.appContext
 import baaahs.sim.FakeNetwork
-import baaahs.ui.*
-import baaahs.ui.SimulatorStyles.networkPacketLossRate
+import baaahs.ui.BComponent
+import baaahs.ui.Observable
+import baaahs.ui.Observer
+import baaahs.ui.unaryPlus
 import baaahs.util.percent
 import kotlinx.css.*
 import kotlinx.html.id
@@ -22,11 +25,13 @@ class NetworkPanel(props: NetworkPanelProps) : BComponent<NetworkPanelProps, RSt
     }
 
     override fun RBuilder.render() {
+        val appContext = useContext(appContext)
+        val styles = appContext.allStyles.simUi
         val network = props.network
 
         styledTable {
             attrs { id = "networkView" }
-            css { +SimulatorStyles.section }
+            css { +styles.section }
             css { tableLayout = TableLayout.fixed; width = LinearDimension("100%") }
 
             tbody {
@@ -40,7 +45,7 @@ class NetworkPanel(props: NetworkPanelProps) : BComponent<NetworkPanelProps, RSt
                 tr {
                     td { +"Packet loss rate:" }
                     styledTd {
-                        css { +networkPacketLossRate }
+                        css { +styles.networkPacketLossRate }
                         if (network != null) {
                             attrs.onClickFunction = {
                                 network.packetLossRate = baaahs.window.prompt(
@@ -54,12 +59,12 @@ class NetworkPanel(props: NetworkPanelProps) : BComponent<NetworkPanelProps, RSt
 
                 tr {
                     td { +"Packets received:" }
-                    td(+SimulatorStyles.dataWithUnit) { +(network?.packetsReceived?.toString() ?: "") }
+                    td(+styles.dataWithUnit) { +(network?.packetsReceived?.toString() ?: "") }
                 }
 
                 tr {
                     td { +"Packets dropped:" }
-                    td(+SimulatorStyles.dataWithUnit) { +(network?.packetsDropped?.toString() ?: "") }
+                    td(+styles.dataWithUnit) { +(network?.packetsDropped?.toString() ?: "") }
                 }
             }
         }
