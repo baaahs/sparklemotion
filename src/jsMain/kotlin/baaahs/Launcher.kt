@@ -1,6 +1,7 @@
 package baaahs
 
-import baaahs.jsx.FakeClientDevice
+import baaahs.sim.FakeClientDevice
+import baaahs.sim.FakeClientDeviceProps
 import kotlinext.js.jsObject
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLButtonElement
@@ -26,14 +27,14 @@ class Launcher(val parentNode: Element) {
                 }
 
                 // Into the darkness.
-                val props = jsObject<FakeClientDevice.Props> {
+                val props = jsObject<FakeClientDeviceProps> {
                     this.name = name
                     width = 1024
                     height = 768
                     this.hostedWebApp = onLaunch()
                     onClose = { document.body?.removeChild(containerDiv) }
                 }
-                render(createElement(FakeClientDevice::class.js, props), containerDiv)
+                render(createElement(FakeClientDevice, props), containerDiv)
             }
         } as HTMLButtonElement
     }
