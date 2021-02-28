@@ -55,8 +55,8 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
 
     val newPatchCardRef = ref<Element>()
     var newPatchMenuAnchor by state<EventTarget?> { null }
-    val handleNewPatchClick = baaahs.ui.useCallback { e: Event -> newPatchMenuAnchor = e.currentTarget }
-    val handleNewPatchMenuClose = baaahs.ui.useCallback { _: Event, _: String -> newPatchMenuAnchor = null }
+    val handleNewPatchClick = useCallback { e: Event -> newPatchMenuAnchor = e.currentTarget }
+    val handleNewPatchMenuClose = useCallback { _: Event, _: String -> newPatchMenuAnchor = null }
     val handleNewShaderMenuClick: CacheBuilder<ShaderType, (Event) -> Unit> =
         CacheBuilder { type ->
             {
@@ -68,11 +68,11 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         }
 
     var showShaderLibraryDialog by state { false }
-    val handleNewFromShaderLibrary = baaahs.ui.useCallback { _: Event ->
+    val handleNewFromShaderLibrary = useCallback { _: Event ->
         newPatchMenuAnchor = null
         showShaderLibraryDialog = true
     }
-    val handleShaderLibrarySelect = baaahs.ui.useCallback { shader: Shader? ->
+    val handleShaderLibrarySelect = useCallback { shader: Shader? ->
         showShaderLibraryDialog = false
 
         if (shader != null) {

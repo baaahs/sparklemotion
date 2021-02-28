@@ -58,7 +58,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }, emptyArray())
 
     private val counterIncr = react.useState { CounterIncr() }
-    private val counter = react.useState { counterIncr.first.next() }
+    private val counter = react.useState { counterIncr.component1().next() }
     private var inRender = true
     private var stateHasChanged = false
 
@@ -163,7 +163,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
      * in a parent component from within a side effect.
      */
     fun later(block: () -> Unit) {
-        window.setTimeout(block, 0)
+        window.setTimeout(block.asDynamic(), 0)
     }
 
     fun forceRender() {
@@ -175,7 +175,7 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     private fun forceRenderNow(immediate: Boolean) {
-        val triggerUpdate = { counter.second(counterIncr.first.next()) }
+        val triggerUpdate = { counter.component2().invoke(counterIncr.component1().next()) }
         if (immediate) {
             triggerUpdate()
         } else {

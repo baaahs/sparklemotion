@@ -3,7 +3,6 @@ package baaahs.app.ui.editor.layout
 import baaahs.app.ui.appContext
 import baaahs.show.mutable.MutableLayoutDimen
 import baaahs.ui.unaryPlus
-import baaahs.ui.useCallback
 import baaahs.ui.value
 import baaahs.ui.xComponent
 import kotlinx.html.InputType

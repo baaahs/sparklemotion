@@ -28,10 +28,6 @@ fun <T> nuffin(): T = null as T
 @Suppress("UNCHECKED_CAST")
 fun <T> useRef(): RMutableRef<T> = react.useRef(null as T)
 
-fun <T : Function<*>> useCallback(vararg dependencies: dynamic, callback: T): T {
-    return react.useCallback(callback, dependencies)
-}
-
 fun useEffect(vararg dependencies: dynamic, name: String? = "Effect", effect: () -> Unit) {
     return react.useEffect(dependencies.toList()) {
         logger.debug {

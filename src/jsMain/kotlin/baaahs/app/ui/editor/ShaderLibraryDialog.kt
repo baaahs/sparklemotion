@@ -7,7 +7,6 @@ import baaahs.libraries.ShaderLibrary
 import baaahs.show.Shader
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderInstance
-import baaahs.ui.useCallback
 import baaahs.ui.value
 import baaahs.ui.xComponent
 import baaahs.util.CacheBuilder
