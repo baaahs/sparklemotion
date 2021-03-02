@@ -80,7 +80,7 @@ class ShaderComponent(
 
     override fun appendInvokeAndSet(buf: StringBuilder) {
         buf.append("    // Invoke ", title, "\n")
-        val invocationGlsl = shaderInstance.shader.invocationGlsl(namespace, resultVar, resolvedPortMap)
+        val invocationGlsl = shaderInstance.shader.invoker(namespace, resolvedPortMap).toGlsl(resultVar)
         buf.append("    ", invocationGlsl, ";\n")
         buf.append("\n")
     }

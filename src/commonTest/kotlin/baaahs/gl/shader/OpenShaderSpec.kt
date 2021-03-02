@@ -19,10 +19,9 @@ object OpenShaderSpec : Spek({
         val shaderAnalysis by value { testToolchain.analyze(shader) }
         val openShader by value { testToolchain.openShader(shaderAnalysis) }
         val invocationStatement by value {
-            openShader.invocationGlsl(
-                GlslCode.Namespace("p"), "toResultVar",
-                mapOf("time" to "timeVal", "intensity" to "intensityVal")
-            )
+            openShader.invoker(
+                GlslCode.Namespace("p"), mapOf("time" to "timeVal", "intensity" to "intensityVal")
+            ).toGlsl("toResultVar")
         }
 
         it("generates an invocation statement") {
