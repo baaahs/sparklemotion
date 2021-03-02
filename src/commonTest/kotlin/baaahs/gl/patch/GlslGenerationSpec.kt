@@ -112,10 +112,10 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
-                          // Invoke This Shader's Name
-                          p0_thisShaderSName_main();
+                            // Invoke This Shader's Name
+                            p0_thisShaderSName_main();
 
-                          sm_result = p0_thisShaderSName_gl_FragColor;
+                            sm_result = p0_thisShaderSName_gl_FragColor;
                         }
                     """.trimIndent()
                 )
@@ -177,10 +177,10 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
-                          // Invoke Untitled Shader
-                          p0_untitledShader_main(gl_FragCoord.xy);
+                            // Invoke Untitled Shader
+                            p0_untitledShader_main(gl_FragCoord.xy);
 
-                          sm_result = p0_untitledShader_gl_FragColor;
+                            sm_result = p0_untitledShader_gl_FragColor;
                         }
                     """.trimIndent()
                 )
@@ -266,10 +266,10 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
-                          // Invoke This Shader's Name
-                          p0_thisShaderSName_mainImage(p0_thisShaderSName_fragColor, gl_FragCoord.xy);
+                            // Invoke This Shader's Name
+                            p0_thisShaderSName_mainImage(p0_thisShaderSName_fragColor, gl_FragCoord.xy);
 
-                          sm_result = p0_thisShaderSName_fragColor;
+                            sm_result = p0_thisShaderSName_fragColor;
                         }
                     """.trimIndent()
                 )
@@ -374,16 +374,16 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
-                          // Invoke Pixel Location
-                          in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
+                            // Invoke Pixel Location
+                            in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
 
-                          // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
+                            // Invoke Cylindrical Projection
+                            p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
 
-                          // Invoke This Shader's Name
-                          p1_thisShaderSName_main();
+                            // Invoke This Shader's Name
+                            p1_thisShaderSName_main();
 
-                          sm_result = p1_thisShaderSName_gl_FragColor;
+                            sm_result = p1_thisShaderSName_gl_FragColor;
                         }
                     """.trimIndent()
                 )
@@ -491,16 +491,16 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
-                          // Invoke Main Paint Shader
-                          p0_mainPaintShader_main();
+                            // Invoke Main Paint Shader
+                            p0_mainPaintShader_main();
 
-                          // Invoke Other Paint Shader
-                          p1_otherPaintShader_mainImage(p1_otherPaintShader_fragColor, gl_FragCoord.xy);
+                            // Invoke Other Paint Shader
+                            p1_otherPaintShader_mainImage(p1_otherPaintShader_fragColor, gl_FragCoord.xy);
 
-                          // Invoke Cross-fade shader
-                          p2_crossFadeShaderi_result = p2_crossFadeShader_main(p0_mainPaintShader_gl_FragColor, p1_otherPaintShader_fragColor);
+                            // Invoke Cross-fade shader
+                            p2_crossFadeShaderi_result = p2_crossFadeShader_main(p0_mainPaintShader_gl_FragColor, p1_otherPaintShader_fragColor);
 
-                          sm_result = p2_crossFadeShaderi_result;
+                            sm_result = p2_crossFadeShaderi_result;
                         }
                     """.trimIndent()
                 )
@@ -556,13 +556,13 @@ object GlslGenerationSpec : Spek({
 
                             #line 10001
                             void main() {
-                              // Invoke Main Paint Shader
-                              p0_mainPaintShader_main();
+                                // Invoke Main Paint Shader
+                                p0_mainPaintShader_main();
 
-                              // Invoke Cross-fade shader
-                              p1_crossFadeShaderi_result = p1_crossFadeShader_main(p0_mainPaintShader_gl_FragColor, vec4(0.));
+                                // Invoke Cross-fade shader
+                                p1_crossFadeShaderi_result = p1_crossFadeShader_main(p0_mainPaintShader_gl_FragColor, vec4(0.));
 
-                              sm_result = p1_crossFadeShaderi_result;
+                                sm_result = p1_crossFadeShaderi_result;
                             }
                         """.trimIndent()
                     )
@@ -648,15 +648,15 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
-                          // Invoke Untitled Shader
-                          p0_untitledShader_main(p0_untitledShader_params);
+                            // Invoke Untitled Shader
+                            p0_untitledShader_main(p0_untitledShader_params);
 
-                          sm_result = vec4(
-                            p0_untitledShader_params.pan,
-                            p0_untitledShader_params.tilt,
-                            p0_untitledShader_params.colorWheel,
-                            p0_untitledShader_params.dimmer
-                          );
+                            sm_result = vec4(
+                                p0_untitledShader_params.pan,
+                                p0_untitledShader_params.tilt,
+                                p0_untitledShader_params.colorWheel,
+                                p0_untitledShader_params.dimmer
+                            );
                         }
                     """.trimIndent()
                 )
@@ -736,15 +736,15 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
-                          // Invoke Untitled Shader
-                          p0_untitledShaderi_result = p0_untitledShader_main();
+                            // Invoke Untitled Shader
+                            p0_untitledShaderi_result = p0_untitledShader_main();
 
-                          sm_result = vec4(
-                            p0_untitledShaderi_result.pan,
-                            p0_untitledShaderi_result.tilt,
-                            p0_untitledShaderi_result.colorWheel,
-                            p0_untitledShaderi_result.dimmer
-                          );
+                            sm_result = vec4(
+                                p0_untitledShaderi_result.pan,
+                                p0_untitledShaderi_result.tilt,
+                                p0_untitledShaderi_result.colorWheel,
+                                p0_untitledShaderi_result.dimmer
+                            );
                         }
                     """.trimIndent()
                 )
@@ -809,10 +809,10 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
-                          // Invoke Untitled Shader
-                          p0_untitledShaderi_result = p0_untitledShader_main();
+                            // Invoke Untitled Shader
+                            p0_untitledShaderi_result = p0_untitledShader_main();
 
-                          sm_result = p0_untitledShaderi_result;
+                            sm_result = p0_untitledShaderi_result;
                         }
                     """.trimIndent()
                 )

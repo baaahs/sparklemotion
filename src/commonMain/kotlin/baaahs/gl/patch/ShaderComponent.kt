@@ -78,10 +78,10 @@ class ShaderComponent(
         buf.append(openShader.toGlsl(namespace, resolvedPortMap), "\n")
     }
 
-    override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {
-        buf.append(prefix, "// Invoke ", title, "\n")
+    override fun appendInvokeAndSet(buf: StringBuilder) {
+        buf.append("    // Invoke ", title, "\n")
         val invocationGlsl = shaderInstance.shader.invocationGlsl(namespace, resultVar, resolvedPortMap)
-        buf.append(prefix, invocationGlsl, ";\n")
+        buf.append("    ", invocationGlsl, ";\n")
         buf.append("\n")
     }
 

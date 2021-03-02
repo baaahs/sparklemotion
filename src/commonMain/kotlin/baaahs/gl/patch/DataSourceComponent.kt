@@ -26,8 +26,8 @@ class DataSourceComponent(val dataSource: DataSource, val varName: String) : Com
         }
     }
 
-    override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {
-        dataSource.appendInvokeAndSet(buf, prefix, varName)
+    override fun appendInvokeAndSet(buf: StringBuilder) {
+        dataSource.appendInvokeAndSet(buf, varName)
     }
 
     override fun getExpression(): String {
