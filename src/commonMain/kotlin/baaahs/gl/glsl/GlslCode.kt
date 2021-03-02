@@ -263,20 +263,24 @@ class GlslCode(
 
         override fun stripSource() = copy(lineNumber = null)
 
-        fun invocationGlsl(namespace: Namespace, resultVar: String, portMap: Map<String, String>): String {
-            val assignment = if (returnType != GlslType.Void) {
-                "$resultVar = "
-            } else ""
+        fun invoker(namespace: Namespace, portMap: Map<String, String>): Invoker {
+            return object : Invoker {
+                override fun toGlsl(resultVar: String): String {
+                    val assignment = if (returnType != GlslType.Void) {
+                        "$resultVar = "
+                    } else ""
 
-            val args = params.joinToString(", ") { glslParam ->
-                if (glslParam.isOut)
-                    resultVar
-                else
-                    portMap[glslParam.name]
-                        ?: "/* huh? ${glslParam.name} */"
+                    val args = params.joinToString(", ") { glslParam ->
+                        if (glslParam.isOut)
+                            resultVar
+                        else
+                            portMap[glslParam.name]
+                                ?: "/* huh? ${glslParam.name} */"
+                    }
+
+                    return assignment + namespace.qualify(name) + "($args)"
+                }
             }
-
-            return assignment + namespace.qualify(name) + "($args)"
         }
     }
 
@@ -311,5 +315,9 @@ class GlslCode(
                 "${prefix}_$name"
             }
         }
+    }
+
+    interface Invoker {
+        fun toGlsl(resultVar: String): String
     }
 }

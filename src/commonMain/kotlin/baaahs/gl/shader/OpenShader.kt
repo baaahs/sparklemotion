@@ -43,11 +43,10 @@ interface OpenShader : RefCounted {
 
     fun toGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
 
-    fun invocationGlsl(
+    fun invoker(
         namespace: Namespace,
-        resultVar: String,
         portMap: Map<String, String> = emptyMap()
-    ): String
+    ): GlslCode.Invoker
 
     class Base(
         override val shader: Shader,
@@ -97,8 +96,8 @@ interface OpenShader : RefCounted {
             return buf.toString()
         }
 
-        override fun invocationGlsl(namespace: Namespace, resultVar: String, portMap: Map<String, String>): String {
-            return entryPoint.invocationGlsl(namespace, resultVar, portMap)
+        override fun invoker(namespace: Namespace, portMap: Map<String, String>): GlslCode.Invoker {
+            return entryPoint.invoker(namespace, portMap)
         }
 
         override fun equals(other: Any?): Boolean =

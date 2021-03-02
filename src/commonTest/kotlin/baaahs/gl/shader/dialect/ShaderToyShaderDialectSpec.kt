@@ -26,10 +26,9 @@ object ShaderToyShaderDialectSpec : Spek({
         val glslCode by value { shaderAnalysis.glslCode }
         val openShader by value { OpenShader.Base(shaderAnalysis, PaintShader) }
         val invocationStatement by value {
-            openShader.invocationGlsl(
-                GlslCode.Namespace("p"), "toResultVar",
-                mapOf("fragCoord" to "fragCoordVal.xy", "intensity" to "intensityVal")
-            )
+            openShader.invoker(
+                GlslCode.Namespace("p"), mapOf("fragCoord" to "fragCoordVal.xy", "intensity" to "intensityVal")
+            ).toGlsl("toResultVar")
         }
 
         context("shaders having a void mainImage(out vec4, in vec2) function") {

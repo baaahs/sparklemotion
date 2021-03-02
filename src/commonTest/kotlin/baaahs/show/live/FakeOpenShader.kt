@@ -28,11 +28,12 @@ class FakeOpenShader(
     override fun toGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String =
         "// GLSL for $title"
 
-    override fun invocationGlsl(
+    override fun invoker(
         namespace: GlslCode.Namespace,
-        resultVar: String,
         portMap: Map<String, String>
-    ): String = "// invocationGlsl for $title;\n"
+    ): GlslCode.Invoker = object : GlslCode.Invoker {
+        override fun toGlsl(resultVar: String): String = "// invocationGlsl for $title;\n"
+    }
 
     override val shaderType: ShaderType
         get() = TODO("not implemented")

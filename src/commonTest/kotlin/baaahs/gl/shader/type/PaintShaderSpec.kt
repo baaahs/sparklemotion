@@ -157,7 +157,7 @@ object PaintShaderSpec : Spek({
             }
 
             it("generates invocation GLSL") {
-                expect(openShader.invocationGlsl(namespace, "resultVar"))
+                expect(openShader.invoker(namespace).toGlsl("resultVar"))
                     .toBe("p0_main()")
             }
 
@@ -190,11 +190,11 @@ object PaintShaderSpec : Spek({
 
                 it("generates invocation GLSL") {
                     expect(
-                        openShader.invocationGlsl(
-                            namespace, "resultVar", mapOf(
+                        openShader.invoker(
+                            namespace, mapOf(
                                 "uv" to "uvArg"
                             )
-                        )
+                        ).toGlsl("resultVar")
                     )
                         .toBe("p0_main(uvArg)")
                 }
@@ -309,7 +309,7 @@ object PaintShaderSpec : Spek({
             }
 
             it("generates invocation GLSL") {
-                expect(openShader.invocationGlsl(namespace, "resultVar", mapOf("fragCoord" to "gl_FragCoord.xy")))
+                expect(openShader.invoker(namespace, mapOf("fragCoord" to "gl_FragCoord.xy")).toGlsl("resultVar"))
                     .toBe("p0_mainImage(resultVar, gl_FragCoord.xy)")
             }
         }
