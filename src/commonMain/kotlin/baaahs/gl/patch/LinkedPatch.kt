@@ -42,19 +42,10 @@ class LinkedPatch(
         }
 
         components.last().outputVar
-            ?.let {
-                val resultContentType = rootNode.outputPort.contentType
-                if (resultContentType.outputRepresentation != resultContentType.glslType) {
-                    // Pass struct members through an output-friendly type.
-                    buf.append("    sm_result = ${resultContentType.outputRepresentation.glslLiteral}(")
-                    (resultContentType.glslType as GlslType.Struct).fields.entries.forEachIndexed { index, (name, _) ->
-                        if (index > 0) buf.append(",")
-                        buf.append("\n        $it.$name")
-                    }
-                    buf.append("\n    );\n")
-                } else {
-                    buf.append("    sm_result = ", it, ";\n")
-                }
+            ?.let { outputVar ->
+                buf.append("    sm_result = ")
+                rootNode.outputPort.contentType.appendResultAsScalars(buf, outputVar)
+                buf.append(";\n")
             }
 
         buf.append("}\n")

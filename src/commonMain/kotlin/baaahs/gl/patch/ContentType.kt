@@ -35,6 +35,23 @@ class ContentType(
         return id == "unknown" || id.startsWith("unknown/")
     }
 
+    /**
+     * OpenGL doesn't support struct buffers directly, so emit any struct results to scalar arrays.
+     */
+    fun appendResultAsScalars(buf: StringBuilder, varName: String) {
+        if (outputRepresentation != glslType) {
+            // Pass struct members through an output-friendly type.
+            buf.append(outputRepresentation.glslLiteral, "(")
+            (glslType as GlslType.Struct).fields.entries.forEachIndexed { index, (name, _) ->
+                if (index > 0) buf.append(",")
+                buf.append("\n        $varName.$name")
+            }
+            buf.append("\n    )")
+        } else {
+            buf.append(varName)
+        }
+    }
+
     override fun toString(): String = "ContentType($id [$glslType])"
 
     override fun equals(other: Any?): Boolean {
