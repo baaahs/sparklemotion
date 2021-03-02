@@ -113,7 +113,7 @@ data class DefaultValueNode(
     override fun appendDeclarations(buf: StringBuilder) {
     }
 
-    override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {
+    override fun appendInvokeAndSet(buf: StringBuilder) {
     }
 
     override fun getExpression(): String {
@@ -143,7 +143,7 @@ data class ConstNode(val glsl: String, override val outputPort: OutputPort) : Pr
 
     override fun appendStructs(buf: StringBuilder) {}
     override fun appendDeclarations(buf: StringBuilder) {}
-    override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {}
+    override fun appendInvokeAndSet(buf: StringBuilder) {}
 
     override fun getExpression(): String {
         return "($glsl)"

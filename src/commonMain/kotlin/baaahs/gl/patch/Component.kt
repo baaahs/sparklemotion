@@ -9,7 +9,7 @@ interface Component {
 
     fun appendStructs(buf: StringBuilder)
     fun appendDeclarations(buf: StringBuilder)
-    fun appendInvokeAndSet(buf: StringBuilder, prefix: String)
+    fun appendInvokeAndSet(buf: StringBuilder)
 
     fun getExpression(): String
 }

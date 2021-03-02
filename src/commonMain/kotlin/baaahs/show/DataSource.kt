@@ -68,11 +68,11 @@ interface DataSource {
 
     fun invocationGlsl(varName: String): String? = null
 
-    fun appendInvokeAndSet(buf: StringBuilder, prefix: String, varName: String) {
+    fun appendInvokeAndSet(buf: StringBuilder, varName: String) {
         val invocationGlsl = invocationGlsl(varName)
         if (invocationGlsl != null) {
-            buf.append(prefix, "// Invoke ", title, "\n")
-            buf.append(prefix, invocationGlsl, ";\n")
+            buf.append("    // Invoke ", title, "\n")
+            buf.append("    ", invocationGlsl, ";\n")
             buf.append("\n")
         }
     }
