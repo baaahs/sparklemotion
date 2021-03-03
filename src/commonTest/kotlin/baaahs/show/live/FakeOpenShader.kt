@@ -25,6 +25,9 @@ class FakeOpenShader(
     override val entryPoint: GlslCode.GlslFunction
         get() = TODO("not implemented")
 
+    override val globalVars: List<GlslCode.GlslVar>
+        get() = TODO("not implemented")
+
     override fun toGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String =
         "// GLSL for $title"
 
