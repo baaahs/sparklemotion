@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 
 interface Component {
@@ -11,5 +12,5 @@ interface Component {
     fun appendDeclarations(buf: StringBuilder)
     fun appendInvokeAndSet(buf: StringBuilder)
 
-    fun getExpression(): String
+    fun getExpression(): GlslExpr
 }

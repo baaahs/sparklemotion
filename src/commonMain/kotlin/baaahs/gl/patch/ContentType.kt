@@ -1,6 +1,7 @@
 package baaahs.gl.patch
 
 import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.plugin.core.MovingHeadParams
 
@@ -10,12 +11,12 @@ class ContentType(
     val glslType: GlslType,
     /** If false, this content type won't be suggested for matching GLSL types, it must be explicitly specified. */
     val suggest: Boolean = true,
-    private val typeAdaptations: Map<GlslType, (String) -> String> = emptyMap(),
+    private val typeAdaptations: Map<GlslType, (GlslExpr) -> GlslExpr> = emptyMap(),
     /** If [glslType] is a [GlslType.Struct], we currently need to provide a hint for converting it to a vector. */
     val outputRepresentation: GlslType = glslType,
-    private val defaultInitializer: ((GlslType) -> String)? = null
+    private val defaultInitializer: ((GlslType) -> GlslExpr)? = null
 ) {
-    fun initializer(dataType: GlslType): String =
+    fun initializer(dataType: GlslType): GlslExpr =
         defaultInitializer?.invoke(dataType)
             ?: officialDefaultInitializer(dataType)
 
@@ -26,7 +27,7 @@ class ContentType(
     private fun officialDefaultInitializer(dataType: GlslType) =
         (if (dataType == glslType) glslType else dataType).defaultInitializer
 
-    fun adapt(expression: String, toType: GlslType): String {
+    fun adapt(expression: GlslExpr, toType: GlslType): GlslExpr {
         return typeAdaptations[toType]?.invoke(expression)
             ?: expression
     }
@@ -87,14 +88,14 @@ class ContentType(
 
         val UvCoordinate = ContentType(
             "uv-coordinate", "U/V Coordinate", GlslType.Vec2,
-            typeAdaptations = mapOf(GlslType.Vec4 to { "$it.xy" })
+            typeAdaptations = mapOf(GlslType.Vec4 to { GlslExpr("${it.s}.xy") })
         )
         val XyCoordinate = ContentType("xy-coordinate", "X/Y Coordinate", GlslType.Vec2)
         val ModelInfo = ContentType("model-info", "Model Info", MoreTypes.ModelInfo.glslType)
         val Mouse = ContentType("mouse", "Mouse", GlslType.Vec2)
         val XyzCoordinate = ContentType("xyz-coordinate", "X/Y/Z Coordinate", GlslType.Vec3)
         val Color = ContentType("color", "Color", GlslType.Vec4) { type ->
-            if (type == GlslType.Vec4) "vec4(0., 0., 0., 1.)" else type.defaultInitializer
+            if (type == GlslType.Vec4) GlslExpr("vec4(0., 0., 0., 1.)") else type.defaultInitializer
         }
         val Time = ContentType("time", "Time", GlslType.Float)
         val Float = ContentType("float", "Float", GlslType.Float)

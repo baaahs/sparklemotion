@@ -2,6 +2,7 @@ package baaahs.gl.shader
 
 import baaahs.describe
 import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.override
 import baaahs.gl.testToolchain
 import baaahs.show.Shader
@@ -19,7 +20,7 @@ object OpenShaderSpec : Spek({
         val openShader by value { testToolchain.openShader(shaderAnalysis) }
         val invocationStatement by value {
             openShader.invoker(
-                GlslCode.Namespace("p"), mapOf("time" to "timeVal", "greenness" to "greennessVal")
+                GlslCode.Namespace("p"), mapOf("time" to GlslExpr("timeVal"), "greenness" to GlslExpr("greennessVal"))
             ).toGlsl("toResultVar")
         }
 

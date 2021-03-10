@@ -4,6 +4,7 @@ import baaahs.fixtures.FloatsResultType
 import baaahs.fixtures.ResultBuffer
 import baaahs.fixtures.ResultType
 import baaahs.gl.GlContext
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import com.danielgergely.kgl.GL_RGBA
@@ -22,7 +23,7 @@ data class MovingHeadParams(
             "tilt" to GlslType.Float,
             "colorWheel" to GlslType.Float,
             "dimmer" to GlslType.Float,
-            defaultInitializer = "MovingHeadParams(0., 0., 0., 1.)"
+            defaultInitializer = GlslExpr("MovingHeadParams(0., 0., 0., 1.)")
         )
 
         val contentType = ContentType(

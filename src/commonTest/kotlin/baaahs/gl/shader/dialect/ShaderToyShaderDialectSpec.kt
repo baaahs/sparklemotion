@@ -3,6 +3,7 @@ package baaahs.gl.shader.dialect
 import baaahs.describe
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.shader.InputPort
@@ -27,7 +28,7 @@ object ShaderToyShaderDialectSpec : Spek({
         val openShader by value { OpenShader.Base(shaderAnalysis, PaintShader) }
         val invocationStatement by value {
             openShader.invoker(
-                GlslCode.Namespace("p"), mapOf("fragCoord" to "fragCoordVal.xy", "intensity" to "intensityVal")
+                GlslCode.Namespace("p"), mapOf("fragCoord" to GlslExpr("fragCoordVal.xy"), "intensity" to GlslExpr("intensityVal"))
             ).toGlsl("toResultVar")
         }
 

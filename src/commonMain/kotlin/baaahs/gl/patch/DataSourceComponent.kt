@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.show.DataSource
 
@@ -30,7 +31,7 @@ class DataSourceComponent(val dataSource: DataSource, val varName: String) : Com
         dataSource.appendInvokeAndSet(buf, varName)
     }
 
-    override fun getExpression(): String {
-        return dataSource.getVarName(varName)
+    override fun getExpression(): GlslExpr {
+        return GlslExpr(dataSource.getVarName(varName))
     }
 }
