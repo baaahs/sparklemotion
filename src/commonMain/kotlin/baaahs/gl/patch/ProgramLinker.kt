@@ -2,6 +2,7 @@ package baaahs.gl.patch
 
 import baaahs.getBang
 import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
@@ -116,7 +117,7 @@ data class DefaultValueNode(
     override fun appendInvokeAndSet(buf: StringBuilder) {
     }
 
-    override fun getExpression(): String {
+    override fun getExpression(): GlslExpr {
         return contentType.glslType.defaultInitializer
     }
 
@@ -145,9 +146,7 @@ data class ConstNode(val glsl: String, override val outputPort: OutputPort) : Pr
     override fun appendDeclarations(buf: StringBuilder) {}
     override fun appendInvokeAndSet(buf: StringBuilder) {}
 
-    override fun getExpression(): String {
-        return "($glsl)"
-    }
+    override fun getExpression(): GlslExpr = GlslExpr("($glsl)")
 
     override fun toString(): String = "ConstNode(glsl='$glsl', outputPort=$outputPort)"
 }

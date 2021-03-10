@@ -97,11 +97,11 @@ class GlslCode(
         fun toGlsl(
             namespace: Namespace,
             symbolsToNamespace: Set<String>,
-            symbolMap: Map<String, String>
+            symbolMap: Map<String, GlslExpr>
         ): String {
             return "${lineNumber?.let { "\n#line $lineNumber\n" }}" +
                     replaceCodeWords(fullText) {
-                        symbolMap[it]
+                        symbolMap[it]?.s
                             ?: if (it == name || symbolsToNamespace.contains(it)) {
                                 namespace.qualify(it)
                             } else {
@@ -263,7 +263,7 @@ class GlslCode(
 
         override fun stripSource() = copy(lineNumber = null)
 
-        fun invoker(namespace: Namespace, portMap: Map<String, String>): Invoker {
+        fun invoker(namespace: Namespace, portMap: Map<String, GlslExpr>): Invoker {
             return object : Invoker {
                 override fun toGlsl(resultVar: String): String {
                     val assignment = if (returnType != GlslType.Void) {
@@ -274,7 +274,7 @@ class GlslCode(
                         if (glslParam.isOut)
                             resultVar
                         else
-                            portMap[glslParam.name]
+                            portMap[glslParam.name]?.s
                                 ?: "/* huh? ${glslParam.name} */"
                     }
 

@@ -2,12 +2,9 @@ package baaahs.gl.shader
 
 import baaahs.RefCounted
 import baaahs.RefCounter
-import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.*
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
-import baaahs.gl.glsl.GlslError
-import baaahs.gl.glsl.GlslType
-import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.shader.dialect.ShaderDialect
 import baaahs.gl.shader.type.ShaderType
 import baaahs.only
@@ -44,11 +41,11 @@ interface OpenShader : RefCounted {
     /** The list of global variables that aren't also backing input ports. */
     val globalVars: List<GlslCode.GlslVar>
 
-    fun toGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
+    fun toGlsl(namespace: Namespace, portMap: Map<String, GlslExpr> = emptyMap()): String
 
     fun invoker(
         namespace: Namespace,
-        portMap: Map<String, String> = emptyMap()
+        portMap: Map<String, GlslExpr> = emptyMap()
     ): GlslCode.Invoker
 
     class Base(
@@ -72,12 +69,12 @@ interface OpenShader : RefCounted {
 
         override val globalVars = glslCode.globalVars.filter { !it.isUniform && !it.isVarying }
 
-        override fun toGlsl(namespace: Namespace, portMap: Map<String, String>): String {
+        override fun toGlsl(namespace: Namespace, portMap: Map<String, GlslExpr>): String {
             val buf = StringBuilder()
 
-            val nonUniformGlobalsMap = hashMapOf<String, String>()
+            val nonUniformGlobalsMap = hashMapOf<String, GlslExpr>()
             globalVars.forEach { glslVar ->
-                nonUniformGlobalsMap[glslVar.name] = namespace.qualify(glslVar.name)
+                nonUniformGlobalsMap[glslVar.name] = GlslExpr(namespace.qualify(glslVar.name))
                 buf.append(glslVar.toGlsl(namespace, glslCode.symbolNames, emptyMap()))
                 buf.append("\n")
             }
@@ -99,7 +96,7 @@ interface OpenShader : RefCounted {
             return buf.toString()
         }
 
-        override fun invoker(namespace: Namespace, portMap: Map<String, String>): GlslCode.Invoker {
+        override fun invoker(namespace: Namespace, portMap: Map<String, GlslExpr>): GlslCode.Invoker {
             return entryPoint.invoker(namespace, portMap)
         }
 

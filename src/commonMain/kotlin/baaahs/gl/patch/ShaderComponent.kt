@@ -1,6 +1,7 @@
 package baaahs.gl.patch
 
 import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.util.Logger
@@ -14,12 +15,12 @@ class ShaderComponent(
     override val title: String get() = shaderInstance.shader.title
     private val prefix = "p$index"
     private val namespace = GlslCode.Namespace(prefix + "_" + id)
-    private val portMap: Map<String, String>
+    private val portMap: Map<String, GlslExpr>
     private val resultInReturnValue: Boolean
     private val resultVar: String
 
     init {
-        val tmpPortMap = hashMapOf<String, String>()
+        val tmpPortMap = hashMapOf<String, GlslExpr>()
 
         shaderInstance.incomingLinks.forEach { (toPortId, fromLink) ->
             val inputPort = shaderInstance.shader.findInputPort(toPortId)
@@ -40,7 +41,7 @@ class ShaderComponent(
             resultVar = namespace.internalQualify("result")
         } else {
             resultVar = namespace.qualify(outputPort.id)
-            tmpPortMap[outputPort.id] = resultVar
+            tmpPortMap[outputPort.id] = GlslExpr(resultVar)
         }
 
         portMap = tmpPortMap
@@ -52,7 +53,7 @@ class ShaderComponent(
         get() = shaderInstance.shader.outputPort.dataType
 
     private val resolvedPortMap get() =
-        portMap + mapOf(shaderInstance.shader.outputPort.id to outputVar)
+        portMap + mapOf(shaderInstance.shader.outputPort.id to GlslExpr(outputVar))
 
     override fun appendStructs(buf: StringBuilder) {
         val openShader = shaderInstance.shader
@@ -72,7 +73,7 @@ class ShaderComponent(
 
         buf.append("\n")
         with(openShader.outputPort) {
-            buf.append("${dataType.glslLiteral} $resultVar = ${contentType.initializer(dataType)};\n")
+            buf.append("${dataType.glslLiteral} $resultVar = ${contentType.initializer(dataType).s};\n")
         }
 
         buf.append(openShader.toGlsl(namespace, resolvedPortMap), "\n")
@@ -85,13 +86,13 @@ class ShaderComponent(
         buf.append("\n")
     }
 
-    override fun getExpression(): String {
+    override fun getExpression(): GlslExpr {
         val outputPort = shaderInstance.shader.outputPort
         return if (outputPort.isReturnValue()) {
             resultVar
         } else {
             namespace.qualify(outputPort.id)
-        }
+        }.let { GlslExpr(it) }
     }
 
     companion object {
