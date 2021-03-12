@@ -130,10 +130,8 @@ data class DefaultValueNode(
     }
 }
 
-data class ConstNode(val glsl: String, override val outputPort: OutputPort) : ProgramNode, Component {
-    override val title: String get() = "const($glsl)"
+abstract class ExprNode : ProgramNode, Component {
     override val outputVar: String get() = TODO("not implemented")
-    override val resultType: GlslType get() = outputPort.dataType
     override val invokeFromMain: Boolean get() = true
 
     override fun getNodeId(programLinker: ProgramLinker): String = "n/a"
@@ -147,6 +145,12 @@ data class ConstNode(val glsl: String, override val outputPort: OutputPort) : Pr
     override fun appendStructs(buf: StringBuilder) {}
     override fun appendDeclarations(buf: StringBuilder) {}
     override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {}
+}
+
+data class ConstNode(val glsl: String, override val outputPort: OutputPort) : ExprNode() {
+    override val title: String get() = "const($glsl)"
+
+    override val resultType: GlslType get() = outputPort.dataType
 
     override fun getExpression(prefix: String): GlslExpr = GlslExpr("($glsl)")
 

@@ -82,7 +82,7 @@ class LiveShaderInstance(
             val inputPort = shader.findInputPort(portId)
             if (injectedData.contains(inputPort.contentType)) {
                 injectedPorts.add(inputPort.id)
-                InjectedDataLink(this, inputPort)
+                InjectedDataLink()
             } else link
         }
 
@@ -158,53 +158,17 @@ class LiveShaderInstance(
         }
     }
 
-    data class InjectedDataLink(val liveShaderInstance: LiveShaderInstance, val inputPort: InputPort) : Link {
+    class InjectedDataLink : Link {
         override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode {
-            return object : ProgramNode {
-                override val title: String
-                    get() = TODO("not implemented")
-                override val outputPort: OutputPort
-                    get() = TODO("not implemented")
+            return object : ExprNode() {
+                override val title: String get() = "InjectedDataLink(${inputPort.id})"
+                override val outputPort: OutputPort get() = OutputPort(inputPort.contentType)
+                override val resultType: GlslType get() = inputPort.contentType.glslType
 
-                override fun getNodeId(programLinker: ProgramLinker): String {
-                    return "n/a InjectedDataLink"
-                }
-
-                override fun traverse(programLinker: ProgramLinker, depth: Int) {
-                }
-
-                override fun buildComponent(
-                    id: String,
-                    index: Int,
-                    findUpstreamComponent: (ProgramNode) -> Component
-                ): Component {
-                    return object : Component {
-                        val lsi = liveShaderInstance
-                        val inputPort = inputPort
-//                        val thing = findUpstreamComponent(liveShaderInstance)
-
-                        override val title: String
-                            get() = TODO("not implemented")
-                        override val outputVar: String?
-                            get() = null
-                        override val resultType: GlslType
-                            get() = inputPort.type
-                        override val invokeFromMain: Boolean
-                            get() = false
-
-                        override fun appendStructs(buf: StringBuilder) {}
-
-                        override fun appendDeclarations(buf: StringBuilder) {}
-
-                        override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {}
-
-                        override fun getExpression(prefix: String): GlslExpr {
-                            return GlslExpr("${prefix}_global_${inputPort.id}")
-                        }
-                    }
+                override fun getExpression(prefix: String): GlslExpr {
+                    return GlslExpr("${prefix}_global_${inputPort.id}")
                 }
             }
-//            return ConstNode("injectedDataXxx", OutputPort(inputPort.contentType))
         }
     }
 }
