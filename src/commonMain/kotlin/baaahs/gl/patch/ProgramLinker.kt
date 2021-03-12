@@ -105,6 +105,7 @@ data class DefaultValueNode(
     override val outputVar: String? = null
     override val resultType: GlslType get() = contentType.glslType
     override val outputPort: OutputPort = OutputPort(contentType)
+    override val invokeFromMain: Boolean get() = true
 
     override fun getNodeId(programLinker: ProgramLinker): String = "n/a"
 
@@ -114,10 +115,10 @@ data class DefaultValueNode(
     override fun appendDeclarations(buf: StringBuilder) {
     }
 
-    override fun appendInvokeAndSet(buf: StringBuilder) {
+    override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {
     }
 
-    override fun getExpression(): GlslExpr {
+    override fun getExpression(prefix: String): GlslExpr {
         return contentType.glslType.defaultInitializer
     }
 
@@ -133,6 +134,7 @@ data class ConstNode(val glsl: String, override val outputPort: OutputPort) : Pr
     override val title: String get() = "const($glsl)"
     override val outputVar: String get() = TODO("not implemented")
     override val resultType: GlslType get() = outputPort.dataType
+    override val invokeFromMain: Boolean get() = true
 
     override fun getNodeId(programLinker: ProgramLinker): String = "n/a"
 
@@ -144,9 +146,9 @@ data class ConstNode(val glsl: String, override val outputPort: OutputPort) : Pr
 
     override fun appendStructs(buf: StringBuilder) {}
     override fun appendDeclarations(buf: StringBuilder) {}
-    override fun appendInvokeAndSet(buf: StringBuilder) {}
+    override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {}
 
-    override fun getExpression(): GlslExpr = GlslExpr("($glsl)")
+    override fun getExpression(prefix: String): GlslExpr = GlslExpr("($glsl)")
 
     override fun toString(): String = "ConstNode(glsl='$glsl', outputPort=$outputPort)"
 }

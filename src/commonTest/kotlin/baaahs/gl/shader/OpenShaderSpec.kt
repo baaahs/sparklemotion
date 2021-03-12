@@ -3,6 +3,7 @@ package baaahs.gl.shader
 import baaahs.describe
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslExpr
+import baaahs.gl.openShader
 import baaahs.gl.override
 import baaahs.gl.testToolchain
 import baaahs.show.Shader
@@ -15,13 +16,17 @@ import org.spekframework.spek2.Spek
 object OpenShaderSpec : Spek({
     describe<OpenShaderSpec> {
         val src by value { toBeSpecified<String>() }
-        val shader by value { Shader("Title", src) }
-        val shaderAnalysis by value { testToolchain.analyze(shader) }
-        val openShader by value { testToolchain.openShader(shaderAnalysis) }
-        val invocationStatement by value {
+        val openShader by value { testToolchain.openShader(Shader("Title", src)) }
+        val invoker by value {
             openShader.invoker(
                 GlslCode.Namespace("p"), mapOf("time" to GlslExpr("timeVal"), "greenness" to GlslExpr("greennessVal"))
-            ).toGlsl("toResultVar")
+            )
+        }
+        val abstractFnPortSrc by value {
+            "/** @return color */ vec4 imageColor(/** @type uv-coordinate */ uv, /** @type time */ float time);"
+        }
+        val abstractFnPort by value {
+            testToolchain.openShader(Shader("abstract fn port", abstractFnPortSrc)).findInputPort("imageColor")
         }
 
         beforeEachTest {
@@ -30,7 +35,7 @@ object OpenShaderSpec : Spek({
             }
         }
 
-        context("with gl_FragColor output port") {
+        context("with gl_FragColor output port and gl_FragCoord input port") {
             override(src) {
                 """
                     uniform float time; // @type time
@@ -41,7 +46,14 @@ object OpenShaderSpec : Spek({
             }
 
             it("generates an invocation statement") {
-                expect(invocationStatement).toEqual("p_main(greennessVal)")
+                expect(invoker.toGlsl("toResultVar"))
+                    .toEqual("p_main(greennessVal)")
+            }
+
+            context("when invoked from an abstract function") {
+                it("generates valid GLSL to invoke the shader") {
+//                    abstractFnPort.invoker()
+                }
             }
         }
 
@@ -58,7 +70,8 @@ object OpenShaderSpec : Spek({
             }
 
             it("generates an invocation statement") {
-                expect(invocationStatement).toEqual("toResultVar = p_main(greennessVal)")
+                expect(invoker.toGlsl("toResultVar"))
+                    .toEqual("toResultVar = p_main(greennessVal)")
             }
         }
 
@@ -74,7 +87,8 @@ object OpenShaderSpec : Spek({
             }
 
             it("generates an invocation statement") {
-                expect(invocationStatement).toEqual("p_main(greennessVal, toResultVar)")
+                expect(invoker.toGlsl("toResultVar"))
+                    .toEqual("p_main(greennessVal, toResultVar)")
             }
         }
     }

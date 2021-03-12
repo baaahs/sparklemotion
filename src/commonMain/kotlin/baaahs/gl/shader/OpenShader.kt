@@ -67,9 +67,13 @@ interface OpenShader : RefCounted {
 
         override val title: String get() = shader.title
 
-        override val globalVars = glslCode.globalVars.filter { !it.isUniform && !it.isVarying }
+        override val globalVars: List<GlslCode.GlslVar> get() =
+            glslCode.globalVars.filter { !it.isUniform && !it.isVarying }
 
-        override fun toGlsl(namespace: Namespace, portMap: Map<String, GlslExpr>): String {
+        override fun toGlsl(
+            namespace: Namespace,
+            portMap: Map<String, GlslExpr>
+        ): String {
             val buf = StringBuilder()
 
             val nonUniformGlobalsMap = hashMapOf<String, GlslExpr>()
@@ -88,7 +92,7 @@ interface OpenShader : RefCounted {
 
             val symbolsToNamespace = glslCode.symbolNames.toSet() - portStructs.map { it.name}
             val symbolMap = uniformGlobalsMap + nonUniformGlobalsMap
-            glslCode.functions.forEach { glslFunction ->
+            glslCode.functions.filterNot { it.isAbstract }.forEach { glslFunction ->
                 buf.append(glslFunction.toGlsl(namespace, symbolsToNamespace, symbolMap))
                 buf.append("\n")
             }

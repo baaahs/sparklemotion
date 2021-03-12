@@ -8,9 +8,11 @@ interface Component {
     val outputVar: String?
     val resultType: GlslType
 
+    val invokeFromMain: Boolean
+
     fun appendStructs(buf: StringBuilder)
     fun appendDeclarations(buf: StringBuilder)
-    fun appendInvokeAndSet(buf: StringBuilder)
+    fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType> = emptyMap())
 
-    fun getExpression(): GlslExpr
+    fun getExpression(prefix: String): GlslExpr
 }

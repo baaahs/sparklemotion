@@ -3,6 +3,8 @@ package baaahs.show.live
 import baaahs.Severity
 import baaahs.ShowProblem
 import baaahs.getBang
+import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.*
 import baaahs.gl.shader.InputPort
@@ -18,65 +20,91 @@ class LiveShaderInstance(
     val shaderChannel: ShaderChannel,
     val priority: Float = 0f,
     val extraLinks: Set<String> = emptySet(),
-    val missingLinks: Set<String> = emptySet()
+    val missingLinks: Set<String> = emptySet(),
+    val injectedPorts: Set<String> = emptySet()
 ) {
     val title get() = shader.title
 
-    val isFilter: Boolean get() = with (shader) {
-        inputPorts.any {
-            it.contentType == outputPort.contentType && incomingLinks[it.id]?.let { link ->
-                link is ShaderChannelLink && link.shaderChannel == shaderChannel
-            } == true
+    val isFilter: Boolean
+        get() = with(shader) {
+            inputPorts.any {
+                it.contentType == outputPort.contentType && incomingLinks[it.id]?.let { link ->
+                    link is ShaderChannelLink && link.shaderChannel == shaderChannel
+                } == true
+            }
         }
-    }
 
-    val problems: List<ShowProblem> get() =
-        arrayListOf<ShowProblem>().apply {
-            if (extraLinks.isNotEmpty()) {
-                add(
-                    ShowProblem(
-                        "Extra incoming links on shader \"$title\"",
-                        "Unknown ports: ${extraLinks.sorted().joinToString(", ")}",
-                        severity = Severity.WARN
+    val problems: List<ShowProblem>
+        get() =
+            arrayListOf<ShowProblem>().apply {
+                if (extraLinks.isNotEmpty()) {
+                    add(
+                        ShowProblem(
+                            "Extra incoming links on shader \"$title\"",
+                            "Unknown ports: ${extraLinks.sorted().joinToString(", ")}",
+                            severity = Severity.WARN
+                        )
                     )
-                )
-            }
-            if (missingLinks.isNotEmpty()) {
-                add(
-                    ShowProblem(
-                        "Missing incoming links on shader \"$title",
-                        "No link for ports: ${missingLinks.sorted().joinToString(", ")}",
-                        severity = Severity.ERROR
+                }
+                if (missingLinks.isNotEmpty()) {
+                    add(
+                        ShowProblem(
+                            "Missing incoming links on shader \"$title",
+                            "No link for ports: ${missingLinks.sorted().joinToString(", ")}",
+                            severity = Severity.ERROR
+                        )
                     )
-                )
-            }
-            if (shader.outputPort.contentType.isUnknown()) {
-                add(
-                    ShowProblem(
-                    "Result content type is unknown for shader \"$title\".", severity = Severity.ERROR
+                }
+                if (shader.outputPort.contentType.isUnknown()) {
+                    add(
+                        ShowProblem(
+                            "Result content type is unknown for shader \"$title\".", severity = Severity.ERROR
+                        )
                     )
-                )
-            }
-            if (shader.errors.isNotEmpty()) {
-                add(
-                    ShowProblem(
-                        "GLSL errors in shader \"$title\".", severity = Severity.ERROR
+                }
+                if (shader.errors.isNotEmpty()) {
+                    add(
+                        ShowProblem(
+                            "GLSL errors in shader \"$title\".", severity = Severity.ERROR
+                        )
                     )
-                )
+                }
             }
-        }
 
     fun release() {
         shader.release()
     }
 
+    fun maybeWithInjectedData(injectedData: Set<ContentType>): LiveShaderInstance {
+        val injectedPorts = mutableSetOf<String>()
+
+        val newLinks = incomingLinks.mapValues { (portId, link) ->
+            val inputPort = shader.findInputPort(portId)
+            if (injectedData.contains(inputPort.contentType)) {
+                injectedPorts.add(inputPort.id)
+                InjectedDataLink(this, inputPort)
+            } else link
+        }
+
+        return if (injectedPorts.isNotEmpty()) {
+            LiveShaderInstance(shader, newLinks, shaderChannel, priority, extraLinks, missingLinks, injectedPorts)
+        } else this
+    }
+
     fun finalResolve(resolver: PortDiagram.Resolver): ProgramNode {
         val resolvedIncomingLinks = incomingLinks.mapValues { (portId, link) ->
             val inputPort = shader.findInputPort(portId)
-            resolver.resolveLink(inputPort, link)
+
+            if (inputPort.injectedData.isNotEmpty()) {
+                println("${inputPort.title} injects: ${inputPort.injectedData}")
+                val fn = inputPort.glslArgSite as? GlslCode.GlslFunction
+                resolver.resolveLink(inputPort, link)
+            } else {
+                resolver.resolveLink(inputPort, link)
+            }
         }
 
-        return LinkedShaderInstance(shader, resolvedIncomingLinks, shaderChannel, priority)
+        return LinkedShaderInstance(shader, resolvedIncomingLinks, shaderChannel, priority, injectedPorts)
     }
 
     override fun toString(): String {
@@ -127,6 +155,56 @@ class LiveShaderInstance(
     data class ConstLink(val glsl: String, val type: GlslType) : Link {
         override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode {
             return ConstNode(glsl, OutputPort(ContentType.unknown(type), dataType = type))
+        }
+    }
+
+    data class InjectedDataLink(val liveShaderInstance: LiveShaderInstance, val inputPort: InputPort) : Link {
+        override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode {
+            return object : ProgramNode {
+                override val title: String
+                    get() = TODO("not implemented")
+                override val outputPort: OutputPort
+                    get() = TODO("not implemented")
+
+                override fun getNodeId(programLinker: ProgramLinker): String {
+                    return "n/a InjectedDataLink"
+                }
+
+                override fun traverse(programLinker: ProgramLinker, depth: Int) {
+                }
+
+                override fun buildComponent(
+                    id: String,
+                    index: Int,
+                    findUpstreamComponent: (ProgramNode) -> Component
+                ): Component {
+                    return object : Component {
+                        val lsi = liveShaderInstance
+                        val inputPort = inputPort
+//                        val thing = findUpstreamComponent(liveShaderInstance)
+
+                        override val title: String
+                            get() = TODO("not implemented")
+                        override val outputVar: String?
+                            get() = null
+                        override val resultType: GlslType
+                            get() = inputPort.type
+                        override val invokeFromMain: Boolean
+                            get() = false
+
+                        override fun appendStructs(buf: StringBuilder) {}
+
+                        override fun appendDeclarations(buf: StringBuilder) {}
+
+                        override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {}
+
+                        override fun getExpression(prefix: String): GlslExpr {
+                            return GlslExpr("${prefix}_global_${inputPort.id}")
+                        }
+                    }
+                }
+            }
+//            return ConstNode("injectedDataXxx", OutputPort(inputPort.contentType))
         }
     }
 }

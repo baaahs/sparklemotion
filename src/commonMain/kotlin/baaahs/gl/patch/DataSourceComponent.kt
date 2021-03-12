@@ -11,6 +11,8 @@ class DataSourceComponent(val dataSource: DataSource, val varName: String) : Com
         get() = null
     override val resultType: GlslType
         get() = dataSource.getType()
+    override val invokeFromMain: Boolean
+        get() = true
 
     override fun appendStructs(buf: StringBuilder) {
         val glslType = dataSource.contentType.glslType
@@ -27,11 +29,11 @@ class DataSourceComponent(val dataSource: DataSource, val varName: String) : Com
         }
     }
 
-    override fun appendInvokeAndSet(buf: StringBuilder) {
+    override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {
         dataSource.appendInvokeAndSet(buf, varName)
     }
 
-    override fun getExpression(): GlslExpr {
+    override fun getExpression(prefix: String): GlslExpr {
         return GlslExpr(dataSource.getVarName(varName))
     }
 }
