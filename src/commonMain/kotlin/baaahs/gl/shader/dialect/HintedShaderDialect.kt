@@ -1,7 +1,10 @@
 package baaahs.gl.shader.dialect
 
 import baaahs.getValue
-import baaahs.gl.glsl.*
+import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslError
+import baaahs.gl.glsl.GlslType
+import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
@@ -40,6 +43,9 @@ abstract class HintedShaderDialect(id: String) : ShaderDialect(id) {
             proFormaInputPorts +
                     (glslCode.globalInputVars + entryPointParams).map {
                         it.resolveInputPort(entryPoint, plugins)
+                    } +
+                    glslCode.functions.filter { it.isAbstract }.map {
+                        it.toInputPort(plugins, null)
                     } +
                     findMagicInputPorts(glslCode)
         )

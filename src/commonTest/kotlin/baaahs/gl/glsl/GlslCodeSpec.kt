@@ -186,7 +186,6 @@ object GlslCodeSpec : Spek({
                     }
                 }
             }
-
         }
 
         context("struct") {

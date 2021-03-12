@@ -17,10 +17,12 @@ data class InputPort(
     val glslArgSite: GlslCode.GlslArgSite? = null,
     val varName: String = id,
 
-    /** There's no declaration for this input, e.g. gl_FragCoord. */
-    val isImplicit: Boolean = false
+    /** `true` if there's no declaration for this input, e.g. gl_FragCoord. */
+    val isImplicit: Boolean = false,
+    val injectedData: Map<String, ContentType> = emptyMap()
 ) {
     val isGlobal: Boolean get() = glslArgSite?.isGlobalInput ?: isImplicit
+    val isAbstractFunction: Boolean get() = glslArgSite?.isAbstractFunction ?: false
 
     fun hasPluginRef() = pluginRef != null
 

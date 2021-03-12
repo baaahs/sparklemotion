@@ -146,14 +146,14 @@ class GlslCode(
         val type: GlslType
         val isVarying: Boolean
         val isGlobalInput: Boolean
+        val isAbstractFunction: Boolean
         val hint: Hint?
         val lineNumber: Int?
 
         fun toInputPort(plugins: Plugins, parent: GlslFunction?): InputPort {
             val contentTypeFromPlugin = try {
                 hint?.pluginRef
-                    ?.let { plugins.findDataSourceBuilder(it) }
-                    ?.contentType
+                    ?.let { plugins.findDataSourceBuilder(it).contentType }
             } catch (e: Exception) {
                 null
             }
@@ -167,12 +167,15 @@ class GlslCode(
                 title = title,
                 pluginRef = hint?.pluginRef,
                 pluginConfig = hint?.config,
-                glslArgSite = this
+                glslArgSite = this,
+                injectedData = findInjectedData(plugins)
             )
         }
 
         fun findContentType(plugins: Plugins, parent: GlslFunction?) =
-            hint?.contentType(plugins)
+            hint?.contentType("type", plugins)
+
+        fun findInjectedData(plugins: Plugins): Map<String, ContentType> = emptyMap()
     }
 
     data class GlslVar(
@@ -187,6 +190,7 @@ class GlslCode(
     ) : GlslStatement, GlslArgSite {
         override val title get() = name.englishize()
         override val isGlobalInput: Boolean get() = isUniform || isVarying
+        override val isAbstractFunction: Boolean get() = false
         override val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
 
         override fun stripSource() = copy(fullText = "", lineNumber = null)
@@ -257,11 +261,37 @@ class GlslCode(
         val params: List<GlslParam>,
         override val fullText: String,
         override val lineNumber: Int? = null,
-        override val comments: List<String> = emptyList()
-    ) : GlslStatement {
-        val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
+        override val comments: List<String> = emptyList(),
+        val isAbstract: Boolean = false
+    ) : GlslStatement, GlslArgSite {
+        override val title: String get() = name.englishize()
+        override val type: GlslType get() = returnType
+        override val isVarying: Boolean get() = true
+        override val isGlobalInput: Boolean get() = false
+        override val isAbstractFunction: Boolean get() = isAbstract
+
+        override val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
 
         override fun stripSource() = copy(lineNumber = null)
+
+        override fun findContentType(plugins: Plugins, parent: GlslFunction?): ContentType? {
+            return hint?.contentType("return", plugins)
+                ?: super.findContentType(plugins, parent)
+        }
+
+        override fun findInjectedData(plugins: Plugins): Map<String, ContentType> {
+            return params.associate { it.name to (it.findContentType(plugins, this) ?: ContentType.Unknown) }
+        }
+
+        override fun toGlsl(
+            namespace: Namespace,
+            symbolsToNamespace: Set<String>,
+            symbolMap: Map<String, GlslExpr>
+        ): String {
+            // Chomp trailing ';' if it's an abstract method.
+            return super.toGlsl(namespace, symbolsToNamespace, symbolMap)
+                .let { if (isAbstract) it.trimEnd(';') else it }
+        }
 
         fun invoker(namespace: Namespace, portMap: Map<String, GlslExpr>): Invoker {
             return object : Invoker {
@@ -296,6 +326,7 @@ class GlslCode(
         override val isVarying: Boolean get() = true
         override val isGlobalInput: Boolean get() = false
         override val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
+        override val isAbstractFunction: Boolean get() = false
 
         override fun findContentType(plugins: Plugins, parent: GlslFunction?): ContentType? {
             return super.findContentType(plugins, parent)
