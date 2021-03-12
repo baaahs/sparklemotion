@@ -43,7 +43,6 @@ object GlslGenerationSpec : Spek({
                 }
             """.trimIndent()
         }
-        val glslAnalyzer by value { testToolchain.glslAnalyzer }
         val mainShader by value { testToolchain.import(shaderText) }
         val mutablePatch by value { MutablePatch { } }
         val resultContentType by value { Color }

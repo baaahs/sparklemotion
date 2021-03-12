@@ -89,17 +89,17 @@ object GlslAnalyzerSpec : Spek({
                     override(shaderText) {
                         /**language=glsl*/
                         """
-                        // This Shader's Name
-                        // Other stuff.
-                        
-                        uniform float time;
-                        uniform vec2  resolution;
-                        uniform float blueness;
-    
-                        void main( void ) {
-                            vec2 uv = gl_FragCoord.xy / resolution.xy;
-                            gl_FragColor = vec4(uv.xy, 0., 1.);
-                        }
+                            // This Shader's Name
+                            // Other stuff.
+                            
+                            uniform float time;
+                            uniform vec2  resolution;
+                            uniform float blueness;
+        
+                            void main( void ) {
+                                vec2 uv = gl_FragCoord.xy / resolution.xy;
+                                gl_FragColor = vec4(uv.xy, 0., 1.);
+                            }
                         """.trimIndent()
                     }
 
@@ -110,17 +110,37 @@ object GlslAnalyzerSpec : Spek({
                     it("creates inputs for implicit uniforms") {
                         expect(openShader.inputPorts.map { it.copy(glslArgSite = null) })
                             .containsExactly(
-                                InputPort(
-                                    "gl_FragCoord",
-                                    ContentType.UvCoordinate,
-                                    GlslType.Vec4,
-                                    "Coordinates",
-                                    isImplicit = true
-                                ),
+                                InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates", isImplicit = true),
                                 InputPort("time", ContentType.Time, GlslType.Float, "Time"),
                                 InputPort("resolution", ContentType.Resolution, GlslType.Vec2, "Resolution"),
                                 InputPort("blueness", ContentType.unknown(GlslType.Float), GlslType.Float, "Blueness")
                             )
+                    }
+
+                    context("with an abstract function") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                            // @param uv uv-coordinate                            
+                            // @return color                            
+                            vec4 channelA(vec2 uv);
+        
+                            void main( void ) {
+                                vec2 uv = gl_FragCoord.xy / resolution.xy;
+                                gl_FragColor = channelA(uv + 1.);
+                            }
+                        """.trimIndent()
+                        }
+
+                        it("crates an input for it") {
+                            expect(openShader.inputPorts.map { it.copy(glslArgSite = null) })
+                                .containsExactly(
+                                    InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates", isImplicit = true),
+                                    InputPort("channelA", ContentType.Color, GlslType.Vec4, "Channel A", isImplicit = false, injectedData = mapOf(
+                                        "uv" to ContentType.UvCoordinate
+                                    ))
+                                )
+                        }
                     }
                 }
 
@@ -166,7 +186,7 @@ object GlslAnalyzerSpec : Spek({
                 context("with U/V translation shader") {
                     override(shaderText) { Shaders.cylindricalProjection.src }
 
-                    it("identifies mainImage() as the entry point") {
+                    it("identifies main() as the entry point") {
                         expect(openShader.entryPoint.name).toBe("main")
                     }
 
