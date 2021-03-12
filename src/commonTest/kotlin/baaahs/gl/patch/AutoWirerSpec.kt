@@ -2,6 +2,8 @@ package baaahs.gl.patch
 
 import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gl.*
+import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.render.DeviceTypeForTest
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
@@ -42,10 +44,11 @@ object AutoWirerSpec : Spek({
             val portId by value { "brightness" }
             val portContentType by value { ContentType.Float }
             val portGlslType by value { portContentType.glslType }
+            val portGlslArgSite by value<GlslCode.GlslArgSite?> { null }
             val outContentType by value { ContentType.Color }
             val mainShader by value {
                 FakeOpenShader(
-                    listOf(InputPort(portId, portContentType, portGlslType)),
+                    listOf(InputPort(portId, portContentType, portGlslType, glslArgSite = portGlslArgSite)),
                     OutputPort(outContentType)
                 )
             }
@@ -136,6 +139,19 @@ object AutoWirerSpec : Spek({
                     it("suggests pulling from that shader channel, making it a filter") {
                         expect(portLink).toBe(ShaderChannel("other").editor())
                     }
+                }
+            }
+
+            context("when an input port is an abstract function") {
+                override(portId) { "imageChannelA" }
+                override(portGlslType) { GlslType.Vec4 }
+                override(portContentType) { ContentType.Color }
+                override(portGlslArgSite) {
+                    GlslCode.GlslFunction(portId, portGlslType, emptyList(), "", isAbstract = true)
+                }
+
+                it("suggests pulling from channel") {
+                    expect(portLink).toBe(ShaderChannel("main").editor())
                 }
             }
         }

@@ -66,9 +66,9 @@ class PortDiagram(val patches: List<OpenPatch>) {
         companion object {
             val comparator =
                 compareByDescending<ChannelEntry> { it.priority }
-                .thenByDescending { it.typePriority }
-                .thenByDescending { it.level }
-                .thenBy { it.shaderInstance.shader.title }
+                    .thenByDescending { it.typePriority }
+                    .thenByDescending { it.level }
+                    .thenBy { it.shaderInstance.shader.title }
         }
 
         private val sortedEntries = entries.sortedWith(comparator)
@@ -87,8 +87,8 @@ class PortDiagram(val patches: List<OpenPatch>) {
         var resolvingInputPort: InputPort? = null
         override fun toString(): String {
             return "Resolving $track" +
-                    (instance?.let { " -> [${it.shader.title}]"} ?: "") +
-                    (resolvingInputPort?.let { ".${it.id} (${it.contentType.id})"} ?: "")
+                    (instance?.let { " -> [${it.shader.title}]" } ?: "") +
+                    (resolvingInputPort?.let { ".${it.id} (${it.contentType.id})" } ?: "")
         }
     }
 
@@ -104,16 +104,16 @@ class PortDiagram(val patches: List<OpenPatch>) {
         private val currentBreadcrumb get() = breadcrumbs.last()
         internal val warnings = mutableListOf<String>()
 
-        fun resolve(track: Track): ProgramNode? {
+        fun resolve(track: Track, injectedData: Set<ContentType> = emptySet()): ProgramNode? {
             return trackResolvers.getOrPut(track) { TrackResolver(track) }
-                .resolve()
+                .resolve(injectedData)
         }
 
         fun resolveChannel(inputPort: InputPort, shaderChannel: ShaderChannel): ProgramNode {
             val contentType = inputPort.contentType
 
             val track = Track(shaderChannel, contentType)
-            return resolve(track)
+            return resolve(track, inputPort.injectedData.values.toSet())
                 ?: tryDataSource(shaderChannel, contentType)
                 ?: run {
                     addWarning("No upstream shader found, using default for ${contentType.id}.")
@@ -148,7 +148,7 @@ class PortDiagram(val patches: List<OpenPatch>) {
             private var resolved = false
             private var resolution: ProgramNode? = null
 
-            fun resolve(): ProgramNode? {
+            fun resolve(injectedData: Set<ContentType>): ProgramNode? {
                 if (resolved) return resolution
 
                 breadcrumbs.add(Breadcrumb(track))
@@ -168,25 +168,27 @@ class PortDiagram(val patches: List<OpenPatch>) {
 
                     currentBreadcrumb.instance = nextInstance
 
-                    return nextInstance?.let { shaderInstance ->
-                        if (!dagAncestors.add(shaderInstance)) {
-                            throw ResolveException(
-                                "circular reference",
-                                message = "resolve($track) already saw [${shaderInstance.shader.title}]"
-                            )
-                        }
-
-                        try {
-                            resolvedNodes.getOrPut(shaderInstance) {
-                                shaderInstance.finalResolve(this@Resolver)
+                    return nextInstance
+                        ?.maybeWithInjectedData(injectedData)
+                        ?.let { shaderInstance ->
+                            if (!dagAncestors.add(shaderInstance)) {
+                                throw ResolveException(
+                                    "circular reference",
+                                    message = "resolve($track) already saw [${shaderInstance.shader.title}]"
+                                )
                             }
-                        } finally {
-                            dagAncestors.remove(shaderInstance)
+
+                            try {
+                                resolvedNodes.getOrPut(shaderInstance) {
+                                    shaderInstance.finalResolve(this@Resolver)
+                                }
+                            } finally {
+                                dagAncestors.remove(shaderInstance)
+                            }
+                        }.also {
+                            resolved = true
+                            resolution = it
                         }
-                    }.also {
-                        resolved = true
-                        resolution = it
-                    }
                 } finally {
                     breadcrumbs.removeLast()
 

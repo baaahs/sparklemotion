@@ -34,10 +34,15 @@ class LinkedPatch(
             component.appendDeclarations(buf)
         }
 
+        appendMain(buf)
+        return buf.toString()
+    }
+
+    private fun appendMain(buf: StringBuilder) {
         buf.append("\n#line 10001\n")
         buf.append("void main() {\n")
 
-        components.forEach { component ->
+        components.filter { it.invokeFromMain }.forEach { component ->
             component.appendInvokeAndSet(buf)
         }
 
@@ -49,7 +54,6 @@ class LinkedPatch(
             }
 
         buf.append("}\n")
-        return buf.toString()
     }
 
     fun toFullGlsl(glslVersion: String): String {

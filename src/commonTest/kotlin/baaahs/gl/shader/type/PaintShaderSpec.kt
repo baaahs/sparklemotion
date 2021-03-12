@@ -279,14 +279,15 @@ object PaintShaderSpec : Spek({
             it("generates function declarations") {
                 expect(
                     openShader.toGlsl(
-                        namespace, mapOf(
+                        namespace,
+                        mapOf(
                             "iResolution" to GlslExpr("in_resolution"),
                             "iMouse" to GlslExpr("in_mouse"),
                             "iTime" to GlslExpr("in_time"),
                             "blueness" to GlslExpr("aquamarinity"),
                             "identity" to GlslExpr("p0_identity"),
                             "fragCoord" to GlslExpr("gl_FragCoord.xy")
-                        )
+                        ),
                     ).trim()
                 )
                     .toBe(

@@ -13,6 +13,8 @@ import baaahs.glsl.Shaders
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.hasSize
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -117,19 +119,19 @@ object GlslAnalyzerSpec : Spek({
                             )
                     }
 
-                    context("with an abstract function") {
+                    context("with an abstract function with arguments") {
                         override(shaderText) {
                             /**language=glsl*/
                             """
-                            // @param uv uv-coordinate                            
-                            // @return color                            
-                            vec4 channelA(vec2 uv);
-        
-                            void main( void ) {
-                                vec2 uv = gl_FragCoord.xy / resolution.xy;
-                                gl_FragColor = channelA(uv + 1.);
-                            }
-                        """.trimIndent()
+                                // @param uv uv-coordinate                            
+                                // @return color                            
+                                vec4 channelA(vec2 uv);
+            
+                                void main( void ) {
+                                    vec2 uv = gl_FragCoord.xy / resolution.xy;
+                                    gl_FragColor = channelA(uv + 1.);
+                                }
+                            """.trimIndent()
                         }
 
                         it("crates an input for it") {
@@ -140,6 +142,61 @@ object GlslAnalyzerSpec : Spek({
                                         "uv" to ContentType.UvCoordinate
                                     ))
                                 )
+                        }
+                    }
+
+                    context("with an abstract function") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                                // This Shader
+                                vec4 upstreamColor(); // @return color
+                                void main() { gl_FragColor = upstreamColor(); }
+                            """.trimIndent()
+                        }
+
+                        it ("creates an input for it") {
+                            expect(openShader.inputPorts).hasSize(1)
+                            val inputPort = openShader.inputPorts.first()
+
+                            expect(inputPort.copy(glslArgSite = null))
+                                .toEqual(
+                                    InputPort(
+                                        "upstreamColor", ContentType.Color, GlslType.Vec4, "Upstream Color",
+                                        injectedData = emptyMap()
+                                    )
+                                )
+
+                            expect(inputPort.isAbstractFunction).toBe(true)
+                            expect(inputPort.injectedData).isEmpty()
+                        }
+
+                        context("which takes arguments") {
+                            override(shaderText) {
+                                /**language=glsl*/
+                                """
+                                    // This Shader
+                                    // @param uv uv-coordinate
+                                    // @return color
+                                    vec4 upstreamColor(vec2 uv);
+                                    void main() { gl_FragColor = upstreamColor(); }
+                                """.trimIndent()
+                            }
+
+                            it ("creates an input for it") {
+                                expect(openShader.inputPorts).hasSize(1)
+                                val inputPort = openShader.inputPorts.first()
+
+                                expect(inputPort.copy(glslArgSite = null))
+                                    .toEqual(
+                                        InputPort(
+                                            "upstreamColor", ContentType.Color, GlslType.Vec4, "Upstream Color",
+                                            injectedData = mapOf("uv" to ContentType.UvCoordinate)
+                                        )
+                                    )
+
+                                expect(inputPort.isAbstractFunction).toBe(true)
+                            }
                         }
                     }
                 }
