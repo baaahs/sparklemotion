@@ -171,9 +171,10 @@ kotlin {
                 implementation(npm("css-loader", "^2.1.1"))
 
                 implementation("net.subroh0508.kotlinmaterialui:core:${Versions.kotlinMaterialUi}")
-                implementation("net.subroh0508.kotlinmaterialui:lab:${Versions.kotlinMaterialUi}")
+                implementation(files("src/jsMain/lib/kotlinmaterialui-lab-0.5.3.jar"))
                 implementation(npm("@material-ui/core", "~4.11"))
                 implementation(npm("@material-ui/icons", "~4.9.1"))
+                implementation(npm("@material-ui/lab", "~4.0.0-alpha.57"))
 
                 implementation(npm("node-sass", "^4.12.0"))
                 implementation(npm("react", "^16.13.1"))
