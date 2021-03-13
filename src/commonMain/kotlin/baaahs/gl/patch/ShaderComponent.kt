@@ -3,6 +3,7 @@ package baaahs.gl.patch
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
+import baaahs.gl.shader.InputPort
 import baaahs.show.live.LinkedShaderInstance
 
 class ShaderComponent(
@@ -78,30 +79,48 @@ class ShaderComponent(
             buf.append("${dataType.glslLiteral} $resultVar = ${contentType.initializer(dataType).s};\n")
         }
 
+        appendInjectionCode(buf)
+
+        buf.append(openShader.toGlsl(namespace, resolvedPortMap), "\n")
+    }
+
+    private fun appendInjectionCode(buf: StringBuilder) {
         shaderInstance.incomingLinks.forEach { (portId, link) ->
-            val inputPort = openShader.findInputPort(portId)
-            val destComponent = findUpstreamComponent(link)
+            val inputPort = shaderInstance.shader.findInputPort(portId)
 
             if (shaderInstance.injectedPorts.contains(portId)) {
-                val contentType = inputPort.contentType
-                val type = inputPort.contentType.glslType
-                buf.append("${type.glslLiteral} ${prefix}_global_$portId = " +
-                        "${contentType.initializer(type).s};\n"  )
+                appendInjectionAssignment(buf, inputPort, portId)
             }
 
             if (inputPort.isAbstractFunction) {
-                val fn = inputPort.glslArgSite as GlslCode.GlslFunction
-                buf.append(fn.toGlsl(namespace, emptySet(), emptyMap()))
-
-                buf.append(" {\n")
-
-                destComponent.appendInvokeAndSet(buf, inputPort.injectedData)
-                buf.append("    return ", destComponent.outputVar, ";\n")
-                buf.append("}\n")
+                appendAbstractFunctionImpl(buf, inputPort, link)
             }
         }
+    }
 
-        buf.append(openShader.toGlsl(namespace, resolvedPortMap), "\n")
+    private fun appendInjectionAssignment(
+        buf: StringBuilder,
+        inputPort: InputPort,
+        portId: String
+    ) {
+        val contentType = inputPort.contentType
+        val type = inputPort.contentType.glslType
+        buf.append("${type.glslLiteral} ${prefix}_global_$portId = ${contentType.initializer(type).s};\n")
+    }
+
+    private fun appendAbstractFunctionImpl(
+        buf: StringBuilder,
+        inputPort: InputPort,
+        link: ProgramNode
+    ) {
+        val fn = inputPort.glslArgSite as GlslCode.GlslFunction
+        buf.append(fn.toGlsl(namespace, emptySet(), emptyMap()))
+        buf.append(" {\n")
+
+        val destComponent = findUpstreamComponent(link)
+        destComponent.appendInvokeAndSet(buf, inputPort.injectedData)
+        buf.append("    return ", destComponent.outputVar, ";\n")
+        buf.append("}\n")
     }
 
     override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {
