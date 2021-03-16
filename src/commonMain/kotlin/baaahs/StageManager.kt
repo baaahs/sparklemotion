@@ -177,10 +177,10 @@ class StageManager(
                 include(remoteFsSerializer.serialModule)
                 include(toolchain.plugins.serialModule)
             })
-            pubSub.listenOnCommandChannel(commands.newShow) { command, _ -> handleNewShow(command) }
-            pubSub.listenOnCommandChannel(commands.switchToShow) { command, _ -> handleSwitchToShow(command.file) }
-            pubSub.listenOnCommandChannel(commands.saveShow) { command, _ -> handleSaveShow() }
-            pubSub.listenOnCommandChannel(commands.saveAsShow) { command, _ ->
+            pubSub.listenOnCommandChannel(commands.newShow) { command -> handleNewShow(command) }
+            pubSub.listenOnCommandChannel(commands.switchToShow) { command -> handleSwitchToShow(command.file) }
+            pubSub.listenOnCommandChannel(commands.saveShow) { command -> handleSaveShow() }
+            pubSub.listenOnCommandChannel(commands.saveAsShow) { command ->
                 val saveAsFile = storage.resolve(command.file.fullPath)
                 handleSaveAsShow(saveAsFile)
                 updateRunningShowPath(saveAsFile)
@@ -264,32 +264,16 @@ data class ClientData(
 )
 
 @Serializable
-class NewShowCommand(
-    val template: Show? = null
-) {
-    @Serializable
-    class Response
-}
+class NewShowCommand(val template: Show? = null)
 
 @Serializable
-class SwitchToShowCommand(
-    val file: Fs.File?
-) {
-    @Serializable
-    class Response
-}
+class SwitchToShowCommand(val file: Fs.File?)
 
 @Serializable
-class SaveShowCommand {
-    @Serializable
-    class Response
-}
+class SaveShowCommand
 
 @Serializable
-class SaveAsShowCommand(val file: Fs.File) {
-    @Serializable
-    class Response
-}
+class SaveAsShowCommand(val file: Fs.File)
 
 @Serializable
 data class ShowProblem(

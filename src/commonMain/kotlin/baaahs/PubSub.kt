@@ -154,7 +154,7 @@ abstract class PubSub {
     }
 
     interface CommandChannel<C, R> {
-        fun send(command: C)
+        suspend fun send(command: C): R
     }
 
     class Topics {
@@ -259,13 +259,22 @@ abstract class PubSub {
                 "command" -> {
                     val name = reader.readString()
                     val commandChannel = commandChannels.getServerChannel(name)
-                    commandChannel.receiveCommand(reader.readString(), this)
+                    val commandId = reader.readString()
+                    commandChannel.receiveCommand(reader.readString(), commandId, this)
+                }
+
+                "commandError" -> {
+                    val name = reader.readString()
+                    val commandChannel = commandChannels.getClientChannel(name)
+                    val commandId = reader.readString()
+                    commandChannel.receiveError(reader.readString(), commandId)
                 }
 
                 "commandReply" -> {
                     val name = reader.readString()
                     val commandChannel = commandChannels.getClientChannel(name)
-                    commandChannel.receiveReply(reader.readString())
+                    val commandId = reader.readString()
+                    commandChannel.receiveReply(reader.readString(), commandId)
                 }
 
                 else -> {
@@ -314,13 +323,14 @@ abstract class PubSub {
             }
         }
 
-        fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C) {
+        fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String) {
             if (isConnected) {
                 if (verbose) debug("command ${commandPort.name} ${commandPort.toJson(command)}")
 
                 val writer = ByteArrayWriter()
                 writer.writeString("command")
                 writer.writeString(commandPort.name)
+                writer.writeString(commandId)
                 writer.writeString(commandPort.toJson(command))
                 sendMessage(writer.toBytes())
             } else {
@@ -328,17 +338,33 @@ abstract class PubSub {
             }
         }
 
-        fun <C, R> sendReply(commandPort: CommandPort<C, R>, reply: R) {
+        fun <C, R> sendReply(commandPort: CommandPort<C, R>, reply: R, commandId: String) {
             if (isConnected) {
-                if (verbose) debug("commandReply ${commandPort.name} ${commandPort.replyToJson(reply)}")
+                if (verbose) debug("commandReply ${commandPort.name} $commandId ${commandPort.replyToJson(reply)}")
 
                 val writer = ByteArrayWriter()
                 writer.writeString("commandReply")
                 writer.writeString(commandPort.name)
+                writer.writeString(commandId)
                 writer.writeString(commandPort.replyToJson(reply))
                 sendMessage(writer.toBytes())
             } else {
                 debug("not connected, so no reply ${commandPort.name}")
+            }
+        }
+
+        fun <C, R> sendError(commandPort: CommandPort<C, R>, message: String, commandId: String) {
+            if (isConnected) {
+                if (verbose) debug("commandError ${commandPort.name} $commandId $message")
+
+                val writer = ByteArrayWriter()
+                writer.writeString("commandError")
+                writer.writeString(commandPort.name)
+                writer.writeString(commandId)
+                writer.writeString(message)
+                sendMessage(writer.toBytes())
+            } else {
+                debug("not connected, so no error ${commandPort.name}")
             }
         }
 
@@ -411,15 +437,11 @@ abstract class PubSub {
 
         fun <C, R> listenOnCommandChannel(
             commandPort: CommandPort<C, R>,
-            callback: suspend (command: C, reply: (R) -> Unit) -> Unit
+            callback: suspend (command: C) -> R
         ) {
             val name = commandPort.name
             if (commandChannels.hasServerChannel(name)) error("Command channel $name already exists.")
-            commandChannels.putServerChannel(name, ServerCommandChannel(commandPort) { command, reply ->
-                CoroutineScope(handlerContext).launch {
-                    callback(command, reply)
-                }
-            })
+            commandChannels.putServerChannel(name, ServerCommandChannel(commandPort) { command -> callback(command) })
         }
 
         fun <T> state(topic: Topic<T>, initialValue: T, callback: (T) -> Unit = {}): ReadWriteProperty<Any, T> {
@@ -456,11 +478,17 @@ abstract class PubSub {
 
         inner class ServerCommandChannel<C, R>(
             private val commandPort: CommandPort<C, R>,
-            private val callback: (command: C, reply: (R) -> Unit) -> Unit
+            private val callback: suspend (command: C) -> R
         ) {
-            fun receiveCommand(commandJson: String, fromConnection: Connection) {
-                callback.invoke(commandPort.fromJson(commandJson)) { reply ->
-                    fromConnection.sendReply(commandPort, reply)
+            fun receiveCommand(commandJson: String, commandId: String, fromConnection: Connection) {
+                CoroutineScope(handlerContext).launch {
+                    val reply = try {
+                        callback.invoke(commandPort.fromJson(commandJson))
+                    } catch (e: Exception) {
+                        fromConnection.sendError(commandPort, e.message ?: "unknown error", commandId)
+                        return@launch
+                    }
+                    fromConnection.sendReply(commandPort, reply, commandId)
                 }
             }
         }
@@ -481,6 +509,10 @@ abstract class PubSub {
         private val commandChannels = CommandChannels()
 
         private var connectionToServer: Connection = ConnectionToServer()
+        private var nextCommandId: Int = 0
+
+        // TODO: this should be issued by the server instead.
+        private val clientId = randomId("pubsub-client")
 
         inner class ConnectionToServer : Connection("Client-side connection from ${link.myAddress} to server at $serverAddress", topics, commandChannels) {
             override fun connected(tcpConnection: Network.TcpConnection) {
@@ -556,21 +588,19 @@ abstract class PubSub {
         }
 
         fun <C, R> openCommandChannel(
-            commandPort: CommandPort<C, R>,
-            replyCallback: (R) -> Unit
+            commandPort: CommandPort<C, R>
         ): CommandChannel<C, R> {
             val name = commandPort.name
             if (commandChannels.hasClientChannel(name)) error("Command channel $name already exists.")
-            return ClientCommandChannel(commandPort, replyCallback).also {
+            return ClientCommandChannel(commandPort).also {
                 commandChannels.putClientChannel(name, it)
             }
         }
 
         fun <C, R> commandSender(
-            commandPort: CommandPort<C, R>,
-            replyCallback: (R) -> Unit
-        ): (command: C) -> Unit {
-            val commandChannel = openCommandChannel(commandPort, replyCallback)
+            commandPort: CommandPort<C, R>
+        ): suspend (command: C) -> R {
+            val commandChannel = openCommandChannel(commandPort)
             return { command: C -> commandChannel.send(command) }
         }
 
@@ -609,16 +639,50 @@ abstract class PubSub {
         }
 
         inner class ClientCommandChannel<C, R>(
-            private val commandPort: CommandPort<C, R>,
-            private val replyCallback: (R) -> Unit
+            private val commandPort: CommandPort<C, R>
         ) : CommandChannel<C, R> {
-            override fun send(command: C) {
-                connectionToServer.sendCommand(commandPort, command)
+            private val handlers = mutableMapOf<String, CommandHandler<R>>()
+            private val callbacks = mutableMapOf<String, suspend (R) -> Unit>()
+
+            override suspend fun send(command: C): R {
+                val commandId = clientId + ":" + nextCommandId++
+                val handler = CommandHandler<R>(commandId)
+                handlers[commandId] = handler
+//                val coroutineChannel = kotlinx.coroutines.channels.Channel<R>()
+//                callbacks[commandId] = { coroutineChannel.send(it) }
+                connectionToServer.sendCommand(commandPort, command, commandId)
+
+//                return coroutineChannel.receive()
+                return handler.receive()
             }
 
-            fun receiveReply(replyJson: String) {
-                replyCallback.invoke(commandPort.replyFromJson(replyJson))
+            fun receiveReply(replyJson: String, commandId: String) {
+                handlers.remove(commandId)?.let {
+                    val reply = commandPort.replyFromJson(replyJson)
+                    coroutineScope.launch { it.onReply(reply) }
+                }
             }
+
+            fun receiveError(message: String, commandId: String) {
+                handlers.remove(commandId)?.let {
+                    coroutineScope.launch { it.onError(message) }
+                }
+            }
+        }
+
+        class CommandHandler<R>(private val commandId: String) {
+            private val coroutineChannel = kotlinx.coroutines.channels.Channel<Pair<R?, String?>>()
+
+            suspend fun receive(): R {
+                val (reply, error) = coroutineChannel.receive()
+                return reply ?: error(error ?: "Unknown error")
+            }
+
+            suspend fun onReply(reply: R) = coroutineChannel.send(reply to null)
+
+            suspend fun onError(message: String) = coroutineChannel.send(null to message)
+
+//            fun receiveError(reply: R)
         }
     }
 
