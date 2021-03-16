@@ -16,8 +16,10 @@ object LoggerConfig {
     private val allLevels = (stringLevels + classLevels.mapKeys { (k, _) -> k.simpleName })
         .toMutableMap()
 
+    @JsName("levelFor")
     fun levelFor(id: String) = allLevels[id] ?: LogLevel.WARN
 
+    @JsName("setLevel")
     fun setLevel(id: String, level: String?) {
         if (level == null) {
             allLevels.remove(id)

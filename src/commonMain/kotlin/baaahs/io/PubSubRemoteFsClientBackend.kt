@@ -1,9 +1,6 @@
 package baaahs.io
 
 import baaahs.PubSub
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -17,33 +14,22 @@ class PubSubRemoteFsClientBackend(
     override val backend: RemoteFsBackend
         get() = this
 
-    private var nextRequestId = 0
-    private val responseChannels = hashMapOf<Int, Channel<RemoteFsOp.Response>>()
     private val commandPort = createCommandPort()
 
-    private val pubSubChannel =
-        pubSub.openCommandChannel(commandPort) { response ->
-            val responseChannel = responseChannels.remove(response.requestId)!!
-            GlobalScope.launch {
-                responseChannel.send(response)
-            }
-        }
+    private val pubSubChannel = pubSub.openCommandChannel(commandPort)
 
     private suspend fun <R : RemoteFsOp.Response> sendCommand(command: RemoteFsOp): R {
-        val responseChannel = Channel<RemoteFsOp.Response>(1)
-        responseChannels[command.requestId] = responseChannel
-        pubSubChannel.send(command)
         @Suppress("UNCHECKED_CAST")
-        return responseChannel.receive() as R
+        return pubSubChannel.send(command) as R
     }
 
     override suspend fun listFiles(directory: Fs.File): List<Fs.File> {
-        val reply: RemoteFsOp.Response.ListFilesResponse = sendCommand(RemoteFsOp.ListFiles(nextRequestId++, directory))
+        val reply: RemoteFsOp.Response.ListFilesResponse = sendCommand(RemoteFsOp.ListFiles(directory))
         return reply.files
     }
 
     override suspend fun loadFile(file: Fs.File): String? {
-        val reply: RemoteFsOp.Response.LoadFileResponse = sendCommand(RemoteFsOp.LoadFile(nextRequestId++, file))
+        val reply: RemoteFsOp.Response.LoadFileResponse = sendCommand(RemoteFsOp.LoadFile(file))
         return reply.contents
     }
 
@@ -52,16 +38,16 @@ class PubSubRemoteFsClientBackend(
     }
 
     override suspend fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean) {
-        sendCommand<RemoteFsOp.Response>(RemoteFsOp.SaveFile(nextRequestId++, file, content, allowOverwrite))
+        sendCommand<RemoteFsOp.Response>(RemoteFsOp.SaveFile(file, content, allowOverwrite))
     }
 
     override suspend fun exists(file: Fs.File): Boolean {
-        val reply: RemoteFsOp.Response.ExistsResponse = sendCommand(RemoteFsOp.Exists(nextRequestId++, file))
+        val reply: RemoteFsOp.Response.ExistsResponse = sendCommand(RemoteFsOp.Exists(file))
         return reply.exists
     }
 
     override suspend fun isDirectory(file: Fs.File): Boolean {
-        val reply: RemoteFsOp.Response.IsDirectoryResponse = sendCommand(RemoteFsOp.IsDirectory(nextRequestId++, file))
+        val reply: RemoteFsOp.Response.IsDirectoryResponse = sendCommand(RemoteFsOp.IsDirectory(file))
         return reply.exists
     }
 }
@@ -69,73 +55,69 @@ class PubSubRemoteFsClientBackend(
 @Polymorphic
 @Serializable
 sealed class RemoteFsOp {
-    abstract val requestId: Int
-
     abstract suspend fun perform(): Response
 
     @Serializable
     @SerialName("ListFiles")
-    data class ListFiles(override val requestId: Int, val directory: Fs.File) : RemoteFsOp() {
+    data class ListFiles(val directory: Fs.File) : RemoteFsOp() {
         override suspend fun perform(): Response =
-            Response.ListFilesResponse(requestId, directory.listFiles())
+            Response.ListFilesResponse(directory.listFiles())
     }
 
     @Serializable
     @SerialName("LoadFile")
-    class LoadFile(override val requestId: Int, val file: Fs.File) : RemoteFsOp() {
+    class LoadFile(val file: Fs.File) : RemoteFsOp() {
         override suspend fun perform(): Response =
-            Response.LoadFileResponse(requestId, file.read())
+            Response.LoadFileResponse(file.read())
     }
 
     @Serializable
     @SerialName("SaveFile")
-    class SaveFile(override val requestId: Int, val file: Fs.File, val content: String, val allowOverwrite: Boolean) : RemoteFsOp() {
+    class SaveFile(val file: Fs.File, val content: String, val allowOverwrite: Boolean) : RemoteFsOp() {
         override suspend fun perform(): Response {
             file.write(content, allowOverwrite)
-            return Response.SaveFileResponse(requestId)
+            return Response.SaveFileResponse()
         }
     }
 
     @Serializable
     @SerialName("Exists")
-    class Exists(override val requestId: Int, val file: Fs.File) : RemoteFsOp() {
+    class Exists(val file: Fs.File) : RemoteFsOp() {
         override suspend fun perform(): Response {
-            return Response.ExistsResponse(requestId, file.exists())
+            return Response.ExistsResponse(file.exists())
         }
     }
 
     @Serializable
     @SerialName("IsDirectory")
-    class IsDirectory(override val requestId: Int, val file: Fs.File) : RemoteFsOp() {
+    class IsDirectory(val file: Fs.File) : RemoteFsOp() {
         override suspend fun perform(): Response {
-            return Response.IsDirectoryResponse(requestId, file.isDir())
+            return Response.IsDirectoryResponse(file.isDir())
         }
     }
 
     @Polymorphic
     @Serializable
     sealed class Response {
-        abstract val requestId: Int
-
         @Serializable
         @SerialName("ListFiles")
-        class ListFilesResponse(override val requestId: Int, val files: List<Fs.File>) : RemoteFsOp.Response()
+        class ListFilesResponse(val files: List<Fs.File>) : RemoteFsOp.Response()
 
         @Serializable
         @SerialName("LoadFile")
-        class LoadFileResponse(override val requestId: Int, val contents: String?) : RemoteFsOp.Response()
+        class LoadFileResponse(val contents: String?) : RemoteFsOp.Response()
 
         @Serializable
         @SerialName("SaveFile")
-        class SaveFileResponse(override val requestId: Int) : RemoteFsOp.Response()
+        class SaveFileResponse() : RemoteFsOp.Response()
 
         @Serializable
         @SerialName("Exists")
-        class ExistsResponse(override val requestId: Int, val exists: Boolean) : RemoteFsOp.Response()
+        class ExistsResponse(val exists: Boolean) : RemoteFsOp.Response()
 
         @Serializable
         @SerialName("IsDirectory")
-        class IsDirectoryResponse(override val requestId: Int, val exists: Boolean) : RemoteFsOp.Response()
+        class IsDirectoryResponse(val exists: Boolean) : RemoteFsOp.Response()
     }
 }
 
@@ -145,8 +127,6 @@ class PubSubRemoteFsServerBackend(
 ) {
     init {
         val commandPort = serializer.createCommandPort()
-        pubSub.listenOnCommandChannel(commandPort) { command, reply ->
-            reply(command.perform())
-        }
+        pubSub.listenOnCommandChannel(commandPort) { command -> command.perform() }
     }
 }

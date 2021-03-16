@@ -30,15 +30,15 @@ object Topics {
     class Commands(serialModule: SerializersModule) {
         val newShow =
             PubSub.CommandPort("pinky/newShow",
-                NewShowCommand.serializer(), NewShowCommand.Response.serializer(), serialModule)
+                NewShowCommand.serializer(), Unit.serializer(), serialModule)
         val switchToShow =
             PubSub.CommandPort("pinky/switchToShow",
-                SwitchToShowCommand.serializer(), SwitchToShowCommand.Response.serializer(), serialModule)
+                SwitchToShowCommand.serializer(), Unit.serializer(), serialModule)
         val saveShow =
             PubSub.CommandPort("pinky/saveShow",
-                SaveShowCommand.serializer(), SaveShowCommand.Response.serializer(), serialModule)
+                SaveShowCommand.serializer(), Unit.serializer(), serialModule)
         val saveAsShow =
             PubSub.CommandPort("pinky/saveAsShow",
-                SaveAsShowCommand.serializer(), SaveAsShowCommand.Response.serializer(), serialModule)
+                SaveAsShowCommand.serializer(), Unit.serializer(), serialModule)
     }
 }
