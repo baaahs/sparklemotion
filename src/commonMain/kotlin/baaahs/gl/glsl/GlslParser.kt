@@ -376,6 +376,7 @@ class GlslParser {
             val returnType: GlslType
             val name: String
             val params = arrayListOf<GlslCode.GlslParam>()
+            var isAbstract = true
 
             init {
                 if (tokensSoFar.size != 2)
@@ -385,8 +386,13 @@ class GlslParser {
                 name = tokensSoFar[1]
             }
 
+            override fun visitLeftCurlyBrace(): ParseState {
+                isAbstract = false
+                return super.visitLeftCurlyBrace()
+            }
+
             override fun createStatement(): GlslCode.GlslStatement =
-                GlslCode.GlslFunction(name, returnType, params, textAsString, lineNumber, comments)
+                GlslCode.GlslFunction(name, returnType, params, textAsString, lineNumber, comments, isAbstract)
 
             inner class Params(
                 recipientOfNextComment: Statement? = null

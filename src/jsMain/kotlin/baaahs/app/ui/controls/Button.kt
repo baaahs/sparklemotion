@@ -9,7 +9,7 @@ import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onMouseDownFunction
 import kotlinx.html.js.onMouseUpFunction
-import materialui.toggleButton
+import materialui.lab.components.togglebutton.toggleButton
 import react.RBuilder
 import react.RHandler
 import react.RProps
@@ -41,6 +41,7 @@ private val Button = xComponent<ButtonProps>("Button") { props ->
             ButtonControl.ActivationType.Toggle ->
                 toggleButton {
                     attrs["value"] = "n/a"
+                    // Yep, for some reason you need to set it directly or it doesn't work.
                     attrs["selected"] = buttonControl.isPressed
                     attrs.onClickFunction = handleToggleClick.withEvent()
 

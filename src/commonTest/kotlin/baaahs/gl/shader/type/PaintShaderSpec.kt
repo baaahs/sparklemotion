@@ -3,6 +3,7 @@ package baaahs.gl.shader.type
 import baaahs.describe
 import baaahs.gl.expects
 import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.openShader
 import baaahs.gl.override
@@ -129,10 +130,10 @@ object PaintShaderSpec : Spek({
                     openShader.toGlsl(
                         namespace,
                         mapOf(
-                            "resolution" to "in_resolution",
-                            "blueness" to "aquamarinity",
-                            "identity" to "p0_identity",
-                            "gl_FragColor" to "sm_result"
+                            "resolution" to GlslExpr("in_resolution"),
+                            "blueness" to GlslExpr("aquamarinity"),
+                            "identity" to GlslExpr("p0_identity"),
+                            "gl_FragColor" to GlslExpr("sm_result")
                         )
                     ).trim()
                 )
@@ -157,7 +158,7 @@ object PaintShaderSpec : Spek({
             }
 
             it("generates invocation GLSL") {
-                expect(openShader.invocationGlsl(namespace, "resultVar"))
+                expect(openShader.invoker(namespace).toGlsl("resultVar"))
                     .toBe("p0_main()")
             }
 
@@ -190,11 +191,11 @@ object PaintShaderSpec : Spek({
 
                 it("generates invocation GLSL") {
                     expect(
-                        openShader.invocationGlsl(
-                            namespace, "resultVar", mapOf(
-                                "uv" to "uvArg"
+                        openShader.invoker(
+                            namespace, mapOf(
+                                "uv" to GlslExpr("uvArg")
                             )
-                        )
+                        ).toGlsl("resultVar")
                     )
                         .toBe("p0_main(uvArg)")
                 }
@@ -278,14 +279,15 @@ object PaintShaderSpec : Spek({
             it("generates function declarations") {
                 expect(
                     openShader.toGlsl(
-                        namespace, mapOf(
-                            "iResolution" to "in_resolution",
-                            "iMouse" to "in_mouse",
-                            "iTime" to "in_time",
-                            "blueness" to "aquamarinity",
-                            "identity" to "p0_identity",
-                            "fragCoord" to "gl_FragCoord.xy"
-                        )
+                        namespace,
+                        mapOf(
+                            "iResolution" to GlslExpr("in_resolution"),
+                            "iMouse" to GlslExpr("in_mouse"),
+                            "iTime" to GlslExpr("in_time"),
+                            "blueness" to GlslExpr("aquamarinity"),
+                            "identity" to GlslExpr("p0_identity"),
+                            "fragCoord" to GlslExpr("gl_FragCoord.xy")
+                        ),
                     ).trim()
                 )
                     .toBe(
@@ -309,7 +311,7 @@ object PaintShaderSpec : Spek({
             }
 
             it("generates invocation GLSL") {
-                expect(openShader.invocationGlsl(namespace, "resultVar", mapOf("fragCoord" to "gl_FragCoord.xy")))
+                expect(openShader.invoker(namespace, mapOf("fragCoord" to GlslExpr("gl_FragCoord.xy"))).toGlsl("resultVar"))
                     .toBe("p0_mainImage(resultVar, gl_FragCoord.xy)")
             }
         }

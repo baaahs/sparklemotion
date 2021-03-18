@@ -12,16 +12,15 @@ import external.copyFrom
 import external.draggable
 import external.droppable
 import kotlinx.html.js.onClickFunction
-import materialui.ToggleButtonGroupStyle
-import materialui.components.button.enums.ButtonVariant
 import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
 import materialui.components.iconbutton.iconButton
 import materialui.components.paper.enums.PaperStyle
 import materialui.icon
 import materialui.icons.Icons
-import materialui.toggleButton
-import materialui.toggleButtonGroup
+import materialui.lab.components.togglebutton.toggleButton
+import materialui.lab.components.togglebuttongroup.enums.ToggleButtonGroupStyle
+import materialui.lab.components.togglebuttongroup.toggleButtonGroup
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
@@ -74,9 +73,8 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
             ) {
                 install(sceneDropProvided)
 
-                attrs.variant = ButtonVariant.outlined
-                attrs.orientation = buttonGroupControl.direction
-                    .decode(ButtonGroupOrientation.horizontal, ButtonGroupOrientation.vertical)
+                attrs["orientation"] = buttonGroupControl.direction
+                    .decode(ButtonGroupOrientation.horizontal, ButtonGroupOrientation.vertical).name
                 attrs["exclusive"] = true
 //                    attrs["value"] = props.selected // ... but this is busted.
 //                    attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }

@@ -4,6 +4,7 @@ import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
@@ -25,14 +26,18 @@ class FakeOpenShader(
     override val entryPoint: GlslCode.GlslFunction
         get() = TODO("not implemented")
 
-    override fun toGlsl(namespace: GlslCode.Namespace, portMap: Map<String, String>): String =
+    override val globalVars: List<GlslCode.GlslVar>
+        get() = TODO("not implemented")
+
+    override fun toGlsl(namespace: GlslCode.Namespace, portMap: Map<String, GlslExpr>): String =
         "// GLSL for $title"
 
-    override fun invocationGlsl(
+    override fun invoker(
         namespace: GlslCode.Namespace,
-        resultVar: String,
-        portMap: Map<String, String>
-    ): String = "// invocationGlsl for $title;\n"
+        portMap: Map<String, GlslExpr>
+    ): GlslCode.Invoker = object : GlslCode.Invoker {
+        override fun toGlsl(resultVar: String): String = "// invocationGlsl for $title;\n"
+    }
 
     override val shaderType: ShaderType
         get() = TODO("not implemented")

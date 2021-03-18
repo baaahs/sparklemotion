@@ -12,7 +12,8 @@ class LinkedShaderInstance(
     val shader: OpenShader,
     val incomingLinks: Map<String, ProgramNode>,
     val shaderChannel: ShaderChannel,
-    val priority: Float
+    val priority: Float,
+    val injectedPorts: Set<String> = emptySet()
 ) : ProgramNode {
     override val title: String get() = shader.title
     override val outputPort: OutputPort get() = shader.outputPort

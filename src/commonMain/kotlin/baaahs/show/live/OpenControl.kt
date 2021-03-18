@@ -4,6 +4,7 @@ import baaahs.Gadget
 import baaahs.app.ui.ControlEditIntent
 import baaahs.app.ui.EditIntent
 import baaahs.gadgets.Switch
+import baaahs.plugin.core.OpenTransitionControl
 import baaahs.show.*
 import baaahs.show.mutable.*
 import baaahs.ui.Draggable
@@ -206,6 +207,7 @@ interface ControlViews {
     fun forGadget(openGadgetControl: OpenGadgetControl, controlProps: ControlProps): Renderer
     fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): Renderer
     fun forButtonGroup(openButtonGroupControl: OpenButtonGroupControl, controlProps: ControlProps): Renderer
+    fun forTransition(openTransitionControl: OpenTransitionControl, controlProps: ControlProps): Renderer
     fun forVisualizer(openVisualizerControl: OpenVisualizerControl, controlProps: ControlProps): Renderer
 }
 

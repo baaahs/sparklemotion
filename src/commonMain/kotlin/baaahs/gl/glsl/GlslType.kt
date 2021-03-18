@@ -1,19 +1,24 @@
 package baaahs.gl.glsl
 
+import baaahs.show.mutable.MutableConstPort
+import baaahs.show.mutable.MutablePort
+
 sealed class GlslType constructor(
     val glslLiteral: String,
-    val defaultInitializer: String = "$glslLiteral(0.)"
+    val defaultInitializer: GlslExpr = GlslExpr("$glslLiteral(0.)")
 ) {
     init {
         @Suppress("LeakingThis")
         types[glslLiteral] = this
     }
 
+    val mutableDefaultInitializer: MutablePort get() = MutableConstPort(defaultInitializer.s, this)
+
     private class OtherGlslType(glslLiteral: String) : GlslType(glslLiteral)
     class Struct(
         val name: String,
         val fields: Map<String, GlslType>,
-        defaultInitializer: String = initializerFor(fields)
+        defaultInitializer: GlslExpr = initializerFor(fields)
     ) : GlslType(name, defaultInitializer) {
         constructor(glslStruct: GlslCode.GlslStruct)
                 : this(glslStruct.name, glslStruct.fields)
@@ -26,7 +31,7 @@ sealed class GlslType constructor(
         constructor(
             name: String,
             vararg fields: Pair<String, GlslType>,
-            defaultInitializer: String
+            defaultInitializer: GlslExpr
         ) : this(name, mapOf(*fields), defaultInitializer)
 
         fun toGlsl(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String {
@@ -63,24 +68,24 @@ sealed class GlslType constructor(
 
 
         companion object {
-            private fun initializerFor(fields: Map<String, GlslType>): String =
+            private fun initializerFor(fields: Map<String, GlslType>): GlslExpr =
                 StringBuilder().apply {
                     append("{ ")
                     fields.entries.forEachIndexed { index, (_, glslType) ->
                         if (index > 0)
                             append(", ")
-                        append(glslType.defaultInitializer)
+                        append(glslType.defaultInitializer.s)
                     }
                     append(" }")
-                }.toString()
+                }.toString().let { GlslExpr(it) }
         }
     }
 
-    object Float : GlslType("float", "0.")
+    object Float : GlslType("float", GlslExpr("0."))
     object Vec2 : GlslType("vec2")
     object Vec3 : GlslType("vec3")
     object Vec4 : GlslType("vec4")
-    object Int : GlslType("int", "0")
+    object Int : GlslType("int", GlslExpr("0"))
     object Sampler2D : GlslType("sampler2D")
     object Void : GlslType("void")
 
