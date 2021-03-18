@@ -1,6 +1,9 @@
 package baaahs.app.ui.editor
 
-import acex.*
+import acex.Editor
+import acex.Point
+import acex.Range
+import acex.Selection
 import baaahs.app.ui.AppContext
 import baaahs.camelize
 import baaahs.gl.glsl.GlslType
@@ -55,7 +58,7 @@ class ShaderRefactor(
             ) {
                 val range = Range(cursor.row, start, cursor.row, end)
                 glslNumberMarker = session.addMarker(
-                    range, +appContext.allStyles.appUiEditor.refactorMarker, "text", false)
+                    range, +appContext.allStyles.editor.refactorMarker, "text", false)
 
                 extractionCandidate = ExtractionCandidate(range, candidate)
                 selectionEndScreenPosition = editor.renderer.textToScreenCoordinates(range.end.row, range.end.column).let {

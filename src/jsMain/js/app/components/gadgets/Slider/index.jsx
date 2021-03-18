@@ -88,7 +88,7 @@ class RangeSlider extends React.Component {
         </label>
         <Slider
           vertical
-          reversed
+          reversed={this.props.reversed}
           mode={2}
           step={this.stepValue}
           domain={this.domain}
@@ -134,15 +134,17 @@ class RangeSlider extends React.Component {
               </div>
             )}
           </Tracks>
-          <Ticks count={10}>
-            {({ ticks }) => (
-              <div className="slider-ticks">
-                {ticks.map((tick) => (
-                  <Tick key={tick.id} tick={tick} />
-                ))}
-              </div>
-            )}
-          </Ticks>
+          {this.props.showTicks &&
+            <Ticks count={10}>
+              {({ ticks }) => (
+                  <div className="slider-ticks">
+                    {ticks.map((tick) => (
+                        <Tick key={tick.id} tick={tick} />
+                    ))}
+                  </div>
+              )}
+            </Ticks>
+          }
         </Slider>
       </div>
     );
@@ -151,10 +153,14 @@ class RangeSlider extends React.Component {
 
 RangeSlider.propTypes = {
   gadget: PropTypes.object,
+  reversed: PropTypes.bool,
+  showTicks: PropTypes.bool,
 };
 
 RangeSlider.defaultProps = {
   gadget: {},
+  reversed: true,
+  showTicks: true,
 };
 
 export default RangeSlider;
