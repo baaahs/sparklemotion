@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.show.DataSource
 
@@ -10,6 +11,8 @@ class DataSourceComponent(val dataSource: DataSource, val varName: String) : Com
         get() = null
     override val resultType: GlslType
         get() = dataSource.getType()
+    override val invokeFromMain: Boolean
+        get() = true
 
     override fun appendStructs(buf: StringBuilder) {
         val glslType = dataSource.contentType.glslType
@@ -26,11 +29,11 @@ class DataSourceComponent(val dataSource: DataSource, val varName: String) : Com
         }
     }
 
-    override fun appendInvokeAndSet(buf: StringBuilder, prefix: String) {
-        dataSource.appendInvokeAndSet(buf, prefix, varName)
+    override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {
+        dataSource.appendInvokeAndSet(buf, varName)
     }
 
-    override fun getExpression(): String {
-        return dataSource.getVarName(varName)
+    override fun getExpression(prefix: String): GlslExpr {
+        return GlslExpr(dataSource.getVarName(varName))
     }
 }

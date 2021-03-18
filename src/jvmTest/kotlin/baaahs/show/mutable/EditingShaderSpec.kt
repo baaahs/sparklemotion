@@ -400,13 +400,13 @@ object EditingShaderSpec : Spek({
 
                     #line 10001
                     void main() {
-                      // Invoke Screen Coords
-                      p0_screenCoordsi_result = p0_screenCoords_main(gl_FragCoord);
+                        // Invoke Screen Coords
+                        p0_screenCoordsi_result = p0_screenCoords_main(gl_FragCoord);
 
-                      // Invoke Paint
-                      p1_paint_main();
+                        // Invoke Paint
+                        p1_paint_main();
 
-                      sm_result = p1_paint_gl_FragColor;
+                        sm_result = p1_paint_gl_FragColor;
                     }
 
 

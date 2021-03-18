@@ -191,19 +191,19 @@ object PatchResolverSpec : Spek({
 
                         #line 10001
                         void main() {
-                          // Invoke Pixel Location
-                          in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
+                            // Invoke Pixel Location
+                            in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
 
-                          // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
+                            // Invoke Cylindrical Projection
+                            p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
 
-                          // Invoke Orange Shader
-                          p1_orangeShader_main();
+                            // Invoke Orange Shader
+                            p1_orangeShader_main();
 
-                          // Invoke Brightness Filter
-                          p2_brightnessFilteri_result = p2_brightnessFilter_main(p1_orangeShader_gl_FragColor);
+                            // Invoke Brightness Filter
+                            p2_brightnessFilteri_result = p2_brightnessFilter_main(p1_orangeShader_gl_FragColor);
 
-                          sm_result = p2_brightnessFilteri_result;
+                            sm_result = p2_brightnessFilteri_result;
                         }
                         
                     """.trimIndent()
@@ -309,22 +309,22 @@ object PatchResolverSpec : Spek({
 
                         #line 10001
                         void main() {
-                          // Invoke Pixel Location
-                          in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
+                            // Invoke Pixel Location
+                            in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
 
-                          // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
+                            // Invoke Cylindrical Projection
+                            p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
 
-                          // Invoke Wobbly Time Filter
-                          p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();
+                            // Invoke Wobbly Time Filter
+                            p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();
 
-                          // Invoke Orange Shader
-                          p2_orangeShader_main();
+                            // Invoke Orange Shader
+                            p2_orangeShader_main();
 
-                          // Invoke Brightness Filter
-                          p3_brightnessFilteri_result = p3_brightnessFilter_main(p2_orangeShader_gl_FragColor);
+                            // Invoke Brightness Filter
+                            p3_brightnessFilteri_result = p3_brightnessFilter_main(p2_orangeShader_gl_FragColor);
 
-                          sm_result = p3_brightnessFilteri_result;
+                            sm_result = p3_brightnessFilteri_result;
                         }
                         
                     """.trimIndent()
@@ -472,25 +472,25 @@ object PatchResolverSpec : Spek({
 
                         #line 10001
                         void main() {
-                          // Invoke Pixel Location
-                          in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
+                            // Invoke Pixel Location
+                            in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
 
-                          // Invoke Cylindrical Projection
-                          p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
+                            // Invoke Cylindrical Projection
+                            p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
 
-                          // Invoke Wobbly Time Filter
-                          p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();
+                            // Invoke Wobbly Time Filter
+                            p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();
 
-                          // Invoke A Main Shader
-                          p2_aMainShader_main();
+                            // Invoke A Main Shader
+                            p2_aMainShader_main();
 
-                          // Invoke Orange Shader
-                          p3_orangeShader_main();
+                            // Invoke Orange Shader
+                            p3_orangeShader_main();
 
-                          // Invoke Fade
-                          p4_fadei_result = p4_fade_main(p2_aMainShader_gl_FragColor);
+                            // Invoke Fade
+                            p4_fadei_result = p4_fade_main(p2_aMainShader_gl_FragColor);
 
-                          sm_result = p4_fadei_result;
+                            sm_result = p4_fadei_result;
                         }
 
                     """.trimIndent()

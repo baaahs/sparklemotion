@@ -365,6 +365,31 @@ object GlslParserSpec : Spek({
                         }
                     }
                 }
+
+                context("function declarations without bodies") {
+                    override(shaderText) {
+                        """
+                            // @param uv uv-coordinate
+                            // @return uv-coordinate
+                            vec4 channelA(vec2 uv);
+                            
+                            // @param uv uv-coordinate
+                            // @return uv-coordinate
+                            vec4 channelB(vec2 uv);
+
+                            void main() {}
+                        """.trimIndent()
+                    }
+
+                    it("are found and marked as abstract") {
+                        expect(glslCode.functions.map { it.prettify() })
+                            .containsExactly(
+                                "vec4 channelA(in vec2 uv) [abstract]",
+                                "vec4 channelB(in vec2 uv) [abstract]",
+                                "void main()"
+                            )
+                    }
+                }
             }
 
             context("const initializers") {
@@ -387,7 +412,9 @@ object GlslParserSpec : Spek({
 })
 
 private fun GlslFunction.prettify() =
-    "${returnType.glslLiteral} ${name}(${params.joinToString(", ") { it.prettify() }})"
+    "${returnType.glslLiteral} ${name}" +
+            "(${params.joinToString(", ") { it.prettify() }})" +
+            if (isAbstract) " [abstract]" else ""
 
 private fun GlslParam.prettify(): String = "${
     when (isIn to isOut) {
@@ -400,4 +427,3 @@ private fun GlslParam.prettify(): String = "${
 }${type.glslLiteral} ${name}${
     if (comments.isNotEmpty()) " /* ${comments.joinToString(" ")} */" else ""
 }"
-

@@ -2,12 +2,9 @@ package baaahs.gl.shader
 
 import baaahs.RefCounted
 import baaahs.RefCounter
-import baaahs.gl.glsl.GlslCode
+import baaahs.gl.glsl.*
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
-import baaahs.gl.glsl.GlslError
-import baaahs.gl.glsl.GlslType
-import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.shader.dialect.ShaderDialect
 import baaahs.gl.shader.type.ShaderType
 import baaahs.only
@@ -41,13 +38,15 @@ interface OpenShader : RefCounted {
         (inputPorts.map { it.contentType.glslType } + outputPort.contentType.glslType)
             .filterIsInstance<GlslType.Struct>()
 
-    fun toGlsl(namespace: Namespace, portMap: Map<String, String> = emptyMap()): String
+    /** The list of global variables that aren't also backing input ports. */
+    val globalVars: List<GlslCode.GlslVar>
 
-    fun invocationGlsl(
+    fun toGlsl(namespace: Namespace, portMap: Map<String, GlslExpr> = emptyMap()): String
+
+    fun invoker(
         namespace: Namespace,
-        resultVar: String,
-        portMap: Map<String, String> = emptyMap()
-    ): String
+        portMap: Map<String, GlslExpr> = emptyMap()
+    ): GlslCode.Invoker
 
     class Base(
         override val shader: Shader,
@@ -68,16 +67,20 @@ interface OpenShader : RefCounted {
 
         override val title: String get() = shader.title
 
-        override fun toGlsl(namespace: Namespace, portMap: Map<String, String>): String {
+        override val globalVars: List<GlslCode.GlslVar> get() =
+            glslCode.globalVars.filter { !it.isUniform && !it.isVarying }
+
+        override fun toGlsl(
+            namespace: Namespace,
+            portMap: Map<String, GlslExpr>
+        ): String {
             val buf = StringBuilder()
 
-            val nonUniformGlobalsMap = hashMapOf<String, String>()
-            glslCode.globalVars.forEach { glslVar ->
-                if (!glslVar.isUniform && !glslVar.isVarying) {
-                    nonUniformGlobalsMap[glslVar.name] = namespace.qualify(glslVar.name)
-                    buf.append(glslVar.toGlsl(namespace, glslCode.symbolNames, emptyMap()))
-                    buf.append("\n")
-                }
+            val nonUniformGlobalsMap = hashMapOf<String, GlslExpr>()
+            globalVars.forEach { glslVar ->
+                nonUniformGlobalsMap[glslVar.name] = GlslExpr(namespace.qualify(glslVar.name))
+                buf.append(glslVar.toGlsl(namespace, glslCode.symbolNames, emptyMap()))
+                buf.append("\n")
             }
 
             val uniformGlobalsMap = portMap.filter { (id, _) ->
@@ -89,7 +92,7 @@ interface OpenShader : RefCounted {
 
             val symbolsToNamespace = glslCode.symbolNames.toSet() - portStructs.map { it.name}
             val symbolMap = uniformGlobalsMap + nonUniformGlobalsMap
-            glslCode.functions.forEach { glslFunction ->
+            glslCode.functions.filterNot { it.isAbstract }.forEach { glslFunction ->
                 buf.append(glslFunction.toGlsl(namespace, symbolsToNamespace, symbolMap))
                 buf.append("\n")
             }
@@ -97,8 +100,8 @@ interface OpenShader : RefCounted {
             return buf.toString()
         }
 
-        override fun invocationGlsl(namespace: Namespace, resultVar: String, portMap: Map<String, String>): String {
-            return entryPoint.invocationGlsl(namespace, resultVar, portMap)
+        override fun invoker(namespace: Namespace, portMap: Map<String, GlslExpr>): GlslCode.Invoker {
+            return entryPoint.invoker(namespace, portMap)
         }
 
         override fun equals(other: Any?): Boolean =
