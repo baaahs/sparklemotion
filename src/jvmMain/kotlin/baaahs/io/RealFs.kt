@@ -58,6 +58,11 @@ class RealFs(
             Files.isDirectory(resolve(file))
         }
 
+    override suspend fun delete(file: Fs.File) =
+        withContext(Dispatchers.IO) {
+            Files.delete(resolve(file))
+        }
+
     private fun resolve(file: Fs.File): Path {
         return basePath.resolve(file.fullPath)
     }

@@ -7,9 +7,7 @@ class BrowserSandboxFs(override val name: String) : BaseFakeFs() {
     private val storage = window.localStorage
 
     override val keys: List<String>
-        get() = (storage.getItem("sm.fs:keys") ?: "").split("\n").filter { it.isNotEmpty() }
-
-    private fun keyName(file: Fs.File): String = "sm.fs:${file.fullPath}"
+        get() = getFileList()
 
     override suspend fun loadFile(file: Fs.File): String? {
         return storage.getItem(keyName(file))
@@ -25,8 +23,23 @@ class BrowserSandboxFs(override val name: String) : BaseFakeFs() {
                 throw Exception("$file already exists")
             }
         } else {
-            storage.setItem("sm.fs:keys", (keys + file.fullPath).joinToString("\n"))
+            updateFileList((keys + file.fullPath))
         }
         storage.setItem(keyName(file), content)
+    }
+
+    override suspend fun delete(file: Fs.File) {
+        storage.removeItem(keyName(file))
+        updateFileList(getFileList() - file.fullPath)
+    }
+
+    private fun keyName(file: Fs.File): String = "sm.fs:${file.fullPath}"
+
+    private fun getFileList() = (storage.getItem("sm.fs:keys") ?: "")
+        .split("\n")
+        .filter { it.isNotEmpty() }
+
+    private fun updateFileList(keys: List<String>) {
+        storage.setItem("sm.fs:keys", keys.joinToString("\n"))
     }
 }

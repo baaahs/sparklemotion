@@ -23,6 +23,10 @@ class FakeFs(override val name: String = "FakeFs") : BaseFakeFs() {
         saveFile(file, content.encodeToByteArray(), allowOverwrite)
     }
 
+    override suspend fun delete(file: Fs.File) {
+        files.remove(file.fullPath)
+    }
+
     private fun addFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
         val path = file.fullPath
         if (files.containsKey(path) && !allowOverwrite) {
