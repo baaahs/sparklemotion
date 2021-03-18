@@ -24,6 +24,27 @@
       "srcFile": "Fireball.glsl"
     },
     {
+      "id": "movers-on",
+      "title": "Movers On",
+      "description": "Sharpys centered and white!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=mover"
+      ],
+      "srcFile": "Movers On.glsl"
+    },
+    {
+      "id": "movers-swirl",
+      "title": "Movers Swirl Filter",
+      "description": "Swirl sharpys around whatever they're aimed at!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "Movers Swirl.glsl"
+    },
+    {
       "id": "saturation",
       "title": "Saturation",
       "description": "Adjusts saturation.",
