@@ -6,9 +6,9 @@ import baaahs.fixtures.RenderPlan
 import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
-import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.io.RemoteFsSerializer
+import baaahs.libraries.ShaderLibrary
 import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
 import baaahs.show.DataSource
@@ -39,7 +39,7 @@ class StageManager(
     private val gadgets: MutableMap<String, GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
 
-    private val fsSerializer = FsServerSideSerializer()
+    private val fsSerializer = storage.fsSerializer
 
     init {
         PubSubRemoteFsServerBackend(pubSub, fsSerializer)
@@ -177,10 +177,10 @@ class StageManager(
                 include(remoteFsSerializer.serialModule)
                 include(toolchain.plugins.serialModule)
             })
-            pubSub.listenOnCommandChannel(commands.newShow) { command, _ -> handleNewShow(command) }
-            pubSub.listenOnCommandChannel(commands.switchToShow) { command, _ -> handleSwitchToShow(command.file) }
-            pubSub.listenOnCommandChannel(commands.saveShow) { command, _ -> handleSaveShow() }
-            pubSub.listenOnCommandChannel(commands.saveAsShow) { command, _ ->
+            pubSub.listenOnCommandChannel(commands.newShow) { command -> handleNewShow(command) }
+            pubSub.listenOnCommandChannel(commands.switchToShow) { command -> handleSwitchToShow(command.file) }
+            pubSub.listenOnCommandChannel(commands.saveShow) { command -> handleSaveShow() }
+            pubSub.listenOnCommandChannel(commands.saveAsShow) { command ->
                 val saveAsFile = storage.resolve(command.file.fullPath)
                 handleSaveAsShow(saveAsFile)
                 updateRunningShowPath(saveAsFile)
@@ -264,31 +264,21 @@ data class ClientData(
 )
 
 @Serializable
-class NewShowCommand(
-    val template: Show? = null
-) {
-    @Serializable
-    class Response
-}
+class NewShowCommand(val template: Show? = null)
 
 @Serializable
-class SwitchToShowCommand(
-    val file: Fs.File?
-) {
-    @Serializable
-    class Response
-}
+class SwitchToShowCommand(val file: Fs.File?)
 
 @Serializable
-class SaveShowCommand {
-    @Serializable
-    class Response
-}
+class SaveShowCommand
 
 @Serializable
-class SaveAsShowCommand(val file: Fs.File) {
+class SaveAsShowCommand(val file: Fs.File)
+
+@Serializable
+class SearchShaderLibraries(val terms: String) {
     @Serializable
-    class Response
+    class Response(val matches: List<ShaderLibrary.Entry>)
 }
 
 @Serializable
