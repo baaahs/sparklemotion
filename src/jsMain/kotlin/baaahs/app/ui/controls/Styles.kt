@@ -6,6 +6,10 @@ import kotlinx.css.*
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
+import materialui.styles.muitheme.MuiTheme
+import materialui.styles.palette.contrastText
+import materialui.styles.palette.main
+import materialui.styles.palette.paper
 import styled.StyleSheet
 
 object Styles : StyleSheet("app-ui-controls", isStatic = true) {
@@ -134,13 +138,52 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val global = CSSBuilder().apply {
-         ".${baaahs.app.ui.Styles.editModeOff.name}" {
-             ".${editButton.name}" {
-                 put("opacity", "0 !important")
-             }
-             ".${dragHandle.name}" {
-                 put("opacity", "0 !important")
-             }
+        ".${baaahs.app.ui.Styles.editModeOff.name}" {
+            ".${editButton.name}" {
+                put("opacity", "0 !important")
+            }
+            ".${dragHandle.name}" {
+                put("opacity", "0 !important")
+            }
         }
+    }
+}
+
+class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-controls-theme", isStatic = true) {
+    val static = Styles
+
+    val transitionCard by css {
+        display = Display.grid
+        gridTemplateColumns = GridTemplateColumns.auto
+        gridTemplateRows = GridTemplateRows("auto auto auto 1fr")
+        gridTemplateAreas = GridTemplateAreas("""
+            "speed speed fader"
+            "shape shape fader"
+            "effect effect fader"
+            "hold go fader"
+        """)
+        gap = Gap(.25.em.value)
+
+//        header {
+//            position = Position.absolute
+//            right = 1.em
+//            top = 0.px
+//            transform { rotate((-90).deg) }
+//            declarations["transformOrigin"] = "top right"
+//        }
+    }
+
+    val transitionHoldButton by css {
+        backgroundColor = theme.palette.secondary.main
+            .withAlpha(.125).blend(theme.palette.background.paper)
+    }
+
+    val transitionHoldEngaged by css {
+        color = theme.palette.secondary.contrastText
+        backgroundColor = theme.palette.secondary.main
+    }
+
+    val speedButton by css {
+        textTransform = TextTransform.none
     }
 }

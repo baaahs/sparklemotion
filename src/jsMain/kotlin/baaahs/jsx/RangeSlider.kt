@@ -3,7 +3,6 @@
 package baaahs.jsx
 
 import baaahs.Gadget
-import baaahs.PubSub
 import react.RClass
 import react.RProps
 
@@ -11,7 +10,8 @@ import react.RProps
 external val RangeSlider: RClass<RangeSliderProps>
 
 external interface RangeSliderProps: RProps {
-    var pubSub: PubSub.Client
     var gadget: Gadget
+    var reversed: Boolean
+    var showTicks: Boolean
 }
 

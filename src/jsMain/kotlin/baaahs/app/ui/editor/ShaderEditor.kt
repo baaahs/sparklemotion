@@ -1,6 +1,9 @@
 package baaahs.app.ui.editor
 
-import acex.*
+import acex.AceEditor
+import acex.Annotation
+import acex.Modes
+import acex.Selection
 import baaahs.app.ui.appContext
 import baaahs.boundedBy
 import baaahs.show.mutable.EditingShader
@@ -29,7 +32,7 @@ import styled.inlineStyles
 val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     val appContext = useContext(appContext)
     var aceEditor by state<AceEditor?> { null }
-    val styles = appContext.allStyles.appUiEditor
+    val styles = appContext.allStyles.editor
 
     val glslDoc = memo(props.editingShader) {
         Document(props.editingShader.id, props.editingShader.mutableShader.src)
