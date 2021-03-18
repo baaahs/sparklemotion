@@ -87,7 +87,7 @@ val ShaderLibraryDialog = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDia
     dialog {
         attrs.open = true
         attrs.fullWidth = true
-        attrs.fullScreen = true
+//        attrs.fullScreen = true
         attrs.maxWidth = DialogMaxWidth.xl
         attrs.scroll = DialogScroll.body
         attrs.onClose = handleClose
