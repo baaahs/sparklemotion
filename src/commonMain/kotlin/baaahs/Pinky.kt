@@ -9,6 +9,7 @@ import baaahs.gl.glsl.CompilationException
 import baaahs.gl.render.RenderManager
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
+import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.MappingResults
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapper.SessionMappingResults
@@ -77,6 +78,8 @@ class Pinky(
     private val brainManager =
         BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats, clock)
     private val movingHeadManager = MovingHeadManager(fixtureManager, dmxUniverse, model.movingHeads)
+
+    private val shaderLibraryManager = ShaderLibraryManager(storage, pubSub)
 
     private val serverNotices = arrayListOf<ServerNotice>()
     private val serverNoticesChannel = pubSub.publish(Topics.serverNotices, serverNotices) {
@@ -163,6 +166,7 @@ class Pinky(
                 launch { movingHeadManager.start() }
                 launch { mappingResults.actualMappingResults = storage.loadMappingData(model) }
                 launch { loadConfig() }
+                launch { shaderLibraryManager.start() }
             }.join()
 
             isStartedUp = true

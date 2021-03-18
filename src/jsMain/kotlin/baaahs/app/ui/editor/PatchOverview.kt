@@ -1,9 +1,11 @@
 package baaahs.app.ui.editor
 
+import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderCard
 import baaahs.gl.openShader
 import baaahs.gl.shader.type.ShaderType
+import baaahs.show.Shader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.on
@@ -13,6 +15,7 @@ import baaahs.util.CacheBuilder
 import kotlinx.html.js.onClickFunction
 import materialui.components.card.card
 import materialui.components.cardcontent.cardContent
+import materialui.components.divider.divider
 import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
 import materialui.components.menu.menu
@@ -64,6 +67,21 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
             }
         }
 
+    var showShaderLibraryDialog by state { false }
+    val handleNewFromShaderLibrary = baaahs.ui.useCallback { _: Event ->
+        newPatchMenuAnchor = null
+        showShaderLibraryDialog = true
+    }
+    val handleShaderLibrarySelect = baaahs.ui.useCallback { shader: Shader? ->
+        showShaderLibraryDialog = false
+
+        if (shader != null) {
+            val newShaderInstance = props.mutablePatch.addShaderInstance(shader)
+            handleShaderSelect[newShaderInstance].invoke()
+            props.editableManager.onChange()
+        }
+    }
+
     div(+EditableStyles.patchOverview) {
         props.mutablePatch.mutableShaderInstances
             .map { it to toolchain.openShader(it.mutableShader) }
@@ -114,10 +132,25 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
                 }
             }
 
+            divider {}
+
+            menuItem {
+                attrs.onClickFunction = handleNewFromShaderLibrary
+
+                listItemIcon { icon(CommonIcons.ShaderLibrary) }
+                listItemText { +"From Shader Library…" }
+            }
+
             menuItem {
                 listItemIcon { icon(Icons.CloudDownload) }
                 listItemText { +"Import… (TBD)" }
             }
+        }
+    }
+
+    if (showShaderLibraryDialog) {
+        shaderLibraryDialog {
+            attrs.onSelect = handleShaderLibrarySelect
         }
     }
 }

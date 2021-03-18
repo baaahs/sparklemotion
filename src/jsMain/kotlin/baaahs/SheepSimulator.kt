@@ -6,6 +6,7 @@ import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
 import baaahs.gl.RootToolchain
 import baaahs.gl.render.RenderManager
+import baaahs.io.ResourcesFs
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
@@ -15,7 +16,6 @@ import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.proto.Ports
-import baaahs.shows.BakedInShaders
 import baaahs.sim.*
 import baaahs.util.JsClock
 import baaahs.util.LoggerConfig
@@ -37,7 +37,13 @@ class SheepSimulator(val model: Model) {
     private val dmxUniverse = FakeDmxUniverse()
     val visualizer = Visualizer(model, clock)
     private val mapperFs = FakeFs("Temporary Mapping Files")
-    private val fs = MergedFs(BrowserSandboxFs("Browser Data"), mapperFs, "Browser Data")
+    private val resourcesFs = ResourcesFs()
+    private val fs = MergedFs(
+        BrowserSandboxFs("Browser Data"),
+        mapperFs,
+        resourcesFs,
+        name = "Browser Data")
+
     val filesystems = listOf(fs)
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     init {
@@ -47,18 +53,7 @@ class SheepSimulator(val model: Model) {
     }
 
     init {
-        GlobalScope.launch {
-            BakedInShaders.all.forEach { show ->
-                try {
-                    val file = fs.resolve("shaders", "${show.name}.glsl")
-                    if (!fs.exists(file)) {
-                        fs.saveFile(file, show.src)
-                    }
-                } catch (e: Exception) {
-                    console.warn("huh? failed:", e)
-                }
-            }
-        }
+        GlobalScope.launch { cleanUpBrowserStorage() }
     }
 
     val pluginContext = PluginContext(clock)
@@ -163,6 +158,13 @@ class SheepSimulator(val model: Model) {
                 fs.resolve("mapping", model.name, "simulated", mappingSessionPath.name))
         }
         return simSurfaces
+    }
+
+    private suspend fun cleanUpBrowserStorage() {
+        // [2021-03-13] Delete old 2019-era show files.
+        fs.resolve("shaders").listFiles().forEach { file ->
+            file.delete()
+        }
     }
 
     class SimSurface(

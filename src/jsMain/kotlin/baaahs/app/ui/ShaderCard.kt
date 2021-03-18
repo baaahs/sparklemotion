@@ -40,7 +40,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
     }
 
     val handleDeleteClick = eventHandler("delete", props.onDelete) { e ->
-        props.onDelete()
+        props.onDelete?.invoke()
         e.stopPropagation()
     }
 
@@ -72,10 +72,12 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
                 +"${openShader.shaderType.title} Shader"
             }
 
-            iconButton {
-                attrs.onClickFunction = handleDeleteClick
+            if (props.onDelete != null) {
+                iconButton {
+                    attrs.onClickFunction = handleDeleteClick
 
-                icon(Icons.Delete)
+                    icon(Icons.Delete)
+                }
             }
         }
     }
@@ -84,7 +86,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
 external interface ShaderInstanceCardProps : RProps {
     var mutableShaderInstance: MutableShaderInstance
     var onSelect: () -> Unit
-    var onDelete: () -> Unit
+    var onDelete: (() -> Unit)?
     var toolchain: Toolchain
 }
 

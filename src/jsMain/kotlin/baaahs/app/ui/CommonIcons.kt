@@ -26,6 +26,7 @@ actual fun getCommonIcons() = object : PlatformIcons {
     override val Button get() = icon(Icons.CropLandscape)
     override val ButtonGroup get() = icon(Icons.ViewModule)
     override val ColorPalette get() = icon(Icons.Palette)
+    override val ShaderLibrary get() = icon(Icons.PhotoLibrary)
     override val Visualizer get() = icon(Icons.Visibility)
 
     override val Info: Icon get() = icon(Icons.Info)

@@ -2,6 +2,8 @@ package baaahs.mapper;
 
 import baaahs.PinkyConfig
 import baaahs.io.Fs
+import baaahs.io.FsServerSideSerializer
+import baaahs.libraries.ShaderLibraryIndexFile
 import baaahs.model.Model
 import baaahs.plugin.Plugins
 import baaahs.show.Show
@@ -13,6 +15,8 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 
 class Storage(val fs: Fs, val plugins: Plugins) {
+    val fsSerializer = FsServerSideSerializer()
+
     private val configFile = fs.resolve("config.json")
 
     companion object {
@@ -86,6 +90,22 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     suspend fun saveShow(file: Fs.File, show: Show) {
         file.write(plugins.json.encodeToString(ShowMigrator, show), true)
     }
+
+    suspend fun listShaderLibraries(): List<Fs.File> {
+        return resolve("shader-libraries").listFiles()
+            .also { println("shader libraries: $it") }
+            .filter { it.libraryIndexFile().exists() }
+            .also { println("shader libraries with index: $it") }
+    }
+
+    suspend fun loadShaderLibraryIndexFile(libDir: Fs.File): ShaderLibraryIndexFile {
+        return json.decodeFromString(
+            ShaderLibraryIndexFile.serializer(),
+            libDir.libraryIndexFile().read()!!
+        )
+    }
+
+    private fun Fs.File.libraryIndexFile() = resolve("_libraryIndex.json", isDirectory = false)
 
     fun resolve(path: String): Fs.File = fs.resolve(path)
 }

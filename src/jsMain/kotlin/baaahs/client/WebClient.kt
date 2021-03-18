@@ -7,6 +7,7 @@ import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsClientBackend
+import baaahs.libraries.ShaderLibraries
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.plugin.PluginContext
@@ -21,6 +22,8 @@ import baaahs.show.mutable.MutableShow
 import baaahs.util.JsClock
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.modules.SerializersModule
 import react.ReactElement
 import react.createElement
@@ -109,11 +112,13 @@ class WebClient(
             include(remoteFsSerializer.serialModule)
             include(toolchain.plugins.serialModule)
         })
-        val newShow = pubSub.commandSender(commands.newShow) {}
-        val switchToShow = pubSub.commandSender(commands.switchToShow) {}
-        val saveShow = pubSub.commandSender(commands.saveShow) {}
-        val saveAsShow = pubSub.commandSender(commands.saveAsShow) {}
+        val newShow = pubSub.commandSender(commands.newShow)
+        val switchToShow = pubSub.commandSender(commands.switchToShow)
+        val saveShow = pubSub.commandSender(commands.saveShow)
+        val saveAsShow = pubSub.commandSender(commands.saveAsShow)
     }
+
+    private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
 
     private fun switchTo(showEditorState: ShowEditorState?) {
         val newShow = showEditorState?.show
@@ -188,6 +193,9 @@ class WebClient(
         val showProblems : List<ShowProblem>
             get() = this@WebClient.showProblems
 
+        val shaderLibraries : ShaderLibraries.Facade
+            get() = this@WebClient.shaderLibraries.facade
+
         override fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
             onShowEdit(mutableShow.getShow(), openShow!!.getShowState(), pushToUndoStack)
         }
@@ -214,23 +222,23 @@ class WebClient(
         }
 
         fun onNewShow(newShow: Show? = null) {
-            serverCommands.newShow(NewShowCommand(newShow))
+            GlobalScope.launch { serverCommands.newShow(NewShowCommand(newShow)) }
         }
 
         fun onOpenShow(file: Fs.File?) {
-            serverCommands.switchToShow(SwitchToShowCommand(file))
+            GlobalScope.launch { serverCommands.switchToShow(SwitchToShowCommand(file)) }
         }
 
         fun onSaveShow() {
-            serverCommands.saveShow(SaveShowCommand())
+            GlobalScope.launch { serverCommands.saveShow(SaveShowCommand()) }
         }
 
         fun onSaveAsShow(file: Fs.File) {
-            serverCommands.saveAsShow(SaveAsShowCommand(file))
+            GlobalScope.launch { serverCommands.saveAsShow(SaveAsShowCommand(file)) }
         }
 
         fun onCloseShow() {
-            serverCommands.switchToShow(SwitchToShowCommand(null))
+            GlobalScope.launch { serverCommands.switchToShow(SwitchToShowCommand(null)) }
         }
 
         fun confirmServerNotice(id: String) {

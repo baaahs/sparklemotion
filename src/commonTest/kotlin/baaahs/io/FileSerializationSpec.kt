@@ -124,4 +124,8 @@ class FakeRemoteFsBackend : RemoteFsBackend {
     override suspend fun exists(file: Fs.File): Boolean {
         TODO("not implemented")
     }
+
+    override suspend fun delete(file: Fs.File) {
+        TODO("not implemented")
+    }
 }

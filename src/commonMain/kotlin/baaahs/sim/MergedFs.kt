@@ -3,18 +3,23 @@ package baaahs.sim
 import baaahs.io.Fs
 
 class MergedFs(
-    val baseFs: Fs,
-    val overlayFs: Fs,
-    override val name: String = "${baseFs.name} + ${overlayFs.name}"
+    private val baseFs: Fs,
+    private vararg val overlayFses: Fs,
+    override val name: String = "${baseFs.name} + ${overlayFses.joinToString(" + ") { it.name }}"
 ) : Fs {
     override suspend fun listFiles(directory: Fs.File): List<Fs.File> {
-        return (baseFs.listFiles(directory) + overlayFs.listFiles(directory))
+        return (
+                baseFs.listFiles(directory) +
+                        overlayFses.flatMap { it.listFiles(directory) }
+                )
+            .map { it.fullPath to it.isDirectory }
             .distinct()
-            .map { Fs.File(this, it.fullPath, it.isDirectory) }
+            .map { (fullPath, isDirectory) -> Fs.File(this, fullPath, isDirectory) }
     }
 
     override suspend fun loadFile(file: Fs.File): String? {
-        return overlayFs.loadFile(file) ?: baseFs.loadFile(file)
+        return overlayFses.firstNonNull { if (it.exists(file)) it.loadFile(file) else null }
+            ?: baseFs.loadFile(file)
     }
 
     override suspend fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
@@ -26,10 +31,23 @@ class MergedFs(
     }
 
     override suspend fun exists(file: Fs.File): Boolean {
-        return baseFs.exists(file) || overlayFs.exists(file)
+        return baseFs.exists(file) || overlayFses.any { it.exists(file) }
     }
 
     override suspend fun isDirectory(file: Fs.File): Boolean {
-        return if (overlayFs.exists(file)) overlayFs.exists(file) else baseFs.isDirectory(file)
+        return overlayFses.firstOrNull { it.exists(file) }?.isDirectory(file)
+            ?: baseFs.isDirectory(file)
     }
+
+    override suspend fun delete(file: Fs.File) {
+        overlayFses.forEach { it.delete(file) }
+        baseFs.delete(file)
+    }
+}
+
+private inline fun <T, R> Array<T>.firstNonNull(fn: (T) -> R): R? {
+    for (item in this) {
+        fn(item)?.let { return it }
+    }
+    return null
 }
