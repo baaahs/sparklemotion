@@ -52,6 +52,7 @@ class Shenzarpy(
     }
 
     enum class WheelColor(val color: Color) {
+        WHITE(Color.from(0xffffff)),
         RED(Color.from(0xc21e22)),
         ORANGE(Color.from(0xeb8236)),
         AQUAMARINE(Color.from(0x7cbc84)),
@@ -65,8 +66,7 @@ class Shenzarpy(
         CTO2(Color.from(0xf4c651)),
         CTO1(Color.from(0xf4d88a)),
         CTB(Color.from(0x97c7b8)),
-        DARK_BLUE(Color.from(0x085197)),
-        WHITE(Color.from(0xffffff));
+        DARK_BLUE(Color.from(0x085197));
 
         companion object {
             val values = values()

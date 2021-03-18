@@ -19,6 +19,11 @@ object MoverShader : ShaderType {
 
     /**language=glsl*/
     override val template: String = """
+        struct FixtureInfo {
+            vec3 origin;
+            vec3 heading;
+        };
+
         struct MovingHeadParams {
             float pan;
             float tilt;
@@ -26,11 +31,14 @@ object MoverShader : ShaderType {
             float dimmer;
         };
         
+        uniform FixtureInfo fixtureInfo;
+
         // @param params moving-head-params
         void main(out MovingHeadParams params) {
             params.pan = 0.;
             params.tilt = .5;
             params.colorWheel = 0.;
+            params.dimmer = 1.;
         }
     """.trimIndent()
 
