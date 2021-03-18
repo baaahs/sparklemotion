@@ -83,6 +83,11 @@ mapper-index.html
 mapper/index.html
 normalize.css
 react-mosaic-component.css
+shader-libraries/built-in/Brightness.glsl
+shader-libraries/built-in/Fireball.glsl
+shader-libraries/built-in/Saturation.glsl
+shader-libraries/built-in/Wobble.glsl
+shader-libraries/built-in/_libraryIndex.json
 styles.css
 sui-generis.obj
 three.js

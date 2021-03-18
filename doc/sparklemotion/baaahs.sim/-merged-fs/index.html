@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">MergedFs</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.MergedFs$<init>(baaahs.io.Fs, baaahs.io.Fs, kotlin.String)/baseFs">baseFs</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.MergedFs$<init>(baaahs.io.Fs, baaahs.io.Fs, kotlin.String)/overlayFs">overlayFs</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.MergedFs$<init>(baaahs.io.Fs, baaahs.io.Fs, kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;"${baseFs.name} + ${overlayFs.name}"<span class="symbol">)</span></code></td>
+<code><span class="identifier">MergedFs</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.MergedFs$<init>(baaahs.io.Fs, kotlin.Array((baaahs.io.Fs)), kotlin.String)/baseFs">baseFs</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">, </span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.sim.MergedFs$<init>(baaahs.io.Fs, kotlin.Array((baaahs.io.Fs)), kotlin.String)/overlayFses">overlayFses</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.MergedFs$<init>(baaahs.io.Fs, kotlin.Array((baaahs.io.Fs)), kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a>&nbsp;<span class="symbol">=</span>&nbsp;"${baseFs.name} + ${overlayFses.joinToString(" + ") { it.name }}"<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,30 +26,23 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="base-fs.html">baseFs</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">baseFs</span><span class="symbol">: </span><a href="../../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="name.html">name</a></h4>
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="overlay-fs.html">overlayFs</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">overlayFs</span><span class="symbol">: </span><a href="../../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a></code></td>
 </tr>
 </tbody>
 </table>
 <h3>Functions</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="delete.html">delete</a></h4>
+</td>
+<td>
+<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">delete</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.MergedFs$delete(baaahs.io.Fs.File)/file">file</span><span class="symbol">:</span>&nbsp;<span class="identifier">File</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="exists.html">exists</a></h4>

@@ -61,6 +61,7 @@ baaahs.imaging
 baaahs.io
 baaahs.jsx
 baaahs.jsx.sim
+baaahs.libraries
 baaahs.mapper
 baaahs.model
 baaahs.models
@@ -74,7 +75,6 @@ baaahs.show
 baaahs.show.live
 baaahs.show.migration
 baaahs.show.mutable
-baaahs.shows
 baaahs.sim
 baaahs.sim.ui
 baaahs.ui

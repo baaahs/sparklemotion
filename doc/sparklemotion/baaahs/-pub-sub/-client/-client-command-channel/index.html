@@ -17,7 +17,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">ClientCommandChannel</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client.ClientCommandChannel$<init>(baaahs.PubSub.CommandPort((baaahs.PubSub.Client.ClientCommandChannel.C, baaahs.PubSub.Client.ClientCommandChannel.R)), kotlin.Function1((baaahs.PubSub.Client.ClientCommandChannel.R, kotlin.Unit)))/commandPort">commandPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandPort</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Client.ClientCommandChannel$<init>(baaahs.PubSub.CommandPort((baaahs.PubSub.Client.ClientCommandChannel.C, baaahs.PubSub.Client.ClientCommandChannel.R)), kotlin.Function1((baaahs.PubSub.Client.ClientCommandChannel.R, kotlin.Unit)))/replyCallback">replyCallback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">R</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">ClientCommandChannel</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client.ClientCommandChannel$<init>(baaahs.PubSub.CommandPort((baaahs.PubSub.Client.ClientCommandChannel.C, baaahs.PubSub.Client.ClientCommandChannel.R)))/commandPort">commandPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandPort</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -26,17 +26,24 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="receive-error.html">receiveError</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">receiveError</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client.ClientCommandChannel$receiveError(kotlin.String, kotlin.String)/message">message</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Client.ClientCommandChannel$receiveError(kotlin.String, kotlin.String)/commandId">commandId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="receive-reply.html">receiveReply</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">receiveReply</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client.ClientCommandChannel$receiveReply(kotlin.String)/replyJson">replyJson</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">receiveReply</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client.ClientCommandChannel$receiveReply(kotlin.String, kotlin.String)/replyJson">replyJson</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Client.ClientCommandChannel$receiveReply(kotlin.String, kotlin.String)/commandId">commandId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="send.html">send</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">send</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client.ClientCommandChannel$send(baaahs.PubSub.Client.ClientCommandChannel.C)/command">command</span><span class="symbol">:</span>&nbsp;<span class="identifier">C</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">send</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client.ClientCommandChannel$send(baaahs.PubSub.Client.ClientCommandChannel.C)/command">command</span><span class="symbol">:</span>&nbsp;<span class="identifier">C</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">R</span></code></td>
 </tr>
 </tbody>
 </table>
