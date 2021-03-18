@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.io.RemoteFsSerializer
+import baaahs.libraries.ShaderLibrary
 import baaahs.model.MovingHead
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -27,18 +28,29 @@ object Topics {
             MapSerializer(String.serializer(), MovingHead.MovingHeadPosition.serializer())
         )
 
+    fun createShaderLibraries(fsSerializer: RemoteFsSerializer) =
+        PubSub.Topic(
+            "shaderLibraries",
+            MapSerializer(String.serializer(), ShaderLibrary.serializer()),
+            fsSerializer.serialModule
+        )
+
     class Commands(serialModule: SerializersModule) {
-        val newShow =
-            PubSub.CommandPort("pinky/newShow",
-                NewShowCommand.serializer(), Unit.serializer(), serialModule)
-        val switchToShow =
-            PubSub.CommandPort("pinky/switchToShow",
-                SwitchToShowCommand.serializer(), Unit.serializer(), serialModule)
-        val saveShow =
-            PubSub.CommandPort("pinky/saveShow",
-                SaveShowCommand.serializer(), Unit.serializer(), serialModule)
-        val saveAsShow =
-            PubSub.CommandPort("pinky/saveAsShow",
-                SaveAsShowCommand.serializer(), Unit.serializer(), serialModule)
+        val newShow = PubSub.CommandPort(
+            "pinky/newShow", NewShowCommand.serializer(), Unit.serializer(), serialModule
+        )
+        val switchToShow = PubSub.CommandPort(
+            "pinky/switchToShow", SwitchToShowCommand.serializer(), Unit.serializer(), serialModule
+        )
+        val saveShow = PubSub.CommandPort(
+            "pinky/saveShow", SaveShowCommand.serializer(), Unit.serializer(), serialModule
+        )
+        val saveAsShow = PubSub.CommandPort(
+            "pinky/saveAsShow", SaveAsShowCommand.serializer(), Unit.serializer(), serialModule
+        )
+        val searchShaderLibraries = PubSub.CommandPort(
+            "pinky/shaderLibraries/search",
+            SearchShaderLibraries.serializer(), SearchShaderLibraries.Response.serializer(), serialModule
+        )
     }
 }

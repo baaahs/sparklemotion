@@ -48,6 +48,7 @@ external object Icons {
     val OpenInBrowser: Icon
     val OpenWith: Icon
     val Palette: Icon
+    val PhotoLibrary: Icon
     val PowerInput: Icon
     val Redo: Icon
     val Save: Icon

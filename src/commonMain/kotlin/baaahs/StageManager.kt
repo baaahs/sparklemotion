@@ -6,9 +6,9 @@ import baaahs.fixtures.RenderPlan
 import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
-import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.io.RemoteFsSerializer
+import baaahs.libraries.ShaderLibrary
 import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
 import baaahs.show.DataSource
@@ -39,7 +39,7 @@ class StageManager(
     private val gadgets: MutableMap<String, GadgetInfo> = mutableMapOf()
     var lastUserInteraction = DateTime.now()
 
-    private val fsSerializer = FsServerSideSerializer()
+    private val fsSerializer = storage.fsSerializer
 
     init {
         PubSubRemoteFsServerBackend(pubSub, fsSerializer)
@@ -274,6 +274,12 @@ class SaveShowCommand
 
 @Serializable
 class SaveAsShowCommand(val file: Fs.File)
+
+@Serializable
+class SearchShaderLibraries(val terms: String) {
+    @Serializable
+    class Response(val matches: List<ShaderLibrary.Entry>)
+}
 
 @Serializable
 data class ShowProblem(
