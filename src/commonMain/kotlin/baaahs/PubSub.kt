@@ -485,6 +485,7 @@ abstract class PubSub {
                     val reply = try {
                         callback.invoke(commandPort.fromJson(commandJson))
                     } catch (e: Exception) {
+                        logger.warn(e) { "Error in remote command invocation ($commandId)." }
                         fromConnection.sendError(commandPort, e.message ?: "unknown error", commandId)
                         return@launch
                     }

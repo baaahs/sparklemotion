@@ -7,6 +7,7 @@ import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsClientBackend
+import baaahs.libraries.ShaderLibraries
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.plugin.PluginContext
@@ -117,6 +118,8 @@ class WebClient(
         val saveAsShow = pubSub.commandSender(commands.saveAsShow)
     }
 
+    private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
+
     private fun switchTo(showEditorState: ShowEditorState?) {
         val newShow = showEditorState?.show
         val newShowState = showEditorState?.showState
@@ -189,6 +192,9 @@ class WebClient(
 
         val showProblems : List<ShowProblem>
             get() = this@WebClient.showProblems
+
+        val shaderLibraries : ShaderLibraries.Facade
+            get() = this@WebClient.shaderLibraries.facade
 
         override fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
             onShowEdit(mutableShow.getShow(), openShow!!.getShowState(), pushToUndoStack)
