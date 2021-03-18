@@ -14,6 +14,13 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="invoke-from-main.html">invokeFromMain</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">invokeFromMain</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="output-var.html">outputVar</a></h4>
 </td>
 <td>
@@ -50,7 +57,7 @@
 <h4><a href="append-invoke-and-set.html">appendInvokeAndSet</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">appendInvokeAndSet</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.Component$appendInvokeAndSet(java.lang.StringBuilder, kotlin.String)/buf">buf</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-string-builder/index.html"><span class="identifier">StringBuilder</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.Component$appendInvokeAndSet(java.lang.StringBuilder, kotlin.String)/prefix">prefix</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">appendInvokeAndSet</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.Component$appendInvokeAndSet(java.lang.StringBuilder, kotlin.collections.Map((kotlin.String, baaahs.gl.patch.ContentType)))/buf">buf</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-string-builder/index.html"><span class="identifier">StringBuilder</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.patch.Component$appendInvokeAndSet(java.lang.StringBuilder, kotlin.collections.Map((kotlin.String, baaahs.gl.patch.ContentType)))/injectionParams">injectionParams</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -64,20 +71,13 @@
 <h4><a href="get-expression.html">getExpression</a></h4>
 </td>
 <td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getExpression</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getExpression</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.patch.Component$getExpression(kotlin.String)/prefix">prefix</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.glsl/-glsl-expr/index.html"><span class="identifier">GlslExpr</span></a></code></td>
 </tr>
 </tbody>
 </table>
 <h3>Inheritors</h3>
 <table>
 <tbody>
-<tr>
-<td>
-<h4><a href="../-const-node/index.html">ConstNode</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ConstNode</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-program-node/index.html"><span class="identifier">ProgramNode</span></a><span class="symbol">, </span><a href="./index.html"><span class="identifier">Component</span></a></code></td>
-</tr>
 <tr>
 <td>
 <h4><a href="../-data-source-component/index.html">DataSourceComponent</a></h4>
@@ -91,6 +91,13 @@
 </td>
 <td>
 <code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">DefaultValueNode</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-program-node/index.html"><span class="identifier">ProgramNode</span></a><span class="symbol">, </span><a href="./index.html"><span class="identifier">Component</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-expr-node/index.html">ExprNode</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">ExprNode</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-program-node/index.html"><span class="identifier">ProgramNode</span></a><span class="symbol">, </span><a href="./index.html"><span class="identifier">Component</span></a></code></td>
 </tr>
 <tr>
 <td>

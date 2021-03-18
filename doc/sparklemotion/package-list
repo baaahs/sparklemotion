@@ -90,7 +90,6 @@ external.mosaic
 external.react
 external.react_draggable
 materialui
-materialui.components.buttongroup
 materialui.icons
 three.js
 three_ext
