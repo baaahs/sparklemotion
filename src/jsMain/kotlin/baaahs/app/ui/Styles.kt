@@ -13,14 +13,14 @@ import materialui.styles.transitions.create
 import materialui.styles.transitions.sharp
 import styled.StyleSheet
 import styled.injectGlobal
-import kotlin.collections.arrayListOf
 import kotlin.collections.set
 
 class AllStyles(val theme: MuiTheme) {
     val appUi by lazy { ThemeStyles(theme) }
-    val shaderEditor by lazy { ShaderEditorStyles(theme) }
-    val appUiEditor by lazy { baaahs.ui.editor.Styles(theme) }
+    val editor by lazy { baaahs.ui.editor.Styles(theme) }
+    val controls by lazy { baaahs.app.ui.controls.ThemeStyles(theme) }
     val layoutEditor by lazy { LayoutEditorStyles(theme) }
+    val shaderEditor by lazy { ShaderEditorStyles(theme) }
 
     fun injectGlobals() {
         injectGlobal(Styles.global.toString())
