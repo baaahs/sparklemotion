@@ -26,6 +26,8 @@ interface Fs {
         return file.isDirectory ?: error("Is $file a directory? Answer unclear.")
     }
 
+    suspend fun delete(file: File)
+
     @Serializable
     class File(
         val fs: Fs,
@@ -51,6 +53,7 @@ interface Fs {
         suspend fun write(content: String, allowOverwrite: Boolean) = fs.saveFile(this, content, allowOverwrite)
         suspend fun exists(): Boolean = fs.exists(this)
         suspend fun isDir(): Boolean = fs.isDirectory(this)
+        suspend fun delete(): Unit = fs.delete(this)
 
         fun isWithin(parent: File): Boolean {
             return if (parent.isRoot) {

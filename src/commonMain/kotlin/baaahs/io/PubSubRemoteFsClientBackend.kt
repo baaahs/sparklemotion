@@ -50,6 +50,10 @@ class PubSubRemoteFsClientBackend(
         val reply: RemoteFsOp.Response.IsDirectoryResponse = sendCommand(RemoteFsOp.IsDirectory(file))
         return reply.exists
     }
+
+    override suspend fun delete(file: Fs.File) {
+        sendCommand<RemoteFsOp.Response>(RemoteFsOp.Delete(file))
+    }
 }
 
 @Polymorphic
@@ -60,15 +64,13 @@ sealed class RemoteFsOp {
     @Serializable
     @SerialName("ListFiles")
     data class ListFiles(val directory: Fs.File) : RemoteFsOp() {
-        override suspend fun perform(): Response =
-            Response.ListFilesResponse(directory.listFiles())
+        override suspend fun perform(): Response = Response.ListFilesResponse(directory.listFiles())
     }
 
     @Serializable
     @SerialName("LoadFile")
     class LoadFile(val file: Fs.File) : RemoteFsOp() {
-        override suspend fun perform(): Response =
-            Response.LoadFileResponse(file.read())
+        override suspend fun perform(): Response = Response.LoadFileResponse(file.read())
     }
 
     @Serializable
@@ -83,16 +85,21 @@ sealed class RemoteFsOp {
     @Serializable
     @SerialName("Exists")
     class Exists(val file: Fs.File) : RemoteFsOp() {
-        override suspend fun perform(): Response {
-            return Response.ExistsResponse(file.exists())
-        }
+        override suspend fun perform(): Response = Response.ExistsResponse(file.exists())
     }
 
     @Serializable
     @SerialName("IsDirectory")
     class IsDirectory(val file: Fs.File) : RemoteFsOp() {
+        override suspend fun perform(): Response = Response.IsDirectoryResponse(file.isDir())
+    }
+
+    @Serializable
+    @SerialName("Delete")
+    class Delete(val file: Fs.File) : RemoteFsOp() {
         override suspend fun perform(): Response {
-            return Response.IsDirectoryResponse(file.isDir())
+            file.delete()
+            return Response.DeleteResponse()
         }
     }
 
@@ -118,6 +125,10 @@ sealed class RemoteFsOp {
         @Serializable
         @SerialName("IsDirectory")
         class IsDirectoryResponse(val exists: Boolean) : RemoteFsOp.Response()
+
+        @Serializable
+        @SerialName("Delete")
+        class DeleteResponse() : RemoteFsOp.Response()
     }
 }
 
