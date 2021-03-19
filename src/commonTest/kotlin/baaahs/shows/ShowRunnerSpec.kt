@@ -87,7 +87,7 @@ object ShowRunnerSpec : Spek({
             val fs = FakeFs()
             StageManager(
                 testToolchain, renderManager, pubSub, Storage(fs, testPlugins()), fixtureManager,
-                FakeClock(), model, testCoroutineContext)
+                FakeClock(), model, GadgetManager(pubSub, FakeClock(), testCoroutineContext))
         }
 
         val fakeProgram by value { fakeGlslContext.programs.only("program") }
