@@ -61,7 +61,7 @@ class ShowRunnerTest {
         MovingHeadManager(fixtureManager, dmxUniverse, emptyList())
         stageManager = StageManager(
             testToolchain, renderManager, server, Storage(fs, testPlugins()), fixtureManager,
-            FakeClock(), sheepModel, testCoroutineContext
+            FakeClock(), sheepModel, GadgetManager(server, FakeClock(), testCoroutineContext)
         )
         stageManager.switchTo(SampleData.sampleShow)
         renderTargets = fixtureManager.getRenderTargets_ForTestOnly()
