@@ -1,9 +1,9 @@
 package baaahs.app.ui.gadgets.slider
 
 import baaahs.Gadget
-import baaahs.GadgetListener
 import baaahs.app.ui.appContext
 import baaahs.gadgets.Slider
+import baaahs.ui.name
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.react_compound_slider.*
@@ -13,15 +13,6 @@ import react.*
 import react.dom.div
 import react.dom.label
 import kotlin.math.floor
-
-private val sliderStyle = js(
-    "{\n" +
-            "  position: 'relative',\n" +
-            "  height: '200px',\n" +
-            "  marginLeft: '45%',\n" +
-            "  touchAction: 'none',\n" +
-            "}"
-)
 
 private val preventDefault: (Event) -> Unit = { event -> event.preventDefault() }
 
@@ -56,7 +47,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 
 
     onMount {
-        props.gadget.listen(handleChangeFromServer as GadgetListener)
+        props.gadget.listen(handleChangeFromServer)
         withCleanup {
             try {
                 props.gadget.unlisten(handleChangeFromServer)
@@ -81,12 +72,12 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
         }
 
         Slider {
+            attrs.className = styles.slider.name
             attrs.vertical = true
             attrs.reversed = props.reversed
             attrs.mode = 2
             attrs.step = stepValue
             attrs.domain = domain.asDynamic()
-            attrs.rootStyle = sliderStyle
             attrs.onSlideStart = disableScroll.asDynamic()
             attrs.onSlideEnd = enableScroll.asDynamic()
             attrs.onUpdate = handleUpdate
@@ -120,7 +111,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 
             Tracks {
                 attrs.left = false
-                attrs.right = false
+                attrs.right = true
                 attrs.children = { tracksObject ->
                     div(+styles.tracks) {
                         tracksObject.tracks.forEach { track ->
@@ -135,7 +126,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                 }
             }
 
-            if (props.showTicks) {
+            if (props.showTicks != false) {
                 Ticks {
                     attrs.count = 10
                     attrs.children = { ticksObject ->
@@ -159,8 +150,8 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 
 external interface SliderProps : RProps {
     var gadget: Slider
-    var reversed: Boolean
-    var showTicks: Boolean
+    var reversed: Boolean?
+    var showTicks: Boolean?
 
 }
 
