@@ -3,9 +3,20 @@ package baaahs.app.ui.gadgets.slider
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import materialui.styles.muitheme.MuiTheme
+import materialui.styles.palette.paper
+import materialui.styles.palette.primary
 import styled.StyleSheet
 
-class ThemedStyles(val theme: MuiTheme) : StyleSheet("gadgets-Slider", isStatic = true) {
+class ThemedStyles(val theme: MuiTheme) : StyleSheet("app-ui-gadgets-Slider", isStatic = true) {
+    private val indicatorColor = Color("#00FF28")
+
+    val slider by css {
+        position = Position.relative
+        height = 200.px
+        marginLeft = 45.pct
+        put("touchAction", "none")
+    }
+
     val wrapper by css {
         display = Display.flex
         width = 60.px
@@ -63,9 +74,9 @@ class ThemedStyles(val theme: MuiTheme) : StyleSheet("gadgets-Slider", isStatic 
 
     val handleNotchMiddle by css {
         height = 2.px
-        borderBottom = "none"
-        boxShadow(Color("#00FF28"), 0.px, 0.px, 3.px)
-        backgroundColor = Color("#00E622")
+        padding = "2px"
+        border = "1px inset #00A4D1"
+        backgroundColor = indicatorColor
         width = 50.pct
     }
 
@@ -90,6 +101,9 @@ class ThemedStyles(val theme: MuiTheme) : StyleSheet("gadgets-Slider", isStatic 
         transform.translateX((-50).pct)
         borderRadius = 7.px
         pointerEvents = PointerEvents.none
+        backgroundColor = theme.palette.text.primary
+            .withAlpha(.25)
+            .blend(theme.palette.background.paper)
         boxShadowInset(rgba(0, 0, 0, .85), 1.px, 1.px, 1.px, 0.px)
         boxShadowInset(rgba(255, 255, 255, 0.2), (-1).px, (-1).px, 1.px, 0.px)
     }
@@ -100,11 +114,12 @@ class ThemedStyles(val theme: MuiTheme) : StyleSheet("gadgets-Slider", isStatic 
         marginLeft = 10.px
         height = 1.px
         width = 6.px
-        backgroundColor = rgb(200,200,200)
+        backgroundColor = rgb(200, 200, 200)
     }
 
     val tickText by css {
         position = Position.absolute
+        right = (-30).px
         marginTop = (-5).px
         marginLeft = 20.px
         fontSize = 10.px
@@ -115,10 +130,10 @@ class ThemedStyles(val theme: MuiTheme) : StyleSheet("gadgets-Slider", isStatic 
     val track by css {
         position = Position.absolute
         zIndex = 1
-        backgroundColor = Color("#6ABBC0")
+        backgroundColor = indicatorColor
         borderRadius = 7.px
         cursor = Cursor.pointer
-        width = 14.px
+        width = 2.px
         transform.translateX((-50).pct)
     }
 }
