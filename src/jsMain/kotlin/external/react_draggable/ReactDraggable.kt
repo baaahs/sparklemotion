@@ -2,7 +2,6 @@
 
 package external.react_draggable
 
-import ReactAce.Ace.IAceEditorProps
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.MouseEvent
 import react.RClass

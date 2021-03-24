@@ -1,8 +1,8 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.gadgets.slider.slider
 import baaahs.gadgets.Slider
-import baaahs.jsx.RangeSlider
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.and
@@ -85,8 +85,9 @@ val Transition = xComponent<TransitionProps>("Transition") { props ->
         div {
             inlineStyles { gridArea = "fader" }
 
-            RangeSlider {
+            slider {
                 attrs.gadget = fader
+                attrs.reversed = false
                 attrs.showTicks = false
             }
         }

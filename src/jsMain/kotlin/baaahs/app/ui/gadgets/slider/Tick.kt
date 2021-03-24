@@ -1,0 +1,40 @@
+package baaahs.app.ui.gadgets.slider
+
+import baaahs.app.ui.appContext
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
+import external.react_compound_slider.SliderItem
+import kotlinx.css.bottom
+import kotlinx.css.pct
+import react.*
+import react.dom.div
+import styled.inlineStyles
+
+private val tick = xComponent<TickProps>("Tick") { props ->
+    val appContext = useContext(appContext)
+    val styles = appContext.allStyles.gadgetsSlider
+
+    div {
+        div(+styles.tickMark) {
+            inlineStyles {
+                bottom = (100 - props.tick.percent.toFloat()).pct
+            }
+        }
+
+        div(+styles.tickText) {
+            inlineStyles {
+                bottom = (100 - props.tick.percent.toFloat()).pct
+            }
+
+            +props.format(props.tick)
+        }
+    }
+}
+
+external interface TickProps: RProps {
+    var tick: SliderItem
+    var format: (SliderItem) -> String
+}
+
+fun RBuilder.tick(handler: RHandler<TickProps>) =
+    child(tick, handler = handler)

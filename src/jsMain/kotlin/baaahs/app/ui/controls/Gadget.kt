@@ -1,7 +1,7 @@
 package baaahs.app.ui.controls
 
+import baaahs.app.ui.gadgets.slider.slider
 import baaahs.gadgets.Slider
-import baaahs.jsx.RangeSlider
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenGadgetControl
 import baaahs.ui.unaryPlus
@@ -18,8 +18,10 @@ private val Gadget = xComponent<GadgetProps>("Gadget") { props ->
 
     when (gadget) {
         is Slider -> {
-            RangeSlider {
+            slider {
                 attrs.gadget = gadget
+                attrs.reversed = true
+                attrs.showTicks = true
             }
             div(+Styles.dataSourceTitle) { +title }
         }
