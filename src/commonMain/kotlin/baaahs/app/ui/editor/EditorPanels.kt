@@ -3,10 +3,16 @@ package baaahs.app.ui.editor
 import baaahs.Severity
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.EditorPanel
+import baaahs.control.MutableButtonControl
+import baaahs.control.MutableButtonGroupControl
+import baaahs.control.MutableVisualizerControl
 import baaahs.gl.openShader
 import baaahs.severity
 import baaahs.show.live.ShaderInstanceResolver
-import baaahs.show.mutable.*
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePatchHolder
+import baaahs.show.mutable.MutableShaderInstance
+import baaahs.show.mutable.ShowBuilder
 import baaahs.ui.Icon
 import baaahs.ui.Renderer
 

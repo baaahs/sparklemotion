@@ -1,6 +1,9 @@
 package baaahs.shows
 
 import baaahs.Gadget
+import baaahs.control.ButtonControl
+import baaahs.control.ButtonGroupControl
+import baaahs.control.GadgetControl
 import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider

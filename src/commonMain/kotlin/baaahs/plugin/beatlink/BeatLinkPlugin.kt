@@ -14,10 +14,10 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
-import baaahs.show.*
+import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
 import baaahs.show.mutable.MutableDataSourcePort
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.descriptors.*
 
 class BeatLinkPlugin internal constructor(
     internal val beatSource: BeatSource,

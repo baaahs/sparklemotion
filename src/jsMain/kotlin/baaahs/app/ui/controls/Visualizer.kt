@@ -2,9 +2,9 @@ package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.preview.ClientPreview
+import baaahs.control.OpenVisualizerControl
 import baaahs.jsx.useResizeListener
 import baaahs.show.live.ControlProps
-import baaahs.show.live.OpenVisualizerControl
 import baaahs.ui.on
 import baaahs.ui.xComponent
 import materialui.components.card.card

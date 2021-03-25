@@ -2,10 +2,10 @@ package baaahs.app.ui
 
 import baaahs.Severity
 import baaahs.app.ui.editor.EditableManager
-import baaahs.show.ButtonControl
+import baaahs.control.ButtonControl
+import baaahs.control.MutableButtonControl
+import baaahs.control.MutableButtonGroupControl
 import baaahs.show.live.ControlDisplay
-import baaahs.show.mutable.MutableButtonControl
-import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.Icon

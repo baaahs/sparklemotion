@@ -1,10 +1,10 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.ControlEditIntent
+import baaahs.control.MutableButtonControl
 import baaahs.describe
 import baaahs.gl.testToolchain
 import baaahs.show.Panel
-import baaahs.show.mutable.MutableButtonControl
 import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import ch.tutteli.atrium.api.fluent.en_GB.toBe

@@ -1,7 +1,7 @@
 package baaahs.app.ui.editor
 
-import baaahs.show.ButtonGroupControl
-import baaahs.show.mutable.MutableButtonGroupControl
+import baaahs.control.ButtonGroupControl
+import baaahs.control.MutableButtonGroupControl
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
