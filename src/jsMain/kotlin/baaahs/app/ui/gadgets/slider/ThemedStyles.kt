@@ -85,6 +85,31 @@ class ThemedStyles(val theme: MuiTheme) : StyleSheet("app-ui-gadgets-Slider", is
         borderTop = "1px solid #B8D5CF"
     }
 
+    val altHandleWrapper by css {
+        position = Position.absolute
+        zIndex = 2
+
+        descendants("path") {
+            put("fill", "darkorange")
+        }
+    }
+
+    val altHandleLeft by css {
+        position = Position.absolute
+        width = 15.px
+        height = 15.px
+        transform.translateY((-50).pct)
+        right = (-1).px
+    }
+
+    val altHandleRight by css {
+        position = Position.absolute
+        width = 15.px
+        height = 15.px
+        transform.translateY((-50).pct)
+        left = 4.px
+    }
+
     val railBackground by css {
         position = Position.absolute
         height = 100.pct
