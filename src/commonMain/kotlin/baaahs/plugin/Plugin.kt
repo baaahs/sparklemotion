@@ -4,10 +4,12 @@ import baaahs.fixtures.DeviceType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.ShaderDialect
 import baaahs.gl.shader.type.ShaderType
-import baaahs.show.AddControlMenuItem
 import baaahs.show.Control
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.mutable.MutableControl
+import baaahs.show.mutable.MutableShow
+import baaahs.ui.Icon
 import baaahs.util.Clock
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -78,4 +80,10 @@ interface PluginBuilder {
 
 class PluginContext(
     val clock: Clock
+)
+
+data class AddControlMenuItem(
+    val label: String,
+    val icon: Icon,
+    val createControlFn: (mutableShow: MutableShow) -> MutableControl
 )

@@ -2,6 +2,7 @@ package baaahs.gl.patch
 
 import baaahs.TestModel
 import baaahs.app.ui.editor.PortLinkOption
+import baaahs.control.OpenButtonControl
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
 import baaahs.gl.autoWire
@@ -18,7 +19,6 @@ import baaahs.show.Panel
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.live.ActivePatchSet
-import baaahs.show.live.OpenButtonControl
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.*
 import baaahs.shows.FakeGlContext

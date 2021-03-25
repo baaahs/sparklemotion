@@ -1,9 +1,9 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.gadgets.slider.slider
+import baaahs.control.OpenGadgetControl
 import baaahs.gadgets.Slider
 import baaahs.show.live.ControlProps
-import baaahs.show.live.OpenGadgetControl
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import react.RBuilder

@@ -1,6 +1,11 @@
 package baaahs.app.ui.editor
 
-import baaahs.show.mutable.*
+import baaahs.control.MutableButtonControl
+import baaahs.control.MutableButtonGroupControl
+import baaahs.control.MutableVisualizerControl
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePatchHolder
+import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.Renderer
 import baaahs.ui.renderWrapper
 import baaahs.ui.unaryPlus

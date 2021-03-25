@@ -2,16 +2,22 @@ package baaahs.plugin
 
 import baaahs.*
 import baaahs.app.ui.CommonIcons
-import baaahs.fixtures.*
+import baaahs.control.*
+import baaahs.fixtures.DeviceType
+import baaahs.fixtures.MovingHeadDevice
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.RadioButtonStrip
 import baaahs.gadgets.Slider
 import baaahs.gl.GlContext
-import baaahs.gl.data.*
+import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.Feed
+import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.SingleUniformFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.*
+import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.dialect.GenericShaderDialect
 import baaahs.gl.shader.dialect.ShaderToyShaderDialect
 import baaahs.gl.shader.type.*
@@ -19,8 +25,9 @@ import baaahs.glsl.Uniform
 import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.MutableTransitionControl
 import baaahs.plugin.core.TransitionControl
-import baaahs.show.*
-import baaahs.show.mutable.*
+import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
+import baaahs.show.UpdateMode
 import baaahs.util.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

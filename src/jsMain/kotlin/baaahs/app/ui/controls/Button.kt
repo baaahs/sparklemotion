@@ -1,8 +1,8 @@
 package baaahs.app.ui.controls
 
-import baaahs.show.ButtonControl
+import baaahs.control.ButtonControl
+import baaahs.control.OpenButtonControl
 import baaahs.show.live.ControlProps
-import baaahs.show.live.OpenButtonControl
 import baaahs.ui.unaryPlus
 import baaahs.ui.withEvent
 import baaahs.ui.xComponent

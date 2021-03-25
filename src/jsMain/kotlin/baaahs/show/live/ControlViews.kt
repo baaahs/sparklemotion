@@ -1,6 +1,10 @@
 package baaahs.show.live
 
 import baaahs.app.ui.controls.*
+import baaahs.control.OpenButtonControl
+import baaahs.control.OpenButtonGroupControl
+import baaahs.control.OpenGadgetControl
+import baaahs.control.OpenVisualizerControl
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.ui.Renderer
 import baaahs.ui.renderWrapper

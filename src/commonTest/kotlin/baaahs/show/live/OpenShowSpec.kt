@@ -1,5 +1,6 @@
 package baaahs.show.live
 
+import baaahs.control.OpenButtonGroupControl
 import baaahs.describe
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.testToolchain

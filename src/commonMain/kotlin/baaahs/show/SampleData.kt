@@ -2,6 +2,8 @@ package baaahs.show
 
 import baaahs.Color
 import baaahs.app.ui.editor.PortLinkOption
+import baaahs.control.ButtonGroupControl.Direction.Horizontal
+import baaahs.control.ButtonGroupControl.Direction.Vertical
 import baaahs.gl.RootToolchain
 import baaahs.gl.autoWire
 import baaahs.glsl.Shaders
@@ -9,8 +11,6 @@ import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
-import baaahs.show.ButtonGroupControl.Direction.Horizontal
-import baaahs.show.ButtonGroupControl.Direction.Vertical
 import baaahs.show.mutable.*
 
 object SampleData {
