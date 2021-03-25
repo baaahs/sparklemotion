@@ -29,22 +29,12 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
     val styles = appContext.allStyles.gadgetsSlider
 
     var sliderValue by state { props.gadget.value }
+    val altSliderValue = props.altGadget?.value
 
     val handleChangeFromServer = handler("change from server") { gadget: Gadget ->
         gadget as Slider
         sliderValue = gadget.value
     }
-
-    val handleChange = handler("gadget change", props.gadget) { value: Array<Number> ->
-        props.gadget.withoutTriggering(handleChangeFromServer) {
-            props.gadget.value = value[0].toFloat()
-        }
-    }
-
-    val handleUpdate = throttle({ value: Array<Number> ->
-        handleChange(value)
-    }, wait = 10)
-
 
     onMount {
         props.gadget.listen(handleChangeFromServer)
@@ -57,6 +47,19 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             }
         }
     }
+
+    val handleChange = handler("gadget change", props.gadget) { value: Array<Number> ->
+        val newValue = value[0].toFloat()
+        if (props.gadget.value != newValue) {
+            props.gadget.withoutTriggering(handleChangeFromServer) {
+                props.gadget.value = newValue
+            }
+        }
+    }
+
+    val handleUpdate = throttle({ value: Array<Number> ->
+        handleChange(value)
+    }, wait = 10)
 
     val domain = memo(props.gadget) {
         arrayOf(props.gadget.minValue, props.gadget.maxValue)
@@ -75,14 +78,14 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             attrs.className = styles.slider.name
             attrs.vertical = true
             attrs.reversed = props.reversed
-            attrs.mode = 2
+            attrs.mode = 1
             attrs.step = stepValue
             attrs.domain = domain.asDynamic()
             attrs.onSlideStart = disableScroll.asDynamic()
             attrs.onSlideEnd = enableScroll.asDynamic()
             attrs.onUpdate = handleUpdate
             attrs.onChange = handleChange
-            attrs.values = arrayOf(sliderValue)
+            attrs.values = if (altSliderValue != null) arrayOf(sliderValue, altSliderValue) else arrayOf(sliderValue)
 
             Rail {
                 attrs.children = { railObject ->
@@ -95,18 +98,27 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             Handles {
                 attrs.children = { handlesObject: HandlesObject ->
                     div(+styles.handles) {
-                        handlesObject.handles.forEach { handle ->
-                            handle {
-                                key = handle.id
-                                attrs.domain = domain
-                                attrs.handle = handle
-                                attrs.getHandleProps = handlesObject.getHandleProps
+                        handlesObject.handles.forEachIndexed { index, handle ->
+                            if (index == 0) {
+                                handle {
+                                    key = handle.id
+                                    attrs.domain = domain
+                                    attrs.handle = handle
+                                    attrs.getHandleProps = handlesObject.getHandleProps
+                                }
+                            } else {
+                                // Non-draggable alt handle.
+                                altHandle {
+                                    key = handle.id
+                                    attrs.domain = domain
+                                    attrs.handle = handle
+                                    attrs.getHandleProps = handlesObject.getHandleProps
+                                }
                             }
                         }
 
                     }
                 }
-
             }
 
             Tracks {
@@ -150,6 +162,10 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 
 external interface SliderProps : RProps {
     var gadget: Slider
+
+    /** If non-null, this gadget's value is displayed as uneditable context. */
+    var altGadget: Slider?
+
     var reversed: Boolean?
     var showTicks: Boolean?
 
