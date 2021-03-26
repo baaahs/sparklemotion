@@ -8,8 +8,8 @@ import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
 import baaahs.glsl.Shaders
-import baaahs.plugin.CorePlugin
 import baaahs.plugin.beatlink.BeatLinkPlugin
+import baaahs.plugin.core.datasource.SliderDataSource
 import baaahs.show.Panel
 import baaahs.show.Shader
 import baaahs.show.mutable.EditingShader.State
@@ -172,7 +172,7 @@ object EditingShaderSpec : Spek({
 
                 it("should create an appropriate data source") {
                     expect(mutableShaderInstance.incomingLinks["theScale"])
-                        .toBe(MutableDataSourcePort(CorePlugin.SliderDataSource("The Scale", 1f, 0f, 1f)))
+                        .toBe(MutableDataSourcePort(SliderDataSource("The Scale", 1f, 0f, 1f)))
                 }
 
                 context("when hints are provided") {
@@ -180,7 +180,7 @@ object EditingShaderSpec : Spek({
 
                     it("should create an appropriate data source") {
                         expect(mutableShaderInstance.incomingLinks["theScale"])
-                            .toBe(MutableDataSourcePort(CorePlugin.SliderDataSource("The Scale", 1f, .25f, 4f)))
+                            .toBe(MutableDataSourcePort(SliderDataSource("The Scale", 1f, .25f, 4f)))
                     }
                 }
 
@@ -207,7 +207,7 @@ object EditingShaderSpec : Spek({
                 override(beforeBuildingShader) {
                     {
                         mutableShaderInstance.incomingLinks["theScale"] =
-                            MutableDataSourcePort(CorePlugin.SliderDataSource("Custom slider", 1f, 0f, 1f))
+                            MutableDataSourcePort(SliderDataSource("Custom slider", 1f, 0f, 1f))
                     }
                 }
 
@@ -232,12 +232,12 @@ object EditingShaderSpec : Spek({
             context("when a link has been selected by a human") {
                 beforeEachTest {
                     mutableShaderInstance.incomingLinks["theScale"] =
-                        MutableDataSourcePort(CorePlugin.SliderDataSource("custom slider", 1f, 0f, 1f))
+                        MutableDataSourcePort(SliderDataSource("custom slider", 1f, 0f, 1f))
 
                     editingShader.changeInputPortLink(
                         "theScale",
                         PortLinkOption(
-                            MutableDataSourcePort(CorePlugin.SliderDataSource("custom slider", 1f, 0f, 1f))
+                            MutableDataSourcePort(SliderDataSource("custom slider", 1f, 0f, 1f))
                         )
                     )
 
