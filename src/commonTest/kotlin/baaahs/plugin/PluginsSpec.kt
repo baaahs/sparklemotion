@@ -3,6 +3,7 @@ package baaahs.plugin
 import baaahs.FakeClock
 import baaahs.describe
 import baaahs.gl.patch.ContentType.Companion.Color
+import baaahs.plugin.core.CorePlugin
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek

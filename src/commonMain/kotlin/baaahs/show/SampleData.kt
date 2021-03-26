@@ -7,10 +7,11 @@ import baaahs.control.ButtonGroupControl.Direction.Vertical
 import baaahs.gl.RootToolchain
 import baaahs.gl.autoWire
 import baaahs.glsl.Shaders
-import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
+import baaahs.plugin.core.datasource.ColorPickerDataSource
+import baaahs.plugin.core.datasource.SliderDataSource
 import baaahs.show.mutable.*
 
 object SampleData {
@@ -166,17 +167,17 @@ object SampleData {
             }
         }
 
-        val color = CorePlugin.ColorPickerDataSource("Color", Color.WHITE)
-        val brightness = CorePlugin.SliderDataSource(
+        val color = ColorPickerDataSource("Color", Color.WHITE)
+        val brightness = SliderDataSource(
             "Brightness", 1f, 0f, 1.25f, null
         )
-        val saturation = CorePlugin.SliderDataSource(
+        val saturation = SliderDataSource(
             "Saturation", 1f, 0f, 1.25f, null
         )
-        val intensity = CorePlugin.SliderDataSource(
+        val intensity = SliderDataSource(
             "Intensity", 1f, 0f, 1f, null
         )
-        val checkerboardSize = CorePlugin.SliderDataSource(
+        val checkerboardSize = SliderDataSource(
             "Checkerboard Size", .1f, .001f, 1f, null
         )
 

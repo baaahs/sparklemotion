@@ -8,10 +8,10 @@ import baaahs.fixtures.PixelLocationDataSource
 import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.Slider
 import baaahs.gl.kexpect
-import baaahs.plugin.CorePlugin
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkControl
 import baaahs.plugin.beatlink.BeatLinkPlugin
+import baaahs.plugin.core.datasource.*
 import baaahs.show.*
 import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
@@ -147,7 +147,7 @@ fun jsonFor(gadget: Gadget): JsonElement {
 
 fun jsonFor(dataSource: DataSource): JsonElement {
     return when (dataSource) {
-        is CorePlugin.SliderDataSource -> {
+        is SliderDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:Slider")
                 put("title", dataSource.gadgetTitle)
@@ -157,24 +157,24 @@ fun jsonFor(dataSource: DataSource): JsonElement {
                 put("stepValue", dataSource.stepValue)
             }
         }
-        is CorePlugin.ColorPickerDataSource -> {
+        is ColorPickerDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:ColorPicker")
                 put("title", dataSource.gadgetTitle)
                 put("initialValue", dataSource.initialValue.toInt())
             }
         }
-        is CorePlugin.ResolutionDataSource -> {
+        is ResolutionDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:Resolution")
             }
         }
-        is CorePlugin.TimeDataSource -> {
+        is TimeDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:Time")
             }
         }
-        is CorePlugin.PixelCoordsTextureDataSource -> {
+        is PixelCoordsTextureDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:PixelCoordsTexture")
             }
@@ -184,12 +184,12 @@ fun jsonFor(dataSource: DataSource): JsonElement {
                 put("type", "baaahs.Core:PixelLocation")
             }
         }
-        is CorePlugin.ModelInfoDataSource -> {
+        is ModelInfoDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:ModelInfo")
             }
         }
-        is CorePlugin.RasterCoordinateDataSource -> {
+        is RasterCoordinateDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:RasterCoordinate")
             }

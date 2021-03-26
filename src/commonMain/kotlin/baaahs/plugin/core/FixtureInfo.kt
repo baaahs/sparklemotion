@@ -14,7 +14,6 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.model.Model
-import baaahs.plugin.CorePlugin
 import baaahs.plugin.classSerializer
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder

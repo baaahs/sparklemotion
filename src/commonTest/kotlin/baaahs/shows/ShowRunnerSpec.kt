@@ -9,7 +9,7 @@ import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
 import baaahs.mapper.Storage
-import baaahs.plugin.CorePlugin
+import baaahs.plugin.core.datasource.ColorPickerDataSource
 import baaahs.shaders.fakeFixture
 import baaahs.show.Panel
 import baaahs.show.Shader
@@ -125,7 +125,7 @@ object ShowRunnerSpec : Spek({
 
                 override(addControls) {
                     {
-                        val colorPickerDataSource = CorePlugin.ColorPickerDataSource("Color", Color.WHITE)
+                        val colorPickerDataSource = ColorPickerDataSource("Color", Color.WHITE)
                         mutableShow.addControl(panel, colorPickerDataSource.buildControl())
                     }
                 }

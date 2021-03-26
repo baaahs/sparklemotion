@@ -12,7 +12,7 @@ import baaahs.gl.render.RenderManager
 import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
 import baaahs.only
-import baaahs.plugin.CorePlugin
+import baaahs.plugin.core.datasource.TimeDataSource
 import baaahs.shaders.fakeFixture
 import baaahs.show.DataSource
 import baaahs.show.Panel
@@ -216,7 +216,7 @@ object PatchResolverSpec : Spek({
                         addButton(mainPanel, "Time Wobble") {
                             addPatch(autoWire(wobblyTimeFilter, shaderChannel = ShaderChannel("time")).apply {
                                 mutableShaderInstances.only("shader instance")
-                                    .incomingLinks["time"] = MutableDataSourcePort(CorePlugin.TimeDataSource())
+                                    .incomingLinks["time"] = MutableDataSourcePort(TimeDataSource())
                             })
                         }
                     }

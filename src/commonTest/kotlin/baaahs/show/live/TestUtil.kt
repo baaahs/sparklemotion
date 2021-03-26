@@ -10,7 +10,7 @@ import baaahs.gl.shader.type.PaintShader
 import baaahs.gl.shader.type.ProjectionShader
 import baaahs.gl.shader.type.ShaderType
 import baaahs.gl.testToolchain
-import baaahs.plugin.CorePlugin
+import baaahs.plugin.core.datasource.SliderDataSource
 import baaahs.show.*
 import baaahs.show.mutable.*
 import baaahs.ui.DragNDrop
@@ -94,8 +94,8 @@ fun createLayouts(vararg panelNames: String): MutableLayouts {
 }
 
 fun MutableShow.addFixtureControls() {
-    val slider1 = CorePlugin.SliderDataSource("slider1", 0f, 0f, 1f, 1f)
-    val slider2 = CorePlugin.SliderDataSource("slider2", 0f, 0f, 1f, 1f)
+    val slider1 = SliderDataSource("slider1", 0f, 0f, 1f, 1f)
+    val slider2 = SliderDataSource("slider2", 0f, 0f, 1f, 1f)
 
     addPatch(testToolchain.wireUp(fakeShader("Show Projection", ProjectionShader)))
 
