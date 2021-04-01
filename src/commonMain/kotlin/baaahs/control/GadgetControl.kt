@@ -16,7 +16,7 @@ import baaahs.show.live.controlViews
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.ui.Renderer
+import baaahs.ui.View
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -74,7 +74,7 @@ class OpenGadgetControl(
     override fun toNewMutable(mutableShow: MutableShow): MutableControl =
         MutableGadgetControl(gadget, controlledDataSource)
 
-    override fun getRenderer(controlProps: ControlProps): Renderer =
+    override fun getView(controlProps: ControlProps): View =
         controlViews.forGadget(this, controlProps)
 
     override fun getEditIntent(): EditIntent? = null

@@ -142,8 +142,8 @@ inline fun RBuilder.typographyBody2(vararg classMap: Pair<TypographyStyle, Strin
     block()
 }
 
-fun renderWrapper(block: RBuilder.() -> Unit): Renderer {
-    return object : Renderer {
+fun renderWrapper(block: RBuilder.() -> Unit): View {
+    return object : View {
         override fun RBuilder.render() {
             block()
         }

@@ -13,7 +13,7 @@ import baaahs.show.live.*
 import baaahs.show.mutable.*
 import baaahs.ui.Draggable
 import baaahs.ui.DropTarget
-import baaahs.ui.Renderer
+import baaahs.ui.View
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -117,7 +117,7 @@ class OpenButtonGroupControl(
     override fun toNewMutable(mutableShow: MutableShow): MutableControl =
         error("not implemented for button groups")
 
-    override fun getRenderer(controlProps: ControlProps): Renderer =
+    override fun getView(controlProps: ControlProps): View =
         controlViews.forButtonGroup(this, controlProps)
 
     fun clickOn(buttonIndex: Int) {

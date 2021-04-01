@@ -1,5 +1,5 @@
 package baaahs.ui
 
-actual interface Renderer
+actual interface View
 
 actual interface Icon

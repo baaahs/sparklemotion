@@ -12,7 +12,7 @@ import baaahs.show.DataSource
 import baaahs.show.Panel
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
-import baaahs.ui.Renderer
+import baaahs.ui.View
 import kotlinx.serialization.json.JsonElement
 
 interface OpenControl {
@@ -25,7 +25,7 @@ interface OpenControl {
     fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panel: Panel, depth: Int) {}
     fun applyConstraints() {}
     fun toNewMutable(mutableShow: MutableShow): MutableControl
-    fun getRenderer(controlProps: ControlProps): Renderer
+    fun getView(controlProps: ControlProps): View
     fun getEditIntent(): EditIntent? = ControlEditIntent(id)
 }
 
@@ -34,11 +34,11 @@ interface ControlContainer {
 }
 
 interface ControlViews {
-    fun forGadget(openGadgetControl: OpenGadgetControl, controlProps: ControlProps): Renderer
-    fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): Renderer
-    fun forButtonGroup(openButtonGroupControl: OpenButtonGroupControl, controlProps: ControlProps): Renderer
-    fun forTransition(openTransitionControl: OpenTransitionControl, controlProps: ControlProps): Renderer
-    fun forVisualizer(openVisualizerControl: OpenVisualizerControl, controlProps: ControlProps): Renderer
+    fun forGadget(openGadgetControl: OpenGadgetControl, controlProps: ControlProps): View
+    fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): View
+    fun forButtonGroup(openButtonGroupControl: OpenButtonGroupControl, controlProps: ControlProps): View
+    fun forTransition(openTransitionControl: OpenTransitionControl, controlProps: ControlProps): View
+    fun forVisualizer(openVisualizerControl: OpenVisualizerControl, controlProps: ControlProps): View
 }
 
 data class ControlProps(
