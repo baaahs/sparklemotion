@@ -51,7 +51,7 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
             }
         }
 
-        with (props.control.getRenderer(props.controlProps)) {
+        with (props.control.getView(props.controlProps)) {
             render()
         }
     }

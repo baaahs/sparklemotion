@@ -172,11 +172,11 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
                                 }
                             }
 
-                            val panelRenderer = editorPanel.getRenderer()
+                            val panelView = editorPanel.getView()
                             ErrorBoundary {
                                 attrs.FallbackComponent = ErrorDisplay
 
-                                with (panelRenderer) { render() }
+                                with (panelView) { render() }
                             }
                         }
                     }

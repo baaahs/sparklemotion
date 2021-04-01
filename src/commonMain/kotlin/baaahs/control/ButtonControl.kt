@@ -8,7 +8,7 @@ import baaahs.gadgets.Switch
 import baaahs.show.*
 import baaahs.show.live.*
 import baaahs.show.mutable.*
-import baaahs.ui.Renderer
+import baaahs.ui.View
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -90,7 +90,7 @@ class OpenButtonControl(
     override fun toNewMutable(mutableShow: MutableShow): MutableControl =
         MutableButtonControl(buttonControl, mutableShow)
 
-    override fun getRenderer(controlProps: ControlProps): Renderer =
+    override fun getView(controlProps: ControlProps): View =
         controlViews.forButton(this, controlProps)
 
     fun click() {

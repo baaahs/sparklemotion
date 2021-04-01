@@ -6,18 +6,18 @@ import baaahs.control.OpenButtonGroupControl
 import baaahs.control.OpenGadgetControl
 import baaahs.control.OpenVisualizerControl
 import baaahs.plugin.core.OpenTransitionControl
-import baaahs.ui.Renderer
+import baaahs.ui.View
 import baaahs.ui.renderWrapper
 
 actual fun getControlViews(): ControlViews = object : ControlViews {
-    override fun forGadget(openGadgetControl: OpenGadgetControl, controlProps: ControlProps): Renderer = renderWrapper {
+    override fun forGadget(openGadgetControl: OpenGadgetControl, controlProps: ControlProps): View = renderWrapper {
         gadget {
             attrs.controlProps = controlProps
             attrs.gadgetControl = openGadgetControl
         }
     }
 
-    override fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): Renderer = renderWrapper {
+    override fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): View = renderWrapper {
         button {
             attrs.controlProps = controlProps
             attrs.buttonControl = openButtonControl

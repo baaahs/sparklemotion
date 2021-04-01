@@ -12,7 +12,7 @@ import baaahs.show.live.controlViews
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.ui.Renderer
+import baaahs.ui.View
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -57,6 +57,6 @@ class OpenTransitionControl(
         return MutableTransitionControl()
     }
 
-    override fun getRenderer(controlProps: ControlProps): Renderer =
+    override fun getView(controlProps: ControlProps): View =
         controlViews.forTransition(this, controlProps)
 }
