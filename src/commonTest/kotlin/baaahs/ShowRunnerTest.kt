@@ -214,15 +214,15 @@ class ShowRunnerTest {
         expect(renderTargets.size).toBe(1)
 
         val originalSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
-        expect(originalSlider.value).toBe(1.0f)
-        originalSlider.value = 0.5f
+        expect(originalSlider.position).toBe(1.0f)
+        originalSlider.position = 0.5f
 
         fixtureManager.fixturesChanged(listOf(surface2Fixture), emptyList())
         stageManager.renderAndSendNextFrame() // Recreate show and restore gadget state.
         expect(renderTargets.size).toBe(2)
 
         val recreatedSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
-        expect(recreatedSlider.value).toBe(0.5f)
+        expect(recreatedSlider.position).toBe(0.5f)
     }
 
     @Test
@@ -236,15 +236,15 @@ class ShowRunnerTest {
         expect(serverNetwork.packetsToSend.size).toBe(0)
 
         val originalSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
-        expect(originalSlider.value).toBe(1.0f)
-        originalSlider.value = 0.5f
+        expect(originalSlider.position).toBe(1.0f)
+        originalSlider.position = 0.5f
 
         fixtureManager.fixturesChanged(listOf(surface2Fixture), emptyList())
         stageManager.renderAndSendNextFrame() // Recreate show and restore gadget state.
         expect(renderTargets.size).toBe(2)
 
         val recreatedSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
-        expect(recreatedSlider.value).toBe(0.5f)
+        expect(recreatedSlider.position).toBe(0.5f)
     }
 
     @Test

@@ -28,12 +28,12 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.gadgetsSlider
 
-    var sliderValue by state { props.gadget.value }
-    val altSliderValue = props.altGadget?.value
+    var sliderValue by state { props.gadget.position }
+    val altSliderValue = props.altGadget?.position
 
     val handleChangeFromServer = handler("change from server") { gadget: Gadget ->
         gadget as Slider
-        sliderValue = gadget.value
+        sliderValue = gadget.position
     }
 
     onMount {
@@ -50,9 +50,9 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 
     val handleChange = handler("gadget change", props.gadget) { value: Array<Number> ->
         val newValue = value[0].toFloat()
-        if (props.gadget.value != newValue) {
+        if (props.gadget.position != newValue) {
             props.gadget.withoutTriggering(handleChangeFromServer) {
-                props.gadget.value = newValue
+                props.gadget.position = newValue
             }
         }
     }

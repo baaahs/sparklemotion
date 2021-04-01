@@ -71,6 +71,6 @@ data class SliderDataSource(
         Slider(gadgetTitle, initialValue, minValue, maxValue, stepValue)
 
     override fun set(gadget: Slider, uniform: Uniform) {
-        uniform.set(gadget.value)
+        uniform.set(gadget.position)
     }
 }

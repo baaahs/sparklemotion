@@ -101,7 +101,7 @@ class RenderEngineTest {
         val renderTarget = renderEngine.addFixture(fakeSurface())
         renderEngine.setRenderPlan(renderPlanFor(glslProgram, renderTarget))
 
-        fakeShowPlayer.getGadget<Slider>("blueSlider").value = .1f
+        fakeShowPlayer.getGadget<Slider>("blueSlider").position = .1f
         renderEngine.draw()
 
         expectColor(
@@ -110,7 +110,7 @@ class RenderEngineTest {
             Color(.4f, .5f, .1f)
         ) { renderTarget.colors.toList() }
 
-        fakeShowPlayer.getGadget<Slider>("blueSlider").value = .2f
+        fakeShowPlayer.getGadget<Slider>("blueSlider").position = .2f
         renderEngine.draw()
 
         expectColor(
