@@ -3,7 +3,6 @@ package baaahs.gl.glsl
 import baaahs.englishize
 import baaahs.getValue
 import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.dialect.findContentType
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
@@ -150,31 +149,6 @@ class GlslCode(
         val hint: Hint?
         val lineNumber: Int?
 
-        fun toInputPort(plugins: Plugins, parent: GlslFunction?): InputPort {
-            val contentTypeFromPlugin = try {
-                hint?.pluginRef
-                    ?.let { plugins.findDataSourceBuilder(it).contentType }
-            } catch (e: Exception) {
-                null
-            }
-
-            return InputPort(
-                name,
-                contentType = contentTypeFromPlugin
-                    ?: findContentType(plugins, parent)
-                    ?: plugins.resolveContentType(type),
-                type = type,
-                title = title,
-                pluginRef = hint?.pluginRef,
-                pluginConfig = hint?.config,
-                glslArgSite = this,
-                injectedData = findInjectedData(plugins)
-            )
-        }
-
-        fun findContentType(plugins: Plugins, parent: GlslFunction?) =
-            hint?.contentType("type", plugins)
-
         fun findInjectedData(plugins: Plugins): Map<String, ContentType> = emptyMap()
     }
 
@@ -274,11 +248,6 @@ class GlslCode(
 
         override fun stripSource() = copy(lineNumber = null)
 
-        override fun findContentType(plugins: Plugins, parent: GlslFunction?): ContentType? {
-            return hint?.contentType("return", plugins)
-                ?: super.findContentType(plugins, parent)
-        }
-
         override fun findInjectedData(plugins: Plugins): Map<String, ContentType> {
             return params.associate { it.name to (it.findContentType(plugins, this) ?: ContentType.Unknown) }
         }
@@ -327,11 +296,6 @@ class GlslCode(
         override val isGlobalInput: Boolean get() = false
         override val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
         override val isAbstractFunction: Boolean get() = false
-
-        override fun findContentType(plugins: Plugins, parent: GlslFunction?): ContentType? {
-            return super.findContentType(plugins, parent)
-                ?: parent?.findContentType(this, plugins)
-        }
     }
 
     class Namespace(private val prefix: String) {
