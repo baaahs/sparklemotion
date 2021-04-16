@@ -38,14 +38,12 @@ abstract class Gadget {
     @Transient
     private val listeners = arrayListOf<Listener>()
 
-    @JsName("listen")
     fun listen(gadgetListener: GadgetListener) {
         if (findListener(gadgetListener) != -1)
             throw IllegalStateException("$gadgetListener already listening to $this")
         listeners.add(Listener(gadgetListener))
     }
 
-    @JsName("unlisten")
     fun unlisten(gadgetListener: GadgetListener) {
         val i = findListener(gadgetListener)
         if (i == -1)
@@ -61,20 +59,23 @@ abstract class Gadget {
         if (it.enabled) it.callback.invoke(this)
     }
 
-    @JsName("withoutTriggering")
     fun withoutTriggering(gadgetListener: GadgetListener?, fn: () -> Unit) {
         if (gadgetListener == null) {
             fn()
         } else {
             val listener = listeners.find { it.callback == gadgetListener }
-                ?: throw IllegalStateException("$gadgetListener isn't listening to $this")
+//                ?: throw IllegalStateException("$gadgetListener isn't listening to $this")
 
-            val priorEnabled = listener.enabled
-            listener.enabled = false
-            try {
+            if (listener == null) {
                 fn()
-            } finally {
-                listener.enabled = priorEnabled
+            } else {
+                val priorEnabled = listener.enabled
+                listener.enabled = false
+                try {
+                    fn()
+                } finally {
+                    listener.enabled = priorEnabled
+                }
             }
         }
     }
