@@ -1,0 +1,169 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>SliderProps - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">external.react_compound_slider</a>&nbsp;/&nbsp;<a href="./index.html">SliderProps</a><br/>
+<br/>
+<h1>SliderProps</h1>
+<code><span class="keyword">interface </span><span class="identifier">SliderProps</span></code>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="children.html">children</a></h4>
+</td>
+<td>
+<p>Component children to render.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">children</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="class-name.html">className</a></h4>
+</td>
+<td>
+<p>CSS class name applied to the root element of the slider.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">className</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="component.html">component</a></h4>
+</td>
+<td>
+<p>String component used for slider root. Defaults to 'div'.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">component</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="disabled.html">disabled</a></h4>
+</td>
+<td>
+<p>Ignore all mouse, touch and keyboard events.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">disabled</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="domain.html">domain</a></h4>
+</td>
+<td>
+<p>Two element array of numbers providing the min and max values for the slider <a href="#">min,max</a> e.g. <a href="#">0,100</a>.
+It does not matter if the slider is reversed on the screen, domain is always <a href="#">min,max</a> with min &lt; max.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">domain</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="flatten.html">flatten</a></h4>
+</td>
+<td>
+<p>Render slider children as siblings. This is primarily for SVG sliders. See the SVG example.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">flatten</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="mode.html">mode</a></h4>
+</td>
+<td>
+<p>The interaction mode. Value of 1 will allow handles to cross each other.
+Value of 2 will keep the sliders from crossing and separated by a step.
+Value of 3 will make the handles pushable and keep them a step apart.
+ADVANCED: You can also supply a function that will be passed the current values and the incoming update.
+Your function should return what the state should be set as.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">mode</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-change.html">onChange</a></h4>
+</td>
+<td>
+<p>Function triggered when the value of the slider has changed. This will recieve changes at the end of a slide as well as changes from clicks on rails and tracks. Receives values.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">onChange</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">(</span><span class="identifier">values</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-slide-end.html">onSlideEnd</a></h4>
+</td>
+<td>
+<p>Function triggered on ontouchend or onmouseup on a handle. Receives values.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">onSlideEnd</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">(</span><span class="identifier">values</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">,</span>&nbsp;<span class="identifier">data</span><span class="symbol">:</span>&nbsp;<a href="../-slider-data/index.html"><span class="identifier">SliderData</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-slide-start.html">onSlideStart</a></h4>
+</td>
+<td>
+<p>Function triggered with ontouchstart or onmousedown on a handle. Receives values.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">onSlideStart</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">(</span><span class="identifier">values</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">,</span>&nbsp;<span class="identifier">data</span><span class="symbol">:</span>&nbsp;<a href="../-slider-data/index.html"><span class="identifier">SliderData</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-update.html">onUpdate</a></h4>
+</td>
+<td>
+<p>Function called with the values at each update (caution: high-volume updates when dragging). Receives values.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">onUpdate</span><span class="symbol">: </span><span class="symbol">(</span><span class="symbol">(</span><span class="identifier">values</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="reversed.html">reversed</a></h4>
+</td>
+<td>
+<p>Reverse the display of slider values.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">reversed</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="root-props.html">rootProps</a></h4>
+</td>
+<td>
+<p>An object with any props you want applied to the root element.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">rootProps</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="root-style.html">rootStyle</a></h4>
+</td>
+<td>
+<p>An object with any inline styles you want applied to the root element.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">rootStyle</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="step.html">step</a></h4>
+</td>
+<td>
+<p>The step value for the slider.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">step</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="values.html">values</a></h4>
+</td>
+<td>
+<p>An array of numbers. You can supply one for a value slider, two for a range slider or more to create n-handled sliders.
+The values should correspond to valid step values in the domain.
+The numbers will be forced into the domain if they are two small or large.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">values</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="vertical.html">vertical</a></h4>
+</td>
+<td>
+<p>Set to true if the slider is displayed vertically to tell the slider to use the height to calculate positions.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">vertical</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="warn-on-changes.html">warnOnChanges</a></h4>
+</td>
+<td>
+<p>When true, the slider will warn if values are changed to fit domain and step values.  Defaults to false.</p>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">warnOnChanges</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

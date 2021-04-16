@@ -40,9 +40,11 @@ baaahs.app.ui
 baaahs.app.ui.controls
 baaahs.app.ui.editor
 baaahs.app.ui.editor.layout
+baaahs.app.ui.gadgets.slider
 baaahs.app.ui.preview
 baaahs.browser
 baaahs.client
+baaahs.control
 baaahs.dmx
 baaahs.fixtures
 baaahs.gadgets
@@ -69,6 +71,7 @@ baaahs.net
 baaahs.plugin
 baaahs.plugin.beatlink
 baaahs.plugin.core
+baaahs.plugin.core.datasource
 baaahs.proto
 baaahs.shaders
 baaahs.show
@@ -88,6 +91,7 @@ external
 external.markdownit
 external.mosaic
 external.react
+external.react_compound_slider
 external.react_draggable
 materialui
 materialui.icons
