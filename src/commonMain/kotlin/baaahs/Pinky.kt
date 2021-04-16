@@ -310,7 +310,7 @@ class Pinky(
 
     private fun reportError(message: String, e: Exception) {
         logger.error(e) { message }
-        serverNotices.add(ServerNotice(message, e.message))
+        serverNotices.add(ServerNotice(message, e.message, e.stackTraceToString()))
         serverNoticesChannel.onChange(serverNotices)
     }
 
@@ -318,6 +318,7 @@ class Pinky(
     data class ServerNotice(
         val title: String,
         val message: String?,
+        val stackTrace: String?,
         val id: String = randomId("error")
     )
 
