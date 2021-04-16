@@ -41,9 +41,9 @@ import materialui.styles.palette.PaletteType
 import materialui.styles.palette.options.type
 import materialui.styles.themeprovider.themeProvider
 import react.*
-import react.dom.code
 import react.dom.div
 import react.dom.p
+import react.dom.pre
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val webClient = props.webClient
@@ -343,7 +343,14 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                     alertTitle {
                                         +serverNotice.title
                                     }
-                                    serverNotice.message?.let { code { +it } }
+
+                                    serverNotice.message?.let {
+                                        div(+Styles.serverNoticeMessage) { +it }
+                                    }
+
+                                    serverNotice.stackTrace?.let {
+                                        pre(+Styles.serverNoticeStackTrace) { +it }
+                                    }
                                 }
                             }
                         }

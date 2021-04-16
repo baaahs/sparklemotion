@@ -426,6 +426,16 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         }
     }
 
+    val serverNoticeMessage by css {
+        fontWeight = FontWeight.bold
+    }
+
+    val serverNoticeStackTrace by css {
+        fontSize = .8.em
+        height = 10.em
+        overflow = Overflow.scroll
+    }
+
     val global = CSSBuilder().apply {
         ".${editModeOn.name}.${unplacedControlsPalette.name}" {
             opacity = 1
