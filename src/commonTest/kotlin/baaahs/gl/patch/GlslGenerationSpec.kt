@@ -7,9 +7,9 @@ import baaahs.gl.override
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders.cylindricalProjection
-import baaahs.plugin.CorePlugin
 import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.MovingHeadParams
+import baaahs.plugin.core.datasource.*
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.*
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -53,12 +53,12 @@ object GlslGenerationSpec : Spek({
         context("with screen coordinates for preview") {
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
-                    link("fragCoord", CorePlugin.RasterCoordinateDataSource())
-                    link("resolution", CorePlugin.ResolutionDataSource())
-                    link("time", CorePlugin.TimeDataSource())
+                    link("fragCoord", RasterCoordinateDataSource())
+                    link("resolution", ResolutionDataSource())
+                    link("time", TimeDataSource())
                     link(
                         "blueness",
-                        CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null)
+                        SliderDataSource("Blueness", 0f, 0f, 1f, null)
                     )
                     shaderChannel = ShaderChannel.Main.editor()
                 }
@@ -136,8 +136,8 @@ object GlslGenerationSpec : Spek({
 
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
-                    link("resolution", CorePlugin.ResolutionDataSource())
-                    link("fragCoord", CorePlugin.RasterCoordinateDataSource())
+                    link("resolution", ResolutionDataSource())
+                    link("fragCoord", RasterCoordinateDataSource())
                     shaderChannel = ShaderChannel.Main.editor()
                 }
             }
@@ -209,11 +209,11 @@ object GlslGenerationSpec : Spek({
                 mutablePatch.addShaderInstance(mainShader) {
                     link(
                         "blueness",
-                        CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null)
+                        SliderDataSource("Blueness", 0f, 0f, 1f, null)
                     )
-                    link("iResolution", CorePlugin.ResolutionDataSource())
-                    link("iTime", CorePlugin.TimeDataSource())
-                    link("fragCoord", CorePlugin.RasterCoordinateDataSource())
+                    link("iResolution", ResolutionDataSource())
+                    link("iTime", TimeDataSource())
+                    link("fragCoord", RasterCoordinateDataSource())
                     shaderChannel = ShaderChannel.Main.editor()
                 }
             }
@@ -278,15 +278,15 @@ object GlslGenerationSpec : Spek({
                 mutablePatch.apply {
                     addShaderInstance(cylindricalProjection) {
                         link("pixelLocation", PixelLocationDataSource())
-                        link("modelInfo", CorePlugin.ModelInfoDataSource())
+                        link("modelInfo", ModelInfoDataSource())
                         shaderChannel = ShaderChannel.Main.editor()
                     }
 
                     addShaderInstance(mainShader) {
                         link("gl_FragCoord", ShaderChannel.Main.toMutable())
-                        link("resolution", CorePlugin.ResolutionDataSource())
-                        link("time", CorePlugin.TimeDataSource())
-                        link("blueness", CorePlugin.SliderDataSource("Blueness", 0f, 0f, 1f, null))
+                        link("resolution", ResolutionDataSource())
+                        link("time", TimeDataSource())
+                        link("blueness", SliderDataSource("Blueness", 0f, 0f, 1f, null))
                         shaderChannel = ShaderChannel.Main.editor()
                     }
                 }
@@ -429,12 +429,12 @@ object GlslGenerationSpec : Spek({
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainPaintShader)
                 mutablePatch.addShaderInstance(otherPaintShader) {
-                    link("fragCoord", MutableDataSourcePort(CorePlugin.RasterCoordinateDataSource()))
+                    link("fragCoord", MutableDataSourcePort(RasterCoordinateDataSource()))
                     shaderChannel = MutableShaderChannel.from(otherShaderActualChannel)
                 }
 
                 mutablePatch.addShaderInstance(mainShader) {
-                    link("fade", CorePlugin.SliderDataSource("Fade", 0f, 0f, 1f, null))
+                    link("fade", SliderDataSource("Fade", 0f, 0f, 1f, null))
                     link("inColor", MutableShaderChannel("main"))
                     link("inColor2", MutableShaderChannel("other"))
                 }
@@ -869,21 +869,21 @@ object GlslGenerationSpec : Spek({
 
             beforeEachTest {
                 mutablePatch.addShaderInstance(mainShader) {
-                    link("fade", CorePlugin.SliderDataSource("Fade", 0f, 0f, 1f, null))
+                    link("fade", SliderDataSource("Fade", 0f, 0f, 1f, null))
                     link("channelA", MutableShaderChannel("channelA"))
                     link("channelB", MutableShaderChannel("channelB"))
-                    link("time", MutableDataSourcePort(CorePlugin.TimeDataSource()))
-                    link("uvIn", MutableDataSourcePort(CorePlugin.RasterCoordinateDataSource()))
+                    link("time", MutableDataSourcePort(TimeDataSource()))
+                    link("uvIn", MutableDataSourcePort(RasterCoordinateDataSource()))
                 }
 
                 mutablePatch.addShaderInstance(channelAShader) {
                     link("gl_FragCoord", MutableConstPort("var from downstream", GlslType.Vec4))
-                    link("time", MutableDataSourcePort(CorePlugin.TimeDataSource()))
+                    link("time", MutableDataSourcePort(TimeDataSource()))
                     shaderChannel = MutableShaderChannel.from("channelA")
                 }
 
                 mutablePatch.addShaderInstance(channelBShader) {
-                    link("fragCoord", MutableDataSourcePort(CorePlugin.RasterCoordinateDataSource()))
+                    link("fragCoord", MutableDataSourcePort(RasterCoordinateDataSource()))
                     link("time", MutableConstPort("var from downstream", GlslType.Vec4))
                     shaderChannel = MutableShaderChannel.from("channelB")
                 }

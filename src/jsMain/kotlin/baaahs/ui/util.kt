@@ -6,7 +6,6 @@ import external.copyFrom
 import kotlinx.css.CSSBuilder
 import kotlinx.css.RuleSet
 import kotlinx.css.StyledElement
-import kotlinx.css.hyphenize
 import kotlinx.html.DIV
 import materialui.components.typography.TypographyElementBuilder
 import materialui.components.typography.TypographyProps
@@ -22,7 +21,6 @@ import react.ReactElement
 import react.dom.RDOMBuilder
 import styled.StyleSheet
 import kotlin.reflect.KProperty
-import kotlinext.js.js
 
 @Suppress("UNCHECKED_CAST")
 fun <T> nuffin(): T = null as T
@@ -95,6 +93,14 @@ fun CSSBuilder.within(ruleSet: RuleSet, block: RuleSet) = "${ruleSet.selector} &
 
 fun CSSBuilder.mixIn(mixin: CSSBuilder) = declarations.putAll(mixin.declarations)
 
+fun keys(jsObj: dynamic) = js("Object").keys(jsObj).unsafeCast<Array<String>>()
+
+fun RDOMBuilder<*>.mixin(jsObj: dynamic) {
+    keys(jsObj).forEach { key ->
+        setProp(key, jsObj[key])
+    }
+}
+
 fun StyleSheet.partial(block: CSSBuilder.() -> Unit): CSSBuilder {
     return CSSBuilder().apply { block() }
 }
@@ -136,8 +142,8 @@ inline fun RBuilder.typographyBody2(vararg classMap: Pair<TypographyStyle, Strin
     block()
 }
 
-fun renderWrapper(block: RBuilder.() -> Unit): Renderer {
-    return object : Renderer {
+fun renderWrapper(block: RBuilder.() -> Unit): View {
+    return object : View {
         override fun RBuilder.render() {
             block()
         }

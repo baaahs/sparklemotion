@@ -1,7 +1,12 @@
 package baaahs.app.ui.editor
 
-import baaahs.show.mutable.*
-import baaahs.ui.Renderer
+import baaahs.control.MutableButtonControl
+import baaahs.control.MutableButtonGroupControl
+import baaahs.control.MutableVisualizerControl
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePatchHolder
+import baaahs.show.mutable.MutableShaderInstance
+import baaahs.ui.View
 import baaahs.ui.renderWrapper
 import baaahs.ui.unaryPlus
 import materialui.components.divider.divider
@@ -12,7 +17,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     override fun forGenericPropertiesPanel(
         editableManager: EditableManager,
         propsEditors: List<PropsEditor>
-    ): Renderer = renderWrapper {
+    ): View = renderWrapper {
         propsEditors.forEachIndexed { index, editorPanelComponent ->
             if (index > 0) {
                 divider {
@@ -20,7 +25,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
                 }
             }
 
-            with(editorPanelComponent.getRenderer(editableManager)) {
+            with(editorPanelComponent.getView(editableManager)) {
                 render()
             }
         }
@@ -29,7 +34,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     override fun forPatchHolder(
         editableManager: EditableManager,
         mutablePatchHolder: MutablePatchHolder
-    ): Renderer = renderWrapper {
+    ): View = renderWrapper {
         fixturesList {
             attrs.editableManager = editableManager
             attrs.mutablePatchHolder = mutablePatchHolder
@@ -39,7 +44,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     override fun forPatch(
         editableManager: EditableManager,
         mutablePatch: MutablePatch
-    ): Renderer = renderWrapper {
+    ): View = renderWrapper {
         patchOverview {
             attrs.editableManager = editableManager
             attrs.mutablePatch = mutablePatch
@@ -51,7 +56,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
         editableManager: EditableManager,
         mutablePatch: MutablePatch,
         mutableShaderInstance: MutableShaderInstance
-    ): Renderer =
+    ): View =
         renderWrapper {
             shaderInstanceEditor {
                 attrs.editableManager = editableManager
@@ -93,7 +98,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     override fun forTitleComponent(
         editableManager: EditableManager,
         mutablePatchHolder: MutablePatchHolder
-    ): Renderer = renderWrapper {
+    ): View = renderWrapper {
         div(+EditableStyles.propertiesSection) {
             textFieldEditor {
                 attrs.label = "Title"

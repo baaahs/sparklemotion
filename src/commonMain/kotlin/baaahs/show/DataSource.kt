@@ -3,13 +3,13 @@ package baaahs.show
 import baaahs.ShowPlayer
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.camelize
+import baaahs.control.MutableGadgetControl
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.SerializerRegistrar
 import baaahs.show.mutable.MutableDataSourcePort
-import baaahs.show.mutable.MutableGadgetControl
 import kotlinx.serialization.Polymorphic
 
 

@@ -15,14 +15,46 @@ import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.buildEmptyShow
 import baaahs.ui.Icon
+import baaahs.ui.Observable
+import baaahs.ui.addObserver
 import baaahs.util.Clock
-import com.soywiz.klock.DateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.coroutines.CoroutineContext
+
+class GadgetManager(
+    private val pubSub: PubSub.Server,
+    private val clock: Clock,
+    private val coroutineContext: CoroutineContext
+) : Observable() {
+    private val gadgets: MutableMap<String, Gadget> = mutableMapOf()
+    var lastUserInteraction = clock.now()
+
+    fun <T : Gadget> registerGadget(id: String, gadget: T) {
+        val topic =
+            PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
+        val channel = pubSub.publish(topic, gadget.state) { updated ->
+            lastUserInteraction = clock.now()
+
+            CoroutineScope(coroutineContext).launch {
+                gadget.state.putAll(updated)
+                notifyChanged()
+            }
+        }
+        val gadgetChannelListener: (Gadget) -> Unit = { channel.onChange(it.state) }
+        gadget.listen(gadgetChannelListener)
+        gadgets[id] = gadget
+    }
+
+    fun <T : Gadget> useGadget(id: String): T {
+        @Suppress("UNCHECKED_CAST")
+        return (gadgets[id]
+            ?: error("no such gadget \"$id\" among [${gadgets.keys.sorted()}]")) as T
+    }
+}
 
 class StageManager(
     toolchain: Toolchain,
@@ -32,17 +64,22 @@ class StageManager(
     private val fixtureManager: FixtureManager,
     private val clock: Clock,
     modelInfo: ModelInfo,
-    private val coroutineContext: CoroutineContext
+    private val gadgetManager: GadgetManager
 ) : BaseShowPlayer(toolchain, modelInfo) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
-    private val gadgets: MutableMap<String, GadgetInfo> = mutableMapOf()
-    var lastUserInteraction = DateTime.now()
 
     private val fsSerializer = storage.fsSerializer
 
     init {
         PubSubRemoteFsServerBackend(pubSub, fsSerializer)
+
+        gadgetManager.addObserver {
+            if (!gadgetsChangedJobEnqueued) {
+                onGadgetChange()
+                gadgetsChangedJobEnqueued = false
+            }
+        }
     }
 
     @Suppress("unused")
@@ -69,22 +106,7 @@ class StageManager(
     private var gadgetsChangedJobEnqueued: Boolean = false
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
-        val topic =
-            PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
-        val channel = pubSub.publish(topic, gadget.state) { updated ->
-            CoroutineScope(coroutineContext).launch {
-                gadget.state.putAll(updated)
-                lastUserInteraction = DateTime.now()
-
-                if (!gadgetsChangedJobEnqueued) {
-                    onGadgetChange()
-                    gadgetsChangedJobEnqueued = false
-                }
-            }
-        }
-        val gadgetChannelListener: (Gadget) -> Unit = { channel.onChange(it.state) }
-        gadget.listen(gadgetChannelListener)
-        gadgets[id] = GadgetInfo(gadget, controlledDataSource, topic, channel, gadgetChannelListener)
+        gadgetManager.registerGadget(id, gadget)
         super.registerGadget(id, gadget, controlledDataSource)
     }
 
@@ -95,10 +117,8 @@ class StageManager(
         if (showRunner?.housekeeping() == true) facade.notifyChanged()
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun <T : Gadget> useGadget(id: String): T {
-        return (gadgets[id]?.gadget
-            ?: error("no such gadget \"$id\" among [${gadgets.keys.sorted()}]")) as T
+        return gadgetManager.useGadget(id)
     }
 
     fun switchTo(

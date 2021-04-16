@@ -12,7 +12,7 @@ import baaahs.geom.Vector3F
 import baaahs.gl.*
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
-import baaahs.plugin.CorePlugin
+import baaahs.plugin.core.datasource.GadgetDataSource
 import baaahs.show.Shader
 import baaahs.shows.FakeShowPlayer
 import kotlin.math.abs
@@ -101,7 +101,7 @@ class RenderEngineTest {
         val renderTarget = renderEngine.addFixture(fakeSurface())
         renderEngine.setRenderPlan(renderPlanFor(glslProgram, renderTarget))
 
-        fakeShowPlayer.getGadget<Slider>("blueSlider").value = .1f
+        fakeShowPlayer.getGadget<Slider>("blueSlider").position = .1f
         renderEngine.draw()
 
         expectColor(
@@ -110,7 +110,7 @@ class RenderEngineTest {
             Color(.4f, .5f, .1f)
         ) { renderTarget.colors.toList() }
 
-        fakeShowPlayer.getGadget<Slider>("blueSlider").value = .2f
+        fakeShowPlayer.getGadget<Slider>("blueSlider").position = .2f
         renderEngine.draw()
 
         expectColor(
@@ -257,7 +257,7 @@ class RenderEngineTest {
             .confirm()
             .openForPreview(testToolchain, ContentType.Color)!!
         return renderEngine.compile(linkedPatch) { id, dataSource ->
-            if (dataSource is CorePlugin.GadgetDataSource<*>) {
+            if (dataSource is GadgetDataSource<*>) {
                 fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
             }
             dataSource.createFeed(fakeShowPlayer, id)

@@ -2,6 +2,7 @@ package baaahs.gl.patch
 
 import baaahs.TestModel
 import baaahs.app.ui.editor.PortLinkOption
+import baaahs.control.OpenButtonControl
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.getBang
 import baaahs.gl.autoWire
@@ -11,14 +12,13 @@ import baaahs.gl.render.RenderManager
 import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
 import baaahs.only
-import baaahs.plugin.CorePlugin
+import baaahs.plugin.core.datasource.TimeDataSource
 import baaahs.shaders.fakeFixture
 import baaahs.show.DataSource
 import baaahs.show.Panel
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.live.ActivePatchSet
-import baaahs.show.live.OpenButtonControl
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.*
 import baaahs.shows.FakeGlContext
@@ -216,7 +216,7 @@ object PatchResolverSpec : Spek({
                         addButton(mainPanel, "Time Wobble") {
                             addPatch(autoWire(wobblyTimeFilter, shaderChannel = ShaderChannel("time")).apply {
                                 mutableShaderInstances.only("shader instance")
-                                    .incomingLinks["time"] = MutableDataSourcePort(CorePlugin.TimeDataSource())
+                                    .incomingLinks["time"] = MutableDataSourcePort(TimeDataSource())
                             })
                         }
                     }

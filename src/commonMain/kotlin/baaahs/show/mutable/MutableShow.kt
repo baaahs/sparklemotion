@@ -4,6 +4,7 @@ import baaahs.*
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
 import baaahs.app.ui.editor.*
+import baaahs.control.*
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
@@ -11,7 +12,10 @@ import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
 import baaahs.gl.shader.OpenShader
 import baaahs.show.*
-import baaahs.show.live.*
+import baaahs.show.live.OpenPatch
+import baaahs.show.live.OpenPatchHolder
+import baaahs.show.live.OpenShow
+import baaahs.show.live.ShaderInstanceResolver
 import baaahs.util.CacheBuilder
 import baaahs.util.UniqueIds
 

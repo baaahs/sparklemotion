@@ -44,11 +44,11 @@ object StageManagerSpec : Spek({
                 FixtureManager(renderManager),
                 FakeClock(),
                 model,
-                object : CoroutineDispatcher() {
+                GadgetManager(pubSub.server, FakeClock(), object : CoroutineDispatcher() {
                     override fun dispatch(context: CoroutineContext, block: Runnable) {
                         block.run()
                     }
-                }
+                })
             )
         }
         val editingClient by value { pubSub.client("editingClient") }

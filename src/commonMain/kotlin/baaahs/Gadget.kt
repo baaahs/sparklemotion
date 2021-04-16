@@ -4,7 +4,6 @@ import baaahs.gadgets.ColorPicker
 import baaahs.gadgets.PalettePicker
 import baaahs.gadgets.Slider
 import baaahs.gadgets.Switch
-import baaahs.show.DataSource
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
@@ -136,14 +135,6 @@ private class GadgetValueObserver<T>(
         }
     }
 }
-
-class GadgetInfo(
-    val gadget: Gadget,
-    val controlledDataSource: DataSource?,
-    val topic: PubSub.Topic<Map<String, JsonElement>>,
-    val channel: PubSub.Channel<Map<String, JsonElement>>,
-    val gadgetChannelListener: (Gadget) -> Unit
-)
 
 val GadgetDataSerializer = MapSerializer(String.serializer(), JsonElement.serializer())
 

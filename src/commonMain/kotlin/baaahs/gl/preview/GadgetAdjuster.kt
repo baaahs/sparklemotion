@@ -26,7 +26,7 @@ class GadgetAdjuster(val gadgets: List<ShaderBuilder.GadgetPreview>, val clock: 
             if (gadget is Slider) {
                 val range = gadget.maxValue - gadget.minValue
                 val scaled = range * myDegree + gadget.minValue
-                gadget.value = scaled
+                gadget.position = scaled
 
             }
 

@@ -2,9 +2,9 @@ package baaahs.app.ui.controls
 
 import baaahs.app.ui.AddButtonToButtonGroupEditIntent
 import baaahs.app.ui.appContext
-import baaahs.show.ButtonGroupControl
+import baaahs.control.ButtonGroupControl
+import baaahs.control.OpenButtonGroupControl
 import baaahs.show.live.ControlProps
-import baaahs.show.live.OpenButtonGroupControl
 import baaahs.show.live.OpenControl
 import baaahs.ui.*
 import external.Direction

@@ -1,7 +1,7 @@
 package baaahs.app.ui.editor
 
-import baaahs.show.VisualizerControl
-import baaahs.show.mutable.MutableVisualizerControl
+import baaahs.control.MutableVisualizerControl
+import baaahs.control.VisualizerControl
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
