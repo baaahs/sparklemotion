@@ -1,5 +1,5 @@
 package baaahs.ui
 
-expect interface Renderer
+expect interface View
 
 expect interface Icon

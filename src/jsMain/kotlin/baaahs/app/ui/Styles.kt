@@ -2,6 +2,7 @@ package baaahs.app.ui
 
 import baaahs.app.ui.editor.ShaderEditorStyles
 import baaahs.app.ui.editor.layout.LayoutEditorStyles
+import baaahs.app.ui.gadgets.slider.ThemedStyles
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
@@ -19,6 +20,7 @@ class AllStyles(val theme: MuiTheme) {
     val appUi by lazy { ThemeStyles(theme) }
     val editor by lazy { baaahs.ui.editor.Styles(theme) }
     val controls by lazy { baaahs.app.ui.controls.ThemeStyles(theme) }
+    val gadgetsSlider by lazy { ThemedStyles(theme) }
     val layoutEditor by lazy { LayoutEditorStyles(theme) }
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
 
@@ -422,6 +424,16 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         descendants("code") {
             whiteSpace = WhiteSpace.preWrap
         }
+    }
+
+    val serverNoticeMessage by css {
+        fontWeight = FontWeight.bold
+    }
+
+    val serverNoticeStackTrace by css {
+        fontSize = .8.em
+        height = 10.em
+        overflow = Overflow.scroll
     }
 
     val global = CSSBuilder().apply {

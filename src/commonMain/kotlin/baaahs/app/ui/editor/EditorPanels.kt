@@ -3,12 +3,18 @@ package baaahs.app.ui.editor
 import baaahs.Severity
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.EditorPanel
+import baaahs.control.MutableButtonControl
+import baaahs.control.MutableButtonGroupControl
+import baaahs.control.MutableVisualizerControl
 import baaahs.gl.openShader
 import baaahs.severity
 import baaahs.show.live.ShaderInstanceResolver
-import baaahs.show.mutable.*
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePatchHolder
+import baaahs.show.mutable.MutableShaderInstance
+import baaahs.show.mutable.ShowBuilder
 import baaahs.ui.Icon
-import baaahs.ui.Renderer
+import baaahs.ui.View
 
 data class GenericPropertiesEditorPanel(
     private val editableManager: EditableManager,
@@ -26,7 +32,7 @@ data class GenericPropertiesEditorPanel(
     override val icon: Icon
         get() = CommonIcons.Settings
 
-    override fun getRenderer(): Renderer =
+    override fun getView(): View =
         editorPanelViews.forGenericPropertiesPanel(editableManager, propsEditors)
 }
 
@@ -45,7 +51,7 @@ data class PatchHolderEditorPanel(
         return mutablePatchHolder.patches.map { mutablePatch -> mutablePatch.getEditorPanel(editableManager) }
     }
 
-    override fun getRenderer(): Renderer =
+    override fun getView(): View =
         editorPanelViews.forPatchHolder(editableManager, mutablePatchHolder)
 }
 
@@ -66,7 +72,7 @@ data class PatchEditorPanel(
         }
     }
 
-    override fun getRenderer(): Renderer =
+    override fun getView(): View =
         editorPanelViews.forPatch(editableManager, mutablePatch)
 
     inner class ShaderInstanceEditorPanel(
@@ -89,7 +95,7 @@ data class PatchEditorPanel(
         override val problemLevel: Severity?
             by lazy { liveShaderInstance.problems.severity() }
 
-        override fun getRenderer(): Renderer =
+        override fun getView(): View =
             editorPanelViews.forShaderInstance(editableManager, mutablePatch, mutableShaderInstance)
 
         override fun equals(other: Any?): Boolean {
@@ -108,49 +114,49 @@ data class PatchEditorPanel(
 }
 
 interface PropsEditor {
-    fun getRenderer(editableManager: EditableManager): Renderer
+    fun getView(editableManager: EditableManager): View
 }
 
 data class TitlePropsEditor(val mutablePatchHolder: MutablePatchHolder) : PropsEditor {
-    override fun getRenderer(editableManager: EditableManager): Renderer =
+    override fun getView(editableManager: EditableManager): View =
         editorPanelViews.forTitleComponent(editableManager, mutablePatchHolder)
 }
 
 data class ButtonPropsEditor(
     val mutableButtonControl: MutableButtonControl
 ) : PropsEditor {
-    override fun getRenderer(editableManager: EditableManager): Renderer =
+    override fun getView(editableManager: EditableManager): View =
         editorPanelViews.forButton(editableManager, mutableButtonControl)
 }
 
 data class ButtonGroupPropsEditor(
     val mutableButtonGroupControl: MutableButtonGroupControl
 ) : PropsEditor {
-    override fun getRenderer(editableManager: EditableManager): Renderer =
+    override fun getView(editableManager: EditableManager): View =
         editorPanelViews.forButtonGroup(editableManager, mutableButtonGroupControl)
 }
 
 data class VisualizerPropsEditor(
     val mutableVisualizerControl: MutableVisualizerControl
 ) : PropsEditor {
-    override fun getRenderer(editableManager: EditableManager): Renderer =
+    override fun getView(editableManager: EditableManager): View =
         editorPanelViews.forVisualizer(editableManager, mutableVisualizerControl)
 }
 
 interface EditorPanelViews {
-    fun forGenericPropertiesPanel(editableManager: EditableManager, propsEditors: List<PropsEditor>): Renderer
-    fun forPatchHolder(editableManager: EditableManager, mutablePatchHolder: MutablePatchHolder): Renderer
-    fun forPatch(editableManager: EditableManager, mutablePatch: MutablePatch): Renderer
+    fun forGenericPropertiesPanel(editableManager: EditableManager, propsEditors: List<PropsEditor>): View
+    fun forPatchHolder(editableManager: EditableManager, mutablePatchHolder: MutablePatchHolder): View
+    fun forPatch(editableManager: EditableManager, mutablePatch: MutablePatch): View
     fun forShaderInstance(
         editableManager: EditableManager,
         mutablePatch: MutablePatch,
         mutableShaderInstance: MutableShaderInstance
-    ): Renderer
-    fun forButton(editableManager: EditableManager, mutableButtonControl: MutableButtonControl): Renderer
-    fun forButtonGroup(editableManager: EditableManager, mutableButtonGroupControl: MutableButtonGroupControl): Renderer
-    fun forVisualizer(editableManager: EditableManager, mutableVisualizerControl: MutableVisualizerControl): Renderer
+    ): View
+    fun forButton(editableManager: EditableManager, mutableButtonControl: MutableButtonControl): View
+    fun forButtonGroup(editableManager: EditableManager, mutableButtonGroupControl: MutableButtonGroupControl): View
+    fun forVisualizer(editableManager: EditableManager, mutableVisualizerControl: MutableVisualizerControl): View
 
-    fun forTitleComponent(editableManager: EditableManager, mutablePatchHolder: MutablePatchHolder): Renderer
+    fun forTitleComponent(editableManager: EditableManager, mutablePatchHolder: MutablePatchHolder): View
 }
 
 val editorPanelViews by lazy { getEditorPanelViews() }

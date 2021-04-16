@@ -1,11 +1,10 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.gadgets.slider.slider
 import baaahs.gadgets.Slider
-import baaahs.jsx.RangeSlider
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.show.live.ControlProps
-import baaahs.ui.and
 import baaahs.ui.on
 import baaahs.ui.xComponent
 import kotlinx.css.StyledElement
@@ -62,14 +61,13 @@ val Transition = xComponent<TransitionProps>("Transition") { props ->
 
 //        header { +"Transitions! \uD83D\uDE1E" }
 
-        val holdButtonStyle =
-            styles.transitionHoldButton.let {
-                if (holdEngaged) it and styles.transitionHoldEngaged else listOf(it)
-            }
-
-        button(holdButtonStyle on ButtonStyle.root) {
-//            inlineStyles { gridArea = "hold" }
-            inlineStyles { put("gridArea", "hold") }
+        button(
+            listOfNotNull(
+                styles.transitionHoldButton,
+                if (holdEngaged) styles.transitionHoldEngaged else null
+            ) on ButtonStyle.root
+        ) {
+            inlineStyles { gridArea = "hold" }
             attrs.color = ButtonColor.secondary
             attrs.onClickFunction = handleHoldButtonClick
             +"Hold"
@@ -85,8 +83,9 @@ val Transition = xComponent<TransitionProps>("Transition") { props ->
         div {
             inlineStyles { gridArea = "fader" }
 
-            RangeSlider {
+            slider {
                 attrs.gadget = fader
+                attrs.reversed = false
                 attrs.showTicks = false
             }
         }

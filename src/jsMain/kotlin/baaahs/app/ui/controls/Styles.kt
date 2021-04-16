@@ -176,11 +176,21 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-controls-theme", isS
     val transitionHoldButton by css {
         backgroundColor = theme.palette.secondary.main
             .withAlpha(.125).blend(theme.palette.background.paper)
+
+        hover {
+            backgroundColor = theme.palette.secondary.main
+                .withAlpha(.25).blend(theme.palette.background.paper)
+        }
     }
 
     val transitionHoldEngaged by css {
         color = theme.palette.secondary.contrastText
         backgroundColor = theme.palette.secondary.main
+
+        hover {
+            backgroundColor = theme.palette.secondary.main
+                .withAlpha(.75).blend(theme.palette.background.paper)
+        }
     }
 
     val speedButton by css {

@@ -1,5 +1,6 @@
 package baaahs.show.live
 
+import baaahs.control.OpenButtonGroupControl
 import baaahs.getBang
 import baaahs.gl.override
 import baaahs.show.Panel

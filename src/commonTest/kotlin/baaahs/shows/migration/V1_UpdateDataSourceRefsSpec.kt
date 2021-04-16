@@ -3,7 +3,8 @@ package baaahs.shows.migration
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.testPlugins
-import baaahs.plugin.CorePlugin
+import baaahs.plugin.core.datasource.ModelInfoDataSource
+import baaahs.plugin.core.datasource.TimeDataSource
 import baaahs.show.Show
 import baaahs.show.migration.V1_UpdateDataSourceRefs
 import baaahs.toBeSpecified
@@ -54,8 +55,8 @@ object V1_UpdateDataSourceRefsSpec : Spek({
             }
 
             it("ignores `structType` and maps from old class names") {
-                expect(show.dataSources["modelInfo"]).toBe(CorePlugin.ModelInfoDataSource())
-                expect(show.dataSources["time"]).toBe(CorePlugin.TimeDataSource())
+                expect(show.dataSources["modelInfo"]).toBe(ModelInfoDataSource())
+                expect(show.dataSources["time"]).toBe(TimeDataSource())
             }
 
             it("permits missing surfaces.deviceTypes") {

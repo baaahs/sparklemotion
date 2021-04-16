@@ -1,8 +1,8 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.controls.controlWrapper
+import baaahs.control.OpenGadgetControl
 import baaahs.show.live.ControlProps
-import baaahs.show.live.OpenGadgetControl
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.addObserver
 import baaahs.ui.unaryPlus

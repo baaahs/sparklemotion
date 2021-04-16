@@ -1,34 +1,23 @@
 package baaahs.show.live
 
 import baaahs.app.ui.controls.*
-import baaahs.gadgets.Slider
-import baaahs.jsx.RangeSlider
+import baaahs.control.OpenButtonControl
+import baaahs.control.OpenButtonGroupControl
+import baaahs.control.OpenGadgetControl
+import baaahs.control.OpenVisualizerControl
 import baaahs.plugin.core.OpenTransitionControl
-import baaahs.ui.Renderer
+import baaahs.ui.View
 import baaahs.ui.renderWrapper
-import baaahs.ui.unaryPlus
-import react.dom.div
 
 actual fun getControlViews(): ControlViews = object : ControlViews {
-    override fun forGadget(openGadgetControl: OpenGadgetControl, controlProps: ControlProps): Renderer = renderWrapper {
-        val gadget = openGadgetControl.gadget
-        val title = gadget.title
-
-        when (gadget) {
-            is Slider -> {
-                RangeSlider {
-                    attrs.gadget = gadget
-                }
-                div(+Styles.dataSourceTitle) { +title }
-            }
-
-            else -> {
-                div(+Styles.dataSourceLonelyTitle) { +title }
-            }
+    override fun forGadget(openGadgetControl: OpenGadgetControl, controlProps: ControlProps): View = renderWrapper {
+        gadget {
+            attrs.controlProps = controlProps
+            attrs.gadgetControl = openGadgetControl
         }
     }
 
-    override fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): Renderer = renderWrapper {
+    override fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): View = renderWrapper {
         button {
             attrs.controlProps = controlProps
             attrs.buttonControl = openButtonControl

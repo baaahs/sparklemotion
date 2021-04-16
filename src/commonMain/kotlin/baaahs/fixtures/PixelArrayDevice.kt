@@ -12,9 +12,9 @@ import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
-import baaahs.plugin.CorePlugin
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
+import baaahs.plugin.core.CorePlugin
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader

@@ -7,8 +7,11 @@ import baaahs.getBang
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.glsl.LinkException
 import baaahs.gl.patch.ContentType
-import baaahs.gl.shader.*
-import baaahs.show.*
+import baaahs.gl.shader.InputPort
+import baaahs.plugin.core.CorePlugin
+import baaahs.show.DataSource
+import baaahs.show.DataSourceBuilder
+import baaahs.show.appearsToBePurposeBuiltFor
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.util.Clock
 import baaahs.util.Time

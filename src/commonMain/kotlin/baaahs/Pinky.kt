@@ -54,12 +54,12 @@ class Pinky(
     override val coroutineContext: CoroutineContext = pinkyMainDispatcher + pinkyJob
 
     private val pubSub: PubSub.Server = PubSub.Server(httpServer, coroutineContext)
-//    private val gadgetManager = GadgetManager(pubSub)
+    val gadgetManager = GadgetManager(pubSub, clock, coroutineContext)
     internal val fixtureManager = FixtureManager(renderManager)
 
     val toolchain = RootToolchain(plugins)
     val stageManager: StageManager = StageManager(
-        toolchain, renderManager, pubSub, storage, fixtureManager, clock, model, coroutineContext
+        toolchain, renderManager, pubSub, storage, fixtureManager, clock, model, gadgetManager
     )
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {
@@ -310,7 +310,7 @@ class Pinky(
 
     private fun reportError(message: String, e: Exception) {
         logger.error(e) { message }
-        serverNotices.add(ServerNotice(message, e.message))
+        serverNotices.add(ServerNotice(message, e.message, e.stackTraceToString()))
         serverNoticesChannel.onChange(serverNotices)
     }
 
@@ -318,6 +318,7 @@ class Pinky(
     data class ServerNotice(
         val title: String,
         val message: String?,
+        val stackTrace: String?,
         val id: String = randomId("error")
     )
 

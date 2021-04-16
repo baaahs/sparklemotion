@@ -11,14 +11,14 @@ class SliderTest {
     @Test
     fun testSliderGadgetSerialization_stateShouldNotBeSent() {
         val slider = Slider("name", .25f)
-        slider.value = .75f
+        slider.position = .75f
 
         val otherSlider = serializationRoundTrip(Slider.serializer(), slider)
         expect(otherSlider.title).toBe("name")
-        expect(otherSlider.value).toBe(.25f)
+        expect(otherSlider.position).toBe(.25f)
 
         otherSlider.state.putAll(slider.state)
-        expect(otherSlider.value).toBe(.75f)
+        expect(otherSlider.position).toBe(.75f)
     }
 
     @Test
@@ -29,6 +29,6 @@ class SliderTest {
         assertNotEquals(exemplar, Slider("A", .75f))
 
         // Gadgets' current values don't affect their equality.
-        assertEquals(exemplar, Slider("A", .25f).apply { value = .75f })
+        assertEquals(exemplar, Slider("A", .25f).apply { position = .75f })
     }
 }

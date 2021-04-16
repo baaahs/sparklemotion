@@ -4,13 +4,13 @@ import baaahs.app.ui.AddButtonToButtonGroupEditIntent
 import baaahs.app.ui.ControlEditIntent
 import baaahs.app.ui.EditIntent
 import baaahs.app.ui.ShowEditIntent
+import baaahs.control.MutableButtonControl
+import baaahs.control.MutableButtonGroupControl
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.testToolchain
 import baaahs.show.SampleData
 import baaahs.show.Show
-import baaahs.show.mutable.MutableButtonControl
-import baaahs.show.mutable.MutableButtonGroupControl
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.addObserver

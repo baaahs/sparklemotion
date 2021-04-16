@@ -5,7 +5,6 @@ import baaahs.constrain
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
-import kotlin.js.JsName
 import kotlin.random.Random
 
 /** A gadget for adjusting a scalar numeric value using a slider. */
@@ -28,12 +27,11 @@ data class Slider(
     val stepValue: Float? = null
 ) : Gadget() {
     /** The selected value. */
-    @JsName("value")
-    var value: Float by updatable("value", initialValue, Float.serializer())
+    var position: Float by updatable("position", initialValue, Float.serializer())
 
     override fun adjustALittleBit() {
         val spread = maxValue - minValue
         val amount = Random.nextFloat() * spread * .25f - spread * .125f
-        value = constrain(value + amount, minValue, maxValue)
+        position = constrain(position + amount, minValue, maxValue)
     }
 }

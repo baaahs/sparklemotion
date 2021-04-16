@@ -189,7 +189,7 @@ kotlin {
                 implementation(npm("memoize-one", "^5.1.1"))
                 // </react-beautiful-dnd bug workaround>
 
-                implementation(npm("react-compound-slider", "^2.0.0"))
+                implementation(npm("react-compound-slider", "^3.3.1"))
                 implementation(npm("react-dom", "^16.13.1"))
                 implementation(npm("react-draggable", "^3.3.0"))
                 implementation(npm("react-hot-loader", "^4.11.0"))

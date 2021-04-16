@@ -2,7 +2,7 @@ package baaahs.ui
 
 import react.RBuilder
 
-actual interface Renderer {
+actual interface View {
     fun RBuilder.render()
 }
 
