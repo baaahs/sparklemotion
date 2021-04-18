@@ -5,12 +5,14 @@ import baaahs.app.ui.editor.ButtonPropsEditor
 import baaahs.app.ui.editor.PropsEditor
 import baaahs.camelize
 import baaahs.gadgets.Switch
+import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.live.*
 import baaahs.show.mutable.*
 import baaahs.ui.View
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 @SerialName("baaahs.Core:Button")
@@ -35,7 +37,7 @@ data class ButtonControl(
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenButtonControl {
         return OpenButtonControl(id, this, openContext)
-            .also { showPlayer.registerGadget(id, it.gadget) }
+            .also { showPlayer.registerGadget(id, it.switch) }
     }
 }
 
@@ -51,7 +53,7 @@ class MutableButtonControl(
         return super.getPropertiesComponents() + ButtonPropsEditor(this)
     }
 
-    override fun build(showBuilder: ShowBuilder): Control {
+    override fun build(showBuilder: ShowBuilder): ButtonControl {
         return ButtonControl(
             title,
             activationType,
@@ -59,6 +61,11 @@ class MutableButtonControl(
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder)
         )
+    }
+
+    override fun previewOpen(): OpenControl {
+        val buttonControl = build(ShowBuilder())
+        return OpenButtonControl(randomId(title.camelize()), buttonControl, EmptyOpenContext)
     }
 
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
@@ -71,15 +78,19 @@ class OpenButtonControl(
     private val buttonControl: ButtonControl,
     openContext: OpenContext
 ) : OpenPatchHolder(buttonControl, openContext), OpenControl {
-    override val gadget: Switch = Switch(buttonControl.title)
+    val switch: Switch = Switch(buttonControl.title)
 
     val type get() = buttonControl.activationType
 
     var isPressed: Boolean
-        get() = gadget.enabled
-        set(value) { gadget.enabled = value }
+        get() = switch.enabled
+        set(value) { switch.enabled = value }
 
     override fun isActive(): Boolean = isPressed
+
+    override fun getState(): Map<String, JsonElement> = switch.state
+
+    override fun applyState(state: Map<String, JsonElement>) = switch.applyState(state)
 
     override fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panel: Panel, depth: Int) {
         if (isPressed) {

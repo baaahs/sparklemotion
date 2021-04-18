@@ -25,6 +25,23 @@ interface OpenContext {
     fun release()
 }
 
+object EmptyOpenContext : OpenContext {
+    override val allControls: List<OpenControl> get() = emptyList()
+
+    override fun findControl(id: String): OpenControl? = null
+
+    override fun getControl(id: String): OpenControl = error("not really an open context")
+
+    override fun getDataSource(id: String): DataSource = error("not really an open context")
+
+    override fun getPanel(id: String): Panel = error("not really an open context")
+
+    override fun getShaderInstance(it: String): LiveShaderInstance = error("not really an open context")
+
+    override fun release() {
+    }
+}
+
 class OpenShow(
     private val show: Show,
     private val showPlayer: ShowPlayer,

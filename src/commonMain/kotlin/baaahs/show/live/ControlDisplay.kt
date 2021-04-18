@@ -55,7 +55,9 @@ class ControlDisplay(
     init {
         val dataSourcesWithoutControls = show.allDataSources.values -
                 show.allControls.flatMap { it.controlledDataSources() }
-        suggestedControls = dataSourcesWithoutControls.mapNotNull { it.buildControl()?.open() }
+        suggestedControls = dataSourcesWithoutControls.mapNotNull {
+            it.buildControl()?.previewOpen()
+        }
     }
     val unplacedControls = (show.allControls + suggestedControls)
         .filter { !placedControls.contains(it) }
