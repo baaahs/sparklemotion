@@ -1,12 +1,15 @@
 package baaahs.client
 
 import baaahs.*
+import baaahs.driverack.BusAlias
+import baaahs.driverack.DriveRack
 import baaahs.gl.Toolchain
 import baaahs.model.Model
 import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenShow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.JsonElement
 
 class ClientStageManager(
@@ -14,6 +17,14 @@ class ClientStageManager(
     private val pubSub: PubSub.Client,
     model: Model
 ) : BaseShowPlayer(toolchain, model) {
+    override val driveRack: DriveRack = DriveRack(pubSub, Dispatchers.Default /* TODO() */)
+
+    private val busA = driveRack.createBus("A")
+    private val busB = driveRack.createBus("B")
+    private val buses = listOf(busA, busB)
+    private val primary = BusAlias(busA)
+    private val secondary = BusAlias(busB)
+
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
     private val listeners = mutableListOf<Listener>()
     private var openShow: OpenShow? = null
@@ -28,6 +39,7 @@ class ClientStageManager(
         return super.openShow(show, showState)
             .also {
                 openShow = it
+                driveRack.rackMap = it.rackMap
                 checkForChanges()
             }
     }

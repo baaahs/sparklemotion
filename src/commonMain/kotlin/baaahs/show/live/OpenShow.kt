@@ -2,6 +2,7 @@ package baaahs.show.live
 
 import baaahs.*
 import baaahs.control.OpenButtonControl
+import baaahs.driverack.RackMap
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.RenderPlan
 import baaahs.gl.data.Feed
@@ -48,6 +49,11 @@ class OpenShow(
     private val openContext: OpenContext,
 ) : OpenPatchHolder(show, openContext), RefCounted by RefCounter() {
     val id = randomId("show")
+
+    val rackMap = show.controls.mapNotNull { (id, control) ->
+        control.allocateChannel(id)
+    }.let { RackMap(it) }
+
     val allProblems: List<ShowProblem>
         get() = run {
             arrayListOf<ShowProblem>().apply {

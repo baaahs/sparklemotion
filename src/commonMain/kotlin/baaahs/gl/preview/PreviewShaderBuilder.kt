@@ -2,6 +2,7 @@ package baaahs.gl.preview
 
 import baaahs.BaseShowPlayer
 import baaahs.control.OpenSliderControl
+import baaahs.driverack.DriveRack
 import baaahs.fixtures.*
 import baaahs.getValue
 import baaahs.gl.Toolchain
@@ -144,7 +145,9 @@ class PreviewShaderBuilder(
         notifyChanged()
 
         coroutineScope.launch {
-            val showPlayer = object : BaseShowPlayer(toolchain, modelInfo) {}
+            val showPlayer = object : BaseShowPlayer(toolchain, modelInfo) {
+                override val driveRack: DriveRack get() = TODO("not implemented")
+            }
 
             compile(renderEngine) { id, dataSource ->
                 dataSource.buildControl()?.let {

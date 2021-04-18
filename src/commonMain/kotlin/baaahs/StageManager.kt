@@ -1,8 +1,13 @@
 package baaahs
 
 import baaahs.app.ui.CommonIcons
+import baaahs.driverack.BusAlias
+import baaahs.driverack.Channel
+import baaahs.driverack.DriveRack
+import baaahs.driverack.RackMap
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.RenderPlan
+import baaahs.gadgets.Slider
 import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
@@ -16,6 +21,7 @@ import baaahs.show.Show
 import baaahs.show.buildEmptyShow
 import baaahs.ui.Icon
 import baaahs.ui.Observable
+import baaahs.ui.RemovableObserver
 import baaahs.ui.addObserver
 import baaahs.util.Clock
 import kotlinx.coroutines.CoroutineScope
@@ -64,7 +70,8 @@ class StageManager(
     private val fixtureManager: FixtureManager,
     private val clock: Clock,
     modelInfo: ModelInfo,
-    private val gadgetManager: GadgetManager
+    private val gadgetManager: GadgetManager,
+    override val driveRack: DriveRack
 ) : BaseShowPlayer(toolchain, modelInfo) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
@@ -81,6 +88,12 @@ class StageManager(
             }
         }
     }
+
+    private val busA = driveRack.createBus("A")
+    private val busB = driveRack.createBus("B")
+    private val buses = listOf(busA, busB)
+    private val primary = BusAlias(busA)
+    private val secondary = BusAlias(busB)
 
     @Suppress("unused")
     private val clientData =
@@ -105,8 +118,26 @@ class StageManager(
 
     private var gadgetsChangedJobEnqueued: Boolean = false
 
+    private var driveRackObservers = mutableListOf<RemovableObserver<*>>()
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
-        gadgetManager.registerGadget(id, gadget)
+        var registerWithGadgetManager = true
+
+        if (gadget is Slider) {
+            registerWithGadgetManager = false
+
+//            primary.channel<T>(id).addObserver {
+//                gadget.position = it.value as Float
+//            }
+
+//            buses.map { bus ->
+//                bus.channel<Any?>(id).addObserver {}
+//            }.also { driveRackObservers.addAll(it) }
+        }
+
+        if (registerWithGadgetManager) {
+            gadgetManager.registerGadget(id, gadget)
+        }
+
         super.registerGadget(id, gadget, controlledDataSource)
     }
 
@@ -120,6 +151,8 @@ class StageManager(
     override fun <T : Gadget> useGadget(id: String): T {
         return gadgetManager.useGadget(id)
     }
+
+    override fun <T> useChannel(id: String): Channel<T> = primary.channel(id)
 
     fun switchTo(
         newShow: Show?,
@@ -139,6 +172,9 @@ class StageManager(
         releaseUnused()
 
         showRunner = newShowRunner
+
+        wireDriveRack(newShowRunner?.rackMap ?: RackMap.Empty)
+
         showEditSession.show = newShowRunner?.show
         showEditSession.showFile = file
         showEditSession.showIsUnsaved = isUnsaved
@@ -147,6 +183,22 @@ class StageManager(
 
         notifyOfShowChanges(fromClientUpdate)
     }
+
+    private fun wireDriveRack(rackMap: RackMap) {
+        driveRack.rackMap = rackMap
+
+//        rackMap.entries.map { entry ->
+//            Updatable(entry.initialValue).also { updatable ->
+//                primary.channel<Any?>(entry.id).addObserver { channel ->
+//                    updatable.value = channel.value
+//                }
+//            }
+//        }
+    }
+
+    class Updatable(
+        var value: Any? = null
+    )
 
     private fun updateRunningShowPath(file: Fs.File?) {
         GlobalScope.launch {

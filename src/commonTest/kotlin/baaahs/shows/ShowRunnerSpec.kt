@@ -1,4 +1,5 @@
 import baaahs.*
+import baaahs.driverack.DriveRack
 import baaahs.fixtures.FixtureManager
 import baaahs.gadgets.ColorPicker
 import baaahs.gl.GlContext.Companion.GL_RGB32F
@@ -87,7 +88,9 @@ object ShowRunnerSpec : Spek({
             val fs = FakeFs()
             StageManager(
                 testToolchain, renderManager, pubSub, Storage(fs, testPlugins()), fixtureManager,
-                FakeClock(), model, GadgetManager(pubSub, FakeClock(), testCoroutineContext))
+                FakeClock(), model, GadgetManager(pubSub, FakeClock(), testCoroutineContext),
+                DriveRack(pubSub, testCoroutineContext)
+            )
         }
 
         val fakeProgram by value { fakeGlslContext.programs.only("program") }

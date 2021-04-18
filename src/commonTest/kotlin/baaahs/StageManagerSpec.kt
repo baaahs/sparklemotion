@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.driverack.DriveRack
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
@@ -18,6 +19,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
+import kotlin.coroutines.EmptyCoroutineContext
 
 @InternalCoroutinesApi
 object StageManagerSpec : Spek({
@@ -41,7 +43,8 @@ object StageManagerSpec : Spek({
                 FixtureManager(renderManager),
                 FakeClock(),
                 model,
-                GadgetManager(pubSub.server, FakeClock(), ImmediateDispatcher)
+                GadgetManager(pubSub.server, FakeClock(), ImmediateDispatcher),
+                DriveRack(pubSub.server, EmptyCoroutineContext + ImmediateDispatcher)
             )
         }
         val editingClient by value { pubSub.client("editingClient") }

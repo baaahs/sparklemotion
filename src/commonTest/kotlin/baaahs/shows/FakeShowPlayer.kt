@@ -3,6 +3,7 @@ package baaahs.shows
 import baaahs.Gadget
 import baaahs.ShowPlayer
 import baaahs.ShowState
+import baaahs.driverack.DriveRack
 import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
@@ -20,6 +21,8 @@ class FakeShowPlayer(
     override val modelInfo: ModelInfo = ModelInfo.Empty,
     override val toolchain: Toolchain = testToolchain
 ) : ShowPlayer {
+    override val driveRack: DriveRack
+        get() = TODO("not implemented")
     private val shaders = mutableMapOf<Shader, OpenShader>()
     private val feeds = mutableMapOf<DataSource, Feed>()
     val gadgets: MutableMap<String, Gadget> = mutableMapOf()
