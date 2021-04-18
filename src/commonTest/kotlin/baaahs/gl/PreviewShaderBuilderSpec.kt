@@ -1,5 +1,7 @@
 package baaahs.gl
 
+import baaahs.control.OpenColorPickerControl
+import baaahs.control.OpenSliderControl
 import baaahs.describe
 import baaahs.gadgets.Slider
 import baaahs.gl.preview.PreviewShaderBuilder
@@ -105,7 +107,13 @@ object PreviewShaderBuilderSpec : Spek({
                             }
 
                             it("has gadgets") {
-                                expect(previewShaderBuilder.gadgets.map { it.gadget })
+                                expect(previewShaderBuilder.gadgets.map {
+                                    when (val openControl = it.openControl) {
+                                        is OpenSliderControl -> openControl.slider
+                                        is OpenColorPickerControl -> openControl.colorPicker
+                                        else -> error("huh? unsupported $openControl")
+                                    }
+                                })
                                     .containsExactly(Slider("Checkerboard Size", .1f, .001f, 1f))
                             }
                         }

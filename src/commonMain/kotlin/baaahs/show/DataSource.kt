@@ -3,12 +3,12 @@ package baaahs.show
 import baaahs.ShowPlayer
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.camelize
-import baaahs.control.MutableGadgetControl
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.SerializerRegistrar
+import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableDataSourcePort
 import kotlinx.serialization.Polymorphic
 
@@ -59,7 +59,7 @@ interface DataSource {
 
     fun suggestId(): String = title.camelize()
 
-    fun buildControl(): MutableGadgetControl? = null
+    fun buildControl(): MutableControl? = null
 
     fun appendDeclaration(buf: StringBuilder, id: String) {
         if (!isImplicit())

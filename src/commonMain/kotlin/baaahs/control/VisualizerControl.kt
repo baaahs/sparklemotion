@@ -1,6 +1,5 @@
 package baaahs.control
 
-import baaahs.Gadget
 import baaahs.ShowPlayer
 import baaahs.app.ui.ControlEditIntent
 import baaahs.app.ui.EditIntent
@@ -8,6 +7,8 @@ import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.GenericPropertiesEditorPanel
 import baaahs.app.ui.editor.VisualizerPropsEditor
+import baaahs.camelize
+import baaahs.randomId
 import baaahs.show.Control
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenContext
@@ -19,6 +20,7 @@ import baaahs.show.mutable.ShowBuilder
 import baaahs.ui.View
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 @SerialName("baaahs.Core:Visualizer")
@@ -59,15 +61,22 @@ data class MutableVisualizerControl(
         )
     }
 
-    override fun build(showBuilder: ShowBuilder): Control {
+    override fun build(showBuilder: ShowBuilder): VisualizerControl {
         return VisualizerControl(surfaceDisplayMode, rotate)
     }
+
+    override fun previewOpen(): OpenControl {
+        return OpenVisualizerControl(randomId(title.camelize()), build(ShowBuilder()))
+    }
 }
+
 class OpenVisualizerControl(
     override val id: String,
     private val visualizerControl: VisualizerControl
 ) : OpenControl {
-    override val gadget: Gadget? get() = null
+    override fun getState(): Map<String, JsonElement>? = null
+
+    override fun applyState(state: Map<String, JsonElement>) {}
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl =
         visualizerControl.createMutable(mutableShow)

@@ -1,12 +1,8 @@
 package baaahs.show.live
 
-import baaahs.Gadget
 import baaahs.app.ui.ControlEditIntent
 import baaahs.app.ui.EditIntent
-import baaahs.control.OpenButtonControl
-import baaahs.control.OpenButtonGroupControl
-import baaahs.control.OpenGadgetControl
-import baaahs.control.OpenVisualizerControl
+import baaahs.control.*
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.show.DataSource
 import baaahs.show.Panel
@@ -17,10 +13,9 @@ import kotlinx.serialization.json.JsonElement
 
 interface OpenControl {
     val id: String
-    val gadget: Gadget?
     fun isActive(): Boolean = true
-    fun getState(): Map<String, JsonElement>? = gadget?.state
-    fun applyState(state: Map<String, JsonElement>) = gadget?.applyState(state)
+    fun getState(): Map<String, JsonElement>?
+    fun applyState(state: Map<String, JsonElement>)
     fun controlledDataSources(): Set<DataSource> = emptySet()
     fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panel: Panel, depth: Int) {}
     fun applyConstraints() {}
@@ -34,9 +29,10 @@ interface ControlContainer {
 }
 
 interface ControlViews {
-    fun forGadget(openGadgetControl: OpenGadgetControl, controlProps: ControlProps): View
     fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): View
     fun forButtonGroup(openButtonGroupControl: OpenButtonGroupControl, controlProps: ControlProps): View
+    fun forColorPicker(openColorPickerControl: OpenColorPickerControl, controlProps: ControlProps): View
+    fun forSlider(openSlider: OpenSliderControl, controlProps: ControlProps): View
     fun forTransition(openTransitionControl: OpenTransitionControl, controlProps: ControlProps): View
     fun forVisualizer(openVisualizerControl: OpenVisualizerControl, controlProps: ControlProps): View
 }

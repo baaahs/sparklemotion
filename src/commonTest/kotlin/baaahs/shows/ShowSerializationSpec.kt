@@ -1,12 +1,10 @@
 package baaahs.shows
 
-import baaahs.Gadget
 import baaahs.control.ButtonControl
 import baaahs.control.ButtonGroupControl
-import baaahs.control.GadgetControl
+import baaahs.control.ColorPickerControl
+import baaahs.control.SliderControl
 import baaahs.fixtures.PixelLocationDataSource
-import baaahs.gadgets.ColorPicker
-import baaahs.gadgets.Slider
 import baaahs.gl.kexpect
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkControl
@@ -101,16 +99,8 @@ fun jsonFor(panel: Panel): JsonElement {
 
 fun jsonFor(control: Control): JsonElement {
     return when (control) {
-        is GadgetControl -> buildJsonObject {
-            put("type", "baaahs.Core:Gadget")
-            put("gadget", jsonFor(control.gadget))
-            put("controlledDataSourceId", control.controlledDataSourceId)
-        }
-        is ButtonGroupControl -> buildJsonObject {
-            put("type", "baaahs.Core:ButtonGroup")
-            put("title", control.title)
-            put("direction", control.direction.name)
-            put("buttonIds", control.buttonIds.jsonMap { JsonPrimitive(it) })
+        is BeatLinkControl -> buildJsonObject {
+            put("type", "baaahs.BeatLink:BeatLink")
         }
         is ButtonControl -> buildJsonObject {
             put("type", "baaahs.Core:Button")
@@ -118,31 +108,29 @@ fun jsonFor(control: Control): JsonElement {
             put("activationType", control.activationType.name)
             addPatchHolder(control)
         }
-        is BeatLinkControl -> buildJsonObject {
-            put("type", "baaahs.BeatLink:BeatLink")
+        is ButtonGroupControl -> buildJsonObject {
+            put("type", "baaahs.Core:ButtonGroup")
+            put("title", control.title)
+            put("direction", control.direction.name)
+            put("buttonIds", control.buttonIds.jsonMap { JsonPrimitive(it) })
         }
-        else -> buildJsonObject { put("type", "unknown") }
-    }
-}
-
-fun jsonFor(gadget: Gadget): JsonElement {
-    return when (gadget) {
-        is Slider -> buildJsonObject {
-            put("type", "baaahs.Core:Slider")
-            put("title", gadget.title)
-            put("initialValue", gadget.initialValue)
-            put("minValue", gadget.minValue)
-            put("maxValue", gadget.maxValue)
-            put("stepValue", gadget.stepValue)
-        }
-        is ColorPicker -> buildJsonObject {
+        is ColorPickerControl -> buildJsonObject {
             put("type", "baaahs.Core:ColorPicker")
-            put("title", gadget.title)
-            put("initialValue", gadget.initialValue.toInt())
+            put("title", control.title)
+            put("initialValue", control.initialValue.toInt())
+            put("controlledDataSourceId", control.controlledDataSourceId)
+        }
+        is SliderControl -> buildJsonObject {
+            put("type", "baaahs.Core:Slider")
+            put("title", control.title)
+            put("initialValue", control.initialValue)
+            put("minValue", control.minValue)
+            put("maxValue", control.maxValue)
+            put("stepValue", control.stepValue)
+            put("controlledDataSourceId", control.controlledDataSourceId)
         }
         else -> buildJsonObject { put("type", "unknown") }
     }
-
 }
 
 fun jsonFor(dataSource: DataSource): JsonElement {
@@ -150,7 +138,7 @@ fun jsonFor(dataSource: DataSource): JsonElement {
         is SliderDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:Slider")
-                put("title", dataSource.gadgetTitle)
+                put("title", dataSource.sliderTitle)
                 put("initialValue", dataSource.initialValue)
                 put("minValue", dataSource.minValue)
                 put("maxValue", dataSource.maxValue)
@@ -160,7 +148,7 @@ fun jsonFor(dataSource: DataSource): JsonElement {
         is ColorPickerDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:ColorPicker")
-                put("title", dataSource.gadgetTitle)
+                put("title", dataSource.colorPickerTitle)
                 put("initialValue", dataSource.initialValue.toInt())
             }
         }
