@@ -1,11 +1,12 @@
-package baaahs
+package baaahs.sim
 
-import baaahs.jsx.FakeClientDevice
+import baaahs.document
+import baaahs.sim.ui.FakeClientDevice
+import baaahs.sim.ui.FakeClientDeviceProps
 import kotlinext.js.jsObject
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
-import react.ReactElement
 import react.createElement
 import react.dom.render
 import kotlin.dom.appendElement
@@ -14,7 +15,6 @@ import kotlin.dom.appendText
 class Launcher(val parentNode: Element) {
 
     fun add(name: String, onLaunch: () -> HostedWebApp): HTMLButtonElement {
-
         return parentNode.appendElement("button") {
             appendText(name)
 
@@ -26,23 +26,15 @@ class Launcher(val parentNode: Element) {
                 }
 
                 // Into the darkness.
-                val props = jsObject<FakeClientDevice.Props> {
+                val props = jsObject<FakeClientDeviceProps> {
                     this.name = name
                     width = 1024
                     height = 768
                     this.hostedWebApp = onLaunch()
                     onClose = { document.body?.removeChild(containerDiv) }
                 }
-                render(createElement(FakeClientDevice::class.js, props), containerDiv)
+                render(createElement(FakeClientDevice, props), containerDiv)
             }
         } as HTMLButtonElement
     }
-}
-
-external interface HostedWebApp {
-    @JsName("render")
-    fun render(): ReactElement
-
-    @JsName("onClose")
-    fun onClose()
 }
