@@ -2,6 +2,7 @@ package baaahs.ui
 
 import kotlinx.css.*
 import kotlinx.css.properties.border
+import kotlinx.css.properties.boxShadow
 import styled.StyleSheet
 
 object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
@@ -87,5 +88,65 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
 
     val dataWithUnit by Styles.css {
         textAlign = TextAlign.right
+    }
+
+    val fakeClientDevicePad by css {
+        zIndex = 1000
+        position = Position.absolute
+        border = "1px solid #404040"
+        borderRadius = 8.px
+        backgroundImage = Image("linear-gradient(to bottom right, #eee, #fff)")
+        cursor = Cursor.grab
+        padding = "28px 40px 28px 28px"
+        color = Color.white
+        right = 5.px
+        bottom = 5.px
+        boxShadow(rgba(0, 0, 0, 0.15), 1.px, 5.px)
+    }
+    
+    val fakeClientDeviceControls by css {
+        position = Position.absolute
+        fontSize = 14.px
+        top = 0.px
+        padding = "4px"
+        right = 0.px
+        color = Color("#222")
+        zIndex = 1
+    }
+    val fakeClientDeviceIconButton by css {
+        color = Color("#222222")
+        padding = "4px"
+        marginLeft = 8.px
+        cursor = Cursor.pointer
+
+        hover {
+            color = Color("#e3e3e3")
+        }
+    }
+
+    val fakeClientDeviceHomeButton by css {
+        position = Position.absolute
+        width = 18.px
+        height = 18.px
+        right = 6.px
+        top = 50.pct
+        border = "1px solid black"
+        borderRadius = 50.pct
+        backgroundImage = Image("radial-gradient(#fff, #ddd)")
+    }
+    
+    val fakeClientDeviceContent by css {
+        overflow = Overflow.hidden
+        cursor = Cursor.default
+        position = Position.relative
+        width = LinearDimension.auto
+        height = LinearDimension.auto
+        padding = "2px"
+        border = "2px solid #373737"
+        backgroundColor = Color("#4F4F4F")
+
+        nav {
+            marginBottom = 8.px
+        }
     }
 }
