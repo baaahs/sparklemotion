@@ -19,6 +19,7 @@ import baaahs.show.Show
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableShow
+import baaahs.sim.HostedWebApp
 import baaahs.util.JsClock
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject

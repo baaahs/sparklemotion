@@ -3,6 +3,7 @@ package baaahs
 import baaahs.admin.AdminPage
 import baaahs.model.Model
 import baaahs.net.Network
+import baaahs.sim.HostedWebApp
 import baaahs.util.Clock
 import baaahs.util.JsClock
 import baaahs.visualizer.Visualizer
