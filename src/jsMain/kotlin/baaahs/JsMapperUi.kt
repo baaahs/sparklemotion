@@ -8,6 +8,7 @@ import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
 import baaahs.jsx.MapperIndex
 import baaahs.model.Model
+import baaahs.sim.HostedWebApp
 import baaahs.visualizer.Rotator
 import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
