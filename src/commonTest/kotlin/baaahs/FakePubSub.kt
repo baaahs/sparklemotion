@@ -1,16 +1,17 @@
 package baaahs
 
 import baaahs.sim.FakeNetwork
-import ext.TestCoroutineContext
+import ext.TestCoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @InternalCoroutinesApi
 class FakePubSub(
-    val testCoroutineContext: TestCoroutineContext = TestCoroutineContext("network"),
-    val network: FakeNetwork = FakeNetwork(0, testCoroutineContext)
+    val dispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher(),
+    val network: FakeNetwork = FakeNetwork(0, CoroutineScope(dispatcher))
 ) : PubSub() {
     val serverNetwork = network.link("server")
-    val server = listen(serverNetwork.startHttpServer(1234), testCoroutineContext)
+    val server = listen(serverNetwork.startHttpServer(1234), CoroutineScope(dispatcher))
     val serverLog = mutableListOf<String>()
 
     fun client(clientName: String): TestClient = TestClient(clientName)

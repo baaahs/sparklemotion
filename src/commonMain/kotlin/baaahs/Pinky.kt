@@ -53,7 +53,7 @@ class Pinky(
     private val pinkyJob = SupervisorJob()
     override val coroutineContext: CoroutineContext = pinkyMainDispatcher + pinkyJob
 
-    private val pubSub: PubSub.Server = PubSub.Server(httpServer, coroutineContext)
+    private val pubSub: PubSub.Server = PubSub.Server(httpServer, CoroutineScope(coroutineContext))
     val gadgetManager = GadgetManager(pubSub, clock, coroutineContext)
     internal val fixtureManager = FixtureManager(renderManager)
 
