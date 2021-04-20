@@ -16,11 +16,8 @@ import baaahs.sim.FakeFs
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.Runnable
 import org.spekframework.spek2.Spek
-import kotlin.coroutines.CoroutineContext
 
 @InternalCoroutinesApi
 object StageManagerSpec : Spek({
@@ -30,7 +27,7 @@ object StageManagerSpec : Spek({
 
         val plugins by value { testPlugins() }
         val fakeFs by value { FakeFs() }
-        val pubSub by value { TestPubSub() }
+        val pubSub by value { FakePubSub() }
         val fakeGlslContext by value { FakeGlContext() }
         val renderManager by value { RenderManager(TestModel) { fakeGlslContext } }
         val baseShow by value { SampleData.sampleShow }
@@ -44,11 +41,7 @@ object StageManagerSpec : Spek({
                 FixtureManager(renderManager),
                 FakeClock(),
                 model,
-                GadgetManager(pubSub.server, FakeClock(), object : CoroutineDispatcher() {
-                    override fun dispatch(context: CoroutineContext, block: Runnable) {
-                        block.run()
-                    }
-                })
+                GadgetManager(pubSub.server, FakeClock(), ImmediateDispatcher)
             )
         }
         val editingClient by value { pubSub.client("editingClient") }
