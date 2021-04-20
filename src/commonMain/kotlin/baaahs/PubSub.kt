@@ -395,6 +395,8 @@ abstract class PubSub {
         protected fun <T> buildTopicInfo(topic: Topic<T>): TopicInfo<T> {
             return TopicInfo(topic)
         }
+
+        abstract fun <T : Any?> openChannel(topic: Topic<T>, initialValue: T, onUpdate: (T) -> Unit): Channel<T>
     }
 
     class Server(httpServer: Network.HttpServer, private val handlerContext: CoroutineContext) : Endpoint() {
@@ -407,6 +409,10 @@ abstract class PubSub {
                 val name = "server ${incomingConnection.toAddress} to ${incomingConnection.fromAddress}"
                 ConnectionFromClient(name, topics, commandChannels)
             }
+        }
+
+        override fun <T> openChannel(topic: Topic<T>, initialValue: T, onUpdate: (T) -> Unit): Channel<T> {
+            return publish(topic, initialValue, onUpdate)
         }
 
         fun <T : Any?> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T> {
@@ -542,6 +548,10 @@ abstract class PubSub {
 
         private fun connectWebSocket() {
             link.connectWebSocket(serverAddress, port, "/sm/ws", connectionToServer)
+        }
+
+        override fun <T> openChannel(topic: Topic<T>, initialValue: T, onUpdate: (T) -> Unit): Channel<T> {
+            return subscribe(topic, onUpdate)
         }
 
         @JsName("subscribe")
