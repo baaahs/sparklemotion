@@ -55,9 +55,10 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
 
     override val controlSerializers
         get() = listOf(
-            classSerializer(GadgetControl.serializer()),
+            classSerializer(ColorPickerControl.serializer()),
             classSerializer(ButtonControl.serializer()),
             classSerializer(ButtonGroupControl.serializer()),
+            classSerializer(SliderControl.serializer()),
             classSerializer(TransitionControl.serializer()),
             classSerializer(VisualizerControl.serializer())
         )

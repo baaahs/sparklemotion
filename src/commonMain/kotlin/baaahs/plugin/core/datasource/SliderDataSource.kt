@@ -1,14 +1,25 @@
 package baaahs.plugin.core.datasource
 
+import baaahs.RefCounted
+import baaahs.RefCounter
+import baaahs.ShowPlayer
 import baaahs.camelize
+import baaahs.control.MutableSliderControl
 import baaahs.gadgets.Slider
+import baaahs.gl.GlContext
+import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.Feed
+import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.SingleUniformFeed
+import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
-import baaahs.glsl.Uniform
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
+import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -21,12 +32,40 @@ import kotlinx.serialization.json.jsonPrimitive
 @SerialName("baaahs.Core:Slider")
 data class SliderDataSource(
     @SerialName("title")
-    override val gadgetTitle: String,
+    val sliderTitle: String,
     val initialValue: Float,
     val minValue: Float,
     val maxValue: Float,
     val stepValue: Float? = null
-) : GadgetDataSource<Slider> {
+) : DataSource {
+    override val title: String get() = "$sliderTitle Slider"
+
+    override fun buildControl(): MutableControl {
+        return MutableSliderControl(sliderTitle, initialValue, minValue, maxValue, stepValue, this)
+    }
+
+    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+//        val channel = showPlayer.useChannel<Float>(id)
+        val slider = showPlayer.useGadget(this)
+            ?: run {
+                logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
+                createGadget()
+            }
+
+        return object : Feed, RefCounted by RefCounter() {
+            override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
+                override fun bind(glslProgram: GlslProgram): ProgramFeed {
+                    return SingleUniformFeed(glslProgram, this@SliderDataSource, id) { uniform ->
+//                        uniform.set(channel.value)
+                        uniform.set(slider.position)
+                    }
+                }
+            }
+
+            override fun release() = Unit
+        }
+    }
+
     companion object : DataSourceBuilder<SliderDataSource> {
         override val resourceName: String get() = "Slider"
         override val contentType: ContentType get() = ContentType.Float
@@ -61,16 +100,11 @@ data class SliderDataSource(
     }
 
     override val pluginPackage: String get() = CorePlugin.id
-    override val title: String get() = "$gadgetTitle $resourceName"
     override fun getType(): GlslType = GlslType.Float
     override val contentType: ContentType
         get() = ContentType.Float
-    override fun suggestId(): String = "$gadgetTitle Slider".camelize()
+    override fun suggestId(): String = title.camelize()
 
-    override fun createGadget(): Slider =
-        Slider(gadgetTitle, initialValue, minValue, maxValue, stepValue)
-
-    override fun set(gadget: Slider, uniform: Uniform) {
-        uniform.set(gadget.position)
-    }
+    fun createGadget(): Slider =
+        Slider(sliderTitle, initialValue, minValue, maxValue, stepValue)
 }

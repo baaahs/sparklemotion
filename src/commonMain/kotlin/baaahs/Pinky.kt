@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.api.ws.WebSocketRouter
 import baaahs.dmx.Dmx
+import baaahs.driverack.DriveRack
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.RootToolchain
@@ -26,6 +27,7 @@ import baaahs.util.Logger
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 class Pinky(
     val model: Model,
@@ -54,12 +56,13 @@ class Pinky(
     override val coroutineContext: CoroutineContext = pinkyMainDispatcher + pinkyJob
 
     private val pubSub: PubSub.Server = PubSub.Server(httpServer, coroutineContext)
-    val gadgetManager = GadgetManager(pubSub, clock, coroutineContext)
+    private val driveRackBuilder = DriveRack(pubSub, EmptyCoroutineContext + Dispatchers.Default)
+    private val gadgetManager = GadgetManager(pubSub, clock, coroutineContext)
     internal val fixtureManager = FixtureManager(renderManager)
 
     val toolchain = RootToolchain(plugins)
     val stageManager: StageManager = StageManager(
-        toolchain, renderManager, pubSub, storage, fixtureManager, clock, model, gadgetManager
+        toolchain, renderManager, pubSub, storage, fixtureManager, clock, model, gadgetManager, driveRackBuilder
     )
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {

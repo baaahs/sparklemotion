@@ -38,12 +38,14 @@ abstract class Gadget {
     @Transient
     private val listeners = arrayListOf<Listener>()
 
+    @JsName("listen")
     fun listen(gadgetListener: GadgetListener) {
         if (findListener(gadgetListener) != -1)
             throw IllegalStateException("$gadgetListener already listening to $this")
         listeners.add(Listener(gadgetListener))
     }
 
+    @JsName("unlisten")
     fun unlisten(gadgetListener: GadgetListener) {
         val i = findListener(gadgetListener)
         if (i == -1)

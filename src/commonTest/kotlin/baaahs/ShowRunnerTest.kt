@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.driverack.DriveRack
 import baaahs.fixtures.*
 import baaahs.gadgets.Slider
 import baaahs.gl.render.RenderManager
@@ -61,7 +62,8 @@ class ShowRunnerTest {
         MovingHeadManager(fixtureManager, dmxUniverse, emptyList())
         stageManager = StageManager(
             testToolchain, renderManager, server, Storage(fs, testPlugins()), fixtureManager,
-            FakeClock(), sheepModel, GadgetManager(server, FakeClock(), testCoroutineContext)
+            FakeClock(), sheepModel, GadgetManager(server, FakeClock(), testCoroutineContext),
+            DriveRack(server, testCoroutineContext)
         )
         stageManager.switchTo(SampleData.sampleShow)
         renderTargets = fixtureManager.getRenderTargets_ForTestOnly()

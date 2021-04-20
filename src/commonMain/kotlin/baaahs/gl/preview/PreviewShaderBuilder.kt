@@ -1,7 +1,8 @@
 package baaahs.gl.preview
 
 import baaahs.BaseShowPlayer
-import baaahs.Gadget
+import baaahs.control.OpenSliderControl
+import baaahs.driverack.DriveRack
 import baaahs.fixtures.*
 import baaahs.getValue
 import baaahs.gl.Toolchain
@@ -17,6 +18,7 @@ import baaahs.model.ModelInfo
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
+import baaahs.show.live.OpenControl
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePatch
 import baaahs.ui.IObservable
@@ -52,7 +54,7 @@ interface ShaderBuilder : IObservable {
 
     class GadgetPreview(
         val id: String,
-        val gadget: Gadget,
+        val openControl: OpenControl,
         val controlledDataSource: DataSource?
     )
 }
@@ -144,15 +146,17 @@ class PreviewShaderBuilder(
 
         coroutineScope.launch {
             val showPlayer = object : BaseShowPlayer(toolchain, modelInfo) {
-                override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
-                    mutableGadgets.add(ShaderBuilder.GadgetPreview(id, gadget, controlledDataSource))
-                    super.registerGadget(id, gadget, controlledDataSource)
-                }
+                override val driveRack: DriveRack get() = TODO("not implemented")
             }
 
             compile(renderEngine) { id, dataSource ->
                 dataSource.buildControl()?.let {
-                    showPlayer.registerGadget(dataSource.suggestId(), it.gadget, dataSource)
+                    // TODO: De-gnarl this mess.
+                    val openControl = it.previewOpen()
+                    if (openControl is OpenSliderControl) {
+                        showPlayer.registerGadget(dataSource.suggestId(), openControl.slider, dataSource)
+                    }
+                    mutableGadgets.add(ShaderBuilder.GadgetPreview(id, openControl, dataSource))
                 }
 
                 dataSource.createFeed(showPlayer, id)

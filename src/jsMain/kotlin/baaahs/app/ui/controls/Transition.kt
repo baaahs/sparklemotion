@@ -2,7 +2,6 @@ package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.slider.slider
-import baaahs.gadgets.Slider
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.on
@@ -41,7 +40,11 @@ val Transition = xComponent<TransitionProps>("Transition") { props ->
     val rootEl = ref<Element>()
 //    clientPreview.transition.rotate = props.transitionControl.rotate
 
-    val fader = memo { Slider("Transition Fader", 0f, 0f, 1f) }
+    var position by state { 0f }
+    val handlePositionChange = handler("handlePositionChange") { newPosition: Float ->
+        position = newPosition
+    }
+
     val speed by state { "1s" }
     val shape by state { "ease" }
     val effect by state { "fade" }
@@ -84,9 +87,15 @@ val Transition = xComponent<TransitionProps>("Transition") { props ->
             inlineStyles { gridArea = "fader" }
 
             slider {
-                attrs.gadget = fader
+                attrs.title = "Manual"
+                attrs.position = position
+                attrs.contextPosition = null
+                attrs.minValue = 0f
+                attrs.maxValue = 1f
                 attrs.reversed = false
                 attrs.showTicks = false
+
+                attrs.onChange = handlePositionChange
             }
         }
 

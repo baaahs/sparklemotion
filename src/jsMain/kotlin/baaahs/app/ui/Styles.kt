@@ -236,6 +236,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     val layoutPanelPaper by css {
         display = Display.flex
         flexDirection = FlexDirection.column
+        overflow = Overflow.scroll
 
         header {
             lineHeight = 2.em.lh
@@ -245,6 +246,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     val layoutPanel by css {
         display = Display.flex
         height = 100.pct
+        overflow = Overflow.scroll
     }
 
     val layoutControls by css {

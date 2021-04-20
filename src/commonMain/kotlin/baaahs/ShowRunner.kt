@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.driverack.RackMap
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.render.RenderManager
 import baaahs.show.Show
@@ -16,6 +17,7 @@ class ShowRunner(
     private val fixtureManager: FixtureManager,
     private val updateProblems: (List<ShowProblem>) -> Unit
 ) {
+    val rackMap: RackMap get() = openShow.rackMap
     private var showState: ShowState = initialShowState ?: openShow.getShowState()
     private var activePatchSetChanged: Boolean = true
 

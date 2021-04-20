@@ -2,6 +2,7 @@ package baaahs.glsl
 
 import baaahs.BaseShowPlayer
 import baaahs.Gadget
+import baaahs.driverack.DriveRack
 import baaahs.fixtures.DeviceType
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
@@ -42,6 +43,8 @@ class GuruMeditationError(deviceType: DeviceType) {
 }
 
 private class FakeShowPlayer(toolchain: Toolchain) : BaseShowPlayer(toolchain, ModelInfo.Empty) {
+    override val driveRack: DriveRack
+        get() = TODO("not implemented")
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?): Unit = error("not implemented")
     override fun <T : Gadget> useGadget(id: String): T = error("not implemented")
 }

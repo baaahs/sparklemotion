@@ -1,9 +1,10 @@
 package baaahs.plugin.beatlink
 
-import baaahs.Gadget
 import baaahs.ShowPlayer
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.editor.EditableManager
+import baaahs.camelize
+import baaahs.randomId
 import baaahs.show.Control
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenContext
@@ -15,6 +16,7 @@ import baaahs.ui.View
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 @SerialName("baaahs.BeatLink:BeatLink")
@@ -26,7 +28,7 @@ data class BeatLinkControl(@Transient private val `_`: Boolean = false) : Contro
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
-        return OpenBeatLinkControl(id, showPlayer)
+        return OpenBeatLinkControl(id)
     }
 }
 
@@ -39,18 +41,21 @@ class MutableBeatLinkControl : MutableControl {
         return emptyList()
     }
 
-    override fun build(showBuilder: ShowBuilder): Control {
+    override fun build(showBuilder: ShowBuilder): BeatLinkControl {
         return BeatLinkControl()
     }
 
+    override fun previewOpen(): OpenControl {
+        return OpenBeatLinkControl(randomId(title.camelize()))
+    }
 }
 
 class OpenBeatLinkControl(
-    override val id: String,
-    private val showPlayer: ShowPlayer
+    override val id: String
 ) : OpenControl {
-    override val gadget: Gadget?
-        get() = null
+    override fun getState(): Map<String, JsonElement>? = null
+
+    override fun applyState(state: Map<String, JsonElement>) {}
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl {
         return MutableBeatLinkControl()

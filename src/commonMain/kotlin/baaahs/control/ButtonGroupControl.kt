@@ -1,12 +1,12 @@
 package baaahs.control
 
-import baaahs.Gadget
 import baaahs.ShowPlayer
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.editor.ButtonGroupPropsEditor
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.GenericPropertiesEditorPanel
 import baaahs.camelize
+import baaahs.randomId
 import baaahs.show.Control
 import baaahs.show.Panel
 import baaahs.show.live.*
@@ -16,6 +16,7 @@ import baaahs.ui.DropTarget
 import baaahs.ui.View
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 @SerialName("baaahs.Core:ButtonGroup")
@@ -67,10 +68,15 @@ data class MutableButtonGroupControl(
         )
     }
 
-    override fun build(showBuilder: ShowBuilder): Control {
+    override fun build(showBuilder: ShowBuilder): ButtonGroupControl {
         return ButtonGroupControl(title, direction, buttons.map { mutableButtonControl ->
             mutableButtonControl.buildAndStashId(showBuilder)
         })
+    }
+
+    override fun previewOpen(): OpenControl {
+        val buttonGroupControl = build(ShowBuilder())
+        return OpenButtonGroupControl(randomId(title.camelize()), buttonGroupControl, EmptyOpenContext)
     }
 
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
@@ -90,8 +96,9 @@ class OpenButtonGroupControl(
     val title: String
         get() = buttonGroupControl.title
 
-    override val gadget: Gadget?
-        get() = null
+    override fun getState(): Map<String, JsonElement>? = null
+
+    override fun applyState(state: Map<String, JsonElement>) {}
 
     val direction = buttonGroupControl.direction
 
