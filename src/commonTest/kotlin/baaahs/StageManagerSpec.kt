@@ -71,7 +71,7 @@ object StageManagerSpec : Spek({
             editingClientChannel.let {}
             otherClientChannel.let {}
             stageManager.switchTo(baseShow, file = fakeFs.resolve("fake-file.sparkle"))
-            pubSub.testCoroutineContext.runAll()
+            pubSub.dispatcher.runCurrent()
         }
 
 //        afterEachTest {
@@ -100,7 +100,7 @@ object StageManagerSpec : Spek({
                         file = editingClientShowEditorState!!.file
                     )
                 )
-                pubSub.testCoroutineContext.runAll()
+                pubSub.dispatcher.runCurrent()
             }
 
             it("no additional pubsub updates are received by the editing client") {

@@ -14,7 +14,6 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.SerializersModule
-import kotlin.coroutines.CoroutineContext
 import kotlin.js.JsName
 import kotlin.jvm.Synchronized
 import kotlin.properties.ReadWriteProperty
@@ -25,8 +24,8 @@ abstract class PubSub {
     companion object {
         val verbose = true
 
-        fun listen(httpServer: Network.HttpServer, coroutineContext: CoroutineContext): Server {
-            return Server(httpServer, coroutineContext)
+        fun listen(httpServer: Network.HttpServer, coroutineScope: CoroutineScope): Server {
+            return Server(httpServer, coroutineScope)
         }
 
         fun connect(networkLink: Network.Link, address: Network.Address, port: Int): Client {
@@ -399,7 +398,7 @@ abstract class PubSub {
         abstract fun <T : Any?> openChannel(topic: Topic<T>, initialValue: T, onUpdate: (T) -> Unit): Channel<T>
     }
 
-    class Server(httpServer: Network.HttpServer, private val handlerContext: CoroutineContext) : Endpoint() {
+    class Server(httpServer: Network.HttpServer, private val handlerScope: CoroutineScope) : Endpoint() {
         private val publisher = Origin("Server-side publisher")
         private val topics: Topics = Topics()
         private val commandChannels = CommandChannels()
@@ -421,7 +420,7 @@ abstract class PubSub {
             @Suppress("UNCHECKED_CAST")
             val topicInfo = topics.getOrPut(topicName) { TopicInfo(topic) } as TopicInfo<T>
             val listener = PublisherListener(topicInfo, publisher) {
-                CoroutineScope(handlerContext).launch { onUpdate(it) }
+                handlerScope.launch { onUpdate(it) }
             }
             topicInfo.addListener(listener)
             topicInfo.notify(data, publisher)
@@ -487,7 +486,7 @@ abstract class PubSub {
             private val callback: suspend (command: C) -> R
         ) {
             fun receiveCommand(commandJson: String, commandId: String, fromConnection: Connection) {
-                CoroutineScope(handlerContext).launch {
+                handlerScope.launch {
                     val reply = try {
                         callback.invoke(commandPort.fromJson(commandJson))
                     } catch (e: Exception) {
