@@ -4,10 +4,7 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
 import baaahs.util.Logger
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
@@ -200,7 +197,7 @@ abstract class PubSub {
         ): CommandChannel<C, R> {
             val name = commandPort.name
             if (hasClientChannel(name)) error("Command channel $name already exists.")
-            return ClientCommandChannel(commandPort, handlerScope, commandRecipient).also {
+            return ClientCommandChannel(commandPort, commandRecipient).also {
                 putClientChannel(name, it)
             }
         }
@@ -247,7 +244,6 @@ abstract class PubSub {
 
         class ClientCommandChannel<C, R>(
             private val commandPort: CommandPort<C, R>,
-            private val handlerScope: CoroutineScope,
             private val connection: CommandRecipient
         ) : CommandChannel<C, R> {
             private val handlers = mutableMapOf<String, Client.CommandHandler<R>>()
@@ -255,23 +251,21 @@ abstract class PubSub {
 
             override suspend fun send(command: C): R {
                 val commandId = nextCommandId++.toString(16)
-                val handler = Client.CommandHandler<R>(commandId)
+                val handler = Client.CommandHandler<R>(commandId, CoroutineScope(currentCoroutineContext()))
                 handlers[commandId] = handler
                 connection.sendCommand(commandPort, command, commandId)
                 return handler.receive()
             }
 
             fun receiveReply(replyJson: String, commandId: String) {
-                handlers.remove(commandId)?.let {
+                handlers.remove(commandId)?.let { handler ->
                     val reply = commandPort.replyFromJson(replyJson)
-                    handlerScope.launch { it.onReply(reply) }
+                    handler.onReply(reply)
                 }
             }
 
             fun receiveError(message: String, commandId: String) {
-                handlers.remove(commandId)?.let {
-                    handlerScope.launch { it.onError(message) }
-                }
+                handlers.remove(commandId)?.onError(message)
             }
         }
     }
@@ -718,7 +712,10 @@ abstract class PubSub {
             stateChangeListeners.forEach { callback -> callback() }
         }
 
-        class CommandHandler<R>(private val commandId: String) {
+        class CommandHandler<R>(
+            private val commandId: String,
+            private val scope: CoroutineScope
+        ) {
             private val coroutineChannel = kotlinx.coroutines.channels.Channel<Pair<R?, String?>>()
 
             suspend fun receive(): R {
@@ -726,11 +723,13 @@ abstract class PubSub {
                 return reply ?: error(error ?: "Unknown error; command=$commandId")
             }
 
-            suspend fun onReply(reply: R) = coroutineChannel.send(reply to null)
+            fun onReply(reply: R) = scope.launch {
+                coroutineChannel.send(reply to null)
+            }
 
-            suspend fun onError(message: String) = coroutineChannel.send(null to message)
-
-//            fun receiveError(reply: R)
+            fun onError(message: String) = scope.launch {
+                coroutineChannel.send(null to message)
+            }
         }
     }
 
