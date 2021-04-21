@@ -26,7 +26,9 @@ class FakePubSub(
 @InternalCoroutinesApi
 class SpyPubSub(
     dispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
-) : PubSub.Endpoint(CoroutineScope(dispatcher)) {
+) : PubSub.Endpoint() {
+    override val commandChannels: PubSub.CommandChannels = PubSub.CommandChannels(CoroutineScope(dispatcher))
+
     private val onUpdates = mutableMapOf<String, (Any?) -> Unit>()
     val events = arrayListOf<String>()
 
