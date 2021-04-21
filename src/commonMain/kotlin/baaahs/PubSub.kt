@@ -194,13 +194,13 @@ abstract class PubSub {
         }
 
 
-        fun <C, R> open(
+        internal fun <C, R> open(
             commandPort: CommandPort<C, R>,
-            client: Client
+            commandRecipient: CommandRecipient
         ): CommandChannel<C, R> {
             val name = commandPort.name
             if (hasClientChannel(name)) error("Command channel $name already exists.")
-            return ClientCommandChannel(commandPort, handlerScope, client).also {
+            return ClientCommandChannel(commandPort, handlerScope, commandRecipient).also {
                 putClientChannel(name, it)
             }
         }
@@ -248,15 +248,16 @@ abstract class PubSub {
         class ClientCommandChannel<C, R>(
             private val commandPort: CommandPort<C, R>,
             private val handlerScope: CoroutineScope,
-            private val client: Client
+            private val connection: CommandRecipient
         ) : CommandChannel<C, R> {
             private val handlers = mutableMapOf<String, Client.CommandHandler<R>>()
+            private var nextCommandId = 0
 
             override suspend fun send(command: C): R {
-                val commandId = client.clientId + ":" + client.nextCommandId++
+                val commandId = nextCommandId++.toString(16)
                 val handler = Client.CommandHandler<R>(commandId)
                 handlers[commandId] = handler
-                client.connectionToServer.sendCommand(commandPort, command, commandId)
+                connection.sendCommand(commandPort, command, commandId)
                 return handler.receive()
             }
 
@@ -456,11 +457,30 @@ abstract class PubSub {
     class ConnectionFromClient(
         name: String,
         topics: Topics,
-        commandChannels: CommandChannels
-    ) : Connection(name, topics, commandChannels)
+        override val commandChannels: CommandChannels
+    ) : Connection(name, topics, commandChannels), CommandRecipient
 
-    abstract class Endpoint(handlerScope: CoroutineScope) {
-        protected val commandChannels = CommandChannels(handlerScope)
+    interface CommandRecipient {
+        val commandChannels: CommandChannels
+
+        fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String)
+
+        fun <C, R> openCommandChannel(
+            commandPort: CommandPort<C, R>
+        ): CommandChannel<C, R> {
+            return commandChannels.open(commandPort, this)
+        }
+
+        fun <C, R> commandSender(
+            commandPort: CommandPort<C, R>
+        ): suspend (command: C) -> R {
+            val commandChannel = openCommandChannel(commandPort)
+            return { command: C -> commandChannel.send(command) }
+        }
+    }
+
+    abstract class Endpoint() {
+        protected abstract val commandChannels: CommandChannels
 
         protected fun <T> buildTopicInfo(topic: Topic<T>): TopicInfo<T> {
             return TopicInfo(topic)
@@ -476,14 +496,17 @@ abstract class PubSub {
         }
     }
 
-    class Server(httpServer: Network.HttpServer, private val handlerScope: CoroutineScope) : Endpoint(handlerScope) {
+    class Server(httpServer: Network.HttpServer, private val handlerScope: CoroutineScope) : Endpoint() {
         private val publisher = Origin("Server-side publisher")
         private val topics: Topics = Topics()
+        override val commandChannels: CommandChannels = CommandChannels(handlerScope)
+        private val connectionListeners: MutableList<(ConnectionFromClient) -> Unit> = mutableListOf()
 
         init {
             httpServer.listenWebSocket("/sm/ws") { incomingConnection ->
                 val name = "server ${incomingConnection.toAddress} to ${incomingConnection.fromAddress}"
                 ConnectionFromClient(name, topics, commandChannels)
+                    .also { connection -> connectionListeners.forEach { it.invoke(connection) } }
             }
         }
 
@@ -537,6 +560,11 @@ abstract class PubSub {
             }
         }
 
+        /** For tests only. */
+        internal fun listenForConnections(callback: (ConnectionFromClient) -> Unit) {
+            connectionListeners.add(callback)
+        }
+
         internal fun getTopicInfo(topicName: String) = topics[topicName]
 
         inner class PublisherListener<T : Any?>(
@@ -555,7 +583,9 @@ abstract class PubSub {
         private val serverAddress: Network.Address,
         private val port: Int,
         private val coroutineScope: CoroutineScope = GlobalScope
-    ) : Endpoint(coroutineScope) {
+    ) : Endpoint(), CommandRecipient {
+        override val commandChannels: CommandChannels = CommandChannels((coroutineScope))
+
         @JsName("isConnected")
         val isConnected: Boolean
             get() = connectionToServer.isConnected
@@ -564,12 +594,12 @@ abstract class PubSub {
         private val topics: Topics = Topics()
 
         internal var connectionToServer: Connection = ConnectionToServer()
-        internal var nextCommandId: Int = 0
 
-        // TODO: this should be issued by the server instead.
-        val clientId = randomId("pubsub-client")
-
-        inner class ConnectionToServer : Connection("Client-side connection from ${link.myAddress} to server at $serverAddress", topics, commandChannels) {
+        inner class ConnectionToServer : Connection(
+            "Client-side connection from ${link.myAddress} to server at $serverAddress",
+            topics,
+            commandChannels
+        ) {
             override fun connected(tcpConnection: Network.TcpConnection) {
                 super.connected(tcpConnection)
 
@@ -646,20 +676,15 @@ abstract class PubSub {
             }
         }
 
-        fun <C, R> openCommandChannel(
-            commandPort: CommandPort<C, R>
-        ): CommandChannel<C, R> {
-            return commandChannels.open(commandPort, this)
+        override fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String) {
+            connectionToServer.sendCommand(commandPort, command, commandId)
         }
 
-        fun <C, R> commandSender(
-            commandPort: CommandPort<C, R>
-        ): suspend (command: C) -> R {
-            val commandChannel = openCommandChannel(commandPort)
-            return { command: C -> commandChannel.send(command) }
-        }
-
-        fun <T> state(topic: Topic<T>, initialValue: T? = null, callback: (T) -> Unit = {}): ReadWriteProperty<Any, T?> {
+        fun <T> state(
+            topic: Topic<T>,
+            initialValue: T? = null,
+            callback: (T) -> Unit = {}
+        ): ReadWriteProperty<Any, T?> {
             return object : ReadWriteProperty<Any, T?> {
                 private var value: T? = initialValue
 
@@ -713,7 +738,9 @@ abstract class PubSub {
         private val cleanups = mutableListOf<() -> Unit>()
 
         @Synchronized
-        fun add(cleanup: () -> Unit) { cleanups.add(cleanup) }
+        fun add(cleanup: () -> Unit) {
+            cleanups.add(cleanup)
+        }
 
         @Synchronized
         fun invokeAll() {
