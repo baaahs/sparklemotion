@@ -1,9 +1,10 @@
 package baaahs.plugin.core
 
-import baaahs.Gadget
 import baaahs.ShowPlayer
 import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.editor.EditableManager
+import baaahs.camelize
+import baaahs.randomId
 import baaahs.show.Control
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenContext
@@ -16,6 +17,7 @@ import baaahs.ui.View
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 @SerialName("baaahs.Core:Transition")
@@ -27,7 +29,7 @@ data class TransitionControl(@Transient private val `_`: Boolean = false) : Cont
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
-        return OpenTransitionControl(id, showPlayer)
+        return OpenTransitionControl(id)
     }
 }
 
@@ -44,14 +46,17 @@ class MutableTransitionControl : MutableControl {
         return TransitionControl()
     }
 
+    override fun previewOpen(): OpenControl {
+        return OpenTransitionControl(randomId(title.camelize()))
+    }
 }
 
 class OpenTransitionControl(
-    override val id: String,
-    private val showPlayer: ShowPlayer
+    override val id: String
 ) : OpenControl {
-    override val gadget: Gadget?
-        get() = null
+    override fun getState(): Map<String, JsonElement>? = null
+
+    override fun applyState(state: Map<String, JsonElement>) {}
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl {
         return MutableTransitionControl()

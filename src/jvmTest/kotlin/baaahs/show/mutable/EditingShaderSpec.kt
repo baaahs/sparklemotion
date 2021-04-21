@@ -290,7 +290,7 @@ object EditingShaderSpec : Spek({
                             Channel:
                             * Main Channel
                             Data Source:
-                            - In Color ColorPicker
+                            - In Color Color Picker
                         """.trimIndent())
                 }
 
@@ -308,7 +308,7 @@ object EditingShaderSpec : Spek({
                                     * Main Channel
                                     - Other Channel
                                     Data Source:
-                                    - In Color ColorPicker
+                                    - In Color Color Picker
                                 """.trimIndent())
                         }
                     }
@@ -322,7 +322,7 @@ object EditingShaderSpec : Spek({
                                     Channel:
                                     * Main Channel
                                     Data Source:
-                                    - In Color ColorPicker
+                                    - In Color Color Picker
                                 """.trimIndent())
                         }
                     }

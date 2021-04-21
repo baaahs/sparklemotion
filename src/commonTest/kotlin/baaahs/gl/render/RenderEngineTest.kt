@@ -12,7 +12,8 @@ import baaahs.geom.Vector3F
 import baaahs.gl.*
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
-import baaahs.plugin.core.datasource.GadgetDataSource
+import baaahs.plugin.core.datasource.ColorPickerDataSource
+import baaahs.plugin.core.datasource.SliderDataSource
 import baaahs.show.Shader
 import baaahs.shows.FakeShowPlayer
 import kotlin.math.abs
@@ -257,8 +258,13 @@ class RenderEngineTest {
             .confirm()
             .openForPreview(testToolchain, ContentType.Color)!!
         return renderEngine.compile(linkedPatch) { id, dataSource ->
-            if (dataSource is GadgetDataSource<*>) {
-                fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
+            when (dataSource) {
+                is ColorPickerDataSource -> {
+                    fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
+                }
+                is SliderDataSource -> {
+                    fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
+                }
             }
             dataSource.createFeed(fakeShowPlayer, id)
         }
