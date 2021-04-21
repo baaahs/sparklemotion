@@ -13,6 +13,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
 import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.Suite
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.assertEquals
 
@@ -25,6 +26,12 @@ object PubSubSpec : Spek({
 
         val serverNetwork by value { network.link("server") }
         val server by value { PubSub.listen(serverNetwork.startHttpServer(1234), testCoroutineScope) }
+        val serverConnections by value {
+            arrayListOf<PubSub.ConnectionFromClient>()
+                .also { list ->
+                    server.listenForConnections { connection -> list.add(connection) }
+                }
+        }
         val serverLog by value { mutableListOf<String>() }
 
         val client1Network by value { network.link("client1") }
@@ -40,6 +47,7 @@ object PubSubSpec : Spek({
         beforeEachTest {
             // Server needs to come up first, then client1 and client2.
             server.run {}
+            serverConnections.run {}
             client1.run {}
             client2.run {}
         }
@@ -261,20 +269,32 @@ object PubSubSpec : Spek({
                     }
                 }
 
-                it("invokes that command on the server and returns the response to the caller") {
-                    dispatcher.runCurrent()
-                    expect(result).containsExactly("response: reply for the command")
-                }
-
-                context("and the server throws an exception") {
-                    override(serverCommandHandler) {
-                        val x: suspend (String) -> String = { s: String -> throw RuntimeException("error for $s") }; x
-                    }
-
-                    it("returns the response to the caller") {
+                fun Suite.sharedCommandSpecs() {
+                    it("invokes that command on the server and returns the response to the caller") {
                         dispatcher.runCurrent()
-                        expect(result).containsExactly("error: error for the command")
+                        expect(result).containsExactly("response: reply for the command")
                     }
+
+                    context("and the server throws an exception") {
+                        override(serverCommandHandler) {
+                            val x: suspend (String) -> String = { s: String -> throw RuntimeException("error for $s") }; x
+                        }
+
+                        it("returns the response to the caller") {
+                            dispatcher.runCurrent()
+                            expect(result).containsExactly("error: error for the command")
+                        }
+                    }
+                }
+                sharedCommandSpecs()
+
+                context("when the command client is a PubSub.Server") {
+                    override(serverCommandChannel) {
+                        client1.listenOnCommandChannel(commandPort) { command: String -> serverCommandHandler(command) }
+                    }
+                    override(clientCommandChannel) { serverConnections.first().commandSender(commandPort) }
+
+                    sharedCommandSpecs()
                 }
             }
         }
