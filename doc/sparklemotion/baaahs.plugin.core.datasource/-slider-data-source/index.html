@@ -8,7 +8,7 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.plugin.core.datasource</a>&nbsp;/&nbsp;<a href="./index.html">SliderDataSource</a><br/>
 <br/>
 <h1>SliderDataSource</h1>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">SliderDataSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-gadget-data-source/index.html"><span class="identifier">GadgetDataSource</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gadgets/-slider/index.html"><span class="identifier">Slider</span></a><span class="symbol">&gt;</span></code>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">SliderDataSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code>
 <h3>Types</h3>
 <table>
 <tbody>
@@ -29,7 +29,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">SliderDataSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/gadgetTitle">gadgetTitle</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/minValue">minValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/maxValue">maxValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/stepValue">stepValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
+<code><span class="identifier">SliderDataSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/sliderTitle">sliderTitle</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/minValue">minValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/maxValue">maxValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$<init>(kotlin.String, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float)/stepValue">stepValue</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -42,13 +42,6 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">contentType</span><span class="symbol">: </span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="gadget-title.html">gadgetTitle</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">gadgetTitle</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -80,6 +73,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="slider-title.html">sliderTitle</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">sliderTitle</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="step-value.html">stepValue</a></h4>
 </td>
 <td>
@@ -100,6 +100,20 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="build-control.html">buildControl</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">buildControl</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show.mutable/-mutable-control/index.html"><span class="identifier">MutableControl</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="create-feed.html">createFeed</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createFeed</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$createFeed(baaahs.ShowPlayer, kotlin.String)/showPlayer">showPlayer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-player/index.html"><span class="identifier">ShowPlayer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$createFeed(baaahs.ShowPlayer, kotlin.String)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.data/-feed/index.html"><span class="identifier">Feed</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="create-gadget.html">createGadget</a></h4>
 </td>
 <td>
@@ -111,13 +125,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">getType</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.glsl/-glsl-type/index.html"><span class="identifier">GlslType</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="set.html">set</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$set(baaahs.gadgets.Slider, baaahs.glsl.Uniform)/gadget">gadget</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gadgets/-slider/index.html"><span class="identifier">Slider</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.SliderDataSource$set(baaahs.gadgets.Slider, baaahs.glsl.Uniform)/uniform">uniform</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-uniform/index.html"><span class="identifier">Uniform</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>

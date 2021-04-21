@@ -8,7 +8,7 @@
 <a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.plugin.core.datasource</a>&nbsp;/&nbsp;<a href="./index.html">RadioButtonStripDataSource</a><br/>
 <br/>
 <h1>RadioButtonStripDataSource</h1>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">RadioButtonStripDataSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-gadget-data-source/index.html"><span class="identifier">GadgetDataSource</span></a><span class="symbol">&lt;</span><a href="../../baaahs.gadgets/-radio-button-strip/index.html"><span class="identifier">RadioButtonStrip</span></a><span class="symbol">&gt;</span></code>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">RadioButtonStripDataSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a></code>
 <h3>Types</h3>
 <table>
 <tbody>
@@ -29,7 +29,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">RadioButtonStripDataSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.core.datasource.RadioButtonStripDataSource$<init>(kotlin.String, kotlin.collections.List((kotlin.String)), kotlin.Int)/gadgetTitle">gadgetTitle</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.RadioButtonStripDataSource$<init>(kotlin.String, kotlin.collections.List((kotlin.String)), kotlin.Int)/options">options</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.RadioButtonStripDataSource$<init>(kotlin.String, kotlin.collections.List((kotlin.String)), kotlin.Int)/initialSelectionIndex">initialSelectionIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">RadioButtonStripDataSource</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.core.datasource.RadioButtonStripDataSource$<init>(kotlin.String, kotlin.collections.List((kotlin.String)), kotlin.Int)/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.RadioButtonStripDataSource$<init>(kotlin.String, kotlin.collections.List((kotlin.String)), kotlin.Int)/options">options</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.RadioButtonStripDataSource$<init>(kotlin.String, kotlin.collections.List((kotlin.String)), kotlin.Int)/initialSelectionIndex">initialSelectionIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -42,13 +42,6 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">contentType</span><span class="symbol">: </span><a href="../../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="gadget-title.html">gadgetTitle</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">gadgetTitle</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -86,6 +79,13 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="create-feed.html">createFeed</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createFeed</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.core.datasource.RadioButtonStripDataSource$createFeed(baaahs.ShowPlayer, kotlin.String)/showPlayer">showPlayer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-player/index.html"><span class="identifier">ShowPlayer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.RadioButtonStripDataSource$createFeed(baaahs.ShowPlayer, kotlin.String)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.data/-feed/index.html"><span class="identifier">Feed</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="create-gadget.html">createGadget</a></h4>
 </td>
 <td>
@@ -97,13 +97,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">getType</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.gl.glsl/-glsl-type/index.html"><span class="identifier">GlslType</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="set.html">set</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="baaahs.plugin.core.datasource.RadioButtonStripDataSource$set(baaahs.gadgets.RadioButtonStrip, baaahs.glsl.Uniform)/gadget">gadget</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gadgets/-radio-button-strip/index.html"><span class="identifier">RadioButtonStrip</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.plugin.core.datasource.RadioButtonStripDataSource$set(baaahs.gadgets.RadioButtonStrip, baaahs.glsl.Uniform)/uniform">uniform</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-uniform/index.html"><span class="identifier">Uniform</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>

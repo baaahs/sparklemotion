@@ -14,13 +14,6 @@
 <tbody>
 <tr>
 <td>
-<h4><a href="gadget.html">gadget</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">gadget</span><span class="symbol">: </span><a href="../../baaahs/-gadget/index.html"><span class="identifier">Gadget</span></a><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="id.html">id</a></h4>
 </td>
 <td>
@@ -50,7 +43,7 @@
 <h4><a href="apply-state.html">applyState</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">applyState</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.OpenControl$applyState(kotlin.collections.Map((kotlin.String, kotlinx.serialization.json.JsonElement)))/state">state</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">?</span></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">applyState</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.OpenControl$applyState(kotlin.collections.Map((kotlin.String, kotlinx.serialization.json.JsonElement)))/state">state</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -71,7 +64,7 @@
 <h4><a href="get-state.html">getState</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">?</span></code></td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">?</span></code></td>
 </tr>
 <tr>
 <td>
@@ -122,10 +115,17 @@
 </tr>
 <tr>
 <td>
-<h4><a href="../../baaahs.control/-open-gadget-control/index.html">OpenGadgetControl</a></h4>
+<h4><a href="../../baaahs.control/-open-color-picker-control/index.html">OpenColorPickerControl</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">OpenGadgetControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">OpenControl</span></a></code></td>
+<code><span class="keyword">class </span><span class="identifier">OpenColorPickerControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">OpenControl</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../../baaahs.control/-open-slider-control/index.html">OpenSliderControl</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">OpenSliderControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">OpenControl</span></a></code></td>
 </tr>
 <tr>
 <td>
