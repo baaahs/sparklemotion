@@ -1,6 +1,6 @@
 package baaahs.gl.preview
 
-import baaahs.gadgets.Slider
+import baaahs.control.OpenSliderControl
 import baaahs.util.Clock
 
 class GadgetAdjuster(val gadgets: List<ShaderBuilder.GadgetPreview>, val clock: Clock) {
@@ -22,8 +22,10 @@ class GadgetAdjuster(val gadgets: List<ShaderBuilder.GadgetPreview>, val clock: 
                 if (isHigh) 1f else 0f
             }
 
-            val gadget = gadgetData.gadget
-            if (gadget is Slider) {
+            val control = gadgetData.openControl
+            if (control is OpenSliderControl) {
+                val gadget = control.slider
+
                 val range = gadget.maxValue - gadget.minValue
                 val scaled = range * myDegree + gadget.minValue
                 gadget.position = scaled

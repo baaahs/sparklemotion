@@ -1,8 +1,6 @@
 package baaahs.app.ui.gadgets.slider
 
-import baaahs.Gadget
 import baaahs.app.ui.appContext
-import baaahs.gadgets.Slider
 import baaahs.ui.name
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -28,50 +26,24 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.gadgetsSlider
 
-    var sliderValue by state { props.gadget.position }
-    val altSliderValue = props.altGadget?.position
-
-    val handleChangeFromServer = handler("change from server") { gadget: Gadget ->
-        gadget as Slider
-        sliderValue = gadget.position
-    }
-
-    onMount {
-        props.gadget.listen(handleChangeFromServer)
-        withCleanup {
-            try {
-                props.gadget.unlisten(handleChangeFromServer)
-            } catch (e: Exception) {
-                // TODO: Why is this happening? It causes the UI to disappear. :-(
-                logger.warn(e) { "Failed to unlisten on ${props.gadget}" }
-            }
-        }
-    }
-
-    val handleChange = handler("gadget change", props.gadget) { value: Array<Number> ->
+    val handleChange = handler("gadget change", props.onChange) { value: Array<Number> ->
         val newValue = value[0].toFloat()
-        if (props.gadget.position != newValue) {
-            props.gadget.withoutTriggering(handleChangeFromServer) {
-                props.gadget.position = newValue
-            }
-        }
+        props.onChange(newValue)
     }
 
     val handleUpdate = throttle({ value: Array<Number> ->
         handleChange(value)
     }, wait = 10)
 
-    val domain = memo(props.gadget) {
-        arrayOf(props.gadget.minValue, props.gadget.maxValue)
+    val domain = memo(props.minValue, props.maxValue) {
+        arrayOf(props.minValue, props.maxValue)
     }
-    val stepValue = memo(props.gadget) {
-        props.gadget.stepValue ?: 0.01f
-    }
+    val stepValue = memo { props.stepValue ?: 0.01f }
 
     div(+styles.wrapper) {
         label(+styles.label) {
             setProp("for", "range-slider")
-            props.gadget.title
+            props.title
         }
 
         Slider {
@@ -85,7 +57,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             attrs.onSlideEnd = enableScroll.asDynamic()
             attrs.onUpdate = handleUpdate
             attrs.onChange = handleChange
-            attrs.values = if (altSliderValue != null) arrayOf(sliderValue, altSliderValue) else arrayOf(sliderValue)
+            attrs.values = listOfNotNull(props.position, props.contextPosition).toTypedArray()
 
             Rail {
                 attrs.children = { railObject ->
@@ -161,14 +133,20 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 }
 
 external interface SliderProps : RProps {
-    var gadget: Slider
+    var title: String
 
-    /** If non-null, this gadget's value is displayed as uneditable context. */
-    var altGadget: Slider?
+    var position: Float
+    /** If non-null, this position is displayed as uneditable context. */
+    var contextPosition: Float?
+
+    var minValue: Float
+    var maxValue: Float
+    var stepValue: Float?
 
     var reversed: Boolean?
     var showTicks: Boolean?
 
+    var onChange: (Float) -> Unit
 }
 
 fun RBuilder.slider(handler: RHandler<SliderProps>) =

@@ -1,7 +1,6 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.controls.controlWrapper
-import baaahs.control.OpenGadgetControl
 import baaahs.show.live.ControlProps
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.addObserver
@@ -16,31 +15,30 @@ import react.dom.div
 import styled.StyleSheet
 
 val GadgetsPreview = xComponent<GadgetsPreviewProps>("GadgetsPreview") { props ->
-    var gadgets by state {
+    var mutableControls by state {
         props.editingShader.gadgets.toTypedArray()
     }
 
     onMount(props.editingShader) {
         val observer = props.editingShader.addObserver {
             if (it.state == EditingShader.State.Success) {
-                gadgets = props.editingShader.gadgets.toTypedArray()
+                mutableControls = props.editingShader.gadgets.toTypedArray()
             }
         }
         withCleanup { observer.remove() }
     }
 
     div(+GadgetsPreviewStyles.gadgetsPreview) {
-        gadgets.forEach { gadgetPreview ->
-            controlWrapper {
-                key = gadgetPreview.id
+        val previewControlProps = ControlProps({  }, false, null)
 
-                attrs.control = OpenGadgetControl(
-                    gadgetPreview.id,
-                    gadgetPreview.gadget,
-                    gadgetPreview.controlledDataSource
-                        ?: error("no datasource?")
-                )
-                attrs.controlProps = ControlProps({}, false, null)
+        mutableControls.forEach { gadgetPreview ->
+            val openControl = gadgetPreview.openControl
+
+            controlWrapper {
+                key = openControl.id
+
+                attrs.control = openControl
+                attrs.controlProps = previewControlProps
                 attrs.disableEdit = true
             }
         }
