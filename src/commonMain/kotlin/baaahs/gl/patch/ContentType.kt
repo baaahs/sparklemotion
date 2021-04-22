@@ -14,6 +14,7 @@ class ContentType(
     private val typeAdaptations: Map<GlslType, (GlslExpr) -> GlslExpr> = emptyMap(),
     /** If [glslType] is a [GlslType.Struct], we currently need to provide a hint for converting it to a vector. */
     val outputRepresentation: GlslType = glslType,
+    val description: String? = null,
     private val defaultInitializer: ((GlslType) -> GlslExpr)? = null
 ) {
     fun initializer(dataType: GlslType): GlslExpr =
@@ -88,7 +89,8 @@ class ContentType(
 
         val UvCoordinate = ContentType(
             "uv-coordinate", "U/V Coordinate", GlslType.Vec2,
-            typeAdaptations = mapOf(GlslType.Vec4 to { GlslExpr("${it.s}.xy") })
+            typeAdaptations = mapOf(GlslType.Vec4 to { GlslExpr("${it.s}.xy") }),
+            description = "U/V coordinate of the pixel being rendered, with [0, 0] being bottom-left and [1, 1] being top-right."
         )
         val XyCoordinate = ContentType("xy-coordinate", "X/Y Coordinate", GlslType.Vec2)
         val ModelInfo = ContentType("model-info", "Model Info", MoreTypes.ModelInfo.glslType)
@@ -98,6 +100,8 @@ class ContentType(
             if (type == GlslType.Vec4) GlslExpr("vec4(0., 0., 0., 1.)") else type.defaultInitializer
         }
         val Time = ContentType("time", "Time", GlslType.Float)
+
+        val Boolean = ContentType("boolean", "Boolean", GlslType.Bool)
         val Float = ContentType("float", "Float", GlslType.Float)
         val Int = ContentType("int", "Integer", GlslType.Int)
         val Media = ContentType("media", "Media", GlslType.Sampler2D)
@@ -116,6 +120,8 @@ class ContentType(
             XyzCoordinate,
             Color,
             Time,
+
+            Boolean,
             Float,
             Int,
             Media,
