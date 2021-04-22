@@ -101,6 +101,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             ModelInfoDataSource,
             XyPadDataSource,
             ColorPickerDataSource,
+            DateDataSource,
             TimeDataSource,
             ResolutionDataSource,
             PreviewResolutionDataSource,
