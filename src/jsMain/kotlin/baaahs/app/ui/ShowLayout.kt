@@ -94,7 +94,11 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                             this.direction = Direction.horizontal.name
                             this.isDropDisabled = !props.editMode
                         }) { droppableProvided, _ ->
-                            val style = Styles.controlSections[panelBucket.section.depth]
+                            val style = if (Styles.controlSections.size > panelBucket.section.depth)
+                                Styles.controlSections[panelBucket.section.depth]
+                            else
+                                Styles.controlSections.last()
+
                             div(+Styles.layoutControls and style) {
                                 install(droppableProvided)
 
