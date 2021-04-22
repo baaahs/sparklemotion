@@ -43,24 +43,25 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
 
         val editingShader = props.editingShader
 
+        fun setAnnotations() {
+            val lineCount = editor.getSession().getLength().toInt()
+            val annotations = editingShader.shaderBuilder.glslErrors.map { error ->
+                jsObject<Annotation> {
+                    row = (error.row).boundedBy(1 until lineCount) - 1
+                    column = 0
+                    text = error.message
+                    type = "error"
+                }
+            }.toTypedArray()
+            editor.getSession().setAnnotations(annotations)
+        }
+        setAnnotations()
+
         val compilationObserver = editingShader.addObserver {
-            fun setAnnotations(list: List<Annotation>) {
-                editor.getSession().setAnnotations(list.toTypedArray())
-            }
             when (editingShader.state) {
                 EditingShader.State.Building,
                 EditingShader.State.Success,
-                EditingShader.State.Errors -> {
-                    val lineCount = editor.getSession().getLength().toInt()
-                    setAnnotations(editingShader.shaderBuilder.glslErrors.map { error ->
-                        jsObject {
-                            row = (error.row).boundedBy(1 until lineCount) - 1
-                            column = 0
-                            text = error.message
-                            type = "error"
-                        }
-                    })
-                }
+                EditingShader.State.Errors -> setAnnotations()
             }
         }
         withCleanup { compilationObserver.remove() }
