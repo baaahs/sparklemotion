@@ -38,7 +38,6 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
     val domain = memo(props.minValue, props.maxValue) {
         arrayOf(props.minValue, props.maxValue)
     }
-    val stepValue = memo { props.stepValue ?: 0.01f }
 
     div(+styles.wrapper) {
         label(+styles.label) {
@@ -51,7 +50,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             attrs.vertical = true
             attrs.reversed = props.reversed
             attrs.mode = 1
-            attrs.step = stepValue
+            attrs.step = props.stepValue ?: (props.maxValue - props.minValue) / 256
             attrs.domain = domain.asDynamic()
             attrs.onSlideStart = disableScroll.asDynamic()
             attrs.onSlideEnd = enableScroll.asDynamic()
