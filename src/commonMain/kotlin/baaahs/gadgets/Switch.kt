@@ -14,12 +14,10 @@ data class Switch(
     /** The label for this switch. */
     override val title: String,
 
-    /** The initial value for this color picker. */
+    /** The initial value for this switch. */
     val initiallyEnabled: Boolean = false
 ) : Gadget() {
 
-    /** The selected color. */
-    @JsName("color")
     var enabled: Boolean by updatable("enabled", initiallyEnabled, Boolean.serializer())
 
     override fun adjustALittleBit() {

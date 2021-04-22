@@ -102,6 +102,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             TimeDataSource,
             ResolutionDataSource,
             PreviewResolutionDataSource,
+            SwitchDataSource,
             SliderDataSource,
             FixtureInfoDataSource,
             RasterCoordinateDataSource
