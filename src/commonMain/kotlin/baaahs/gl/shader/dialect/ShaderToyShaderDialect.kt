@@ -7,8 +7,12 @@ import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
+import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
+import baaahs.plugin.core.CorePlugin
 import baaahs.show.Shader
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
 
 object ShaderToyShaderDialect : HintedShaderDialect("baaahs.Core:ShaderToy") {
 
@@ -46,9 +50,12 @@ object ShaderToyShaderDialect : HintedShaderDialect("baaahs.Core:ShaderToy") {
 */
         InputPort("iMouse", ContentType.Mouse, GlslType.Vec4, "Mouse"),
 
-//          vec4 iDate: year-1, month-1, day, seconds(+fracs) since midnight.
+//          vec4 iDate: year, month-1, day, seconds(+fracs) since midnight.
+        InputPort("iDate", ContentType.Date, GlslType.Vec4, "Date",
+            pluginRef = PluginRef(CorePlugin.id, "Date"),
+            pluginConfig = buildJsonObject { put("zeroBasedMonth", JsonPrimitive(true)) }
+        ),
 /*
-        InputPort("iDate", GlslType.Vec4, "Date"),
         InputPort("iSampleRate", GlslType.Float, "Sample Rate"),
         InputPort("iChannelResolution", GlslType.from("vec3[4]"), "Channel Resolution"),
 */

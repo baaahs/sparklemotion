@@ -1,10 +1,17 @@
 package baaahs.shows
 
+import baaahs.geom.Vector2F
+import baaahs.geom.Vector3F
+import baaahs.geom.Vector4F
 import baaahs.getBang
 import baaahs.gl.GlContext
+import baaahs.gl.glsl.CompiledShader
+import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.render.RenderTarget
+import baaahs.glsl.Uniform
 import com.danielgergely.kgl.*
 
-class FakeGlContext(private val kgl: FakeKgl = FakeKgl()) : GlContext(kgl, "1234") {
+class FakeGlContext(internal val kgl: FakeKgl = FakeKgl()) : GlContext(kgl, "1234") {
     val programs get() = kgl.programs.let { it.subList(1, it.size) }
     val textures get() = kgl.textures.let { it.subList(1, it.size) }
     val allocatedTextureUnits get() = textureUnits
@@ -435,5 +442,58 @@ class FakeKgl : Kgl {
                 is FloatBuffer -> this.contents()
                 else -> error("unknown type")
             }
+    }
+}
+
+class FakeUniform : Uniform {
+    var value: Any? = null
+
+    override fun set(x: Int) { value = x }
+    override fun set(x: Int, y: Int) { value = listOf(x, y) }
+    override fun set(x: Int, y: Int, z: Int) { value = listOf(x, y, z) }
+    override fun set(x: Float) { value = x }
+    override fun set(x: Float, y: Float) { value = Vector2F(x, y) }
+    override fun set(x: Float, y: Float, z: Float) { value = Vector3F(x, y, z) }
+    override fun set(x: Float, y: Float, z: Float, w: Float) { value = Vector4F(x, y, z, w) }
+    override fun set(vector3F: Vector3F) { value = vector3F }
+    override fun set(textureUnit: GlContext.TextureUnit) { value = textureUnit }
+}
+
+open class StubGlslProgram : GlslProgram {
+    override val title: String
+        get() = TODO("not implemented")
+
+    override val fragShader: CompiledShader
+        get() = TODO("not implemented")
+
+    override val vertexAttribLocation: Int
+        get() = TODO("not implemented")
+
+    override fun setResolution(x: Float, y: Float) {
+        TODO("not implemented")
+    }
+
+    override fun aboutToRenderFrame() {
+        TODO("not implemented")
+    }
+
+    override fun aboutToRenderFixture(renderTarget: RenderTarget) {
+        TODO("not implemented")
+    }
+
+    override fun getUniform(name: String): Uniform? {
+        TODO("not implemented")
+    }
+
+    override fun <T> withProgram(fn: Kgl.() -> T): T {
+        TODO("not implemented")
+    }
+
+    override fun use() {
+        TODO("not implemented")
+    }
+
+    override fun release() {
+        TODO("not implemented")
     }
 }

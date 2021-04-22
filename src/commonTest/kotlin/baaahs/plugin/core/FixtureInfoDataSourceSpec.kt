@@ -4,6 +4,7 @@ import baaahs.TestMovingHead
 import baaahs.TestRenderContext
 import baaahs.describe
 import baaahs.geom.Vector3F
+import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.show.live.link
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
@@ -31,7 +32,7 @@ object FixtureInfoDataSourceSpec : Spek({
         val testRenderContext by value { TestRenderContext(movingHead) }
         val program by value { testRenderContext.createProgram(shaderText, mapOf(
             "fixtureInfo" to FixtureInfoDataSource().link("fixtureInfo")
-        )) }
+        )) as GlslProgramImpl }
 
         beforeEachTest {
             testRenderContext.addFixtures()
