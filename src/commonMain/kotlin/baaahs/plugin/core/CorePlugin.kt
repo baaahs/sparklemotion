@@ -9,6 +9,7 @@ import baaahs.fixtures.PixelArrayDevice
 import baaahs.gl.data.Feed
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.GenericShaderDialect
+import baaahs.gl.shader.dialect.IsfShaderDialect
 import baaahs.gl.shader.dialect.ShaderToyShaderDialect
 import baaahs.gl.shader.type.*
 import baaahs.plugin.*
@@ -72,7 +73,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
     override val shaderDialects
         get() = listOf(
             GenericShaderDialect,
-            ShaderToyShaderDialect
+            ShaderToyShaderDialect,
+            IsfShaderDialect
         )
 
     override val shaderTypes: List<ShaderType>

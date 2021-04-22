@@ -1,9 +1,6 @@
 package baaahs.gl.shader.dialect
 
-import baaahs.gl.glsl.GlslCode
-import baaahs.gl.glsl.GlslError
-import baaahs.gl.glsl.GlslType
-import baaahs.gl.glsl.ShaderAnalysis
+import baaahs.gl.glsl.*
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.plugin.Plugins
@@ -28,92 +25,106 @@ abstract class BaseShaderDialect(id: String) : ShaderDialect(id) {
 
     private val wellKnownInputPortsById by lazy { wellKnownInputPorts.associateBy { it.id } }
 
-    override fun analyze(glslCode: GlslCode, plugins: Plugins, shader: Shader?): ShaderAnalysis {
+    abstract fun findDeclaredInputPorts(
+        glslCode: GlslCode,
+        plugins: Plugins
+    ): List<InputPort>
+
+    open fun findInputPorts(glslCode: GlslCode, plugins: Plugins): List<InputPort> {
         val proFormaInputPorts: List<InputPort> =
             implicitInputPorts.mapNotNull { glslCode.ifRefersTo(it)?.copy(isImplicit = true) }
 
-        val entryPoint = findEntryPointOrNull(glslCode)
+        val declaredInputPorts = findDeclaredInputPorts(glslCode, plugins)
 
-        val entryPointParams =
-            entryPoint?.params?.filter { it.isIn } ?: emptyList()
-
-        val inputPorts = adjustInputPorts(
+        return adjustInputPorts(
             proFormaInputPorts +
-                    (glslCode.globalInputVars + entryPointParams).map {
-                        it.resolveInputPort(entryPoint, plugins)
-                    } +
-                    glslCode.functions.filter { it.isAbstract }.map {
-                        toInputPort(it, plugins)
-                    } +
-                    findMagicInputPorts(glslCode)
+                    declaredInputPorts +
+                    findWellKnownInputPorts(glslCode, declaredInputPorts.map { it.id }.toSet())
         )
+    }
+
+    open fun findOutputPorts(glslCode: GlslCode, plugins: Plugins): List<OutputPort> {
+        val entryPoint = findEntryPointOrNull(glslCode)
 
         val entryPointReturn: OutputPort? =
             findEntryPointOutputPort(entryPoint, plugins)
 
-        val outputPorts = adjustOutputPorts(
+        return adjustOutputPorts(
             listOfNotNull(entryPointReturn) +
                     (entryPoint?.getParamOutputPorts(plugins) ?: emptyList()) +
                     additionalOutputPorts(glslCode, plugins)
         )
+    }
 
-        return object : ShaderAnalysis {
-            override val glslCode = glslCode
-            override val shaderDialect = this@BaseShaderDialect
-            override val entryPoint = entryPoint
-            override val inputPorts = inputPorts
-            override val outputPorts = outputPorts
-
-            override val isValid: Boolean =
-                entryPoint != null &&
-                        outputPorts.size == 1
-
-            override val errors: List<GlslError> = arrayListOf<GlslError>().apply {
-                operator fun GlslError.unaryPlus() = this@apply.add(this)
-
-                if (entryPoint == null)
-                    +GlslError("No entry point \"$entryPointName\" among ${glslCode.functionNames.sorted()}")
-
-                if (outputPorts.isEmpty())
-                    +GlslError("No output port found.")
-
-                if (outputPorts.size > 1)
-                    +GlslError("Too many output ports found: " +
-                            "${outputPorts.map { it.argSiteName }.sorted()}.", entryPoint?.lineNumber
-                    )
-
-                inputPorts.forEach { inputPort ->
-                    if (inputPort.contentType.isUnknown())
-                        +GlslError(
-                            "Input port \"${inputPort.id}\" " +
-                                    "content type is \"${inputPort.contentType.id}\"", inputPort.glslArgSite?.lineNumber
-                        )
-                }
-
-                outputPorts.forEach { outputPort ->
-                    if (outputPort.contentType.isUnknown())
-                        +GlslError(
-                            "Output port \"${outputPort.argSiteName}\" " +
-                                    "content type is \"${outputPort.contentType.id}\"",
-                            outputPort.lineNumber ?: entryPoint?.lineNumber
-                        )
-                }
-            }
-
-            override val shader: Shader = shader
-                ?: Shader(
-                    findTitle(glslCode) ?: "Untitled Shader",
-                    glslCode.src
-                )
-
+    override fun analyze(glslCode: GlslCode, plugins: Plugins, shader: Shader?): ShaderAnalysis {
+        try {
+            val inputPorts = findInputPorts(glslCode, plugins)
+            val outputPorts = findOutputPorts(glslCode, plugins)
+            val entryPoint = findEntryPointOrNull(glslCode)
+            return Analysis(glslCode, entryPoint, inputPorts, outputPorts, shader)
+        } catch (e: GlslException) {
+            return ErrorsShaderAnalysis(glslCode.src, e, shader ?: createShader(glslCode))
         }
     }
+
+    inner class Analysis(
+        override val glslCode: GlslCode,
+        override val entryPoint: GlslCode.GlslFunction?,
+        override val inputPorts: List<InputPort>,
+        override val outputPorts: List<OutputPort>,
+        shader: Shader?
+    ) : ShaderAnalysis {
+        override val shaderDialect = this@BaseShaderDialect
+
+        override val isValid: Boolean =
+            entryPoint != null &&
+                    outputPorts.size == 1
+
+        override val errors: List<GlslError> = arrayListOf<GlslError>().apply {
+            operator fun GlslError.unaryPlus() = this@apply.add(this)
+
+            if (entryPoint == null)
+                +GlslError("No entry point \"$entryPointName\" among ${glslCode.functionNames.sorted()}")
+
+            if (outputPorts.isEmpty())
+                +GlslError("No output port found.")
+
+            if (outputPorts.size > 1)
+                +GlslError(
+                    "Too many output ports found: " +
+                            "${outputPorts.map { it.argSiteName }.sorted()}.", entryPoint?.lineNumber
+                )
+
+            inputPorts.forEach { inputPort ->
+                if (inputPort.contentType.isUnknown())
+                    +GlslError(
+                        "Input port \"${inputPort.id}\" " +
+                                "content type is \"${inputPort.contentType.id}\"", inputPort.glslArgSite?.lineNumber
+                    )
+            }
+
+            outputPorts.forEach { outputPort ->
+                if (outputPort.contentType.isUnknown())
+                    +GlslError(
+                        "Output port \"${outputPort.argSiteName}\" " +
+                                "content type is \"${outputPort.contentType.id}\"",
+                        outputPort.lineNumber ?: entryPoint?.lineNumber
+                    )
+            }
+        }
+
+        override val shader: Shader = shader
+            ?: createShader(glslCode)
+    }
+
+    private fun createShader(glslCode: GlslCode) =
+        Shader(findTitle(glslCode) ?: "Untitled Shader", glslCode.src)
 
     abstract fun findEntryPointOutputPort(entryPoint: GlslCode.GlslFunction?, plugins: Plugins): OutputPort?
 
     abstract fun toInputPort(it: GlslCode.GlslFunction, plugins: Plugins): InputPort
 
-    private fun GlslCode.GlslArgSite.resolveInputPort(entryPoint: GlslCode.GlslFunction?, plugins: Plugins) =
+    fun GlslCode.GlslArgSite.resolveInputPort(entryPoint: GlslCode.GlslFunction?, plugins: Plugins) =
         (wellKnownInputPortsById[name]?.copy(type = type, glslArgSite = this)
             ?: defaultInputPortsByType[type]
                 ?.copy(id = name, varName = name, glslArgSite = this)
@@ -134,5 +145,21 @@ abstract class BaseShaderDialect(id: String) : ShaderDialect(id) {
         return glslCode.findFunctionOrNull(entryPointName)
     }
 
-    open fun findMagicInputPorts(glslCode: GlslCode): List<InputPort> = emptyList()
+    /**
+     * Well-known input ports are uniforms that are automatically declared if they're used by a shader;
+     * see if we're using any of them.
+     */
+    open fun findWellKnownInputPorts(glslCode: GlslCode, declaredInputPorts: Set<String>): List<InputPort> {
+        if (wellKnownInputPorts.isEmpty()) return emptyList()
+
+        val iVars = glslCode.functions.flatMap { glslFunction ->
+            Regex("\\w+").findAll(glslFunction.fullText).map { it.value }.filter { word ->
+                wellKnownInputPortsById.containsKey(word)
+            }.toList()
+        }.toSet()
+
+        return wellKnownInputPorts.filter { inputPort ->
+            iVars.contains(inputPort.id) && !declaredInputPorts.contains(inputPort.id)
+        }
+    }
 }
