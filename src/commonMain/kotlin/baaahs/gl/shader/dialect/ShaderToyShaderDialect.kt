@@ -64,8 +64,6 @@ object ShaderToyShaderDialect : HintedShaderDialect("baaahs.Core:ShaderToy") {
         InputPort("sm_FragCoord", ContentType.UvCoordinate, GlslType.Vec2, "U/V Coordinates")
     ).associateBy { it.type }
 
-    private val iPortsById = wellKnownInputPorts.associateBy { it.id }
-
     override fun adjustInputPorts(inputPorts: List<InputPort>): List<InputPort> {
         return inputPorts.map {
             if (it.type == GlslType.Vec2 && it.contentType.isUnknown()) {
@@ -80,18 +78,6 @@ object ShaderToyShaderDialect : HintedShaderDialect("baaahs.Core:ShaderToy") {
                 it.copy(contentType = ContentType.Color, description = "Output Color")
             } else it
         }
-    }
-
-    override fun findMagicInputPorts(glslCode: GlslCode): List<InputPort> {
-        // ShaderToy shaders have a set of uniforms that are automatically declared;
-        // see if we're using any of them.
-        val iVars = glslCode.functions.flatMap { glslFunction ->
-            Regex("\\w+").findAll(glslFunction.fullText).map { it.value }.filter { word ->
-                iPortsById.containsKey(word)
-            }.toList()
-        }.toSet()
-
-        return wellKnownInputPorts.filter { inputPort -> iVars.contains(inputPort.id) }
     }
 
     override val title: String = "Paint"

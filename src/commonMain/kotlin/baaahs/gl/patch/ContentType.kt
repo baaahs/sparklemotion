@@ -100,6 +100,14 @@ class ContentType(
             if (type == GlslType.Vec4) GlslExpr("vec4(0., 0., 0., 1.)") else type.defaultInitializer
         }
         val Time = ContentType("time", "Time", GlslType.Float)
+        val TimeDelta = ContentType("time-delta", "Time Delta", GlslType.Float,
+            description = "Elapsed seconds since the last frame was rendered; 0 for the first frame.")
+        val Date = ContentType("date", "Date", GlslType.Vec4,
+            description = "The first element of the vector is the year, the second element is the month, the third element is the day, and the fourth element is the time (in seconds) within the day.")
+        val PassIndex = ContentType("pass-index", "Pass Index", GlslType.Int,
+            description = "For multipass renders, this would indicate which pass we're on. For now, always 0.")
+        val FrameIndex = ContentType("frame-index", "Frame Index", GlslType.Int,
+            description = "Starting from 0.")
 
         val Boolean = ContentType("boolean", "Boolean", GlslType.Bool)
         val Float = ContentType("float", "Float", GlslType.Float)
@@ -120,6 +128,10 @@ class ContentType(
             XyzCoordinate,
             Color,
             Time,
+            TimeDelta,
+            Date,
+            PassIndex,
+            FrameIndex,
 
             Boolean,
             Float,
