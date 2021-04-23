@@ -169,6 +169,8 @@ class PreviewShaderBuilder(
                 dataSource.createFeed(showPlayer, id)
                     .also { feeds.add(it) }
             }
+
+            mutableGadgets.sortBy { it.id }
         }
     }
 

@@ -3,6 +3,7 @@ package baaahs.app.ui
 import baaahs.app.ui.editor.EditableStyles
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
+import baaahs.gl.preview.GadgetAdjuster
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
@@ -60,7 +61,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
             attrs.shader = shader
             attrs.width = styles.cardWidth
             attrs.height = styles.cardWidth
-            attrs.adjustGadgets = true
+            attrs.adjustGadgets = GadgetAdjuster.Mode.FULL_RANGE
             attrs.toolchain = props.toolchain
         }
 

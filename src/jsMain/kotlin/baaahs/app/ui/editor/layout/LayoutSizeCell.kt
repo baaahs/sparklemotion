@@ -73,7 +73,7 @@ val LayoutSizeCell = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props -
             }
         }
 
-        gridSizeMenuAnchor?.let { gridSizeMenu ->
+        gridSizeMenuAnchor?.let {
             menu {
                 attrs.anchorEl(gridSizeMenuAnchor)
                 attrs.anchorOrigin {

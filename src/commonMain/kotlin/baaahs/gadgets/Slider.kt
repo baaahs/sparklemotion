@@ -30,8 +30,9 @@ data class Slider(
     var position: Float by updatable("position", initialValue, Float.serializer())
 
     override fun adjustALittleBit() {
+        val factor = .125f
         val spread = maxValue - minValue
-        val amount = Random.nextFloat() * spread * .25f - spread * .125f
+        val amount = (Random.nextFloat() - .5f) * spread * factor
         position = constrain(position + amount, minValue, maxValue)
     }
 }
