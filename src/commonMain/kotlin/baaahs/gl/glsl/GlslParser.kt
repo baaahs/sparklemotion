@@ -182,7 +182,7 @@ class GlslParser {
                 return if (braceNestLevel == 0) {
                     Comment(context, recipientOfNextComment ?: this, this)
                 } else {
-                    super.visitComment()
+                    Comment(context, null, this)
                 }
             }
 
@@ -264,9 +264,9 @@ class GlslParser {
             fun asVarOrNull(): GlslCode.GlslVar? {
                 val text = textAsString
 
-                return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(\\s*=.*)?;", RegexOption.MULTILINE)
+                return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(\\s*\\[\\s*\\d+\\s*])?(\\s*=.*)?;", RegexOption.MULTILINE)
                     .find(text.trim())?.let {
-                        val (qualifier, type, name, constValue) = it.destructured
+                        val (qualifier, type, name, arraySpec, constValue) = it.destructured
                         var (isConst, isUniform, isVarying) = arrayOf(false, false, false)
                         when (qualifier) {
                             "const" -> isConst = true
@@ -473,7 +473,7 @@ class GlslParser {
 
         private class Comment(
             context: Context,
-            val recipientOfComment: ParseState,
+            val recipientOfComment: ParseState?,
             val nextParseState: ParseState
         ) : ParseState(context) {
             val commentText = StringBuilder()
@@ -484,14 +484,23 @@ class GlslParser {
             }
 
             override fun visitNewline(): ParseState {
-                recipientOfComment.addComment(commentText.toString())
+                appendComment()
                 nextParseState.visitNewline()
                 return nextParseState
             }
 
             override fun visitEof(): ParseState {
-                recipientOfComment.addComment(commentText.toString())
+                appendComment()
                 return super.visitEof()
+            }
+
+            private fun appendComment() {
+                if (recipientOfComment == null) {
+                    nextParseState.visitText("//")
+                    nextParseState.visitText(commentText.toString())
+                }
+
+                recipientOfComment?.addComment(commentText.toString())
             }
         }
 

@@ -28,6 +28,11 @@ object GlslCodeSpec : Spek({
                 expectValue(GlslCode.GlslVar("i", GlslType.Int, "int i;")) { variable }
             }
 
+            context("arrays") {
+                override(text) { "vec4 colorsArray[9];" }
+                expectValue(GlslCode.GlslVar("colorsArray", GlslType.Vec4, "vec4 colorsArray[9];")) { variable }
+            }
+
             context("const") {
                 override(text) { "const int i = 3;" }
                 expectValue(GlslCode.GlslVar("i", GlslType.Int, "const int i = 3;", isConst = true)) { variable }

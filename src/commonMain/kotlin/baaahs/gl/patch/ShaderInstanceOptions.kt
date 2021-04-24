@@ -104,18 +104,19 @@ class ShaderInstanceOptions(
 
             contentTypes.forEach { contentType ->
                 val defaultPort = defaultPorts[contentType]
+                val isExactContentType = contentType == exactContentType || exactContentType.isUnknown()
                 options.add(
                     if (defaultPort != null) {
                         PortLinkOption(
                             defaultPort,
-                            isExactContentType = contentType == exactContentType,
+                            isExactContentType = isExactContentType,
                             isLocalShaderOut = true,
                             isDefaultBinding = true
                         )
                     } else {
                         PortLinkOption(
                             MutableShaderChannel(shaderChannel.id),
-                            isExactContentType = contentType == exactContentType,
+                            isExactContentType = isExactContentType,
                             isDefaultBinding = true,
                         )
                     }
@@ -127,7 +128,7 @@ class ShaderInstanceOptions(
                             // TODO: this is dumb and broken.
                             mutableShaderChannel,
                             isShaderChannel = true,
-                            isExactContentType = contentType == exactContentType
+                            isExactContentType = isExactContentType
                         )
                     )
                 }
@@ -138,7 +139,7 @@ class ShaderInstanceOptions(
                             shaderChannel.toMutable(),
                             createsFilter = true,
                             isShaderChannel = true,
-                            isExactContentType = contentType == exactContentType
+                            isExactContentType = isExactContentType
                         )
                     )
                 }

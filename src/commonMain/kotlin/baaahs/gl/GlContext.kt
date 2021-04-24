@@ -73,7 +73,7 @@ abstract class GlContext(
 
     fun useProgram(glslProgram: GlslProgram) {
         if (activeProgram !== glslProgram) {
-            check { useProgram(glslProgram.id) }
+            glslProgram.use()
             activeProgram = glslProgram
         }
     }

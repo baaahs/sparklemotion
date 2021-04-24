@@ -30,6 +30,7 @@ interface DataSourceBuilder<T : DataSource> {
                     wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
                     isPluginSuggestion = true,
                     isExactContentType = dataSource.contentType == inputPort.contentType
+                            || inputPort.contentType.isUnknown()
                 )
             }
         } else emptyList()

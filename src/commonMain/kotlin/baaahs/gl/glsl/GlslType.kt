@@ -81,6 +81,7 @@ sealed class GlslType constructor(
         }
     }
 
+    object Bool : GlslType("bool", GlslExpr("false"))
     object Float : GlslType("float", GlslExpr("0."))
     object Vec2 : GlslType("vec2")
     object Vec3 : GlslType("vec3")

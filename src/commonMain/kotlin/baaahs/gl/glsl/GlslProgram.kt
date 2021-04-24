@@ -6,24 +6,43 @@ import baaahs.gl.data.Feed
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
+import baaahs.glsl.UniformImpl
 import baaahs.show.DataSource
 import baaahs.show.UpdateMode
 import baaahs.util.Logger
 import com.danielgergely.kgl.Kgl
 
-class GlslProgram(
+interface GlslProgram {
+    val title: String
+    val fragShader: CompiledShader
+    val vertexAttribLocation: Int
+
+    fun setResolution(x: Float, y: Float)
+    fun aboutToRenderFrame()
+    fun aboutToRenderFixture(renderTarget: RenderTarget)
+    fun getUniform(name: String): Uniform?
+    fun <T> withProgram(fn: Kgl.() -> T): T
+    fun use()
+    fun release()
+
+    interface ResolutionListener {
+        fun onResolution(x: Float, y: Float)
+    }
+}
+
+class GlslProgramImpl(
     private val gl: GlContext,
     private val linkedPatch: LinkedPatch,
     engineFeedResolver: EngineFeedResolver
-) {
-    val title: String get() = linkedPatch.rootNode.title
+): GlslProgram {
+    override val title: String get() = linkedPatch.rootNode.title
 
     private val vertexShader =
         gl.createVertexShader(
-            "#version ${gl.glslVersion}\n${GlslProgram.vertexShader}"
+            "#version ${gl.glslVersion}\n${GlslProgramImpl.vertexShader}"
         )
 
-    internal val fragShader =
+    override val fragShader =
         gl.createFragmentShader(linkedPatch.toFullGlsl(gl.glslVersion))
 
     val id = gl.compile(vertexShader, fragShader)
@@ -70,27 +89,27 @@ class GlslProgram(
         else null
     }
 
-    val vertexAttribLocation: Int = gl.runInContext {
+    override val vertexAttribLocation: Int = gl.runInContext {
         gl.check { getAttribLocation(id, "Vertex") }
     }
 
     private inline fun <reified T> feedsOf(): List<T> = feeds.filterIsInstance<T>()
 
-    fun setResolution(x: Float, y: Float) {
-        feedsOf<ResolutionListener>().forEach { it.onResolution(x, y) }
+    override fun setResolution(x: Float, y: Float) {
+        feedsOf<GlslProgram.ResolutionListener>().forEach { it.onResolution(x, y) }
     }
 
-    fun aboutToRenderFrame() {
+    override fun aboutToRenderFrame() {
         perFrameFeeds.forEach { it.setOnProgram() }
     }
 
-    fun aboutToRenderFixture(renderTarget: RenderTarget) {
+    override fun aboutToRenderFixture(renderTarget: RenderTarget) {
         perFixtureFeeds.forEach {
             it.setOnProgram(renderTarget)
         }
     }
 
-    fun release() {
+    override fun release() {
         feeds.forEach { it.release() }
 
         gl.runInContext {
@@ -104,22 +123,22 @@ class GlslProgram(
 //        TODO gl.runInContext { gl.check { deleteProgram(id) } }
     }
 
-    fun getUniform(name: String): Uniform? = gl.runInContext {
+    override fun getUniform(name: String): Uniform? = gl.runInContext {
         gl.useProgram(this)
         val uniformLoc = gl.check { getUniformLocation(id, name) }
         if (uniformLoc == null) {
             logger.debug { "no such uniform $name" }
         }
-        uniformLoc?.let { Uniform(this@GlslProgram, it) }
+        uniformLoc?.let { UniformImpl(this@GlslProgramImpl, it) }
     }
 
-    fun <T> withProgram(fn: Kgl.() -> T): T {
+    override fun <T> withProgram(fn: Kgl.() -> T): T {
         gl.useProgram(this)
         return gl.check(fn)
     }
 
-    interface ResolutionListener {
-        fun onResolution(x: Float, y: Float)
+    override fun use() {
+        gl.check { useProgram(id) }
     }
 
     companion object {

@@ -102,6 +102,10 @@ class OpenSliderControl(
 
     override fun applyState(state: Map<String, JsonElement>) = slider.applyState(state)
 
+    override fun resetToDefault() {
+        slider.position = slider.initialValue
+    }
+
     override fun toNewMutable(mutableShow: MutableShow): MutableControl {
         return MutableSliderControl(
             slider.title, slider.initialValue, slider.minValue, slider.maxValue, slider.stepValue, controlledDataSource

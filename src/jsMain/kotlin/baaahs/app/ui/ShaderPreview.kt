@@ -11,15 +11,11 @@ import baaahs.gl.preview.ShaderPreview
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
 import baaahs.ui.addObserver
-import baaahs.ui.on
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.IntersectionObserver
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
-import materialui.components.divider.divider
-import materialui.components.popover.enums.PopoverStyle
-import materialui.components.popover.popover
 import materialui.components.typography.enums.TypographyDisplay
 import materialui.components.typography.typography
 import materialui.icon
@@ -30,8 +26,7 @@ import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.*
 import styled.StyleSheet
-import styled.css
-import styled.styledDiv
+import styled.inlineStyles
 import kotlin.collections.set
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
@@ -48,9 +43,9 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
     val canvas = memo(props.previewShaderBuilder?.openShader?.shaderType) {
         document.createElement("canvas").apply {
-                this.setAttribute("width", width.toString())
-                this.setAttribute("height", height.toString())
-            } as HTMLCanvasElement
+            this.setAttribute("width", width.toString())
+            this.setAttribute("height", height.toString())
+        } as HTMLCanvasElement
     }
     var gl by state<GlContext?> { null }
 
@@ -97,6 +92,13 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         }
     }
 
+    val gadgetAdjuster = memo(props.adjustGadgets) {
+        props.adjustGadgets?.let { mode ->
+            builder?.let { mode.build(builder.gadgets, appContext.clock) }
+        }
+    }
+    preRenderHook.current = { gadgetAdjuster?.adjustGadgets() }
+
     onChange("different builder", gl, shaderPreview, builder, props.adjustGadgets) {
         if (gl == null) return@onChange
         if (shaderPreview == null) return@onChange
@@ -110,12 +112,6 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                     }
                 }
                 ShaderBuilder.State.Success -> {
-                    val gadgetAdjuster =
-                        GadgetAdjuster(builder.gadgets, appContext.clock)
-                    preRenderHook.current = {
-                        if (props.adjustGadgets) gadgetAdjuster.adjustGadgets()
-                    }
-
                     shaderPreview?.setProgram(it.glslProgram)
                 }
                 else -> {
@@ -138,11 +134,12 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         )
     }
 
-    styledDiv {
+    div(+ShaderPreviewStyles.container) {
         ref = canvasParent
-        css { +ShaderPreviewStyles.container }
-        css.width = width
-        css.height = height
+        inlineStyles {
+            this.width = width
+            this.height = height
+        }
 
         when (builder?.state ?: ShaderBuilder.State.Unbuilt) {
             ShaderBuilder.State.Unbuilt,
@@ -170,31 +167,10 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                     }
                 }
 
-                popover(ShaderPreviewStyles.errorPopup on PopoverStyle.paper) {
-                    attrs.open = errorPopupAnchor != null
-                    attrs.anchorEl(errorPopupAnchor)
-                    attrs.onClose = { event, _ ->
-                        errorPopupAnchor = null
-                        event.stopPropagation()
-                    }
-
-                    header { +"Errors:" }
-
-                    div {
-                        if (errorPopupAnchor != null) {
-                            pre(+ShaderPreviewStyles.errorMessage) {
-                                +(builder?.glslErrors?.joinToString("\n") ?: "No errors!?")
-                            }
-
-                            divider {}
-
-                            pre(+ShaderPreviewStyles.errorSourceCode) {
-                                (builder?.linkedPatch?.toFullGlsl("x") ?: "No source!?")
-                                    .split("\n")
-                                    .forEach { code { +it }; +"\n" }
-                            }
-                        }
-                    }
+                shaderDiagnostics {
+                    attrs.anchor = errorPopupAnchor
+                    attrs.builder = builder!!
+                    attrs.onClose = { errorPopupAnchor = null }
                 }
             }
         }
@@ -260,7 +236,7 @@ external interface ShaderPreviewProps : RProps {
     var previewShaderBuilder: ShaderBuilder?
     var width: LinearDimension?
     var height: LinearDimension?
-    var adjustGadgets: Boolean
+    var adjustGadgets: GadgetAdjuster.Mode?
     var toolchain: Toolchain?
 }
 

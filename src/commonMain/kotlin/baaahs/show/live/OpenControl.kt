@@ -19,6 +19,7 @@ interface OpenControl {
     fun controlledDataSources(): Set<DataSource> = emptySet()
     fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panel: Panel, depth: Int) {}
     fun applyConstraints() {}
+    fun resetToDefault() {}
     fun toNewMutable(mutableShow: MutableShow): MutableControl
     fun getView(controlProps: ControlProps): View
     fun getEditIntent(): EditIntent? = ControlEditIntent(id)
