@@ -154,6 +154,7 @@ class GlslParser {
             } else this
         }
 
+        open fun visitCommentText(value: String): ParseState = visitText(value)
         open fun visitComment(): ParseState = visitText("//")
         open fun visitBlockCommentBegin(): ParseState = visitText("/*")
         open fun visitBlockCommentEnd(): ParseState = visitText("*/")
@@ -474,7 +475,8 @@ class GlslParser {
         private class Comment(
             context: Context,
             val recipientOfComment: ParseState?,
-            val nextParseState: ParseState
+            val nextParseState: ParseState,
+            val chompNewlines: Boolean = false
         ) : ParseState(context) {
             val commentText = StringBuilder()
 
@@ -485,8 +487,12 @@ class GlslParser {
 
             override fun visitNewline(): ParseState {
                 appendComment()
-                nextParseState.visitNewline()
-                return nextParseState
+                return if (chompNewlines) {
+                    nextParseState.visitNewline()
+                } else {
+                    nextParseState.visitNewline()
+                    nextParseState
+                }
             }
 
             override fun visitEof(): ParseState {
@@ -496,18 +502,19 @@ class GlslParser {
 
             private fun appendComment() {
                 if (recipientOfComment == null) {
-                    nextParseState.visitText("//")
-                    nextParseState.visitText(commentText.toString())
+                    nextParseState.visitCommentText("//")
+                    nextParseState.visitCommentText(commentText.toString())
+                } else {
+                    recipientOfComment.addComment(commentText.toString())
                 }
-
-                recipientOfComment?.addComment(commentText.toString())
             }
         }
 
         private class BlockComment(
             context: Context,
-            val recipientOfComment: ParseState,
-            val nextParseState: ParseState
+            val recipientOfComment: ParseState?,
+            val nextParseState: ParseState,
+            val chompNewlines: Boolean = false
         ) : ParseState(context) {
             val commentText = StringBuilder()
 
@@ -517,13 +524,23 @@ class GlslParser {
             }
 
             override fun visitNewline(): ParseState {
-                nextParseState.visitNewline()
+                if (!chompNewlines) nextParseState.visitNewline()
                 return super.visitNewline()
             }
 
             override fun visitBlockCommentEnd(): ParseState {
-                recipientOfComment.addComment(commentText.toString())
+                appendComment()
                 return nextParseState
+            }
+
+            private fun appendComment() {
+                if (recipientOfComment == null) {
+                    nextParseState.visitCommentText("/* ")
+                    nextParseState.visitCommentText(commentText.toString())
+                    nextParseState.visitCommentText(" */")
+                } else {
+                    recipientOfComment.addComment(commentText.toString())
+                }
             }
         }
 
@@ -594,6 +611,14 @@ class GlslParser {
                 }
                 return this
             }
+
+            // Ignore comments.
+            override fun visitCommentText(value: String): ParseState = this
+
+            override fun visitComment(): ParseState =
+                Comment(context, null, this, chompNewlines = true)
+            override fun visitBlockCommentBegin(): ParseState =
+                BlockComment(context, null, this, chompNewlines = true)
 
             override fun visitLeftParen(): ParseState {
                 return if (mode == Mode.HaveName) {
