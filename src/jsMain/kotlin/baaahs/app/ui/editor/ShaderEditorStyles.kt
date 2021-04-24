@@ -86,6 +86,21 @@ class ShaderEditorStyles(private val theme: MuiTheme) : StyleSheet("app-ui-edito
         important(::textAlign, TextAlign.right)
     }
 
+    val showAdvancedMenuItem by css {
+        paddingTop = 0.px
+        paddingBottom = 0.px
+        paddingLeft = 8.px
+
+        svg {
+            width = .75.em
+            height = .75.em
+        }
+
+        span {
+            fontSize = .95.em
+        }
+    }
+
     companion object {
         val previewWidth = 250.px
         val previewHeight = 250.px

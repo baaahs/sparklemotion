@@ -66,7 +66,8 @@ class BeatLinkPlugin internal constructor(
                             PortLinkOption(
                                 MutableDataSourcePort(beatLinkDataSource),
                                 wasPurposeBuilt = true,
-                                isExactContentType = inputPort.contentType == beatDataContentType,
+                                isExactContentType = inputPort.contentType == beatDataContentType
+                                        || inputPort.contentType.isUnknown(),
                                 isPluginSuggestion = true
                             )
                         )

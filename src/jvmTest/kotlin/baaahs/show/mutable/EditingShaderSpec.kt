@@ -222,7 +222,7 @@ object EditingShaderSpec : Spek({
                             - Main Channel
                             Data Source:
                             - BeatLink
-                            - Custom slider Slider
+                            - Custom slider Slider (advanced)
                             * The Scale Slider
                             - Time
                         """.trimIndent())
@@ -277,9 +277,9 @@ object EditingShaderSpec : Spek({
                             Channel:
                             - Main Channel
                             Data Source:
-                            - BeatLink
+                            - BeatLink (advanced)
                             * Time
-                            - Time Slider
+                            - Time Slider (advanced)
                         """.trimIndent())
                 }
 
@@ -290,6 +290,7 @@ object EditingShaderSpec : Spek({
                             Channel:
                             * Main Channel
                             Data Source:
+                            - Date (advanced)
                             - In Color Color Picker
                         """.trimIndent())
                 }
@@ -308,6 +309,7 @@ object EditingShaderSpec : Spek({
                                     * Main Channel
                                     - Other Channel
                                     Data Source:
+                                    - Date (advanced)
                                     - In Color Color Picker
                                 """.trimIndent())
                         }
@@ -322,6 +324,7 @@ object EditingShaderSpec : Spek({
                                     Channel:
                                     * Main Channel
                                     Data Source:
+                                    - Date (advanced)
                                     - In Color Color Picker
                                 """.trimIndent())
                         }
@@ -429,7 +432,8 @@ fun List<LinkOption>?.stringify(): String {
             groupName?.let { lines.add(it) }
         }
         val selected = if (linkOption == first()) "*" else "-"
-        lines.add("$selected ${linkOption.title}")
+        val advanced = if (linkOption.isAdvanced) " (advanced)" else ""
+        lines.add("$selected ${linkOption.title}$advanced")
     }
     return lines.joinToString("\n")
 }

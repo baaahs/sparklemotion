@@ -8,6 +8,7 @@ interface LinkOption {
     val title: String
     val icon: Icon
     val groupName: String?
+    val isAdvanced: Boolean get() = false
 
     fun getMutablePort(): MutablePort?
     fun matches(otherPort: MutablePort?): Boolean = otherPort == getMutablePort()
@@ -24,6 +25,9 @@ class PortLinkOption(
     val isDefaultBinding: Boolean = false,
     val createsFilter: Boolean = false
 ): LinkOption {
+    override val isAdvanced: Boolean
+        get() = !isExactContentType
+
     override val title get() = mutablePort.title
     override val icon get() = mutablePort.icon
     override val groupName get() = mutablePort.groupName
