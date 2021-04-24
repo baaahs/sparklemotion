@@ -107,6 +107,7 @@ fun jsonFor(control: Control): JsonElement {
             put("title", control.title)
             put("activationType", control.activationType.name)
             addPatchHolder(control)
+            put("controlledDataSourceId", control.controlledDataSourceId)
         }
         is ButtonGroupControl -> buildJsonObject {
             put("type", "baaahs.Core:ButtonGroup")

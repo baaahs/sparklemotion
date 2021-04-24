@@ -85,6 +85,10 @@ class OpenColorPickerControl(
 
     override fun applyState(state: Map<String, JsonElement>) = colorPicker.applyState(state)
 
+    override fun resetToDefault() {
+        colorPicker.color = colorPicker.initialValue
+    }
+
     override fun toNewMutable(mutableShow: MutableShow): MutableControl {
         return MutableColorPickerControl(
             colorPicker.title, colorPicker.initialValue, controlledDataSource

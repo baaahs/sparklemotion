@@ -8,6 +8,7 @@ import baaahs.only
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -246,6 +247,24 @@ object GlslParserSpec : Spek({
                                             "}\n".trimIndent()
                                 )
                         }
+                    }
+                }
+
+                context("hash signs inside of comments") {
+                    override(shaderText) {
+                        /**language=glsl*/
+                        """
+                            // Title
+                            
+                            void main() {
+                              // this #is ignored                             
+                            }
+                        """.trimIndent()
+                    }
+
+                    it("finds the global variables and performs substitutions") {
+                        // Shouldn't throw "analysis error: directive #is ignored"
+                        expect(glslCode.globalVars.toList()).isEmpty()
                     }
                 }
 

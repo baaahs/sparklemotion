@@ -2,12 +2,9 @@ package baaahs.show.live
 
 import baaahs.app.ui.controls.*
 import baaahs.control.*
-import baaahs.jsx.ColorPicker
-import baaahs.jsx.ColorPickerProps
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
-import kotlinext.js.jsObject
 
 actual fun getControlViews(): ControlViews = object : ControlViews {
     override fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): View = renderWrapper {
@@ -25,9 +22,10 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
     }
 
     override fun forColorPicker(openColorPickerControl: OpenColorPickerControl, controlProps: ControlProps) = renderWrapper {
-        child(ColorPicker, jsObject<ColorPickerProps> {
-            gadget = openColorPickerControl.colorPicker
-        }) {}
+        colorPickerControl {
+            attrs.controlProps = controlProps
+            attrs.colorPickerControl = openColorPickerControl
+        }
     }
 
     override fun forSlider(openSlider: OpenSliderControl, controlProps: ControlProps) = renderWrapper {

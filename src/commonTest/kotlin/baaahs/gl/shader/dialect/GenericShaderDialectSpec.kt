@@ -10,6 +10,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.testToolchain
 import baaahs.show.Shader
+import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -20,14 +21,7 @@ import org.spekframework.spek2.Spek
 @Suppress("unused")
 object GenericShaderDialectSpec : Spek({
     describe<GenericShaderDialect> {
-        val src by value {
-            """
-                // @return time
-                float main(
-                    float time // @type time
-                ) { return time + sin(time); }
-            """.trimIndent()
-        }
+        val src by value<String> { toBeSpecified() }
         val dialect by value { GenericShaderDialect }
         val plugins by value { testToolchain.plugins }
         val analyzer by value { GlslAnalyzer(plugins) }
@@ -35,7 +29,16 @@ object GenericShaderDialectSpec : Spek({
         val glslCode by value { shaderAnalysis.glslCode }
         val openShader by value { analyzer.openShader(shaderAnalysis) }
 
-        context("shaders having a main() function") {
+        context("a shader having a main() function") {
+            override(src) {
+                """
+                    // @return time
+                    float main(
+                        float time // @type time
+                    ) { return time + sin(time); }
+                """.trimIndent()
+            }
+
             it("is a poor match (so this one acts as a fallback)") {
                 expect(dialect.matches(glslCode)).toEqual(MatchLevel.Poor)
             }
@@ -57,7 +60,7 @@ object GenericShaderDialectSpec : Spek({
             }
 
             context("when a shader refers to gl_FragCoord") {
-                override(src) { "vec4 main() { return vec4(gl_FragCoord.xy, 0., 0.); }" }
+                override(src) { "vec4 main() { return vec4(gl_FragCoord.xy, 0., 1.); }" }
 
                 it("includes it as an input port") {
                     expect(openShader.inputPorts).containsExactly(
@@ -99,7 +102,7 @@ object GenericShaderDialectSpec : Spek({
             }
         }
 
-        context("shaders without a main() function") {
+        context("a shader without a main() function") {
             override(src) { "void mainImage(void) { ... };" }
             it("is not a match") {
                 expect(dialect.matches(glslCode)).toEqual(MatchLevel.NoMatch)

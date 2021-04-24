@@ -1,10 +1,49 @@
 package baaahs.gl.preview
 
+import baaahs.control.OpenButtonControl
+import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
 import baaahs.util.Clock
 
-class GadgetAdjuster(val gadgets: List<ShaderBuilder.GadgetPreview>, val clock: Clock) {
-    fun adjustGadgets() {
+interface GadgetAdjuster {
+    enum class Mode {
+        INCREMENTAL {
+            override fun build(gadgets: List<ShaderBuilder.GadgetPreview>, clock: Clock) =
+                IncrementalGadgetAdjuster(gadgets, clock)
+        },
+        FULL_RANGE {
+            override fun build(gadgets: List<ShaderBuilder.GadgetPreview>, clock: Clock) =
+                FullRangeGadgetAdjuster(gadgets, clock)
+        };
+
+        abstract fun build(gadgets: List<ShaderBuilder.GadgetPreview>, clock: Clock): GadgetAdjuster
+    }
+
+    fun adjustGadgets()
+}
+
+class IncrementalGadgetAdjuster(
+    val gadgets: List<ShaderBuilder.GadgetPreview>,
+    val clock: Clock
+) : GadgetAdjuster {
+    override fun adjustGadgets() {
+        gadgets.forEachIndexed() { index, gadgetData ->
+            val gadget = when (val control = gadgetData.openControl) {
+                is OpenButtonControl -> control.switch
+                is OpenColorPickerControl -> control.colorPicker
+                is OpenSliderControl -> control.slider
+                else -> null
+            }
+            gadget?.adjustALittleBit()
+        }
+    }
+}
+
+class FullRangeGadgetAdjuster(
+    val gadgets: List<ShaderBuilder.GadgetPreview>,
+    val clock: Clock
+) : GadgetAdjuster {
+    override fun adjustGadgets() {
         val now = clock.now() / 2
         val count = gadgets.size
 

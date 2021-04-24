@@ -140,7 +140,8 @@ object GlslAnalyzerSpec : Spek({
                                     InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates", isImplicit = true),
                                     InputPort("channelA", ContentType.Color, GlslType.Vec4, "Channel A", isImplicit = false, injectedData = mapOf(
                                         "uv" to ContentType.UvCoordinate
-                                    ))
+                                    )),
+                                    InputPort("resolution", ContentType.Resolution, GlslType.Vec2, "Resolution", isImplicit = false),
                                 )
                         }
                     }
