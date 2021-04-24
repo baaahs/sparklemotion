@@ -1,0 +1,124 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>GlslProgramImpl - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.gl.glsl</a>&nbsp;/&nbsp;<a href="./index.html">GlslProgramImpl</a><br/>
+<br/>
+<h1>GlslProgramImpl</h1>
+<code><span class="keyword">class </span><span class="identifier">GlslProgramImpl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-glsl-program/index.html"><span class="identifier">GlslProgram</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">GlslProgramImpl</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslProgramImpl$<init>(baaahs.gl.GlContext, baaahs.gl.patch.LinkedPatch, baaahs.gl.glsl.EngineFeedResolver)/gl">gl</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl/-gl-context/index.html"><span class="identifier">GlContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslProgramImpl$<init>(baaahs.gl.GlContext, baaahs.gl.patch.LinkedPatch, baaahs.gl.glsl.EngineFeedResolver)/linkedPatch">linkedPatch</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.patch/-linked-patch/index.html"><span class="identifier">LinkedPatch</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslProgramImpl$<init>(baaahs.gl.GlContext, baaahs.gl.patch.LinkedPatch, baaahs.gl.glsl.EngineFeedResolver)/engineFeedResolver">engineFeedResolver</span><span class="symbol">:</span>&nbsp;<a href="../-engine-feed-resolver/index.html"><span class="identifier">EngineFeedResolver</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="frag-shader.html">fragShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">fragShader</span><span class="symbol">: </span><a href="../-compiled-shader/index.html"><span class="identifier">CompiledShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="id.html">id</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><span class="identifier">Program</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="title.html">title</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="vertex-attrib-location.html">vertexAttribLocation</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">vertexAttribLocation</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="about-to-render-fixture.html">aboutToRenderFixture</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">aboutToRenderFixture</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslProgramImpl$aboutToRenderFixture(baaahs.gl.render.RenderTarget)/renderTarget">renderTarget</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.render/-render-target/index.html"><span class="identifier">RenderTarget</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="about-to-render-frame.html">aboutToRenderFrame</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">aboutToRenderFrame</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-uniform.html">getUniform</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getUniform</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslProgramImpl$getUniform(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.glsl/-uniform/index.html"><span class="identifier">Uniform</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="release.html">release</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">release</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-resolution.html">setResolution</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">setResolution</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslProgramImpl$setResolution(kotlin.Float, kotlin.Float)/x">x</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.glsl.GlslProgramImpl$setResolution(kotlin.Float, kotlin.Float)/y">y</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="use.html">use</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">use</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="with-program.html">withProgram</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">withProgram</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.glsl.GlslProgramImpl$withProgram(kotlin.Function1((com.danielgergely.kgl.Kgl, baaahs.gl.glsl.GlslProgramImpl.withProgram.T)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="identifier">Kgl</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="vertex-shader.html">vertexShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">vertexShader</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
