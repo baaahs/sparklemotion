@@ -5,8 +5,7 @@ import baaahs.sim.FakeNetwork
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import ext.Second
-import ext.TestCoroutineContext
+import ext.TestCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -14,27 +13,29 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
 import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.Suite
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.assertEquals
 
 @InternalCoroutinesApi
 object PubSubSpec : Spek({
     describe<PubSub> {
-        val testCoroutineContext by value { TestCoroutineContext("network") }
-        val network by value { FakeNetwork(0, coroutineContext = testCoroutineContext) }
+        val dispatcher by value { TestCoroutineDispatcher() }
+        val testCoroutineScope by value { CoroutineScope(EmptyCoroutineContext + dispatcher) }
+        val network by value { FakeNetwork(0, coroutineScope = testCoroutineScope) }
 
         val serverNetwork by value { network.link("server") }
-        val server by value { PubSub.listen(serverNetwork.startHttpServer(1234), testCoroutineContext) }
+        val server by value { PubSub.listen(serverNetwork.startHttpServer(1234), testCoroutineScope) }
+        val serverConnections by value {
+            arrayListOf<PubSub.ConnectionFromClient>()
+                .also { list ->
+                    server.listenForConnections { connection -> list.add(connection) }
+                }
+        }
         val serverLog by value { mutableListOf<String>() }
 
         val client1Network by value { network.link("client1") }
-        val client1 by value {
-            PubSub.Client(
-                client1Network,
-                serverNetwork.myAddress,
-                1234,
-                CoroutineScope(testCoroutineContext)
-            )
-        }
+        val client1 by value { PubSub.Client(client1Network, serverNetwork.myAddress, 1234, testCoroutineScope) }
         val client1Log by value { mutableListOf<String>() }
 
         val client2Network by value { network.link("client2") }
@@ -46,6 +47,7 @@ object PubSubSpec : Spek({
         beforeEachTest {
             // Server needs to come up first, then client1 and client2.
             server.run {}
+            serverConnections.run {}
             client1.run {}
             client2.run {}
         }
@@ -63,21 +65,21 @@ object PubSubSpec : Spek({
             }
 
             val client2TopicObserver = client2.subscribe(topic1) { client2Log.add("topic1 changed: $it") }
-            testCoroutineContext.runAll()
+            dispatcher.runCurrent()
 
             serverLog.assertEmpty()
             client1Log.assertContents("topic1 changed: value")
             client2Log.assertContents("topic1 changed: value")
 
             serverTopicObserver.onChange("new value")
-            testCoroutineContext.runAll()
+            dispatcher.runCurrent()
 
             serverLog.assertEmpty()
             client1Log.assertContents("topic1 changed: new value")
             client2Log.assertContents("topic1 changed: new value")
 
             client2TopicObserver.onChange("from client 2")
-            testCoroutineContext.runAll()
+            dispatcher.runCurrent()
 
             serverLog.assertContents("topic1 changed: from client 2")
             client1Log.assertContents("topic1 changed: from client 2")
@@ -92,7 +94,7 @@ object PubSubSpec : Spek({
             serverTopicObserver.onChange("second value")
 
             client1.subscribe(topic1) { client1Log.add("topic1 changed: $it") }
-            testCoroutineContext.runAll()
+            dispatcher.runCurrent()
 
             serverLog.assertEmpty()
             client1Log.assertContents("topic1 changed: second value")
@@ -111,7 +113,7 @@ object PubSubSpec : Spek({
 
                 val client1TopicObserver1 = client1.subscribe(topic1) { client1Log.add("topic1 changed1: $it") }
                 val client1TopicObserver2 = client1.subscribe(topic1) { client1Log2.add("topic1 changed2: $it") }
-                testCoroutineContext.runAll()
+                dispatcher.runCurrent()
 
                 client1Log.assertContents("topic1 changed1: value")
                 client1Log2.assertContents("topic1 changed2: value")
@@ -119,7 +121,7 @@ object PubSubSpec : Spek({
 
                 client1TopicObserver1.unsubscribe()
                 serverTopicObserver.onChange("new value")
-                testCoroutineContext.runAll()
+                dispatcher.runCurrent()
 
                 client1Log.assertEmpty()
                 client1Log2.assertContents("topic1 changed2: new value")
@@ -127,7 +129,7 @@ object PubSubSpec : Spek({
 
                 client1TopicObserver2.unsubscribe()
                 serverTopicObserver.onChange("another new value")
-                testCoroutineContext.runAll()
+                dispatcher.runCurrent()
 
                 client1Log.assertEmpty()
                 client1Log2.assertEmpty()
@@ -138,7 +140,7 @@ object PubSubSpec : Spek({
         context("before connection is made") {
             it("isConnected should return false") {
                 expect(client1.isConnected).toBe(false)
-                testCoroutineContext.runAll()
+                dispatcher.runCurrent()
                 expect(client1.isConnected).toBe(true)
             }
         }
@@ -146,14 +148,14 @@ object PubSubSpec : Spek({
         context("when websocket is connected") {
             it("isConnected should notify listeners") {
                 client1.addStateChangeListener { client1Log.add("isConnected was changed to ${client1.isConnected}") }
-                testCoroutineContext.runAll()
+                dispatcher.runCurrent()
                 client1Log.assertContents("isConnected was changed to true")
             }
         }
 
         context("when connection is reset") {
             it("should notify listener of state change") {
-                testCoroutineContext.runAll()
+                dispatcher.runCurrent()
                 expect(client1.isConnected).toBe(true)
 
                 client1.addStateChangeListener { client1Log.add("isConnected was changed to ${client1.isConnected}") }
@@ -174,11 +176,11 @@ object PubSubSpec : Spek({
                 expect(client1Network.tcpConnections.size).toBe(1)
 
                 // don't attempt a new connection until a second has passed
-                testCoroutineContext.triggerActions()
+                dispatcher.runCurrent()
                 expect(client1Network.tcpConnections.size).toBe(1)
 
-                testCoroutineContext.advanceTimeBy(2, Second())
-                testCoroutineContext.triggerActions()
+                dispatcher.advanceTimeBy(2000)
+                dispatcher.runCurrent()
 
                 // assert that there was a new outgoing connection
                 expect(client1Network.tcpConnections.size).toBe(2)
@@ -193,7 +195,7 @@ object PubSubSpec : Spek({
                 }
 
                 expect(client1Network.tcpConnections.size).toBe(1)
-                testCoroutineContext.triggerActions()
+                dispatcher.runCurrent()
                 client1Log.assertContents("topic1 changed: value")
 
                 // trigger a connection reset
@@ -203,18 +205,18 @@ object PubSubSpec : Spek({
                 expect(client1Network.tcpConnections.size).toBe(1)
 
                 // don't attempt a new connection until a second has passed
-                testCoroutineContext.triggerActions()
+                dispatcher.runCurrent()
                 expect(client1Network.tcpConnections.size).toBe(1)
 
-                testCoroutineContext.advanceTimeBy(2, Second())
-                testCoroutineContext.triggerActions()
+                dispatcher.advanceTimeBy(2000)
+                dispatcher.runCurrent()
 
                 // assert that there was a new outgoing connection
                 expect(client1Network.tcpConnections.size).toBe(2)
                 expect(client1.isConnected).toBe(true)
 
                 serverTopicObserver.onChange("new value")
-                testCoroutineContext.triggerActions()
+                dispatcher.runCurrent()
                 client1Log.assertContents("topic1 changed: new value")
             }
         }
@@ -230,11 +232,11 @@ object PubSubSpec : Spek({
                 client1.subscribe(nullableTopic) {
                     client1Log.add("topic1 changed: ${it?.string}")
                 }
-                testCoroutineContext.runAll()
+                dispatcher.runCurrent()
                 client1Log.assertContents("topic1 changed: value")
 
                 serverTopicObserver.onChange(null)
-                testCoroutineContext.runAll()
+                dispatcher.runCurrent()
                 client1Log.assertContents("topic1 changed: null")
             }
         }
@@ -258,7 +260,7 @@ object PubSubSpec : Spek({
                 val result by value { arrayListOf<String>() }
 
                 beforeEachTest {
-                    CoroutineScope(testCoroutineContext).launch {
+                    testCoroutineScope.launch {
                         try {
                             result.add("response: " + clientCommandChannel("the command"))
                         } catch (e: Exception) {
@@ -267,20 +269,32 @@ object PubSubSpec : Spek({
                     }
                 }
 
-                it("invokes that command on the server and returns the response to the caller") {
-                    testCoroutineContext.runAll()
-                    expect(result).containsExactly("response: reply for the command")
+                fun Suite.sharedCommandSpecs() {
+                    it("invokes that command on the server and returns the response to the caller") {
+                        dispatcher.runCurrent()
+                        expect(result).containsExactly("response: reply for the command")
+                    }
+
+                    context("and the server throws an exception") {
+                        override(serverCommandHandler) {
+                            val x: suspend (String) -> String = { s: String -> throw RuntimeException("error for $s") }; x
+                        }
+
+                        it("returns the response to the caller") {
+                            dispatcher.runCurrent()
+                            expect(result).containsExactly("error: error for the command")
+                        }
+                    }
                 }
+                sharedCommandSpecs()
 
-                context("and the server throws an exception") {
-                    override(serverCommandHandler) {
-                        val x: suspend (String) -> String = { s: String -> throw RuntimeException("error for $s") }; x
+                context("when the command client is a PubSub.Server") {
+                    override(serverCommandChannel) {
+                        client1.listenOnCommandChannel(commandPort) { command: String -> serverCommandHandler(command) }
                     }
+                    override(clientCommandChannel) { serverConnections.first().commandSender(commandPort) }
 
-                    it("returns the response to the caller") {
-                        testCoroutineContext.runAll()
-                        expect(result).containsExactly("error: error for the command")
-                    }
+                    sharedCommandSpecs()
                 }
             }
         }

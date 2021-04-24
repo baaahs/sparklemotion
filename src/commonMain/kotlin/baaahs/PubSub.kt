@@ -4,17 +4,13 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
 import baaahs.util.Logger
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.SerializersModule
-import kotlin.coroutines.CoroutineContext
 import kotlin.js.JsName
 import kotlin.jvm.Synchronized
 import kotlin.properties.ReadWriteProperty
@@ -25,8 +21,8 @@ abstract class PubSub {
     companion object {
         val verbose = true
 
-        fun listen(httpServer: Network.HttpServer, coroutineContext: CoroutineContext): Server {
-            return Server(httpServer, coroutineContext)
+        fun listen(httpServer: Network.HttpServer, coroutineScope: CoroutineScope): Server {
+            return Server(httpServer, coroutineScope)
         }
 
         fun connect(networkLink: Network.Link, address: Network.Address, port: Int): Client {
@@ -179,31 +175,98 @@ abstract class PubSub {
         }
     }
 
-    class CommandChannels {
-        private val serverChannels: MutableMap<String, Server.ServerCommandChannel<*, *>> = hashMapOf()
-        private val clientChannels: MutableMap<String, Client.ClientCommandChannel<*, *>> = hashMapOf()
+    class CommandChannels(private val handlerScope: CoroutineScope) {
+        private val serverChannels: MutableMap<String, ServerCommandChannel<*, *>> = hashMapOf()
+        private val clientChannels: MutableMap<String, ClientCommandChannel<*, *>> = hashMapOf()
 
         @Synchronized
-        fun hasServerChannel(name: String) = serverChannels.containsKey(name)
+        private fun hasServerChannel(name: String) = serverChannels.containsKey(name)
 
         @Synchronized
         fun getServerChannel(name: String) = serverChannels.getBang(name, "command channel")
 
         @Synchronized
-        fun putServerChannel(name: String, channel: Server.ServerCommandChannel<*, *>) {
+        private fun putServerChannel(name: String, channel: ServerCommandChannel<*, *>) {
             serverChannels[name] = channel
         }
 
 
+        internal fun <C, R> open(
+            commandPort: CommandPort<C, R>,
+            commandRecipient: CommandRecipient
+        ): CommandChannel<C, R> {
+            val name = commandPort.name
+            if (hasClientChannel(name)) error("Command channel $name already exists.")
+            return ClientCommandChannel(commandPort, commandRecipient).also {
+                putClientChannel(name, it)
+            }
+        }
+
         @Synchronized
-        fun hasClientChannel(name: String) = clientChannels.containsKey(name)
+        private fun hasClientChannel(name: String) = clientChannels.containsKey(name)
 
         @Synchronized
         fun getClientChannel(name: String) = clientChannels.getBang(name, "command channel")
 
         @Synchronized
-        fun putClientChannel(name: String, channel: Client.ClientCommandChannel<*, *>) {
+        private fun putClientChannel(name: String, channel: ClientCommandChannel<*, *>) {
             clientChannels[name] = channel
+        }
+
+        fun <C, R> listen(
+            commandPort: CommandPort<C, R>,
+            callback: suspend (command: C) -> R
+        ) {
+            val name = commandPort.name
+            if (hasServerChannel(name)) error("Command channel $name already exists.")
+            putServerChannel(name,
+                ServerCommandChannel(commandPort, handlerScope) { command -> callback(command) })
+        }
+
+        class ServerCommandChannel<C, R>(
+            private val commandPort: CommandPort<C, R>,
+            private val handlerScope: CoroutineScope,
+            private val callback: suspend (command: C) -> R
+        ) {
+            fun receiveCommand(commandJson: String, commandId: String, fromConnection: Connection) {
+                handlerScope.launch {
+                    val reply = try {
+                        callback.invoke(commandPort.fromJson(commandJson))
+                    } catch (e: Exception) {
+                        logger.warn(e) { "Error in remote command invocation ($commandId)." }
+                        fromConnection.sendError(commandPort, e.message ?: "unknown error", commandId)
+                        return@launch
+                    }
+                    fromConnection.sendReply(commandPort, reply, commandId)
+                }
+            }
+        }
+
+        class ClientCommandChannel<C, R>(
+            private val commandPort: CommandPort<C, R>,
+            private val connection: CommandRecipient
+        ) : CommandChannel<C, R> {
+            private val handlers = mutableMapOf<String, Client.CommandHandler<R>>()
+            private var nextCommandId = 0
+
+            override suspend fun send(command: C): R {
+                val commandId = nextCommandId++.toString(16)
+                val handler = Client.CommandHandler<R>(commandId, CoroutineScope(currentCoroutineContext()))
+                handlers[commandId] = handler
+                connection.sendCommand(commandPort, command, commandId)
+                return handler.receive()
+            }
+
+            fun receiveReply(replyJson: String, commandId: String) {
+                handlers.remove(commandId)?.let { handler ->
+                    val reply = commandPort.replyFromJson(replyJson)
+                    handler.onReply(reply)
+                }
+            }
+
+            fun receiveError(message: String, commandId: String) {
+                handlers.remove(commandId)?.onError(message)
+            }
         }
     }
 
@@ -388,25 +451,61 @@ abstract class PubSub {
     class ConnectionFromClient(
         name: String,
         topics: Topics,
-        commandChannels: CommandChannels
-    ) : Connection(name, topics, commandChannels)
+        override val commandChannels: CommandChannels
+    ) : Connection(name, topics, commandChannels), CommandRecipient
 
-    abstract class Endpoint {
-        protected fun <T> buildTopicInfo(topic: Topic<T>): TopicInfo<T> {
-            return TopicInfo(topic)
+    interface CommandRecipient {
+        val commandChannels: CommandChannels
+
+        fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String)
+
+        fun <C, R> openCommandChannel(
+            commandPort: CommandPort<C, R>
+        ): CommandChannel<C, R> {
+            return commandChannels.open(commandPort, this)
+        }
+
+        fun <C, R> commandSender(
+            commandPort: CommandPort<C, R>
+        ): suspend (command: C) -> R {
+            val commandChannel = openCommandChannel(commandPort)
+            return { command: C -> commandChannel.send(command) }
         }
     }
 
-    class Server(httpServer: Network.HttpServer, private val handlerContext: CoroutineContext) : Endpoint() {
+    abstract class Endpoint() {
+        protected abstract val commandChannels: CommandChannels
+
+        protected fun <T> buildTopicInfo(topic: Topic<T>): TopicInfo<T> {
+            return TopicInfo(topic)
+        }
+
+        abstract fun <T : Any?> openChannel(topic: Topic<T>, initialValue: T, onUpdate: (T) -> Unit): Channel<T>
+
+        fun <C, R> listenOnCommandChannel(
+            commandPort: CommandPort<C, R>,
+            callback: suspend (command: C) -> R
+        ) {
+            commandChannels.listen(commandPort, callback)
+        }
+    }
+
+    class Server(httpServer: Network.HttpServer, private val handlerScope: CoroutineScope) : Endpoint() {
         private val publisher = Origin("Server-side publisher")
         private val topics: Topics = Topics()
-        private val commandChannels = CommandChannels()
+        override val commandChannels: CommandChannels = CommandChannels(handlerScope)
+        private val connectionListeners: MutableList<(ConnectionFromClient) -> Unit> = mutableListOf()
 
         init {
             httpServer.listenWebSocket("/sm/ws") { incomingConnection ->
                 val name = "server ${incomingConnection.toAddress} to ${incomingConnection.fromAddress}"
                 ConnectionFromClient(name, topics, commandChannels)
+                    .also { connection -> connectionListeners.forEach { it.invoke(connection) } }
             }
+        }
+
+        override fun <T> openChannel(topic: Topic<T>, initialValue: T, onUpdate: (T) -> Unit): Channel<T> {
+            return publish(topic, initialValue, onUpdate)
         }
 
         fun <T : Any?> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T> {
@@ -415,7 +514,7 @@ abstract class PubSub {
             @Suppress("UNCHECKED_CAST")
             val topicInfo = topics.getOrPut(topicName) { TopicInfo(topic) } as TopicInfo<T>
             val listener = PublisherListener(topicInfo, publisher) {
-                CoroutineScope(handlerContext).launch { onUpdate(it) }
+                handlerScope.launch { onUpdate(it) }
             }
             topicInfo.addListener(listener)
             topicInfo.notify(data, publisher)
@@ -433,15 +532,6 @@ abstract class PubSub {
                     // TODO("${CLASS_NAME}.unsubscribe not implemented")
                 }
             }
-        }
-
-        fun <C, R> listenOnCommandChannel(
-            commandPort: CommandPort<C, R>,
-            callback: suspend (command: C) -> R
-        ) {
-            val name = commandPort.name
-            if (commandChannels.hasServerChannel(name)) error("Command channel $name already exists.")
-            commandChannels.putServerChannel(name, ServerCommandChannel(commandPort) { command -> callback(command) })
         }
 
         fun <T> state(topic: Topic<T>, initialValue: T, callback: (T) -> Unit = {}): ReadWriteProperty<Any, T> {
@@ -464,6 +554,11 @@ abstract class PubSub {
             }
         }
 
+        /** For tests only. */
+        internal fun listenForConnections(callback: (ConnectionFromClient) -> Unit) {
+            connectionListeners.add(callback)
+        }
+
         internal fun getTopicInfo(topicName: String) = topics[topicName]
 
         inner class PublisherListener<T : Any?>(
@@ -475,24 +570,6 @@ abstract class PubSub {
                 onUpdateFn(topicInfo.deserialize(data))
             }
         }
-
-        inner class ServerCommandChannel<C, R>(
-            private val commandPort: CommandPort<C, R>,
-            private val callback: suspend (command: C) -> R
-        ) {
-            fun receiveCommand(commandJson: String, commandId: String, fromConnection: Connection) {
-                CoroutineScope(handlerContext).launch {
-                    val reply = try {
-                        callback.invoke(commandPort.fromJson(commandJson))
-                    } catch (e: Exception) {
-                        logger.warn(e) { "Error in remote command invocation ($commandId)." }
-                        fromConnection.sendError(commandPort, e.message ?: "unknown error", commandId)
-                        return@launch
-                    }
-                    fromConnection.sendReply(commandPort, reply, commandId)
-                }
-            }
-        }
     }
 
     open class Client(
@@ -500,22 +577,23 @@ abstract class PubSub {
         private val serverAddress: Network.Address,
         private val port: Int,
         private val coroutineScope: CoroutineScope = GlobalScope
-    ) : Endpoint() {
+    ) : Endpoint(), CommandRecipient {
+        override val commandChannels: CommandChannels = CommandChannels((coroutineScope))
+
         @JsName("isConnected")
         val isConnected: Boolean
             get() = connectionToServer.isConnected
         private val stateChangeListeners = mutableListOf<() -> Unit>()
 
         private val topics: Topics = Topics()
-        private val commandChannels = CommandChannels()
 
-        private var connectionToServer: Connection = ConnectionToServer()
-        private var nextCommandId: Int = 0
+        internal var connectionToServer: Connection = ConnectionToServer()
 
-        // TODO: this should be issued by the server instead.
-        private val clientId = randomId("pubsub-client")
-
-        inner class ConnectionToServer : Connection("Client-side connection from ${link.myAddress} to server at $serverAddress", topics, commandChannels) {
+        inner class ConnectionToServer : Connection(
+            "Client-side connection from ${link.myAddress} to server at $serverAddress",
+            topics,
+            commandChannels
+        ) {
             override fun connected(tcpConnection: Network.TcpConnection) {
                 super.connected(tcpConnection)
 
@@ -542,6 +620,10 @@ abstract class PubSub {
 
         private fun connectWebSocket() {
             link.connectWebSocket(serverAddress, port, "/sm/ws", connectionToServer)
+        }
+
+        override fun <T> openChannel(topic: Topic<T>, initialValue: T, onUpdate: (T) -> Unit): Channel<T> {
+            return subscribe(topic, onUpdate)
         }
 
         @JsName("subscribe")
@@ -588,24 +670,15 @@ abstract class PubSub {
             }
         }
 
-        fun <C, R> openCommandChannel(
-            commandPort: CommandPort<C, R>
-        ): CommandChannel<C, R> {
-            val name = commandPort.name
-            if (commandChannels.hasClientChannel(name)) error("Command channel $name already exists.")
-            return ClientCommandChannel(commandPort).also {
-                commandChannels.putClientChannel(name, it)
-            }
+        override fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String) {
+            connectionToServer.sendCommand(commandPort, command, commandId)
         }
 
-        fun <C, R> commandSender(
-            commandPort: CommandPort<C, R>
-        ): suspend (command: C) -> R {
-            val commandChannel = openCommandChannel(commandPort)
-            return { command: C -> commandChannel.send(command) }
-        }
-
-        fun <T> state(topic: Topic<T>, initialValue: T? = null, callback: (T) -> Unit = {}): ReadWriteProperty<Any, T?> {
+        fun <T> state(
+            topic: Topic<T>,
+            initialValue: T? = null,
+            callback: (T) -> Unit = {}
+        ): ReadWriteProperty<Any, T?> {
             return object : ReadWriteProperty<Any, T?> {
                 private var value: T? = initialValue
 
@@ -639,51 +712,24 @@ abstract class PubSub {
             stateChangeListeners.forEach { callback -> callback() }
         }
 
-        inner class ClientCommandChannel<C, R>(
-            private val commandPort: CommandPort<C, R>
-        ) : CommandChannel<C, R> {
-            private val handlers = mutableMapOf<String, CommandHandler<R>>()
-            private val callbacks = mutableMapOf<String, suspend (R) -> Unit>()
-
-            override suspend fun send(command: C): R {
-                val commandId = clientId + ":" + nextCommandId++
-                val handler = CommandHandler<R>(commandId)
-                handlers[commandId] = handler
-//                val coroutineChannel = kotlinx.coroutines.channels.Channel<R>()
-//                callbacks[commandId] = { coroutineChannel.send(it) }
-                connectionToServer.sendCommand(commandPort, command, commandId)
-
-//                return coroutineChannel.receive()
-                return handler.receive()
-            }
-
-            fun receiveReply(replyJson: String, commandId: String) {
-                handlers.remove(commandId)?.let {
-                    val reply = commandPort.replyFromJson(replyJson)
-                    coroutineScope.launch { it.onReply(reply) }
-                }
-            }
-
-            fun receiveError(message: String, commandId: String) {
-                handlers.remove(commandId)?.let {
-                    coroutineScope.launch { it.onError(message) }
-                }
-            }
-        }
-
-        class CommandHandler<R>(private val commandId: String) {
+        class CommandHandler<R>(
+            private val commandId: String,
+            private val scope: CoroutineScope
+        ) {
             private val coroutineChannel = kotlinx.coroutines.channels.Channel<Pair<R?, String?>>()
 
             suspend fun receive(): R {
                 val (reply, error) = coroutineChannel.receive()
-                return reply ?: error(error ?: "Unknown error")
+                return reply ?: error(error ?: "Unknown error; command=$commandId")
             }
 
-            suspend fun onReply(reply: R) = coroutineChannel.send(reply to null)
+            fun onReply(reply: R) = scope.launch {
+                coroutineChannel.send(reply to null)
+            }
 
-            suspend fun onError(message: String) = coroutineChannel.send(null to message)
-
-//            fun receiveError(reply: R)
+            fun onError(message: String) = scope.launch {
+                coroutineChannel.send(null to message)
+            }
         }
     }
 
@@ -691,7 +737,9 @@ abstract class PubSub {
         private val cleanups = mutableListOf<() -> Unit>()
 
         @Synchronized
-        fun add(cleanup: () -> Unit) { cleanups.add(cleanup) }
+        fun add(cleanup: () -> Unit) {
+            cleanups.add(cleanup)
+        }
 
         @Synchronized
         fun invokeAll() {

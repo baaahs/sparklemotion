@@ -5,20 +5,16 @@ import baaahs.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.random.Random
 
 class FakeNetwork(
     private val networkDelay: Int = 1,
-    coroutineContext: CoroutineContext = EmptyCoroutineContext
+    private val coroutineScope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
 ) : Network {
     private val addressCounters = hashMapOf<String, Int>()
     val facade = Facade()
 
-    private val coroutineScope: CoroutineScope = object : CoroutineScope {
-        override val coroutineContext: CoroutineContext get() = coroutineContext
-    }
     private val udpListeners: MutableMap<Pair<Network.Address, Int>, Network.UdpListener> = hashMapOf()
     private val udpListenersByPort: MutableMap<Int, MutableList<Network.UdpListener>> = hashMapOf()
 

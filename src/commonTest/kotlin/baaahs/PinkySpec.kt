@@ -22,12 +22,9 @@ import baaahs.ui.Observable
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.Runnable
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.coroutines.CoroutineContext
 
 @Suppress("unused")
 @InternalCoroutinesApi
@@ -53,11 +50,7 @@ object PinkySpec : Spek({
                 StubSoundAnalyzer(),
                 renderManager = fakeGlslContext.runInContext { RenderManager(model) { fakeGlslContext } },
                 plugins = testPlugins(),
-                pinkyMainDispatcher = object : CoroutineDispatcher() {
-                    override fun dispatch(context: CoroutineContext, block: Runnable) {
-                        block.run()
-                    }
-                }
+                pinkyMainDispatcher = ImmediateDispatcher
             )
         }
         val pinkyLink by value { network.links.only() }
