@@ -26,6 +26,7 @@ import kotlin.math.max
  *
  * @see DelayController
  */
+@ExperimentalCoroutinesApi
 @InternalCoroutinesApi
 //@ExperimentalCoroutinesApi // Since 1.2.1, tentatively till 1.3.0
 public class TestCoroutineDispatcher(dispatchImmediately: Boolean = false): CoroutineDispatcher(), Delay, DelayController {
