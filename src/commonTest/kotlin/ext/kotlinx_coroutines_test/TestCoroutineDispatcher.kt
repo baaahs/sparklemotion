@@ -1,4 +1,4 @@
-package ext
+package ext.kotlinx_coroutines_test
 
 // Adapted from https://github.com/Kotlin/kotlinx.coroutines/tree/1.4.3/kotlinx-coroutines-test
 

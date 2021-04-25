@@ -22,7 +22,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.GL_FRAGMENT_SHADER
-import ext.TestCoroutineDispatcher
+import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import io.mockk.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
