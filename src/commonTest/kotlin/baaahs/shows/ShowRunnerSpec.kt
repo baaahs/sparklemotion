@@ -22,7 +22,7 @@ import baaahs.sim.FakeNetwork
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.*
-import ext.TestCoroutineDispatcher
+import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.serialization.json.JsonPrimitive

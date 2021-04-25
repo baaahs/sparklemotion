@@ -1,7 +1,7 @@
 package baaahs
 
 import baaahs.sim.FakeNetwork
-import ext.TestCoroutineDispatcher
+import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.serialization.builtins.serializer
