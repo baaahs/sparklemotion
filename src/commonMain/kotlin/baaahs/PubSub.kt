@@ -594,6 +594,8 @@ abstract class PubSub {
             topics,
             commandChannels
         ) {
+            var attemptReconnect: Boolean = true
+
             override fun connected(tcpConnection: Network.TcpConnection) {
                 super.connected(tcpConnection)
 
@@ -607,9 +609,11 @@ abstract class PubSub {
                 super.reset(tcpConnection)
                 notifyChangeListeners()
 
-                coroutineScope.launch {
-                    delay(1000)
-                    connectWebSocket()
+                if (attemptReconnect) {
+                    coroutineScope.launch {
+                        delay(1000)
+                        connectWebSocket()
+                    }
                 }
             }
         }

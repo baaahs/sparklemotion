@@ -4,6 +4,7 @@ import baaahs.gl.override
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -13,6 +14,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.Suite
 import kotlin.test.assertEquals
 
+@ExperimentalCoroutinesApi
 @InternalCoroutinesApi
 object PubSubSpec : Spek({
     describe<PubSub> {
@@ -27,10 +29,8 @@ object PubSubSpec : Spek({
             testRig.client2.run {}
         }
 
-//        TODO: This stopped working when we switched commands to use suspend functions. Huh?
-//        afterEachTest {
-//            expect(testCoroutineContext.exceptions).isEmpty()
-//        }
+//      TODO: This stopped working when we switched commands to use suspend functions. Huh?
+//        afterEachTest { testRig.cleanup() }
 
         it("should notify subscribers of changes") {
             val client1TopicObserver =
@@ -139,8 +139,10 @@ object PubSubSpec : Spek({
 
                 testRig.client1.addStateChangeListener { testRig.client1Log.add("isConnected was changed to ${testRig.client1.isConnected}") }
 
-                // trigger a connection reset
-                testRig.client1Network.webSocketListeners[0].reset(testRig.client1Network.tcpConnections[0])
+                // Trigger a connection reset, and don't try to reconnect (to avoid spec cleanup).
+                val connectionToServer = testRig.client1Network.webSocketListeners[0] as PubSub.Client.ConnectionToServer
+                connectionToServer.attemptReconnect = false
+                connectionToServer.reset(testRig.client1Network.tcpConnections[0])
 
                 testRig.client1Log.assertContents("isConnected was changed to false")
             }
@@ -271,9 +273,7 @@ object PubSubSpec : Spek({
                 context("when the command client is a PubSub.Server") {
                     override(serverCommandChannel) {
                         testRig.client1.listenOnCommandChannel(commandPort) { command: String ->
-                            serverCommandHandler(
-                                command
-                            )
+                            serverCommandHandler(command)
                         }
                     }
                     override(clientCommandChannel) { testRig.serverConnections.first().commandSender(commandPort) }
