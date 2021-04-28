@@ -3,6 +3,7 @@ package baaahs.gl.preview
 import baaahs.control.OpenButtonControl
 import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
+import baaahs.show.live.AdjustableControl
 import baaahs.util.Clock
 
 interface GadgetAdjuster {
@@ -31,10 +32,14 @@ class IncrementalGadgetAdjuster(
             val gadget = when (val control = gadgetData.openControl) {
                 is OpenButtonControl -> control.switch
                 is OpenColorPickerControl -> control.colorPicker
-                is OpenSliderControl -> control.slider
+//                is OpenSliderControl -> control.slider
                 else -> null
             }
             gadget?.adjustALittleBit()
+
+            if (gadgetData.openControl is AdjustableControl) {
+                gadgetData.openControl.adjustALittleBit()
+            }
         }
     }
 }
@@ -63,12 +68,9 @@ class FullRangeGadgetAdjuster(
 
             val control = gadgetData.openControl
             if (control is OpenSliderControl) {
-                val gadget = control.slider
-
-                val range = gadget.maxValue - gadget.minValue
-                val scaled = range * myDegree + gadget.minValue
-                gadget.position = scaled
-
+                val range = control.maxValue - control.minValue
+                val scaled = range * myDegree + control.minValue
+                control.positionChannel.value = scaled
             }
 
             mask = mask.shl(1)

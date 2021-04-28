@@ -3,7 +3,6 @@ package baaahs.gl.preview
 import baaahs.BaseShowPlayer
 import baaahs.control.OpenButtonControl
 import baaahs.control.OpenColorPickerControl
-import baaahs.control.OpenSliderControl
 import baaahs.fixtures.*
 import baaahs.getValue
 import baaahs.gl.Toolchain
@@ -20,6 +19,7 @@ import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import baaahs.show.live.OpenControl
+import baaahs.show.live.PreviewOpenContext
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePatch
 import baaahs.ui.IObservable
@@ -147,15 +147,16 @@ class PreviewShaderBuilder(
 
         coroutineScope.launch {
             val showPlayer = object : BaseShowPlayer(toolchain, modelInfo) {}
+            val previewOpenContext = PreviewOpenContext()
 
             compile(renderEngine) { id, dataSource ->
                 dataSource.buildControl()?.let {
                     // TODO: De-gnarl this mess.
-                    val openControl = it.previewOpen()
+                    val openControl = it.previewOpen(previewOpenContext)
                     val gadget = when (openControl) {
                         is OpenButtonControl -> openControl.switch
                         is OpenColorPickerControl -> openControl.colorPicker
-                        is OpenSliderControl -> openControl.slider
+// TODO                       is OpenSliderControl -> openControl.slider
                         else -> null
                     }
                     if (gadget == null) {

@@ -12,6 +12,7 @@ import kotlinx.serialization.modules.SerializersModule
 data class ShowEditorState(
     val show: Show,
     val showState: ShowState,
+    val driveRackId: String,
     val isUnsaved: Boolean,
     val file: Fs.File?
 ) {
@@ -29,6 +30,6 @@ data class ShowEditorState(
     }
 }
 
-fun Show.withState(showState: ShowState, isUnsaved: Boolean, file: Fs.File?): ShowEditorState {
-    return ShowEditorState(this, showState, isUnsaved, file)
+fun Show.withState(showState: ShowState, driveRackId: String, isUnsaved: Boolean, file: Fs.File?): ShowEditorState {
+    return ShowEditorState(this, showState, driveRackId, isUnsaved, file)
 }

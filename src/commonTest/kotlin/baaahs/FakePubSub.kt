@@ -39,8 +39,9 @@ class TestRig {
             .also { list ->
                 server.listenForConnections { connection -> list.add(connection) }
             }
-
     val serverLog = mutableListOf<String>()
+
+    init { dispatcher.runCurrent() }
 
     val client1Network = network.link("client1")
     val client1 = PubSub.Client(client1Network, serverNetwork.myAddress, 1234, testCoroutineScope)

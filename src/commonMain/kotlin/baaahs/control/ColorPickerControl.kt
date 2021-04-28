@@ -70,7 +70,7 @@ data class MutableColorPickerControl(
         )
     }
 
-    override fun previewOpen(): OpenColorPickerControl {
+    override fun previewOpen(openContext: OpenContext): OpenColorPickerControl {
         val colorPicker = ColorPicker(title, initialValue)
         return OpenColorPickerControl(randomId(title.camelize()), colorPicker, controlledDataSource)
     }
@@ -81,9 +81,12 @@ class OpenColorPickerControl(
     val colorPicker: ColorPicker,
     val controlledDataSource: DataSource
 ) : OpenControl {
-    override fun getState(): Map<String, JsonElement> = colorPicker.state
+    override fun getState(): JsonElement =
+        OpenControl.json.encodeToJsonElement(Color.serializer(), colorPicker.color)
 
-    override fun applyState(state: Map<String, JsonElement>) = colorPicker.applyState(state)
+    override fun applyState(state: JsonElement) {
+        colorPicker.color = OpenControl.json.decodeFromJsonElement(Color.serializer(), state)
+    }
 
     override fun resetToDefault() {
         colorPicker.color = colorPicker.initialValue

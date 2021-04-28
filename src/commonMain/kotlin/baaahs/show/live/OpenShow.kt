@@ -2,6 +2,9 @@ package baaahs.show.live
 
 import baaahs.*
 import baaahs.control.OpenButtonControl
+import baaahs.driverack.Bus
+import baaahs.driverack.Channel
+import baaahs.driverack.RackMap
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.RenderPlan
 import baaahs.gl.data.Feed
@@ -12,21 +15,100 @@ import baaahs.show.DataSource
 import baaahs.show.Panel
 import baaahs.show.Show
 import baaahs.show.mutable.MutableShow
+import baaahs.ui.Observable
+import baaahs.ui.Observer
 import baaahs.util.Logger
+import kotlinx.serialization.KSerializer
 
 interface OpenContext {
     val allControls: List<OpenControl>
+    val channels: Map<String, RegisteredChannel<*>>
+    val altChannels: Map<String, RegisteredChannel<*>>
 
     fun findControl(id: String): OpenControl?
     fun getControl(id: String): OpenControl
     fun getDataSource(id: String): DataSource
     fun getPanel(id: String): Panel
     fun getShaderInstance(it: String): LiveShaderInstance
+
+    fun <T> registerChannel(
+        id: String,
+        initialValue: T,
+        serializer: KSerializer<T>,
+        controlledDataSource: DataSource
+    ): Channel<T>
+
+    fun <T> registerAltChannel(
+        id: String,
+        initialValue: T,
+        serializer: KSerializer<T>,
+        controlledDataSource: DataSource
+    ): Channel<T>
+
     fun release()
+
+    class RegisteredChannel<T>(
+        val entry: RackMap.Entry<T>,
+        val controlledDataSource: DataSource
+    ): Observable(), Channel<T> {
+        override var value: T = entry.initialValue
+            get() = field
+            set(value) {
+                field = value
+                if (this::busChannel.isInitialized) {
+                    busChannel.value = value
+                }
+                notifyChanged()
+            }
+
+        lateinit var busChannel: Channel<T>
+
+        fun attachBus(bus: Bus) {
+            val channel = bus.channel(entry)
+            channel.addObserver(object : Observer {
+                override fun notifyChanged() {
+                    value = channel.value
+                    this@RegisteredChannel.notifyChanged()
+                }
+            })
+            busChannel = channel
+        }
+    }
 }
 
-object EmptyOpenContext : OpenContext {
+object EmptyOpenContext : StubOpenContext()
+
+class PreviewOpenContext : StubOpenContext() {
+    override val channels = mutableMapOf<String, OpenContext.RegisteredChannel<*>>()
+    override val altChannels = mutableMapOf<String, OpenContext.RegisteredChannel<*>>()
+
+    override fun <T> registerChannel(
+        id: String,
+        initialValue: T,
+        serializer: KSerializer<T>,
+        controlledDataSource: DataSource
+    ): Channel<T> {
+        return OpenContext.RegisteredChannel(RackMap.Entry(id, initialValue, serializer), controlledDataSource).also {
+            channels[id] = it
+        }
+    }
+
+    override fun <T> registerAltChannel(
+        id: String,
+        initialValue: T,
+        serializer: KSerializer<T>,
+        controlledDataSource: DataSource
+    ): Channel<T> {
+        return OpenContext.RegisteredChannel(RackMap.Entry(id, initialValue, serializer), controlledDataSource).also {
+            altChannels[id] = it
+        }
+    }
+}
+
+open class StubOpenContext : OpenContext {
     override val allControls: List<OpenControl> get() = emptyList()
+    override val channels: MutableMap<String, OpenContext.RegisteredChannel<*>> = mutableMapOf()
+    override val altChannels: MutableMap<String, OpenContext.RegisteredChannel<*>> = mutableMapOf()
 
     override fun findControl(id: String): OpenControl? = null
 
@@ -37,6 +119,24 @@ object EmptyOpenContext : OpenContext {
     override fun getPanel(id: String): Panel = error("not really an open context")
 
     override fun getShaderInstance(it: String): LiveShaderInstance = error("not really an open context")
+
+    override fun <T> registerChannel(
+        id: String,
+        initialValue: T,
+        serializer: KSerializer<T>,
+        controlledDataSource: DataSource
+    ): Channel<T> {
+        return OpenContext.RegisteredChannel(RackMap.Entry(id, initialValue, serializer), controlledDataSource)
+    }
+
+    override fun <T> registerAltChannel(
+        id: String,
+        initialValue: T,
+        serializer: KSerializer<T>,
+        controlledDataSource: DataSource
+    ): Channel<T> {
+        return OpenContext.RegisteredChannel(RackMap.Entry(id, initialValue, serializer), controlledDataSource)
+    }
 
     override fun release() {
     }
@@ -62,6 +162,9 @@ class OpenShow(
     val layouts get() = show.layouts
     val allDataSources = show.dataSources
     val allControls: List<OpenControl> = openContext.allControls
+    val rackMap: RackMap get() = RackMap(openContext.channels.map { (_, v) -> v.entry })
+    val channels: Map<String, OpenContext.RegisteredChannel<*>> get() = openContext.channels
+    val altChannels: Map<String, OpenContext.RegisteredChannel<*>> get() = openContext.altChannels
 
     fun getPanel(id: String) = show.layouts.panels.getBang(id, "panel")
 

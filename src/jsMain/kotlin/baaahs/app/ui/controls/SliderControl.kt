@@ -1,6 +1,5 @@
 package baaahs.app.ui.controls
 
-import baaahs.GadgetListener
 import baaahs.app.ui.gadgets.slider.slider
 import baaahs.control.OpenSliderControl
 import baaahs.show.live.ControlProps
@@ -14,35 +13,29 @@ import react.dom.div
 
 private val SliderControl = xComponent<SliderControlProps>("SliderControl") { props ->
     val sliderControl = props.sliderControl
-    val title = sliderControl.slider.title
+    val title = sliderControl.title
 //    val channel = props.sliderControl.channel
 
-//    observe(channel)
+    observe(sliderControl.positionChannel, sliderControl.altPositionChannel)
 //    val handlePositionChange = handler("handlePositionChange", channel) { newPosition: Float ->
 //        channel.value = newPosition
 //    }
 
 
-    val slider = sliderControl.slider
-    var position by state { slider.position }
-    onMount(slider) {
-        val listener: GadgetListener = { position = slider.position }
-        slider.listen(listener)
-        withCleanup { slider.unlisten(listener) }
-    }
+    var position by state { sliderControl }
 
-    val handlePositionChange = handler("handlePositionChange", slider) { newPosition: Float ->
-        slider.position = newPosition
+    val handlePositionChange = handler("handlePositionChange", sliderControl) { newPosition: Float ->
+        sliderControl.positionChannel.value = newPosition
     }
 
     slider {
-        attrs.title = props.sliderControl.slider.title
-//        attrs.position = channel.value
-        attrs.position = position
+        attrs.title = props.sliderControl.title
+        attrs.position = sliderControl.position
+        attrs.contextPosition = sliderControl.altPosition
         attrs.contextPosition = null
-        attrs.minValue = props.sliderControl.slider.minValue
-        attrs.maxValue = props.sliderControl.slider.maxValue
-        attrs.stepValue = props.sliderControl.slider.stepValue
+        attrs.minValue = props.sliderControl.minValue
+        attrs.maxValue = props.sliderControl.maxValue
+        attrs.stepValue = props.sliderControl.stepValue
         attrs.reversed = true
         attrs.showTicks = true
 

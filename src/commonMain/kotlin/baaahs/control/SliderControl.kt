@@ -18,6 +18,7 @@ import baaahs.show.mutable.ShowBuilder
 import baaahs.ui.View
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.JsonElement
 
 @Serializable
@@ -53,7 +54,16 @@ data class SliderControl(
         val controlledDataSource = openContext.getDataSource(controlledDataSourceId)
         val slider = Slider(title, initialValue, minValue, maxValue, stepValue)
         showPlayer.registerGadget(id, slider, controlledDataSource)
-        return OpenSliderControl(id, slider, controlledDataSource)
+        return OpenSliderControl(
+            id,
+            title,
+            initialValue,
+            minValue,
+            maxValue,
+            stepValue,
+            controlledDataSource,
+            openContext
+        )
     }
 }
 
@@ -87,28 +97,64 @@ data class MutableSliderControl(
         )
     }
 
-    override fun previewOpen(): OpenSliderControl {
-        val slider = Slider(title, initialValue, minValue, maxValue, stepValue)
-        return OpenSliderControl(randomId(title.camelize()), slider, controlledDataSource)
+    override fun previewOpen(openContext: OpenContext): OpenSliderControl {
+        return OpenSliderControl(
+            randomId(title.camelize()),
+            title,
+            initialValue,
+            minValue,
+            maxValue,
+            stepValue,
+            controlledDataSource,
+            openContext
+        )
     }
 }
 
 class OpenSliderControl(
     override val id: String,
-    val slider: Slider,
-    val controlledDataSource: DataSource
-) : OpenControl {
-    override fun getState(): Map<String, JsonElement> = slider.state
 
-    override fun applyState(state: Map<String, JsonElement>) = slider.applyState(state)
+    /** The name for this slider. */
+    val title: String,
+
+    /** The initial value for this slider. */
+    val initialValue: Float = 1f,
+
+    /** The minimum value for this slider. */
+    val minValue: Float = 0f,
+
+    /** The maximum value for this slider. */
+    val maxValue: Float = 1f,
+
+    /** The step value for the slider. */
+    val stepValue: Float? = null,
+
+    val controlledDataSource: DataSource,
+
+    openContext: OpenContext
+) : OpenControl {
+    val positionChannel =
+        openContext.registerChannel(id, initialValue, Float.serializer(), controlledDataSource)
+    val altPositionChannel =
+        openContext.registerAltChannel(id, initialValue, Float.serializer(), controlledDataSource)
+
+    val position: Float get() = positionChannel.value
+    val altPosition: Float get() = positionChannel.value
+
+    override fun getState(): JsonElement =
+        OpenControl.json.encodeToJsonElement(Float.serializer(), positionChannel.value)
+
+    override fun applyState(state: JsonElement) {
+        positionChannel.value = OpenControl.json.decodeFromJsonElement(Float.serializer(), state)
+    }
 
     override fun resetToDefault() {
-        slider.position = slider.initialValue
+        positionChannel.value = initialValue
     }
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl {
         return MutableSliderControl(
-            slider.title, slider.initialValue, slider.minValue, slider.maxValue, slider.stepValue, controlledDataSource
+            title, initialValue, minValue, maxValue, stepValue, controlledDataSource
         )
     }
 

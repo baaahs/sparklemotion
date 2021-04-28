@@ -74,7 +74,7 @@ data class MutableButtonGroupControl(
         })
     }
 
-    override fun previewOpen(): OpenControl {
+    override fun previewOpen(openContext: OpenContext): OpenControl {
         val buttonGroupControl = build(ShowBuilder())
         return OpenButtonGroupControl(randomId(title.camelize()), buttonGroupControl, EmptyOpenContext)
     }
@@ -96,9 +96,9 @@ class OpenButtonGroupControl(
     val title: String
         get() = buttonGroupControl.title
 
-    override fun getState(): Map<String, JsonElement>? = null
+    override fun getState(): JsonElement? = null
 
-    override fun applyState(state: Map<String, JsonElement>) {}
+    override fun applyState(state: JsonElement) {}
 
     val direction = buttonGroupControl.direction
 

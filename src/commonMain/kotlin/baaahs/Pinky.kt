@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.api.ws.WebSocketRouter
 import baaahs.dmx.Dmx
+import baaahs.driverack.DriveRackManager
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.RootToolchain
@@ -56,10 +57,11 @@ class Pinky(
     private val pubSub: PubSub.Server = PubSub.Server(httpServer, CoroutineScope(coroutineContext))
     val gadgetManager = GadgetManager(pubSub, clock, coroutineContext)
     internal val fixtureManager = FixtureManager(renderManager)
+    private val driveRackManager = DriveRackManager(pubSub, Dispatchers.Default, true, /* TODO: should pass Dispatchers.IO here! */)
 
     val toolchain = RootToolchain(plugins)
     val stageManager: StageManager = StageManager(
-        toolchain, renderManager, pubSub, storage, fixtureManager, clock, model, gadgetManager
+        toolchain, renderManager, pubSub, storage, fixtureManager, clock, model, gadgetManager, driveRackManager
     )
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {

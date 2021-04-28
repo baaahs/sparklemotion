@@ -2,6 +2,8 @@ package baaahs.show.live
 
 import baaahs.ShowPlayer
 import baaahs.ShowState
+import baaahs.driverack.Channel
+import baaahs.driverack.RackMap
 import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
@@ -12,6 +14,7 @@ import baaahs.show.Shader
 import baaahs.show.Show
 import baaahs.util.CacheBuilder
 import baaahs.util.Logger
+import kotlinx.serialization.KSerializer
 
 open class ShowOpener(
     private val toolchain: Toolchain,
@@ -25,7 +28,8 @@ open class ShowOpener(
     }
 
     override val allControls: List<OpenControl> get() = openControlCache.all.values.toList()
-
+    override val channels: MutableMap<String, OpenContext.RegisteredChannel<*>> = mutableMapOf()
+    override val altChannels: MutableMap<String, OpenContext.RegisteredChannel<*>> = mutableMapOf()
     private val openShaders = CacheBuilder<String, OpenShader> { shaderId ->
         openShader(show.shaders.getBang(shaderId, "shaders"))
     }
@@ -60,6 +64,29 @@ open class ShowOpener(
 
     open fun openShader(shader: Shader) =
         toolchain.openShader(shader)
+
+    override fun <T> registerChannel(
+        id: String,
+        initialValue: T,
+        serializer: KSerializer<T>,
+        controlledDataSource: DataSource
+    ): Channel<T> {
+        return OpenContext.RegisteredChannel(RackMap.Entry(id, initialValue, serializer), controlledDataSource).also {
+            channels[id] = it
+        }
+
+    }
+
+    override fun <T> registerAltChannel(
+        id: String,
+        initialValue: T,
+        serializer: KSerializer<T>,
+        controlledDataSource: DataSource
+    ): Channel<T> {
+        return OpenContext.RegisteredChannel(RackMap.Entry(id, initialValue, serializer), controlledDataSource).also {
+            altChannels[id] = it
+        }
+    }
 
     override fun release() {
 //        allControls.forEach { it.release() }

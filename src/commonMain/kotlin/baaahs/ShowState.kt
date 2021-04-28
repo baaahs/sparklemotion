@@ -5,5 +5,5 @@ import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class ShowState(
-    val controls: Map<String, Map<String, JsonElement>>
+    val controls: Map<String, JsonElement>
 )

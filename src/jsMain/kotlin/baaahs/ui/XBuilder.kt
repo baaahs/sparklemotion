@@ -104,10 +104,10 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         }
     }
 
-    fun observe(item: IObservable) {
-        onChange("observe", item) {
-            val observer = item.addObserver { forceRender() }
-            withCleanup { observer.remove() }
+    fun observe(vararg items: IObservable) {
+        onChange("observe", *items) {
+            val observers = items.map { it.addObserver { forceRender() } }
+            withCleanup { observers.forEach { it.remove() } }
         }
     }
 

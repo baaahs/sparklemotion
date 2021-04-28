@@ -56,7 +56,7 @@ class ControlDisplay(
         val dataSourcesWithoutControls = show.allDataSources.values -
                 show.allControls.flatMap { it.controlledDataSources() }
         suggestedControls = dataSourcesWithoutControls.mapNotNull {
-            it.buildControl()?.previewOpen()
+            it.buildControl()?.previewOpen(EmptyOpenContext)
         }
     }
     val unplacedControls = (show.allControls + suggestedControls)

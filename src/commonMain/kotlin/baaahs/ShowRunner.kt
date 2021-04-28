@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.driverack.DriveRackManager
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.render.RenderManager
 import baaahs.show.Show
@@ -14,14 +15,23 @@ class ShowRunner(
     internal val clock: Clock,
     private val renderManager: RenderManager,
     private val fixtureManager: FixtureManager,
+    driveRackManager: DriveRackManager,
     private val updateProblems: (List<ShowProblem>) -> Unit
 ) {
     private var showState: ShowState = initialShowState ?: openShow.getShowState()
     private var activePatchSetChanged: Boolean = true
+    private val driveRack = driveRackManager.publish(openShow.rackMap, initialBuses = setOf("A", "B"))
+    private val driveRackMainBus = driveRack.getBus("A")
+    private val driveRackAltBus = driveRack.getBus("B")
+
+    val driveRackId: String get() = driveRack.id
 
     init {
         logger.debug { "Running show ${openShow.title}" }
         updateProblems(openShow.allProblems)
+
+        openShow.channels.forEach { (_, channel) -> channel.attachBus(driveRackMainBus) }
+        openShow.altChannels.forEach { (_, channel) -> channel.attachBus(driveRackAltBus) }
     }
 
     fun getShowState(): ShowState {

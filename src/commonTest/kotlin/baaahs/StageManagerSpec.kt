@@ -96,6 +96,7 @@ object StageManagerSpec : Spek({
                     ShowEditorState(
                         editedShow,
                         ShowState(emptyMap()),
+                        driveRackId,
                         isUnsaved = true,
                         file = editingClientShowEditorState!!.file
                     )

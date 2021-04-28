@@ -12,6 +12,7 @@ import baaahs.show.mutable.*
 import baaahs.ui.View
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.JsonElement
 
 @Serializable
@@ -71,7 +72,7 @@ class MutableButtonControl(
         )
     }
 
-    override fun previewOpen(): OpenControl {
+    override fun previewOpen(openContext: OpenContext): OpenControl {
         val buttonControl = build(ShowBuilder())
         return OpenButtonControl(randomId(title.camelize()), buttonControl, EmptyOpenContext, controlledDataSource)
     }
@@ -98,9 +99,12 @@ class OpenButtonControl(
 
     override fun isActive(): Boolean = isPressed
 
-    override fun getState(): Map<String, JsonElement> = switch.state
+    override fun getState(): JsonElement =
+        OpenControl.json.encodeToJsonElement(Boolean.serializer(), switch.enabled)
 
-    override fun applyState(state: Map<String, JsonElement>) = switch.applyState(state)
+    override fun applyState(state: JsonElement) {
+        switch.enabled = OpenControl.json.decodeFromJsonElement(Boolean.serializer(), state)
+    }
 
     override fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panel: Panel, depth: Int) {
         if (isPressed) {

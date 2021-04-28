@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.app.ui.CommonIcons
+import baaahs.driverack.DriveRackManager
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.RenderPlan
 import baaahs.gl.Toolchain
@@ -64,7 +65,8 @@ class StageManager(
     private val fixtureManager: FixtureManager,
     private val clock: Clock,
     modelInfo: ModelInfo,
-    private val gadgetManager: GadgetManager
+    private val gadgetManager: GadgetManager,
+    private val driveRackManager: DriveRackManager
 ) : BaseShowPlayer(toolchain, modelInfo) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
@@ -130,7 +132,9 @@ class StageManager(
     ) {
         val newShowRunner = newShow?.let {
             val openShow = openShow(newShow, newShowState)
-            ShowRunner(newShow, newShowState, openShow, clock, renderManager, fixtureManager) { problems ->
+            ShowRunner(
+                newShow, newShowState, openShow, clock, renderManager, fixtureManager, driveRackManager
+            ) { problems ->
                 this.showProblems.onChange(problems)
             }
         }
@@ -238,7 +242,7 @@ class StageManager(
 
         fun getShowEditState(): ShowEditorState? {
             return showRunner?.let { showRunner ->
-                show?.withState(showRunner.getShowState(), showIsUnsaved, showFile)
+                show?.withState(showRunner.getShowState(), showRunner.driveRackId, showIsUnsaved, showFile)
             }
         }
     }

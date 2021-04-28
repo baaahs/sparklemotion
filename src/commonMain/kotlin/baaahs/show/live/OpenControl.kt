@@ -9,13 +9,14 @@ import baaahs.show.Panel
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.View
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 
 interface OpenControl {
     val id: String
     fun isActive(): Boolean = true
-    fun getState(): Map<String, JsonElement>?
-    fun applyState(state: Map<String, JsonElement>)
+    fun getState(): JsonElement?
+    fun applyState(state: JsonElement)
     fun controlledDataSources(): Set<DataSource> = emptySet()
     fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panel: Panel, depth: Int) {}
     fun applyConstraints() {}
@@ -23,6 +24,18 @@ interface OpenControl {
     fun toNewMutable(mutableShow: MutableShow): MutableControl
     fun getView(controlProps: ControlProps): View
     fun getEditIntent(): EditIntent? = ControlEditIntent(id)
+
+    companion object {
+        val json = Json {}
+    }
+}
+
+interface AdjustableControl {
+    /**
+     * Implementing child classes should change their state a little bit in some valid way, as if a user had done it.
+     */
+    fun adjustALittleBit() {
+    }
 }
 
 interface ControlContainer {

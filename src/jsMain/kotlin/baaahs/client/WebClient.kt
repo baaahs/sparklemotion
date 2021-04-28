@@ -47,6 +47,7 @@ class WebClient(
     private val model = Pluggables.getModel()
 
     private var show: Show? = null
+    private var driveRackId: String? = null
     private var openShow: OpenShow? = null
 
     private var savedShow: Show? = null
@@ -124,12 +125,14 @@ class WebClient(
     private fun switchTo(showEditorState: ShowEditorState?) {
         val newShow = showEditorState?.show
         val newShowState = showEditorState?.showState
+        val newDriveRackId = showEditorState?.driveRackId
         val newIsUnsaved = showEditorState?.isUnsaved ?: false
         val newFile = showEditorState?.file
-        val newOpenShow = newShow?.let { stageManager.openShow(newShow, newShowState) }
+        val newOpenShow = newShow?.let { stageManager.openShow(newShow, newShowState, newDriveRackId!!) }
         openShow?.release()
         openShow = newOpenShow
         this.show = newShow
+        this.driveRackId = showEditorState?.driveRackId
         this.showIsUnsaved = newIsUnsaved
         this.showFile = newFile
         if (!newIsUnsaved) this.savedShow = show
@@ -207,7 +210,7 @@ class WebClient(
 
         override fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean) {
             val isUnsaved = savedShow?.equals(show) != true
-            val showEditState = show.withState(showState, isUnsaved, showFile)
+            val showEditState = show.withState(showState, driveRackId!!, isUnsaved, showFile)
             showEditStateChannel.onChange(showEditState)
             switchTo(showEditState)
 

@@ -46,7 +46,7 @@ class MutableTransitionControl : MutableControl {
         return TransitionControl()
     }
 
-    override fun previewOpen(): OpenControl {
+    override fun previewOpen(openContext: OpenContext): OpenControl {
         return OpenTransitionControl(randomId(title.camelize()))
     }
 }
@@ -54,9 +54,9 @@ class MutableTransitionControl : MutableControl {
 class OpenTransitionControl(
     override val id: String
 ) : OpenControl {
-    override fun getState(): Map<String, JsonElement>? = null
+    override fun getState(): JsonElement? = null
 
-    override fun applyState(state: Map<String, JsonElement>) {}
+    override fun applyState(state: JsonElement) {}
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl {
         return MutableTransitionControl()

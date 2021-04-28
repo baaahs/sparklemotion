@@ -2,6 +2,7 @@ package baaahs.show.mutable
 
 import baaahs.app.ui.MutableEditable
 import baaahs.show.Control
+import baaahs.show.live.OpenContext
 import baaahs.show.live.OpenControl
 
 interface MutableControl : MutableEditable {
@@ -11,7 +12,7 @@ interface MutableControl : MutableEditable {
         if (log.controls.add(this)) visitor.visit(this)
     }
 
-    fun previewOpen(): OpenControl
+    fun previewOpen(openContext: OpenContext): OpenControl
 
     fun buildAndStashId(showBuilder: ShowBuilder): String {
         return showBuilder.idFor(build(showBuilder))
