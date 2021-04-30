@@ -4,6 +4,7 @@ import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.ShaderSubstitutions
 import baaahs.show.live.LinkedShaderInstance
 
 class ShaderComponent(
@@ -58,6 +59,8 @@ class ShaderComponent(
     private val resolvedPortMap get() =
         portMap + mapOf(shaderInstance.shader.outputPort.id to GlslExpr(outputVar))
 
+    private val substitutions = ShaderSubstitutions(shaderInstance.shader, namespace, resolvedPortMap)
+
     override fun appendStructs(buf: StringBuilder) {
         val openShader = shaderInstance.shader
         val portStructs = openShader.portStructs
@@ -81,7 +84,7 @@ class ShaderComponent(
 
         appendInjectionCode(buf)
 
-        buf.append(openShader.toGlsl(namespace, resolvedPortMap), "\n")
+        buf.append(openShader.toGlsl(substitutions), "\n")
     }
 
     private fun appendInjectionCode(buf: StringBuilder) {
@@ -114,7 +117,9 @@ class ShaderComponent(
         link: ProgramNode
     ) {
         val fn = inputPort.glslArgSite as GlslCode.GlslFunction
-        buf.append(fn.toGlsl(namespace, emptySet(), emptyMap()))
+        buf.append(fn.toGlsl {
+            if (it == fn.name) namespace.qualify(it) else it
+        })
         buf.append(" {\n")
 
         val destComponent = findUpstreamComponent(link)
@@ -146,6 +151,16 @@ class ShaderComponent(
         } else {
             namespace.qualify(outputPort.id)
         }.let { GlslExpr(it) }
+    }
+
+    override fun getInit(): String? {
+        return if (shaderInstance.shader.requiresInit) {
+            StringBuilder().apply {
+                append("    // Init ${title}.\n")
+                append("    ${ShaderSubstitutions.namespacedInitFnName(namespace)}();\n")
+                append("\n")
+            }.toString()
+        } else null
     }
 
     override fun toString(): String = "ShaderComponent(${prefix}_$id)"

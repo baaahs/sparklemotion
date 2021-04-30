@@ -10,13 +10,13 @@ import baaahs.gl.shader.type.ShaderType
 import baaahs.only
 import baaahs.show.Shader
 import baaahs.unknown
-import kotlin.collections.set
 
 interface OpenShader : RefCounted {
     val shader: Shader
     val src: String get() = glslCode.src
     val glslCode: GlslCode
     val title: String
+    val requiresInit: Boolean get() = false
     val entryPoint: GlslFunction
 
     val inputPorts: List<InputPort>
@@ -38,10 +38,7 @@ interface OpenShader : RefCounted {
         (inputPorts.map { it.contentType.glslType } + outputPort.contentType.glslType)
             .filterIsInstance<GlslType.Struct>()
 
-    /** The list of global variables that aren't also backing input ports. */
-    val globalVars: List<GlslCode.GlslVar>
-
-    fun toGlsl(namespace: Namespace, portMap: Map<String, GlslExpr> = emptyMap()): String
+    fun toGlsl(substitutions: GlslCode.Substitutions): String
 
     fun invoker(
         namespace: Namespace,
@@ -67,34 +64,29 @@ interface OpenShader : RefCounted {
 
         override val title: String get() = shader.title
 
-        override val globalVars: List<GlslCode.GlslVar> get() =
-            glslCode.globalVars.filter { !it.isUniform && !it.isVarying }
+        override val requiresInit = globalVars.any { it.deferInitialization }
 
-        override fun toGlsl(
-            namespace: Namespace,
-            portMap: Map<String, GlslExpr>
-        ): String {
+        override fun toGlsl(substitutions: GlslCode.Substitutions): String {
             val buf = StringBuilder()
-
-            val nonUniformGlobalsMap = hashMapOf<String, GlslExpr>()
             globalVars.forEach { glslVar ->
-                nonUniformGlobalsMap[glslVar.name] = GlslExpr(namespace.qualify(glslVar.name))
-                buf.append(glslVar.toGlsl(namespace, glslCode.symbolNames, emptyMap()))
+                buf.append(glslVar.declarationToGlsl(substitutions))
                 buf.append("\n")
             }
 
-            val uniformGlobalsMap = portMap.filter { (id, _) ->
-                val inputPort = findInputPortOrNull(id)
-
-                inputPort?.isGlobal == true ||
-                        (outputPort.id == id && !outputPort.isParam)
-            }
-
-            val symbolsToNamespace = glslCode.symbolNames.toSet() - portStructs.map { it.name}
-            val symbolMap = uniformGlobalsMap + nonUniformGlobalsMap
             glslCode.functions.filterNot { it.isAbstract }.forEach { glslFunction ->
-                buf.append(glslFunction.toGlsl(namespace, symbolsToNamespace, symbolMap))
+                buf.append(glslFunction.toGlsl(substitutions))
                 buf.append("\n")
+            }
+
+            if (requiresInit) {
+                buf.append("\n")
+                buf.append("void ${substitutions.substitute(ShaderSubstitutions.initFnName)}() {")
+                globalVars.forEach {
+                    if (it.deferInitialization) {
+                        buf.append("    ${it.assignmentToGlsl(substitutions)};\n")
+                    }
+                }
+                buf.append("}\n")
             }
 
             return buf.toString()
@@ -114,3 +106,44 @@ interface OpenShader : RefCounted {
             src.hashCode()
     }
 }
+
+class ShaderSubstitutions(
+    val openShader: OpenShader,
+    val namespace: Namespace,
+    portMap: Map<String, GlslExpr>
+) : GlslCode.Substitutions {
+    private val uniformGlobalsMap = portMap.filter { (id, _) ->
+        val inputPort = openShader.findInputPortOrNull(id)
+        inputPort?.isGlobal == true ||
+                (openShader.outputPort.id == id && !openShader.outputPort.isParam)
+    }
+
+    private val nonUniformGlobalsMap = openShader.globalVars.associate { glslVar ->
+        glslVar.name to GlslExpr(namespace.qualify(glslVar.name))
+    }
+
+    private val symbolsToNamespace =
+        openShader.glslCode.symbolNames.toSet() - openShader.portStructs.map { it.name }
+
+    private val specialSymbols =
+        mapOf(initFnName to GlslExpr(namespacedInitFnName(namespace)))
+
+    private val symbolMap = uniformGlobalsMap + nonUniformGlobalsMap + specialSymbols
+
+    override fun substitute(word: String): String =
+        symbolMap[word]?.s
+            ?: if (symbolsToNamespace.contains(word)) {
+                namespace.qualify(word)
+            } else {
+                word
+            }
+
+    companion object {
+        val initFnName = "_init_"
+        fun namespacedInitFnName(namespace: Namespace) = namespace.internalQualify("init")
+    }
+}
+
+/** The list of global variables that aren't also backing input ports. */
+private val OpenShader.globalVars: List<GlslCode.GlslVar> get() =
+    glslCode.globalVars.filter { !it.isUniform && !it.isVarying }

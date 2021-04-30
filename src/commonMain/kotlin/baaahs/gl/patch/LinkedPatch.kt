@@ -42,6 +42,10 @@ class LinkedPatch(
         buf.append("\n#line 10001\n")
         buf.append("void main() {\n")
 
+        components.forEach { component ->
+            component.getInit()?.let { buf.append(it) }
+        }
+
         components.filter { it.invokeFromMain }.forEach { component ->
             component.appendInvokeAndSet(buf)
         }

@@ -233,7 +233,9 @@ object GlslParserSpec : Spek({
                         it("handles nested macro expansions") {
                             val glslFunction = glslCode.functions.only()
 
-                            val glsl = glslFunction.toGlsl(Namespace("ns"), emptySet(), emptyMap())
+                            val glsl = glslFunction.toGlsl { text ->
+                                if (text == "main") Namespace("ns").qualify(text) else text
+                            }
 
                             expect(glsl.trim())
                                 .toBe(
@@ -423,6 +425,7 @@ object GlslParserSpec : Spek({
                             GlslVar(
                                 "baseColor", GlslType.Vec3, "const vec3 baseColor = vec3(0.0,0.09,0.18);",
                                 isConst = true,
+                                initExpr = " = vec3(0.0,0.09,0.18)",
                                 lineNumber = 1
                             )
                         )
