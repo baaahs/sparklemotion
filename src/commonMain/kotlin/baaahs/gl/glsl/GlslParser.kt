@@ -267,7 +267,7 @@ class GlslParser {
 
                 return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(\\s*\\[\\s*\\d+\\s*])?(\\s*=.*)?;", RegexOption.MULTILINE)
                     .find(text.trim())?.let {
-                        val (qualifier, type, name, arraySpec, constValue) = it.destructured
+                        val (qualifier, type, name, arraySpec, initExpr) = it.destructured
                         var (isConst, isUniform, isVarying) = arrayOf(false, false, false)
                         when (qualifier) {
                             "const" -> isConst = true
@@ -277,7 +277,7 @@ class GlslParser {
                         val (trimmedText, trimmedLineNumber) = chomp(text, lineNumber)
                         GlslCode.GlslVar(
                             name, context.findType(type), trimmedText, isConst, isUniform, isVarying,
-                            trimmedLineNumber, comments
+                            if (initExpr.isEmpty()) null else initExpr, trimmedLineNumber, comments
                         )
                     }
             }

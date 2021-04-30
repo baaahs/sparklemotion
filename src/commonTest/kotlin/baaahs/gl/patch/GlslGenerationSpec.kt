@@ -29,7 +29,8 @@ object GlslGenerationSpec : Spek({
                 uniform float blueness;
                 uniform vec2  resolution;
                 uniform float time;
-                int someGlobalVar;
+                int someGlobalVar = int(blueness * 100.);
+                int anotherGlobalVar = someGlobalVar + 1;
                 const int someConstVar = 123;
                 
                 int anotherFunc(int i) { return i; }
@@ -94,21 +95,35 @@ object GlslGenerationSpec : Spek({
                         int p0_thisShaderSName_someGlobalVar;
 
                         #line 8
+                        int p0_thisShaderSName_anotherGlobalVar;
+
+                        #line 9
                         const int p0_thisShaderSName_someConstVar = 123;
 
-                        #line 10
+                        #line 11
                         int p0_thisShaderSName_anotherFunc(int i) { return i; }
 
-                        #line 12
+                        #line 13
                         void p0_thisShaderSName_main( void ) {
                             vec2 uv = gl_FragCoord.xy / in_resolution.xy;
                             p0_thisShaderSName_someGlobalVar = p0_thisShaderSName_anotherFunc(p0_thisShaderSName_someConstVar);
                             p0_thisShaderSName_gl_FragColor = vec4(uv.xy, in_bluenessSlider, 1.);
                         }
 
+                        void p0_thisShaderSNamei_init() {    
+                        #line 7
+                          p0_thisShaderSName_someGlobalVar = int(in_bluenessSlider * 100.);;
+                            
+                        #line 8
+                          p0_thisShaderSName_anotherGlobalVar = p0_thisShaderSName_someGlobalVar + 1;;
+                        }
+
 
                         #line 10001
                         void main() {
+                            // Init This Shader's Name.
+                            p0_thisShaderSNamei_init();
+
                             // Invoke This Shader's Name
                             p0_thisShaderSName_main();
 
@@ -192,7 +207,7 @@ object GlslGenerationSpec : Spek({
                     // Other stuff.
                     
                     uniform float blueness;
-                    int someGlobalVar;
+                    int someGlobalVar = int(blueness * 100.);
                     const int someConstVar = 123;
                     
                     int anotherFunc(int i) { return i; }
@@ -260,9 +275,17 @@ object GlslGenerationSpec : Spek({
                             fragColor = vec4(uv.xy, in_bluenessSlider, 1.);
                         }
 
+                        void p0_thisShaderSNamei_init() {    
+                        #line 5
+                          p0_thisShaderSName_someGlobalVar = int(in_bluenessSlider * 100.);;
+                        }
+
 
                         #line 10001
                         void main() {
+                            // Init This Shader's Name.
+                            p0_thisShaderSNamei_init();
+
                             // Invoke This Shader's Name
                             p0_thisShaderSName_mainImage(p0_thisShaderSName_fragColor, gl_FragCoord.xy);
 
@@ -356,21 +379,35 @@ object GlslGenerationSpec : Spek({
                         int p1_thisShaderSName_someGlobalVar;
 
                         #line 8
+                        int p1_thisShaderSName_anotherGlobalVar;
+
+                        #line 9
                         const int p1_thisShaderSName_someConstVar = 123;
 
-                        #line 10
+                        #line 11
                         int p1_thisShaderSName_anotherFunc(int i) { return i; }
 
-                        #line 12
+                        #line 13
                         void p1_thisShaderSName_main( void ) {
                             vec2 uv = p0_cylindricalProjectioni_result.xy / in_resolution.xy;
                             p1_thisShaderSName_someGlobalVar = p1_thisShaderSName_anotherFunc(p1_thisShaderSName_someConstVar);
                             p1_thisShaderSName_gl_FragColor = vec4(uv.xy, in_bluenessSlider, 1.);
                         }
 
+                        void p1_thisShaderSNamei_init() {    
+                        #line 7
+                          p1_thisShaderSName_someGlobalVar = int(in_bluenessSlider * 100.);;
+                            
+                        #line 8
+                          p1_thisShaderSName_anotherGlobalVar = p1_thisShaderSName_someGlobalVar + 1;;
+                        }
+
 
                         #line 10001
                         void main() {
+                            // Init This Shader's Name.
+                            p1_thisShaderSNamei_init();
+
                             // Invoke Pixel Location
                             in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
 

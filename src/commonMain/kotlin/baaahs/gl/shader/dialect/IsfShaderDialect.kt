@@ -117,10 +117,9 @@ object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
     }
 
     private fun findIsfShaderDeclaration(glslCode: GlslCode): IsfShader? {
-        val match = Regex("^/\\*(\\{[\\s\\S]*})\\*/").find(glslCode.src)
-            ?: return null
-
-        val (jsonDecl) = match.destructured
+        if (!glslCode.src.startsWith("/*{")) return null
+        val endOfJson = glslCode.src.indexOf("*/")
+        val jsonDecl = glslCode.src.substring(2, endOfJson)
         try {
             return json.decodeFromString(IsfShader.serializer(), jsonDecl)
         } catch (e: SerializationException) {
