@@ -14,7 +14,7 @@ import kotlinx.serialization.json.put
 
 class GlslCode(
     val src: String,
-    private val statements: List<GlslStatement>
+    val statements: List<GlslStatement>
 ) {
     val globalVarNames = hashSetOf<String>()
     val functionNames = hashSetOf<String>()
@@ -85,6 +85,10 @@ class GlslCode(
         }
     }
 
+    fun interface Substitutions {
+        fun substitute(word: String): String
+    }
+
     interface GlslStatement {
         val name: String
         val fullText: String
@@ -93,20 +97,13 @@ class GlslCode(
 
         fun stripSource(): GlslStatement
 
-        fun toGlsl(
-            namespace: Namespace,
-            symbolsToNamespace: Set<String>,
-            symbolMap: Map<String, GlslExpr>
-        ): String {
+        fun toGlsl(substitutions: Substitutions): String {
+            return substituteGlsl(fullText, substitutions, lineNumber)
+        }
+
+        fun substituteGlsl(text: String, substitutions: Substitutions, lineNumber: Int?): String {
             return "${lineNumber?.let { "\n#line $lineNumber\n" }}" +
-                    replaceCodeWords(fullText) {
-                        symbolMap[it]?.s
-                            ?: if (it == name || symbolsToNamespace.contains(it)) {
-                                namespace.qualify(it)
-                            } else {
-                                it
-                            }
-                    }
+                    replaceCodeWords(text) { substitutions.substitute(it) }
         }
     }
 
@@ -159,6 +156,7 @@ class GlslCode(
         val isConst: Boolean = false,
         val isUniform: Boolean = false,
         override val isVarying: Boolean = false,
+        val initExpr: String? = null,
         override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList()
     ) : GlslStatement, GlslArgSite {
@@ -166,8 +164,21 @@ class GlslCode(
         override val isGlobalInput: Boolean get() = isUniform || isVarying
         override val isAbstractFunction: Boolean get() = false
         override val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
+        val deferInitialization: Boolean = !isConst && initExpr != null
 
         override fun stripSource() = copy(fullText = "", lineNumber = null)
+
+        fun declarationToGlsl(substitutions: Substitutions): String {
+            val declaration = if (deferInitialization) {
+                fullText.substring(0, fullText.indexOf(initExpr!!)) + ";"
+            } else fullText
+            return substituteGlsl(declaration, substitutions, lineNumber)
+        }
+
+        fun assignmentToGlsl(substitutions: Substitutions): String {
+            val assignment = "  $name$initExpr;"
+            return substituteGlsl(assignment, substitutions, lineNumber)
+        }
     }
 
     class Hint(
@@ -252,13 +263,9 @@ class GlslCode(
             return params.associate { it.name to (it.findContentType(plugins, this) ?: ContentType.Unknown) }
         }
 
-        override fun toGlsl(
-            namespace: Namespace,
-            symbolsToNamespace: Set<String>,
-            symbolMap: Map<String, GlslExpr>
-        ): String {
+        override fun toGlsl(substitutions: Substitutions): String {
             // Chomp trailing ';' if it's an abstract method.
-            return super.toGlsl(namespace, symbolsToNamespace, symbolMap)
+            return super.toGlsl(substitutions)
                 .let { if (isAbstract) it.trimEnd(';') else it }
         }
 

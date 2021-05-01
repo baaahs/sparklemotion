@@ -35,7 +35,9 @@ object GlslCodeSpec : Spek({
 
             context("const") {
                 override(text) { "const int i = 3;" }
-                expectValue(GlslCode.GlslVar("i", GlslType.Int, "const int i = 3;", isConst = true)) { variable }
+                expectValue(
+                    GlslCode.GlslVar("i", GlslType.Int, "const int i = 3;", isConst = true, initExpr = " = 3")
+                ) { variable }
             }
 
             context("uniform") {

@@ -23,7 +23,7 @@ object ShaderToyShaderDialectSpec : Spek({
         val src by value { "void mainImage(out vec4 fragColor, in vec2 fragCoord) { ... };" }
         val shader by value { Shader("Title", src) }
         val dialect by value { ShaderToyShaderDialect }
-        val shaderAnalysis by value { testToolchain.analyze(shader) }
+        val shaderAnalysis by value { dialect.analyze(testToolchain.parse(src), testToolchain.plugins) }
         val glslCode by value { shaderAnalysis.glslCode }
         val openShader by value { OpenShader.Base(shaderAnalysis, PaintShader) }
         val invocationStatement by value {
@@ -34,17 +34,17 @@ object ShaderToyShaderDialectSpec : Spek({
 
         context("shaders having a void mainImage(out vec4, in vec2) function") {
             it("is an good match") {
-                expect(dialect.matches(glslCode)).toEqual(MatchLevel.Good)
+                expect(dialect.matches(shaderAnalysis.glslCode)).toEqual(MatchLevel.Good)
             }
 
             it("finds the input port") {
-                expect(openShader.inputPorts.str()).containsExactly(
+                expect(shaderAnalysis.inputPorts.str()).containsExactly(
                     "fragCoord uv-coordinate:vec2 (U/V Coordinates)"
                 )
             }
 
             it("finds the output port") {
-                expect(openShader.outputPort).toEqual(
+                expect(shaderAnalysis.outputPorts).containsExactly(
                     OutputPort(Color, description = "Output Color", id = "fragColor", isParam = true)
                 )
             }
@@ -73,7 +73,7 @@ object ShaderToyShaderDialectSpec : Spek({
                 }
 
                 it("finds the input port") {
-                    expect(openShader.inputPorts.str()).containsExactly(
+                    expect(shaderAnalysis.inputPorts.str()).containsExactly(
                         "fragCoord uv-coordinate:vec2 (U/V Coordinates)",
                         "intensity unknown/float:float (Intensity)"
                     )
@@ -90,7 +90,7 @@ object ShaderToyShaderDialectSpec : Spek({
                 }
 
                 it("finds the input port") {
-                    expect(openShader.inputPorts.str()).contains.inAnyOrder.only.values(
+                    expect(shaderAnalysis.inputPorts.str()).contains.inAnyOrder.only.values(
                         "fragCoord uv-coordinate:vec2 (U/V Coordinates)",
                         "intensity unknown/float:float (Intensity)"
                     )
@@ -105,7 +105,7 @@ object ShaderToyShaderDialectSpec : Spek({
                 }
 
                 it("identifies the uniforms and maps them to the correct content types") {
-                    expect(openShader.inputPorts.str()).contains.inAnyOrder.only.values(
+                    expect(shaderAnalysis.inputPorts.str()).contains.inAnyOrder.only.values(
                         "fragCoord uv-coordinate:vec2 (U/V Coordinates)",
                         "iResolution resolution:vec3 (Resolution)",
                         "iTime time:float (Time)",
@@ -158,6 +158,7 @@ object ShaderToyShaderDialectSpec : Spek({
             it("fails to validate") {
                 expect(shaderAnalysis.isValid).toBe(false)
                 expect(shaderAnalysis.errors).containsExactly(
+                    GlslError("No entry point \"mainImage\" among [main]"),
                     GlslError("No output port found.")
                 )
             }

@@ -7,6 +7,7 @@ import baaahs.gl.openShader
 import baaahs.gl.shader.type.ShaderType
 import baaahs.show.Shader
 import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
@@ -53,19 +54,28 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
             }
         }
 
+    val handleNewShader = baaahs.ui.useCallback(props.mutablePatch, props.editableManager) { shader: MutableShader ->
+        val newShaderInstance = props.mutablePatch.addShaderInstance(shader)
+        handleShaderSelect[newShaderInstance].invoke()
+        props.editableManager.onChange()
+    }
+
     val newPatchCardRef = ref<Element>()
     var newPatchMenuAnchor by state<EventTarget?> { null }
     val handleNewPatchClick = baaahs.ui.useCallback { e: Event -> newPatchMenuAnchor = e.currentTarget }
     val handleNewPatchMenuClose = baaahs.ui.useCallback { _: Event, _: String -> newPatchMenuAnchor = null }
-    val handleNewShaderMenuClick: CacheBuilder<ShaderType, (Event) -> Unit> =
+    val handleNewShaderMenuClick = baaahs.ui.useCallback(handleNewShader) { _: Event ->
+        newPatchMenuAnchor = null
+        handleNewShader(MutableShader("New Shader", ""))
+    }
+    val handleNewShaderFromTemplateMenuClick: CacheBuilder<ShaderType, (Event) -> Unit> = memo(handleNewShader) {
         CacheBuilder { type ->
             {
                 newPatchMenuAnchor = null
-                val newShaderInstance = props.mutablePatch.addShaderInstance(type.newShaderFromTemplate())
-                handleShaderSelect[newShaderInstance].invoke()
-                props.editableManager.onChange()
+                handleNewShader(type.newShaderFromTemplate())
             }
         }
+    }
 
     var showShaderLibraryDialog by state { false }
     val handleNewFromShaderLibrary = baaahs.ui.useCallback { _: Event ->
@@ -123,9 +133,18 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
             attrs.open = newPatchMenuAnchor != null
             attrs.onClose = handleNewPatchMenuClose
 
+            menuItem {
+                attrs.onClickFunction = handleNewShaderMenuClick
+
+                listItemIcon { icon(CommonIcons.Add) }
+                listItemText { +"New Shader…" }
+            }
+
+            divider {}
+
             appContext.plugins.shaderTypes.all.forEach { type ->
                 menuItem {
-                    attrs.onClickFunction = handleNewShaderMenuClick[type]
+                    attrs.onClickFunction = handleNewShaderFromTemplateMenuClick[type]
 
                     listItemIcon { icon(type.icon) }
                     listItemText { +"New ${type.title} Shader…" }
