@@ -2,7 +2,6 @@ package baaahs.gl.shader.dialect
 
 import baaahs.describe
 import baaahs.gl.glsl.ErrorsShaderAnalysis
-import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
@@ -11,7 +10,6 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.testToolchain
 import baaahs.plugin.PluginRef
-import baaahs.show.Shader
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.contains
@@ -28,11 +26,9 @@ object IsfShaderDialectSpec : Spek({
     describe<IsfShaderDialect> {
         val src by value<String> { toBeSpecified() }
         val dialect by value { IsfShaderDialect }
-        val plugins by value { testToolchain.plugins }
-        val analyzer by value { GlslAnalyzer(plugins) }
-        val shaderAnalysis by value { testToolchain.analyze(Shader("Shader", src)) }
+        val shaderAnalysis by value { dialect.analyze(testToolchain.parse(src), testToolchain.plugins) }
         val glslCode by value { shaderAnalysis.glslCode }
-        val openShader by value { analyzer.openShader(shaderAnalysis) }
+        val openShader by value { testToolchain.openShader(shaderAnalysis) }
 
         context("a shader having an ISF block at the top") {
             override(src) {
@@ -140,6 +136,22 @@ object IsfShaderDialectSpec : Spek({
                     expect(openShader.inputPorts).containsExactly(
                         InputPort("TIME", ContentType.Time, GlslType.Float, "Time", isImplicit = true)
                     )
+                }
+
+                context("from the right hand side of a global variable") {
+                    override(src) {
+                        """
+                        /*{ }*/
+                        float theTime = TIME;
+                    """.trimIndent()
+
+                    }
+
+                    it("includes it as an input port") {
+                        expect(openShader.inputPorts).containsExactly(
+                            InputPort("TIME", ContentType.Time, GlslType.Float, "Time", isImplicit = true)
+                        )
+                    }
                 }
             }
 

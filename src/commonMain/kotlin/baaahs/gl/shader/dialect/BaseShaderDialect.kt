@@ -152,7 +152,7 @@ abstract class BaseShaderDialect(id: String) : ShaderDialect(id) {
     open fun findWellKnownInputPorts(glslCode: GlslCode, declaredInputPorts: Set<String>): List<InputPort> {
         if (wellKnownInputPorts.isEmpty()) return emptyList()
 
-        val iVars = glslCode.functions.flatMap { glslFunction ->
+        val iVars = glslCode.statements.flatMap { glslFunction ->
             Regex("\\w+").findAll(glslFunction.fullText).map { it.value }.filter { word ->
                 wellKnownInputPortsById.containsKey(word)
             }.toList()
