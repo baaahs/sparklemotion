@@ -15,4 +15,6 @@ interface Component {
     fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType> = emptyMap())
 
     fun getExpression(prefix: String): GlslExpr
+
+    fun getInit(): String? = null
 }

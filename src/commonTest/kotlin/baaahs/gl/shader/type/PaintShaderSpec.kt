@@ -9,6 +9,7 @@ import baaahs.gl.openShader
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.ShaderSubstitutions
 import baaahs.gl.testToolchain
 import baaahs.show.Shader
 import baaahs.toBeSpecified
@@ -128,12 +129,13 @@ object PaintShaderSpec : Spek({
             it("generates function declarations") {
                 expect(
                     openShader.toGlsl(
-                        namespace,
-                        mapOf(
-                            "resolution" to GlslExpr("in_resolution"),
-                            "blueness" to GlslExpr("aquamarinity"),
-                            "identity" to GlslExpr("p0_identity"),
-                            "gl_FragColor" to GlslExpr("sm_result")
+                        ShaderSubstitutions(openShader, namespace,
+                            mapOf(
+                                "resolution" to GlslExpr("in_resolution"),
+                                "blueness" to GlslExpr("aquamarinity"),
+                                "identity" to GlslExpr("p0_identity"),
+                                "gl_FragColor" to GlslExpr("sm_result")
+                            )
                         )
                     ).trim()
                 )
@@ -279,15 +281,18 @@ object PaintShaderSpec : Spek({
             it("generates function declarations") {
                 expect(
                     openShader.toGlsl(
-                        namespace,
-                        mapOf(
-                            "iResolution" to GlslExpr("in_resolution"),
-                            "iMouse" to GlslExpr("in_mouse"),
-                            "iTime" to GlslExpr("in_time"),
-                            "blueness" to GlslExpr("aquamarinity"),
-                            "identity" to GlslExpr("p0_identity"),
-                            "fragCoord" to GlslExpr("gl_FragCoord.xy")
-                        ),
+                        ShaderSubstitutions(
+                            openShader,
+                            namespace,
+                            mapOf(
+                                "iResolution" to GlslExpr("in_resolution"),
+                                "iMouse" to GlslExpr("in_mouse"),
+                                "iTime" to GlslExpr("in_time"),
+                                "blueness" to GlslExpr("aquamarinity"),
+                                "identity" to GlslExpr("p0_identity"),
+                                "fragCoord" to GlslExpr("gl_FragCoord.xy")
+                            ),
+                        )
                     ).trim()
                 )
                     .toBe(

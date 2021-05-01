@@ -1,7 +1,6 @@
 package baaahs.gl.shader.dialect
 
 import baaahs.describe
-import baaahs.gl.glsl.GlslAnalyzer
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
@@ -9,7 +8,6 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.testToolchain
-import baaahs.show.Shader
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.contains
@@ -23,11 +21,9 @@ object GenericShaderDialectSpec : Spek({
     describe<GenericShaderDialect> {
         val src by value<String> { toBeSpecified() }
         val dialect by value { GenericShaderDialect }
-        val plugins by value { testToolchain.plugins }
-        val analyzer by value { GlslAnalyzer(plugins) }
-        val shaderAnalysis by value { testToolchain.analyze(Shader("Shader", src)) }
+        val shaderAnalysis by value { dialect.analyze(testToolchain.parse(src), testToolchain.plugins) }
         val glslCode by value { shaderAnalysis.glslCode }
-        val openShader by value { analyzer.openShader(shaderAnalysis) }
+        val openShader by value { testToolchain.openShader(shaderAnalysis) }
 
         context("a shader having a main() function") {
             override(src) {
