@@ -6,6 +6,7 @@ import external.react.memo
 import org.w3c.dom.events.Event
 import react.RMutableRef
 import react.RProps
+import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -142,6 +143,8 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     fun <T : Function<*>> handler(name: String, vararg watch: Any?, block: T): T {
+    @Suppress("FunctionName")
+    private fun <T : Function<*>> _handler(name: String, watch: Array<out Any?>, block: T): T {
         val handler = context.handlers.getOrPut(name) { Handler(watch, logger, block) }
         return if (handler.hasChanged(watch)) {
             handler.block = block
@@ -153,13 +156,16 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         }
     }
 
-    fun eventHandler(name: String, vararg watch: Any?, block: (Event) -> Unit): (Event) -> Unit {
-        return handler(name, watch = watch, block = block)
+    fun <T : Function<*>> handler(vararg watch: Any?, block: T): ReadOnlyProperty<Any?, T> {
+        return ReadOnlyProperty { _, property ->
+            _handler(property.name, watch, block)
+        }
     }
 
-    fun eventHandler(block: Function<*>): (Event) -> Unit {
-        @Suppress("UNCHECKED_CAST")
-        return handler("event handler", block, block = block as (Event) -> Unit)
+    fun eventHandler(vararg watch: Any?, block: (Event) -> Unit): ReadOnlyProperty<Any?, (Event) -> Unit> {
+        return ReadOnlyProperty { _, property ->
+            _handler(property.name, watch) { event: Event -> block(event) }
+        }
     }
 
     /**

@@ -23,29 +23,29 @@ val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
     val value = ref { prompt.defaultValue }
     var isInvalidMessage by state { prompt.isValid(value.current) }
 
-    val handleChange = handler("change", prompt) { event: Event ->
+    val handleChange by eventHandler(prompt) { event: Event ->
         val newValue = event.target.value
         value.current = newValue
         isInvalidMessage = prompt.isValid(newValue)
     }
 
-    val handleDialogClose = handler("dialog close", props.onClose, prompt.onCancel) { event: Event, _: String ->
+    val handleDialogClose by handler(props.onClose, prompt.onCancel) { event: Event, _: String ->
         props.onClose()
         prompt.onCancel()
         event.stopPropagation()
     }
-    val handleCancelClick = handler("click cancel", props.onClose, prompt.onCancel) { event: Event ->
+    val handleCancelClick by eventHandler(props.onClose, prompt.onCancel) { event: Event ->
         props.onClose()
         prompt.onCancel()
         event.stopPropagation()
     }
-    val handleSubmitClick = handler("click submit", props.onClose, prompt.onSubmit) { event: Event ->
+    val handleSubmitClick by eventHandler(props.onClose, prompt.onSubmit) { event: Event ->
         props.onClose()
         prompt.onSubmit(value.current)
         event.stopPropagation()
     }
 
-    val handleKeyUp = handler("keyUp", prompt) { event: Event ->
+    val handleKeyUp by eventHandler(prompt) { event: Event ->
         if (event.asDynamic().key == "Enter" && isInvalidMessage == null) {
             handleSubmitClick(event)
         }

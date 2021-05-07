@@ -35,13 +35,12 @@ val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderProp
     val shaderInstance = props.mutableShaderInstance
     val editingShader = props.editingShader
 
-    val handleUpdate =
-        handler("handleShaderUpdate", props.mutableShaderInstance) { block: MutableShaderInstance.() -> Unit ->
-            props.mutableShaderInstance.block()
-            props.editableManager.onChange()
-        }
+    val handleUpdate by handler(props.mutableShaderInstance) { block: MutableShaderInstance.() -> Unit ->
+        props.mutableShaderInstance.block()
+        props.editableManager.onChange()
+    }
 
-    val handleSelectShaderChannel = handler("select shader channel", handleUpdate) { event: Event ->
+    val handleSelectShaderChannel by eventHandler(handleUpdate) { event: Event ->
         val channelId = event.target.value
         if (channelId == "__new__") {
             appContext.prompt(Prompt(
