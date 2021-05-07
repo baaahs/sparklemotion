@@ -18,7 +18,7 @@ private val SliderControl = xComponent<SliderControlProps>("SliderControl") { pr
 //    val channel = props.sliderControl.channel
 
 //    observe(channel)
-//    val handlePositionChange = handler("handlePositionChange", channel) { newPosition: Float ->
+//    val handlePositionChange by eventHandler(channel) { newPosition: Float ->
 //        channel.value = newPosition
 //    }
 
@@ -31,7 +31,7 @@ private val SliderControl = xComponent<SliderControlProps>("SliderControl") { pr
         withCleanup { slider.unlisten(listener) }
     }
 
-    val handlePositionChange = handler("handlePositionChange", slider) { newPosition: Float ->
+    val handlePositionChange by handler(slider) { newPosition: Float ->
         slider.position = newPosition
     }
 

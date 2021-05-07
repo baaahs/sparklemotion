@@ -105,12 +105,12 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         props.onApply(mutableShow)
     }
 
-    val handlePanelsClick = handler("panelsClick") { _: Event -> currentFormat = null }
+    val handlePanelsClick by eventHandler { _: Event -> currentFormat = null }
     val handleLayoutClicks = memo(mutableLayouts.formats.keys) {
         mutableLayouts.formats.keys.associateWith { { _: Event -> currentFormat = it } }
     }
 
-    val handleGridChange = handler("handleGridChange", handleApply) {
+    val handleGridChange by handler(handleApply) {
         changed.current = true
         props.onApply(mutableShow)
     }

@@ -21,17 +21,17 @@ private val Button = xComponent<ButtonProps>("Button") { props ->
     val buttonControl = props.buttonControl
     val onShowStateChange = props.controlProps.onShowStateChange
 
-    val handleToggleClick = handler("toggle click", onShowStateChange) {
+    val handleToggleClick by eventHandler(onShowStateChange) {
         buttonControl.click()
         onShowStateChange()
     }
 
-    val handleMomentaryPress = handler("momentary press", onShowStateChange) {
+    val handleMomentaryPress by eventHandler(onShowStateChange) {
         if (!buttonControl.isPressed) buttonControl.click()
         onShowStateChange()
     }
 
-    val handleMomentaryRelease = handler("momentary release", onShowStateChange) {
+    val handleMomentaryRelease by eventHandler(onShowStateChange) {
         if (buttonControl.isPressed) buttonControl.click()
         onShowStateChange()
     }

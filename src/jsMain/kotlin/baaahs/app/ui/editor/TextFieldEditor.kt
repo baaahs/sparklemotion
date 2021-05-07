@@ -17,12 +17,12 @@ import react.child
 val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { props ->
     val valueOnUndoStack = ref { props.getValue() }
 
-    val handleChange = handler("on change", props.setValue, props.editableManager) { event: Event ->
+    val handleChange by eventHandler(props.setValue, props.editableManager) { event: Event ->
         props.setValue(event.target.value)
         props.editableManager.onChange(pushToUndoStack = false)
     }
 
-    val handleBlur = handler("on blur", props.editableManager) { event: Event ->
+    val handleBlur by eventHandler(props.editableManager) { event: Event ->
         val newValue = event.target.value
         if (newValue != valueOnUndoStack.current) {
             valueOnUndoStack.current = newValue
@@ -30,7 +30,7 @@ val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { prop
         }
     }
 
-    val handleKeyDown = handler("on keydown", props.editableManager) { event: Event ->
+    val handleKeyDown by eventHandler(props.editableManager) { event: Event ->
         if (event.asDynamic().keyCode == 13) {
             handleBlur(event)
         }
