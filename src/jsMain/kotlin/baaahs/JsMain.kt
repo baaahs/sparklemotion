@@ -7,7 +7,7 @@ import baaahs.jsx.sim.MosaicApp
 import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
-import baaahs.sim.ui.WebClientWindow
+import baaahs.sim.HostedWebApp
 import baaahs.util.ConsoleFormatters
 import baaahs.util.JsClock
 import decodeQueryParams
@@ -33,12 +33,26 @@ fun main(args: Array<String>) {
     val queryParams = decodeQueryParams(document.location!!)
     val model = Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
 
+    fun HostedWebApp.launch() {
+        onLaunch()
+        render(render(), contentDiv)
+    }
+
     when (mode) {
         "Simulator" -> {
             val simulator = SheepSimulator(model)
+
+            val hostedWebApp = when (val app = queryParams["app"] ?: "UI") {
+                "Admin" -> simulator.createAdminUiApp()
+                "Mapper" -> simulator.createMapperApp()
+                "UI" -> simulator.createWebClientApp()
+                else -> throw UnsupportedOperationException("unknown app $app")
+            }
+            hostedWebApp.onLaunch()
+
             val props = jsObject<MosaicApp.Props> {
                 this.simulator = simulator
-                this.webClientWindow = WebClientWindow
+                this.hostedWebApp = hostedWebApp
             }
             val simulatorEl = document.getElementById("app")
             render(createElement(MosaicApp::class.js, props), simulatorEl)
@@ -46,7 +60,7 @@ fun main(args: Array<String>) {
 
         "Admin" -> {
             val adminApp = AdminUi(network, pinkyAddress, model)
-            render(adminApp.render(), contentDiv)
+            adminApp.launch()
         }
 
         "Mapper" -> {
@@ -54,9 +68,10 @@ fun main(args: Array<String>) {
 
             val mapperUi = JsMapperUi();
             val mediaDevices = RealMediaDevices()
-            val mapper = Mapper(network, model, mapperUi, mediaDevices, pinkyAddress, JsClock);
-            render(mapperUi.render(), contentDiv);
-            mapper.start();
+            // Yuck, side effects.
+            Mapper(network, model, mapperUi, mediaDevices, pinkyAddress, JsClock);
+
+            mapperUi.launch()
         }
 
         "UI" -> {

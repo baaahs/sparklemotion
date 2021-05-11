@@ -246,6 +246,10 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         return if (parentNode.offsetHeight == 0) window.innerHeight else parentNode.offsetHeight
     }
 
+    override fun onLaunch() {
+        listener.onLaunch()
+    }
+
     override fun onClose() {
         statusListener?.mapperStatusChanged(false)
 

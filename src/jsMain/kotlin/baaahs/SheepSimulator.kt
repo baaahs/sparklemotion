@@ -83,20 +83,9 @@ class SheepSimulator(val model: Model) {
         }
 
         val launcher = Launcher(document.getElementById("launcher")!!)
-        launcher.add("Web UI") { createWebClient() }
-
-        launcher.add("Mapper") {
-            val mapperUi = JsMapperUi(visualizer)
-            val mediaDevices = FakeMediaDevices(visualizer)
-            val mapper = Mapper(network, model, mapperUi, mediaDevices, pinky.address, clock)
-            mapperScope.launch { mapper.start() }
-
-            mapperUi
-        }
-
-        launcher.add("Admin UI") {
-            AdminUi(network, pinky.address, model, clock)
-        }
+        launcher.add("Web UI") { createWebClientApp() }
+        launcher.add("Mapper") { createMapperApp() }
+        launcher.add("Admin UI") { createAdminUiApp() }
 
         simSurfaces.forEach { simSurface ->
             val vizPanel = visualizer.addSurface(simSurface.surfaceGeometry)
@@ -123,9 +112,21 @@ class SheepSimulator(val model: Model) {
         }
     }
 
-    fun createWebClient(): WebClient {
+    fun createWebClientApp(): WebClient {
         return WebClient(network, pinkyAddress, RootToolchain(plugins))
     }
+
+    fun createMapperApp(): JsMapperUi {
+        val mapperUi = JsMapperUi(visualizer)
+        val mediaDevices = FakeMediaDevices(visualizer)
+
+        // This has side-effects on mapperUi. Ugly.
+        Mapper(network, model, mapperUi, mediaDevices, pinky.address, clock)
+
+        return mapperUi
+    }
+
+    fun createAdminUiApp() = AdminUi(network, pinky.address, model, clock)
 
     private fun prepareSurfaces(): List<SimSurface> {
         val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
@@ -183,7 +184,6 @@ class SheepSimulator(val model: Model) {
     }
 
     private val brainScope = CoroutineScope(Dispatchers.Main)
-    private val mapperScope = CoroutineScope(Dispatchers.Main)
 
     inner class Facade : baaahs.ui.Facade() {
         val pinky: Pinky.Facade
