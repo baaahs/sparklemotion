@@ -5,6 +5,7 @@ import SheepVisualizerWindow from './windows/SheepVisualizerWindow/SheepVisualiz
 import SimulatorSettingsWindow from './windows/SimulatorSettingsWindow/SimulatorSettingsWindow';
 import MosiacMenuBar from '../mosiac/MosiacMenuBar/MosiacMenuBar';
 import {StateProvider, store} from './store';
+import {baaahs} from 'sparklemotion';
 
 const EMPTY_ARRAY = [];
 const additionalControls = React.Children.toArray([]);
@@ -21,7 +22,6 @@ const MosaicUI = (props) => {
   const WINDOWS_BY_TYPE = {
     'Sheep Visualizer': SheepVisualizerWindow,
     'Simulator Console': SimulatorSettingsWindow,
-    'Web UI': props.webClientWindow,
   };
 
   const { simulator } = props;
@@ -85,24 +85,31 @@ const MosaicUI = (props) => {
     >
       <MosiacMenuBar />
       <Mosaic
-        renderTile={(type, path) => (
-          <MosaicWindow
-            draggable={false}
-            additionalControls={type === 3 ? additionalControls : EMPTY_ARRAY}
-            title={type}
-            createNode={createNode}
-            path={path}
-            onDragStart={() => console.log('MosaicWindow.onDragStart')}
-            onDragEnd={(type) => console.log('MosaicWindow.onDragEnd', type)}
-            renderToolbar={({ title }) => (
-              <div className={styles.panelToolbar}>{title}</div>
-            )}
-          >
-            <div className={styles.windowContainer}>
-              {React.createElement(WINDOWS_BY_TYPE[type])}
-            </div>
-          </MosaicWindow>
-        )}
+        renderTile={(type, path) => {
+          let windowType = WINDOWS_BY_TYPE[type];
+          let childElement = (windowType != null)
+              ? React.createElement(windowType)
+              : React.createElement(baaahs.sim.ui.WebClientWindow, {hostedWebApp: props.hostedWebApp});
+
+          return (
+            <MosaicWindow
+              draggable={false}
+              additionalControls={type === 3 ? additionalControls : EMPTY_ARRAY}
+              title={type}
+              createNode={createNode}
+              path={path}
+              onDragStart={() => console.log('MosaicWindow.onDragStart')}
+              onDragEnd={(type) => console.log('MosaicWindow.onDragEnd', type)}
+              renderToolbar={({title}) => (
+                <div className={styles.panelToolbar}>{title}</div>
+              )}
+            >
+              <div className={styles.windowContainer}>
+                {childElement}
+              </div>
+            </MosaicWindow>
+            );
+        }}
         zeroStateView={<MosaicZeroState createNode={createNode} />}
         value={state.currentNode}
         onChange={onChange}

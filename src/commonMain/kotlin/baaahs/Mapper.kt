@@ -33,7 +33,8 @@ class Mapper(
     private val mapperUi: MapperUi,
     private val mediaDevices: MediaDevices,
     private val pinkyAddress: Network.Address,
-    private val clock: Clock
+    private val clock: Clock,
+    private val mapperScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
 ) : Network.UdpListener, MapperUi.Listener, CoroutineScope by MainScope() {
     // TODO: getCamera should just return max available size?
     lateinit var camera: MediaDevices.Camera
@@ -54,6 +55,10 @@ class Mapper(
     init {
         mapperUi.listen(this)
         mapperUi.addWireframe(model)
+    }
+
+    override fun onLaunch() {
+        mapperScope.launch { start() }
     }
 
     fun start() = doRunBlocking {
@@ -869,6 +874,7 @@ interface MapperUi {
     fun pauseForUserInteraction()
 
     interface Listener {
+        fun onLaunch()
         fun onStart()
         fun onPause()
         fun onStop()
