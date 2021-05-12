@@ -105,6 +105,11 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
             select("mapperUi-cameraSelector") {
                 attrs.onChangeFunction = uiActions.changedCamera
 
+                option {
+                    attrs.label = "Unknown"
+                    attrs.value = ""
+                }
+
                 ui.devices.forEach { device ->
                     option {
                         attrs.label = device.label

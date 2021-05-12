@@ -149,7 +149,8 @@ body.noScroll {
 video {
     display: block;
     position: absolute;
-    top: 0;
+    top: 200px;
     left: 0;
     z-index: 10000;
+    width: 200px;
 }

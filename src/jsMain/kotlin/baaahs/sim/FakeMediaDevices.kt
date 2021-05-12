@@ -45,7 +45,7 @@ class FakeMediaDevices(
     }
 
     companion object {
-        val fakeDevice = MediaDevices.Device("fake", "video", "Fake Camera", "group")
+        val fakeDevice = MediaDevices.Device("simulator", "videoinput", "Simulator", "group")
     }
 
     inner class FakeCamera(val width: Int, val height: Int) : MediaDevices.Camera, Visualizer.FrameListener {

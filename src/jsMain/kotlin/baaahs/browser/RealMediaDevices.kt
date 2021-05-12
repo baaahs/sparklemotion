@@ -25,9 +25,10 @@ class RealMediaDevices : MediaDevices, CoroutineScope by MainScope() {
             val constraints = jsObject<dynamic> {
                 if (selectedDevice != null) {
                     deviceId = selectedDevice.deviceId
+                } else {
+                    width = js("({ min: 1024, ideal: 1280, max: 1920 })")
+                    height = js("({ min: 776, ideal: 720, max: 1080 })")
                 }
-                width = js("({ min: 1024, ideal: 1280, max: 1920 })")
-                height = js("({ min: 776, ideal: 720, max: 1080 })")
             }
 
             val camPromise: Promise<MediaStream> =

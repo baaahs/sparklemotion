@@ -60,15 +60,15 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : Observabl
         this.listener = listener
     }
 
-    var width by notifyOnChange(512)
-    var height by notifyOnChange(384)
+    var width = 512
+    var height = 384
 
-    var uiWidth by notifyOnChange(512)
-    var uiHeight by notifyOnChange(384)
+    var uiWidth = 512
+    var uiHeight = 384
 
     private var haveCamDimensions = false
-    var camWidth by notifyOnChange(0)
-    var camHeight by notifyOnChange(0)
+    var camWidth = 0
+    var camHeight = 0
 
     private val clock = Clock()
 
@@ -234,8 +234,9 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : Observabl
     val diffCanvasScale = 1 / 3.0
 
     fun resizeTo(width: Int, height: Int) {
-        if (width == width && height == height) return
+        if (width == this.width && height == this.height) return
 
+        println("resizeTo($width, $height)")
         this.width = width
         this.height = height
 
@@ -251,6 +252,8 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : Observabl
         uiCamera.updateProjectionMatrix()
 
         uiRenderer.setSize(uiWidth, uiHeight, true)
+
+        println("ui=${uiWidth}x$uiHeight; cam=${camWidth}x$camHeight")
         notifyChanged()
     }
 
@@ -513,7 +516,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : Observabl
     }
 
     override fun showCamImage(image: Image, changeRegion: MediaDevices.Region?) {
-        if (!haveCamDimensions) {
+        if (camWidth != image.width || camHeight != image.height) {
             camWidth = image.width
             camHeight = image.height
             haveCamDimensions = true
