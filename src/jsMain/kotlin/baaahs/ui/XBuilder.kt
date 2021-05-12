@@ -168,6 +168,18 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         }
     }
 
+    fun <T> eventHandler(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
+        @Suppress("UNREACHABLE_CODE")
+        return if (firstTime) {
+            val data = Data(logger, valueInitializer()) { forceRender() }
+            context.data.add(data)
+            return data
+        } else {
+            @Suppress("UNCHECKED_CAST")
+            return context.data[dataIndex++] as Data<T>
+        }
+    }
+
     /**
      * Useful when calling a prop function which might make an impermissible state change
      * in a parent component from within a side effect.

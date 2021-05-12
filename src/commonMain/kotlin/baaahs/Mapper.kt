@@ -29,13 +29,15 @@ const val USE_SOLID_SHADERS = false
 
 class Mapper(
     private val network: Network,
-    model: Model,
+    private val model: Model,
     private val mapperUi: MapperUi,
     private val mediaDevices: MediaDevices,
     private val pinkyAddress: Network.Address,
     private val clock: Clock,
     private val mapperScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
 ) : Network.UdpListener, MapperUi.Listener, CoroutineScope by MainScope() {
+    private val facade = Facade()
+
     // TODO: getCamera should just return max available size?
     lateinit var camera: MediaDevices.Camera
 
@@ -51,6 +53,8 @@ class Mapper(
 
     private val activeColor = Color(0x07, 0xFF, 0x07)
     private val inactiveColor = Color(0x01, 0x00, 0x01)
+    
+    private val sessions: MutableList<String> = arrayListOf()
 
     init {
         mapperUi.listen(this)
@@ -68,8 +72,10 @@ class Mapper(
 
         launch {
             webSocketClient.listSessions().forEach { mapperUi.addExistingSession(it) }
-
+            sessions.addAll(webSocketClient.listSessions())
             onStart()
+
+            facade.notifyChanged()
         }
     }
 
@@ -104,8 +110,27 @@ class Mapper(
         mapperUi.close()
     }
 
+    private fun showMessage(message: String) { mapperUi.showMessage(message) }
+    private fun showMessage2(message: String) { mapperUi.showMessage2(message) }
+    private fun showBefore(bitmap: Bitmap) { mapperUi.showBefore(bitmap) }
+    private fun showAfter(bitmap: Bitmap) { mapperUi.showAfter(bitmap) }
+    private fun getVisibleSurfaces(): List<MapperUi.VisibleSurface> = mapperUi.getVisibleSurfaces()
+    private fun lockUi(): MapperUi.CameraOrientation = mapperUi.lockUi()
+    private fun unlockUi() { mapperUi.lockUi() }
+    private fun showStats(total: Int, mapped: Int, visible: Int) = mapperUi.showStats(total, mapped, visible)
+    private fun setRedo(fn: (suspend () -> Unit)?) { mapperUi.setRedo(fn) }
+    private fun showCamImage(image: Image, changeRegion: MediaDevices.Region? = null) {
+        mapperUi.showCamImage(image, changeRegion)
+    }
+    private fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region? = null) {
+        mapperUi.showDiffImage(deltaBitmap, changeRegion)
+    }
+    private fun intersectingSurface(x: Int, y: Int, visibleSurfaces: List<MapperUi.VisibleSurface>): MapperUi.VisibleSurface? {
+        return mapperUi.intersectingSurface(x, y, visibleSurfaces)
+    }
+
     suspend fun startNewSession() {
-        mapperUi.showMessage("ESTABLISHING UPLINK…")
+        showMessage("ESTABLISHING UPLINK…")
 
         // shut down Pinky, advertise for Brains...
         retry {
@@ -128,17 +153,17 @@ class Mapper(
             }
         }
 
-        mapperUi.showMessage("${brainsToMap.size} SURFACES DISCOVERED!")
+        showMessage("${brainsToMap.size} SURFACES DISCOVERED!")
         waitUntilUnpaused()
         brainIdRequestJob.cancelAndJoin()
 
         if (brainsToMap.isEmpty()) {
-            mapperUi.showMessage("NO SURFACES DISCOVERED! TRY AGAIN!")
+            showMessage("NO SURFACES DISCOVERED! TRY AGAIN!")
             isRunning = false
             return
         }
 
-        mapperUi.showMessage("READY PLAYER ONE…")
+        showMessage("READY PLAYER ONE…")
         pauseForUserInteraction("ALIGN MODEL AND PRESS PLAY WHEN READY")
         waitUntilUnpaused()
 
@@ -147,9 +172,9 @@ class Mapper(
 
     inner class Session {
         val sessionStartTime = DateTime.now()
-        val visibleSurfaces = mapperUi.getVisibleSurfaces()
+        val visibleSurfaces = getVisibleSurfaces()
         private var baseBitmap: Bitmap? = null
-        val cameraOrientation = mapperUi.lockUi()
+        val cameraOrientation = lockUi()
         lateinit var deltaBitmap: Bitmap
 
         fun resetToBase() {
@@ -178,7 +203,7 @@ class Mapper(
         }
 
         suspend fun start() {
-            mapperUi.showMessage("CALIBRATING…")
+            showMessage("CALIBRLATING…")
             logger.info { "Visible surfaces: ${visibleSurfaces.joinToString { it.modelSurface.name }}" }
 
             // Blackout for base image.
@@ -192,8 +217,8 @@ class Mapper(
 
             val baseImageName = webSocketClient.saveImage(sessionStartTime, "base", bitmap)
 
-            mapperUi.showMessage("MAPPING…")
-            mapperUi.showStats(brainsToMap.size, 0, -1)
+            showMessage("MAPPING…")
+            showStats(brainsToMap.size, 0, -1)
 
             try {
                 logger.info { "identify surfaces..." }
@@ -205,12 +230,12 @@ class Mapper(
                     pauseForUserInteraction()
 
                     var retryCount = 0
-                    mapperUi.setRedo {
+                    setRedo {
                         identifyBrain(index, brainToMap, ++retryCount)
                     }
 
                     waitUntilUnpaused()
-                    mapperUi.setRedo(null)
+                    setRedo(null)
 
                     deliverer.send(brainToMap, solidColorBuffer(inactiveColor))
                     deliverer.await()
@@ -218,7 +243,7 @@ class Mapper(
 
                 delay(1000L)
 
-//            mapperUi.showMessage("SEEKING LIMITS…")
+//            showMessage("SEEKING LIMITS…")
 //            var maxPixel = 0
                 // binary search for highest present pixel 0..MAX_PIXEL_COUNT…
 
@@ -248,11 +273,11 @@ class Mapper(
                 logger.info { "done identifying pixels..." }
 
                 logger.info { "done identifying things... $isRunning" }
-                mapperUi.showMessage("++LEVEL UNLOCKED++")
+                showMessage("++LEVEL UNLOCKED++")
 
                 delay(1000L)
             } catch (e: TimeoutException) {
-                mapperUi.showMessage("Timed out: ${e.message}")
+                showMessage("Timed out: ${e.message}")
                 logger.error(e) { "Timed out" }
             }
 
@@ -321,7 +346,7 @@ class Mapper(
             // We're done!
 
             isRunning = false
-            mapperUi.unlockUi()
+            unlockUi()
 
             retry { udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning)) }
         }
@@ -336,8 +361,8 @@ class Mapper(
                 val pixels = brainToMap.surfaceData?.pixels!!
                 val buffer = brainToMap.pixelShaderBuffer
                 val unmappedPixelCount = pixels.count { it == null }
-                mapperUi.showMessage(brainToMap.guessedModelSurface?.name ?: "???")
-                mapperUi.showMessage2("$unmappedPixelCount of ${brainToMap.expectedPixelCount} pixels unmapped")
+                showMessage(brainToMap.guessedModelSurface?.name ?: "???")
+                showMessage2("$unmappedPixelCount of ${brainToMap.expectedPixelCount} pixels unmapped")
 
                 suspend fun drawPixels(isLit: (screenPosition: Vector2F) -> Boolean) {
                     buffer.indices.forEach { i ->
@@ -388,7 +413,7 @@ class Mapper(
         }
 
         private suspend fun identifyPixel(pixelIndex: Int, maxPixelForTheseBrains: Int) {
-            mapperUi.showMessage("MAPPING PIXEL $pixelIndex / $maxPixelForTheseBrains…")
+            showMessage("MAPPING PIXEL $pixelIndex / $maxPixelForTheseBrains…")
 
             if (pixelIndex % 128 == 0) logger.debug { "pixel $pixelIndex... isRunning is $isRunning" }
             turnOnPixel(pixelIndex)
@@ -402,7 +427,7 @@ class Mapper(
             // we won't block here yet...
 
             ImageProcessing.diff(pixelOnBitmap, baseBitmap!!, deltaBitmap)
-            mapperUi.showDiffImage(deltaBitmap)
+            showDiffImage(deltaBitmap)
             val pixelOnImageName = "not-really-an-image.png"
 //                mapperClient.saveImage(sessionStartTime, "pixel-$pixelIndex", deltaBitmap)
 
@@ -418,7 +443,7 @@ class Mapper(
         }
 
         suspend fun identifyBrain(index: Int, brainToMap: BrainToMap, retryCount: Int = 0) {
-            mapperUi.showMessage("MAPPING SURFACE $index / ${brainsToMap.size} (${brainToMap.brainId})…")
+            showMessage("MAPPING SURFACE $index / ${brainsToMap.size} (${brainToMap.brainId})…")
 
             deliverer.send(brainToMap, solidColorBuffer(activeColor))
             deliverer.await()
@@ -432,7 +457,7 @@ class Mapper(
                         " $surfaceChangeRegion ${surfaceChangeRegion.width}x${surfaceChangeRegion.height}"
             }
 
-            mapperUi.showDiffImage(deltaBitmap, surfaceChangeRegion)
+            showDiffImage(deltaBitmap, surfaceChangeRegion)
 
             brainToMap.changeRegion = surfaceChangeRegion
 
@@ -454,7 +479,7 @@ class Mapper(
             var tries = 1000
             while (surfaceBallot.totalVotes < 10 && tries-- > 0) {
                 val (x, y) = sampleLocations.random()
-                val visibleSurface = mapperUi.intersectingSurface(x, y, visibleSurfaces)
+                val visibleSurface = intersectingSurface(x, y, visibleSurfaces)
                 val surface = visibleSurface?.modelSurface
                 surface?.let {
                     surfaceBallot.cast(surface.name, visibleSurface)
@@ -479,8 +504,8 @@ class Mapper(
             val firstGuess = surfaceBallot.winner()
             val firstGuessSurface = firstGuess.modelSurface
 
-            mapperUi.showMessage("$index / ${brainsToMap.size}: ${brainToMap.brainId} — surface is ${firstGuessSurface.name}?")
-            mapperUi.showMessage2("Candidate panels: ${surfaceBallot.summarize()}")
+            showMessage("$index / ${brainsToMap.size}: ${brainToMap.brainId} — surface is ${firstGuessSurface.name}?")
+            showMessage2("Candidate panels: ${surfaceBallot.summarize()}")
 
             logger.info { "Guessed panel ${firstGuessSurface.name} for ${brainToMap.brainId}" }
             brainToMap.guessedModelSurface = firstGuessSurface
@@ -498,12 +523,12 @@ class Mapper(
             deltaBitmap: Bitmap,
             pixelOnImageName: String
         ) {
-            mapperUi.showMessage("MAPPING PIXEL $pixelIndex / $maxPixelsPerBrain (${brainToMap.brainId})…")
+            showMessage("MAPPING PIXEL $pixelIndex / $maxPixelsPerBrain (${brainToMap.brainId})…")
             val surfaceChangeRegion = brainToMap.changeRegion
             val visibleSurface = brainToMap.guessedVisibleSurface
 
             if (surfaceChangeRegion != null && surfaceChangeRegion.sqPix() > 0 && visibleSurface != null) {
-                mapperUi.showAfter(brainToMap.panelDeltaBitmap!!)
+                showAfter(brainToMap.panelDeltaBitmap!!)
 
                 val analysis = ImageProcessing.diff(
                     pixelOnBitmap,
@@ -518,9 +543,9 @@ class Mapper(
                             " $pixelChangeRegion ${pixelChangeRegion.width}x${pixelChangeRegion.height}"
                 }
 
-                mapperUi.showDiffImage(deltaBitmap, pixelChangeRegion)
-                mapperUi.showBefore(pixelOnBitmap)
-                mapperUi.showAfter(brainToMap.panelDeltaBitmap!!)
+                showDiffImage(deltaBitmap, pixelChangeRegion)
+                showBefore(pixelOnBitmap)
+                showAfter(brainToMap.panelDeltaBitmap!!)
 
                 if (analysis.hasBrightSpots() && !pixelChangeRegion.isEmpty()) {
                     val center = Vector3F(
@@ -537,7 +562,7 @@ class Mapper(
                     brainToMap.pixelMapData[pixelIndex] = PixelMapData(pixelChangeRegion, pixelOnImageName)
                     logger.debug { "$pixelIndex/${brainToMap.brainId}: center = $center" }
                 } else {
-                    mapperUi.showMessage2("looks like no pixel $pixelIndex for ${brainToMap.brainId}…")
+                    showMessage2("looks like no pixel $pixelIndex for ${brainToMap.brainId}…")
                 }
             }
         }
@@ -560,12 +585,12 @@ class Mapper(
     private fun pauseForUserInteraction(message: String = "PRESS PLAY WHEN READY") {
         isPaused = true
         mapperUi.pauseForUserInteraction()
-        mapperUi.showMessage2(message)
+        showMessage2(message)
     }
 
     private suspend fun waitUntilUnpaused() {
         while (isPaused) delay(50L)
-        mapperUi.showMessage2("")
+        showMessage2("")
     }
 
     private suspend fun sendToAllReliably(
@@ -649,7 +674,7 @@ class Mapper(
                 val waitingFor =
                     outstanding.values.map { it.brainToMap.guessedModelSurface?.name ?: it.brainToMap.brainId }
                         .sorted()
-                mapperUi.showMessage2("Waiting for PONG from ${waitingFor.joinToString(",")}")
+                showMessage2("Waiting for PONG from ${waitingFor.joinToString(",")}")
 //                logger.debug { "pongs outstanding: ${outstanding.keys.map { it.stringify() }}" }
 
                 var sleepUntil = Double.MAX_VALUE
@@ -698,7 +723,7 @@ class Mapper(
                     }
                 }
 
-                mapperUi.showMessage2("")
+                showMessage2("")
             }
         }
 
@@ -739,7 +764,7 @@ class Mapper(
             is BrainHelloMessage -> {
                 logger.debug { "Heard from Brain ${message.brainId} surface=${message.surfaceName ?: "unknown"}" }
                 val brainToMap = brainsToMap.getOrPut(fromAddress) { BrainToMap(fromAddress, message.brainId) }
-                mapperUi.showMessage("${brainsToMap.size} SURFACES DISCOVERED!")
+                showMessage("${brainsToMap.size} SURFACES DISCOVERED!")
                 brainToMap.shade { solidColor(Color.GREEN) }
             }
 
@@ -753,7 +778,7 @@ class Mapper(
 
     private fun haveImage(image: Image) {
 //        println("image: $image")
-        mapperUi.showCamImage(image)
+        showCamImage(image)
 
         newIncomingImage = image
     }
@@ -842,13 +867,18 @@ class Mapper(
     }
 
     companion object {
-        val logger = Logger("Mapper")
+        val logger = Logger<Mapper>()
 
         private val maxPixelsPerBrain = SparkleMotion.MAX_PIXEL_COUNT
     }
 
     fun List<Byte>.stringify(): String {
         return joinToString("") { (it.toInt() and 0xff).toString(16).padStart(2, '0') }
+    }
+
+
+    inner class Facade : baaahs.ui.Facade() {
+        val model = this@Mapper.model
     }
 }
 

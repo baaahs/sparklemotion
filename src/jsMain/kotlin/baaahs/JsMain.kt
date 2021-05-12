@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.mapper.MapperAppView
+import baaahs.mapper.MapperAppViewProps
 import baaahs.DeadCodeEliminationDefeater.noDCE
 import baaahs.browser.RealMediaDevices
 import baaahs.client.WebClient
@@ -73,7 +75,7 @@ fun main(args: Array<String>) {
             val mapperUi = JsMapperUi();
             val mediaDevices = RealMediaDevices()
             // Yuck, side effects.
-            Mapper(network, model, mapperUi, mediaDevices, pinkyAddress, JsClock);
+            Mapper(network, model, mapperUi, mediaDevices, pinkyAddress, JsClock)
 
             mapperUi.launch()
         }

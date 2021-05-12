@@ -171,7 +171,7 @@ class StageManager(
             if (dontProcrastinate) housekeeping()
 
             if (showRunner.renderNextFrame()) {
-                fixtureManager.sendFrame()
+//                fixtureManager.sendFrame()
             }
 
             if (!dontProcrastinate) housekeeping()
