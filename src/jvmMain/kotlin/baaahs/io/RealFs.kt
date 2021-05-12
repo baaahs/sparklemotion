@@ -40,7 +40,8 @@ class RealFs(
             Files.write(
                 destPath,
                 content,
-                if (allowOverwrite) StandardOpenOption.CREATE else StandardOpenOption.CREATE_NEW
+                if (allowOverwrite) StandardOpenOption.CREATE else StandardOpenOption.CREATE_NEW,
+                StandardOpenOption.TRUNCATE_EXISTING
             )
         }
 
