@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.browser.RealMediaDevices
 import baaahs.client.WebClient
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
@@ -118,7 +119,7 @@ class SheepSimulator(val model: Model) {
 
     fun createMapperApp(): JsMapperUi {
         val mapperUi = JsMapperUi(visualizer)
-        val mediaDevices = FakeMediaDevices(visualizer)
+        val mediaDevices = FakeMediaDevices(visualizer, RealMediaDevices())
 
         // This has side-effects on mapperUi. Ugly.
         Mapper(network, model, mapperUi, mediaDevices, pinky.address, clock)

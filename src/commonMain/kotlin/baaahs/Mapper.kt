@@ -77,6 +77,10 @@ class Mapper(
 
             facade.notifyChanged()
         }
+
+        launch {
+            mapperUi.devices = mediaDevices.enumerate()
+        }
     }
 
     override fun onStart() {
@@ -108,6 +112,11 @@ class Mapper(
         udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(false))
 
         mapperUi.close()
+    }
+
+    override fun useCamera(selectedDevice: MediaDevices.Device?) {
+        camera.close()
+        camera = mediaDevices.getCamera(selectedDevice).apply { onImage = { image -> haveImage(image) } }
     }
 
     private fun showMessage(message: String) { mapperUi.showMessage(message) }
@@ -883,6 +892,8 @@ class Mapper(
 }
 
 interface MapperUi {
+    var devices: List<MediaDevices.Device>
+
     fun listen(listener: Listener)
 
     fun addWireframe(model: Model)
@@ -909,6 +920,8 @@ interface MapperUi {
         fun onPause()
         fun onStop()
         fun onClose()
+
+        fun useCamera(selectedDevice: MediaDevices.Device?)
     }
 
     interface VisibleSurface {

@@ -10,6 +10,7 @@ import baaahs.ui.xComponent
 import kotlinx.css.properties.scale
 import kotlinx.css.properties.transform
 import kotlinx.css.px
+import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.tabIndex
 import org.w3c.dom.HTMLCanvasElement
@@ -92,7 +93,28 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                 i(classes = "fas fa-sign-in-alt") {}
                 attrs.onClickFunction = uiActions.clickedGoToSurface.withEvent()
             }
-            select("mapperUi-sessionSelector") { }
+            select("mapperUi-sessionSelector") {
+                ui.sessions.forEach { name ->
+                    option {
+                        attrs.label = name
+                        attrs.value = name
+                    }
+                }
+            }
+
+            select("mapperUi-cameraSelector") {
+                attrs.onChangeFunction = uiActions.changedCamera
+
+                ui.devices.forEach { device ->
+                    option {
+                        attrs.label = device.label
+                        attrs.value = device.deviceId
+                        if (device == ui.selectedDevice) {
+                            attrs.selected = true
+                        }
+                    }
+                }
+            }
         }
 //        cameraView {
 //            attrs.mapperUi = ui

@@ -5,30 +5,37 @@ import baaahs.document
 import baaahs.imaging.Image
 import baaahs.imaging.VideoElementImage
 import baaahs.window
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinext.js.jsObject
+import kotlinx.coroutines.*
 import org.w3c.dom.HTMLVideoElement
 import org.w3c.dom.ImageBitmap
 import org.w3c.dom.events.EventTarget
-import org.w3c.dom.mediacapture.MediaStream
-import org.w3c.dom.mediacapture.MediaStreamConstraints
-import org.w3c.dom.mediacapture.MediaStreamTrack
-import org.w3c.dom.mediacapture.MediaStreamTrackEvent
+import org.w3c.dom.mediacapture.*
 import kotlin.js.Promise
 
 class RealMediaDevices : MediaDevices, CoroutineScope by MainScope() {
-    override fun getCamera(): MediaDevices.Camera {
+    override suspend fun enumerate(): List<MediaDevices.Device> {
+        return window.navigator.mediaDevices.enumerateDevices().await()
+            .filter { it.kind == MediaDeviceKind.VIDEOINPUT }
+            .map { MediaDevices.Device(it.deviceId, it.kind.toString(), it.label, it.groupId) }
+    }
+
+    override fun getCamera(selectedDevice: MediaDevices.Device?): MediaDevices.Camera {
         return object : MediaDevices.Camera {
+            val constraints = jsObject<dynamic> {
+                if (selectedDevice != null) {
+                    deviceId = selectedDevice.deviceId
+                }
+                width = js("({ min: 1024, ideal: 1280, max: 1920 })")
+                height = js("({ min: 776, ideal: 720, max: 1080 })")
+            }
+
             val camPromise: Promise<MediaStream> =
-                window.navigator.mediaDevices.getUserMedia(MediaStreamConstraints(video = js("({" +
-                        "    width: { min: 1024, ideal: 1280, max: 1920 },\n" +
-                        "    height: { min: 776, ideal: 720, max: 1080 }\n" +
-                        "})")))
+                window.navigator.mediaDevices.getUserMedia(MediaStreamConstraints(video = constraints))
             lateinit var videoTrack: MediaStreamTrack
             //            lateinit var imageCapture: ImageCapture
             val videoEl = document.createElement("video") as HTMLVideoElement
+            private var closed = false
 
             init {
                 videoEl.autoplay = true
@@ -60,13 +67,20 @@ class RealMediaDevices : MediaDevices, CoroutineScope by MainScope() {
             override var onImage: (image: Image) -> Unit = {}
 
             override fun close() {
+                videoEl.pause()
             }
 
             suspend fun capture() {
                 onImage(VideoElementImage(videoEl))
 
-                delay(50)
-                capture()
+                if (!closed) {
+                    try {
+                        videoEl.asDynamic().requestVideoFrameCallback(this::capture)
+                    } catch (e: Exception) {
+                        delay(50)
+                        capture()
+                    }
+                }
             }
         }
     }

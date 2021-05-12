@@ -11,6 +11,7 @@ import baaahs.mapper.MapperAppViewProps
 import baaahs.model.Model
 import baaahs.sim.HostedWebApp
 import baaahs.ui.Observable
+import baaahs.ui.value
 import baaahs.util.Logger
 import baaahs.visualizer.Rotator
 import kotlinext.js.jsObject
@@ -33,6 +34,7 @@ import kotlin.collections.set
 import kotlin.math.roundToInt
 
 class MemoizedJsMapperUi(mapperUi: JsMapperUi) {
+    val changedCamera = mapperUi::changedCamera
     val clickedPlay = mapperUi::clickedPlay
     val clickedPause = mapperUi::clickedPause
     val clickedRedo = mapperUi::clickedRedo
@@ -51,19 +53,22 @@ class MapperStatus : Observable() {
 class JsMapperUi(private val statusListener: StatusListener? = null) : Observable(), MapperUi, HostedWebApp {
     private lateinit var listener: MapperUi.Listener
 
+    override var devices: List<MediaDevices.Device> by notifyOnChange(emptyList())
+    var selectedDevice: MediaDevices.Device? by notifyOnChange(null)
+
     override fun listen(listener: MapperUi.Listener) {
         this.listener = listener
     }
 
-    var width = 512
-    var height = 384
+    var width by notifyOnChange(512)
+    var height by notifyOnChange(384)
 
-    var uiWidth = 512
-    var uiHeight = 384
+    var uiWidth by notifyOnChange(512)
+    var uiHeight by notifyOnChange(384)
 
     private var haveCamDimensions = false
-    var camWidth = 0
-    var camHeight = 0
+    var camWidth by notifyOnChange(0)
+    var camHeight by notifyOnChange(0)
 
     private val clock = Clock()
 
@@ -75,7 +80,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : Observabl
         uiScene.add(camera)
     }
     private val uiControls: CameraControls = CameraControls(uiCamera, uiRenderer.domElement)
-    private val wireframe = Object3D()
+    val wireframe = Object3D()
 
     private val selectedSurfaces = mutableListOf<PanelInfo>()
     var uiLocked: Boolean by notifyOnChange(false)
@@ -92,23 +97,19 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : Observabl
     private lateinit var beforeCanvas: HTMLCanvasElement
     private lateinit var afterCanvas: HTMLCanvasElement
 
-//    private val sessionSelector = screen.first<HTMLSelectElement>("mapperUi-sessionSelector")
-//
-//    private val playButton = screen.first<HTMLButtonElement>("fa-play")
-//    private val pauseButton = screen.first<HTMLButtonElement>("fa-pause")
-//    private val redoButton = screen.first<HTMLButtonElement>("fa-redo")
+    val sessions = arrayListOf<String>()
 
-    var pauseButtonEnabled = true
-    var playButtonEnabled = true
+    var pauseButtonEnabled by notifyOnChange(true)
+    var playButtonEnabled by notifyOnChange(true)
 
     private val modelSurfaceInfos = mutableMapOf<Model.Surface, PanelInfo>()
 
     private var commandProgress = ""
     private var cameraZRotation = 0f
 
-    var mapperStatus = MapperStatus()
+    val mapperStatus = MapperStatus()
 
-    var redoFn: (() -> Unit)? = null
+    var redoFn: (() -> Unit)? by notifyOnChange(null)
 
     fun onMount(
         ui2dCanvas: HTMLCanvasElement,
@@ -166,10 +167,8 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : Observabl
     }
 
     override fun addExistingSession(name: String) {
-//        sessionSelector.insertBefore(
-//            document.create.option { label = name; value = name },
-//            sessionSelector.childNodes.asList().find { (it as HTMLOptionElement).value > name }
-//        )
+        sessions.add(name)
+        notifyChanged()
     }
 
     private fun resetCameraRotation() {
@@ -216,15 +215,6 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : Observabl
         return createElement(MapperAppView, jsObject<MapperAppViewProps> {
             mapperUi = this@JsMapperUi
         })
-    }
-
-    private fun renderDom(parentNode: HTMLElement) {
-//        parentNode.appendChild(screen)
-        resizeTo(parentNode.offsetWidth, heightOrWindowHeight(parentNode))
-
-        parentNode.onresize = {
-            resizeTo(parentNode.offsetWidth, heightOrWindowHeight(parentNode))
-        }
     }
 
     private fun heightOrWindowHeight(parentNode: HTMLElement): Int {
@@ -604,6 +594,13 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : Observabl
 
     override fun pauseForUserInteraction() {
         clickedPause()
+    }
+
+    fun changedCamera(event: Event) {
+        val selectedDeviceId = event.target?.value
+        selectedDevice = devices.find { it.deviceId == selectedDeviceId}
+
+        listener.useCamera(selectedDevice)
     }
 
     fun clickedPlay() {
