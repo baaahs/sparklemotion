@@ -8,6 +8,8 @@ import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
 import baaahs.sim.HostedWebApp
+import baaahs.sim.ui.WebClientWindow
+import baaahs.sim.ui.WebClientWindowProps
 import baaahs.util.ConsoleFormatters
 import baaahs.util.JsClock
 import decodeQueryParams
@@ -35,7 +37,9 @@ fun main(args: Array<String>) {
 
     fun HostedWebApp.launch() {
         onLaunch()
-        render(render(), contentDiv)
+        render(createElement(WebClientWindow, jsObject<WebClientWindowProps> {
+            this.hostedWebApp = this@launch
+        }), contentDiv)
     }
 
     when (mode) {
@@ -76,7 +80,7 @@ fun main(args: Array<String>) {
 
         "UI" -> {
             val uiApp = WebClient(network, pinkyAddress)
-            render(uiApp.render(), contentDiv)
+            uiApp.launch()
         }
 
         "test" -> {}
