@@ -117,29 +117,63 @@ class MutableTab(
     }
 
     fun appendColumn() {
+        duplicateColumn(columns.size - 1)
+    }
+
+    fun duplicateColumn(index: Int) {
         val previousColCount = columns.size
-        columns.add(columns.last().copy())
+        columns.add(index, columns[index].copy())
+
         val newAreas = mutableListOf<MutablePanel>()
         areas.forEachIndexed { i, area ->
             newAreas.add(area)
-            if (i % previousColCount == previousColCount - 1) {
+            if (i % previousColCount == index)
                 newAreas.add(area)
-            }
+        }
+        areas.clear()
+        areas.addAll(newAreas)
+    }
+
+    fun deleteColumn(index: Int) {
+        val previousColCount = columns.size
+        columns.removeAt(index)
+
+        val newAreas = mutableListOf<MutablePanel>()
+        areas.forEachIndexed { i, area ->
+            if (i % previousColCount != index)
+                newAreas.add(area)
         }
         areas.clear()
         areas.addAll(newAreas)
     }
 
     fun appendRow() {
-        val previousRowCount = rows.size
+        duplicateRow(rows.size - 1)
+    }
+
+    fun duplicateRow(index: Int) {
+        val newAreas = mutableListOf<MutablePanel>()
         val colCount = columns.size
-        rows.add(rows.last().copy())
-        areas.addAll(
-            areas.subList(
-                colCount * (previousRowCount - 1),
-                colCount * (previousRowCount)
-            )
-        )
+        repeat(rows.size) { row ->
+            repeat(colCount) { column -> newAreas.add(areas[row * colCount + column]) }
+            if (row == index)
+                repeat(colCount) { column -> newAreas.add(areas[row * colCount + column]) }
+        }
+        areas.clear()
+        areas.addAll(newAreas)
+        rows.add(index, rows[index].copy())
+    }
+
+    fun deleteRow(index: Int) {
+        val newAreas = mutableListOf<MutablePanel>()
+        val colCount = columns.size
+        repeat(rows.size) { row ->
+            if (row != index)
+                repeat(colCount) { column -> newAreas.add(areas[row * colCount + column]) }
+        }
+        areas.clear()
+        areas.addAll(newAreas)
+        rows.removeAt(index)
     }
 }
 
