@@ -43,6 +43,10 @@ class LayoutEditorStyles(theme: MuiTheme) : StyleSheet("app-ui-editor-LayoutEdit
         }
     }
 
+//    val gridSizeEditorTextField by css {
+//        paddingTop = 5.px
+//    }
+
     val gridAreaEditor by css {
     }
 
@@ -50,16 +54,15 @@ class LayoutEditorStyles(theme: MuiTheme) : StyleSheet("app-ui-editor-LayoutEdit
         border = "none"
     }
 
-    val gridSizeMenuAffordance by css {
+    val gridSizeEditorMenuAffordance by css {
         display = Display.inlineBlock
-//        border(2.px, BorderStyle.solid, theme.palette.primary.light)
-//        borderRadius = 5.px
-//        position = Position.fixed
-//        transform { scale(.5) }
-        padding(2.px)
+        padding(2.px, 2.px, 5.px, 2.px)
         height = 100.pct
         verticalAlign = VerticalAlign.middle
-//        backgroundColor = theme.palette.background.paper
-//        boxShadow = theme.shadows[3]
+
+        child("span") {
+            position = Position.relative
+            top = 6.px
+        }
     }
 }

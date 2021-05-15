@@ -103,7 +103,10 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
                         layoutSizeCell {
                             attrs.key = "col$columnIndex"
                             attrs.dimen = currentTab.columns[columnIndex]
+                            attrs.type = "Column"
                             attrs.onChange = props.onGridChange
+                            attrs.onDuplicate = { currentTab.duplicateColumn(columnIndex); props.onGridChange() }
+                            attrs.onDelete = { currentTab.deleteColumn(columnIndex); props.onGridChange() }
                         }
                     } else if (columnIndex == -1) {
                         // Extra cell on right side for "add column".
@@ -123,7 +126,10 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
                         layoutSizeCell {
                             attrs.key = "row$rowIndex"
                             attrs.dimen = currentTab.rows[rowIndex]
+                            attrs.type = "Row"
                             attrs.onChange = props.onGridChange
+                            attrs.onDuplicate = { currentTab.duplicateRow(rowIndex); props.onGridChange() }
+                            attrs.onDelete = { currentTab.deleteRow(rowIndex); props.onGridChange() }
                         }
                     } else {
                         layoutAreaCell {
