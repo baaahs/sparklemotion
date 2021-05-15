@@ -46,6 +46,10 @@ class LayoutEditorStyles(theme: MuiTheme) : StyleSheet("app-ui-editor-LayoutEdit
     val gridAreaEditor by css {
     }
 
+    val gridAreaEdge by css {
+        border = "none"
+    }
+
     val gridSizeMenuAffordance by css {
         display = Display.inlineBlock
 //        border(2.px, BorderStyle.solid, theme.palette.primary.light)
