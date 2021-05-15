@@ -115,6 +115,32 @@ class MutableTab(
             areas.map { showBuilder.idFor(it.build()) }
         )
     }
+
+    fun appendColumn() {
+        val previousColCount = columns.size
+        columns.add(columns.last().copy())
+        val newAreas = mutableListOf<MutablePanel>()
+        areas.forEachIndexed { i, area ->
+            newAreas.add(area)
+            if (i % previousColCount == previousColCount - 1) {
+                newAreas.add(area)
+            }
+        }
+        areas.clear()
+        areas.addAll(newAreas)
+    }
+
+    fun appendRow() {
+        val previousRowCount = rows.size
+        val colCount = columns.size
+        rows.add(rows.last().copy())
+        areas.addAll(
+            areas.subList(
+                colCount * (previousRowCount - 1),
+                colCount * (previousRowCount)
+            )
+        )
+    }
 }
 
 data class MutableLayoutDimen(var scalar: Number, var unit: String) {
