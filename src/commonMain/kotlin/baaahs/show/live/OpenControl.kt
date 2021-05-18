@@ -35,6 +35,7 @@ interface ControlViews {
     fun forColorPicker(openColorPickerControl: OpenColorPickerControl, controlProps: ControlProps): View
     fun forSlider(openSlider: OpenSliderControl, controlProps: ControlProps): View
     fun forTransition(openTransitionControl: OpenTransitionControl, controlProps: ControlProps): View
+    fun forVacuity(openVacuityControl: OpenVacuityControl, controlProps: ControlProps): View
     fun forVisualizer(openVisualizerControl: OpenVisualizerControl, controlProps: ControlProps): View
 }
 
