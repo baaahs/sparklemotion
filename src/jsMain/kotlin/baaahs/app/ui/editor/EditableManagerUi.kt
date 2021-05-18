@@ -45,19 +45,19 @@ import react.dom.header
 val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") { props ->
     observe(props.editableManager)
 
-//    val handleTitleChange = baaahs.ui.useCallback(props.mutablePatchHolder) { event: Event ->
+//    val handleTitleChange = baaahs.ui.callback(props.mutablePatchHolder) { event: Event ->
 //        props.mutablePatchHolder.title = event.targetEl<HTMLInputElement>().value
 //        forceRender()
 //    }
 
     var showModifiedWarning by state { false }
 
-    val handleFormSubmit = useCallback { _: Event ->
+    val handleFormSubmit = callback { _: Event ->
         if (props.editableManager.isModified()) {
             props.editableManager.applyChanges()
         }
     }
-    val handleDrawerClose = useCallback { _: Event ->
+    val handleDrawerClose = callback { _: Event ->
         if (props.editableManager.isModified()) {
             showModifiedWarning = true
         } else {
@@ -65,11 +65,11 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
         }
     }
 
-    val handleUndo = useCallback { _: Event -> props.editableManager.undo() }
-    val handleRedo = useCallback { _: Event -> props.editableManager.redo() }
+    val handleUndo = callback { _: Event -> props.editableManager.undo() }
+    val handleRedo = callback { _: Event -> props.editableManager.redo() }
 
-    val handleClose = useCallback { _: Event -> props.editableManager.close() }
-    val handleApply = useCallback { _: Event -> props.editableManager.applyChanges() }
+    val handleClose = callback { _: Event -> props.editableManager.close() }
+    val handleApply = callback { _: Event -> props.editableManager.applyChanges() }
 
     val editorPanels = props.editableManager.editorPanels
     val selectedPanel = props.editableManager.selectedPanel
