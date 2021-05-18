@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>OpenVacuityControl - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.control</a>&nbsp;/&nbsp;<a href="./index.html">OpenVacuityControl</a><br/>
+<br/>
+<h1>OpenVacuityControl</h1>
+<code><span class="keyword">class </span><span class="identifier">OpenVacuityControl</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-open-control/index.html"><span class="identifier">OpenControl</span></a></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">OpenVacuityControl</span><span class="symbol">(</span><span class="identifier" id="baaahs.control.OpenVacuityControl$<init>(kotlin.String, kotlin.String)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.control.OpenVacuityControl$<init>(kotlin.String, kotlin.String)/title">title</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="id.html">id</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="title.html">title</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">title</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="apply-state.html">applyState</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">applyState</span><span class="symbol">(</span><span class="identifier" id="baaahs.control.OpenVacuityControl$applyState(kotlin.collections.Map((kotlin.String, kotlinx.serialization.json.JsonElement)))/state">state</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="controlled-data-sources.html">controlledDataSources</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">controlledDataSources</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-state.html">getState</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">JsonElement</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-view.html">getView</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">getView</span><span class="symbol">(</span><span class="identifier" id="baaahs.control.OpenVacuityControl$getView(baaahs.show.live.ControlProps)/controlProps">controlProps</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-control-props/index.html"><span class="identifier">ControlProps</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.ui/-view/index.html"><span class="identifier">View</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="to-new-mutable.html">toNewMutable</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">toNewMutable</span><span class="symbol">(</span><span class="identifier" id="baaahs.control.OpenVacuityControl$toNewMutable(baaahs.show.mutable.MutableShow)/mutableShow">mutableShow</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-show/index.html"><span class="identifier">MutableShow</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show.mutable/-mutable-control/index.html"><span class="identifier">MutableControl</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
