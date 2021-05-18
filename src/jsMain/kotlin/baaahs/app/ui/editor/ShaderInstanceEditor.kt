@@ -45,8 +45,8 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
     val toolchain = memo { appContext.toolchain.withCache("Editor") }
 
     var settingsMenuAnchor by state<EventTarget?> { null }
-    val showSettingsMenu = baaahs.ui.useCallback { event: Event -> settingsMenuAnchor = event.target!! }
-    val hideSettingsMenu = baaahs.ui.useCallback { _: Event?, _: String? -> settingsMenuAnchor = null }
+    val showSettingsMenu = callback { event: Event -> settingsMenuAnchor = event.target!! }
+    val hideSettingsMenu = callback { _: Event?, _: String? -> settingsMenuAnchor = null }
 
     var selectedTab by state { PageTabs.Properties }
     @Suppress("UNCHECKED_CAST")
