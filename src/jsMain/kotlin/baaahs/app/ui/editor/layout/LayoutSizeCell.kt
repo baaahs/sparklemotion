@@ -3,7 +3,6 @@ package baaahs.app.ui.editor.layout
 import baaahs.app.ui.appContext
 import baaahs.show.mutable.MutableLayoutDimen
 import baaahs.ui.unaryPlus
-import baaahs.ui.useCallback
 import baaahs.ui.value
 import baaahs.ui.xComponent
 import kotlinx.html.InputType
@@ -32,26 +31,26 @@ val LayoutSizeCell = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props -
 
     var gridSizeMenuAnchor by state<EventTarget?> { null }
 
-    val showGridSizeMenu = useCallback { event: Event -> gridSizeMenuAnchor = event.target!! }
-    val hideGridSizeMenu = useCallback { _: Event?, _: String? -> gridSizeMenuAnchor = null}
+    val showGridSizeMenu = callback { event: Event -> gridSizeMenuAnchor = event.target!! }
+    val hideGridSizeMenu = callback { _: Event?, _: String? -> gridSizeMenuAnchor = null}
 
-    val handleGridSizeMenuUnitClick = useCallback(gridSizeMenuAnchor, props.dimen) { unit: String ->
+    val handleGridSizeMenuUnitClick = callback(gridSizeMenuAnchor, props.dimen) { unit: String ->
         props.dimen .unit = unit
         props.onChange()
         forceRender()
         gridSizeMenuAnchor = null
     }
-    val handleGridSizeMenuEmClick = useCallback(handleGridSizeMenuUnitClick) { _: Event ->
+    val handleGridSizeMenuEmClick = callback(handleGridSizeMenuUnitClick) { _: Event ->
         handleGridSizeMenuUnitClick("em")
     }
-    val handleGridSizeMenuPxClick = useCallback(handleGridSizeMenuUnitClick) { _: Event ->
+    val handleGridSizeMenuPxClick = callback(handleGridSizeMenuUnitClick) { _: Event ->
         handleGridSizeMenuUnitClick("px")
     }
-    val handleGridSizeMenuFrClick = useCallback(handleGridSizeMenuUnitClick) { _: Event ->
+    val handleGridSizeMenuFrClick = callback(handleGridSizeMenuUnitClick) { _: Event ->
         handleGridSizeMenuUnitClick("fr")
     }
 
-    val handleGridSizeScalarChange = useCallback(props.dimen) { event: Event ->
+    val handleGridSizeScalarChange = callback(props.dimen) { event: Event ->
         props.dimen.scalar = event.target!!.value.toFloat()
         props.onChange()
         forceRender()

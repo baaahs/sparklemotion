@@ -80,7 +80,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         }
     }
 
-    val handleCursorChange = useCallback(shaderRefactor) { value: Any, _: Any ->
+    val handleCursorChange = callback(shaderRefactor) { value: Any, _: Any ->
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         val selection = value as Selection
         shaderRefactor?.onCursorChange(selection)
@@ -88,10 +88,10 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     }
 
     var refactorMenuAnchor by state<EventTarget?> { null }
-    val showRefactorMenu = useCallback { event: Event -> refactorMenuAnchor = event.target }
-    val hideRefactorMenu = useCallback { _: Event?, _: String? -> refactorMenuAnchor = null}
+    val showRefactorMenu = callback { event: Event -> refactorMenuAnchor = event.target }
+    val hideRefactorMenu = callback { _: Event?, _: String? -> refactorMenuAnchor = null}
 
-    val extractUniform = useCallback(shaderRefactor) { _: Event ->
+    val extractUniform = callback(shaderRefactor) { _: Event ->
         hideRefactorMenu(null, null)
         shaderRefactor?.onExtract()
         Unit

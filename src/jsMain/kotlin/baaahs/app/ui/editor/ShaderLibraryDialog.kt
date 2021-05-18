@@ -7,7 +7,6 @@ import baaahs.libraries.ShaderLibrary
 import baaahs.show.Shader
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderInstance
-import baaahs.ui.useCallback
 import baaahs.ui.value
 import baaahs.ui.xComponent
 import baaahs.util.CacheBuilder
@@ -37,7 +36,7 @@ val ShaderLibraryDialog = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDia
     val shaderLibraries = appContext.webClient.shaderLibraries
     val toolchain = appContext.toolchain.withCache("Shader Library")
 
-    val handleClose = useCallback(props.onSelect) { _: Event, _: String -> props.onSelect(null) }
+    val handleClose = callback(props.onSelect) { _: Event, _: String -> props.onSelect(null) }
 
     val searchJob = ref<Job?> { null }
     var matches by state { emptyList<ShaderLibrary.Entry>() }

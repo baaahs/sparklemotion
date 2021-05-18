@@ -42,7 +42,7 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
         aceEditor.current?.editor?.resize()
     }
 
-    val handleChangeDebounced = baaahs.ui.useCallback(
+    val handleChangeDebounced = callback(
         props.document, props.debounceSeconds, props.onChange
     ) { value: String, _: Any ->
         props.document.content = value

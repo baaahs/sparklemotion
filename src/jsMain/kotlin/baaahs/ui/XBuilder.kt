@@ -57,8 +57,8 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         Context()
     }, emptyArray())
 
-    private val counterIncr = react.useState { CounterIncr() }
-    private val counter = react.useState { counterIncr.first.next() }
+    private val counterIncr = react.rawUseState { CounterIncr() }
+    private val counter = react.rawUseState { counterIncr.component1().next() }
     private var inRender = true
     private var stateHasChanged = false
 
@@ -137,6 +137,10 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         }
     }
 
+    fun <T : Function<*>> callback(vararg dependencies: dynamic, callback: T): T {
+        return react.useCallback(callback, dependencies)
+    }
+
     fun <T : Function<*>> handler(name: String, vararg watch: Any?, block: T): T {
         val handler = context.handlers.getOrPut(name) { Handler(watch, logger, block) }
         return if (handler.hasChanged(watch)) {
@@ -175,11 +179,11 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     private fun forceRenderNow(immediate: Boolean) {
-        val triggerUpdate = { counter.second(counterIncr.first.next()) }
+        val triggerUpdate = { counter.component2()(counterIncr.component1().next()) }
         if (immediate) {
             triggerUpdate()
         } else {
-            later(triggerUpdate)
+            later { triggerUpdate() }
         }
     }
 
