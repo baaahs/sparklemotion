@@ -82,7 +82,10 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
             typographyH6(themeStyles.title on TypographyStyle.root) {
                 show?.let {
-                    b { +show.title }
+                    b {
+                        +show.title
+                        webClient.showFile?.let { attrs["title"] = it.toString() }
+                    }
                     if (webClient.showIsModified) i { +" (Unsaved)" }
                 }
 
