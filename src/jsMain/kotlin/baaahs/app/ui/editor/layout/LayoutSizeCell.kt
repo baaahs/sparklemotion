@@ -3,7 +3,6 @@ package baaahs.app.ui.editor.layout
 import baaahs.app.ui.appContext
 import baaahs.show.mutable.MutableLayoutDimen
 import baaahs.ui.unaryPlus
-import baaahs.ui.useCallback
 import baaahs.ui.value
 import baaahs.ui.xComponent
 import kotlinx.css.paddingTop
@@ -35,27 +34,27 @@ val LayoutSizeCell = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props -
 
     var gridSizeMenuAnchor by state<EventTarget?> { null }
 
-    val showGridSizeMenu = useCallback { event: Event -> gridSizeMenuAnchor = event.target!! }
-    val hideGridSizeMenu = useCallback { _: Event?, _: String? -> gridSizeMenuAnchor = null}
+    val showGridSizeMenu = callback { event: Event -> gridSizeMenuAnchor = event.target!! }
+    val hideGridSizeMenu = callback { _: Event?, _: String? -> gridSizeMenuAnchor = null}
 
-    val handleMenuUnitClick = useCallback(gridSizeMenuAnchor, props.dimen) { unit: String ->
+    val handleMenuUnitClick = callback(gridSizeMenuAnchor, props.dimen) { unit: String ->
         props.dimen .unit = unit
         props.onChange()
         gridSizeMenuAnchor = null
     }
-    val handleMenuEmClick = useCallback(handleMenuUnitClick) { _: Event -> handleMenuUnitClick("em") }
-    val handleMenuPxClick = useCallback(handleMenuUnitClick) { _: Event -> handleMenuUnitClick("px") }
-    val handleMenuFrClick = useCallback(handleMenuUnitClick) { _: Event -> handleMenuUnitClick("fr") }
-    val handleMenuDuplicateClick = useCallback(handleMenuUnitClick) { _: Event ->
+    val handleMenuEmClick = callback(handleMenuUnitClick) { _: Event -> handleMenuUnitClick("em") }
+    val handleMenuPxClick = callback(handleMenuUnitClick) { _: Event -> handleMenuUnitClick("px") }
+    val handleMenuFrClick = callback(handleMenuUnitClick) { _: Event -> handleMenuUnitClick("fr") }
+    val handleMenuDuplicateClick = callback(handleMenuUnitClick) { _: Event ->
         props.onDuplicate()
         gridSizeMenuAnchor = null
     }
-    val handleMenuDeleteClick = useCallback(handleMenuUnitClick) { _: Event ->
+    val handleMenuDeleteClick = callback(handleMenuUnitClick) { _: Event ->
         props.onDelete()
         gridSizeMenuAnchor = null
     }
 
-    val handleGridSizeScalarChange = useCallback(props.dimen) { event: Event ->
+    val handleGridSizeScalarChange = callback(props.dimen) { event: Event ->
         props.dimen.scalar = event.target!!.value.toFloat()
         props.onChange()
         forceRender()

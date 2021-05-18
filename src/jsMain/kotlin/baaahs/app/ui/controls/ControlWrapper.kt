@@ -23,7 +23,7 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
 
     val control = props.control
 
-    val onEditButtonClick = useCallback(control) { event: Event ->
+    val onEditButtonClick = callback(control) { event: Event ->
         control.getEditIntent()?.let { appContext.openEditor(it) }
         event.preventDefault()
     }

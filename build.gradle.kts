@@ -44,7 +44,7 @@ repositories {
     jcenter()
     maven("https://kotlin.bintray.com/kotlinx")
     maven("https://kotlin.bintray.com/ktor")
-    maven("https://kotlin.bintray.com/kotlin-js-wrappers")
+    maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://jitpack.io")
     maven("https://dl.bintray.com/fabmax/kool")

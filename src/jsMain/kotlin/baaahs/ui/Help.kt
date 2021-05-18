@@ -21,8 +21,8 @@ val Help = xComponent<HelpProps>("Help", isPure = true) { props ->
 
     var open by state { false }
 
-    val toggleHelp = useCallback { open = !open }
-    val closeHelp = useCallback { _: Event, _: String -> open = false }
+    val toggleHelp = callback { open = !open }
+    val closeHelp = callback { _: Event, _: String -> open = false }
 
     div("${styles.help.name} ${props.divClass}") {
         link {

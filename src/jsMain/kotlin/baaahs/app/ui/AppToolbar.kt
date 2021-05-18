@@ -43,7 +43,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val themeStyles = appContext.allStyles.appUi
     val webClient = appContext.webClient
 
-    val handleShowEditButtonClick = useCallback {
+    val handleShowEditButtonClick = callback {
         appContext.openEditor(ShowEditIntent())
     }
 
@@ -66,8 +66,8 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val showProblemsSeverity = webClient.showProblems.map { it.severity }.max()
 
     var showProblemsDialogIsOpen by state { false }
-    val toggleProblems = useCallback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
-    val closeProblems = useCallback { _: Event, _: String -> showProblemsDialogIsOpen = false }
+    val toggleProblems = callback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
+    val closeProblems = callback { _: Event, _: String -> showProblemsDialogIsOpen = false }
 
     appBar(themeStyles.appToolbar on AppBarStyle.root) {
         attrs.position = AppBarPosition.relative
