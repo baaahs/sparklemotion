@@ -12,6 +12,7 @@ external object Icons {
     val ArrowDropDown: Icon
     val AvTimer: Icon
     val CastConnected: Icon
+    val CheckBoxOutlineBlank: Icon
     val ChevronLeft: Icon
     val ChevronRight: Icon
     val Close: Icon

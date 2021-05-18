@@ -38,7 +38,7 @@ data class SliderControl(
     /** The step value for the slider. */
     val stepValue: Float? = null,
 
-    val controlledDataSourceId: String
+    override val controlledDataSourceId: String
 ) : Control {
     override fun suggestId(): String = controlledDataSourceId + "Control"
 

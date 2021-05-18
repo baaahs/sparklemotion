@@ -49,6 +49,10 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             MutableTransitionControl()
         },
 
+        AddControlMenuItem("New Vacuity…", CommonIcons.Visualizer) { mutableShow ->
+            MutableVacuityControl("Vacuity")
+        },
+
         AddControlMenuItem("New Visualizer…", CommonIcons.Visualizer) { mutableShow ->
             MutableVisualizerControl()
         }
@@ -61,6 +65,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             classSerializer(ButtonGroupControl.serializer()),
             classSerializer(SliderControl.serializer()),
             classSerializer(TransitionControl.serializer()),
+            classSerializer(VacuityControl.serializer()),
             classSerializer(VisualizerControl.serializer())
         )
 
