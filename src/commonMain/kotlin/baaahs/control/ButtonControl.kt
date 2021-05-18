@@ -22,7 +22,7 @@ data class ButtonControl(
     override val patches: List<Patch> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
     override val controlLayout: Map<String, List<String>> = emptyMap(),
-    val controlledDataSourceId: String? = null
+    override val controlledDataSourceId: String? = null
 ) : PatchHolder, Control {
 
     enum class ActivationType {

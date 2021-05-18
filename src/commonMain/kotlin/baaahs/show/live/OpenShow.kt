@@ -43,9 +43,10 @@ object EmptyOpenContext : OpenContext {
 }
 
 class OpenShow(
-    private val show: Show,
+    internal val show: Show,
     private val showPlayer: ShowPlayer,
     private val openContext: OpenContext,
+    internal val implicitControls: List<OpenControl>,
 ) : OpenPatchHolder(show, openContext), RefCounted by RefCounter() {
     val id = randomId("show")
     val allProblems: List<ShowProblem>
@@ -61,7 +62,7 @@ class OpenShow(
         }
     val layouts get() = show.layouts
     val allDataSources = show.dataSources
-    val allControls: List<OpenControl> = openContext.allControls
+    val allControls: List<OpenControl> get() = openContext.allControls
 
     fun getPanel(id: String) = show.layouts.panels.getBang(id, "panel")
 
@@ -177,6 +178,8 @@ class ActivePatchSetBuilder(private val openShow: OpenShow) {
 abstract class OpenShowVisitor {
     open fun visitShow(openShow: OpenShow) {
         visitPatchHolder(openShow)
+
+        openShow.implicitControls.forEach { visitUnplacedControl(it) }
     }
 
     open fun visitPatchHolder(openPatchHolder: OpenPatchHolder) {
@@ -192,6 +195,10 @@ abstract class OpenShowVisitor {
     }
 
     open fun visitPlacedControl(panel: Panel, openControl: OpenControl) {
+        visitControl(openControl)
+    }
+
+    open fun visitUnplacedControl(openControl: OpenControl) {
         visitControl(openControl)
     }
 

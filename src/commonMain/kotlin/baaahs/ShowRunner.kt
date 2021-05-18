@@ -14,7 +14,7 @@ class ShowRunner(
     internal val clock: Clock,
     private val renderManager: RenderManager,
     private val fixtureManager: FixtureManager,
-    private val updateProblems: (List<ShowProblem>) -> Unit
+    updateProblems: (List<ShowProblem>) -> Unit
 ) {
     private var showState: ShowState = initialShowState ?: openShow.getShowState()
     private var activePatchSetChanged: Boolean = true
