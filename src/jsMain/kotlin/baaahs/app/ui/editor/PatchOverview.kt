@@ -54,7 +54,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
             }
         }
 
-    val handleNewShader = baaahs.ui.useCallback(props.mutablePatch, props.editableManager) { shader: MutableShader ->
+    val handleNewShader = callback(props.mutablePatch, props.editableManager) { shader: MutableShader ->
         val newShaderInstance = props.mutablePatch.addShaderInstance(shader)
         handleShaderSelect[newShaderInstance].invoke()
         props.editableManager.onChange()
@@ -62,9 +62,9 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
 
     val newPatchCardRef = ref<Element>()
     var newPatchMenuAnchor by state<EventTarget?> { null }
-    val handleNewPatchClick = baaahs.ui.useCallback { e: Event -> newPatchMenuAnchor = e.currentTarget }
-    val handleNewPatchMenuClose = baaahs.ui.useCallback { _: Event, _: String -> newPatchMenuAnchor = null }
-    val handleNewShaderMenuClick = baaahs.ui.useCallback(handleNewShader) { _: Event ->
+    val handleNewPatchClick = callback { e: Event -> newPatchMenuAnchor = e.currentTarget }
+    val handleNewPatchMenuClose = callback { _: Event, _: String -> newPatchMenuAnchor = null }
+    val handleNewShaderMenuClick = callback(handleNewShader) { _: Event ->
         newPatchMenuAnchor = null
         handleNewShader(MutableShader("New Shader", ""))
     }
@@ -78,11 +78,11 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
     }
 
     var showShaderLibraryDialog by state { false }
-    val handleNewFromShaderLibrary = baaahs.ui.useCallback { _: Event ->
+    val handleNewFromShaderLibrary = callback { _: Event ->
         newPatchMenuAnchor = null
         showShaderLibraryDialog = true
     }
-    val handleShaderLibrarySelect = baaahs.ui.useCallback { shader: Shader? ->
+    val handleShaderLibrarySelect = callback { shader: Shader? ->
         showShaderLibraryDialog = false
 
         if (shader != null) {

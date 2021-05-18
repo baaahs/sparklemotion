@@ -56,7 +56,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
         props.defaultTarget
     }
 
-    val handleFileSingleClick = useCallback { file: Fs.File ->
+    val handleFileSingleClick = callback { file: Fs.File ->
         scope.launch {
             if (!file.fs.isDirectory(file)) {
                 selectedFile = file
@@ -64,7 +64,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
         }
     }
 
-    val handleFileDoubleClick = useCallback(props.isSaveAs, props.onSelect) { file: Fs.File ->
+    val handleFileDoubleClick = callback(props.isSaveAs, props.onSelect) { file: Fs.File ->
         scope.launch {
             if (file.fs.isDirectory(file)) {
                 currentDir = file
@@ -80,20 +80,20 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
         }
     }
 
-    val handleFileNameChange = useCallback(currentDir) { event: Event ->
+    val handleFileNameChange = callback(currentDir) { event: Event ->
         val str = event.target.value
         selectedFile = currentDir.resolve(str)
     }
 
-    val handleConfirm = useCallback(selectedFile, props.onSelect) { _: Event ->
+    val handleConfirm = callback(selectedFile, props.onSelect) { _: Event ->
         selectedFile?.let { props.onSelect(it) }; Unit
     }
 
-    val handleClose = useCallback(props.onCancel) { _: Event, _: String ->
+    val handleClose = callback(props.onCancel) { _: Event, _: String ->
         props.onCancel()
     }
 
-    val handleCancel = useCallback(props.onCancel) { _: Event ->
+    val handleCancel = callback(props.onCancel) { _: Event ->
         props.onCancel()
     }
 
