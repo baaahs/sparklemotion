@@ -196,4 +196,8 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-controls-theme", isS
     val speedButton by css {
         textTransform = TextTransform.none
     }
+
+    val vacuityContainer by css {
+        display = Display.flex
+    }
 }

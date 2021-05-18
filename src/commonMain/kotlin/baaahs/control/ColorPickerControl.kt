@@ -24,13 +24,13 @@ import kotlinx.serialization.json.JsonElement
 @Serializable
 @SerialName("baaahs.Core:ColorPicker")
 data class ColorPickerControl(
-    /** The name for this slider. */
+    /** The name for this color picker. */
     override val title: String,
 
-    /** The initial value for this slider. */
+    /** The initial value for this color picker. */
     val initialValue: Color = Color.WHITE,
 
-    val controlledDataSourceId: String
+    override val controlledDataSourceId: String
 ) : Control {
     override fun suggestId(): String = controlledDataSourceId + "Control"
 

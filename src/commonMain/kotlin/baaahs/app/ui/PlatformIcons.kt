@@ -28,6 +28,7 @@ interface PlatformIcons {
     val ButtonGroup: Icon
     val ColorPalette: Icon
     val ShaderLibrary: Icon
+    val Vacuity: Icon
     val Visualizer: Icon
 
     val Info: Icon
