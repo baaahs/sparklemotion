@@ -14,7 +14,7 @@ config.watchOptions = {
 };
 
 if (config.devServer) {
-    config.devServer = config.devServer || {};
+    config.devServer.noInfo = false
 
     // config.devServer.noInfo = false
 
