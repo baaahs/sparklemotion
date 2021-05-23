@@ -24,6 +24,11 @@ external class CameraControls(camera: Camera, domElement: Element) {
         options: Options? = definedExternally
     )
 
+    fun setTarget(
+        targetX: Number, targetY: Number, targetZ: Number,
+        enableTransition: Boolean
+    )
+
     fun setLookAt(
         positionX: Number, positionY: Number, positionZ: Number,
         targetX: Number, targetY: Number, targetZ: Number,

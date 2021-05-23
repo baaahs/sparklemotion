@@ -9,15 +9,15 @@ import baaahs.util.Framerate
 import baaahs.util.asMillis
 import baaahs.visualizer.movers.VizMovingHead
 import baaahs.window
+import kotlinext.js.jsObject
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.MouseEvent
 import three.js.*
-import three_ext.OrbitControls
-import kotlin.math.PI
+import three_ext.CameraControls
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusListener {
+class Visualizer(private val model: Model, private val clock: Clock) : JsMapperUi.StatusListener {
     val facade = Facade()
 
     private var container: HTMLDivElement? = null
@@ -48,9 +48,10 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     private val prerenderListeners = mutableListOf<() -> Unit>()
     private val frameListeners = mutableListOf<FrameListener>()
 
-    private var controls: OrbitControls? = null
+    private var controls: CameraControls? = null
+    private val threeClock = Clock()
     private val camera: PerspectiveCamera =
-        PerspectiveCamera(45, 1.0, 1, 10000).apply {
+        PerspectiveCamera(60, 1.0, 1, 10000).apply {
             position.z = 1000.0
         }
     private val scene: Scene = Scene()
@@ -63,7 +64,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
     private val raycaster = Raycaster()
     private var mouse: Vector2? = null
-    private val sphere: Mesh<*, *>
+    private val originDot: Mesh<*, *>
 
     private var vizPanels = mutableListOf<FixtureViz>()
 
@@ -72,11 +73,11 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 //        renderer.setPixelRatio(window.devicePixelRatio)
 
         raycaster.asDynamic().params.Points.threshold = 1
-        sphere = Mesh(
+        originDot = Mesh(
             SphereBufferGeometry(1, 32, 32),
             MeshBasicMaterial().apply { color.set(0xff0000) }
         )
-        scene.add(sphere)
+        scene.add(originDot)
 
         // convert from SheepModel to THREE
         model.geomVertices.forEach { v ->
@@ -99,11 +100,11 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     private fun containerAttached() {
         container!!.appendChild(renderer.domElement)
 
-        controls = OrbitControls(camera, container!!).apply {
-            minPolarAngle = PI / 2 - .25 // radians
-            maxPolarAngle = PI / 2 + .25 // radians
-
-            enableKeys = false
+        controls = CameraControls(camera, container!!).apply {
+//            minPolarAngle = PI / 2 - .25 // radians
+//            maxPolarAngle = PI / 2 + .25 // radians
+//
+//            enableKeys = false
         }
 
         resize()
@@ -165,7 +166,15 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         geom.computeBoundingSphere()
         scene.add(Points(geom, pointMaterial))
         val target = geom.boundingSphere!!.center.clone()
-        controls?.target = target
+        controls?.setTarget(target.x, target.y, target.z, true)
+        controls?.fitToBox(model.boundingBox, true, jsObject {
+            val xPadding = container?.clientWidth?.div(10) ?: 10
+            val yPadding = container?.clientHeight?.div(10) ?: 10
+            paddingTop = yPadding
+            paddingBottom = yPadding
+            paddingLeft = xPadding
+            paddingRight = xPadding
+        })
         camera.lookAt(target)
     }
 
@@ -199,7 +208,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
             camera.lookAt(scene.position)
         }
 
-        controls?.update()
+        controls?.update(threeClock.getDelta())
 
         val startTime = clock.now()
         renderer.render(scene, camera)
@@ -269,4 +278,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     companion object {
         private const val DEFAULT_REFRESH_DELAY = 50 // ms
     }
+
+    private val Model.boundingBox: Box3
+        get() = with (modelBounds) { Box3(first.toVector3(), second.toVector3()) }
 }

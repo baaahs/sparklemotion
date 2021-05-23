@@ -166,7 +166,7 @@ kotlin {
                 implementation(npm("@babel/preset-react", "^7.0.0"))
 //                implementation(npm("prettier", "1.19.1"))
 
-                implementation(npm("camera-controls", "^1.25.3"))
+                implementation(npm("camera-controls", "^1.28.3"))
                 implementation(npm("chroma-js", "^2.0.3"))
                 implementation(npm("css-loader", "^2.1.1"))
 
