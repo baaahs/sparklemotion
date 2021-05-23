@@ -32,11 +32,11 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
     val mutableLayout = mutableLayouts.formats[props.format]!!
     val currentTab = mutableLayout.tabs[currentTabIndex]
 
-    val handleTabChange = handler("handleTabChange") { e: Event ->
+    val handleTabChange by eventHandler { e: Event ->
         currentTabIndex = e.target.value.toInt()
     }
 
-    val handleNewTabClick = handler("handleNewTabClick") { _: Event ->
+    val handleNewTabClick by eventHandler { _: Event ->
         appContext.prompt(
             Prompt(
                 "Create New Tab",

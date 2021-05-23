@@ -19,7 +19,7 @@ val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props -
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layoutEditor
 
-    val handlePanelAreaChange = handler("handlePanelAreaChange") { event: Event ->
+    val handlePanelAreaChange by eventHandler { event: Event ->
         val panel = props.layouts.panels.getBang(event.target.value, "panel")
         props.tab.areas[props.rowIndex * props.tab.columns.size + props.columnIndex] = panel
         props.onChange()

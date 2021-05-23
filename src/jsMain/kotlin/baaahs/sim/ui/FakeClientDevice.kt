@@ -29,15 +29,15 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
     var zoom by state { .5f }
     val clientDeviceContentRef = useRef<HTMLElement?>(null)
 
-    val handleZoomOut = eventHandler("handleZoomOut") { zoom *= .5f }
-    val handleZoomIn = eventHandler("handleZoomIn") { zoom *= 2f }
+    val handleZoomOut by eventHandler { zoom *= .5f }
+    val handleZoomIn by eventHandler { zoom *= 2f }
 
-    val handleClose = eventHandler("handleClose", props.hostedWebApp) {
+    val handleClose by eventHandler(props.hostedWebApp) {
         isOpen = false
         props.hostedWebApp.onClose()
     }
 
-    val handleDragStart: (MouseEvent, DraggableData) -> Boolean = handler("handleDragStart") { e, draggableData ->
+    val handleDragStart: (MouseEvent, DraggableData) -> Boolean by handler { e, draggableData ->
         val draggableNode = draggableData.node
         val contentNode = clientDeviceContentRef.current
         var eventNode = e.target

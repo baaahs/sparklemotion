@@ -6,23 +6,23 @@ import baaahs.imaging.Bitmap
 import baaahs.imaging.CanvasBitmap
 import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
-import baaahs.jsx.MapperIndex
+import baaahs.mapper.MapperAppView
+import baaahs.mapper.MapperAppViewProps
 import baaahs.model.Model
 import baaahs.sim.HostedWebApp
+import baaahs.ui.Observable
+import baaahs.ui.value
+import baaahs.util.Logger
 import baaahs.visualizer.Rotator
 import kotlinext.js.jsObject
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.dom.clear
-import kotlinx.html.*
-import kotlinx.html.dom.append
-import kotlinx.html.dom.create
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.table
 import org.w3c.dom.*
+import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
+import react.RBuilder
 import react.ReactElement
 import react.createElement
+import react.dom.br
+import react.dom.i
 import three.js.*
 import three.js.Color
 import three_ext.CameraControls
@@ -31,129 +31,114 @@ import three_ext.plus
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
-import kotlin.math.min
 import kotlin.math.roundToInt
 
-class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi, HostedWebApp {
+class MemoizedJsMapperUi(mapperUi: JsMapperUi) {
+    val changedCamera = mapperUi::changedCamera
+    val clickedPlay = mapperUi::clickedPlay
+    val clickedPause = mapperUi::clickedPause
+    val clickedRedo = mapperUi::clickedRedo
+    val clickedStop = mapperUi::clickedStop
+    val clickedGoToSurface = mapperUi::clickedGoToSurface
+    val onKeydown = { event: Event -> mapperUi.gotUiKeypress(event as KeyboardEvent) }
+}
+
+class MapperStatus : Observable() {
+    var message: String? by notifyOnChange(null)
+    var message2: String? by notifyOnChange(null)
+    var stats: (RBuilder.() -> Unit)? by notifyOnChange(null)
+    var orderedPanels: List<Pair<JsMapperUi.VisibleSurface, Float>> by notifyOnChange(emptyList())
+}
+
+class JsMapperUi(private val statusListener: StatusListener? = null) : Observable(), MapperUi, HostedWebApp {
     private lateinit var listener: MapperUi.Listener
+
+    override var devices: List<MediaDevices.Device> by notifyOnChange(emptyList())
+    var selectedDevice: MediaDevices.Device? by notifyOnChange(null)
 
     override fun listen(listener: MapperUi.Listener) {
         this.listener = listener
     }
 
-    private var width = 512
-    private var height = 384
+    var width = 512
+    var height = 384
 
-    private var uiWidth = 512
-    private var uiHeight = 384
+    var uiWidth = 512
+    var uiHeight = 384
 
     private var haveCamDimensions = false
-    private var camWidth = 0
-    private var camHeight = 0
+    var camWidth = 0
+    var camHeight = 0
 
     private val clock = Clock()
 
     // onscreen renderer for registration UI:
     private val uiRenderer = WebGLRenderer(jsObject { alpha = true })
-    private var uiScene = Scene()
-    private var uiCamera = PerspectiveCamera(45, width.toDouble() / height, 1, 10000)
-    private var uiControls: CameraControls
-    private val wireframe = Object3D()
-
-    private var selectedSurfaces = mutableListOf<PanelInfo>()
-    private var uiLocked: Boolean = false
-
-    private val screen = document.create.div("mapperUi-screen") {
-        tabIndex = "-1" // So we can receive key events.
-
-        div("mapperUi-controls") {
-            button { +"▲"; onClickFunction = { wireframe.position.y += 10 } }
-            button { +"▼"; onClickFunction = { wireframe.position.y -= 10 } }
-//            button { i(classes="fas fa-crosshairs"); onClickFunction = { target() } }
-            button { i(classes = "fas fa-play"); onClickFunction = { clickedPlay() } }
-            button { i(classes = "fas fa-pause"); onClickFunction = { clickedPause() } }
-            button { i(classes = "fas fa-redo"); onClickFunction = { redoFn?.invoke() } }
-            button { i(classes = "fas fa-stop"); onClickFunction = { clickedStop() } }
-            button {
-                i(classes = "fas fa-sign-in-alt")
-                onClickFunction = {
-                    val surfaceName = window.prompt("Surface:")
-                    if (surfaceName != null && surfaceName.isNotEmpty()) {
-                        goToSurface(surfaceName.toUpperCase())
-                    }
-                }
-            }
-            select("mapperUi-sessionSelector") { }
-        }
-        canvas(classes = "mapperUi-2d-canvas") {
-            width = this@JsMapperUi.width.toString() + "px"
-            height = this@JsMapperUi.height.toString() + "px"
-        }
-        div("mapperUi-3d-div") { }
-        canvas(classes = "mapperUi-diff-canvas") {
-            width = this@JsMapperUi.width.toString() + "px"
-            height = this@JsMapperUi.height.toString() + "px"
-        }
-        canvas(classes = "mapperUi-before-canvas") {
-            width = this@JsMapperUi.width.toString() + "px"
-            height = this@JsMapperUi.height.toString() + "px"
-        }
-        canvas(classes = "mapperUi-after-canvas") {
-            width = this@JsMapperUi.width.toString() + "px"
-            height = this@JsMapperUi.height.toString() + "px"
-        }
-        div("mapperUi-stats") { }
-        div("mapperUi-message") { }
-        div("mapperUi-message2") { }
-        div("mapperUi-table") { }
+    private val uiScene = Scene()
+    private val uiCamera = PerspectiveCamera(45, width.toDouble() / height, 1, 10000).also { camera ->
+        camera.position.z = 1000.0
+        uiScene.add(camera)
     }
+    private val uiControls: CameraControls = CameraControls(uiCamera, uiRenderer.domElement)
+    val wireframe = Object3D()
 
-    private val ui2dCanvas = screen.first<HTMLCanvasElement>("mapperUi-2d-canvas")
-    private val ui2dCtx = ui2dCanvas.context2d()
+    private val selectedSurfaces = mutableListOf<PanelInfo>()
+    var uiLocked: Boolean by notifyOnChange(false)
 
-    private val ui3dDiv = screen.first<HTMLCanvasElement>("mapperUi-3d-div")
+    private lateinit var ui2dCanvas: HTMLCanvasElement
+    private lateinit var ui2dCtx: CanvasRenderingContext2D
+
+//    private val ui3dDiv = screen.first<HTMLCanvasElement>("mapperUi-3d-div")
     private val ui3dCanvas = uiRenderer.domElement
 
-    private val diffCanvas = screen.first<HTMLCanvasElement>("mapperUi-diff-canvas")
-    private val diffCtx = diffCanvas.context2d()
+    private lateinit var diffCanvas: HTMLCanvasElement
+    private lateinit var diffCtx: CanvasRenderingContext2D
 
-    private val beforeCanvas = screen.first<HTMLCanvasElement>("mapperUi-before-canvas")
-    private val afterCanvas = screen.first<HTMLCanvasElement>("mapperUi-after-canvas")
+    private lateinit var beforeCanvas: HTMLCanvasElement
+    private lateinit var afterCanvas: HTMLCanvasElement
 
-    private val statsDiv = screen.first<HTMLDivElement>("mapperUi-stats")
-    private val messageDiv = screen.first<HTMLDivElement>("mapperUi-message")
-    private val message2Div = screen.first<HTMLDivElement>("mapperUi-message2")
-    private val table = screen.first<HTMLDivElement>("mapperUi-table")
-    private val sessionSelector = screen.first<HTMLSelectElement>("mapperUi-sessionSelector")
+    val sessions = arrayListOf<String>()
 
-    private val playButton = screen.first<HTMLButtonElement>("fa-play")
-    private val pauseButton = screen.first<HTMLButtonElement>("fa-pause")
-    private val redoButton = screen.first<HTMLButtonElement>("fa-redo")
+    var pauseButtonEnabled by notifyOnChange(true)
+    var playButtonEnabled by notifyOnChange(true)
 
     private val modelSurfaceInfos = mutableMapOf<Model.Surface, PanelInfo>()
 
     private var commandProgress = ""
     private var cameraZRotation = 0f
 
-    private var redoFn: (() -> Unit)? = null
+    val mapperStatus = MapperStatus()
 
-    init {
+    var redoFn: (() -> Unit)? by notifyOnChange(null)
+
+    fun onMount(
+        ui2dCanvas: HTMLCanvasElement,
+        ui3dDiv: HTMLElement,
+        diffCanvas: HTMLCanvasElement,
+        beforeCanvas: HTMLCanvasElement,
+        afterCanvas: HTMLCanvasElement
+    ) {
+        this.ui2dCanvas = ui2dCanvas
+        this.ui2dCtx = ui2dCanvas.context2d()
+        this.diffCanvas = diffCanvas
+        this.diffCtx = diffCanvas.context2d()
+        this.beforeCanvas = beforeCanvas
+        this.afterCanvas = afterCanvas
+
         statusListener?.mapperStatusChanged(true)
 
         ui3dDiv.appendChild(ui3dCanvas)
 
-        uiCamera.position.z = 1000.0
-        uiScene.add(uiCamera)
-
-        uiControls = CameraControls(uiCamera, uiRenderer.domElement)
-
-        screen.focus()
-        screen.addEventListener("keydown", { event -> gotUiKeypress(event as KeyboardEvent) })
+//        screen.focus()
+//        screen.addEventListener("keydown", { event -> gotUiKeypress(event as KeyboardEvent) })
 
         drawAnimationFrame()
     }
 
-    private fun gotUiKeypress(event: KeyboardEvent) {
+    fun onUnmount() {
+    }
+
+    fun gotUiKeypress(event: KeyboardEvent) {
         if (event.code == "Enter") {
             processCommand(commandProgress.trim())
             commandProgress = ""
@@ -182,10 +167,8 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     }
 
     override fun addExistingSession(name: String) {
-        sessionSelector.insertBefore(
-            document.create.option { label = name; value = name },
-            sessionSelector.childNodes.asList().find { (it as HTMLOptionElement).value > name }
-        )
+        sessions.add(name)
+        notifyChanged()
     }
 
     private fun resetCameraRotation() {
@@ -207,6 +190,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         selectedSurfaces.clear()
         selectedSurfaces.addAll(modelSurfaceInfos.values.filter { it.name.contains(pattern, true) })
         selectedSurfaces.forEach { it.select() }
+        notifyChanged()
     }
 
     private fun processCommand(command: String) {
@@ -228,22 +212,17 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     }
 
     override fun render(): ReactElement {
-        return createElement(MapperIndex::class.js, jsObject<MapperIndex.Props> {
-            render = this@JsMapperUi::renderDom
+        return createElement(MapperAppView, jsObject<MapperAppViewProps> {
+            mapperUi = this@JsMapperUi
         })
-    }
-
-    private fun renderDom(parentNode: HTMLElement) {
-        parentNode.appendChild(screen)
-        resizeTo(parentNode.offsetWidth, heightOrWindowHeight(parentNode))
-
-        parentNode.onresize = {
-            resizeTo(parentNode.offsetWidth, heightOrWindowHeight(parentNode))
-        }
     }
 
     private fun heightOrWindowHeight(parentNode: HTMLElement): Int {
         return if (parentNode.offsetHeight == 0) window.innerHeight else parentNode.offsetHeight
+    }
+
+    override fun onLaunch() {
+        listener.onLaunch()
     }
 
     override fun onClose() {
@@ -252,9 +231,12 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         listener.onClose()
     }
 
-    private val diffCanvasScale = 1 / 3.0
+    val diffCanvasScale = 1 / 3.0
 
-    private fun resizeTo(width: Int, height: Int) {
+    fun resizeTo(width: Int, height: Int) {
+        if (width == this.width && height == this.height) return
+
+        println("resizeTo($width, $height)")
         this.width = width
         this.height = height
 
@@ -263,7 +245,6 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
             camHeight = height
         }
 
-        val scale = min(1f, min((width - 10).toFloat() / camWidth, (height - 10).toFloat() / camHeight))
         uiWidth = camWidth - 10
         uiHeight = camHeight - 10
 
@@ -271,19 +252,9 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         uiCamera.updateProjectionMatrix()
 
         uiRenderer.setSize(uiWidth, uiHeight, true)
-        ui3dCanvas.width = uiWidth
-        ui3dCanvas.height = uiHeight
 
-        ui2dCanvas.width = uiWidth
-        ui2dCanvas.height = uiHeight
-        ui2dCanvas.style.transform = "scale(${scale})"
-
-        diffCanvas.width = (uiWidth * diffCanvasScale).toInt()
-        diffCanvas.height = (uiHeight * diffCanvasScale).toInt()
-        beforeCanvas.width = (uiWidth * diffCanvasScale).toInt()
-        beforeCanvas.height = (uiHeight * diffCanvasScale).toInt()
-        afterCanvas.width = (uiWidth * diffCanvasScale).toInt()
-        afterCanvas.height = (uiHeight * diffCanvasScale).toInt()
+        println("ui=${uiWidth}x$uiHeight; cam=${camWidth}x$camHeight")
+        notifyChanged()
     }
 
     override fun addWireframe(model: Model) {
@@ -506,22 +477,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         val firstGuess = orderedPanels.first()
         (firstGuess.first.panelInfo.mesh.material as MeshBasicMaterial).color.r += .25
 
-        table.clear()
-        table.append {
-            table {
-                tr {
-                    th { +"Panel" }
-                    th { +"Centroid dist" }
-                }
-
-                orderedPanels.subList(0, min(5, orderedPanels.size)).forEach { (visibleSurface, distance) ->
-                    tr {
-                        td { +visibleSurface.modelSurface.name }
-                        td { +"$distance" }
-                    }
-                }
-            }
-        }
+        mapperStatus.orderedPanels = orderedPanels
     }
 
     override fun intersectingSurface(
@@ -560,7 +516,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     }
 
     override fun showCamImage(image: Image, changeRegion: MediaDevices.Region?) {
-        if (!haveCamDimensions) {
+        if (camWidth != image.width || camHeight != image.height) {
             camWidth = image.width
             camHeight = image.height
             haveCamDimensions = true
@@ -593,18 +549,20 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     }
 
     override fun showMessage(message: String) {
-        messageDiv.innerText = message
-        console.log("Message:", message)
+        mapperStatus.message = message
+        logger.info { "Message: $message" }
     }
 
     override fun showMessage2(message: String) {
-        message2Div.innerText = message
-//        console.log("Message2:", message)
+        mapperStatus.message2 = message
     }
 
-    override fun showBefore(bitmap: Bitmap) {
-        val beforeCanvas = document.body!!.first<HTMLCanvasElement>("mapperUi-before-canvas")
-        val beforeCtx = beforeCanvas.getContext("2d") as CanvasRenderingContext2D
+    override fun showBefore(bitmap: Bitmap) = showImage(bitmap, beforeCanvas)
+
+    override fun showAfter(bitmap: Bitmap) = showImage(bitmap, afterCanvas)
+
+    private fun showImage(bitmap: Bitmap, canvas: HTMLCanvasElement) {
+        val beforeCtx = canvas.getContext("2d") as CanvasRenderingContext2D
         beforeCtx.resetTransform()
         beforeCtx.scale(.3, .3)
         val renderBitmap = when (bitmap) { // TODO: huh?
@@ -615,60 +573,72 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         beforeCtx.drawImage(renderBitmap, 0.0, 0.0)
     }
 
-    override fun showAfter(bitmap: Bitmap) {
-        val afterCanvas = document.body!!.first<HTMLCanvasElement>("mapperUi-after-canvas")
-        val afterCtx = afterCanvas.getContext("2d") as CanvasRenderingContext2D
-        afterCtx.resetTransform()
-        afterCtx.scale(.3, .3)
-        val renderBitmap = when (bitmap) {
-            is NativeBitmap -> bitmap.canvas
-            is CanvasBitmap -> bitmap.canvas
-            else -> bitmap as CanvasImageSource
-        }
-        afterCtx.drawImage(renderBitmap, 0.0, 0.0)
-    }
-
     override fun setRedo(fn: (suspend () -> Unit)?) {
-        if (fn == null) {
-            redoFn = null
-        } else {
-            redoFn = {
-                GlobalScope.launch { fn() }
-                redoButton.enabled(false)
-            }
-        }
-        redoButton.enabled(fn != null)
+//        if (fn == null) {
+//            redoFn = null
+//        } else {
+//            redoFn = {
+//                GlobalScope.launch { fn() }
+//                redoButton.enabled(false)
+//            }
+//        }
+//        redoButton.enabled(fn != null)
     }
 
     override fun showStats(total: Int, mapped: Int, visible: Int) {
-        statsDiv.innerHTML = "<i class=\"fas fa-triangle\"></i>Mapped: $mapped / $total<br/>Visible: $visible"
+        mapperStatus.stats = {
+            i("fas fa-triangle") {
+                +"Mapped: $mapped / $total"
+                br {}
+                +"Visible: $visible"
+            }
+        }
     }
 
     override fun pauseForUserInteraction() {
         clickedPause()
     }
 
-    private fun clickedPlay() {
+    fun changedCamera(event: Event) {
+        val selectedDeviceId = event.target?.value
+        selectedDevice = devices.find { it.deviceId == selectedDeviceId}
+
+        listener.useCamera(selectedDevice)
+    }
+
+    fun clickedPlay() {
         showPauseMode(false)
         listener.onStart()
     }
 
-    private fun clickedPause() {
+    fun clickedPause() {
         showPauseMode(true)
         listener.onPause()
     }
 
+    fun clickedRedo() {
+        redoFn?.invoke()
+    }
+
     private fun showPauseMode(isPaused: Boolean) {
-        pauseButton.enabled(!isPaused)
-        playButton.enabled(isPaused)
+        pauseButtonEnabled = !isPaused
+        playButtonEnabled = isPaused
+        notifyChanged()
     }
 
     private fun HTMLButtonElement.enabled(isEnabled: Boolean) {
         style.opacity = if (isEnabled) "1" else ".5"
     }
 
-    private fun clickedStop() {
+    fun clickedStop() {
         listener.onStop()
+    }
+
+    fun clickedGoToSurface() {
+        val surfaceName = window.prompt("Surface:")
+        if (surfaceName != null && surfaceName.isNotEmpty()) {
+            goToSurface(surfaceName.toUpperCase())
+        }
     }
 
     private fun goToSurface(name: String) {
@@ -694,6 +664,10 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
 
     interface StatusListener {
         fun mapperStatusChanged(isRunning: Boolean)
+    }
+
+    companion object {
+        internal val logger = Logger<JsMapperUi>()
     }
 }
 

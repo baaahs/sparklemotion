@@ -5,7 +5,8 @@ import baaahs.imaging.Image
 import kotlin.math.*
 
 interface MediaDevices {
-    fun getCamera(): Camera
+    suspend fun enumerate(): List<Device>
+    fun getCamera(selectedDevice: Device? = null): Camera
 
     interface Camera {
         var onImage: (image: Image) -> Unit
@@ -62,4 +63,11 @@ interface MediaDevices {
             fun containing(image: Image) = Region(0, 0, image.width, image.height)
         }
     }
+
+    data class Device(
+        val deviceId: String,
+        val kind: String,
+        val label: String,
+        val groupId: String,
+    )
 }

@@ -166,7 +166,7 @@ kotlin {
                 implementation(npm("@babel/preset-react", "^7.0.0"))
 //                implementation(npm("prettier", "1.19.1"))
 
-                implementation(npm("camera-controls", "^1.25.3"))
+                implementation(npm("camera-controls", "^1.28.3"))
                 implementation(npm("chroma-js", "^2.0.3"))
                 implementation(npm("css-loader", "^2.1.1"))
 
@@ -240,18 +240,19 @@ tasks.withType(Kotlin2JsCompile::class) {
     kotlinOptions.sourceMapEmbedSources = "always"
 }
 
-// see https://discuss.kotlinlang.org/t/kotlin-js-react-unstable-building/15582/6
-tasks.named<Kotlin2JsCompile>("compileKotlinJs") {
-    val outDir = outputFile.parent
-    val tempOutDir = "$outDir/kotlin-out"
-    kotlinOptions.outputFile = "$tempOutDir/${outputFile.name}"
-    doLast {
-        copy {
-            from(tempOutDir)
-            into(outDir)
-        }
-    }
-}
+//// see https://discuss.kotlinlang.org/t/kotlin-js-react-unstable-building/15582/6
+//tasks.named<Kotlin2JsCompile>("compileKotlinJs") {
+//    val outDir = outputFile.parent
+//    logger.warn("compileKotlinJs outDir=$outDir")
+//    val tempOutDir = "$outDir/kotlin-out"
+//    kotlinOptions.outputFile = "$tempOutDir/${outputFile.name}"
+//    doLast {
+//        copy {
+//            from(tempOutDir)
+//            into(outDir)
+//        }
+//    }
+//}
 
 tasks.withType(KotlinWebpack::class) {
     sourceMaps = true

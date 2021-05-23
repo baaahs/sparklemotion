@@ -1,6 +1,7 @@
 package baaahs.sim
 
 import baaahs.MediaDevices
+import baaahs.browser.RealMediaDevices
 import baaahs.imaging.Image
 import baaahs.imaging.ImageBitmapImage
 import baaahs.visualizer.Visualizer
@@ -17,16 +18,34 @@ import three.js.PerspectiveCamera
 import three.js.Scene
 import three.js.WebGLRenderer
 
-class FakeMediaDevices(private val visualizer: Visualizer) : MediaDevices {
+class FakeMediaDevices(
+    private val visualizer: Visualizer,
+    private val realMediaDevices: RealMediaDevices?
+) : MediaDevices {
     var currentCam: MediaDevices.Camera? = null
+
+    override suspend fun enumerate(): List<MediaDevices.Device> {
+        return listOf(
+            fakeDevice
+        ) + (realMediaDevices?.enumerate() ?: emptyList())
+    }
 
     @JsName("getCurrentCam")
     fun getCurrentCam() = currentCam
 
-    override fun getCamera(): MediaDevices.Camera {
-        return FakeCamera(640, 480).also {
-            visualizer.addFrameListener(it)
+    override fun getCamera(selectedDevice: MediaDevices.Device?): MediaDevices.Camera {
+        return if (selectedDevice == fakeDevice) {
+            FakeCamera(640, 480).also {
+                visualizer.addFrameListener(it)
+            }
+        } else {
+            realMediaDevices?.getCamera(selectedDevice)
+                ?: error("no RealMediaDevices?")
         }
+    }
+
+    companion object {
+        val fakeDevice = MediaDevices.Device("simulator", "videoinput", "Simulator", "group")
     }
 
     inner class FakeCamera(val width: Int, val height: Int) : MediaDevices.Camera, Visualizer.FrameListener {

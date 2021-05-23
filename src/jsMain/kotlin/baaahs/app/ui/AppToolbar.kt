@@ -48,18 +48,16 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     }
 
     val undoStack = props.undoStack
-    val handleUndo = handler("handleUndo", undoStack) { _: Event ->
+    val handleUndo by eventHandler(undoStack) {
         undoStack.undo().also { (show, showState) ->
             webClient.onShowEdit(show, showState, pushToUndoStack = false)
         }
-        Unit
     }
 
-    val handleRedo = handler("handleRedo", undoStack) { _: Event ->
+    val handleRedo by eventHandler(undoStack) {
         undoStack.redo().also { (show, showState) ->
             webClient.onShowEdit(show, showState, pushToUndoStack = false)
         }
-        Unit
     }
 
     val show = webClient.openShow
