@@ -84,6 +84,7 @@ baaahs.ui
 baaahs.ui.editor
 baaahs.ui.misc
 baaahs.util
+baaahs.util.three
 baaahs.visualizer
 baaahs.visualizer.movers
 baaahs.visualizer.ui

@@ -28,6 +28,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-facade/index.html">Facade</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Facade</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-facade/index.html"><span class="identifier">Facade</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-pixel-map-data/index.html">PixelMapData</a></h4>
 </td>
 <td>
@@ -69,7 +76,7 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">Mapper</span><span class="symbol">(</span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock)/mapperUi">mapperUi</span><span class="symbol">:</span>&nbsp;<a href="../-mapper-ui/index.html"><span class="identifier">MapperUi</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock)/mediaDevices">mediaDevices</span><span class="symbol">:</span>&nbsp;<a href="../-media-devices/index.html"><span class="identifier">MediaDevices</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock)/pinkyAddress">pinkyAddress</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock)/clock">clock</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.util/-clock/index.html"><span class="identifier">Clock</span></a><span class="symbol">)</span></code></td>
+<code><span class="identifier">Mapper</span><span class="symbol">(</span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/mapperUi">mapperUi</span><span class="symbol">:</span>&nbsp;<a href="../-mapper-ui/index.html"><span class="identifier">MapperUi</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/mediaDevices">mediaDevices</span><span class="symbol">:</span>&nbsp;<a href="../-media-devices/index.html"><span class="identifier">MediaDevices</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/pinkyAddress">pinkyAddress</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/clock">clock</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.util/-clock/index.html"><span class="identifier">Clock</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/mapperScope">mapperScope</span><span class="symbol">:</span>&nbsp;<span class="identifier">CoroutineScope</span>&nbsp;<span class="symbol">=</span>&nbsp;CoroutineScope(Dispatchers.Main)<span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -90,10 +97,24 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="load-mapping-session.html">loadMappingSession</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">loadMappingSession</span><span class="symbol">(</span><span class="identifier" id="baaahs.Mapper$loadMappingSession(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="on-close.html">onClose</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">onClose</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-launch.html">onLaunch</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onLaunch</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -144,6 +165,13 @@
 <td>
 <code><span class="keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte/index.html"><span class="identifier">Byte</span></a><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">stringify</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
 </tr>
+<tr>
+<td>
+<h4><a href="use-camera.html">useCamera</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">useCamera</span><span class="symbol">(</span><span class="identifier" id="baaahs.Mapper$useCamera(baaahs.MediaDevices.Device)/selectedDevice">selectedDevice</span><span class="symbol">:</span>&nbsp;<span class="identifier">Device</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
 </tbody>
 </table>
 <h3>Companion Object Properties</h3>
@@ -155,6 +183,13 @@
 </td>
 <td>
 <code><span class="keyword">val </span><span class="identifier">logger</span><span class="symbol">: </span><a href="../../baaahs.util/-logger/index.html"><span class="identifier">Logger</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="mapper-stats.html">mapperStats</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">mapperStats</span><span class="symbol">: </span><a href="../-mapper-stats/index.html"><span class="identifier">MapperStats</span></a></code></td>
 </tr>
 </tbody>
 </table>

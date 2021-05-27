@@ -45,111 +45,11 @@ body.noScroll {
     height: 80%;
 }
 
-.mapperUi-screen {
-    width: 100%;
-    height: 100%;
-}
-
-.mapperUi-controls {
-    position: absolute;
-    z-index: 1;
-}
-
-.mapperUi-2d-canvas {
-    position: absolute;
-    display: block;
-    margin: auto;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
-.mapperUi-3d-div > canvas {
-    position: absolute;
-    display: block;
-    margin: auto;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    mix-blend-mode: lighten;
-}
-
-.mapperUi-diff-canvas {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    border: 1px groove white;
-}
-
-.mapperUi-before-canvas {
-    position: absolute;
-    top: 310px;
-    right: 10px;
-    border: 1px groove white;
-}
-
-.mapperUi-after-canvas {
-    position: absolute;
-    top: 610px;
-    right: 10px;
-    border: 1px groove white;
-}
-
-.mapperUi-stats {
-    position: absolute;
-    right: 20px;
-    padding: 20px;
-    color: #00ff00;
-    font-family: 'Press Start 2P', sans-serif;
-    font-size: 8pt;
-    text-align: right;
-    width: 100%;
-    text-shadow: 1px 1px 3px black, -1px -1px 3px black;
-}
-
-.mapperUi-message {
-    position: absolute;
-    bottom: 20px;
-    padding: 20px;
-    color: #00ff00;
-    font-family: 'Press Start 2P', sans-serif;
-    font-size: 16pt;
-    text-align: center;
-    width: 100%;
-    text-shadow: 1px 1px 3px black, -1px -1px 3px black;
-}
-
-.mapperUi-message2 {
-    position: absolute;
-    bottom: 0;
-    padding: 20px;
-    color: #00ff00;
-    font-family: 'Press Start 2P', sans-serif;
-    font-size: 7pt;
-    text-align: center;
-    width: 100%;
-    text-shadow: 1px 1px 3px black, -1px -1px 3px black;
-}
-
-.mapperUi-table {
-    position: absolute;
-    top: 30px;
-    padding: 20px;
-    color: #00ff00;
-    font-family: 'Press Start 2P', sans-serif;
-    font-size: 7pt;
-    width: 400px;
-    text-shadow: 1px 1px 3px black, -1px -1px 3px black;
-    background: rgba(0, 0, 0, .5);
-    height: 250px;
-}
-
 video {
     display: block;
-    position: absolute;
-    top: 0;
+    position: fixed;
+    top: 200px;
     left: 0;
     z-index: 10000;
+    /* width: 200px; */
 }
