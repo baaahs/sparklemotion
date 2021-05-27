@@ -13,10 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
-import java.net.InetSocketAddress
+import java.net.*
 import java.nio.ByteBuffer
 import java.time.Duration
 
@@ -38,6 +35,24 @@ class JvmNetwork : Network {
             return "msgId=${((data[0].toInt() and 0xff) * 256) or (data[1].toInt() and 0xff)}"
         }
 
+        fun getBroadcastAddresses(): List<InetAddress> {
+            val broadcastAddresses = arrayListOf<InetAddress>()
+            for (iface in NetworkInterface.getNetworkInterfaces().iterator()) {
+                if (!iface.isLoopback && iface.isUp) {
+                    logger.debug { "    ${iface.name} ${iface.displayName}" }
+
+                    for (ipAddr in iface.interfaceAddresses) {
+                        if (ipAddr.address is Inet4Address) {
+                            logger.debug { "        $ipAddr: broadcast=${ipAddr.broadcast}" }
+                            broadcastAddresses.add(ipAddr.broadcast)
+                        } else {
+                            logger.debug { "        $ipAddr (unknown)" }
+                        }
+                    }
+                }
+            }
+            return broadcastAddresses
+        }
     }
 
     override fun link(name: String): RealLink = link
@@ -72,10 +87,17 @@ class JvmNetwork : Network {
         inner class JvmUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             internal var udpSocket = DatagramSocket(serverPort)
 
+            private val broadcastAddresses: List<InetAddress>
             init {
+                broadcastAddresses = getBroadcastAddresses()
+
 //                println("Trying to set send buffer size to ${4*MAX_UDP_SIZE}")
 //                udpSocket.sendBufferSize = 4*MAX_UDP_SIZE;
                 logger.info { "UDP socket bound to ${udpSocket.localAddress}" }
+                logger.info { "Broadcast addresses:" }
+                broadcastAddresses.forEach {
+                    logger.info { "  $it" }
+                }
                 logger.debug { "Send buffer size is ${udpSocket.sendBufferSize}" }
             }
 
@@ -90,8 +112,15 @@ class JvmNetwork : Network {
             }
 
             override fun broadcastUdp(port: Int, bytes: ByteArray) {
-                val packetOut = DatagramPacket(bytes, 0, bytes.size, InetSocketAddress(broadcastAddress, port))
-                udpSocket.send(packetOut)
+                for (broadcastAddress in broadcastAddresses) {
+                    val broadcastSocketAddress = InetSocketAddress(broadcastAddress, port)
+                    val packetOut = DatagramPacket(bytes, 0, bytes.size, broadcastSocketAddress)
+                    try {
+                        udpSocket.send(packetOut)
+                    } catch (e: Exception) {
+                        logger.warn(e) { "Failed to broadcast on $broadcastAddress" }
+                    }
+                }
             }
         }
 

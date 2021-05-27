@@ -30,6 +30,12 @@ class PinkyMapperHandlers(val storage: Storage) {
                 storage.saveSession(mappingSession)
                 JsonNull
             }
+
+            handle("loadSession") { args ->
+                val sessionName = json.decodeFromJsonElement(String.serializer(), args[1])
+                val mappingSession = storage.loadMappingSession(sessionName)
+                json.encodeToJsonElement(MappingSession.serializer(), mappingSession)
+            }
         }
     }
 }

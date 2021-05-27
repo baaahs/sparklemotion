@@ -2,6 +2,7 @@ package baaahs.net
 
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.net.JvmNetwork.Companion.msgId
 import baaahs.net.JvmNetwork.Companion.networkScope
 import baaahs.util.Logger
 import io.ktor.http.cio.websocket.*
@@ -14,7 +15,9 @@ import java.nio.ByteBuffer
 
 class JvmUdpProxy {
     companion object {
-        val logger = Logger("JvmUdpProxy")
+        val logger = Logger<JvmUdpProxy>()
+
+        val broadcastAddresses = JvmNetwork.getBroadcastAddresses()
     }
     
     suspend fun handle(
@@ -33,7 +36,7 @@ class JvmUdpProxy {
                     writeBytes(packetIn.address.address)
                     writeInt(packetIn.port)
                     writeBytes(data, packetIn.offset, packetIn.length)
-//                    logger.debug { "UDP: Receive ${packetIn.length} ${msgId(data)} from ${packetIn.address}:${packetIn.port}" }
+                    logger.debug { "UDP: Receive ${packetIn.length} ${msgId(data)} from ${packetIn.address}:${packetIn.port}" }
                 }.toBytes()))
                 networkScope.launch {
 //                    logger.debug { "UDP: Receive: forward ${packetIn.length} ${msgId(data)} from ${packetIn.address}:${packetIn.port}" }
@@ -64,22 +67,27 @@ class JvmUdpProxy {
                             val data = readBytes()
                             val toInetAddress = InetAddress.getByAddress(toAddress)
                             val packet = DatagramPacket(data, 0, data.size, toInetAddress, toPort)
-                            networkScope.launch {
-//                                logger.debug { "UDP: Will send ${data.size} ${msgId(data)} to $toInetAddress:$toPort" }
-                                socket!!.send(packet)
+                            logger.debug { "UDP: Will send ${data.size} ${msgId(data)} to $toInetAddress:$toPort" }
+                            socket!!.send(packet)
+//                            networkScope.launch {
 //                                logger.debug { "UDP: Sent ${data.size} ${msgId(data)} to $toInetAddress:$toPort" }
-                            }
+//                            }
                         }
                         Network.UdpProxy.BROADCAST_OP.toByte() -> {
                             val toPort = readInt()
                             val data = readBytes()
-                            val packet = DatagramPacket(data, 0, data.size,
-                                JvmNetwork.broadcastAddress, toPort)
-                            networkScope.launch {
-//                                logger.debug { "UDP: Will broadcast ${data.size} ${msgId(data)} to *:$toPort" }
-                                socket!!.send(packet)
-//                                logger.debug { "UDP: Broadcast ${data.size} ${msgId(data)} to *:$toPort" }
+                            for (broadcastAddress in broadcastAddresses) {
+                                val packet = DatagramPacket(data, 0, data.size, broadcastAddress, toPort)
+                                logger.debug { "UDP: Will broadcast ${data.size} ${msgId(data)} to ${broadcastAddress}:$toPort" }
+                                try {
+                                    socket!!.send(packet)
+                                } catch (e: Exception) {
+                                    logger.warn(e) { "Failed to broadcast on $broadcastAddress" }
+                                }
                             }
+//                            networkScope.launch {
+//                                logger.debug { "UDP: Broadcast ${data.size} ${msgId(data)} to *:$toPort" }
+//                            }
                         }
                         else -> {
                             logger.warn { "UDP: Huh? unknown op $op: $bytes" }

@@ -33,22 +33,18 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { p
         ?: lastLinkOptions.current
         ?: emptyList()
 
-    val handleChange =
-        eventHandler(
-            "change to ${props.inputPort.id}",
-            props.editingShader, props.editableManager, props.inputPort
-        ) { event ->
-            val value = event.target.asDynamic().value as? LinkOption?
-                ?: return@eventHandler
+    val handleChange by eventHandler(props.editingShader, props.editableManager, props.inputPort) { event ->
+        val value = event.target.asDynamic().value as? LinkOption?
+            ?: return@eventHandler
 
-            val newLink = when (value) {
-                NoSourcePortOption -> null
-                NewSourcePortOption -> error("new not yet implemented") // TODO
-                else -> value
-            }
-            props.editingShader.changeInputPortLink(props.inputPort, newLink)
-            props.editableManager.onChange()
+        val newLink = when (value) {
+            NoSourcePortOption -> null
+            NewSourcePortOption -> error("new not yet implemented") // TODO
+            else -> value
         }
+        props.editingShader.changeInputPortLink(props.inputPort, newLink)
+        props.editableManager.onChange()
+    }
 
     val currentLink = props.editingShader.getInputPortLink(props.inputPort)
     val selected: LinkOption? = linkOptions.find { it.getMutablePort() == currentLink }
@@ -59,7 +55,7 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { p
     var showAdvanced by state { false }
     val showAdvancedCheckbox = ref<HTMLElement?>(null)
     val anyAdvanced = linkOptions.any { it.isAdvanced }
-    val handleToggleShowAdvanced = handler("toggle show advanced") { event: Event ->
+    val handleToggleShowAdvanced by eventHandler { event: Event ->
         showAdvanced = !showAdvanced
         event.stopPropagation()
     }

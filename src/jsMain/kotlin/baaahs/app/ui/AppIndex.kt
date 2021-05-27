@@ -262,6 +262,23 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         }
                     }
 
+                    // TODO: this doesn't actuyally show up for some reason?
+                    if (props.webClient.isMapping) {
+                        backdrop {
+                            attrs {
+                                open = true
+                            }
+
+                            container {
+                                circularProgress {}
+                                icon(Icons.NotificationImportant)
+
+                                typographyH6 { +"Mapper Running…" }
+                                +"Please wait."
+                            }
+                        }
+                    }
+
                     if (show == null) {
                         paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
                             if (webClient.isLoaded) {

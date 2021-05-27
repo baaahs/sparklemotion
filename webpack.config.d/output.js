@@ -48,7 +48,9 @@ config.resolve.alias = {
     js: path.resolve(__dirname, "../../../../src/jsMain/js/"),
 };
 
-if (config.devServer) {
+if (config.devServer || true) {
+    config.devServer = config.devServer || {};
+
     config.devServer.hot = true;
     config.devServer.watchOptions = {
       aggregateTimeout: 2000,
