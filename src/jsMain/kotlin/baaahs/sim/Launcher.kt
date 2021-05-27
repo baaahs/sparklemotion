@@ -14,7 +14,7 @@ import kotlin.dom.appendText
 
 class Launcher(val parentNode: Element) {
 
-    fun add(name: String, onLaunch: () -> HostedWebApp): HTMLButtonElement {
+    fun add(name: String, buildWebApp: () -> HostedWebApp): HTMLButtonElement {
         return parentNode.appendElement("button") {
             appendText(name)
 
@@ -26,11 +26,14 @@ class Launcher(val parentNode: Element) {
                 }
 
                 // Into the darkness.
+                val webApp = buildWebApp()
+                webApp.onLaunch()
+
                 val props = jsObject<FakeClientDeviceProps> {
                     this.name = name
                     width = 1024
                     height = 768
-                    this.hostedWebApp = onLaunch()
+                    hostedWebApp = webApp
                     onClose = { document.body?.removeChild(containerDiv) }
                 }
                 render(createElement(FakeClientDevice, props), containerDiv)

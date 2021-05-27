@@ -173,6 +173,9 @@ class WebClient(
         val isLoaded: Boolean
             get() = this@WebClient.pinkyState == PinkyState.Running && clientData != null
 
+        val isMapping: Boolean
+            get() = this@WebClient.pinkyState == PinkyState.Mapping
+
         val model: Model
             get() = this@WebClient.model
 

@@ -97,15 +97,15 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         Unit
     }
 
-    val x = this
+    val handleAceEditor by handler { incoming: AceEditor ->
+        later { aceEditor = incoming }
+    }
 
     div(+Styles.shaderEditor) {
         textEditor {
             attrs.document = glslDoc
             attrs.mode = Modes.glsl
-            attrs.onAceEditor = x.handler("onAceEditor") { incoming: AceEditor ->
-                x.later { aceEditor = incoming }
-            }
+            attrs.onAceEditor = handleAceEditor
             attrs.debounceSeconds = 0.25f
             attrs.onChange = handleSrcChange
             attrs.onCursorChange = handleCursorChange

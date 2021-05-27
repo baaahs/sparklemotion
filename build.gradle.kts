@@ -240,19 +240,6 @@ tasks.withType(Kotlin2JsCompile::class) {
     kotlinOptions.sourceMapEmbedSources = "always"
 }
 
-// see https://discuss.kotlinlang.org/t/kotlin-js-react-unstable-building/15582/6
-tasks.named<Kotlin2JsCompile>("compileKotlinJs") {
-    val outDir = outputFile.parent
-    val tempOutDir = "$outDir/kotlin-out"
-    kotlinOptions.outputFile = "$tempOutDir/${outputFile.name}"
-    doLast {
-        copy {
-            from(tempOutDir)
-            into(outDir)
-        }
-    }
-}
-
 tasks.withType(KotlinWebpack::class) {
     sourceMaps = true
     inputs.dir("src/jsMain/js")

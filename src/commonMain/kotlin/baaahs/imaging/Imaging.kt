@@ -2,16 +2,24 @@ package baaahs.imaging
 
 import baaahs.MediaDevices
 
-public interface Image {
+/**
+ * An immutable, but possibly changing over time, image source.
+ *
+ * E.g., this could be a video stream or an animated GIF.
+ */
+interface Image {
     val width: Int
     val height: Int
+    val dimen: Dimen get() = Dimen(width, height)
 
     fun toBitmap(): Bitmap
 }
 
-public interface Bitmap {
+/** A mutable, static image. */
+interface Bitmap {
     val width: Int
     val height: Int
+    val dimen: Dimen get() = Dimen(width, height)
 
     fun drawImage(image: Image)
 

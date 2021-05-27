@@ -26,12 +26,12 @@ val Transition = xComponent<TransitionProps>("Transition") { props ->
     val styles = appContext.allStyles.controls
 
     var holdEngaged by state { false }
-    val handleHoldButtonClick = handler("handleHoldButtonClick") { _: Event ->
+    val handleHoldButtonClick by eventHandler { _: Event ->
         holdEngaged = !holdEngaged
         logger.warn { "holdEngaged: $holdEngaged" }
     }
 
-    val handleGoButtonClick = handler("handleGoButtonClick") { _: Event ->
+    val handleGoButtonClick by eventHandler { _: Event ->
         holdEngaged = false
         logger.warn { "holdEngaged: $holdEngaged" }
     }
@@ -41,7 +41,7 @@ val Transition = xComponent<TransitionProps>("Transition") { props ->
 //    clientPreview.transition.rotate = props.transitionControl.rotate
 
     var position by state { 0f }
-    val handlePositionChange = handler("handlePositionChange") { newPosition: Float ->
+    val handlePositionChange by handler { newPosition: Float ->
         position = newPosition
     }
 

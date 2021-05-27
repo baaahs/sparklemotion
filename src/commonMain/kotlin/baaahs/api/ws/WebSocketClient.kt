@@ -55,6 +55,14 @@ class WebSocketClient(link: Network.Link, address: Network.Address) : Network.We
         )
     }
 
+    suspend fun loadSession(name: String): MappingSession {
+        val response = sendCommand(
+            "loadSession",
+            WebSocketRouter.json.encodeToJsonElement(String.serializer(), name)
+        )
+        return WebSocketRouter.json.decodeFromJsonElement(MappingSession.serializer(), response)
+    }
+
     private suspend fun sendCommand(command: String, vararg args: JsonElement): JsonElement {
         val content = buildJsonArray {
             add(command)

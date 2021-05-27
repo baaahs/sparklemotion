@@ -1,20 +1,19 @@
 package baaahs.sim.ui
 
-import baaahs.app.ui.AppIndexProps
-import baaahs.jsx.sim.store
+import baaahs.sim.HostedWebApp
 import baaahs.ui.ErrorDisplay
 import baaahs.ui.xComponent
 import external.ErrorBoundary
-import react.useContext
+import react.RProps
 
-val WebClientWindow = xComponent<AppIndexProps>("WebClientWindow") { _ ->
-    val contextState = useContext(store).state
-    val simulator = contextState.simulator
-    val webClient = memo { simulator.createWebClient() }
-
+val WebClientWindow = xComponent<WebClientWindowProps>("WebClientWindow") { props ->
     ErrorBoundary {
         attrs.FallbackComponent = ErrorDisplay
 
-        child(webClient.render())
+        child(props.hostedWebApp.render())
     }
+}
+
+external interface WebClientWindowProps : RProps {
+    var hostedWebApp: HostedWebApp
 }
