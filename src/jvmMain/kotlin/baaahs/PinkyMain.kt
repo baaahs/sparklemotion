@@ -96,6 +96,7 @@ class PinkyMain(private val args: Args) {
             FileSystems.newFileSystem(uri, mapOf("create" to "true"))
             val jsResDir = Paths.get(uri).parent.resolve("htdocs")
             testForIndexDotHtml(jsResDir)
+            logger.info { "Serving from jar at $jsResDir." }
 
             ktor.application.routing {
                 static {
@@ -110,14 +111,24 @@ class PinkyMain(private val args: Args) {
             val classPathBaseDir = Paths.get(resource.file).parent
             val repoDir = classPathBaseDir.parent.parent.parent.parent.parent
             val jsResDir = repoDir.resolve("build/processedResources/js/main")
+            val jsPackageDir = "build/distributions"
             testForIndexDotHtml(jsResDir)
+            logger.info { "Serving resources from files at $jsResDir." }
+            logger.info { "Serving sparklemotion from files at $jsPackageDir." }
 
             ktor.application.routing {
                 static {
                     staticRootFolder = jsResDir.toFile()
 
                     file("sparklemotion.js",
-                        repoDir.resolve("build/distributions/sparklemotion.js").toFile())
+                        repoDir.resolve("$jsPackageDir/sparklemotion.js").toFile())
+                    file("sparklemotion.js.map",
+                        repoDir.resolve("$jsPackageDir/sparklemotion.js.map").toFile())
+
+                    file("vendors.js",
+                        repoDir.resolve("$jsPackageDir/vendors.js").toFile())
+                    file("vendors.js.map",
+                        repoDir.resolve("$jsPackageDir/vendors.js.map").toFile())
 
                     files(jsResDir.toFile())
                     route("admin") { default("admin/index.html") }

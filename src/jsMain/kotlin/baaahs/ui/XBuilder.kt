@@ -142,7 +142,6 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         return react.useCallback(callback, dependencies)
     }
 
-    fun <T : Function<*>> handler(name: String, vararg watch: Any?, block: T): T {
     @Suppress("FunctionName")
     private fun <T : Function<*>> _handler(name: String, watch: Array<out Any?>, block: T): T {
         val handler = context.handlers.getOrPut(name) { Handler(watch, logger, block) }
@@ -165,6 +164,18 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     fun eventHandler(vararg watch: Any?, block: (Event) -> Unit): ReadOnlyProperty<Any?, (Event) -> Unit> {
         return ReadOnlyProperty { _, property ->
             _handler(property.name, watch) { event: Event -> block(event) }
+        }
+    }
+
+    fun <T> eventHandler(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
+        @Suppress("UNREACHABLE_CODE")
+        return if (firstTime) {
+            val data = Data(logger, valueInitializer()) { forceRender() }
+            context.data.add(data)
+            return data
+        } else {
+            @Suppress("UNCHECKED_CAST")
+            return context.data[dataIndex++] as Data<T>
         }
     }
 
