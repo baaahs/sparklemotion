@@ -136,6 +136,6 @@ internal class BrowserUdpProxy(
     }
 
     companion object {
-        val logger = Logger("BrowserUdpProxy")
+        val logger = Logger<BrowserUdpProxy>()
     }
 }

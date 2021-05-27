@@ -73,7 +73,7 @@ fun main(args: Array<String>) {
             val mapperUi = JsMapperUi();
             val mediaDevices = RealMediaDevices()
             // Yuck, side effects.
-            Mapper(network, model, mapperUi, mediaDevices, pinkyAddress, JsClock);
+            Mapper(network, model, mapperUi, mediaDevices, pinkyAddress, JsClock)
 
             mapperUi.launch()
         }

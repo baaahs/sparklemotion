@@ -123,6 +123,7 @@ class FakeNetwork(
         private inner class FakeUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
                 if (!sendPacketShouldSucceed()) {
+                    logger.warn { "Dropped UDP packet to $toAddress:$port" }
                     packetsDropped++.updates(facade)
                     return
                 }
@@ -133,6 +134,7 @@ class FakeNetwork(
 
             override fun broadcastUdp(port: Int, bytes: ByteArray) {
                 if (!sendPacketShouldSucceed()) {
+                    logger.warn { "Dropped UDP packet to *:$port" }
                     packetsDropped++.updates(facade)
                     return
                 }
@@ -184,7 +186,7 @@ class FakeNetwork(
     }
 
     companion object {
-        val logger = Logger("FakeNetwork")
+        val logger = Logger<FakeNetwork>()
     }
 
     inner class Facade : baaahs.ui.Facade() {

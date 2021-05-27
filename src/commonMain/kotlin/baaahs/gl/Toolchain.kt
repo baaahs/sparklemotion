@@ -39,11 +39,11 @@ interface Toolchain {
 }
 
 class ToolchainStats : Stats() {
-    val parse by statistic()
-    val import by statistic()
-    val analyze by statistic()
-    val openShader by statistic()
-    val autoWire by statistic()
+    val parse by statistic
+    val import by statistic
+    val analyze by statistic
+    val openShader by statistic
+    val autoWire by statistic
 }
 
 class RootToolchain(

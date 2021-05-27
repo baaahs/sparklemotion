@@ -64,7 +64,7 @@ class Brain(
             val elapsedSinceMessage = clock.now() - (lastInstructionsReceivedAt ?: 0.0)
             if (elapsedSinceMessage > 100) {
                 if (lastInstructionsReceivedAt != null) {
-                    logger.info { "$id: haven't heard from Pinky in ${elapsedSinceMessage}s" }
+                    logger.info { "[$id] haven't heard from Pinky in ${elapsedSinceMessage}s" }
                 }
                 udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, modelElementName))
             }
@@ -81,7 +81,7 @@ class Brain(
         try {
             // Inline message parsing here so we can optimize stuff.
             val type = Type.get(reader.readByte())
-            // println("Got a message of type ${type}")
+//            logger.debug { "Got a message of type ${type}" }
             when (type) {
                 Type.BRAIN_PANEL_SHADE -> {
                     val pongData = if (reader.readBoolean()) {
@@ -119,6 +119,7 @@ class Brain(
                 }
 
                 Type.BRAIN_ID_REQUEST -> {
+                    logger.debug { "[$id] $type: Hello($id, $modelElementName)" }
                     udpSocket.sendUdp(fromAddress, fromPort, BrainHelloMessage(id, modelElementName))
                 }
 
@@ -132,11 +133,13 @@ class Brain(
                     currentShaderDesc = null
                     currentRenderTree = null
 
+                    logger.debug { "[$id] $type: Hello($id, $modelElementName)" }
                     udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, modelElementName))
                 }
 
                 Type.PING -> {
                     val ping = PingMessage.parse(reader)
+                    logger.debug { "[$id] $type: isPong=${ping.isPong}" }
                     if (!ping.isPong) {
                         udpSocket.sendUdp(fromAddress, fromPort, PingMessage(ping.data, isPong = true))
                     }
@@ -145,10 +148,11 @@ class Brain(
                 // Other message types are ignored by Brains.
                 else -> {
                     // no-op
+                    logger.debug { "[$id] Unknown message $type" }
                 }
             }
         } catch (e: Exception) {
-            logger.error(e) { "Brain $id failed to handle a packet." }
+            logger.error(e) { "[$id] failed to handle a packet." }
         }
     }
 
@@ -184,6 +188,6 @@ class Brain(
     }
 
     companion object {
-        val logger = Logger("Brain")
+        val logger = Logger<Brain>()
     }
 }

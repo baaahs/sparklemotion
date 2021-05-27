@@ -6,6 +6,7 @@ import baaahs.document
 import kotlinx.html.dom.create
 import kotlinx.html.js.canvas
 import org.khronos.webgl.Uint8ClampedArray
+import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.get
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
@@ -28,21 +29,17 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
 
     internal val ctx = canvas.context2d()
 
-    override fun drawImage(image: Image) = (image as JsImage).draw(ctx, 0, 0)
+    override fun drawImage(image: Image) {
+        (image as JsImage).draw(ctx, 0, 0)
+    }
 
     override fun drawImage(
         image: Image,
         sX: Int, sY: Int, sWidth: Int, sHeight: Int,
         dX: Int, dY: Int, dWidth: Int, dHeight: Int
-    ) = (image as JsImage).draw(ctx, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight)
-
-    override fun copyFrom(other: Bitmap) {
-        assertSameSizeAs(other)
-
+    ) {
         ctx.resetTransform()
-        ctx.globalCompositeOperation = "source-over"
-        ctx.drawImage((other as CanvasBitmap).canvas, 0.0, 0.0)
-        ctx.resetTransform()
+        (image as JsImage).draw(ctx, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight)
     }
 
     private fun apply(other: Bitmap, operation: String) {
@@ -53,6 +50,10 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
         ctx.globalCompositeOperation = operation
         ctx.drawImage(other.canvas, 0.0, 0.0)
         ctx.resetTransform()
+    }
+
+    override fun copyFrom(other: Bitmap) {
+        apply(other, "source-over")
     }
 
     override fun lighten(other: Bitmap) {
@@ -105,10 +106,8 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
     }
 
     override fun clone(): Bitmap {
-        val newCanvas = document.createElement("canvas") as HTMLCanvasElement
-        newCanvas.width = canvas.width
-        newCanvas.height = canvas.height
-        val ctx = newCanvas.getContext("2d") as CanvasRenderingContext2D
+        val newCanvas = createCanvas(canvas.width, canvas.height)
+        val ctx = newCanvas.context2d()
         ctx.drawImage(canvas, 0.0, 0.0)
         return CanvasBitmap(newCanvas)
     }
@@ -131,6 +130,35 @@ abstract class JsImage : Image {
         sX: Int, sY: Int, sWidth: Int, sHeight: Int,
         dX: Int, dY: Int, dWidth: Int, dHeight: Int
     )
+}
+
+class WebGlImage(private val webGlContext: WebGLRenderingContext) : JsImage() {
+    override val width: Int
+        get() = webGlContext.drawingBufferWidth
+    override val height: Int
+        get() = webGlContext.drawingBufferHeight
+
+    override fun toBitmap(): Bitmap {
+        val newCanvas = createCanvas(width, height)
+        newCanvas.context2d().drawImage(webGlContext.canvas, 0.0, 0.0)
+        return CanvasBitmap(newCanvas)
+    }
+
+    override fun draw(ctx: CanvasRenderingContext2D, x: Int, y: Int) {
+        ctx.drawImage(webGlContext.canvas, x.toDouble(), y.toDouble())
+    }
+
+    override fun draw(
+        ctx: CanvasRenderingContext2D,
+        sX: Int, sY: Int, sWidth: Int, sHeight: Int,
+        dX: Int, dY: Int, dWidth: Int, dHeight: Int
+    ) {
+        ctx.drawImage(
+            webGlContext.canvas,
+            sX.toDouble(), sY.toDouble(), sWidth.toDouble(), sHeight.toDouble(),
+            dX.toDouble(), dY.toDouble(), dWidth.toDouble(), dHeight.toDouble()
+        )
+    }
 }
 
 class ImageBitmapImage(private val imageBitmap: ImageBitmap) : JsImage() {
@@ -165,7 +193,7 @@ class VideoElementImage(private val videoEl: HTMLVideoElement) : JsImage() {
     override val height get() = videoEl.videoHeight
 
     override fun toBitmap(): Bitmap {
-        val bitmap = NativeBitmap(videoEl.videoWidth, videoEl.videoHeight)
+        val bitmap = NativeBitmap(width, height)
         bitmap.drawImage(this)
         return bitmap
     }

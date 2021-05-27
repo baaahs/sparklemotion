@@ -63,7 +63,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
     private val raycaster = Raycaster()
     private var mouse: Vector2? = null
-    private val sphere: Mesh<*, *>
+    private val originDot: Mesh<*, *>
 
     private var vizPanels = mutableListOf<FixtureViz>()
 
@@ -72,11 +72,11 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 //        renderer.setPixelRatio(window.devicePixelRatio)
 
         raycaster.asDynamic().params.Points.threshold = 1
-        sphere = Mesh(
+        originDot = Mesh(
             SphereBufferGeometry(1, 32, 32),
             MeshBasicMaterial().apply { color.set(0xff0000) }
         )
-        scene.add(sphere)
+        scene.add(originDot)
 
         // convert from SheepModel to THREE
         model.geomVertices.forEach { v ->

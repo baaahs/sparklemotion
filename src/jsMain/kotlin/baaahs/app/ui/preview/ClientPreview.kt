@@ -37,7 +37,7 @@ class ClientPreview(
                 is Model.Surface -> {
                     val surfaceGeometry = SurfaceGeometry(entity)
                     // TODO: it'd be nice if actual pixel locations were used. For now we make them up.
-                    val pixelPositions = pixelArranger.arrangePixels(surfaceGeometry)
+                    val pixelPositions = pixelArranger.arrangePixels(surfaceGeometry, entity.expectedPixelCount)
                     val vizSurface = theVisualizer.addSurface(surfaceGeometry)
                     val vizPixels = VizPixels(vizSurface, pixelPositions)
                     vizSurface.vizPixels = vizPixels
