@@ -611,6 +611,7 @@ object GlslGenerationSpec : Spek({
                     struct FixtureInfo {
                         vec3 origin;            
                         vec3 heading; // in Euler angles
+                        vec3 matrix;
                     };
                     
                     uniform FixtureInfo fixtureInfo;
@@ -661,6 +662,7 @@ object GlslGenerationSpec : Spek({
                         struct FixtureInfo {
                             vec3 origin;
                             vec3 heading;
+                            mat4 matrix;
                         };
 
                         // Data source: Fixture Info
@@ -671,7 +673,7 @@ object GlslGenerationSpec : Spek({
 
                         MovingHeadParams p0_untitledShader_params = MovingHeadParams(0., 0., 0., 1.);
 
-                        #line 16
+                        #line 17
                         void p0_untitledShader_main(out MovingHeadParams params) {
                             params.pan = in_fixtureInfo.origin.x;
                             params.tilt = in_fixtureInfo.origin.y,

@@ -420,6 +420,37 @@ object AutoWirerSpec : Spek({
                 }
             }
 
+            // TODO: fix!
+            context("with a shader for a non-PixelArrayDevice fixture with an incomplete struct specification", Skip.Yes("This should work too.")) {
+                override(shaderText) {
+                    /**language=glsl*/
+                    """
+                        struct FixtureInfo {
+                            vec3 origin;
+                            vec3 heading;
+                        };
+                        
+                        uniform FixtureInfo fixtureInfo;
+                        
+                        vec4 main() {
+                            return vec4(fixtureInfo.heading.xy, fixtureInfo.origin.xy);
+                        }
+                    """.trimIndent()
+                }
+
+                it("creates a reasonable guess patch") {
+                    expect(patch.mutableShaderInstances)
+                        .containsExactly(
+                            MutableShaderInstance(
+                                MutableShader(mainShader),
+                                hashMapOf(
+                                    "fixtureInfo" to FixtureInfoDataSource().editor()
+                                )
+                            )
+                        )
+                }
+            }
+
             context("with a shader for a non-PixelArrayDevice fixture") {
                 override(shaderText) {
                     /**language=glsl*/
@@ -427,6 +458,7 @@ object AutoWirerSpec : Spek({
                         struct FixtureInfo {
                             vec3 origin;
                             vec3 heading;
+                            mat4 matrix;
                         };
                         
                         uniform FixtureInfo fixtureInfo;

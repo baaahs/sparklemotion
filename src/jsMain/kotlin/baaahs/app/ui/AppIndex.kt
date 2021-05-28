@@ -139,7 +139,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         listItem {
                             attrs.button = true
                             attrs.onClickFunction = { _ ->
-                                webClient.onNewShow(); renderDialog = null
+                                webClient.onNewShow()
+                                renderDialog = null
                             }
                             listItemText {
                                 attrs.primary { +"Blank" }
@@ -150,7 +151,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         listItem {
                             attrs.button = true
                             attrs.onClickFunction = { _ ->
-                                webClient.onNewShow(SampleData.sampleShow); renderDialog = null
+                                webClient.onNewShow(SampleData.createSampleShow(withHeadlightsMode = true).getShow())
+                                renderDialog = null
                             }
                             listItemText {
                                 attrs.primary { +"Sample template" }

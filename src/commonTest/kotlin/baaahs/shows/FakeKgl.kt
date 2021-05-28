@@ -1,5 +1,6 @@
 package baaahs.shows
 
+import baaahs.geom.Matrix4
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.geom.Vector4F
@@ -455,6 +456,7 @@ class FakeUniform : Uniform {
     override fun set(x: Float, y: Float) { value = Vector2F(x, y) }
     override fun set(x: Float, y: Float, z: Float) { value = Vector3F(x, y, z) }
     override fun set(x: Float, y: Float, z: Float, w: Float) { value = Vector4F(x, y, z, w) }
+    override fun set(matrix: Matrix4) { value = matrix }
     override fun set(vector3F: Vector3F) { value = vector3F }
     override fun set(textureUnit: GlContext.TextureUnit) { value = textureUnit }
 }

@@ -135,7 +135,56 @@ object SampleData {
         .acceptSuggestedLinkOptions()
         .confirm()
 
-    val sampleShow: Show get() = MutableShow("Sample Show") {
+    private val headlightsMode = toolchain.autoWire(
+        Shader(
+            "Headlights Mode",
+            /**language=glsl*/
+            """
+                const float PI = 3.141592654;
+                const float panScale = 540. / PI / 180.;
+                const float tiltScale = 125. / PI / 180.;
+
+                struct FixtureInfo {
+                    vec3 origin;
+                    vec3 heading;
+                    mat4 matrix;
+                };
+
+                struct MovingHeadParams {
+                    float pan;
+                    float tilt;
+                    float colorWheel;
+                    float dimmer;
+                };
+
+                uniform FixtureInfo fixtureInfo;
+
+                uniform float targetX; // @@Slider default=240 max=500 min=-100
+                uniform float targetY; // @@Slider default=0 max=400 min=0
+                uniform float targetZ; // @@Slider default=0 max=200 min=-200
+
+                // @param params moving-head-params
+                void main(out MovingHeadParams params) {
+                    vec3 target = vec3(targetX, targetY, targetZ);
+
+                    vec3 direction = normalize((vec4(target, 1.0) * fixtureInfo.matrix).xyz);
+                    float theta = atan(direction.y, direction.x);
+                    float phi = acos(direction.z);
+                    
+                    params.pan = theta * panScale;
+                    params.tilt = phi * tiltScale + .5;
+                    params.colorWheel = 0.;
+                    params.dimmer = 1.;
+                }
+            """.trimIndent()
+        )
+    )
+        .acceptSuggestedLinkOptions()
+        .confirm()
+
+    val sampleShow: Show get() = createSampleShow().getShow()
+
+    fun createSampleShow(withHeadlightsMode: Boolean = false) = MutableShow("Sample Show") {
         println("Initialize sampleShow!")
 
         val scenesPanel = MutablePanel("Scenes")
@@ -219,15 +268,24 @@ object SampleData {
                 }
             }
         }
+        if (withHeadlightsMode) {
+            addVacuity(backdropsPanel)
+        }
 
         addControl(moreControlsPanel, color.buildControl())
         addControl(moreControlsPanel, brightness.buildControl())
         addControl(moreControlsPanel, saturation.buildControl())
 
+        if (withHeadlightsMode) {
+            addButton(moreControlsPanel, "Headlights Mode") {
+                addPatch(headlightsMode)
+            }
+        }
+
         addButton(moreControlsPanel, "Wobble") {
             addPatch(wireUp(Shaders.ripple))
         }
-    }.getShow()
+    }
 
     val sampleShowWithBeatLink: Show get() = MutableShow(sampleShow).apply {
         addPatch {

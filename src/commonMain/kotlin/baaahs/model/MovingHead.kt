@@ -5,7 +5,9 @@ import baaahs.dmx.Dmx
 import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.DeviceType
 import baaahs.fixtures.MovingHeadDevice
+import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
+import baaahs.geom.createMatrixWithPositionAndOrientation
 import kotlinx.serialization.Serializable
 
 abstract class MovingHead(
@@ -38,6 +40,9 @@ abstract class MovingHead(
     abstract val tiltRange: ClosedRange<Float>
     /** Seconds required to rotate through full tilt range. */
     abstract val tiltMotorSpeed: Float
+
+    override val matrix: Matrix4?
+        get() = createMatrixWithPositionAndOrientation(origin, heading)
 
     enum class ColorModel {
         ColorWheel,
