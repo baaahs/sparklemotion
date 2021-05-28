@@ -19,15 +19,15 @@ class SheepModel : ObjModel("baaahs-model.obj") {
             "leftEye",
             "Left Eye",
             1,
-            origin = Vector3F(-11f, 202.361f, 27.5f),
-            heading = Vector3F(0f, -wallEyedness, (PI / 2).toFloat())
+            origin = Vector3F(-11f, 202.361f, -24.5f),
+            heading = Vector3F(0f, wallEyedness, (PI / 2).toFloat())
         ),
         Shenzarpy(
             "rightEye",
             "Right Eye",
             17,
-            origin = Vector3F(-11f, 202.361f, -24.5f),
-            heading = Vector3F(0f, wallEyedness, (PI / 2).toFloat())
+            origin = Vector3F(-11f, 202.361f, 27.5f),
+            heading = Vector3F(0f, -wallEyedness, (PI / 2).toFloat())
         )
     )
 
