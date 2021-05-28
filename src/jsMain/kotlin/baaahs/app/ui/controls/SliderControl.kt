@@ -36,15 +36,18 @@ private val SliderControl = xComponent<SliderControlProps>("SliderControl") { pr
     }
 
     slider {
-        attrs.title = props.sliderControl.slider.title
+        attrs.title = slider.title
 //        attrs.position = channel.value
         attrs.position = position
         attrs.contextPosition = null
-        attrs.minValue = props.sliderControl.slider.minValue
-        attrs.maxValue = props.sliderControl.slider.maxValue
-        attrs.stepValue = props.sliderControl.slider.stepValue
+        attrs.minValue = slider.minValue
+        attrs.maxValue = slider.maxValue
+        attrs.stepValue = slider.stepValue
         attrs.reversed = true
         attrs.showTicks = true
+        if (slider.maxValue  <= 2) {
+            attrs.ticksScale = 100f
+        }
 
         attrs.onChange = handlePositionChange
     }
