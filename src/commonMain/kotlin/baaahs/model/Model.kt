@@ -1,6 +1,7 @@
 package baaahs.model
 
 import baaahs.fixtures.DeviceType
+import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.geom.center
@@ -50,6 +51,7 @@ abstract class Model : ModelInfo {
     interface FixtureInfo {
         val origin: Vector3F?
         val heading: Vector3F?
+        val matrix: Matrix4?
     }
 
     /** A named surface in the geometry model. */

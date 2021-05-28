@@ -3,6 +3,7 @@ package baaahs.plugin.core
 import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.ShowPlayer
+import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
@@ -26,7 +27,8 @@ import kotlinx.serialization.Transient
 val fixtureInfoStruct = GlslType.Struct(
     "FixtureInfo",
     "origin" to GlslType.Vec3,
-    "heading" to GlslType.Vec3
+    "heading" to GlslType.Vec3,
+    "matrix" to GlslType.Matrix4
 )
 
 val fixtureInfoContentType = ContentType("fixture-info", "Fixture Info", fixtureInfoStruct)
@@ -65,13 +67,16 @@ class FixtureInfoFeed(
 
             private val originUniform = glslProgram.getUniform("$id.origin")
             private val headingUniform = glslProgram.getUniform("$id.heading")
+            private val matrixUniform = glslProgram.getUniform("$id.matrix")
 
-            override val isValid: Boolean get() = originUniform != null && headingUniform != null
+            override val isValid: Boolean get() =
+                originUniform != null || headingUniform != null || matrixUniform != null
 
             override fun setOnProgram(renderTarget: RenderTarget) {
                 val fixtureInfo = renderTarget.fixture.modelEntity as? Model.FixtureInfo
-                originUniform!!.set(fixtureInfo?.origin ?: Vector3F.origin)
-                headingUniform!!.set(fixtureInfo?.heading ?: Vector3F.origin)
+                originUniform?.set(fixtureInfo?.origin ?: Vector3F.origin)
+                headingUniform?.set(fixtureInfo?.heading ?: Vector3F.origin)
+                matrixUniform?.set(fixtureInfo?.matrix ?: Matrix4())
             }
         }
     }

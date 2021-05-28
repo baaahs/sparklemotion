@@ -105,6 +105,14 @@ abstract class MutablePatchHolder(
         return control
     }
 
+    fun addVacuity(
+        panel: MutablePanel
+    ): MutableVacuityControl {
+        val control = MutableVacuityControl("Vacuity")
+        addControl(panel, control)
+        return control
+    }
+
     fun removeControl(panel: Panel, index: Int): MutableControl {
         return controlLayout.getOrPut(mutableShow.findPanel(panel)) { arrayListOf() }.removeAt(index)
     }

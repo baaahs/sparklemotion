@@ -22,6 +22,7 @@ object MoverShader : ShaderType {
         struct FixtureInfo {
             vec3 origin;
             vec3 heading;
+            mat4 matrix;
         };
 
         struct MovingHeadParams {
