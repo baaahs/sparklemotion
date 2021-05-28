@@ -1,5 +1,6 @@
 package baaahs.glsl
 
+import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
@@ -14,6 +15,7 @@ interface Uniform {
     fun set(x: Float, y: Float)
     fun set(x: Float, y: Float, z: Float)
     fun set(x: Float, y: Float, z: Float, w: Float)
+    fun set(matrix: Matrix4)
     fun set(vector3F: Vector3F)
     fun set(textureUnit: GlContext.TextureUnit)
 }
@@ -29,6 +31,10 @@ class UniformImpl internal constructor(
     override fun set(x: Float, y: Float) = withProgram { uniform2f(uniformLocation, x, y) }
     override fun set(x: Float, y: Float, z: Float) = withProgram { uniform3f(uniformLocation, x, y, z) }
     override fun set(x: Float, y: Float, z: Float, w: Float) = withProgram { uniform4f(uniformLocation, x, y, z, w) }
+
+    override fun set(matrix: Matrix4) = withProgram {
+        uniformMatrix4fv(uniformLocation, false, matrix.elements.map { it.toFloat() }.toFloatArray())
+    }
 
     override fun set(vector3F: Vector3F) = set(vector3F.x, vector3F.y, vector3F.z)
 

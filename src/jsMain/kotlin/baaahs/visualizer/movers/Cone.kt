@@ -29,7 +29,7 @@ actual class Cone actual constructor(
         }
     }
     private val innerGeometry = ConeGeometry(20, coneLength, openEnded = true)
-        .also { it.applyMatrix4(Matrix4().makeTranslation(0.0, -coneLength / 2, 0.0)) }
+        .also { it.translate(0.0, -coneLength / 2, 0.0) }
     private val inner = Mesh(innerGeometry, innerMaterial)
 
     private val outerBaseOpacity = .4
@@ -45,7 +45,7 @@ actual class Cone actual constructor(
         }
     }
     private val outerGeometry = ConeGeometry(50, coneLength, openEnded = true)
-        .also { it.applyMatrix4(Matrix4().makeTranslation(0.0, -coneLength / 2, 0.0)) }
+        .also { it.translate(0.0, -coneLength / 2, 0.0) }
     private val outer = Mesh(outerGeometry, outerMaterial)
 
     private val baseOpacities = listOf(innerBaseOpacity, outerBaseOpacity)
@@ -54,7 +54,7 @@ actual class Cone actual constructor(
 
     init {
         cones.forEach { cone ->
-            cone.position.set(origin.x - coneLength / 2, origin.y, origin.z)
+            cone.position.set(origin.x, origin.y, origin.z)
             cone.rotation.setFromVector3(heading)
         }
     }
@@ -98,7 +98,6 @@ actual class Cone actual constructor(
             val normal = Vector3(0, 0, 1).applyEuler(planeRotation)
             if (colorMode == ColorMode.Secondary) normal.negate()
             val planeOrigin = origin.clone()
-            planeOrigin.x -= coneLength / 2
             clipPlane.setFromNormalAndCoplanarPoint(normal, planeOrigin)
         }
     }

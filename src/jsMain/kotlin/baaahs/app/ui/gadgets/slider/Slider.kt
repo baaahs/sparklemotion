@@ -119,7 +119,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                                     key = tick.id
                                     attrs.tick = tick
                                     attrs.format = { item ->
-                                        floor(item.value.toFloat() * 100).toString()
+                                        floor(item.value.toFloat() * (props.ticksScale ?: 1f)).toString()
                                     }
                                 }
                             }
@@ -144,6 +144,7 @@ external interface SliderProps : RProps {
 
     var reversed: Boolean?
     var showTicks: Boolean?
+    var ticksScale: Float?
 
     var onChange: (Float) -> Unit
 }
