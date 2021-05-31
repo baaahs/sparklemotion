@@ -15,6 +15,7 @@ import styled.StyleSheet
 object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     val buttonGroupCard by css {
         display = Display.flex
+        overflowY = Overflow.scroll
 
         descendants(controlButton) {
             transition(::transform, duration = 0.25.s, timing = Timing.linear)
