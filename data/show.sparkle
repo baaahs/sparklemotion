@@ -1,1 +1,1746 @@
-{"title":"Sample Show","patches":[{"shaderInstanceIds":["flatProjection-inst","darkness-inst","brightness-inst","saturation-inst","scale-inst","sharpyDefault-inst"],"surfaces":{"name":"All Surfaces"}}],"controlLayout":{"scenes":["scenesButtonGroup","sparklezButton","zzzButton"],"moreControls":["colorColorPickerControl","brightnessSliderControl","saturationSliderControl","wobblyButton","sizeSliderControl","pulseButton"],"controls":["transitionEffectButtonGroup","fadeSliderControl"],"preview":["control2"],"transition":["control3"]},"layouts":{"panels":{"scenes":{"title":"Scenes"},"preview":{"title":"Preview"},"backdrops":{"title":"Backdrops"},"controls":{"title":"Controls"},"moreControls":{"title":"More Controls"},"transition":{"title":"Transition"}},"formats":{"default":{"mediaQuery":null,"tabs":[{"title":"Main","columns":["3fr","2fr"],"rows":["2fr","5fr","3fr"],"areas":["scenes","preview","backdrops","controls","moreControls","transition"]}]}}},"shaders":{"flatProjection":{"title":"Flat Projection","src":"\n// Cylindrical Projection\n// !SparkleMotion:internal\n\nstruct ModelInfo {\n    vec3 center;\n    vec3 extents;\n};\nuniform ModelInfo modelInfo;\n\nconst float PI = 3.141592654;\n\n// @return uv-coordinate\n// @param pixelLocation xyz-coordinate\nvec2 main(vec3 pixelLocation) {\n    vec3 pixelOffset = (pixelLocation - modelInfo.center) / modelInfo.extents + .5;\n    return vec2(1.-pixelOffset.x, pixelOffset.y);\n    // vec3 normalDelta = normalize(pixelOffset);\n    // float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]\n    // if (theta < 0.0) theta += (2.0f * PI);                 // theta in range [0,2π)\n    // float u = theta / (2.0f * PI);                         // u in range [0,1)\n    // float v = (pixelOffset.y + modelInfo.extents.y / 2.0f) / modelInfo.extents.y;\n    // return vec2(u, v);\n}\n"},"darkness":{"title":"Darkness","src":"void main(void) {\n    gl_FragColor = vec4(0., 0., 0., 1.);\n}"},"brightness":{"title":"Brightness","src":"uniform float brightness; // @@Slider min=0 max=1.25 default=1\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    return vec4(clampedColor.rgb * brightness, clampedColor.a);\n}"},"saturation":{"title":"Saturation","src":"uniform float saturation; // @@Slider min=0 max=1.25 default=1\n\n// All components are in the range [0…1], including hue.\nvec3 rgb2hsv(vec3 c)\n{\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\n\n    float d = q.x - min(q.w, q.y);\n    float e = 1.0e-10;\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\n \n\n// All components are in the range [0…1], including hue.\nvec3 hsv2rgb(vec3 c)\n{\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    if (saturation == 1.) return inColor;\n\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    vec3 hsv = rgb2hsv(clampedColor.rgb);\n    hsv.y *= saturation;\n    return vec4(hsv2rgb(hsv), clampedColor.a);\n}"},"scale":{"title":"Scale","src":"uniform float size; // @@Slider min=0.25 max=4 default=1\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n  return (uvIn - .5) / size + .5;\n}"},"sharpyDefault":{"title":"Sharpy Default","src":"struct FixtureInfo {\n    vec3 origin;\n    vec3 heading;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\nuniform FixtureInfo fixtureInfo;\n\n// @return moving-head-params\nMovingHeadParams main() {\n    // float pan = sin(time/5.) / 2. + .5;\n    // float tilt = sin(time/5.) / 4. + .5;\n    float pan = 0.;\n    float tilt = .5;\n    // float pan = mod(time * 2., 1.);\n    // float tilt = mod(time * 2., 1.);\n    float colorWheel = mod(time/20., 1.);\n    return MovingHeadParams(pan, tilt, colorWheel, 1.);\n    // return vec4(fixtureInfo.origin.x, fixtureInfo.origin.z, 0., 0.);\n}"},"glslHueTestPattern":{"title":"GLSL Hue Test Pattern","src":"uniform vec2 resolution;\nvoid main(void) {\n    gl_FragColor = vec4(gl_FragCoord.xy / resolution, 0.0, 1.0);\n}"},"fireBall":{"title":"Fire Ball","src":"// Fire Ball\n// From http://glslsandbox.com/e#61108.0\n\n// Fire ball by David Robles\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n//#extension GL_OES_standard_derivatives : enable\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n\nconst float PI = 3.141592;\n\nuniform float conflagration; // @@Slider min=5 max=20 default=15.\n\nvec2 hash( vec2 p ) // replace this by something better\n{\n    p = vec2( dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)) );\n    return -1.0 + 2.0*fract(sin(p)*43758.5453123);\n}\n\nfloat noise( in vec2 p )\n{\n    const float K1 = 0.366025404; // (sqrt(3)-1)/2;\n    const float K2 = 0.211324865; // (3-sqrt(3))/6;\n\n    vec2  i = floor( p + (p.x+p.y)*K1 );\n    vec2  a = p - i + (i.x+i.y)*K2;\n    float m = step(a.y,a.x);\n    vec2  o = vec2(m,1.0-m);\n    vec2  b = a - o + K2;\n    vec2  c = a - 1.0 + 2.0*K2;\n    vec3  h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );\n    vec3  n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));\n    return dot( n, vec3(70.0) );\n}\n\nfloat circleShape(vec2 coord, vec2 pos){\n    float dist = distance(coord, pos);\n    return clamp(   log(dist*(15.+conflagration+4.*noise(vec2(time*.8))))  ,0.,1.);\n}\n\nvec2 sineWave(vec2 p){\n    float Ax = .05;\n    float wx = 1.50 * PI;\n    float x = sin(wx * p.x) * Ax * sin(noise(vec2(time)));\n\n    float Ay = .05;\n    float wy = PI * 10.;\n    float y = sin(wy*p.y) * Ay * noise(vec2(time));\n\n    return vec2(p.x + x, p.y + y);\n}\n\nvoid main( void ) {\n\n    vec2 pos = gl_FragCoord.xy / resolution.xy;\n    pos.x += .2;\n    vec2 uv = pos;\n\n    uv += vec2(-.5, -.5);\n    uv *= vec2(2.3, 1.3);\n\n    float luz = clamp(1.05 - (pow(uv.x, 2.) + pow(uv.y * 1.6, 6.))*2., 0., 1.);\n    //vec3 color = vec3(0.3059, 0.1922, 0.0431);\n    vec3 color = vec3(0.7333, 0.2902, 0.0314);\n    //vec3 color = vec3(0.3882, 0.1686, 0.251);\n    float grad = circleShape(sineWave(pos), vec2(.5, .32));\n\n    float ruido = 0.;\n\n    pos *= 5.0;\n    float xoff = 1.05;\n    float yoff = 2.1;\n    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );\n    ruido = 0.7500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.2500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.5000*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.1250*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n\n\n    ruido = 0.5 + 0.5*ruido;\n    ruido = clamp(ruido, 0., 1.);\n\n    /////////////////////////////////////////////////////////////\n    pos = uv;\n    pos *= 3.0;\n    float ruido2 = 0.;\n    xoff = 1.5;\n    yoff = 1.5;\n    m = mat2( -2.1,  .5, -.5,  2.1 );\n    ruido2 = 0.2500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.5000*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.1250*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.0625*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n\n    ruido2 = 0.5 + 0.5*ruido2;\n    ruido2 = clamp(ruido2, 0., 1.);\n\n    float f = 0.;\n    f += 1.0 - ( (1.0-luz) / (ruido2 + 0.001) );\n    f /= grad;\n    f /= ruido;\n\n    gl_FragColor = vec4(f*color*luz*(.5-.5*noise(vec2(time*.8))), 1.);\n    //gl_FragColor = vec4(color/grad, 1.);\n\n}"},"adjustTilt":{"title":"Adjust tilt","src":"struct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\n\n// @param upstream moving-head-params\n// @param result moving-head-params\nvoid main(in MovingHeadParams upstream, out MovingHeadParams result) {\n    result = upstream;\n    result.tilt += sin(time) * .1;\n}"},"checkerboard":{"title":"Checkerboard","src":"uniform float checkerboardSize = 10.0; // @@Slider min=.001 max=1 default=.1\nuniform float whiteness = 1.; // @type float\n\nvoid mainImage(out vec4 fragColor, in vec2 fragCoord) {\n    vec2 pos = floor(fragCoord / checkerboardSize);\n    vec3 patternMask = vec3(mod(pos.x + mod(pos.y, 2.0), 2.0));\n    fragColor = vec4(patternMask.xy, whiteness, 1.);\n}"},"hippieTrap":{"title":"Hippie Trap","src":"uniform float zoom; // @@Slider min=1 default=2. max=10\n\nmat2 rot(float a){return mat2(cos(a),-sin(a),sin(a),cos(a));}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n\n    vec3 col;\n    float t;\n    \n    for(int c=0;c<3;c++){\n\t    vec2 uv = (fragCoord*50.0-25.) / zoom;\n        t = iTime+float(c)/10.;\n        for(int i=0;i<20;i++)\n        {\n            uv=abs(uv.yx);\n            uv /= 1.1;\n        \tuv -= 1.0;\n        \tuv=uv*rot(t/float(i+2))+col.xy;\n        }\n     col[c] = fract((uv.x)/(uv.y));\n\t}\n    \n    fragColor = vec4(vec3(col),1.0);\n    \n}\n"},"bandlimitedSynthesis1":{"title":"Bandlimited Synthesis 1 ","src":"// The MIT License\n// Copyright © 2020 Inigo Quilez\n// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n// A simple way to prevent aliasing of cosine functions (the color\n// palette in this case is made of 8 layers) by attenuating them\n// when their oscillations become smaller than a pixel. Left is\n// direct use of cos(x), right is band-limited cos(x).\n//\n// Box-filtering of cos(x):\n//\n// (1/w)∫cos(t)dt with t ∈ (x-½w, x+½w)\n// = [sin(x+½w) - sin(x-½w)]/w\n// = cos(x)·sin(½w)/(½w)\n//\n// Can approximate smoothstep(2π,0,w) ≈ sin(w/2)/(w/2),\n// which you can also see as attenuating cos(x) when it \n// oscilates more than once per pixel. More info:\n//\n// https://iquilezles.org/www/articles/bandlimiting/bandlimiting.htm\n//\n// Related Shader:\n//   https://www.shadertoy.com/view/WtScDt\n//   https://www.shadertoy.com/view/wtXfRH\n//   https://www.shadertoy.com/view/3tScWd\n\n\n// box-filted cos(x)\nvec3 fcos( in vec3 x )\n{\n    vec3 w = fwidth(x);\n    return cos(x) * sin(0.5*w)/(0.5*w);       // exact\n    // return cos(x) * smoothstep(6.2832,0.0,w); // approx\n}\n\n// pick raw cosine, or band-limited cosine\nbool  mode = false;\nvec3  mcos( vec3 x){return mode?cos(x):fcos(x);}\n\n// color palette, made of 8 cos functions\n// (see https://iquilezles.org/www/articles/palettes/palettes.htm)\nvec3 getColor( in float t )\n{\n    vec3 col = vec3(0.6,0.5,0.4);\n    col += 0.14*mcos(6.2832*t*  1.0+vec3(0.0,0.5,0.6));\n    col += 0.13*mcos(6.2832*t*  3.1+vec3(0.5,0.6,1.0));\n    col += 0.12*mcos(6.2832*t*  5.1+vec3(0.1,0.7,1.1));\n    col += 0.11*mcos(6.2832*t*  9.1+vec3(0.1,0.5,1.2));\n    col += 0.10*mcos(6.2832*t* 17.1+vec3(0.0,0.3,0.9));\n    col += 0.09*mcos(6.2832*t* 31.1+vec3(0.1,0.5,1.3));\n    col += 0.08*mcos(6.2832*t* 65.1+vec3(0.1,0.5,1.3));\n    col += 0.07*mcos(6.2832*t*131.1+vec3(0.3,0.2,0.8));\n    return col;\n}\n\nvoid mainImage(out vec4 fragColor, in vec2 fragCoord )\n{\n    // coordiantes\n\tvec2 q = (2.0*(fragCoord + vec2(1.75, .0))-iResolution.xy)/iResolution.y;\n\n    // separation\n    float th = /*(iMouse.z>0.001) ? (2.0*iMouse.x-iResolution.x)/iResolution.y :*/ 1.8*sin(iTime);\n    mode = (q.x<th);\n    \n    // deformation\n    vec2 p = 2.0*q/dot(q,q);\n\n    // animation\n    p.xy += 0.05*iTime;\n\n    // texture\n    vec3 col = min(getColor(p.x),getColor(p.y));\n\n    // vignetting\n    col *= 1.5 - 0.2*length(q);\n    \n    // separation\n    col *= smoothstep(0.005,0.010,abs(q.x-th));\n    \n    // palette\n    if( q.y<-0.9 ) col = getColor( fragCoord.x/iResolution.x );\n\n    fragColor = vec4( col, 1.0 );\n}"},"smpteColorBars":{"title":"SMPTE Color Bars","src":"\n// Robby Kraft\n// from https://www.shadertoy.com/view/XlGXRz\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    float br = 0.75; // a less popular SMPTE version uses 1.0\n\n\tvec2 st = fragCoord.xy/iResolution.xy;\n\n\tbool sev1 = bool( step(st.x, 1.0/7.0) );\n\tbool sev2 = bool( step(st.x, 2.0/7.0) );\n\tbool sev3 = bool( step(st.x, 3.0/7.0) );\n\tbool sev4 = bool( step(st.x, 4.0/7.0) );\n\tbool sev5 = bool( step(st.x, 5.0/7.0) );\n\tbool sev6 = bool( step(st.x, 6.0/7.0) );\n\n\tbool row1 = !bool( step(st.y, 0.3333) );\n\tbool row2 = !bool( step(st.y, 0.25) );\n\n\t/////////////////////////////////////////\n\t// R : 0.75  1.0            1.0  1.0      \n\t// G : 0.75  1.0  1.0  1.0                \n\t// B : 0.75       1.0       1.0       1.0\n\t/////////////////////////////////////////\n\tfloat top_red =   br * float((sev6 && !sev4) || sev2 );\n\tfloat top_green = br * float(sev4);\n\tfloat top_blue =  br * float(!sev6 || (sev5 && !sev4) || (sev3 && !sev2) || sev1 );\n\n\t/////////////////////////////////////////\n\t// R :           1.0                 0.75      \n\t// G :                     1.0       0.75                \n\t// B : 1.0       1.0       1.0       0.75\n\t/////////////////////////////////////////\n\tfloat mid_red =   0.075*float( (sev6 && !sev5)||(sev4 && !sev3)||(sev2 && !sev1) ) + br * float(!sev6 || (sev3 && !sev2) );\n\tfloat mid_green = 0.075*float( (sev6 && !sev5)||(sev4 && !sev3)||(sev2 && !sev1) ) + br * float(!sev6 || (sev5 && !sev4) );\n\tfloat mid_blue =  0.075*float( (sev6 && !sev5)||(sev4 && !sev3)||(sev2 && !sev1) ) + br * float(!sev6 || (sev5 && !sev4) || (sev3 && !sev2) || sev1);\n\n\t///////////////////////\n\t// R: 0.00  1.0  0.22\n\t// G: 0.24  1.0  0.00\n\t// B: 0.35  1.0  0.5\n\t/////////////////////// \n\tbool fourth1 = bool( step(st.x, 1.0*(5.0/7.0)/4.0 ));\n\tbool fourth2 = bool( step(st.x, 2.0*(5.0/7.0)/4.0 ));\n\tbool fourth3 = bool( step(st.x, 3.0*(5.0/7.0)/4.0 ));\n\tbool fourth4 = bool( step(st.x, (5.0/7.0) ));\n\n\tbool littleThird1 = bool( step(st.x, 5.0/7.0 + 1.0/7.0/3.0) );\n\tbool littleThird2 = bool( step(st.x, 5.0/7.0 + 1.0/7.0/3.0*2.0) );\n\tbool littleThird3 = bool( step(st.x, 5.0/7.0 + 1.0/7.0/3.0*3.0) );\n\n\tfloat bottom_red =                         float(fourth2 && !fourth1) + 0.22*float(fourth3 && !fourth2) + 0.075*float(fourth4 && !fourth3) + 0.075*float(littleThird2 && !littleThird1) + 0.15*float(littleThird3 && !littleThird2) + 0.075*float(!sev6);\n\tfloat bottom_green = 0.24*float(fourth1) + float(fourth2 && !fourth1)                                   + 0.075*float(fourth4 && !fourth3) + 0.075*float(littleThird2 && !littleThird1) + 0.15*float(littleThird3 && !littleThird2) + 0.075*float(!sev6);\n\tfloat bottom_blue =  0.35*float(fourth1) + float(fourth2 && !fourth1) + 0.5*float(fourth3 && !fourth2)  + 0.075*float(fourth4 && !fourth3) + 0.075*float(littleThird2 && !littleThird1) + 0.15*float(littleThird3 && !littleThird2) + 0.075*float(!sev6);\n\n\tfragColor = vec4(top_red*float(row1)   + mid_red*float(row2 && !row1) + bottom_red*float(!row2), \n\t                 top_green*float(row1) + mid_green*float(row2 && !row1) + bottom_green*float(!row2), \n\t                 top_blue*float(row1)  + mid_blue*float(row2 && !row1) + bottom_blue*float(!row2),1.);\n}\n"},"green":{"title":"Green","src":"struct Thing {\n    float a;\n    float b;\n};\n\nvoid main(void) {\n    Thing t = Thing(0., 1.);\n    gl_FragColor = vec4(t.a, t.b, 0., 1.);\n}\n"},"blue":{"title":"Blue","src":"uniform float time;\n\nvoid main(void) {\n    gl_FragColor = vec4(0., 0., mod(time, 1.), 1.);\n}"},"moarHippies":{"title":"Moar Hippies","src":"mat2 rot(float a){return mat2(cos(a),-sin(a),sin(a),cos(a));}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n\n    vec3 col;\n    float t;\n    \n    for(int c=0;c<3;c++){\n\t    vec2 uv = (fragCoord*50.0-iResolution.xy)/iResolution.y;\n        t = iTime+float(c)/10.;\n        for(int i=0;i<20;i++)\n        {\n            uv=abs(uv.yx);\n            uv /= 1.1;\n        \tuv -= 1.0;\n        \tuv=uv*rot(t/float(i+2))+col.xy;\n        }\n     col[c] = fract((uv.x)/(uv.y));\n\t}\n    \n    fragColor = vec4(vec3(col),1.0);\n    \n}\n"},"plots":{"title":"Plots","src":"vec3 f(float x) {\n\tconst float PI = radians(180.0);\n    vec3 t = vec3(-1.0, 0.0, 1.0)/12.0 + 2.0*cos(PI*x) + iTime;\n    return 0.5 + x*(1.0-x)*sin(2.0*PI*t);\n}\n\nvec3 sdf(vec2 xy) {\n    return f(xy.x) - xy.y;\n}\n\nvec3 de(vec2 xy, vec2 px) {\n    const vec2 e = vec2(1.0, 0.0);\n    vec3 x = sdf(xy + e.xy*px) - sdf(xy - e.xy*px);\n    vec3 y = sdf(xy + e.yx*px) - sdf(xy - e.yx*px);\n    return sdf(xy)/sqrt(x*x + y*y)*(2.0*e.x);\n}\n\nvec3 de(vec2 xy) {\n    vec3 d = sdf(xy);\n    vec3 x = dFdx(d);\n    vec3 y = dFdy(d);\n    return d/sqrt(x*x + y*y);\n}\n\nvoid mainImage(out vec4 fragColor, in vec2 fragCoord) {\n    vec2 px = 1.0/iResolution.xy;\n    vec2 uv = vec2(fragCoord.x+.25, fragCoord.y);\n    vec3 rgb = mix(de(uv, px), de(uv), step(0.5, uv.x));\n    rgb = smoothstep(2.5, 0.0, abs(rgb));\n    rgb = mix(rgb, vec3(1.0), smoothstep(2.5, 0.0, abs(uv.x - 0.5)/px.x));\n    fragColor = vec4(rgb, 1.0);\n}"},"timeWobble":{"title":"Time Wobble","src":"uniform float time; // @type time\n\n// @return time\nfloat main() {\n    return time + sin(time * 3.);\n}"},"pulse2":{"title":"Pulse 2","src":"uniform float time;\nuniform float beat; // @type beat-link\nuniform vec2 center; // @type xy-coordinate\nuniform float scale; // @type float\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    float dist = mod(length(center - gl_FragCoord.xy), scale) / scale;\n    float val = mod(dist + mod(time, 1.0) / 1.0, 1.0);\n    return inColor + vec4(val, 0.0, 0.0, 1.0);\n}"},"untitledMoverShader":{"title":"Untitled Mover Shader","src":"struct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\n\n// @param inParams moving-head-params\n// @param params moving-head-params\nvoid main(in MovingHeadParams inParams, out MovingHeadParams params) {\n    params = inParams;\n    params.tilt = inParams.tilt + sin(time) * .1;\n}"},"anotherGlslHueTestPattern":{"title":"Another GLSL Hue Test Pattern","src":"uniform vec2 resolution;\nuniform float redness;\nvoid main(void) {\n    gl_FragColor = vec4(redness, gl_FragCoord.xy / resolution, 1.0);\n}"},"untitledPaintShader":{"title":"Untitled Paint Shader","src":"uniform float mysterNumber;\n\nvec3 palette(float d){\n\treturn mix(vec3(0.2,0.7,0.9),vec3(1.,0.,1.),d);\n}\n\nvec2 rotate(vec2 p,float a){\n\tfloat c = cos(a);\n    float s = sin(a);\n    return p*mat2(c,s,-s,c);\n}\n\nfloat map(vec3 p){\n    for( int i = 0; i<8; ++i){\n        float t = iTime*0.2;\n        p.xz =rotate(p.xz,t);\n        p.xy =rotate(p.xy,t*mysterNumber);\n        p.xz = abs(p.xz);\n        p.xz-=.5;\n\t}\n\treturn dot(sign(p),p)/5.;\n}\n\nvec4 rm (vec3 ro, vec3 rd){\n    float t = 0.;\n    vec3 col = vec3(0.);\n    float d;\n    for(float i =0.; i<64.; i++){\n\t\tvec3 p = ro + rd*t;\n        d = map(p)*.5;\n        if(d<0.02){\n            break;\n        }\n        if(d>100.){\n        \tbreak;\n        }\n        //col+=vec3(0.6,0.8,0.8)/(400.*(d));\n        col+=palette(length(p)*.1)/(400.*(d));\n        t+=d;\n    }\n    return vec4(col,1./(d*100.));\n}\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = (fragCoord-(iResolution.xy/2.))/iResolution.x;\n\tvec3 ro = vec3(0.,0.,-50.);\n    ro.xz = rotate(ro.xz,iTime);\n    vec3 cf = normalize(-ro);\n    vec3 cs = normalize(cross(cf,vec3(0.,1.,0.)));\n    vec3 cu = normalize(cross(cf,cs));\n    \n    vec3 uuv = ro+cf*3. + uv.x*cs + uv.y*cu;\n    \n    vec3 rd = normalize(uuv-ro);\n    \n    vec4 col = rm(ro,rd);\n    \n    \n    fragColor = col;\n    fragColor.a = 1.;\n}\n\n/** SHADERDATA\n{\n\t\"title\": \"fractal pyramid\",\n\t\"description\": \"coding my new screensaver\",\n\t\"model\": \"car\"\n}\n*/"},"isfShader":{"title":"ISF Shader","src":"/*{\n\t\"DESCRIPTION\": \"ASCII Art\",\n\t\"CREDIT\": \"by VIDVOX (Ported from https://www.shadertoy.com/view/lssGDj)\",\n\t\"ISFVSN\": \"2\",\n\t\"CATEGORIES\": [\n\t\t\"Stylize\", \"Retro\"\n\t],\n\t\"INPUTS\": [\n\t\t{\n\t\t\t\"NAME\": \"inputImage\",\n\t\t\t\"TYPE\": \"image\"\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"size\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 1.0,\n\t\t\t\"DEFAULT\": 0.1\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"gamma\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"DEFAULT\": 1.0,\n\t\t\t\"MIN\": 0.5,\n\t\t\t\"MAX\": 2.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"tint\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 1.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"tintColor\",\n\t\t\t\"TYPE\": \"color\",\n\t\t\t\"DEFAULT\": [\n\t\t\t\t0.0,\n\t\t\t\t1.0,\n\t\t\t\t0.0,\n\t\t\t\t1.0\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"alphaMode\",\n\t\t\t\"TYPE\": \"bool\",\n\t\t\t\"DEFAULT\": 0.0\n\t\t}\n\t]\n\t\n}*/\n\n\n\nfloat character(float n, vec2 p) // some compilers have the word \"char\" reserved\n{\n\tp = floor(p*vec2(4.0, -4.0) + 2.5);\n\tif (clamp(p.x, 0.0, 4.0) == p.x && clamp(p.y, 0.0, 4.0) == p.y)\n\t{\n\t\tif (int(mod(n/exp2(p.x + 5.0*p.y), 2.0)) == 1) return 1.0;\n\t}\t\n\treturn 0.0;\n}\n\nvec4 IMG_NORM_PIXEL(vec4 image, vec2 uv) {\n    return vec4(gl_FragCoord.xy, 0., 1.);\n}\n\nvoid main()\t{\n\tfloat _size = size*36.0+8.0;\n\tvec2 uv = gl_FragCoord.xy;\n\tvec4 inputColor = IMG_NORM_PIXEL(inputImage, (floor(uv/_size)*_size/RENDERSIZE.xy));\n\tvec3 col = inputColor.rgb;\n\tfloat gray = (col.r + col.g + col.b)/3.0;\n\tgray = pow(gray, gamma);\n\tcol = mix(tintColor.rgb, col.rgb, 1.0-tint);\n\t\n\tfloat n =  65536.0;             // .\n\tif (gray > 0.2) n = 65600.0;    // :\n\tif (gray > 0.3) n = 332772.0;   // *\n\tif (gray > 0.4) n = 15255086.0; // o \n\tif (gray > 0.5) n = 23385164.0; // &\n\tif (gray > 0.6) n = 15252014.0; // 8\n\tif (gray > 0.7) n = 13199452.0; // @\n\tif (gray > 0.8) n = 11512810.0; // #\n\t\t\n\tvec2 p = mod(uv/(_size/2.0), 2.0) - vec2(1.0);\n\tcol = col*character(n, p);\n\tfloat alpha = mix(tintColor.a * inputColor.a, inputColor.a, 1.0-tint);\n\tif (alphaMode)\t{\n\t\talpha = (col.r + col.g + col.b)/3.0;\n\t\talpha = (alpha > 0.01) ? tintColor.a : alpha;\n\t}\n\talpha = 1.;\n\t\n\tgl_FragColor = vec4(col,alpha);\n\n}\n"},"colorDiffusionFlow":{"title":"ColorDiffusionFlow","src":"/*{\n  \"CREDIT\": \"by mojovideotech\",\n  \"DESCRIPTION\": \"from http://glslsandbox.com/e#35553.0\",\n  \"CATEGORIES\": [\n    \"fluid\",\n    \"liquid\"\n  ],\n  \"INPUTS\": [\n  \t{\n\t\t\t\"NAME\" :\t\"rate1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.9,\n\t\t\t\"MIN\" :\t-3.0,\n\t\t\t\"MAX\" :\t3.0\n\t},\n\t {\n\t\t\t\"NAME\" :\t\"rate2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.6,\n\t\t\t\"MIN\" :\t-3.0,\n\t\t\t\"MAX\" :\t3.0\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"loopcycle\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t85.0,\n\t\t\t\"MIN\" :\t20.0,\n\t\t\t\"MAX\" :\t100.0\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"color1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.45,\n\t\t\t\"MIN\" :\t-2.5,\n\t\t\t\"MAX\" :\t2.5\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"color2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.0,\n\t\t\t\"MIN\" :\t-1.25,\n\t\t\t\"MAX\" :\t1.125\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"cycle1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.33,\n\t\t\t\"MIN\" :\t0.01,\n\t\t\t\"MAX\" :\t3.1459\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"cycle2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.22,\n\t\t\t\"MIN\" :\t-0.497,\n\t\t\t\"MAX\" :\t0.497\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"nudge\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.095,\n\t\t\t\"MIN\" :\t0.001,\n\t\t\t\"MAX\" :\t0.01\n\t},\n\t{\n      \t\t\t\"NAME\" :\t\"depthX\",\n      \t\t\t\"TYPE\" : \t\"float\",\n      \t\t\t\"DEFAULT\" :\t0.85,\n      \t\t\t\"MIN\" : \t0.001,\n      \t\t\t\"MAX\" :\t\t0.9\n    \t},\n    \t{\n      \t\t\t\"NAME\" :\t\"depthY\",\n      \t\t\t\"TYPE\" :\t\"float\",\n      \t\t\t\"DEFAULT\" :\t0.25,\n      \t\t\t\"MIN\" : \t0.001,\n      \t\t\t\"MAX\" :\t\t0.9\n    \t}\n  ]\n}*/\n\n///////////////////////////////////////////\n// ColorDiffusionFlow  by mojovideotech\n//\n// based on :\n// glslsandbox.com/\\e#35553.0\n//\n// Creative Commons Attribution-NonCommercial-ShareAlike 3.0\n///////////////////////////////////////////\n\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n \n#define \tpi   \t3.141592653589793\n\nvoid main() {\n\tfloat T = TIME * rate1;\n\tfloat TT = TIME * rate2;\n\tvec2 p=(2.*isf_FragNormCoord);\n\tfor(int i=1;i<11;i++) {\n    \tvec2 newp = p;\n        float ii = float(i);  \n    \tnewp.x+=depthX/ii*sin(ii*pi*p.y+T*nudge+cos((TT/(5.0*ii))*ii));\n    \tnewp.y+=depthY/ii*cos(ii*pi*p.x+TT+nudge+sin((T/(5.0*ii))*ii));\n    \tp = newp +log(DATE.w)/loopcycle;\n  }\n  vec3 col=vec3(cos(p.x+p.y+3.0*color1)*0.5+0.5,sin(p.x+p.y+6.0*cycle1)*0.5+0.5,(sin(p.x+p.y+9.0*color2)+cos(p.x+p.y+12.0*cycle2))*0.25+.5);\n  gl_FragColor=vec4(col*col, 1.0);\n}"},"solidColor":{"title":"Solid Color","src":"// @return color\n// @param uvIn uv-coordinate\n// @param color color\nvec4 main(vec2 uvIn, vec4 color) {\n    return vec4(color.rgb, 1.);\n}"},"quiver":{"title":"Quiver","src":"////////////////////////////////////////////////////////////////////////////////\n//\n// Playing around with simplex noise and polar-coords with a lightning-themed\n// scene.\n//\n// Copyright 2019 Mirco Müller\n//\n// Author(s):\n//   Mirco \"MacSlow\" Müller <macslow@gmail.com>\n//\n// This program is free software: you can redistribute it and/or modify it\n// under the terms of the GNU General Public License version 3, as published\n// by the Free Software Foundation.\n//\n// This program is distributed in the hope that it will be useful, but\n// WITHOUT ANY WARRANTY; without even the implied warranties of\n// MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR\n// PURPOSE.  See the GNU General Public License for more details.\n//\n// You should have received a copy of the GNU General Public License along\n// with this program.  If not, see <http://www.gnu.org/licenses/>.\n//\n////////////////////////////////////////////////////////////////////////////////\n\nmat2 r2d (in float degree)\n{\n\tfloat rad = radians (degree);\n\tfloat c = cos (rad);\n\tfloat s = sin (rad);\n\treturn mat2 (vec2 (c, s),vec2 (-s, c));\n}\n\n// using a slightly adapted implementation of iq's simplex noise from\n// https://www.shadertoy.com/view/Msf3WH with hash(), noise() and fbm()\nvec2 hash (in vec2 p)\n{\n\tp = vec2 (dot (p, vec2 (127.1, 311.7)),\n\t\t\t  dot (p, vec2 (269.5, 183.3)));\n\n\treturn -1. + 2.*fract (sin (p)*43758.5453123);\n}\n\nfloat noise (in vec2 p)\n{\n    const float K1 = .366025404;\n    const float K2 = .211324865;\n\n\tvec2 i = floor (p + (p.x + p.y)*K1);\n\t\n    vec2 a = p - i + (i.x + i.y)*K2;\n    vec2 o = step (a.yx, a.xy);    \n    vec2 b = a - o + K2;\n\tvec2 c = a - 1. + 2.*K2;\n\n    vec3 h = max (.5 - vec3 (dot (a, a), dot (b, b), dot (c, c) ), .0);\n\n\tvec3 n = h*h*h*h*vec3 (dot (a, hash (i + .0)),\n\t\t\t\t\t\t   dot (b, hash (i + o)),\n\t\t\t\t\t\t   dot (c, hash (i + 1.)));\n\n    return dot (n, vec3 (70.));\n}\n\nfloat fbm (in vec2 p)\n{\n\tmat2 rot = r2d (27.5);\n    float d = noise (p); p *= rot;\n    d += .5*noise (p); p *= rot;\n    d += .25*noise (p); p *= rot;\n    d += .125*noise (p); p *= rot;\n    d += .0625*noise (p);\n\td /= (1. + .5 + .25 + .125 + .0625);\n\treturn .5 + .5*d;\n}\n\nvec2 mapToScreen (in vec2 p, in float scale)\n{\n    vec2 res = p;\n    res = res * 2. - 1.;\n    res.x *= iResolution.x / iResolution.y;\n    res *= scale;\n    \n    return res;\n}\n\nvec2 cart2polar (in vec2 cart)\n{\n    float r = length (cart);\n    float phi = atan (cart.y, cart.x);\n    return vec2 (r, phi); \n}\n\nvec2 polar2cart (in vec2 polar)\n{\n    float x = polar.x*cos (polar.y);\n    float y = polar.x*sin (polar.y);\n    return vec2 (x, y); \n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = mapToScreen (fragCoord.xy/iResolution.xy, 2.5);\n\n\tuv *= r2d (12.*iTime);\n    float len = length (uv);\n\tfloat thickness = .25;\n    float haze = 2.5;\n\n    // distort UVs a bit\n    uv = cart2polar (uv);\n    uv.y += .2*(.5 + .5*sin(cos (uv.x)*len));\n    uv = polar2cart (uv);\n\n    float d1 = abs ((uv.x*haze)*thickness / (uv.x + fbm (uv + 1.25*iTime)));\n    float d2 = abs ((uv.y*haze)*thickness / (uv.y + fbm (uv - 1.5*iTime)));\n    float d3 = abs ((uv.x*uv.y*haze)*thickness / (uv.x*uv.y + fbm (uv - 2.*iTime)));\n    vec3 col = vec3 (.0);\n    float size = .075;\n\tcol += d1*size*vec3 (.1, .8, 2.);\n\tcol += d2*size*vec3 (2., .1, .8);\n\tcol += d3*size*vec3 (.8, 2., .1);\n\n    fragColor = vec4 (col, 1.);\n}\n"},"sparklez":{"title":"Sparklez™","src":"//Based on https://www.youtube.com/watch?v=3CycKKJiwis\n\nfloat random(vec2 par){\n   return fract(sin(dot(par.xy,vec2(12.9898,78.233))) * 43758.5453);\n}\n\nvec2 random2(vec2 par){\n\tfloat rand = random(par);\n\treturn vec2(rand, random(par+rand));\n}\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    // Normalized pixel coordinates (from 0 to 1)\n    vec2 uv = fragCoord/iResolution.xy;\n\t\n    //The ratio of the width and height of the screen\n    float widthHeightRatio = iResolution.x/iResolution.y;\n    \n    float t = iTime * 0.01;\n    float dist = 0.0;\n    float layers = 16.0;\n    float scale = 32.0;\n    float depth;\n    float phase;\n    float rotationAngle = iTime * -0.01;\n    \n    vec2 offset;\n    vec2 local_uv;\n    vec2 index;\n    vec2 pos;\n    vec2 seed;\n    vec2 centre = vec2(0.5, 0.5);\n    \n    mat2 rotation = mat2(cos(rotationAngle), -sin(rotationAngle), \n                         sin(rotationAngle),  cos(rotationAngle));\n \t\n    for(float i = 0.0; i < layers; i++){\n        depth = fract(i/layers + t);\n        \n        //Move centre in a circle depending on the depth of the layer\n        centre.x = 0.5 + 0.1 * cos(t) * depth;\n        centre.y = 0.5 + 0.1 * sin(t) * depth;\n        \n        //Get uv from the fragment coordinates, rotation and depth\n    \tuv = centre-fragCoord/iResolution.xy;\n    \tuv.y /= widthHeightRatio;\n        uv *= rotation;\n    \tuv *= mix(scale, 0.0, depth);\n        \n        //The local cell\n        index = floor(uv);\n        \n        //Local cell seed;\n        seed = 20.0 * i + index;\n        \n        //The local cell coordinates\n        local_uv = fract(i + uv) - 0.5;\n        \n        //Get a random position for the local cell\n        pos = 1.8 * (random2(seed) - 0.5);\n        \n        //Get a random phase\n        phase = 128.0 * random(seed);\n        \n        //Get distance to the generated point, add fading to distant points\n        //Add the distance to the sum\n    \tdist += pow(abs(1.0-length(local_uv-pos)), 50.0 + 20.0 * sin(phase + 8.0 * iTime)) \n            * min(1.0, depth*2.0);\n        \n    }\n    fragColor = upstreamColor(fragCoord) + vec4(vec3(dist),1.0) * 10.;\n}"},"untitledFilterShader":{"title":"Untitled Filter Shader","src":"// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    return inColor / 2.;\n}"},"wobble":{"title":"Wobble","src":"uniform float time;\nuniform float wobbleAmount; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n  vec2 p = -1.0 + 2.0 * uvIn;\n  float len = length(p);\n  return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * wobbleAmount;\n}"},"pulse":{"title":"Pulse","src":"uniform float time;\nuniform float beat;\nuniform vec2 center;\nuniform float scale;\n\nvoid main(void) {\n    float dist = mod(length(center - gl_FragCoord.xy), scale) / scale;\n    float val = mod(dist + mod(time, 1.0) / 1.0, 1.0);\n    gl_FragColor = vec4(val, 0.0, 0.0, 1.);\n}"},"crossFade":{"title":"Cross Fade","src":"varying vec4 inColor2; // @type color\nuniform float fade;\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    return mix(inColor, inColor2, fade);\n}"},"slideLeft":{"title":"Slide Left","src":"// @param uv uv-coordinate\n// @return color\nvec4 channelA(vec2 uv);\n\n// @param uv uv-coordinate\n// @return color\nvec4 channelB(vec2 uv);\n\nuniform float fade; // @type float\n\n// @return color\nvec4 main() {\n    if (1. - gl_FragCoord.x > fade) {\n        return channelA(gl_FragCoord + vec2(fade, 0));\n    } else {\n        return channelB(gl_FragCoord + vec2(fade - 1., 0));\n    }\n}"}},"shaderInstances":{"flatProjection-inst":{"shaderId":"flatProjection","incomingLinks":{"modelInfo":{"type":"datasource","dataSourceId":"modelInfo"},"pixelLocation":{"type":"datasource","dataSourceId":"pixelLocation"}}},"darkness-inst":{"shaderId":"darkness","incomingLinks":{}},"brightness-inst":{"shaderId":"brightness","incomingLinks":{"brightness":{"type":"datasource","dataSourceId":"brightnessSlider"},"inColor":{"type":"shader-channel","shaderChannel":"main"}},"priority":10.0},"saturation-inst":{"shaderId":"saturation","incomingLinks":{"inColor":{"type":"shader-channel","shaderChannel":"main"},"saturation":{"type":"datasource","dataSourceId":"saturationSlider"}},"priority":10.0},"scale-inst":{"shaderId":"scale","incomingLinks":{"size":{"type":"datasource","dataSourceId":"sizeSlider"},"uvIn":{"type":"shader-channel","shaderChannel":"main"}},"priority":10.0},"sharpyDefault-inst":{"shaderId":"sharpyDefault","incomingLinks":{"time":{"type":"datasource","dataSourceId":"time"},"fixtureInfo":{"type":"datasource","dataSourceId":"fixtureInfo"}}},"glslHueTestPattern-inst":{"shaderId":"glslHueTestPattern","incomingLinks":{"gl_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"resolution":{"type":"datasource","dataSourceId":"resolution"}}},"fireBall-inst":{"shaderId":"fireBall","incomingLinks":{"time":{"type":"datasource","dataSourceId":"time"},"gl_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"resolution":{"type":"datasource","dataSourceId":"resolution"},"conflagration":{"type":"datasource","dataSourceId":"conflagrationSlider"}}},"adjustTilt-inst":{"shaderId":"adjustTilt","incomingLinks":{"time":{"type":"datasource","dataSourceId":"time"},"upstream":{"type":"shader-channel","shaderChannel":"main"}}},"checkerboard-inst":{"shaderId":"checkerboard","incomingLinks":{"fragCoord":{"type":"shader-channel","shaderChannel":"main"},"checkerboardSize":{"type":"datasource","dataSourceId":"checkerboardSizeSlider"},"whiteness":{"type":"datasource","dataSourceId":"whitenessSlider"}}},"hippieTrap-inst":{"shaderId":"hippieTrap","incomingLinks":{"zoom":{"type":"datasource","dataSourceId":"zoomSlider"},"iTime":{"type":"datasource","dataSourceId":"time"},"fragCoord":{"type":"shader-channel","shaderChannel":"main"}}},"bandlimitedSynthesis1-inst":{"shaderId":"bandlimitedSynthesis1","incomingLinks":{"time":{"type":"datasource","dataSourceId":"time"},"iTime":{"type":"datasource","dataSourceId":"time"},"sm_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"fragCoord":{"type":"shader-channel","shaderChannel":"main"},"gl_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"iResolution":{"type":"datasource","dataSourceId":"resolution"},"iChannel0":{"type":"datasource","dataSourceId":"pixelCoordsTexture"},"iMouse":{"type":"datasource","dataSourceId":"mouseXyPad"}}},"smpteColorBars-inst":{"shaderId":"smpteColorBars","incomingLinks":{"sm_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"fragCoord":{"type":"shader-channel","shaderChannel":"main"},"gl_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"iResolution":{"type":"datasource","dataSourceId":"resolution"}},"shaderChannel":"other"},"green-inst":{"shaderId":"green","incomingLinks":{"gl_FragCoord":{"type":"shader-channel","shaderChannel":"main"}},"shaderChannel":"other"},"blue-inst":{"shaderId":"blue","incomingLinks":{"time":{"type":"datasource","dataSourceId":"time"}},"shaderChannel":"other"},"moarHippies-inst":{"shaderId":"moarHippies","incomingLinks":{"iTime":{"type":"datasource","dataSourceId":"time"},"sm_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"fragCoord":{"type":"shader-channel","shaderChannel":"main"},"iResolution":{"type":"datasource","dataSourceId":"resolution"}},"shaderChannel":"other"},"plots-inst":{"shaderId":"plots","incomingLinks":{"iTime":{"type":"datasource","dataSourceId":"time"},"sm_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"fragCoord":{"type":"shader-channel","shaderChannel":"main"},"iResolution":{"type":"datasource","dataSourceId":"resolution"}},"shaderChannel":"other"},"timeWobble-inst":{"shaderId":"timeWobble","incomingLinks":{"time":{"type":"datasource","dataSourceId":"time"}},"shaderChannel":"time"},"pulse2-inst":{"shaderId":"pulse2","incomingLinks":{"beat":{"type":"datasource","dataSourceId":"beatLink"},"time":{"type":"datasource","dataSourceId":"time"},"scale":{"type":"datasource","dataSourceId":"scaleSlider"},"gl_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"inColor":{"type":"shader-channel","shaderChannel":"main"},"center":{"type":"datasource","dataSourceId":"centerXyPad"}}},"untitledMoverShader-inst":{"shaderId":"untitledMoverShader","incomingLinks":{"time":{"type":"datasource","dataSourceId":"time"},"inParams":{"type":"shader-channel","shaderChannel":"main"}}},"anotherGlslHueTestPattern-inst":{"shaderId":"anotherGlslHueTestPattern","incomingLinks":{"gl_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"redness":{"type":"datasource","dataSourceId":"rednessSlider"},"resolution":{"type":"datasource","dataSourceId":"resolution"}}},"untitledPaintShader-inst":{"shaderId":"untitledPaintShader","incomingLinks":{"iTime":{"type":"datasource","dataSourceId":"time"},"fragCoord":{"type":"shader-channel","shaderChannel":"main"},"iResolution":{"type":"datasource","dataSourceId":"resolution"},"mysterNumber":{"type":"datasource","dataSourceId":"time"}}},"isfShader-inst":{"shaderId":"isfShader","incomingLinks":{"size":{"type":"datasource","dataSourceId":"sizeSlider2"},"tint":{"type":"datasource","dataSourceId":"tintSlider"},"gamma":{"type":"datasource","dataSourceId":"gammaSlider"},"gl_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"tintColor":{"type":"datasource","dataSourceId":"tintColorColorPicker"},"inputImage":{"type":"shader-channel","shaderChannel":"main"},"RENDERSIZE":{"type":"shader-channel","shaderChannel":"main"},"alphaMode":{"type":"datasource","dataSourceId":"alphaModeSwitch"}}},"colorDiffusionFlow-inst":{"shaderId":"colorDiffusionFlow","incomingLinks":{"DATE":{"type":"datasource","dataSourceId":"date"},"TIME":{"type":"datasource","dataSourceId":"time"},"nudge":{"type":"datasource","dataSourceId":"nudgeSlider"},"rate1":{"type":"datasource","dataSourceId":"rate1Slider"},"rate2":{"type":"datasource","dataSourceId":"rate2Slider"},"loopcycle":{"type":"datasource","dataSourceId":"loopcycleSlider"},"isf_FragNormCoord":{"type":"shader-channel","shaderChannel":"main"},"color1":{"type":"datasource","dataSourceId":"color1Slider"},"color2":{"type":"datasource","dataSourceId":"color2Slider"},"cycle1":{"type":"datasource","dataSourceId":"cycle1Slider"},"cycle2":{"type":"datasource","dataSourceId":"cycle2Slider"},"depthX":{"type":"datasource","dataSourceId":"depthXSlider"},"depthY":{"type":"datasource","dataSourceId":"depthYSlider"}}},"solidColor-inst":{"shaderId":"solidColor","incomingLinks":{"uvIn":{"type":"shader-channel","shaderChannel":"main"},"color":{"type":"datasource","dataSourceId":"colorColorPicker"}}},"quiver-inst":{"shaderId":"quiver","incomingLinks":{"iTime":{"type":"datasource","dataSourceId":"time"},"fragCoord":{"type":"shader-channel","shaderChannel":"main"},"iResolution":{"type":"datasource","dataSourceId":"resolution"}}},"sparklez-inst":{"shaderId":"sparklez","incomingLinks":{"iTime":{"type":"datasource","dataSourceId":"time"},"fragCoord":{"type":"shader-channel","shaderChannel":"main"},"iResolution":{"type":"datasource","dataSourceId":"resolution"},"upstreamColor":{"type":"shader-channel","shaderChannel":"main"}}},"untitledFilterShader-inst":{"shaderId":"untitledFilterShader","incomingLinks":{"inColor":{"type":"shader-channel","shaderChannel":"main"}}},"wobble-inst":{"shaderId":"wobble","incomingLinks":{"time":{"type":"datasource","dataSourceId":"time"},"uvIn":{"type":"shader-channel","shaderChannel":"main"},"wobbleAmount":{"type":"datasource","dataSourceId":"wobbleAmountSlider"}}},"pulse-inst":{"shaderId":"pulse","incomingLinks":{"beat":{"type":"datasource","dataSourceId":"beatLink"},"time":{"type":"datasource","dataSourceId":"time"},"scale":{"type":"datasource","dataSourceId":"scaleSlider"},"gl_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"center":{"type":"datasource","dataSourceId":"centerXyPad"}},"priority":1.0},"crossFade-inst":{"shaderId":"crossFade","incomingLinks":{"fade":{"type":"datasource","dataSourceId":"fadeSlider"},"inColor":{"type":"shader-channel","shaderChannel":"main"},"inColor2":{"type":"shader-channel","shaderChannel":"other"}}},"slideLeft-inst":{"shaderId":"slideLeft","incomingLinks":{"fade":{"type":"datasource","dataSourceId":"fadeSlider"},"gl_FragCoord":{"type":"shader-channel","shaderChannel":"main"},"channelA":{"type":"shader-channel","shaderChannel":"main"},"channelB":{"type":"shader-channel","shaderChannel":"other"}}}},"controls":{"redYellowGreenButton":{"type":"baaahs.Core:Button","title":"Red Yellow Green","patches":[{"shaderInstanceIds":["glslHueTestPattern-inst"],"surfaces":{"name":"All Surfaces"}}]},"intensitySliderControl":{"type":"baaahs.Core:Slider","title":"Intensity","controlledDataSourceId":"intensitySlider"},"conflagrationSliderControl":{"type":"baaahs.Core:Slider","title":"Conflagration","initialValue":15.0,"minValue":5.0,"maxValue":20.0,"controlledDataSourceId":"conflagrationSlider"},"intensitySlider2Control":{"type":"baaahs.Core:Slider","title":"Intensity","initialValue":15.0,"minValue":5.0,"maxValue":20.0,"controlledDataSourceId":"intensitySlider2"},"fireButton":{"type":"baaahs.Core:Button","title":"Fire","patches":[{"shaderInstanceIds":["fireBall-inst","adjustTilt-inst"],"surfaces":{"name":"All Surfaces"}}],"controlLayout":{"controls":["intensitySliderControl"],"backdrops":["conflagrationSliderControl","intensitySlider2Control"]}},"checkerboardSizeSliderControl":{"type":"baaahs.Core:Slider","title":"Checkerboard Size","initialValue":0.1,"minValue":0.001,"controlledDataSourceId":"checkerboardSizeSlider"},"whitenessSliderControl":{"type":"baaahs.Core:Slider","title":"Whiteness","controlledDataSourceId":"whitenessSlider"},"checkerboardButton":{"type":"baaahs.Core:Button","title":"Checkerboard","patches":[{"shaderInstanceIds":["checkerboard-inst"],"surfaces":{"name":"All Surfaces"}}],"controlLayout":{"controls":["checkerboardSizeSliderControl"],"backdrops":["whitenessSliderControl"]}},"zoomSliderControl":{"type":"baaahs.Core:Slider","title":"Zoom","initialValue":2.0,"minValue":1.0,"maxValue":10.0,"controlledDataSourceId":"zoomSlider"},"hippieTrapButton":{"type":"baaahs.Core:Button","title":"Hippie Trap","patches":[{"shaderInstanceIds":["hippieTrap-inst"],"surfaces":{"name":"All Surfaces"}}],"controlLayout":{"moreControls":["checkerboardSizeSliderControl"],"backdrops":["zoomSliderControl"]}},"bandlimitedSynthesis1Button":{"type":"baaahs.Core:Button","title":"Bandlimited Synthesis 1 ","patches":[{"shaderInstanceIds":["bandlimitedSynthesis1-inst"],"surfaces":{"name":"All Surfaces"}}]},"backdropsButtonGroup":{"type":"baaahs.Core:ButtonGroup","title":"Backdrops","direction":"Vertical","buttonIds":["redYellowGreenButton","fireButton","checkerboardButton","hippieTrapButton","bandlimitedSynthesis1Button"]},"smtpeButton":{"type":"baaahs.Core:Button","title":"SMTPE","patches":[{"shaderInstanceIds":["smpteColorBars-inst"],"surfaces":{"name":"All Surfaces"}}]},"greenButton":{"type":"baaahs.Core:Button","title":"Green","patches":[{"shaderInstanceIds":["green-inst"],"surfaces":{"name":"All Surfaces"}}]},"blueButton":{"type":"baaahs.Core:Button","title":"Blue","patches":[{"shaderInstanceIds":["blue-inst"],"surfaces":{"name":"All Surfaces"}}]},"hippieTrap2HippieSRevengeButton":{"type":"baaahs.Core:Button","title":"Hippie Trap 2: Hippie's Revenge","patches":[{"shaderInstanceIds":["moarHippies-inst"],"surfaces":{"name":"All Surfaces"}}]},"heartbeatButton":{"type":"baaahs.Core:Button","title":"Heartbeat","patches":[{"shaderInstanceIds":["plots-inst"],"surfaces":{"name":"All Surfaces"}}]},"newButtonGroupButtonGroup":{"type":"baaahs.Core:ButtonGroup","title":"New Button Group","direction":"Vertical","buttonIds":["smtpeButton","greenButton","blueButton","hippieTrap2HippieSRevengeButton","heartbeatButton"]},"timeWobbleButton":{"type":"baaahs.Core:Button","title":"Time Wobble","patches":[{"shaderInstanceIds":["timeWobble-inst"],"surfaces":{"name":"All Surfaces"}}]},"pulse2Button":{"type":"baaahs.Core:Button","title":"Pulse 2","patches":[{"shaderInstanceIds":["pulse2-inst","untitledMoverShader-inst"],"surfaces":{"name":"All Surfaces"}}]},"control":{"type":"baaahs.BeatLink:BeatLink"},"pleistoceneButton":{"type":"baaahs.Core:Button","title":"Pleistocene","controlLayout":{"backdrops":["backdropsButtonGroup","newButtonGroupButtonGroup","timeWobbleButton","pulse2Button"],"controls":[],"scenes":["control"]}},"blueAquaGreenButton":{"type":"baaahs.Core:Button","title":"Blue Aqua Green","patches":[{"shaderInstanceIds":["anotherGlslHueTestPattern-inst"],"surfaces":{"name":"All Surfaces"}}]},"danceyCubesButton":{"type":"baaahs.Core:Button","title":"Dancey Cubes","patches":[{"shaderInstanceIds":["untitledPaintShader-inst"],"surfaces":{"name":"All Surfaces"}}]},"sizeSlider2Control":{"type":"baaahs.Core:Slider","title":"Size","initialValue":0.1,"controlledDataSourceId":"sizeSlider2"},"gammaSliderControl":{"type":"baaahs.Core:Slider","title":"Gamma","minValue":0.5,"maxValue":2.0,"controlledDataSourceId":"gammaSlider"},"tintSliderControl":{"type":"baaahs.Core:Slider","title":"Tint","controlledDataSourceId":"tintSlider"},"tintColorColorPickerControl":{"type":"baaahs.Core:ColorPicker","title":"Tint Color","controlledDataSourceId":"tintColorColorPicker"},"alphaModeButton":{"type":"baaahs.Core:Button","title":"Alpha Mode","controlledDataSourceId":"alphaModeSwitch"},"isfShaderButton":{"type":"baaahs.Core:Button","title":"ISF Shader","patches":[{"shaderInstanceIds":["isfShader-inst"],"surfaces":{"name":"All Surfaces"}}],"controlLayout":{"backdrops":["sizeSlider2Control","gammaSliderControl","tintSliderControl","tintColorColorPickerControl","alphaModeButton"]}},"nudgeSliderControl":{"type":"baaahs.Core:Slider","title":"Nudge","initialValue":0.095,"minValue":0.001,"maxValue":0.01,"controlledDataSourceId":"nudgeSlider"},"rate1SliderControl":{"type":"baaahs.Core:Slider","title":"Rate1","initialValue":1.9,"minValue":-3.0,"maxValue":3.0,"controlledDataSourceId":"rate1Slider"},"rate2SliderControl":{"type":"baaahs.Core:Slider","title":"Rate2","initialValue":0.6,"minValue":-3.0,"maxValue":3.0,"controlledDataSourceId":"rate2Slider"},"colorShiftSliderControl":{"type":"baaahs.Core:Slider","title":"Color Shift","initialValue":0.0,"controlledDataSourceId":"colorShiftSlider"},"color1SliderControl":{"type":"baaahs.Core:Slider","title":"Color1","initialValue":0.45,"minValue":-2.5,"maxValue":2.5,"controlledDataSourceId":"color1Slider"},"color2SliderControl":{"type":"baaahs.Core:Slider","title":"Color2","minValue":-1.25,"maxValue":1.125,"controlledDataSourceId":"color2Slider"},"cycle1SliderControl":{"type":"baaahs.Core:Slider","title":"Cycle1","initialValue":1.33,"minValue":0.01,"maxValue":3.1459,"controlledDataSourceId":"cycle1Slider"},"cycle2SliderControl":{"type":"baaahs.Core:Slider","title":"Cycle2","initialValue":0.22,"minValue":-0.497,"maxValue":0.497,"controlledDataSourceId":"cycle2Slider"},"depthXSliderControl":{"type":"baaahs.Core:Slider","title":"Depth X","initialValue":0.85,"minValue":0.001,"maxValue":0.9,"controlledDataSourceId":"depthXSlider"},"depthYSliderControl":{"type":"baaahs.Core:Slider","title":"Depth Y","initialValue":0.25,"minValue":0.001,"maxValue":0.9,"controlledDataSourceId":"depthYSlider"},"colorDiffusionFlowButton":{"type":"baaahs.Core:Button","title":"Color Diffusion Flow","patches":[{"shaderInstanceIds":["colorDiffusionFlow-inst"],"surfaces":{"name":"All Surfaces"}}],"controlLayout":{"backdrops":["nudgeSliderControl","rate1SliderControl","rate2SliderControl","colorShiftSliderControl","color1SliderControl","color2SliderControl","cycle1SliderControl","cycle2SliderControl","depthXSliderControl","depthYSliderControl"]}},"solidColorButton":{"type":"baaahs.Core:Button","title":"Solid Color","patches":[{"shaderInstanceIds":["solidColor-inst"],"surfaces":{"name":"All Surfaces"}}]},"quiverButton":{"type":"baaahs.Core:Button","title":"Quiver","patches":[{"shaderInstanceIds":["quiver-inst"],"surfaces":{"name":"All Surfaces"}}]},"backdropsButtonGroup2":{"type":"baaahs.Core:ButtonGroup","title":"Backdrops","direction":"Vertical","buttonIds":["blueAquaGreenButton","danceyCubesButton","isfShaderButton","colorDiffusionFlowButton","solidColorButton","quiverButton"]},"holoceneButton":{"type":"baaahs.Core:Button","title":"Holocene","controlLayout":{"backdrops":["backdropsButtonGroup2"]}},"scenesButtonGroup":{"type":"baaahs.Core:ButtonGroup","title":"Scenes","buttonIds":["pleistoceneButton","holoceneButton"]},"sparklezButton":{"type":"baaahs.Core:Button","title":"Sparklez™","activationType":"Momentary","patches":[{"shaderInstanceIds":["sparklez-inst"],"surfaces":{"name":"All Surfaces"}}]},"zzzButton":{"type":"baaahs.Core:Button","title":"Zzz","patches":[{"shaderInstanceIds":["untitledFilterShader-inst"],"surfaces":{"name":"All Surfaces"}}]},"colorColorPickerControl":{"type":"baaahs.Core:ColorPicker","title":"Color","controlledDataSourceId":"colorColorPicker"},"brightnessSliderControl":{"type":"baaahs.Core:Slider","title":"Brightness","maxValue":1.25,"controlledDataSourceId":"brightnessSlider"},"saturationSliderControl":{"type":"baaahs.Core:Slider","title":"Saturation","maxValue":1.25,"controlledDataSourceId":"saturationSlider"},"wobblyButton":{"type":"baaahs.Core:Button","title":"Wobbly","patches":[{"shaderInstanceIds":["wobble-inst"],"surfaces":{"name":"All Surfaces"}}]},"sizeSliderControl":{"type":"baaahs.Core:Slider","title":"Size","minValue":0.75,"maxValue":1.25,"controlledDataSourceId":"sizeSlider"},"scaleSliderControl":{"type":"baaahs.Core:Slider","title":"Scale","controlledDataSourceId":"scaleSlider"},"beatSliderControl":{"type":"baaahs.Core:Slider","title":"Beat","controlledDataSourceId":"beatSlider"},"pulseButton":{"type":"baaahs.Core:Button","title":"Pulse","patches":[{"shaderInstanceIds":["pulse-inst"],"surfaces":{"name":"All Surfaces"}}],"controlLayout":{"moreControls":["scaleSliderControl","beatSliderControl"]}},"noneButton":{"type":"baaahs.Core:Button","title":"None"},"dissolveButton":{"type":"baaahs.Core:Button","title":"Dissolve","patches":[{"shaderInstanceIds":["crossFade-inst"],"surfaces":{"name":"All Surfaces"}}]},"slideLeftButton":{"type":"baaahs.Core:Button","title":"Slide Left","patches":[{"shaderInstanceIds":["slideLeft-inst"],"surfaces":{"name":"All Surfaces"}}]},"transitionEffectButtonGroup":{"type":"baaahs.Core:ButtonGroup","title":"Transition Effect","direction":"Vertical","buttonIds":["noneButton","dissolveButton","slideLeftButton"]},"fadeSliderControl":{"type":"baaahs.Core:Slider","title":"Fade","controlledDataSourceId":"fadeSlider"},"control2":{"type":"baaahs.Core:Visualizer"},"control3":{"type":"baaahs.Core:Transition"}},"dataSources":{"modelInfo":{"type":"baaahs.Core:ModelInfo"},"pixelLocation":{"type":"baaahs.Core:PixelLocation"},"brightnessSlider":{"type":"baaahs.Core:Slider","title":"Brightness","initialValue":1.0,"minValue":0.0,"maxValue":1.25},"saturationSlider":{"type":"baaahs.Core:Slider","title":"Saturation","initialValue":1.0,"minValue":0.0,"maxValue":1.25},"sizeSlider":{"type":"baaahs.Core:Slider","title":"Size","initialValue":1.0,"minValue":0.75,"maxValue":1.25},"time":{"type":"baaahs.Core:Time"},"fixtureInfo":{"type":"baaahs.Core.FixtureInfo"},"resolution":{"type":"baaahs.Core:Resolution"},"conflagrationSlider":{"type":"baaahs.Core:Slider","title":"Conflagration","initialValue":15.0,"minValue":5.0,"maxValue":20.0},"intensitySlider":{"type":"baaahs.Core:Slider","title":"Intensity","initialValue":1.0,"minValue":0.0,"maxValue":1.0},"intensitySlider2":{"type":"baaahs.Core:Slider","title":"Intensity","initialValue":15.0,"minValue":5.0,"maxValue":20.0},"checkerboardSizeSlider":{"type":"baaahs.Core:Slider","title":"Checkerboard Size","initialValue":0.1,"minValue":0.001,"maxValue":1.0},"whitenessSlider":{"type":"baaahs.Core:Slider","title":"Whiteness","initialValue":1.0,"minValue":0.0,"maxValue":1.0},"zoomSlider":{"type":"baaahs.Core:Slider","title":"Zoom","initialValue":2.0,"minValue":1.0,"maxValue":10.0},"pixelCoordsTexture":{"type":"baaahs.Core:PixelCoordsTexture"},"mouseXyPad":{"type":"baaahs.Core:XyPad","title":"Mouse","varPrefix":"iMouseVec2"},"beatLink":{"type":"baaahs.BeatLink:BeatLink"},"scaleSlider":{"type":"baaahs.Core:Slider","title":"Scale","initialValue":1.0,"minValue":0.0,"maxValue":1.0},"centerXyPad":{"type":"baaahs.Core:XyPad","title":"Center","varPrefix":"centerVec2"},"rednessSlider":{"type":"baaahs.Core:Slider","title":"Redness","initialValue":1.0,"minValue":0.0,"maxValue":1.0},"sizeSlider2":{"type":"baaahs.Core:Slider","title":"Size","initialValue":0.1,"minValue":0.0,"maxValue":1.0},"tintSlider":{"type":"baaahs.Core:Slider","title":"Tint","initialValue":1.0,"minValue":0.0,"maxValue":1.0},"gammaSlider":{"type":"baaahs.Core:Slider","title":"Gamma","initialValue":1.0,"minValue":0.5,"maxValue":2.0},"tintColorColorPicker":{"type":"baaahs.Core:ColorPicker","title":"Tint Color","initialValue":-1},"alphaModeSwitch":{"type":"baaahs.Core:Switch","title":"Alpha Mode","initiallyEnabled":false},"date":{"type":"baaahs.Core:Date"},"nudgeSlider":{"type":"baaahs.Core:Slider","title":"Nudge","initialValue":0.095,"minValue":0.001,"maxValue":0.01},"rate1Slider":{"type":"baaahs.Core:Slider","title":"Rate1","initialValue":1.9,"minValue":-3.0,"maxValue":3.0},"rate2Slider":{"type":"baaahs.Core:Slider","title":"Rate2","initialValue":0.6,"minValue":-3.0,"maxValue":3.0},"loopcycleSlider":{"type":"baaahs.Core:Slider","title":"Loopcycle","initialValue":85.0,"minValue":20.0,"maxValue":100.0},"color1Slider":{"type":"baaahs.Core:Slider","title":"Color1","initialValue":0.45,"minValue":-2.5,"maxValue":2.5},"color2Slider":{"type":"baaahs.Core:Slider","title":"Color2","initialValue":1.0,"minValue":-1.25,"maxValue":1.125},"cycle1Slider":{"type":"baaahs.Core:Slider","title":"Cycle1","initialValue":1.33,"minValue":0.01,"maxValue":3.1459},"cycle2Slider":{"type":"baaahs.Core:Slider","title":"Cycle2","initialValue":0.22,"minValue":-0.497,"maxValue":0.497},"depthXSlider":{"type":"baaahs.Core:Slider","title":"Depth X","initialValue":0.85,"minValue":0.001,"maxValue":0.9},"depthYSlider":{"type":"baaahs.Core:Slider","title":"Depth Y","initialValue":0.25,"minValue":0.001,"maxValue":0.9},"colorShiftSlider":{"type":"baaahs.Core:Slider","title":"Color Shift","initialValue":0.0,"minValue":0.0,"maxValue":1.0},"colorColorPicker":{"type":"baaahs.Core:ColorPicker","title":"Color","initialValue":-1},"wobbleAmountSlider":{"type":"baaahs.Core:Slider","title":"Wobble Amount","initialValue":1.0,"minValue":0.0,"maxValue":1.0},"beatSlider":{"type":"baaahs.Core:Slider","title":"Beat","initialValue":1.0,"minValue":0.0,"maxValue":1.0},"fadeSlider":{"type":"baaahs.Core:Slider","title":"Fade","initialValue":1.0,"minValue":0.0,"maxValue":1.0}},"version":4}
+{
+  "title": "Sample Show",
+  "patches": [
+    {
+      "shaderInstanceIds": [
+        "flatProjection-inst",
+        "darkness-inst",
+        "brightness-inst",
+        "saturation-inst",
+        "scale-inst",
+        "sharpyDefault-inst"
+      ],
+      "surfaces": {
+        "name": "All Surfaces"
+      }
+    }
+  ],
+  "controlLayout": {
+    "scenes": [
+      "scenesButtonGroup",
+      "sparklezButton",
+      "zzzButton"
+    ],
+    "moreControls": [
+      "colorColorPickerControl",
+      "brightnessSliderControl",
+      "saturationSliderControl",
+      "wobblyButton",
+      "sizeSliderControl",
+      "pulseButton"
+    ],
+    "controls": [
+      "transitionEffectButtonGroup",
+      "fadeSliderControl"
+    ],
+    "preview": [
+      "control2"
+    ],
+    "transition": [
+      "control3"
+    ]
+  },
+  "layouts": {
+    "panels": {
+      "scenes": {
+        "title": "Scenes"
+      },
+      "preview": {
+        "title": "Preview"
+      },
+      "backdrops": {
+        "title": "Backdrops"
+      },
+      "controls": {
+        "title": "Controls"
+      },
+      "moreControls": {
+        "title": "More Controls"
+      },
+      "transition": {
+        "title": "Transition"
+      }
+    },
+    "formats": {
+      "default": {
+        "mediaQuery": null,
+        "tabs": [
+          {
+            "title": "Main",
+            "columns": [
+              "3fr",
+              "2fr"
+            ],
+            "rows": [
+              "2fr",
+              "5fr",
+              "3fr"
+            ],
+            "areas": [
+              "scenes",
+              "preview",
+              "backdrops",
+              "controls",
+              "moreControls",
+              "transition"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "shaders": {
+    "flatProjection": {
+      "title": "Flat Projection",
+      "src": "\n// Cylindrical Projection\n// !SparkleMotion:internal\n\nstruct ModelInfo {\n    vec3 center;\n    vec3 extents;\n};\nuniform ModelInfo modelInfo;\n\nconst float PI = 3.141592654;\n\n// @return uv-coordinate\n// @param pixelLocation xyz-coordinate\nvec2 main(vec3 pixelLocation) {\n    vec3 pixelOffset = (pixelLocation - modelInfo.center) / modelInfo.extents + .5;\n    return vec2(1.-pixelOffset.x, pixelOffset.y);\n    // vec3 normalDelta = normalize(pixelOffset);\n    // float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]\n    // if (theta < 0.0) theta += (2.0f * PI);                 // theta in range [0,2π)\n    // float u = theta / (2.0f * PI);                         // u in range [0,1)\n    // float v = (pixelOffset.y + modelInfo.extents.y / 2.0f) / modelInfo.extents.y;\n    // return vec2(u, v);\n}\n"
+    },
+    "darkness": {
+      "title": "Darkness",
+      "src": "void main(void) {\n    gl_FragColor = vec4(0., 0., 0., 1.);\n}"
+    },
+    "brightness": {
+      "title": "Brightness",
+      "src": "uniform float brightness; // @@Slider min=0 max=1.25 default=1\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    return vec4(clampedColor.rgb * brightness, clampedColor.a);\n}"
+    },
+    "saturation": {
+      "title": "Saturation",
+      "src": "uniform float saturation; // @@Slider min=0 max=1.25 default=1\n\n// All components are in the range [0…1], including hue.\nvec3 rgb2hsv(vec3 c)\n{\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\n\n    float d = q.x - min(q.w, q.y);\n    float e = 1.0e-10;\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\n \n\n// All components are in the range [0…1], including hue.\nvec3 hsv2rgb(vec3 c)\n{\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    if (saturation == 1.) return inColor;\n\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    vec3 hsv = rgb2hsv(clampedColor.rgb);\n    hsv.y *= saturation;\n    return vec4(hsv2rgb(hsv), clampedColor.a);\n}"
+    },
+    "scale": {
+      "title": "Scale",
+      "src": "uniform float size; // @@Slider min=0.25 max=4 default=1\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n  return (uvIn - .5) / size + .5;\n}"
+    },
+    "sharpyDefault": {
+      "title": "Sharpy Default",
+      "src": "struct FixtureInfo {\n    vec3 origin;\n    vec3 heading;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\nuniform FixtureInfo fixtureInfo;\n\n// @return moving-head-params\nMovingHeadParams main() {\n    // float pan = sin(time/5.) / 2. + .5;\n    // float tilt = sin(time/5.) / 4. + .5;\n    float pan = 0.;\n    float tilt = .5;\n    // float pan = mod(time * 2., 1.);\n    // float tilt = mod(time * 2., 1.);\n    float colorWheel = mod(time/20., 1.);\n    return MovingHeadParams(pan, tilt, colorWheel, 1.);\n    // return vec4(fixtureInfo.origin.x, fixtureInfo.origin.z, 0., 0.);\n}"
+    },
+    "glslHueTestPattern": {
+      "title": "GLSL Hue Test Pattern",
+      "src": "uniform vec2 resolution;\nvoid main(void) {\n    gl_FragColor = vec4(gl_FragCoord.xy / resolution, 0.0, 1.0);\n}"
+    },
+    "fireBall": {
+      "title": "Fire Ball",
+      "src": "// Fire Ball\n// From http://glslsandbox.com/e#61108.0\n\n// Fire ball by David Robles\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n//#extension GL_OES_standard_derivatives : enable\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n\nconst float PI = 3.141592;\n\nuniform float conflagration; // @@Slider min=5 max=20 default=15.\n\nvec2 hash( vec2 p ) // replace this by something better\n{\n    p = vec2( dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)) );\n    return -1.0 + 2.0*fract(sin(p)*43758.5453123);\n}\n\nfloat noise( in vec2 p )\n{\n    const float K1 = 0.366025404; // (sqrt(3)-1)/2;\n    const float K2 = 0.211324865; // (3-sqrt(3))/6;\n\n    vec2  i = floor( p + (p.x+p.y)*K1 );\n    vec2  a = p - i + (i.x+i.y)*K2;\n    float m = step(a.y,a.x);\n    vec2  o = vec2(m,1.0-m);\n    vec2  b = a - o + K2;\n    vec2  c = a - 1.0 + 2.0*K2;\n    vec3  h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );\n    vec3  n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));\n    return dot( n, vec3(70.0) );\n}\n\nfloat circleShape(vec2 coord, vec2 pos){\n    float dist = distance(coord, pos);\n    return clamp(   log(dist*(15.+conflagration+4.*noise(vec2(time*.8))))  ,0.,1.);\n}\n\nvec2 sineWave(vec2 p){\n    float Ax = .05;\n    float wx = 1.50 * PI;\n    float x = sin(wx * p.x) * Ax * sin(noise(vec2(time)));\n\n    float Ay = .05;\n    float wy = PI * 10.;\n    float y = sin(wy*p.y) * Ay * noise(vec2(time));\n\n    return vec2(p.x + x, p.y + y);\n}\n\nvoid main( void ) {\n\n    vec2 pos = gl_FragCoord.xy / resolution.xy;\n    pos.x += .2;\n    vec2 uv = pos;\n\n    uv += vec2(-.5, -.5);\n    uv *= vec2(2.3, 1.3);\n\n    float luz = clamp(1.05 - (pow(uv.x, 2.) + pow(uv.y * 1.6, 6.))*2., 0., 1.);\n    //vec3 color = vec3(0.3059, 0.1922, 0.0431);\n    vec3 color = vec3(0.7333, 0.2902, 0.0314);\n    //vec3 color = vec3(0.3882, 0.1686, 0.251);\n    float grad = circleShape(sineWave(pos), vec2(.5, .32));\n\n    float ruido = 0.;\n\n    pos *= 5.0;\n    float xoff = 1.05;\n    float yoff = 2.1;\n    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );\n    ruido = 0.7500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.2500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.5000*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.1250*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n\n\n    ruido = 0.5 + 0.5*ruido;\n    ruido = clamp(ruido, 0., 1.);\n\n    /////////////////////////////////////////////////////////////\n    pos = uv;\n    pos *= 3.0;\n    float ruido2 = 0.;\n    xoff = 1.5;\n    yoff = 1.5;\n    m = mat2( -2.1,  .5, -.5,  2.1 );\n    ruido2 = 0.2500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.5000*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.1250*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.0625*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n\n    ruido2 = 0.5 + 0.5*ruido2;\n    ruido2 = clamp(ruido2, 0., 1.);\n\n    float f = 0.;\n    f += 1.0 - ( (1.0-luz) / (ruido2 + 0.001) );\n    f /= grad;\n    f /= ruido;\n\n    gl_FragColor = vec4(f*color*luz*(.5-.5*noise(vec2(time*.8))), 1.);\n    //gl_FragColor = vec4(color/grad, 1.);\n\n}"
+    },
+    "adjustTilt": {
+      "title": "Adjust tilt",
+      "src": "struct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\n\n// @param upstream moving-head-params\n// @param result moving-head-params\nvoid main(in MovingHeadParams upstream, out MovingHeadParams result) {\n    result = upstream;\n    result.tilt += sin(time) * .1;\n}"
+    },
+    "checkerboard": {
+      "title": "Checkerboard",
+      "src": "uniform float checkerboardSize = 10.0; // @@Slider min=.001 max=1 default=.1\nuniform float whiteness = 1.; // @type float\n\nvoid mainImage(out vec4 fragColor, in vec2 fragCoord) {\n    vec2 pos = floor(fragCoord / checkerboardSize);\n    vec3 patternMask = vec3(mod(pos.x + mod(pos.y, 2.0), 2.0));\n    fragColor = vec4(patternMask.xy, whiteness, 1.);\n}"
+    },
+    "hippieTrap": {
+      "title": "Hippie Trap",
+      "src": "uniform float zoom; // @@Slider min=1 default=2. max=10\n\nmat2 rot(float a){return mat2(cos(a),-sin(a),sin(a),cos(a));}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n\n    vec3 col;\n    float t;\n    \n    for(int c=0;c<3;c++){\n\t    vec2 uv = (fragCoord*50.0-25.) / zoom;\n        t = iTime+float(c)/10.;\n        for(int i=0;i<20;i++)\n        {\n            uv=abs(uv.yx);\n            uv /= 1.1;\n        \tuv -= 1.0;\n        \tuv=uv*rot(t/float(i+2))+col.xy;\n        }\n     col[c] = fract((uv.x)/(uv.y));\n\t}\n    \n    fragColor = vec4(vec3(col),1.0);\n    \n}\n"
+    },
+    "bandlimitedSynthesis1": {
+      "title": "Bandlimited Synthesis 1 ",
+      "src": "// The MIT License\n// Copyright © 2020 Inigo Quilez\n// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n// A simple way to prevent aliasing of cosine functions (the color\n// palette in this case is made of 8 layers) by attenuating them\n// when their oscillations become smaller than a pixel. Left is\n// direct use of cos(x), right is band-limited cos(x).\n//\n// Box-filtering of cos(x):\n//\n// (1/w)∫cos(t)dt with t ∈ (x-½w, x+½w)\n// = [sin(x+½w) - sin(x-½w)]/w\n// = cos(x)·sin(½w)/(½w)\n//\n// Can approximate smoothstep(2π,0,w) ≈ sin(w/2)/(w/2),\n// which you can also see as attenuating cos(x) when it \n// oscilates more than once per pixel. More info:\n//\n// https://iquilezles.org/www/articles/bandlimiting/bandlimiting.htm\n//\n// Related Shader:\n//   https://www.shadertoy.com/view/WtScDt\n//   https://www.shadertoy.com/view/wtXfRH\n//   https://www.shadertoy.com/view/3tScWd\n\n\n// box-filted cos(x)\nvec3 fcos( in vec3 x )\n{\n    vec3 w = fwidth(x);\n    return cos(x) * sin(0.5*w)/(0.5*w);       // exact\n    // return cos(x) * smoothstep(6.2832,0.0,w); // approx\n}\n\n// pick raw cosine, or band-limited cosine\nbool  mode = false;\nvec3  mcos( vec3 x){return mode?cos(x):fcos(x);}\n\n// color palette, made of 8 cos functions\n// (see https://iquilezles.org/www/articles/palettes/palettes.htm)\nvec3 getColor( in float t )\n{\n    vec3 col = vec3(0.6,0.5,0.4);\n    col += 0.14*mcos(6.2832*t*  1.0+vec3(0.0,0.5,0.6));\n    col += 0.13*mcos(6.2832*t*  3.1+vec3(0.5,0.6,1.0));\n    col += 0.12*mcos(6.2832*t*  5.1+vec3(0.1,0.7,1.1));\n    col += 0.11*mcos(6.2832*t*  9.1+vec3(0.1,0.5,1.2));\n    col += 0.10*mcos(6.2832*t* 17.1+vec3(0.0,0.3,0.9));\n    col += 0.09*mcos(6.2832*t* 31.1+vec3(0.1,0.5,1.3));\n    col += 0.08*mcos(6.2832*t* 65.1+vec3(0.1,0.5,1.3));\n    col += 0.07*mcos(6.2832*t*131.1+vec3(0.3,0.2,0.8));\n    return col;\n}\n\nvoid mainImage(out vec4 fragColor, in vec2 fragCoord )\n{\n    // coordiantes\n\tvec2 q = (2.0*(fragCoord + vec2(1.75, .0))-iResolution.xy)/iResolution.y;\n\n    // separation\n    float th = /*(iMouse.z>0.001) ? (2.0*iMouse.x-iResolution.x)/iResolution.y :*/ 1.8*sin(iTime);\n    mode = (q.x<th);\n    \n    // deformation\n    vec2 p = 2.0*q/dot(q,q);\n\n    // animation\n    p.xy += 0.05*iTime;\n\n    // texture\n    vec3 col = min(getColor(p.x),getColor(p.y));\n\n    // vignetting\n    col *= 1.5 - 0.2*length(q);\n    \n    // separation\n    col *= smoothstep(0.005,0.010,abs(q.x-th));\n    \n    // palette\n    if( q.y<-0.9 ) col = getColor( fragCoord.x/iResolution.x );\n\n    fragColor = vec4( col, 1.0 );\n}"
+    },
+    "smpteColorBars": {
+      "title": "SMPTE Color Bars",
+      "src": "\n// Robby Kraft\n// from https://www.shadertoy.com/view/XlGXRz\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    float br = 0.75; // a less popular SMPTE version uses 1.0\n\n\tvec2 st = fragCoord.xy/iResolution.xy;\n\n\tbool sev1 = bool( step(st.x, 1.0/7.0) );\n\tbool sev2 = bool( step(st.x, 2.0/7.0) );\n\tbool sev3 = bool( step(st.x, 3.0/7.0) );\n\tbool sev4 = bool( step(st.x, 4.0/7.0) );\n\tbool sev5 = bool( step(st.x, 5.0/7.0) );\n\tbool sev6 = bool( step(st.x, 6.0/7.0) );\n\n\tbool row1 = !bool( step(st.y, 0.3333) );\n\tbool row2 = !bool( step(st.y, 0.25) );\n\n\t/////////////////////////////////////////\n\t// R : 0.75  1.0            1.0  1.0      \n\t// G : 0.75  1.0  1.0  1.0                \n\t// B : 0.75       1.0       1.0       1.0\n\t/////////////////////////////////////////\n\tfloat top_red =   br * float((sev6 && !sev4) || sev2 );\n\tfloat top_green = br * float(sev4);\n\tfloat top_blue =  br * float(!sev6 || (sev5 && !sev4) || (sev3 && !sev2) || sev1 );\n\n\t/////////////////////////////////////////\n\t// R :           1.0                 0.75      \n\t// G :                     1.0       0.75                \n\t// B : 1.0       1.0       1.0       0.75\n\t/////////////////////////////////////////\n\tfloat mid_red =   0.075*float( (sev6 && !sev5)||(sev4 && !sev3)||(sev2 && !sev1) ) + br * float(!sev6 || (sev3 && !sev2) );\n\tfloat mid_green = 0.075*float( (sev6 && !sev5)||(sev4 && !sev3)||(sev2 && !sev1) ) + br * float(!sev6 || (sev5 && !sev4) );\n\tfloat mid_blue =  0.075*float( (sev6 && !sev5)||(sev4 && !sev3)||(sev2 && !sev1) ) + br * float(!sev6 || (sev5 && !sev4) || (sev3 && !sev2) || sev1);\n\n\t///////////////////////\n\t// R: 0.00  1.0  0.22\n\t// G: 0.24  1.0  0.00\n\t// B: 0.35  1.0  0.5\n\t/////////////////////// \n\tbool fourth1 = bool( step(st.x, 1.0*(5.0/7.0)/4.0 ));\n\tbool fourth2 = bool( step(st.x, 2.0*(5.0/7.0)/4.0 ));\n\tbool fourth3 = bool( step(st.x, 3.0*(5.0/7.0)/4.0 ));\n\tbool fourth4 = bool( step(st.x, (5.0/7.0) ));\n\n\tbool littleThird1 = bool( step(st.x, 5.0/7.0 + 1.0/7.0/3.0) );\n\tbool littleThird2 = bool( step(st.x, 5.0/7.0 + 1.0/7.0/3.0*2.0) );\n\tbool littleThird3 = bool( step(st.x, 5.0/7.0 + 1.0/7.0/3.0*3.0) );\n\n\tfloat bottom_red =                         float(fourth2 && !fourth1) + 0.22*float(fourth3 && !fourth2) + 0.075*float(fourth4 && !fourth3) + 0.075*float(littleThird2 && !littleThird1) + 0.15*float(littleThird3 && !littleThird2) + 0.075*float(!sev6);\n\tfloat bottom_green = 0.24*float(fourth1) + float(fourth2 && !fourth1)                                   + 0.075*float(fourth4 && !fourth3) + 0.075*float(littleThird2 && !littleThird1) + 0.15*float(littleThird3 && !littleThird2) + 0.075*float(!sev6);\n\tfloat bottom_blue =  0.35*float(fourth1) + float(fourth2 && !fourth1) + 0.5*float(fourth3 && !fourth2)  + 0.075*float(fourth4 && !fourth3) + 0.075*float(littleThird2 && !littleThird1) + 0.15*float(littleThird3 && !littleThird2) + 0.075*float(!sev6);\n\n\tfragColor = vec4(top_red*float(row1)   + mid_red*float(row2 && !row1) + bottom_red*float(!row2), \n\t                 top_green*float(row1) + mid_green*float(row2 && !row1) + bottom_green*float(!row2), \n\t                 top_blue*float(row1)  + mid_blue*float(row2 && !row1) + bottom_blue*float(!row2),1.);\n}\n"
+    },
+    "green": {
+      "title": "Green",
+      "src": "struct Thing {\n    float a;\n    float b;\n};\n\nvoid main(void) {\n    Thing t = Thing(0., 1.);\n    gl_FragColor = vec4(t.a, t.b, 0., 1.);\n}\n"
+    },
+    "blue": {
+      "title": "Blue",
+      "src": "uniform float time;\n\nvoid main(void) {\n    gl_FragColor = vec4(0., 0., mod(time, 1.), 1.);\n}"
+    },
+    "moarHippies": {
+      "title": "Moar Hippies",
+      "src": "mat2 rot(float a){return mat2(cos(a),-sin(a),sin(a),cos(a));}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n\n    vec3 col;\n    float t;\n    \n    for(int c=0;c<3;c++){\n\t    vec2 uv = (fragCoord*50.0-iResolution.xy)/iResolution.y;\n        t = iTime+float(c)/10.;\n        for(int i=0;i<20;i++)\n        {\n            uv=abs(uv.yx);\n            uv /= 1.1;\n        \tuv -= 1.0;\n        \tuv=uv*rot(t/float(i+2))+col.xy;\n        }\n     col[c] = fract((uv.x)/(uv.y));\n\t}\n    \n    fragColor = vec4(vec3(col),1.0);\n    \n}\n"
+    },
+    "plots": {
+      "title": "Plots",
+      "src": "vec3 f(float x) {\n\tconst float PI = radians(180.0);\n    vec3 t = vec3(-1.0, 0.0, 1.0)/12.0 + 2.0*cos(PI*x) + iTime;\n    return 0.5 + x*(1.0-x)*sin(2.0*PI*t);\n}\n\nvec3 sdf(vec2 xy) {\n    return f(xy.x) - xy.y;\n}\n\nvec3 de(vec2 xy, vec2 px) {\n    const vec2 e = vec2(1.0, 0.0);\n    vec3 x = sdf(xy + e.xy*px) - sdf(xy - e.xy*px);\n    vec3 y = sdf(xy + e.yx*px) - sdf(xy - e.yx*px);\n    return sdf(xy)/sqrt(x*x + y*y)*(2.0*e.x);\n}\n\nvec3 de(vec2 xy) {\n    vec3 d = sdf(xy);\n    vec3 x = dFdx(d);\n    vec3 y = dFdy(d);\n    return d/sqrt(x*x + y*y);\n}\n\nvoid mainImage(out vec4 fragColor, in vec2 fragCoord) {\n    vec2 px = 1.0/iResolution.xy;\n    vec2 uv = vec2(fragCoord.x+.25, fragCoord.y);\n    vec3 rgb = mix(de(uv, px), de(uv), step(0.5, uv.x));\n    rgb = smoothstep(2.5, 0.0, abs(rgb));\n    rgb = mix(rgb, vec3(1.0), smoothstep(2.5, 0.0, abs(uv.x - 0.5)/px.x));\n    fragColor = vec4(rgb, 1.0);\n}"
+    },
+    "timeWobble": {
+      "title": "Time Wobble",
+      "src": "uniform float time; // @type time\n\n// @return time\nfloat main() {\n    return time + sin(time * 3.);\n}"
+    },
+    "pulse2": {
+      "title": "Pulse 2",
+      "src": "uniform float time;\nuniform float beat; // @type beat-link\nuniform vec2 center; // @type xy-coordinate\nuniform float scale; // @type float\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    float dist = mod(length(center - gl_FragCoord.xy), scale) / scale;\n    float val = mod(dist + mod(time, 1.0) / 1.0, 1.0);\n    return inColor + vec4(val, 0.0, 0.0, 1.0);\n}"
+    },
+    "untitledMoverShader": {
+      "title": "Untitled Mover Shader",
+      "src": "struct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\n\n// @param inParams moving-head-params\n// @param params moving-head-params\nvoid main(in MovingHeadParams inParams, out MovingHeadParams params) {\n    params = inParams;\n    params.tilt = inParams.tilt + sin(time) * .1;\n}"
+    },
+    "anotherGlslHueTestPattern": {
+      "title": "Another GLSL Hue Test Pattern",
+      "src": "uniform vec2 resolution;\nuniform float redness;\nvoid main(void) {\n    gl_FragColor = vec4(redness, gl_FragCoord.xy / resolution, 1.0);\n}"
+    },
+    "untitledPaintShader": {
+      "title": "Untitled Paint Shader",
+      "src": "uniform float mysterNumber;\n\nvec3 palette(float d){\n\treturn mix(vec3(0.2,0.7,0.9),vec3(1.,0.,1.),d);\n}\n\nvec2 rotate(vec2 p,float a){\n\tfloat c = cos(a);\n    float s = sin(a);\n    return p*mat2(c,s,-s,c);\n}\n\nfloat map(vec3 p){\n    for( int i = 0; i<8; ++i){\n        float t = iTime*0.2;\n        p.xz =rotate(p.xz,t);\n        p.xy =rotate(p.xy,t*mysterNumber);\n        p.xz = abs(p.xz);\n        p.xz-=.5;\n\t}\n\treturn dot(sign(p),p)/5.;\n}\n\nvec4 rm (vec3 ro, vec3 rd){\n    float t = 0.;\n    vec3 col = vec3(0.);\n    float d;\n    for(float i =0.; i<64.; i++){\n\t\tvec3 p = ro + rd*t;\n        d = map(p)*.5;\n        if(d<0.02){\n            break;\n        }\n        if(d>100.){\n        \tbreak;\n        }\n        //col+=vec3(0.6,0.8,0.8)/(400.*(d));\n        col+=palette(length(p)*.1)/(400.*(d));\n        t+=d;\n    }\n    return vec4(col,1./(d*100.));\n}\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = (fragCoord-(iResolution.xy/2.))/iResolution.x;\n\tvec3 ro = vec3(0.,0.,-50.);\n    ro.xz = rotate(ro.xz,iTime);\n    vec3 cf = normalize(-ro);\n    vec3 cs = normalize(cross(cf,vec3(0.,1.,0.)));\n    vec3 cu = normalize(cross(cf,cs));\n    \n    vec3 uuv = ro+cf*3. + uv.x*cs + uv.y*cu;\n    \n    vec3 rd = normalize(uuv-ro);\n    \n    vec4 col = rm(ro,rd);\n    \n    \n    fragColor = col;\n    fragColor.a = 1.;\n}\n\n/** SHADERDATA\n{\n\t\"title\": \"fractal pyramid\",\n\t\"description\": \"coding my new screensaver\",\n\t\"model\": \"car\"\n}\n*/"
+    },
+    "isfShader": {
+      "title": "ISF Shader",
+      "src": "/*{\n\t\"DESCRIPTION\": \"ASCII Art\",\n\t\"CREDIT\": \"by VIDVOX (Ported from https://www.shadertoy.com/view/lssGDj)\",\n\t\"ISFVSN\": \"2\",\n\t\"CATEGORIES\": [\n\t\t\"Stylize\", \"Retro\"\n\t],\n\t\"INPUTS\": [\n\t\t{\n\t\t\t\"NAME\": \"inputImage\",\n\t\t\t\"TYPE\": \"image\"\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"size\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 1.0,\n\t\t\t\"DEFAULT\": 0.1\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"gamma\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"DEFAULT\": 1.0,\n\t\t\t\"MIN\": 0.5,\n\t\t\t\"MAX\": 2.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"tint\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 1.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"tintColor\",\n\t\t\t\"TYPE\": \"color\",\n\t\t\t\"DEFAULT\": [\n\t\t\t\t0.0,\n\t\t\t\t1.0,\n\t\t\t\t0.0,\n\t\t\t\t1.0\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"alphaMode\",\n\t\t\t\"TYPE\": \"bool\",\n\t\t\t\"DEFAULT\": 0.0\n\t\t}\n\t]\n\t\n}*/\n\n\n\nfloat character(float n, vec2 p) // some compilers have the word \"char\" reserved\n{\n\tp = floor(p*vec2(4.0, -4.0) + 2.5);\n\tif (clamp(p.x, 0.0, 4.0) == p.x && clamp(p.y, 0.0, 4.0) == p.y)\n\t{\n\t\tif (int(mod(n/exp2(p.x + 5.0*p.y), 2.0)) == 1) return 1.0;\n\t}\t\n\treturn 0.0;\n}\n\nvec4 IMG_NORM_PIXEL(vec4 image, vec2 uv) {\n    return vec4(gl_FragCoord.xy, 0., 1.);\n}\n\nvoid main()\t{\n\tfloat _size = size*36.0+8.0;\n\tvec2 uv = gl_FragCoord.xy;\n\tvec4 inputColor = IMG_NORM_PIXEL(inputImage, (floor(uv/_size)*_size/RENDERSIZE.xy));\n\tvec3 col = inputColor.rgb;\n\tfloat gray = (col.r + col.g + col.b)/3.0;\n\tgray = pow(gray, gamma);\n\tcol = mix(tintColor.rgb, col.rgb, 1.0-tint);\n\t\n\tfloat n =  65536.0;             // .\n\tif (gray > 0.2) n = 65600.0;    // :\n\tif (gray > 0.3) n = 332772.0;   // *\n\tif (gray > 0.4) n = 15255086.0; // o \n\tif (gray > 0.5) n = 23385164.0; // &\n\tif (gray > 0.6) n = 15252014.0; // 8\n\tif (gray > 0.7) n = 13199452.0; // @\n\tif (gray > 0.8) n = 11512810.0; // #\n\t\t\n\tvec2 p = mod(uv/(_size/2.0), 2.0) - vec2(1.0);\n\tcol = col*character(n, p);\n\tfloat alpha = mix(tintColor.a * inputColor.a, inputColor.a, 1.0-tint);\n\tif (alphaMode)\t{\n\t\talpha = (col.r + col.g + col.b)/3.0;\n\t\talpha = (alpha > 0.01) ? tintColor.a : alpha;\n\t}\n\talpha = 1.;\n\t\n\tgl_FragColor = vec4(col,alpha);\n\n}\n"
+    },
+    "colorDiffusionFlow": {
+      "title": "ColorDiffusionFlow",
+      "src": "/*{\n  \"CREDIT\": \"by mojovideotech\",\n  \"DESCRIPTION\": \"from http://glslsandbox.com/e#35553.0\",\n  \"CATEGORIES\": [\n    \"fluid\",\n    \"liquid\"\n  ],\n  \"INPUTS\": [\n  \t{\n\t\t\t\"NAME\" :\t\"rate1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.9,\n\t\t\t\"MIN\" :\t-3.0,\n\t\t\t\"MAX\" :\t3.0\n\t},\n\t {\n\t\t\t\"NAME\" :\t\"rate2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.6,\n\t\t\t\"MIN\" :\t-3.0,\n\t\t\t\"MAX\" :\t3.0\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"loopcycle\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t85.0,\n\t\t\t\"MIN\" :\t20.0,\n\t\t\t\"MAX\" :\t100.0\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"color1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.45,\n\t\t\t\"MIN\" :\t-2.5,\n\t\t\t\"MAX\" :\t2.5\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"color2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.0,\n\t\t\t\"MIN\" :\t-1.25,\n\t\t\t\"MAX\" :\t1.125\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"cycle1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.33,\n\t\t\t\"MIN\" :\t0.01,\n\t\t\t\"MAX\" :\t3.1459\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"cycle2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.22,\n\t\t\t\"MIN\" :\t-0.497,\n\t\t\t\"MAX\" :\t0.497\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"nudge\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.095,\n\t\t\t\"MIN\" :\t0.001,\n\t\t\t\"MAX\" :\t0.01\n\t},\n\t{\n      \t\t\t\"NAME\" :\t\"depthX\",\n      \t\t\t\"TYPE\" : \t\"float\",\n      \t\t\t\"DEFAULT\" :\t0.85,\n      \t\t\t\"MIN\" : \t0.001,\n      \t\t\t\"MAX\" :\t\t0.9\n    \t},\n    \t{\n      \t\t\t\"NAME\" :\t\"depthY\",\n      \t\t\t\"TYPE\" :\t\"float\",\n      \t\t\t\"DEFAULT\" :\t0.25,\n      \t\t\t\"MIN\" : \t0.001,\n      \t\t\t\"MAX\" :\t\t0.9\n    \t}\n  ]\n}*/\n\n///////////////////////////////////////////\n// ColorDiffusionFlow  by mojovideotech\n//\n// based on :\n// glslsandbox.com/\\e#35553.0\n//\n// Creative Commons Attribution-NonCommercial-ShareAlike 3.0\n///////////////////////////////////////////\n\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n \n#define \tpi   \t3.141592653589793\n\nvoid main() {\n\tfloat T = TIME * rate1;\n\tfloat TT = TIME * rate2;\n\tvec2 p=(2.*isf_FragNormCoord);\n\tfor(int i=1;i<11;i++) {\n    \tvec2 newp = p;\n        float ii = float(i);  \n    \tnewp.x+=depthX/ii*sin(ii*pi*p.y+T*nudge+cos((TT/(5.0*ii))*ii));\n    \tnewp.y+=depthY/ii*cos(ii*pi*p.x+TT+nudge+sin((T/(5.0*ii))*ii));\n    \tp = newp +log(DATE.w)/loopcycle;\n  }\n  vec3 col=vec3(cos(p.x+p.y+3.0*color1)*0.5+0.5,sin(p.x+p.y+6.0*cycle1)*0.5+0.5,(sin(p.x+p.y+9.0*color2)+cos(p.x+p.y+12.0*cycle2))*0.25+.5);\n  gl_FragColor=vec4(col*col, 1.0);\n}"
+    },
+    "solidColor": {
+      "title": "Solid Color",
+      "src": "// @return color\n// @param uvIn uv-coordinate\n// @param color color\nvec4 main(vec2 uvIn, vec4 color) {\n    return vec4(color.rgb, 1.);\n}"
+    },
+    "quiver": {
+      "title": "Quiver",
+      "src": "////////////////////////////////////////////////////////////////////////////////\n//\n// Playing around with simplex noise and polar-coords with a lightning-themed\n// scene.\n//\n// Copyright 2019 Mirco Müller\n//\n// Author(s):\n//   Mirco \"MacSlow\" Müller <macslow@gmail.com>\n//\n// This program is free software: you can redistribute it and/or modify it\n// under the terms of the GNU General Public License version 3, as published\n// by the Free Software Foundation.\n//\n// This program is distributed in the hope that it will be useful, but\n// WITHOUT ANY WARRANTY; without even the implied warranties of\n// MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR\n// PURPOSE.  See the GNU General Public License for more details.\n//\n// You should have received a copy of the GNU General Public License along\n// with this program.  If not, see <http://www.gnu.org/licenses/>.\n//\n////////////////////////////////////////////////////////////////////////////////\n\nmat2 r2d (in float degree)\n{\n\tfloat rad = radians (degree);\n\tfloat c = cos (rad);\n\tfloat s = sin (rad);\n\treturn mat2 (vec2 (c, s),vec2 (-s, c));\n}\n\n// using a slightly adapted implementation of iq's simplex noise from\n// https://www.shadertoy.com/view/Msf3WH with hash(), noise() and fbm()\nvec2 hash (in vec2 p)\n{\n\tp = vec2 (dot (p, vec2 (127.1, 311.7)),\n\t\t\t  dot (p, vec2 (269.5, 183.3)));\n\n\treturn -1. + 2.*fract (sin (p)*43758.5453123);\n}\n\nfloat noise (in vec2 p)\n{\n    const float K1 = .366025404;\n    const float K2 = .211324865;\n\n\tvec2 i = floor (p + (p.x + p.y)*K1);\n\t\n    vec2 a = p - i + (i.x + i.y)*K2;\n    vec2 o = step (a.yx, a.xy);    \n    vec2 b = a - o + K2;\n\tvec2 c = a - 1. + 2.*K2;\n\n    vec3 h = max (.5 - vec3 (dot (a, a), dot (b, b), dot (c, c) ), .0);\n\n\tvec3 n = h*h*h*h*vec3 (dot (a, hash (i + .0)),\n\t\t\t\t\t\t   dot (b, hash (i + o)),\n\t\t\t\t\t\t   dot (c, hash (i + 1.)));\n\n    return dot (n, vec3 (70.));\n}\n\nfloat fbm (in vec2 p)\n{\n\tmat2 rot = r2d (27.5);\n    float d = noise (p); p *= rot;\n    d += .5*noise (p); p *= rot;\n    d += .25*noise (p); p *= rot;\n    d += .125*noise (p); p *= rot;\n    d += .0625*noise (p);\n\td /= (1. + .5 + .25 + .125 + .0625);\n\treturn .5 + .5*d;\n}\n\nvec2 mapToScreen (in vec2 p, in float scale)\n{\n    vec2 res = p;\n    res = res * 2. - 1.;\n    res.x *= iResolution.x / iResolution.y;\n    res *= scale;\n    \n    return res;\n}\n\nvec2 cart2polar (in vec2 cart)\n{\n    float r = length (cart);\n    float phi = atan (cart.y, cart.x);\n    return vec2 (r, phi); \n}\n\nvec2 polar2cart (in vec2 polar)\n{\n    float x = polar.x*cos (polar.y);\n    float y = polar.x*sin (polar.y);\n    return vec2 (x, y); \n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = mapToScreen (fragCoord.xy/iResolution.xy, 2.5);\n\n\tuv *= r2d (12.*iTime);\n    float len = length (uv);\n\tfloat thickness = .25;\n    float haze = 2.5;\n\n    // distort UVs a bit\n    uv = cart2polar (uv);\n    uv.y += .2*(.5 + .5*sin(cos (uv.x)*len));\n    uv = polar2cart (uv);\n\n    float d1 = abs ((uv.x*haze)*thickness / (uv.x + fbm (uv + 1.25*iTime)));\n    float d2 = abs ((uv.y*haze)*thickness / (uv.y + fbm (uv - 1.5*iTime)));\n    float d3 = abs ((uv.x*uv.y*haze)*thickness / (uv.x*uv.y + fbm (uv - 2.*iTime)));\n    vec3 col = vec3 (.0);\n    float size = .075;\n\tcol += d1*size*vec3 (.1, .8, 2.);\n\tcol += d2*size*vec3 (2., .1, .8);\n\tcol += d3*size*vec3 (.8, 2., .1);\n\n    fragColor = vec4 (col, 1.);\n}\n"
+    },
+    "sparklez": {
+      "title": "Sparklez™",
+      "src": "//Based on https://www.youtube.com/watch?v=3CycKKJiwis\n\nfloat random(vec2 par){\n   return fract(sin(dot(par.xy,vec2(12.9898,78.233))) * 43758.5453);\n}\n\nvec2 random2(vec2 par){\n\tfloat rand = random(par);\n\treturn vec2(rand, random(par+rand));\n}\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    // Normalized pixel coordinates (from 0 to 1)\n    vec2 uv = fragCoord/iResolution.xy;\n\t\n    //The ratio of the width and height of the screen\n    float widthHeightRatio = iResolution.x/iResolution.y;\n    \n    float t = iTime * 0.01;\n    float dist = 0.0;\n    float layers = 16.0;\n    float scale = 32.0;\n    float depth;\n    float phase;\n    float rotationAngle = iTime * -0.01;\n    \n    vec2 offset;\n    vec2 local_uv;\n    vec2 index;\n    vec2 pos;\n    vec2 seed;\n    vec2 centre = vec2(0.5, 0.5);\n    \n    mat2 rotation = mat2(cos(rotationAngle), -sin(rotationAngle), \n                         sin(rotationAngle),  cos(rotationAngle));\n \t\n    for(float i = 0.0; i < layers; i++){\n        depth = fract(i/layers + t);\n        \n        //Move centre in a circle depending on the depth of the layer\n        centre.x = 0.5 + 0.1 * cos(t) * depth;\n        centre.y = 0.5 + 0.1 * sin(t) * depth;\n        \n        //Get uv from the fragment coordinates, rotation and depth\n    \tuv = centre-fragCoord/iResolution.xy;\n    \tuv.y /= widthHeightRatio;\n        uv *= rotation;\n    \tuv *= mix(scale, 0.0, depth);\n        \n        //The local cell\n        index = floor(uv);\n        \n        //Local cell seed;\n        seed = 20.0 * i + index;\n        \n        //The local cell coordinates\n        local_uv = fract(i + uv) - 0.5;\n        \n        //Get a random position for the local cell\n        pos = 1.8 * (random2(seed) - 0.5);\n        \n        //Get a random phase\n        phase = 128.0 * random(seed);\n        \n        //Get distance to the generated point, add fading to distant points\n        //Add the distance to the sum\n    \tdist += pow(abs(1.0-length(local_uv-pos)), 50.0 + 20.0 * sin(phase + 8.0 * iTime)) \n            * min(1.0, depth*2.0);\n        \n    }\n    fragColor = upstreamColor(fragCoord) + vec4(vec3(dist),1.0) * 10.;\n}"
+    },
+    "untitledFilterShader": {
+      "title": "Untitled Filter Shader",
+      "src": "// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    return inColor / 2.;\n}"
+    },
+    "wobble": {
+      "title": "Wobble",
+      "src": "uniform float time;\nuniform float wobbleAmount; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n  vec2 p = -1.0 + 2.0 * uvIn;\n  float len = length(p);\n  return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * wobbleAmount;\n}"
+    },
+    "pulse": {
+      "title": "Pulse",
+      "src": "uniform float time;\nuniform float beat;\nuniform vec2 center;\nuniform float scale;\n\nvoid main(void) {\n    float dist = mod(length(center - gl_FragCoord.xy), scale) / scale;\n    float val = mod(dist + mod(time, 1.0) / 1.0, 1.0);\n    gl_FragColor = vec4(val, 0.0, 0.0, 1.);\n}"
+    },
+    "crossFade": {
+      "title": "Cross Fade",
+      "src": "varying vec4 inColor2; // @type color\nuniform float fade;\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    return mix(inColor, inColor2, fade);\n}"
+    },
+    "slideLeft": {
+      "title": "Slide Left",
+      "src": "// @param uv uv-coordinate\n// @return color\nvec4 channelA(vec2 uv);\n\n// @param uv uv-coordinate\n// @return color\nvec4 channelB(vec2 uv);\n\nuniform float fade; // @type float\n\n// @return color\nvec4 main() {\n    if (1. - gl_FragCoord.x > fade) {\n        return channelA(gl_FragCoord + vec2(fade, 0));\n    } else {\n        return channelB(gl_FragCoord + vec2(fade - 1., 0));\n    }\n}"
+    }
+  },
+  "shaderInstances": {
+    "flatProjection-inst": {
+      "shaderId": "flatProjection",
+      "incomingLinks": {
+        "modelInfo": {
+          "type": "datasource",
+          "dataSourceId": "modelInfo"
+        },
+        "pixelLocation": {
+          "type": "datasource",
+          "dataSourceId": "pixelLocation"
+        }
+      }
+    },
+    "darkness-inst": {
+      "shaderId": "darkness",
+      "incomingLinks": {}
+    },
+    "brightness-inst": {
+      "shaderId": "brightness",
+      "incomingLinks": {
+        "brightness": {
+          "type": "datasource",
+          "dataSourceId": "brightnessSlider"
+        },
+        "inColor": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      },
+      "priority": 10.0
+    },
+    "saturation-inst": {
+      "shaderId": "saturation",
+      "incomingLinks": {
+        "inColor": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "saturation": {
+          "type": "datasource",
+          "dataSourceId": "saturationSlider"
+        }
+      },
+      "priority": 10.0
+    },
+    "scale-inst": {
+      "shaderId": "scale",
+      "incomingLinks": {
+        "size": {
+          "type": "datasource",
+          "dataSourceId": "sizeSlider"
+        },
+        "uvIn": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      },
+      "priority": 10.0
+    },
+    "sharpyDefault-inst": {
+      "shaderId": "sharpyDefault",
+      "incomingLinks": {
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "fixtureInfo": {
+          "type": "datasource",
+          "dataSourceId": "fixtureInfo"
+        }
+      }
+    },
+    "glslHueTestPattern-inst": {
+      "shaderId": "glslHueTestPattern",
+      "incomingLinks": {
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "resolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        }
+      }
+    },
+    "fireBall-inst": {
+      "shaderId": "fireBall",
+      "incomingLinks": {
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "resolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        },
+        "conflagration": {
+          "type": "datasource",
+          "dataSourceId": "conflagrationSlider"
+        }
+      }
+    },
+    "adjustTilt-inst": {
+      "shaderId": "adjustTilt",
+      "incomingLinks": {
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "upstream": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      }
+    },
+    "checkerboard-inst": {
+      "shaderId": "checkerboard",
+      "incomingLinks": {
+        "fragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "checkerboardSize": {
+          "type": "datasource",
+          "dataSourceId": "checkerboardSizeSlider"
+        },
+        "whiteness": {
+          "type": "datasource",
+          "dataSourceId": "whitenessSlider"
+        }
+      }
+    },
+    "hippieTrap-inst": {
+      "shaderId": "hippieTrap",
+      "incomingLinks": {
+        "zoom": {
+          "type": "datasource",
+          "dataSourceId": "zoomSlider"
+        },
+        "iTime": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "fragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      }
+    },
+    "bandlimitedSynthesis1-inst": {
+      "shaderId": "bandlimitedSynthesis1",
+      "incomingLinks": {
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "iTime": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "sm_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "fragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "iResolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        },
+        "iChannel0": {
+          "type": "datasource",
+          "dataSourceId": "pixelCoordsTexture"
+        },
+        "iMouse": {
+          "type": "datasource",
+          "dataSourceId": "mouseXyPad"
+        }
+      }
+    },
+    "smpteColorBars-inst": {
+      "shaderId": "smpteColorBars",
+      "incomingLinks": {
+        "sm_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "fragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "iResolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        }
+      },
+      "shaderChannel": "other"
+    },
+    "green-inst": {
+      "shaderId": "green",
+      "incomingLinks": {
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      },
+      "shaderChannel": "other"
+    },
+    "blue-inst": {
+      "shaderId": "blue",
+      "incomingLinks": {
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        }
+      },
+      "shaderChannel": "other"
+    },
+    "moarHippies-inst": {
+      "shaderId": "moarHippies",
+      "incomingLinks": {
+        "iTime": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "sm_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "fragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "iResolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        }
+      },
+      "shaderChannel": "other"
+    },
+    "plots-inst": {
+      "shaderId": "plots",
+      "incomingLinks": {
+        "iTime": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "sm_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "fragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "iResolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        }
+      },
+      "shaderChannel": "other"
+    },
+    "timeWobble-inst": {
+      "shaderId": "timeWobble",
+      "incomingLinks": {
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        }
+      },
+      "shaderChannel": "time"
+    },
+    "pulse2-inst": {
+      "shaderId": "pulse2",
+      "incomingLinks": {
+        "beat": {
+          "type": "datasource",
+          "dataSourceId": "beatLink"
+        },
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "scale": {
+          "type": "datasource",
+          "dataSourceId": "scaleSlider"
+        },
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "inColor": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "center": {
+          "type": "datasource",
+          "dataSourceId": "centerXyPad"
+        }
+      }
+    },
+    "untitledMoverShader-inst": {
+      "shaderId": "untitledMoverShader",
+      "incomingLinks": {
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "inParams": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      }
+    },
+    "anotherGlslHueTestPattern-inst": {
+      "shaderId": "anotherGlslHueTestPattern",
+      "incomingLinks": {
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "redness": {
+          "type": "datasource",
+          "dataSourceId": "rednessSlider"
+        },
+        "resolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        }
+      }
+    },
+    "untitledPaintShader-inst": {
+      "shaderId": "untitledPaintShader",
+      "incomingLinks": {
+        "iTime": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "fragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "iResolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        },
+        "mysterNumber": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        }
+      }
+    },
+    "isfShader-inst": {
+      "shaderId": "isfShader",
+      "incomingLinks": {
+        "size": {
+          "type": "datasource",
+          "dataSourceId": "sizeSlider2"
+        },
+        "tint": {
+          "type": "datasource",
+          "dataSourceId": "tintSlider"
+        },
+        "gamma": {
+          "type": "datasource",
+          "dataSourceId": "gammaSlider"
+        },
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "tintColor": {
+          "type": "datasource",
+          "dataSourceId": "tintColorColorPicker"
+        },
+        "inputImage": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "RENDERSIZE": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "alphaMode": {
+          "type": "datasource",
+          "dataSourceId": "alphaModeSwitch"
+        }
+      }
+    },
+    "colorDiffusionFlow-inst": {
+      "shaderId": "colorDiffusionFlow",
+      "incomingLinks": {
+        "DATE": {
+          "type": "datasource",
+          "dataSourceId": "date"
+        },
+        "TIME": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "nudge": {
+          "type": "datasource",
+          "dataSourceId": "nudgeSlider"
+        },
+        "rate1": {
+          "type": "datasource",
+          "dataSourceId": "rate1Slider"
+        },
+        "rate2": {
+          "type": "datasource",
+          "dataSourceId": "rate2Slider"
+        },
+        "loopcycle": {
+          "type": "datasource",
+          "dataSourceId": "loopcycleSlider"
+        },
+        "isf_FragNormCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "color1": {
+          "type": "datasource",
+          "dataSourceId": "color1Slider"
+        },
+        "color2": {
+          "type": "datasource",
+          "dataSourceId": "color2Slider"
+        },
+        "cycle1": {
+          "type": "datasource",
+          "dataSourceId": "cycle1Slider"
+        },
+        "cycle2": {
+          "type": "datasource",
+          "dataSourceId": "cycle2Slider"
+        },
+        "depthX": {
+          "type": "datasource",
+          "dataSourceId": "depthXSlider"
+        },
+        "depthY": {
+          "type": "datasource",
+          "dataSourceId": "depthYSlider"
+        }
+      }
+    },
+    "solidColor-inst": {
+      "shaderId": "solidColor",
+      "incomingLinks": {
+        "uvIn": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "color": {
+          "type": "datasource",
+          "dataSourceId": "colorColorPicker"
+        }
+      }
+    },
+    "quiver-inst": {
+      "shaderId": "quiver",
+      "incomingLinks": {
+        "iTime": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "fragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "iResolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        }
+      }
+    },
+    "sparklez-inst": {
+      "shaderId": "sparklez",
+      "incomingLinks": {
+        "iTime": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "fragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "iResolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        },
+        "upstreamColor": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      }
+    },
+    "untitledFilterShader-inst": {
+      "shaderId": "untitledFilterShader",
+      "incomingLinks": {
+        "inColor": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      }
+    },
+    "wobble-inst": {
+      "shaderId": "wobble",
+      "incomingLinks": {
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "uvIn": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "wobbleAmount": {
+          "type": "datasource",
+          "dataSourceId": "wobbleAmountSlider"
+        }
+      }
+    },
+    "pulse-inst": {
+      "shaderId": "pulse",
+      "incomingLinks": {
+        "beat": {
+          "type": "datasource",
+          "dataSourceId": "beatLink"
+        },
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "scale": {
+          "type": "datasource",
+          "dataSourceId": "scaleSlider"
+        },
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "center": {
+          "type": "datasource",
+          "dataSourceId": "centerXyPad"
+        }
+      },
+      "priority": 1.0
+    },
+    "crossFade-inst": {
+      "shaderId": "crossFade",
+      "incomingLinks": {
+        "fade": {
+          "type": "datasource",
+          "dataSourceId": "fadeSlider"
+        },
+        "inColor": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "inColor2": {
+          "type": "shader-channel",
+          "shaderChannel": "other"
+        }
+      }
+    },
+    "slideLeft-inst": {
+      "shaderId": "slideLeft",
+      "incomingLinks": {
+        "fade": {
+          "type": "datasource",
+          "dataSourceId": "fadeSlider"
+        },
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "channelA": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "channelB": {
+          "type": "shader-channel",
+          "shaderChannel": "other"
+        }
+      }
+    }
+  },
+  "controls": {
+    "redYellowGreenButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Red Yellow Green",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "glslHueTestPattern-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "intensitySliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Intensity",
+      "controlledDataSourceId": "intensitySlider"
+    },
+    "conflagrationSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Conflagration",
+      "initialValue": 15.0,
+      "minValue": 5.0,
+      "maxValue": 20.0,
+      "controlledDataSourceId": "conflagrationSlider"
+    },
+    "intensitySlider2Control": {
+      "type": "baaahs.Core:Slider",
+      "title": "Intensity",
+      "initialValue": 15.0,
+      "minValue": 5.0,
+      "maxValue": 20.0,
+      "controlledDataSourceId": "intensitySlider2"
+    },
+    "fireButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Fire",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "fireBall-inst",
+            "adjustTilt-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ],
+      "controlLayout": {
+        "controls": [
+          "intensitySliderControl"
+        ],
+        "backdrops": [
+          "conflagrationSliderControl",
+          "intensitySlider2Control"
+        ]
+      }
+    },
+    "checkerboardSizeSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Checkerboard Size",
+      "initialValue": 0.1,
+      "minValue": 0.001,
+      "controlledDataSourceId": "checkerboardSizeSlider"
+    },
+    "whitenessSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Whiteness",
+      "controlledDataSourceId": "whitenessSlider"
+    },
+    "checkerboardButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Checkerboard",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "checkerboard-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ],
+      "controlLayout": {
+        "controls": [
+          "checkerboardSizeSliderControl"
+        ],
+        "backdrops": [
+          "whitenessSliderControl"
+        ]
+      }
+    },
+    "zoomSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Zoom",
+      "initialValue": 2.0,
+      "minValue": 1.0,
+      "maxValue": 10.0,
+      "controlledDataSourceId": "zoomSlider"
+    },
+    "hippieTrapButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Hippie Trap",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "hippieTrap-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ],
+      "controlLayout": {
+        "moreControls": [
+          "checkerboardSizeSliderControl"
+        ],
+        "backdrops": [
+          "zoomSliderControl"
+        ]
+      }
+    },
+    "bandlimitedSynthesis1Button": {
+      "type": "baaahs.Core:Button",
+      "title": "Bandlimited Synthesis 1 ",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "bandlimitedSynthesis1-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "backdropsButtonGroup": {
+      "type": "baaahs.Core:ButtonGroup",
+      "title": "Backdrops",
+      "direction": "Vertical",
+      "buttonIds": [
+        "redYellowGreenButton",
+        "fireButton",
+        "checkerboardButton",
+        "hippieTrapButton",
+        "bandlimitedSynthesis1Button"
+      ]
+    },
+    "smtpeButton": {
+      "type": "baaahs.Core:Button",
+      "title": "SMTPE",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "smpteColorBars-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "greenButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Green",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "green-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "blueButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Blue",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "blue-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "hippieTrap2HippieSRevengeButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Hippie Trap 2: Hippie's Revenge",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "moarHippies-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "heartbeatButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Heartbeat",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "plots-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "newButtonGroupButtonGroup": {
+      "type": "baaahs.Core:ButtonGroup",
+      "title": "New Button Group",
+      "direction": "Vertical",
+      "buttonIds": [
+        "smtpeButton",
+        "greenButton",
+        "blueButton",
+        "hippieTrap2HippieSRevengeButton",
+        "heartbeatButton"
+      ]
+    },
+    "timeWobbleButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Time Wobble",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "timeWobble-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "pulse2Button": {
+      "type": "baaahs.Core:Button",
+      "title": "Pulse 2",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "pulse2-inst",
+            "untitledMoverShader-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "control": {
+      "type": "baaahs.BeatLink:BeatLink"
+    },
+    "pleistoceneButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Pleistocene",
+      "controlLayout": {
+        "backdrops": [
+          "backdropsButtonGroup",
+          "newButtonGroupButtonGroup",
+          "timeWobbleButton",
+          "pulse2Button"
+        ],
+        "controls": [],
+        "scenes": [
+          "control"
+        ]
+      }
+    },
+    "blueAquaGreenButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Blue Aqua Green",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "anotherGlslHueTestPattern-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "danceyCubesButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Dancey Cubes",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "untitledPaintShader-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "sizeSlider2Control": {
+      "type": "baaahs.Core:Slider",
+      "title": "Size",
+      "initialValue": 0.1,
+      "controlledDataSourceId": "sizeSlider2"
+    },
+    "gammaSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Gamma",
+      "minValue": 0.5,
+      "maxValue": 2.0,
+      "controlledDataSourceId": "gammaSlider"
+    },
+    "tintSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Tint",
+      "controlledDataSourceId": "tintSlider"
+    },
+    "tintColorColorPickerControl": {
+      "type": "baaahs.Core:ColorPicker",
+      "title": "Tint Color",
+      "controlledDataSourceId": "tintColorColorPicker"
+    },
+    "alphaModeButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Alpha Mode",
+      "controlledDataSourceId": "alphaModeSwitch"
+    },
+    "isfShaderButton": {
+      "type": "baaahs.Core:Button",
+      "title": "ISF Shader",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "isfShader-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ],
+      "controlLayout": {
+        "backdrops": [
+          "sizeSlider2Control",
+          "gammaSliderControl",
+          "tintSliderControl",
+          "tintColorColorPickerControl",
+          "alphaModeButton"
+        ]
+      }
+    },
+    "nudgeSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Nudge",
+      "initialValue": 0.095,
+      "minValue": 0.001,
+      "maxValue": 0.01,
+      "controlledDataSourceId": "nudgeSlider"
+    },
+    "rate1SliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Rate1",
+      "initialValue": 1.9,
+      "minValue": -3.0,
+      "maxValue": 3.0,
+      "controlledDataSourceId": "rate1Slider"
+    },
+    "rate2SliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Rate2",
+      "initialValue": 0.6,
+      "minValue": -3.0,
+      "maxValue": 3.0,
+      "controlledDataSourceId": "rate2Slider"
+    },
+    "colorShiftSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Color Shift",
+      "initialValue": 0.0,
+      "controlledDataSourceId": "colorShiftSlider"
+    },
+    "color1SliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Color1",
+      "initialValue": 0.45,
+      "minValue": -2.5,
+      "maxValue": 2.5,
+      "controlledDataSourceId": "color1Slider"
+    },
+    "color2SliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Color2",
+      "minValue": -1.25,
+      "maxValue": 1.125,
+      "controlledDataSourceId": "color2Slider"
+    },
+    "cycle1SliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Cycle1",
+      "initialValue": 1.33,
+      "minValue": 0.01,
+      "maxValue": 3.1459,
+      "controlledDataSourceId": "cycle1Slider"
+    },
+    "cycle2SliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Cycle2",
+      "initialValue": 0.22,
+      "minValue": -0.497,
+      "maxValue": 0.497,
+      "controlledDataSourceId": "cycle2Slider"
+    },
+    "depthXSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Depth X",
+      "initialValue": 0.85,
+      "minValue": 0.001,
+      "maxValue": 0.9,
+      "controlledDataSourceId": "depthXSlider"
+    },
+    "depthYSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Depth Y",
+      "initialValue": 0.25,
+      "minValue": 0.001,
+      "maxValue": 0.9,
+      "controlledDataSourceId": "depthYSlider"
+    },
+    "colorDiffusionFlowButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Color Diffusion Flow",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "colorDiffusionFlow-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ],
+      "controlLayout": {
+        "backdrops": [
+          "nudgeSliderControl",
+          "rate1SliderControl",
+          "rate2SliderControl",
+          "colorShiftSliderControl",
+          "color1SliderControl",
+          "color2SliderControl",
+          "cycle1SliderControl",
+          "cycle2SliderControl",
+          "depthXSliderControl",
+          "depthYSliderControl"
+        ]
+      }
+    },
+    "solidColorButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Solid Color",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "solidColor-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "quiverButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Quiver",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "quiver-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "backdropsButtonGroup2": {
+      "type": "baaahs.Core:ButtonGroup",
+      "title": "Backdrops",
+      "direction": "Vertical",
+      "buttonIds": [
+        "blueAquaGreenButton",
+        "danceyCubesButton",
+        "isfShaderButton",
+        "colorDiffusionFlowButton",
+        "solidColorButton",
+        "quiverButton"
+      ]
+    },
+    "holoceneButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Holocene",
+      "controlLayout": {
+        "backdrops": [
+          "backdropsButtonGroup2"
+        ]
+      }
+    },
+    "scenesButtonGroup": {
+      "type": "baaahs.Core:ButtonGroup",
+      "title": "Scenes",
+      "buttonIds": [
+        "pleistoceneButton",
+        "holoceneButton"
+      ]
+    },
+    "sparklezButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Sparklez™",
+      "activationType": "Momentary",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "sparklez-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "zzzButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Zzz",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "untitledFilterShader-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "colorColorPickerControl": {
+      "type": "baaahs.Core:ColorPicker",
+      "title": "Color",
+      "controlledDataSourceId": "colorColorPicker"
+    },
+    "brightnessSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Brightness",
+      "maxValue": 1.25,
+      "controlledDataSourceId": "brightnessSlider"
+    },
+    "saturationSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Saturation",
+      "maxValue": 1.25,
+      "controlledDataSourceId": "saturationSlider"
+    },
+    "wobblyButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Wobbly",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "wobble-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "sizeSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Size",
+      "minValue": 0.75,
+      "maxValue": 1.25,
+      "controlledDataSourceId": "sizeSlider"
+    },
+    "scaleSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Scale",
+      "controlledDataSourceId": "scaleSlider"
+    },
+    "beatSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Beat",
+      "controlledDataSourceId": "beatSlider"
+    },
+    "pulseButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Pulse",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "pulse-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ],
+      "controlLayout": {
+        "moreControls": [
+          "scaleSliderControl",
+          "beatSliderControl"
+        ]
+      }
+    },
+    "noneButton": {
+      "type": "baaahs.Core:Button",
+      "title": "None"
+    },
+    "dissolveButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Dissolve",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "crossFade-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "slideLeftButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Slide Left",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "slideLeft-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "transitionEffectButtonGroup": {
+      "type": "baaahs.Core:ButtonGroup",
+      "title": "Transition Effect",
+      "direction": "Vertical",
+      "buttonIds": [
+        "noneButton",
+        "dissolveButton",
+        "slideLeftButton"
+      ]
+    },
+    "fadeSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Fade",
+      "controlledDataSourceId": "fadeSlider"
+    },
+    "control2": {
+      "type": "baaahs.Core:Visualizer"
+    },
+    "control3": {
+      "type": "baaahs.Core:Transition"
+    }
+  },
+  "dataSources": {
+    "modelInfo": {
+      "type": "baaahs.Core:ModelInfo"
+    },
+    "pixelLocation": {
+      "type": "baaahs.Core:PixelLocation"
+    },
+    "brightnessSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Brightness",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.25
+    },
+    "saturationSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Saturation",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.25
+    },
+    "sizeSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Size",
+      "initialValue": 1.0,
+      "minValue": 0.75,
+      "maxValue": 1.25
+    },
+    "time": {
+      "type": "baaahs.Core:Time"
+    },
+    "fixtureInfo": {
+      "type": "baaahs.Core.FixtureInfo"
+    },
+    "resolution": {
+      "type": "baaahs.Core:Resolution"
+    },
+    "conflagrationSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Conflagration",
+      "initialValue": 15.0,
+      "minValue": 5.0,
+      "maxValue": 20.0
+    },
+    "intensitySlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Intensity",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "intensitySlider2": {
+      "type": "baaahs.Core:Slider",
+      "title": "Intensity",
+      "initialValue": 15.0,
+      "minValue": 5.0,
+      "maxValue": 20.0
+    },
+    "checkerboardSizeSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Checkerboard Size",
+      "initialValue": 0.1,
+      "minValue": 0.001,
+      "maxValue": 1.0
+    },
+    "whitenessSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Whiteness",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "zoomSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Zoom",
+      "initialValue": 2.0,
+      "minValue": 1.0,
+      "maxValue": 10.0
+    },
+    "pixelCoordsTexture": {
+      "type": "baaahs.Core:PixelCoordsTexture"
+    },
+    "mouseXyPad": {
+      "type": "baaahs.Core:XyPad",
+      "title": "Mouse",
+      "varPrefix": "iMouseVec2"
+    },
+    "beatLink": {
+      "type": "baaahs.BeatLink:BeatLink"
+    },
+    "scaleSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Scale",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "centerXyPad": {
+      "type": "baaahs.Core:XyPad",
+      "title": "Center",
+      "varPrefix": "centerVec2"
+    },
+    "rednessSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Redness",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "sizeSlider2": {
+      "type": "baaahs.Core:Slider",
+      "title": "Size",
+      "initialValue": 0.1,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "tintSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Tint",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "gammaSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Gamma",
+      "initialValue": 1.0,
+      "minValue": 0.5,
+      "maxValue": 2.0
+    },
+    "tintColorColorPicker": {
+      "type": "baaahs.Core:ColorPicker",
+      "title": "Tint Color",
+      "initialValue": -1
+    },
+    "alphaModeSwitch": {
+      "type": "baaahs.Core:Switch",
+      "title": "Alpha Mode",
+      "initiallyEnabled": false
+    },
+    "date": {
+      "type": "baaahs.Core:Date"
+    },
+    "nudgeSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Nudge",
+      "initialValue": 0.095,
+      "minValue": 0.001,
+      "maxValue": 0.01
+    },
+    "rate1Slider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Rate1",
+      "initialValue": 1.9,
+      "minValue": -3.0,
+      "maxValue": 3.0
+    },
+    "rate2Slider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Rate2",
+      "initialValue": 0.6,
+      "minValue": -3.0,
+      "maxValue": 3.0
+    },
+    "loopcycleSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Loopcycle",
+      "initialValue": 85.0,
+      "minValue": 20.0,
+      "maxValue": 100.0
+    },
+    "color1Slider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Color1",
+      "initialValue": 0.45,
+      "minValue": -2.5,
+      "maxValue": 2.5
+    },
+    "color2Slider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Color2",
+      "initialValue": 1.0,
+      "minValue": -1.25,
+      "maxValue": 1.125
+    },
+    "cycle1Slider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Cycle1",
+      "initialValue": 1.33,
+      "minValue": 0.01,
+      "maxValue": 3.1459
+    },
+    "cycle2Slider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Cycle2",
+      "initialValue": 0.22,
+      "minValue": -0.497,
+      "maxValue": 0.497
+    },
+    "depthXSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Depth X",
+      "initialValue": 0.85,
+      "minValue": 0.001,
+      "maxValue": 0.9
+    },
+    "depthYSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Depth Y",
+      "initialValue": 0.25,
+      "minValue": 0.001,
+      "maxValue": 0.9
+    },
+    "colorShiftSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Color Shift",
+      "initialValue": 0.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "colorColorPicker": {
+      "type": "baaahs.Core:ColorPicker",
+      "title": "Color",
+      "initialValue": -1
+    },
+    "wobbleAmountSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Wobble Amount",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "beatSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Beat",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "fadeSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Fade",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    }
+  },
+  "version": 4
+}
