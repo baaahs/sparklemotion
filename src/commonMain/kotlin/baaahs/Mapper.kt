@@ -521,6 +521,8 @@ class Mapper(
             deliverer.send(brainToMap, solidColorBuffer(activeColor))
             deliverer.await()
             slowCamDelay()
+            slowCamDelay()
+            slowCamDelay()
 
             val surfaceOnBitmap = getBrightImageBitmap(3)
             showSnapshot(surfaceOnBitmap)
@@ -840,7 +842,9 @@ class Mapper(
                 logger.debug { "Heard from Brain ${message.brainId} surface=${message.surfaceName ?: "unknown"}" }
                 val brainToMap = brainsToMap.getOrPut(fromAddress) { BrainToMap(fromAddress, message.brainId) }
                 showMessage("${brainsToMap.size} SURFACES DISCOVERED!")
-                brainToMap.shade { solidColor(Color.GREEN.withBrightness(.6f)) }
+
+                // Less voltage causes less LED glitches.
+                brainToMap.shade { solidColor(Color.GREEN.withBrightness(.4f)) }
             }
 
             is PingMessage -> {
