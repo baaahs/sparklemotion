@@ -1,8 +1,6 @@
 package baaahs.gl.render
 
-import baaahs.TestModel
-import baaahs.describe
-import baaahs.englishize
+import baaahs.*
 import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
@@ -14,7 +12,6 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.shader.InputPort
-import baaahs.only
 import baaahs.plugin.SerializerRegistrar
 import baaahs.show.*
 import baaahs.show.Shader
@@ -38,7 +35,10 @@ object ModelRenderEngineSpec : Spek({
         val pixelDataSource by value { PerPixelDataSourceForTest(updateMode) }
         val dataSource by value<DataSource> { fixtureDataSource }
         val deviceType by value { DeviceTypeForTest(dataSource) }
-        val renderEngine by value { ModelRenderEngine(gl, TestModel, deviceType, minTextureWidth = 1) }
+        val maxFramebufferWidth by value { 64 }
+        val renderEngine by value {
+            ModelRenderEngine(gl, TestModel, deviceType, minTextureWidth = 1, maxFramebufferWidth)
+        }
         val texture by value { gl.textures.only("texture") }
 
         context("when engine has just been started") {
@@ -138,7 +138,58 @@ object ModelRenderEngineSpec : Spek({
                 }
             }
 
-            context("when a fixtures are added") {
+            context("when a fixture with maxFramebufferWidth pixels is added") {
+                val fixture1Target by value {
+                    renderEngine.addFixture(testFixture(deviceType, maxFramebufferWidth, 0f))
+                }
+
+                val addFixture by value { { fixture1Target.run { } } }
+                val renderPlan by value { renderPlanFor(initialProgram[0]!!, fixture1Target) }
+                val drawTwoFrames by value {
+                    {
+                        renderEngine.setRenderPlan(renderPlan)
+                        renderEngine.draw()
+                        renderEngine.draw()
+                    }
+                }
+
+                beforeEachTest { addFixture() }
+
+                context("when two frames are rendered") {
+                    beforeEachTest {
+                        // Two frames so we can observe when uniforms are updated.
+                        drawTwoFrames()
+                    }
+
+                    it("should generate a RenderTarget with appropriate rects") {
+                        expect(fixture1Target.pixel0Index).toEqual(0)
+                        expect(fixture1Target.pixelCount).toEqual(maxFramebufferWidth)
+
+                        expect(fixture1Target.rect0Index).toEqual(0)
+                        expect(fixture1Target.rects).toEqual(listOf(
+                            Quad.Rect(0f, 0f, 0f, 0f)
+                        ))
+                    }
+
+                    context("when the data source is per-pixel") {
+                        override(dataSource) { pixelDataSource }
+
+                        it("should allocate a texture to hold per-pixel data for all fixtures") {
+                            expect(texture.width to texture.height)
+                                .toBe(3 to 1)
+                            expect(fakeGlProgram.renders.map { it.textureBuffers.only("texture buffer") })
+                                .containsExactly(
+                                    listOf(10f, 20f, 21f), // First frame, fixture1.
+                                    listOf(10f, 20f, 21f), // First frame, fixture2.
+                                    listOf(10f, 20f, 21f), // Second frame, fixture1.
+                                    listOf(10f, 20f, 21f)  // Second frame, fixture2.
+                                )
+                        }
+                    }
+                }
+            }
+
+            context("when fixtures are added") {
                 val fixture1Target by value {
                     renderEngine.addFixture(testFixture(deviceType, 1, 0f))
                 }
@@ -243,6 +294,23 @@ object ModelRenderEngineSpec : Spek({
                         }
                     }
                 }
+
+//                context("when a fixture is removed and added again") {
+//                    val fixture3Target by value {
+//                        renderEngine.addFixture(testFixture(deviceType, , 0f))
+//                    }
+//
+//                    beforeEachTest {
+//                        renderEngine.removeRenderTarget(fixture1Target)
+//                        fixture3Target.run { }
+//                        renderEngine.beforeFrame()
+//                    }
+//
+//                    it("should rebuild the arrangement") {
+//                        renderEngine.arrangement.quad
+//
+//                    }
+//                }
             }
         }
     }

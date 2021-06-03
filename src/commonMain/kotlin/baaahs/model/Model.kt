@@ -73,7 +73,7 @@ abstract class Model : ModelInfo {
     data class Line(val vertices: List<Vector3F>)
 
     class Face(
-        private val allVertices: List<Vector3F>,
+        internal val allVertices: List<Vector3F>,
         val vertexA: Int,
         val vertexB: Int,
         val vertexC: Int

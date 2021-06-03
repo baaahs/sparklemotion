@@ -56,11 +56,18 @@ class FixtureManager(
     }
 
     fun sendFrame() {
-        renderTargets.values.forEach { renderTarget ->
+        print("Send frame:")
+        renderTargets.values.forEachIndexed { index, renderTarget ->
+            val p0 = renderTarget.pixel0Index
+            val pixelCount = renderTarget.pixelCount
+            println("\n$index: pixel0Index=${p0.toString(16)}..${(p0 + pixelCount).toString(16)} count=${pixelCount.toString(16)} " +
+                    "rect0Index=${renderTarget.rect0Index} ${renderTarget.fixture.name}")
+            println("   rects=${renderTarget.rects}")
             // TODO(tom): The send might return an error, at which point this fixture should be nuked
             // from the list of fixtures. I'm not quite sure the best way to do that so I'm leaving this note.
             renderTarget.sendFrame()
         }
+        println()
         frameListeners.forEach { it.invoke() }
     }
 

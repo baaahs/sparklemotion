@@ -45,7 +45,20 @@ class SheepModel : ObjModel("baaahs-model.obj") {
         if (expectedPixelCount == null) {
             logger.debug { "No pixel count found for $name" }
         }
-        return Surface(name, "Panel $name", PixelArrayDevice, expectedPixelCount, faces, lines)
+        val offset = when (name) {
+            "Panel 2" -> Vector3F(-12f, 0f, 0f)
+            "Panel 3" -> Vector3F(-24f, 0f, 0f)
+            else -> Vector3F.origin
+        }
+        return Surface(
+            name, "Panel $name", PixelArrayDevice, expectedPixelCount,
+            faces.map {
+                Face(it.allVertices.map { it + offset }, it.vertexA, it.vertexB, it.vertexC)
+            },
+            lines.map {
+                Line(it.vertices.map { it + offset })
+            }
+        )
     }
 
     companion object {

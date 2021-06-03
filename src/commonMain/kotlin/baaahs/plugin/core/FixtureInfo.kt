@@ -77,6 +77,11 @@ class FixtureInfoFeed(
                 originUniform?.set(fixtureInfo?.origin ?: Vector3F.origin)
                 headingUniform?.set(fixtureInfo?.heading ?: Vector3F.origin)
                 matrixUniform?.set(fixtureInfo?.matrix ?: Matrix4())
+
+                println("fixture = ${renderTarget.fixture.name}")
+                println("origin = ${fixtureInfo?.origin}")
+                println("heading = ${fixtureInfo?.heading}")
+                println("matrix = ${fixtureInfo?.matrix?.elements?.map { it.toString() }}")
             }
         }
     }

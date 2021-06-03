@@ -1,6 +1,7 @@
 package baaahs.gl.render
 
 import baaahs.gl.GlContext
+import baaahs.util.Logger
 import com.danielgergely.kgl.*
 
 class Quad(private val gl: GlContext, rects: List<Rect>) {
@@ -25,6 +26,9 @@ class Quad(private val gl: GlContext, rects: List<Rect>) {
     init {
         gl.check { bindVertexArray(vao) }
         gl.check { bindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer) }
+        println("Quad: bind vertices (init)")
+        println(vertices.map { it })
+        println("=== ===")
         gl.check { bufferData(GL_ARRAY_BUFFER, sourceData, vertices.size, GL_STATIC_DRAW) }
         gl.check { bindBuffer(GL_ARRAY_BUFFER, null) }
         gl.check { bindVertexArray(null) }
@@ -64,9 +68,17 @@ class Quad(private val gl: GlContext, rects: List<Rect>) {
         release()
     }
 
-    data class Rect(val top: Float, val left: Float, val bottom: Float, val right: Float)
+    data class Rect(val top: Float, val left: Float, val bottom: Float, val right: Float) {
+        fun scaleToUv(width: Int, height: Int) = Rect(
+            -(top / height * 2 - 1),
+            left / width * 2 - 1,
+            -(bottom / height * 2 - 1),
+            right / width * 2 - 1
+        )
+    }
 
     companion object {
+        private val logger = Logger<Quad>()
         val quadRect2x2 = Rect(1f, -1f, -1f, 1f)
     }
 }

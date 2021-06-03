@@ -3,6 +3,9 @@ package baaahs.gl
 import baaahs.util.Logger
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglLwjgl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GLCapabilities
 

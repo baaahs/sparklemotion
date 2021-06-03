@@ -172,7 +172,7 @@ class ResultParam(val title: String, val type: ResultType) {
 }
 
 abstract class ResultBuffer(
-    gl: GlContext,
+    val gl: GlContext,
     private val paramIndex: Int,
     val type: ResultType
 ) {
@@ -207,10 +207,11 @@ abstract class ResultBuffer(
     abstract fun resizeBuffer(size: Int)
 
     fun attachTo(fb: GlContext.FrameBuffer) {
-        fb.attach(gpuBuffer, GL_COLOR_ATTACHMENT0 + paramIndex)
+//        fb.attach(gpuBuffer, GL_COLOR_ATTACHMENT0 + paramIndex)
     }
 
     fun afterFrame(frameBuffer: GlContext.FrameBuffer) {
+        gl.flushEvents()
         frameBuffer.withRenderBufferAsAttachment0(gpuBuffer) {
             gpuBuffer.readPixels(
                 0, 0, gpuBuffer.curWidth, gpuBuffer.curHeight,
