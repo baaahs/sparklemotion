@@ -48,7 +48,14 @@ object ColorResultType : ResultType {
                 green = byteBuffer[offset + 1],
                 blue = byteBuffer[offset + 2],
                 alpha = byteBuffer[offset + 3]
-            )
+            ).also {
+                if (pixelIndex % 0x80 == 0) print("\n${pixelIndex.toString(16)}: ")
+                if (it == Color(0f, 1f, 0f)) {
+                    print("*")
+                } else {
+                    print(".")
+                }
+            }
         }
 
         override fun getView(pixelOffset: Int, pixelCount: Int): ColorResultView {

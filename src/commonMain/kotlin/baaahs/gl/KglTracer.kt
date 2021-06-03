@@ -54,6 +54,12 @@ class KglTracer(private val kgl: Kgl) : Kgl {
 
     override fun bufferData(target: Int, sourceData: Buffer, size: Int, usage: Int, offset: Int) {
         log("bufferData", target, sourceData, size, usage, offset)
+        val data = when (sourceData) {
+            is ByteBuffer -> (offset until offset + size).map { i -> sourceData[i].toString(16) }
+            is FloatBuffer -> (offset until offset + size).map { i -> sourceData[i].toString() }
+            else -> error("huh?")
+        }
+        logger.debug { "  data: $data" }
         return kgl.bufferData(target, sourceData, size, usage, offset)
     }
 

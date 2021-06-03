@@ -274,6 +274,8 @@ abstract class GlContext(
 //        TODO("not implemented")
     }
 
+    open fun flushEvents() {}
+
     companion object {
         private val logger = Logger("GlslContext")
 

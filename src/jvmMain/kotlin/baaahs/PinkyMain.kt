@@ -78,7 +78,7 @@ class PinkyMain(private val args: Args) {
                 BeatLinkPlugin.Builder(beatSource)
 
         val pinky = runBlocking(pinkyMainDispatcher) {
-            val renderManager = RenderManager(model) { GlBase.manager.createContext() }
+            val renderManager = RenderManager(model) { GlBase.manager.createContext(true) }
             Pinky(
                 model, network, dmxUniverse, clock, fs,
                 daddy, soundAnalyzer, switchShowAfterIdleSeconds = args.switchShowAfter,

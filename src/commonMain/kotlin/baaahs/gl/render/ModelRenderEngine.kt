@@ -12,6 +12,7 @@ import baaahs.gl.patch.LinkedPatch
 import baaahs.model.ModelInfo
 import baaahs.util.Logger
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
+import com.danielgergely.kgl.GL_CULL_FACE
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import kotlin.math.max
 import kotlin.math.min
@@ -20,7 +21,8 @@ class ModelRenderEngine(
     gl: GlContext,
     private val modelInfo: ModelInfo,
     private val deviceType: DeviceType,
-    private val minTextureWidth: Int = 16
+    private val minTextureWidth: Int = 16,
+    private val maxFramebufferWidth: Int = 1024
 ) : RenderEngine(gl) {
     private val renderTargetsToAdd: MutableList<FixtureRenderTarget> = mutableListOf()
     private val renderTargetsToRemove: MutableList<FixtureRenderTarget> = mutableListOf()
@@ -55,9 +57,15 @@ class ModelRenderEngine(
 
         val rects = mapFixturePixelsToRects(
             nextPixelOffset,
-            fbMaxPixWidth,
+            maxFramebufferWidth,
             fixture
         )
+
+        println("Fixture: ${fixture.name} (${fixture.pixelCount} pixels)")
+        println("nextPixelOffset = ${nextPixelOffset.toString(16)} maxFramebufferWidth = $maxFramebufferWidth")
+        println("rects = $rects")
+        println()
+
         val renderTarget = FixtureRenderTarget(
             fixture, nextRectOffset, rects, modelInfo, fixture.pixelCount, nextPixelOffset, resultBuffers
         )
@@ -103,8 +111,9 @@ class ModelRenderEngine(
 
     override fun render() {
         gl.setViewport(0, 0, arrangement.pixWidth, arrangement.pixHeight)
-        gl.check { clearColor(.1f, .2f, 0f, 1f) }
+        gl.check { clearColor(0f, 1f, 0f, 1f) }
         gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
+        gl.check { disable(GL_CULL_FACE) }
 
         arrangement.render()
     }
@@ -147,8 +156,8 @@ class ModelRenderEngine(
         frameBuffer.release()
     }
 
-    val Int.bufWidth: Int get() = max(minTextureWidth, min(this, fbMaxPixWidth))
-    val Int.bufHeight: Int get() = this / fbMaxPixWidth + 1
+    val Int.bufWidth: Int get() = max(minTextureWidth, min(this, maxFramebufferWidth))
+    val Int.bufHeight: Int get() = this / maxFramebufferWidth + 1
     val Int.bufSize: Int get() = bufWidth * bufHeight
 
     inner class Arrangement(val pixelCount: Int, addedRenderTargets: List<FixtureRenderTarget>) {
@@ -171,16 +180,14 @@ class ModelRenderEngine(
             }
         }
 
-        private val quad: Quad =
+        internal val quad: Quad =
             Quad(gl, renderTargets.flatMap {
                 it.rects.map { rect ->
                     // Remap from pixel coordinates to normalized device coordinates.
-                    Quad.Rect(
-                        -(rect.top / pixHeight * 2 - 1),
-                        rect.left / pixWidth * 2 - 1,
-                        -(rect.bottom / pixHeight * 2 - 1),
-                        rect.right / pixWidth * 2 - 1
-                    )
+                    rect.scaleToUv(pixWidth, pixHeight).also {
+                        println("rect: $rect ($pixWidth, $pixHeight)")
+                        println("quad: $it")
+                    }
                 }
             })
 
@@ -219,7 +226,6 @@ class ModelRenderEngine(
 
     companion object {
         private val logger = Logger<ModelRenderEngine>()
-        private const val fbMaxPixWidth = 1024
 
         /** Resulting Rect is in pixel coordinates starting at (0,0) with Y increasing. */
         internal fun mapFixturePixelsToRects(nextPix: Int, pixWidth: Int, fixture: Fixture): List<Quad.Rect> {
@@ -227,6 +233,30 @@ class ModelRenderEngine(
                 val xStartPixel = offsetPix % pixWidth
                 val yStartPixel = offsetPix / pixWidth
                 val xEndPixel = xStartPixel + widthPix
+                val yEndPixel = yStartPixel + 1
+                return Quad.Rect(
+                    yStartPixel.toFloat(),
+                    xStartPixel.toFloat(),
+                    yEndPixel.toFloat(),
+                    xEndPixel.toFloat()
+                )
+            }
+            fun makeQuad1(offsetPix: Int, widthPix: Int): Quad.Rect {
+                val xStartPixel = offsetPix % pixWidth
+                val yStartPixel = offsetPix / pixWidth
+                val xEndPixel = xStartPixel + widthPix * 3 / 4
+                val yEndPixel = yStartPixel + 1
+                return Quad.Rect(
+                    yStartPixel.toFloat(),
+                    xStartPixel.toFloat(),
+                    yEndPixel.toFloat(),
+                    xEndPixel.toFloat()
+                )
+            }
+            fun makeQuad2(offsetPix: Int, widthPix: Int): Quad.Rect {
+                val xStartPixel = offsetPix % pixWidth + widthPix * 3 / 4
+                val yStartPixel = offsetPix / pixWidth
+                val xEndPixel = xStartPixel - widthPix * 3 / 4 + widthPix
                 val yEndPixel = yStartPixel + 1
                 return Quad.Rect(
                     yStartPixel.toFloat(),
@@ -244,6 +274,7 @@ class ModelRenderEngine(
                 val rowPixelsLeft = pixWidth - rowPixelOffset
                 val rowPixelsTaken = min(pixelsLeft, rowPixelsLeft)
                 rects.add(makeQuad(nextPixelOffset, rowPixelsTaken))
+//                rects.add(makeQuad2(nextPixelOffset, rowPixelsTaken))
 
                 nextPixelOffset += rowPixelsTaken
                 pixelsLeft -= rowPixelsTaken
