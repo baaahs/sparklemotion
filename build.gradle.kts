@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         maven("https://kotlin.bintray.com/kotlinx")
         maven("https://plugins.gradle.org/m2/")
         maven("https://dl.bintray.com/kotlin/kotlin-eap")
@@ -41,7 +41,7 @@ plugins {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
     maven("https://kotlin.bintray.com/kotlinx")
     maven("https://kotlin.bintray.com/ktor")
     maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
@@ -76,7 +76,7 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationRuntime}")
-                implementation("com.soywiz.korlibs.klock:klock:1.12.0")
+                implementation("com.soywiz.korlibs.klock:klock:2.1.2")
                 api("com.danielgergely.kgl:kgl-metadata:${Versions.kgl}")
             }
         }
