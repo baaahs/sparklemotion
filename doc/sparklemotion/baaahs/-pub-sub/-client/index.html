@@ -8,17 +8,10 @@
 <a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs</a>&nbsp;/&nbsp;<a href="../index.html">PubSub</a>&nbsp;/&nbsp;<a href="./index.html">Client</a><br/>
 <br/>
 <h1>Client</h1>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Client</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Endpoint</span></code>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Client</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Endpoint</span><span class="symbol">, </span><span class="identifier">CommandRecipient</span></code>
 <h3>Types</h3>
 <table>
 <tbody>
-<tr>
-<td>
-<h4><a href="-client-command-channel/index.html">ClientCommandChannel</a></h4>
-</td>
-<td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">ClientCommandChannel</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">R</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">CommandChannel</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span></code></td>
-</tr>
 <tr>
 <td>
 <h4><a href="-command-handler/index.html">CommandHandler</a></h4>
@@ -52,6 +45,13 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="command-channels.html">commandChannels</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">commandChannels</span><span class="symbol">: </span><span class="identifier">CommandChannels</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="is-connected.html">isConnected</a></h4>
 </td>
 <td>
@@ -71,17 +71,10 @@
 </tr>
 <tr>
 <td>
-<h4><a href="command-sender.html">commandSender</a></h4>
+<h4><a href="open-channel.html">openChannel</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">R</span><span class="symbol">&gt;</span> <span class="identifier">commandSender</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client$commandSender(baaahs.PubSub.CommandPort((baaahs.PubSub.Client.commandSender.C, baaahs.PubSub.Client.commandSender.R)))/commandPort">commandPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandPort</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="keyword">suspend </span><span class="symbol">(</span><span class="identifier">command</span><span class="symbol">:</span>&nbsp;<span class="identifier">C</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">R</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="open-command-channel.html">openCommandChannel</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">R</span><span class="symbol">&gt;</span> <span class="identifier">openCommandChannel</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client$openCommandChannel(baaahs.PubSub.CommandPort((baaahs.PubSub.Client.openCommandChannel.C, baaahs.PubSub.Client.openCommandChannel.R)))/commandPort">commandPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandPort</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">CommandChannel</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">openChannel</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client$openChannel(baaahs.PubSub.Topic((baaahs.PubSub.Client.openChannel.T)), baaahs.PubSub.Client.openChannel.T, kotlin.Function1((baaahs.PubSub.Client.openChannel.T, kotlin.Unit)))/topic">topic</span><span class="symbol">:</span>&nbsp;<span class="identifier">Topic</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Client$openChannel(baaahs.PubSub.Topic((baaahs.PubSub.Client.openChannel.T)), baaahs.PubSub.Client.openChannel.T, kotlin.Function1((baaahs.PubSub.Client.openChannel.T, kotlin.Unit)))/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Client$openChannel(baaahs.PubSub.Topic((baaahs.PubSub.Client.openChannel.T)), baaahs.PubSub.Client.openChannel.T, kotlin.Function1((baaahs.PubSub.Client.openChannel.T, kotlin.Unit)))/onUpdate">onUpdate</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Channel</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
@@ -89,6 +82,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">removeStateChangeListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client$removeStateChangeListener(kotlin.Function0((kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="send-command.html">sendCommand</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">R</span><span class="symbol">&gt;</span> <span class="identifier">sendCommand</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Client$sendCommand(baaahs.PubSub.CommandPort((baaahs.PubSub.Client.sendCommand.C, baaahs.PubSub.Client.sendCommand.R)), baaahs.PubSub.Client.sendCommand.C, kotlin.String)/commandPort">commandPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandPort</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Client$sendCommand(baaahs.PubSub.CommandPort((baaahs.PubSub.Client.sendCommand.C, baaahs.PubSub.Client.sendCommand.R)), baaahs.PubSub.Client.sendCommand.C, kotlin.String)/command">command</span><span class="symbol">:</span>&nbsp;<span class="identifier">C</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Client$sendCommand(baaahs.PubSub.CommandPort((baaahs.PubSub.Client.sendCommand.C, baaahs.PubSub.Client.sendCommand.R)), baaahs.PubSub.Client.sendCommand.C, kotlin.String)/commandId">commandId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>

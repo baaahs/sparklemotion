@@ -1,0 +1,51 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>PubSub.CommandRecipient - sparklemotion</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs</a>&nbsp;/&nbsp;<a href="../index.html">PubSub</a>&nbsp;/&nbsp;<a href="./index.html">CommandRecipient</a><br/>
+<br/>
+<h1>CommandRecipient</h1>
+<code><span class="keyword">interface </span><span class="identifier">CommandRecipient</span></code>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="command-channels.html">commandChannels</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">commandChannels</span><span class="symbol">: </span><span class="identifier">CommandChannels</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="command-sender.html">commandSender</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">R</span><span class="symbol">&gt;</span> <span class="identifier">commandSender</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.CommandRecipient$commandSender(baaahs.PubSub.CommandPort((baaahs.PubSub.CommandRecipient.commandSender.C, baaahs.PubSub.CommandRecipient.commandSender.R)))/commandPort">commandPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandPort</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="keyword">suspend </span><span class="symbol">(</span><span class="identifier">command</span><span class="symbol">:</span>&nbsp;<span class="identifier">C</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">R</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="open-command-channel.html">openCommandChannel</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">R</span><span class="symbol">&gt;</span> <span class="identifier">openCommandChannel</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.CommandRecipient$openCommandChannel(baaahs.PubSub.CommandPort((baaahs.PubSub.CommandRecipient.openCommandChannel.C, baaahs.PubSub.CommandRecipient.openCommandChannel.R)))/commandPort">commandPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandPort</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">CommandChannel</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="send-command.html">sendCommand</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">, </span><span class="identifier">R</span><span class="symbol">&gt;</span> <span class="identifier">sendCommand</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.CommandRecipient$sendCommand(baaahs.PubSub.CommandPort((baaahs.PubSub.CommandRecipient.sendCommand.C, baaahs.PubSub.CommandRecipient.sendCommand.R)), baaahs.PubSub.CommandRecipient.sendCommand.C, kotlin.String)/commandPort">commandPort</span><span class="symbol">:</span>&nbsp;<span class="identifier">CommandPort</span><span class="symbol">&lt;</span><span class="identifier">C</span><span class="symbol">,</span>&nbsp;<span class="identifier">R</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.CommandRecipient$sendCommand(baaahs.PubSub.CommandPort((baaahs.PubSub.CommandRecipient.sendCommand.C, baaahs.PubSub.CommandRecipient.sendCommand.R)), baaahs.PubSub.CommandRecipient.sendCommand.C, kotlin.String)/command">command</span><span class="symbol">:</span>&nbsp;<span class="identifier">C</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.CommandRecipient$sendCommand(baaahs.PubSub.CommandPort((baaahs.PubSub.CommandRecipient.sendCommand.C, baaahs.PubSub.CommandRecipient.sendCommand.R)), baaahs.PubSub.CommandRecipient.sendCommand.C, kotlin.String)/commandId">commandId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

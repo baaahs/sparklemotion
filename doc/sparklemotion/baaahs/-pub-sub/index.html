@@ -24,7 +24,7 @@
 <h4><a href="-client/index.html">Client</a></h4>
 </td>
 <td>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Client</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Endpoint</span></code></td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Client</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Endpoint</span><span class="symbol">, </span><span class="identifier">CommandRecipient</span></code></td>
 </tr>
 <tr>
 <td>
@@ -49,6 +49,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-command-recipient/index.html">CommandRecipient</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">CommandRecipient</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-connection/index.html">Connection</a></h4>
 </td>
 <td>
@@ -59,7 +66,7 @@
 <h4><a href="-connection-from-client/index.html">ConnectionFromClient</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">ConnectionFromClient</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Connection</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">ConnectionFromClient</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Connection</span><span class="symbol">, </span><span class="identifier">CommandRecipient</span></code></td>
 </tr>
 <tr>
 <td>
@@ -158,7 +165,7 @@
 <h4><a href="listen.html">listen</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">listen</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Companion$listen(baaahs.net.Network.HttpServer, kotlin.coroutines.CoroutineContext)/httpServer">httpServer</span><span class="symbol">:</span>&nbsp;<span class="identifier">HttpServer</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Companion$listen(baaahs.net.Network.HttpServer, kotlin.coroutines.CoroutineContext)/coroutineContext">coroutineContext</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html"><span class="identifier">CoroutineContext</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Server</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">listen</span><span class="symbol">(</span><span class="identifier" id="baaahs.PubSub.Companion$listen(baaahs.net.Network.HttpServer, kotlinx.coroutines.CoroutineScope)/httpServer">httpServer</span><span class="symbol">:</span>&nbsp;<span class="identifier">HttpServer</span><span class="symbol">, </span><span class="identifier" id="baaahs.PubSub.Companion$listen(baaahs.net.Network.HttpServer, kotlinx.coroutines.CoroutineScope)/coroutineScope">coroutineScope</span><span class="symbol">:</span>&nbsp;<span class="identifier">CoroutineScope</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Server</span></code></td>
 </tr>
 </tbody>
 </table>
