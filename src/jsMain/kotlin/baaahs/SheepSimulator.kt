@@ -2,23 +2,28 @@ package baaahs
 
 import baaahs.browser.RealMediaDevices
 import baaahs.client.WebClient
+import baaahs.dmx.Dmx
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
 import baaahs.gl.RootToolchain
 import baaahs.gl.render.RenderManager
+import baaahs.io.Fs
 import baaahs.io.ResourcesFs
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
 import baaahs.model.Model
+import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.proto.Ports
 import baaahs.sim.*
+import baaahs.util.Clock
 import baaahs.util.JsClock
+import baaahs.util.KoinLogger
 import baaahs.util.LoggerConfig
 import baaahs.visualizer.SurfaceGeometry
 import baaahs.visualizer.SwirlyPixelArranger
@@ -26,7 +31,11 @@ import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPixels
 import decodeQueryParams
 import kotlinx.coroutines.*
+import org.koin.core.qualifier.named
+import org.koin.dsl.koinApplication
+import org.koin.dsl.module
 import three.js.Vector3
+import kotlin.coroutines.CoroutineContext
 
 class SheepSimulator(val model: Model) {
     @Suppress("unused")
@@ -57,21 +66,50 @@ class SheepSimulator(val model: Model) {
         GlobalScope.launch { cleanUpBrowserStorage() }
     }
 
+    val pinkyModule = module {
+        single<Dmx.Universe> { dmxUniverse }
+        single<Clock> { clock }
+        single<Fs> { fs }
+        single<Network> { network }
+        single<Network.Link> { FragmentingUdpLink(get<Network>().link("pinky")) }
+        single { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
+        single { plugins }
+        single<FirmwareDaddy> { PermissiveFirmwareDaddy() }
+        single<SoundAnalyzer> { bridgeClient.soundAnalyzer }
+        single<CoroutineDispatcher>(named("PinkyMainDispatcher")) { Dispatchers.Main }
+        single<Job>(named("Pinky")) { SupervisorJob() }
+        single(named("PinkyContext")) {
+            get<CoroutineDispatcher>(named("PinkyMainDispatcher")) + get<Job>(named("Pinky")) }
+        single { PubSub.Server(get(), CoroutineScope(get(named("PinkyContext")))) }
+
+        single { RenderManager(model) { GlBase.manager.createContext() } }
+
+        factory {
+            Pinky(
+                model, get(), get(), get(), get(),
+                get(), get(), switchShowAfterIdleSeconds = null,
+                adjustShowAfterIdleSeconds = null,
+                renderManager = get(),
+                plugins = get(),
+                pinkyMainDispatcher = get(named("PinkyMainDispatcher")),
+                link = get(),
+                httpServer = get(),
+                pubSub = get()
+            )
+        }
+    }
+
     val pluginContext = PluginContext(clock)
     val plugins = Plugins.safe(pluginContext) +
             BeatLinkPlugin.Builder(bridgeClient.beatSource)
-    private val pinky = Pinky(
-        model,
-        network,
-        dmxUniverse,
-        clock,
-        fs,
-        PermissiveFirmwareDaddy(),
-        bridgeClient.soundAnalyzer,
-        renderManager = RenderManager(model) { GlBase.manager.createContext() },
-        plugins = plugins,
-        pinkyMainDispatcher = Dispatchers.Main
-    )
+
+    val pinkyInjector = koinApplication {
+        logger(KoinLogger())
+
+        modules(pinkyModule)
+    }
+    val pinky = pinkyInjector.koin.get<Pinky>()
+
     private val brains: MutableList<Brain> = mutableListOf()
 
     val pinkyAddress: Network.Address get() = pinky.address

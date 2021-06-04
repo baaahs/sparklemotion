@@ -4,8 +4,11 @@ import baaahs.dmx.Dmx
 import baaahs.dmx.DmxDevice
 import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
+import baaahs.io.Fs
 import baaahs.io.RealFs
+import baaahs.net.FragmentingUdpLink
 import baaahs.net.JvmNetwork
+import baaahs.net.Network
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkBeatSource
@@ -13,6 +16,8 @@ import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.sim.FakeDmxUniverse
+import baaahs.util.Clock
+import baaahs.util.KoinLogger
 import baaahs.util.Logger
 import baaahs.util.SystemClock
 import com.xenomachina.argparser.ArgParser
@@ -22,15 +27,17 @@ import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import org.koin.core.qualifier.named
+import org.koin.dsl.koinApplication
+import org.koin.dsl.module
 import java.io.File
 import java.io.FileNotFoundException
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.coroutines.CoroutineContext
 
 @ObsoleteCoroutinesApi
 fun main(args: Array<String>) {
@@ -77,17 +84,53 @@ class PinkyMain(private val args: Args) {
         val plugins = Plugins.safe(pluginContext) +
                 BeatLinkPlugin.Builder(beatSource)
 
-        val pinky = runBlocking(pinkyMainDispatcher) {
-            val renderManager = RenderManager(model) { GlBase.manager.createContext() }
-            Pinky(
-                model, network, dmxUniverse, clock, fs,
-                daddy, soundAnalyzer, switchShowAfterIdleSeconds = args.switchShowAfter,
-                adjustShowAfterIdleSeconds = args.adjustShowAfter,
-                renderManager = renderManager,
-                plugins = plugins,
-                pinkyMainDispatcher = pinkyMainDispatcher
-            )
+        val pinkyModule = module {
+            single { dmxUniverse }
+            single<Clock> { clock }
+            single<Fs> { fs }
+            single<Network> { network }
+            single<Network.Link> { FragmentingUdpLink(get<Network>().link("pinky")) }
+            single { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
+            single { plugins }
+            single<FirmwareDaddy> { daddy }
+            single<SoundAnalyzer> { soundAnalyzer }
+            single<CoroutineDispatcher>(named("PinkyMainDispatcher")) { pinkyMainDispatcher }
+            single<Job>(named("Pinky")) { SupervisorJob() }
+            single(named("PinkyContext")) {
+                get<CoroutineDispatcher>(named("PinkyMainDispatcher")) + get<Job>(named("Pinky")) }
+            single {
+                PubSub.Server(get(), CoroutineScope(get(named("PinkyContext")))) }
+
+            single {
+                runBlocking(pinkyMainDispatcher) {
+                    RenderManager(model) { GlBase.manager.createContext() }
+                }
+            }
+
+            factory {
+                runBlocking(pinkyMainDispatcher) {
+                    Pinky(
+                        model, get(), get(), get(), get(),
+                        get(), get(), switchShowAfterIdleSeconds = args.switchShowAfter,
+                        adjustShowAfterIdleSeconds = args.adjustShowAfter,
+                        renderManager = get(),
+                        plugins = get(),
+                        pinkyMainDispatcher = get(named("PinkyMainDispatcher")),
+                        link = get(),
+                        httpServer = get(),
+                        pubSub = get()
+                    )
+                }
+            }
         }
+
+        val pinkyInjector = koinApplication {
+            logger(KoinLogger())
+
+            modules(pinkyModule)
+        }
+
+        val pinky = pinkyInjector.koin.get<Pinky>()
 
         val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
         val resource = Pinky::class.java.classLoader.getResource("baaahs")!!

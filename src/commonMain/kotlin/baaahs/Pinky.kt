@@ -39,19 +39,18 @@ class Pinky(
     private val adjustShowAfterIdleSeconds: Int? = null,
     renderManager: RenderManager,
     val plugins: Plugins,
-    val pinkyMainDispatcher: CoroutineDispatcher
+    val pinkyMainDispatcher: CoroutineDispatcher,
+    private val link: Network.Link,
+    val httpServer: Network.HttpServer,
+    private val pubSub: PubSub.Server
 ) : CoroutineScope, Network.UdpListener {
     val facade = Facade()
     private val storage = Storage(fs, plugins)
     private val mappingResults = FutureMappingResults()
 
-    private val link = FragmentingUdpLink(network.link("pinky"))
-    val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
-
     private val pinkyJob = SupervisorJob()
     override val coroutineContext: CoroutineContext = pinkyMainDispatcher + pinkyJob
 
-    private val pubSub: PubSub.Server = PubSub.Server(httpServer, CoroutineScope(coroutineContext))
     val gadgetManager = GadgetManager(pubSub, clock, coroutineContext)
     internal val fixtureManager = FixtureManager(renderManager)
 
