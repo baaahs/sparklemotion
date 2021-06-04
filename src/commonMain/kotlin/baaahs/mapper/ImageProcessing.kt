@@ -2,6 +2,7 @@ package baaahs.mapper
 
 import baaahs.MediaDevices
 import baaahs.imaging.Bitmap
+import baaahs.imaging.Dimen
 import kotlin.math.max
 
 class ImageProcessing {
@@ -106,8 +107,7 @@ class ImageProcessing {
             }
 
             return Analysis(
-                bitmap.width,
-                bitmap.height,
+                bitmap.dimen,
                 regionOfInterest,
                 Histogram(hist, bitmap.width * bitmap.height),
                 xMin,
@@ -125,8 +125,7 @@ class ImageProcessing {
     }
 
     class Analysis(
-        val width: Int,
-        val height: Int,
+        val sourceDimen: Dimen,
         val regionOfInterest: MediaDevices.Region,
         val hist: Histogram,
         val xMin: ShortArray,
@@ -151,7 +150,7 @@ class ImageProcessing {
             val minY = yMax.indexOfFirst { colMaxValue -> colMaxValue >= thresholdValue }
             val maxX = xMax.indexOfLast { rowMaxValue -> rowMaxValue >= thresholdValue }
             val maxY = yMax.indexOfLast { colMaxValue -> colMaxValue >= thresholdValue }
-            return MediaDevices.Region(minX, minY, maxX, maxY)
+            return MediaDevices.Region(minX, minY, maxX, maxY, sourceDimen)
         }
 
         private fun ShortArray.copyOfRange(intRange: IntRange): ShortArray {

@@ -42,6 +42,13 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
         }
     }
 
+    override fun forVacuity(openVacuityControl: OpenVacuityControl, controlProps: ControlProps) = renderWrapper {
+        vacuity {
+            attrs.controlProps = controlProps
+            attrs.vacuityControl = openVacuityControl
+        }
+    }
+
     override fun forVisualizer(openVisualizerControl: OpenVisualizerControl, controlProps: ControlProps) = renderWrapper {
         visualizer {
             attrs.controlProps = controlProps

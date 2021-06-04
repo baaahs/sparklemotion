@@ -459,6 +459,16 @@ class ShowBuilder {
     fun getDataSources(): Map<String, DataSource> = dataSourceIds.all()
     fun getShaders(): Map<String, Shader> = shaderIds.all()
     fun getShaderInstances(): Map<String, ShaderInstance> = shaderInstanceIds.all()
+
+    companion object {
+        fun forImplicitControls(
+            existingControls: Map<String, Control>,
+            existingDataSources: Map<String, DataSource>
+        ): ShowBuilder = ShowBuilder().apply {
+            controlIds.putAll(existingControls)
+            dataSourceIds.putAll(existingDataSources)
+        }
+    }
 }
 
 class VisitationLog {

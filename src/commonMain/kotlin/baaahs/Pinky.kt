@@ -48,8 +48,6 @@ class Pinky(
     private val link = FragmentingUdpLink(network.link("pinky"))
     val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
 
-    private var mapperIsRunning = false
-
     private val pinkyJob = SupervisorJob()
     override val coroutineContext: CoroutineContext = pinkyMainDispatcher + pinkyJob
 
@@ -91,6 +89,7 @@ class Pinky(
 
     private var pinkyState = PinkyState.Initializing
     private val pinkyStateChannel = pubSub.publish(Topics.pinkyState, pinkyState) {}
+    private var mapperIsRunning = false
 
     init {
         httpServer.listenWebSocket("/ws/api") {
@@ -234,8 +233,16 @@ class Pinky(
                 is BrainHelloMessage -> brainManager.foundBrain(fromAddress, message)
                 is PingMessage -> brainManager.receivedPing(fromAddress, message)
                 is MapperHelloMessage -> {
-                    logger.debug { "Mapper isRunning=${message.isRunning}" }
-                    mapperIsRunning = message.isRunning
+                    logger.info { "Mapper isRunning=${message.isRunning}" }
+                    if (pinkyState == PinkyState.Running && message.isRunning) {
+                        pinkyState = PinkyState.Mapping
+                        pinkyStateChannel.onChange(PinkyState.Mapping)
+                        mapperIsRunning = true
+                    } else if (pinkyState == PinkyState.Mapping && !message.isRunning) {
+                        pinkyState = PinkyState.Running
+                        pinkyStateChannel.onChange(PinkyState.Running)
+                        mapperIsRunning = false
+                    }
                 }
             }
         }
@@ -355,6 +362,7 @@ data class PinkyConfig(
 enum class PinkyState {
     Initializing,
     Running,
+    Mapping,
     ShuttingDown
 }
 

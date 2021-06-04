@@ -80,9 +80,7 @@ class BrainManager(
         val brainId = BrainId(msg.brainId)
 
         logger.debug {
-            "Hello from ${brainId.uuid}" +
-                    " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
-                    " at $brainAddress: $msg"
+            "Hello from ${brainId.uuid} (surface=${msg.surfaceName ?: "[unknown]"}) at $brainAddress"
         }
 
         // Decide whether or not to tell this brain it should use a different firmware
@@ -113,6 +111,10 @@ class BrainManager(
                     Vector2F(0f, 0f), fixture.pixelCount, fixture.pixelLocations
                 )
                 udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
+            } else {
+                logger.debug {
+                    "Not sending BrainMappingMessage to $brainId, its mapping is already correct (${modelSurface.name})."
+                }
             }
         }
 

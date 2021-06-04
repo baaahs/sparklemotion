@@ -44,7 +44,7 @@ repositories {
     jcenter()
     maven("https://kotlin.bintray.com/kotlinx")
     maven("https://kotlin.bintray.com/ktor")
-    maven("https://kotlin.bintray.com/kotlin-js-wrappers")
+    maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://jitpack.io")
     maven("https://dl.bintray.com/fabmax/kool")
@@ -238,19 +238,6 @@ tasks.create<Copy>("copySheepModel") {
 tasks.withType(Kotlin2JsCompile::class) {
     kotlinOptions.sourceMap = true
     kotlinOptions.sourceMapEmbedSources = "always"
-}
-
-// see https://discuss.kotlinlang.org/t/kotlin-js-react-unstable-building/15582/6
-tasks.named<Kotlin2JsCompile>("compileKotlinJs") {
-    val outDir = outputFile.parent
-    val tempOutDir = "$outDir/kotlin-out"
-    kotlinOptions.outputFile = "$tempOutDir/${outputFile.name}"
-    doLast {
-        copy {
-            from(tempOutDir)
-            into(outDir)
-        }
-    }
 }
 
 tasks.withType(KotlinWebpack::class) {

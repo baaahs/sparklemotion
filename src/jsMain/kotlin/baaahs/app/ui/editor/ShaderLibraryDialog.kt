@@ -7,7 +7,6 @@ import baaahs.libraries.ShaderLibrary
 import baaahs.show.Shader
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderInstance
-import baaahs.ui.useCallback
 import baaahs.ui.value
 import baaahs.ui.xComponent
 import baaahs.util.CacheBuilder
@@ -37,24 +36,24 @@ val ShaderLibraryDialog = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDia
     val shaderLibraries = appContext.webClient.shaderLibraries
     val toolchain = appContext.toolchain.withCache("Shader Library")
 
-    val handleClose = useCallback(props.onSelect) { _: Event, _: String -> props.onSelect(null) }
+    val handleClose = callback(props.onSelect) { _: Event, _: String -> props.onSelect(null) }
 
     val searchJob = ref<Job?> { null }
     var matches by state { emptyList<ShaderLibrary.Entry>() }
-    val runSearch = handler("run search") { terms: String ->
+    val runSearch by handler { terms: String ->
         searchJob.current?.cancel()
         searchJob.current = GlobalScope.launch {
             matches = shaderLibraries.searchFor(terms)
         }
     }
 
-    val handleSearchChange = handler("on change") { event: Event ->
+    val handleSearchChange by eventHandler { event: Event ->
         println("onChange $event — ${event.target.value}")
 //        props.setValue(event.target.value)
 //        props.editableManager.onChange(pushToUndoStack = false)
     }
 
-    val handleSearchBlur = handler("on blur") { event: Event ->
+    val handleSearchBlur by eventHandler { event: Event ->
         println("onBlur $event — ${event.target.value}")
 //        val newValue = event.target.value
 //        if (newValue != valueOnUndoStack.current) {
@@ -63,7 +62,7 @@ val ShaderLibraryDialog = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDia
 //        }
     }
 
-    val handleSearchKeyDown = handler("on keydown", runSearch) { event: Event ->
+    val handleSearchKeyDown by eventHandler(runSearch) { event: Event ->
         println("onKeydown $event — ${event.target.value}")
         runSearch(event.target.value)
 //        if (event.asDynamic().keyCode == 13) {
@@ -71,7 +70,7 @@ val ShaderLibraryDialog = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDia
 //        }
     }
 
-    val handleSearchInput = handler("on input", runSearch) { event: Event ->
+    val handleSearchInput by eventHandler(runSearch) { event: Event ->
         println("onInput $event — ${event.target.value}")
         runSearch(event.target.value)
 //        if (event.asDynamic().keyCode == 13) {

@@ -37,6 +37,11 @@ class UniqueIds<T> {
         toId.clear()
         byId.clear()
     }
+
+    fun putAll(items: Map<String, T>) {
+        items.forEach { (k, v) -> toId[v] = k }
+        byId.putAll(items)
+    }
 }
 
 fun <V> MutableMap<String, V>.putWithUniqueId(prefix: String, value: V): String {

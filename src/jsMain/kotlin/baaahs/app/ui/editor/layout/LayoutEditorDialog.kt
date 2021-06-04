@@ -76,7 +76,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         return json.decodeFromString(formatsSerializer, layoutJson.getValue())
     }
 
-    val checkLayout = useCallback {
+    val checkLayout = callback {
         if (showCode && changed.current) {
             errorMessage = try {
                 panelIds = getLayoutsFromJson().getPanelIds().toMutableSet()
@@ -93,7 +93,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         withCleanup { baaahs.window.clearInterval(interval) }
     }
 
-    val handleApply = useCallback(props.onApply) { _: Event ->
+    val handleApply = callback(props.onApply) { _: Event ->
         if (showCode) {
             val layoutsMap = getLayoutsFromJson()
             mutableLayouts.formats.clear()
@@ -105,24 +105,24 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         props.onApply(mutableShow)
     }
 
-    val handlePanelsClick = handler("panelsClick") { _: Event -> currentFormat = null }
+    val handlePanelsClick by eventHandler { _: Event -> currentFormat = null }
     val handleLayoutClicks = memo(mutableLayouts.formats.keys) {
         mutableLayouts.formats.keys.associateWith { { _: Event -> currentFormat = it } }
     }
 
-    val handleGridChange = handler("handleGridChange", handleApply) {
+    val handleGridChange by handler(handleApply) {
         changed.current = true
         props.onApply(mutableShow)
     }
 
     val handleShowCodeButton =
-        useCallback { _: Event -> showCode = !showCode }
+        callback { _: Event -> showCode = !showCode }
 
     val handleClose =
-        useCallback(props.onClose) { _: Event, _: String -> props.onClose() }
+        callback(props.onClose) { _: Event, _: String -> props.onClose() }
 
     val handleCancel =
-        useCallback(props.onClose) { _: Event -> props.onClose() }
+        callback(props.onClose) { _: Event -> props.onClose() }
 
     dialog(DraggablePaper.handleClassName on DialogStyle.paper) {
         attrs.open = props.open

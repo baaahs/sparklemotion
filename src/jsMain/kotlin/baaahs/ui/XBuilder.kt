@@ -6,6 +6,7 @@ import external.react.memo
 import org.w3c.dom.events.Event
 import react.RMutableRef
 import react.RProps
+import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -57,8 +58,8 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         Context()
     }, emptyArray())
 
-    private val counterIncr = react.useState { CounterIncr() }
-    private val counter = react.useState { counterIncr.first.next() }
+    private val counterIncr = react.rawUseState { CounterIncr() }
+    private val counter = react.rawUseState { counterIncr.component1().next() }
     private var inRender = true
     private var stateHasChanged = false
 
@@ -137,7 +138,12 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         }
     }
 
-    fun <T : Function<*>> handler(name: String, vararg watch: Any?, block: T): T {
+    fun <T : Function<*>> callback(vararg dependencies: dynamic, callback: T): T {
+        return react.useCallback(callback, dependencies)
+    }
+
+    @Suppress("FunctionName")
+    private fun <T : Function<*>> _handler(name: String, watch: Array<out Any?>, block: T): T {
         val handler = context.handlers.getOrPut(name) { Handler(watch, logger, block) }
         return if (handler.hasChanged(watch)) {
             handler.block = block
@@ -149,13 +155,28 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         }
     }
 
-    fun eventHandler(name: String, vararg watch: Any?, block: (Event) -> Unit): (Event) -> Unit {
-        return handler(name, watch = watch, block = block)
+    fun <T : Function<*>> handler(vararg watch: Any?, block: T): ReadOnlyProperty<Any?, T> {
+        return ReadOnlyProperty { _, property ->
+            _handler(property.name, watch, block)
+        }
     }
 
-    fun eventHandler(block: Function<*>): (Event) -> Unit {
-        @Suppress("UNCHECKED_CAST")
-        return handler("event handler", block, block = block as (Event) -> Unit)
+    fun eventHandler(vararg watch: Any?, block: (Event) -> Unit): ReadOnlyProperty<Any?, (Event) -> Unit> {
+        return ReadOnlyProperty { _, property ->
+            _handler(property.name, watch) { event: Event -> block(event) }
+        }
+    }
+
+    fun <T> eventHandler(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
+        @Suppress("UNREACHABLE_CODE")
+        return if (firstTime) {
+            val data = Data(logger, valueInitializer()) { forceRender() }
+            context.data.add(data)
+            return data
+        } else {
+            @Suppress("UNCHECKED_CAST")
+            return context.data[dataIndex++] as Data<T>
+        }
     }
 
     /**
@@ -175,11 +196,11 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     private fun forceRenderNow(immediate: Boolean) {
-        val triggerUpdate = { counter.second(counterIncr.first.next()) }
+        val triggerUpdate = { counter.component2()(counterIncr.component1().next()) }
         if (immediate) {
             triggerUpdate()
         } else {
-            later(triggerUpdate)
+            later { triggerUpdate() }
         }
     }
 

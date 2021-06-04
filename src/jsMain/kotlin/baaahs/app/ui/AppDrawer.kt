@@ -34,7 +34,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
     val theme = useTheme()
     val themeStyles = ThemeStyles(theme)
 
-    val handleDownloadShow = handler("handleDownloadShow") { _: Event ->
+    val handleDownloadShow by eventHandler { _: Event ->
         val show = appContext.webClient.show!!
         UiActions.downloadShow(show, appContext.plugins)
     }

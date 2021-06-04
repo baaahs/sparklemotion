@@ -9,10 +9,12 @@ import kotlin.random.Random
 
 class SwirlyPixelArranger(private val pixelDensity: Float = 0.2f, private val pixelSpacing : Float = 2f) {
 
-    fun arrangePixels(surfaceGeometry: SurfaceGeometry): Array<Vector3> = PanelArranger(surfaceGeometry).arrangePixels()
+    fun arrangePixels(surfaceGeometry: SurfaceGeometry, pixelCount: Int? = null): Array<Vector3> =
+        PanelArranger(surfaceGeometry, pixelCount).arrangePixels()
 
-    inner class PanelArranger(surfaceGeometry: SurfaceGeometry) {
-        private val pixelCount = min(SparkleMotion.MAX_PIXEL_COUNT, floor(surfaceGeometry.area * pixelDensity).toInt())
+    private inner class PanelArranger(surfaceGeometry: SurfaceGeometry, pixelCount: Int? = null) {
+        private val pixelCount = pixelCount
+            ?: min(SparkleMotion.MAX_PIXEL_COUNT, floor(surfaceGeometry.area * pixelDensity).toInt())
         private val panelGeometry = surfaceGeometry.geometry.clone()
         private val vertices = panelGeometry.vertices
         private val isMultiFaced = surfaceGeometry.isMultiFaced

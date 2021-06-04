@@ -45,14 +45,14 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
     val toolchain = memo { appContext.toolchain.withCache("Editor") }
 
     var settingsMenuAnchor by state<EventTarget?> { null }
-    val showSettingsMenu = baaahs.ui.useCallback { event: Event -> settingsMenuAnchor = event.target!! }
-    val hideSettingsMenu = baaahs.ui.useCallback { _: Event?, _: String? -> settingsMenuAnchor = null }
+    val showSettingsMenu = callback { event: Event -> settingsMenuAnchor = event.target!! }
+    val hideSettingsMenu = callback { _: Event?, _: String? -> settingsMenuAnchor = null }
 
     var selectedTab by state { PageTabs.Properties }
     @Suppress("UNCHECKED_CAST")
-    val handleChangeTab = handler("on tab click") { _: Event, value: PageTabs ->
+    val handleChangeTab by handler { _: Event, value: PageTabs ->
         selectedTab = value
-    } as (Event, Any?) -> Unit
+    }
 
     val editingShader = memo(props.mutableShaderInstance) {
         val newEditingShader =
@@ -75,26 +75,26 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
     }
 
     var autoAdjustGadgets by state { true }
-    val handleToggleAutoAdjustGadgets = handler("on adjust gadgets menu select") { _: Event ->
+    val handleToggleAutoAdjustGadgets by eventHandler { _: Event ->
         autoAdjustGadgets = !autoAdjustGadgets
         settingsMenuAnchor = null
     }
 
     var fullRange by state { false }
-    val handleToggleFullRange = handler("on full range menu select") { _: Event ->
+    val handleToggleFullRange by eventHandler { _: Event ->
         autoAdjustGadgets = true
         fullRange = !fullRange
         settingsMenuAnchor = null
     }
 
-    val handleDefaultsClick = handler("on defaults click") { _: Event ->
+    val handleDefaultsClick by eventHandler { _: Event ->
         autoAdjustGadgets = false
         editingShader.gadgets.forEach { gadget -> gadget.openControl.resetToDefault() }
         settingsMenuAnchor = null
     }
 
     var showDiagnosticsAnchor by state<EventTarget?> { null }
-    val handleShowDiagnosticsClick = handler("on show diagnostics click") { _: Event ->
+    val handleShowDiagnosticsClick by eventHandler { _: Event ->
         showDiagnosticsAnchor = settingsMenuAnchor
         settingsMenuAnchor = null
     }
@@ -103,7 +103,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
         div(+shaderEditorStyles.propsTabsAndPanels) {
             tabs(shaderEditorStyles.tabsContainer on TabsStyle.flexContainer) {
                 attrs.value = selectedTab
-                attrs.onChange = handleChangeTab
+                attrs.onChange = handleChangeTab.asDynamic()
                 attrs["orientation"] = "vertical"
                 PageTabs.values().forEach { tab ->
                     tab(shaderEditorStyles.tab on TabStyle.root) {

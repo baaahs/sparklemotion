@@ -35,12 +35,12 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
     val shader = mutableShaderInstance.mutableShader.build()
     val openShader = props.toolchain.openShader(shader)
 
-    val handleCardClick = eventHandler("select", props.onSelect) { e ->
+    val handleCardClick by eventHandler(props.onSelect) { e ->
         props.onSelect()
         e.stopPropagation()
     }
 
-    val handleDeleteClick = eventHandler("delete", props.onDelete) { e ->
+    val handleDeleteClick by eventHandler(props.onDelete) { e ->
         props.onDelete?.invoke()
         e.stopPropagation()
     }

@@ -43,31 +43,29 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val themeStyles = appContext.allStyles.appUi
     val webClient = appContext.webClient
 
-    val handleShowEditButtonClick = useCallback {
+    val handleShowEditButtonClick = callback {
         appContext.openEditor(ShowEditIntent())
     }
 
     val undoStack = props.undoStack
-    val handleUndo = handler("handleUndo", undoStack) { _: Event ->
+    val handleUndo by eventHandler(undoStack) {
         undoStack.undo().also { (show, showState) ->
             webClient.onShowEdit(show, showState, pushToUndoStack = false)
         }
-        Unit
     }
 
-    val handleRedo = handler("handleRedo", undoStack) { _: Event ->
+    val handleRedo by eventHandler(undoStack) {
         undoStack.redo().also { (show, showState) ->
             webClient.onShowEdit(show, showState, pushToUndoStack = false)
         }
-        Unit
     }
 
     val show = webClient.openShow
     val showProblemsSeverity = webClient.showProblems.map { it.severity }.max()
 
     var showProblemsDialogIsOpen by state { false }
-    val toggleProblems = useCallback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
-    val closeProblems = useCallback { _: Event, _: String -> showProblemsDialogIsOpen = false }
+    val toggleProblems = callback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
+    val closeProblems = callback { _: Event, _: String -> showProblemsDialogIsOpen = false }
 
     appBar(themeStyles.appToolbar on AppBarStyle.root) {
         attrs.position = AppBarPosition.relative
@@ -82,7 +80,10 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
             typographyH6(themeStyles.title on TypographyStyle.root) {
                 show?.let {
-                    b { +show.title }
+                    b {
+                        +show.title
+                        webClient.showFile?.let { attrs["title"] = it.toString() }
+                    }
                     if (webClient.showIsModified) i { +" (Unsaved)" }
                 }
 

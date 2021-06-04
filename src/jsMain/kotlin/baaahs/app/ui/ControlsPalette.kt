@@ -50,30 +50,31 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                         div(+Styles.unplacedControlsDroppable) {
                             install(droppableProvided)
 
-                            props.controlDisplay.renderUnplacedControls { index, unplacedControl ->
-                                val draggableId = "unplaced-${unplacedControl.id}"
-                                draggable({
-                                    this.key = draggableId
-                                    this.draggableId = draggableId
-                                    this.isDragDisabled = !props.editMode
-                                    this.index = index
-                                }) { draggableProvided, snapshot ->
-                                    if (snapshot.isDragging) {
+                            props.controlDisplay.relevantUnplacedControls
+                                .forEachIndexed { index, unplacedControl ->
+                                    val draggableId = "unplaced-${unplacedControl.id}"
+                                    draggable({
+                                        this.key = draggableId
+                                        this.draggableId = draggableId
+                                        this.isDragDisabled = !props.editMode
+                                        this.index = index
+                                    }) { draggableProvided, snapshot ->
+                                        if (snapshot.isDragging) {
 //                                    // Correct for translated parent.
 //                                    unplacedControlPaletteDiv.current?.let {
 //                                        val draggableStyle = draggableProvided.draggableProps.asDynamic().style
 //                                        draggableStyle.left -= it.offsetLeft
 //                                        draggableStyle.top -= it.offsetTop
 //                                    }
-                                    }
+                                        }
 
-                                    controlWrapper {
-                                        attrs.control = unplacedControl
-                                        attrs.controlProps = props.controlProps
-                                        attrs.draggableProvided = draggableProvided
+                                        controlWrapper {
+                                            attrs.control = unplacedControl
+                                            attrs.controlProps = props.controlProps
+                                            attrs.draggableProvided = draggableProvided
+                                        }
                                     }
                                 }
-                            }
 
                             insertPlaceholder(droppableProvided)
                         }

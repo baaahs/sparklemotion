@@ -1,5 +1,8 @@
 package baaahs.ui
 
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
+
 interface IObservable {
     fun addObserver(observer: Observer): Observer
     fun removeObserver(observer: Observer)
@@ -20,6 +23,10 @@ open class Observable : IObservable {
     fun notifyChanged() {
         observers.forEach { it.notifyChanged() }
     }
+
+    protected fun <V> notifyOnChange(initialValue: V): ReadWriteProperty<Observable, V> {
+        return NotifyOnChangeProperty<V>(initialValue)
+    }
 }
 
 fun <T : IObservable> T.addObserver(fireImmediately: Boolean = false, callback: (T) -> Unit): RemovableObserver<T> {
@@ -35,4 +42,17 @@ class RemovableObserver<T : IObservable>(
 ) : Observer {
     override fun notifyChanged() = callback.invoke(observable)
     fun remove() = observable.removeObserver(this)
+}
+
+private class NotifyOnChangeProperty<V>(initialValue: V) : ReadWriteProperty<Observable, V> {
+    private var value = initialValue
+
+    override fun getValue(thisRef: Observable, property: KProperty<*>): V = value
+
+    override fun setValue(thisRef: Observable, property: KProperty<*>, value: V) {
+        if (this.value != value) {
+            this.value = value
+            thisRef.notifyChanged()
+        }
+    }
 }
