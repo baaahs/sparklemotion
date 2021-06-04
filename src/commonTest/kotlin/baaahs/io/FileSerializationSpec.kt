@@ -4,7 +4,7 @@ import baaahs.sim.FakeFs
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import ext.TestCoroutineContext
+import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -67,7 +67,7 @@ object FileSerializationSpec : Spek({
         }
 
         context("client-side serializer") {
-            val testCoroutineContext by value { TestCoroutineContext("network") }
+            val dispatcher by value { TestCoroutineDispatcher() }
 
             it("converts all Fs types to RemoteFs") {
                 val remoteFile1 = clientJson.decodeFromJsonElement(Fs.File.serializer(), buildJsonObject {
@@ -78,10 +78,10 @@ object FileSerializationSpec : Spek({
                 expect(remoteFile1.fullPath).toBe("some/file.txt")
 
                 val resultFiles = mutableListOf<Fs.File>()
-                CoroutineScope(testCoroutineContext).launch {
+                CoroutineScope(dispatcher).launch {
                     resultFiles.addAll(remoteFile1.fs.listFiles(remoteFile1))
                 }
-                testCoroutineContext.runAll()
+                dispatcher.runCurrent()
 
                 expect(resultFiles.map { it.fullPath }).containsExactly("fake/response.txt")
             }

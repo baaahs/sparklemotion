@@ -28,6 +28,8 @@ import ch.tutteli.atrium.logic.notToBe
 import ch.tutteli.atrium.logic.toBe
 import ch.tutteli.atrium.reporting.Reporter
 import ch.tutteli.atrium.reporting.ReporterFactory
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Runnable
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -36,6 +38,7 @@ import org.spekframework.spek2.dsl.Skip
 import org.spekframework.spek2.meta.*
 import org.spekframework.spek2.style.specification.Suite
 import org.spekframework.spek2.style.specification.describe
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 import kotlin.test.assertEquals
@@ -130,6 +133,11 @@ class TestRenderContext(
         )
     }
 }
+
+object ImmediateDispatcher : CoroutineDispatcher() {
+    override fun dispatch(context: CoroutineContext, block: Runnable) = block.run()
+}
+
 
 expect fun assumeTrue(boolean: Boolean)
 

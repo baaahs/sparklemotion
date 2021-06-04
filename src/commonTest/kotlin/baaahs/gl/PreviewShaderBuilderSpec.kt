@@ -16,7 +16,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import ext.TestCoroutineContext
+import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
@@ -26,9 +26,9 @@ import kotlin.test.assertNotNull
 object PreviewShaderBuilderSpec : Spek({
     describe<PreviewShaderBuilder> {
         val shader by value { Shaders.checkerboard }
-        val testCoroutineContext by value { TestCoroutineContext("global") }
+        val dispatcher by value { TestCoroutineDispatcher() }
         val previewShaderBuilder by value {
-            PreviewShaderBuilder(shader, testToolchain, ModelInfo.Empty, CoroutineScope(testCoroutineContext))
+            PreviewShaderBuilder(shader, testToolchain, ModelInfo.Empty, CoroutineScope(dispatcher))
         }
         val renderEngine by value { PreviewRenderEngine(FakeGlContext(), 100, 100) }
 
@@ -45,8 +45,8 @@ object PreviewShaderBuilderSpec : Spek({
                 expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Analyzing)
             }
 
-            context("after idle") {
-                beforeEachTest { testCoroutineContext.processOneEvent() }
+            context("after first pass") {
+                beforeEachTest { dispatcher.runOne() }
 
                 it("is in Linking state") {
                     expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linking)
@@ -54,7 +54,7 @@ object PreviewShaderBuilderSpec : Spek({
                 }
 
                 context("after idle") {
-                    beforeEachTest { testCoroutineContext.runAll() }
+                    beforeEachTest { dispatcher.runCurrent() }
 
                     it("is in Linked state") {
                         expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linked)
@@ -100,7 +100,7 @@ object PreviewShaderBuilderSpec : Spek({
                         }
 
                         context("after idle") {
-                            beforeEachTest { testCoroutineContext.runAll() }
+                            beforeEachTest { dispatcher.runCurrent() }
 
                             it("is in Success state") {
                                 expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Success)
