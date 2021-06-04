@@ -58,15 +58,24 @@ class Storage(val fs: Fs, val plugins: Plugins) {
                 .sortedBy { it.name }
                 .filter { it.name.endsWith(".json") }
                 .forEach { f ->
-                    val mappingJson = fs.loadFile(f)
-                    val mappingSession = json.decodeFromString(MappingSession.serializer(), mappingJson!!)
-                    mappingSession.surfaces.forEach { surface ->
-                        logger.debug { "Found pixel mapping for ${surface.panelName} (${surface.brainId})" }
-                    }
-                    sessions.add(mappingSession)
+                    sessions.add(loadMappingSession(f))
                 }
         }
         return SessionMappingResults(model, sessions)
+    }
+
+    suspend fun loadMappingSession(name: String): MappingSession {
+        val file = fs.resolve("mapping-sessions", name)
+        return loadMappingSession(file)
+    }
+
+    suspend fun loadMappingSession(f: Fs.File): MappingSession {
+        val mappingJson = fs.loadFile(f)
+        val mappingSession = json.decodeFromString(MappingSession.serializer(), mappingJson!!)
+        mappingSession.surfaces.forEach { surface ->
+            logger.debug { "Found pixel mapping for ${surface.panelName} (${surface.brainId})" }
+        }
+        return mappingSession
     }
 
     suspend fun loadConfig(): PinkyConfig? {

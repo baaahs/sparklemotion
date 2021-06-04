@@ -1,7 +1,9 @@
 package baaahs.show.live
 
 import baaahs.control.OpenButtonGroupControl
+import baaahs.control.OpenSliderControl
 import baaahs.describe
+import baaahs.gadgets.Slider
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.testToolchain
 import baaahs.only
@@ -14,6 +16,7 @@ import baaahs.show.mutable.MutableLayouts
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeShowPlayer
+import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -82,6 +85,26 @@ object OpenShowSpec : Spek({
 
                 expect(openShow.activePatchSet().activePatches)
                     .toBe(openShow.patches + scenesButtonGroup.buttons[0].patches)
+            }
+        }
+
+        context("when a data source has no corresponding placed control") {
+            beforeEachTest {
+                mutableShow.addPatch(
+                    testToolchain.wireUp(
+                        Shader("Shader", "uniform float slider; // @@Slider\nvoid main() { ... }")
+                    )
+                )
+            }
+
+            it("an implicit control is created") {
+                expect(openShow.allControls.size).toEqual(1)
+                val implicitSlider = openShow.allControls.only("control")
+                implicitSlider as OpenSliderControl
+                expect(implicitSlider.slider)
+                    .toEqual(Slider("Slider"))
+                expect(implicitSlider.controlledDataSource)
+                    .toEqual(show.dataSources.values.only("datasource"))
             }
         }
 

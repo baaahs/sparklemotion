@@ -6,10 +6,8 @@ import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
 import baaahs.gl.shader.OpenShader
-import baaahs.show.DataSource
-import baaahs.show.Panel
-import baaahs.show.Shader
-import baaahs.show.Show
+import baaahs.show.*
+import baaahs.show.mutable.ShowBuilder
 import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 
@@ -20,8 +18,11 @@ open class ShowOpener(
 ): OpenContext {
     init { logger.debug { "Opening show ${show.title}" } }
 
+    private val implicitControls = mutableMapOf<String, Control>()
+
     private val openControlCache = CacheBuilder<String, OpenControl> { controlId ->
-        show.getControl(controlId).open(controlId, this, showPlayer)
+        (implicitControls[controlId] ?: show.getControl(controlId))
+            .open(controlId, this, showPlayer)
     }
 
     override val allControls: List<OpenControl> get() = openControlCache.all.values.toList()
@@ -39,7 +40,7 @@ open class ShowOpener(
     private val allShaderInstances = resolver.getResolvedShaderInstances()
 
     override fun findControl(id: String): OpenControl? =
-        if (show.controls.containsKey(id)) openControlCache[id] else null
+        if (implicitControls.contains(id) || show.controls.contains(id)) openControlCache[id] else null
 
     override fun getControl(id: String): OpenControl = openControlCache[id]
 
@@ -53,7 +54,23 @@ open class ShowOpener(
         allShaderInstances.getBang(it, "shader instance")
 
     fun openShow(showState: ShowState? = null): OpenShow {
-        return OpenShow(show, showPlayer, this)
+        val controlledDataSourceIds = show.controls.mapNotNull { (_, control) ->
+            control.controlledDataSourceId
+        }.toSet()
+
+        val implicitControlsShowBuilder = ShowBuilder.forImplicitControls(show.controls, show.dataSources)
+        show.dataSources
+            .filter { (key, _) -> !controlledDataSourceIds.contains(key) }
+            .map { (_, dataSource) ->
+                dataSource.buildControl()?.let { mutableControl ->
+                    val control = mutableControl.build(implicitControlsShowBuilder)
+                    val id = implicitControlsShowBuilder.idFor(control)
+                    implicitControls[id] = control
+                } }
+
+        val implicitOpenControls = implicitControls.keys.map { getControl(it) }
+
+        return OpenShow(show, showPlayer, this, implicitOpenControls)
             .also { if (showState != null) it.applyState(showState) }
             .also { it.applyConstraints() }
     }

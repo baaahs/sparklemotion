@@ -14,6 +14,7 @@ import kotlinx.css.display
 import kotlinx.css.gridTemplateColumns
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import materialui.components.iconbutton.iconButton
 import materialui.components.tab.tab
 import materialui.components.tabs.tabs
 import materialui.icon
@@ -31,11 +32,11 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
     val mutableLayout = mutableLayouts.formats[props.format]!!
     val currentTab = mutableLayout.tabs[currentTabIndex]
 
-    val handleTabChange = handler("handleTabChange") { e: Event ->
+    val handleTabChange by eventHandler { e: Event ->
         currentTabIndex = e.target.value.toInt()
     }
 
-    val handleNewTabClick = handler("handleNewTabClick") { _: Event ->
+    val handleNewTabClick by eventHandler { _: Event ->
         appContext.prompt(
             Prompt(
                 "Create New Tab",
@@ -85,7 +86,7 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
             inlineStyles {
                 display = Display.grid
                 gridTemplateColumns = GridTemplateColumns(
-                    MutableList(currentTab.columns.size + 1) { "1fr" }.joinToString(" ")
+                    MutableList(currentTab.columns.size + 1) { "1fr" }.joinToString(" ") + " auto"
                 )
 //                        gridTemplateAreas = GridTemplateAreas(areas.joinToString(" ") { "\"$it\"" })
 //                        gridTemplateColumns = GridTemplateColumns(currentTab.columns.joinToString(" "))
@@ -102,14 +103,33 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
                         layoutSizeCell {
                             attrs.key = "col$columnIndex"
                             attrs.dimen = currentTab.columns[columnIndex]
+                            attrs.type = "Column"
                             attrs.onChange = props.onGridChange
+                            attrs.onDuplicate = { currentTab.duplicateColumn(columnIndex); props.onGridChange() }
+                            attrs.onDelete = { currentTab.deleteColumn(columnIndex); props.onGridChange() }
                         }
                     } else if (columnIndex == -1) {
+                        // Extra cell on right side for "add column".
+                        div(+styles.gridAreaEdge) {
+                            if (rowIndex == 0) {
+                                iconButton {
+                                    attrs.onClickFunction = {
+                                        currentTab.appendColumn()
+                                        props.onGridChange()
+                                    }
+                                    icon(CommonIcons.Add)
+                                }
+                            }
+                        }
+
                         // Cell along the left.
                         layoutSizeCell {
                             attrs.key = "row$rowIndex"
                             attrs.dimen = currentTab.rows[rowIndex]
+                            attrs.type = "Row"
                             attrs.onChange = props.onGridChange
+                            attrs.onDuplicate = { currentTab.duplicateRow(rowIndex); props.onGridChange() }
+                            attrs.onDelete = { currentTab.deleteRow(rowIndex); props.onGridChange() }
                         }
                     } else {
                         layoutAreaCell {
@@ -121,6 +141,20 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
                             attrs.onChange = props.onGridChange
                         }
                     }
+                }
+            }
+
+            // Fill out "add column" column.
+            div(+styles.gridAreaEdge) {}
+
+            // Extra cell on bottom left for "add row".
+            div(+styles.gridAreaEdge) {
+                iconButton {
+                    attrs.onClickFunction = {
+                        currentTab.appendRow()
+                        props.onGridChange()
+                    }
+                    icon(CommonIcons.Add)
                 }
             }
         }

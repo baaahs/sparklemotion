@@ -3,6 +3,7 @@ package baaahs.show.live
 import baaahs.camelize
 import baaahs.control.OpenButtonGroupControl
 import baaahs.getBang
+import baaahs.show.DataSource
 import baaahs.show.Layouts
 import baaahs.show.Panel
 import baaahs.show.mutable.EditHandler
@@ -20,11 +21,15 @@ class ControlDisplay(
 ) {
     private val allPanelBuckets = AllPanelBuckets(show.layouts)
     private val placedControls = hashSetOf<OpenControl>()
-    val additionalDropTargets = mutableMapOf<OpenControl, OpenButtonGroupControl.ButtonGroupDropTarget>()
+    val unplacedControls: List<OpenControl>
+    val relevantUnplacedControls: List<OpenControl>
+    private val additionalDropTargets = mutableMapOf<OpenControl, OpenButtonGroupControl.ButtonGroupDropTarget>()
     val unplacedControlsDropTarget = UnplacedControlsDropTarget()
     val unplacedControlsDropTargetId = dragNDrop.addDropTarget(unplacedControlsDropTarget)
 
     init {
+        val unplacedControls = arrayListOf<OpenControl>()
+
         object : OpenShowVisitor() {
             val breadcrumbs = arrayListOf<OpenPatchHolder>()
 
@@ -37,37 +42,46 @@ class ControlDisplay(
             }
 
             override fun visitPlacedControl(panel: Panel, openControl: OpenControl) {
+                placedControls.add(openControl)
                 allPanelBuckets.addControl(panel, openControl, breadcrumbs)
                 super.visitPlacedControl(panel, openControl)
             }
 
-            override fun visitControl(openControl: OpenControl) {
-                placedControls.add(openControl)
+            override fun visitUnplacedControl(openControl: OpenControl) {
+                unplacedControls.add(openControl)
+                super.visitUnplacedControl(openControl)
+            }
 
+            override fun visitControl(openControl: OpenControl) {
                 if (openControl.isActive()) {
                     super.visitControl(openControl)
                 }
             }
         }.visitShow(show)
-    }
 
-    private val suggestedControls: List<OpenControl>
-    init {
-        val dataSourcesWithoutControls = show.allDataSources.values -
-                show.allControls.flatMap { it.controlledDataSources() }
-        suggestedControls = dataSourcesWithoutControls.mapNotNull {
-            it.buildControl()?.previewOpen()
+        val activePatchSet = show.activePatchSet()
+        val activeDataSources = mutableSetOf<DataSource>()
+        activePatchSet.activePatches.forEach { activePatch ->
+            activePatch.shaderInstances.forEach { shaderInstance ->
+                shaderInstance.incomingLinks.forEach { (_, link) ->
+                    if (link is LiveShaderInstance.DataSourceLink) {
+                        activeDataSources.add(link.dataSource)
+                    }
+                }
+            }
+        }
+
+        this.unplacedControls = unplacedControls
+        this.relevantUnplacedControls = unplacedControls.filter { control ->
+            activeDataSources.containsAll(control.controlledDataSources())
+        }.sortedBy { control ->
+            control.controlledDataSources().firstOrNull()?.title
+                ?: "zzzzz"
         }
     }
-    val unplacedControls = (show.allControls + suggestedControls)
-        .filter { !placedControls.contains(it) }
 
     fun render(panel: Panel, renderBucket: RenderBucket) {
         allPanelBuckets.render(panel, renderBucket)
-    }
-
-    fun renderUnplacedControls(block: (index: Int, control: OpenControl) -> Unit) {
-        unplacedControls.forEachIndexed { index, control -> block(index, control) }
     }
 
     fun release() {
@@ -241,11 +255,11 @@ class ControlDisplay(
     inner class UnplacedControl(val index: Int) : PlaceableControl {
         override val mutableShow: MutableShow by lazy { show.edit() }
         override val mutableControl: MutableControl by lazy {
-            val subject = unplacedControls[index]
-            if (suggestedControls.contains(subject)) {
-                subject.toNewMutable(mutableShow)
+            val subject = relevantUnplacedControls[index]
+            if (show.show.controls.contains(subject.id)) {
+                mutableShow.controls[subject.id]
             } else {
-                mutableShow.findControl(subject.id)
+                subject.toNewMutable(mutableShow)
             }
         }
 

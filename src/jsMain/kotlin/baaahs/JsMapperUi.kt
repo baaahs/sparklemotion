@@ -2,158 +2,156 @@ package baaahs
 
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
-import baaahs.imaging.Bitmap
-import baaahs.imaging.CanvasBitmap
+import baaahs.imaging.*
 import baaahs.imaging.Image
-import baaahs.imaging.NativeBitmap
-import baaahs.jsx.MapperIndex
+import baaahs.mapper.MapperIndexView
+import baaahs.mapper.MapperIndexViewProps
 import baaahs.model.Model
 import baaahs.sim.HostedWebApp
+import baaahs.ui.Observable
+import baaahs.ui.value
+import baaahs.util.Logger
 import baaahs.visualizer.Rotator
+import baaahs.visualizer.toVector3
 import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.dom.clear
-import kotlinx.html.*
-import kotlinx.html.dom.append
-import kotlinx.html.dom.create
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.table
+import kotlinx.css.px
 import org.w3c.dom.*
+import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
+import react.RBuilder
 import react.ReactElement
 import react.createElement
+import react.dom.br
+import react.dom.i
 import three.js.*
 import three.js.Color
 import three_ext.CameraControls
+import three_ext.Float32BufferAttribute
 import three_ext.Matrix4
 import three_ext.plus
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
-import kotlin.math.min
 import kotlin.math.roundToInt
 
-class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi, HostedWebApp {
+class MemoizedJsMapperUi(mapperUi: JsMapperUi) {
+    val changedCamera = mapperUi::changedCamera
+    val clickedPlay = mapperUi::clickedPlay
+    val clickedPause = mapperUi::clickedPause
+    val clickedRedo = mapperUi::clickedRedo
+    val clickedStart = mapperUi::clickedStart
+    val clickedStop = mapperUi::clickedStop
+    val clickedGoToSurface = mapperUi::clickedGoToSurface
+    val loadMappingSession = mapperUi::loadMappingSession
+    val onKeydown = { event: Event -> mapperUi.gotUiKeypress(event as KeyboardEvent) }
+}
+
+class MapperStatus : Observable() {
+    var message: String? by notifyOnChange(null)
+    var message2: String? by notifyOnChange(null)
+    var stats: (RBuilder.() -> Unit)? by notifyOnChange(null)
+    var orderedPanels: List<Pair<JsMapperUi.VisibleSurface, Float>> by notifyOnChange(emptyList())
+}
+
+class JsMapperUi(private val statusListener: StatusListener? = null) : Observable(), MapperUi, HostedWebApp {
     private lateinit var listener: MapperUi.Listener
+
+    override var devices: List<MediaDevices.Device> by notifyOnChange(emptyList())
+    var selectedDevice: MediaDevices.Device? by notifyOnChange(null)
 
     override fun listen(listener: MapperUi.Listener) {
         this.listener = listener
     }
 
-    private var width = 512
-    private var height = 384
+    // Bounds of mapper container.
+    var browserDimen = Dimen(512, 384)
 
-    private var uiWidth = 512
-    private var uiHeight = 384
+    // Bounds of area used for mapping.
+    var containerDimen = browserDimen
 
-    private var haveCamDimensions = false
-    private var camWidth = 0
-    private var camHeight = 0
+    // Actual dimensions coming from the camera.
+    var lastCamImageDimen = browserDimen
+
+    // Best-fit dimensions of mapping area and camera image.
+    var viewportDimen = browserDimen
 
     private val clock = Clock()
 
     // onscreen renderer for registration UI:
     private val uiRenderer = WebGLRenderer(jsObject { alpha = true })
-    private var uiScene = Scene()
-    private var uiCamera = PerspectiveCamera(45, width.toDouble() / height, 1, 10000)
-    private var uiControls: CameraControls
-    private val wireframe = Object3D()
-
-    private var selectedSurfaces = mutableListOf<PanelInfo>()
-    private var uiLocked: Boolean = false
-
-    private val screen = document.create.div("mapperUi-screen") {
-        tabIndex = "-1" // So we can receive key events.
-
-        div("mapperUi-controls") {
-            button { +"▲"; onClickFunction = { wireframe.position.y += 10 } }
-            button { +"▼"; onClickFunction = { wireframe.position.y -= 10 } }
-//            button { i(classes="fas fa-crosshairs"); onClickFunction = { target() } }
-            button { i(classes = "fas fa-play"); onClickFunction = { clickedPlay() } }
-            button { i(classes = "fas fa-pause"); onClickFunction = { clickedPause() } }
-            button { i(classes = "fas fa-redo"); onClickFunction = { redoFn?.invoke() } }
-            button { i(classes = "fas fa-stop"); onClickFunction = { clickedStop() } }
-            button {
-                i(classes = "fas fa-sign-in-alt")
-                onClickFunction = {
-                    val surfaceName = window.prompt("Surface:")
-                    if (surfaceName != null && surfaceName.isNotEmpty()) {
-                        goToSurface(surfaceName.toUpperCase())
-                    }
-                }
-            }
-            select("mapperUi-sessionSelector") { }
-        }
-        canvas(classes = "mapperUi-2d-canvas") {
-            width = this@JsMapperUi.width.toString() + "px"
-            height = this@JsMapperUi.height.toString() + "px"
-        }
-        div("mapperUi-3d-div") { }
-        canvas(classes = "mapperUi-diff-canvas") {
-            width = this@JsMapperUi.width.toString() + "px"
-            height = this@JsMapperUi.height.toString() + "px"
-        }
-        canvas(classes = "mapperUi-before-canvas") {
-            width = this@JsMapperUi.width.toString() + "px"
-            height = this@JsMapperUi.height.toString() + "px"
-        }
-        canvas(classes = "mapperUi-after-canvas") {
-            width = this@JsMapperUi.width.toString() + "px"
-            height = this@JsMapperUi.height.toString() + "px"
-        }
-        div("mapperUi-stats") { }
-        div("mapperUi-message") { }
-        div("mapperUi-message2") { }
-        div("mapperUi-table") { }
+    private val uiScene = Scene()
+    private val uiCamera = PerspectiveCamera(45, containerDimen.aspect(), 1, 10000).also { camera ->
+        camera.position.z = 1000.0
+        uiScene.add(camera)
     }
+    private val uiControls: CameraControls = CameraControls(uiCamera, uiRenderer.domElement)
+    val wireframe = Object3D()
 
-    private val ui2dCanvas = screen.first<HTMLCanvasElement>("mapperUi-2d-canvas")
-    private val ui2dCtx = ui2dCanvas.context2d()
+    private val selectedSurfaces = mutableListOf<PanelInfo>()
+    var uiLocked: Boolean by notifyOnChange(false)
 
-    private val ui3dDiv = screen.first<HTMLCanvasElement>("mapperUi-3d-div")
+    private lateinit var ui2dCanvas: HTMLCanvasElement
+
     private val ui3dCanvas = uiRenderer.domElement
 
-    private val diffCanvas = screen.first<HTMLCanvasElement>("mapperUi-diff-canvas")
-    private val diffCtx = diffCanvas.context2d()
+    private lateinit var snapshotCanvas: HTMLCanvasElement
+    private lateinit var baseCanvas: HTMLCanvasElement
+    private lateinit var diffCanvas: HTMLCanvasElement
+    private lateinit var diffCtx: CanvasRenderingContext2D
+    private lateinit var panelMaskCanvas: HTMLCanvasElement
+    private lateinit var perfStatsDiv: HTMLElement
 
-    private val beforeCanvas = screen.first<HTMLCanvasElement>("mapperUi-before-canvas")
-    private val afterCanvas = screen.first<HTMLCanvasElement>("mapperUi-after-canvas")
+    val sessions = arrayListOf<String>()
+    var selectedMappingSession: String? by notifyOnChange(null)
 
-    private val statsDiv = screen.first<HTMLDivElement>("mapperUi-stats")
-    private val messageDiv = screen.first<HTMLDivElement>("mapperUi-message")
-    private val message2Div = screen.first<HTMLDivElement>("mapperUi-message2")
-    private val table = screen.first<HTMLDivElement>("mapperUi-table")
-    private val sessionSelector = screen.first<HTMLSelectElement>("mapperUi-sessionSelector")
-
-    private val playButton = screen.first<HTMLButtonElement>("fa-play")
-    private val pauseButton = screen.first<HTMLButtonElement>("fa-pause")
-    private val redoButton = screen.first<HTMLButtonElement>("fa-redo")
+    var pauseButtonEnabled by notifyOnChange(true)
+    var playButtonEnabled by notifyOnChange(true)
 
     private val modelSurfaceInfos = mutableMapOf<Model.Surface, PanelInfo>()
 
     private var commandProgress = ""
     private var cameraZRotation = 0f
 
-    private var redoFn: (() -> Unit)? = null
+    val mapperStatus = MapperStatus()
 
-    init {
+    var redoFn: (() -> Unit)? by notifyOnChange(null)
+
+    fun onMount(
+        ui2dCanvas: HTMLCanvasElement,
+        ui3dDiv: HTMLElement,
+        snapshotCanvas: HTMLCanvasElement,
+        baseCanvas: HTMLCanvasElement,
+        diffCanvas: HTMLCanvasElement,
+        panelMaskCanvas: HTMLCanvasElement,
+        perfStatsDiv: HTMLElement,
+        width: Int,
+        height: Int
+    ) {
+        this.ui2dCanvas = ui2dCanvas
+        this.diffCanvas = diffCanvas
+        this.snapshotCanvas = snapshotCanvas
+        this.baseCanvas = baseCanvas
+        this.diffCtx = diffCanvas.context2d()
+        this.panelMaskCanvas = panelMaskCanvas
+        this.perfStatsDiv = perfStatsDiv
+
+        onResize(width, height)
         statusListener?.mapperStatusChanged(true)
 
         ui3dDiv.appendChild(ui3dCanvas)
 
-        uiCamera.position.z = 1000.0
-        uiScene.add(uiCamera)
-
-        uiControls = CameraControls(uiCamera, uiRenderer.domElement)
-
-        screen.focus()
-        screen.addEventListener("keydown", { event -> gotUiKeypress(event as KeyboardEvent) })
+//        screen.focus()
+//        screen.addEventListener("keydown", { event -> gotUiKeypress(event as KeyboardEvent) })
 
         drawAnimationFrame()
     }
 
-    private fun gotUiKeypress(event: KeyboardEvent) {
+    fun onUnmount() {
+    }
+
+    fun gotUiKeypress(event: KeyboardEvent) {
         if (event.code == "Enter") {
             processCommand(commandProgress.trim())
             commandProgress = ""
@@ -182,10 +180,8 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     }
 
     override fun addExistingSession(name: String) {
-        sessionSelector.insertBefore(
-            document.create.option { label = name; value = name },
-            sessionSelector.childNodes.asList().find { (it as HTMLOptionElement).value > name }
-        )
+        sessions.add(name)
+        notifyChanged()
     }
 
     private fun resetCameraRotation() {
@@ -205,8 +201,9 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     private fun selectSurfacesMatching(pattern: String) {
         selectedSurfaces.forEach { it.deselect() }
         selectedSurfaces.clear()
-        selectedSurfaces.addAll(modelSurfaceInfos.values.filter { it.name.contains(pattern, true) })
+        selectedSurfaces.addAll(modelSurfaceInfos.values.filter { it.surface.name.contains(pattern, true) })
         selectedSurfaces.forEach { it.select() }
+        notifyChanged()
     }
 
     private fun processCommand(command: String) {
@@ -224,26 +221,23 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         }
         uiRenderer.render(uiScene, uiCamera)
 
+        updateStats()
+
         window.requestAnimationFrame { drawAnimationFrame() }
     }
 
+    private fun updateStats() {
+        perfStatsDiv.innerText = Mapper.mapperStats.summarize()
+    }
+
     override fun render(): ReactElement {
-        return createElement(MapperIndex::class.js, jsObject<MapperIndex.Props> {
-            render = this@JsMapperUi::renderDom
+        return createElement(MapperIndexView, jsObject<MapperIndexViewProps> {
+            mapperUi = this@JsMapperUi
         })
     }
 
-    private fun renderDom(parentNode: HTMLElement) {
-        parentNode.appendChild(screen)
-        resizeTo(parentNode.offsetWidth, heightOrWindowHeight(parentNode))
-
-        parentNode.onresize = {
-            resizeTo(parentNode.offsetWidth, heightOrWindowHeight(parentNode))
-        }
-    }
-
-    private fun heightOrWindowHeight(parentNode: HTMLElement): Int {
-        return if (parentNode.offsetHeight == 0) window.innerHeight else parentNode.offsetHeight
+    override fun onLaunch() {
+        listener.onLaunch()
     }
 
     override fun onClose() {
@@ -252,38 +246,45 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         listener.onClose()
     }
 
-    private val diffCanvasScale = 1 / 3.0
+    fun onResize(width: Int, height: Int) {
+        browserDimen = Dimen(width, height)
+        resize()
+    }
 
-    private fun resizeTo(width: Int, height: Int) {
-        this.width = width
-        this.height = height
+    private fun onCamResize(dimen: Dimen) {
+        lastCamImageDimen = dimen
+        resize()
+    }
 
-        if (!haveCamDimensions) {
-            camWidth = width
-            camHeight = height
-        }
+    private fun resize() {
+        containerDimen = browserDimen
+        viewportDimen = containerDimen.bestFit(lastCamImageDimen)
+        ui2dCanvas.resize(viewportDimen)
+        ui2dCanvas.width = viewportDimen.width
+        ui2dCanvas.height = viewportDimen.height
 
-        val scale = min(1f, min((width - 10).toFloat() / camWidth, (height - 10).toFloat() / camHeight))
-        uiWidth = camWidth - 10
-        uiHeight = camHeight - 10
-
-        uiCamera.aspect = uiWidth.toDouble() / uiHeight
+        uiCamera.aspect = viewportDimen.aspect()
         uiCamera.updateProjectionMatrix()
 
-        uiRenderer.setSize(uiWidth, uiHeight, true)
-        ui3dCanvas.width = uiWidth
-        ui3dCanvas.height = uiHeight
+        uiRenderer.setSize(viewportDimen.width, viewportDimen.height, true)
 
-        ui2dCanvas.width = uiWidth
-        ui2dCanvas.height = uiHeight
-        ui2dCanvas.style.transform = "scale(${scale})"
+        val thumbnailDimen = (containerDimen * .22f).bestFit(viewportDimen)
+        snapshotCanvas.resize(thumbnailDimen)
+        diffCanvas.resize(thumbnailDimen)
+        baseCanvas.resize(thumbnailDimen)
+        panelMaskCanvas.resize(thumbnailDimen)
 
-        diffCanvas.width = (uiWidth * diffCanvasScale).toInt()
-        diffCanvas.height = (uiHeight * diffCanvasScale).toInt()
-        beforeCanvas.width = (uiWidth * diffCanvasScale).toInt()
-        beforeCanvas.height = (uiHeight * diffCanvasScale).toInt()
-        afterCanvas.width = (uiWidth * diffCanvasScale).toInt()
-        afterCanvas.height = (uiHeight * diffCanvasScale).toInt()
+        notifyChanged()
+    }
+
+    private fun HTMLCanvasElement.resize(dimen: Dimen) {
+        width = dimen.width
+        height = dimen.height
+    }
+
+    private fun HTMLElement.resize(dimen: Dimen) {
+        style.width = dimen.width.px.toString()
+        style.height = dimen.height.px.toString()
     }
 
     override fun addWireframe(model: Model) {
@@ -332,7 +333,8 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
             geom.computeFaceNormals()
             geom.computeVertexNormals()
 
-            modelSurfaceInfos[surface] = PanelInfo(surface.name, panelFaces, mesh, geom, lineMaterial)
+            modelSurfaceInfos[surface] =
+                PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
         }
 
         uiScene.add(wireframe)
@@ -346,6 +348,160 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         uiControls.fitToBox(boundingBox, false)
     }
 
+    inner class PanelInfo(
+        val surface: Model.Surface,
+        val faces: List<Face3>,
+        val mesh: Mesh<*, *>,
+        val geom: Geometry,
+        val lineMaterial: LineBasicMaterial
+    ) : MapperUi.SurfaceViz {
+        override val modelSurface: Model.Surface
+            get() = surface
+
+        private val pixelsGeom = BufferGeometry()
+        private val pixelsMaterial = PointsMaterial().apply {
+            color = Color(0x00FF00)
+            size = 5
+        }
+        private var pixelsInScene = true
+        private val pixelsPoints = Points(pixelsGeom, pixelsMaterial).also {
+            if (pixelsInScene) uiScene.add(it)
+        }
+        private val pixelLocations = mutableMapOf<Int, Vector3?>()
+        private var maxPixel = -1
+
+        val pixelsInModelSpace: List<Vector3F?>
+            get() {
+                val vectors = mutableListOf<Vector3F?>()
+                for (i in 0..(pixelLocations.keys.maxOrNull()!!)) {
+                    val position = pixelLocations[i]
+                    vectors.add(position?.let {
+                        Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat())
+                    })
+                }
+                return vectors
+            }
+
+        val vertices: Set<Vector3>
+            get() {
+                val v = mutableSetOf<Vector3>()
+                for (face in faces) {
+                    v.add(geom.vertices[face.a])
+                    v.add(geom.vertices[face.b])
+                    v.add(geom.vertices[face.c])
+                }
+                return v
+            }
+
+        val _boundingBox: Box3 by lazy {
+            val boundingBox = Box3()
+            for (vertex in vertices) {
+                boundingBox.expandByPoint(vertex)
+            }
+            boundingBox.translate(mesh.getWorldPosition(Vector3()))
+        }
+
+        val boundingBox get() = _boundingBox.clone()
+
+        private val rotator by lazy { Rotator(surfaceNormal, Vector3(0, 0, 1)) }
+
+        fun toSurfaceNormal(point: Vector3): Vector3 {
+            rotator.rotate(point); return point
+        }
+
+        private val normalBoundingBox: Box3 by lazy {
+            val worldPos = mesh.getWorldPosition(Vector3())
+            val boundingBox = Box3()
+            for (vertex in vertices) {
+                boundingBox.expandByPoint(toSurfaceNormal(vertex).add(worldPos))
+            }
+            boundingBox
+        }
+
+        private val normalBoundingBoxVolume: Vector3 by lazy {
+            normalBoundingBox.max.clone().sub(normalBoundingBox.min)
+        }
+
+        fun toPanelSpace(point: Vector3): Vector3 {
+            var pt = point.clone()
+            pt = toSurfaceNormal(pt)
+            pt.sub(normalBoundingBox.min)
+            pt.divide(normalBoundingBoxVolume)
+            return pt
+        }
+
+        fun select() {
+            lineMaterial.color.r = 1.0
+            lineMaterial.color.g = 0.0
+        }
+
+        fun deselect() {
+            lineMaterial.color.r = 0.0
+            lineMaterial.color.g = 1.0
+        }
+
+        val center get() = boundingBox.getCenter(Vector3())
+
+        val isMultiFaced get() = faces.size > 1
+
+        val _surfaceNormal: Vector3 by lazy {
+            val faceNormalSum = Vector3()
+            var totalArea = 0f
+            for (face in faces) {
+                val triangle = Triangle(geom.vertices[face.a], geom.vertices[face.b], geom.vertices[face.c])
+                val faceArea = triangle.asDynamic().getArea() as Float
+                faceNormalSum.addScaledVector(face.normal, faceArea)
+                totalArea += faceArea
+            }
+            faceNormalSum.divideScalar(totalArea.toDouble())
+        }
+
+        val surfaceNormal get() = _surfaceNormal.clone()
+
+        var boxOnScreen: Box2? = null
+
+        override fun setPixel(index: Int, modelPosition: Vector3F?) {
+            pixelLocations[index] = modelPosition?.toVector3()
+            if (index > maxPixel) maxPixel = index
+            updatePixels()
+        }
+
+        override fun showPixels() {
+            if (!pixelsInScene) {
+                uiScene.add(pixelsPoints)
+                pixelsInScene = true
+            }
+        }
+
+        fun hidePixels() {
+            if (pixelsInScene) {
+                uiScene.remove(pixelsPoints)
+                pixelsInScene = false
+            }
+        }
+
+        override fun resetPixels() {
+            pixelLocations.clear()
+            maxPixel = -1
+            updatePixels()
+        }
+
+        fun updatePixels() {
+            if (pixelsInScene) {
+                val positions = Array((maxPixel + 1) * 3) { 0f }
+                (0 until maxPixel).forEach { i ->
+                    val loc = pixelLocations[i] ?: Vector3(0, 0, 0)
+                    positions[i * 3] = loc.x.toFloat()
+                    positions[i * 3 + 1] = loc.y.toFloat()
+                    positions[i * 3 + 2] = loc.z.toFloat()
+                }
+
+                pixelsGeom.setAttribute("position", Float32BufferAttribute(positions, 3))
+            }
+        }
+    }
+
+
     override fun lockUi(): MapperUi.CameraOrientation {
         uiLocked = true
         return CameraOrientation.from(uiCamera)
@@ -353,6 +509,10 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
 
     override fun unlockUi() {
         uiLocked = false
+    }
+
+    override fun getAllSurfaceVisualizers(): List<MapperUi.SurfaceViz> {
+        return modelSurfaceInfos.values.toList()
     }
 
     override fun getVisibleSurfaces(): List<MapperUi.VisibleSurface> {
@@ -377,7 +537,8 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
                         panelBoxOnScreen.min.x.roundToInt(),
                         panelBoxOnScreen.min.y.roundToInt(),
                         panelBoxOnScreen.max.x.roundToInt(),
-                        panelBoxOnScreen.max.y.roundToInt()
+                        panelBoxOnScreen.max.y.roundToInt(),
+                        viewportDimen
                     )
                     visibleSurfaces.add(VisibleSurface(panel, region, panelInfo, cameraOrientation))
                 }
@@ -394,49 +555,36 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         cameraOrientation: CameraOrientation
     ) : MapperUi.VisibleSurface {
         private val camera = cameraOrientation.createCamera()
-        private val geom = Geometry()
-        private val material = PointsMaterial().apply {
-            color = Color(0x00FF00)
-            size = 5
-        }
-        private val points = Points(geom, material)
-        private val pixels = mutableMapOf<Int, VisiblePixel>()
 
-        override fun addPixel(pixelIndex: Int, x: Float, y: Float) {
-            pixels[pixelIndex] = VisiblePixel(pixelIndex, x, y).apply { addToGeom() }
+        override val pixelsInModelSpace: List<Vector3F?> get() = panelInfo.pixelsInModelSpace
+
+        override fun setPixel(pixelIndex: Int, uv: Uv) {
+            val intersect = findIntersection(uv)
+            val positionInModel = intersect?.point
+
+            panelInfo.setPixel(pixelIndex, positionInModel?.toVector3F())
         }
 
-        override fun translatePixelToPanelSpace(screenX: Float, screenY: Float): Vector2F? {
-            val intersection = findIntersection(screenX, screenY) ?: return null
+        override fun setPixel(pixelIndex: Int, panelSpacePosition: Vector3F?) {
+            panelInfo.setPixel(pixelIndex, panelSpacePosition)
+        }
+
+        override fun translatePixelToPanelSpace(uv: Uv): Vector2F? {
+            val intersection = findIntersection(uv) ?: return null
 
             val point = panelInfo.toPanelSpace(intersection.point.clone())
             console.log("   ---->", point.x, point.y, point.z)
             return Vector2F(point.x.toFloat(), point.y.toFloat())
         }
 
-        override val pixelsInModelSpace: List<Vector3F?>
-            get() {
-                val vectors = mutableListOf<Vector3F?>()
-                for (i in 0..(pixels.keys.maxOrNull()!!)) {
-                    val position = pixels[i]?.positionInModel
-                    vectors.add(position?.let {
-                        Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat())
-                    })
-                }
-                return vectors
-            }
-
-        private fun findIntersection(x: Float, y: Float): Intersection? {
+        private fun findIntersection(uv: Uv): Intersection? {
             val raycaster = Raycaster()
-            val pixelVector = Vector2(
-                x / uiWidth * 2 - 1,
-                -(y / uiHeight * 2 - 1)
-            )
-            raycaster.setFromCamera(pixelVector, camera)
+            raycaster.setFromCamera(uv.toVector2(), camera)
             var intersections = raycaster.intersectObject(panelInfo.mesh, false)
             if (intersections.isEmpty()) {
+                logger.warn { "Couldn't find point in ${modelSurface.name}, searching in scene..." }
                 intersections = raycaster.intersectObject(uiScene, true)
-                console.log("Couldn't find point in ${modelSurface.name}...", intersections)
+                console.log("Found intersections: ", intersections)
             }
             if (intersections.isNotEmpty()) {
                 return intersections.first()
@@ -446,36 +594,15 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         }
 
         override fun showPixels() {
-            uiScene.add(points)
+            panelInfo.showPixels()
         }
 
         override fun hidePixels() {
-            uiScene.remove(points)
+            panelInfo.hidePixels()
         }
 
-        inner class VisiblePixel(val pixelIndex: Int, val cameraX: Float, val cameraY: Float) {
-            private val intersect: Intersection? by lazy { findIntersection(cameraX, cameraY) }
-            val positionInModel = intersect?.point
-
-            fun addToGeom() {
-                if (intersect != null) {
-                    // fill in any missing vertices...
-                    while (geom.vertices.size < pixelIndex) {
-                        geom.vertices[geom.vertices.size] = Vector3(0, 0, 0)
-                    }
-
-                    geom.vertices[pixelIndex] = intersect!!.point
-                }
-            }
-
-            val panelSpaceCoords: Pair<Float, Float>? by lazy {
-                if (positionInModel == null) {
-                    null
-                } else {
-                    panelInfo.toPanelSpace(positionInModel)
-                    positionInModel.x.toFloat() to positionInModel.y.toFloat()
-                }
-            }
+        override fun resetPixels() {
+            panelInfo.resetPixels()
         }
     }
 
@@ -506,46 +633,26 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         val firstGuess = orderedPanels.first()
         (firstGuess.first.panelInfo.mesh.material as MeshBasicMaterial).color.r += .25
 
-        table.clear()
-        table.append {
-            table {
-                tr {
-                    th { +"Panel" }
-                    th { +"Centroid dist" }
-                }
-
-                orderedPanels.subList(0, min(5, orderedPanels.size)).forEach { (visibleSurface, distance) ->
-                    tr {
-                        td { +visibleSurface.modelSurface.name }
-                        td { +"$distance" }
-                    }
-                }
-            }
-        }
+        mapperStatus.orderedPanels = orderedPanels
     }
 
-    override fun intersectingSurface(
-        x: Int,
-        y: Int,
-        visibleSurfaces: List<MapperUi.VisibleSurface>
-    ): MapperUi.VisibleSurface? {
+    override fun intersectingSurface(uv: Uv, visibleSurfaces: List<MapperUi.VisibleSurface>): MapperUi.VisibleSurface? {
         val raycaster = Raycaster()
-        val pixelVector = Vector2(
-            x.toFloat() / uiWidth * 2 - 1,
-            -(y.toFloat() / uiHeight * 2 - 1)
-        )
+        val pixelVector = uv.toVector2()
         raycaster.setFromCamera(pixelVector, uiCamera)
         val intersections = raycaster.intersectObject(uiScene, true)
-        if (intersections.isNotEmpty()) {
+        return if (intersections.isNotEmpty()) {
             val intersect = intersections.first()
-            return visibleSurfaces.find { it.modelSurface.name == intersect.`object`.name }
+            visibleSurfaces.find { it.modelSurface.name == intersect.`object`.name }
         } else {
-            return null
+            null
         }
     }
 
     private fun getScreenBox(): Box2 {
-        return Box2(Vector2(0, 0), Vector2(width, height))
+        // Workaround for Kotlin/JS bug:
+        return Box2(Vector2(0, 0), Vector2(browserDimen.width, browserDimen.height))
+//        return Box2(Vector2(0, 0), browserDimen.toVector2())
     }
 
     private fun calcBoundingBoxOnScreen(box: Box3, screenCenter: Vector2): Box2 {
@@ -559,116 +666,144 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
         return Box2(Vector2(minX, minY), Vector2(maxX, maxY))
     }
 
-    override fun showCamImage(image: Image, changeRegion: MediaDevices.Region?) {
-        if (!haveCamDimensions) {
-            camWidth = image.width
-            camHeight = image.height
-            haveCamDimensions = true
-            resizeTo(width, height)
+    override fun showLiveCamImage(image: Image, changeRegion: MediaDevices.Region?) {
+        if (image.dimen != lastCamImageDimen) {
+            onCamResize(image.dimen)
         }
 
-        ui2dCtx.resetTransform()
-        CanvasBitmap(ui2dCanvas).drawImage(image)
+        CanvasBitmap(ui2dCanvas).drawImage(
+            image,
+            0, 0, image.width, image.height,
+            0, 0, viewportDimen.width, viewportDimen.height,
+        )
 
         changeRegion?.apply {
+            val ui2dCtx = ui2dCanvas.getContext("2d") as CanvasRenderingContext2D
             ui2dCtx.lineWidth = 2.0
             ui2dCtx.strokeStyle = "#ff0000"
             ui2dCtx.strokeRect(x0.toDouble(), y0.toDouble(), width.toDouble(), height.toDouble())
         }
     }
 
-    override fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region?) {
-        diffCtx.resetTransform()
-        diffCtx.scale(diffCanvasScale, diffCanvasScale)
-        CanvasBitmap(diffCanvas).drawImage(deltaBitmap.asImage())
+    override fun showSnapshot(bitmap: Bitmap) =
+        snapshotCanvas.showImage(bitmap)
 
-        changeRegion?.apply {
-            diffCtx.strokeStyle = "#ff0000"
-            diffCtx.lineWidth = 1 / diffCanvasScale
-            diffCtx.strokeRect(
-                x0.toDouble(), y0.toDouble(),
-                changeRegion.width.toDouble(), changeRegion.height.toDouble()
-            )
-        }
-    }
+    override fun showBaseImage(bitmap: Bitmap) =
+        baseCanvas.showImage(bitmap)
+
+    override fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region?) =
+        diffCanvas.showImage(deltaBitmap, changeRegion)
+
+    override fun showPanelMask(bitmap: Bitmap, changeRegion: MediaDevices.Region?) =
+        panelMaskCanvas.showImage(bitmap, changeRegion)
 
     override fun showMessage(message: String) {
-        messageDiv.innerText = message
-        console.log("Message:", message)
+        mapperStatus.message = message
+        logger.info { "Message: $message" }
     }
 
     override fun showMessage2(message: String) {
-        message2Div.innerText = message
-//        console.log("Message2:", message)
+        mapperStatus.message2 = message
     }
 
-    override fun showBefore(bitmap: Bitmap) {
-        val beforeCanvas = document.body!!.first<HTMLCanvasElement>("mapperUi-before-canvas")
-        val beforeCtx = beforeCanvas.getContext("2d") as CanvasRenderingContext2D
-        beforeCtx.resetTransform()
-        beforeCtx.scale(.3, .3)
+    private fun HTMLCanvasElement.showImage(bitmap: Bitmap, changeRegion: MediaDevices.Region? = null) {
+        val ctx2d = getContext("2d") as CanvasRenderingContext2D
+        ctx2d.resetTransform()
         val renderBitmap = when (bitmap) { // TODO: huh?
             is NativeBitmap -> bitmap.canvas
             is CanvasBitmap -> bitmap.canvas
             else -> bitmap as CanvasImageSource
         }
-        beforeCtx.drawImage(renderBitmap, 0.0, 0.0)
-    }
+        val drawSize = Dimen(width, height).bestFit(bitmap.dimen)
+        ctx2d.drawImage(renderBitmap, 0.0, 0.0, drawSize.width.toDouble(), drawSize.height.toDouble())
 
-    override fun showAfter(bitmap: Bitmap) {
-        val afterCanvas = document.body!!.first<HTMLCanvasElement>("mapperUi-after-canvas")
-        val afterCtx = afterCanvas.getContext("2d") as CanvasRenderingContext2D
-        afterCtx.resetTransform()
-        afterCtx.scale(.3, .3)
-        val renderBitmap = when (bitmap) {
-            is NativeBitmap -> bitmap.canvas
-            is CanvasBitmap -> bitmap.canvas
-            else -> bitmap as CanvasImageSource
+        changeRegion?.apply {
+            ctx2d.strokeStyle = "#ff0000"
+            ctx2d.lineWidth = 1.0
+
+            val drawScaleX = drawSize.width / bitmap.width.toDouble()
+            val drawScaleY = drawSize.height / bitmap.height.toDouble()
+
+            ctx2d.strokeRect(
+                x0.toDouble() * drawScaleX - 1, y0.toDouble() * drawScaleY - 1,
+                changeRegion.width * drawScaleX + 2, changeRegion.height * drawScaleY + 2
+            )
         }
-        afterCtx.drawImage(renderBitmap, 0.0, 0.0)
     }
 
     override fun setRedo(fn: (suspend () -> Unit)?) {
         if (fn == null) {
             redoFn = null
         } else {
-            redoFn = {
-                GlobalScope.launch { fn() }
-                redoButton.enabled(false)
-            }
+            redoFn = { GlobalScope.launch { fn() } }
         }
-        redoButton.enabled(fn != null)
     }
 
     override fun showStats(total: Int, mapped: Int, visible: Int) {
-        statsDiv.innerHTML = "<i class=\"fas fa-triangle\"></i>Mapped: $mapped / $total<br/>Visible: $visible"
+        mapperStatus.stats = {
+            i("fas fa-triangle") {
+                +"Mapped: $mapped / $total"
+                br {}
+                +"Visible: $visible"
+            }
+        }
     }
 
     override fun pauseForUserInteraction() {
         clickedPause()
     }
 
-    private fun clickedPlay() {
+    fun changedCamera(event: Event) {
+        val selectedDeviceId = event.target?.value
+        selectedDevice = devices.find { it.deviceId == selectedDeviceId }
+
+        listener.useCamera(selectedDevice)
+    }
+
+    fun clickedPlay() {
         showPauseMode(false)
         listener.onStart()
     }
 
-    private fun clickedPause() {
+    fun clickedPause() {
         showPauseMode(true)
         listener.onPause()
     }
 
+    fun clickedRedo() {
+        redoFn?.invoke()
+    }
+
     private fun showPauseMode(isPaused: Boolean) {
-        pauseButton.enabled(!isPaused)
-        playButton.enabled(isPaused)
+        pauseButtonEnabled = !isPaused
+        playButtonEnabled = isPaused
+        notifyChanged()
     }
 
     private fun HTMLButtonElement.enabled(isEnabled: Boolean) {
         style.opacity = if (isEnabled) "1" else ".5"
     }
 
-    private fun clickedStop() {
+    fun clickedStart() {
+        listener.onStart()
+    }
+
+    fun clickedStop() {
         listener.onStop()
+    }
+
+    fun clickedGoToSurface() {
+        val surfaceName = window.prompt("Surface:")
+        if (surfaceName != null && surfaceName.isNotEmpty()) {
+            goToSurface(surfaceName.toUpperCase())
+        }
+    }
+
+    fun loadMappingSession(event: Event) {
+        val mappingSessionToLoad = event.target?.value
+        selectedMappingSession = mappingSessionToLoad
+
+        listener.loadMappingSession(mappingSessionToLoad)
     }
 
     private fun goToSurface(name: String) {
@@ -695,7 +830,13 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : MapperUi,
     interface StatusListener {
         fun mapperStatusChanged(isRunning: Boolean)
     }
+
+    companion object {
+        internal val logger = Logger<JsMapperUi>()
+    }
 }
+
+private fun Vector3.toVector3F() = Vector3F(x.toFloat(), y.toFloat(), z.toFloat())
 
 private val Box2.center: Vector2 get() = max.clone().sub(min).divideScalar(2).add(min)
 
@@ -717,88 +858,7 @@ private fun Box3.project(camera: Camera): Box3 {
     return this
 }
 
-class PanelInfo(
-    val name: String,
-    val faces: List<Face3>,
-    val mesh: Mesh<*, *>,
-    val geom: Geometry,
-    val lineMaterial: LineBasicMaterial
-) {
-    val vertices: Set<Vector3>
-        get() {
-            val v = mutableSetOf<Vector3>()
-            for (face in faces) {
-                v.add(geom.vertices[face.a])
-                v.add(geom.vertices[face.b])
-                v.add(geom.vertices[face.c])
-            }
-            return v
-        }
-
-    val _boundingBox: Box3 by lazy {
-        val boundingBox = Box3()
-        for (vertex in vertices) {
-            boundingBox.expandByPoint(vertex)
-        }
-        boundingBox.translate(mesh.getWorldPosition(Vector3()))
-    }
-
-    val boundingBox get() = _boundingBox.clone()
-
-    private val rotator by lazy { Rotator(surfaceNormal, Vector3(0, 0, 1)) }
-
-    fun toSurfaceNormal(point: Vector3): Vector3 {
-        rotator.rotate(point); return point
-    }
-
-    private val normalBoundingBox: Box3 by lazy {
-        val worldPos = mesh.getWorldPosition(Vector3())
-        val boundingBox = Box3()
-        for (vertex in vertices) {
-            boundingBox.expandByPoint(toSurfaceNormal(vertex).add(worldPos))
-        }
-        boundingBox
-    }
-
-    private val normalBoundingBoxVolume: Vector3 by lazy {
-        normalBoundingBox.max.clone().sub(normalBoundingBox.min)
-    }
-
-    fun toPanelSpace(point: Vector3): Vector3 {
-        var pt = point.clone()
-        pt = toSurfaceNormal(pt)
-        pt.sub(normalBoundingBox.min)
-        pt.divide(normalBoundingBoxVolume)
-        return pt
-    }
-
-    fun select() {
-        lineMaterial.color.r = 1.0
-        lineMaterial.color.g = 0.0
-    }
-
-    fun deselect() {
-        lineMaterial.color.r = 0.0
-        lineMaterial.color.g = 1.0
-    }
-
-    val center get() = boundingBox.getCenter(Vector3())
-
-    val isMultiFaced get() = faces.size > 1
-
-    val _surfaceNormal: Vector3 by lazy {
-        val faceNormalSum = Vector3()
-        var totalArea = 0f
-        for (face in faces) {
-            val triangle = Triangle(geom.vertices[face.a], geom.vertices[face.b], geom.vertices[face.c])
-            val faceArea = triangle.asDynamic().getArea() as Float
-            faceNormalSum.addScaledVector(face.normal, faceArea)
-            totalArea += faceArea
-        }
-        faceNormalSum.divideScalar(totalArea.toDouble())
-    }
-
-    val surfaceNormal get() = _surfaceNormal.clone()
-
-    var boxOnScreen: Box2? = null
-}
+fun Uv.toVector2() = Vector2(
+    u * 2 - 1,
+    -(v * 2 - 1)
+)

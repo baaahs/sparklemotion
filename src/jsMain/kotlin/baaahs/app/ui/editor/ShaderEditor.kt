@@ -80,7 +80,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
         }
     }
 
-    val handleCursorChange = useCallback(shaderRefactor) { value: Any, _: Any ->
+    val handleCursorChange = callback(shaderRefactor) { value: Any, _: Any ->
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         val selection = value as Selection
         shaderRefactor?.onCursorChange(selection)
@@ -88,24 +88,24 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     }
 
     var refactorMenuAnchor by state<EventTarget?> { null }
-    val showRefactorMenu = useCallback { event: Event -> refactorMenuAnchor = event.target }
-    val hideRefactorMenu = useCallback { _: Event?, _: String? -> refactorMenuAnchor = null}
+    val showRefactorMenu = callback { event: Event -> refactorMenuAnchor = event.target }
+    val hideRefactorMenu = callback { _: Event?, _: String? -> refactorMenuAnchor = null}
 
-    val extractUniform = useCallback(shaderRefactor) { _: Event ->
+    val extractUniform = callback(shaderRefactor) { _: Event ->
         hideRefactorMenu(null, null)
         shaderRefactor?.onExtract()
         Unit
     }
 
-    val x = this
+    val handleAceEditor by handler { incoming: AceEditor ->
+        later { aceEditor = incoming }
+    }
 
     div(+Styles.shaderEditor) {
         textEditor {
             attrs.document = glslDoc
             attrs.mode = Modes.glsl
-            attrs.onAceEditor = x.handler("onAceEditor") { incoming: AceEditor ->
-                x.later { aceEditor = incoming }
-            }
+            attrs.onAceEditor = handleAceEditor
             attrs.debounceSeconds = 0.25f
             attrs.onChange = handleSrcChange
             attrs.onCursorChange = handleCursorChange

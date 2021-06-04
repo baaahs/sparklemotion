@@ -3,9 +3,10 @@ package baaahs.app.ui.editor.layout
 import baaahs.app.ui.appContext
 import baaahs.show.mutable.MutableLayoutDimen
 import baaahs.ui.unaryPlus
-import baaahs.ui.useCallback
 import baaahs.ui.value
 import baaahs.ui.xComponent
+import kotlinx.css.paddingTop
+import kotlinx.css.px
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -25,6 +26,7 @@ import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.div
 import react.dom.span
+import styled.inlineStyles
 
 val LayoutSizeCell = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props ->
     val appContext = useContext(appContext)
@@ -32,40 +34,42 @@ val LayoutSizeCell = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props -
 
     var gridSizeMenuAnchor by state<EventTarget?> { null }
 
-    val showGridSizeMenu = useCallback { event: Event -> gridSizeMenuAnchor = event.target!! }
-    val hideGridSizeMenu = useCallback { _: Event?, _: String? -> gridSizeMenuAnchor = null}
+    val showGridSizeMenu = callback { event: Event -> gridSizeMenuAnchor = event.target!! }
+    val hideGridSizeMenu = callback { _: Event?, _: String? -> gridSizeMenuAnchor = null}
 
-    val handleGridSizeMenuUnitClick = useCallback(gridSizeMenuAnchor, props.dimen) { unit: String ->
+    val handleMenuUnitClick = callback(gridSizeMenuAnchor, props.dimen) { unit: String ->
         props.dimen .unit = unit
         props.onChange()
-        forceRender()
         gridSizeMenuAnchor = null
     }
-    val handleGridSizeMenuEmClick = useCallback(handleGridSizeMenuUnitClick) { _: Event ->
-        handleGridSizeMenuUnitClick("em")
+    val handleMenuEmClick = callback(handleMenuUnitClick) { _: Event -> handleMenuUnitClick("em") }
+    val handleMenuPxClick = callback(handleMenuUnitClick) { _: Event -> handleMenuUnitClick("px") }
+    val handleMenuFrClick = callback(handleMenuUnitClick) { _: Event -> handleMenuUnitClick("fr") }
+    val handleMenuDuplicateClick = callback(handleMenuUnitClick) { _: Event ->
+        props.onDuplicate()
+        gridSizeMenuAnchor = null
     }
-    val handleGridSizeMenuPxClick = useCallback(handleGridSizeMenuUnitClick) { _: Event ->
-        handleGridSizeMenuUnitClick("px")
-    }
-    val handleGridSizeMenuFrClick = useCallback(handleGridSizeMenuUnitClick) { _: Event ->
-        handleGridSizeMenuUnitClick("fr")
+    val handleMenuDeleteClick = callback(handleMenuUnitClick) { _: Event ->
+        props.onDelete()
+        gridSizeMenuAnchor = null
     }
 
-    val handleGridSizeScalarChange = useCallback(props.dimen) { event: Event ->
+    val handleGridSizeScalarChange = callback(props.dimen) { event: Event ->
         props.dimen.scalar = event.target!!.value.toFloat()
         props.onChange()
         forceRender()
     }
 
     div(+styles.gridSizeEditor) {
-        textField {
+        textField(/*styles.gridSizeEditorTextField*/) {
+            inlineStyles { paddingTop = 5.px }
             attrs.type = InputType.number
             attrs.value = props.dimen.scalar
             attrs.onChangeFunction = handleGridSizeScalarChange
         }
 
         span {
-            div(+styles.gridSizeMenuAffordance) {
+            div(+styles.gridSizeEditorMenuAffordance) {
                 attrs.onClickFunction = showGridSizeMenu
 
                 +props.dimen.unit
@@ -84,32 +88,30 @@ val LayoutSizeCell = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props -
                 attrs.onClose = hideGridSizeMenu
 
                 menuItem {
-                    attrs.onClickFunction = handleGridSizeMenuEmClick
+                    attrs.onClickFunction = handleMenuEmClick
                     listItemText { +"em ('m' widths)" }
                 }
 
                 menuItem {
-                    attrs.onClickFunction = handleGridSizeMenuPxClick
+                    attrs.onClickFunction = handleMenuPxClick
                     listItemText { +"px (pixels)" }
                 }
 
                 menuItem {
-                    attrs.onClickFunction = handleGridSizeMenuFrClick
+                    attrs.onClickFunction = handleMenuFrClick
                     listItemText { +"fr (fractional part of remaining space)" }
                 }
 
                 divider {}
 
                 menuItem {
-                    attrs.disabled = true
-
-                    listItemText { +"Duplicate…" }
+                    attrs.onClickFunction = handleMenuDuplicateClick
+                    listItemText { +"Duplicate ${props.type}" }
                 }
 
                 menuItem {
-                    attrs.disabled = true
-
-                    listItemText { +"Delete…" }
+                    attrs.onClickFunction = handleMenuDeleteClick
+                    listItemText { +"Delete ${props.type}" }
                 }
             }
         }
@@ -118,7 +120,10 @@ val LayoutSizeCell = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props -
 
 external interface LayoutSizeCellProps : RProps {
     var dimen: MutableLayoutDimen
+    var type: String
     var onChange: () -> Unit
+    var onDuplicate: () -> Unit
+    var onDelete: () -> Unit
 }
 
 fun RBuilder.layoutSizeCell(handler: RHandler<LayoutSizeCellProps>) =

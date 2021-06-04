@@ -2,7 +2,10 @@ package baaahs.sim
 
 import react.ReactElement
 
-external interface HostedWebApp {
+interface HostedWebApp {
+    @JsName("onLaunch")
+    fun onLaunch() {}
+
     @JsName("render")
     fun render(): ReactElement
 

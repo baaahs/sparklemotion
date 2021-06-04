@@ -50,10 +50,10 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     observe(webClient)
 
     var editMode by state { false }
-    val handleEditModeChange = useCallback(editMode) { editMode = !editMode }
+    val handleEditModeChange = callback(editMode) { editMode = !editMode }
 
     var darkMode by state { false }
-    val handleDarkModeChange = useCallback(darkMode) { darkMode = !darkMode }
+    val handleDarkModeChange = callback(darkMode) { darkMode = !darkMode }
 
     val theme = memo(darkMode) {
         createMuiTheme {
@@ -99,20 +99,20 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var renderDialog by state<(RBuilder.() -> Unit)?> { null }
 
     val handleAppDrawerToggle =
-        useCallback(appDrawerOpen) { appDrawerOpen = !appDrawerOpen }
+        callback(appDrawerOpen) { appDrawerOpen = !appDrawerOpen }
 
     val handleLayoutEditorDialogToggle =
-        useCallback(layoutEditorDialogOpen) { layoutEditorDialogOpen = !layoutEditorDialogOpen }
-    val handleLayoutEditorDialogClose = useCallback { layoutEditorDialogOpen = false }
+        callback(layoutEditorDialogOpen) { layoutEditorDialogOpen = !layoutEditorDialogOpen }
+    val handleLayoutEditorDialogClose = callback { layoutEditorDialogOpen = false }
 
-    val handleShowStateChange = useCallback {
+    val handleShowStateChange = callback {
         webClient.onShowStateChange()
         forceRender()
     }
 
     var fileDialogOpen by state { false }
     var fileDialogIsSaveAs by state { false }
-    val handleFileSelected = useCallback { file: Fs.File ->
+    val handleFileSelected = callback { file: Fs.File ->
         fileDialogOpen = false
         if (fileDialogIsSaveAs) {
             webClient.onSaveAsShow(file.withExtension(".sparkle"))
@@ -120,14 +120,14 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             webClient.onOpenShow(file)
         }
     }
-    val handleFileDialogCancel = useCallback { fileDialogOpen = false }
+    val handleFileDialogCancel = callback { fileDialogOpen = false }
 
     fun confirmCloseUnsaved(): Boolean {
         return true
     }
 
-    val handleNewShow = useCallback {
-        if (webClient.showIsModified) confirmCloseUnsaved() || return@useCallback
+    val handleNewShow = callback {
+        if (webClient.showIsModified) confirmCloseUnsaved() || return@callback
         renderDialog = {
             dialog {
                 attrs.open = true
@@ -162,27 +162,27 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
-    val handleOpenShow = useCallback {
-        if (webClient.showIsModified) confirmCloseUnsaved() || return@useCallback
+    val handleOpenShow = callback {
+        if (webClient.showIsModified) confirmCloseUnsaved() || return@callback
         fileDialogOpen = true
         fileDialogIsSaveAs = false
     }
 
-    val handleSaveShow = useCallback {
+    val handleSaveShow = callback {
         webClient.onSaveShow()
     }
 
-    val handleSaveShowAs = useCallback {
+    val handleSaveShowAs = callback {
         fileDialogOpen = true
         fileDialogIsSaveAs = true
     }
 
-    val handleCloseShow = useCallback {
-        if (webClient.showIsModified) confirmCloseUnsaved() || return@useCallback
+    val handleCloseShow = callback {
+        if (webClient.showIsModified) confirmCloseUnsaved() || return@callback
         webClient.onCloseShow()
     }
 
-    val handlePromptClose = useCallback { prompt = null }
+    val handlePromptClose = callback { prompt = null }
 
     val forceAppDrawerOpen = webClient.isLoaded && webClient.show == null
     val renderAppDrawerOpen = appDrawerOpen && !layoutEditorDialogOpen || forceAppDrawerOpen
@@ -259,6 +259,23 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                             typographyH6 { +"Connecting…" }
                             +"Attempting to connect to Sparkle Motion."
+                        }
+                    }
+
+                    // TODO: this doesn't actuyally show up for some reason?
+                    if (props.webClient.isMapping) {
+                        backdrop {
+                            attrs {
+                                open = true
+                            }
+
+                            container {
+                                circularProgress {}
+                                icon(Icons.NotificationImportant)
+
+                                typographyH6 { +"Mapper Running…" }
+                                +"Please wait."
+                            }
                         }
                     }
 

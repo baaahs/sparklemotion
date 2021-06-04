@@ -26,7 +26,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.gadgetsSlider
 
-    val handleChange = handler("gadget change", props.onChange) { value: Array<Number> ->
+    val handleChange by handler(props.onChange) { value: Array<Number> ->
         val newValue = value[0].toFloat()
         props.onChange(newValue)
     }

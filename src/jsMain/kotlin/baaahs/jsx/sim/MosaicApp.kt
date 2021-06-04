@@ -4,14 +4,13 @@
 package baaahs.jsx.sim
 
 import baaahs.SheepSimulator
-import baaahs.app.ui.AppIndexProps
-import react.FunctionalComponent
+import baaahs.sim.HostedWebApp
 import react.RProps
 
 @JsName("default")
 external class MosaicApp(props: Props) {
     interface Props : RProps {
         var simulator: SheepSimulator
-        var webClientWindow: FunctionalComponent<AppIndexProps>
+        var hostedWebApp: HostedWebApp
     }
 }
