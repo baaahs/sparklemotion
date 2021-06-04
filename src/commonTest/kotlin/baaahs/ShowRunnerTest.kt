@@ -17,7 +17,8 @@ import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import ext.TestCoroutineContext
+import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
@@ -25,7 +26,6 @@ import kotlin.test.Test
 
 @InternalCoroutinesApi
 class ShowRunnerTest {
-    private lateinit var testCoroutineContext: TestCoroutineContext
     private val network = TestNetwork(0)
     private val serverNetwork = network.link("test")
     private lateinit var server: PubSub.Server
@@ -50,8 +50,8 @@ class ShowRunnerTest {
 
     @BeforeTest
     fun setUp() {
-        testCoroutineContext = TestCoroutineContext("network")
-        server = PubSub.listen(serverNetwork.startHttpServer(1234), testCoroutineContext)
+        val dispatcher = TestCoroutineDispatcher()
+        server = PubSub.listen(serverNetwork.startHttpServer(1234), CoroutineScope(dispatcher))
         fakeGlslContext = FakeGlContext()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
@@ -61,7 +61,7 @@ class ShowRunnerTest {
         MovingHeadManager(fixtureManager, dmxUniverse, emptyList())
         stageManager = StageManager(
             testToolchain, renderManager, server, Storage(fs, testPlugins()), fixtureManager,
-            FakeClock(), sheepModel, GadgetManager(server, FakeClock(), testCoroutineContext)
+            FakeClock(), sheepModel, GadgetManager(server, FakeClock(), dispatcher)
         )
         stageManager.switchTo(SampleData.sampleShow)
         renderTargets = fixtureManager.getRenderTargets_ForTestOnly()

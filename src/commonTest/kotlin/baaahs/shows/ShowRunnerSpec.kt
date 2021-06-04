@@ -22,7 +22,8 @@ import baaahs.sim.FakeNetwork
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.*
-import ext.TestCoroutineContext
+import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.serialization.json.JsonPrimitive
 import org.spekframework.spek2.Spek
@@ -79,15 +80,18 @@ object ShowRunnerSpec : Spek({
                 )
             )
         }
-        val testCoroutineContext by value { TestCoroutineContext("Test") }
-        val pubSub by value { PubSub.Server(FakeNetwork().link("test").startHttpServer(0), testCoroutineContext) }
+        val dispatcher by value { TestCoroutineDispatcher() }
+        val pubSub by value {
+            val httpServer = FakeNetwork().link("test").startHttpServer(0)
+            PubSub.Server(httpServer, CoroutineScope(dispatcher))
+        }
         val renderManager by value { RenderManager(TestModel) { fakeGlslContext } }
         val fixtureManager by value { FixtureManager(renderManager) }
         val stageManager by value {
             val fs = FakeFs()
             StageManager(
                 testToolchain, renderManager, pubSub, Storage(fs, testPlugins()), fixtureManager,
-                FakeClock(), model, GadgetManager(pubSub, FakeClock(), testCoroutineContext))
+                FakeClock(), model, GadgetManager(pubSub, FakeClock(), dispatcher))
         }
 
         val fakeProgram by value { fakeGlslContext.programs.only("program") }
