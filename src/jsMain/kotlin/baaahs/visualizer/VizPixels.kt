@@ -70,7 +70,11 @@ class VizPixels(vizSurface: VizSurface, val positions: Array<Vector3>) : Pixels 
     }
 
     override fun set(i: Int, color: Color) {
-        colorsAsInts[i] = color.argb
+        try {
+            colorsAsInts[i] = color.argb
+        } catch (e: Exception) {
+            throw e
+        }
 
         val redF = color.redF / 2
         val greenF = color.greenF / 2
