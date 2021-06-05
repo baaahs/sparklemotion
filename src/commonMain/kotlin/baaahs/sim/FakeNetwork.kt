@@ -35,7 +35,7 @@ class FakeNetwork(
     private fun sendPacketShouldSucceed() = Random.nextFloat() > packetLossRate / 2
     private fun receivePacketShouldSucceed() = Random.nextFloat() > packetLossRate / 2
 
-    inner class FakeLink(override val myAddress: Network.Address) : Network.Link {
+    inner class FakeLink(override val myAddress: FakeAddress) : Network.Link {
         override val udpMtu = 1500
         private var nextAvailablePort = 65000
         var webSocketListeners = mutableListOf<Network.WebSocketListener>()
@@ -52,6 +52,7 @@ class FakeNetwork(
         override fun startHttpServer(port: Int): Network.HttpServer {
             val fakeHttpServer = FakeHttpServer(port)
             httpServersByPort[myAddress to port] = fakeHttpServer
+            logger.info { "HTTP server listening on $myAddress:$port." }
             return fakeHttpServer
         }
 
@@ -119,7 +120,7 @@ class FakeNetwork(
         private inner class FakeUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
                 if (!sendPacketShouldSucceed()) {
-                    logger.warn { "Dropped UDP packet to $toAddress:$port" }
+                    logger.debug { "Dropped UDP packet to $toAddress:$port" }
                     packetsDropped++.updates(facade)
                     return
                 }
@@ -130,7 +131,7 @@ class FakeNetwork(
 
             override fun broadcastUdp(port: Int, bytes: ByteArray) {
                 if (!sendPacketShouldSucceed()) {
-                    logger.warn { "Dropped UDP packet to *:$port" }
+                    logger.debug { "Dropped UDP packet to *:$port" }
                     packetsDropped++.updates(facade)
                     return
                 }
@@ -177,7 +178,7 @@ class FakeNetwork(
         if (networkDelay != 0) delay(networkDelay.toLong())
     }
 
-    private data class FakeAddress(val name: String) : Network.Address {
+    data class FakeAddress(val name: String) : Network.Address {
         override fun toString(): String = name
     }
 

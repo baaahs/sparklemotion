@@ -9,7 +9,6 @@ import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.models.SheepModel
 import baaahs.net.FragmentingUdpLink
-import baaahs.net.Network
 import baaahs.net.TestNetwork
 import baaahs.plugin.beatlink.BeatData
 import baaahs.plugin.beatlink.BeatSource
@@ -26,7 +25,6 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
-import org.koin.core.qualifier.named
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
@@ -55,7 +53,6 @@ object PinkySpec : Spek({
                 FakeClock(),
                 fakeFs,
                 PermissiveFirmwareDaddy(),
-                StubSoundAnalyzer(),
                 renderManager = fakeGlslContext.runInContext { RenderManager(model) { fakeGlslContext } },
                 plugins = testPlugins(),
                 pinkyMainDispatcher = ImmediateDispatcher,

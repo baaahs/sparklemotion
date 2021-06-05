@@ -7,6 +7,12 @@ import kotlin.jvm.Synchronized
 import kotlin.math.min
 
 class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
+    init {
+        if (wrappedLink is FragmentingUdpLink) {
+            error("You're trying to wrap a FragmentingUdpLink in a FragmentingUdpLink?")
+        }
+    }
+
     override val myAddress: Network.Address get() = wrappedLink.myAddress
     override val udpMtu: Int get() = wrappedLink.udpMtu
 

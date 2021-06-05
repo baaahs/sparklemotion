@@ -34,7 +34,6 @@ class Pinky(
     val clock: Clock,
     fs: Fs,
     val firmwareDaddy: FirmwareDaddy,
-    soundAnalyzer: SoundAnalyzer,
     private val switchShowAfterIdleSeconds: Int? = 600,
     private val adjustShowAfterIdleSeconds: Int? = null,
     renderManager: RenderManager,
