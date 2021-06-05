@@ -30,13 +30,14 @@
       "Vacuity"
     ],
     "preview": [
-      "control"
+      "control",
+      "control2"
     ],
     "transition": [
       "transitionEffectButtonGroup",
       "fadeSliderControl",
       "newButtonGroupButtonGroup",
-      "control2",
+      "control3",
       "isfShaderButton",
       "pulse2Button"
     ],
@@ -207,7 +208,7 @@
     },
     "circularDependency": {
       "title": "Circular Dependency",
-      "src": "// Circular Dependency\n// From http://glslsandbox.com/e#56705\n\n/*\n * Original shader from: https://www.shadertoy.com/view/Wtf3zl\n */\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// glslsandbox uniforms\nuniform float time;\nuniform vec2 resolution;\nuniform vec2 mouse;\n\n// shadertoy emulation\n#define iTime time\n#define iResolution resolution\n\n// --------[ Original ShaderToy begins here ]---------- //\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord/iResolution.xy;\n    uv-=.5;\n    uv.x*= iResolution.x/iResolution.y;\n\n    vec3 col = vec3(0.5);\n    float d =length(uv)*20.;\n    float a = atan(uv.y, uv.x);\n    col.r = smoothstep(0.1, .2, abs(mod(d+iTime, 2.)-1.));\n\tcol.g = col.r*floor(mod(d*.5+.5+iTime*.5, 2.));\n    float f = smoothstep(-.1, .1,sin(a*3.+(sin(iTime*.5)*2.)*d-iTime));\n    col.rg = mix(1.-col.rg, col.rg, f);\n\n    // Output to screen\n    fragColor = vec4(col,1.0);\n}\n// --------[ Original ShaderToy ends here ]---------- //\n"
+      "src": "// Circular Dependency\n// From http://glslsandbox.com/e#56705\n\n/*\n * Original shader from: https://www.shadertoy.com/view/Wtf3zl\n */\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// glslsandbox uniforms\nuniform float time;\nuniform vec2 resolution;\nuniform vec2 mouse;\nuniform float tightness; // @@Slider default=20. min=1 max=400\n\n// shadertoy emulation\n#define iTime time\n#define iResolution resolution\n\n// --------[ Original ShaderToy begins here ]---------- //\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord/iResolution.xy;\n    uv-=.5;\n    uv.x*= iResolution.x/iResolution.y;\n\n    vec3 col = vec3(0.5);\n    float d =length(uv)*tightness;\n    float a = atan(uv.y, uv.x);\n    col.r = smoothstep(0.1, .2, abs(mod(d+iTime, 2.)-1.));\n\tcol.g = col.r*floor(mod(d*.5+.5+iTime*.5, 2.));\n    float f = smoothstep(-.1, .1,sin(a*3.+(sin(iTime*.5)*2.)*d-iTime));\n    col.rg = mix(1.-col.rg, col.rg, f);\n\n    // Output to screen\n    fragColor = vec4(col,1.0);\n}\n// --------[ Original ShaderToy ends here ]---------- //\n"
     },
     "colorDiffusionFlow": {
       "title": "ColorDiffusionFlow",
@@ -724,6 +725,10 @@
         "resolution": {
           "type": "shader-channel",
           "shaderChannel": "main"
+        },
+        "tightness": {
+          "type": "datasource",
+          "dataSourceId": "tightnessSlider"
         }
       }
     },
@@ -1241,6 +1246,9 @@
       "title": "Vacuity"
     },
     "control": {
+      "type": "baaahs.Core:Visualizer"
+    },
+    "control2": {
       "type": "baaahs.BeatLink:BeatLink"
     },
     "noneButton": {
@@ -1406,7 +1414,7 @@
         "heartbeatButton"
       ]
     },
-    "control2": {
+    "control3": {
       "type": "baaahs.Core:Transition"
     },
     "sizeSlider2Control": {
@@ -2077,6 +2085,13 @@
       "initialValue": 1.0,
       "minValue": 0.0,
       "maxValue": 1.0
+    },
+    "tightnessSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Tightness",
+      "initialValue": 20.0,
+      "minValue": 1.0,
+      "maxValue": 400.0
     },
     "date": {
       "type": "baaahs.Core:Date"
