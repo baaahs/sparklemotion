@@ -110,6 +110,8 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
         fragments.addAll(myFragments)
     }
 
+    override val mdns = wrappedLink.mdns
+
     private fun removeMessageId(messageId: Short): List<Fragment> {
         val myFragments = popMessageFragments(messageId)
 

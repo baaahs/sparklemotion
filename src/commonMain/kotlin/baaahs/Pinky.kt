@@ -24,7 +24,7 @@ import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
 import kotlinx.coroutines.*
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 import kotlin.coroutines.CoroutineContext
 
 class Pinky(
@@ -50,6 +50,7 @@ class Pinky(
 
     private val pinkyJob = SupervisorJob()
     override val coroutineContext: CoroutineContext = pinkyMainDispatcher + pinkyJob
+    private val mdns = link.mdns
 
     private val pubSub: PubSub.Server = PubSub.Server(httpServer, coroutineContext)
     val gadgetManager = GadgetManager(pubSub, clock, coroutineContext)
@@ -92,6 +93,7 @@ class Pinky(
     private var mapperIsRunning = false
 
     init {
+//        PinkyHttp(httpServer).register(brainManager.brainInfos, mappingResults, model)
         httpServer.listenWebSocket("/ws/api") {
             WebSocketRouter(coroutineContext) { PinkyMapperHandlers(storage).register(this) }
         }
@@ -114,6 +116,11 @@ class Pinky(
             run()
             daemonJobs.cancelAndJoin()
         }
+
+        // save these if we want to explicitly unregister them or update their TXT records later
+        mdns.register(link.myHostname, "_sparklemotion-pinky", "_udp", Ports.PINKY, "local.", mutableMapOf(Pair("MAX_UDP_SIZE", "1450")))
+        mdns.register(link.myHostname, "_sparklemotion-pinky", "_tcp", Ports.PINKY_UI_TCP, "local.")
+        mdns.listen("_sparklemotion-brain", "_udp", "local.", MdnsBrainListenHandler())
     }
 
     fun addSimulatedBrains() {
@@ -252,6 +259,23 @@ class Pinky(
         internal fun reset() {
             bytesSent = 0
             packetsSent = 0
+        }
+    }
+
+    private inner class MdnsBrainListenHandler : Network.MdnsListenHandler {
+        override fun resolved(service: Network.MdnsService) {
+            val brainId = service.hostname
+            val address = service.getAddress()
+            if (address != null) {
+                val version = service.getTXT("version")
+                val idfVersion = service.getTXT("idf_ver")
+                val msg = BrainHelloMessage(brainId, null, version, idfVersion)
+                foundBrain(address, msg)
+            }
+        }
+
+        override fun removed(service: Network.MdnsService) {
+            TODO("not implemented: What do when brain disconnects?")
         }
     }
 

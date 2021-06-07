@@ -2,8 +2,12 @@ package baaahs.net
 
 import baaahs.util.Logger
 import io.ktor.application.*
+import io.ktor.content.*
+import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.request.*
+import io.ktor.response.respond
+import io.ktor.routing.get
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -16,6 +20,10 @@ import java.io.IOException
 import java.net.*
 import java.nio.ByteBuffer
 import java.time.Duration
+import javax.jmdns.JmDNS
+import javax.jmdns.ServiceEvent
+import javax.jmdns.ServiceInfo
+import javax.jmdns.ServiceListener
 
 class JvmNetwork : Network {
     private val link = RealLink()
@@ -84,6 +92,8 @@ class JvmNetwork : Network {
             return socket
         }
 
+        override val mdns by lazy { JvmMdns() }
+
         inner class JvmUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             internal var udpSocket = DatagramSocket(serverPort)
 
@@ -151,6 +161,31 @@ class JvmNetwork : Network {
 
             val application: Application get() = httpServer.application
 
+            override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
+                application.routing {
+                    val route = this
+                    val routing = object : Network.HttpServer.HttpRouting {
+                        override fun get(
+                            path: String,
+                            handler: (Network.HttpServer.HttpRequest) -> Network.HttpResponse
+                        ) {
+                            route.get(path) {
+                                val response = handler.invoke(object : Network.HttpServer.HttpRequest {
+                                    override fun param(name: String): String? = call.parameters[name]
+                                })
+                                call.respond(
+                                    ByteArrayContent(
+                                        response.body,
+                                        ContentType.parse(response.contentType),
+                                        HttpStatusCode.fromValue(response.statusCode)
+                                    ))
+                            }
+                        }
+                    }
+                    config.invoke(routing)
+                }
+            }
+
             override fun listenWebSocket(
                 path: String,
                 onConnect: (incomingConnection: Network.TcpConnection) -> Network.WebSocketListener
@@ -209,7 +244,79 @@ class JvmNetwork : Network {
         }
 
         override val myAddress = IpAddress.mine()
+        override val myHostname = myAddress.address.hostName.replace(Regex("\\.local(domain)?\\.?$"), "")
 
+        inner class JvmMdns() : Network.Mdns {
+            private val svc = JmDNS.create(InetAddress.getLocalHost())
+
+            override fun register(hostname: String, type: String, proto: String, port: Int, domain: String, params: MutableMap<String, String>): Network.MdnsRegisteredService? {
+                val inst = ServiceInfo.create("$hostname.$type.$proto.${domain.normalizeMdnsDomain()}", hostname, port, 1, 1, params)
+                svc.registerService(inst)
+                return JvmRegisteredService(inst)
+            }
+
+            override fun unregister(inst: Network.MdnsRegisteredService?) { inst?.unregister() }
+
+            override fun listen(type: String, proto: String, domain: String, handler: Network.MdnsListenHandler) {
+                val wrapper = object : ServiceListener {
+                    override fun serviceResolved(event: ServiceEvent?) {
+                        if (event != null) {
+                            handler.resolved(JvmMdnsService(event.info))
+                        }
+                    }
+
+                    override fun serviceRemoved(event: ServiceEvent?) {
+                        if (event != null) {
+                            handler.removed(JvmMdnsService(event.info))
+                        }
+                    }
+
+                    override fun serviceAdded(event: ServiceEvent?) { /* noop */ }
+                }
+                svc.addServiceListener("$type.$proto.${domain.normalizeMdnsDomain()}", wrapper)
+            }
+
+            open inner class JvmMdnsService(private val inst: ServiceInfo) : Network.MdnsService {
+                override val hostname : String get() = inst.name
+                override val type     : String get() = inst.type.removeSuffix(inst.domain).removeSuffix(".").removeSuffix(inst.protocol).removeSuffix(".")
+                override val proto    : String get() = inst.protocol
+                override val port     : Int    get() = inst.port
+                override val domain   : String get() = inst.domain
+
+                override fun getAddress(): Network.Address? {
+                    val addresses = inst.inet4Addresses
+                    return if (addresses.isNotEmpty()) {
+                        IpAddress(addresses[0])
+                    } else { null }
+                }
+
+                override fun getTXT(key: String): String? = inst.getPropertyString(key)
+
+                override fun getAllTXTs(): MutableMap<String, String> {
+                    val map = mutableMapOf<String, String>()
+                    val names = inst.propertyNames
+                    while (names.hasMoreElements()) {
+                        val key = names.nextElement()
+                        map[key] = inst.getPropertyString(key)
+                    }
+                    return map
+                }
+            }
+
+            inner class JvmRegisteredService(private val inst: ServiceInfo) : JvmMdnsService(inst), Network.MdnsRegisteredService {
+                override fun unregister() { svc.unregisterService(inst) }
+
+                override fun updateTXT(txt: MutableMap<String, String>) {
+                    val map = getAllTXTs()
+                    map.putAll(txt)
+                    inst.setText(map)
+                }
+
+                override fun updateTXT(key: String, value: String) {
+                    updateTXT(mutableMapOf(Pair(key, value)))
+                }
+            }
+        }
     }
 
     data class IpAddress(val address: InetAddress) : Network.Address {

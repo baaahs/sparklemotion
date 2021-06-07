@@ -15,6 +15,13 @@ import baaahs.shaders.PixelBrainShader
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.asMillis
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 class BrainManager(
     private val fixtureManager: FixtureManager,
@@ -88,7 +95,7 @@ class BrainManager(
             // You need the new hotness bro
             logger.debug {
                 "The firmware daddy doesn't like $brainId" +
-                        " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
+                        " (${mappingResults.dataForBrain(brainId)?.surface?.name ?: "[unknown]"})" +
                         " having ${msg.firmwareVersion}" +
                         " so we'll send ${firmwareDaddy.urlForPreferredVersion}"
             }
@@ -141,8 +148,8 @@ class BrainManager(
     fun createFixtureFor(msg: BrainHelloMessage, transport: Transport): Fixture {
         val brainId = BrainId(msg.brainId)
 
-        val mappingData = mappingResults.dataFor(brainId)
-            ?: mappingResults.dataFor(msg.surfaceName ?: "__nope")
+        val mappingData = mappingResults.dataForBrain(brainId)
+            ?: mappingResults.dataForBrain(BrainId(msg.surfaceName ?: "__nope"))
             ?: msg.surfaceName?.let { MappingResults.Info(model.findSurface(it), null) }
 
         val modelSurface = mappingData?.surface
@@ -242,4 +249,25 @@ class BrainManager(
     }
 }
 
+@Serializable(with = BrainIdSerializer::class)
 data class BrainId(val uuid: String)
+
+class BrainIdSerializer : KSerializer<BrainId> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BrainId", PrimitiveKind.STRING)
+    override fun deserialize(decoder: Decoder): BrainId = BrainId(decoder.decodeString())
+    override fun serialize(encoder: Encoder, value: BrainId) = encoder.encodeString(value.uuid)
+}
+
+@Serializable
+data class BrainInfo(
+    val id: String,
+    val address: String,
+    val modelElement: String?,
+    val pixelCount: Int,
+    val pixelsMapped: Int,
+    val status: Status
+) {
+    enum class Status {
+        Online
+    }
+}
