@@ -8,6 +8,7 @@ import kotlin.math.min
 
 class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
     override val myAddress: Network.Address get() = wrappedLink.myAddress
+    override val myHostname: String get() = wrappedLink.myHostname
     override val udpMtu: Int get() = wrappedLink.udpMtu
 
     /**
@@ -109,6 +110,8 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
     private fun replaceFragments(myFragments: List<Fragment>) {
         fragments.addAll(myFragments)
     }
+
+    override val mdns = wrappedLink.mdns
 
     private fun removeMessageId(messageId: Short): List<Fragment> {
         val myFragments = popMessageFragments(messageId)
