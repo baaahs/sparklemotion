@@ -1,16 +1,19 @@
 package baaahs.net
 
 import baaahs.proto.Message
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 
 interface Network {
     fun link(name: String): Link
 
     interface Link {
         val myAddress: Address
-
+        val myHostname: String
         val udpMtu: Int
         fun listenUdp(port: Int, udpListener: UdpListener): UdpSocket
-
+        val mdns: Mdns
         fun startHttpServer(port: Int): HttpServer
         fun connectWebSocket(
             toAddress: Address,
@@ -18,6 +21,50 @@ interface Network {
             path: String,
             webSocketListener: WebSocketListener
         ): TcpConnection
+    }
+
+    interface Mdns {
+        fun register(hostname: String, type: String, proto: String, port: Int, domain: String = "local.", params: MutableMap<String, String> = mutableMapOf()): MdnsRegisteredService?
+        fun unregister(inst: MdnsRegisteredService?)
+        fun listen(type: String, proto: String, domain: String, handler: MdnsListenHandler)
+
+        fun String.normalizeMdnsDomain(): String {
+            var dom = this
+            if (dom.startsWith(".")) {
+                dom = dom.substring(1)
+            }
+            if (!dom.endsWith(".")) {
+                dom += "."
+            }
+            return dom
+        }
+    }
+
+    interface MdnsService {
+        // todo: add service methods
+
+        val hostname : String
+        val type     : String
+        val proto    : String
+        val port     : Int
+        val domain   : String
+
+        fun getAddress() : Address?
+        fun getTXT(key: String) : String?
+        fun getAllTXTs() : MutableMap<String, String>
+    }
+
+    interface MdnsRegisteredService : MdnsService {
+        fun unregister()
+        fun updateTXT(txt: MutableMap<String, String>)
+        fun updateTXT(key: String, value: String)
+        // todo: unsetTXT
+        // todo: unsetAllTXT
+    }
+
+    interface MdnsListenHandler {
+        fun resolved(service: MdnsService)
+        fun removed(service: MdnsService)
     }
 
     interface Address

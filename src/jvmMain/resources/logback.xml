@@ -10,4 +10,5 @@
     <logger name="org.eclipse.jetty" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
     <logger name="io.mockk" level="INFO"/>
+    <logger name="javax.jmdns.impl" level="ERROR" />
 </configuration>

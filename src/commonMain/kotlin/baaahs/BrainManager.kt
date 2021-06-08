@@ -15,6 +15,13 @@ import baaahs.shaders.PixelBrainShader
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.asMillis
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 class BrainManager(
     private val fixtureManager: FixtureManager,
@@ -242,4 +249,11 @@ class BrainManager(
     }
 }
 
+@Serializable(with = BrainIdSerializer::class)
 data class BrainId(val uuid: String)
+
+class BrainIdSerializer : KSerializer<BrainId> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BrainId", PrimitiveKind.STRING)
+    override fun deserialize(decoder: Decoder): BrainId = BrainId(decoder.decodeString())
+    override fun serialize(encoder: Encoder, value: BrainId) = encoder.encodeString(value.uuid)
+}
