@@ -85,11 +85,11 @@ class Brain(
             when (type) {
                 Type.BRAIN_PANEL_SHADE -> {
                     val pongData = if (reader.readBoolean()) {
-                        reader.readBytes()
+                        reader.readBytesWithSize()
                     } else {
                         null
                     }
-                    val shaderDesc = reader.readBytes()
+                    val shaderDesc = reader.readBytesWithSize()
 
                     // If possible, use the previously-built Shader stuff:
                     val theCurrentShaderDesc = currentShaderDesc

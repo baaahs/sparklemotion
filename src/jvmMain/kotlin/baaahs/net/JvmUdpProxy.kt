@@ -33,9 +33,9 @@ class JvmUdpProxy {
 //                logger.debug { "UDP: received packet!" }
                 val frame = Frame.Binary(true, ByteBuffer.wrap(ByteArrayWriter().apply {
                     writeByte(Network.UdpProxy.RECEIVE_OP.toByte())
-                    writeBytes(packetIn.address.address)
+                    writeBytesWithSize(packetIn.address.address)
                     writeInt(packetIn.port)
-                    writeBytes(data, packetIn.offset, packetIn.length)
+                    writeBytesWithSize(data, packetIn.offset, packetIn.length)
                     logger.debug { "UDP: Receive ${packetIn.length} ${msgId(data)} from ${packetIn.address}:${packetIn.port}" }
                 }.toBytes()))
                 networkScope.launch {
@@ -62,9 +62,9 @@ class JvmUdpProxy {
                             logger.debug { "UDP: Listening on ${socket!!.localPort}" }
                         }
                         Network.UdpProxy.SEND_OP.toByte() -> {
-                            val toAddress = readBytes()
+                            val toAddress = readBytesWithSize()
                             val toPort = readInt()
-                            val data = readBytes()
+                            val data = readBytesWithSize()
                             val toInetAddress = InetAddress.getByAddress(toAddress)
                             val packet = DatagramPacket(data, 0, data.size, toInetAddress, toPort)
                             logger.debug { "UDP: Will send ${data.size} ${msgId(data)} to $toInetAddress:$toPort" }
@@ -75,7 +75,7 @@ class JvmUdpProxy {
                         }
                         Network.UdpProxy.BROADCAST_OP.toByte() -> {
                             val toPort = readInt()
-                            val data = readBytes()
+                            val data = readBytesWithSize()
                             for (broadcastAddress in broadcastAddresses) {
                                 val packet = DatagramPacket(data, 0, data.size, broadcastAddress, toPort)
                                 logger.debug { "UDP: Will broadcast ${data.size} ${msgId(data)} to ${broadcastAddress}:$toPort" }

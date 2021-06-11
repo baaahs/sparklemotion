@@ -30,9 +30,9 @@ internal class BrowserUdpProxy(
                 val op = readByte()
                 when (op) {
                     Network.UdpProxy.RECEIVE_OP.toByte() -> {
-                        val fromAddress = UdpProxyAddress(readBytes())
+                        val fromAddress = UdpProxyAddress(readBytesWithSize())
                         val fromPort = readInt()
-                        val data = readBytes()
+                        val data = readBytesWithSize()
                         log("UDP: Received ${data.size} bytes ${msgId(data)} from $fromAddress:$fromPort")
                         udpListener!!.receive(fromAddress, fromPort, data)
                     }
@@ -80,9 +80,9 @@ internal class BrowserUdpProxy(
 
             tcpConnectionSend(ByteArrayWriter().apply {
                 writeByte(Network.UdpProxy.SEND_OP.toByte())
-                writeBytes(toAddress.bytes)
+                writeBytesWithSize(toAddress.bytes)
                 writeInt(port)
-                writeBytes(bytes)
+                writeBytesWithSize(bytes)
                 log("UDP: Sent ${bytes.size} bytes ${msgId(bytes)} to $toAddress:$port")
             }.toBytes())
         }
@@ -91,7 +91,7 @@ internal class BrowserUdpProxy(
             tcpConnectionSend(ByteArrayWriter().apply {
                 writeByte(Network.UdpProxy.BROADCAST_OP.toByte())
                 writeInt(port)
-                writeBytes(bytes)
+                writeBytesWithSize(bytes)
                 log("UDP: Broadcast ${bytes.size} bytes ${msgId(bytes)} to *:$port")
             }.toBytes())
         }

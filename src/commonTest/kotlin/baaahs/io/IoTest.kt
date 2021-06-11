@@ -8,20 +8,20 @@ class IoTest {
     @Test
     fun testByteArrays() {
         val writer = ByteArrayWriter(bytes = ByteArray(2))
-        writer.writeBytes(byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8))
+        writer.writeBytesWithSize(byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8))
 
         val reader = ByteArrayReader(writer.toBytes())
-        expect(reader.readBytes().toList())
+        expect(reader.readBytesWithSize().toList())
             .toBe(byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8).toList())
     }
 
     @Test
     fun testPartialByteArrays() {
         val writer = ByteArrayWriter(bytes = ByteArray(2))
-        writer.writeBytes(byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8), 6)
+        writer.writeBytesWithSize(byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8), 6)
 
         val reader = ByteArrayReader(writer.toBytes())
-        expect(reader.readBytes().toList())
+        expect(reader.readBytesWithSize().toList())
             .toBe(byteArrayOf(7, 8).toList())
     }
 }

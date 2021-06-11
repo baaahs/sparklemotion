@@ -60,7 +60,7 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
                     return
                 }
 
-                val frameBytes = reader.readNBytes(size)
+                val frameBytes = reader.readBytes(size)
                 if (offset == 0 && size == totalSize) {
                     udpListener.receive(fromAddress, fromPort, frameBytes)
                 } else {
@@ -182,7 +182,7 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
                 writer.writeShort(thisFrameSize.toShort())
                 writer.writeInt(bytes.size)
                 writer.writeInt(offset)
-                writer.writeNBytes(bytes, offset, offset + thisFrameSize)
+                writer.writeBytes(bytes, offset, offset + thisFrameSize)
                 fn(writer.toBytes())
 
 //                println("Sending UDP: messageId=$messageId thisFrameSize=${thisFrameSize.toShort()} totalSize=${bytes.size} offset=${offset}")
