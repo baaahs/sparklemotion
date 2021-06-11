@@ -47,7 +47,7 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
     }
 
     fun writeString(s: String) {
-        writeBytes(s.encodeToByteArray())
+        writeBytesWithSize(s.encodeToByteArray())
     }
 
     fun writeNullableString(s: String?) {
@@ -60,17 +60,17 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
     fun writeBytes(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
         val size = endIndex - startIndex
 
-        growIfNecessary(4 + size)
-        writeInt(size)
+        growIfNecessary(size)
 
         data.copyInto(bytes, offset, startIndex, endIndex)
         offset += size
     }
 
-    fun writeNBytes(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
+    fun writeBytesWithSize(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
         val size = endIndex - startIndex
 
-        growIfNecessary(size)
+        growIfNecessary(4 + size)
+        writeInt(size)
 
         data.copyInto(bytes, offset, startIndex, endIndex)
         offset += size

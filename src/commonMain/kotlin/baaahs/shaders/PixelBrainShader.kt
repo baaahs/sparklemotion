@@ -230,13 +230,13 @@ class PixelBrainShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : 
         override fun serialize(writer: ByteArrayWriter) {
             writer.writeShort(pixelCount)
             palette.forEach { paletteColor -> writer.writeInt(paletteColor.argb) }
-            writer.writeNBytes(dataBuf)
+            writer.writeBytes(dataBuf)
         }
 
         /** [serialize] and [read] are asymmetrical because pixel count is read in [Buffer.read]. */
         override fun read(reader: ByteArrayReader, incomingPixelCount: Int) {
             palette.indices.forEach { i -> palette[i] = Color.from(reader.readInt()) }
-            reader.readNBytes(dataBuf)
+            reader.readBytes(dataBuf)
         }
 
         override fun setAll(color: Color): Unit =
