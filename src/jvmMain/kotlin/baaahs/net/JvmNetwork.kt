@@ -6,8 +6,7 @@ import io.ktor.content.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.request.*
-import io.ktor.response.respond
-import io.ktor.routing.get
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -24,6 +23,15 @@ import javax.jmdns.JmDNS
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceInfo
 import javax.jmdns.ServiceListener
+import kotlin.collections.List
+import kotlin.collections.MutableMap
+import kotlin.collections.arrayListOf
+import kotlin.collections.copyOfRange
+import kotlin.collections.forEach
+import kotlin.collections.isNotEmpty
+import kotlin.collections.iterator
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
 class JvmNetwork : Network {
     private val link = RealLink()
@@ -214,6 +222,31 @@ class JvmNetwork : Network {
                             e.printStackTrace()
                         }
                     }
+                }
+            }
+
+            override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
+                application.routing {
+                    val route = this
+                    val routing = object : Network.HttpServer.HttpRouting {
+                        override fun get(
+                            path: String,
+                            handler: (Network.HttpServer.HttpRequest) -> Network.HttpResponse
+                        ) {
+                            route.get(path) {
+                                val response = handler.invoke(object : Network.HttpServer.HttpRequest {
+                                    override fun param(name: String): String? = call.parameters[name]
+                                })
+                                call.respond(
+                                    ByteArrayContent(
+                                        response.body,
+                                        ContentType.parse(response.contentType),
+                                        HttpStatusCode.fromValue(response.statusCode)
+                                    ))
+                            }
+                        }
+                    }
+                    config.invoke(routing)
                 }
             }
         }

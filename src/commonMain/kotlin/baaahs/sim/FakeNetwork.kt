@@ -176,6 +176,10 @@ class FakeNetwork(
             ) {
                 webSocketListeners[path] = onConnect
             }
+
+            override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
+                TODO("not implemented")
+            }
         }
     }
 

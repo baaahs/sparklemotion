@@ -57,6 +57,10 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
             ) {
 //                TODO("TestNetwork.Link.listenWebSocket not implemented")
             }
+
+            override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
+                TODO("not implemented")
+            }
         }
 
         override fun connectWebSocket(
