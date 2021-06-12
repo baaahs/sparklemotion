@@ -6,16 +6,12 @@ import baaahs.util.Logger
 import kotlin.jvm.Synchronized
 import kotlin.math.min
 
-class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
+class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link by wrappedLink {
     init {
         if (wrappedLink is FragmentingUdpLink) {
             error("You're trying to wrap a FragmentingUdpLink in a FragmentingUdpLink?")
         }
     }
-
-    override val myAddress: Network.Address get() = wrappedLink.myAddress
-    override val myHostname: String get() = wrappedLink.myHostname
-    override val udpMtu: Int get() = wrappedLink.udpMtu
 
     /**
      * Header is 12 bytes long; format is:
@@ -117,8 +113,6 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
         fragments.addAll(myFragments)
     }
 
-    override val mdns = wrappedLink.mdns
-
     private fun removeMessageId(messageId: Short): List<Fragment> {
         val myFragments = popMessageFragments(messageId)
 
@@ -133,7 +127,7 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
         }
 
         if (myFragments.isEmpty()) {
-            println("remaining fragments = ${fragments}")
+            println("remaining fragments = $fragments")
         }
 
         return myFragments.sortedBy { it.offset }
@@ -191,16 +185,4 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link {
             }
         }
     }
-
-    override fun startHttpServer(port: Int): Network.HttpServer =
-        wrappedLink.startHttpServer(port)
-
-    override fun connectWebSocket(
-        toAddress: Network.Address,
-        port: Int,
-        path: String,
-        webSocketListener: Network.WebSocketListener
-    ): Network.TcpConnection =
-        wrappedLink.connectWebSocket(toAddress, port, path, webSocketListener)
-
 }
