@@ -5,7 +5,6 @@ import baaahs.di.*
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.io.Fs
-import baaahs.io.ResourcesFs
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
@@ -23,8 +22,6 @@ import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPixels
 import decodeQueryParams
 import kotlinx.coroutines.*
-import org.koin.core.logger.Level
-import org.koin.core.logger.PrintLogger
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import three.js.Vector3
@@ -41,10 +38,6 @@ class SheepSimulator(val model: Model) {
         window.asDynamic().simulator = this
         window.asDynamic().LoggerConfig = LoggerConfig
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
-    }
-
-    init {
-        GlobalScope.launch { cleanUpBrowserStorage() }
     }
 
     val pinkyLink = FragmentingUdpLink(network.link("pinky"))
@@ -67,6 +60,10 @@ class SheepSimulator(val model: Model) {
     val plugins = injector.get<Plugins>()
     val visualizer = injector.get<Visualizer>()
     val clock = injector.get<Clock>()
+
+    init {
+        GlobalScope.launch { cleanUpBrowserStorage() }
+    }
 
     private val brains: MutableList<Brain> = mutableListOf()
 
