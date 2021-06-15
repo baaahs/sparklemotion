@@ -1,6 +1,9 @@
 package baaahs.shaders
 
-import baaahs.*
+import baaahs.BrainShader
+import baaahs.BrainShaderId
+import baaahs.BrainShaderReader
+import baaahs.Color
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlin.math.min
@@ -97,8 +100,8 @@ class PixelBrainShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : 
     inner class DirectColorBuffer(private val pixelCount: Int, private val rgb24BitMode: Boolean = false) : Buffer() {
         override val palette: Array<Color> = emptyArray()
         private var colorsBuf: Array<Color> = Array(pixelCount) { Color.WHITE }
-        override val colors: MutableList<Color>
-            get() = object : AbstractMutableList<Color>() {
+        override val colors: MutableList<Color> =
+            object : AbstractMutableList<Color>() {
                 override fun add(index: Int, element: Color): Unit = throw UnsupportedOperationException()
 
                 override fun removeAt(index: Int): Color = throw UnsupportedOperationException()
@@ -278,7 +281,9 @@ class PixelBrainShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : 
     }
 
     class Renderer : BrainShader.Renderer<Buffer> {
-        override fun draw(buffer: Buffer, pixelIndex: Int): Color = buffer.colors[pixelIndex]
+        override fun draw(buffer: Buffer, pixelIndex: Int): Color? {
+            return if (pixelIndex < buffer.colors.size) buffer.colors[pixelIndex] else null
+        }
     }
 
 }
