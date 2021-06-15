@@ -158,7 +158,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         pointAtModel()
 
         stopRendering = false
-        render()
+        requestAnimationFrame()
     }
 
     private fun pointAtModel() {
