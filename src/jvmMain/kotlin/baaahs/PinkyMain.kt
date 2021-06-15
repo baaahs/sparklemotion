@@ -1,20 +1,15 @@
 package baaahs
 
-import baaahs.dmx.Dmx
-import baaahs.dmx.DmxDevice
+import baaahs.di.JvmBeatLinkPluginModule
+import baaahs.di.JvmPinkyModule
+import baaahs.di.JvmPlatformModule
+import baaahs.di.JvmSoundAnalysisPluginModule
 import baaahs.gl.GlBase
-import baaahs.gl.render.RenderManager
+import baaahs.io.Fs
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
-import baaahs.plugin.PluginContext
-import baaahs.plugin.Plugins
-import baaahs.plugin.beatlink.BeatLinkBeatSource
-import baaahs.plugin.beatlink.BeatLinkPlugin
-import baaahs.plugin.beatlink.BeatSource
-import baaahs.proto.Ports
-import baaahs.sim.FakeDmxUniverse
+import baaahs.util.KoinLogger
 import baaahs.util.Logger
-import baaahs.util.SystemClock
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
@@ -22,10 +17,9 @@ import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.runBlocking
-import java.io.File
+import kotlinx.coroutines.*
+import org.koin.core.qualifier.named
+import org.koin.dsl.koinApplication
 import java.io.FileNotFoundException
 import java.nio.file.FileSystems
 import java.nio.file.Files
@@ -42,52 +36,26 @@ fun main(args: Array<String>) {
 @ObsoleteCoroutinesApi
 class PinkyMain(private val args: Args) {
     private val logger = Logger("PinkyMain")
-    private val pinkyMainDispatcher = newSingleThreadContext("Pinky Main")
 
     fun run() {
         logger.info { "Are you pondering what I'm pondering?" }
 
+
         GlBase.manager // Need to wake up OpenGL on the main thread.
 
-        val model = Pluggables.loadModel(args.model)
+        val pinkyInjector = koinApplication {
+            logger(KoinLogger())
 
-        val network = JvmNetwork()
-        val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
-//        Files.createDirectories(dataDir)
-
-        val fwDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/fw")
-
-        val fs = RealFs("Sparkle Motion Data", dataDir)
-
-        val dmxUniverse = findDmxUniverse()
-
-        val clock = SystemClock
-        val beatSource = if (args.enableBeatLink) {
-            BeatLinkBeatSource(clock).also { it.start() }
-        } else {
-            BeatSource.None
-        }
-
-        val fwUrlBase = "http://${network.link("pinky").myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw"
-        val daddy = DirectoryDaddy(RealFs("Sparkle Motion Firmware", fwDir), fwUrlBase)
-        val soundAnalyzer = JvmSoundAnalyzer()
-//  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(soundAnalyzer))
-
-        val pluginContext = PluginContext(clock)
-        val plugins = Plugins.safe(pluginContext) +
-                BeatLinkPlugin.Builder(beatSource)
-
-        val pinky = runBlocking(pinkyMainDispatcher) {
-            val renderManager = RenderManager(model) { GlBase.manager.createContext() }
-            Pinky(
-                model, network, dmxUniverse, clock, fs,
-                daddy, soundAnalyzer, switchShowAfterIdleSeconds = args.switchShowAfter,
-                adjustShowAfterIdleSeconds = args.adjustShowAfter,
-                renderManager = renderManager,
-                plugins = plugins,
-                pinkyMainDispatcher = pinkyMainDispatcher
+            modules(
+                JvmPlatformModule(args).getModule(),
+                JvmPinkyModule().getModule(),
+                JvmBeatLinkPluginModule(args).getModule(),
+                JvmSoundAnalysisPluginModule(args).getModule()
             )
         }
+
+        val pinkyScope = pinkyInjector.koin.createScope<Pinky>()
+        val pinky = pinkyScope.get<Pinky>()
 
         val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
         val resource = Pinky::class.java.classLoader.getResource("baaahs")!!
@@ -142,7 +110,7 @@ class PinkyMain(private val args: Args) {
         ktor.application.install(CallLogging)
         ktor.application.routing {
             static("fw") {
-                files(fwDir.toFile())
+                files(pinkyScope.get<Fs.File>(named("firmwareDir")).asPath().toFile())
             }
         }
 
@@ -155,7 +123,7 @@ class PinkyMain(private val args: Args) {
         )
         logger.info { responses.random() }
 
-        runBlocking(pinkyMainDispatcher) {
+        runBlocking(pinkyScope.get<CoroutineDispatcher>(named("PinkyMainDispatcher"))) {
             pinky.startAndRun(simulateBrains = args.simulateBrains)
         }
     }
@@ -165,27 +133,6 @@ class PinkyMain(private val args: Args) {
         if (!Files.exists(indexHtml)) {
             throw FileNotFoundException("$indexHtml doesn't exist and it really probably should!")
         }
-    }
-
-    private fun findDmxUniverse(): Dmx.Universe {
-        val dmxDevices = try {
-            DmxDevice.listDevices()
-        } catch (e: UnsatisfiedLinkError) {
-            logger.warn { "DMX driver not found, DMX will be disabled." }
-            e.printStackTrace()
-            return FakeDmxUniverse()
-        }
-
-        if (dmxDevices.isNotEmpty()) {
-            if (dmxDevices.size > 1) {
-                logger.warn { "Multiple DMX USB devices found, using ${dmxDevices.first()}." }
-            }
-
-            return dmxDevices.first()
-        }
-
-        logger.warn { "No DMX USB devices found, DMX will be disabled." }
-        return FakeDmxUniverse()
     }
 
     class Args(parser: ArgParser) {
@@ -207,4 +154,8 @@ class PinkyMain(private val args: Args) {
 
         val simulateBrains by parser.flagging("Simulate connected brains").default(false)
     }
+}
+
+private fun Fs.File.asPath(): Path {
+    return (fs as RealFs).resolve(this)
 }

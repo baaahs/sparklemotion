@@ -1,24 +1,21 @@
 package baaahs
 
-import baaahs.browser.RealMediaDevices
 import baaahs.client.WebClient
+import baaahs.di.*
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
-import baaahs.gl.GlBase
-import baaahs.gl.RootToolchain
-import baaahs.gl.render.RenderManager
+import baaahs.io.Fs
 import baaahs.io.ResourcesFs
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
 import baaahs.model.Model
-import baaahs.net.Network
-import baaahs.plugin.PluginContext
+import baaahs.net.FragmentingUdpLink
 import baaahs.plugin.Plugins
-import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.proto.Ports
 import baaahs.sim.*
-import baaahs.util.JsClock
+import baaahs.util.Clock
+import baaahs.util.KoinLogger
 import baaahs.util.LoggerConfig
 import baaahs.visualizer.SurfaceGeometry
 import baaahs.visualizer.SwirlyPixelArranger
@@ -26,6 +23,10 @@ import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPixels
 import decodeQueryParams
 import kotlinx.coroutines.*
+import org.koin.core.logger.Level
+import org.koin.core.logger.PrintLogger
+import org.koin.core.qualifier.named
+import org.koin.dsl.koinApplication
 import three.js.Vector3
 
 class SheepSimulator(val model: Model) {
@@ -34,18 +35,7 @@ class SheepSimulator(val model: Model) {
 
     private val queryParams = decodeQueryParams(document.location!!)
     val network = FakeNetwork()
-    val clock = JsClock
-    private val dmxUniverse = FakeDmxUniverse()
-    val visualizer = Visualizer(model, clock)
-    private val mapperFs = FakeFs("Temporary Mapping Files")
-    private val resourcesFs = ResourcesFs()
-    private val fs = MergedFs(
-        BrowserSandboxFs("Browser Data"),
-        mapperFs,
-        resourcesFs,
-        name = "Browser Data")
 
-    val filesystems = listOf(fs)
     private val bridgeClient: BridgeClient = BridgeClient("${window.location.hostname}:${Ports.SIMULATOR_BRIDGE_TCP}")
     init {
         window.asDynamic().simulator = this
@@ -57,24 +47,28 @@ class SheepSimulator(val model: Model) {
         GlobalScope.launch { cleanUpBrowserStorage() }
     }
 
-    val pluginContext = PluginContext(clock)
-    val plugins = Plugins.safe(pluginContext) +
-            BeatLinkPlugin.Builder(bridgeClient.beatSource)
-    private val pinky = Pinky(
-        model,
-        network,
-        dmxUniverse,
-        clock,
-        fs,
-        PermissiveFirmwareDaddy(),
-        bridgeClient.soundAnalyzer,
-        renderManager = RenderManager(model) { GlBase.manager.createContext() },
-        plugins = plugins,
-        pinkyMainDispatcher = Dispatchers.Main
-    )
+    val pinkyLink = FragmentingUdpLink(network.link("pinky"))
+
+    val injector = koinApplication {
+        logger(KoinLogger())
+
+        modules(
+            JsSimPlatformModule(network, model).getModule(),
+            JsSimulatorModule().getModule(),
+            JsSimPinkyModule(pinkyLink).getModule(),
+            JsWebClientModule(pinkyLink.myAddress).getModule(),
+            JsMapperClientModule(pinkyLink.myAddress).getModule(),
+            JsBeatLinkPluginModule(bridgeClient.beatSource).getModule()
+        )
+    }.koin
+
+    val pinky = injector.createScope<Pinky>().get<Pinky>()
+    val plugins = injector.get<Plugins>()
+    val visualizer = injector.get<Visualizer>()
+    val clock = injector.get<Clock>()
+
     private val brains: MutableList<Brain> = mutableListOf()
 
-    val pinkyAddress: Network.Address get() = pinky.address
 
     fun start() = doRunBlocking {
         val simSurfaces = prepareSurfaces()
@@ -99,6 +93,7 @@ class SheepSimulator(val model: Model) {
         }
         pinky.pixelCount = simSurfaces.sumBy { it.pixelPositions.size }
 
+        val dmxUniverse = injector.get<FakeDmxUniverse>()
         model.movingHeads.forEach { movingHead ->
             visualizer.addMovingHead(movingHead, dmxUniverse)
         }
@@ -114,17 +109,11 @@ class SheepSimulator(val model: Model) {
     }
 
     fun createWebClientApp(): WebClient {
-        return WebClient(network, pinkyAddress, RootToolchain(plugins))
+        return injector.createScope<WebClient>().get()
     }
 
     fun createMapperApp(): JsMapperUi {
-        val mapperUi = JsMapperUi(visualizer)
-        val mediaDevices = FakeMediaDevices(visualizer, RealMediaDevices())
-
-        // This has side-effects on mapperUi. Ugly.
-        Mapper(network, model, mapperUi, mediaDevices, pinky.address, clock)
-
-        return mapperUi
+        return injector.createScope<MapperUi>().get()
     }
 
     fun createAdminUiApp() = AdminUi(network, pinky.address, model, clock)
@@ -145,6 +134,9 @@ class SheepSimulator(val model: Model) {
         }
 
         doRunBlocking {
+            val mapperFs = injector.get<Fs>(named(JsSimulatorModule.Qualifier.MapperFs)) as FakeFs
+            val fs = injector.get<Fs>()
+
             val mappingSessionPath = Storage(mapperFs, plugins).saveSession(
                 MappingSession(clock.now(), simSurfaces.map { simSurface ->
                     MappingSession.SurfaceData(
@@ -163,6 +155,8 @@ class SheepSimulator(val model: Model) {
     }
 
     private suspend fun cleanUpBrowserStorage() {
+        val fs = injector.get<Fs>()
+
         // [2021-03-13] Delete old 2019-era show files.
         fs.resolve("shaders").listFiles().forEach { file ->
             file.delete()
