@@ -45,6 +45,7 @@ baaahs.app.ui.preview
 baaahs.browser
 baaahs.client
 baaahs.control
+baaahs.di
 baaahs.dmx
 baaahs.fixtures
 baaahs.gadgets
