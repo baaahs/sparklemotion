@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.util.Clock
 import baaahs.util.JsClock
+import baaahs.util.Logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import org.w3c.dom.get
@@ -9,7 +10,9 @@ import org.w3c.xhr.XMLHttpRequest
 
 actual fun doRunBlocking(block: suspend () -> Unit) {
     GlobalScope.promise { block() }
-    return
+        .catch { t ->
+            Logger("doRunBlocking").error(t) { "Error during doRunBlocking()" }
+        }
 }
 
 val resourcesBase = document["resourcesBase"]

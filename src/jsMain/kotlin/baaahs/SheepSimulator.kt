@@ -62,7 +62,8 @@ class SheepSimulator(val model: Model) {
         )
     }.koin
 
-    val pinky = injector.createScope<Pinky>().get<Pinky>()
+    val pinkyScope = injector.createScope<Pinky>()
+    val pinky = pinkyScope.get<Pinky>()
     val plugins = injector.get<Plugins>()
     val visualizer = injector.get<Visualizer>()
     val clock = injector.get<Clock>()
@@ -135,7 +136,7 @@ class SheepSimulator(val model: Model) {
 
         doRunBlocking {
             val mapperFs = injector.get<Fs>(named(JsSimulatorModule.Qualifier.MapperFs)) as FakeFs
-            val fs = injector.get<Fs>()
+            val fs = pinkyScope.get<Fs>()
 
             val mappingSessionPath = Storage(mapperFs, plugins).saveSession(
                 MappingSession(clock.now(), simSurfaces.map { simSurface ->
@@ -155,7 +156,7 @@ class SheepSimulator(val model: Model) {
     }
 
     private suspend fun cleanUpBrowserStorage() {
-        val fs = injector.get<Fs>()
+        val fs = pinkyScope.get<Fs>()
 
         // [2021-03-13] Delete old 2019-era show files.
         fs.resolve("shaders").listFiles().forEach { file ->
