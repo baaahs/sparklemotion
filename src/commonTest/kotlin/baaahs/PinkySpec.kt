@@ -13,6 +13,7 @@ import baaahs.net.TestNetwork
 import baaahs.plugin.beatlink.BeatData
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.BrainHelloMessage
+import baaahs.proto.Ports
 import baaahs.proto.Type
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
@@ -22,6 +23,7 @@ import baaahs.ui.Observable
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -40,6 +42,10 @@ object PinkySpec : Spek({
 
         val fakeFs by value { FakeFs() }
         val pinky by value {
+            val link = FragmentingUdpLink(network.link("pinky"))
+            val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
+            val pubSub = PubSub.Server(httpServer, CoroutineScope(ImmediateDispatcher))
+
             Pinky(
                 model,
                 network,
@@ -47,10 +53,12 @@ object PinkySpec : Spek({
                 FakeClock(),
                 fakeFs,
                 PermissiveFirmwareDaddy(),
-                StubSoundAnalyzer(),
                 renderManager = fakeGlslContext.runInContext { RenderManager(model) { fakeGlslContext } },
                 plugins = testPlugins(),
-                pinkyMainDispatcher = ImmediateDispatcher
+                pinkyMainDispatcher = ImmediateDispatcher,
+                link = link,
+                httpServer = httpServer,
+                pubSub = pubSub
             )
         }
         val pinkyLink by value { network.links.only() }

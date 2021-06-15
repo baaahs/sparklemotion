@@ -1,10 +1,9 @@
 package baaahs
 
 import baaahs.io.Fs
-import baaahs.io.RealFs
 import baaahs.util.Logger
 
-class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
+class DirectoryDaddy(val firmwareDir: Fs.File, val urlBase: String) : FirmwareDaddy {
     private var preferredVersion: String? = null
 
     override suspend fun start() {
@@ -15,7 +14,7 @@ class DirectoryDaddy(val fs: RealFs, val urlBase: String) : FirmwareDaddy {
 
     private suspend fun findPreferredFirmware(): String? {
         try {
-            val files = fs.listFiles(fs.rootFile)
+            val files = firmwareDir.listFiles()
             logger.debug { "Found the following firmware files:" }
 
             var currentNum = 0

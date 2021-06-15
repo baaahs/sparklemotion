@@ -76,6 +76,7 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationRuntime}")
+                implementation("io.insert-koin:koin-core:${Versions.koin}")
                 implementation("com.soywiz.korlibs.klock:klock:2.1.2")
                 api("com.danielgergely.kgl:kgl-metadata:${Versions.kgl}")
             }
@@ -85,6 +86,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
+                implementation("io.insert-koin:koin-test:${Versions.koin}")
                 implementation("spek:spek-dsl:${Versions.spek}")
                 implementation("ch.tutteli.atrium:${Versions.atriumApi}-common:${Versions.atrium}")
             }

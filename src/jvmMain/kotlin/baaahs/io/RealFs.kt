@@ -64,7 +64,7 @@ class RealFs(
             Files.delete(resolve(file))
         }
 
-    private fun resolve(file: Fs.File): Path {
+    fun resolve(file: Fs.File): Path {
         return basePath.resolve(file.fullPath)
     }
 }
