@@ -151,7 +151,7 @@ class Brain(
                     logger.debug { "[$id] Unknown message $type" }
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             logger.error(e) { "[$id] failed to handle a packet." }
         }
     }
@@ -162,7 +162,7 @@ class Brain(
         fun draw(pixels: Pixels) {
             renderer.beginFrame(buffer, pixels.size)
             for (i in pixels.indices) {
-                pixels[i] = renderer.draw(buffer, i)
+                pixels[i] = renderer.draw(buffer, i) ?: Color.BLACK
             }
             renderer.endFrame()
             pixels.finishedFrame()

@@ -41,7 +41,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 
     div(+styles.wrapper) {
         label(+styles.label) {
-            setProp("for", "range-slider")
+            setProp("htmlFor", "range-slider")
             props.title
         }
 

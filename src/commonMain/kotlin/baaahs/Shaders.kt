@@ -69,7 +69,7 @@ abstract class BrainShader<B : BrainShader.Buffer>(val idBrain: BrainShaderId) {
 
     interface Renderer<B : Buffer> {
         fun beginFrame(buffer: B, pixelCount: Int) {}
-        fun draw(buffer: B, pixelIndex: Int): Color
+        fun draw(buffer: B, pixelIndex: Int): Color?
         fun endFrame() {}
         fun release() {}
     }
