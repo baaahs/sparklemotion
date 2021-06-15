@@ -1,17 +1,16 @@
 package baaahs
 
 import baaahs.DeadCodeEliminationDefeater.noDCE
-import baaahs.browser.RealMediaDevices
 import baaahs.client.WebClient
 import baaahs.di.JsBeatLinkPluginModule
 import baaahs.di.JsMapperClientModule
 import baaahs.di.JsPlatformModule
 import baaahs.di.JsWebClientModule
 import baaahs.jsx.sim.MosaicApp
+import baaahs.model.Model
 import baaahs.model.ObjModel
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
-import baaahs.net.Network
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.sim.HostedWebApp
@@ -20,12 +19,11 @@ import baaahs.sim.ui.WebClientWindowProps
 import baaahs.ui.ErrorDisplay
 import baaahs.ui.ErrorDisplayProps
 import baaahs.util.ConsoleFormatters
-import baaahs.util.JsClock
 import baaahs.util.KoinLogger
 import decodeQueryParams
 import kotlinext.js.jsObject
-import org.koin.core.logger.Level
-import org.koin.core.logger.PrintLogger
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.dsl.koinApplication
 import org.w3c.dom.get
 import react.createElement
@@ -43,17 +41,32 @@ fun main(args: Array<String>) {
 
     val pinkyAddress = BrowserAddress(websocketsUrl())
     val network = BrowserNetwork(pinkyAddress, Ports.PINKY)
-    val contentDiv = document.getElementById("content")
 
     val queryParams = decodeQueryParams(document.location!!)
     val model = Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
 
 
+    GlobalScope.launch {
+        launchUi(mode, model, queryParams, network, pinkyAddress)
+    }
+}
+
+private fun launchUi(
+    mode: String?,
+    model: Model,
+    queryParams: Map<String, String>,
+    network: BrowserNetwork,
+    pinkyAddress: BrowserAddress
+) {
     fun HostedWebApp.launch() {
-        onLaunch()
-        render(createElement(WebClientWindow, jsObject<WebClientWindowProps> {
-            this.hostedWebApp = this@launch
-        }), contentDiv)
+        GlobalScope.launch {
+            onLaunch()
+
+            val contentDiv = document.getElementById("content")
+            render(createElement(WebClientWindow, jsObject<WebClientWindowProps> {
+                this.hostedWebApp = this@launch
+            }), contentDiv)
+        }
     }
 
 
@@ -74,7 +87,10 @@ fun main(args: Array<String>) {
                 this.hostedWebApp = hostedWebApp
             }
             val simulatorEl = document.getElementById("app")
-            render(createElement(MosaicApp::class.js, props), simulatorEl)
+
+            GlobalScope.launch {
+                render(createElement(MosaicApp::class.js, props), simulatorEl)
+            }
         } else {
             val webAppInjector = koinApplication {
                 logger(KoinLogger())

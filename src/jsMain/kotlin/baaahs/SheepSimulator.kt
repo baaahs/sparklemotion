@@ -5,7 +5,6 @@ import baaahs.di.*
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.io.Fs
-import baaahs.io.ResourcesFs
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
@@ -23,8 +22,6 @@ import baaahs.visualizer.Visualizer
 import baaahs.visualizer.VizPixels
 import decodeQueryParams
 import kotlinx.coroutines.*
-import org.koin.core.logger.Level
-import org.koin.core.logger.PrintLogger
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import three.js.Vector3
@@ -43,10 +40,6 @@ class SheepSimulator(val model: Model) {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
     }
 
-    init {
-        GlobalScope.launch { cleanUpBrowserStorage() }
-    }
-
     val pinkyLink = FragmentingUdpLink(network.link("pinky"))
 
     val injector = koinApplication {
@@ -62,10 +55,15 @@ class SheepSimulator(val model: Model) {
         )
     }.koin
 
-    val pinky = injector.createScope<Pinky>().get<Pinky>()
+    val pinkyScope = injector.createScope<Pinky>()
+    val pinky = pinkyScope.get<Pinky>()
     val plugins = injector.get<Plugins>()
     val visualizer = injector.get<Visualizer>()
     val clock = injector.get<Clock>()
+
+    init {
+        GlobalScope.launch { cleanUpBrowserStorage() }
+    }
 
     private val brains: MutableList<Brain> = mutableListOf()
 
@@ -135,7 +133,7 @@ class SheepSimulator(val model: Model) {
 
         doRunBlocking {
             val mapperFs = injector.get<Fs>(named(JsSimulatorModule.Qualifier.MapperFs)) as FakeFs
-            val fs = injector.get<Fs>()
+            val fs = pinkyScope.get<Fs>()
 
             val mappingSessionPath = Storage(mapperFs, plugins).saveSession(
                 MappingSession(clock.now(), simSurfaces.map { simSurface ->
@@ -155,7 +153,7 @@ class SheepSimulator(val model: Model) {
     }
 
     private suspend fun cleanUpBrowserStorage() {
-        val fs = injector.get<Fs>()
+        val fs = pinkyScope.get<Fs>()
 
         // [2021-03-13] Delete old 2019-era show files.
         fs.resolve("shaders").listFiles().forEach { file ->

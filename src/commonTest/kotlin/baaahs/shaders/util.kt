@@ -42,7 +42,7 @@ internal fun <T : BrainShader.Buffer> render(srcBuf: T, fixture: Fixture): Pixel
     val renderer = dstBrainShader.createRenderer()
     renderer.beginFrame(dstBuf, pixels.size)
     for (i in pixels.indices) {
-        pixels[i] = renderer.draw(dstBuf, i)
+        pixels[i] = renderer.draw(dstBuf, i) ?: Color.BLACK
     }
     renderer.endFrame()
     return pixels

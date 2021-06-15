@@ -37,6 +37,6 @@ class SolidBrainShader : BrainShader<SolidBrainShader.Buffer>(BrainShaderId.SOLI
     }
 
     class Renderer : BrainShader.Renderer<Buffer> {
-        override fun draw(buffer: Buffer, pixelIndex: Int): Color = buffer.color
+        override fun draw(buffer: Buffer, pixelIndex: Int): Color? = buffer.color
     }
 }
