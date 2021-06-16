@@ -22,18 +22,36 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link b
      */
     companion object {
         const val headerSize = 12
+        const val incomingMessageWindow = 10
 
-        val logger = Logger("FragmentingUdpLink")
+        private val logger = Logger<FragmentingUdpLink>()
     }
 
     private val mtu = wrappedLink.udpMtu
     private var nextMessageId: Short = 0
 
-    private var fragments = mutableListOf<Fragment>()
+    private val incoming = linkedMapOf<Number, MessageAssembler>()
 
-    class Fragment(val messageId: Short, val offset: Int, val bytes: ByteArray) {
+    class MessageAssembler(val messageId: Short, val totalSize: Int) {
+        private val fragments = hashMapOf<Int, Int>() // offset to size
+        val bytes = ByteArray(totalSize)
+
+        fun receive(offset: Int, size: Int, reader: ByteArrayReader) {
+            var newData = false
+            fragments.getOrPut(offset) { newData = true; size }
+            if (newData) {
+                reader.readBytes(bytes, size, offset)
+            } else {
+                reader.skipBytes(size)
+            }
+        }
+
+        fun isComplete(): Boolean = bytesReceived() == totalSize
+
+        fun bytesReceived() = fragments.values.sum()
+
         override fun toString(): String {
-            return "Fragment(messageId=$messageId, offset=$offset, bytes=${bytes.size})"
+            return "MessageAssembler(messageId=$messageId, bytes received=${bytesReceived()}, total bytes=$totalSize)"
         }
     }
 
@@ -56,93 +74,33 @@ class FragmentingUdpLink(private val wrappedLink: Network.Link) : Network.Link b
                     return
                 }
 
-                val frameBytes = reader.readBytes(size)
                 if (offset == 0 && size == totalSize) {
+                    // Full frame in a single packet, awesome!
+                    val frameBytes = reader.readBytes(size)
                     udpListener.receive(fromAddress, fromPort, frameBytes)
                 } else {
-                    addFragment(messageId, offset, frameBytes)
+                    // Part of a frame.
+                    val messageAssembler = incoming.getOrPut(messageId) { MessageAssembler(messageId, totalSize) }
+                    messageAssembler.receive(offset, size, reader)
 
-//                        println("received fragment: ${thisFragment}")
-                    if (offset + size == totalSize) {
-                        // final fragment, try to reassemble…
+                    if (messageAssembler.isComplete()) {
+                        incoming.remove(messageId)
+                        udpListener.receive(fromAddress, fromPort, messageAssembler.bytes)
+                    }
 
-                        val myFragments = removeMessageId(messageId)
-
-                        val actualTotalSize = myFragments.map { it.bytes.size }.reduce { acc, i -> acc + i }
-                        if (actualTotalSize == totalSize) {
-                            val reassembleBytes = ByteArray(totalSize)
-                            myFragments.forEach {
-                                it.bytes.copyInto(reassembleBytes, it.offset)
-                            }
-
-                            udpListener.receive(fromAddress, fromPort, reassembleBytes)
-                        } else {
-                            if (incompleteCount++ < 5) {
-                                val maybeFinal = if (incompleteCount == 5) {
-                                    "FINAL WARNING: "
-                                } else ""
-
-                                logger.debug {
-                                    "${maybeFinal}incomplete fragmented UDP packet from $fromAddress:$fromPort:" +
-                                            " actualTotalSize=$actualTotalSize != totalSize=$totalSize" +
-                                            " for messageId=$messageId" +
-                                            " (have ${myFragments.map { it.bytes.size }.joinToString(",")})"
-                                }
-                            }
-
-                            replaceFragments(myFragments)
+                    val incomingCount = incoming.size
+                    if (incomingCount > incomingMessageWindow) {
+                        val key = incoming.keys.first()
+                        val value = incoming.remove(key)!!
+                        logger.debug {
+                            "Dropped incomplete incoming message $key " +
+                                    "with ${value.bytesReceived()} of ${value.totalSize} bytes; " +
+                                    "window size is $incomingMessageWindow."
                         }
                     }
                 }
             }
         }))
-    }
-
-    @Synchronized
-    private fun addFragment(messageId: Short, offset: Int, frameBytes: ByteArray) {
-        val fragmentCount = fragments.size
-        if (fragmentCount > 200) {
-            fragments = fragments.subList(fragmentCount - 50, fragmentCount)
-        }
-        val thisFragment = Fragment(messageId, offset, frameBytes)
-        fragments.add(thisFragment)
-    }
-
-    @Synchronized
-    private fun replaceFragments(myFragments: List<Fragment>) {
-        fragments.addAll(myFragments)
-    }
-
-    private fun removeMessageId(messageId: Short): List<Fragment> {
-        val myFragments = popMessageFragments(messageId)
-
-        val offsets = hashSetOf<Int>()
-        myFragments.removeAll { fragment ->
-            val alreadyThere = !offsets.add(fragment.offset)
-//                if (alreadyThere) {
-//                    println("already there: ${fragment}")
-//                    println("from: $myFragments")
-//                }
-            alreadyThere // duplicate, ignore
-        }
-
-        if (myFragments.isEmpty()) {
-            println("remaining fragments = $fragments")
-        }
-
-        return myFragments.sortedBy { it.offset }
-    }
-
-    @Synchronized
-    private fun popMessageFragments(messageId: Short): ArrayList<Fragment> {
-        val myFragments = arrayListOf<Fragment>()
-
-        fragments.removeAll { fragment ->
-            val remove = fragment.messageId == messageId
-            if (remove) myFragments.add(fragment)
-            remove
-        }
-        return myFragments
     }
 
     inner class FragmentingUdpSocket(private val delegate: Network.UdpSocket) : Network.UdpSocket {

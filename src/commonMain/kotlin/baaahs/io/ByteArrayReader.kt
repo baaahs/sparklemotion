@@ -3,7 +3,7 @@ package baaahs.io
 import kotlin.math.min
 
 class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
-    var offset = offset
+    private var offset = offset
         set(value) {
             if (value > bytes.size) {
                 throw IllegalStateException("array index out of bounds")
@@ -43,10 +43,18 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
         return bytes
     }
 
-    fun readBytes(dest: ByteArray): ByteArray {
-        val bytes = bytes.copyInto(dest,
-            destinationOffset = 0, startIndex = offset, endIndex = offset + dest.size)
-        offset += dest.size
+    fun readBytes(
+        dest: ByteArray,
+        count: Int = dest.size,
+        destOffset: Int = 0
+    ): ByteArray {
+        val bytes = bytes.copyInto(
+            dest,
+            destinationOffset = destOffset,
+            startIndex = offset,
+            endIndex = offset + count
+        )
+        offset += count
         return bytes
     }
 
@@ -68,4 +76,8 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
     }
 
     fun hasMoreBytes(): Boolean = offset < bytes.size
+
+    fun skipBytes(count: Int) {
+        offset += count
+    }
 }
