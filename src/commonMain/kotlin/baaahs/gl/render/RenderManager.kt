@@ -22,7 +22,11 @@ class RenderManager(
         renderEngines.getBang(deviceType, "render engine")
 
     fun draw() {
-        renderEngines.values.forEach { it.draw() }
+        // If there are multiple RenderEngines, let them parallelize the render step...
+        renderEngines.values.forEach { it.draw(finish = false) }
+
+        // ... before transferring results back to CPU memory.
+        renderEngines.values.forEach { it.finish() }
     }
 
     fun addFixture(fixture: Fixture): FixtureRenderTarget {
