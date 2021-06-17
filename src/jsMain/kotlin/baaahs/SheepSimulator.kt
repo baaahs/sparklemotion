@@ -9,7 +9,6 @@ import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
 import baaahs.model.Model
-import baaahs.net.FragmentingUdpLink
 import baaahs.plugin.Plugins
 import baaahs.proto.Ports
 import baaahs.sim.*
@@ -40,7 +39,7 @@ class SheepSimulator(val model: Model) {
 //  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
     }
 
-    val pinkyLink = FragmentingUdpLink(network.link("pinky"))
+    val pinkyLink = network.link("pinky")
 
     val injector = koinApplication {
         logger(KoinLogger())

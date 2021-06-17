@@ -8,7 +8,7 @@ import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.models.SheepModel
-import baaahs.net.FragmentingUdpLink
+import baaahs.net.FragmentingUdpSocket
 import baaahs.net.TestNetwork
 import baaahs.plugin.beatlink.BeatData
 import baaahs.plugin.beatlink.BeatSource
@@ -42,7 +42,7 @@ object PinkySpec : Spek({
 
         val fakeFs by value { FakeFs() }
         val pinky by value {
-            val link = FragmentingUdpLink(network.link("pinky"))
+            val link = network.link("pinky")
             val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
             val pubSub = PubSub.Server(httpServer, CoroutineScope(ImmediateDispatcher))
 
@@ -106,7 +106,7 @@ object PinkySpec : Spek({
                 }
 
                 it("should send pixels but not not send mapping to the brain") {
-                    val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
+                    val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpSocket.headerSize]) }
                     expect(packetTypes)
                         .containsExactly(Type.BRAIN_PANEL_SHADE) // Should send no mapping packet.
                 }
@@ -125,7 +125,7 @@ object PinkySpec : Spek({
                     }
 
                     it("should send pixels but not mapping to the brain") {
-                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
+                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpSocket.headerSize]) }
                         expect(packetTypes)
                             .containsExactly(Type.BRAIN_PANEL_SHADE) // Should send no mapping packet.
                     }
@@ -135,7 +135,7 @@ object PinkySpec : Spek({
                     override(brainHelloMessage) { BrainHelloMessage("brain1", null) }
 
                     it("should notify show") {
-                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
+                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpSocket.headerSize]) }
                         expect(packetTypes)
                             .containsExactly(Type.BRAIN_MAPPING,Type.BRAIN_PANEL_SHADE) // Should send a mapping packet.
                     }

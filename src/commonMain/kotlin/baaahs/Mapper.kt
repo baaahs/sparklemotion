@@ -11,8 +11,8 @@ import baaahs.imaging.NativeBitmap
 import baaahs.mapper.ImageProcessing
 import baaahs.mapper.MappingSession
 import baaahs.model.Model
-import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
+import baaahs.net.listenFragmentingUdp
 import baaahs.proto.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.shaders.SolidBrainShader
@@ -71,8 +71,8 @@ class Mapper(
     }
 
     fun start() = doRunBlocking {
-        link = FragmentingUdpLink(network.link("mapper"))
-        udpSocket = link.listenUdp(0, this)
+        link = network.link("mapper")
+        udpSocket = link.listenFragmentingUdp(0, this)
         webSocketClient = WebSocketClient(link, pinkyAddress)
 
         launch {

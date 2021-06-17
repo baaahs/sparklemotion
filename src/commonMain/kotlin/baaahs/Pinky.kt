@@ -15,8 +15,8 @@ import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapper.SessionMappingResults
 import baaahs.mapper.Storage
 import baaahs.model.Model
-import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
+import baaahs.net.listenFragmentingUdp
 import baaahs.plugin.Plugins
 import baaahs.proto.*
 import baaahs.show.Show
@@ -24,7 +24,7 @@ import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
 import kotlinx.coroutines.*
-import kotlinx.serialization.*
+import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
 
 class Pinky(
@@ -70,7 +70,7 @@ class Pinky(
     private val networkStats = NetworkStats()
 
     // This needs to go last-ish, otherwise we start getting network traffic too early.
-    private val udpSocket = link.listenUdp(Ports.PINKY, this)
+    private val udpSocket = link.listenFragmentingUdp(Ports.PINKY, this)
     private val brainManager =
         BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats, clock)
     private val movingHeadManager = MovingHeadManager(fixtureManager, dmxUniverse, model.movingHeads)
