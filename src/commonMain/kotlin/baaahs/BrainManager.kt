@@ -103,9 +103,8 @@ class BrainManager(
             udpSocket.sendUdp(brainAddress, Ports.BRAIN, newHotness)
         }
 
-        val transport = BrainTransport(brainAddress, brainId, isSimulatedBrain, msg.firmwareVersion, msg.idfVersion)
-        val fixture = createFixtureFor(msg, transport)
-            .also { transport.fixture = it }
+        val transport = BrainTransport(brainAddress, brainId, isSimulatedBrain, msg)
+        val fixture = transport.fixture
 
         fixture.modelEntity?.let { modelSurface ->
             if (msg.surfaceName != modelSurface.name) {
@@ -166,11 +165,11 @@ class BrainManager(
         private val brainAddress: Network.Address,
         val brainId: BrainId,
         private val isSimulatedBrain: Boolean,
+        msg: BrainHelloMessage,
         val firmwareVersion: String? = null,
         val idfVersion: String? = null
     ) : Transport {
-        // This is weirdly circular. :-/
-        lateinit var fixture: Fixture
+        val fixture: Fixture = createFixtureFor(msg, this)
 
         var hadException: Boolean = false
             private set
