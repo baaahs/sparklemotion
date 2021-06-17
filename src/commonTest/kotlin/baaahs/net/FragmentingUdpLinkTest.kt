@@ -6,28 +6,26 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import kotlin.random.Random
 
-object FragmentingUdpLinkSpec : Spek({
-    describe<FragmentingUdpLink> {
+object FragmentingUdpSocketSpec : Spek({
+    describe<FragmentingUdpSocket> {
         val port by value { 1234 }
         val mtu by value { 1400 }
 
         val network by value { TestNetwork(mtu) }
         val receivedPayloads by value { mutableListOf<ByteArray>() }
-        val sendTestLink by value { network.link("send-link") }
-        val sendLink by value { FragmentingUdpLink(sendTestLink) }
-        val recvTestLink by value { network.link("recv-link") }
-        val recvLink by value { FragmentingUdpLink(recvTestLink) }
+        val sendLink by value { network.link("send-link") }
+        val recvLink by value { network.link("recv-link") }
 
         fun send(payload: ByteArray) {
-            sendLink.listenUdp(0, object : Network.UdpListener {
+            sendLink.listenFragmentingUdp(0, object : Network.UdpListener {
                 override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
                 }
             }).sendUdp(recvLink.myAddress, port, payload)
-            sendTestLink.sendTo(recvTestLink)
+            sendLink.sendTo(recvLink)
         }
 
         beforeEachTest {
-            recvLink.listenUdp(port, object : Network.UdpListener {
+            recvLink.listenFragmentingUdp(port, object : Network.UdpListener {
                 override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
                     receivedPayloads += bytes
                 }
@@ -40,7 +38,7 @@ object FragmentingUdpLinkSpec : Spek({
 
             expect(receivedPayloads.size).toBe(1)
             expect(receivedPayloads.first().toList()).toBe(smallPayload.toList())
-            expect(recvTestLink.receviedPackets.size).toBe(1)
+            expect(recvLink.receviedPackets.size).toBe(1)
         }
 
         it("shouldFragmentAndReassembleLargerPayloads") {
@@ -49,7 +47,7 @@ object FragmentingUdpLinkSpec : Spek({
 
             expect(receivedPayloads.size).toBe(1)
             expect(receivedPayloads.first().toList()).toBe(mediumPayload.toList())
-            expect(recvTestLink.receviedPackets.size).toBe(5)
+            expect(recvLink.receviedPackets.size).toBe(5)
         }
 
         it("shouldFragmentAndReassemblePayloadsLargerThan64k") {
@@ -58,7 +56,7 @@ object FragmentingUdpLinkSpec : Spek({
 
             expect(receivedPayloads.size).toBe(1)
             expect(receivedPayloads.first().toList()).toBe(mediumPayload.toList())
-            expect(recvTestLink.receviedPackets.size).toBe(73)
+            expect(recvLink.receviedPackets.size).toBe(73)
         }
     }
 })
