@@ -2,6 +2,21 @@ package baaahs.sim
 
 import baaahs.dmx.Dmx
 
+class SimDmxDriver : Dmx.Driver {
+    private val fakeDmxDevice = SimDmxDevice()
+
+    override fun findDmxDevices(): List<Dmx.Device> = listOf(fakeDmxDevice)
+}
+
+class SimDmxDevice : Dmx.Device {
+    override val id: String get() = "dmx-simulator"
+    override val name: String get() = "DMX Simulator"
+
+    private val fakeDmxUniverse = FakeDmxUniverse()
+
+    override fun asUniverse(): Dmx.Universe = fakeDmxUniverse
+}
+
 class FakeDmxUniverse : Dmx.Universe() {
     private val channelsOut = ByteArray(512)
     private val channelsIn = ByteArray(512)

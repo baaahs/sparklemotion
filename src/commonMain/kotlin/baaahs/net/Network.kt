@@ -35,8 +35,16 @@ interface Network {
     }
 
     interface Mdns {
-        fun register(hostname: String, type: String, proto: String, port: Int, domain: String = "local.", params: MutableMap<String, String> = mutableMapOf()): MdnsRegisteredService?
-        fun unregister(inst: MdnsRegisteredService?)
+        fun register(
+            hostname: String,
+            type: String,
+            proto: String,
+            port: Int,
+            domain: String = "local.",
+            params: Map<String, String> = mutableMapOf()
+        ): MdnsRegisteredService
+
+        fun unregister(inst: MdnsRegisteredService)
         fun listen(type: String, proto: String, domain: String, handler: MdnsListenHandler)
 
         fun String.normalizeMdnsDomain(): String {
@@ -54,28 +62,29 @@ interface Network {
     interface MdnsService {
         // todo: add service methods
 
-        val hostname : String
-        val type     : String
-        val proto    : String
-        val port     : Int
-        val domain   : String
+        val hostname: String
+        val type: String
+        val proto: String
+        val port: Int
+        val domain: String
 
-        fun getAddress() : Address?
-        fun getTXT(key: String) : String?
-        fun getAllTXTs() : MutableMap<String, String>
+        fun getAddress(): Address?
+        fun getTXT(key: String): String?
+        fun getAllTXTs(): Map<String, String>
     }
 
     interface MdnsRegisteredService : MdnsService {
         fun unregister()
-        fun updateTXT(txt: MutableMap<String, String>)
+        fun updateTXT(txt: Map<String, String>)
         fun updateTXT(key: String, value: String)
         // todo: unsetTXT
         // todo: unsetAllTXT
     }
 
     interface MdnsListenHandler {
-        fun resolved(service: MdnsService)
+        fun added(service: MdnsService)
         fun removed(service: MdnsService)
+        fun resolved(service: MdnsService)
     }
 
     interface Address {

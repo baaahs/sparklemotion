@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.dmx.DmxManager
 import baaahs.geom.Matrix4
 import baaahs.gl.override
 import baaahs.gl.render.RenderManager
@@ -17,8 +18,8 @@ import baaahs.proto.Ports
 import baaahs.proto.Type
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
-import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
+import baaahs.sim.SimDmxDriver
 import baaahs.ui.Observable
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -49,7 +50,6 @@ object PinkySpec : Spek({
             Pinky(
                 model,
                 network,
-                FakeDmxUniverse(),
                 FakeClock(),
                 fakeFs,
                 PermissiveFirmwareDaddy(),
@@ -58,7 +58,8 @@ object PinkySpec : Spek({
                 pinkyMainDispatcher = ImmediateDispatcher,
                 link = link,
                 httpServer = httpServer,
-                pubSub = pubSub
+                pubSub = pubSub,
+                dmxManager = DmxManager(SimDmxDriver(), pubSub)
             )
         }
         val pinkyLink by value { network.links.only() }

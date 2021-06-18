@@ -1,7 +1,9 @@
 package baaahs
 
 import baaahs.api.ws.WebSocketRouter
+import baaahs.controller.WledManager
 import baaahs.dmx.Dmx
+import baaahs.dmx.DmxManager
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.RootToolchain
@@ -30,18 +32,18 @@ import kotlin.coroutines.CoroutineContext
 class Pinky(
     val model: Model,
     val network: Network,
-    val dmxUniverse: Dmx.Universe,
     val clock: Clock,
     fs: Fs,
     val firmwareDaddy: FirmwareDaddy,
-    private val switchShowAfterIdleSeconds: Int? = 600,
-    private val adjustShowAfterIdleSeconds: Int? = null,
+//    private val switchShowAfterIdleSeconds: Int? = 600,
+//    private val adjustShowAfterIdleSeconds: Int? = null,
     renderManager: RenderManager,
     val plugins: Plugins,
     val pinkyMainDispatcher: CoroutineDispatcher,
     private val link: Network.Link,
     val httpServer: Network.HttpServer,
-    private val pubSub: PubSub.Server
+    pubSub: PubSub.Server,
+    dmxManager: DmxManager
 ) : CoroutineScope, Network.UdpListener {
     val facade = Facade()
     private val storage = Storage(fs, plugins)
@@ -72,8 +74,10 @@ class Pinky(
     // This needs to go last-ish, otherwise we start getting network traffic too early.
     private val udpSocket = link.listenFragmentingUdp(Ports.PINKY, this)
     private val brainManager =
-        BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats, clock)
-    private val movingHeadManager = MovingHeadManager(fixtureManager, dmxUniverse, model.movingHeads)
+        BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats, clock, pubSub)
+    private val movingHeadManager = MovingHeadManager(fixtureManager, dmxManager.dmxUniverse, model.movingHeads)
+    private val wledManager = WledManager(fixtureManager, model, link, pubSub, pinkyMainDispatcher, clock)
+    val dmxUniverse: Dmx.Universe = dmxManager.dmxUniverse
 
     private val shaderLibraryManager = ShaderLibraryManager(storage, pubSub)
 
@@ -183,9 +187,9 @@ class Pinky(
             launch {
                 while (true) {
                     if (mapperIsRunning) {
-                        logger.info { "Mapping ${brainManager.brainCount} brains..." }
+                        logger.info { "Mapping ${brainManager.brainCount} brains." }
                     } else {
-                        logger.info { "Sending to ${brainManager.brainCount} brains..." }
+                        logger.info { "Sending pixels to ${brainManager.brainCount} brains." }
                     }
                     delay(10000)
                 }

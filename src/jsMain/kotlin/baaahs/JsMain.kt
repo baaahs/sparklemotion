@@ -116,11 +116,6 @@ private fun launchUi(
 
                     (model as? ObjModel)?.load()
 
-//                    val mapperUi = JsMapperUi();
-//                    val mediaDevices = RealMediaDevices()
-//                    // Yuck, side effects.
-//                    Mapper(koin.get(), model, mapperUi, mediaDevices, pinkyAddress, JsClock)
-
                     val mapperUi = koin.createScope<MapperUi>().get<JsMapperUi>()
                     mapperUi.launch()
                 }

@@ -42,6 +42,39 @@ environment using sensors,
 
 (more TK)
 
+## Scene Configuration
+
+Sparkle Motion shows may be designed with a specific model and display fixtures in mind, but most shows can be applied to any model and fixtures.
+
+To facilitate this, Sparkle Motion separates configuration of scene elements (the physical model and fixtures) from visuals and the performance interface.
+
+| Term | Definition |
+| --- | --- |
+| **Driver** | A pluggable software component that can talk to specific types of display controller hardware, e.g. Brains, WLED, or DMX USB dongles. |
+| **Controller** | A physical component directly connected to display hardware, e.g. a Sparkle Motion Brain, a WLED controller, or a DMX USB dongle. One or more fixtures may be associated with a controller. |
+| **Fixture** | A physical display device, e.g. a moving head, a pixel array surface (a.k.a. panel), an LED bar, etc. |
+| **Scene/Stage?** | The collection of fixtures under control of Sparkle Motion, which may be identified as model entities, or anonymous. |
+| **Geometry** | The physical shape of a pixel array fixture. |
+| **Model** | A 3-dimensional model to which fixtures may be mapped. Models may be composed of OBJ files and explicitly placed entities. |
+| **Entity** | An object within the model, e.g. a sheep panel or eye. |
+
+Note that in some cases a single controller may control multiple fixtures. Commonly, a physical DMX USB dongle may have
+multiple moving heads attached. It's possible (but less common) for a single brain or WLED controller to be attached to
+multiple physical lighting fixtures.
+
+Also, it's possible for a DMX controller to manage multiple DMX universes, e.g. in the case of a WLED controller
+managing more than 170 pixels.
+
+ERD:
+
+Driver <->* Controller <->* Fixture <->? Entity *<--> Model
+
+A fixture may be *identified* or *anomnymous*.
+
+Identified fixtures are associated with an entity in the model, and therefore have a known position and geometry.
+
+Anonymous fixtures are mostly for stuff like bikers-by. They are randomly placed within the model. Pixel arrays are assumed to be linear.
+
 ## Mapper
 
 Sparkle Morton's mapper lets you detect arbitrarily-placed lights on a 2D or 3D model using just a camera

@@ -14,6 +14,7 @@ import baaahs.proto.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.Time
 import baaahs.util.asMillis
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -31,11 +32,14 @@ class BrainManager(
     private val udpSocket: Network.UdpSocket,
     private val networkStats: Pinky.NetworkStats,
     private val clock: Clock,
+    pubSub: PubSub.IServer,
     private val surfacePixelStrategy: SurfacePixelStrategy = LinearSurfacePixelStrategy()
 ) {
     internal val activeBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
     private val pendingBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
     private val listeningVisualizers = hashSetOf<Pinky.ListeningVisualizer>()
+
+    private var brainData by publishProperty(pubSub, Topics.brains, emptyMap())
 
     val brainCount: Int
         get() = activeBrains.size
@@ -51,6 +55,7 @@ class BrainManager(
 
         val fixturesToAdd = mutableListOf<Fixture>()
         val fixturesToRemove = mutableListOf<Fixture>()
+        val newBrainData = brainData.toMutableMap()
 
         pendingBrains.forEach { (brainId, incomingBrainTransport) ->
             val priorBrainTransport = activeBrains[brainId]
@@ -61,9 +66,22 @@ class BrainManager(
             if (incomingBrainTransport.hadException) {
                 // Existing Brain has had exceptions so we're forgetting about it.
                 activeBrains.remove(brainId)
+                newBrainData.remove(brainId.uuid)
             } else {
-                fixturesToAdd.add(incomingBrainTransport.fixture)
+                val fixture = incomingBrainTransport.fixture
+
+                fixturesToAdd.add(fixture)
                 activeBrains[brainId] = incomingBrainTransport
+
+                newBrainData[brainId.uuid] = BrainInfo(
+                    brainId,
+                    incomingBrainTransport.brainAddress.asString(),
+                    fixture.modelEntity?.name,
+                    fixture.pixelCount,
+                    fixture.pixelLocations.size,
+                    BrainInfo.Status.Online,
+                    clock.now()
+                )
             }
         }
 
@@ -75,6 +93,7 @@ class BrainManager(
         }
 
         pendingBrains.clear()
+        brainData = newBrainData
 
         return true
     }
@@ -162,7 +181,7 @@ class BrainManager(
     }
 
     inner class BrainTransport(
-        private val brainAddress: Network.Address,
+        internal val brainAddress: Network.Address,
         val brainId: BrainId,
         private val isSimulatedBrain: Boolean,
         msg: BrainHelloMessage,
@@ -245,6 +264,21 @@ class BrainManager(
     companion object {
         private val logger = Logger<BrainManager>()
         private val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.DIRECT_RGB)
+    }
+}
+
+@Serializable
+data class BrainInfo(
+    val id: BrainId,
+    val address: String,
+    val modelEntity: String?,
+    val pixelCount: Int,
+    val mappedPixelCount: Int,
+    val status: Status,
+    val onlineSince: Time
+) {
+    enum class Status {
+        Online
     }
 }
 

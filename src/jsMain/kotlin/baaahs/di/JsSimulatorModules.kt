@@ -67,8 +67,8 @@ class JsSimPinkyModule(
         get() = Dispatchers.Main
     override val Scope.pinkyLink: Network.Link
         get() = pinkyLink_
-    override val Scope.dmxUniverse: Dmx.Universe
-        get() = get<FakeDmxUniverse>()
+    override val Scope.dmxDriver: Dmx.Driver
+        get() = SimDmxDriver()
     override val Scope.renderManager: RenderManager
         get() = RenderManager(get()) { GlBase.manager.createContext() }
 }

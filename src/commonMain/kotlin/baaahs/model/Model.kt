@@ -19,28 +19,16 @@ abstract class Model : ModelInfo {
     fun findSurface(name: String) =
         allSurfacesByName[name] ?: throw RuntimeException("no such model surface $name")
 
-    val allVertices by lazy {
-        val allVertices = hashSetOf<Vector3F>()
-        allSurfaces.map { allVertices.addAll(it.allVertices()) }
-        allVertices
+    private val allVertices by lazy {
+        hashSetOf<Vector3F>().apply { allSurfaces.map { addAll(it.allVertices()) } }
     }
 
-    val modelBounds by lazy {
-        boundingBox(allVertices)
-    }
+    private val modelBounds by lazy { boundingBox(allVertices) }
+    private val modelExtents by lazy { val (min, max) = modelBounds; max - min }
+    private val modelCenter by lazy { center(allVertices) }
 
-    val modelExtents by lazy {
-        val (min, max) = modelBounds
-        max - min
-    }
-    override val extents
-        get() = modelExtents
-
-    val modelCenter by lazy {
-        center(allVertices)
-    }
-    override val center: Vector3F
-        get() = modelCenter
+    override val extents get() = modelExtents
+    override val center: Vector3F get() = modelCenter
 
     interface Entity {
         val name: String
@@ -69,6 +57,15 @@ abstract class Model : ModelInfo {
             return vertices
         }
     }
+
+    class LightBar(
+        override val name: String,
+        override val description: String,
+        override val deviceType: DeviceType,
+        val startVertex: Vector3F?,
+        val endVertex: Vector3F?,
+        val pixelCount: Int
+    ) : Entity
 
     data class Line(val vertices: List<Vector3F>)
 

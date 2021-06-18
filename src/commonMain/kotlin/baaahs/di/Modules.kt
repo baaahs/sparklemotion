@@ -2,6 +2,7 @@ package baaahs.di
 
 import baaahs.*
 import baaahs.dmx.Dmx
+import baaahs.dmx.DmxManager
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.model.Model
@@ -46,7 +47,7 @@ interface PinkyModule : KModule {
     val Scope.firmwareDaddy: FirmwareDaddy
     val Scope.pinkyMainDispatcher: CoroutineDispatcher
     val Scope.pinkyLink: Network.Link get() = get<Network>().link("pinky")
-    val Scope.dmxUniverse: Dmx.Universe
+    val Scope.dmxDriver: Dmx.Driver
     val Scope.renderManager: RenderManager
 
     override fun getModule(): Module = module {
@@ -61,18 +62,19 @@ interface PinkyModule : KModule {
                 get<CoroutineDispatcher>(named("PinkyMainDispatcher")) + get<Job>(named("PinkyJob"))
             }
             scoped { PubSub.Server(get(), CoroutineScope(get(named("PinkyContext")))) }
-            scoped { dmxUniverse }
+            scoped { dmxDriver }
+            scoped { DmxManager(get(), get()) }
             scoped { renderManager }
             scoped { get<Network.Link>(named("PinkyLink")).startHttpServer(Ports.PINKY_UI_TCP) }
             scoped {
                 Pinky(
                     get(), get(), get(), get(), get(),
-                    get(), renderManager = get(),
-                    plugins = get(),
+                    get(), get(),
                     pinkyMainDispatcher = get(named("PinkyMainDispatcher")),
                     link = get(named("PinkyLink")),
                     httpServer = get(),
-                    pubSub = get()
+                    pubSub = get(),
+                    dmxManager = get()
                 )
             }
         }

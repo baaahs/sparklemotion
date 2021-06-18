@@ -97,5 +97,19 @@ class SpyPubSub(
         events.add(s)
         println("event: $s")
     }
+}
 
+class StubPubSubServer : PubSub.IServer {
+    override fun <T> publish(topic: PubSub.Topic<T>, data: T, onUpdate: (T) -> Unit): PubSub.Channel<T> {
+        return object : PubSub.Channel<T> {
+            override fun onChange(t: T) {
+            }
+
+            override fun replaceOnUpdate(onUpdate: (T) -> Unit) {
+            }
+
+            override fun unsubscribe() {
+            }
+        }
+    }
 }

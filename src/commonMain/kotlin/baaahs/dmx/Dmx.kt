@@ -1,6 +1,22 @@
 package baaahs.dmx
 
 interface Dmx {
+    interface Driver {
+        fun findDmxDevices(): List<Device>
+
+        companion object {
+            val NoOpDmxDriver = object : Driver {
+                override fun findDmxDevices(): List<Device> = emptyList()
+            }
+        }
+    }
+
+    interface Device {
+        val id: String
+        val name: String
+        fun asUniverse(): Universe
+    }
+
     abstract class Universe {
         abstract fun writer(baseChannel: Int, channelCount: Int): Buffer
         abstract fun sendFrame()
