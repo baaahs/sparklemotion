@@ -11,10 +11,7 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.IOException
 import java.net.*
 import java.nio.ByteBuffer
@@ -23,14 +20,6 @@ import javax.jmdns.JmDNS
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceInfo
 import javax.jmdns.ServiceListener
-import kotlin.collections.List
-import kotlin.collections.MutableMap
-import kotlin.collections.arrayListOf
-import kotlin.collections.copyOfRange
-import kotlin.collections.forEach
-import kotlin.collections.isNotEmpty
-import kotlin.collections.iterator
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
 class JvmNetwork : Network {
@@ -145,6 +134,26 @@ class JvmNetwork : Network {
         override fun startHttpServer(port: Int): KtorHttpServer =
             KtorHttpServer(port).also { it.httpServer.start(false) }
 
+        override suspend fun httpGetRequest(address: Network.Address, port: Int, path: String): String {
+            val url = URLBuilder().apply {
+                this.host = address.asString()
+                this.path(path)
+                this.port = port
+            }.buildString()
+
+            return coroutineScope {
+                withContext(Dispatchers.IO) {
+                    makeRequest(url)
+                }
+            }
+        }
+
+        private fun makeRequest(url: String): String {
+            val connection = URL(url).openConnection() as HttpURLConnection
+            connection.setRequestProperty("accept", "application/json")
+            return connection.inputStream.bufferedReader().use { it.readText() }
+        }
+
         override fun connectWebSocket(
             toAddress: Network.Address,
             port: Int,
@@ -152,6 +161,10 @@ class JvmNetwork : Network {
             webSocketListener: Network.WebSocketListener
         ): Network.TcpConnection {
             TODO("JvmNetwork.connectWebSocket not implemented")
+        }
+
+        override fun createAddress(name: String): Network.Address {
+            return IpAddress(InetAddress.getByName(name))
         }
 
         inner class KtorHttpServer(val port: Int) : Network.HttpServer {
@@ -338,8 +351,7 @@ class JvmNetwork : Network {
             }
         }
 
-        override fun toString(): String {
-            return "IpAddress($address)"
-        }
+        override fun asString(): String = address.hostAddress
+        override fun toString(): String = asString()
     }
 }

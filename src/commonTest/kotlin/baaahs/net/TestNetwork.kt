@@ -63,6 +63,10 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
             }
         }
 
+        override suspend fun httpGetRequest(address: Network.Address, port: Int, path: String): String {
+            TODO("TestNetowrk.Link.httpGetRequest not implemented")
+        }
+
         override fun connectWebSocket(
             toAddress: Network.Address,
             port: Int,
@@ -71,9 +75,12 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
         ): Network.TcpConnection {
             TODO("Link.connectWebSocket not implemented")
         }
+
+        override fun createAddress(name: String): Network.Address = Address(name)
     }
 
     class Address(private val name: String = "some address") : Network.Address {
-        override fun toString(): String =  name
+        override fun asString(): String = name
+        override fun toString(): String = asString()
     }
 }

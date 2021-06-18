@@ -115,9 +115,12 @@ internal class BrowserUdpProxy(
     }
 
     private data class UdpProxyAddress(val bytes: ByteArray) : Network.Address {
-        override fun toString(): String {
+
+        override fun asString(): String {
             return bytes.joinToString(".") { it.toInt().and(0xff).toString() }
         }
+
+        override fun toString(): String = asString()
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
