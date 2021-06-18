@@ -490,7 +490,11 @@ abstract class PubSub {
         }
     }
 
-    class Server(httpServer: Network.HttpServer, private val handlerScope: CoroutineScope) : Endpoint() {
+    interface IServer {
+        fun <T : Any?> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T>
+    }
+
+    class Server(httpServer: Network.HttpServer, private val handlerScope: CoroutineScope) : Endpoint(), IServer {
         private val publisher = Origin("Server-side publisher")
         private val topics: Topics = Topics()
         override val commandChannels: CommandChannels = CommandChannels(handlerScope)
@@ -508,7 +512,7 @@ abstract class PubSub {
             return publish(topic, initialValue, onUpdate)
         }
 
-        fun <T : Any?> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T> {
+        override fun <T : Any?> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T> {
             val topicName = topic.name
 
             @Suppress("UNCHECKED_CAST")
@@ -750,5 +754,47 @@ abstract class PubSub {
             cleanups.forEach { it.invoke() }
             cleanups.clear()
         }
+    }
+}
+
+fun <T: Any?> publishProperty(
+    pubSub: PubSub.IServer,
+    topic: PubSub.Topic<T>,
+    initialValue: T,
+    onChange: ((value: T) -> Unit)? = null
+): ReadWriteProperty<Any?, T> = object : ReadWriteProperty<Any?, T> {
+    var data: T = initialValue
+
+    val channel = pubSub.publish(topic, initialValue) { newValue ->
+        data = newValue
+        onChange?.invoke(newValue)
+    }
+
+    override fun getValue(thisRef: Any?, property: KProperty<*>): T = data
+
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+        data = value
+        channel.onChange(data)
+    }
+}
+
+fun <T: Any?> subscribeProperty(
+    pubSub: PubSub.Client,
+    topic: PubSub.Topic<T>,
+    initialValue: T,
+    onChange: ((value: T) -> Unit)? = null
+): ReadWriteProperty<Any?, T> = object : ReadWriteProperty<Any?, T> {
+    var data: T = initialValue
+
+    val channel = pubSub.subscribe(topic) { newValue ->
+        data = newValue
+        onChange?.invoke(newValue)
+    }
+
+    override fun getValue(thisRef: Any?, property: KProperty<*>): T = data
+
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+        data = value
+        channel.onChange(data)
     }
 }

@@ -9,6 +9,7 @@ import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.mapper.Storage
 import baaahs.model.Model
+import baaahs.model.MovingHead
 import baaahs.plugin.Plugins
 import baaahs.proto.Ports
 import baaahs.sim.*
@@ -90,9 +91,10 @@ class SheepSimulator(val model: Model) {
         }
         pinky.pixelCount = simSurfaces.sumBy { it.pixelPositions.size }
 
-        val dmxUniverse = injector.get<FakeDmxUniverse>()
-        model.movingHeads.forEach { movingHead ->
-            visualizer.addMovingHead(movingHead, dmxUniverse)
+        model.allEntities.forEach { entity ->
+            when (entity) {
+                is MovingHead -> visualizer.addMovingHead(entity, pinky.dmxUniverse as FakeDmxUniverse)
+            }
         }
 
 //        val users = storage.users.transaction { store -> store.getAll() }

@@ -2,19 +2,24 @@ package baaahs.dmx
 
 import com.ftdichip.ftd2xx.*
 
-class DmxDevice(usbDevice: Device) : Dmx.Universe() {
+class JvmDmxDevice(usbDevice: Device) : Dmx.Device {
+    override val id: String = "usb id${usbDevice.deviceDescriptor.serialNumber}"
+    override val name: String = "usb name ${usbDevice.deviceDescriptor.productDescription}"
+
     private val buf = ByteArray(513) // DMX wants byte 0 to always be 0
     private val dmxTransmitter = DmxTransmitter(usbDevice).apply { start() }
 
-    override fun writer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
-        Dmx.Buffer(buf, baseChannel, channelCount)
+    override fun asUniverse(): Dmx.Universe = object : Dmx.Universe() {
+        override fun writer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
+            Dmx.Buffer(buf, baseChannel, channelCount)
 
-    override fun sendFrame() {
-        dmxTransmitter.update(buf)
-    }
+        override fun sendFrame() {
+            dmxTransmitter.update(buf)
+        }
 
-    override fun allOff() {
-        buf.fill(0)
+        override fun allOff() {
+            buf.fill(0)
+        }
     }
 
     fun close() {
@@ -29,7 +34,7 @@ class DmxDevice(usbDevice: Device) : Dmx.Universe() {
     private class DmxTransmitter(private val device: Device) : Thread("DMXTransmitter") {
         val DMX_TRANSMIT_DELAY = 20
 
-        internal var keepRunning = true
+        var keepRunning = true
         private var updated = false
         private val newData: ByteArray = ByteArray(513)
         private val currentData: ByteArray = ByteArray(513)
@@ -81,6 +86,7 @@ class DmxDevice(usbDevice: Device) : Dmx.Universe() {
             sleep(DMX_TRANSMIT_DELAY)
         }
 
+        @Suppress("RemoveRedundantQualifierName", "SameParameterValue")
         private fun sleep(millis: Int) {
             try {
                 Thread.sleep(millis.toLong())
@@ -89,9 +95,4 @@ class DmxDevice(usbDevice: Device) : Dmx.Universe() {
             }
         }
     }
-
-    companion object {
-        fun listDevices() = Service.listDevicesByType(DeviceType.FT_DEVICE_232R).map { DmxDevice(it) }
-    }
-
 }

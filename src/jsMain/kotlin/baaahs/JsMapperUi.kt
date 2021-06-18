@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.admin.AdminClient
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.imaging.*
@@ -55,7 +56,10 @@ class MapperStatus : Observable() {
     var orderedPanels: List<Pair<JsMapperUi.VisibleSurface, Float>> by notifyOnChange(emptyList())
 }
 
-class JsMapperUi(private val statusListener: StatusListener? = null) : Observable(), MapperUi, HostedWebApp {
+class JsMapperUi(
+    private val adminClient: AdminClient,
+    private val statusListener: StatusListener? = null
+) : Observable(), MapperUi, HostedWebApp {
     private lateinit var listener: MapperUi.Listener
 
     override var devices: List<MediaDevices.Device> by notifyOnChange(emptyList())
@@ -232,6 +236,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : Observabl
 
     override fun render(): ReactElement {
         return createElement(MapperIndexView, jsObject<MapperIndexViewProps> {
+            adminClient = this@JsMapperUi.adminClient.facade
             mapperUi = this@JsMapperUi
         })
     }
@@ -244,6 +249,7 @@ class JsMapperUi(private val statusListener: StatusListener? = null) : Observabl
         statusListener?.mapperStatusChanged(false)
 
         listener.onClose()
+        adminClient.onClose()
     }
 
     fun onResize(width: Int, height: Int) {

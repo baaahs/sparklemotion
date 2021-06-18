@@ -16,11 +16,12 @@ import java.io.IOException
 import java.net.*
 import java.nio.ByteBuffer
 import java.time.Duration
-import javax.jmdns.JmDNS
+import javax.jmdns.JmmDNS
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceInfo
 import javax.jmdns.ServiceListener
 import kotlin.collections.set
+
 
 class JvmNetwork : Network {
     private val link = RealLink()
@@ -94,10 +95,9 @@ class JvmNetwork : Network {
         inner class JvmUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             internal var udpSocket = DatagramSocket(serverPort)
 
-            private val broadcastAddresses: List<InetAddress>
-            init {
-                broadcastAddresses = getBroadcastAddresses()
+            private val broadcastAddresses: List<InetAddress> = getBroadcastAddresses()
 
+            init {
 //                println("Trying to set send buffer size to ${4*MAX_UDP_SIZE}")
 //                udpSocket.sendBufferSize = 4*MAX_UDP_SIZE;
                 logger.info { "UDP socket bound to ${udpSocket.localAddress}" }
@@ -267,34 +267,50 @@ class JvmNetwork : Network {
         override val myAddress = IpAddress.mine()
         override val myHostname = myAddress.address.hostName.replace(Regex("\\.local(domain)?\\.?$"), "")
 
-        inner class JvmMdns() : Network.Mdns {
-            private val svc = JmDNS.create(InetAddress.getLocalHost())
+        inner class JvmMdns : Network.Mdns {
+            private val svc = run {
+                logger.debug { "Initilizing JmmDNS." }
+                JmmDNS.Factory.getInstance() // Listens on all network interfaces.
+            }
 
-            override fun register(hostname: String, type: String, proto: String, port: Int, domain: String, params: MutableMap<String, String>): Network.MdnsRegisteredService? {
-                val inst = ServiceInfo.create("$hostname.$type.$proto.${domain.normalizeMdnsDomain()}", hostname, port, 1, 1, params)
+            override fun register(
+                hostname: String,
+                type: String,
+                proto: String,
+                port: Int,
+                domain: String,
+                params: Map<String, String>
+            ): Network.MdnsRegisteredService {
+                val serviceType = "$hostname.$type.$proto.${domain.normalizeMdnsDomain()}"
+                logger.info { "Registering mDNS service \"$serviceType}\"." }
+
+                val inst = ServiceInfo.create(serviceType, hostname, port, 1, 1, params)
                 svc.registerService(inst)
                 return JvmRegisteredService(inst)
             }
 
-            override fun unregister(inst: Network.MdnsRegisteredService?) { inst?.unregister() }
+            override fun unregister(inst: Network.MdnsRegisteredService) {
+                logger.info { "Unregistering mDNS service \"${inst.type}}\"." }
+                inst.unregister()
+            }
 
             override fun listen(type: String, proto: String, domain: String, handler: Network.MdnsListenHandler) {
-                val wrapper = object : ServiceListener {
-                    override fun serviceResolved(event: ServiceEvent?) {
-                        if (event != null) {
-                            handler.resolved(JvmMdnsService(event.info))
-                        }
+                val serviceType = "$type.$proto.${domain.normalizeMdnsDomain()}"
+                logger.info { "Listening for mDNS service \"$serviceType}\"" }
+
+                svc.addServiceListener(serviceType, object : ServiceListener {
+                    override fun serviceAdded(event: ServiceEvent) {
+                        handler.added(JvmMdnsService(event.info))
                     }
 
-                    override fun serviceRemoved(event: ServiceEvent?) {
-                        if (event != null) {
-                            handler.removed(JvmMdnsService(event.info))
-                        }
+                    override fun serviceRemoved(event: ServiceEvent) {
+                        handler.removed(JvmMdnsService(event.info))
                     }
 
-                    override fun serviceAdded(event: ServiceEvent?) { /* noop */ }
-                }
-                svc.addServiceListener("$type.$proto.${domain.normalizeMdnsDomain()}", wrapper)
+                    override fun serviceResolved(event: ServiceEvent) {
+                        handler.resolved(JvmMdnsService(event.info))
+                    }
+                })
             }
 
             open inner class JvmMdnsService(private val inst: ServiceInfo) : Network.MdnsService {
@@ -313,7 +329,7 @@ class JvmNetwork : Network {
 
                 override fun getTXT(key: String): String? = inst.getPropertyString(key)
 
-                override fun getAllTXTs(): MutableMap<String, String> {
+                override fun getAllTXTs(): Map<String, String> {
                     val map = mutableMapOf<String, String>()
                     val names = inst.propertyNames
                     while (names.hasMoreElements()) {
@@ -322,19 +338,23 @@ class JvmNetwork : Network {
                     }
                     return map
                 }
+
+                override fun toString(): String {
+                    return "JvmMdnsService(inst=$inst, hostname='$hostname', type='$type', proto='$proto', port=$port, domain='$domain')"
+                }
             }
 
             inner class JvmRegisteredService(private val inst: ServiceInfo) : JvmMdnsService(inst), Network.MdnsRegisteredService {
                 override fun unregister() { svc.unregisterService(inst) }
 
-                override fun updateTXT(txt: MutableMap<String, String>) {
-                    val map = getAllTXTs()
+                override fun updateTXT(txt: Map<String, String>) {
+                    val map = getAllTXTs().toMutableMap()
                     map.putAll(txt)
                     inst.setText(map)
                 }
 
                 override fun updateTXT(key: String, value: String) {
-                    updateTXT(mutableMapOf(Pair(key, value)))
+                    updateTXT(mapOf(key to value))
                 }
             }
         }

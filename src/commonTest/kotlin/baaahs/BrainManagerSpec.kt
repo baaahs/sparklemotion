@@ -21,7 +21,7 @@ object BrainManagerSpec : Spek({
         val brainManager by value {
             BrainManager(
                 mockk(), PermissiveFirmwareDaddy(), TestModel, mappingResults,
-                mockk(), Pinky.NetworkStats(), FakeClock(), LinearSurfacePixelStrategy(Random(1))
+                mockk(), Pinky.NetworkStats(), FakeClock(), StubPubSubServer(), LinearSurfacePixelStrategy(Random(1))
             )
         }
 

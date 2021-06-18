@@ -124,7 +124,7 @@ kotlin {
                 implementation("org.jogamp.jogl:jogl-all-main:${Versions.jogl}")
                 implementation("com.danielgergely.kgl:kgl-jogl:${Versions.kgl}")
 
-                implementation("com.github.jmdns:jmdns:jmdns-3.5.5")
+                implementation("org.jmdns:jmdns:3.5.7")
             }
         }
         @Suppress("UNUSED_VARIABLE")

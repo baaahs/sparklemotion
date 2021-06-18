@@ -38,10 +38,8 @@ class WebClient(
 
     private val webClientLink = network.link("app")
     private val pubSub = PubSub.Client(webClientLink, pinkyAddress, Ports.PINKY_UI_TCP)
-    private val pubSubListener = { facade.notifyChanged() }
-
-    init {
-        pubSub.addStateChangeListener(pubSubListener)
+    private val pubSubListener = { facade.notifyChanged() }.also {
+        pubSub.addStateChangeListener(it)
     }
 
     private val model = Pluggables.getModel()
