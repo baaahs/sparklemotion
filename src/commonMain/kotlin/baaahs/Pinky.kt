@@ -115,7 +115,9 @@ class Pinky(
     }
 
     fun addSimulatedBrains() {
-        val fakeAddress = object : Network.Address {}
+        val fakeAddress = object : Network.Address {
+            override fun asString(): String = "Simulated Brain"
+        }
         val mappingInfos = (mappingResults.actualMappingResults as SessionMappingResults).brainData
         mappingInfos.forEach { (brainId, info) ->
             brainManager.foundBrain(

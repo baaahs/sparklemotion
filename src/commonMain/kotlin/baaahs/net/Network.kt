@@ -12,15 +12,26 @@ interface Network {
         val myAddress: Address
         val myHostname: String
         val udpMtu: Int
-        fun listenUdp(port: Int, udpListener: UdpListener): UdpSocket
         val mdns: Mdns
+
+        fun listenUdp(port: Int, udpListener: UdpListener): UdpSocket
+
         fun startHttpServer(port: Int): HttpServer
+
+        suspend fun httpGetRequest(
+            address: Address,
+            port: Int = 80,
+            path: String
+        ): String
+
         fun connectWebSocket(
             toAddress: Address,
             port: Int,
             path: String,
             webSocketListener: WebSocketListener
         ): TcpConnection
+
+        fun createAddress(name: String): Address
     }
 
     interface Mdns {
@@ -67,7 +78,9 @@ interface Network {
         fun removed(service: MdnsService)
     }
 
-    interface Address
+    interface Address {
+        fun asString(): String
+    }
 
     interface UdpListener {
         fun receive(fromAddress: Address, fromPort: Int, bytes: ByteArray)

@@ -61,6 +61,10 @@ class FakeNetwork(
             return fakeHttpServer
         }
 
+        override suspend fun httpGetRequest(address: Network.Address, port: Int, path: String): String {
+            TODO("not implemented")
+        }
+
         override fun connectWebSocket(
             toAddress: Network.Address,
             port: Int,
@@ -107,6 +111,8 @@ class FakeNetwork(
             tcpConnections.add(clientSideConnection)
             return clientSideConnection
         }
+
+        override fun createAddress(name: String): Network.Address = FakeAddress(name)
 
         inner class FakeTcpConnection(
             override val fromAddress: Network.Address,
@@ -188,7 +194,8 @@ class FakeNetwork(
     }
 
     data class FakeAddress(val name: String) : Network.Address {
-        override fun toString(): String = name
+        override fun asString(): String = name
+        override fun toString(): String = asString()
     }
 
     companion object {
