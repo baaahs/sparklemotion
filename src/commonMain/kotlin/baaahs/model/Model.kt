@@ -58,15 +58,6 @@ abstract class Model : ModelInfo {
         }
     }
 
-    class LightBar(
-        override val name: String,
-        override val description: String,
-        override val deviceType: DeviceType,
-        val startVertex: Vector3F?,
-        val endVertex: Vector3F?,
-        val pixelCount: Int
-    ) : Entity
-
     data class Line(val vertices: List<Vector3F>)
 
     class Face(

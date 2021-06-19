@@ -13,6 +13,7 @@ import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.FakeFs
 import baaahs.util.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -99,10 +100,18 @@ interface SoundAnalysisPluginModule : KModule {
 }
 
 interface SimulatorModule : KModule {
-    val Scope.fakeDmxUniverse: FakeDmxUniverse
+    val Scope.fs: Fs
 
     override fun getModule(): Module = module {
-        single { fakeDmxUniverse }
+        single { FakeDmxUniverse() }
+        single(named(Qualifier.PinkyFs)) { fs }
+        single(named(Qualifier.MapperFs)) { FakeFs("Temporary Mapping Files") }
+        single<Fs>(named(Qualifier.MapperFs)) { get<FakeFs>(named(Qualifier.MapperFs)) }
+    }
+
+    enum class Qualifier {
+        PinkyFs,
+        MapperFs
     }
 }
 

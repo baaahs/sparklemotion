@@ -12,10 +12,11 @@ class FixtureManager(
     private val renderManager: RenderManager,
     initialRenderTargets: Map<Fixture, FixtureRenderTarget> = emptyMap()
 ) {
+    val facade = Facade()
+
     private val renderTargets: MutableMap<Fixture, FixtureRenderTarget> = initialRenderTargets.toMutableMap()
     private val frameListeners: MutableList<() -> Unit> = arrayListOf()
     private val changedFixtures = mutableListOf<FixturesChanges>()
-    private var totalFixtures = 0
 
     private var currentActivePatchSet: ActivePatchSet = ActivePatchSet.Empty
     private var activePatchSetChanged = false
@@ -51,9 +52,7 @@ class FixtureManager(
         renderTargets.values.forEach { it.release() }
     }
 
-    fun getFixtureCount(): Int {
-        return renderTargets.size
-    }
+    private fun getFixtureCount(): Int = renderTargets.size
 
     fun sendFrame() {
         renderTargets.values.forEach { renderTarget ->
@@ -68,7 +67,6 @@ class FixtureManager(
         renderTargets.getOrPut(fixture) {
             logger.debug { "Adding fixture ${fixture.title}" }
             renderManager.addFixture(fixture)
-                .also { totalFixtures++ }
         }
     }
 
@@ -77,7 +75,6 @@ class FixtureManager(
             logger.debug { "Removing fixture ${fixture.title}" }
             renderManager.removeRenderTarget(renderTarget)
             renderTarget.release()
-            totalFixtures--
         } ?: throw IllegalStateException("huh? can't remove unknown fixture $fixture")
     }
 
@@ -124,6 +121,14 @@ class FixtureManager(
     }
 
     data class FixturesChanges(val added: Collection<Fixture>, val removed: Collection<Fixture>)
+
+    inner class Facade : baaahs.ui.Facade() {
+        val fixtureCount: Int
+            get() = this@FixtureManager.getFixtureCount()
+
+        val pixelCount: Int
+            get() = this@FixtureManager.renderTargets.values.sumOf { it.pixelCount }
+    }
 
     companion object {
         private val logger = Logger<FixtureManager>()
