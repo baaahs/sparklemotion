@@ -7,12 +7,18 @@ import three_ext.Matrix4
 import kotlin.math.*
 import kotlin.random.Random
 
-class SwirlyPixelArranger(private val pixelDensity: Float = 0.2f, private val pixelSpacing : Float = 2f) {
+interface PixelArranger {
+    fun arrangePixels(surfaceGeometry: SurfaceGeometry, pixelCount: Int? = null): Array<Vector3>
+}
 
-    fun arrangePixels(surfaceGeometry: SurfaceGeometry, pixelCount: Int? = null): Array<Vector3> =
-        PanelArranger(surfaceGeometry, pixelCount).arrangePixels()
+class SwirlyPixelArranger(
+    private val pixelDensity: Float = 0.2f,
+    private val pixelSpacing: Float = 2f
+) : PixelArranger {
+    override fun arrangePixels(surfaceGeometry: SurfaceGeometry, pixelCount: Int?): Array<Vector3> =
+        Arranger(surfaceGeometry, pixelCount).arrangePixels()
 
-    private inner class PanelArranger(surfaceGeometry: SurfaceGeometry, pixelCount: Int? = null) {
+    private inner class Arranger(surfaceGeometry: SurfaceGeometry, pixelCount: Int? = null) {
         private val pixelCount = pixelCount
             ?: min(SparkleMotion.MAX_PIXEL_COUNT, floor(surfaceGeometry.area * pixelDensity).toInt())
         private val panelGeometry = surfaceGeometry.geometry.clone()

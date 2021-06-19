@@ -66,8 +66,6 @@ class Pinky(
 
 //    private var selectedNewShowAt = DateTime.now()
 
-    var pixelCount: Int = 0
-
     val address: Network.Address get() = link.myAddress
     private val networkStats = NetworkStats()
 
@@ -341,6 +339,9 @@ class Pinky(
         val stageManager: StageManager.Facade
             get() = this@Pinky.stageManager.facade
 
+        val fixtureManager : FixtureManager.Facade
+            get() = this@Pinky.fixtureManager.facade
+
         val networkStats: NetworkStats
             get() = this@Pinky.networkStats
 
@@ -351,9 +352,6 @@ class Pinky(
             get() = this@Pinky.clock
 
         val framerate = Framerate()
-
-        val pixelCount: Int
-            get() = this@Pinky.pixelCount
     }
 }
 
