@@ -6,9 +6,9 @@ import baaahs.model.ModelInfo
 import kotlin.random.Random
 
 interface SurfacePixelStrategy {
-    fun forFixture(pixelCount: Int, surface: Model.Surface?, model: ModelInfo): List<Vector3F> {
-        return if (surface != null) {
-            forKnownSurface(pixelCount, surface, model)
+    fun forFixture(pixelCount: Int, entity: Model.Entity?, model: ModelInfo): List<Vector3F> {
+        return if (entity is Model.Surface) {
+            forKnownSurface(pixelCount, entity, model)
         } else {
             forUnknownSurface(pixelCount, model)
         }

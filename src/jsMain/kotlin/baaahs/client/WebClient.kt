@@ -32,7 +32,8 @@ import react.createElement
 class WebClient(
     network: Network,
     pinkyAddress: Network.Address,
-    private val toolchain: Toolchain = RootToolchain(createPlugins())
+    private val toolchain: Toolchain = RootToolchain(createPlugins()),
+    private val model: Model
 ) : HostedWebApp {
     private val facade = Facade()
 
@@ -41,8 +42,6 @@ class WebClient(
     private val pubSubListener = { facade.notifyChanged() }.also {
         pubSub.addStateChangeListener(it)
     }
-
-    private val model = Pluggables.getModel()
 
     private var show: Show? = null
     private var openShow: OpenShow? = null

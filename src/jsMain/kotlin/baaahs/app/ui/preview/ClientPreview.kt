@@ -5,6 +5,7 @@ import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
+import baaahs.mapper.SessionMappingResults
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
@@ -22,7 +23,8 @@ class ClientPreview(
 ) : ClientStageManager.Listener {
     private val glContext = GlBase.jsManager.createContext()
     private val renderManager = RenderManager(model) { glContext }
-    private val fixtureManager = FixtureManager(renderManager)
+    private val mappingResults = SessionMappingResults(model, emptyList()) // TODO: use real data.
+    private val fixtureManager = FixtureManager(renderManager, model, mappingResults)
     private val theVisualizer = Visualizer(model, clock)
     private var patchSetChanged = true
 

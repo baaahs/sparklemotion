@@ -14,15 +14,16 @@ abstract class Model : ModelInfo {
 
     abstract val geomVertices: List<Vector3F>
 
-    private val allSurfacesByName: Map<String, Surface> by lazy { allSurfaces.associateBy { it.name } }
+    private val allSurfacesByName: Map<String, Entity> by lazy { allEntities.associateBy { it.name } }
 
-    fun findSurface(name: String) =
+    fun findEntity(name: String) =
         allSurfacesByName[name] ?: throw RuntimeException("no such model surface $name")
 
     private val allVertices by lazy {
         hashSetOf<Vector3F>().apply { allSurfaces.map { addAll(it.allVertices()) } }
     }
 
+    // TODO: modelBounds et al. should be based on allEntities, not allVertices.
     private val modelBounds by lazy { boundingBox(allVertices) }
     private val modelExtents by lazy { val (min, max) = modelBounds; max - min }
     private val modelCenter by lazy { center(allVertices) }

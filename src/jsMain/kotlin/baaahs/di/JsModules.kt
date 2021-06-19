@@ -42,7 +42,7 @@ class JsWebClientModule(
     override fun getModule(): Module = module {
         scope<WebClient> {
             scoped { get<Network>().link("app") }
-            scoped { WebClient(get(), pinkyAddress, RootToolchain(get())) }
+            scoped { WebClient(get(), pinkyAddress, RootToolchain(get()), get()) }
         }
     }
 }
