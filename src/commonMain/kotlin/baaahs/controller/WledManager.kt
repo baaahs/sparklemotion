@@ -6,6 +6,7 @@ import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.glsl.SurfacePixelStrategy
+import baaahs.mapper.ControllerId
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.publishProperty
@@ -60,7 +61,7 @@ class WledManager(
             }
 
             override fun resolved(service: Network.MdnsService) {
-                val id = "${service.hostname}.${service.domain}."
+                val id = service.hostname
                 val onlineSince = clock.now()
 
                 val wledAddress = service.getAddress()
@@ -80,9 +81,13 @@ class WledManager(
                             val pixelCount = wledJson.info.leds.count
 
                             val newWledDevice = WledDevice(id, wledAddress.asString(), pixelCount, onlineSince)
-                            val pixelLocations = surfacePixelStrategy.forFixture(pixelCount, null, model)
+                            val controllerId = ControllerId(controllerTypeName, id)
+                            val provisionalFixture = fixtureManager.createFixtureFor(controllerId, null, NullTransport)
+                            val entity = provisionalFixture.modelEntity
+                            println("WledManager: entity = $entity")
+                            val pixelLocations = surfacePixelStrategy.forFixture(pixelCount, entity, model)
                             val wledTransport =
-                                WledTransport(newWledDevice, sacnLink.deviceAt(wledAddress), pixelLocations)
+                                WledTransport(newWledDevice, sacnLink.deviceAt(wledAddress), entity, pixelLocations)
 
                             val existingWledTransport = wledTransports[id]
                             if (existingWledTransport == null) {
@@ -109,6 +114,7 @@ class WledManager(
     }
 
     companion object {
+        val controllerTypeName = "WLED"
         private val logger = Logger<WledManager>()
         private val json = Json {
             ignoreUnknownKeys = true
@@ -119,13 +125,14 @@ class WledManager(
 class WledTransport(
     private val wledDevice: WledDevice,
     private val sacnDevice: SacnLink.SacnDevice,
+    entity: Model.Entity?,
     pixelLocations: List<Vector3F>
 ) : Transport {
     override val name: String get() = wledDevice.id
     val stats get() = sacnDevice.stats
 
-    val fixture: Fixture =             Fixture(
-        null, wledDevice.pixelCount, pixelLocations,
+    val fixture: Fixture = Fixture(
+        entity, wledDevice.pixelCount, pixelLocations,
         PixelArrayDevice, wledDevice.id, this
     )
 

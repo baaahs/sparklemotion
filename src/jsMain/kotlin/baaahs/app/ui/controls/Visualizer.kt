@@ -43,6 +43,7 @@ val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
             ref = rootEl
         }
     } catch (e: Exception) {
+        logger.error(e) { "Error rendering Visualizer control." }
         card(Styles.visualizerCard on PaperStyle.root) {
             i { +"Not supported on iOS yet :-(" }
         }

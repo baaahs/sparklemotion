@@ -57,7 +57,7 @@ class ShowRunnerTest {
         dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
         val model = TestModel
         val renderManager = RenderManager(model) { fakeGlslContext }
-        fixtureManager = FixtureManager(renderManager)
+        fixtureManager = FixtureManager(renderManager, model, FakeMappingResults())
         MovingHeadManager(fixtureManager, dmxUniverse, emptyList())
         stageManager = StageManager(
             testToolchain, renderManager, server, Storage(fs, testPlugins()), fixtureManager,

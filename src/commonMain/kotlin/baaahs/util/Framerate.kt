@@ -24,4 +24,7 @@ class Framerate : Observable() {
 
         notifyChanged()
     }
+
+    fun summarize(): String =
+        "Average FPS=${averageFps}; average elapsed=${averageElapsedMs}ms"
 }

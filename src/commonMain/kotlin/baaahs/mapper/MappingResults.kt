@@ -1,48 +1,52 @@
 package baaahs.mapper
 
-import baaahs.BrainId
 import baaahs.geom.Vector3F
 import baaahs.model.Model
 import baaahs.util.Logger
 
 interface MappingResults {
-    fun dataFor(brainId: BrainId): Info?
+    fun dataForController(controllerId: ControllerId): Info?
 
-    fun dataFor(surfaceName: String): Info?
+    fun dataForEntity(entityName: String): Info?
 
     class Info(
-        val surface: Model.Surface,
+        val entity: Model.Entity,
 
         /** Pixel's estimated position within the model. */
         val pixelLocations: List<Vector3F?>?
     )
 }
 
+data class ControllerId(val controllerType: String, val id: String) {
+    fun shortName(): String = "$controllerType:$id"
+}
+
 class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>) : MappingResults {
-    val brainData = mutableMapOf<BrainId, MappingResults.Info>()
+    val controllerData = mutableMapOf<ControllerId, MappingResults.Info>()
 
     init {
         mappingSessions.forEach { mappingSession ->
             mappingSession.surfaces.forEach { surfaceData ->
-                val brainId = BrainId(surfaceData.brainId)
-                val surfaceName = surfaceData.surfaceName
+                val controllerId = surfaceData.controllerId
+                val entityName = surfaceData.entityName
 
                 try {
-                    val modelSurface = model.findSurface(surfaceName)
+                    val modelEntity = model.findEntity(entityName)
                     val pixelLocations = surfaceData.pixels.map { it?.modelPosition }
 
-                    brainData[brainId] = MappingResults.Info(modelSurface, pixelLocations)
+                    controllerData[controllerId] = MappingResults.Info(modelEntity, pixelLocations)
                 } catch (e: Exception) {
-                    logger.warn(e) { "Skipping $surfaceName" }
+                    logger.warn(e) { "Skipping $entityName." }
                 }
             }
         }
     }
 
-    override fun dataFor(brainId: BrainId): MappingResults.Info? = brainData[brainId]
+    override fun dataForController(controllerId: ControllerId): MappingResults.Info? =
+        controllerData[controllerId]
 
-    override fun dataFor(surfaceName: String): MappingResults.Info? {
-        return brainData.values.find { it.surface.name == surfaceName }
+    override fun dataForEntity(entityName: String): MappingResults.Info? {
+        return controllerData.values.find { it.entity.name == entityName }
     }
 
     companion object {

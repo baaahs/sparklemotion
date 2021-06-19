@@ -1,15 +1,25 @@
 package baaahs.fixtures
 
+import baaahs.SparkleMotion
+import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
+import baaahs.glsl.LinearSurfacePixelStrategy
+import baaahs.glsl.SurfacePixelStrategy
+import baaahs.mapper.ControllerId
+import baaahs.mapper.MappingResults
+import baaahs.model.Model
 import baaahs.show.live.ActivePatchSet
 import baaahs.timeSync
 import baaahs.util.Logger
 
 class FixtureManager(
     private val renderManager: RenderManager,
+    private val model: Model,
+    private val mappingResults: MappingResults,
+    private val surfacePixelStrategy: SurfacePixelStrategy = LinearSurfacePixelStrategy(),
     initialRenderTargets: Map<Fixture, FixtureRenderTarget> = emptyMap()
 ) {
     val facade = Facade()
@@ -25,6 +35,25 @@ class FixtureManager(
 
     fun addFrameListener(callback: () -> Unit) {
         frameListeners.add(callback)
+    }
+
+    fun createFixtureFor(
+        controllerId: ControllerId,
+        entityName: String?,
+        transport: Transport
+    ): Fixture {
+        val mappingData = mappingResults.dataForController(controllerId)
+            ?: mappingResults.dataForEntity(entityName ?: "__nope")
+            ?: entityName?.let { MappingResults.Info(model.findEntity(it), null) }
+
+        val modelEntity = mappingData?.entity
+        val pixelCount = mappingData?.pixelLocations?.size
+            ?: (modelEntity as? Model.Surface)?.expectedPixelCount
+            ?: SparkleMotion.MAX_PIXEL_COUNT
+        val pixelLocations = mappingData?.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) }
+            ?: surfacePixelStrategy.forFixture(pixelCount, modelEntity, model)
+
+        return Fixture(modelEntity, pixelCount, pixelLocations, PixelArrayDevice, transport = transport)
     }
 
     fun getRenderTargets_ForTestOnly(): Map<Fixture, RenderTarget> {

@@ -2,13 +2,10 @@ package baaahs
 
 import baaahs.fixtures.*
 import baaahs.geom.Vector2F
-import baaahs.geom.Vector3F
-import baaahs.glsl.LinearSurfacePixelStrategy
-import baaahs.glsl.SurfacePixelStrategy
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.mapper.ControllerId
 import baaahs.mapper.MappingResults
-import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.proto.*
 import baaahs.shaders.PixelBrainShader
@@ -27,13 +24,11 @@ import kotlinx.serialization.encoding.Encoder
 class BrainManager(
     private val fixtureManager: FixtureManager,
     private val firmwareDaddy: FirmwareDaddy,
-    private val model: Model,
     private val mappingResults: MappingResults,
     private val udpSocket: Network.UdpSocket,
     private val networkStats: Pinky.NetworkStats,
     private val clock: Clock,
-    pubSub: PubSub.IServer,
-    private val surfacePixelStrategy: SurfacePixelStrategy = LinearSurfacePixelStrategy()
+    pubSub: PubSub.IServer
 ) {
     internal val activeBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
     private val pendingBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
@@ -106,7 +101,7 @@ class BrainManager(
         val brainId = BrainId(msg.brainId)
 
         logger.debug {
-            "Hello from ${brainId.uuid} (surface=${msg.surfaceName ?: "[unknown]"}) at $brainAddress"
+            "Hello from ${brainId} (surface=${msg.surfaceName ?: "[unknown]"}) at $brainAddress"
         }
 
         // Decide whether or not to tell this brain it should use a different firmware
@@ -114,7 +109,7 @@ class BrainManager(
             // You need the new hotness bro
             logger.debug {
                 "The firmware daddy doesn't like $brainId" +
-                        " (${mappingResults.dataFor(brainId)?.surface?.name ?: "[unknown]"})" +
+                        " (${mappingResults.dataForController(brainId.asControllerId())?.entity?.name ?: "[unknown]"})" +
                         " having ${msg.firmwareVersion}" +
                         " so we'll send ${firmwareDaddy.urlForPreferredVersion}"
             }
@@ -164,20 +159,8 @@ class BrainManager(
     }
 
     fun createFixtureFor(msg: BrainHelloMessage, transport: Transport): Fixture {
-        val brainId = BrainId(msg.brainId)
-
-        val mappingData = mappingResults.dataFor(brainId)
-            ?: mappingResults.dataFor(msg.surfaceName ?: "__nope")
-            ?: msg.surfaceName?.let { MappingResults.Info(model.findSurface(it), null) }
-
-        val modelSurface = mappingData?.surface
-        val pixelCount = mappingData?.pixelLocations?.size
-            ?: modelSurface?.expectedPixelCount
-            ?: SparkleMotion.MAX_PIXEL_COUNT
-        val pixelLocations = mappingData?.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) }
-            ?: surfacePixelStrategy.forFixture(pixelCount, modelSurface, model)
-
-        return Fixture(modelSurface, pixelCount, pixelLocations, PixelArrayDevice, transport = transport)
+        val controllerId = BrainId(msg.brainId).asControllerId()
+        return fixtureManager.createFixtureFor(controllerId, msg.surfaceName, transport)
     }
 
     inner class BrainTransport(
@@ -262,6 +245,8 @@ class BrainManager(
     }
 
     companion object {
+        val controllerTypeName: String = "Brain"
+
         private val logger = Logger<BrainManager>()
         private val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.DIRECT_RGB)
     }
@@ -283,7 +268,9 @@ data class BrainInfo(
 }
 
 @Serializable(with = BrainIdSerializer::class)
-data class BrainId(val uuid: String)
+data class BrainId(val uuid: String) {
+    fun asControllerId(): ControllerId = ControllerId(BrainManager.controllerTypeName, uuid)
+}
 
 class BrainIdSerializer : KSerializer<BrainId> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BrainId", PrimitiveKind.STRING)

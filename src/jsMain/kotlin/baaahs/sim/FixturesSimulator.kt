@@ -1,7 +1,6 @@
 package baaahs.sim
 
 import baaahs.*
-import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.io.Fs
 import baaahs.mapper.MappingSession
@@ -53,7 +52,9 @@ class FixturesSimulator(
             val mappingSessionPath = Storage(mapperFs, plugins).saveSession(
                 MappingSession(clock.now(), simSurfaces.map { simSurface ->
                     MappingSession.SurfaceData(
-                        simSurface.brainId.uuid, simSurface.surface.name,
+                        BrainManager.controllerTypeName,
+                        simSurface.brainId.uuid,
+                        simSurface.surface.name,
                         simSurface.pixelPositions.map {
                             MappingSession.SurfaceData.PixelData(
                                 Vector3F(
@@ -64,7 +65,7 @@ class FixturesSimulator(
                             )
                         }, null, null, null
                     )
-                }, Matrix4(doubleArrayOf()), null, notes = "Simulated pixels")
+                }, null, null, notes = "Simulated mapping session")
             )
             mapperFs.renameFile(
                 mappingSessionPath,

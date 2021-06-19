@@ -12,10 +12,7 @@ import baaahs.gl.render.RenderManager
 import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibraryManager
-import baaahs.mapper.MappingResults
-import baaahs.mapper.PinkyMapperHandlers
-import baaahs.mapper.SessionMappingResults
-import baaahs.mapper.Storage
+import baaahs.mapper.*
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
@@ -53,7 +50,7 @@ class Pinky(
     override val coroutineContext: CoroutineContext = pinkyMainDispatcher + pinkyJob
 
     val gadgetManager = GadgetManager(pubSub, clock, coroutineContext)
-    internal val fixtureManager = FixtureManager(renderManager)
+    internal val fixtureManager = FixtureManager(renderManager, model, mappingResults)
 
     val toolchain = RootToolchain(plugins)
     val stageManager: StageManager = StageManager(
@@ -72,7 +69,7 @@ class Pinky(
     // This needs to go last-ish, otherwise we start getting network traffic too early.
     private val udpSocket = link.listenFragmentingUdp(Ports.PINKY, this)
     private val brainManager =
-        BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats, clock, pubSub)
+        BrainManager(fixtureManager, firmwareDaddy, mappingResults, udpSocket, networkStats, clock, pubSub)
     private val movingHeadManager = MovingHeadManager(fixtureManager, dmxManager.dmxUniverse, model.movingHeads)
     private val wledManager = WledManager(fixtureManager, model, link, pubSub, pinkyMainDispatcher, clock)
     val dmxUniverse: Dmx.Universe = dmxManager.dmxUniverse
@@ -120,14 +117,23 @@ class Pinky(
         val fakeAddress = object : Network.Address {
             override fun asString(): String = "Simulated Brain"
         }
-        val mappingInfos = (mappingResults.actualMappingResults as SessionMappingResults).brainData
-        mappingInfos.forEach { (brainId, info) ->
-            brainManager.foundBrain(
-                fakeAddress, BrainHelloMessage(brainId.uuid, info.surface.name, null, null),
-                isSimulatedBrain = true
-            )
+        val mappingInfos = (mappingResults.actualMappingResults as SessionMappingResults).controllerData
+        mappingInfos.forEach { (controllerId, info) ->
+            when (controllerId.controllerType) {
+                BrainManager.controllerTypeName -> {
+                    brainManager.foundBrain(
+                        fakeAddress, BrainHelloMessage(controllerId.id, info.entity.name, null, null),
+                        isSimulatedBrain = true
+                    )
+                }
+                else -> {
+                    logger.error { "Unknown controller type for $controllerId." }
+                }
+            }
         }
     }
+
+    private var frameDelay = 30L
 
     private suspend fun run() {
         while (keepRunning) {
@@ -156,7 +162,7 @@ class Pinky(
 
             maybeChangeThingsIfUsersAreIdle()
 
-            delay(30)
+            delay(frameDelay)
         }
     }
 
@@ -190,6 +196,13 @@ class Pinky(
                         logger.info { "Sending pixels to ${brainManager.brainCount} brains." }
                     }
                     delay(10000)
+                }
+            }
+
+            launch {
+                while (keepRunning) {
+                    delay(10000)
+                    logger.info { "Framerate: ${facade.framerate.summarize()}" }
                 }
             }
         }
@@ -371,17 +384,17 @@ enum class PinkyState {
 private class FutureMappingResults : MappingResults {
     var actualMappingResults: MappingResults? = null
 
-    override fun dataFor(brainId: BrainId): MappingResults.Info? {
+    override fun dataForController(controllerId: ControllerId): MappingResults.Info? {
         if (actualMappingResults == null) {
-            Pinky.logger.warn { "Mapping results for $brainId requested before available." }
+            Pinky.logger.warn { "Mapping results for $controllerId requested before available." }
         }
-        return actualMappingResults?.dataFor(brainId)
+        return actualMappingResults?.dataForController(controllerId)
     }
 
-    override fun dataFor(surfaceName: String): MappingResults.Info? {
+    override fun dataForEntity(entityName: String): MappingResults.Info? {
         if (actualMappingResults == null) {
-            Pinky.logger.warn { "Mapping results for $surfaceName requested before available." }
+            Pinky.logger.warn { "Mapping results for $entityName requested before available." }
         }
-        return actualMappingResults?.dataFor(surfaceName)
+        return actualMappingResults?.dataForEntity(entityName)
     }
 }
