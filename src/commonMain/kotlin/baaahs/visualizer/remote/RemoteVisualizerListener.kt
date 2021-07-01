@@ -24,7 +24,7 @@ class RemoteVisualizerListener(
         brainManager.removeListeningVisualizer(this)
     }
 
-    fun sendPixelData(fixture: Fixture) {
+    fun sendPixelMappingData(fixture: Fixture) {
         if (fixture.modelEntity != null) {
             val pixelLocations = fixture.pixelLocations
 

@@ -2,7 +2,7 @@ package baaahs.sim
 
 import baaahs.net.Network
 
-class FakeMdns(val createAddress: (serviceId: Int) -> Network.Address) : Network.Mdns {
+class FakeMdns : Network.Mdns {
     private var services = mutableMapOf<String, FakeMdns.FakeMdnsService>()
     private var listeners = mutableMapOf<String, MutableList<Network.MdnsListenHandler>>()
     private var nextServiceId : Int = 0
@@ -22,7 +22,7 @@ class FakeMdns(val createAddress: (serviceId: Int) -> Network.Address) : Network
         return inst
     }
 
-    override fun unregister(inst: Network.MdnsRegisteredService) { inst?.unregister() }
+    override fun unregister(inst: Network.MdnsRegisteredService) { inst.unregister() }
 
     override fun listen(type: String, proto: String, domain: String, handler: Network.MdnsListenHandler) {
         listeners.getOrPut("$type.$proto.${domain.normalizeMdnsDomain()}") { mutableListOf() }.add(handler)
@@ -39,7 +39,7 @@ class FakeMdns(val createAddress: (serviceId: Int) -> Network.Address) : Network
         private var id : Int = nextServiceId++
         protected val params = params.toMutableMap()
 
-        override fun getAddress(): Network.Address? = createAddress(id)
+        override fun getAddress(): Network.Address? = FakeNetwork.FakeAddress(hostname)
 
         override fun getTXT(key: String): String? = params[key]
 

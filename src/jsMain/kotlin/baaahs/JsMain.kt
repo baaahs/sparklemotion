@@ -20,10 +20,12 @@ import baaahs.ui.ErrorDisplay
 import baaahs.ui.ErrorDisplayProps
 import baaahs.util.ConsoleFormatters
 import baaahs.util.KoinLogger
+import baaahs.util.Logger
 import decodeQueryParams
 import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.promise
 import org.koin.dsl.koinApplication
 import org.w3c.dom.get
 import react.createElement
@@ -90,6 +92,13 @@ private fun launchUi(
 
             GlobalScope.launch {
                 render(createElement(MosaicApp::class.js, props), simulatorEl)
+            }
+
+            GlobalScope.promise {
+                simulator.start()
+            }.catch {
+                window.alert("Failed to launch simulator: $it")
+                Logger("JsMain").error(it) { "Failed to launch simulator." }
             }
         } else {
             val webAppInjector = koinApplication {

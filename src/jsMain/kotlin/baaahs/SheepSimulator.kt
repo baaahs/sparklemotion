@@ -56,8 +56,8 @@ class SheepSimulator(val model: Model) {
         GlobalScope.launch { cleanUpBrowserStorage() }
     }
 
-    fun start() = doRunBlocking {
-        fixturesSimulator.prepareSurfaces()
+    suspend fun start() {
+        fixturesSimulator.generateMappingData()
 
         GlobalScope.launch {
             pinky.startAndRun()
@@ -68,6 +68,7 @@ class SheepSimulator(val model: Model) {
         launcher.add("Mapper") { createMapperApp() }
         launcher.add("Admin UI") { createAdminUiApp() }
 
+        pinky.awaitMappingResultsLoaded() // Otherwise controllers might report in before they can be mapped.
         fixturesSimulator.launchControllers()
         fixturesSimulator.addToVisualizer()
 
@@ -76,9 +77,7 @@ class SheepSimulator(val model: Model) {
 
         facade.notifyChanged()
 
-        doRunBlocking {
-            delay(200000L)
-        }
+        delay(200000L)
     }
 
     fun createWebClientApp(): WebClient = injector.createScope<WebClient>().get()

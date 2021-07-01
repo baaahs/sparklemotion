@@ -24,7 +24,7 @@ data class MappingSession(
         val controllerType: String? = BrainManager.controllerTypeName,
         val brainId: String, // TODO: rename to controllerId.
         val panelName: String, // TODO: rename to entityName.
-        val pixels: List<PixelData?>,
+        val pixels: List<PixelData?> = emptyList(),
         val deltaImage: String? = null,
         val screenAreaInSqPixels: Float? = null,
         val screenAngle: Float? = null
@@ -36,8 +36,8 @@ data class MappingSession(
         @Serializable
         data class PixelData(
             val modelPosition: Vector3F?,
-            val screenPosition: Vector2F?,
-            val deltaImage: String?
+            val screenPosition: Vector2F? = null,
+            val deltaImage: String? = null
         )
     }
 }

@@ -7,6 +7,11 @@ actual class VizScene(private val scene: Scene) {
     actual fun add(obj: VizObj) {
         scene.add(obj.obj)
     }
+
+    actual fun remove(obj: VizObj) {
+        scene.add(obj.obj)
+    }
 }
 
 actual class VizObj(val obj: Object3D)
+

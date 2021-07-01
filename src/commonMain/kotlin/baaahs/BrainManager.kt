@@ -84,7 +84,7 @@ class BrainManager(
         fixtureManager.fixturesChanged(fixturesToAdd, fixturesToRemove)
         listeningVisualizers.forEach { listeningVisualizer ->
             fixturesToAdd.forEach {
-                listeningVisualizer.sendPixelData(it)
+                listeningVisualizer.sendPixelMappingData(it)
             }
         }
 
@@ -230,7 +230,7 @@ class BrainManager(
     fun addListeningVisualizer(remoteVisualizerListener: RemoteVisualizerListener) {
         listeningVisualizers.add(remoteVisualizerListener)
 
-        activeBrains.values.forEach { remoteVisualizerListener.sendPixelData(it.fixture) }
+        activeBrains.values.forEach { remoteVisualizerListener.sendPixelMappingData(it.fixture) }
     }
 
     fun removeListeningVisualizer(remoteVisualizerListener: RemoteVisualizerListener) {

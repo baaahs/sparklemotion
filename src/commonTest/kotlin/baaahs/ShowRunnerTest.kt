@@ -54,7 +54,7 @@ class ShowRunnerTest {
         server = PubSub.listen(serverNetwork.startHttpServer(1234), CoroutineScope(dispatcher))
         fakeGlslContext = FakeGlContext()
         dmxUniverse = FakeDmxUniverse()
-        dmxUniverse.reader(1, 1) { dmxEvents.add("dmx frame sent") }
+        dmxUniverse.listen(1, 1) { dmxEvents.add("dmx frame sent") }
         val model = TestModel
         val renderManager = RenderManager(model) { fakeGlslContext }
         fixtureManager = FixtureManager(renderManager, model, FakeMappingResults())

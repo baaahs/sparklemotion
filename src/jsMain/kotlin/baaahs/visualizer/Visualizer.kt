@@ -2,12 +2,9 @@ package baaahs.visualizer
 
 import baaahs.JsMapperUi
 import baaahs.model.Model
-import baaahs.model.MovingHead
-import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.asMillis
-import baaahs.visualizer.movers.VizMovingHead
 import baaahs.window
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.MouseEvent
@@ -38,7 +35,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         set(isRunning) {
             field = isRunning
 
-            vizPanels.forEach { it.mapperIsRunning = isRunning }
+            entityVisualizers.forEach { it.mapperIsRunning = isRunning }
 
             if (isRunning) {
                 rotate = false
@@ -65,7 +62,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     private var mouse: Vector2? = null
     private val originDot: Mesh<*, *>
 
-    private var vizPanels = mutableListOf<FixtureViz>()
+    private val entityVisualizers = arrayListOf<EntityVisualizer>()
 
     init {
         scene.add(camera)
@@ -141,17 +138,18 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         }
     }
 
-    fun addSurface(surfaceGeometry: SurfaceGeometry): VizSurface {
+    fun addEntityVisualizer(entityVisualizer: EntityVisualizer) {
+        entityVisualizer.addTo(VizScene(scene))
+        entityVisualizers.add(entityVisualizer)
+    }
+
+    fun addSurface(surfaceGeometry: SurfaceGeometry): SurfaceVisualizer {
         // if (p.name !== '15R') return
         // if (omitPanels.includes(p.name)) return
 
-        val vizPanel = VizSurface(surfaceGeometry, scene)
-        vizPanels.add(vizPanel)
-        return vizPanel
-    }
-
-    fun addMovingHead(movingHead: MovingHead, dmxUniverse: FakeDmxUniverse): VizMovingHead {
-        return VizMovingHead(movingHead, dmxUniverse, clock).also { it.addTo(VizScene(scene)) }
+        val surfaceVisualizer = SurfaceVisualizer(surfaceGeometry)
+        addEntityVisualizer(surfaceVisualizer)
+        return surfaceVisualizer
     }
 
     private fun startRender() {
@@ -182,7 +180,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
             val intersections = raycaster.intersectObjects(scene.children, false)
             intersections.forEach { intersection ->
                 val intersectedObject = intersection.`object`
-                VizSurface.getFromObject(intersectedObject)?.let {
+                SurfaceVisualizer.getFromObject(intersectedObject)?.let {
                     facade.selectedSurface = it
                     facade.notifyChanged()
                     return@forEach
@@ -235,10 +233,6 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         mapperIsRunning = isRunning
     }
 
-    interface FixtureViz {
-        var mapperIsRunning: Boolean
-    }
-
     interface FrameListener {
         @JsName("onFrameReady")
         fun onFrameReady(scene: Scene, camera: Camera)
@@ -257,7 +251,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
                 this@Visualizer.rotate = value
             }
 
-        var selectedSurface: VizSurface? = null
+        var selectedSurface: SurfaceVisualizer? = null
 
         val framerate = Framerate()
 

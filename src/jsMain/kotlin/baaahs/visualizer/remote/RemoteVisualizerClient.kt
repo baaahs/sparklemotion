@@ -6,27 +6,38 @@ import baaahs.io.ByteArrayReader
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.proto.Ports
+import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.SimulationEnv
+import baaahs.util.Clock
 import baaahs.util.Logger
-import baaahs.visualizer.SurfaceGeometry
-import baaahs.visualizer.Visualizer
-import baaahs.visualizer.VizPixels
+import baaahs.visualizer.*
 import baaahs.visualizer.remote.RemoteVisualizerListener.Opcode.PixelColors
 import baaahs.visualizer.remote.RemoteVisualizerListener.Opcode.PixelLocations
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
-import three.js.Vector3
 import kotlin.math.min
 
 class RemoteVisualizerClient(
     link: Network.Link,
     address: Network.Address,
     private val visualizer: Visualizer,
-    model: Model
+    model: Model,
+    clock: Clock
 ) :
     Network.WebSocketListener, CoroutineScope by MainScope() {
 
-    private val vizSurfaces = model.allSurfaces.associate { surface ->
-        surface.name to visualizer.addSurface(SurfaceGeometry(surface))
+    private val simulationEnv = SimulationEnv {
+        component(clock)
+        component(FakeDmxUniverse())
+        component<PixelArranger>(SwirlyPixelArranger(0.2f, 3f))
+        component(visualizer)
+    }
+
+    private val entityVisualizers = model.allEntities.associate { entity ->
+        val simulation = entity.createFixtureSimulation(simulationEnv)
+        val entityVisualizer = simulation.entityVisualizer
+        visualizer.addEntityVisualizer(entityVisualizer)
+        entity.name to entityVisualizer
     }
 
     private lateinit var tcpConnection: Network.TcpConnection
@@ -43,25 +54,29 @@ class RemoteVisualizerClient(
         val reader = ByteArrayReader(bytes)
         when (RemoteVisualizerListener.Opcode.get(reader.readByte())) {
             PixelLocations -> { // Pixel locations.
-                val surfaceName = reader.readString()
+                val entityName = reader.readString()
                 val pixelCount = reader.readInt()
-                vizSurfaces[surfaceName]?.let { vizSurface ->
-                    val pixelLocations = (0 until pixelCount).map {
-                        Vector3F.parse(reader).let { Vector3(it.x, it.y, it.z) }
-                    }.toTypedArray()
-                    vizSurface.vizPixels = VizPixels(vizSurface, pixelLocations)
+                entityVisualizers[entityName]?.let { entityVisualizer ->
+                    if (entityVisualizer is SurfaceVisualizer) {
+                        val pixelLocations = (0 until pixelCount).map {
+                            Vector3F.parse(reader).toVector3()
+                        }.toTypedArray()
+                        entityVisualizer.vizPixels = VizPixels(pixelLocations, entityVisualizer.surfaceGeometry.panelNormal)
+                    }
                 }
             }
 
             PixelColors -> { // Pixel colors.
-                val surfaceName = reader.readString()
+                val entityName = reader.readString()
                 val pixelCount = reader.readInt()
-                vizSurfaces[surfaceName]?.let { vizSurface ->
-                    val vizPixels = vizSurface.vizPixels
-                    vizPixels?.let {
-                        val minPixCount = min(vizPixels.size, pixelCount)
-                        for (i in 0 until minPixCount) {
-                            vizPixels[i] = Color.parseWithoutAlpha(reader)
+                entityVisualizers[entityName]?.let { entityVisualizer ->
+                    if (entityVisualizer is SurfaceVisualizer) {
+                        val vizPixels = entityVisualizer.vizPixels
+                        vizPixels?.let {
+                            val minPixCount = min(vizPixels.size, pixelCount)
+                            for (i in 0 until minPixCount) {
+                                vizPixels[i] = Color.parseWithoutAlpha(reader)
+                            }
                         }
                     }
                 }

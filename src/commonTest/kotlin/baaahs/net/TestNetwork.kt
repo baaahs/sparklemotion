@@ -4,7 +4,7 @@ import baaahs.sim.FakeMdns
 
 class TestNetwork(var defaultMtu: Int = 1400) : Network {
     val links = mutableListOf<Link>()
-    private val mdns = FakeMdns { serviceId -> Address("test-svc-$serviceId")}
+    private val mdns = FakeMdns()
 
     override fun link(name: String): Link {
         return Link(defaultMtu).also { links.add(it) }

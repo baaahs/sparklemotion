@@ -21,12 +21,16 @@ class FakeNetwork(
     private val httpServersByPort:
             MutableMap<Pair<Network.Address, Int>, FakeLink.FakeHttpServer> = hashMapOf()
 
-    private val mdns = FakeMdns { id -> FakeAddress(id.toString()) }
+    private val mdns = FakeMdns()
 
     override fun link(name: String): FakeLink {
         val next = addressCounters.getOrElse(name) { 1 }
         addressCounters[name] = next + 1
         val address = FakeAddress("$name$next")
+        return FakeLink(address)
+    }
+
+    fun link(address: FakeAddress): FakeLink {
         return FakeLink(address)
     }
 
@@ -62,7 +66,11 @@ class FakeNetwork(
         }
 
         override suspend fun httpGetRequest(address: Network.Address, port: Int, path: String): String {
-            TODO("not implemented")
+            val fakeHttpServer = httpServersByPort[address to port]
+                ?: error ("No HTTP server at $address:$port.")
+            val response = fakeHttpServer.httpGetResponses[path]
+                ?: error("No response registered for http://$address:$port/$path.")
+            return response.decodeToString()
         }
 
         override fun connectWebSocket(
@@ -173,6 +181,8 @@ class FakeNetwork(
         }
 
         internal inner class FakeHttpServer(val port: Int) : Network.HttpServer {
+            val httpGetResponses: MutableMap<String, ByteArray> = mutableMapOf()
+
             val webSocketListeners: MutableMap<String, (Network.TcpConnection) -> Network.WebSocketListener> =
                 mutableMapOf()
 
