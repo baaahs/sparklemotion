@@ -1,4 +1,4 @@
-package baaahs.visualizer
+package baaahs.visualizer.remote
 
 import baaahs.Color
 import baaahs.geom.Vector3F
@@ -7,12 +7,17 @@ import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.proto.Ports
 import baaahs.util.Logger
+import baaahs.visualizer.SurfaceGeometry
+import baaahs.visualizer.Visualizer
+import baaahs.visualizer.VizPixels
+import baaahs.visualizer.remote.RemoteVisualizerListener.Opcode.PixelColors
+import baaahs.visualizer.remote.RemoteVisualizerListener.Opcode.PixelLocations
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import three.js.Vector3
 import kotlin.math.min
 
-class VisualizerListenerClient(
+class RemoteVisualizerClient(
     link: Network.Link,
     address: Network.Address,
     private val visualizer: Visualizer,
@@ -28,7 +33,6 @@ class VisualizerListenerClient(
 
     init {
         link.connectWebSocket(address, Ports.PINKY_UI_TCP, "/ws/visualizer", this)
-
     }
 
     override fun connected(tcpConnection: Network.TcpConnection) {
@@ -37,9 +41,8 @@ class VisualizerListenerClient(
 
     override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
         val reader = ByteArrayReader(bytes)
-        val op = reader.readByte().toInt()
-        when (op) {
-            0 -> { // Pixel locations.
+        when (RemoteVisualizerListener.Opcode.get(reader.readByte())) {
+            PixelLocations -> { // Pixel locations.
                 val surfaceName = reader.readString()
                 val pixelCount = reader.readInt()
                 vizSurfaces[surfaceName]?.let { vizSurface ->
@@ -50,7 +53,7 @@ class VisualizerListenerClient(
                 }
             }
 
-            1 -> { // Pixel colors.
+            PixelColors -> { // Pixel colors.
                 val surfaceName = reader.readString()
                 val pixelCount = reader.readInt()
                 vizSurfaces[surfaceName]?.let { vizSurface ->
@@ -63,7 +66,6 @@ class VisualizerListenerClient(
                     }
                 }
             }
-            else -> throw UnsupportedOperationException("huh?")
         }
     }
 

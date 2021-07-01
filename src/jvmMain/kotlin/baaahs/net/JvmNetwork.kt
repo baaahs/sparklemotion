@@ -82,7 +82,7 @@ class JvmNetwork : Network {
                                 data.copyOfRange(packetIn.offset, packetIn.length)
                             )
                         } catch (e: Exception) {
-                            RuntimeException("Error handling UDP packet", e).printStackTrace()
+                            logger.error(e) { "Error handling UDP packet" }
                         }
                     }
                 }
@@ -205,7 +205,7 @@ class JvmNetwork : Network {
                             }
                         }
 
-                        println("Connection from ${this.call.request.host()}…")
+                        logger.info { "Connection from ${this.call.request.host()}…" }
                         val webSocketListener = onConnect(tcpConnection)
                         webSocketListener.connected(tcpConnection)
 
@@ -216,11 +216,11 @@ class JvmNetwork : Network {
                                     val bytes = frame.readBytes()
                                     webSocketListener.receive(tcpConnection, bytes)
                                 } else {
-                                    println("wait huh? received weird data: $frame")
+                                    logger.warn { "wait huh? received weird data: $frame" }
                                 }
                             }
                         } catch (e: Exception) {
-                            e.printStackTrace()
+                            logger.error(e) { "Error reading websocket frame." }
                             close(CloseReason(
                                 CloseReason.Codes.INTERNAL_ERROR, "Internal error: ${e.message}"))
                         } finally {
@@ -232,7 +232,7 @@ class JvmNetwork : Network {
                         try {
                             JvmUdpProxy().handle(this)
                         } catch (e: Exception) {
-                            e.printStackTrace()
+                            logger.error(e) { "Error handling UDP proxy." }
                         }
                     }
                 }

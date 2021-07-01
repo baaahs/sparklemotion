@@ -13,6 +13,7 @@ import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
 import baaahs.util.asMillis
+import baaahs.visualizer.remote.RemoteVisualizerListener
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -32,7 +33,7 @@ class BrainManager(
 ) {
     internal val activeBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
     private val pendingBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
-    private val listeningVisualizers = hashSetOf<Pinky.ListeningVisualizer>()
+    private val listeningVisualizers = hashSetOf<RemoteVisualizerListener>()
 
     private var brainData by publishProperty(pubSub, Topics.brains, emptyMap())
 
@@ -226,14 +227,14 @@ class BrainManager(
         }
     }
 
-    fun addListeningVisualizer(listeningVisualizer: Pinky.ListeningVisualizer) {
-        listeningVisualizers.add(listeningVisualizer)
+    fun addListeningVisualizer(remoteVisualizerListener: RemoteVisualizerListener) {
+        listeningVisualizers.add(remoteVisualizerListener)
 
-        activeBrains.values.forEach { listeningVisualizer.sendPixelData(it.fixture) }
+        activeBrains.values.forEach { remoteVisualizerListener.sendPixelData(it.fixture) }
     }
 
-    fun removeListeningVisualizer(listeningVisualizer: Pinky.ListeningVisualizer) {
-        listeningVisualizers.remove(listeningVisualizer)
+    fun removeListeningVisualizer(remoteVisualizerListener: RemoteVisualizerListener) {
+        listeningVisualizers.remove(remoteVisualizerListener)
     }
 
     private fun updateListeningVisualizers(fixture: Fixture, colors: List<Color>) {
