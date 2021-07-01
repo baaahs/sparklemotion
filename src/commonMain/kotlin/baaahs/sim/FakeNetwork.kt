@@ -88,6 +88,7 @@ class FakeNetwork(
 
             val onConnectCallback = fakeHttpServer?.webSocketListeners?.get(path)
             if (onConnectCallback == null) {
+                logger.warn { "No WebSocket listener at $toAddress:$port$path" }
                 val connection = FakeTcpConnection(myAddress, toAddress, port, null)
                 coroutineScope.launch {
                     networkDelay()
@@ -95,8 +96,6 @@ class FakeNetwork(
                 }
                 tcpConnections.add(connection)
                 return connection
-            } else {
-                logger.warn { "No WebSocket listener at $toAddress:$port$path" }
             }
 
             lateinit var clientSideConnection: FakeTcpConnection
@@ -132,6 +131,12 @@ class FakeNetwork(
             override fun send(bytes: ByteArray) {
                 coroutineScope.launch {
                     webSocketListener?.receive(otherListener!!(), bytes)
+                }
+            }
+
+            override fun close() {
+                coroutineScope.launch {
+                    webSocketListener?.reset(this@FakeTcpConnection)
                 }
             }
         }

@@ -14,6 +14,9 @@ import baaahs.publishProperty
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
+import baaahs.visualizer.remote.RemoteVisualizable
+import baaahs.visualizer.remote.RemoteVisualizerServer
+import baaahs.visualizer.remote.RemoteVisualizers
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -26,11 +29,12 @@ class WledManager(
     private val mainDispatcher: CoroutineDispatcher,
     private val clock: Clock,
     private val surfacePixelStrategy: SurfacePixelStrategy = LinearSurfacePixelStrategy()
-) {
+) : RemoteVisualizable {
     private val senderCid = "SparkleMotion000".encodeToByteArray()
     private val sacnLink = SacnLink(link, senderCid, "SparkleMotion")
     private var wledTransports = mutableMapOf<String, WledTransport>()
     private var wledDevices by publishProperty(pubSub, Topics.sacnDevices, emptyMap())
+    private val remoteVisualizers = RemoteVisualizers()
 
     init {
         CoroutineScope(Dispatchers.Default).launch {
@@ -71,12 +75,8 @@ class WledManager(
 
                 if (wledAddress != null) {
                     CoroutineScope(Dispatchers.Default).launch {
-                        logger.warn { "httpGetRequest ->" }
                         val wledJsonStr = link.httpGetRequest(wledAddress, wledPort, "json")
-                        logger.warn { "               -> $wledJsonStr" }
                         val wledJson = json.decodeFromString(WledJson.serializer(), wledJsonStr)
-                        logger.warn { "               -> $wledJson" }
-                        println("wledJson = $wledJson")
 
                         withContext(mainDispatcher) {
                             val pixelCount = wledJson.info.leds.count
@@ -85,7 +85,6 @@ class WledManager(
                             val controllerId = ControllerId(controllerTypeName, id)
                             val provisionalFixture = fixtureManager.createFixtureFor(controllerId, null, NullTransport)
                             val entity = provisionalFixture.modelEntity
-                            println("WledManager: entity = $entity")
                             val pixelLocations = if (provisionalFixture.pixelLocations.isNotEmpty()) {
                                 provisionalFixture.pixelLocations
                             } else if (entity is LightBar) {
@@ -104,6 +103,7 @@ class WledManager(
                                 wledTransports[id] = wledTransport
                                 fixtureManager.fixturesChanged(listOf(wledTransport.fixture), emptyList())
                                 updateWledDevices(id, newWledDevice)
+                                remoteVisualizers.sendFixtureInfo(wledTransport.fixture)
                             } else {
                                 // TODO: check to see if any attributes of the device have changed.
                                 logger.info { "Ignoring duplicate $id ($pixelCount pixels)." }
@@ -121,33 +121,46 @@ class WledManager(
         wledDevices = newWledDevices
     }
 
+    override fun addRemoteVisualizer(listener: RemoteVisualizerServer.Listener) {
+        remoteVisualizers.addListener(listener)
+        wledTransports.values.forEach { listener.sendFixtureInfo(it.fixture) }
+    }
+
+    override fun removeRemoteVisualizer(listener: RemoteVisualizerServer.Listener) {
+        remoteVisualizers.removeListener(listener)
+    }
+
+    inner class WledTransport(
+        private val wledDevice: WledDevice,
+        private val sacnDevice: SacnLink.SacnDevice,
+        entity: Model.Entity?,
+        pixelLocations: List<Vector3F>
+    ) : Transport {
+        override val name: String get() = wledDevice.id
+        val stats get() = sacnDevice.stats
+
+        val fixture = Fixture(
+            entity, wledDevice.pixelCount, pixelLocations,
+            PixelArrayDevice, wledDevice.id, this
+        )
+
+        override fun send(fixture: Fixture, resultViews: List<ResultView>) {
+            val resultColors = PixelArrayDevice.getColorResults(resultViews)
+            sacnDevice.sendDataPacket(resultColors)
+
+            remoteVisualizers.sendFrameData(fixture) { outBuf ->
+                outBuf.writeInt(resultColors.pixelCount)
+                resultColors.forEach { color -> color.serializeWithoutAlpha(outBuf) }
+            }
+        }
+    }
+
     companion object {
         val controllerTypeName = "WLED"
         private val logger = Logger<WledManager>()
         private val json = Json {
             ignoreUnknownKeys = true
         }
-    }
-}
-
-class WledTransport(
-    private val wledDevice: WledDevice,
-    private val sacnDevice: SacnLink.SacnDevice,
-    entity: Model.Entity?,
-    pixelLocations: List<Vector3F>
-) : Transport {
-    override val name: String get() = wledDevice.id
-    val stats get() = sacnDevice.stats
-
-    val fixture: Fixture = Fixture(
-        entity, wledDevice.pixelCount, pixelLocations,
-        PixelArrayDevice, wledDevice.id, this
-    )
-
-
-    override fun send(fixture: Fixture, resultViews: List<ResultView>) {
-        val resultColors = PixelArrayDevice.getColorResults(resultViews)
-        sacnDevice.sendDataPacket(resultColors)
     }
 }
 

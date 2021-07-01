@@ -5,7 +5,9 @@ import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.fixtures.ResultView
 import baaahs.fixtures.Transport
+import baaahs.geom.Vector3F
 import baaahs.geom.toVector3F
+import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.Model
 import baaahs.visualizer.*
@@ -40,7 +42,7 @@ actual class BrainSurfaceSimulation actual constructor(
             )
         }
 
-    override val entityVisualizer: EntityVisualizer by lazy { SurfaceVisualizer(surfaceGeometry, vizPixels) }
+    override val entityVisualizer: SurfaceVisualizer by lazy { SurfaceVisualizer(surfaceGeometry, vizPixels) }
 
     override val previewFixture: Fixture by lazy {
         val transport = PixelArrayPreviewTransport()
@@ -56,6 +58,22 @@ actual class BrainSurfaceSimulation actual constructor(
 
     override fun launch() {
         brain.run {}
+    }
+
+    override fun receiveRemoteVisualizationFixtureInfo(reader: ByteArrayReader) {
+        val pixelCount = reader.readInt()
+        val pixelLocations = (0 until pixelCount).map {
+            Vector3F.parse(reader).toVector3()
+        }.toTypedArray()
+
+        entityVisualizer.vizPixels = VizPixels(
+            pixelLocations,
+            entityVisualizer.surfaceGeometry.panelNormal
+        )
+    }
+
+    override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
+        entityVisualizer.vizPixels?.readColors(reader)
     }
 
     inner class PixelArrayPreviewTransport : Transport {

@@ -93,6 +93,10 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
 
     fun at(offset: Int): ByteArrayWriter = ByteArrayWriter(bytes, offset)
 
+    fun reset() {
+        offset = 0
+    }
+
     private fun growIfNecessary(by: Int) {
         if (offset + by > bytes.size) {
             var newSize = bytes.size * 2

@@ -3,6 +3,7 @@ package baaahs.visualizer
 import baaahs.Color
 import baaahs.Pixels
 import baaahs.geom.Vector2
+import baaahs.io.ByteArrayReader
 import baaahs.resourcesBase
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.get
@@ -140,6 +141,14 @@ class VizPixels(
     }
 
     fun clamp(f: Float): Float = min(1f, max(f, 0f))
+
+    fun readColors(reader: ByteArrayReader) {
+        val pixelCount = reader.readInt()
+        val minPixCount = min(size, pixelCount)
+        for (i in 0 until minPixCount) {
+            this[i] = Color.parseWithoutAlpha(reader)
+        }
+    }
 
     companion object {
         private val roundLightTx = TextureLoader().load(

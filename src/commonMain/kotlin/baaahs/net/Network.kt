@@ -114,6 +114,8 @@ interface Network {
         fun send(message: Message) {
             send(message.toBytes())
         }
+
+        fun close()
     }
 
     interface HttpServer {

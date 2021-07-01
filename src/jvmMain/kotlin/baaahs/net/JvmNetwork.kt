@@ -198,9 +198,15 @@ class JvmNetwork : Network {
 
                             override fun send(bytes: ByteArray) {
                                 val frame = Frame.Binary(true, ByteBuffer.wrap(bytes.clone()))
-                                GlobalScope.launch {
+                                networkScope.launch {
                                     this@webSocket.send(frame)
                                     this@webSocket.flush()
+                                }
+                            }
+
+                            override fun close() {
+                                networkScope.launch {
+                                    this@webSocket.close()
                                 }
                             }
                         }
