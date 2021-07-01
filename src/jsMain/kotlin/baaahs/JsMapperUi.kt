@@ -455,7 +455,7 @@ class JsMapperUi(
             var totalArea = 0f
             for (face in faces) {
                 val triangle = Triangle(geom.vertices[face.a], geom.vertices[face.b], geom.vertices[face.c])
-                val faceArea = triangle.asDynamic().getArea() as Float
+                val faceArea = triangle.getArea() as Float
                 faceNormalSum.addScaledVector(face.normal, faceArea)
                 totalArea += faceArea
             }

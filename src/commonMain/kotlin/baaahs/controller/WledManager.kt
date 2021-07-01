@@ -7,6 +7,7 @@ import baaahs.geom.Vector3F
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.glsl.SurfacePixelStrategy
 import baaahs.mapper.ControllerId
+import baaahs.model.LightBar
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.publishProperty
@@ -85,7 +86,14 @@ class WledManager(
                             val provisionalFixture = fixtureManager.createFixtureFor(controllerId, null, NullTransport)
                             val entity = provisionalFixture.modelEntity
                             println("WledManager: entity = $entity")
-                            val pixelLocations = surfacePixelStrategy.forFixture(pixelCount, entity, model)
+                            val pixelLocations = if (provisionalFixture.pixelLocations.isNotEmpty()) {
+                                provisionalFixture.pixelLocations
+                            } else if (entity is LightBar) {
+                                entity.getPixelLocations(pixelCount)
+                            } else {
+                                surfacePixelStrategy.forFixture(pixelCount, entity, model)
+                            }
+
                             val wledTransport =
                                 WledTransport(newWledDevice, sacnLink.deviceAt(wledAddress), entity, pixelLocations)
 

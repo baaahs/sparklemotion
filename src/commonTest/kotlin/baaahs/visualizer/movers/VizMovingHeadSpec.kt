@@ -8,7 +8,7 @@ import baaahs.visualizer.VizScene
 import org.spekframework.spek2.Spek
 
 object VizMovingHeadSpec: Spek({
-    describe<VizMovingHead> {
+    describe<MovingHeadVisualizer> {
         val movingHead by value {
             TestMovingHead(
                 panMotorSpeed = 2f,
@@ -19,7 +19,7 @@ object VizMovingHeadSpec: Spek({
         val dmxUniverse by value { FakeDmxUniverse() }
         val fakeClock by value { FakeClock() }
         val beam by value { BeamForTest() }
-        val vizMovingHead by value { VizMovingHead(movingHead, dmxUniverse, fakeClock, beam) }
+        val vizMovingHead by value { MovingHeadVisualizer(movingHead, fakeClock, dmxUniverse, beam) }
 
         val sendDmxFrame by value<UpdateMoverState> {
             { elapsedTime, pan, tilt, colorWheelPosition, dimmer ->

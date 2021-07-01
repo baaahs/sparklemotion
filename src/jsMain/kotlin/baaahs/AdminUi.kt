@@ -22,7 +22,8 @@ class AdminUi(
     private val clientLink = network.link("admin")
     private val container = document.createElement("div") as HTMLDivElement
     private val visualizer = Visualizer(model, clock)
-    private val visualizerListenerClient = RemoteVisualizerClient(clientLink, pinkyAddress, visualizer, model)
+    private val visualizerListenerClient =
+        RemoteVisualizerClient(clientLink, pinkyAddress, visualizer, model, clock)
 
     init {
         container.className = "adminModelVisualizerContainer"

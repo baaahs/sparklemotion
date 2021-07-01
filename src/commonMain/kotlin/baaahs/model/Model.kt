@@ -5,6 +5,9 @@ import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.geom.center
+import baaahs.sim.BrainSurfaceSimulation
+import baaahs.sim.FixtureSimulation
+import baaahs.sim.SimulationEnv
 
 abstract class Model : ModelInfo {
     abstract val name: String
@@ -35,6 +38,8 @@ abstract class Model : ModelInfo {
         val name: String
         val description: String
         val deviceType: DeviceType
+
+        fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation
     }
 
     interface FixtureInfo {
@@ -57,6 +62,9 @@ abstract class Model : ModelInfo {
             vertices.addAll(lines.flatMap { it.vertices })
             return vertices
         }
+
+        override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
+            BrainSurfaceSimulation(this, simulationEnv)
     }
 
     data class Line(val vertices: List<Vector3F>)

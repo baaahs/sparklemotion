@@ -3,7 +3,7 @@ package baaahs.io
 import kotlin.math.min
 
 class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
-    private var offset = offset
+    var offset = offset
         set(value) {
             if (value > bytes.size) {
                 throw IllegalStateException("array index out of bounds")

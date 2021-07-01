@@ -1,6 +1,9 @@
 package baaahs.controller
 
+import baaahs.Color
+import baaahs.Pixels
 import baaahs.fixtures.ColorResultType
+import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
 import baaahs.util.Logger
@@ -94,6 +97,54 @@ class SacnLink(
         }.toBytes()
 
         udpSocket.sendUdp(address, sAcnPort, bytes)
+    }
+
+    fun readDataFrame(byteArray: ByteArray, pixels: Pixels) {
+        ByteArrayReader(byteArray).apply {
+            // Root Layer
+            readShort(/*0x10*/) // Preamble size
+            readShort(/*0x0*/) // Post-amble size
+            // ACN packet identifier:
+            readBytes(12 /*0x41, 0x53, 0x43, 0x2d, 0x45, 0x31, 0x2e, 0x31, 0x37, 0x00, 0x00, 0x00*/)
+
+//            val rootLayerPdu = offset
+            readShort(/*0*/) // PDU length
+            readInt(/*VECTOR_ROOT_E131_DATA*/) // Vector
+            readBytes(16 /*senderCid*/) // Sender's CID
+
+            // Framing Layer
+//            val framingLayerPdu = offset
+            readShort(/*0*/) // PDU length
+            readInt(/*VECTOR_E131_DATA_PACKET*/) // Vector
+            readBytes(sourceNameBytes)
+            readByte(/*199.toByte()*/) // Priority
+            readShort(/*0x0*/) // Synchronization address
+            readByte(/*sequenceNumber.toByte()*/) // Sequence number
+            readByte(/*0x0*/) // Options
+            readShort(/*0x1*/) // Universe
+
+            // DMP Layer
+//            val dmpLayerPdu = offset
+            readShort(/*0*/) // PDU length
+            readByte(/*VECTOR_DMP_SET_PROPERTY.toByte()*/) // Vector
+            readByte(/*0xA1.toByte()*/) // Address type & data type
+            readShort(/*0x0*/) // First property address
+            readShort(/*0x1*/) // Address increment
+            val pixelCount = readShort() / 3 - 1 - 3// (/*1 + colors.pixelCount * 3*/) // Property value count
+            // Property values...
+            readByte(/*0x0*/) // START code
+            for (i in 0 until pixelCount) {
+                pixels[i] = Color(
+                    readByte(/*color.redB*/),
+                    readByte(/*color.greenB*/),
+                    readByte(/*color.blueB*/)
+                )
+            }
+
+//            at(rootLayerPdu).writeShort(0x7000 or offset - rootLayerPdu)
+//            at(framingLayerPdu).writeShort(0x7000 or offset - framingLayerPdu)
+//            at(dmpLayerPdu).writeShort(0x7000 or offset - dmpLayerPdu)
+        }
     }
 
     fun sendUniverseDiscoveryPacket() {

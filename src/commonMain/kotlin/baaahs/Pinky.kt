@@ -165,12 +165,15 @@ class Pinky(
         }
     }
 
+    private var mappingResultsLoaderJob: Job? = null
+
     internal suspend fun launchStartupJobs(): Job {
         return CoroutineScope(coroutineContext).launch {
             CoroutineScope(coroutineContext).launch {
                 launch { firmwareDaddy.start() }
                 launch { movingHeadManager.start() }
-                launch { mappingResults.actualMappingResults = storage.loadMappingData(model) }
+                mappingResultsLoaderJob =
+                    launch { mappingResults.actualMappingResults = storage.loadMappingData(model) }
                 launch { loadConfig() }
                 launch { shaderLibraryManager.start() }
             }.join()
@@ -178,6 +181,15 @@ class Pinky(
             isStartedUp = true
             updatePinkyState(PinkyState.Running)
         }
+    }
+
+    internal suspend fun awaitMappingResultsLoaded() {
+        // Gross hack to ensure mapping results have loaded before we start fixture simulators.
+        while (mappingResultsLoaderJob == null) {
+            delay(5)
+            yield()
+        }
+        mappingResultsLoaderJob!!.join()
     }
 
     private fun updatePinkyState(newState: PinkyState) {

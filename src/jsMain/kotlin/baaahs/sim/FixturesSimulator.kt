@@ -1,24 +1,28 @@
 package baaahs.sim
 
-import baaahs.*
-import baaahs.geom.Vector3F
+import baaahs.Brain
+import baaahs.doRunBlocking
+import baaahs.getValue
 import baaahs.io.Fs
 import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.model.Model
-import baaahs.model.MovingHead
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.util.Clock
 import baaahs.visualizer.PixelArranger
-import baaahs.visualizer.SurfaceGeometry
 import baaahs.visualizer.Visualizer
-import baaahs.visualizer.VizPixels
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import three.js.Vector3
 
+/**
+ * Steps to setting up a simulator:
+ *
+ * 1. Create a fixture simulation for each model entity.
+ * 1. Generate fixture mapping data linking controllers to model entities.
+ * 1. Generate pixel mapping data.
+ * 1. Register mapping data.
+ * 1. Launch controller simulations for each fixture.
+ * 1. Generate fixture visualizers and add them to the simulation visualizer.
+ */
 class FixturesSimulator(
     private val visualizer: Visualizer,
     private val model: Model,
@@ -32,84 +36,54 @@ class FixturesSimulator(
 ) {
     val facade = Facade()
 
-    private val brainScope = CoroutineScope(Dispatchers.Main)
-    private val brains: MutableList<Brain> = mutableListOf()
-    private lateinit var simSurfaces: List<SimSurface>
+    private val brainsSimulator = BrainsSimulator(network, clock)
+    private val wledsSimulator = WledsSimulator(network, clock)
 
-    fun prepareSurfaces() {
-        var totalPixels = 0
-
-        simSurfaces = model.allSurfaces.sortedBy(Model.Surface::name).mapIndexed { index, surface ->
-            //            if (panel.name != "17L") return@forEachIndexed
-
-            val surfaceGeometry = SurfaceGeometry(surface)
-            val pixelPositions = pixelArranger.arrangePixels(surfaceGeometry, surface.expectedPixelCount)
-            totalPixels += pixelPositions.size
-            SimSurface(surface, surfaceGeometry, pixelPositions, BrainId("brain//$index"))
+    private val fixtureSimulations by lazy {
+        val simulationEnv = SimulationEnv {
+            component(brainsSimulator)
+            component(clock)
+            component(dmxUniverse)
+            component(pixelArranger)
+            component(wledsSimulator)
+            component(visualizer)
         }
 
+        model.allEntities.sortedBy(Model.Entity::name).map { entity ->
+            entity.createFixtureSimulation(simulationEnv)
+        }
+    }
+
+    fun generateMappingData() {
+        val mappingSession = MappingSession(
+            clock.now(),
+            fixtureSimulations.mapNotNull { it.mappingData },
+            null,
+            null,
+            notes = "Simulated mapping session"
+        )
+
         doRunBlocking {
-            val mappingSessionPath = Storage(mapperFs, plugins).saveSession(
-                MappingSession(clock.now(), simSurfaces.map { simSurface ->
-                    MappingSession.SurfaceData(
-                        BrainManager.controllerTypeName,
-                        simSurface.brainId.uuid,
-                        simSurface.surface.name,
-                        simSurface.pixelPositions.map {
-                            MappingSession.SurfaceData.PixelData(
-                                Vector3F(
-                                    it.x.toFloat(),
-                                    it.y.toFloat(),
-                                    it.z.toFloat()
-                                ), null, null
-                            )
-                        }, null, null, null
-                    )
-                }, null, null, notes = "Simulated mapping session")
-            )
-            mapperFs.renameFile(
-                mappingSessionPath,
-                fs.resolve("mapping", model.name, "simulated", mappingSessionPath.name))
+            val mappingSessionPath = Storage(mapperFs, plugins).saveSession(mappingSession)
+            val mappingDataPath = fs.resolve("mapping", model.name, "simulated", mappingSessionPath.name)
+            mapperFs.renameFile(mappingSessionPath, mappingDataPath)
         }
     }
 
     fun launchControllers() {
-        simSurfaces.forEach { simSurface ->
-            val vizPanel = visualizer.addSurface(simSurface.surfaceGeometry)
-            vizPanel.vizPixels = VizPixels(vizPanel, simSurface.pixelPositions)
-
-            val brain = Brain(simSurface.brainId.uuid, network, vizPanel.vizPixels ?: NullPixels, clock)
-            brains.add(brain)
-
-            brainScope.launch { randomDelay(1000); brain.run() }
+        fixtureSimulations.forEach { fixtureSimulation ->
+            fixtureSimulation.launch()
         }
     }
 
     fun addToVisualizer() {
-        model.allEntities.forEach { entity ->
-            when (entity) {
-                is MovingHead -> visualizer.addMovingHead(entity, dmxUniverse)
-            }
+        fixtureSimulations.forEach {
+            visualizer.addEntityVisualizer(it.entityVisualizer)
         }
     }
 
     inner class Facade : baaahs.ui.Facade() {
         val brains: List<Brain.Facade>
-            get() = this@FixturesSimulator.brains.map { it.facade }
-    }
-
-    class SimSurface(
-        val surface: Model.Surface,
-        val surfaceGeometry: SurfaceGeometry,
-        val pixelPositions: Array<Vector3>,
-        val brainId: BrainId
-    )
-
-    object NullPixels : Pixels {
-        override val size = 0
-
-        override fun get(i: Int): Color = Color.BLACK
-        override fun set(i: Int, color: Color) {}
-        override fun set(colors: Array<Color>) {}
+            get() = this@FixturesSimulator.brainsSimulator.brains.map { it.facade }
     }
 }

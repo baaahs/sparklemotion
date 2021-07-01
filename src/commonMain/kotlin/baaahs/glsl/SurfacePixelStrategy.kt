@@ -64,6 +64,10 @@ class LinearSurfacePixelStrategy(private val random: Random = Random) : SurfaceP
         return interpolate(vertex1, vertex2, pixelCount)
     }
 
+    fun betweenPoints(startVertex: Vector3F, endVertex: Vector3F, count: Int): List<Vector3F> {
+        return interpolate(startVertex, endVertex, count)
+    }
+
     private fun Collection<Vector3F>.average(): Vector3F {
         if (isEmpty()) return Vector3F.origin
 
