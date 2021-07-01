@@ -7,7 +7,7 @@ import baaahs.sim.HostedWebApp
 import baaahs.util.Clock
 import baaahs.util.JsClock
 import baaahs.visualizer.Visualizer
-import baaahs.visualizer.VisualizerListenerClient
+import baaahs.visualizer.remote.RemoteVisualizerClient
 import kotlinext.js.jsObject
 import org.w3c.dom.HTMLDivElement
 import react.ReactElement
@@ -22,7 +22,7 @@ class AdminUi(
     private val clientLink = network.link("admin")
     private val container = document.createElement("div") as HTMLDivElement
     private val visualizer = Visualizer(model, clock)
-    private val visualizerListenerClient = VisualizerListenerClient(clientLink, pinkyAddress, visualizer, model)
+    private val visualizerListenerClient = RemoteVisualizerClient(clientLink, pinkyAddress, visualizer, model)
 
     init {
         container.className = "adminModelVisualizerContainer"

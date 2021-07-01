@@ -4,12 +4,10 @@ import baaahs.api.ws.WebSocketRouter
 import baaahs.controller.WledManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
-import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.RootToolchain
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.render.RenderManager
-import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.*
@@ -22,6 +20,7 @@ import baaahs.show.Show
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
+import baaahs.visualizer.remote.RemoteVisualizerListener
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
@@ -93,7 +92,7 @@ class Pinky(
             WebSocketRouter(coroutineContext) { PinkyMapperHandlers(storage).register(this) }
         }
 
-        httpServer.listenWebSocket("/ws/visualizer") { ListeningVisualizer() }
+        httpServer.listenWebSocket("/ws/visualizer") { RemoteVisualizerListener(brainManager) }
     }
 
     private var isStartedUp = false
@@ -267,49 +266,6 @@ class Pinky(
         internal fun reset() {
             bytesSent = 0
             packetsSent = 0
-        }
-    }
-
-    inner class ListeningVisualizer : Network.WebSocketListener {
-        lateinit var tcpConnection: Network.TcpConnection
-
-        override fun connected(tcpConnection: Network.TcpConnection) {
-            this.tcpConnection = tcpConnection
-            brainManager.addListeningVisualizer(this)
-        }
-
-        override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
-            TODO("not implemented")
-        }
-
-        override fun reset(tcpConnection: Network.TcpConnection) {
-            brainManager.removeListeningVisualizer(this)
-        }
-
-        fun sendPixelData(fixture: Fixture) {
-            if (fixture.modelEntity != null) {
-                val pixelLocations = fixture.pixelLocations
-
-                val out = ByteArrayWriter(fixture.name.length + fixture.pixelCount * 3 * 4 + 20)
-                out.writeByte(0)
-                out.writeString(fixture.name)
-                out.writeInt(fixture.pixelCount)
-                pixelLocations.forEach { it.serialize(out) }
-                tcpConnection.send(out.toBytes())
-            }
-        }
-
-        fun sendFrame(fixture: Fixture, colors: List<Color>) {
-            if (fixture.modelEntity != null) {
-                val out = ByteArrayWriter(fixture.name.length + colors.size * 3 + 20)
-                out.writeByte(1)
-                out.writeString(fixture.name)
-                out.writeInt(colors.size)
-                colors.forEach {
-                    it.serializeWithoutAlpha(out)
-                }
-                tcpConnection.send(out.toBytes())
-            }
         }
     }
 
