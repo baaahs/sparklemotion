@@ -13,7 +13,9 @@ import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
 import baaahs.util.asMillis
-import baaahs.visualizer.remote.RemoteVisualizerListener
+import baaahs.visualizer.remote.RemoteVisualizable
+import baaahs.visualizer.remote.RemoteVisualizerServer
+import baaahs.visualizer.remote.RemoteVisualizers
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -30,10 +32,10 @@ class BrainManager(
     private val networkStats: Pinky.NetworkStats,
     private val clock: Clock,
     pubSub: PubSub.IServer
-) {
+) : RemoteVisualizable {
     internal val activeBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
     private val pendingBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
-    private val listeningVisualizers = hashSetOf<RemoteVisualizerListener>()
+    private val remoteVisualizers = RemoteVisualizers()
 
     private var brainData by publishProperty(pubSub, Topics.brains, emptyMap())
 
@@ -82,11 +84,7 @@ class BrainManager(
         }
 
         fixtureManager.fixturesChanged(fixturesToAdd, fixturesToRemove)
-        listeningVisualizers.forEach { listeningVisualizer ->
-            fixturesToAdd.forEach {
-                listeningVisualizer.sendPixelMappingData(it)
-            }
-        }
+        fixturesToAdd.forEach { remoteVisualizers.sendFixtureInfo(it) }
 
         pendingBrains.clear()
         brainData = newBrainData
@@ -208,7 +206,11 @@ class BrainManager(
             networkStats.packetsSent++
             networkStats.bytesSent += message.size
 
-            updateListeningVisualizers(fixture, pixelBuffer.colors)
+            remoteVisualizers.sendFrameData(fixture) { outBuf ->
+                val colors = pixelBuffer.colors
+                outBuf.writeInt(colors.size)
+                colors.forEach { color -> color.serializeWithoutAlpha(outBuf) }
+            }
         }
     }
 
@@ -227,22 +229,16 @@ class BrainManager(
         }
     }
 
-    fun addListeningVisualizer(remoteVisualizerListener: RemoteVisualizerListener) {
-        listeningVisualizers.add(remoteVisualizerListener)
+    override fun addRemoteVisualizer(listener: RemoteVisualizerServer.Listener) {
+        remoteVisualizers.addListener(listener)
 
-        activeBrains.values.forEach { remoteVisualizerListener.sendPixelMappingData(it.fixture) }
-    }
-
-    fun removeListeningVisualizer(remoteVisualizerListener: RemoteVisualizerListener) {
-        listeningVisualizers.remove(remoteVisualizerListener)
-    }
-
-    private fun updateListeningVisualizers(fixture: Fixture, colors: List<Color>) {
-        if (listeningVisualizers.isNotEmpty()) {
-            listeningVisualizers.forEach {
-                it.sendFrame(fixture, colors)
-            }
+        activeBrains.values.forEach {
+            listener.sendFixtureInfo(it.fixture)
         }
+    }
+
+    override fun removeRemoteVisualizer(listener: RemoteVisualizerServer.Listener) {
+        remoteVisualizers.removeListener(listener)
     }
 
     companion object {

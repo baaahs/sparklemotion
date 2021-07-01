@@ -13,7 +13,7 @@ class SurfaceVisualizer(
     private val lines: List<Line<*, *>>
     val panelNormal: Vector3 get() = surfaceGeometry.panelNormal
     val geometry: Geometry get() = surfaceGeometry.geometry
-    private val vizScene: VizScene? = null
+    private var vizScene: VizScene? = null
     var vizPixels: VizPixels? = vizPixels
         set(value) {
             vizScene?.let { scene ->
@@ -41,6 +41,7 @@ class SurfaceVisualizer(
         scene.add(VizObj(this.mesh))
         lines.forEach { line -> scene.add(VizObj(line)) }
         vizPixels?.addToScene(scene)
+        vizScene = scene
     }
 
     override var mapperIsRunning: Boolean = false

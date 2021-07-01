@@ -5,6 +5,8 @@ import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayDevice
 import baaahs.fixtures.ResultView
 import baaahs.fixtures.Transport
+import baaahs.geom.Vector3F
+import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.LightBar
 import baaahs.visualizer.LightBarVisualizer
@@ -21,7 +23,7 @@ actual class LightBarSimulation actual constructor(
 
     private val pixelLocations by lazy { lightBar.getPixelLocations(pixelCount) }
     private val vizPixels by lazy {
-        VizPixels(pixelLocations.map { it.toVector3() }.toTypedArray(), Vector3(0, 0, 1))
+        VizPixels(pixelLocations.map { it.toVector3() }.toTypedArray(), pixelVisualizationNormal)
     }
 
     override val mappingData: MappingSession.SurfaceData
@@ -54,6 +56,19 @@ actual class LightBarSimulation actual constructor(
         wledSimulator.run()
     }
 
+    override fun receiveRemoteVisualizationFixtureInfo(reader: ByteArrayReader) {
+        val pixelCount = reader.readInt()
+        val pixelLocations = (0 until pixelCount).map {
+            Vector3F.parse(reader).toVector3()
+        }.toTypedArray()
+
+        entityVisualizer.vizPixels = VizPixels(pixelLocations, pixelVisualizationNormal)
+    }
+
+    override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
+        entityVisualizer.vizPixels?.readColors(reader)
+    }
+
     inner class PreviewTransport : Transport {
         override val name: String
             get() = lightBar.name
@@ -64,5 +79,9 @@ actual class LightBarSimulation actual constructor(
                 vizPixels[i] = resultColors[i]
             }
         }
+    }
+
+    companion object {
+        val pixelVisualizationNormal = Vector3(0, 0, 1)
     }
 }

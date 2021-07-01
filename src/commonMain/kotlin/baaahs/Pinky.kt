@@ -20,7 +20,7 @@ import baaahs.show.Show
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
-import baaahs.visualizer.remote.RemoteVisualizerListener
+import baaahs.visualizer.remote.RemoteVisualizerServer
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
@@ -92,7 +92,9 @@ class Pinky(
             WebSocketRouter(coroutineContext) { PinkyMapperHandlers(storage).register(this) }
         }
 
-        httpServer.listenWebSocket("/ws/visualizer") { RemoteVisualizerListener(brainManager) }
+        httpServer.listenWebSocket("/ws/visualizer") {
+            RemoteVisualizerServer(brainManager, wledManager)
+        }
     }
 
     private var isStartedUp = false

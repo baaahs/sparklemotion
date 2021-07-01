@@ -56,6 +56,10 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
                 override fun send(bytes: ByteArray) {
                     webSocket.send(Int8Array(bytes.toTypedArray()))
                 }
+
+                override fun close() {
+                    webSocket.close()
+                }
             }
 
             webSocket.onopen = {

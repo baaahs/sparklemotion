@@ -5,9 +5,20 @@ import three.js.*
 
 class LightBarVisualizer(
     lightBar: LightBar,
-    val vizPixels: VizPixels
+    vizPixels: VizPixels? = null
 ) : EntityVisualizer {
     override var mapperIsRunning: Boolean = false
+
+    private var vizScene: VizScene? = null
+    var vizPixels : VizPixels? = vizPixels
+        set(value) {
+            vizScene?.let { scene ->
+                field?.removeFromScene(scene)
+                value?.addToScene(scene)
+            }
+
+            field = value
+        }
 
     private val object3D = Object3D()
 
@@ -38,6 +49,7 @@ class LightBarVisualizer(
 
     override fun addTo(scene: VizScene) {
         scene.add(VizObj(object3D))
-        vizPixels.addToScene(scene)
+        vizPixels?.addToScene(scene)
+        vizScene = scene
     }
 }
