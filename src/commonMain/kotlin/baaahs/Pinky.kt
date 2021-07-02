@@ -17,6 +17,7 @@ import baaahs.net.listenFragmentingUdp
 import baaahs.plugin.Plugins
 import baaahs.proto.*
 import baaahs.show.Show
+import baaahs.sim.FakeNetwork
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
@@ -93,7 +94,7 @@ class Pinky(
         }
 
         httpServer.listenWebSocket("/ws/visualizer") {
-            RemoteVisualizerServer(brainManager, wledManager)
+            RemoteVisualizerServer(brainManager, wledManager, movingHeadManager)
         }
     }
 
@@ -114,16 +115,14 @@ class Pinky(
         }
     }
 
-    fun addSimulatedBrains() {
-        val fakeAddress = object : Network.Address {
-            override fun asString(): String = "Simulated Brain"
-        }
+    private fun addSimulatedBrains() {
         val mappingInfos = (mappingResults.actualMappingResults as SessionMappingResults).controllerData
         mappingInfos.forEach { (controllerId, info) ->
             when (controllerId.controllerType) {
                 BrainManager.controllerTypeName -> {
                     brainManager.foundBrain(
-                        fakeAddress, BrainHelloMessage(controllerId.id, info.entity.name, null, null),
+                        FakeNetwork.FakeAddress("Simulated Brain ${controllerId.id}"),
+                        BrainHelloMessage(controllerId.id, info.entity.name, null, null),
                         isSimulatedBrain = true
                     )
                 }

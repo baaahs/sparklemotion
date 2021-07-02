@@ -18,6 +18,7 @@ import baaahs.proto.Ports
 import baaahs.proto.Type
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
+import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.SimDmxDriver
 import baaahs.ui.Observable
@@ -47,6 +48,7 @@ object PinkySpec : Spek({
             val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
             val pubSub = PubSub.Server(httpServer, CoroutineScope(ImmediateDispatcher))
 
+            val fakeDmxUniverse = FakeDmxUniverse()
             Pinky(
                 model,
                 network,
@@ -59,7 +61,7 @@ object PinkySpec : Spek({
                 link = link,
                 httpServer = httpServer,
                 pubSub = pubSub,
-                dmxManager = DmxManager(SimDmxDriver(), pubSub)
+                dmxManager = DmxManager(SimDmxDriver(fakeDmxUniverse), pubSub, fakeDmxUniverse)
             )
         }
         val pinkyLink by value { network.links.only() }
