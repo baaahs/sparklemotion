@@ -17,13 +17,20 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">VizPixels</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPixels$<init>(baaahs.visualizer.VizSurface, kotlin.Array((three.js.Vector3)))/vizSurface">vizSurface</span><span class="symbol">:</span>&nbsp;<a href="../-viz-surface/index.html"><span class="identifier">VizSurface</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.VizPixels$<init>(baaahs.visualizer.VizSurface, kotlin.Array((three.js.Vector3)))/positions">positions</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../../three.js/-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
+<code><span class="identifier">VizPixels</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPixels$<init>(kotlin.Array((three.js.Vector3)), three.js.Vector3)/positions">positions</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../../three.js/-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.VizPixels$<init>(kotlin.Array((three.js.Vector3)), three.js.Vector3)/normal">normal</span><span class="symbol">:</span>&nbsp;<a href="../../three.js/-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">)</span></code></td>
 </tr>
 </tbody>
 </table>
 <h3>Properties</h3>
 <table>
 <tbody>
+<tr>
+<td>
+<h4><a href="normal.html">normal</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">normal</span><span class="symbol">: </span><a href="../../three.js/-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
 <tr>
 <td>
 <h4><a href="positions.html">positions</a></h4>
@@ -48,7 +55,7 @@
 <h4><a href="add-to-scene.html">addToScene</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">addToScene</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPixels$addToScene(three.js.Scene)/scene">scene</span><span class="symbol">:</span>&nbsp;<a href="../../three.js/-scene/index.html"><span class="identifier">Scene</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">addToScene</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPixels$addToScene(baaahs.visualizer.VizScene)/scene">scene</span><span class="symbol">:</span>&nbsp;<a href="../-viz-scene/index.html"><span class="identifier">VizScene</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -69,21 +76,28 @@
 <h4><a href="get-pixel-locations-in-model-space.html">getPixelLocationsInModelSpace</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">getPixelLocationsInModelSpace</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPixels$getPixelLocationsInModelSpace(baaahs.visualizer.VizSurface)/vizSurface">vizSurface</span><span class="symbol">:</span>&nbsp;<a href="../-viz-surface/index.html"><span class="identifier">VizSurface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../../three.js/-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">getPixelLocationsInModelSpace</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../../three.js/-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="get-pixel-locations-in-panel-space.html">getPixelLocationsInPanelSpace</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">getPixelLocationsInPanelSpace</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPixels$getPixelLocationsInPanelSpace(baaahs.visualizer.VizSurface)/vizSurface">vizSurface</span><span class="symbol">:</span>&nbsp;<a href="../-viz-surface/index.html"><span class="identifier">VizSurface</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../../baaahs.geom/-vector2/index.html"><span class="identifier">Vector2</span></a><span class="symbol">&gt;</span></code></td>
+<code><span class="keyword">fun </span><span class="identifier">getPixelLocationsInPanelSpace</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPixels$getPixelLocationsInPanelSpace(baaahs.visualizer.SurfaceVisualizer)/surfaceVisualizer">surfaceVisualizer</span><span class="symbol">:</span>&nbsp;<a href="../-surface-visualizer/index.html"><span class="identifier">SurfaceVisualizer</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../../baaahs.geom/-vector2/index.html"><span class="identifier">Vector2</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="read-colors.html">readColors</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">readColors</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPixels$readColors(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
 <h4><a href="remove-from-scene.html">removeFromScene</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">removeFromScene</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPixels$removeFromScene(three.js.Scene)/scene">scene</span><span class="symbol">:</span>&nbsp;<a href="../../three.js/-scene/index.html"><span class="identifier">Scene</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">removeFromScene</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.VizPixels$removeFromScene(baaahs.visualizer.VizScene)/scene">scene</span><span class="symbol">:</span>&nbsp;<a href="../-viz-scene/index.html"><span class="identifier">VizScene</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>

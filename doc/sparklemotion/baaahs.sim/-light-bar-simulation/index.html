@@ -1,0 +1,115 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>LightBarSimulation - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.sim</a>&nbsp;/&nbsp;<a href="./index.html">LightBarSimulation</a><br/>
+<br/>
+<h1>LightBarSimulation</h1>
+<code><span class="keyword">class </span><span class="identifier">LightBarSimulation</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-fixture-simulation/index.html"><span class="identifier">FixtureSimulation</span></a></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-preview-transport/index.html">PreviewTransport</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">PreviewTransport</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.fixtures/-transport/index.html"><span class="identifier">Transport</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">LightBarSimulation</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.LightBarSimulation$<init>(baaahs.model.LightBar, baaahs.sim.SimulationEnv)/lightBar">lightBar</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-light-bar/index.html"><span class="identifier">LightBar</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.LightBarSimulation$<init>(baaahs.model.LightBar, baaahs.sim.SimulationEnv)/simulationEnv">simulationEnv</span><span class="symbol">:</span>&nbsp;<a href="../-simulation-env/index.html"><span class="identifier">SimulationEnv</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="entity-visualizer.html">entityVisualizer</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">entityVisualizer</span><span class="symbol">: </span><a href="../../baaahs.visualizer/-light-bar-visualizer/index.html"><span class="identifier">LightBarVisualizer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="light-bar.html">lightBar</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">lightBar</span><span class="symbol">: </span><a href="../../baaahs.model/-light-bar/index.html"><span class="identifier">LightBar</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="mapping-data.html">mappingData</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">mappingData</span><span class="symbol">: </span><span class="identifier">SurfaceData</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="preview-fixture.html">previewFixture</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">previewFixture</span><span class="symbol">: </span><a href="../../baaahs.fixtures/-fixture/index.html"><span class="identifier">Fixture</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="wled-simulator.html">wledSimulator</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">wledSimulator</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="launch.html">launch</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">launch</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="receive-remote-visualization-fixture-info.html">receiveRemoteVisualizationFixtureInfo</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">receiveRemoteVisualizationFixtureInfo</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.LightBarSimulation$receiveRemoteVisualizationFixtureInfo(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="receive-remote-visualization-frame-data.html">receiveRemoteVisualizationFrameData</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">receiveRemoteVisualizationFrameData</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.LightBarSimulation$receiveRemoteVisualizationFrameData(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="pixel-visualization-normal.html">pixelVisualizationNormal</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">pixelVisualizationNormal</span><span class="symbol">: </span><a href="../../three.js/-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -14,6 +14,13 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="-facade/index.html">Facade</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Facade</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-facade/index.html"><span class="identifier">Facade</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-fixtures-changes/index.html">FixturesChanges</a></h4>
 </td>
 <td>
@@ -29,7 +36,19 @@
 <h4><a href="-init-.html">&lt;init&gt;</a></h4>
 </td>
 <td>
-<code><span class="identifier">FixtureManager</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, kotlin.collections.Map((baaahs.fixtures.Fixture, baaahs.gl.render.FixtureRenderTarget)))/renderManager">renderManager</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.render/-render-manager/index.html"><span class="identifier">RenderManager</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, kotlin.collections.Map((baaahs.fixtures.Fixture, baaahs.gl.render.FixtureRenderTarget)))/initialRenderTargets">initialRenderTargets</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.gl.render/-fixture-render-target/index.html"><span class="identifier">FixtureRenderTarget</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span></code></td>
+<code><span class="identifier">FixtureManager</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, baaahs.model.Model, baaahs.mapper.MappingResults, baaahs.glsl.SurfacePixelStrategy, kotlin.collections.Map((baaahs.fixtures.Fixture, baaahs.gl.render.FixtureRenderTarget)))/renderManager">renderManager</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.render/-render-manager/index.html"><span class="identifier">RenderManager</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, baaahs.model.Model, baaahs.mapper.MappingResults, baaahs.glsl.SurfacePixelStrategy, kotlin.collections.Map((baaahs.fixtures.Fixture, baaahs.gl.render.FixtureRenderTarget)))/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, baaahs.model.Model, baaahs.mapper.MappingResults, baaahs.glsl.SurfacePixelStrategy, kotlin.collections.Map((baaahs.fixtures.Fixture, baaahs.gl.render.FixtureRenderTarget)))/mappingResults">mappingResults</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.mapper/-mapping-results/index.html"><span class="identifier">MappingResults</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, baaahs.model.Model, baaahs.mapper.MappingResults, baaahs.glsl.SurfacePixelStrategy, kotlin.collections.Map((baaahs.fixtures.Fixture, baaahs.gl.render.FixtureRenderTarget)))/surfacePixelStrategy">surfacePixelStrategy</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-surface-pixel-strategy/index.html"><span class="identifier">SurfacePixelStrategy</span></a>&nbsp;<span class="symbol">=</span>&nbsp;LinearSurfacePixelStrategy()<span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, baaahs.model.Model, baaahs.mapper.MappingResults, baaahs.glsl.SurfacePixelStrategy, kotlin.collections.Map((baaahs.fixtures.Fixture, baaahs.gl.render.FixtureRenderTarget)))/initialRenderTargets">initialRenderTargets</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.gl.render/-fixture-render-target/index.html"><span class="identifier">FixtureRenderTarget</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="facade.html">facade</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">facade</span><span class="symbol">: </span><span class="identifier">Facade</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -52,17 +71,17 @@
 </tr>
 <tr>
 <td>
+<h4><a href="create-fixture-for.html">createFixtureFor</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">createFixtureFor</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$createFixtureFor(baaahs.mapper.ControllerId, kotlin.String, baaahs.fixtures.Transport)/controllerId">controllerId</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.mapper/-controller-id/index.html"><span class="identifier">ControllerId</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$createFixtureFor(baaahs.mapper.ControllerId, kotlin.String, baaahs.fixtures.Transport)/entityName">entityName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$createFixtureFor(baaahs.mapper.ControllerId, kotlin.String, baaahs.fixtures.Transport)/transport">transport</span><span class="symbol">:</span>&nbsp;<a href="../-transport/index.html"><span class="identifier">Transport</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-fixture/index.html"><span class="identifier">Fixture</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="fixtures-changed.html">fixturesChanged</a></h4>
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">fixturesChanged</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$fixturesChanged(kotlin.collections.Collection((baaahs.fixtures.Fixture)), kotlin.collections.Collection((baaahs.fixtures.Fixture)))/addedFixtures">addedFixtures</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$fixturesChanged(kotlin.collections.Collection((baaahs.fixtures.Fixture)), kotlin.collections.Collection((baaahs.fixtures.Fixture)))/removedFixtures">removedFixtures</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-fixture-count.html">getFixtureCount</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getFixtureCount</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>

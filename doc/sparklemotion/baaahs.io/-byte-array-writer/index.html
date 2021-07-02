@@ -39,6 +39,20 @@
 <tbody>
 <tr>
 <td>
+<h4><a href="at.html">at</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">at</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.ByteArrayWriter$at(kotlin.Int)/offset">offset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">ByteArrayWriter</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="reset.html">reset</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">reset</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="to-bytes.html">toBytes</a></h4>
 </td>
 <td>
@@ -63,7 +77,15 @@
 <h4><a href="write-bytes.html">writeBytes</a></h4>
 </td>
 <td>
+<code><span class="keyword">fun </span><span class="identifier">writeBytes</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.io.ByteArrayWriter$writeBytes(kotlin.IntArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
 <code><span class="keyword">fun </span><span class="identifier">writeBytes</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.ByteArrayWriter$writeBytes(kotlin.ByteArray, kotlin.Int, kotlin.Int)/data">data</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.io.ByteArrayWriter$writeBytes(kotlin.ByteArray, kotlin.Int, kotlin.Int)/startIndex">startIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0<span class="symbol">, </span><span class="identifier" id="baaahs.io.ByteArrayWriter$writeBytes(kotlin.ByteArray, kotlin.Int, kotlin.Int)/endIndex">endIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;data.size<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="write-bytes-with-size.html">writeBytesWithSize</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">writeBytesWithSize</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.ByteArrayWriter$writeBytesWithSize(kotlin.ByteArray, kotlin.Int, kotlin.Int)/data">data</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.io.ByteArrayWriter$writeBytesWithSize(kotlin.ByteArray, kotlin.Int, kotlin.Int)/startIndex">startIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0<span class="symbol">, </span><span class="identifier" id="baaahs.io.ByteArrayWriter$writeBytesWithSize(kotlin.ByteArray, kotlin.Int, kotlin.Int)/endIndex">endIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;data.size<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -92,13 +114,6 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">writeLong</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.ByteArrayWriter$writeLong(kotlin.Long)/l">l</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html"><span class="identifier">Long</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="write-n-bytes.html">writeNBytes</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">writeNBytes</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.ByteArrayWriter$writeNBytes(kotlin.ByteArray, kotlin.Int, kotlin.Int)/data">data</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.io.ByteArrayWriter$writeNBytes(kotlin.ByteArray, kotlin.Int, kotlin.Int)/startIndex">startIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0<span class="symbol">, </span><span class="identifier" id="baaahs.io.ByteArrayWriter$writeNBytes(kotlin.ByteArray, kotlin.Int, kotlin.Int)/endIndex">endIndex</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;data.size<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 <tr>
 <td>

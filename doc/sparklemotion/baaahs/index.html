@@ -48,6 +48,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="-brain-info/index.html">BrainInfo</a></h4>
+</td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">BrainInfo</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="-brain-main/index.html">BrainMain</a></h4>
 </td>
 <td>
@@ -58,7 +65,7 @@
 <h4><a href="-brain-manager/index.html">BrainManager</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">BrainManager</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">BrainManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.visualizer.remote/-remote-visualizable/index.html"><span class="identifier">RemoteVisualizable</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -207,7 +214,7 @@
 <h4><a href="-moving-head-manager/index.html">MovingHeadManager</a></h4>
 </td>
 <td>
-<code><span class="keyword">class </span><span class="identifier">MovingHeadManager</span></code></td>
+<code><span class="keyword">class </span><span class="identifier">MovingHeadManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.visualizer.remote/-remote-visualizable/index.html"><span class="identifier">RemoteVisualizable</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -599,6 +606,13 @@
 </tr>
 <tr>
 <td>
+<h4><a href="publish-property.html">publishProperty</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">publishProperty</span><span class="symbol">(</span><span class="identifier" id="baaahs$publishProperty(baaahs.PubSub.IServer, baaahs.PubSub.Topic((baaahs.publishProperty.T)), baaahs.publishProperty.T, kotlin.Function1((baaahs.publishProperty.T, kotlin.Unit)))/pubSub">pubSub</span><span class="symbol">:</span>&nbsp;<span class="identifier">IServer</span><span class="symbol">, </span><span class="identifier" id="baaahs$publishProperty(baaahs.PubSub.IServer, baaahs.PubSub.Topic((baaahs.publishProperty.T)), baaahs.publishProperty.T, kotlin.Function1((baaahs.publishProperty.T, kotlin.Unit)))/topic">topic</span><span class="symbol">:</span>&nbsp;<span class="identifier">Topic</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs$publishProperty(baaahs.PubSub.IServer, baaahs.PubSub.Topic((baaahs.publishProperty.T)), baaahs.publishProperty.T, kotlin.Function1((baaahs.publishProperty.T, kotlin.Unit)))/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="baaahs$publishProperty(baaahs.PubSub.IServer, baaahs.PubSub.Topic((baaahs.publishProperty.T)), baaahs.publishProperty.T, kotlin.Function1((baaahs.publishProperty.T, kotlin.Unit)))/onChange">onChange</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">(</span><span class="identifier">value</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.properties/-read-write-property/index.html"><span class="identifier">ReadWriteProperty</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">,</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
 <h4><a href="random-delay.html">randomDelay</a></h4>
 </td>
 <td>
@@ -610,6 +624,13 @@
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">randomId</span><span class="symbol">(</span><span class="identifier" id="baaahs$randomId(kotlin.String)/prefix">prefix</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="subscribe-property.html">subscribeProperty</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">subscribeProperty</span><span class="symbol">(</span><span class="identifier" id="baaahs$subscribeProperty(baaahs.PubSub.Client, baaahs.PubSub.Topic((baaahs.subscribeProperty.T)), baaahs.subscribeProperty.T, kotlin.Function1((baaahs.subscribeProperty.T, kotlin.Unit)))/pubSub">pubSub</span><span class="symbol">:</span>&nbsp;<span class="identifier">Client</span><span class="symbol">, </span><span class="identifier" id="baaahs$subscribeProperty(baaahs.PubSub.Client, baaahs.PubSub.Topic((baaahs.subscribeProperty.T)), baaahs.subscribeProperty.T, kotlin.Function1((baaahs.subscribeProperty.T, kotlin.Unit)))/topic">topic</span><span class="symbol">:</span>&nbsp;<span class="identifier">Topic</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs$subscribeProperty(baaahs.PubSub.Client, baaahs.PubSub.Topic((baaahs.subscribeProperty.T)), baaahs.subscribeProperty.T, kotlin.Function1((baaahs.subscribeProperty.T, kotlin.Unit)))/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">, </span><span class="identifier" id="baaahs$subscribeProperty(baaahs.PubSub.Client, baaahs.PubSub.Topic((baaahs.subscribeProperty.T)), baaahs.subscribeProperty.T, kotlin.Function1((baaahs.subscribeProperty.T, kotlin.Unit)))/onChange">onChange</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">(</span><span class="identifier">value</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.properties/-read-write-property/index.html"><span class="identifier">ReadWriteProperty</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">,</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
 </tr>
 <tr>
 <td>

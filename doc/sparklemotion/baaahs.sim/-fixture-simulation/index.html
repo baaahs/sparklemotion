@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>FixtureSimulation - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.sim</a>&nbsp;/&nbsp;<a href="./index.html">FixtureSimulation</a><br/>
+<br/>
+<h1>FixtureSimulation</h1>
+<code><span class="keyword">interface </span><span class="identifier">FixtureSimulation</span></code>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="entity-visualizer.html">entityVisualizer</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">entityVisualizer</span><span class="symbol">: </span><a href="../../baaahs.visualizer/-entity-visualizer/index.html"><span class="identifier">EntityVisualizer</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="mapping-data.html">mappingData</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">mappingData</span><span class="symbol">: </span><span class="identifier">SurfaceData</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="preview-fixture.html">previewFixture</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">val </span><span class="identifier">previewFixture</span><span class="symbol">: </span><a href="../../baaahs.fixtures/-fixture/index.html"><span class="identifier">Fixture</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="launch.html">launch</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">launch</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="receive-remote-visualization-fixture-info.html">receiveRemoteVisualizationFixtureInfo</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">receiveRemoteVisualizationFixtureInfo</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FixtureSimulation$receiveRemoteVisualizationFixtureInfo(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="receive-remote-visualization-frame-data.html">receiveRemoteVisualizationFrameData</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">receiveRemoteVisualizationFrameData</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FixtureSimulation$receiveRemoteVisualizationFrameData(baaahs.io.ByteArrayReader)/reader">reader</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-byte-array-reader/index.html"><span class="identifier">ByteArrayReader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-brain-surface-simulation/index.html">BrainSurfaceSimulation</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">BrainSurfaceSimulation</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">FixtureSimulation</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-light-bar-simulation/index.html">LightBarSimulation</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">LightBarSimulation</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">FixtureSimulation</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="../-moving-head-simulation/index.html">MovingHeadSimulation</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">MovingHeadSimulation</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">FixtureSimulation</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

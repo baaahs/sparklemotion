@@ -1,0 +1,94 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>SacnLink - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.controller</a>&nbsp;/&nbsp;<a href="./index.html">SacnLink</a><br/>
+<br/>
+<h1>SacnLink</h1>
+<code><span class="keyword">class </span><span class="identifier">SacnLink</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-sacn-device/index.html">SacnDevice</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">SacnDevice</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-sacn-stats/index.html">SacnStats</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">SacnStats</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.util/-stats/index.html"><span class="identifier">Stats</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">SacnLink</span><span class="symbol">(</span><span class="identifier" id="baaahs.controller.SacnLink$<init>(baaahs.net.Network.Link, kotlin.ByteArray, kotlin.String)/link">link</span><span class="symbol">:</span>&nbsp;<span class="identifier">Link</span><span class="symbol">, </span><span class="identifier" id="baaahs.controller.SacnLink$<init>(baaahs.net.Network.Link, kotlin.ByteArray, kotlin.String)/senderCid">senderCid</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.controller.SacnLink$<init>(baaahs.net.Network.Link, kotlin.ByteArray, kotlin.String)/sourceName">sourceName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="udp-socket.html">udpSocket</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">udpSocket</span><span class="symbol">: </span><span class="identifier">UdpSocket</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="device-at.html">deviceAt</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">deviceAt</span><span class="symbol">(</span><span class="identifier" id="baaahs.controller.SacnLink$deviceAt(baaahs.net.Network.Address)/address">address</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">SacnDevice</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="read-data-frame.html">readDataFrame</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">readDataFrame</span><span class="symbol">(</span><span class="identifier" id="baaahs.controller.SacnLink$readDataFrame(kotlin.ByteArray, baaahs.Pixels)/byteArray">byteArray</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.controller.SacnLink$readDataFrame(kotlin.ByteArray, baaahs.Pixels)/pixels">pixels</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-pixels/index.html"><span class="identifier">Pixels</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="send-universe-discovery-packet.html">sendUniverseDiscoveryPacket</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">sendUniverseDiscoveryPacket</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="s-acn-port.html">sAcnPort</a></h4>
+</td>
+<td>
+<code><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">sAcnPort</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

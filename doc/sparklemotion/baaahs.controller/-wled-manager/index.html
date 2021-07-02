@@ -1,0 +1,68 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>WledManager - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.controller</a>&nbsp;/&nbsp;<a href="./index.html">WledManager</a><br/>
+<br/>
+<h1>WledManager</h1>
+<code><span class="keyword">class </span><span class="identifier">WledManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.visualizer.remote/-remote-visualizable/index.html"><span class="identifier">RemoteVisualizable</span></a></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-wled-transport/index.html">WledTransport</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">WledTransport</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.fixtures/-transport/index.html"><span class="identifier">Transport</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">WledManager</span><span class="symbol">(</span><span class="identifier" id="baaahs.controller.WledManager$<init>(baaahs.fixtures.FixtureManager, baaahs.model.Model, baaahs.net.Network.Link, baaahs.PubSub.Server, kotlinx.coroutines.CoroutineDispatcher, baaahs.util.Clock, baaahs.glsl.SurfacePixelStrategy)/fixtureManager">fixtureManager</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.fixtures/-fixture-manager/index.html"><span class="identifier">FixtureManager</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.controller.WledManager$<init>(baaahs.fixtures.FixtureManager, baaahs.model.Model, baaahs.net.Network.Link, baaahs.PubSub.Server, kotlinx.coroutines.CoroutineDispatcher, baaahs.util.Clock, baaahs.glsl.SurfacePixelStrategy)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.controller.WledManager$<init>(baaahs.fixtures.FixtureManager, baaahs.model.Model, baaahs.net.Network.Link, baaahs.PubSub.Server, kotlinx.coroutines.CoroutineDispatcher, baaahs.util.Clock, baaahs.glsl.SurfacePixelStrategy)/link">link</span><span class="symbol">:</span>&nbsp;<span class="identifier">Link</span><span class="symbol">, </span><span class="identifier" id="baaahs.controller.WledManager$<init>(baaahs.fixtures.FixtureManager, baaahs.model.Model, baaahs.net.Network.Link, baaahs.PubSub.Server, kotlinx.coroutines.CoroutineDispatcher, baaahs.util.Clock, baaahs.glsl.SurfacePixelStrategy)/pubSub">pubSub</span><span class="symbol">:</span>&nbsp;<span class="identifier">Server</span><span class="symbol">, </span><span class="identifier" id="baaahs.controller.WledManager$<init>(baaahs.fixtures.FixtureManager, baaahs.model.Model, baaahs.net.Network.Link, baaahs.PubSub.Server, kotlinx.coroutines.CoroutineDispatcher, baaahs.util.Clock, baaahs.glsl.SurfacePixelStrategy)/mainDispatcher">mainDispatcher</span><span class="symbol">:</span>&nbsp;<span class="identifier">CoroutineDispatcher</span><span class="symbol">, </span><span class="identifier" id="baaahs.controller.WledManager$<init>(baaahs.fixtures.FixtureManager, baaahs.model.Model, baaahs.net.Network.Link, baaahs.PubSub.Server, kotlinx.coroutines.CoroutineDispatcher, baaahs.util.Clock, baaahs.glsl.SurfacePixelStrategy)/clock">clock</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.util/-clock/index.html"><span class="identifier">Clock</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.controller.WledManager$<init>(baaahs.fixtures.FixtureManager, baaahs.model.Model, baaahs.net.Network.Link, baaahs.PubSub.Server, kotlinx.coroutines.CoroutineDispatcher, baaahs.util.Clock, baaahs.glsl.SurfacePixelStrategy)/surfacePixelStrategy">surfacePixelStrategy</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-surface-pixel-strategy/index.html"><span class="identifier">SurfacePixelStrategy</span></a>&nbsp;<span class="symbol">=</span>&nbsp;LinearSurfacePixelStrategy()<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="add-remote-visualizer.html">addRemoteVisualizer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addRemoteVisualizer</span><span class="symbol">(</span><span class="identifier" id="baaahs.controller.WledManager$addRemoteVisualizer(baaahs.visualizer.remote.RemoteVisualizerServer.Listener)/listener">listener</span><span class="symbol">:</span>&nbsp;<span class="identifier">Listener</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="remove-remote-visualizer.html">removeRemoteVisualizer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">removeRemoteVisualizer</span><span class="symbol">(</span><span class="identifier" id="baaahs.controller.WledManager$removeRemoteVisualizer(baaahs.visualizer.remote.RemoteVisualizerServer.Listener)/listener">listener</span><span class="symbol">:</span>&nbsp;<span class="identifier">Listener</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="controller-type-name.html">controllerTypeName</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">controllerTypeName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -45,6 +45,7 @@ baaahs.app.ui.preview
 baaahs.browser
 baaahs.client
 baaahs.control
+baaahs.controller
 baaahs.di
 baaahs.dmx
 baaahs.fixtures
@@ -88,6 +89,7 @@ baaahs.util
 baaahs.util.three
 baaahs.visualizer
 baaahs.visualizer.movers
+baaahs.visualizer.remote
 baaahs.visualizer.ui
 external
 external.markdownit

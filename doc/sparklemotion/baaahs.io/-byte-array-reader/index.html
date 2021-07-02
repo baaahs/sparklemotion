@@ -69,10 +69,18 @@
 <h4><a href="read-bytes.html">readBytes</a></h4>
 </td>
 <td>
-<code><span class="keyword">fun </span><span class="identifier">readBytes</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code>
+<code><span class="keyword">fun </span><span class="identifier">readBytes</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.ByteArrayReader$readBytes(kotlin.Int)/count">count</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">readBytes</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.ByteArrayReader$readBytes(kotlin.ByteArray, kotlin.Int, kotlin.Int)/dest">dest</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.io.ByteArrayReader$readBytes(kotlin.ByteArray, kotlin.Int, kotlin.Int)/count">count</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;dest.size<span class="symbol">, </span><span class="identifier" id="baaahs.io.ByteArrayReader$readBytes(kotlin.ByteArray, kotlin.Int, kotlin.Int)/destOffset">destOffset</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a>&nbsp;<span class="symbol">=</span>&nbsp;0<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="read-bytes-with-size.html">readBytesWithSize</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">readBytesWithSize</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code>
 <p>Reads up to as many bytes as are present in <code>buffer</code>, or as many bytes are available in the incoming byte array,
 and returns the number of bytes actually read. Any unread incoming bytes are skipped.</p>
-<code><span class="keyword">fun </span><span class="identifier">readBytes</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.ByteArrayReader$readBytes(kotlin.ByteArray)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+<code><span class="keyword">fun </span><span class="identifier">readBytesWithSize</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.ByteArrayReader$readBytesWithSize(kotlin.ByteArray)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
 </tr>
 <tr>
 <td>
@@ -104,14 +112,6 @@ and returns the number of bytes actually read. Any unread incoming bytes are ski
 </tr>
 <tr>
 <td>
-<h4><a href="read-n-bytes.html">readNBytes</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">readNBytes</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.ByteArrayReader$readNBytes(kotlin.Int)/count">count</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code><br/>
-<code><span class="keyword">fun </span><span class="identifier">readNBytes</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.ByteArrayReader$readNBytes(kotlin.ByteArray)/dest">dest</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a></code></td>
-</tr>
-<tr>
-<td>
 <h4><a href="read-nullable-string.html">readNullableString</a></h4>
 </td>
 <td>
@@ -130,6 +130,13 @@ and returns the number of bytes actually read. Any unread incoming bytes are ski
 </td>
 <td>
 <code><span class="keyword">fun </span><span class="identifier">readString</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="skip-bytes.html">skipBytes</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">skipBytes</span><span class="symbol">(</span><span class="identifier" id="baaahs.io.ByteArrayReader$skipBytes(kotlin.Int)/count">count</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
 </tr>
 </tbody>
 </table>

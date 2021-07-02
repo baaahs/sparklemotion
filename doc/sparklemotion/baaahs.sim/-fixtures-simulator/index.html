@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>FixturesSimulator - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.sim</a>&nbsp;/&nbsp;<a href="./index.html">FixturesSimulator</a><br/>
+<br/>
+<h1>FixturesSimulator</h1>
+<code><span class="keyword">class </span><span class="identifier">FixturesSimulator</span></code>
+<p>Steps to setting up a simulator:</p>
+<ol><li>Create a fixture simulation for each model entity.</li>
+<li>Generate fixture mapping data linking controllers to model entities.</li>
+<li>Generate pixel mapping data.</li>
+<li>Register mapping data.</li>
+<li>Launch controller simulations for each fixture.</li>
+<li>Generate fixture visualizers and add them to the simulation visualizer.</li>
+</ol>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-facade/index.html">Facade</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Facade</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-facade/index.html"><span class="identifier">Facade</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<p>Steps to setting up a simulator:</p>
+<code><span class="identifier">FixturesSimulator</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/visualizer">visualizer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.visualizer/-visualizer/index.html"><span class="identifier">Visualizer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/dmxUniverse">dmxUniverse</span><span class="symbol">:</span>&nbsp;<a href="../-fake-dmx-universe/index.html"><span class="identifier">FakeDmxUniverse</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/fs">fs</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/mapperFs">mapperFs</span><span class="symbol">:</span>&nbsp;<a href="../-fake-fs/index.html"><span class="identifier">FakeFs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/clock">clock</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.util/-clock/index.html"><span class="identifier">Clock</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/pixelArranger">pixelArranger</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.visualizer/-pixel-arranger/index.html"><span class="identifier">PixelArranger</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="facade.html">facade</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">facade</span><span class="symbol">: </span><span class="identifier">Facade</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="add-to-visualizer.html">addToVisualizer</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">addToVisualizer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="generate-mapping-data.html">generateMappingData</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">generateMappingData</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="launch-controllers.html">launchControllers</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">launchControllers</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

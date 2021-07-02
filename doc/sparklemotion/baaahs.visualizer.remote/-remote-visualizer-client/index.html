@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>RemoteVisualizerClient - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.visualizer.remote</a>&nbsp;/&nbsp;<a href="./index.html">RemoteVisualizerClient</a><br/>
+<br/>
+<h1>RemoteVisualizerClient</h1>
+<code><span class="keyword">class </span><span class="identifier">RemoteVisualizerClient</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">WebSocketListener</span><span class="symbol">, </span><span class="identifier">CoroutineScope</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">RemoteVisualizerClient</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.remote.RemoteVisualizerClient$<init>(baaahs.net.Network.Link, baaahs.net.Network.Address, baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.util.Clock)/link">link</span><span class="symbol">:</span>&nbsp;<span class="identifier">Link</span><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.remote.RemoteVisualizerClient$<init>(baaahs.net.Network.Link, baaahs.net.Network.Address, baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.util.Clock)/address">address</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.remote.RemoteVisualizerClient$<init>(baaahs.net.Network.Link, baaahs.net.Network.Address, baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.util.Clock)/visualizer">visualizer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.visualizer/-visualizer/index.html"><span class="identifier">Visualizer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.remote.RemoteVisualizerClient$<init>(baaahs.net.Network.Link, baaahs.net.Network.Address, baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.util.Clock)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.remote.RemoteVisualizerClient$<init>(baaahs.net.Network.Link, baaahs.net.Network.Address, baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.util.Clock)/clock">clock</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.util/-clock/index.html"><span class="identifier">Clock</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="close.html">close</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">close</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="connected.html">connected</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">connected</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.remote.RemoteVisualizerClient$connected(baaahs.net.Network.TcpConnection)/tcpConnection">tcpConnection</span><span class="symbol">:</span>&nbsp;<span class="identifier">TcpConnection</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="receive.html">receive</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">receive</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.remote.RemoteVisualizerClient$receive(baaahs.net.Network.TcpConnection, kotlin.ByteArray)/tcpConnection">tcpConnection</span><span class="symbol">:</span>&nbsp;<span class="identifier">TcpConnection</span><span class="symbol">, </span><span class="identifier" id="baaahs.visualizer.remote.RemoteVisualizerClient$receive(baaahs.net.Network.TcpConnection, kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="reset.html">reset</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">reset</span><span class="symbol">(</span><span class="identifier" id="baaahs.visualizer.remote.RemoteVisualizerClient$reset(baaahs.net.Network.TcpConnection)/tcpConnection">tcpConnection</span><span class="symbol">:</span>&nbsp;<span class="identifier">TcpConnection</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="logger.html">logger</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">logger</span><span class="symbol">: </span><a href="../../baaahs.util/-logger/index.html"><span class="identifier">Logger</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
