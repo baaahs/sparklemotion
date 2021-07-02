@@ -5,6 +5,9 @@ import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.geom.center
+import baaahs.sim.BrainSurfaceSimulation
+import baaahs.sim.FixtureSimulation
+import baaahs.sim.SimulationEnv
 
 abstract class Model : ModelInfo {
     abstract val name: String
@@ -14,38 +17,29 @@ abstract class Model : ModelInfo {
 
     abstract val geomVertices: List<Vector3F>
 
-    private val allSurfacesByName: Map<String, Surface> by lazy { allSurfaces.associateBy { it.name } }
+    private val allSurfacesByName: Map<String, Entity> by lazy { allEntities.associateBy { it.name } }
 
-    fun findSurface(name: String) =
+    fun findEntity(name: String) =
         allSurfacesByName[name] ?: throw RuntimeException("no such model surface $name")
 
-    val allVertices by lazy {
-        val allVertices = hashSetOf<Vector3F>()
-        allSurfaces.map { allVertices.addAll(it.allVertices()) }
-        allVertices
+    private val allVertices by lazy {
+        hashSetOf<Vector3F>().apply { allSurfaces.map { addAll(it.allVertices()) } }
     }
 
-    val modelBounds by lazy {
-        boundingBox(allVertices)
-    }
+    // TODO: modelBounds et al. should be based on allEntities, not allVertices.
+    private val modelBounds by lazy { boundingBox(allVertices) }
+    private val modelExtents by lazy { val (min, max) = modelBounds; max - min }
+    private val modelCenter by lazy { center(allVertices) }
 
-    val modelExtents by lazy {
-        val (min, max) = modelBounds
-        max - min
-    }
-    override val extents
-        get() = modelExtents
-
-    val modelCenter by lazy {
-        center(allVertices)
-    }
-    override val center: Vector3F
-        get() = modelCenter
+    override val extents get() = modelExtents
+    override val center: Vector3F get() = modelCenter
 
     interface Entity {
         val name: String
         val description: String
         val deviceType: DeviceType
+
+        fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation
     }
 
     interface FixtureInfo {
@@ -68,6 +62,9 @@ abstract class Model : ModelInfo {
             vertices.addAll(lines.flatMap { it.vertices })
             return vertices
         }
+
+        override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
+            BrainSurfaceSimulation(this, simulationEnv)
     }
 
     data class Line(val vertices: List<Vector3F>)

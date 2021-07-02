@@ -11,7 +11,7 @@ import styled.styledDiv
 
 class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPanelState>(props), Observer {
     override fun observing(props: PinkyPanelProps, state: PinkyPanelState): List<Observable?> {
-        return listOf(props.pinky, props.pinky.stageManager)
+        return listOf(props.pinky, props.pinky.stageManager, props.pinky.fixtureManager)
     }
 
     override fun RBuilder.render() {
@@ -57,12 +57,17 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
             css { +"controls " }
 
             styledDiv {
-                css { +"pixelCount " }
+                +"Fixture count:"
+                span {
+                    +pinky.fixtureManager.fixtureCount.toString()
+                }
+            }
+
+            styledDiv {
                 +"Pixel count:"
                 span {
-                    +pinky.pixelCount.toString()
+                    +pinky.fixtureManager.pixelCount.toString()
                 }
-
             }
         }
     }

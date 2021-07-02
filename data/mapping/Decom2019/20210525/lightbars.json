@@ -1,0 +1,21 @@
+{
+  "startedAt": 1.622194537436E12,
+  "surfaces": [
+    {
+      "controllerType": "WLED",
+      "brainId": "wled-63256d",
+      "panelName": "bar 1"
+    },
+    {
+      "controllerType": "WLED",
+      "brainId": "wled-b187d1",
+      "panelName": "bar 2"
+    },
+    {
+      "controllerType": "WLED",
+      "brainId": "wled-b25c1d",
+      "panelName": "bar 3"
+    }
+  ],
+  "savedAt": 1.622194845489E12
+}

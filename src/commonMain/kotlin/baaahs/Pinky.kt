@@ -1,47 +1,46 @@
 package baaahs
 
 import baaahs.api.ws.WebSocketRouter
+import baaahs.controller.WledManager
 import baaahs.dmx.Dmx
-import baaahs.fixtures.Fixture
+import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.RootToolchain
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.render.RenderManager
-import baaahs.io.ByteArrayWriter
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibraryManager
-import baaahs.mapper.MappingResults
-import baaahs.mapper.PinkyMapperHandlers
-import baaahs.mapper.SessionMappingResults
-import baaahs.mapper.Storage
+import baaahs.mapper.*
 import baaahs.model.Model
-import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
+import baaahs.net.listenFragmentingUdp
 import baaahs.plugin.Plugins
 import baaahs.proto.*
 import baaahs.show.Show
+import baaahs.sim.FakeNetwork
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
+import baaahs.visualizer.remote.RemoteVisualizerServer
 import kotlinx.coroutines.*
-import kotlinx.serialization.*
+import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
 
 class Pinky(
     val model: Model,
     val network: Network,
-    val dmxUniverse: Dmx.Universe,
     val clock: Clock,
     fs: Fs,
     val firmwareDaddy: FirmwareDaddy,
-    private val switchShowAfterIdleSeconds: Int? = 600,
-    private val adjustShowAfterIdleSeconds: Int? = null,
+//    private val switchShowAfterIdleSeconds: Int? = 600,
+//    private val adjustShowAfterIdleSeconds: Int? = null,
     renderManager: RenderManager,
     val plugins: Plugins,
     val pinkyMainDispatcher: CoroutineDispatcher,
     private val link: Network.Link,
     val httpServer: Network.HttpServer,
-    private val pubSub: PubSub.Server
+    pubSub: PubSub.Server,
+    dmxManager: DmxManager
 ) : CoroutineScope, Network.UdpListener {
     val facade = Facade()
     private val storage = Storage(fs, plugins)
@@ -51,7 +50,7 @@ class Pinky(
     override val coroutineContext: CoroutineContext = pinkyMainDispatcher + pinkyJob
 
     val gadgetManager = GadgetManager(pubSub, clock, coroutineContext)
-    internal val fixtureManager = FixtureManager(renderManager)
+    internal val fixtureManager = FixtureManager(renderManager, model, mappingResults)
 
     val toolchain = RootToolchain(plugins)
     val stageManager: StageManager = StageManager(
@@ -64,16 +63,16 @@ class Pinky(
 
 //    private var selectedNewShowAt = DateTime.now()
 
-    var pixelCount: Int = 0
-
     val address: Network.Address get() = link.myAddress
     private val networkStats = NetworkStats()
 
     // This needs to go last-ish, otherwise we start getting network traffic too early.
-    private val udpSocket = link.listenUdp(Ports.PINKY, this)
+    private val udpSocket = link.listenFragmentingUdp(Ports.PINKY, this)
     private val brainManager =
-        BrainManager(fixtureManager, firmwareDaddy, model, mappingResults, udpSocket, networkStats, clock)
-    private val movingHeadManager = MovingHeadManager(fixtureManager, dmxUniverse, model.movingHeads)
+        BrainManager(fixtureManager, firmwareDaddy, mappingResults, udpSocket, networkStats, clock, pubSub)
+    private val movingHeadManager = MovingHeadManager(fixtureManager, dmxManager.dmxUniverse, model.movingHeads)
+    private val wledManager = WledManager(fixtureManager, model, link, pubSub, pinkyMainDispatcher, clock)
+    val dmxUniverse: Dmx.Universe = dmxManager.dmxUniverse
 
     private val shaderLibraryManager = ShaderLibraryManager(storage, pubSub)
 
@@ -94,7 +93,9 @@ class Pinky(
             WebSocketRouter(coroutineContext) { PinkyMapperHandlers(storage).register(this) }
         }
 
-        httpServer.listenWebSocket("/ws/visualizer") { ListeningVisualizer() }
+        httpServer.listenWebSocket("/ws/visualizer") {
+            RemoteVisualizerServer(brainManager, wledManager, movingHeadManager)
+        }
     }
 
     private var isStartedUp = false
@@ -114,16 +115,25 @@ class Pinky(
         }
     }
 
-    fun addSimulatedBrains() {
-        val fakeAddress = object : Network.Address {}
-        val mappingInfos = (mappingResults.actualMappingResults as SessionMappingResults).brainData
-        mappingInfos.forEach { (brainId, info) ->
-            brainManager.foundBrain(
-                fakeAddress, BrainHelloMessage(brainId.uuid, info.surface.name, null, null),
-                isSimulatedBrain = true
-            )
+    private fun addSimulatedBrains() {
+        val mappingInfos = (mappingResults.actualMappingResults as SessionMappingResults).controllerData
+        mappingInfos.forEach { (controllerId, info) ->
+            when (controllerId.controllerType) {
+                BrainManager.controllerTypeName -> {
+                    brainManager.foundBrain(
+                        FakeNetwork.FakeAddress("Simulated Brain ${controllerId.id}"),
+                        BrainHelloMessage(controllerId.id, info.entity.name, null, null),
+                        isSimulatedBrain = true
+                    )
+                }
+                else -> {
+                    logger.error { "Unknown controller type for $controllerId." }
+                }
+            }
         }
     }
+
+    private var frameDelay = 30L
 
     private suspend fun run() {
         while (keepRunning) {
@@ -152,16 +162,19 @@ class Pinky(
 
             maybeChangeThingsIfUsersAreIdle()
 
-            delay(30)
+            delay(frameDelay)
         }
     }
+
+    private var mappingResultsLoaderJob: Job? = null
 
     internal suspend fun launchStartupJobs(): Job {
         return CoroutineScope(coroutineContext).launch {
             CoroutineScope(coroutineContext).launch {
                 launch { firmwareDaddy.start() }
                 launch { movingHeadManager.start() }
-                launch { mappingResults.actualMappingResults = storage.loadMappingData(model) }
+                mappingResultsLoaderJob =
+                    launch { mappingResults.actualMappingResults = storage.loadMappingData(model) }
                 launch { loadConfig() }
                 launch { shaderLibraryManager.start() }
             }.join()
@@ -169,6 +182,15 @@ class Pinky(
             isStartedUp = true
             updatePinkyState(PinkyState.Running)
         }
+    }
+
+    internal suspend fun awaitMappingResultsLoaded() {
+        // Gross hack to ensure mapping results have loaded before we start fixture simulators.
+        while (mappingResultsLoaderJob == null) {
+            delay(5)
+            yield()
+        }
+        mappingResultsLoaderJob!!.join()
     }
 
     private fun updatePinkyState(newState: PinkyState) {
@@ -181,11 +203,18 @@ class Pinky(
             launch {
                 while (true) {
                     if (mapperIsRunning) {
-                        logger.info { "Mapping ${brainManager.brainCount} brains..." }
+                        logger.info { "Mapping ${brainManager.brainCount} brains." }
                     } else {
-                        logger.info { "Sending to ${brainManager.brainCount} brains..." }
+                        logger.info { "Sending pixels to ${brainManager.brainCount} brains." }
                     }
                     delay(10000)
+                }
+            }
+
+            launch {
+                while (keepRunning) {
+                    delay(10000)
+                    logger.info { "Framerate: ${facade.framerate.summarize()}" }
                 }
             }
         }
@@ -253,49 +282,6 @@ class Pinky(
         }
     }
 
-    inner class ListeningVisualizer : Network.WebSocketListener {
-        lateinit var tcpConnection: Network.TcpConnection
-
-        override fun connected(tcpConnection: Network.TcpConnection) {
-            this.tcpConnection = tcpConnection
-            brainManager.addListeningVisualizer(this)
-        }
-
-        override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
-            TODO("not implemented")
-        }
-
-        override fun reset(tcpConnection: Network.TcpConnection) {
-            brainManager.removeListeningVisualizer(this)
-        }
-
-        fun sendPixelData(fixture: Fixture) {
-            if (fixture.modelEntity != null) {
-                val pixelLocations = fixture.pixelLocations
-
-                val out = ByteArrayWriter(fixture.name.length + fixture.pixelCount * 3 * 4 + 20)
-                out.writeByte(0)
-                out.writeString(fixture.name)
-                out.writeInt(fixture.pixelCount)
-                pixelLocations.forEach { it.serialize(out) }
-                tcpConnection.send(out.toBytes())
-            }
-        }
-
-        fun sendFrame(fixture: Fixture, colors: List<Color>) {
-            if (fixture.modelEntity != null) {
-                val out = ByteArrayWriter(fixture.name.length + colors.size * 3 + 20)
-                out.writeByte(1)
-                out.writeString(fixture.name)
-                out.writeInt(colors.size)
-                colors.forEach {
-                    it.serializeWithoutAlpha(out)
-                }
-                tcpConnection.send(out.toBytes())
-            }
-        }
-    }
-
     suspend fun loadConfig() {
         val config = storage.loadConfig()
         config?.runningShowPath?.let { lastRunningShowPath ->
@@ -335,6 +321,9 @@ class Pinky(
         val stageManager: StageManager.Facade
             get() = this@Pinky.stageManager.facade
 
+        val fixtureManager : FixtureManager.Facade
+            get() = this@Pinky.fixtureManager.facade
+
         val networkStats: NetworkStats
             get() = this@Pinky.networkStats
 
@@ -345,9 +334,6 @@ class Pinky(
             get() = this@Pinky.clock
 
         val framerate = Framerate()
-
-        val pixelCount: Int
-            get() = this@Pinky.pixelCount
     }
 }
 
@@ -367,17 +353,17 @@ enum class PinkyState {
 private class FutureMappingResults : MappingResults {
     var actualMappingResults: MappingResults? = null
 
-    override fun dataFor(brainId: BrainId): MappingResults.Info? {
+    override fun dataForController(controllerId: ControllerId): MappingResults.Info? {
         if (actualMappingResults == null) {
-            Pinky.logger.warn { "Mapping results for $brainId requested before available." }
+            Pinky.logger.warn { "Mapping results for $controllerId requested before available." }
         }
-        return actualMappingResults?.dataFor(brainId)
+        return actualMappingResults?.dataForController(controllerId)
     }
 
-    override fun dataFor(surfaceName: String): MappingResults.Info? {
+    override fun dataForEntity(entityName: String): MappingResults.Info? {
         if (actualMappingResults == null) {
-            Pinky.logger.warn { "Mapping results for $surfaceName requested before available." }
+            Pinky.logger.warn { "Mapping results for $entityName requested before available." }
         }
-        return actualMappingResults?.dataFor(surfaceName)
+        return actualMappingResults?.dataForEntity(entityName)
     }
 }

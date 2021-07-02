@@ -1,5 +1,5 @@
 import styles from './MosaicUI.scss';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import {Mosaic, MosaicWindow, MosaicZeroState} from 'react-mosaic-component';
 import SheepVisualizerWindow from './windows/SheepVisualizerWindow/SheepVisualizerWindow';
 import SimulatorSettingsWindow from './windows/SimulatorSettingsWindow/SimulatorSettingsWindow';
@@ -24,37 +24,7 @@ const MosaicUI = (props) => {
     'Simulator Console': SimulatorSettingsWindow,
   };
 
-  const { simulator } = props;
   const { state, dispatch } = useContext(store);
-  const [pubSub, setPubSub] = useState(null);
-
-  useEffect(() => {
-    simulator.start();
-  }, []);
-
-  useEffect(() => {
-    if (!pubSub) return;
-
-    // const onPubSubStateChange = () => {
-    //   dispatch({
-    //     type: 'SET_STATE',
-    //     payload: { isConnected: pubSub.isConnected },
-    //   });
-    // };
-    // pubSub.addStateChangeListener(onPubSubStateChange);
-
-    // const selectedShowChannel = pubSub.subscribe(
-    //   baaahs.Topics.selectedShow,
-    //   (selectedShow) => {
-    //     dispatch({ type: 'SET_STATE', payload: { selectedShow } });
-    //   }
-    // );
-
-    return () => {
-      // selectedShowChannel.unsubscribe();
-      // pubSub.removeStateChangeListener(onPubSubStateChange);
-    };
-  }, [pubSub]);
 
   //
   // Mosaic API

@@ -124,7 +124,7 @@ kotlin {
                 implementation("org.jogamp.jogl:jogl-all-main:${Versions.jogl}")
                 implementation("com.danielgergely.kgl:kgl-jogl:${Versions.kgl}")
 
-                implementation("com.github.jmdns:jmdns:jmdns-3.5.5")
+                implementation("org.jmdns:jmdns:3.5.7")
             }
         }
         @Suppress("UNUSED_VARIABLE")
@@ -296,7 +296,7 @@ val dokka by tasks.getting(DokkaTask::class) {
 
 tasks.create<JavaExec>("runPinkyJvm") {
     dependsOn("compileKotlinJvm")
-    dependsOn("jsBrowserDevelopmentWebpack")
+//    dependsOn("jsBrowserDevelopmentWebpack")
     main = "baaahs.PinkyMainKt"
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")

@@ -2,7 +2,7 @@ package baaahs.di
 
 import baaahs.*
 import baaahs.dmx.Dmx
-import baaahs.dmx.DmxDevice
+import baaahs.dmx.JvmFtdiDmxDriver
 import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
@@ -16,15 +16,15 @@ import baaahs.plugin.beatlink.BeatLinkBeatSource
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
-import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
-import baaahs.util.Logger
 import baaahs.util.SystemClock
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.runBlocking
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import java.io.File
-import kotlin.coroutines.CoroutineContext
 
 class JvmPlatformModule(private val args: PinkyMain.Args) : PlatformModule {
     override val network: Network = JvmNetwork()
@@ -67,37 +67,12 @@ class JvmPinkyModule : PinkyModule {
     @ObsoleteCoroutinesApi
     override val Scope.pinkyMainDispatcher: CoroutineDispatcher
         get() = newSingleThreadContext("Pinky Main")
-    override val Scope.dmxUniverse: Dmx.Universe
-        get() = findDmxUniverse()
+    override val Scope.dmxDriver: Dmx.Driver
+        get() = JvmFtdiDmxDriver
     override val Scope.renderManager: RenderManager
         get() = runBlocking(get(named("PinkyContext"))) {
             RenderManager(get()) { GlBase.manager.createContext() }
         }
-
-    private fun findDmxUniverse(): Dmx.Universe {
-        val dmxDevices = try {
-            DmxDevice.listDevices()
-        } catch (e: UnsatisfiedLinkError) {
-            logger.warn { "DMX driver not found, DMX will be disabled." }
-            e.printStackTrace()
-            return FakeDmxUniverse()
-        }
-
-        if (dmxDevices.isNotEmpty()) {
-            if (dmxDevices.size > 1) {
-                logger.warn { "Multiple DMX USB devices found, using ${dmxDevices.first()}." }
-            }
-
-            return dmxDevices.first()
-        }
-
-        logger.warn { "No DMX USB devices found, DMX will be disabled." }
-        return FakeDmxUniverse()
-    }
-
-    companion object {
-        private val logger = Logger<JvmPinkyModule>()
-    }
 }
 
 class JvmBeatLinkPluginModule(private val args: PinkyMain.Args) : BeatLinkPluginModule {

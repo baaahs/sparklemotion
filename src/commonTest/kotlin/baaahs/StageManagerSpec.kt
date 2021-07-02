@@ -38,7 +38,7 @@ object StageManagerSpec : Spek({
                 renderManager,
                 pubSub.server,
                 Storage(fakeFs, plugins),
-                FixtureManager(renderManager),
+                FixtureManager(renderManager, model, FakeMappingResults()),
                 FakeClock(),
                 model,
                 GadgetManager(pubSub.server, FakeClock(), ImmediateDispatcher)

@@ -47,7 +47,7 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
     }
 
     fun writeString(s: String) {
-        writeBytes(s.encodeToByteArray())
+        writeBytesWithSize(s.encodeToByteArray())
     }
 
     fun writeNullableString(s: String?) {
@@ -57,7 +57,27 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         }
     }
 
+    fun writeBytes(vararg bytes: Int) {
+        for (byte in bytes) {
+            val b = byte.toByte()
+            if (b.toInt() != byte) {
+                throw IllegalArgumentException("$byte doesn't fit in a byte")
+            }
+
+            writeByte(b)
+        }
+    }
+
     fun writeBytes(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
+        val size = endIndex - startIndex
+
+        growIfNecessary(size)
+
+        data.copyInto(bytes, offset, startIndex, endIndex)
+        offset += size
+    }
+
+    fun writeBytesWithSize(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
         val size = endIndex - startIndex
 
         growIfNecessary(4 + size)
@@ -67,17 +87,14 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         offset += size
     }
 
-    fun writeNBytes(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
-        val size = endIndex - startIndex
-
-        growIfNecessary(size)
-
-        data.copyInto(bytes, offset, startIndex, endIndex)
-        offset += size
-    }
-
     fun toBytes(): ByteArray {
         return bytes.copyOf(offset)
+    }
+
+    fun at(offset: Int): ByteArrayWriter = ByteArrayWriter(bytes, offset)
+
+    fun reset() {
+        offset = 0
     }
 
     private fun growIfNecessary(by: Int) {

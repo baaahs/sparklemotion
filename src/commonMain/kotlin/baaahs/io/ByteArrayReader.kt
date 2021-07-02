@@ -33,33 +33,41 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
 
     fun readFloat(): Float = Float.fromBits(readInt())
 
-    fun readString(): String = readBytes().decodeToString()
+    fun readString(): String = readBytesWithSize().decodeToString()
 
     fun readNullableString(): String? = if (readBoolean()) readString() else null
 
-    fun readBytes(): ByteArray {
-        val count = readInt()
-        return readNBytes(count)
-    }
-
-    fun readNBytes(count: Int): ByteArray {
+    fun readBytes(count: Int): ByteArray {
         val bytes = bytes.copyOfRange(offset, offset + count)
         offset += count
         return bytes
     }
 
-    fun readNBytes(dest: ByteArray): ByteArray {
-        val bytes = bytes.copyInto(dest,
-            destinationOffset = 0, startIndex = offset, endIndex = offset + dest.size)
-        offset += dest.size
+    fun readBytes(
+        dest: ByteArray,
+        count: Int = dest.size,
+        destOffset: Int = 0
+    ): ByteArray {
+        val bytes = bytes.copyInto(
+            dest,
+            destinationOffset = destOffset,
+            startIndex = offset,
+            endIndex = offset + count
+        )
+        offset += count
         return bytes
+    }
+
+    fun readBytesWithSize(): ByteArray {
+        val count = readInt()
+        return readBytes(count)
     }
 
     /**
      * Reads up to as many bytes as are present in `buffer`, or as many bytes are available in the incoming byte array,
      * and returns the number of bytes actually read. Any unread incoming bytes are skipped.
      */
-    fun readBytes(buffer: ByteArray): Int {
+    fun readBytesWithSize(buffer: ByteArray): Int {
         val count = readInt()
         val toCopy = min(buffer.size, count)
         bytes.copyInto(buffer, 0, offset, offset + toCopy)
@@ -68,4 +76,8 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
     }
 
     fun hasMoreBytes(): Boolean = offset < bytes.size
+
+    fun skipBytes(count: Int) {
+        offset += count
+    }
 }

@@ -73,7 +73,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
         val mappingJson = fs.loadFile(f)
         val mappingSession = json.decodeFromString(MappingSession.serializer(), mappingJson!!)
         mappingSession.surfaces.forEach { surface ->
-            logger.debug { "Found pixel mapping for ${surface.panelName} (${surface.brainId})" }
+            logger.debug { "Found pixel mapping for ${surface.entityName} (${surface.controllerId.shortName()})" }
         }
         return mappingSession
     }

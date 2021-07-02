@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.dmx.DmxManager
 import baaahs.geom.Matrix4
 import baaahs.gl.override
 import baaahs.gl.render.RenderManager
@@ -8,7 +9,7 @@ import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.models.SheepModel
-import baaahs.net.FragmentingUdpLink
+import baaahs.net.FragmentingUdpSocket
 import baaahs.net.TestNetwork
 import baaahs.plugin.beatlink.BeatData
 import baaahs.plugin.beatlink.BeatSource
@@ -19,6 +20,7 @@ import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
+import baaahs.sim.SimDmxDriver
 import baaahs.ui.Observable
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -42,14 +44,14 @@ object PinkySpec : Spek({
 
         val fakeFs by value { FakeFs() }
         val pinky by value {
-            val link = FragmentingUdpLink(network.link("pinky"))
+            val link = network.link("pinky")
             val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
             val pubSub = PubSub.Server(httpServer, CoroutineScope(ImmediateDispatcher))
 
+            val fakeDmxUniverse = FakeDmxUniverse()
             Pinky(
                 model,
                 network,
-                FakeDmxUniverse(),
                 FakeClock(),
                 fakeFs,
                 PermissiveFirmwareDaddy(),
@@ -58,7 +60,8 @@ object PinkySpec : Spek({
                 pinkyMainDispatcher = ImmediateDispatcher,
                 link = link,
                 httpServer = httpServer,
-                pubSub = pubSub
+                pubSub = pubSub,
+                dmxManager = DmxManager(SimDmxDriver(fakeDmxUniverse), pubSub, fakeDmxUniverse)
             )
         }
         val pinkyLink by value { network.links.only() }
@@ -73,7 +76,7 @@ object PinkySpec : Spek({
             doRunBlocking {
                 panelMappings.forEach { (brainId, surface) ->
                     val surfaceData = MappingSession.SurfaceData(
-                        brainId.uuid, surface.name, emptyList(), null, null, null
+                        BrainManager.controllerTypeName, brainId.uuid, surface.name, emptyList(), null, null, null
                     )
                     val mappingSessionPath = Storage(fakeFs, testPlugins()).saveSession(
                         MappingSession(
@@ -106,7 +109,7 @@ object PinkySpec : Spek({
                 }
 
                 it("should send pixels but not not send mapping to the brain") {
-                    val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
+                    val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpSocket.headerSize]) }
                     expect(packetTypes)
                         .containsExactly(Type.BRAIN_PANEL_SHADE) // Should send no mapping packet.
                 }
@@ -125,7 +128,7 @@ object PinkySpec : Spek({
                     }
 
                     it("should send pixels but not mapping to the brain") {
-                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
+                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpSocket.headerSize]) }
                         expect(packetTypes)
                             .containsExactly(Type.BRAIN_PANEL_SHADE) // Should send no mapping packet.
                     }
@@ -135,7 +138,7 @@ object PinkySpec : Spek({
                     override(brainHelloMessage) { BrainHelloMessage("brain1", null) }
 
                     it("should notify show") {
-                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpLink.headerSize]) }
+                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpSocket.headerSize]) }
                         expect(packetTypes)
                             .containsExactly(Type.BRAIN_MAPPING,Type.BRAIN_PANEL_SHADE) // Should send a mapping packet.
                     }

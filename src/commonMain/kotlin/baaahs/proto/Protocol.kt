@@ -76,8 +76,8 @@ class BrainShaderMessage(val brainShader: BrainShader<*>, val buffer: BrainShade
          * Suboptimal parser; on the Brain we'll do better than this.
          */
         fun parse(reader: ByteArrayReader): BrainShaderMessage {
-            val pongData = if (reader.readBoolean()) reader.readBytes() else null
-            val shaderDesc = reader.readBytes()
+            val pongData = if (reader.readBoolean()) reader.readBytesWithSize() else null
+            val shaderDesc = reader.readBytesWithSize()
             val shader = BrainShader.parse(ByteArrayReader(shaderDesc))
             val buffer = shader.readBuffer(reader)
             return BrainShaderMessage(shader, buffer, pongData)
@@ -86,8 +86,8 @@ class BrainShaderMessage(val brainShader: BrainShader<*>, val buffer: BrainShade
 
     override fun serialize(writer: ByteArrayWriter) {
         writer.writeBoolean(pongData != null)
-        if (pongData != null) writer.writeBytes(pongData)
-        writer.writeBytes(brainShader.descriptorBytes)
+        if (pongData != null) writer.writeBytesWithSize(pongData)
+        writer.writeBytesWithSize(brainShader.descriptorBytes)
         buffer.serialize(writer)
     }
 }
@@ -197,14 +197,14 @@ class PingMessage(val data: ByteArray, val isPong: Boolean = false) : Message(Ty
     companion object {
         fun parse(reader: ByteArrayReader): PingMessage {
             val isPong = reader.readBoolean()
-            val data = reader.readBytes()
+            val data = reader.readBytesWithSize()
             return PingMessage(data, isPong)
         }
     }
 
     override fun serialize(writer: ByteArrayWriter) {
         writer.writeBoolean(isPong)
-        writer.writeBytes(data)
+        writer.writeBytesWithSize(data)
     }
 }
 

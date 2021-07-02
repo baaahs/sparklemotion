@@ -2,8 +2,8 @@ package baaahs
 
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
-import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
+import baaahs.net.listenFragmentingUdp
 import baaahs.proto.*
 import baaahs.util.Clock
 import baaahs.util.Logger
@@ -34,8 +34,8 @@ class Brain(
     enum class State { Unknown, Link, Online }
 
     suspend fun run() {
-        link = FragmentingUdpLink(network.link("brain"))
-        udpSocket = link.listenUdp(Ports.BRAIN, this)
+        link = network.link("brain")
+        udpSocket = link.listenFragmentingUdp(Ports.BRAIN, this)
         sendHello()
     }
 
@@ -85,11 +85,11 @@ class Brain(
             when (type) {
                 Type.BRAIN_PANEL_SHADE -> {
                     val pongData = if (reader.readBoolean()) {
-                        reader.readBytes()
+                        reader.readBytesWithSize()
                     } else {
                         null
                     }
-                    val shaderDesc = reader.readBytes()
+                    val shaderDesc = reader.readBytesWithSize()
 
                     // If possible, use the previously-built Shader stuff:
                     val theCurrentShaderDesc = currentShaderDesc
