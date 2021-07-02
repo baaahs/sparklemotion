@@ -31,7 +31,7 @@ class MovingHeadVisualizer(
         beam.addTo(scene)
     }
 
-    private fun receivedDmxFrame() {
+    internal fun receivedDmxFrame() {
         val now = clock.now()
         val elapsed = (now - lastUpdate).toFloat()
 

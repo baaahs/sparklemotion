@@ -11,8 +11,8 @@ import baaahs.util.Logger
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
-import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.PixelColors
-import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.PixelLocations
+import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.FixtureInfo
+import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.FrameData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
@@ -52,14 +52,16 @@ class RemoteVisualizerClient(
     override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
         val reader = ByteArrayReader(bytes)
         when (RemoteVisualizerServer.Opcode.get(reader.readByte())) {
-            PixelLocations -> { // Pixel locations.
+            FixtureInfo -> {
                 val entityName = reader.readString()
-                fixtureSimulations[entityName]?.receiveRemoteVisualizationFixtureInfo(reader)
+                val fixtureSimulation = fixtureSimulations[entityName]
+                fixtureSimulation?.receiveRemoteVisualizationFixtureInfo(reader)
             }
 
-            PixelColors -> { // Pixel colors.
+            FrameData -> {
                 val entityName = reader.readString()
-                fixtureSimulations[entityName]?.receiveRemoteVisualizationFrameData(reader)
+                val fixtureSimulation = fixtureSimulations[entityName]
+                fixtureSimulation?.receiveRemoteVisualizationFrameData(reader)
             }
         }
     }

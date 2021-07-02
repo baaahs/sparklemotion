@@ -54,7 +54,7 @@ class JsSimulatorModule(
             single<PixelArranger> { SwirlyPixelArranger(pixelDensity, pixelSpacing) }
             single {
                 FixturesSimulator(
-                    get(), get(), get(), get(),
+                    get(), get(), get(), get(named("Fallback")),
                     get(named(SimulatorModule.Qualifier.PinkyFs)),
                     get(named(SimulatorModule.Qualifier.MapperFs)),
                     get(), get(), get()
@@ -85,7 +85,7 @@ class JsSimPinkyModule(
     override val Scope.pinkyLink: Network.Link
         get() = pinkyLink_
     override val Scope.dmxDriver: Dmx.Driver
-        get() = SimDmxDriver()
+        get() = SimDmxDriver(get(named("Fallback")))
     override val Scope.renderManager: RenderManager
         get() = RenderManager(get()) { GlBase.manager.createContext() }
 }

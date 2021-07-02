@@ -26,7 +26,7 @@ interface Dmx {
     class Buffer(
         private val channels: ByteArray,
         private val baseChannel: Int,
-        private val channelCount: Int
+        val channelCount: Int
     ) {
         operator fun get(channel: Channel): Byte = get(channel.offset)
 

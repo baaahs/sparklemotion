@@ -9,7 +9,8 @@ import kotlinx.serialization.Serializable
 
 class DmxManager(
     private val dmxDriver: Dmx.Driver,
-    pubSub: PubSub.Server
+    pubSub: PubSub.Server,
+    private val fakeDmxUniverse: FakeDmxUniverse // For fallback.
 ) {
     private var deviceData by publishProperty(pubSub, Topics.dmxDevices, emptyMap())
     private val listDevices = listDevices()
@@ -33,7 +34,7 @@ class DmxManager(
         }
 
         logger.warn { "No DMX USB devices found, DMX will be disabled." }
-        return FakeDmxUniverse()
+        return fakeDmxUniverse
     }
 
     companion object {

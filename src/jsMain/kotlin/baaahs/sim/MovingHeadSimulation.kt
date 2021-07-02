@@ -4,10 +4,10 @@ import baaahs.fixtures.Fixture
 import baaahs.fixtures.MovingHeadDevice
 import baaahs.fixtures.ResultView
 import baaahs.fixtures.Transport
+import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.MovingHead
 import baaahs.util.Clock
-import baaahs.visualizer.EntityVisualizer
 import baaahs.visualizer.movers.MovingHeadVisualizer
 
 actual class MovingHeadSimulation actual constructor(
@@ -19,10 +19,12 @@ actual class MovingHeadSimulation actual constructor(
     override val mappingData: MappingSession.SurfaceData?
         get() = null
 
-    override val entityVisualizer: EntityVisualizer by lazy {
+    override val entityVisualizer: MovingHeadVisualizer by lazy {
         val clock = simulationEnv[Clock::class]
         MovingHeadVisualizer(movingHead, clock, dmxUniverse)
     }
+
+    private val buffer = dmxUniverse.writer(movingHead.baseDmxChannel, movingHead.dmxChannelCount)
 
     override val previewFixture: Fixture by lazy {
         val transport = PreviewTransport()
@@ -38,6 +40,18 @@ actual class MovingHeadSimulation actual constructor(
     }
 
     override fun launch() {
+    }
+
+    override fun receiveRemoteVisualizationFixtureInfo(reader: ByteArrayReader) {
+    }
+
+    override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
+        val channelCount = reader.readShort().toInt()
+        repeat(channelCount) { i ->
+            buffer[i] = reader.readByte()
+        }
+
+        entityVisualizer.receivedDmxFrame()
     }
 
     inner class PreviewTransport : Transport {

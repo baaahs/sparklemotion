@@ -9,6 +9,7 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.JsClock
 import kotlinext.js.jsObject
+import kotlinx.css.*
 import kotlinx.html.hidden
 import materialui.components.appbar.appBar
 import materialui.components.appbar.enums.AppBarPosition
@@ -26,6 +27,7 @@ import react.RHandler
 import react.RProps
 import react.child
 import react.dom.div
+import styled.inlineStyles
 
 private enum class PageTabs {
     Controllers,
@@ -104,6 +106,12 @@ private fun RBuilder.tabPanel(tab: PageTabs, selectedTab: PageTabs, block: RBuil
     val isCurrent = tab == selectedTab
 
     div {
+        inlineStyles {
+            height = 0.px
+            overflow = Overflow.scroll
+            flex(1.0, 0.0)
+        }
+
         attrs.hidden = !isCurrent
         if (isCurrent) block()
     }

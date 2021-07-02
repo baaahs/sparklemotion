@@ -39,6 +39,7 @@ interface PlatformModule : KModule {
         single { pluginContext }
         single { plugins }
         single { mediaDevices }
+        single(named("Fallback")) { FakeDmxUniverse() }
     }
 }
 
@@ -64,7 +65,7 @@ interface PinkyModule : KModule {
             }
             scoped { PubSub.Server(get(), CoroutineScope(get(named("PinkyContext")))) }
             scoped { dmxDriver }
-            scoped { DmxManager(get(), get()) }
+            scoped { DmxManager(get(), get(), get(named("Fallback"))) }
             scoped { renderManager }
             scoped { get<Network.Link>(named("PinkyLink")).startHttpServer(Ports.PINKY_UI_TCP) }
             scoped {
@@ -103,7 +104,6 @@ interface SimulatorModule : KModule {
     val Scope.fs: Fs
 
     override fun getModule(): Module = module {
-        single { FakeDmxUniverse() }
         single(named(Qualifier.PinkyFs)) { fs }
         single(named(Qualifier.MapperFs)) { FakeFs("Temporary Mapping Files") }
         single<Fs>(named(Qualifier.MapperFs)) { get<FakeFs>(named(Qualifier.MapperFs)) }

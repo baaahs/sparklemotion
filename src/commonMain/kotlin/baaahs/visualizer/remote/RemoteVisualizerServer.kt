@@ -28,11 +28,13 @@ class RemoteVisualizerServer(
         remoteVisualizables.forEach { it.removeRemoteVisualizer(listener) }
     }
 
-    private val listener = object : Listener {
+    private val listener = ListenerImpl()
+
+    inner class ListenerImpl() : Listener {
         override fun sendFixtureInfo(fixture: Fixture) {
             if (fixture.modelEntity != null) {
                 outBuf.reset()
-                outBuf.writeByte(Opcode.PixelLocations.byteValue)
+                outBuf.writeByte(Opcode.FixtureInfo.byteValue)
                 outBuf.writeString(fixture.modelEntity.name)
                 outBuf.writeInt(fixture.pixelCount)
                 fixture.pixelLocations.forEach { it.serialize(outBuf) }
@@ -43,7 +45,7 @@ class RemoteVisualizerServer(
         override fun sendFrameData(fixture: Fixture, block: (ByteArrayWriter) -> Unit) {
             if (fixture.modelEntity != null) {
                 outBuf.reset()
-                outBuf.writeByte(Opcode.PixelColors.byteValue)
+                outBuf.writeByte(Opcode.FrameData.byteValue)
                 outBuf.writeString(fixture.modelEntity.name)
                 block(outBuf)
                 tcpConnection.send(outBuf.toBytes())
@@ -57,8 +59,8 @@ class RemoteVisualizerServer(
     }
 
     enum class Opcode {
-        PixelLocations,
-        PixelColors;
+        FixtureInfo,
+        FrameData;
 
         val byteValue: Byte get() = ordinal.toByte()
 
