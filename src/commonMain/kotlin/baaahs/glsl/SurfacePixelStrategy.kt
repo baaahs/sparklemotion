@@ -6,9 +6,9 @@ import baaahs.model.ModelInfo
 import kotlin.random.Random
 
 interface SurfacePixelStrategy {
-    fun forFixture(pixelCount: Int, surface: Model.Surface?, model: ModelInfo): List<Vector3F> {
-        return if (surface != null) {
-            forKnownSurface(pixelCount, surface, model)
+    fun forFixture(pixelCount: Int, entity: Model.Entity?, model: ModelInfo): List<Vector3F> {
+        return if (entity is Model.Surface) {
+            forKnownSurface(pixelCount, entity, model)
         } else {
             forUnknownSurface(pixelCount, model)
         }
@@ -62,6 +62,10 @@ class LinearSurfacePixelStrategy(private val random: Random = Random) : SurfaceP
         val vertex2 = Vector3F(random.nextFloat(), random.nextFloat(), random.nextFloat()) * scale + min
 
         return interpolate(vertex1, vertex2, pixelCount)
+    }
+
+    fun betweenPoints(startVertex: Vector3F, endVertex: Vector3F, count: Int): List<Vector3F> {
+        return interpolate(startVertex, endVertex, count)
     }
 
     private fun Collection<Vector3F>.average(): Vector3F {

@@ -8,6 +8,9 @@ import baaahs.fixtures.MovingHeadDevice
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.geom.createMatrixWithPositionAndOrientation
+import baaahs.sim.FixtureSimulation
+import baaahs.sim.MovingHeadSimulation
+import baaahs.sim.SimulationEnv
 import kotlinx.serialization.Serializable
 
 abstract class MovingHead(
@@ -141,4 +144,7 @@ abstract class MovingHead(
 
     override val deviceType: DeviceType
         get() = MovingHeadDevice
+
+    override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
+        MovingHeadSimulation(this, simulationEnv)
 }

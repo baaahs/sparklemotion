@@ -34,15 +34,31 @@ abstract class RenderEngine(val gl: GlContext) {
 
     abstract fun onBind(engineFeed: EngineFeed)
 
-    fun draw() {
+    fun draw(finish: Boolean = true) {
         gl.runInContext {
-            stats.prepareMs += timeSync { beforeFrame() }
-            bindResults()
-            stats.renderMs += timeSync { wrappedRender() }
-            stats.finishMs += timeSync { gl.check { finish() } }
-            stats.readPxMs += timeSync { afterFrame() }
-        }
+            stats.prepareMs += timeSync {
+                beforeFrame()
+                bindResults()
+            }
 
+            stats.renderMs += timeSync {
+                gl.check { clearColor(0f, .5f, 0f, 1f) }
+                gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
+                render()
+            }
+
+            if (finish) doFinish()
+        }
+    }
+
+    fun finish() {
+        gl.runInContext { doFinish() }
+    }
+
+    /** This is run from within a GL context. */
+    private fun doFinish() {
+        stats.finishMs += timeSync { gl.check { finish() } }
+        stats.readPxMs += timeSync { afterFrame() }
         stats.frameCount++
     }
 
@@ -51,12 +67,6 @@ abstract class RenderEngine(val gl: GlContext) {
 
     /** This is run from within a GL context. */
     abstract fun bindResults()
-
-    private fun wrappedRender() {
-        gl.check { clearColor(0f, .5f, 0f, 1f) }
-        gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
-        render()
-    }
 
     /** This is run from within a GL context. */
     protected abstract fun render()

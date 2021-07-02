@@ -19,7 +19,12 @@ import styled.styledDiv
 
 class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(props), Observer {
     override fun observing(props: ConsoleProps, state: ConsoleState): List<Observable?> {
-        return listOf(props.simulator, props.simulator.visualizer, props.simulator.pinky)
+        return listOf(
+            props.simulator,
+            props.simulator.visualizer,
+            props.simulator.pinky,
+            props.simulator.fixturesSimulator
+        )
     }
 
     private fun brainSelectionListener(brain: Brain.Facade) =
@@ -48,7 +53,7 @@ class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(prop
                 css { +SimulatorStyles.section }
                 b { +"Brains:" }
                 div {
-                    simulator.brains.forEach { brain ->
+                    simulator.fixturesSimulator.brains.forEach { brain ->
                          brainIndicator {
                              attrs.brain = brain
                              attrs.brainSelectionListener = ::brainSelectionListener

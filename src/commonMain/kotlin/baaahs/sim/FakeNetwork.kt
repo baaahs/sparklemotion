@@ -21,12 +21,16 @@ class FakeNetwork(
     private val httpServersByPort:
             MutableMap<Pair<Network.Address, Int>, FakeLink.FakeHttpServer> = hashMapOf()
 
-    private val mdns = FakeMdns { id -> FakeAddress(id.toString()) }
+    private val mdns = FakeMdns()
 
     override fun link(name: String): FakeLink {
         val next = addressCounters.getOrElse(name) { 1 }
         addressCounters[name] = next + 1
         val address = FakeAddress("$name$next")
+        return FakeLink(address)
+    }
+
+    fun link(address: FakeAddress): FakeLink {
         return FakeLink(address)
     }
 
@@ -61,6 +65,14 @@ class FakeNetwork(
             return fakeHttpServer
         }
 
+        override suspend fun httpGetRequest(address: Network.Address, port: Int, path: String): String {
+            val fakeHttpServer = httpServersByPort[address to port]
+                ?: error ("No HTTP server at $address:$port.")
+            val response = fakeHttpServer.httpGetResponses[path]
+                ?: error("No response registered for http://$address:$port/$path.")
+            return response.decodeToString()
+        }
+
         override fun connectWebSocket(
             toAddress: Network.Address,
             port: Int,
@@ -76,6 +88,7 @@ class FakeNetwork(
 
             val onConnectCallback = fakeHttpServer?.webSocketListeners?.get(path)
             if (onConnectCallback == null) {
+                logger.warn { "No WebSocket listener at $toAddress:$port$path" }
                 val connection = FakeTcpConnection(myAddress, toAddress, port, null)
                 coroutineScope.launch {
                     networkDelay()
@@ -83,8 +96,6 @@ class FakeNetwork(
                 }
                 tcpConnections.add(connection)
                 return connection
-            } else {
-                logger.warn { "No WebSocket listener at $toAddress:$port$path" }
             }
 
             lateinit var clientSideConnection: FakeTcpConnection
@@ -108,6 +119,8 @@ class FakeNetwork(
             return clientSideConnection
         }
 
+        override fun createAddress(name: String): Network.Address = FakeAddress(name)
+
         inner class FakeTcpConnection(
             override val fromAddress: Network.Address,
             override val toAddress: Network.Address,
@@ -118,6 +131,12 @@ class FakeNetwork(
             override fun send(bytes: ByteArray) {
                 coroutineScope.launch {
                     webSocketListener?.receive(otherListener!!(), bytes)
+                }
+            }
+
+            override fun close() {
+                coroutineScope.launch {
+                    webSocketListener?.reset(this@FakeTcpConnection)
                 }
             }
         }
@@ -167,6 +186,8 @@ class FakeNetwork(
         }
 
         internal inner class FakeHttpServer(val port: Int) : Network.HttpServer {
+            val httpGetResponses: MutableMap<String, ByteArray> = mutableMapOf()
+
             val webSocketListeners: MutableMap<String, (Network.TcpConnection) -> Network.WebSocketListener> =
                 mutableMapOf()
 
@@ -176,6 +197,10 @@ class FakeNetwork(
             ) {
                 webSocketListeners[path] = onConnect
             }
+
+            override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
+                TODO("not implemented")
+            }
         }
     }
 
@@ -184,7 +209,8 @@ class FakeNetwork(
     }
 
     data class FakeAddress(val name: String) : Network.Address {
-        override fun toString(): String = name
+        override fun asString(): String = name
+        override fun toString(): String = asString()
     }
 
     companion object {

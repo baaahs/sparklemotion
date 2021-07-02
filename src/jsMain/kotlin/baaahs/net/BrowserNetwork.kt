@@ -12,7 +12,10 @@ import org.w3c.dom.WebSocket
  */
 class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, private val udpProxyPort: Int = 0) : Network {
     override fun link(name: String): Network.Link = object : Network.Link {
-        override val myAddress: Network.Address = object : Network.Address {}
+        override val myAddress: Network.Address = object : Network.Address {
+            override fun asString(): String = "BrowserNetwork:localhost"
+        }
+
         override val myHostname: String get() = "Browser"
 
         var udpProxy: BrowserUdpProxy? = null
@@ -53,6 +56,10 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
                 override fun send(bytes: ByteArray) {
                     webSocket.send(Int8Array(bytes.toTypedArray()))
                 }
+
+                override fun close() {
+                    webSocket.close()
+                }
             }
 
             webSocket.onopen = {
@@ -79,8 +86,17 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
 
             return tcpConnection
         }
+
+        override suspend fun httpGetRequest(address: Network.Address, port: Int, path: String): String {
+            TODO("not implemented")
+        }
+
+        override fun createAddress(name: String): Network.Address = BrowserAddress(name)
     }
 
-    class BrowserAddress(val urlString: String) : Network.Address
+    class BrowserAddress(val urlString: String) : Network.Address {
+        override fun asString(): String = urlString
+        override fun toString(): String = asString()
+    }
 
 }

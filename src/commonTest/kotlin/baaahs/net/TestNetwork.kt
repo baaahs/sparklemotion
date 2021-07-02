@@ -4,7 +4,7 @@ import baaahs.sim.FakeMdns
 
 class TestNetwork(var defaultMtu: Int = 1400) : Network {
     val links = mutableListOf<Link>()
-    private val mdns = FakeMdns { serviceId -> Address("test-svc-$serviceId")}
+    private val mdns = FakeMdns()
 
     override fun link(name: String): Link {
         return Link(defaultMtu).also { links.add(it) }
@@ -57,6 +57,14 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
             ) {
 //                TODO("TestNetwork.Link.listenWebSocket not implemented")
             }
+
+            override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
+                TODO("not implemented")
+            }
+        }
+
+        override suspend fun httpGetRequest(address: Network.Address, port: Int, path: String): String {
+            TODO("TestNetowrk.Link.httpGetRequest not implemented")
         }
 
         override fun connectWebSocket(
@@ -67,9 +75,12 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
         ): Network.TcpConnection {
             TODO("Link.connectWebSocket not implemented")
         }
+
+        override fun createAddress(name: String): Network.Address = Address(name)
     }
 
     class Address(private val name: String = "some address") : Network.Address {
-        override fun toString(): String =  name
+        override fun asString(): String = name
+        override fun toString(): String = asString()
     }
 }

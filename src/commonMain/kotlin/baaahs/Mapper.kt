@@ -11,8 +11,8 @@ import baaahs.imaging.NativeBitmap
 import baaahs.mapper.ImageProcessing
 import baaahs.mapper.MappingSession
 import baaahs.model.Model
-import baaahs.net.FragmentingUdpLink
 import baaahs.net.Network
+import baaahs.net.listenFragmentingUdp
 import baaahs.proto.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.shaders.SolidBrainShader
@@ -23,7 +23,6 @@ import baaahs.util.asMillis
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -71,8 +70,8 @@ class Mapper(
     }
 
     fun start() = doRunBlocking {
-        link = FragmentingUdpLink(network.link("mapper"))
-        udpSocket = link.listenUdp(0, this)
+        link = network.link("mapper")
+        udpSocket = link.listenFragmentingUdp(0, this)
         webSocketClient = WebSocketClient(link, pinkyAddress)
 
         launch {
@@ -135,7 +134,7 @@ class Mapper(
             mapperScope.launch {
                 val session = webSocketClient.loadSession(name)
                 session.surfaces.forEach { surfaceData ->
-                    val surfaceVisualizer = surfaceVisualizers.getBang(surfaceData.surfaceName, "visible surface")
+                    val surfaceVisualizer = surfaceVisualizers.getBang(surfaceData.entityName, "visible surface")
                     surfaceData.pixels.forEachIndexed { index, pixelData ->
                         if (pixelData?.modelPosition != null) {
                             surfaceVisualizer.setPixel(index, pixelData.modelPosition)
@@ -380,6 +379,7 @@ class Mapper(
                     }
 
                     val surfaceData = MappingSession.SurfaceData(
+                        BrainManager.controllerTypeName,
                         brainToMap.brainId,
                         visibleSurface.modelSurface.name,
                         pixels,
@@ -391,80 +391,6 @@ class Mapper(
                 }
             }
             return surfaces
-        }
-
-        private suspend fun showTestPattern(surfaceDatas: List<MappingSession.SurfaceData>) {
-            val surfaceDataByBrainId = surfaceDatas.associateBy { it.brainId }
-
-            brainsToMap.forEach { (_, brainToMap) ->
-                isPaused = true
-
-                val surfaceData = surfaceDataByBrainId.getBang(brainToMap.brainId, "surface data for brain")
-                val screenMax: Vector2F
-                val screenMin: Vector2F
-
-                try {
-                    val mappedPixels: List<Vector2F> = surfaceData.pixels.mapNotNull { it?.screenPosition }
-                    screenMin = Vector2F(mappedPixels.minOf { it.x }, mappedPixels.minOf { it.y })
-                    screenMax = Vector2F(mappedPixels.maxOf { it.x }, mappedPixels.maxOf { it.y })
-                } catch (e: Exception) {
-                    logger.warn(e) { "No mapped pixels for ${brainToMap.brainId}?" }
-                    return@forEach
-                }
-
-                val range = abs(screenMax.x - screenMin.x)
-                val pixels = surfaceData.pixels
-                val buffer = brainToMap.pixelShaderBuffer
-                val unmappedPixelCount = pixels.count { it == null }
-                showMessage(brainToMap.guessedModelSurface?.name ?: "???")
-                showMessage2("$unmappedPixelCount of ${brainToMap.expectedPixelCount} pixels unmapped")
-
-                suspend fun drawPixels(isLit: (screenPosition: Vector2F) -> Boolean) {
-                    buffer.indices.forEach { i ->
-                        if (i < pixels.size) {
-                            val screenPosition = pixels[i]?.screenPosition
-                            buffer[i] = if (screenPosition != null && isLit(screenPosition)) 1 else 0
-                        }
-                    }
-                    brainToMap.shade { BrainShaderMessage(buffer.brainShader, buffer) }
-                    delay(30)
-                }
-
-                while (isPaused) {
-                    buffer.palette[1] = Color.WHITE
-
-                    // scan up Y
-                    for (y in screenMin.y.toInt()..screenMax.y.toInt() step (range / 16f).toInt()) {
-                        drawPixels { (_, screenY) -> abs(screenY - y) < range / 10f }
-                    }
-                    // scan down Y
-                    for (y in screenMax.y.toInt()..screenMin.y.toInt() step (range / 16f).toInt()) {
-                        drawPixels { (_, screenY) -> abs(screenY - y) < range / 10f }
-                    }
-
-                    // scan up X
-                    for (x in screenMin.x.toInt()..screenMax.x.toInt() step (range / 16f).toInt()) {
-                        drawPixels { (screenX, _) -> abs(screenX - x) < range / 10f }
-                    }
-                    // scan down X
-                    for (x in screenMax.x.toInt()..screenMin.x.toInt() step (range / 16f).toInt()) {
-                        drawPixels { (screenX, _) -> abs(screenX - x) < range / 10f }
-                    }
-
-                    delay(500)
-
-                    // show unmapped pixels
-                    buffer.palette[1] = Color.RED
-                    buffer.indices.forEach { i ->
-                        val screenPosition = pixels[i]?.screenPosition
-                        buffer[i] = if (screenPosition == null) 1 else 0
-                    }
-                    brainToMap.shade { BrainShaderMessage(buffer.brainShader, buffer) }
-                    delay(2000)
-
-                    buffer.palette[1] = Color.WHITE
-                }
-            }
         }
 
         private suspend fun identifyPixel(pixelIndex: Int, maxPixelForTheseBrains: Int, pixelIndexX: Int) {

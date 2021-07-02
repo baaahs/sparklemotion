@@ -4,17 +4,20 @@ import baaahs.Color
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
+import baaahs.visualizer.EntityVisualizer
 import baaahs.visualizer.VizScene
 import kotlin.math.absoluteValue
 
-class VizMovingHead(
+class MovingHeadVisualizer(
     private val movingHead: MovingHead,
-    dmxUniverse: FakeDmxUniverse,
     private val clock: Clock,
+    private val dmxUniverse: FakeDmxUniverse,
     private val beam: Beam = Beam.selectFor(movingHead)
-) {
+) : EntityVisualizer {
+    override var mapperIsRunning: Boolean = false
+
     private val buffer = run {
-        val dmxBufferReader = dmxUniverse.reader(movingHead.baseDmxChannel, movingHead.dmxChannelCount) {
+        val dmxBufferReader = dmxUniverse.listen(movingHead.baseDmxChannel, movingHead.dmxChannelCount) {
             receivedDmxFrame()
         }
         movingHead.newBuffer(dmxBufferReader)
@@ -24,11 +27,11 @@ class VizMovingHead(
     private var currentState = State()
     private var momentumState = State()
 
-    fun addTo(scene: VizScene) {
+    override fun addTo(scene: VizScene) {
         beam.addTo(scene)
     }
 
-    private fun receivedDmxFrame() {
+    internal fun receivedDmxFrame() {
         val now = clock.now()
         val elapsed = (now - lastUpdate).toFloat()
 

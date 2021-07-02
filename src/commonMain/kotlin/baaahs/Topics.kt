@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.controller.WledDevice
+import baaahs.dmx.DmxInfo
 import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibrary
 import baaahs.model.MovingHead
@@ -18,6 +20,15 @@ object Topics {
 
     val pinkyState =
         PubSub.Topic("pinkyState", PinkyState.serializer())
+
+    val brains =
+        PubSub.Topic("brains", MapSerializer(String.serializer(), BrainInfo.serializer()))
+
+    val dmxDevices =
+        PubSub.Topic("dmx/devices", MapSerializer(String.serializer(), DmxInfo.serializer()))
+
+    val sacnDevices =
+        PubSub.Topic("sacn/devices", MapSerializer(String.serializer(), WledDevice.serializer()))
 
     val showProblems =
         PubSub.Topic("showProblems", ListSerializer(ShowProblem.serializer()))

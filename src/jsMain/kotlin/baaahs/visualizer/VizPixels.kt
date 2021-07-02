@@ -3,6 +3,7 @@ package baaahs.visualizer
 import baaahs.Color
 import baaahs.Pixels
 import baaahs.geom.Vector2
+import baaahs.io.ByteArrayReader
 import baaahs.resourcesBase
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.get
@@ -14,7 +15,10 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-class VizPixels(vizSurface: VizSurface, val positions: Array<Vector3>) : Pixels {
+class VizPixels(
+    val positions: Array<Vector3>,
+    val normal: Vector3
+) : Pixels {
     override val size = positions.size
     private val pixGeometry = BufferGeometry()
     private val planeGeometry: BufferGeometry
@@ -35,7 +39,7 @@ class VizPixels(vizSurface: VizSurface, val positions: Array<Vector3>) : Pixels 
         vertexColorBufferAttr = Float32BufferAttribute(Float32Array(size * 3 * 4), 3)
         vertexColorBufferAttr.usage = DynamicDrawUsage
 
-        val rotator = Rotator(Vector3(0, 0, 1), vizSurface.panelNormal)
+        val rotator = Rotator(Vector3(0, 0, 1), normal)
         planeGeometry = BufferGeometryUtils.mergeBufferGeometries(positions.map { position ->
             PlaneBufferGeometry(2 + Random.nextFloat() * 8, 2 + Random.nextFloat() * 8).apply {
                 rotator.rotate(this)
@@ -57,12 +61,12 @@ class VizPixels(vizSurface: VizSurface, val positions: Array<Vector3>) : Pixels 
         map = roundLightTx
     })
 
-    fun addToScene(scene: Scene) {
-        scene.add(pixelsMesh)
+    fun addToScene(scene: VizScene) {
+        scene.add(VizObj(pixelsMesh))
     }
 
-    fun removeFromScene(scene: Scene) {
-        scene.remove(pixelsMesh)
+    fun removeFromScene(scene: VizScene) {
+        scene.remove(VizObj(pixelsMesh))
     }
 
     override fun get(i: Int): Color {
@@ -98,16 +102,16 @@ class VizPixels(vizSurface: VizSurface, val positions: Array<Vector3>) : Pixels 
         vertexColorBufferAttr.needsUpdate = true
     }
 
-    fun getPixelLocationsInModelSpace(vizSurface: VizSurface): Array<Vector3> = positions
+    fun getPixelLocationsInModelSpace(): Array<Vector3> = positions
 
-    fun getPixelLocationsInPanelSpace(vizSurface: VizSurface): Array<Vector2> {
-        val panelGeom = vizSurface.geometry.clone()
+    fun getPixelLocationsInPanelSpace(surfaceVisualizer: SurfaceVisualizer): Array<Vector2> {
+        val panelGeom = surfaceVisualizer.geometry.clone()
         val pixGeom = pixGeometry.clone()
 
         val straightOnNormal = Vector3(0, 0, 1)
 
         // Rotate to straight on.
-        val rotator = Rotator(vizSurface.panelNormal, straightOnNormal)
+        val rotator = Rotator(surfaceVisualizer.panelNormal, straightOnNormal)
         rotator.rotate(panelGeom)
         rotator.rotate(pixGeom)
 
@@ -137,6 +141,14 @@ class VizPixels(vizSurface: VizSurface, val positions: Array<Vector3>) : Pixels 
     }
 
     fun clamp(f: Float): Float = min(1f, max(f, 0f))
+
+    fun readColors(reader: ByteArrayReader) {
+        val pixelCount = reader.readInt()
+        val minPixCount = min(size, pixelCount)
+        for (i in 0 until minPixCount) {
+            this[i] = Color.parseWithoutAlpha(reader)
+        }
+    }
 
     companion object {
         private val roundLightTx = TextureLoader().load(

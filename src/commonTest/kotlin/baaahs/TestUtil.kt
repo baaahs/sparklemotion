@@ -16,6 +16,8 @@ import baaahs.show.ShaderChannel
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
+import baaahs.sim.FixtureSimulation
+import baaahs.sim.SimulationEnv
 import baaahs.util.Clock
 import baaahs.util.Time
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -73,7 +75,11 @@ class FakeModelEntity(
     override val name: String,
     override val deviceType: DeviceType = PixelArrayDevice,
     override val description: String = name
-) : Model.Entity
+) : Model.Entity {
+    override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation {
+        TODO("not implemented")
+    }
+}
 
 class TestModelSurface(
     name: String,

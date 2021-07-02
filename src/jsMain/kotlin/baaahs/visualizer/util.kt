@@ -40,6 +40,4 @@ fun <T> MutableList<T>.findOrAdd(value: T): Int {
     return index
 }
 
-fun Triangle.getArea() = asDynamic().getArea() as Float
-
 fun Vector3F.toVector3(): Vector3 = Vector3(x, y, z)
