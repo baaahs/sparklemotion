@@ -1,8 +1,10 @@
 package baaahs.app.ui.editor
 
+import baaahs.app.ui.AppGlContext
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderCard
+import baaahs.gl.SharedGlContext
 import baaahs.gl.openShader
 import baaahs.gl.shader.type.ShaderType
 import baaahs.show.Shader
@@ -13,6 +15,7 @@ import baaahs.ui.on
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.CacheBuilder
+import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
 import materialui.components.card.card
 import materialui.components.cardcontent.cardContent
@@ -28,6 +31,7 @@ import materialui.components.typography.typography
 import materialui.icon
 import materialui.icons.Icons
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
@@ -92,77 +96,108 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         }
     }
 
-    div(+EditableStyles.patchOverview) {
-        props.mutablePatch.mutableShaderInstances
-            .map { it to toolchain.openShader(it.mutableShader) }
-            .sortedWith(
-                compareBy(
-                    { (_, openShader) -> openShader.shaderType.displayOrder },
-                    { (_, openShader) -> openShader.title }
-                )
-            )
-            .forEach { (mutableShaderInstance, _) ->
-                shaderCard {
-                    key = mutableShaderInstance.id
-                    attrs.mutableShaderInstance = mutableShaderInstance
-                    attrs.onSelect = handleShaderSelect[mutableShaderInstance]
-                    attrs.onDelete = handleShaderDelete[mutableShaderInstance]
-                    attrs.toolchain = toolchain
-                }
-            }
+    val canvasParentRef = ref<HTMLElement?> { null }
+    val appGlContext = memo {
+        jsObject<AppGlContext> {
+            this.sharedGlContext = SharedGlContext()
+        }
+    }
+    val sharedGlContext = appGlContext.sharedGlContext!!
 
-        card(+styles.shaderCard on PaperStyle.root) {
-            key = "new patch"
-            ref = newPatchCardRef
-
-            attrs.onClickFunction = handleNewPatchClick
-
-            cardContent {
-                icon(Icons.AddCircleOutline)
-                typography {
-                    attrs.display = TypographyDisplay.block
-                    attrs.variant = TypographyVariant.subtitle1
-                    +"New Shader…"
-                }
-            }
+    onMount {
+        val canvas = sharedGlContext.canvas
+        canvasParentRef.current!!.appendChild(canvas)
+        canvas.style.apply {
+            position = "absolute"
+            top = "0"
+            left = "0"
+            width = "100%"
+            height = "100%"
+            setProperty("pointer-events", "none")
         }
 
-        menu {
-            attrs.getContentAnchorEl = null
-            attrs.anchorEl(newPatchMenuAnchor)
-            attrs.open = newPatchMenuAnchor != null
-            attrs.onClose = handleNewPatchMenuClose
+        withCleanup {
+            canvasParentRef.current!!.removeChild(canvas)
+        }
+    }
 
-            menuItem {
-                attrs.onClickFunction = handleNewShaderMenuClick
+    div(+EditableStyles.patchOverview) {
+        ref = canvasParentRef
 
-                listItemIcon { icon(CommonIcons.Add) }
-                listItemText { +"New Shader…" }
-            }
+        baaahs.app.ui.appGlContext.Provider {
+            attrs.value = appGlContext
 
-            divider {}
+            props.mutablePatch.mutableShaderInstances
+                .map { it to toolchain.openShader(it.mutableShader) }
+                .sortedWith(
+                    compareBy(
+                        { (_, openShader) -> openShader.shaderType.displayOrder },
+                        { (_, openShader) -> openShader.title }
+                    )
+                )
+                .forEach { (mutableShaderInstance, _) ->
+                    shaderCard {
+                        key = mutableShaderInstance.id
+                        attrs.mutableShaderInstance = mutableShaderInstance
+                        attrs.onSelect = handleShaderSelect[mutableShaderInstance]
+                        attrs.onDelete = handleShaderDelete[mutableShaderInstance]
+                        attrs.toolchain = toolchain
+                    }
+                }
 
-            appContext.plugins.shaderTypes.all.forEach { type ->
-                menuItem {
-                    attrs.onClickFunction = handleNewShaderFromTemplateMenuClick[type]
+            card(+styles.shaderCard on PaperStyle.root) {
+                key = "new patch"
+                ref = newPatchCardRef
 
-                    listItemIcon { icon(type.icon) }
-                    listItemText { +"New ${type.title} Shader…" }
+                attrs.onClickFunction = handleNewPatchClick
+
+                cardContent {
+                    icon(Icons.AddCircleOutline)
+                    typography {
+                        attrs.display = TypographyDisplay.block
+                        attrs.variant = TypographyVariant.subtitle1
+                        +"New Shader…"
+                    }
                 }
             }
 
-            divider {}
+            menu {
+                attrs.getContentAnchorEl = null
+                attrs.anchorEl(newPatchMenuAnchor)
+                attrs.open = newPatchMenuAnchor != null
+                attrs.onClose = handleNewPatchMenuClose
 
-            menuItem {
-                attrs.onClickFunction = handleNewFromShaderLibrary
+                menuItem {
+                    attrs.onClickFunction = handleNewShaderMenuClick
 
-                listItemIcon { icon(CommonIcons.ShaderLibrary) }
-                listItemText { +"From Shader Library…" }
-            }
+                    listItemIcon { icon(CommonIcons.Add) }
+                    listItemText { +"New Shader…" }
+                }
 
-            menuItem {
-                listItemIcon { icon(Icons.CloudDownload) }
-                listItemText { +"Import… (TBD)" }
+                divider {}
+
+                appContext.plugins.shaderTypes.all.forEach { type ->
+                    menuItem {
+                        attrs.onClickFunction = handleNewShaderFromTemplateMenuClick[type]
+
+                        listItemIcon { icon(type.icon) }
+                        listItemText { +"New ${type.title} Shader…" }
+                    }
+                }
+
+                divider {}
+
+                menuItem {
+                    attrs.onClickFunction = handleNewFromShaderLibrary
+
+                    listItemIcon { icon(CommonIcons.ShaderLibrary) }
+                    listItemText { +"From Shader Library…" }
+                }
+
+                menuItem {
+                    listItemIcon { icon(Icons.CloudDownload) }
+                    listItemText { +"Import… (TBD)" }
+                }
             }
         }
     }

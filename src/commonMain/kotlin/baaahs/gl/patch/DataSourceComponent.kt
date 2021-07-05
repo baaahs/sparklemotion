@@ -22,11 +22,9 @@ class DataSourceComponent(val dataSource: DataSource, val varName: String) : Com
     }
 
     override fun appendDeclarations(buf: StringBuilder) {
-        if (!dataSource.isImplicit()) {
-            buf.append("// Data source: ", dataSource.title, "\n")
-            dataSource.appendDeclaration(buf, varName)
-            buf.append("\n")
-        }
+        buf.append("// Data source: ", dataSource.title, "\n")
+        dataSource.appendDeclaration(buf, varName)
+        buf.append("\n")
     }
 
     override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {

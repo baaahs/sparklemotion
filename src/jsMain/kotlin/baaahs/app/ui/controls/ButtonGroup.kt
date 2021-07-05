@@ -2,6 +2,7 @@ package baaahs.app.ui.controls
 
 import baaahs.app.ui.AddButtonToButtonGroupEditIntent
 import baaahs.app.ui.appContext
+import baaahs.app.ui.shaderPreview
 import baaahs.control.ButtonGroupControl
 import baaahs.control.OpenButtonGroupControl
 import baaahs.show.live.ControlProps
@@ -18,6 +19,7 @@ import materialui.components.iconbutton.iconButton
 import materialui.components.paper.enums.PaperStyle
 import materialui.icon
 import materialui.icons.Icons
+import materialui.lab.components.togglebutton.enums.ToggleButtonStyle
 import materialui.lab.components.togglebutton.toggleButton
 import materialui.lab.components.togglebuttongroup.enums.ToggleButtonGroupStyle
 import materialui.lab.components.togglebuttongroup.toggleButtonGroup
@@ -80,6 +82,8 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 //                    attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
 
                 buttonGroupControl.buttons.forEachIndexed { index, buttonControl ->
+                    val shaderForPreview = buttonControl.shaderForPreview()
+
                     draggable({
                         this.key = buttonControl.id
                         this.draggableId = buttonControl.id
@@ -107,25 +111,28 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                                 icon(Icons.DragIndicator)
                             }
 
-//                            droppable({
-//                                droppableId = sceneDropTargets[index].first
-//                                type = "Patch"
-//                                direction = Direction.vertical.name
-//                                isDropDisabled = !props.editMode
-//                            }) { patchDroppableProvided, _ ->
-                                toggleButton {
-//                                    ref = patchDroppableProvided.innerRef
-//                                    copyFrom(patchDroppableProvided.droppableProps)
-
-                                    attrs["value"] = index
-                                    attrs["selected"] = buttonControl.isPressed
-                                    attrs.onClickFunction = {
-                                        buttonGroupControl.clickOn(index)
-                                        onShowStateChange()
+                            if (shaderForPreview != null) {
+                                div(+Styles.buttonShaderPreviewContainer) {
+                                    shaderPreview {
+                                        attrs.shader = shaderForPreview.shader
                                     }
-
-                                    +buttonControl.title
                                 }
+                            }
+
+                            toggleButton {
+                                if (shaderForPreview != null) {
+                                    attrs.classes(Styles.buttonLabelWhenPreview on ToggleButtonStyle.label)
+                                }
+
+                                attrs["value"] = index
+                                attrs["selected"] = buttonControl.isPressed
+                                attrs.onClickFunction = {
+                                    buttonGroupControl.clickOn(index)
+                                    onShowStateChange()
+                                }
+
+                                +buttonControl.title
+                            }
 //                            }
                         }
                     }

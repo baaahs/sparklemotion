@@ -12,4 +12,5 @@ interface ShaderPreview {
     fun setProgram(program: GlslProgram?)
     fun render()
     fun resize(width: Int, height: Int)
+    fun rasterOffsetChanged(left: Int, bottom: Int) {}
 }

@@ -9,22 +9,17 @@ import baaahs.util.Logger
 import com.danielgergely.kgl.*
 
 abstract class GlContext(
-    private val kgl: Kgl,
+    internal val kgl: Kgl,
     val glslVersion: String,
-    var checkForErrors: Boolean = false
+    var checkForErrors: Boolean = false,
+    val state: State = State()
 ) {
     init { logger.debug { "Created ${this::class.simpleName}" } }
     abstract fun <T> runInContext(fn: () -> T): T
 
-    private var viewport: List<Int> = emptyList()
     private val maxTextureUnit = 31 // TODO: should be gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS)
 
-    protected val textureUnits = mutableMapOf<Any, TextureUnit>()
-    private var activeTextureUnit: TextureUnit? = null
-
-    private var activeProgram: GlslProgram? = null
-    private var activeFrameBuffer: FrameBuffer? = null
-    private var activeRenderBuffer: RenderBuffer? = null
+    protected val textureUnits get() = state.textureUnits
 
     class Stats {
         var activeTexture = 0
@@ -33,11 +28,21 @@ abstract class GlContext(
     }
     val stats = Stats()
 
+    class State {
+        var viewport: List<Int> = emptyList()
+        val textureUnits = mutableMapOf<Any, TextureUnit>()
+        var activeTextureUnit: TextureUnit? = null
+
+        var activeProgram: GlslProgram? = null
+        var activeFrameBuffer: FrameBuffer? = null
+        var activeRenderBuffer: RenderBuffer? = null
+    }
+
     fun setViewport(x: Int, y: Int, width: Int, height: Int) {
         val newViewport = listOf(x, y, width, height)
-        if (newViewport != viewport) {
+        if (newViewport != state.viewport) {
             check { viewport(x, y, width, height) }
-            viewport = newViewport
+            state.viewport = newViewport
         }
     }
 
@@ -72,9 +77,9 @@ abstract class GlContext(
     }
 
     fun useProgram(glslProgram: GlslProgram) {
-        if (activeProgram !== glslProgram) {
+        if (state.activeProgram !== glslProgram) {
             glslProgram.use()
-            activeProgram = glslProgram
+            state.activeProgram = glslProgram
         }
     }
 
@@ -90,9 +95,9 @@ abstract class GlContext(
         private val curRenderBuffers = mutableMapOf<Int, RenderBuffer>()
 
         fun bind() {
-            if (activeFrameBuffer != this) {
+            if (state.activeFrameBuffer != this) {
                 check { bindFramebuffer(GL_FRAMEBUFFER, framebuffer) }
-                activeFrameBuffer = this
+                state.activeFrameBuffer = this
             }
         }
 
@@ -117,7 +122,7 @@ abstract class GlContext(
         }
 
         fun release() {
-            if (activeFrameBuffer == this) {
+            if (state.activeFrameBuffer == this) {
                 check { bindFramebuffer(GL_FRAMEBUFFER, null) }
             }
 
@@ -154,9 +159,9 @@ abstract class GlContext(
         var curHeight = -1
 
         fun bind() {
-            if (activeRenderBuffer != this) {
+            if (state.activeRenderBuffer != this) {
                 check { bindRenderbuffer(GL_RENDERBUFFER, renderbuffer) }
-                activeRenderBuffer = this
+                state.activeRenderBuffer = this
             }
         }
 
@@ -198,10 +203,10 @@ abstract class GlContext(
         var boundTexture: Texture? = null
 
         private fun activate() {
-            if (activeTextureUnit !== this) {
+            if (state.activeTextureUnit !== this) {
                 stats.activeTexture++
                 check { activeTexture(GL_TEXTURE0 + unitNumber) }
-                activeTextureUnit = this
+                state.activeTextureUnit = this
             }
         }
 
