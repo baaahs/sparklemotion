@@ -80,7 +80,7 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
     }
 
     override fun appendDeclaration(buf: StringBuilder, id: String) {
-        val textureUniformId = """ds_${id}_texture"""
+        val textureUniformId = "ds_${id}_texture"
         val varName = getVarName(id)
         buf.append("""
             uniform sampler2D $textureUniformId;

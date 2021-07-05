@@ -2,6 +2,7 @@ package baaahs.glsl
 
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
+import baaahs.geom.Vector4F
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import com.danielgergely.kgl.Kgl
@@ -17,6 +18,7 @@ interface Uniform {
     fun set(x: Float, y: Float, z: Float, w: Float)
     fun set(matrix: Matrix4)
     fun set(vector3F: Vector3F)
+    fun set(vector4F: Vector4F)
     fun set(textureUnit: GlContext.TextureUnit)
 }
 
@@ -37,6 +39,7 @@ class UniformImpl internal constructor(
     }
 
     override fun set(vector3F: Vector3F) = set(vector3F.x, vector3F.y, vector3F.z)
+    override fun set(vector4F: Vector4F) = set(vector4F.x, vector4F.y, vector4F.z, vector4F.w)
 
     override fun set(textureUnit: GlContext.TextureUnit) = textureUnit.setUniform(this)
 

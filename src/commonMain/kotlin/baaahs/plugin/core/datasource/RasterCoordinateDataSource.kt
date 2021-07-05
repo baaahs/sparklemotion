@@ -39,12 +39,43 @@ data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : Data
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
         object : Feed, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {}
+                val offsetUniformId = "ds_${id}_offset"
+                override fun bind(glslProgram: GlslProgram): ProgramFeed =
+                    object : ProgramFeed, GlslProgram.RasterOffsetListener {
+                        private val uniform = glslProgram.getUniform(offsetUniformId)
+                        override val isValid: Boolean = uniform != null
+
+                        var left = 0
+                        var bottom = 0
+
+                        override fun onRasterOffset(left: Int, bottom: Int) {
+                            this.left = left
+                            this.bottom = bottom
+                        }
+
+                        override fun setOnProgram() {
+                            uniform?.set(left.toFloat(), bottom.toFloat())
+                        }
+                    }
             }
 
             override fun release() = Unit
         }
 
     override fun isImplicit(): Boolean = true
-    override fun getVarName(id: String): String = "gl_FragCoord"
+
+    override fun appendDeclaration(buf: StringBuilder, id: String) {
+        val offsetUniformId = "ds_${id}_offset"
+        val varName = getVarName(id)
+        buf.append("""
+            uniform vec2 $offsetUniformId;
+            vec4 $varName;
+            
+        """.trimIndent())
+    }
+
+    override fun invocationGlsl(varName: String): String {
+        val offsetUniformId = "ds_${varName}_offset"
+        return "${getVarName(varName)} = gl_FragCoord - vec4($offsetUniformId, 0., 0.)"
+    }
 }

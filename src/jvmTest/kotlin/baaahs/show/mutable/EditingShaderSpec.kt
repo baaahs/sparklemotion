@@ -375,6 +375,10 @@ object EditingShaderSpec : Spek({
                     // Data source: PreviewResolution
                     uniform vec2 in_previewResolution;
 
+                    // Data source: Raster Coordinate
+                    uniform vec2 ds_rasterCoordinate_offset;
+                    vec4 in_rasterCoordinate;
+
                     // Data source: Time
                     uniform float in_time;
 
@@ -403,8 +407,11 @@ object EditingShaderSpec : Spek({
 
                     #line 10001
                     void main() {
+                        // Invoke Raster Coordinate
+                        in_rasterCoordinate = gl_FragCoord - vec4(ds_rasterCoordinate_offset, 0., 0.);
+                    
                         // Invoke Screen Coords
-                        p0_screenCoordsi_result = p0_screenCoords_main(gl_FragCoord);
+                        p0_screenCoordsi_result = p0_screenCoords_main(in_rasterCoordinate);
 
                         // Invoke Paint
                         p1_paint_main();

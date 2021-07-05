@@ -1,5 +1,6 @@
 package baaahs.app.ui
 
+import baaahs.app.ui.settings.UiSettings
 import baaahs.client.ClientStageManager
 import baaahs.client.WebClient
 import baaahs.gl.Toolchain
@@ -23,6 +24,7 @@ external interface AppContext {
     var webClient: WebClient.Facade
     var plugins: Plugins
     var toolchain: Toolchain
+    var uiSettings: UiSettings
     var allStyles: AllStyles
     var prompt: (prompt: Prompt) -> Unit
     var clock: Clock

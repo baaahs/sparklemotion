@@ -15,6 +15,10 @@ fun <E> Collection<E>.only(description: String = "item"): E {
     else return iterator().next()
 }
 
+fun <E> Collection<E>.onlyOrNull(): E? {
+    return if (size != 1) null else iterator().next()
+}
+
 fun <T> List<T>.replacing(index: Int, replacement: T): List<T> {
     return this.mapIndexed { i, t -> if (i == index) replacement else t }
 }
