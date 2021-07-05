@@ -31,6 +31,10 @@ class PreviewRenderEngine(
         program?.setResolution()
     }
 
+    fun onRasterOffsetChange(left: Int, bottom: Int) {
+        program?.setRasterOffset(left, bottom)
+    }
+
     override fun onBind(engineFeed: EngineFeed) {
     }
 

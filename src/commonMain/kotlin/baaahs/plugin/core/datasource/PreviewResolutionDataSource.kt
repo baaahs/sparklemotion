@@ -39,23 +39,23 @@ data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : Dat
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
         object : Feed, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed,
-                    GlslProgram.ResolutionListener {
-                    private val uniform = glslProgram.getUniform(getVarName(id))
-                    override val isValid: Boolean = uniform != null
+                override fun bind(glslProgram: GlslProgram): ProgramFeed =
+                    object : ProgramFeed, GlslProgram.ResolutionListener {
+                        private val uniform = glslProgram.getUniform(getVarName(id))
+                        override val isValid: Boolean = uniform != null
 
-                    private var x = 1f
-                    private var y = 1f
+                        private var x = 1f
+                        private var y = 1f
 
-                    override fun onResolution(x: Float, y: Float) {
-                        this.x = x
-                        this.y = y
+                        override fun onResolution(x: Float, y: Float) {
+                            this.x = x
+                            this.y = y
+                        }
+
+                        override fun setOnProgram() {
+                            uniform?.set(x, y)
+                        }
                     }
-
-                    override fun setOnProgram() {
-                        uniform?.set(x, y)
-                    }
-                }
             }
 
             override fun release() = Unit

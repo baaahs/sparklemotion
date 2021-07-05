@@ -18,7 +18,7 @@ actual object GlBase {
             gl != null
         }
 
-        override fun createContext(trace: Boolean): GlContext {
+        override fun createContext(trace: Boolean): JsGlContext {
             val canvas = document.createElement("canvas") as HTMLCanvasElement
             return createContext(canvas, trace)
         }
@@ -34,6 +34,7 @@ actual object GlBase {
                 throw Exception("WebGL 2 not supported")
             }
             return JsGlContext(
+                canvas,
                 maybeTrace(KglJs(webgl), trace),
                 "300 es",
                 webgl
@@ -41,11 +42,14 @@ actual object GlBase {
         }
     }
 
-    class JsGlContext(
+    open class JsGlContext(
+        val canvas: HTMLCanvasElement,
         kgl: Kgl,
         glslVersion: String,
-        private val webgl: WebGL2RenderingContext
-    ) : GlContext(kgl, glslVersion) {
+        internal val webgl: WebGL2RenderingContext,
+        checkForErrors: Boolean = false,
+        state: State = State()
+    ) : GlContext(kgl, glslVersion, checkForErrors, state) {
         private val checkedExtensions = hashSetOf<String>()
 
         override fun <T> runInContext(fn: () -> T): T = fn()
@@ -53,6 +57,11 @@ actual object GlBase {
         override fun ensureResultBufferCanContainFloats() {
             // For RGBA32F in FloatXyzwParam:
             ensureExtension("EXT_color_buffer_float")
+        }
+
+        /** Creates a related context with shared state and the given Kgl. */
+        fun subContext(kgl: Kgl): JsGlContext {
+            return JsGlContext(canvas, kgl, glslVersion, webgl, checkForErrors, state)
         }
 
         private fun ensureExtension(name: String) {

@@ -148,6 +148,13 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                     attrs.label { typographyH6 { +"Dark Mode" } }
                 }
             }
+
+            listItem {
+                attrs.button = true
+                attrs.onClickFunction = props.onSettings.withEvent()
+                listItemIcon { icon(CommonIcons.Settings) }
+                listItemText { attrs.primary { +"Settings" } }
+            }
         }
     }
 }
@@ -173,6 +180,8 @@ external interface AppDrawerProps : RProps {
     var onSaveShow: () -> Unit
     var onSaveShowAs: () -> Unit
     var onCloseShow: () -> Unit
+
+    var onSettings: () -> Unit
 }
 
 fun RBuilder.appDrawer(handler: RHandler<AppDrawerProps>) =

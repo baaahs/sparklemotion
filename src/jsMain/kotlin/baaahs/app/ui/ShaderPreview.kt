@@ -1,6 +1,5 @@
 package baaahs.app.ui
 
-import baaahs.document
 import baaahs.gl.GlContext
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
@@ -20,17 +19,16 @@ import materialui.components.typography.enums.TypographyDisplay
 import materialui.components.typography.typography
 import materialui.icon
 import materialui.icons.Icons
-import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.EventTarget
 import react.*
-import react.dom.*
+import react.dom.div
 import styled.StyleSheet
-import styled.inlineStyles
 import kotlin.collections.set
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
+    val sharedGlContext = useContext(appGlContext).sharedGlContext
     val toolchain = props.toolchain ?: appContext.toolchain
 
     val canvasParent = ref<HTMLDivElement?> { null }
@@ -41,31 +39,32 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val width = props.width ?: 150.px
     val height = props.height ?: 150.px
 
-    val canvas = memo(props.previewShaderBuilder?.openShader?.shaderType) {
-        document.createElement("canvas").apply {
-            this.setAttribute("width", width.toString())
-            this.setAttribute("height", height.toString())
-        } as HTMLCanvasElement
+    val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
+        // TODO: This is duplicating work that happens later in PreviewShaderBuilder, which is rotten.
+        toolchain.openShader(props.shader!!).shaderType
     }
+    val bootstrapper = shaderType.shaderPreviewBootstrapper
+    val helper = memo(bootstrapper, sharedGlContext) { bootstrapper.createHelper(sharedGlContext) }
+//    helper.resize(width, height)
+    val previewContainer = helper.container
+
     var gl by state<GlContext?> { null }
 
-    onMount(canvasParent.current, canvas) {
+    onMount(canvasParent.current, previewContainer) {
         canvasParent.current?.let { parent ->
-            parent.insertBefore(canvas, parent.firstChild)
+            parent.insertBefore(previewContainer, parent.firstChild)
         }
+        helper.resize(previewContainer.clientWidth.px, previewContainer.clientHeight.px)
+        shaderPreview?.resize(
+            previewContainer.clientWidth,
+            previewContainer.clientHeight
+        )
 
-        withCleanup { canvasParent.current?.removeChild(canvas) }
+        withCleanup { canvasParent.current?.removeChild(previewContainer) }
     }
 
-    onChange("shader type", canvas, props.previewShaderBuilder?.openShader?.shaderType) {
-        val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
-            // TODO: This is duplicating work that happens later in PreviewShaderBuilder, which is rotten.
-            toolchain.openShader(props.shader!!).shaderType
-        }
-
-        val preview = shaderType.shaderPreviewBootstrapper.bootstrap(
-            canvas, appContext.webClient.model, preRenderHook
-        )
+    onChange("shader type", helper, shaderType) {
+        val preview = helper.bootstrap(appContext.webClient.model, preRenderHook)
         gl = preview.renderEngine.gl
 
         val intersectionObserver = IntersectionObserver { entries ->
@@ -75,7 +74,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                 preview.stop()
             }
         }
-        intersectionObserver.observe(canvas)
+        intersectionObserver.observe(previewContainer)
 
         shaderPreview = preview
 
@@ -136,10 +135,10 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
     div(+ShaderPreviewStyles.container) {
         ref = canvasParent
-        inlineStyles {
-            this.width = width
-            this.height = height
-        }
+//        inlineStyles {
+//            this.width = width
+//            this.height = height
+//        }
 
         when (builder?.state ?: ShaderBuilder.State.Unbuilt) {
             ShaderBuilder.State.Unbuilt,
@@ -180,6 +179,8 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 object ShaderPreviewStyles : StyleSheet("ui-ShaderPreview", isStatic = true) {
     val container by css {
         position = Position.relative
+        width = 100.pct
+        height = 100.pct
 
         child("canvas") {
             position = Position.absolute

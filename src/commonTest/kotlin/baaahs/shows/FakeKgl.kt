@@ -12,22 +12,22 @@ import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
 import com.danielgergely.kgl.*
 
-class FakeGlContext(internal val kgl: FakeKgl = FakeKgl()) : GlContext(kgl, "1234") {
-    val programs get() = kgl.programs.let { it.subList(1, it.size) }
-    val textures get() = kgl.textures.let { it.subList(1, it.size) }
+class FakeGlContext(internal val fakeKgl: FakeKgl = FakeKgl()) : GlContext(fakeKgl, "1234") {
+    val programs get() = fakeKgl.programs.let { it.subList(1, it.size) }
+    val textures get() = fakeKgl.textures.let { it.subList(1, it.size) }
     val allocatedTextureUnits get() = textureUnits
 
     override fun <T> runInContext(fn: () -> T): T {
-        ++kgl.nestLevel
-        try { return fn() } finally { kgl.nestLevel-- }
+        ++fakeKgl.nestLevel
+        try { return fn() } finally { fakeKgl.nestLevel-- }
     }
 
     fun getTextureConfig(textureUnit: Int): FakeKgl.TextureConfig {
-        return kgl.getTextureConfig(textureUnit)
+        return fakeKgl.getTextureConfig(textureUnit)
             ?: error("no texture bound on unit $textureUnit")
     }
 
-    fun findProgram(id: Program) = kgl.programs[id as Int]
+    fun findProgram(id: Program) = fakeKgl.programs[id as Int]
 }
 
 // Until mockk works on JS:
@@ -458,44 +458,19 @@ class FakeUniform : Uniform {
     override fun set(x: Float, y: Float, z: Float, w: Float) { value = Vector4F(x, y, z, w) }
     override fun set(matrix: Matrix4) { value = matrix }
     override fun set(vector3F: Vector3F) { value = vector3F }
+    override fun set(vector4F: Vector4F) { value = vector4F }
     override fun set(textureUnit: GlContext.TextureUnit) { value = textureUnit }
 }
 
 open class StubGlslProgram : GlslProgram {
-    override val title: String
-        get() = TODO("not implemented")
-
-    override val fragShader: CompiledShader
-        get() = TODO("not implemented")
-
-    override val vertexAttribLocation: Int
-        get() = TODO("not implemented")
-
-    override fun setResolution(x: Float, y: Float) {
-        TODO("not implemented")
-    }
-
-    override fun aboutToRenderFrame() {
-        TODO("not implemented")
-    }
-
-    override fun aboutToRenderFixture(renderTarget: RenderTarget) {
-        TODO("not implemented")
-    }
-
-    override fun getUniform(name: String): Uniform? {
-        TODO("not implemented")
-    }
-
-    override fun <T> withProgram(fn: Kgl.() -> T): T {
-        TODO("not implemented")
-    }
-
-    override fun use() {
-        TODO("not implemented")
-    }
-
-    override fun release() {
-        TODO("not implemented")
-    }
-}
+    override val title: String get() = TODO("not implemented")
+    override val fragShader: CompiledShader get() = TODO("not implemented")
+    override val vertexAttribLocation: Int get() = TODO("not implemented")
+    override fun setResolution(x: Float, y: Float): Unit = TODO("not implemented")
+    override fun setRasterOffset(left: Int, bottom: Int): Unit = TODO("not implemented")
+    override fun aboutToRenderFrame(): Unit = TODO("not implemented")
+    override fun aboutToRenderFixture(renderTarget: RenderTarget): Unit = TODO("not implemented")
+    override fun getUniform(name: String): Uniform? = TODO("not implemented")
+    override fun <T> withProgram(fn: Kgl.() -> T): T = TODO("not implemented")
+    override fun use(): Unit = TODO("not implemented")
+    override fun release(): Unit = TODO("not implemented") }
