@@ -50,67 +50,35 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     var showAddMenuFor by state<ControlDisplay.PanelBuckets.PanelBucket?> { null }
     var showAddMenuForAnchorEl by state<EventTarget?> { null }
 
-    val canvasParentRef = ref<HTMLElement?> { null }
-    val appGlContext = memo {
-        jsObject<AppGlContext> {
-            this.sharedGlContext = SharedGlContext()
-        }
-    }
-    val sharedGlContext = appGlContext.sharedGlContext!!
-
-    onMount {
-        val canvas = sharedGlContext.canvas
-        canvas.style.apply {
-            position = "absolute"
-            top = "0"
-            left = "0"
-            width = "100%"
-            height = "100%"
-            setProperty("pointer-events", "none")
-        }
-        canvasParentRef.current!!.let { parent ->
-            parent.insertBefore(canvas, parent.firstChild)
-        }
-
-        withCleanup {
-            canvasParentRef.current!!.removeChild(canvas)
-        }
-    }
-
-    div(+Styles.showLayout) {
-        ref = canvasParentRef
-
-        if (currentTab != null) {
-            val colCount = currentTab.columns.size
-            val rowCount = currentTab.rows.size
-            if (currentTab.areas.size != colCount * rowCount) {
-                error("Invalid layout! " +
-                        "Area count (${currentTab.areas.size} != cell count " +
-                        "($colCount columns * $rowCount rows)")
-            }
-
-            val areas = mutableListOf<String>()
-            currentTab.rows.indices.forEach { rowIndex ->
-                val cols = mutableListOf<String>()
-
-                currentTab.columns.indices.forEach { columnIndex ->
-                    cols.add(currentTab.areas[rowIndex * colCount + columnIndex])
+    sharedGlContext {
+        div(+Styles.showLayout) {
+            if (currentTab != null) {
+                val colCount = currentTab.columns.size
+                val rowCount = currentTab.rows.size
+                if (currentTab.areas.size != colCount * rowCount) {
+                    error("Invalid layout! " +
+                            "Area count (${currentTab.areas.size} != cell count " +
+                            "($colCount columns * $rowCount rows)")
                 }
-                areas.add(cols.joinToString(" ") { it.replace(" ", "") })
+
+                val areas = mutableListOf<String>()
+                currentTab.rows.indices.forEach { rowIndex ->
+                    val cols = mutableListOf<String>()
+
+                    currentTab.columns.indices.forEach { columnIndex ->
+                        cols.add(currentTab.areas[rowIndex * colCount + columnIndex])
+                    }
+                    areas.add(cols.joinToString(" ") { it.replace(" ", "") })
+                }
+
+                inlineStyles {
+                    gridTemplateAreas = GridTemplateAreas(areas.joinToString(" ") { "\"$it\"" })
+                    gridTemplateColumns = GridTemplateColumns(currentTab.columns.joinToString(" "))
+                    gridTemplateRows = GridTemplateRows(currentTab.rows.joinToString(" "))
+                }
             }
 
-            inlineStyles {
-                gridTemplateAreas = GridTemplateAreas(areas.joinToString(" ") { "\"$it\"" })
-                gridTemplateColumns = GridTemplateColumns(currentTab.columns.joinToString(" "))
-                gridTemplateRows = GridTemplateRows(currentTab.rows.joinToString(" "))
-            }
-        }
-
-
-        currentTab?.areas?.distinct()?.forEach { panelId ->
-            baaahs.app.ui.appGlContext.Provider {
-                attrs.value = appGlContext
-
+            currentTab?.areas?.distinct()?.forEach { panelId ->
                 val panel = props.show.layouts.panels.getBang(panelId, "panel")
                 paper(Styles.layoutPanelPaper on PaperStyle.root) {
                     inlineStyles {

@@ -12,6 +12,7 @@ import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.on
+import baaahs.ui.sharedGlContext
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.CacheBuilder
@@ -96,37 +97,8 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         }
     }
 
-    val canvasParentRef = ref<HTMLElement?> { null }
-    val appGlContext = memo {
-        jsObject<AppGlContext> {
-            this.sharedGlContext = SharedGlContext()
-        }
-    }
-    val sharedGlContext = appGlContext.sharedGlContext!!
-
-    onMount {
-        val canvas = sharedGlContext.canvas
-        canvasParentRef.current!!.appendChild(canvas)
-        canvas.style.apply {
-            position = "absolute"
-            top = "0"
-            left = "0"
-            width = "100%"
-            height = "100%"
-            setProperty("pointer-events", "none")
-        }
-
-        withCleanup {
-            canvasParentRef.current!!.removeChild(canvas)
-        }
-    }
-
-    div(+EditableStyles.patchOverview) {
-        ref = canvasParentRef
-
-        baaahs.app.ui.appGlContext.Provider {
-            attrs.value = appGlContext
-
+    sharedGlContext {
+        div(+EditableStyles.patchOverview) {
             props.mutablePatch.mutableShaderInstances
                 .map { it to toolchain.openShader(it.mutableShader) }
                 .sortedWith(

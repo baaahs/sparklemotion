@@ -4,6 +4,8 @@ import baaahs.ShowEditorState
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layout.layoutEditorDialog
+import baaahs.app.ui.settings.UiSettings
+import baaahs.app.ui.settings.settingsDialog
 import baaahs.client.ClientStageManager
 import baaahs.client.WebClient
 import baaahs.gl.withCache
@@ -52,8 +54,16 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var editMode by state { false }
     val handleEditModeChange = callback(editMode) { editMode = !editMode }
 
-    var darkMode by state { false }
-    val handleDarkModeChange = callback(darkMode) { darkMode = !darkMode }
+    var uiSettings by state { UiSettings() }
+    val handleUiSettingsChange by handler { newUiSettings: UiSettings ->
+        uiSettings = newUiSettings
+        // TODO: Persist UiSettings change.
+    }
+
+    val darkMode = uiSettings.darkMode
+    val handleDarkModeChange = callback(darkMode) {
+        handleUiSettingsChange(uiSettings.copy(darkMode = !uiSettings.darkMode))
+    }
 
     val theme = memo(darkMode) {
         createMuiTheme {
@@ -63,20 +73,23 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
+    val allStyles = memo(theme) { AllStyles(theme)}
+
     val dragNDrop by state { ReactBeautifulDragNDrop() }
     var prompt by state<Prompt?> { null }
     val editableManager by state { EditableManager { newShow ->
         webClient.onShowEdit(newShow)
     } }
 
-    val myAppContext = memo(theme) {
+    val myAppContext = memo(uiSettings, allStyles) {
         jsObject<AppContext> {
             this.showPlayer = props.stageManager
             this.dragNDrop = dragNDrop
             this.webClient = webClient
             this.plugins = webClient.plugins
             this.toolchain = webClient.toolchain
-            this.allStyles = AllStyles(theme)
+            this.uiSettings = uiSettings
+            this.allStyles = allStyles
             this.prompt = { prompt = it }
             this.clock = JsClock
 
@@ -88,7 +101,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
-    val allStyles = myAppContext.allStyles
+    val myAppGlContext = memo { jsObject<AppGlContext> { this.sharedGlContext = null } }
+
     onChange("global styles", allStyles) {
         allStyles.injectGlobals()
     }
@@ -184,6 +198,15 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         webClient.onCloseShow()
     }
 
+    val handleSettings = callback {
+        renderDialog = {
+            settingsDialog {
+                attrs.onUiSettingsChange = handleUiSettingsChange
+                attrs.onClose = { renderDialog = null }
+            }
+        }
+    }
+
     val handlePromptClose = callback { prompt = null }
 
     val forceAppDrawerOpen = webClient.isLoaded && webClient.show == null
@@ -217,158 +240,163 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     appContext.Provider {
         attrs.value = myAppContext
 
-        themeProvider(theme) {
-            cssBaseline { }
+        appGlContext.Provider {
+            attrs.value = myAppGlContext
 
-            div(+Styles.root and appDrawerStateStyle and editModeStyle) {
-                appToolbar {
-                    attrs.editMode = editMode
-                    attrs.onEditModeChange = handleEditModeChange
-                    attrs.onMenuButtonClick = handleAppDrawerToggle
-                    attrs.undoStack = props.undoStack
-                    attrs.onSaveShow = handleSaveShow
-                    attrs.onSaveShowAs = handleSaveShowAs
-                }
+            themeProvider(theme) {
+                cssBaseline { }
 
-                appDrawer {
-                    attrs.open = renderAppDrawerOpen
-                    attrs.forcedOpen = forceAppDrawerOpen
-                    attrs.onClose = handleAppDrawerToggle
-                    attrs.showLoaded = show != null
-                    attrs.showFile = webClient.showFile
-                    attrs.editMode = editMode
-                    attrs.showUnsaved = webClient.showIsModified
-                    attrs.onEditModeChange = handleEditModeChange
-                    attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
-                    attrs.darkMode = darkMode
-                    attrs.onDarkModeChange = handleDarkModeChange
-                    attrs.onNewShow = handleNewShow
-                    attrs.onOpenShow = handleOpenShow
-                    attrs.onSaveShow = handleSaveShow
-                    attrs.onSaveShowAs = handleSaveShowAs
-                    attrs.onCloseShow = handleCloseShow
-                }
-
-                div(+themeStyles.appContent) {
-                    backdrop {
-                        attrs {
-                            open = !webClient.isConnected
-                        }
-
-                        container {
-                            circularProgress {}
-                            icon(Icons.NotificationImportant)
-
-                            typographyH6 { +"Connecting…" }
-                            +"Attempting to connect to Sparkle Motion."
-                        }
+                div(+Styles.root and appDrawerStateStyle and editModeStyle) {
+                    appToolbar {
+                        attrs.editMode = editMode
+                        attrs.onEditModeChange = handleEditModeChange
+                        attrs.onMenuButtonClick = handleAppDrawerToggle
+                        attrs.undoStack = props.undoStack
+                        attrs.onSaveShow = handleSaveShow
+                        attrs.onSaveShowAs = handleSaveShowAs
                     }
 
-                    // TODO: this doesn't actuyally show up for some reason?
-                    if (props.webClient.isMapping) {
+                    appDrawer {
+                        attrs.open = renderAppDrawerOpen
+                        attrs.forcedOpen = forceAppDrawerOpen
+                        attrs.onClose = handleAppDrawerToggle
+                        attrs.showLoaded = show != null
+                        attrs.showFile = webClient.showFile
+                        attrs.editMode = editMode
+                        attrs.showUnsaved = webClient.showIsModified
+                        attrs.onEditModeChange = handleEditModeChange
+                        attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
+                        attrs.darkMode = darkMode
+                        attrs.onDarkModeChange = handleDarkModeChange
+                        attrs.onNewShow = handleNewShow
+                        attrs.onOpenShow = handleOpenShow
+                        attrs.onSaveShow = handleSaveShow
+                        attrs.onSaveShowAs = handleSaveShowAs
+                        attrs.onCloseShow = handleCloseShow
+                        attrs.onSettings = handleSettings
+                    }
+
+                    div(+themeStyles.appContent) {
                         backdrop {
                             attrs {
-                                open = true
+                                open = !webClient.isConnected
                             }
 
                             container {
                                 circularProgress {}
                                 icon(Icons.NotificationImportant)
 
-                                typographyH6 { +"Mapper Running…" }
-                                +"Please wait."
+                                typographyH6 { +"Connecting…" }
+                                +"Attempting to connect to Sparkle Motion."
                             }
                         }
-                    }
 
-                    if (show == null) {
-                        paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
-                            if (webClient.isLoaded) {
-                                icon(Icons.NotificationImportant)
-                                typographyH6 { +"No open show." }
-                                p { +"Maybe you'd like to open one? " }
-                            } else {
-                                circularProgress {}
-                                typographyH6 { +"Loading Show…" }
+                        // TODO: this doesn't actuyally show up for some reason?
+                        if (props.webClient.isMapping) {
+                            backdrop {
+                                attrs {
+                                    open = true
+                                }
+
+                                container {
+                                    circularProgress {}
+                                    icon(Icons.NotificationImportant)
+
+                                    typographyH6 { +"Mapper Running…" }
+                                    +"Please wait."
+                                }
                             }
                         }
-                    } else {
-                        ErrorBoundary {
-                            attrs.FallbackComponent = ErrorDisplay
 
-                            showUi {
-                                attrs.show = webClient.openShow!!
-                                attrs.onShowStateChange = handleShowStateChange
-                                attrs.editMode = editMode
+                        if (show == null) {
+                            paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
+                                if (webClient.isLoaded) {
+                                    icon(Icons.NotificationImportant)
+                                    typographyH6 { +"No open show." }
+                                    p { +"Maybe you'd like to open one? " }
+                                } else {
+                                    circularProgress {}
+                                    typographyH6 { +"Loading Show…" }
+                                }
                             }
+                        } else {
+                            ErrorBoundary {
+                                attrs.FallbackComponent = ErrorDisplay
 
-                            if (layoutEditorDialogOpen) {
-                                // Layout Editor dialog
-                                layoutEditorDialog {
-                                    attrs.open = layoutEditorDialogOpen
-                                    attrs.show = show
-                                    attrs.onApply = { newMutableShow ->
-                                        myAppContext.webClient.onShowEdit(newMutableShow)
+                                showUi {
+                                    attrs.show = webClient.openShow!!
+                                    attrs.onShowStateChange = handleShowStateChange
+                                    attrs.editMode = editMode
+                                }
+
+                                if (layoutEditorDialogOpen) {
+                                    // Layout Editor dialog
+                                    layoutEditorDialog {
+                                        attrs.open = layoutEditorDialogOpen
+                                        attrs.show = show
+                                        attrs.onApply = { newMutableShow ->
+                                            myAppContext.webClient.onShowEdit(newMutableShow)
+                                        }
+                                        attrs.onClose = handleLayoutEditorDialogClose
                                     }
-                                    attrs.onClose = handleLayoutEditorDialogClose
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            if (fileDialogOpen) {
-                fileDialog {
-                    attrs.isOpen = fileDialogOpen
-                    attrs.title = if (fileDialogIsSaveAs) "Save Show As…" else "Open Show…"
-                    attrs.isSaveAs = fileDialogIsSaveAs
-                    attrs.fileDisplayCallback = { file, fileDisplay ->
-                        if (file.isDirectory == false) {
-                            fileDisplay.isSelectable = file.name.endsWith(".sparkle")
+                if (fileDialogOpen) {
+                    fileDialog {
+                        attrs.isOpen = fileDialogOpen
+                        attrs.title = if (fileDialogIsSaveAs) "Save Show As…" else "Open Show…"
+                        attrs.isSaveAs = fileDialogIsSaveAs
+                        attrs.fileDisplayCallback = { file, fileDisplay ->
+                            if (file.isDirectory == false) {
+                                fileDisplay.isSelectable = file.name.endsWith(".sparkle")
+                            }
                         }
+                        attrs.onSelect = handleFileSelected
+                        attrs.onCancel = handleFileDialogCancel
+                        attrs.defaultTarget = webClient.showFile
                     }
-                    attrs.onSelect = handleFileSelected
-                    attrs.onCancel = handleFileDialogCancel
-                    attrs.defaultTarget = webClient.showFile
                 }
-            }
 
-            renderDialog?.invoke(this)
+                renderDialog?.invoke(this)
 
-            editableManagerUi {
-                attrs.editMode = editMode
-                attrs.editableManager = editableManager
-            }
-
-            prompt?.let {
-                promptDialog {
-                    attrs.prompt = it
-                    attrs.onClose = handlePromptClose
+                editableManagerUi {
+                    attrs.editMode = editMode
+                    attrs.editableManager = editableManager
                 }
-            }
 
-            webClient.serverNotices.let { serverNotices ->
-                if (serverNotices.isNotEmpty()) {
-                    backdrop(Styles.serverNoticeBackdrop on BackdropStyle.root) {
-                        attrs { open = true }
+                prompt?.let {
+                    promptDialog {
+                        attrs.prompt = it
+                        attrs.onClose = handlePromptClose
+                    }
+                }
 
-                        div {
-                            serverNotices.forEach { serverNotice ->
-                                alert {
-                                    attrs.severity = AlertSeverity.error
-                                    attrs.onClose = { webClient.confirmServerNotice(serverNotice.id) }
+                webClient.serverNotices.let { serverNotices ->
+                    if (serverNotices.isNotEmpty()) {
+                        backdrop(Styles.serverNoticeBackdrop on BackdropStyle.root) {
+                            attrs { open = true }
 
-                                    alertTitle {
-                                        +serverNotice.title
-                                    }
+                            div {
+                                serverNotices.forEach { serverNotice ->
+                                    alert {
+                                        attrs.severity = AlertSeverity.error
+                                        attrs.onClose = { webClient.confirmServerNotice(serverNotice.id) }
 
-                                    serverNotice.message?.let {
-                                        div(+Styles.serverNoticeMessage) { +it }
-                                    }
+                                        alertTitle {
+                                            +serverNotice.title
+                                        }
 
-                                    serverNotice.stackTrace?.let {
-                                        pre(+Styles.serverNoticeStackTrace) { +it }
+                                        serverNotice.message?.let {
+                                            div(+Styles.serverNoticeMessage) { +it }
+                                        }
+
+                                        serverNotice.stackTrace?.let {
+                                            pre(+Styles.serverNoticeStackTrace) { +it }
+                                        }
                                     }
                                 }
                             }

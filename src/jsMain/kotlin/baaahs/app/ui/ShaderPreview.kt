@@ -28,7 +28,7 @@ import kotlin.collections.set
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
-    val sharedGlContext = useContext(appGlContext)?.sharedGlContext
+    val sharedGlContext = useContext(appGlContext).sharedGlContext
     val toolchain = props.toolchain ?: appContext.toolchain
 
     val canvasParent = ref<HTMLDivElement?> { null }
