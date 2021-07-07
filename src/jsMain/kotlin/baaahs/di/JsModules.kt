@@ -1,11 +1,15 @@
 package baaahs.di
 
-import baaahs.*
+import baaahs.JsMapperUi
+import baaahs.Mapper
+import baaahs.MapperUi
+import baaahs.MediaDevices
 import baaahs.admin.AdminClient
 import baaahs.browser.RealMediaDevices
 import baaahs.client.WebClient
 import baaahs.gl.RootToolchain
 import baaahs.model.Model
+import baaahs.monitor.MonitorUi
 import baaahs.net.Network
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
@@ -47,15 +51,10 @@ class JsWebClientModule(
     }
 }
 
-class JsMapperClientModule(
+class JsAdminClientModule(
     private val pinkyAddress: Network.Address
 ) : KModule {
     override fun getModule(): Module = module {
-        scope<AdminUi> {
-            scoped { get<Network>().link("admin") }
-            scoped { AdminUi(get(), pinkyAddress, get(), get()) }
-        }
-
         scope<MapperUi> {
             scoped { get<Network>().link("mapper") }
             scoped {
@@ -65,6 +64,11 @@ class JsMapperClientModule(
                     Mapper(get(), get(), it, get(), pinkyAddress, get())
                 }
             }
+        }
+
+        scope<MonitorUi> {
+            scoped { get<Network>().link("monitor") }
+            scoped { MonitorUi(get(), pinkyAddress, get(), get()) }
         }
     }
 }

@@ -4,6 +4,7 @@ import baaahs.client.WebClient
 import baaahs.di.*
 import baaahs.io.Fs
 import baaahs.model.Model
+import baaahs.monitor.MonitorUi
 import baaahs.sim.FakeNetwork
 import baaahs.sim.FixturesSimulator
 import baaahs.sim.Launcher
@@ -42,7 +43,7 @@ class SheepSimulator(val model: Model) {
             JsSimulatorModule(window.location.hostname, pixelDensity, pixelSpacing).getModule(),
             JsSimPinkyModule(pinkyLink).getModule(),
             JsWebClientModule(pinkyLink.myAddress).getModule(),
-            JsMapperClientModule(pinkyLink.myAddress).getModule(),
+            JsAdminClientModule(pinkyLink.myAddress).getModule(),
             JsSimBeatLinkPluginModule().getModule()
         )
     }.koin
@@ -66,7 +67,7 @@ class SheepSimulator(val model: Model) {
         val launcher = Launcher(document.getElementById("launcher")!!)
         launcher.add("Web UI") { createWebClientApp() }
         launcher.add("Mapper") { createMapperApp() }
-        launcher.add("Admin UI") { createAdminUiApp() }
+        launcher.add("Monitor") { createMonitorApp() }
 
         pinky.awaitMappingResultsLoaded() // Otherwise controllers might report in before they can be mapped.
         fixturesSimulator.launchControllers()
@@ -82,7 +83,7 @@ class SheepSimulator(val model: Model) {
 
     fun createWebClientApp(): WebClient = injector.createScope<WebClient>().get()
     fun createMapperApp(): JsMapperUi = injector.createScope<MapperUi>().get()
-    fun createAdminUiApp(): AdminUi = injector.createScope<AdminUi>().get()
+    fun createMonitorApp(): MonitorUi = injector.createScope<MonitorUi>().get()
 
     private suspend fun cleanUpBrowserStorage() {
         val fs = pinkyScope.get<Fs>()
