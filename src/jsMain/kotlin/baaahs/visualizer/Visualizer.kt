@@ -1,6 +1,6 @@
 package baaahs.visualizer
 
-import baaahs.JsMapperUi
+import baaahs.mapper.JsMapperUi
 import baaahs.model.Model
 import baaahs.util.Clock
 import baaahs.util.Framerate

@@ -1,6 +1,5 @@
 package baaahs.mapper
 
-import baaahs.MapperUi
 import baaahs.ui.xComponent
 import kotlinx.css.px
 import react.RBuilder

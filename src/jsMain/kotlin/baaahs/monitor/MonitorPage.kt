@@ -1,4 +1,4 @@
-package baaahs.admin
+package baaahs.monitor
 
 import baaahs.visualizer.Visualizer
 import org.w3c.dom.HTMLDivElement
@@ -8,7 +8,7 @@ import react.RProps
 import react.RState
 import react.dom.div
 
-class AdminPage(props: Props) : RComponent<AdminPage.Props, AdminPage.State>(props) {
+class MonitorPage(props: Props) : RComponent<MonitorPage.Props, MonitorPage.State>(props) {
     private val container = react.createRef<HTMLDivElement?>()
 
     override fun componentDidMount() {

@@ -1,6 +1,7 @@
-package baaahs
+package baaahs.monitor
 
-import baaahs.admin.AdminPage
+import baaahs.Pluggables
+import baaahs.document
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.sim.HostedWebApp
@@ -13,13 +14,13 @@ import org.w3c.dom.HTMLDivElement
 import react.ReactElement
 import react.createElement
 
-class AdminUi(
+class MonitorUi(
     network: Network,
     pinkyAddress: Network.Address,
     model: Model,
     clock: Clock = JsClock
 ) : HostedWebApp {
-    private val clientLink = network.link("admin")
+    private val clientLink = network.link("monitor")
     private val container = document.createElement("div") as HTMLDivElement
     private val visualizer = Visualizer(model, clock)
     private val visualizerListenerClient =
@@ -32,9 +33,9 @@ class AdminUi(
     }
 
     override fun render(): ReactElement {
-        return createElement(AdminPage::class.js, jsObject<AdminPage.Props> {
+        return createElement(MonitorPage::class.js, jsObject<MonitorPage.Props> {
             this.containerDiv = container
-            this.visualizer = this@AdminUi.visualizer
+            this.visualizer = this@MonitorUi.visualizer
         })
     }
 

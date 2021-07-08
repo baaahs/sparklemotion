@@ -1,6 +1,5 @@
 package baaahs.mapper
 
-import baaahs.MapperStatus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import react.*

@@ -17,7 +17,9 @@ import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.koin.core.qualifier.named
 import org.koin.dsl.koinApplication
 import java.io.FileNotFoundException
@@ -69,8 +71,8 @@ class PinkyMain(private val args: Args) {
             ktor.application.routing {
                 static {
                     resources("htdocs")
-                    route("admin") { default("htdocs/admin/index.html") }
                     route("mapper") { default("htdocs/mapper/index.html") }
+                    route("monitor") { default("htdocs/monitor/index.html") }
                     route("ui") { default("htdocs/ui/index.html") }
                     defaultResource("htdocs/ui-index.html")
                 }
@@ -99,8 +101,8 @@ class PinkyMain(private val args: Args) {
                         repoDir.resolve("$jsPackageDir/vendors.js.map").toFile())
 
                     files(jsResDir.toFile())
-                    route("admin") { default("admin/index.html") }
                     route("mapper") { default("mapper/index.html") }
+                    route("monitor") { default("monitor/index.html") }
                     route("ui") { default("ui/index.html") }
                     default("ui-index.html")
                 }
