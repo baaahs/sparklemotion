@@ -1,6 +1,5 @@
 package baaahs.mapper
 
-import baaahs.JsMapperUi
 import baaahs.admin.AdminClient
 import baaahs.app.ui.AllStyles
 import baaahs.app.ui.Styles

@@ -2,13 +2,16 @@ package baaahs
 
 import baaahs.DeadCodeEliminationDefeater.noDCE
 import baaahs.client.WebClient
+import baaahs.di.JsAdminClientModule
 import baaahs.di.JsBeatLinkPluginModule
-import baaahs.di.JsMapperClientModule
 import baaahs.di.JsPlatformModule
 import baaahs.di.JsWebClientModule
 import baaahs.jsx.sim.MosaicApp
+import baaahs.mapper.JsMapperUi
+import baaahs.mapper.MapperUi
 import baaahs.model.Model
 import baaahs.model.ObjModel
+import baaahs.monitor.MonitorUi
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
 import baaahs.plugin.beatlink.BeatSource
@@ -77,8 +80,8 @@ private fun launchUi(
             val simulator = SheepSimulator(model)
 
             val hostedWebApp = when (val app = queryParams["app"] ?: "UI") {
-                "Admin" -> simulator.createAdminUiApp()
                 "Mapper" -> simulator.createMapperApp()
+                "Monitor" -> simulator.createMonitorApp()
                 "UI" -> simulator.createWebClientApp()
                 else -> throw UnsupportedOperationException("unknown app $app")
             }
@@ -113,20 +116,20 @@ private fun launchUi(
             val koin = webAppInjector.koin
 
             when (mode) {
-                "Admin" -> {
-                    koin.loadModules(listOf(JsMapperClientModule(pinkyAddress).getModule()))
-//                    val adminApp = AdminUi(koin.get(), pinkyAddress, model)
-                    val adminApp = koin.createScope<AdminUi>().get<AdminUi>()
-                    adminApp.launch()
-                }
-
                 "Mapper" -> {
-                    koin.loadModules(listOf(JsMapperClientModule(pinkyAddress).getModule()))
+                    koin.loadModules(listOf(JsAdminClientModule(pinkyAddress).getModule()))
 
                     (model as? ObjModel)?.load()
 
                     val mapperUi = koin.createScope<MapperUi>().get<JsMapperUi>()
                     mapperUi.launch()
+                }
+
+                "Monitor" -> {
+                    koin.loadModules(listOf(JsAdminClientModule(pinkyAddress).getModule()))
+//                    val monitorApp = MonitorUi(koin.get(), pinkyAddress, model)
+                    val monitorApp = koin.createScope<MonitorUi>().get<MonitorUi>()
+                    monitorApp.launch()
                 }
 
                 "UI" -> {

@@ -1,12 +1,13 @@
-package baaahs
+package baaahs.mapper
 
+import baaahs.MediaDevices
 import baaahs.admin.AdminClient
+import baaahs.context2d
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
+import baaahs.getValue
 import baaahs.imaging.*
 import baaahs.imaging.Image
-import baaahs.mapper.MapperIndexView
-import baaahs.mapper.MapperIndexViewProps
 import baaahs.model.Model
 import baaahs.sim.HostedWebApp
 import baaahs.ui.Observable
@@ -14,6 +15,7 @@ import baaahs.ui.value
 import baaahs.util.Logger
 import baaahs.visualizer.Rotator
 import baaahs.visualizer.toVector3
+import baaahs.window
 import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -27,7 +29,6 @@ import react.createElement
 import react.dom.br
 import react.dom.i
 import three.js.*
-import three.js.Color
 import three_ext.CameraControls
 import three_ext.Float32BufferAttribute
 import three_ext.Matrix4

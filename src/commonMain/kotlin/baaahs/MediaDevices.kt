@@ -3,6 +3,7 @@ package baaahs
 import baaahs.imaging.Bitmap
 import baaahs.imaging.Dimen
 import baaahs.imaging.Image
+import baaahs.mapper.Uv
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
