@@ -1,0 +1,133 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Mapper.BrainToMap - sparklemotion</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.mapper</a>&nbsp;/&nbsp;<a href="../index.html">Mapper</a>&nbsp;/&nbsp;<a href="./index.html">BrainToMap</a><br/>
+<br/>
+<h1>BrainToMap</h1>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">BrainToMap</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">BrainToMap</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.Mapper.BrainToMap$<init>(baaahs.net.Network.Address, kotlin.String)/address">address</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.Mapper.BrainToMap$<init>(baaahs.net.Network.Address, kotlin.String)/brainId">brainId</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="address.html">address</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">address</span><span class="symbol">: </span><span class="identifier">Address</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="brain-id.html">brainId</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">brainId</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="change-region.html">changeRegion</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">changeRegion</span><span class="symbol">: </span><span class="identifier">Region</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="delta-image-name.html">deltaImageName</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">deltaImageName</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="expected-pixel-count.html">expectedPixelCount</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">expectedPixelCount</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="expected-pixel-count-or-default.html">expectedPixelCountOrDefault</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">expectedPixelCountOrDefault</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="guessed-model-surface.html">guessedModelSurface</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">guessedModelSurface</span><span class="symbol">: </span><span class="identifier">Surface</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="guessed-visible-surface.html">guessedVisibleSurface</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">guessedVisibleSurface</span><span class="symbol">: </span><span class="identifier">VisibleSurface</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="panel-delta-bitmap.html">panelDeltaBitmap</a></h4>
+</td>
+<td>
+<code><span class="keyword">var </span><span class="identifier">panelDeltaBitmap</span><span class="symbol">: </span><a href="../../../baaahs.imaging/-bitmap/index.html"><span class="identifier">Bitmap</span></a><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pixel-map-data.html">pixelMapData</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">pixelMapData</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html"><span class="identifier">MutableMap</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">PixelMapData</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pixel-shader.html">pixelShader</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">pixelShader</span><span class="symbol">: </span><a href="../../../baaahs.shaders/-pixel-brain-shader/index.html"><span class="identifier">PixelBrainShader</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pixel-shader-buffer.html">pixelShaderBuffer</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">pixelShaderBuffer</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="port.html">port</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">port</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="shade.html">shade</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">shade</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.Mapper.BrainToMap$shade(kotlin.Function0((baaahs.proto.BrainShaderMessage)))/shaderMessage">shaderMessage</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="../../../baaahs.proto/-brain-shader-message/index.html"><span class="identifier">BrainShaderMessage</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

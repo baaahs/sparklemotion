@@ -69,6 +69,7 @@ baaahs.libraries
 baaahs.mapper
 baaahs.model
 baaahs.models
+baaahs.monitor
 baaahs.net
 baaahs.plugin
 baaahs.plugin.beatlink

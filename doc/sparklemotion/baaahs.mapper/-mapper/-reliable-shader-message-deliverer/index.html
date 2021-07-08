@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Mapper.ReliableShaderMessageDeliverer - sparklemotion</title>
+<link rel="stylesheet" href="../../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.mapper</a>&nbsp;/&nbsp;<a href="../index.html">Mapper</a>&nbsp;/&nbsp;<a href="./index.html">ReliableShaderMessageDeliverer</a><br/>
+<br/>
+<h1>ReliableShaderMessageDeliverer</h1>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">ReliableShaderMessageDeliverer</span></code>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">ReliableShaderMessageDeliverer</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="outstanding.html">outstanding</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">outstanding</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pongs.html">pongs</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">pongs</span><span class="symbol">: </span><span class="identifier">Channel</span><span class="symbol">&lt;</span><a href="../../../baaahs.proto/-ping-message/index.html"><span class="identifier">PingMessage</span></a><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="await.html">await</a></h4>
+</td>
+<td>
+<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">await</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.Mapper.ReliableShaderMessageDeliverer$await(kotlin.Double, kotlin.Double)/retryAfterSeconds">retryAfterSeconds</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a>&nbsp;<span class="symbol">=</span>&nbsp;.25<span class="symbol">, </span><span class="identifier" id="baaahs.mapper.Mapper.ReliableShaderMessageDeliverer$await(kotlin.Double, kotlin.Double)/failAfterSeconds">failAfterSeconds</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html"><span class="identifier">Double</span></a>&nbsp;<span class="symbol">=</span>&nbsp;10.0<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="got-pong.html">gotPong</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">gotPong</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.Mapper.ReliableShaderMessageDeliverer$gotPong(baaahs.proto.PingMessage)/pingMessage">pingMessage</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.proto/-ping-message/index.html"><span class="identifier">PingMessage</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="send.html">send</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">send</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.Mapper.ReliableShaderMessageDeliverer$send(baaahs.mapper.Mapper.BrainToMap, baaahs.BrainShader.Buffer)/brainToMap">brainToMap</span><span class="symbol">:</span>&nbsp;<span class="identifier">BrainToMap</span><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.Mapper.ReliableShaderMessageDeliverer$send(baaahs.mapper.Mapper.BrainToMap, baaahs.BrainShader.Buffer)/buffer">buffer</span><span class="symbol">:</span>&nbsp;<span class="identifier">Buffer</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

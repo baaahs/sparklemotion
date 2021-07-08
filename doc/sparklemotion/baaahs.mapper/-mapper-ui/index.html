@@ -1,0 +1,215 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>MapperUi - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.mapper</a>&nbsp;/&nbsp;<a href="./index.html">MapperUi</a><br/>
+<br/>
+<h1>MapperUi</h1>
+<code><span class="keyword">interface </span><span class="identifier">MapperUi</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-camera-orientation/index.html">CameraOrientation</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">CameraOrientation</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-listener/index.html">Listener</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Listener</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-surface-viz/index.html">SurfaceViz</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">SurfaceViz</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-visible-surface/index.html">VisibleSurface</a></h4>
+</td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">VisibleSurface</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="devices.html">devices</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">var </span><span class="identifier">devices</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">Device</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="add-existing-session.html">addExistingSession</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">addExistingSession</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$addExistingSession(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="add-wireframe.html">addWireframe</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">addWireframe</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$addWireframe(baaahs.model.Model)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="close.html">close</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">close</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-all-surface-visualizers.html">getAllSurfaceVisualizers</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getAllSurfaceVisualizers</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">SurfaceViz</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get-visible-surfaces.html">getVisibleSurfaces</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">getVisibleSurfaces</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">VisibleSurface</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="intersecting-surface.html">intersectingSurface</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">intersectingSurface</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$intersectingSurface(baaahs.mapper.Uv, kotlin.collections.List((baaahs.mapper.MapperUi.VisibleSurface)))/uv">uv</span><span class="symbol">:</span>&nbsp;<a href="../-uv/index.html"><span class="identifier">Uv</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.MapperUi$intersectingSurface(baaahs.mapper.Uv, kotlin.collections.List((baaahs.mapper.MapperUi.VisibleSurface)))/visibleSurfaces">visibleSurfaces</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><span class="identifier">VisibleSurface</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">VisibleSurface</span><span class="symbol">?</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="listen.html">listen</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">listen</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$listen(baaahs.mapper.MapperUi.Listener)/listener">listener</span><span class="symbol">:</span>&nbsp;<span class="identifier">Listener</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="lock-ui.html">lockUi</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">lockUi</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">CameraOrientation</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="pause-for-user-interaction.html">pauseForUserInteraction</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">pauseForUserInteraction</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set-redo.html">setRedo</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">setRedo</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$setRedo(kotlin.coroutines.SuspendFunction0((kotlin.Unit)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="keyword">suspend </span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-base-image.html">showBaseImage</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showBaseImage</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$showBaseImage(baaahs.imaging.Bitmap)/bitmap">bitmap</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.imaging/-bitmap/index.html"><span class="identifier">Bitmap</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-candidates.html">showCandidates</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showCandidates</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$showCandidates(kotlin.collections.List((kotlin.Pair((baaahs.mapper.MapperUi.VisibleSurface, kotlin.Float)))))/orderedPanels">orderedPanels</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><span class="identifier">VisibleSurface</span><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-diff-image.html">showDiffImage</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showDiffImage</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$showDiffImage(baaahs.imaging.Bitmap, baaahs.MediaDevices.Region)/deltaBitmap">deltaBitmap</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.imaging/-bitmap/index.html"><span class="identifier">Bitmap</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.MapperUi$showDiffImage(baaahs.imaging.Bitmap, baaahs.MediaDevices.Region)/changeRegion">changeRegion</span><span class="symbol">:</span>&nbsp;<span class="identifier">Region</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-live-cam-image.html">showLiveCamImage</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showLiveCamImage</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$showLiveCamImage(baaahs.imaging.Image, baaahs.MediaDevices.Region)/image">image</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.imaging/-image/index.html"><span class="identifier">Image</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.MapperUi$showLiveCamImage(baaahs.imaging.Image, baaahs.MediaDevices.Region)/changeRegion">changeRegion</span><span class="symbol">:</span>&nbsp;<span class="identifier">Region</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-message.html">showMessage</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showMessage</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$showMessage(kotlin.String)/message">message</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-message2.html">showMessage2</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showMessage2</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$showMessage2(kotlin.String)/message">message</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-panel-mask.html">showPanelMask</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showPanelMask</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$showPanelMask(baaahs.imaging.Bitmap, baaahs.MediaDevices.Region)/bitmap">bitmap</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.imaging/-bitmap/index.html"><span class="identifier">Bitmap</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.MapperUi$showPanelMask(baaahs.imaging.Bitmap, baaahs.MediaDevices.Region)/changeRegion">changeRegion</span><span class="symbol">:</span>&nbsp;<span class="identifier">Region</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-snapshot.html">showSnapshot</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showSnapshot</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$showSnapshot(baaahs.imaging.Bitmap)/bitmap">bitmap</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.imaging/-bitmap/index.html"><span class="identifier">Bitmap</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="show-stats.html">showStats</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">showStats</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.MapperUi$showStats(kotlin.Int, kotlin.Int, kotlin.Int)/total">total</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.MapperUi$showStats(kotlin.Int, kotlin.Int, kotlin.Int)/mapped">mapped</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.MapperUi$showStats(kotlin.Int, kotlin.Int, kotlin.Int)/visible">visible</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="unlock-ui.html">unlockUi</a></h4>
+</td>
+<td>
+<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">unlockUi</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Inheritors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="../-js-mapper-ui/index.html">JsMapperUi</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">JsMapperUi</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-observable/index.html"><span class="identifier">Observable</span></a><span class="symbol">, </span><a href="./index.html"><span class="identifier">MapperUi</span></a><span class="symbol">, </span><a href="../../baaahs.sim/-hosted-web-app/index.html"><span class="identifier">HostedWebApp</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

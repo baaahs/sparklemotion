@@ -1,0 +1,197 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>Mapper - sparklemotion</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.mapper</a>&nbsp;/&nbsp;<a href="./index.html">Mapper</a><br/>
+<br/>
+<h1>Mapper</h1>
+<code><span class="keyword">class </span><span class="identifier">Mapper</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">UdpListener</span><span class="symbol">, </span><span class="identifier">Listener</span><span class="symbol">, </span><span class="identifier">CoroutineScope</span></code>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-brain-to-map/index.html">BrainToMap</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">BrainToMap</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-delivery-attempt/index.html">DeliveryAttempt</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">DeliveryAttempt</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-facade/index.html">Facade</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Facade</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-facade/index.html"><span class="identifier">Facade</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-pixel-map-data/index.html">PixelMapData</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">PixelMapData</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-reliable-shader-message-deliverer/index.html">ReliableShaderMessageDeliverer</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">ReliableShaderMessageDeliverer</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="-session/index.html">Session</a></h4>
+</td>
+<td>
+<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Session</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Exceptions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-timeout-exception/index.html">TimeoutException</a></h4>
+</td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">TimeoutException</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Exception.html"><span class="identifier">Exception</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<code><span class="identifier">Mapper</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.mapper.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.mapper.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.mapper.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/mapperUi">mapperUi</span><span class="symbol">:</span>&nbsp;<a href="../-mapper-ui/index.html"><span class="identifier">MapperUi</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.mapper.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/mediaDevices">mediaDevices</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-media-devices/index.html"><span class="identifier">MediaDevices</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.mapper.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/pinkyAddress">pinkyAddress</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.mapper.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/clock">clock</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.util/-clock/index.html"><span class="identifier">Clock</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.Mapper$<init>(baaahs.net.Network, baaahs.model.Model, baaahs.mapper.MapperUi, baaahs.MediaDevices, baaahs.net.Network.Address, baaahs.util.Clock, kotlinx.coroutines.CoroutineScope)/mapperScope">mapperScope</span><span class="symbol">:</span>&nbsp;<span class="identifier">CoroutineScope</span>&nbsp;<span class="symbol">=</span>&nbsp;CoroutineScope(Dispatchers.Main)<span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="camera.html">camera</a></h4>
+</td>
+<td>
+<code><span class="keyword">lateinit</span> <span class="keyword">var </span><span class="identifier">camera</span><span class="symbol">: </span><span class="identifier">Camera</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="load-mapping-session.html">loadMappingSession</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">loadMappingSession</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.Mapper$loadMappingSession(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-close.html">onClose</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onClose</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-launch.html">onLaunch</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onLaunch</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-pause.html">onPause</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onPause</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-start.html">onStart</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onStart</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="on-stop.html">onStop</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">onStop</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="receive.html">receive</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">receive</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.Mapper$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/fromAddress">fromAddress</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.Mapper$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/fromPort">fromPort</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.mapper.Mapper$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="start.html">start</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">start</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="start-new-session.html">startNewSession</a></h4>
+</td>
+<td>
+<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">startNewSession</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="stringify.html">stringify</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte/index.html"><span class="identifier">Byte</span></a><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">stringify</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="use-camera.html">useCamera</a></h4>
+</td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">useCamera</span><span class="symbol">(</span><span class="identifier" id="baaahs.mapper.Mapper$useCamera(baaahs.MediaDevices.Device)/selectedDevice">selectedDevice</span><span class="symbol">:</span>&nbsp;<span class="identifier">Device</span><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Companion Object Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="logger.html">logger</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">logger</span><span class="symbol">: </span><a href="../../baaahs.util/-logger/index.html"><span class="identifier">Logger</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="mapper-stats.html">mapperStats</a></h4>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">mapperStats</span><span class="symbol">: </span><a href="../-mapper-stats/index.html"><span class="identifier">MapperStats</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

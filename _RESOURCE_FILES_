@@ -1,5 +1,4 @@
 .nojekyll
-admin/index.html
 baaahs-model.obj
 baaahs-panel-info.txt
 baaahs/shows/AcidAtTheDisco.glsl
@@ -81,6 +80,7 @@ fonts/press-start-2p-v8-latin-regular.woff2
 index.html
 mapper-index.html
 mapper/index.html
+monitor/index.html
 normalize.css
 react-mosaic-component.css
 shader-libraries/built-in/Brightness.glsl
