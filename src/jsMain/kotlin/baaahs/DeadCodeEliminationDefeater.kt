@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.sim.ui.Views
+
 object DeadCodeEliminationDefeater {
     // Protection from dead code elimination; this method is never actually called.
     fun noDCE() {
@@ -8,6 +10,7 @@ object DeadCodeEliminationDefeater {
         baaahs.sim.ui.GeneratedGlslPalette(nuffin())
         baaahs.sim.ui.WebClientWindow(nuffin())
         baaahs.visualizer.ui.VisualizerPanel(nuffin())
+        Views.webClientWindow
     }
 
     @Suppress("UNCHECKED_CAST")
