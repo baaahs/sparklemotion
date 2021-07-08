@@ -89,12 +89,10 @@ class GlslParser {
 
         fun checkForMacro(value: String, parseState: ParseState): ParseState? {
             val macro = macros[value]
-            return if (macro == null) {
-                null
-            } else if (macro.params == null) {
-                parse(macro.replacement.trim(), parseState, freezeLineNumber = true)
-            } else {
-                ParseState.MacroExpansion(this, parseState, macro)
+            return when {
+                macro == null -> null
+                macro.params == null -> parse(macro.replacement.trim(), parseState, freezeLineNumber = true)
+                else -> ParseState.MacroExpansion(this, parseState, macro)
             }
         }
 
@@ -265,7 +263,8 @@ class GlslParser {
             fun asVarOrNull(): GlslCode.GlslVar? {
                 val text = textAsString
 
-                return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(\\s*\\[\\s*\\d+\\s*])?(\\s*=.*)?;", RegexOption.MULTILINE)
+                @Suppress("RegExpRedundantEscape") // Otherwise fails on JS with "lone quantifier brackets".
+                return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(\\s*\\[\\s*\\d+\\s*\\])?(\\s*=.*)?;", RegexOption.MULTILINE)
                     .find(text.trim())?.let {
                         val (qualifier, type, name, arraySpec, initExpr) = it.destructured
                         var (isConst, isUniform, isVarying) = arrayOf(false, false, false)
@@ -277,7 +276,7 @@ class GlslParser {
                         val (trimmedText, trimmedLineNumber) = chomp(text, lineNumber)
                         GlslCode.GlslVar(
                             name, context.findType(type), trimmedText, isConst, isUniform, isVarying,
-                            if (initExpr.isEmpty()) null else initExpr, trimmedLineNumber, comments
+                            initExpr.ifEmpty { null }, trimmedLineNumber, comments
                         )
                     }
             }
@@ -343,9 +342,11 @@ class GlslParser {
 
             fun asStructOrNull(): GlslCode.GlslStruct? {
                 val text = textAsString
-                return Regex("^(uniform\\s+)?struct\\s+(\\w+)\\s+\\{([^}]+)}(?:\\s+(\\w+)?)?;\$", RegexOption.MULTILINE)
-                    .find(text.trim())?.let {
-                        val (uniform, name, members, varName) = it.destructured
+
+                @Suppress("RegExpRedundantEscape") // Otherwise fails on JS with "lone quantifier brackets".
+                return Regex("^(uniform\\s+)?struct\\s+(\\w+)\\s+\\{([^}]+)\\}(?:\\s+(\\w+)?)?;\$", RegexOption.MULTILINE)
+                    .find(text.trim())?.let { match ->
+                        val (uniform, name, members, varName) = match.destructured
                         val fields = mutableMapOf<String, GlslType>()
 
                         members.replace(Regex("//.*"), "")
@@ -360,7 +361,7 @@ class GlslParser {
                                     else -> throw AnalysisException("illegal struct member \"$member\"", lineNumber)
                                 }
                             }
-                        val varNameOrNull = if (varName.isBlank()) null else varName
+                        val varNameOrNull = varName.ifBlank { null }
                         GlslCode.GlslStruct(
                             name, fields, varNameOrNull, uniform.isNotBlank(),
                             text, lineNumber, comments
@@ -559,8 +560,7 @@ class GlslParser {
 
                 val str = textAsString.trim()
                 val args = str.split(Regex("\\s+")).toMutableList()
-                val directive = args.removeFirst()
-                when (directive) {
+                when (args.removeFirst()) {
                     "define" -> throw IllegalStateException("This should be handled by MacroDeclaration.")
                     "undef" -> context.doUndef(args)
                     "ifdef" -> context.doIfdef(args)
