@@ -1,13 +1,13 @@
 package baaahs.di
 
-import baaahs.JsMapperUi
-import baaahs.Mapper
-import baaahs.MapperUi
 import baaahs.MediaDevices
 import baaahs.admin.AdminClient
 import baaahs.browser.RealMediaDevices
 import baaahs.client.WebClient
 import baaahs.gl.RootToolchain
+import baaahs.mapper.JsMapperUi
+import baaahs.mapper.Mapper
+import baaahs.mapper.MapperUi
 import baaahs.model.Model
 import baaahs.monitor.MonitorUi
 import baaahs.net.Network
