@@ -17,3 +17,7 @@ val WebClientWindow = xComponent<WebClientWindowProps>("WebClientWindow") { prop
 external interface WebClientWindowProps : RProps {
     var hostedWebApp: HostedWebApp
 }
+
+object Views {
+    val webClientWindow = WebClientWindow
+}

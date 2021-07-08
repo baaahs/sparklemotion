@@ -59,7 +59,7 @@ const MosaicUI = (props) => {
           let windowType = WINDOWS_BY_TYPE[type];
           let childElement = (windowType != null)
               ? React.createElement(windowType)
-              : React.createElement(baaahs.sim.ui.WebClientWindow, {hostedWebApp: props.hostedWebApp});
+              : React.createElement(baaahs.sim.ui.Views.webClientWindow, {hostedWebApp: props.hostedWebApp});
 
           return (
             <MosaicWindow
