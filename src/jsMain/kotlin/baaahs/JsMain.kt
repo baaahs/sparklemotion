@@ -7,6 +7,8 @@ import baaahs.di.JsBeatLinkPluginModule
 import baaahs.di.JsPlatformModule
 import baaahs.di.JsWebClientModule
 import baaahs.jsx.sim.MosaicApp
+import baaahs.mapper.JsMapperUi
+import baaahs.mapper.MapperUi
 import baaahs.model.Model
 import baaahs.model.ObjModel
 import baaahs.monitor.MonitorUi

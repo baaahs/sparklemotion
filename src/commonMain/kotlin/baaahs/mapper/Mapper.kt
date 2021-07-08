@@ -1,5 +1,6 @@
-package baaahs
+package baaahs.mapper
 
+import baaahs.*
 import baaahs.api.ws.WebSocketClient
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector2F
@@ -8,8 +9,6 @@ import baaahs.imaging.Bitmap
 import baaahs.imaging.Dimen
 import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
-import baaahs.mapper.ImageProcessing
-import baaahs.mapper.MappingSession
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp

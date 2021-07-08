@@ -3,6 +3,8 @@ package baaahs
 import baaahs.client.WebClient
 import baaahs.di.*
 import baaahs.io.Fs
+import baaahs.mapper.JsMapperUi
+import baaahs.mapper.MapperUi
 import baaahs.model.Model
 import baaahs.monitor.MonitorUi
 import baaahs.sim.FakeNetwork
