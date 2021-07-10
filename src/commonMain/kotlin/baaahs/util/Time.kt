@@ -1,5 +1,6 @@
 package baaahs.util
 
+import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
 typealias Time = Double
@@ -10,3 +11,4 @@ interface Clock {
 }
 
 fun Time.asMillis(): Long = (this * 1000).roundToLong()
+fun Float.asMillis(): Int = (this * 1000).roundToInt()
