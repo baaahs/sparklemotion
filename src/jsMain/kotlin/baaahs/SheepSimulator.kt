@@ -33,6 +33,7 @@ class SheepSimulator(val model: Model) {
     val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
 
     val pinkyLink = network.link("pinky")
+    val pinkySettings = PinkySettings()
 
     val injector = koinApplication {
         logger(KoinLogger())
@@ -40,7 +41,7 @@ class SheepSimulator(val model: Model) {
         modules(
             JsSimPlatformModule(network, model).getModule(),
             JsSimulatorModule(window.location.hostname, pixelDensity, pixelSpacing).getModule(),
-            JsSimPinkyModule(pinkyLink).getModule(),
+            JsSimPinkyModule(pinkyLink, pinkySettings).getModule(),
             JsWebClientModule(pinkyLink.myAddress).getModule(),
             JsMapperClientModule(pinkyLink.myAddress).getModule(),
             JsSimBeatLinkPluginModule().getModule()

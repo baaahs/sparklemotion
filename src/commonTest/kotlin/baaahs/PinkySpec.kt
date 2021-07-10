@@ -61,7 +61,8 @@ object PinkySpec : Spek({
                 link = link,
                 httpServer = httpServer,
                 pubSub = pubSub,
-                dmxManager = DmxManager(SimDmxDriver(fakeDmxUniverse), pubSub, fakeDmxUniverse)
+                dmxManager = DmxManager(SimDmxDriver(fakeDmxUniverse), pubSub, fakeDmxUniverse),
+                PinkySettings()
             )
         }
         val pinkyLink by value { network.links.only() }

@@ -170,8 +170,6 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     fun render() {
         if (stopRendering) return
 
-        requestAnimationFrame()
-
         prerenderListeners.forEach { value -> value.invoke() }
 
         mouse?.let { mouseClick ->
@@ -204,12 +202,12 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         facade.framerate.elapsed((clock.now() - startTime).asMillis().toInt())
 
         frameListeners.forEach { f -> f.onFrameReady(scene, camera) }
+
+        requestAnimationFrame()
     }
 
     private fun requestAnimationFrame() {
-        window.setTimeout(fun() {
-            window.requestAnimationFrame { render() }
-        }, DEFAULT_REFRESH_DELAY)
+        window.requestAnimationFrame { render() }
     }
 
 // vector.applyMatrix(object.matrixWorld).project(camera) to get 2d x,y coord

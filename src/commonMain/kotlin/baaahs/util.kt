@@ -1,11 +1,14 @@
 package baaahs
 
 import baaahs.util.Clock
+import baaahs.util.Logger
 import baaahs.util.asMillis
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.yield
 import kotlin.math.PI
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlin.reflect.KProperty
 
@@ -107,3 +110,20 @@ fun debugger(arg: String = "?") {
 
 // Workaround for https://youtrack.jetbrains.com/issue/KT-41471.
 operator fun <T> Lazy<T>.getValue(thisRef: Any?, property: KProperty<*>) = value
+
+suspend fun throttle(targetRatePerSecond: Float, logger: Logger? = null, block: suspend () -> Unit) {
+    val startTime = internalTimerClock.now()
+
+    block()
+
+    val endTime = internalTimerClock.now()
+    val elapsed = endTime - startTime
+    val target = 1f / targetRatePerSecond
+    val delayMs = ((target - elapsed) * 1000).roundToInt()
+    if (delayMs <= 0) {
+        logger?.warn { "Throttled block took ${elapsed.asMillis()}ms; target is ${target.asMillis()}ms." }
+        yield()
+    } else {
+        delay(delayMs.toLong())
+    }
+}

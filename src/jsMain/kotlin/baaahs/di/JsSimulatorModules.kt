@@ -3,6 +3,7 @@ package baaahs.di
 import baaahs.FirmwareDaddy
 import baaahs.MediaDevices
 import baaahs.PermissiveFirmwareDaddy
+import baaahs.PinkySettings
 import baaahs.browser.RealMediaDevices
 import baaahs.dmx.Dmx
 import baaahs.gl.GlBase
@@ -70,7 +71,8 @@ class JsSimBeatLinkPluginModule : BeatLinkPluginModule {
 }
 
 class JsSimPinkyModule(
-    private val pinkyLink_: Network.Link
+    private val pinkyLink_: Network.Link,
+    private val pinkySettings_: PinkySettings
 ) : PinkyModule {
     override val Scope.fs: Fs
         get() = get(named(SimulatorModule.Qualifier.PinkyFs))
@@ -88,4 +90,6 @@ class JsSimPinkyModule(
         get() = SimDmxDriver(get(named("Fallback")))
     override val Scope.renderManager: RenderManager
         get() = RenderManager(get()) { GlBase.manager.createContext() }
+    override val Scope.pinkySettings: PinkySettings
+        get() = pinkySettings_
 }
