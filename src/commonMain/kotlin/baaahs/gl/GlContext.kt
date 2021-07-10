@@ -11,11 +11,12 @@ import com.danielgergely.kgl.*
 abstract class GlContext(
     internal val kgl: Kgl,
     val glslVersion: String,
-    var checkForErrors: Boolean = false,
+    var checkForErrors: Boolean = true,
     val state: State = State()
 ) {
     init { logger.debug { "Created ${this::class.simpleName}" } }
     abstract fun <T> runInContext(fn: () -> T): T
+    abstract suspend fun <T> asyncRunInContext(fn: suspend () -> T): T
 
     private val maxTextureUnit = 31 // TODO: should be gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS)
 

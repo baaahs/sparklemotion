@@ -16,14 +16,19 @@ class RenderManager(
     private val createContext: () -> GlContext
 ) {
     private val renderEngines = model.allEntities.map { it.deviceType }.distinct()
-        .associateWith { deviceType -> ModelRenderEngine(createContext(), model, deviceType) }
+        .associateWith { deviceType ->
+            val gl = createContext()
+            ModelRenderEngine(
+                gl, model, deviceType, resultDeliveryStrategy = pickResultDeliveryStrategy(gl)
+            )
+        }
 
     fun getEngineFor(deviceType: DeviceType): ModelRenderEngine =
         renderEngines.getBang(deviceType, "render engine")
 
-    fun draw() {
+    suspend fun draw() {
         // If there are multiple RenderEngines, let them parallelize the render step...
-        renderEngines.values.forEach { it.draw(finish = false) }
+        renderEngines.values.forEach { it.draw() }
 
         // ... before transferring results back to CPU memory.
         renderEngines.values.forEach { it.finish() }

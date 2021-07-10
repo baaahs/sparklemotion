@@ -6,7 +6,7 @@ object Versions {
     const val koin = "3.0.2"
 
     // GL:
-    const val kgl = "0.3-baaahs"
+    const val kgl = "0.3-baaahs.1"
     const val jogl = "2.3.2"
     const val lwjgl = "3.2.3"
 

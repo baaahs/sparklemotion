@@ -42,7 +42,7 @@ class RenderEngineTest {
     fun setUp() {
         if (glslAvailable()) {
             glContext = GlBase.manager.createContext()
-            renderEngine = ModelRenderEngine(glContext, TestModel, PixelArrayDevice)
+            renderEngine = ModelRenderEngine(glContext, TestModel, PixelArrayDevice,)
             fakeShowPlayer = FakeShowPlayer()
         }
     }

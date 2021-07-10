@@ -47,7 +47,6 @@ repositories {
     maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://jitpack.io")
-    maven("https://dl.bintray.com/fabmax/kool")
     maven("https://raw.githubusercontent.com/baaahs/kgl/mvnrepo")
     maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/")
     maven("https://dl.bintray.com/subroh0508/maven") // for material-ui

@@ -22,6 +22,11 @@ class FakeGlContext(internal val fakeKgl: FakeKgl = FakeKgl()) : GlContext(fakeK
         try { return fn() } finally { fakeKgl.nestLevel-- }
     }
 
+    override suspend fun <T> asyncRunInContext(fn: suspend () -> T): T {
+        ++fakeKgl.nestLevel
+        try { return fn() } finally { fakeKgl.nestLevel-- }
+    }
+
     fun getTextureConfig(textureUnit: Int): FakeKgl.TextureConfig {
         return fakeKgl.getTextureConfig(textureUnit)
             ?: error("no texture bound on unit $textureUnit")
@@ -467,7 +472,6 @@ open class StubGlslProgram : GlslProgram {
     override val fragShader: CompiledShader get() = TODO("not implemented")
     override val vertexAttribLocation: Int get() = TODO("not implemented")
     override fun setResolution(x: Float, y: Float): Unit = TODO("not implemented")
-    override fun setRasterOffset(left: Int, bottom: Int): Unit = TODO("not implemented")
     override fun aboutToRenderFrame(): Unit = TODO("not implemented")
     override fun aboutToRenderFixture(renderTarget: RenderTarget): Unit = TODO("not implemented")
     override fun getUniform(name: String): Uniform? = TODO("not implemented")
