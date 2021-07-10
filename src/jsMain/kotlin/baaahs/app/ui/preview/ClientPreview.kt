@@ -78,7 +78,7 @@ class ClientPreview(
         }
     }
 
-    private fun drawAndSendFrame() {
+    private suspend fun drawAndSendFrame() {
         checkForPatchSetChange()
         renderManager.draw()
         fixtureManager.sendFrame()

@@ -34,7 +34,7 @@ class PreviewRenderEngine(
     override fun onBind(engineFeed: EngineFeed) {
     }
 
-    override fun beforeFrame() {
+    override fun beforeRender() {
     }
 
     override fun bindResults() {
@@ -56,7 +56,10 @@ class PreviewRenderEngine(
         }
     }
 
-    override fun afterFrame() {
+    override fun afterRender() {
+    }
+
+    override suspend fun awaitResults() {
     }
 
     override fun onRelease() {

@@ -38,7 +38,7 @@ object ModelRenderEngineSpec : Spek({
         val pixelDataSource by value { PerPixelDataSourceForTest(updateMode) }
         val dataSource by value<DataSource> { fixtureDataSource }
         val deviceType by value { DeviceTypeForTest(dataSource) }
-        val renderEngine by value { ModelRenderEngine(gl, TestModel, deviceType, minTextureWidth = 1) }
+        val renderEngine by value { ModelRenderEngine(gl, TestModel, deviceType, minTextureWidth = 1,) }
         val texture by value { gl.textures.only("texture") }
 
         context("when engine has just been started") {

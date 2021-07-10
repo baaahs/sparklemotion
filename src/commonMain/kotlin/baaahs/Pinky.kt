@@ -236,7 +236,7 @@ class Pinky(
 //        }
     }
 
-    internal fun renderAndSendNextFrame() {
+    internal suspend fun renderAndSendNextFrame() {
         stageManager.renderAndSendNextFrame()
     }
 
