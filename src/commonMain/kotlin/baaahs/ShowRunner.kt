@@ -34,7 +34,7 @@ class ShowRunner(
     }
 
     /** @return `true` if a frame was rendered and should be sent to fixtures. */
-    fun renderNextFrame(): Boolean {
+    suspend fun renderNextFrame(): Boolean {
         return if (fixtureManager.hasActiveRenderPlan()) {
             renderManager.draw()
             true

@@ -98,7 +98,7 @@ object PinkySpec : Spek({
             beforeEachTest {
                 pinky.receive(clientAddress, clientPort, brainHelloMessage.toBytes())
                 pinky.updateFixtures()
-                pinky.renderAndSendNextFrame()
+                doRunBlocking { pinky.renderAndSendNextFrame() }
             }
 
             describe("which are unmapped") {
@@ -151,12 +151,12 @@ object PinkySpec : Spek({
 
                     context("then when the brain re-sends its hello with its newfound mapping") {
                         it("should cause no changes") {
-                            pinky.renderAndSendNextFrame()
+                            doRunBlocking { pinky.renderAndSendNextFrame() }
 
                             pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
                             pinky.updateFixtures()
-                            pinky.renderAndSendNextFrame()
-                            pinky.renderAndSendNextFrame()
+                            doRunBlocking { pinky.renderAndSendNextFrame() }
+                            doRunBlocking { pinky.renderAndSendNextFrame() }
                             expect(renderTargets.size).toBe(1)
                             val fixture = renderTargets.keys.only()
                             expect(fixture.modelEntity).toBe(panel17)
@@ -165,30 +165,30 @@ object PinkySpec : Spek({
 
                     context("in the case of a brain race condition") {
                         it("should notify show") {
-                            pinky.renderAndSendNextFrame()
+                            doRunBlocking { pinky.renderAndSendNextFrame() }
 
                             // Remap to 17L...
                             pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
                             // ... but a packet also made it through identifying brain1 as unmapped.
                             pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
                             pinky.updateFixtures()
-                            pinky.renderAndSendNextFrame()
-                            pinky.renderAndSendNextFrame()
+                            doRunBlocking { pinky.renderAndSendNextFrame() }
+                            doRunBlocking { pinky.renderAndSendNextFrame() }
 
                             // Pinky should have sent out another BrainMappingMessage message; todo: verify that!
 
                             pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
                             pinky.updateFixtures()
-                            pinky.renderAndSendNextFrame()
-                            pinky.renderAndSendNextFrame()
+                            doRunBlocking { pinky.renderAndSendNextFrame() }
+                            doRunBlocking { pinky.renderAndSendNextFrame() }
 
                             expect(renderTargets.size).toBe(1)
                             expect(renderTargets.keys.only().modelEntity).toBe(panel17)
 
                             pinky.receive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
                             pinky.updateFixtures()
-                            pinky.renderAndSendNextFrame()
-                            pinky.renderAndSendNextFrame()
+                            doRunBlocking { pinky.renderAndSendNextFrame() }
+                            doRunBlocking { pinky.renderAndSendNextFrame() }
                             expect(renderTargets.size).toBe(1)
                             val fixture = renderTargets.keys.only()
                             expect(fixture.modelEntity).toBe(panel17)

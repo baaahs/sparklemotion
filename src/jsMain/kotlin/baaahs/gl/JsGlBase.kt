@@ -4,7 +4,8 @@ import baaahs.document
 import baaahs.window
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglJs
-import com.danielgergely.kgl.WebGL2RenderingContext
+import org.khronos.webgl.ArrayBufferView
+import org.khronos.webgl.WebGLObject
 import org.w3c.dom.HTMLCanvasElement
 
 actual object GlBase {
@@ -53,6 +54,7 @@ actual object GlBase {
         private val checkedExtensions = hashSetOf<String>()
 
         override fun <T> runInContext(fn: () -> T): T = fn()
+        override suspend fun <T> asyncRunInContext(fn: suspend () -> T): T = fn()
 
         override fun ensureResultBufferCanContainFloats() {
             // For RGBA32F in FloatXyzwParam:
@@ -72,3 +74,24 @@ actual object GlBase {
         }
     }
 }
+
+abstract external class WebGL2RenderingContext : com.danielgergely.kgl.WebGL2RenderingContext {
+    fun fenceSync(condition: Int, flags: Int): WebGLSync
+    fun clientWaitSync(sync: WebGLSync, flags: Int, timeout: Number): Int
+    fun deleteSync(sync: WebGLSync): WebGLSync
+    fun readPixels(x: Int, y: Int, width: Int, height: Int, format: Int, type: Int, offset: Int)
+    fun getBufferSubData(target: Int, srcByteOffset: Int, dstData: ArrayBufferView, dstOffset: Int, length: Int)
+
+    companion object {
+        val PIXEL_PACK_BUFFER: Int
+        val SYNC_GPU_COMMANDS_COMPLETE: Int
+        val ALREADY_SIGNALED: Int
+        val TIMEOUT_EXPIRED: Int
+        val CONDITION_SATISFIED: Int
+        val WAIT_FAILED: Int
+        val STATIC_READ: Int
+        val STREAM_READ: Int
+    }
+}
+
+external class WebGLSync : WebGLObject

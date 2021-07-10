@@ -20,7 +20,8 @@ class ModelRenderEngine(
     gl: GlContext,
     private val modelInfo: ModelInfo,
     private val deviceType: DeviceType,
-    private val minTextureWidth: Int = 16
+    private val minTextureWidth: Int = 16,
+    private val resultDeliveryStrategy: ResultDeliveryStrategy = SyncResultDeliveryStrategy()
 ) : RenderEngine(gl) {
     private val renderTargetsToAdd: MutableList<FixtureRenderTarget> = mutableListOf()
     private val renderTargetsToRemove: MutableList<FixtureRenderTarget> = mutableListOf()
@@ -91,8 +92,9 @@ class ModelRenderEngine(
         }
     }
 
-    override fun beforeFrame() {
+    override fun beforeRender() {
         incorporateNewFixtures()
+        resultDeliveryStrategy.beforeRender()
     }
 
     override fun bindResults() {
@@ -109,12 +111,12 @@ class ModelRenderEngine(
         arrangement.render()
     }
 
-    override fun afterFrame() {
-        copyResultsToCpuBuffer()
+    override fun afterRender() {
+        resultDeliveryStrategy.afterRender(frameBuffer, resultBuffers)
     }
 
-    private fun copyResultsToCpuBuffer() {
-        resultBuffers.forEach { it.afterFrame(frameBuffer) }
+    override suspend fun awaitResults() {
+        resultDeliveryStrategy.awaitResults(frameBuffer, resultBuffers)
     }
 
     // This must be run from within a GL context.
