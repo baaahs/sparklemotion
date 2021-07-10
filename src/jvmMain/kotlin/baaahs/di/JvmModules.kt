@@ -73,6 +73,8 @@ class JvmPinkyModule : PinkyModule {
         get() = runBlocking(get(named("PinkyContext"))) {
             RenderManager(get()) { GlBase.manager.createContext() }
         }
+    override val Scope.pinkySettings: PinkySettings
+        get() = PinkySettings()
 }
 
 class JvmBeatLinkPluginModule(private val args: PinkyMain.Args) : BeatLinkPluginModule {
