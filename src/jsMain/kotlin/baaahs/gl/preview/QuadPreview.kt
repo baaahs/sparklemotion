@@ -1,12 +1,11 @@
 package baaahs.gl.preview
 
-import baaahs.gl.GlContext
+import baaahs.gl.GlBase
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.PreviewRenderEngine
-import baaahs.window
 
 class QuadPreview(
-    gl: GlContext,
+    private val gl: GlBase.JsGlContext,
     private var width: Int,
     private var height: Int,
     private val preRenderCallback: ((QuadPreview) -> Unit)? = null
@@ -39,20 +38,13 @@ class QuadPreview(
 
         preRenderCallback?.invoke(this)
         renderEngine.render()
-        window.requestAnimationFrame { render() }
+
+        gl.requestAnimationFrame { render() }
     }
 
     override fun resize(width: Int, height: Int) {
         this.width = width
         this.height = height
         renderEngine.onResize(width, height)
-    }
-
-    override fun rasterOffsetChanged(left: Int, bottom: Int) {
-        if (offsetLeft != left || offsetBottom != bottom) {
-            renderEngine.onRasterOffsetChange(left, bottom)
-            offsetLeft = left
-            offsetBottom = bottom
-        }
     }
 }

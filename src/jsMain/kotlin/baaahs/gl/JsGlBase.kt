@@ -60,8 +60,8 @@ actual object GlBase {
         }
 
         /** Creates a related context with shared state and the given Kgl. */
-        fun subContext(kgl: Kgl): JsGlContext {
-            return JsGlContext(canvas, kgl, glslVersion, webgl, checkForErrors, state)
+        open fun requestAnimationFrame(callback: (Double) -> Unit) {
+            window.requestAnimationFrame(callback)
         }
 
         private fun ensureExtension(name: String) {

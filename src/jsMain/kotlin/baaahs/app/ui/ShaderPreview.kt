@@ -67,13 +67,13 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         val preview = helper.bootstrap(appContext.webClient.model, preRenderHook)
         gl = preview.renderEngine.gl
 
-        val intersectionObserver = IntersectionObserver { entries ->
+        val intersectionObserver = IntersectionObserver(callback = { entries ->
             if (entries.any { it.isIntersecting }) {
                 preview.start()
             } else {
                 preview.stop()
             }
-        }
+        })
         intersectionObserver.observe(previewContainer)
 
         shaderPreview = preview

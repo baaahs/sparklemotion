@@ -41,20 +41,13 @@ data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : Data
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 val offsetUniformId = "ds_${id}_offset"
                 override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                    object : ProgramFeed, GlslProgram.RasterOffsetListener {
+                    object : ProgramFeed {
                         private val uniform = glslProgram.getUniform(offsetUniformId)
                         override val isValid: Boolean = uniform != null
 
-                        var left = 0
-                        var bottom = 0
-
-                        override fun onRasterOffset(left: Int, bottom: Int) {
-                            this.left = left
-                            this.bottom = bottom
-                        }
-
                         override fun setOnProgram() {
-                            uniform?.set(left.toFloat(), bottom.toFloat())
+                            val rasterOffset = gl.rasterOffset
+                            uniform?.set(rasterOffset.left.toFloat(), rasterOffset.bottom.toFloat())
                         }
                     }
             }
