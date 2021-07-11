@@ -3,63 +3,123 @@ package baaahs.gl
 import com.danielgergely.kgl.Kgl
 import org.khronos.webgl.WebGLRenderingContext
 import org.w3c.dom.DOMRect
+import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 class SharedGlContext(
     private val glContext: GlBase.JsGlContext = GlBase.jsManager.createContext(trace = true)
 ) : GlBase.JsGlContext(glContext.canvas, glContext.kgl, glContext.glslVersion, glContext.webgl) {
+    private val sharedCanvas = glContext.canvas
+    private var sharedLastFrameTimestamp = 0.0
+    private var sharedCanvasRect: Rect = sharedCanvas.getBoundingClientRect().asRect()
+
     init {
         glContext.webgl.enable(WebGLRenderingContext.SCISSOR_TEST)
     }
 
-    fun createSubContext(container: HTMLElement): GlContext {
-        val subKgl: Kgl = SubKgl(container, kgl)
-        return subContext(subKgl)
+    fun createSubContext(container: HTMLElement): GlBase.JsGlContext =
+        SubJsGlContext(SubKgl(container, kgl))
+
+    override fun requestAnimationFrame(callback: (Double) -> Unit) {
+        error("Don't call requestAnimationFrame() on a SharedGlContext!")
     }
 
-//    inner class JsGlContext(
-//        private val subKgl: Kgl
-//    ) : GlBase.JsGlContext(glContext.canvas, subKgl, glContext.glslVersion, glContext.webgl) {
-//
-//    }
+    private fun maybeUpdateSharedCanvasRect(frameTimestamp: Double) {
+        if (frameTimestamp != sharedLastFrameTimestamp) {
+            sharedCanvasRect = sharedCanvas.getBoundingClientRect().asRect()
+            sharedCanvas.resizeToMatch(sharedCanvasRect)
+            sharedLastFrameTimestamp = frameTimestamp
+        }
+    }
+
+    inner class SubJsGlContext(
+        private val subKgl: SubKgl
+    ) : GlBase.JsGlContext(
+        canvas, subKgl, glslVersion, webgl, checkForErrors, state
+    ) {
+        private var subLastFrameTimestamp = 0.0
+
+        override val rasterOffset: RasterOffset
+            get() = RasterOffset(
+                (subKgl.containerRect.bottom - sharedCanvasRect.bottom),
+                (sharedCanvasRect.left - subKgl.containerRect.left)
+            )
+
+        override fun requestAnimationFrame(callback: (Double) -> Unit) {
+            super.requestAnimationFrame { timestamp ->
+                if (timestamp != subLastFrameTimestamp) {
+                    maybeUpdateSharedCanvasRect(timestamp)
+                    subKgl.updateContainerRect()
+                    subLastFrameTimestamp = timestamp
+                }
+
+                callback(timestamp)
+            }
+        }
+    }
 
     inner class SubKgl(
         private val container: HTMLElement,
         private val delegate: Kgl
     ) : Kgl by delegate {
+        internal var containerRect = container.getBoundingClientRect().asRect()
+
+        internal fun updateContainerRect() {
+            containerRect = container.getBoundingClientRect().asRect()
+        }
+
         override fun viewport(x: Int, y: Int, width: Int, height: Int) {
-            // get element position relative to the page's viewport
-            val rect = container.getBoundingClientRect()
-
-            val sharedCanvas = glContext.canvas
-            val sharedRect = sharedCanvas.getBoundingClientRect()
-
-            if (sharedCanvas.width != sharedRect.width.toInt()) {
-                sharedCanvas.width = sharedRect.width.toInt()
-            }
-
-            if (sharedCanvas.height != sharedRect.height.toInt()) {
-                sharedCanvas.height = sharedRect.height.toInt()
-            }
-
-            // check if it's offscreen. If so skip it
-            if (!rect.intersects(sharedRect)) return
-
-            // set the viewport
-            val subWidth: Int = (rect.right - rect.left).toInt()
-            val subHeight: Int = (rect.bottom - rect.top).toInt()
-            val subLeft: Int = (rect.left - sharedRect.left).toInt()
-            val subBottom: Int = (sharedRect.bottom - rect.bottom).toInt()
-
-            setViewport(subLeft, subBottom, subWidth, subHeight)
-            glContext.webgl.scissor(subLeft, subBottom, subWidth, subHeight)
+            val rect = containerRect
+                .intersectionWith(sharedCanvasRect)
+                .relativeToBottomLeftOf(sharedCanvasRect)
+            setViewport(rect.left, rect.bottom, rect.width, rect.height)
+            glContext.webgl.scissor(rect.left, rect.bottom, rect.width, rect.height)
         }
     }
 
-    fun DOMRect.intersects(other: DOMRect): Boolean {
-        return !(other.left > right ||
-                other.right < left ||
-                other.top > bottom ||
-                other.bottom < top)
+    private fun DOMRect.asRect(): Rect = Rect(top, left, bottom, right)
+
+    private fun HTMLCanvasElement.resizeToMatch(rect: Rect) {
+        if (width != rect.width) width = rect.width
+        if (height != rect.height) height = rect.height
+    }
+
+    data class Rect(
+        val top: Int,
+        val left: Int,
+        val bottom: Int,
+        val right: Int
+    ) {
+        constructor(
+            top: Double, left: Double, bottom: Double, right: Double
+        ): this(top.roundToInt(), left.roundToInt(), bottom.roundToInt(), right.roundToInt())
+
+        val height: Int get() = bottom - top
+        val width: Int get() = right - left
+
+        fun isEmpty(): Boolean = top == bottom || left == right
+
+        fun relativeToBottomLeftOf(other: Rect): Rect {
+            val subLeft: Int = left - other.left
+            val subBottom: Int = other.bottom - bottom
+
+            return Rect(
+                subBottom - (bottom - top),
+                subLeft,
+                subBottom,
+                subLeft + right - left
+            )
+        }
+
+        fun intersectionWith(other: Rect) =
+            Rect(
+                max(top, other.top),
+                max(left, other.left),
+                min(bottom, other.bottom),
+                min(right, other.right)
+            )
     }
 }

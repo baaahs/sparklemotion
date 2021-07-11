@@ -21,6 +21,12 @@ abstract class GlContext(
 
     protected val textureUnits get() = state.textureUnits
 
+    /**
+     * When a GlContext shares a rendering canvas with others, [rasterOffet] indicates this
+     * context's location in the shared canvas.
+     */
+    open val rasterOffset: RasterOffset = RasterOffset(0, 0)
+
     class Stats {
         var activeTexture = 0
         var bindTexture = 0
@@ -276,8 +282,18 @@ abstract class GlContext(
     }
 
     fun release() {
+        if (kgl is ReleasableKgl) {
+            kgl.release()
+        }
+
 //        TODO("not implemented")
     }
+
+    interface ReleasableKgl {
+        fun release()
+    }
+
+    data class RasterOffset(val bottom: Int, val left: Int)
 
     companion object {
         private val logger = Logger("GlslContext")

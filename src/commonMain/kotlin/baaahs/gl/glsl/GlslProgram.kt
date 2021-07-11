@@ -18,7 +18,6 @@ interface GlslProgram {
     val vertexAttribLocation: Int
 
     fun setResolution(x: Float, y: Float)
-    fun setRasterOffset(left: Int, bottom: Int)
 
     fun aboutToRenderFrame()
     fun aboutToRenderFixture(renderTarget: RenderTarget)
@@ -102,10 +101,6 @@ class GlslProgramImpl(
 
     override fun setResolution(x: Float, y: Float) {
         feedsOf<GlslProgram.ResolutionListener>().forEach { it.onResolution(x, y) }
-    }
-
-    override fun setRasterOffset(left: Int, bottom: Int) {
-        feedsOf<GlslProgram.RasterOffsetListener>().forEach { it.onRasterOffset(left, bottom) }
     }
 
     override fun aboutToRenderFrame() {
