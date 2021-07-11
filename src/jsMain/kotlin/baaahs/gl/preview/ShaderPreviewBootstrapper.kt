@@ -140,13 +140,6 @@ actual object QuadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedGlConte
     ): ShaderPreview {
         val glslContext = sharedGlContext.createSubContext(container)
         return QuadPreview(glslContext, width, height) {
-            val containerRect = container.getBoundingClientRect()
-            val subRect = sharedGlContext.canvas.getBoundingClientRect()
-            it.rasterOffsetChanged(
-                (containerRect.left - subRect.left).toInt(),
-                (subRect.bottom - containerRect.bottom).toInt(),
-            )
-
             preRenderHook.current.invoke()
         }
     }
