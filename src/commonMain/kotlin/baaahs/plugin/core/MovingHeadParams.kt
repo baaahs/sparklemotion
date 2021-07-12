@@ -1,7 +1,6 @@
 package baaahs.plugin.core
 
 import baaahs.fixtures.FloatsResultType
-import baaahs.fixtures.ResultBuffer
 import baaahs.fixtures.ResultType
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslExpr
@@ -32,13 +31,13 @@ data class MovingHeadParams(
         )
 
         val resultType: ResultType = object : FloatsResultType(4, GlContext.GL_RGBA32F, GL_RGBA) {
-            override fun createParamBuffer(gl: GlContext, index: Int): ResultBuffer {
-                return ParamBuffer(gl, index, this)
+            override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+                return ResultBuffer(gl, index, this)
             }
         }
     }
 
-    class ParamBuffer(gl: GlContext, index: Int, type: ResultType) : FloatsResultType.Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: ResultType) : FloatsResultType.Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): MovingHeadParams {
             val offset = pixelIndex * type.stride
 
@@ -56,7 +55,7 @@ data class MovingHeadParams(
     }
 
     class ResultView(
-        val buffer: ParamBuffer,
+        val buffer: ResultBuffer,
         pixelOffset: Int,
         pixelCount: Int
     ) : baaahs.fixtures.ResultView(pixelOffset, pixelCount) {

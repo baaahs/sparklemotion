@@ -167,13 +167,13 @@ class FloatsPixelParam(
 
 class ResultParam(val title: String, val type: ResultType) {
     fun allocate(gl: GlContext, index: Int): ResultBuffer {
-        return type.createParamBuffer(gl, index)
+        return type.createResultBuffer(gl, index)
     }
 }
 
 abstract class ResultBuffer(
     gl: GlContext,
-    private val paramIndex: Int,
+    private val resultIndex: Int,
     val type: ResultType
 ) {
     var pixelCount: Int = 0
@@ -207,7 +207,7 @@ abstract class ResultBuffer(
     abstract fun resizeBuffer(size: Int)
 
     fun attachTo(fb: GlContext.FrameBuffer) {
-        fb.attach(gpuBuffer, GL_COLOR_ATTACHMENT0 + paramIndex)
+        fb.attach(gpuBuffer, GL_COLOR_ATTACHMENT0 + resultIndex)
     }
 
     fun afterFrame(frameBuffer: GlContext.FrameBuffer) {
