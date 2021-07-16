@@ -82,7 +82,8 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 //                    attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
 
                 buttonGroupControl.buttons.forEachIndexed { index, buttonControl ->
-                    val shaderForPreview = buttonControl.shaderForPreview()
+                    val shaderForPreview = if (appContext.uiSettings.renderButtonPreviews)
+                        buttonControl.shaderForPreview() else null
 
                     draggable({
                         this.key = buttonControl.id
