@@ -1,4 +1,4 @@
-package baaahs.mapper;
+package baaahs.mapper
 
 import baaahs.PinkyConfig
 import baaahs.io.Fs

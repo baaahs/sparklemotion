@@ -3,6 +3,7 @@ package baaahs.client
 import baaahs.*
 import baaahs.app.ui.AppIndex
 import baaahs.app.ui.AppIndexProps
+import baaahs.app.ui.settings.UiSettings
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
@@ -33,7 +34,8 @@ class WebClient(
     network: Network,
     pinkyAddress: Network.Address,
     private val toolchain: Toolchain = RootToolchain(createPlugins()),
-    private val model: Model
+    private val model: Model,
+    private val storage: ClientStorage
 ) : HostedWebApp {
     private val facade = Facade()
 
@@ -118,6 +120,14 @@ class WebClient(
 
     private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
 
+    private var uiSettings = UiSettings()
+
+    init {
+        GlobalScope.launch {
+            storage.loadSettings()?.let { updateUiSettings(it, saveToStorage = false) }
+        }
+    }
+
     private fun switchTo(showEditorState: ShowEditorState?) {
         val newShow = showEditorState?.show
         val newShowState = showEditorState?.showState
@@ -152,6 +162,17 @@ class WebClient(
         serverNotices.removeAll { it.id == id }
         serverNoticesChannel.onChange(this@WebClient.serverNotices)
         facade.notifyChanged()
+    }
+
+    private fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {
+        if (uiSettings != newSettings) {
+            uiSettings = newSettings
+            facade.notifyChanged()
+
+            if (saveToStorage) {
+                GlobalScope.launch { storage.saveSettings(newSettings) }
+            }
+        }
     }
 
     inner class Facade : baaahs.ui.Facade(), EditHandler {
@@ -196,6 +217,9 @@ class WebClient(
 
         val shaderLibraries : ShaderLibraries.Facade
             get() = this@WebClient.shaderLibraries.facade
+
+        val uiSettings: UiSettings
+            get() = this@WebClient.uiSettings
 
         override fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
             onShowEdit(mutableShow.getShow(), openShow!!.getShowState(), pushToUndoStack)
@@ -245,6 +269,10 @@ class WebClient(
         fun confirmServerNotice(id: String) {
             this@WebClient.confirmServerNotice(id)
         }
+
+        fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {
+            this@WebClient.updateUiSettings(newSettings, saveToStorage)
+        }
     }
 
     companion object {
@@ -253,4 +281,3 @@ class WebClient(
                     BeatLinkPlugin.Builder(BeatSource.None)
     }
 }
-

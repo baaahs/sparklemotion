@@ -54,10 +54,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var editMode by state { false }
     val handleEditModeChange = callback(editMode) { editMode = !editMode }
 
-    var uiSettings by state { UiSettings() }
+    val uiSettings = webClient.uiSettings
     val handleUiSettingsChange by handler { newUiSettings: UiSettings ->
-        uiSettings = newUiSettings
-        // TODO: Persist UiSettings change.
+        webClient.updateUiSettings(newUiSettings, saveToStorage = true)
     }
 
     val darkMode = uiSettings.darkMode

@@ -3,6 +3,7 @@ package baaahs.di
 import baaahs.MediaDevices
 import baaahs.admin.AdminClient
 import baaahs.browser.RealMediaDevices
+import baaahs.client.ClientStorage
 import baaahs.client.WebClient
 import baaahs.gl.RootToolchain
 import baaahs.mapper.JsMapperUi
@@ -16,6 +17,7 @@ import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.plugin.core.CorePlugin
+import baaahs.sim.BrowserSandboxFs
 import baaahs.util.Clock
 import baaahs.util.JsClock
 import org.koin.core.module.Module
@@ -46,7 +48,8 @@ class JsWebClientModule(
     override fun getModule(): Module = module {
         scope<WebClient> {
             scoped { get<Network>().link("app") }
-            scoped { WebClient(get(), pinkyAddress, RootToolchain(get()), get()) }
+            scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage"))  }
+            scoped { WebClient(get(), pinkyAddress, RootToolchain(get()), get(), get()) }
         }
     }
 }
