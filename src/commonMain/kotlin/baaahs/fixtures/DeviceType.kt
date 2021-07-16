@@ -166,16 +166,28 @@ class FloatsPixelParam(
 }
 
 class ResultParam(val title: String, val type: ResultType) {
-    fun allocate(gl: GlContext, index: Int): ResultBuffer {
+    fun allocate(gl: GlContext, index: Int): IResultBuffer {
         return type.createResultBuffer(gl, index)
     }
+
+    fun allocateDirect(gl: GlContext, index: Int): IResultBuffer {
+        return type.createDirectResultBuffer(gl, index)
+    }
+}
+
+interface IResultBuffer {
+    fun resize(width: Int, height: Int, renderTargets: List<FixtureRenderTarget>)
+    fun attachTo(fb: GlContext.FrameBuffer)
+    fun afterFrame(frameBuffer: GlContext.FrameBuffer)
+    fun getView(pixelOffset: Int, pixelCount: Int): ResultView
+    fun release()
 }
 
 abstract class ResultBuffer(
     gl: GlContext,
     private val resultIndex: Int,
     val type: ResultType
-) {
+) : IResultBuffer {
     var pixelCount: Int = 0
         private set
 
@@ -184,14 +196,14 @@ abstract class ResultBuffer(
     private var cpuBufferSize = 0
 
     private val gpuBuffer = gl.createRenderBuffer()
-    abstract val cpuBuffer: Buffer
+    protected abstract val cpuBuffer: Buffer
 
     // Storage smaller than 16x1 causes a GL error.
     init {
-        resize(16, 1)
+        resize(16, 1, emptyList())
     }
 
-    fun resize(width: Int, height: Int) {
+    final override fun resize(width: Int, height: Int, renderTargets: List<FixtureRenderTarget>) {
         gpuBuffer.storage(type.renderPixelFormat, width, height)
         curWidth = width
         curHeight = height
@@ -206,11 +218,11 @@ abstract class ResultBuffer(
 
     abstract fun resizeBuffer(size: Int)
 
-    fun attachTo(fb: GlContext.FrameBuffer) {
+    override fun attachTo(fb: GlContext.FrameBuffer) {
         fb.attach(gpuBuffer, GL_COLOR_ATTACHMENT0 + resultIndex)
     }
 
-    fun afterFrame(frameBuffer: GlContext.FrameBuffer) {
+    override fun afterFrame(frameBuffer: GlContext.FrameBuffer) {
         frameBuffer.withRenderBufferAsAttachment0(gpuBuffer) {
             gpuBuffer.readPixels(
                 0, 0, gpuBuffer.curWidth, gpuBuffer.curHeight,
@@ -219,9 +231,9 @@ abstract class ResultBuffer(
         }
     }
 
-    abstract fun getView(pixelOffset: Int, pixelCount: Int): ResultView
+    abstract override fun getView(pixelOffset: Int, pixelCount: Int): ResultView
 
-    fun release() {
+    override fun release() {
         gpuBuffer.release()
     }
 }

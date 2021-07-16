@@ -54,6 +54,7 @@ class SheepSimulator(val model: Model) {
     private val fixturesSimulator = injector.get<FixturesSimulator>()
 
     init {
+        fixturesSimulator.fixtureManager = pinky.fixtureManager
         GlobalScope.launch { cleanUpBrowserStorage() }
     }
 

@@ -4,7 +4,7 @@ import three.js.*
 
 class SurfaceVisualizer(
     val surfaceGeometry: SurfaceGeometry,
-    vizPixels: VizPixels? = null
+    pixelsVisualizer: PixelsVisualizer? = null
 ) : EntityVisualizer {
     val name: String get() = surfaceGeometry.name
     private val lineMaterial = LineBasicMaterial().apply { color.set(0xaaaaaa) }
@@ -14,11 +14,11 @@ class SurfaceVisualizer(
     val panelNormal: Vector3 get() = surfaceGeometry.panelNormal
     val geometry: Geometry get() = surfaceGeometry.geometry
     private var vizScene: VizScene? = null
-    var vizPixels: VizPixels? = vizPixels
+    var pixelsVisualizer: PixelsVisualizer? = pixelsVisualizer
         set(value) {
             vizScene?.let { scene ->
-                field?.removeFromScene(scene)
-                value?.addToScene(scene)
+                field?.removeFrom(scene)
+                value?.addTo(scene)
             }
 
             field = value
@@ -40,7 +40,7 @@ class SurfaceVisualizer(
     override fun addTo(scene: VizScene) {
         scene.add(VizObj(this.mesh))
         lines.forEach { line -> scene.add(VizObj(line)) }
-        vizPixels?.addToScene(scene)
+        pixelsVisualizer?.addTo(scene)
         vizScene = scene
     }
 

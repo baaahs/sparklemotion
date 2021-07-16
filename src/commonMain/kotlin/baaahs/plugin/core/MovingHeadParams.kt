@@ -31,9 +31,7 @@ data class MovingHeadParams(
         )
 
         val resultType: ResultType = object : FloatsResultType(4, GlContext.GL_RGBA32F, GL_RGBA) {
-            override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
-                return ResultBuffer(gl, index, this)
-            }
+            override fun createResultBuffer(gl: GlContext, index: Int) = ResultBuffer(gl, index, this)
         }
     }
 

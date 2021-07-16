@@ -3,6 +3,7 @@ package baaahs.sim
 import baaahs.fixtures.Fixture
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
+import baaahs.model.Model
 import baaahs.visualizer.EntityVisualizer
 
 interface FixtureSimulation {
@@ -21,3 +22,6 @@ interface FixtureSimulation {
     }
 }
 
+fun interface FixtureSimulationBuilder {
+    fun build(entity: Model.Entity, simulationEnv: SimulationEnv): FixtureSimulation
+}

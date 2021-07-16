@@ -1,11 +1,14 @@
 package baaahs.visualizer
 
 import baaahs.JsMapperUi
+import baaahs.document
 import baaahs.model.Model
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.asMillis
 import baaahs.window
+import kotlinext.js.jsObject
+import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.MouseEvent
 import three.js.*
@@ -51,7 +54,25 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
             position.z = 1000.0
         }
     private val scene: Scene = Scene()
-    private val renderer = WebGLRenderer().apply {
+    private val canvas = (document.createElement("canvas") as HTMLCanvasElement).apply {
+        // Wrap the webgl context for recording/restoring state.
+        // Also consider using getParameter() instead.
+        val c = asDynamic()
+        val getContext = c.getContext
+        c.getContext = {
+            val context = getContext.apply(this, js("arguments")).asDynamic()
+            val bindFramebuffer = context.bindFramebuffer
+            context.bindFramebuffer = {
+                val fb = bindFramebuffer.apply(context, js("arguments"))
+                console.log("framebuffer", fb)
+                fb
+            }
+            context
+        }
+    }
+    private val renderer = WebGLRenderer(jsObject {
+        this.canvas = this@Visualizer.canvas
+    }).apply {
         localClippingEnabled = true
     }
     private val geom = Geometry()
@@ -63,6 +84,8 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     private val originDot: Mesh<*, *>
 
     private val entityVisualizers = arrayListOf<EntityVisualizer>()
+
+    private var glContext: ThreeJsGlContext? = null
 
     init {
         scene.add(camera)
@@ -231,8 +254,16 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         mapperIsRunning = isRunning
     }
 
-    interface FrameListener {
-        @JsName("onFrameReady")
+    fun getGlContext(): ThreeJsGlContext {
+        var context = glContext
+        if (context == null) {
+            context = ThreeJsGlContext.create(renderer)
+            glContext = context
+        }
+        return context
+    }
+
+    fun interface FrameListener {
         fun onFrameReady(scene: Scene, camera: Camera)
     }
 
@@ -253,7 +284,6 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
         val framerate = Framerate()
 
-        fun onAnimationFrame() = this@Visualizer.render()
         fun resize() = this@Visualizer.resize()
         fun onMouseDown(event: MouseEvent) = this@Visualizer.onMouseDown(event)
     }

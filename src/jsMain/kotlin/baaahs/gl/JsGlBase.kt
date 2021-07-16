@@ -4,7 +4,9 @@ import baaahs.document
 import baaahs.window
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglJs
+import com.danielgergely.kgl.Texture
 import com.danielgergely.kgl.WebGL2RenderingContext
+import org.khronos.webgl.WebGLTexture
 import org.w3c.dom.HTMLCanvasElement
 
 actual object GlBase {
@@ -57,6 +59,12 @@ actual object GlBase {
         override fun ensureResultBufferCanContainFloats() {
             // For RGBA32F in FloatXyzwParam:
             ensureExtension("EXT_color_buffer_float")
+        }
+
+        override fun glFramebufferTexture2D(
+            target: Int, attachment: Int, texTarget: Int, texture: Texture?, level: Int
+        ) {
+            webgl.framebufferTexture2D(target, attachment, texTarget, texture as WebGLTexture?, level)
         }
 
         /** Creates a related context with shared state and the given Kgl. */

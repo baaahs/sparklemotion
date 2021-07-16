@@ -10,7 +10,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 class SharedGlContext(
-    private val glContext: GlBase.JsGlContext = GlBase.jsManager.createContext(trace = true)
+    private val glContext: GlBase.JsGlContext = GlBase.jsManager.createContext(/*trace = true*/)
 ) : GlBase.JsGlContext(glContext.canvas, glContext.kgl, glContext.glslVersion, glContext.webgl) {
     private val sharedCanvas = glContext.canvas
     private var sharedLastFrameTimestamp = 0.0

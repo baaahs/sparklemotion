@@ -6,7 +6,6 @@ import baaahs.PermissiveFirmwareDaddy
 import baaahs.PinkySettings
 import baaahs.browser.RealMediaDevices
 import baaahs.dmx.Dmx
-import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.ResourcesFs
@@ -89,7 +88,10 @@ class JsSimPinkyModule(
     override val Scope.dmxDriver: Dmx.Driver
         get() = SimDmxDriver(get(named("Fallback")))
     override val Scope.renderManager: RenderManager
-        get() = RenderManager(get()) { GlBase.manager.createContext() }
+        get() = run {
+            val sharedContext = get<Visualizer>().getGlContext()
+            RenderManager(get(), direct = true) { sharedContext }
+        }
     override val Scope.pinkySettings: PinkySettings
         get() = pinkySettings_
 }

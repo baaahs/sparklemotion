@@ -3,11 +3,12 @@ package baaahs.app.ui.preview
 import baaahs.client.ClientStageManager
 import baaahs.document
 import baaahs.fixtures.FixtureManager
-import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.mapper.SessionMappingResults
 import baaahs.model.Model
+import baaahs.sim.DirectSurfaceSimulation
 import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.FixtureSimulationBuilder
 import baaahs.sim.SimulationEnv
 import baaahs.throttle
 import baaahs.util.Clock
@@ -26,12 +27,12 @@ class ClientPreview(
     private val stageManager: ClientStageManager,
     clock: Clock
 ) : ClientStageManager.Listener {
-    private val glContext = GlBase.jsManager.createContext()
-    private val renderManager = RenderManager(model) { glContext }
     private val mappingResults = SessionMappingResults(model, emptyList()) // TODO: use real data.
-    private val fixtureManager = FixtureManager(renderManager, model, mappingResults)
     private val dmxUniverse = FakeDmxUniverse()
     private val theVisualizer = Visualizer(model, clock)
+    private val glContext = theVisualizer.getGlContext()
+    private val renderManager = RenderManager(model, direct = true) { glContext }
+    private val fixtureManager = FixtureManager(renderManager, model, mappingResults)
     private var patchSetChanged = true
 
     // TODO: This is super janky.
@@ -42,12 +43,21 @@ class ClientPreview(
 
     init {
         val pixelArranger = SwirlyPixelArranger(0.2f, 3f)
+        val fixtureSimulationBuilder = FixtureSimulationBuilder { entity, simulationEnv ->
+            when (entity) {
+                is Model.Surface -> {
+                    DirectSurfaceSimulation(entity, simulationEnv)
+                }
+                else -> error("huh?")
+            }
+        }
 
         val simulationEnv = SimulationEnv {
             component(clock)
             component(dmxUniverse)
             component<PixelArranger>(pixelArranger)
             component(visualizer)
+            component(fixtureSimulationBuilder)
         }
 
         val allFixtures = model.allEntities.map { entity ->

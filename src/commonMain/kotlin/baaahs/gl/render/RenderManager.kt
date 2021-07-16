@@ -13,10 +13,11 @@ import baaahs.util.Logger
 
 class RenderManager(
     private val model: Model,
+    direct: Boolean = false,
     private val createContext: () -> GlContext
 ) {
     private val renderEngines = model.allEntities.map { it.deviceType }.distinct()
-        .associateWith { deviceType -> ModelRenderEngine(createContext(), model, deviceType) }
+        .associateWith { deviceType -> ModelRenderEngine(createContext(), model, deviceType, direct = direct) }
 
     fun getEngineFor(deviceType: DeviceType): ModelRenderEngine =
         renderEngines.getBang(deviceType, "render engine")

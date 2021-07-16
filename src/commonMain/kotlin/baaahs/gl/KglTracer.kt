@@ -5,7 +5,7 @@ import com.danielgergely.kgl.*
 
 class KglTracer(private val kgl: Kgl) : Kgl {
     private val id = tracerCounter++
-    private val logger = Logger("KglTracer")
+    private val logger = Logger<KglTracer>()
     private var nextObjId = 0
 
     override fun activeTexture(texture: Int) {

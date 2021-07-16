@@ -2,6 +2,7 @@ package baaahs.sim
 
 import baaahs.Brain
 import baaahs.doRunBlocking
+import baaahs.fixtures.FixtureManager
 import baaahs.getValue
 import baaahs.io.Fs
 import baaahs.mapper.MappingSession
@@ -35,11 +36,21 @@ class FixturesSimulator(
     private val pixelArranger: PixelArranger
 ) {
     val facade = Facade()
+    var fixtureManager: FixtureManager? = null
 
     private val brainsSimulator = BrainsSimulator(network, clock)
     private val wledsSimulator = WledsSimulator(network, clock)
 
     private val fixtureSimulations by lazy {
+        val fixtureSimulationBuilder = FixtureSimulationBuilder { entity, simulationEnv ->
+            when (entity) {
+                is Model.Surface -> {
+                    DirectSurfaceSimulation(entity, simulationEnv)
+                }
+                else -> error("huh?")
+            }
+        }
+
         val simulationEnv = SimulationEnv {
             component(brainsSimulator)
             component(clock)
@@ -47,6 +58,8 @@ class FixturesSimulator(
             component(pixelArranger)
             component(wledsSimulator)
             component(visualizer)
+            component(fixtureSimulationBuilder)
+            component(fixtureManager!!)
         }
 
         model.allEntities.sortedBy(Model.Entity::name).map { entity ->

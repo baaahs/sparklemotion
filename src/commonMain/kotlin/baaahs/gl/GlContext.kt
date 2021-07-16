@@ -38,7 +38,6 @@ abstract class GlContext(
         var viewport: List<Int> = emptyList()
         val textureUnits = mutableMapOf<Any, TextureUnit>()
         var activeTextureUnit: TextureUnit? = null
-
         var activeProgram: GlslProgram? = null
         var activeFrameBuffer: FrameBuffer? = null
         var activeRenderBuffer: RenderBuffer? = null
@@ -97,6 +96,8 @@ abstract class GlContext(
         return RenderBuffer(check { createRenderbuffer() })
     }
 
+    abstract fun glFramebufferTexture2D(target: Int, attachment: Int, texTarget: Int, texture: Texture?, level: Int)
+
     inner class FrameBuffer(private val framebuffer: Framebuffer) {
         private val curRenderBuffers = mutableMapOf<Int, RenderBuffer>()
 
@@ -116,6 +117,16 @@ abstract class GlContext(
             }
         }
 
+        fun attach(texture: Texture, attachment: Int) {
+            bind()
+
+//            if (curRenderBuffers[attachment] != renderBuffer) {
+            check { bindTexture(GL_TEXTURE_2D, texture) }
+            check { glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture, 0) }
+//                curRenderBuffers[attachment] = renderBuffer
+//            }
+        }
+
         fun check() {
             if (checkForErrors) {
                 bind()
@@ -124,6 +135,17 @@ abstract class GlContext(
                 if (status != GL_FRAMEBUFFER_COMPLETE) {
                     logger.warn { "FrameBuffer huh? $status" }
                 }
+            }
+        }
+
+        fun rebind() {
+            check { bindFramebuffer(GL_FRAMEBUFFER, framebuffer) }
+        }
+
+        fun unbind() {
+            if (state.activeFrameBuffer == this) {
+                check { bindFramebuffer(GL_FRAMEBUFFER, null) }
+                state.activeFrameBuffer = null
             }
         }
 
@@ -190,8 +212,35 @@ abstract class GlContext(
             check { readPixels(x, y, width, height, format, type, buffer, offset) }
         }
 
+        fun rebind() {
+            check { bindRenderbuffer(GL_RENDERBUFFER, renderbuffer) }
+        }
+
+        fun unbind() {
+            if (state.activeRenderBuffer == this) {
+                check { bindRenderbuffer(GL_RENDERBUFFER, null) }
+                state.activeRenderBuffer = null
+            }
+        }
+
         fun release() {
             check { deleteRenderbuffer(renderbuffer) }
+        }
+    }
+
+    open fun createTexture(): GlTexture {
+        return NormalGlTexture(check { createTexture() })
+    }
+
+    interface GlTexture {
+        val texture: Texture
+
+        fun release()
+    }
+
+    inner class NormalGlTexture(override val texture: Texture) : GlTexture {
+        override fun release() {
+            check { deleteTexture(texture) }
         }
     }
 
@@ -278,6 +327,15 @@ abstract class GlContext(
         if (error != 0) {
             logger.error { "OpenGL Error: $code" }
             throw RuntimeException("OpenGL Error: $code")
+        }
+    }
+
+    fun invalidateState() {
+        state.activeFrameBuffer?.unbind()
+        state.activeRenderBuffer?.unbind()
+        if (state.viewport.isNotEmpty()) {
+            check { viewport(0, 0, 100, 100) }
+            state.viewport = emptyList()
         }
     }
 

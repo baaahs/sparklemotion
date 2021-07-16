@@ -1,5 +1,6 @@
 package baaahs.util
 
+import baaahs.gl.KglTracer
 import baaahs.show.live.ShowOpener
 import kotlin.reflect.KClass
 
@@ -10,7 +11,7 @@ object LoggerConfig {
     )
 
     val classLevels = mapOf<KClass<*>, LogLevel>(
-//        KglTracer::class to LogLevel.DEBUG,
+        KglTracer::class to LogLevel.DEBUG,
         ShowOpener::class to LogLevel.DEBUG
     )
 

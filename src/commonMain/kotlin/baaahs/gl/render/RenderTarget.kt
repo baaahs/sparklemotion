@@ -1,7 +1,7 @@
 package baaahs.gl.render
 
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.ResultBuffer
+import baaahs.fixtures.IResultBuffer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.model.ModelInfo
 
@@ -21,7 +21,7 @@ class FixtureRenderTarget(
     override val modelInfo: ModelInfo,
     override val pixelCount: Int,
     val pixel0Index: Int,
-    resultBuffers: List<ResultBuffer>
+    resultBuffers: List<IResultBuffer>
 ) : RenderTarget {
     var program: GlslProgram? = null
         private set

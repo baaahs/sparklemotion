@@ -5,8 +5,8 @@ import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.geom.center
-import baaahs.sim.BrainSurfaceSimulation
 import baaahs.sim.FixtureSimulation
+import baaahs.sim.FixtureSimulationBuilder
 import baaahs.sim.SimulationEnv
 
 abstract class Model : ModelInfo {
@@ -64,7 +64,7 @@ abstract class Model : ModelInfo {
         }
 
         override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
-            BrainSurfaceSimulation(this, simulationEnv)
+            simulationEnv.get(FixtureSimulationBuilder::class).build(this, simulationEnv)
     }
 
     data class Line(val vertices: List<Vector3F>)

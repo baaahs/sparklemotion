@@ -20,7 +20,8 @@ class ModelRenderEngine(
     gl: GlContext,
     private val modelInfo: ModelInfo,
     private val deviceType: DeviceType,
-    private val minTextureWidth: Int = 16
+    private val minTextureWidth: Int = 16,
+    direct: Boolean = false
 ) : RenderEngine(gl) {
     private val renderTargetsToAdd: MutableList<FixtureRenderTarget> = mutableListOf()
     private val renderTargetsToRemove: MutableList<FixtureRenderTarget> = mutableListOf()
@@ -33,7 +34,13 @@ class ModelRenderEngine(
 
     private val resultBuffers = gl.runInContext {
         deviceType.resultParams
-            .mapIndexed { index, deviceParam -> deviceParam.allocate(gl, index) }
+            .mapIndexed { index, deviceParam ->
+                if (direct) {
+                    deviceParam.allocateDirect(gl, index)
+                } else {
+                    deviceParam.allocate(gl, index)
+                }
+            }
     }
 
     private val frameBuffer = gl.runInContext {
@@ -167,7 +174,7 @@ class ModelRenderEngine(
             }
 
             resultBuffers.forEach {
-                it.resize(safeWidth, safeHeight)
+                it.resize(safeWidth, safeHeight, renderTargets)
             }
         }
 

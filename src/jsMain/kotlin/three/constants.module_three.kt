@@ -79,6 +79,9 @@ external enum class TextureFilter {
 
 }
 
+external val NearestFilter: TextureFilter
+external val LinearFilter: TextureFilter
+
 external enum class TextureDataType {
 
 }

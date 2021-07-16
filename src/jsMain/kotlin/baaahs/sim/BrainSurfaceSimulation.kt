@@ -23,7 +23,7 @@ actual class BrainSurfaceSimulation actual constructor(
         pixelArranger.arrangePixels(surfaceGeometry, surface.expectedPixelCount)
     }
 
-    val vizPixels by lazy { VizPixels(pixelPositions, surfaceGeometry.panelNormal) }
+    val vizPixels by lazy { ColorBufferPixelsVisualizer(pixelPositions, surfaceGeometry.panelNormal) }
 
     val brain by lazy {
         val brainsSimulator = simulationEnv[BrainsSimulator::class]
@@ -56,6 +56,8 @@ actual class BrainSurfaceSimulation actual constructor(
         )
     }
 
+    private var remotePixelsVisualizer: ColorBufferPixelsVisualizer? = null
+
     override fun launch() {
         brain.run {}
     }
@@ -66,14 +68,15 @@ actual class BrainSurfaceSimulation actual constructor(
             Vector3F.parse(reader).toVector3()
         }.toTypedArray()
 
-        entityVisualizer.vizPixels = VizPixels(
+        remotePixelsVisualizer = ColorBufferPixelsVisualizer(
             pixelLocations,
-            entityVisualizer.surfaceGeometry.panelNormal
+            surfaceGeometry.panelNormal
         )
+        entityVisualizer.pixelsVisualizer = remotePixelsVisualizer
     }
 
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
-        entityVisualizer.vizPixels?.readColors(reader)
+        remotePixelsVisualizer?.readColors(reader)
     }
 
     inner class PixelArrayPreviewTransport : Transport {

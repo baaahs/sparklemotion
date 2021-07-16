@@ -9,8 +9,8 @@ import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.LightBar
+import baaahs.visualizer.ColorBufferPixelsVisualizer
 import baaahs.visualizer.LightBarVisualizer
-import baaahs.visualizer.VizPixels
 import baaahs.visualizer.toVector3
 import three.js.Vector3
 
@@ -23,7 +23,7 @@ actual class LightBarSimulation actual constructor(
 
     private val pixelLocations by lazy { lightBar.getPixelLocations(pixelCount) }
     private val vizPixels by lazy {
-        VizPixels(pixelLocations.map { it.toVector3() }.toTypedArray(), pixelVisualizationNormal)
+        ColorBufferPixelsVisualizer(pixelLocations.map { it.toVector3() }.toTypedArray(), pixelVisualizationNormal)
     }
 
     override val mappingData: MappingSession.SurfaceData
@@ -62,7 +62,7 @@ actual class LightBarSimulation actual constructor(
             Vector3F.parse(reader).toVector3()
         }.toTypedArray()
 
-        entityVisualizer.vizPixels = VizPixels(pixelLocations, pixelVisualizationNormal)
+        entityVisualizer.vizPixels = ColorBufferPixelsVisualizer(pixelLocations, pixelVisualizationNormal)
     }
 
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {

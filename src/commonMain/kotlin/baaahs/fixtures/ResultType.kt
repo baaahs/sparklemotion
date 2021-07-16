@@ -5,6 +5,7 @@ import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.geom.Vector4F
 import baaahs.gl.GlContext
+import baaahs.visualizer.DirectResultBuffer
 import com.danielgergely.kgl.*
 
 interface ResultType {
@@ -13,7 +14,8 @@ interface ResultType {
     val readType: Int
     val stride: Int
 
-    fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer
+    fun createResultBuffer(gl: GlContext, index: Int): IResultBuffer
+    fun createDirectResultBuffer(gl: GlContext, index: Int): IResultBuffer = createResultBuffer(gl, index)
 }
 
 object ColorResultType : ResultType {
@@ -26,9 +28,8 @@ object ColorResultType : ResultType {
     override val stride: Int
         get() = 4
 
-    override fun createResultBuffer(gl: GlContext, index: Int): Buffer {
-        return Buffer(gl, index)
-    }
+    override fun createResultBuffer(gl: GlContext, index: Int) = Buffer(gl, index)
+    override fun createDirectResultBuffer(gl: GlContext, index: Int) = DirectResultBuffer(gl, index)
 
     class Buffer(gl: GlContext, resultIndex: Int) : ResultBuffer(gl, resultIndex, ColorResultType) {
         private lateinit var byteBuffer: ByteBuffer
@@ -77,7 +78,7 @@ object FloatResultType : FloatsResultType(
     // Haven't tested this, but I'm assuming it doesn't work.
     1, GL_R32F, GL_RED
 ) {
-    override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+    override fun createResultBuffer(gl: GlContext, index: Int): IResultBuffer {
         return ResultBuffer(gl, index, this)
     }
 
@@ -109,7 +110,7 @@ object Vec2ResultType : FloatsResultType(
     // Instead we use four floats and ignore one:
     4, GlContext.GL_RGBA32F, GL_RGBA
 ) {
-    override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+    override fun createResultBuffer(gl: GlContext, index: Int): IResultBuffer {
         return ResultBuffer(gl, index, this)
     }
 
@@ -144,7 +145,7 @@ object Vec3ResultType : FloatsResultType(
     // Instead we use four floats and ignore one:
     4, GlContext.GL_RGBA32F, GL_RGBA
 ) {
-    override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+    override fun createResultBuffer(gl: GlContext, index: Int): IResultBuffer {
         return ResultBuffer(gl, index, this)
     }
 
@@ -174,7 +175,7 @@ object Vec3ResultType : FloatsResultType(
 }
 
 object Vec4ResultType : FloatsResultType(4, GlContext.GL_RGBA32F, GL_RGBA) {
-    override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+    override fun createResultBuffer(gl: GlContext, index: Int): IResultBuffer {
         return ResultBuffer(gl, index, this)
     }
 
@@ -204,7 +205,6 @@ object Vec4ResultType : FloatsResultType(4, GlContext.GL_RGBA32F, GL_RGBA) {
     }
 }
 
-
 abstract class FloatsResultType(
     private val floatCount: Int,
     override val renderPixelFormat: Int,
@@ -230,3 +230,5 @@ abstract class FloatsResultType(
         }
     }
 }
+
+expect fun nuffinBuffer(): Buffer
