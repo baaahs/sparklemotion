@@ -114,7 +114,7 @@ class PreviewShaderBuilder(
     }
 
     private fun transitionTo(newState: ShaderBuilder.State) {
-        logger.warn { "Transition to $newState for ${shader.title}"}
+        logger.debug { "Transition to $newState for ${shader.title}"}
         state = newState
         notifyChanged()
 
@@ -171,7 +171,7 @@ class PreviewShaderBuilder(
     override fun startCompile(renderEngine: RenderEngine) {
         state = ShaderBuilder.State.Compiling
         notifyChanged()
-        logger.warn { "Transition to $state for ${shader.title}"}
+        logger.debug { "Transition to $state for ${shader.title}"}
 
         coroutineScope.launch {
             val showPlayer = object : BaseShowPlayer(toolchain, modelInfo) {}
@@ -215,7 +215,7 @@ class PreviewShaderBuilder(
             state = ShaderBuilder.State.Errors
         }
         notifyChanged()
-        logger.warn { "Transition to $state for ${shader.title}"}
+        logger.debug { "Transition to $state for ${shader.title}"}
     }
 
     fun release() {

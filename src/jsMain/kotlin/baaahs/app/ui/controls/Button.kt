@@ -1,5 +1,6 @@
 package baaahs.app.ui.controls
 
+import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderPreview
 import baaahs.control.ButtonControl
 import baaahs.control.OpenButtonControl
@@ -14,17 +15,17 @@ import kotlinx.html.js.onMouseUpFunction
 import materialui.components.button.enums.ButtonStyle
 import materialui.lab.components.togglebutton.enums.ToggleButtonStyle
 import materialui.lab.components.togglebutton.toggleButton
-import react.RBuilder
-import react.RHandler
-import react.RProps
-import react.child
+import react.*
 import react.dom.div
 import materialui.components.button.button as muiButton
 
 private val Button = xComponent<ButtonProps>("Button") { props ->
+    val appContext = useContext(appContext)
+
     val buttonControl = props.buttonControl
     val onShowStateChange = props.controlProps.onShowStateChange
-    val shaderForPreview = buttonControl.shaderForPreview()
+    val shaderForPreview = if (appContext.uiSettings.renderButtonPreviews)
+        buttonControl.shaderForPreview() else null
 
     val handleToggleClick by eventHandler(onShowStateChange) {
         buttonControl.click()
