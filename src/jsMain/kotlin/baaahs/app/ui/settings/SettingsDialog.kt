@@ -23,14 +23,14 @@ private val SettingsDialog = xComponent<SettingsDialogProps>("SettingsDialog") {
     val appContext = useContext(appContext)
     val uiSettings = appContext.uiSettings
 
-    val handleDarkModeChange by handler(uiSettings) {
-        props.onUiSettingsChange(uiSettings.copy(darkMode = !uiSettings.darkMode))
+    val handleDarkModeChange by handler {
+        props.changeUiSettings { it.copy(darkMode = !it.darkMode) }
     }
     val handleRenderButtonPreviewsChange by handler(uiSettings) {
-        props.onUiSettingsChange(uiSettings.copy(renderButtonPreviews = !uiSettings.renderButtonPreviews))
+        props.changeUiSettings { it.copy(renderButtonPreviews = !it.renderButtonPreviews) }
     }
     val handleUseSharedContextsChange by handler(uiSettings) {
-        props.onUiSettingsChange(uiSettings.copy(useSharedContexts = !uiSettings.useSharedContexts))
+        props.changeUiSettings { it.copy(useSharedContexts = !it.useSharedContexts) }
     }
 
     dialog {
@@ -99,7 +99,7 @@ private val SettingsDialog = xComponent<SettingsDialogProps>("SettingsDialog") {
 }
 
 external interface SettingsDialogProps : RProps {
-    var onUiSettingsChange: (UiSettings) -> Unit
+    var changeUiSettings: ((UiSettings) -> UiSettings) -> Unit
     var onClose: () -> Unit
 }
 
