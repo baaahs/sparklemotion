@@ -263,7 +263,8 @@ class GlslParser {
             fun asVarOrNull(): GlslCode.GlslVar? {
                 val text = textAsString
 
-                @Suppress("RegExpRedundantEscape") // Otherwise fails on JS with "lone quantifier brackets".
+                // Escaped closing brace/bracket required for Kotlin 1.5+/JS or we fail with "lone quantifier brackets".
+                @Suppress("RegExpRedundantEscape")
                 return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(\\s*\\[\\s*\\d+\\s*\\])?(\\s*=.*)?;", RegexOption.MULTILINE)
                     .find(text.trim())?.let {
                         val (qualifier, type, name, arraySpec, initExpr) = it.destructured
@@ -343,7 +344,8 @@ class GlslParser {
             fun asStructOrNull(): GlslCode.GlslStruct? {
                 val text = textAsString
 
-                @Suppress("RegExpRedundantEscape") // Otherwise fails on JS with "lone quantifier brackets".
+                // Escaped closing brace/bracket required for Kotlin 1.5+/JS or we fail with "lone quantifier brackets".
+                @Suppress("RegExpRedundantEscape")
                 return Regex("^(uniform\\s+)?struct\\s+(\\w+)\\s+\\{([^}]+)\\}(?:\\s+(\\w+)?)?;\$", RegexOption.MULTILINE)
                     .find(text.trim())?.let { match ->
                         val (uniform, name, members, varName) = match.destructured
