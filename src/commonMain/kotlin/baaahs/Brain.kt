@@ -9,6 +9,7 @@ import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -31,11 +32,17 @@ class Brain(
     private var currentRenderTree: RenderTree<*>? = null
     private val state: State = State.Unknown
 
+    private val frameChannel = Channel<IncomingFrame>(Channel.CONFLATED) {
+        logger.warn { "[$id]: Skipped frame!" }
+    }
+
     enum class State { Unknown, Link, Online }
 
     suspend fun run() {
         link = network.link("brain")
         udpSocket = link.listenFragmentingUdp(Ports.BRAIN, this)
+
+        GlobalScope.launch { handleFrames() }
         sendHello()
     }
 
@@ -84,38 +91,7 @@ class Brain(
 //            logger.debug { "Got a message of type ${type}" }
             when (type) {
                 Type.BRAIN_PANEL_SHADE -> {
-                    val pongData = if (reader.readBoolean()) {
-                        reader.readBytesWithSize()
-                    } else {
-                        null
-                    }
-                    val shaderDesc = reader.readBytesWithSize()
-
-                    // If possible, use the previously-built Shader stuff:
-                    val theCurrentShaderDesc = currentShaderDesc
-                    if (theCurrentShaderDesc == null || !theCurrentShaderDesc.contentEquals(shaderDesc)) {
-                        currentShaderDesc = shaderDesc
-
-                        @Suppress("UNCHECKED_CAST")
-                        val shader = BrainShader.parse(ByteArrayReader(shaderDesc)) as BrainShader<BrainShader.Buffer>
-                        val newRenderTree = RenderTree(
-                            shader,
-                            shader.createRenderer(),
-                            shader.createBuffer(pixelCount)
-                        )
-                        currentRenderTree?.release()
-                        currentRenderTree = newRenderTree
-                    }
-
-                    with(currentRenderTree!!) {
-                        read(reader)
-                        draw(pixels)
-                    }
-
-                    if (pongData != null) {
-                        udpSocket.sendUdp(fromAddress, fromPort, PingMessage(pongData, true))
-                    }
-
+                    GlobalScope.launch { frameChannel.send(IncomingFrame(reader, fromAddress, fromPort)) }
                 }
 
                 Type.BRAIN_ID_REQUEST -> {
@@ -155,6 +131,53 @@ class Brain(
             logger.error(e) { "[$id] failed to handle a packet." }
         }
     }
+
+    private suspend fun handleFrames() {
+        while (true) {
+            val incomingFrame = frameChannel.receive()
+            val reader = incomingFrame.reader
+
+            val pongData = if (reader.readBoolean()) reader.readBytesWithSize() else null
+            val shaderDesc = reader.readBytesWithSize()
+
+            // If possible, use the previously-built Shader stuff:
+            val theCurrentShaderDesc = currentShaderDesc
+            if (theCurrentShaderDesc == null || !theCurrentShaderDesc.contentEquals(shaderDesc)) {
+                currentShaderDesc = shaderDesc
+
+                @Suppress("UNCHECKED_CAST")
+                val shader = BrainShader.parse(ByteArrayReader(shaderDesc)) as BrainShader<BrainShader.Buffer>
+                val newRenderTree = RenderTree(
+                    shader,
+                    shader.createRenderer(),
+                    shader.createBuffer(pixelCount)
+                )
+                currentRenderTree?.release()
+                currentRenderTree = newRenderTree
+            }
+
+            with(currentRenderTree!!) {
+                read(reader)
+                draw(pixels)
+            }
+
+            if (pongData != null) {
+                udpSocket.sendUdp(
+                    incomingFrame.fromAddress,
+                    incomingFrame.fromPort,
+                    PingMessage(pongData, true)
+                )
+            }
+
+            delay(10)
+        }
+    }
+
+    private class IncomingFrame(
+        val reader: ByteArrayReader,
+        val fromAddress: Network.Address,
+        val fromPort: Int
+    )
 
     class RenderTree<B : BrainShader.Buffer>(val brainShader: BrainShader<B>, val renderer: BrainShader.Renderer<B>, val buffer: B) {
         fun read(reader: ByteArrayReader) = buffer.read(reader)
