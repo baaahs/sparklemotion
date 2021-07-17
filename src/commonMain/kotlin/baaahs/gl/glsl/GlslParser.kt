@@ -265,7 +265,8 @@ class GlslParser {
             fun asVarOrNull(): GlslCode.GlslVar? {
                 val text = textAsString
 
-                return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(\\s*\\[\\s*\\d+\\s*])?(\\s*=.*)?;", RegexOption.MULTILINE)
+                @Suppress("RegExpRedundantEscape") // Escaped closing brace/bracket required for Kotlin 1.5+/JS.
+                return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(\\s*\\[\\s*\\d+\\s*\\])?(\\s*=.*)?;", RegexOption.MULTILINE)
                     .find(text.trim())?.let {
                         val (qualifier, type, name, arraySpec, initExpr) = it.destructured
                         var (isConst, isUniform, isVarying) = arrayOf(false, false, false)
@@ -343,7 +344,8 @@ class GlslParser {
 
             fun asStructOrNull(): GlslCode.GlslStruct? {
                 val text = textAsString
-                return Regex("^(uniform\\s+)?struct\\s+(\\w+)\\s+\\{([^}]+)}(?:\\s+(\\w+)?)?;\$", RegexOption.MULTILINE)
+                @Suppress("RegExpRedundantEscape") // Escaped closing brace/bracket required for Kotlin 1.5+/JS.
+                return Regex("^(uniform\\s+)?struct\\s+(\\w+)\\s+\\{([^}]+)\\}(?:\\s+(\\w+)?)?;\$", RegexOption.MULTILINE)
                     .find(text.trim())?.let {
                         val (uniform, name, members, varName) = it.destructured
                         val fields = mutableMapOf<String, GlslType>()
