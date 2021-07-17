@@ -7,8 +7,6 @@ import baaahs.gl.GlContext
 import baaahs.gl.WebGL2RenderingContext
 import baaahs.gl.WebGLSync
 import baaahs.internalTimerClock
-import baaahs.time
-import baaahs.util.asMillis
 import com.danielgergely.kgl.Buffer
 import com.danielgergely.kgl.GlBuffer
 import kotlinx.coroutines.delay
@@ -23,7 +21,7 @@ class SwitchingResultDeliveryStrategy(private val gl: GlBase.JsGlContext): Resul
     val async = WebGl2ResultDeliveryStrategy(gl)
 
     private fun pickStrategy() =
-        if (document.asDynamic()["strategy"] == "async") async else sync
+        if (document.asDynamic()["strategy"] != "sync") async else sync
 
     override fun beforeRender() {
         pickStrategy().beforeRender()
@@ -38,6 +36,7 @@ class SwitchingResultDeliveryStrategy(private val gl: GlBase.JsGlContext): Resul
     }
 }
 
+// See https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices#non-blocking_async_data_downloadreadback
 class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultDeliveryStrategy {
     private val webgl2 = gl.webgl
 
@@ -53,11 +52,10 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
                 val glBuf = gl.check { createBuffer() }
                 gl.check { bindBuffer(WebGL2RenderingContext.PIXEL_PACK_BUFFER, glBuf) }
                 gl.check {
-                    bufferData(
+                    webgl2.bufferData(
                         WebGL2RenderingContext.PIXEL_PACK_BUFFER,
-                        cpuBuffer,
                         cpuBuffer.sizeInBytes,
-                        WebGL2RenderingContext.STATIC_READ
+                        WebGL2RenderingContext.STREAM_READ
                     )
                 }
 
@@ -76,46 +74,44 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
     }
 
     override suspend fun awaitResults(frameBuffer: GlContext.FrameBuffer, resultBuffers: List<ResultBuffer>) {
-        val startTime = internalTimerClock.now()
-        val fenceSync = gl.check { webgl2.fenceSync(WebGL2RenderingContext.SYNC_GPU_COMMANDS_COMPLETE, 0) }
-
-        val syncTime = internalTimerClock.now()
-        val syncElapsed = waitForFenceSync(fenceSync)
+        FenceSync(gl).await()
 
         bufs.forEach { (cpuBuffer, glBuf) ->
             gl.check { bindBuffer(WebGL2RenderingContext.PIXEL_PACK_BUFFER, glBuf) }
-            val length = cpuBuffer.sizeInBytes
             gl.check {
                 webgl2.getBufferSubData(
-                    WebGL2RenderingContext.PIXEL_PACK_BUFFER, 0, cpuBuffer.buffer, 0, length
+                    WebGL2RenderingContext.PIXEL_PACK_BUFFER, 0, cpuBuffer.buffer, 0, cpuBuffer.sizeInBytes
                 )
             }
+            gl.check { bindBuffer(WebGL2RenderingContext.PIXEL_PACK_BUFFER, null) }
         }
         bufs.clear()
-
-        val now = internalTimerClock.now()
-        println(
-            "async.awaitResults() took ${(syncTime - startTime).asMillis()}ms (sync)" +
-                    " [${syncElapsed.asMillis()}ms blocking]" +
-                    " + ${(now - syncTime).asMillis()}ms (read)" +
-                    " = ${(now - startTime).asMillis()}ms (total)"
-        )
     }
+}
 
-    private suspend fun waitForFenceSync(fenceSync: WebGLSync): Double {
+class FenceSync(private val gl: GlBase.JsGlContext) {
+    private val webgl2 = gl.webgl
+
+    private val fenceSync = gl.check { webgl2.fenceSync(WebGL2RenderingContext.SYNC_GPU_COMMANDS_COMPLETE, 0) }
+
+    suspend fun await() {
+        gl.check { webgl2.flush() }
+
         val startTime = internalTimerClock.now()
-        var maxTries = fenceTimeoutMs / fencePollTimeMs
-        var elapsed = 0.0
-        while (maxTries > 0) {
-            val syncStartTime = internalTimerClock.now()
+        val maxTries = fenceTimeoutMs / delayBetweenSyncChecksMs
+        var tries = 0
+        while (tries ++ < maxTries) {
             val result = clientWaitSync(fenceSync, timeout = 0)
-            elapsed += internalTimerClock.now() - syncStartTime
-            if (result) return elapsed
+            if (result) {
+                gl.check { webgl2.deleteSync(fenceSync) }
+                return
+            }
 
-            delay(5)
-            maxTries--
+            delay(delayBetweenSyncChecksMs)
         }
-        error("Failed to sync after ${internalTimerClock.now() - startTime}ms!")
+
+        gl.check { webgl2.deleteSync(fenceSync) }
+        error("Fence sync failed after ${internalTimerClock.now() - startTime}ms, $tries tries!")
     }
 
     private fun clientWaitSync(fence: WebGLSync, timeout: Int): Boolean {
@@ -131,7 +127,7 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
     }
 
     companion object {
-        private val fencePollTimeMs = 5
-        private val fenceTimeoutMs = 5000
+        private const val fenceTimeoutMs = 5000
+        private const val delayBetweenSyncChecksMs = 3L
     }
 }
