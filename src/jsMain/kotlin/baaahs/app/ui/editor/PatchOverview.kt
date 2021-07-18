@@ -1,10 +1,8 @@
 package baaahs.app.ui.editor
 
-import baaahs.app.ui.AppGlContext
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderCard
-import baaahs.gl.SharedGlContext
 import baaahs.gl.openShader
 import baaahs.gl.shader.type.ShaderType
 import baaahs.show.Shader
@@ -16,7 +14,6 @@ import baaahs.ui.sharedGlContext
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.CacheBuilder
-import kotlinext.js.jsObject
 import kotlinx.html.js.onClickFunction
 import materialui.components.card.card
 import materialui.components.cardcontent.cardContent
@@ -32,7 +29,6 @@ import materialui.components.typography.typography
 import materialui.icon
 import materialui.icons.Icons
 import org.w3c.dom.Element
-import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
@@ -98,6 +94,8 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
     }
 
     sharedGlContext {
+        attrs.inFront = true
+
         div(+EditableStyles.patchOverview) {
             props.mutablePatch.mutableShaderInstances
                 .map { it to toolchain.openShader(it.mutableShader) }

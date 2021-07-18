@@ -282,7 +282,7 @@ abstract class GlContext(
         }
     }
 
-    fun release() {
+    open fun release() {
         if (kgl is ReleasableKgl) {
             kgl.release()
         }

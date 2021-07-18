@@ -2,8 +2,10 @@ package baaahs.gl.preview
 
 import baaahs.document
 import baaahs.gl.GlBase
+import baaahs.gl.GlContext
 import baaahs.gl.SharedGlContext
 import baaahs.model.Model
+import baaahs.ui.inPixels
 import kotlinx.css.LinearDimension
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
@@ -42,6 +44,8 @@ actual interface ShaderPreviewBootstrapper {
         }
 
         abstract fun bootstrap(model: Model, preRenderHook: RMutableRef<() -> Unit>): ShaderPreview
+
+        abstract fun release(gl: GlContext)
     }
 }
 
@@ -66,6 +70,8 @@ class StandaloneCanvasHelper(
     override fun bootstrap(model: Model, preRenderHook: RMutableRef<() -> Unit>): ShaderPreview {
         return bootstrapper.bootstrap(container, model, preRenderHook)
     }
+
+    override fun release(gl: GlContext) {}
 }
 
 class SharedCanvasHelper(
@@ -78,12 +84,16 @@ class SharedCanvasHelper(
     override fun bootstrap(model: Model, preRenderHook: RMutableRef<() -> Unit>): ShaderPreview =
         bootstrapper.bootstrapShared(
             container,
-            width?.toPx() ?: 10,
-            height?.toPx() ?: 10,
+            width?.inPixels() ?: 10,
+            height?.inPixels() ?: 10,
             sharedGlContext,
             model,
             preRenderHook
         )
+
+    override fun release(gl: GlContext) {
+        gl.release()
+    }
 }
 
 actual object MovingHeadPreviewBootstrapper : ShaderPreviewBootstrapper {
@@ -143,10 +153,4 @@ actual object QuadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedGlConte
             preRenderHook.current.invoke()
         }
     }
-}
-
-private fun LinearDimension.toPx(): Int {
-    if (value.endsWith("px")) {
-        return value.substring(0, value.length - 2).toInt()
-    } else error("unsupported unit $value.")
 }

@@ -19,6 +19,14 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
+/**
+ * This data source provides `gl_FragColor` for quad previews.
+ *
+ * Because `gl_FragColor` is always given as absolute pixels relative to the bottom-left
+ * of the screen/canvas, _not_ relative to the the viewport, and we might be rendering
+ * into a `SharedGlContext` (which adjusts the viewport to a rectangle within the shared
+ * canvas), we need to adjust `gl_FragColor` to account for any offset.
+ */
 @Serializable
 @SerialName("baaahs.Core:RasterCoordinate")
 data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : DataSource {

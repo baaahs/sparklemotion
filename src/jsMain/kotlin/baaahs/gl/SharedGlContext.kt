@@ -15,13 +15,18 @@ class SharedGlContext(
     private val sharedCanvas = glContext.canvas
     private var sharedLastFrameTimestamp = 0.0
     private var sharedCanvasRect: Rect = sharedCanvas.getBoundingClientRect().asRect()
+    private var subContextCount = 0
 
     init {
         glContext.webgl.enable(WebGLRenderingContext.SCISSOR_TEST)
+        updateVisibility()
     }
 
     fun createSubContext(container: HTMLElement): GlBase.JsGlContext =
-        SubJsGlContext(SubKgl(container, kgl))
+        SubJsGlContext(SubKgl(container, kgl)).also {
+            subContextCount++
+            updateVisibility()
+        }
 
     override fun requestAnimationFrame(callback: (Double) -> Unit) {
         error("Don't call requestAnimationFrame() on a SharedGlContext!")
@@ -32,6 +37,19 @@ class SharedGlContext(
             sharedCanvasRect = sharedCanvas.getBoundingClientRect().asRect()
             sharedCanvas.resizeToMatch(sharedCanvasRect)
             sharedLastFrameTimestamp = frameTimestamp
+        }
+    }
+
+    private fun releaseSubContext() {
+        subContextCount--
+        updateVisibility()
+    }
+
+    private fun updateVisibility() {
+        if (subContextCount == 0) {
+            sharedCanvas.style.display = "none"
+        } else {
+            sharedCanvas.style.removeProperty("display")
         }
     }
 
@@ -58,6 +76,10 @@ class SharedGlContext(
 
                 callback(timestamp)
             }
+        }
+
+        override fun release() {
+            this@SharedGlContext.releaseSubContext()
         }
     }
 

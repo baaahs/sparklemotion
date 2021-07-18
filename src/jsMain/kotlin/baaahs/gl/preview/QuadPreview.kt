@@ -12,8 +12,6 @@ class QuadPreview(
 ) : ShaderPreview {
     private var running = false
     override var renderEngine = PreviewRenderEngine(gl, width, height)
-    private var offsetLeft = 0
-    private var offsetBottom = 0
 
     override fun start() {
         running = true

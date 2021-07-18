@@ -39,6 +39,7 @@ class MovingHeadPreview(
     override fun destroy() {
         stop()
         movingHeadProgram?.release()
+        renderEngine.release()
     }
 
     override fun setProgram(program: GlslProgram?) {
