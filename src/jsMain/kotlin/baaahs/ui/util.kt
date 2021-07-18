@@ -4,6 +4,7 @@ import baaahs.util.Logger
 import external.DroppableProvided
 import external.copyFrom
 import kotlinx.css.CSSBuilder
+import kotlinx.css.LinearDimension
 import kotlinx.css.RuleSet
 import kotlinx.css.StyledElement
 import kotlinx.html.DIV
@@ -140,6 +141,12 @@ inline fun RBuilder.typographyBody2(vararg classMap: Pair<TypographyStyle, Strin
         = typography(*classMap, factory = { DIV(mapOf(), it) }) {
     attrs.variant = TypographyVariant.body2
     block()
+}
+
+fun LinearDimension.inPixels(): Int {
+    return if (value.endsWith("px"))
+        value.replace("px", "").toInt()
+    else error("Not a pixel dimension: \"$value\".")
 }
 
 fun renderWrapper(block: RBuilder.() -> Unit): View {

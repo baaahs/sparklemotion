@@ -34,7 +34,11 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
             val canvas = sharedGlContext.canvas
             canvas.classList.add(SharedGlContextStyles.canvas.name)
             canvasParentRef.current!!.let { parent ->
-                parent.insertBefore(canvas, parent.firstChild)
+                if (props.inFront == true) {
+                    parent.appendChild(canvas)
+                } else {
+                    parent.insertBefore(canvas, parent.firstChild)
+                }
             }
 
             withCleanup {
@@ -59,6 +63,7 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
 }
 
 external interface SharedGlContextProps : RProps {
+    var inFront: Boolean?
 }
 
 fun RBuilder.sharedGlContext(handler: RHandler<SharedGlContextProps>) =

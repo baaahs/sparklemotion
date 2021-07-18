@@ -10,6 +10,7 @@ import baaahs.gl.preview.ShaderPreview
 import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
 import baaahs.ui.addObserver
+import baaahs.ui.inPixels
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.IntersectionObserver
@@ -24,6 +25,7 @@ import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.div
 import styled.StyleSheet
+import styled.inlineStyles
 import kotlin.collections.set
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
@@ -36,16 +38,12 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     var errorPopupAnchor by state<EventTarget?> { null }
     val preRenderHook = ref { {} }
 
-    val width = props.width ?: 150.px
-    val height = props.height ?: 150.px
-
     val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
         // TODO: This is duplicating work that happens later in PreviewShaderBuilder, which is rotten.
         toolchain.openShader(props.shader!!).shaderType
     }
     val bootstrapper = shaderType.shaderPreviewBootstrapper
     val helper = memo(bootstrapper, sharedGlContext) { bootstrapper.createHelper(sharedGlContext) }
-//    helper.resize(width, height)
     val previewContainer = helper.container
 
     var gl by state<GlContext?> { null }
@@ -54,11 +52,10 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         canvasParent.current?.let { parent ->
             parent.insertBefore(previewContainer, parent.firstChild)
         }
-        helper.resize(previewContainer.clientWidth.px, previewContainer.clientHeight.px)
-        shaderPreview?.resize(
-            previewContainer.clientWidth,
-            previewContainer.clientHeight
-        )
+        val width = props.width ?: previewContainer.clientWidth.px
+        val height = props.height ?: previewContainer.clientHeight.px
+        helper.resize(width, height)
+        shaderPreview?.resize(width.inPixels(), height.inPixels())
 
         withCleanup { canvasParent.current?.removeChild(previewContainer) }
     }
@@ -82,6 +79,10 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
             intersectionObserver.disconnect()
             preview.destroy()
         }
+    }
+
+    onMount(helper, gl) {
+        withCleanup { gl?.let { helper.release(it) } }
     }
 
     val builder = memo(gl, props.shader, props.previewShaderBuilder) {
@@ -135,10 +136,12 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
     div(+ShaderPreviewStyles.container) {
         ref = canvasParent
-//        inlineStyles {
-//            this.width = width
-//            this.height = height
-//        }
+        if (props.width != null || props.height != null) {
+            inlineStyles {
+                props.width?.let { this.width = it }
+                props.height?.let { this.height = it }
+            }
+        }
 
         when (builder?.state ?: ShaderBuilder.State.Unbuilt) {
             ShaderBuilder.State.Unbuilt,

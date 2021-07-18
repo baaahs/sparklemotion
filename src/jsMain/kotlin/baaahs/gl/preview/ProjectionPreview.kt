@@ -44,6 +44,7 @@ class ProjectionPreview(
     override fun destroy() {
         stop()
         projectionProgram?.release()
+        renderEngine.release()
     }
 
     override fun setProgram(program: GlslProgram?) {

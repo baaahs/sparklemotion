@@ -88,6 +88,8 @@ class ShaderEditorStyles(private val theme: MuiTheme) : StyleSheet("app-ui-edito
 
     val previewContainer by css {
         position = Position.relative
+        width = previewWidth
+        height = previewHeight
     }
 
     val settingsMenuAffordance by css {
