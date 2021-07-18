@@ -62,8 +62,8 @@ class SharedGlContext(
 
         override val rasterOffset: RasterOffset
             get() = RasterOffset(
-                (subKgl.containerRect.bottom - sharedCanvasRect.bottom),
-                (sharedCanvasRect.left - subKgl.containerRect.left)
+                (sharedCanvasRect.bottom - subKgl.containerRect.bottom),
+                (subKgl.containerRect.left - sharedCanvasRect.left)
             )
 
         override fun requestAnimationFrame(callback: (Double) -> Unit) {

@@ -48,7 +48,6 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
         patchOverview {
             attrs.editableManager = editableManager
             attrs.mutablePatch = mutablePatch
-//            attrs.onSelectShaderInstance =
         }
     }
 
