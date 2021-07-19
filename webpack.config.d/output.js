@@ -69,7 +69,7 @@ if (config.devServer || true) {
 
             cacheGroups: {
                 commons: {
-                    test: /[\\/]node_modules[\\/]|[\\/]packages_imported[\\/]/,
+                    test: /[\\/]node_modules[\\/]|[\\/]packages_imported[\\/]|[\\/]kotlin(-dce(-dev)?)?[\\/]kotlin/,
                     name: 'vendors',
                     chunks: 'all'
                 },
