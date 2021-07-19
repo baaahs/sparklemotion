@@ -19,7 +19,6 @@ import kotlinx.html.js.onClickFunction
 import materialui.components.typography.enums.TypographyDisplay
 import materialui.components.typography.typography
 import materialui.icon
-import materialui.icons.Icons
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.EventTarget
 import react.*
@@ -162,7 +161,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                         event.stopPropagation()
                     }
 
-                    icon(Icons.Warning)
+                    icon(materialui.icons.Warning)
                     typography {
                         attrs.display = TypographyDisplay.block
                         +"Preview failed."

@@ -20,7 +20,6 @@ import materialui.components.popover.horizontal
 import materialui.components.popover.vertical
 import materialui.components.textfield.textField
 import materialui.icon
-import materialui.icons.Icons
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
@@ -73,7 +72,7 @@ val LayoutSizeCell = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props -
                 attrs.onClickFunction = showGridSizeMenu
 
                 +props.dimen.unit
-                icon(Icons.ArrowDropDown)
+                icon(materialui.icons.ArrowDropDown)
             }
         }
 

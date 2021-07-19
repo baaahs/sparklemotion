@@ -27,7 +27,6 @@ import materialui.components.listitemtext.listItemText
 import materialui.components.textfield.textField
 import materialui.components.typography.typography
 import materialui.icon
-import materialui.icons.Icons
 import org.w3c.dom.events.Event
 import react.*
 
@@ -143,12 +142,12 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
                         attrs.button = true
                         attrs.onClickFunction = { _ -> handleFileSingleClick(parent) }
                         attrs.onDoubleClickFunction = { _ -> handleFileDoubleClick(parent) }
-                        listItemIcon { icon(Icons.Folder) }
+                        listItemIcon { icon(materialui.icons.Folder) }
                         listItemText { attrs.primary { +".." } }
                     }
                 }
                 filesInDir.forEach { file ->
-                    val icon = if (file.isDirectory == true) Icons.Folder else Icons.InsertDriveFile
+                    val icon = if (file.isDirectory == true) materialui.icons.Folder else materialui.icons.InsertDriveFile
                     val fileDisplay = FileDisplay(file.name, icon, file.name.startsWith("."))
                     props.fileDisplayCallback?.invoke(file, fileDisplay)
 

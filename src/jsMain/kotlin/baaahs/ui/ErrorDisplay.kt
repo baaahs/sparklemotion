@@ -5,12 +5,10 @@ import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.role
 import materialui.components.button.button
-import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.container.container
 import materialui.components.paper.paper
 import materialui.icon
-import materialui.icons.Icons
 import org.w3c.dom.HTMLElement
 import react.RProps
 import react.dom.*
@@ -63,7 +61,7 @@ val ErrorDisplay = functionalComponent<ErrorDisplayProps> { props ->
                         float = Float.left
                         paddingRight = 2.em
                     }
-                    icon(Icons.NotificationImportant)
+                    icon(materialui.icons.NotificationImportant)
                 }
 
                 div {
