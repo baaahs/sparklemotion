@@ -5,6 +5,9 @@ import baaahs.fixtures.ResultBuffer
 import baaahs.gl.GlBase
 import baaahs.gl.GlContext
 import baaahs.gl.WebGL2RenderingContext
+import baaahs.gl.WebGL2RenderingContext.Companion.PIXEL_PACK_BUFFER
+import baaahs.gl.WebGL2RenderingContext.Companion.STREAM_READ
+import baaahs.gl.WebGL2RenderingContext.Companion.SYNC_GPU_COMMANDS_COMPLETE
 import baaahs.gl.WebGLSync
 import baaahs.internalTimerClock
 import com.danielgergely.kgl.Buffer
@@ -50,14 +53,8 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
 
             frameBuffer.withRenderBufferAsAttachment0(gpuBuffer) {
                 val glBuf = gl.check { createBuffer() }
-                gl.check { bindBuffer(WebGL2RenderingContext.PIXEL_PACK_BUFFER, glBuf) }
-                gl.check {
-                    webgl2.bufferData(
-                        WebGL2RenderingContext.PIXEL_PACK_BUFFER,
-                        cpuBuffer.sizeInBytes,
-                        WebGL2RenderingContext.STREAM_READ
-                    )
-                }
+                gl.check { bindBuffer(PIXEL_PACK_BUFFER, glBuf) }
+                gl.check { webgl2.bufferData(PIXEL_PACK_BUFFER, cpuBuffer.sizeInBytes, STREAM_READ) }
 
                 gl.check {
                     webgl2.readPixels(
@@ -65,10 +62,9 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
                         resultType.readPixelFormat, resultType.readType, 0
                     )
                 }
-                gl.check { bindBuffer(WebGL2RenderingContext.PIXEL_PACK_BUFFER, null) }
+                gl.check { bindBuffer(PIXEL_PACK_BUFFER, null) }
 
                 bufs.add(cpuBuffer to glBuf)
-//                gl.check { deleteBuffer(buf) }
             }
         }
     }
@@ -77,13 +73,14 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
         FenceSync(gl).await()
 
         bufs.forEach { (cpuBuffer, glBuf) ->
-            gl.check { bindBuffer(WebGL2RenderingContext.PIXEL_PACK_BUFFER, glBuf) }
+            gl.check { bindBuffer(PIXEL_PACK_BUFFER, glBuf) }
             gl.check {
                 webgl2.getBufferSubData(
-                    WebGL2RenderingContext.PIXEL_PACK_BUFFER, 0, cpuBuffer.buffer, 0, cpuBuffer.sizeInBytes
+                    PIXEL_PACK_BUFFER, 0, cpuBuffer.buffer, 0, 0
                 )
             }
-            gl.check { bindBuffer(WebGL2RenderingContext.PIXEL_PACK_BUFFER, null) }
+            gl.check { bindBuffer(PIXEL_PACK_BUFFER, null) }
+            gl.check { deleteBuffer(glBuf) }
         }
         bufs.clear()
     }
@@ -92,7 +89,7 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
 class FenceSync(private val gl: GlBase.JsGlContext) {
     private val webgl2 = gl.webgl
 
-    private val fenceSync = gl.check { webgl2.fenceSync(WebGL2RenderingContext.SYNC_GPU_COMMANDS_COMPLETE, 0) }
+    private val fenceSync = gl.check { webgl2.fenceSync(SYNC_GPU_COMMANDS_COMPLETE, 0) }
 
     suspend fun await() {
         gl.check { webgl2.flush() }
