@@ -18,7 +18,6 @@ import materialui.components.card.card
 import materialui.components.iconbutton.iconButton
 import materialui.components.paper.enums.PaperStyle
 import materialui.icon
-import materialui.icons.Icons
 import materialui.lab.components.togglebutton.enums.ToggleButtonStyle
 import materialui.lab.components.togglebutton.toggleButton
 import materialui.lab.components.togglebuttongroup.enums.ToggleButtonGroupStyle
@@ -105,11 +104,11 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                                     attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
                                 }
 
-                                icon(Icons.Edit)
+                                icon(materialui.icons.Edit)
                             }
                             div(+Styles.dragHandle) {
                                 copyFrom(sceneDragProvided.dragHandleProps)
-                                icon(Icons.DragIndicator)
+                                icon(materialui.icons.DragIndicator)
                             }
 
                             if (shaderForPreview != null) {
@@ -145,7 +144,7 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 
                 if (editMode) {
                     iconButton {
-                        icon(Icons.AddCircleOutline)
+                        icon(materialui.icons.AddCircleOutline)
                         attrs.onClickFunction = { _: Event ->
                             appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
                         }

@@ -2,7 +2,6 @@ package baaahs.app.ui
 
 import baaahs.app.ui.controls.controlWrapper
 import baaahs.getBang
-import baaahs.gl.SharedGlContext
 import baaahs.show.Layout
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
@@ -15,7 +14,6 @@ import external.mosaic.Mosaic
 import external.mosaic.MosaicControlledProps
 import external.mosaic.MosaicWindow
 import external.mosaic.MosaicWindowProps
-import kotlinext.js.jsObject
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import materialui.components.iconbutton.enums.IconButtonStyle
@@ -27,8 +25,6 @@ import materialui.components.menuitem.menuItem
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.icon
-import materialui.icons.Icons
-import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
@@ -133,7 +129,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                                 showAddMenuForAnchorEl = event.target
                                             }
                                         }.withEvent()
-                                        icon(Icons.AddCircleOutline)
+                                        icon(materialui.icons.AddCircleOutline)
                                     }
                                 }
                             }

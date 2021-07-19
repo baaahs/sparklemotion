@@ -33,7 +33,6 @@ import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.components.typography.typographyH6
 import materialui.icon
-import materialui.icons.Icons
 import materialui.lab.components.alert.alert
 import materialui.lab.components.alert.enums.AlertSeverity
 import materialui.lab.components.alerttitle.alertTitle
@@ -284,7 +283,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                             container {
                                 circularProgress {}
-                                icon(Icons.NotificationImportant)
+                                icon(materialui.icons.NotificationImportant)
 
                                 typographyH6 { +"Connecting…" }
                                 +"Attempting to connect to Sparkle Motion."
@@ -300,7 +299,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                                 container {
                                     circularProgress {}
-                                    icon(Icons.NotificationImportant)
+                                    icon(materialui.icons.NotificationImportant)
 
                                     typographyH6 { +"Mapper Running…" }
                                     +"Please wait."
@@ -311,7 +310,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         if (show == null) {
                             paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
                                 if (webClient.isLoaded) {
-                                    icon(Icons.NotificationImportant)
+                                    icon(materialui.icons.NotificationImportant)
                                     typographyH6 { +"No open show." }
                                     p { +"Maybe you'd like to open one? " }
                                 } else {

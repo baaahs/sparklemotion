@@ -27,7 +27,6 @@ import materialui.components.typography.enums.TypographyDisplay
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.icon
-import materialui.icons.Icons
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
@@ -122,7 +121,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
                 attrs.onClickFunction = handleNewPatchClick
 
                 cardContent {
-                    icon(Icons.AddCircleOutline)
+                    icon(materialui.icons.AddCircleOutline)
                     typography {
                         attrs.display = TypographyDisplay.block
                         attrs.variant = TypographyVariant.subtitle1
@@ -165,7 +164,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
                 }
 
                 menuItem {
-                    listItemIcon { icon(Icons.CloudDownload) }
+                    listItemIcon { icon(materialui.icons.CloudDownload) }
                     listItemText { +"Import… (TBD)" }
                 }
             }

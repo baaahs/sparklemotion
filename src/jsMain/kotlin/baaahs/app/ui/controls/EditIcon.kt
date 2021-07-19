@@ -7,7 +7,6 @@ import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import kotlinx.css.RuleSet
 import materialui.icon
-import materialui.icons.Icons
 import react.RBuilder
 import react.dom.div
 
@@ -24,9 +23,9 @@ fun RBuilder.problemBadge(openPatchHolder: OpenPatchHolder, cssClass: RuleSet = 
 fun RBuilder.problemBadge(problemLevel: Severity?, cssClass: RuleSet = Styles.cardProblemBadge) {
     problemLevel?.let { severity ->
         val (severityClass, severityIcon) = when (severity) {
-            Severity.INFO -> Styles.cardProblemInfo to Icons.Info
-            Severity.WARN -> Styles.cardProblemWarning to Icons.Warning
-            Severity.ERROR -> Styles.cardProblemError to Icons.Error
+            Severity.INFO -> Styles.cardProblemInfo to materialui.icons.Info
+            Severity.WARN -> Styles.cardProblemWarning to materialui.icons.Warning
+            Severity.ERROR -> Styles.cardProblemError to materialui.icons.Error
         }
         div(+cssClass and severityClass) {
             icon(severityIcon)

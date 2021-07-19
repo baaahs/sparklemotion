@@ -38,7 +38,6 @@ import materialui.components.listsubheader.enums.ListSubheaderStyle
 import materialui.components.listsubheader.listSubheader
 import materialui.components.textfield.textField
 import materialui.icon
-import materialui.icons.Icons
 import materialui.lab.components.togglebutton.toggleButton
 import org.w3c.dom.events.Event
 import react.*
@@ -140,7 +139,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                 attrs["selected"] = showCode
                 attrs["size"] = ButtonSize.small.name
                 attrs.onClickFunction = handleShowCodeButton
-                icon(Icons.Code)
+                icon(materialui.icons.Code)
             }
         }
 
@@ -235,7 +234,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                                                     props.onApply(mutableShow)
                                                 }
                                             }
-                                            icon(Icons.Delete)
+                                            icon(materialui.icons.Delete)
                                         }
                                     }
                                 }
