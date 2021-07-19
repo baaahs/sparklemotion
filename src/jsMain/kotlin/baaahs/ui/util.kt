@@ -144,9 +144,11 @@ inline fun RBuilder.typographyBody2(vararg classMap: Pair<TypographyStyle, Strin
 }
 
 fun LinearDimension.inPixels(): Int {
-    return if (value.endsWith("px"))
-        value.replace("px", "").toInt()
-    else error("Not a pixel dimension: \"$value\".")
+    return when {
+        value == "0" -> 0
+        value.endsWith("px") -> value.replace("px", "").toInt()
+        else -> error("Not a pixel dimension: \"$value\".")
+    }
 }
 
 fun renderWrapper(block: RBuilder.() -> Unit): View {

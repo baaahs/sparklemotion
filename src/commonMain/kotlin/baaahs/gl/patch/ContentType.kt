@@ -3,7 +3,6 @@ package baaahs.gl.patch
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
-import baaahs.plugin.core.MovingHeadParams
 
 class ContentType(
     val id: String,
@@ -136,9 +135,7 @@ class ContentType(
             Boolean,
             Float,
             Int,
-            Media,
-
-            MovingHeadParams.contentType
+            Media
         )
     }
 }
