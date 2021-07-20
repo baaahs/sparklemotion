@@ -65,18 +65,18 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
 
     var showCode by state { false }
     var errorMessage by state<String?> { null }
-    val changed = ref { false }
+    val changed = ref(false)
 
     var currentFormat by state<String?> { "default" }
 
     val formatsSerializer = MapSerializer(String.serializer(), Layout.serializer())
     fun getLayoutsFromJson(): Map<String, Layout> {
-        val layoutJson = aceEditor.current.editor.session.getDocument()
+        val layoutJson = aceEditor.current!!.editor.session.getDocument()
         return json.decodeFromString(formatsSerializer, layoutJson.getValue())
     }
 
     val checkLayout = callback {
-        if (showCode && changed.current) {
+        if (showCode && changed.current == true) {
             errorMessage = try {
                 panelIds = getLayoutsFromJson().getPanelIds().toMutableSet()
                 null

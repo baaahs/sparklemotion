@@ -18,5 +18,3 @@ pluginManagement {
 //    }
 //}
 rootProject.name = "sparklemotion"
-
-enableFeaturePreview("GRADLE_METADATA")

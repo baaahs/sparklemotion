@@ -178,7 +178,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-controls-theme", isS
             "effect effect fader"
             "hold go fader"
         """)
-        gap = Gap(.25.em.value)
+        gap = .25.em
 
 //        header {
 //            position = Position.absolute

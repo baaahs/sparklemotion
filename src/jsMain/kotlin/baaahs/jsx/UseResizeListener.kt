@@ -3,7 +3,7 @@
 
 package baaahs.jsx
 
-import react.RMutableRef
+import react.RReadableRef
 
 @JsName("useResizeListener")
-external fun useResizeListener(element: RMutableRef<*>, onResized: () -> Unit)
+external fun useResizeListener(element: RReadableRef<*>, onResized: () -> Unit)

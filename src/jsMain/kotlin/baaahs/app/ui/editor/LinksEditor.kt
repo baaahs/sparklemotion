@@ -26,7 +26,7 @@ import react.dom.code
 val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     observe(props.editingShader)
 
-    val lastShaderInputPorts = ref<List<InputPort>?>(null)
+    val lastShaderInputPorts = ref<List<InputPort>>()
     val shaderInputPorts = props.editingShader.inputPorts
         ?.also { lastShaderInputPorts.current = it }
         ?: lastShaderInputPorts.current

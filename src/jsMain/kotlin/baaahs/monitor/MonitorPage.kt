@@ -9,7 +9,7 @@ import react.RState
 import react.dom.div
 
 class MonitorPage(props: Props) : RComponent<MonitorPage.Props, MonitorPage.State>(props) {
-    private val container = react.createRef<HTMLDivElement?>()
+    private val container = react.createRef<HTMLDivElement>()
 
     override fun componentDidMount() {
         container.current?.appendChild(props.containerDiv)

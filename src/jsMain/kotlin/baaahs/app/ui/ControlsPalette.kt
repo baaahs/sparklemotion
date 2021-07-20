@@ -18,7 +18,7 @@ import react.*
 import react.dom.div
 
 val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { props ->
-    val unplacedControlPaletteDiv = ref<HTMLElement?>()
+    val unplacedControlPaletteDiv = ref<HTMLElement>()
 
     val editModeStyle =
         if (props.editMode) Styles.editModeOn else Styles.editModeOff

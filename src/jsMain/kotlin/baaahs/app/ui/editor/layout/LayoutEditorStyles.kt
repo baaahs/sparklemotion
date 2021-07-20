@@ -15,7 +15,7 @@ class LayoutEditorStyles(theme: MuiTheme) : StyleSheet("app-ui-editor-LayoutEdit
     val outerContainer by css {
         display = Display.grid
         gridTemplateColumns = GridTemplateColumns("auto auto auto")
-        gap = Gap(1.em.toString())
+        gap = 1.em
     }
 
     val listSubheader by css {

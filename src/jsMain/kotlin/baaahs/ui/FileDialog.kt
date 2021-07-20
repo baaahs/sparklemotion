@@ -29,6 +29,7 @@ import materialui.components.typography.typography
 import materialui.icon
 import org.w3c.dom.events.Event
 import react.*
+import react.dom.attrs
 
 private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
     val appContext = useContext(appContext)

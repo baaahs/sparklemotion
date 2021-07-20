@@ -32,10 +32,10 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val sharedGlContext = useContext(appGlContext).sharedGlContext
     val toolchain = props.toolchain ?: appContext.toolchain
 
-    val canvasParent = ref<HTMLDivElement?> { null }
+    val canvasParent = ref<HTMLDivElement>()
     var shaderPreview by state<ShaderPreview?> { null }
     var errorPopupAnchor by state<EventTarget?> { null }
-    val preRenderHook = ref { {} }
+    val preRenderHook = ref({})
 
     val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
         // TODO: This is duplicating work that happens later in PreviewShaderBuilder, which is rotten.

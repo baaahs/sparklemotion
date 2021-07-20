@@ -48,49 +48,52 @@ config.resolve.alias = {
     js: path.resolve(__dirname, "../../../../src/jsMain/js/"),
 };
 
-if (config.devServer || true) {
+if (config.devServer) {
     config.devServer = config.devServer || {};
 
-    config.devServer.hot = true;
-    config.devServer.watchOptions = {
-      aggregateTimeout: 2000,
-      poll: 1000
-    };
+    // config.devServer.noInfo = false
 
-    // see https://discuss.kotlinlang.org/t/kotlin-js-react-unstable-building/15582/6
-    config.entry.main = config.entry.main.map(
-      s => s.replace(`/kotlin-out/`, "/"),
-    );
+    // config.devServer.hot = true;
+    // config.devServer.watchOptions = {
+    //   aggregateTimeout: 2000,
+    //   poll: 1000
+    // };
 
-    config.optimization = {
-        splitChunks: {
-            chunks: 'all',
-            name: true,
+    // // see https://discuss.kotlinlang.org/t/kotlin-js-react-unstable-building/15582/6
+    // config.entry.main = config.entry.main.map(
+    //   s => s.replace(`/kotlin-out/`, "/"),
+    // );
 
-            cacheGroups: {
-                commons: {
-                    test: /[\\/]node_modules[\\/]|[\\/]packages_imported[\\/]|[\\/]kotlin(-dce(-dev)?)?[\\/]kotlin/,
-                    name: 'vendors',
-                    chunks: 'all'
-                },
-                default: {
-                    minChunks: 2,
-                    priority: -20,
-                    reuseExistingChunk: true
-                }
-            }
-        }
-    };
+    // config.optimization = {
+        // splitChunks: true
+    //     splitChunks: {
+    //         chunks: 'all',
+    //         name: true,
+    //
+    //         cacheGroups: {
+    //             commons: {
+    //                 test: /[\\/]node_modules[\\/]|[\\/]packages_imported[\\/]|[\\/]kotlin(-dce(-dev)?)?[\\/]kotlin/,
+    //                 name: 'vendors',
+    //                 chunks: 'all'
+    //             },
+    //             default: {
+    //                 minChunks: 2,
+    //                 priority: -20,
+    //                 reuseExistingChunk: true
+    //             }
+    //         }
+    //     }
+    // };
 } else {
     // Otherwise we get "unknown module and require" from production build.
-    config.optimization = {
-        sideEffects: false,
-        splitChunks: {
-            chunks: function(chunk) {
-                return false;
-            }
-        }
-    };
+    // config.optimization = {
+    //     sideEffects: false,
+        // splitChunks: {
+        //     chunks: function(chunk) {
+        //         return false;
+        //     }
+        // }
+    // };
 }
 
 // config.devtool = 'eval';

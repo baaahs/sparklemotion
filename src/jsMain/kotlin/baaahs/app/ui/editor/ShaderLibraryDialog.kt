@@ -38,7 +38,7 @@ val ShaderLibraryDialog = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDia
 
     val handleClose = callback(props.onSelect) { _: Event, _: String -> props.onSelect(null) }
 
-    val searchJob = ref<Job?> { null }
+    val searchJob = ref<Job>()
     var matches by state { emptyList<ShaderLibrary.Entry>() }
     val runSearch by handler { terms: String ->
         searchJob.current?.cancel()
@@ -116,7 +116,7 @@ val ShaderLibraryDialog = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDia
                 inlineStyles {
                     display = Display.grid
                     gridTemplateColumns = GridTemplateColumns("1fr 1fr 1fr")
-                    gap = Gap(1.em.value)
+                    gap = 1.em
                 }
 
                 matches.forEach { match ->

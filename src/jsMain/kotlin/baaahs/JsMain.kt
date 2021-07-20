@@ -7,6 +7,7 @@ import baaahs.di.JsBeatLinkPluginModule
 import baaahs.di.JsPlatformModule
 import baaahs.di.JsWebClientModule
 import baaahs.jsx.sim.MosaicApp
+import baaahs.jsx.sim.MosaicAppProps
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.MapperUi
 import baaahs.model.Model
@@ -18,7 +19,6 @@ import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.sim.HostedWebApp
 import baaahs.sim.ui.WebClientWindow
-import baaahs.sim.ui.WebClientWindowProps
 import baaahs.ui.ErrorDisplay
 import baaahs.ui.ErrorDisplayProps
 import baaahs.util.ConsoleFormatters
@@ -68,7 +68,7 @@ private fun launchUi(
             onLaunch()
 
             val contentDiv = document.getElementById("content")
-            render(createElement(WebClientWindow, jsObject<WebClientWindowProps> {
+            render(createElement(WebClientWindow, jsObject {
                 this.hostedWebApp = this@launch
             }), contentDiv)
         }
@@ -87,14 +87,14 @@ private fun launchUi(
             }
             hostedWebApp.onLaunch()
 
-            val props = jsObject<MosaicApp.Props> {
+            val props = jsObject<MosaicAppProps> {
                 this.simulator = simulator
                 this.hostedWebApp = hostedWebApp
             }
             val simulatorEl = document.getElementById("app")
 
             GlobalScope.launch {
-                render(createElement(MosaicApp::class.js, props), simulatorEl)
+                render(createElement(MosaicApp, props), simulatorEl)
             }
 
             GlobalScope.promise {

@@ -5,12 +5,13 @@ package baaahs.jsx.sim
 
 import baaahs.SheepSimulator
 import baaahs.sim.HostedWebApp
+import react.RClass
 import react.RProps
 
 @JsName("default")
-external class MosaicApp(props: Props) {
-    interface Props : RProps {
-        var simulator: SheepSimulator
-        var hostedWebApp: HostedWebApp
-    }
+external val MosaicApp: RClass<MosaicAppProps>
+
+external interface MosaicAppProps : RProps {
+    var simulator: SheepSimulator
+    var hostedWebApp: HostedWebApp
 }

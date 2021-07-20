@@ -60,7 +60,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     }
 
     val show = webClient.openShow
-    val showProblemsSeverity = webClient.showProblems.map { it.severity }.max()
+    val showProblemsSeverity = webClient.showProblems.map { it.severity }.maxOrNull()
 
     var showProblemsDialogIsOpen by state { false }
     val toggleProblems = callback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
