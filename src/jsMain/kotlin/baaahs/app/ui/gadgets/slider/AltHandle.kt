@@ -9,6 +9,7 @@ import kotlinx.css.top
 import kotlinx.html.unsafe
 import react.*
 import react.dom.div
+import react.dom.setProp
 import react.dom.svg
 import styled.inlineStyles
 

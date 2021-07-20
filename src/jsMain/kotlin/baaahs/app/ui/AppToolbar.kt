@@ -28,7 +28,6 @@ import materialui.components.toolbar.toolbar
 import materialui.components.typography.enums.TypographyStyle
 import materialui.components.typography.typographyH6
 import materialui.icon
-import materialui.icons.Icons
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.b
@@ -61,7 +60,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     }
 
     val show = webClient.openShow
-    val showProblemsSeverity = webClient.showProblems.map { it.severity }.max()
+    val showProblemsSeverity = webClient.showProblems.map { it.severity }.maxOrNull()
 
     var showProblemsDialogIsOpen by state { false }
     val toggleProblems = callback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
@@ -75,7 +74,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                 attrs.color = ButtonColor.inherit
                 attrs.edge = IconButtonEdge.start
                 attrs.onClickFunction = props.onMenuButtonClick.withEvent()
-                icon(Icons.Menu)
+                icon(materialui.icons.Menu)
             }
 
             typographyH6(themeStyles.title on TypographyStyle.root) {
@@ -91,7 +90,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                 if (show != null && props.editMode) {
                     div(+themeStyles.editButton) {
-                        icon(Icons.Edit)
+                        icon(materialui.icons.Edit)
                         attrs.onClickFunction = handleShowEditButtonClick.withEvent()
                     }
                 }
@@ -107,7 +106,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     }
 
                     iconButton {
-                        icon(Icons.Undo)
+                        icon(materialui.icons.Undo)
                         attrs["disabled"] = !undoStack.canUndo()
                         attrs.onClickFunction = handleUndo
 
@@ -115,7 +114,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     }
 
                     iconButton {
-                        icon(Icons.Redo)
+                        icon(materialui.icons.Redo)
                         attrs["disabled"] = !undoStack.canRedo()
                         attrs.onClickFunction = handleRedo
 
@@ -124,13 +123,13 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                     if (webClient.showFile == null) {
                         iconButton {
-                            icon(Icons.FileCopy)
+                            icon(materialui.icons.FileCopy)
                             attrs.onClickFunction = props.onSaveShowAs.withEvent()
                             typographyH6 { +"Save As…" }
                         }
                     } else {
                         iconButton {
-                            icon(Icons.Save)
+                            icon(materialui.icons.Save)
                             attrs["disabled"] = !webClient.showIsModified
                             attrs.onClickFunction = props.onSaveShow.withEvent()
                             typographyH6 { +"Save" }

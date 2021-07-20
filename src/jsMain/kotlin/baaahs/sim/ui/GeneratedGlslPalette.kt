@@ -11,7 +11,6 @@ import materialui.components.paper.paper
 import materialui.components.portal.portal
 import materialui.components.typography.typographyH6
 import materialui.icon
-import materialui.icons.Icons
 import react.RBuilder
 import react.RHandler
 import react.RProps
@@ -31,7 +30,7 @@ val GeneratedGlslPalette = xComponent<GeneratedGlslPaletteProps>("GeneratedGlslP
 
             div(+Styles.glslCodeSheet) {
                 div(+Styles.dragHandle and randomStyleForHandle) {
-                    icon(Icons.DragIndicator)
+                    icon(materialui.icons.DragIndicator)
                 }
 
                 paper(Styles.glslCodePaper on PaperStyle.root) {

@@ -6,10 +6,7 @@ import baaahs.util.Framerate
 import kotlinx.css.*
 import kotlinx.html.id
 import react.*
-import react.dom.tbody
-import react.dom.td
-import react.dom.th
-import react.dom.tr
+import react.dom.*
 import styled.css
 import styled.styledTable
 import styled.styledTh

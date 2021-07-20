@@ -102,7 +102,7 @@ object ShowRunnerSpec : Spek({
             addControls()
             stageManager.switchTo(show, showState)
             fixtureManager.fixturesChanged(fixtures, emptyList())
-            stageManager.renderAndSendNextFrame()
+            doRunBlocking { stageManager.renderAndSendNextFrame() }
         }
 
         context("port wiring") {
@@ -151,7 +151,7 @@ object ShowRunnerSpec : Spek({
                 it("sets the uniform when the gadget value changes") {
                     colorPickerGadget.color = Color.YELLOW
 
-                    stageManager.renderAndSendNextFrame()
+                    doRunBlocking { stageManager.renderAndSendNextFrame() }
                     val colorUniform = fakeProgram.getUniform<List<Float>>("in_colorColorPicker")
                     expect(colorUniform).toBe(arrayListOf(1f, 1f, 0f, 1f))
                 }

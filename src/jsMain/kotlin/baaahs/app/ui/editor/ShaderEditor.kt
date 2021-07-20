@@ -7,7 +7,10 @@ import acex.Selection
 import baaahs.app.ui.appContext
 import baaahs.boundedBy
 import baaahs.show.mutable.EditingShader
-import baaahs.ui.*
+import baaahs.ui.Styles
+import baaahs.ui.addObserver
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import kotlinext.js.jsObject
 import kotlinx.css.left
 import kotlinx.css.px
@@ -22,7 +25,6 @@ import materialui.components.popover.enums.PopoverOriginVertical
 import materialui.components.popover.horizontal
 import materialui.components.popover.vertical
 import materialui.icon
-import materialui.icons.Icons
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
@@ -116,7 +118,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
                 inlineStyles { top = y.px; left = x.px }
                 attrs.onClickFunction = showRefactorMenu
 
-                icon(Icons.MoreHoriz)
+                icon(materialui.icons.MoreHoriz)
             }
         }
 

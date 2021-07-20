@@ -10,6 +10,7 @@ import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.on
+import baaahs.ui.sharedGlContext
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.CacheBuilder
@@ -26,7 +27,6 @@ import materialui.components.typography.enums.TypographyDisplay
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.icon
-import materialui.icons.Icons
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
@@ -92,77 +92,81 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         }
     }
 
-    div(+EditableStyles.patchOverview) {
-        props.mutablePatch.mutableShaderInstances
-            .map { it to toolchain.openShader(it.mutableShader) }
-            .sortedWith(
-                compareBy(
-                    { (_, openShader) -> openShader.shaderType.displayOrder },
-                    { (_, openShader) -> openShader.title }
+    sharedGlContext {
+        attrs.inFront = true
+
+        div(+EditableStyles.patchOverview) {
+            props.mutablePatch.mutableShaderInstances
+                .map { it to toolchain.openShader(it.mutableShader) }
+                .sortedWith(
+                    compareBy(
+                        { (_, openShader) -> openShader.shaderType.displayOrder },
+                        { (_, openShader) -> openShader.title }
+                    )
                 )
-            )
-            .forEach { (mutableShaderInstance, _) ->
-                shaderCard {
-                    key = mutableShaderInstance.id
-                    attrs.mutableShaderInstance = mutableShaderInstance
-                    attrs.onSelect = handleShaderSelect[mutableShaderInstance]
-                    attrs.onDelete = handleShaderDelete[mutableShaderInstance]
-                    attrs.toolchain = toolchain
+                .forEach { (mutableShaderInstance, _) ->
+                    shaderCard {
+                        key = mutableShaderInstance.id
+                        attrs.mutableShaderInstance = mutableShaderInstance
+                        attrs.onSelect = handleShaderSelect[mutableShaderInstance]
+                        attrs.onDelete = handleShaderDelete[mutableShaderInstance]
+                        attrs.toolchain = toolchain
+                    }
+                }
+
+            card(+styles.shaderCard on PaperStyle.root) {
+                key = "new patch"
+                ref = newPatchCardRef
+
+                attrs.onClickFunction = handleNewPatchClick
+
+                cardContent {
+                    icon(materialui.icons.AddCircleOutline)
+                    typography {
+                        attrs.display = TypographyDisplay.block
+                        attrs.variant = TypographyVariant.subtitle1
+                        +"New Shader…"
+                    }
                 }
             }
 
-        card(+styles.shaderCard on PaperStyle.root) {
-            key = "new patch"
-            ref = newPatchCardRef
+            menu {
+                attrs.getContentAnchorEl = null
+                attrs.anchorEl(newPatchMenuAnchor)
+                attrs.open = newPatchMenuAnchor != null
+                attrs.onClose = handleNewPatchMenuClose
 
-            attrs.onClickFunction = handleNewPatchClick
-
-            cardContent {
-                icon(Icons.AddCircleOutline)
-                typography {
-                    attrs.display = TypographyDisplay.block
-                    attrs.variant = TypographyVariant.subtitle1
-                    +"New Shader…"
-                }
-            }
-        }
-
-        menu {
-            attrs.getContentAnchorEl = null
-            attrs.anchorEl(newPatchMenuAnchor)
-            attrs.open = newPatchMenuAnchor != null
-            attrs.onClose = handleNewPatchMenuClose
-
-            menuItem {
-                attrs.onClickFunction = handleNewShaderMenuClick
-
-                listItemIcon { icon(CommonIcons.Add) }
-                listItemText { +"New Shader…" }
-            }
-
-            divider {}
-
-            appContext.plugins.shaderTypes.all.forEach { type ->
                 menuItem {
-                    attrs.onClickFunction = handleNewShaderFromTemplateMenuClick[type]
+                    attrs.onClickFunction = handleNewShaderMenuClick
 
-                    listItemIcon { icon(type.icon) }
-                    listItemText { +"New ${type.title} Shader…" }
+                    listItemIcon { icon(CommonIcons.Add) }
+                    listItemText { +"New Shader…" }
                 }
-            }
 
-            divider {}
+                divider {}
 
-            menuItem {
-                attrs.onClickFunction = handleNewFromShaderLibrary
+                appContext.plugins.shaderTypes.all.forEach { type ->
+                    menuItem {
+                        attrs.onClickFunction = handleNewShaderFromTemplateMenuClick[type]
 
-                listItemIcon { icon(CommonIcons.ShaderLibrary) }
-                listItemText { +"From Shader Library…" }
-            }
+                        listItemIcon { icon(type.icon) }
+                        listItemText { +"New ${type.title} Shader…" }
+                    }
+                }
 
-            menuItem {
-                listItemIcon { icon(Icons.CloudDownload) }
-                listItemText { +"Import… (TBD)" }
+                divider {}
+
+                menuItem {
+                    attrs.onClickFunction = handleNewFromShaderLibrary
+
+                    listItemIcon { icon(CommonIcons.ShaderLibrary) }
+                    listItemText { +"From Shader Library…" }
+                }
+
+                menuItem {
+                    listItemIcon { icon(materialui.icons.CloudDownload) }
+                    listItemText { +"Import… (TBD)" }
+                }
             }
         }
     }

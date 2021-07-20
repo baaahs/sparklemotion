@@ -4,6 +4,7 @@ import baaahs.util.Logger
 import external.DroppableProvided
 import external.copyFrom
 import kotlinx.css.CSSBuilder
+import kotlinx.css.LinearDimension
 import kotlinx.css.RuleSet
 import kotlinx.css.StyledElement
 import kotlinx.html.DIV
@@ -19,6 +20,7 @@ import react.RMutableRef
 import react.RProps
 import react.ReactElement
 import react.dom.RDOMBuilder
+import react.dom.setProp
 import styled.StyleSheet
 import kotlin.reflect.KProperty
 
@@ -26,7 +28,7 @@ import kotlin.reflect.KProperty
 fun <T> nuffin(): T = null as T
 
 @Suppress("UNCHECKED_CAST")
-fun <T> useRef(): RMutableRef<T> = react.useRef(null as T)
+fun <T: Any> useRef(): RMutableRef<T> = react.useRef(null as T)
 
 fun <T : Function<*>> useCallback(vararg dependencies: dynamic, callback: T): T {
     return react.useCallback(callback, dependencies)
@@ -140,6 +142,14 @@ inline fun RBuilder.typographyBody2(vararg classMap: Pair<TypographyStyle, Strin
         = typography(*classMap, factory = { DIV(mapOf(), it) }) {
     attrs.variant = TypographyVariant.body2
     block()
+}
+
+fun LinearDimension.inPixels(): Int {
+    return when {
+        value == "0" -> 0
+        value.endsWith("px") -> value.replace("px", "").toInt()
+        else -> error("Not a pixel dimension: \"$value\".")
+    }
 }
 
 fun renderWrapper(block: RBuilder.() -> Unit): View {

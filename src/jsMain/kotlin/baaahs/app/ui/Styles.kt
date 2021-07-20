@@ -157,7 +157,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 
     val showProblemsDialogContent by css {
         display = Display.grid
-        gap = Gap(1.em.value)
+        gap = 1.em
         gridTemplateColumns = GridTemplateColumns(GridAutoRows.auto, GridAutoRows.auto)
 
         h4 { margin = "unset" }
@@ -231,7 +231,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     val showLayout by css {
         display = Display.grid
         height = 100.pct
-        gap = Gap(2.px.toString())
+        gap = 2.px
         padding(2.px)
     }
 

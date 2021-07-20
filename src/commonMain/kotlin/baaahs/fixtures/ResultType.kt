@@ -13,7 +13,7 @@ interface ResultType {
     val readType: Int
     val stride: Int
 
-    fun createParamBuffer(gl: GlContext, index: Int): ResultBuffer
+    fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer
 }
 
 object ColorResultType : ResultType {
@@ -26,11 +26,11 @@ object ColorResultType : ResultType {
     override val stride: Int
         get() = 4
 
-    override fun createParamBuffer(gl: GlContext, index: Int): Buffer {
+    override fun createResultBuffer(gl: GlContext, index: Int): Buffer {
         return Buffer(gl, index)
     }
 
-    class Buffer(gl: GlContext, paramIndex: Int) : ResultBuffer(gl, paramIndex, ColorResultType) {
+    class Buffer(gl: GlContext, resultIndex: Int) : ResultBuffer(gl, resultIndex, ColorResultType) {
         private lateinit var byteBuffer: ByteBuffer
 
         override val cpuBuffer: com.danielgergely.kgl.Buffer
@@ -77,11 +77,11 @@ object FloatResultType : FloatsResultType(
     // Haven't tested this, but I'm assuming it doesn't work.
     1, GL_R32F, GL_RED
 ) {
-    override fun createParamBuffer(gl: GlContext, index: Int): ResultBuffer {
-        return ParamBuffer(gl, index, this)
+    override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+        return ResultBuffer(gl, index, this)
     }
 
-    class ParamBuffer(gl: GlContext, index: Int, type: ResultType) : Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: ResultType) : Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Float {
             val offset = pixelIndex * type.stride
 
@@ -94,7 +94,7 @@ object FloatResultType : FloatsResultType(
     }
 
     class FloatResultView(
-        private val buffer: ParamBuffer,
+        private val buffer: ResultBuffer,
         pixelOffset: Int,
         pixelCount: Int
     ) : ResultView(pixelOffset, pixelCount) {
@@ -109,11 +109,11 @@ object Vec2ResultType : FloatsResultType(
     // Instead we use four floats and ignore one:
     4, GlContext.GL_RGBA32F, GL_RGBA
 ) {
-    override fun createParamBuffer(gl: GlContext, index: Int): ResultBuffer {
-        return ParamBuffer(gl, index, this)
+    override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+        return ResultBuffer(gl, index, this)
     }
 
-    class ParamBuffer(gl: GlContext, index: Int, type: ResultType) : Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: ResultType) : Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Vector2F {
             val offset = pixelIndex * type.stride
 
@@ -129,7 +129,7 @@ object Vec2ResultType : FloatsResultType(
     }
 
     class Vec2ResultView(
-        private val buffer: ParamBuffer,
+        private val buffer: ResultBuffer,
         pixelOffset: Int,
         pixelCount: Int
     ) : ResultView(pixelOffset, pixelCount) {
@@ -144,11 +144,11 @@ object Vec3ResultType : FloatsResultType(
     // Instead we use four floats and ignore one:
     4, GlContext.GL_RGBA32F, GL_RGBA
 ) {
-    override fun createParamBuffer(gl: GlContext, index: Int): ResultBuffer {
-        return ParamBuffer(gl, index, this)
+    override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+        return ResultBuffer(gl, index, this)
     }
 
-    class ParamBuffer(gl: GlContext, index: Int, type: ResultType) : Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: ResultType) : Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Vector3F {
             val offset = pixelIndex * type.stride
 
@@ -165,7 +165,7 @@ object Vec3ResultType : FloatsResultType(
     }
 
     class Vec3ResultView(
-        private val buffer: ParamBuffer,
+        private val buffer: ResultBuffer,
         pixelOffset: Int,
         pixelCount: Int
     ) : ResultView(pixelOffset, pixelCount) {
@@ -174,11 +174,11 @@ object Vec3ResultType : FloatsResultType(
 }
 
 object Vec4ResultType : FloatsResultType(4, GlContext.GL_RGBA32F, GL_RGBA) {
-    override fun createParamBuffer(gl: GlContext, index: Int): ResultBuffer {
-        return ParamBuffer(gl, index, this)
+    override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+        return ResultBuffer(gl, index, this)
     }
 
-    class ParamBuffer(gl: GlContext, index: Int, type: ResultType) : Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: ResultType) : Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Vector4F {
             val offset = pixelIndex * type.stride
 
@@ -196,7 +196,7 @@ object Vec4ResultType : FloatsResultType(4, GlContext.GL_RGBA32F, GL_RGBA) {
     }
 
     class Vec4ResultView(
-        private val buffer: ParamBuffer,
+        private val buffer: ResultBuffer,
         pixelOffset: Int,
         pixelCount: Int
     ) : ResultView(pixelOffset, pixelCount) {

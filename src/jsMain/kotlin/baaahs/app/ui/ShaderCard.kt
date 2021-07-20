@@ -22,7 +22,6 @@ import materialui.components.typography.enums.TypographyStyle
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.icon
-import materialui.icons.Icons
 import react.RBuilder
 import react.RHandler
 import react.RProps
@@ -77,7 +76,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
                 iconButton {
                     attrs.onClickFunction = handleDeleteClick
 
-                    icon(Icons.Delete)
+                    icon(materialui.icons.Delete)
                 }
             }
         }

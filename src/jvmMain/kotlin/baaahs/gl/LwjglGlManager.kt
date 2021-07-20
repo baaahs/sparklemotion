@@ -40,6 +40,20 @@ class LwjglGlManager : GlManager() {
                 }
             }
         }
+
+        override suspend fun <T> asyncRunInContext(fn: suspend () -> T): T {
+            if (++nestLevel == 1) {
+                GLFW.glfwMakeContextCurrent(window)
+                checkCapabilities()
+            }
+            try {
+                return fn()
+            } finally {
+                if (--nestLevel == 0) {
+                    GLFW.glfwMakeContextCurrent(0)
+                }
+            }
+        }
     }
 
     companion object {

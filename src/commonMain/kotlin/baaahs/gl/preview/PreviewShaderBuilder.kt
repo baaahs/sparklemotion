@@ -5,7 +5,6 @@ import baaahs.control.OpenButtonControl
 import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
 import baaahs.fixtures.*
-import baaahs.getValue
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
@@ -16,11 +15,12 @@ import baaahs.gl.render.RenderEngine
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
+import baaahs.plugin.core.datasource.RasterCoordinateDataSource
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import baaahs.show.live.OpenControl
-import baaahs.show.mutable.MutableConstPort
+import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutablePatch
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
@@ -66,6 +66,16 @@ class PreviewShaderBuilder(
     private val modelInfo: ModelInfo,
     private val coroutineScope: CoroutineScope = GlobalScope
 ) : Observable(), ShaderBuilder {
+
+    constructor(
+        openShader: OpenShader,
+        toolchain: Toolchain,
+        modelInfo: ModelInfo,
+        coroutineScope: CoroutineScope = GlobalScope
+    ) : this(openShader.shader, toolchain, modelInfo, coroutineScope) {
+        this.openShader = openShader
+    }
+
     override var state: ShaderBuilder.State =
         ShaderBuilder.State.Unbuilt
         private set
@@ -94,11 +104,29 @@ class PreviewShaderBuilder(
     private val previewShaders = PreviewShaders(toolchain)
 
     override fun startBuilding() {
-        state = ShaderBuilder.State.Analyzing
+        transitionTo(
+            if (openShader == null) {
+                ShaderBuilder.State.Analyzing
+            } else {
+                ShaderBuilder.State.Linking
+            }
+        )
+    }
+
+    private fun transitionTo(newState: ShaderBuilder.State) {
+        logger.debug { "Transition to $newState for ${shader.title}"}
+        state = newState
         notifyChanged()
 
-        coroutineScope.launch {
-            analyze()
+        fun unsupported(): Unit = error("transitionTo($newState) not supported")
+        when (newState) {
+            ShaderBuilder.State.Unbuilt -> unsupported()
+            ShaderBuilder.State.Analyzing -> coroutineScope.launch { analyze() }
+            ShaderBuilder.State.Linking -> coroutineScope.launch { link() }
+            ShaderBuilder.State.Linked -> { } // No-op; an observer will handle it.
+            ShaderBuilder.State.Compiling -> unsupported()
+            ShaderBuilder.State.Success -> unsupported()
+            ShaderBuilder.State.Errors -> { } // No-op; an observer will handle it.
         }
     }
 
@@ -106,22 +134,18 @@ class PreviewShaderBuilder(
         val shaderAnalysis = toolchain.analyze(shader)
         this.shaderAnalysis = shaderAnalysis
         openShader = toolchain.openShader(shaderAnalysis)
-        state = ShaderBuilder.State.Linking
-        notifyChanged()
 
-        coroutineScope.launch {
-            link()
-        }
+        transitionTo(ShaderBuilder.State.Linking)
     }
 
     fun link() {
-        try {
+        val newState = try {
             val openShader = openShader!!
             val shaderType = openShader.shaderType
             val shaders = shaderType.pickPreviewShaders(openShader, previewShaders)
             val resultContentType = shaderType.previewResultContentType()
             val defaultPorts = if (shaderType.injectUvCoordinateForPreview) {
-                mapOf(ContentType.UvCoordinate to MutableConstPort("gl_FragCoord", GlslType.Vec2))
+                mapOf(ContentType.UvCoordinate to MutableDataSourcePort(RasterCoordinateDataSource()))
             } else emptyMap()
 
             previewPatch = toolchain.autoWire(shaders, defaultPorts = defaultPorts)
@@ -129,21 +153,25 @@ class PreviewShaderBuilder(
                 .acceptSuggestedLinkOptions()
                 .confirm()
             linkedPatch = previewPatch?.openForPreview(toolchain, resultContentType)
-            state = ShaderBuilder.State.Linked
+            ShaderBuilder.State.Linked
         } catch (e: GlslException) {
+            logger.warn(e) { "Failed to compile shader." }
+            e.errors.forEach { logger.warn { it.message } }
             compileErrors = e.errors
-            state = ShaderBuilder.State.Errors
+            ShaderBuilder.State.Errors
         } catch (e: Exception) {
             logger.warn(e) { "Failed to analyze shader." }
             compileErrors = listOf(GlslError(e.message ?: e.toString()))
-            state = ShaderBuilder.State.Errors
+            ShaderBuilder.State.Errors
         }
-        notifyChanged()
+
+        transitionTo(newState)
     }
 
     override fun startCompile(renderEngine: RenderEngine) {
         state = ShaderBuilder.State.Compiling
         notifyChanged()
+        logger.debug { "Transition to $state for ${shader.title}"}
 
         coroutineScope.launch {
             val showPlayer = object : BaseShowPlayer(toolchain, modelInfo) {}
@@ -187,6 +215,7 @@ class PreviewShaderBuilder(
             state = ShaderBuilder.State.Errors
         }
         notifyChanged()
+        logger.debug { "Transition to $state for ${shader.title}"}
     }
 
     fun release() {

@@ -15,6 +15,7 @@ import styled.StyleSheet
 object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     val buttonGroupCard by css {
         display = Display.flex
+        backgroundColor = Color.transparent
         overflowY = Overflow.scroll
 
         descendants(controlButton) {
@@ -92,6 +93,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         flex(1.0, 0.0)
         position = Position.relative
         marginRight = 0.em
+        backgroundColor = Color.transparent
 
         hover {
             child(".${editButton.name}") {
@@ -138,6 +140,19 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         }
     }
 
+    val buttonShaderPreviewContainer by css {
+        position = Position.absolute
+        left = 0.px
+        top = 0.px
+        width = 100.pct
+        height = 100.pct
+    }
+
+    val buttonLabelWhenPreview by css {
+        color = Color.black
+        background = "radial-gradient(rgba(255,255,255,.8), transparent)"
+    }
+
     val global = CSSBuilder().apply {
         ".${baaahs.app.ui.Styles.editModeOff.name}" {
             ".${editButton.name}" {
@@ -163,7 +178,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-controls-theme", isS
             "effect effect fader"
             "hold go fader"
         """)
-        gap = Gap(.25.em.value)
+        gap = .25.em
 
 //        header {
 //            position = Position.absolute

@@ -10,15 +10,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     repositories {
         mavenCentral()
-        maven("https://kotlin.bintray.com/kotlinx")
         maven("https://plugins.gradle.org/m2/")
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
     }
 
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
         classpath("org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}")
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.10.1")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka}")
         classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
     }
 }
@@ -33,7 +31,7 @@ val lwjglNatives = when {
 plugins {
     kotlin("multiplatform") version Versions.kotlin
     kotlin("plugin.serialization") version Versions.kotlin
-    id("org.jetbrains.dokka") version "0.10.1"
+    id("org.jetbrains.dokka") version Versions.dokka
     id("com.github.johnrengelman.shadow") version "5.2.0"
     id("com.github.ben-manes.versions") version "0.29.0"
     id("maven-publish")
@@ -42,15 +40,10 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven("https://kotlin.bintray.com/kotlinx")
-    maven("https://kotlin.bintray.com/ktor")
     maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://jitpack.io")
-    maven("https://dl.bintray.com/fabmax/kool")
     maven("https://raw.githubusercontent.com/baaahs/kgl/mvnrepo")
     maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/")
-    maven("https://dl.bintray.com/subroh0508/maven") // for material-ui
 //    maven("https://maven.danielgergely.com/repository/releases") TODO when next kgl is released
 }
 
@@ -84,9 +77,8 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-                implementation("io.insert-koin:koin-test:${Versions.koin}")
+                implementation(kotlin("test"))
+//                implementation("io.insert-koin:koin-test:${Versions.koin}")
                 implementation("spek:spek-dsl:${Versions.spek}")
                 implementation("ch.tutteli.atrium:${Versions.atriumApi}-common:${Versions.atrium}")
             }
@@ -130,10 +122,6 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val jvmTest by getting {
             dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-junit"))
-                implementation(kotlin("test-junit5"))
-
                 runtimeOnly("org.junit.vintage:junit-vintage-engine:${Versions.junit}")
                 runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.spek}")
                 runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
@@ -142,7 +130,7 @@ kotlin {
                 implementation("ch.tutteli.atrium:${Versions.atriumApi}:${Versions.atrium}")
 
                 // For RunOpenGLTests:
-                implementation("org.junit.platform:junit-platform-launcher:1.6.2")
+                implementation("org.junit.platform:junit-platform-launcher:${Versions.junitPlatform}")
             }
         }
 
@@ -156,9 +144,10 @@ kotlin {
                 implementation("com.danielgergely.kgl:kgl-js:${Versions.kgl}")
 
                 // kotlin react:
-                implementation("org.jetbrains:kotlin-react:${Versions.kotlinReact}")
-                implementation("org.jetbrains:kotlin-react-dom:${Versions.kotlinReact}")
-                implementation("org.jetbrains:kotlin-styled:${Versions.kotlinStyled}")
+//                implementation(enforcedPlatform("org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:${Versions.kotlinWrappers}"))
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react:${Versions.kotlinReact}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:${Versions.kotlinReact}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:${Versions.kotlinStyled}")
                 implementation(npm("styled-components", Versions.styledComponents))
                 implementation(npm("inline-style-prefixer", "^6.0.0"))
 
@@ -175,10 +164,10 @@ kotlin {
                 implementation(npm("css-loader", "^2.1.1"))
 
                 implementation("net.subroh0508.kotlinmaterialui:core:${Versions.kotlinMaterialUi}")
-                implementation(files("src/jsMain/lib/kotlinmaterialui-lab-0.5.3.jar"))
-                implementation(npm("@material-ui/core", "~4.11"))
+                implementation("net.subroh0508.kotlinmaterialui:lab:${Versions.kotlinMaterialUi}")
+//                implementation(npm("@material-ui/core", "4.12.1"))
                 implementation(npm("@material-ui/icons", "~4.9.1"))
-                implementation(npm("@material-ui/lab", "~4.0.0-alpha.57"))
+//                implementation(npm("@material-ui/lab", "4.0.0-alpha.60"))
 
                 implementation(npm("node-sass", "^4.12.0"))
                 implementation(npm("react", "^16.13.1"))
@@ -284,14 +273,8 @@ tasks.named<ProcessResources>("jvmProcessResources") {
     }
 }
 
-val dokka by tasks.getting(DokkaTask::class) {
-    outputFormat = "html"
-    outputDirectory = "$buildDir/javadoc"
-
-    configuration {
-        jdkVersion = 8
-        reportUndocumented = true
-    }
+tasks.named<DokkaTask>("dokkaHtml") {
+    outputDirectory.set(buildDir.resolve("javadoc"))
 }
 
 tasks.create<JavaExec>("runPinkyJvm") {
@@ -340,6 +323,7 @@ tasks.create<JavaExec>("runGlslJvmTests") {
 
 tasks.create<Copy>("packageClientResources") {
     dependsOn("jsProcessResources", "jsBrowserWebpack")
+    duplicatesStrategy = DuplicatesStrategy.WARN
     from(project.file("build/processedResources/js/main"))
     from(project.file("build/distributions"))
     into("build/classes/kotlin/jvm/main/htdocs")
@@ -347,6 +331,7 @@ tasks.create<Copy>("packageClientResources") {
 
 tasks.named<Jar>("jvmJar") {
     dependsOn("packageClientResources")
+    duplicatesStrategy = DuplicatesStrategy.WARN
 }
 
 tasks.create<ShadowJar>("shadowJar") {

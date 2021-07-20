@@ -15,7 +15,7 @@ import styled.StyleSheet
 class ShaderEditorStyles(private val theme: MuiTheme) : StyleSheet("app-ui-editor-ShaderEditor", isStatic = true) {
     val propsAndPreview by css {
         display = Display.flex
-        gap = Gap(1.em.toString())
+        gap = 1.em
         marginTop = 1.em
         paddingRight = 1.em
         maxHeight = previewHeight
@@ -60,7 +60,7 @@ class ShaderEditorStyles(private val theme: MuiTheme) : StyleSheet("app-ui-edito
         display = Display.grid
         gridTemplateColumns = GridTemplateColumns("50% 50%")
         gridTemplateAreas = GridTemplateAreas("\"name name\" \"priority channel\" \"returnType returnType\"")
-        gap = Gap(1.em.value)
+        gap = 1.em
         alignContent = Align.start
 
     }
@@ -88,6 +88,8 @@ class ShaderEditorStyles(private val theme: MuiTheme) : StyleSheet("app-ui-edito
 
     val previewContainer by css {
         position = Position.relative
+        width = previewWidth
+        height = previewHeight
     }
 
     val settingsMenuAffordance by css {

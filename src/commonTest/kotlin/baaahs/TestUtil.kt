@@ -112,7 +112,7 @@ class TestRenderContext(
     val model = fakeModel(modelEntities.toList())
     val deviceType = modelEntities.map { it.deviceType }.distinct().only("device type")
     val gl = FakeGlContext()
-    val renderEngine = ModelRenderEngine(gl, model, deviceType, minTextureWidth = 1)
+    val renderEngine = ModelRenderEngine(gl, model, deviceType, minTextureWidth = 1,)
     val showPlayer = FakeShowPlayer()
     val renderTargets = mutableListOf<RenderTarget>()
 
@@ -144,8 +144,6 @@ object ImmediateDispatcher : CoroutineDispatcher() {
     override fun dispatch(context: CoroutineContext, block: Runnable) = block.run()
 }
 
-
-expect fun assumeTrue(boolean: Boolean)
 
 @Synonym(SynonymType.GROUP)
 @Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))

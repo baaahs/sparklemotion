@@ -10,6 +10,7 @@ object LoggerConfig {
     )
 
     val classLevels = mapOf<KClass<*>, LogLevel>(
+//        KglTracer::class to LogLevel.DEBUG,
         ShowOpener::class to LogLevel.DEBUG
     )
 

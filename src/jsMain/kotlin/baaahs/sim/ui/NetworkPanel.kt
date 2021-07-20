@@ -8,6 +8,7 @@ import kotlinx.css.*
 import kotlinx.html.id
 import kotlinx.html.js.onClickFunction
 import react.*
+import react.dom.attrs
 import react.dom.tbody
 import react.dom.td
 import react.dom.tr

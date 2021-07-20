@@ -15,7 +15,7 @@ import react.RProps
 import react.child
 
 val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { props ->
-    val valueOnUndoStack = ref { props.getValue() }
+    val valueOnUndoStack = ref(props.getValue())
 
     val handleChange by eventHandler(props.setValue, props.editableManager) { event: Event ->
         props.setValue(event.target.value)

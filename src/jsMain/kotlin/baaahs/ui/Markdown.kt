@@ -20,7 +20,7 @@ val Markdown = xComponent<MarkdownProps>("Markdown", isPure = true) { props ->
     }
 
     onMount(props.children) {
-        mdRef.current.innerHTML = mdHtml
+        mdRef.current!!.innerHTML = mdHtml
     }
 
     span {

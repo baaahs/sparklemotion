@@ -22,6 +22,7 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
 
     override val contentTypes: List<ContentType> get() =
         ContentType.coreTypes +
+                MovingHeadParams.contentType +
                 dataSourceBuilders.map { it.contentType } +
                 deviceTypes.map { it.resultContentType } +
                 deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.contentType } }

@@ -29,7 +29,6 @@ import materialui.components.portal.portal
 import materialui.components.snackbar.snackbar
 import materialui.components.typography.typographyH6
 import materialui.icon
-import materialui.icons.Icons
 import materialui.lab.components.alert.alert
 import materialui.lab.components.alert.enums.AlertSeverity
 import materialui.lab.components.alerttitle.alertTitle
@@ -130,7 +129,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                     div(+EditableStyles.dialogTitleButtons) {
                         iconButton(Styles.buttons on IconButtonStyle.root) {
-                            icon(Icons.Undo)
+                            icon(materialui.icons.Undo)
                             attrs["disabled"] = !props.editableManager.canUndo()
                             attrs.onClickFunction = handleUndo
 
@@ -138,7 +137,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
                         }
 
                         iconButton(Styles.buttons on IconButtonStyle.root) {
-                            icon(Icons.Redo)
+                            icon(materialui.icons.Redo)
                             attrs["disabled"] = !props.editableManager.canRedo()
                             attrs.onClickFunction = handleRedo
 

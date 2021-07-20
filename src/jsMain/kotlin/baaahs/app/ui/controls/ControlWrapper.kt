@@ -5,7 +5,6 @@ import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
-import baaahs.ui.useCallback
 import baaahs.ui.xComponent
 import external.DraggableProvided
 import external.copyFrom
@@ -13,7 +12,6 @@ import kotlinx.html.js.onClickFunction
 import materialui.components.card.card
 import materialui.components.paper.enums.PaperStyle
 import materialui.icon
-import materialui.icons.Icons
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
@@ -40,14 +38,14 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
             div(+Styles.editButton) {
                 attrs.onClickFunction = onEditButtonClick
 
-                icon(Icons.Edit)
+                icon(materialui.icons.Edit)
             }
         }
 
         props.draggableProvided?.let { draggableProvided ->
             div(+Styles.dragHandle) {
                 copyFrom(draggableProvided.dragHandleProps)
-                icon(Icons.DragIndicator)
+                icon(materialui.icons.DragIndicator)
             }
         }
 

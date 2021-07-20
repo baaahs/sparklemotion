@@ -6,6 +6,7 @@ import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.FixtureRenderTarget
+import baaahs.gl.render.ResultDeliveryStrategy
 import baaahs.glsl.Uniform
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
@@ -167,13 +168,13 @@ class FloatsPixelParam(
 
 class ResultParam(val title: String, val type: ResultType) {
     fun allocate(gl: GlContext, index: Int): ResultBuffer {
-        return type.createParamBuffer(gl, index)
+        return type.createResultBuffer(gl, index)
     }
 }
 
 abstract class ResultBuffer(
     gl: GlContext,
-    private val paramIndex: Int,
+    private val resultIndex: Int,
     val type: ResultType
 ) {
     var pixelCount: Int = 0
@@ -183,7 +184,7 @@ abstract class ResultBuffer(
     private var curHeight = 0
     private var cpuBufferSize = 0
 
-    private val gpuBuffer = gl.createRenderBuffer()
+    val gpuBuffer = gl.createRenderBuffer()
     abstract val cpuBuffer: Buffer
 
     // Storage smaller than 16x1 causes a GL error.
@@ -207,16 +208,7 @@ abstract class ResultBuffer(
     abstract fun resizeBuffer(size: Int)
 
     fun attachTo(fb: GlContext.FrameBuffer) {
-        fb.attach(gpuBuffer, GL_COLOR_ATTACHMENT0 + paramIndex)
-    }
-
-    fun afterFrame(frameBuffer: GlContext.FrameBuffer) {
-        frameBuffer.withRenderBufferAsAttachment0(gpuBuffer) {
-            gpuBuffer.readPixels(
-                0, 0, gpuBuffer.curWidth, gpuBuffer.curHeight,
-                type.readPixelFormat, type.readType, cpuBuffer
-            )
-        }
+        fb.attach(gpuBuffer, GL_COLOR_ATTACHMENT0 + resultIndex)
     }
 
     abstract fun getView(pixelOffset: Int, pixelCount: Int): ResultView
