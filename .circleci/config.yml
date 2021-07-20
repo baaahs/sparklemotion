@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Build
           command: |
-            ./gradlew build dokkaHtml -x jsBrowserTest --stacktrace --no-daemon --no-parallel --info
+            ./gradlew build -x jsBrowserTest --stacktrace --no-daemon --no-parallel --info
 
       - add_ssh_keys:
           fingerprints:
