@@ -10,9 +10,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     repositories {
         mavenCentral()
-        maven("https://kotlin.bintray.com/kotlinx")
         maven("https://plugins.gradle.org/m2/")
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
     }
 
     dependencies {
@@ -42,14 +40,10 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven("https://kotlin.bintray.com/kotlinx")
-    maven("https://kotlin.bintray.com/ktor")
     maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://jitpack.io")
     maven("https://raw.githubusercontent.com/baaahs/kgl/mvnrepo")
     maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/")
-    maven("https://dl.bintray.com/subroh0508/maven") // for material-ui
 //    maven("https://maven.danielgergely.com/repository/releases") TODO when next kgl is released
 }
 
@@ -85,7 +79,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
-                implementation("io.insert-koin:koin-test:${Versions.koin}")
+//                implementation("io.insert-koin:koin-test:${Versions.koin}")
                 implementation("spek:spek-dsl:${Versions.spek}")
                 implementation("ch.tutteli.atrium:${Versions.atriumApi}-common:${Versions.atrium}")
             }
@@ -155,9 +149,10 @@ kotlin {
                 implementation("com.danielgergely.kgl:kgl-js:${Versions.kgl}")
 
                 // kotlin react:
-                implementation("org.jetbrains:kotlin-react:${Versions.kotlinReact}")
-                implementation("org.jetbrains:kotlin-react-dom:${Versions.kotlinReact}")
-                implementation("org.jetbrains:kotlin-styled:${Versions.kotlinStyled}")
+//                implementation(enforcedPlatform("org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:${Versions.kotlinWrappers}"))
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react:${Versions.kotlinReact}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:${Versions.kotlinReact}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:${Versions.kotlinStyled}")
                 implementation(npm("styled-components", Versions.styledComponents))
                 implementation(npm("inline-style-prefixer", "^6.0.0"))
 
@@ -175,9 +170,9 @@ kotlin {
 
                 implementation("net.subroh0508.kotlinmaterialui:core:${Versions.kotlinMaterialUi}")
                 implementation("net.subroh0508.kotlinmaterialui:lab:${Versions.kotlinMaterialUi}")
-                implementation(npm("@material-ui/core", "~4.11"))
+//                implementation(npm("@material-ui/core", "4.12.1"))
                 implementation(npm("@material-ui/icons", "~4.9.1"))
-                implementation(npm("@material-ui/lab", "4.0.0-alpha.57"))
+//                implementation(npm("@material-ui/lab", "4.0.0-alpha.60"))
 
                 implementation(npm("node-sass", "^4.12.0"))
                 implementation(npm("react", "^16.13.1"))

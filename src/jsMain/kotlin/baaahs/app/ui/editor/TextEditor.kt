@@ -26,10 +26,10 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
     val appContext = useContext(appContext)
 
     val rootEl = baaahs.ui.useRef<Element>()
-    val aceEditor = baaahs.ui.useRef<AceEditor?>()
+    val aceEditor = baaahs.ui.useRef<AceEditor>()
 
-    val src = ref { "" }
-    val srcLastChangedAt = ref<Time?> { null }
+    val src = ref("")
+    val srcLastChangedAt = ref<Time>()
 
     val defaultDebounceSeconds = 0f
 
@@ -71,7 +71,7 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
                 // Changed within .25 seconds?
                 if (lastChange < appContext.clock.now() - debounceSeconds) {
                     srcLastChangedAt.current = null
-                    props.onChange?.invoke(src.current)
+                    props.onChange?.invoke(src.current!!)
                 }
             }
         }, 100)

@@ -49,7 +49,7 @@ object GadgetsPreviewStyles : StyleSheet("app-ui-editor-GadgetsPreview", isStati
     val gadgetsPreview by css {
         display = Display.flex
         flexDirection = FlexDirection.row
-        gap = Gap(1.em.toString())
+        gap = 1.em
     }
 }
 

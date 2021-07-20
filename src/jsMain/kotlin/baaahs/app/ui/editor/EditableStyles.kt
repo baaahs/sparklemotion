@@ -74,7 +74,7 @@ object EditableStyles : StyleSheet("app-ui-Editable", isStatic = true) {
         backgroundColor = StuffThatShouldComeFromTheTheme.lightBackgroundColor
         display = Display.grid
         gridTemplateColumns = GridTemplateColumns.repeat("auto-fit, minmax(175px, 1fr)")
-        gap = Gap(1.em.toString())
+        gap = 1.em
         padding(1.em)
     }
 

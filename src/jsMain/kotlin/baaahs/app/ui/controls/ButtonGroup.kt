@@ -48,8 +48,7 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 //        }
 //    }
 
-    val propsRef = ref { props }
-    propsRef.current = props
+    val propsRef = ref(props)
     val handleEditButtonClick = callback(buttonGroupControl) { event: Event, index: Int ->
         val button = buttonGroupControl.buttons[index]
         button.getEditIntent()?.let { appContext.openEditor(it) }

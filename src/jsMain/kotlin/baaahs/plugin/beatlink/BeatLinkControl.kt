@@ -36,7 +36,7 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
     val beats = listOf(beat1, beat2, beat3, beat4)
     val confidence = ref<HTMLElement>()
     val bpmSpan = ref<HTMLElement>()
-    val timeout = ref<Int?>()
+    val timeout = ref<Int>()
 
     fun update() {
         val beatData = beatSource.getBeatData()
@@ -45,14 +45,14 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
         val beatConfidence = beatData.confidence
 
         beats.forEachIndexed { index, ref ->
-            ref.current.className =
+            ref.current!!.className =
                 if (beat == index) "selected" else ""
         }
 
-        confidence.current.innerText = beatConfidence.percent()
-        bpmSpan.current.innerText = "${bpm.roundToInt()} BPM"
+        confidence.current!!.innerText = beatConfidence.percent()
+        bpmSpan.current!!.innerText = "${bpm.roundToInt()} BPM"
 
-        bpmSpan.current.className =
+        bpmSpan.current!!.className =
             if (beat % 1 == 0) "bpmDisplay bpmDisplay-beatOn" else "bpmDisplay bpmDisplay-beatOff"
 
 

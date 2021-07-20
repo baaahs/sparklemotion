@@ -16,7 +16,7 @@ import react.functionalComponent
 import styled.inlineStyles
 
 val ErrorDisplay = functionalComponent<ErrorDisplayProps> { props ->
-    val guruMediationBox = react.useRef<HTMLElement?>(null)
+    val guruMediationBox = react.useRef<HTMLElement>(null)
 
     react.useEffect {
         var outlined = true

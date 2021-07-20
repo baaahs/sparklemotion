@@ -20,8 +20,8 @@ import react.child
 
 val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
     val prompt = props.prompt
-    val value = ref { prompt.defaultValue }
-    var isInvalidMessage by state { prompt.isValid(value.current) }
+    val value = ref(prompt.defaultValue)
+    var isInvalidMessage by state { prompt.isValid(value.current!!) }
 
     val handleChange by eventHandler(prompt) { event: Event ->
         val newValue = event.target.value
@@ -41,7 +41,7 @@ val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
     }
     val handleSubmitClick by eventHandler(props.onClose, prompt.onSubmit) { event: Event ->
         props.onClose()
-        prompt.onSubmit(value.current)
+        prompt.onSubmit(value.current!!)
         event.stopPropagation()
     }
 
@@ -65,7 +65,7 @@ val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
                 attrs.label { +prompt.fieldLabel }
                 attrs.type = InputType.text
                 attrs.fullWidth = true
-                attrs.defaultValue(value.current)
+                attrs.defaultValue(value.current!!)
                 isInvalidMessage?.let {
                     attrs.error = true
                     attrs.helperText = it.asTextNode()

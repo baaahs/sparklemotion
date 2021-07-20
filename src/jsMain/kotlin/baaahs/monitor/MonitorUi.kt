@@ -13,6 +13,7 @@ import kotlinext.js.jsObject
 import org.w3c.dom.HTMLDivElement
 import react.ReactElement
 import react.createElement
+import react.rClass
 
 class MonitorUi(
     network: Network,
@@ -33,7 +34,7 @@ class MonitorUi(
     }
 
     override fun render(): ReactElement {
-        return createElement(MonitorPage::class.js, jsObject<MonitorPage.Props> {
+        return createElement(MonitorPage::class.rClass, jsObject {
             this.containerDiv = container
             this.visualizer = this@MonitorUi.visualizer
         })

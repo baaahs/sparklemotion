@@ -10,6 +10,7 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 import react.dom.label
+import react.dom.setProp
 import kotlin.math.floor
 
 private val preventDefault: (Event) -> Unit = { event -> event.preventDefault() }

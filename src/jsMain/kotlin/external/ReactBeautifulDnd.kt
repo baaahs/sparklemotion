@@ -4,6 +4,7 @@ import kotlinext.js.jsObject
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.RDOMBuilder
+import react.dom.setProp
 
 @JsModule("js/lib/react-beautiful-dnd-13.0-fixed.js")
 private external val reactBeautifulDndModule: dynamic
