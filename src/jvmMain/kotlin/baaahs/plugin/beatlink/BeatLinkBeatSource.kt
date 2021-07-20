@@ -31,11 +31,11 @@ class BeatLinkBeatSource(
         deviceFinder.start()
         deviceFinder.addDeviceAnnouncementListener(object : DeviceAnnouncementListener {
             override fun deviceLost(announcement: DeviceAnnouncement) {
-                logger.info { "Lost device: ${announcement.name}" }
+                logger.info { "Lost device: ${announcement.deviceName}" }
             }
 
             override fun deviceFound(announcement: DeviceAnnouncement) {
-                logger.info { "New device: ${announcement.name}" }
+                logger.info { "New device: ${announcement.deviceName}" }
             }
         })
 

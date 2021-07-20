@@ -145,8 +145,6 @@ object ImmediateDispatcher : CoroutineDispatcher() {
 }
 
 
-expect fun assumeTrue(boolean: Boolean)
-
 @Synonym(SynonymType.GROUP)
 @Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
 inline fun <reified T> GroupBody.describe(skip: Skip = Skip.No, noinline body: Suite.() -> Unit) {

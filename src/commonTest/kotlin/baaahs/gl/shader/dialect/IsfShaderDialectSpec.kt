@@ -1,7 +1,6 @@
 package baaahs.gl.shader.dialect
 
 import baaahs.describe
-import baaahs.gl.glsl.ErrorsShaderAnalysis
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
@@ -14,7 +13,6 @@ import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.isA
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.json.JsonPrimitive
@@ -162,7 +160,6 @@ object IsfShaderDialectSpec : Spek({
 
                 it("fails to validate") {
                     expect(shaderAnalysis.isValid).toBe(false)
-
                     expect(shaderAnalysis.errors).contains(
                         GlslError("Too many output ports found: [fragColor, gl_FragColor, other].", row = 1)
                     )
@@ -177,11 +174,10 @@ object IsfShaderDialectSpec : Spek({
                     """.trimIndent()
                 }
 
-                it("returns an ErrorShaderAnalysis") {
-                    expect(shaderAnalysis).isA<ErrorsShaderAnalysis>()
-                    shaderAnalysis as ErrorsShaderAnalysis
+                it("fails to validate") {
+                    expect(shaderAnalysis.isValid).toBe(false)
                     expect(shaderAnalysis.errors).containsExactly(
-                        GlslError("Unexpected JSON token at offset 9: EOF\n" +
+                        GlslError("Unexpected JSON token at offset 2: Expected quotation mark '\"', but had '\"' instead\n" +
                                 "JSON input: { \"DESC }", 1)
                     )
                 }

@@ -77,8 +77,7 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
+                implementation(kotlin("test"))
 //                implementation("io.insert-koin:koin-test:${Versions.koin}")
                 implementation("spek:spek-dsl:${Versions.spek}")
                 implementation("ch.tutteli.atrium:${Versions.atriumApi}-common:${Versions.atrium}")
@@ -123,10 +122,6 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val jvmTest by getting {
             dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-junit"))
-                implementation(kotlin("test-junit5"))
-
                 runtimeOnly("org.junit.vintage:junit-vintage-engine:${Versions.junit}")
                 runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.spek}")
                 runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
@@ -135,7 +130,7 @@ kotlin {
                 implementation("ch.tutteli.atrium:${Versions.atriumApi}:${Versions.atrium}")
 
                 // For RunOpenGLTests:
-                implementation("org.junit.platform:junit-platform-launcher:1.6.2")
+                implementation("org.junit.platform:junit-platform-launcher:${Versions.junitPlatform}")
             }
         }
 
@@ -334,6 +329,7 @@ tasks.create<JavaExec>("runGlslJvmTests") {
 
 tasks.create<Copy>("packageClientResources") {
     dependsOn("jsProcessResources", "jsBrowserWebpack")
+    duplicatesStrategy = DuplicatesStrategy.WARN
     from(project.file("build/processedResources/js/main"))
     from(project.file("build/distributions"))
     into("build/classes/kotlin/jvm/main/htdocs")
@@ -341,6 +337,7 @@ tasks.create<Copy>("packageClientResources") {
 
 tasks.named<Jar>("jvmJar") {
     dependsOn("packageClientResources")
+    duplicatesStrategy = DuplicatesStrategy.WARN
 }
 
 tasks.create<ShadowJar>("shadowJar") {
