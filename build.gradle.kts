@@ -16,7 +16,7 @@ buildscript {
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
         classpath("org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}")
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.10.1")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka}")
         classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
     }
 }
@@ -31,7 +31,7 @@ val lwjglNatives = when {
 plugins {
     kotlin("multiplatform") version Versions.kotlin
     kotlin("plugin.serialization") version Versions.kotlin
-    id("org.jetbrains.dokka") version "0.10.1"
+    id("org.jetbrains.dokka") version Versions.dokka
     id("com.github.johnrengelman.shadow") version "5.2.0"
     id("com.github.ben-manes.versions") version "0.29.0"
     id("maven-publish")
@@ -273,14 +273,8 @@ tasks.named<ProcessResources>("jvmProcessResources") {
     }
 }
 
-val dokka by tasks.getting(DokkaTask::class) {
-    outputFormat = "html"
-    outputDirectory = "$buildDir/javadoc"
-
-    configuration {
-        jdkVersion = 8
-        reportUndocumented = true
-    }
+tasks.named<DokkaTask>("dokkaHtml") {
+    outputDirectory.set(buildDir.resolve("javadoc"))
 }
 
 tasks.create<JavaExec>("runPinkyJvm") {
