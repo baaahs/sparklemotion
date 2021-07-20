@@ -1,58 +1,723 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>CompressedTexture - sparklemotion</title>
-<link rel="stylesheet" href="../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">CompressedTexture</a><br/>
-<br/>
-<h1>CompressedTexture</h1>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">CompressedTexture</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-texture/index.html"><span class="identifier">Texture</span></a></code>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-init-.html">&lt;init&gt;</a></h4>
-</td>
-<td>
-<code><span class="identifier">CompressedTexture</span><span class="symbol">(</span><span class="identifier" id="three.js.CompressedTexture$<init>(kotlin.Array(()), kotlin.Number, kotlin.Number, three.js.CompressedPixelFormat, three.js.TextureDataType, three.js.Mapping, three.js.Wrapping, three.js.Wrapping, three.js.TextureFilter, three.js.TextureFilter, kotlin.Number, three.js.TextureEncoding)/mipmaps">mipmaps</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.CompressedTexture$<init>(kotlin.Array(()), kotlin.Number, kotlin.Number, three.js.CompressedPixelFormat, three.js.TextureDataType, three.js.Mapping, three.js.Wrapping, three.js.Wrapping, three.js.TextureFilter, three.js.TextureFilter, kotlin.Number, three.js.TextureEncoding)/width">width</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.CompressedTexture$<init>(kotlin.Array(()), kotlin.Number, kotlin.Number, three.js.CompressedPixelFormat, three.js.TextureDataType, three.js.Mapping, three.js.Wrapping, three.js.Wrapping, three.js.TextureFilter, three.js.TextureFilter, kotlin.Number, three.js.TextureEncoding)/height">height</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a><span class="symbol">, </span><span class="identifier" id="three.js.CompressedTexture$<init>(kotlin.Array(()), kotlin.Number, kotlin.Number, three.js.CompressedPixelFormat, three.js.TextureDataType, three.js.Mapping, three.js.Wrapping, three.js.Wrapping, three.js.TextureFilter, three.js.TextureFilter, kotlin.Number, three.js.TextureEncoding)/format">format</span><span class="symbol">:</span>&nbsp;<a href="../-compressed-pixel-format.html"><span class="identifier">CompressedPixelFormat</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.CompressedTexture$<init>(kotlin.Array(()), kotlin.Number, kotlin.Number, three.js.CompressedPixelFormat, three.js.TextureDataType, three.js.Mapping, three.js.Wrapping, three.js.Wrapping, three.js.TextureFilter, three.js.TextureFilter, kotlin.Number, three.js.TextureEncoding)/type">type</span><span class="symbol">:</span>&nbsp;<a href="../-texture-data-type.html"><span class="identifier">TextureDataType</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.CompressedTexture$<init>(kotlin.Array(()), kotlin.Number, kotlin.Number, three.js.CompressedPixelFormat, three.js.TextureDataType, three.js.Mapping, three.js.Wrapping, three.js.Wrapping, three.js.TextureFilter, three.js.TextureFilter, kotlin.Number, three.js.TextureEncoding)/mapping">mapping</span><span class="symbol">:</span>&nbsp;<a href="../-mapping.html"><span class="identifier">Mapping</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.CompressedTexture$<init>(kotlin.Array(()), kotlin.Number, kotlin.Number, three.js.CompressedPixelFormat, three.js.TextureDataType, three.js.Mapping, three.js.Wrapping, three.js.Wrapping, three.js.TextureFilter, three.js.TextureFilter, kotlin.Number, three.js.TextureEncoding)/wrapS">wrapS</span><span class="symbol">:</span>&nbsp;<a href="../-wrapping.html"><span class="identifier">Wrapping</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.CompressedTexture$<init>(kotlin.Array(()), kotlin.Number, kotlin.Number, three.js.CompressedPixelFormat, three.js.TextureDataType, three.js.Mapping, three.js.Wrapping, three.js.Wrapping, three.js.TextureFilter, three.js.TextureFilter, kotlin.Number, three.js.TextureEncoding)/wrapT">wrapT</span><span class="symbol">:</span>&nbsp;<a href="../-wrapping.html"><span class="identifier">Wrapping</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.CompressedTexture$<init>(kotlin.Array(()), kotlin.Number, kotlin.Number, three.js.CompressedPixelFormat, three.js.TextureDataType, three.js.Mapping, three.js.Wrapping, three.js.Wrapping, three.js.TextureFilter, three.js.TextureFilter, kotlin.Number, three.js.TextureEncoding)/magFilter">magFilter</span><span class="symbol">:</span>&nbsp;<a href="../-texture-filter.html"><span class="identifier">TextureFilter</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.CompressedTexture$<init>(kotlin.Array(()), kotlin.Number, kotlin.Number, three.js.CompressedPixelFormat, three.js.TextureDataType, three.js.Mapping, three.js.Wrapping, three.js.Wrapping, three.js.TextureFilter, three.js.TextureFilter, kotlin.Number, three.js.TextureEncoding)/minFilter">minFilter</span><span class="symbol">:</span>&nbsp;<a href="../-texture-filter.html"><span class="identifier">TextureFilter</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.CompressedTexture$<init>(kotlin.Array(()), kotlin.Number, kotlin.Number, three.js.CompressedPixelFormat, three.js.TextureDataType, three.js.Mapping, three.js.Wrapping, three.js.Wrapping, three.js.TextureFilter, three.js.TextureFilter, kotlin.Number, three.js.TextureEncoding)/anisotropy">anisotropy</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html"><span class="identifier">Number</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">, </span><span class="identifier" id="three.js.CompressedTexture$<init>(kotlin.Array(()), kotlin.Number, kotlin.Number, three.js.CompressedPixelFormat, three.js.TextureDataType, three.js.Mapping, three.js.Wrapping, three.js.Wrapping, three.js.TextureFilter, three.js.TextureFilter, kotlin.Number, three.js.TextureEncoding)/encoding">encoding</span><span class="symbol">:</span>&nbsp;<a href="../-texture-encoding.html"><span class="identifier">TextureEncoding</span></a>&nbsp;<span class="symbol">=</span>&nbsp;definedExternally<span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="flip-y.html">flipY</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">flipY</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="generate-mipmaps.html">generateMipmaps</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">generateMipmaps</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="image.html">image</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">image</span><span class="symbol">: </span><a href="../-t$12/index.html"><span class="identifier">T$12</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="mipmaps.html">mipmaps</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">mipmaps</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&gt;</span></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>CompressedTexture</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::three.js/CompressedTexture///PointingToDeclaration//371682492">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../index.html">sparklemotion</a>/<a href="../index.html">three.js</a>/<a href="index.html">CompressedTexture</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector js-like" data-active="" data-filter=":dokkaHtml/jsMain">js</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Compressed</span><wbr></wbr><span>Texture</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open external class <a href="index.html">CompressedTexture</a>(mipmaps: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-image-data/index.html">ImageData</a>&gt;, width: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a>, height: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a>, format: <a href="../-compressed-pixel-format/index.html">CompressedPixelFormat</a>, type: <a href="../-texture-data-type/index.html">TextureDataType</a>, mapping: <a href="../-mapping/index.html">Mapping</a>, wrapS: <a href="../-wrapping/index.html">Wrapping</a>, wrapT: <a href="../-wrapping/index.html">Wrapping</a>, magFilter: <a href="../-texture-filter/index.html">TextureFilter</a>, minFilter: <a href="../-texture-filter/index.html">TextureFilter</a>, anisotropy: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a>, encoding: <a href="../-texture-encoding/index.html">TextureEncoding</a>) : <a href="../-texture/index.html">Texture</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="2088052995%2FFunctions%2F371682492" anchor-label="addEventListener" id="2088052995%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-event-dispatcher/add-event-listener.html">addEventListener</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2088052995%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="../-event-dispatcher/add-event-listener.html">addEventListener</a>(type: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, listener: (event: <a href="../-event/index.html">Event</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1916222518%2FFunctions%2F371682492" anchor-label="clone" id="-1916222518%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-texture/clone.html">clone</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1916222518%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="../-texture/clone.html">clone</a>(): <a href="../-texture/index.html">Texture</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1013541512%2FFunctions%2F371682492" anchor-label="copy" id="-1013541512%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-texture/copy.html">copy</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1013541512%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="../-texture/copy.html">copy</a>(source: <a href="../-texture/index.html">Texture</a>): <a href="../-texture/index.html">Texture</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-2007034513%2FFunctions%2F371682492" anchor-label="dispatchEvent" id="-2007034513%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-event-dispatcher/dispatch-event.html">dispatchEvent</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2007034513%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="../-event-dispatcher/dispatch-event.html">dispatchEvent</a>(event: <a href="../-t$7/index.html">T$7</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-686035256%2FFunctions%2F371682492" anchor-label="dispose" id="-686035256%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-texture/dispose.html">dispose</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-686035256%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="../-texture/dispose.html">dispose</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-910502148%2FFunctions%2F371682492" anchor-label="hasEventListener" id="-910502148%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-event-dispatcher/has-event-listener.html">hasEventListener</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-910502148%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="../-event-dispatcher/has-event-listener.html">hasEventListener</a>(type: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, listener: (event: <a href="../-event/index.html">Event</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1817786094%2FFunctions%2F371682492" anchor-label="removeEventListener" id="1817786094%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-event-dispatcher/remove-event-listener.html">removeEventListener</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1817786094%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="../-event-dispatcher/remove-event-listener.html">removeEventListener</a>(type: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, listener: (event: <a href="../-event/index.html">Event</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1782364337%2FFunctions%2F371682492" anchor-label="toJSON" id="1782364337%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-texture/to-j-s-o-n.html">toJSON</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1782364337%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="../-texture/to-j-s-o-n.html">toJSON</a>(meta: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="311610208%2FFunctions%2F371682492" anchor-label="transformUv" id="311610208%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-texture/transform-uv.html">transformUv</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="311610208%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="../-texture/transform-uv.html">transformUv</a>(uv: <a href="../-vector2/index.html">Vector2</a>): <a href="../-vector2/index.html">Vector2</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="691305225%2FFunctions%2F371682492" anchor-label="updateMatrix" id="691305225%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-texture/update-matrix.html">updateMatrix</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="691305225%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="../-texture/update-matrix.html">updateMatrix</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="-238139024%2FProperties%2F371682492" anchor-label="anisotropy" id="-238139024%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-238139024%2FProperties%2F371682492">anisotropy</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-238139024%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-238139024%2FProperties%2F371682492" anchor-label="anisotropy" id="-238139024%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-238139024%2FProperties%2F371682492">anisotropy</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="750670909%2FProperties%2F371682492" anchor-label="center" id="750670909%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#750670909%2FProperties%2F371682492">center</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="750670909%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="750670909%2FProperties%2F371682492" anchor-label="center" id="750670909%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#750670909%2FProperties%2F371682492">center</a>: <a href="../-vector2/index.html">Vector2</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1468894273%2FProperties%2F371682492" anchor-label="encoding" id="-1468894273%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-1468894273%2FProperties%2F371682492">encoding</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1468894273%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1468894273%2FProperties%2F371682492" anchor-label="encoding" id="-1468894273%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-1468894273%2FProperties%2F371682492">encoding</a>: <a href="../-texture-encoding/index.html">TextureEncoding</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-717058596%2FProperties%2F371682492" anchor-label="flipY" id="-717058596%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="flip-y.html">flipY</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-717058596%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-717058596%2FProperties%2F371682492" anchor-label="flipY" id="-717058596%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open override var <a href="flip-y.html">flipY</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1607589157%2FProperties%2F371682492" anchor-label="format" id="-1607589157%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-1607589157%2FProperties%2F371682492">format</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1607589157%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1607589157%2FProperties%2F371682492" anchor-label="format" id="-1607589157%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-1607589157%2FProperties%2F371682492">format</a>: <a href="../-pixel-format/index.html">PixelFormat</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1358773554%2FProperties%2F371682492" anchor-label="generateMipmaps" id="1358773554%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="generate-mipmaps.html">generateMipmaps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1358773554%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1358773554%2FProperties%2F371682492" anchor-label="generateMipmaps" id="1358773554%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open override var <a href="generate-mipmaps.html">generateMipmaps</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-735887177%2FProperties%2F371682492" anchor-label="id" id="-735887177%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-735887177%2FProperties%2F371682492">id</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-735887177%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-735887177%2FProperties%2F371682492" anchor-label="id" id="-735887177%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-735887177%2FProperties%2F371682492">id</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1939437331%2FProperties%2F371682492" anchor-label="image" id="-1939437331%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="image.html">image</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1939437331%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1939437331%2FProperties%2F371682492" anchor-label="image" id="-1939437331%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open override var <a href="image.html">image</a>: <a href="../-t$12/index.html">T$12</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1001146530%2FProperties%2F371682492" anchor-label="internalFormat" id="-1001146530%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-1001146530%2FProperties%2F371682492">internalFormat</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1001146530%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1001146530%2FProperties%2F371682492" anchor-label="internalFormat" id="-1001146530%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-1001146530%2FProperties%2F371682492">internalFormat</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="658370807%2FProperties%2F371682492" anchor-label="isTexture" id="658370807%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#658370807%2FProperties%2F371682492">isTexture</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="658370807%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="658370807%2FProperties%2F371682492" anchor-label="isTexture" id="658370807%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#658370807%2FProperties%2F371682492">isTexture</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1082954723%2FProperties%2F371682492" anchor-label="magFilter" id="-1082954723%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-1082954723%2FProperties%2F371682492">magFilter</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1082954723%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1082954723%2FProperties%2F371682492" anchor-label="magFilter" id="-1082954723%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-1082954723%2FProperties%2F371682492">magFilter</a>: <a href="../-texture-filter/index.html">TextureFilter</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-359632358%2FProperties%2F371682492" anchor-label="mapping" id="-359632358%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-359632358%2FProperties%2F371682492">mapping</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-359632358%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-359632358%2FProperties%2F371682492" anchor-label="mapping" id="-359632358%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-359632358%2FProperties%2F371682492">mapping</a>: <a href="../-mapping/index.html">Mapping</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="29162065%2FProperties%2F371682492" anchor-label="matrix" id="29162065%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#29162065%2FProperties%2F371682492">matrix</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="29162065%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="29162065%2FProperties%2F371682492" anchor-label="matrix" id="29162065%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#29162065%2FProperties%2F371682492">matrix</a>: <a href="../-matrix3/index.html">Matrix3</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-2118973223%2FProperties%2F371682492" anchor-label="matrixAutoUpdate" id="-2118973223%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-2118973223%2FProperties%2F371682492">matrixAutoUpdate</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2118973223%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-2118973223%2FProperties%2F371682492" anchor-label="matrixAutoUpdate" id="-2118973223%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-2118973223%2FProperties%2F371682492">matrixAutoUpdate</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1736641342%2FProperties%2F371682492" anchor-label="minFilter" id="1736641342%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#1736641342%2FProperties%2F371682492">minFilter</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1736641342%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1736641342%2FProperties%2F371682492" anchor-label="minFilter" id="1736641342%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#1736641342%2FProperties%2F371682492">minFilter</a>: <a href="../-texture-filter/index.html">TextureFilter</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="405852829%2FProperties%2F371682492" anchor-label="mipmaps" id="405852829%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="mipmaps.html">mipmaps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="405852829%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="405852829%2FProperties%2F371682492" anchor-label="mipmaps" id="405852829%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open override var <a href="mipmaps.html">mipmaps</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-image-data/index.html">ImageData</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1911670777%2FProperties%2F371682492" anchor-label="name" id="-1911670777%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-1911670777%2FProperties%2F371682492">name</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1911670777%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1911670777%2FProperties%2F371682492" anchor-label="name" id="-1911670777%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-1911670777%2FProperties%2F371682492">name</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="383475362%2FProperties%2F371682492" anchor-label="needsUpdate" id="383475362%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#383475362%2FProperties%2F371682492">needsUpdate</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="383475362%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="383475362%2FProperties%2F371682492" anchor-label="needsUpdate" id="383475362%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#383475362%2FProperties%2F371682492">needsUpdate</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-256451137%2FProperties%2F371682492" anchor-label="offset" id="-256451137%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-256451137%2FProperties%2F371682492">offset</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-256451137%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-256451137%2FProperties%2F371682492" anchor-label="offset" id="-256451137%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-256451137%2FProperties%2F371682492">offset</a>: <a href="../-vector2/index.html">Vector2</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1014826794%2FProperties%2F371682492" anchor-label="onUpdate" id="1014826794%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#1014826794%2FProperties%2F371682492">onUpdate</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1014826794%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1014826794%2FProperties%2F371682492" anchor-label="onUpdate" id="1014826794%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#1014826794%2FProperties%2F371682492">onUpdate</a>: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1277343931%2FProperties%2F371682492" anchor-label="premultiplyAlpha" id="1277343931%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#1277343931%2FProperties%2F371682492">premultiplyAlpha</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1277343931%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1277343931%2FProperties%2F371682492" anchor-label="premultiplyAlpha" id="1277343931%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#1277343931%2FProperties%2F371682492">premultiplyAlpha</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1154429513%2FProperties%2F371682492" anchor-label="repeat" id="-1154429513%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-1154429513%2FProperties%2F371682492">repeat</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1154429513%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1154429513%2FProperties%2F371682492" anchor-label="repeat" id="-1154429513%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-1154429513%2FProperties%2F371682492">repeat</a>: <a href="../-vector2/index.html">Vector2</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-908343308%2FProperties%2F371682492" anchor-label="rotation" id="-908343308%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-908343308%2FProperties%2F371682492">rotation</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-908343308%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-908343308%2FProperties%2F371682492" anchor-label="rotation" id="-908343308%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-908343308%2FProperties%2F371682492">rotation</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-97487845%2FProperties%2F371682492" anchor-label="sourceFile" id="-97487845%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-97487845%2FProperties%2F371682492">sourceFile</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-97487845%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-97487845%2FProperties%2F371682492" anchor-label="sourceFile" id="-97487845%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-97487845%2FProperties%2F371682492">sourceFile</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-981895624%2FProperties%2F371682492" anchor-label="type" id="-981895624%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-981895624%2FProperties%2F371682492">type</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-981895624%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-981895624%2FProperties%2F371682492" anchor-label="type" id="-981895624%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-981895624%2FProperties%2F371682492">type</a>: <a href="../-texture-data-type/index.html">TextureDataType</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="513518455%2FProperties%2F371682492" anchor-label="unpackAlignment" id="513518455%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#513518455%2FProperties%2F371682492">unpackAlignment</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="513518455%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="513518455%2FProperties%2F371682492" anchor-label="unpackAlignment" id="513518455%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#513518455%2FProperties%2F371682492">unpackAlignment</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1737198377%2FProperties%2F371682492" anchor-label="uuid" id="-1737198377%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-1737198377%2FProperties%2F371682492">uuid</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1737198377%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1737198377%2FProperties%2F371682492" anchor-label="uuid" id="-1737198377%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-1737198377%2FProperties%2F371682492">uuid</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-881775280%2FProperties%2F371682492" anchor-label="version" id="-881775280%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-881775280%2FProperties%2F371682492">version</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-881775280%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-881775280%2FProperties%2F371682492" anchor-label="version" id="-881775280%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#-881775280%2FProperties%2F371682492">version</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1190731967%2FProperties%2F371682492" anchor-label="wrapS" id="1190731967%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#1190731967%2FProperties%2F371682492">wrapS</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1190731967%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1190731967%2FProperties%2F371682492" anchor-label="wrapS" id="1190731967%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#1190731967%2FProperties%2F371682492">wrapS</a>: <a href="../-wrapping/index.html">Wrapping</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1221751774%2FProperties%2F371682492" anchor-label="wrapT" id="1221751774%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#1221751774%2FProperties%2F371682492">wrapT</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1221751774%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1221751774%2FProperties%2F371682492" anchor-label="wrapT" id="1221751774%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="index.html#1221751774%2FProperties%2F371682492">wrapT</a>: <a href="../-wrapping/index.html">Wrapping</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

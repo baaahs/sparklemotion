@@ -1,113 +1,282 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>CanvasBitmap - sparklemotion</title>
-<link rel="stylesheet" href="../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.imaging</a>&nbsp;/&nbsp;<a href="./index.html">CanvasBitmap</a><br/>
-<br/>
-<h1>CanvasBitmap</h1>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">CanvasBitmap</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-bitmap/index.html"><span class="identifier">Bitmap</span></a></code>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-init-.html">&lt;init&gt;</a></h4>
-</td>
-<td>
-<code><span class="identifier">CanvasBitmap</span><span class="symbol">(</span><span class="identifier" id="baaahs.imaging.CanvasBitmap$<init>()/canvas">canvas</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="height.html">height</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">height</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="width.html">width</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">val </span><span class="identifier">width</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="as-image.html">asImage</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">asImage</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-image/index.html"><span class="identifier">Image</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="clone.html">clone</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">clone</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-bitmap/index.html"><span class="identifier">Bitmap</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="copy-from.html">copyFrom</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">copyFrom</span><span class="symbol">(</span><span class="identifier" id="baaahs.imaging.CanvasBitmap$copyFrom(baaahs.imaging.Bitmap)/other">other</span><span class="symbol">:</span>&nbsp;<a href="../-bitmap/index.html"><span class="identifier">Bitmap</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="darken.html">darken</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">darken</span><span class="symbol">(</span><span class="identifier" id="baaahs.imaging.CanvasBitmap$darken(baaahs.imaging.Bitmap)/other">other</span><span class="symbol">:</span>&nbsp;<a href="../-bitmap/index.html"><span class="identifier">Bitmap</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="draw-image.html">drawImage</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">drawImage</span><span class="symbol">(</span><span class="identifier" id="baaahs.imaging.CanvasBitmap$drawImage(baaahs.imaging.Image)/image">image</span><span class="symbol">:</span>&nbsp;<a href="../-image/index.html"><span class="identifier">Image</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code><br/>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">drawImage</span><span class="symbol">(</span><span class="identifier" id="baaahs.imaging.CanvasBitmap$drawImage(baaahs.imaging.Image, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/image">image</span><span class="symbol">:</span>&nbsp;<a href="../-image/index.html"><span class="identifier">Image</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.imaging.CanvasBitmap$drawImage(baaahs.imaging.Image, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/sX">sX</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.imaging.CanvasBitmap$drawImage(baaahs.imaging.Image, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/sY">sY</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.imaging.CanvasBitmap$drawImage(baaahs.imaging.Image, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/sWidth">sWidth</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.imaging.CanvasBitmap$drawImage(baaahs.imaging.Image, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/sHeight">sHeight</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.imaging.CanvasBitmap$drawImage(baaahs.imaging.Image, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/dX">dX</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.imaging.CanvasBitmap$drawImage(baaahs.imaging.Image, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/dY">dY</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.imaging.CanvasBitmap$drawImage(baaahs.imaging.Image, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/dWidth">dWidth</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.imaging.CanvasBitmap$drawImage(baaahs.imaging.Image, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int, kotlin.Int)/dHeight">dHeight</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="lighten.html">lighten</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">lighten</span><span class="symbol">(</span><span class="identifier" id="baaahs.imaging.CanvasBitmap$lighten(baaahs.imaging.Bitmap)/other">other</span><span class="symbol">:</span>&nbsp;<a href="../-bitmap/index.html"><span class="identifier">Bitmap</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="subtract.html">subtract</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">subtract</span><span class="symbol">(</span><span class="identifier" id="baaahs.imaging.CanvasBitmap$subtract(baaahs.imaging.Bitmap)/other">other</span><span class="symbol">:</span>&nbsp;<a href="../-bitmap/index.html"><span class="identifier">Bitmap</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="to-data-url.html">toDataUrl</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">toDataUrl</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="with-data.html">withData</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">withData</span><span class="symbol">(</span><span class="identifier" id="baaahs.imaging.CanvasBitmap$withData(baaahs.MediaDevices.Region, kotlin.Function1((baaahs.imaging.UByteClampedArray, kotlin.Boolean)))/region">region</span><span class="symbol">:</span>&nbsp;<span class="identifier">Region</span><span class="symbol">, </span><span class="identifier" id="baaahs.imaging.CanvasBitmap$withData(baaahs.MediaDevices.Region, kotlin.Function1((baaahs.imaging.UByteClampedArray, kotlin.Boolean)))/fn">fn</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">data</span><span class="symbol">:</span>&nbsp;<a href="../-u-byte-clamped-array/index.html"><span class="identifier">UByteClampedArray</span></a><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>CanvasBitmap</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.imaging/CanvasBitmap///PointingToDeclaration//371682492">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../index.html">sparklemotion</a>/<a href="../index.html">baaahs.imaging</a>/<a href="index.html">CanvasBitmap</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector js-like" data-active="" data-filter=":dokkaHtml/jsMain">js</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Canvas</span><wbr></wbr><span>Bitmap</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open class <a href="index.html">CanvasBitmap</a>(canvas: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/org.w3c.dom/-h-t-m-l-canvas-element/index.html">HTMLCanvasElement</a>) : <a href="../-bitmap/index.html">Bitmap</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="282240097%2FFunctions%2F371682492" anchor-label="asImage" id="282240097%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="as-image.html">asImage</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="282240097%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open override fun <a href="as-image.html">asImage</a>(): <a href="../-image/index.html">Image</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1141001971%2FFunctions%2F371682492" anchor-label="clone" id="-1141001971%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="clone.html">clone</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1141001971%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open override fun <a href="clone.html">clone</a>(): <a href="../-bitmap/index.html">Bitmap</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-891338712%2FFunctions%2F371682492" anchor-label="copyFrom" id="-891338712%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="copy-from.html">copyFrom</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-891338712%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open override fun <a href="copy-from.html">copyFrom</a>(other: <a href="../-bitmap/index.html">Bitmap</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-851159736%2FFunctions%2F371682492" anchor-label="darken" id="-851159736%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="darken.html">darken</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-851159736%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open override fun <a href="darken.html">darken</a>(other: <a href="../-bitmap/index.html">Bitmap</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-225242664%2FFunctions%2F371682492" anchor-label="drawImage" id="-225242664%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="draw-image.html">drawImage</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-225242664%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open override fun <a href="draw-image.html">drawImage</a>(image: <a href="../-image/index.html">Image</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace">open override fun <a href="draw-image.html">drawImage</a>(image: <a href="../-image/index.html">Image</a>, sX: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, sY: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, sWidth: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, sHeight: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dX: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dY: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dWidth: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dHeight: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1059398638%2FFunctions%2F371682492" anchor-label="lighten" id="1059398638%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="lighten.html">lighten</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1059398638%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open override fun <a href="lighten.html">lighten</a>(other: <a href="../-bitmap/index.html">Bitmap</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-96201283%2FFunctions%2F371682492" anchor-label="subtract" id="-96201283%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="subtract.html">subtract</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-96201283%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open override fun <a href="subtract.html">subtract</a>(other: <a href="../-bitmap/index.html">Bitmap</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-2115995104%2FFunctions%2F371682492" anchor-label="toDataUrl" id="-2115995104%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="to-data-url.html">toDataUrl</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2115995104%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open override fun <a href="to-data-url.html">toDataUrl</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1361504407%2FFunctions%2F371682492" anchor-label="withData" id="1361504407%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="with-data.html">withData</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1361504407%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open override fun <a href="with-data.html">withData</a>(region: <a href="../../baaahs/-media-devices/-region/index.html">MediaDevices.Region</a>, fn: (data: <a href="../-u-byte-clamped-array/index.html">UByteClampedArray</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="1810036153%2FProperties%2F371682492" anchor-label="dimen" id="1810036153%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#1810036153%2FProperties%2F371682492">dimen</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1810036153%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1810036153%2FProperties%2F371682492" anchor-label="dimen" id="1810036153%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open val <a href="index.html#1810036153%2FProperties%2F371682492">dimen</a>: <a href="../-dimen/index.html">Dimen</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1524840951%2FProperties%2F371682492" anchor-label="height" id="-1524840951%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="height.html">height</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1524840951%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1524840951%2FProperties%2F371682492" anchor-label="height" id="-1524840951%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open override val <a href="height.html">height</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1375893700%2FProperties%2F371682492" anchor-label="width" id="1375893700%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="width.html">width</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1375893700%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1375893700%2FProperties%2F371682492" anchor-label="width" id="1375893700%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open override val <a href="width.html">width</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Inheritors</h2>
+              <div class="table" data-togglable="Inheritors"><a data-name="1333863984%2FInheritors%2F371682492" anchor-label="NativeBitmap" id="1333863984%2FInheritors%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-native-bitmap/index.html">NativeBitmap</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1333863984%2FInheritors%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

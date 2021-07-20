@@ -1,132 +1,345 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>baaahs.visualizer - sparklemotion</title>
-<link rel="stylesheet" href="../../style.css">
-</HEAD>
-<BODY>
-<a href="../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="./index.html">baaahs.visualizer</a><br/>
-<br/>
-<h2>Package baaahs.visualizer</h2>
-<h3>Types</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-entity-visualizer/index.html">EntityVisualizer</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">EntityVisualizer</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-light-bar-visualizer/index.html">LightBarVisualizer</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">LightBarVisualizer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-entity-visualizer/index.html"><span class="identifier">EntityVisualizer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-pixel-arranger/index.html">PixelArranger</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">PixelArranger</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-rotator/index.html">Rotator</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Rotator</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-surface-geometry/index.html">SurfaceGeometry</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">SurfaceGeometry</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-surface-visualizer/index.html">SurfaceVisualizer</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">SurfaceVisualizer</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-entity-visualizer/index.html"><span class="identifier">EntityVisualizer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-swirly-pixel-arranger/index.html">SwirlyPixelArranger</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">SwirlyPixelArranger</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-pixel-arranger/index.html"><span class="identifier">PixelArranger</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-visualizer/index.html">Visualizer</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Visualizer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">StatusListener</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-viz-obj/index.html">VizObj</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">VizObj</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-viz-pixels/index.html">VizPixels</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">VizPixels</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs/-pixels/index.html"><span class="identifier">Pixels</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-viz-scene/index.html">VizScene</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">VizScene</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Extensions for External Classes</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="kotlin.-array/index.html">kotlin.Array</a></h4>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td>
-<h4><a href="kotlin.collections.-mutable-list/index.html">kotlin.collections.MutableList</a></h4>
-</td>
-<td>
-</td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="segments.html">segments</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><a href="../three.js/-face3/index.html"><span class="identifier">Face3</span></a><span class="symbol">.</span><span class="identifier">segments</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="to-vector3.html">toVector3</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><a href="../baaahs.geom/-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">.</span><span class="identifier">toVector3</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../three.js/-vector3/index.html"><span class="identifier">Vector3</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>baaahs.visualizer</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script><script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../styles/style.css" rel="Stylesheet"><link href="../../styles/logo-styles.css" rel="Stylesheet"><link href="../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.visualizer////PointingToDeclaration//-712551682">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../index.html">sparklemotion</a>/<a href="index.html">baaahs.visualizer</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":dokkaHtml/commonMain">common</button><button class="platform-tag platform-selector js-like" data-active="" data-filter=":dokkaHtml/jsMain">js</button><button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":dokkaHtml/jvmMain">jvm</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Package baaahs.</span><wbr></wbr><span>visualizer</span></h1>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="1147696547%2FClasslikes%2F-712551682" anchor-label="EntityVisualizer" id="1147696547%2FClasslikes%2F-712551682" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-entity-visualizer/index.html">EntityVisualizer</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1147696547%2FClasslikes%2F-712551682"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"><div class="with-platform-tags"><span class="pull-right">
+  <div class="platform-tags ">
+    <div class="platform-tag common-like">common</div>
+  </div>
+</span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-entity-visualizer/index.html">EntityVisualizer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1363345257%2FClasslikes%2F371682492" anchor-label="LightBarVisualizer" id="1363345257%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-light-bar-visualizer/index.html">LightBarVisualizer</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1363345257%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-light-bar-visualizer/index.html">LightBarVisualizer</a>(lightBar: <a href="../baaahs.model/-light-bar/index.html">LightBar</a>, vizPixels: <a href="-viz-pixels/index.html">VizPixels</a>?) : <a href="-entity-visualizer/index.html">EntityVisualizer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1166082098%2FClasslikes%2F371682492" anchor-label="PixelArranger" id="1166082098%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-pixel-arranger/index.html">PixelArranger</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1166082098%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">interface <a href="-pixel-arranger/index.html">PixelArranger</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="2107593809%2FClasslikes%2F371682492" anchor-label="Rotator" id="2107593809%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-rotator/index.html">Rotator</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2107593809%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-rotator/index.html">Rotator</a>(from: <a href="../three.js/-vector3/index.html">Vector3</a>, to: <a href="../three.js/-vector3/index.html">Vector3</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-453102849%2FClasslikes%2F371682492" anchor-label="SurfaceGeometry" id="-453102849%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-surface-geometry/index.html">SurfaceGeometry</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-453102849%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-surface-geometry/index.html">SurfaceGeometry</a>(surface: <a href="../baaahs.model/-model/-surface/index.html">Model.Surface</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="927568915%2FClasslikes%2F371682492" anchor-label="SurfaceVisualizer" id="927568915%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-surface-visualizer/index.html">SurfaceVisualizer</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="927568915%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-surface-visualizer/index.html">SurfaceVisualizer</a>(surfaceGeometry: <a href="-surface-geometry/index.html">SurfaceGeometry</a>, vizPixels: <a href="-viz-pixels/index.html">VizPixels</a>?) : <a href="-entity-visualizer/index.html">EntityVisualizer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1346198548%2FClasslikes%2F371682492" anchor-label="SwirlyPixelArranger" id="-1346198548%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-swirly-pixel-arranger/index.html">SwirlyPixelArranger</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1346198548%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-swirly-pixel-arranger/index.html">SwirlyPixelArranger</a>(pixelDensity: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>, pixelSpacing: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>) : <a href="-pixel-arranger/index.html">PixelArranger</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-804190522%2FClasslikes%2F371682492" anchor-label="Visualizer" id="-804190522%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-visualizer/index.html">Visualizer</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-804190522%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-visualizer/index.html">Visualizer</a>(model: <a href="../baaahs.model/-model/index.html">Model</a>, clock: <a href="../baaahs.util/-clock/index.html">Clock</a>) : <a href="../baaahs.mapper/-js-mapper-ui/-status-listener/index.html">JsMapperUi.StatusListener</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1692200468%2FClasslikes%2F-712551682" anchor-label="VizObj" id="1692200468%2FClasslikes%2F-712551682" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-viz-obj/index.html">VizObj</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1692200468%2FClasslikes%2F-712551682"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"><div class="with-platform-tags"><span class="pull-right">
+  <div class="platform-tags ">
+    <div class="platform-tag common-like">common</div>
+  </div>
+</span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-viz-obj/index.html">VizObj</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1745803498%2FClasslikes%2F371682492" anchor-label="VizPixels" id="1745803498%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-viz-pixels/index.html">VizPixels</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1745803498%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-viz-pixels/index.html">VizPixels</a>(positions: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a>&lt;<a href="../three.js/-vector3/index.html">Vector3</a>&gt;, normal: <a href="../three.js/-vector3/index.html">Vector3</a>) : <a href="../baaahs/-pixels/index.html">Pixels</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1175907743%2FClasslikes%2F-712551682" anchor-label="VizScene" id="1175907743%2FClasslikes%2F-712551682" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-viz-scene/index.html">VizScene</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1175907743%2FClasslikes%2F-712551682"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"><div class="with-platform-tags"><span class="pull-right">
+  <div class="platform-tags ">
+    <div class="platform-tag common-like">common</div>
+  </div>
+</span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-viz-scene/index.html">VizScene</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="196619742%2FFunctions%2F371682492" anchor-label="asKey" id="196619742%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="as-key.html">asKey</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="196619742%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>&gt;.<a href="as-key.html">asKey</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1605009850%2FFunctions%2F371682492" anchor-label="findOrAdd" id="-1605009850%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="find-or-add.html">findOrAdd</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1605009850%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun &lt;<a href="find-or-add.html">T</a>&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a>&lt;<a href="find-or-add.html">T</a>&gt;.<a href="find-or-add.html">findOrAdd</a>(value: <a href="find-or-add.html">T</a>): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="27915420%2FFunctions%2F371682492" anchor-label="segments" id="27915420%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="segments.html">segments</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="27915420%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <a href="../three.js/-face3/index.html">Face3</a>.<a href="segments.html">segments</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>&gt;&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1365615666%2FFunctions%2F371682492" anchor-label="toVector3" id="-1365615666%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="to-vector3.html">toVector3</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1365615666%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <a href="../baaahs.geom/-vector3-f/index.html#418084428%2FExtensions%2F371682492">Vector3F</a>.<a href="to-vector3.html">toVector3</a>(): <a href="../three.js/-vector3/index.html">Vector3</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

@@ -1,162 +1,392 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>Network - sparklemotion</title>
-<link rel="stylesheet" href="../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.net</a>&nbsp;/&nbsp;<a href="./index.html">Network</a><br/>
-<br/>
-<h1>Network</h1>
-<code><span class="keyword">interface </span><span class="identifier">Network</span></code>
-<h3>Types</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-address/index.html">Address</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">Address</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-http-response/index.html">HttpResponse</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">HttpResponse</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-http-server/index.html">HttpServer</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">HttpServer</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-json-response/index.html">JsonResponse</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JsonResponse</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">HttpResponse</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-link/index.html">Link</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">Link</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-mdns/index.html">Mdns</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">Mdns</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-mdns-listen-handler/index.html">MdnsListenHandler</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">MdnsListenHandler</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-mdns-registered-service/index.html">MdnsRegisteredService</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">MdnsRegisteredService</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">MdnsService</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-mdns-service/index.html">MdnsService</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">MdnsService</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-tcp-connection/index.html">TcpConnection</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">TcpConnection</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-text-response/index.html">TextResponse</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">TextResponse</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">HttpResponse</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-udp-listener/index.html">UdpListener</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">UdpListener</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-udp-proxy/index.html">UdpProxy</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">UdpProxy</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-udp-socket/index.html">UdpSocket</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">UdpSocket</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-web-socket-listener/index.html">WebSocketListener</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">WebSocketListener</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="link.html">link</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">fun </span><span class="identifier">link</span><span class="symbol">(</span><span class="identifier" id="baaahs.net.Network$link(kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Link</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Inheritors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="../-browser-network/index.html">BrowserNetwork</a></h4>
-</td>
-<td>
-<p>Uses WebSockets for TCP, and proxies UDP via Pinky.</p>
-<code><span class="keyword">class </span><span class="identifier">BrowserNetwork</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Network</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="../../baaahs.sim/-fake-network/index.html">FakeNetwork</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">FakeNetwork</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Network</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="../-jvm-network/index.html">JvmNetwork</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JvmNetwork</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Network</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Network</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.net/Network///PointingToDeclaration//788909594">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../index.html">sparklemotion</a>/<a href="../index.html">baaahs.net</a>/<a href="index.html">Network</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":dokkaHtml/commonMain">common</button><button class="platform-tag platform-selector js-like" data-active="" data-filter=":dokkaHtml/jsMain">js</button><button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":dokkaHtml/jvmMain">jvm</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Network</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="index.html">Network</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="-85706125%2FClasslikes%2F788909594" anchor-label="Address" id="-85706125%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-address/index.html">Address</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-85706125%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-address/index.html">Address</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1099447950%2FClasslikes%2F788909594" anchor-label="HttpResponse" id="-1099447950%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-http-response/index.html">HttpResponse</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1099447950%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-http-response/index.html">HttpResponse</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="907369776%2FClasslikes%2F788909594" anchor-label="HttpServer" id="907369776%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-http-server/index.html">HttpServer</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="907369776%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-http-server/index.html">HttpServer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-183703278%2FClasslikes%2F788909594" anchor-label="JsonResponse" id="-183703278%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-json-response/index.html">JsonResponse</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-183703278%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-json-response/index.html">JsonResponse</a>(json: <span data-unresolved-link="kotlinx.serialization.json/Json///PointingToDeclaration/">Json</span>, statusCode: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, element: <span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span>) : <a href="-http-response/index.html">Network.HttpResponse</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1365154177%2FClasslikes%2F788909594" anchor-label="Link" id="1365154177%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-link/index.html">Link</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1365154177%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-link/index.html">Link</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-714870241%2FClasslikes%2F788909594" anchor-label="Mdns" id="-714870241%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-mdns/index.html">Mdns</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-714870241%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-mdns/index.html">Mdns</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1498857728%2FClasslikes%2F788909594" anchor-label="MdnsListenHandler" id="-1498857728%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-mdns-listen-handler/index.html">MdnsListenHandler</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1498857728%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-mdns-listen-handler/index.html">MdnsListenHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="882575792%2FClasslikes%2F788909594" anchor-label="MdnsRegisteredService" id="882575792%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-mdns-registered-service/index.html">MdnsRegisteredService</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="882575792%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-mdns-registered-service/index.html">MdnsRegisteredService</a> : <a href="-mdns-service/index.html">Network.MdnsService</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1210395250%2FClasslikes%2F788909594" anchor-label="MdnsService" id="-1210395250%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-mdns-service/index.html">MdnsService</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1210395250%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-mdns-service/index.html">MdnsService</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-300652888%2FClasslikes%2F788909594" anchor-label="TcpConnection" id="-300652888%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-tcp-connection/index.html">TcpConnection</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-300652888%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-tcp-connection/index.html">TcpConnection</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1786998125%2FClasslikes%2F788909594" anchor-label="TextResponse" id="1786998125%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-text-response/index.html">TextResponse</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1786998125%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-text-response/index.html">TextResponse</a>(statusCode: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, body: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>) : <a href="-http-response/index.html">Network.HttpResponse</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="48404210%2FClasslikes%2F788909594" anchor-label="UdpListener" id="48404210%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-udp-listener/index.html">UdpListener</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="48404210%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-udp-listener/index.html">UdpListener</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1793434450%2FClasslikes%2F788909594" anchor-label="UdpProxy" id="-1793434450%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-udp-proxy/index.html">UdpProxy</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1793434450%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">object <a href="-udp-proxy/index.html">UdpProxy</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1556628909%2FClasslikes%2F788909594" anchor-label="UdpSocket" id="-1556628909%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-udp-socket/index.html">UdpSocket</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1556628909%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-udp-socket/index.html">UdpSocket</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1798344460%2FClasslikes%2F788909594" anchor-label="WebSocketListener" id="1798344460%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-web-socket-listener/index.html">WebSocketListener</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1798344460%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-web-socket-listener/index.html">WebSocketListener</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="852154808%2FFunctions%2F788909594" anchor-label="link" id="852154808%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="link.html">link</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="852154808%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">abstract fun <a href="link.html">link</a>(name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>): <a href="-link/index.html">Network.Link</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Inheritors</h2>
+              <div class="table" data-togglable="Inheritors"><a data-name="678104340%2FInheritors%2F788909594" anchor-label="FakeNetwork" id="678104340%2FInheritors%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs.sim/-fake-network/index.html">FakeNetwork</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="678104340%2FInheritors%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+<a data-name="-182996363%2FInheritors%2F371682492" anchor-label="BrowserNetwork" id="-182996363%2FInheritors%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-browser-network/index.html">BrowserNetwork</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-182996363%2FInheritors%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+<a data-name="-843692818%2FInheritors%2F-879532132" anchor-label="JvmNetwork" id="-843692818%2FInheritors%2F-879532132" data-filterable-set=":dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-jvm-network/index.html">JvmNetwork</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-843692818%2FInheritors%2F-879532132"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

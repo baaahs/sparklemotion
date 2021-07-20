@@ -1,70 +1,167 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>MapperStatus - sparklemotion</title>
-<link rel="stylesheet" href="../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.mapper</a>&nbsp;/&nbsp;<a href="./index.html">MapperStatus</a><br/>
-<br/>
-<h1>MapperStatus</h1>
-<code><span class="keyword">class </span><span class="identifier">MapperStatus</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-observable/index.html"><span class="identifier">Observable</span></a></code>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-init-.html">&lt;init&gt;</a></h4>
-</td>
-<td>
-<code><span class="identifier">MapperStatus</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="message.html">message</a></h4>
-</td>
-<td>
-<code><span class="keyword">var </span><span class="identifier">message</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="message2.html">message2</a></h4>
-</td>
-<td>
-<code><span class="keyword">var </span><span class="identifier">message2</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="ordered-panels.html">orderedPanels</a></h4>
-</td>
-<td>
-<code><span class="keyword">var </span><span class="identifier">orderedPanels</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><span class="identifier">VisibleSurface</span><span class="symbol">,</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html"><span class="identifier">Float</span></a><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="stats.html">stats</a></h4>
-</td>
-<td>
-<code><span class="keyword">var </span><span class="identifier">stats</span><span class="symbol">: </span><span class="symbol">(</span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">?</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Extension Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="../../baaahs.ui/add-observer.html">addObserver</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-i-observable/index.html"><span class="identifier">IObservable</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">addObserver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Boolean, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/fireImmediately">fireImmediately</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Boolean, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.ui/-removable-observer/index.html"><span class="identifier">RemovableObserver</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>MapperStatus</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.mapper/MapperStatus///PointingToDeclaration//371682492">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../index.html">sparklemotion</a>/<a href="../index.html">baaahs.mapper</a>/<a href="index.html">MapperStatus</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector js-like" data-active="" data-filter=":dokkaHtml/jsMain">js</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Mapper</span><wbr></wbr><span>Status</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="index.html">MapperStatus</a> : <a href="../../baaahs.ui/-observable/index.html">Observable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="395389999%2FFunctions%2F371682492" anchor-label="addObserver" id="395389999%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs.admin/-admin-client/-facade/index.html#395389999%2FFunctions%2F371682492">addObserver</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="395389999%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open override fun <a href="../../baaahs.admin/-admin-client/-facade/index.html#395389999%2FFunctions%2F371682492">addObserver</a>(observer: <a href="../../baaahs.ui/-observer/index.html">Observer</a>): <a href="../../baaahs.ui/-observer/index.html">Observer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="543581159%2FFunctions%2F371682492" anchor-label="notifyChanged" id="543581159%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs.admin/-admin-client/-facade/index.html#543581159%2FFunctions%2F371682492">notifyChanged</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="543581159%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <a href="../../baaahs.admin/-admin-client/-facade/index.html#543581159%2FFunctions%2F371682492">notifyChanged</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1510903454%2FFunctions%2F371682492" anchor-label="removeObserver" id="-1510903454%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs.admin/-admin-client/-facade/index.html#-1510903454%2FFunctions%2F371682492">removeObserver</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1510903454%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open override fun <a href="../../baaahs.admin/-admin-client/-facade/index.html#-1510903454%2FFunctions%2F371682492">removeObserver</a>(observer: <a href="../../baaahs.ui/-observer/index.html">Observer</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="-680548184%2FProperties%2F371682492" anchor-label="message" id="-680548184%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="message.html">message</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-680548184%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-680548184%2FProperties%2F371682492" anchor-label="message" id="-680548184%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">var <a href="message.html">message</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-72189888%2FProperties%2F371682492" anchor-label="message2" id="-72189888%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="message2.html">message2</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-72189888%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-72189888%2FProperties%2F371682492" anchor-label="message2" id="-72189888%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">var <a href="message2.html">message2</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-614948077%2FProperties%2F371682492" anchor-label="orderedPanels" id="-614948077%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="ordered-panels.html">orderedPanels</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-614948077%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-614948077%2FProperties%2F371682492" anchor-label="orderedPanels" id="-614948077%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">var <a href="ordered-panels.html">orderedPanels</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html">Pair</a>&lt;<a href="../-js-mapper-ui/-visible-surface/index.html">JsMapperUi.VisibleSurface</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>&gt;&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1954962320%2FProperties%2F371682492" anchor-label="stats" id="1954962320%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="stats.html">stats</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1954962320%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1954962320%2FProperties%2F371682492" anchor-label="stats" id="1954962320%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">var <a href="stats.html">stats</a>: <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

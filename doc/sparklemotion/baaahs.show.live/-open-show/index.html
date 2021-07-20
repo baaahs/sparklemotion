@@ -1,134 +1,481 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>OpenShow - sparklemotion</title>
-<link rel="stylesheet" href="../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.show.live</a>&nbsp;/&nbsp;<a href="./index.html">OpenShow</a><br/>
-<br/>
-<h1>OpenShow</h1>
-<code><span class="keyword">class </span><span class="identifier">OpenShow</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-open-patch-holder/index.html"><span class="identifier">OpenPatchHolder</span></a><span class="symbol">, </span><a href="../../baaahs/-ref-counted/index.html"><span class="identifier">RefCounted</span></a></code>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-init-.html">&lt;init&gt;</a></h4>
-</td>
-<td>
-<code><span class="identifier">OpenShow</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.OpenShow$<init>(baaahs.show.Show, baaahs.ShowPlayer, baaahs.show.live.OpenContext, kotlin.collections.List((baaahs.show.live.OpenControl)))/show">show</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.OpenShow$<init>(baaahs.show.Show, baaahs.ShowPlayer, baaahs.show.live.OpenContext, kotlin.collections.List((baaahs.show.live.OpenControl)))/showPlayer">showPlayer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-player/index.html"><span class="identifier">ShowPlayer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.OpenShow$<init>(baaahs.show.Show, baaahs.ShowPlayer, baaahs.show.live.OpenContext, kotlin.collections.List((baaahs.show.live.OpenControl)))/openContext">openContext</span><span class="symbol">:</span>&nbsp;<a href="../-open-context/index.html"><span class="identifier">OpenContext</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.show.live.OpenShow$<init>(baaahs.show.Show, baaahs.ShowPlayer, baaahs.show.live.OpenContext, kotlin.collections.List((baaahs.show.live.OpenControl)))/implicitControls">implicitControls</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-open-control/index.html"><span class="identifier">OpenControl</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="all-controls.html">allControls</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">allControls</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../-open-control/index.html"><span class="identifier">OpenControl</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="all-data-sources.html">allDataSources</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">allDataSources</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.show/-data-source/index.html"><span class="identifier">DataSource</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="all-problems.html">allProblems</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">allProblems</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../baaahs/-show-problem/index.html"><span class="identifier">ShowProblem</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="feeds.html">feeds</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">feeds</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="id.html">id</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="layouts.html">layouts</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">layouts</span><span class="symbol">: </span><a href="../../baaahs.show/-layouts/index.html"><span class="identifier">Layouts</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="active-patch-set.html">activePatchSet</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">activePatchSet</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-active-patch-set/index.html"><span class="identifier">ActivePatchSet</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="apply-constraints.html">applyConstraints</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">applyConstraints</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="apply-state.html">applyState</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">applyState</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.OpenShow$applyState(baaahs.ShowState)/showState">showState</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs/-show-state/index.html"><span class="identifier">ShowState</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="edit.html">edit</a></h4>
-</td>
-<td>
-<p>Don't hold on to MutableShows; create them, apply changes, and commit or abandon them promptly!</p>
-<code><span class="keyword">fun </span><span class="identifier">edit</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.OpenShow$edit(kotlin.Function1((baaahs.show.mutable.MutableShow, kotlin.Unit)))/block">block</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.mutable/-mutable-show/index.html"><span class="identifier">MutableShow</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a>&nbsp;<span class="symbol">=</span>&nbsp;{}<span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show.mutable/-mutable-show/index.html"><span class="identifier">MutableShow</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-enabled-switch-state.html">getEnabledSwitchState</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getEnabledSwitchState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html"><span class="identifier">Set</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-panel.html">getPanel</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getPanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.show.live.OpenShow$getPanel(kotlin.String)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs.show/-panel/index.html"><span class="identifier">Panel</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-show-state.html">getShowState</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getShowState</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../../baaahs/-show-state/index.html"><span class="identifier">ShowState</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="on-full-release.html">onFullRelease</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">onFullRelease</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>OpenShow</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.show.live/OpenShow///PointingToDeclaration//788909594">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../index.html">sparklemotion</a>/<a href="../index.html">baaahs.show.live</a>/<a href="index.html">OpenShow</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":dokkaHtml/commonMain">common</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Open</span><wbr></wbr><span>Show</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="index.html">OpenShow</a>(show: <a href="../../baaahs.show/-show/index.html">Show</a>, showPlayer: <a href="../../baaahs/-show-player/index.html">ShowPlayer</a>, openContext: <a href="../-open-context/index.html">OpenContext</a>, implicitControls: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-open-control/index.html">OpenControl</a>&gt;) : <a href="../-open-patch-holder/index.html">OpenPatchHolder</a>, <a href="../../baaahs/-ref-counted/index.html">RefCounted</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="1855989942%2FClasslikes%2F788909594" anchor-label="Companion" id="1855989942%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-companion/index.html">Companion</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1855989942%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">object <a href="-companion/index.html">Companion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="1493235499%2FFunctions%2F788909594" anchor-label="activePatchSet" id="1493235499%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="active-patch-set.html">activePatchSet</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1493235499%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="active-patch-set.html">activePatchSet</a>(): <a href="../-active-patch-set/index.html">ActivePatchSet</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-2011203161%2FFunctions%2F788909594" anchor-label="addTo" id="-2011203161%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-open-patch-holder/add-to.html">addTo</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2011203161%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="../-open-patch-holder/add-to.html">addTo</a>(activePatchSetBuilder: <a href="../-active-patch-set-builder/index.html">ActivePatchSetBuilder</a>, depth: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="796671715%2FFunctions%2F788909594" anchor-label="applyConstraints" id="796671715%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="apply-constraints.html">applyConstraints</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="796671715%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="apply-constraints.html">applyConstraints</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1864353416%2FFunctions%2F788909594" anchor-label="applyState" id="-1864353416%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="apply-state.html">applyState</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1864353416%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="apply-state.html">applyState</a>(showState: <a href="../../baaahs/-show-state/index.html">ShowState</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-477894232%2FFunctions%2F788909594" anchor-label="edit" id="-477894232%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="edit.html">edit</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-477894232%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="edit.html">edit</a>(block: <a href="../../baaahs.show.mutable/-mutable-show/index.html">MutableShow</a>.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a> = {}): <a href="../../baaahs.show.mutable/-mutable-show/index.html">MutableShow</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="-477894232%2FFunctions%2F788909594" anchor-label="edit" id="-477894232%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="brief "><a data-name="-477894232%2FFunctions%2F788909594" anchor-label="edit" id="-477894232%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>Don't hold on to MutableShows; create them, apply changes, and commit or abandon them promptly!</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1390685949%2FFunctions%2F788909594" anchor-label="getEnabledSwitchState" id="1390685949%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="get-enabled-switch-state.html">getEnabledSwitchState</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1390685949%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="get-enabled-switch-state.html">getEnabledSwitchState</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="11658983%2FFunctions%2F788909594" anchor-label="getPanel" id="11658983%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="get-panel.html">getPanel</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="11658983%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="get-panel.html">getPanel</a>(id: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>): <a href="../../baaahs.show/-panel/index.html">Panel</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1074245715%2FFunctions%2F788909594" anchor-label="getShowState" id="-1074245715%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="get-show-state.html">getShowState</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1074245715%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="get-show-state.html">getShowState</a>(): <a href="../../baaahs/-show-state/index.html">ShowState</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="329649290%2FFunctions%2F788909594" anchor-label="inUse" id="329649290%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs/-ref-counted/in-use.html">inUse</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="329649290%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">open override fun <a href="../../baaahs/-ref-counted/in-use.html">inUse</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="714421622%2FFunctions%2F788909594" anchor-label="onFullRelease" id="714421622%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="on-full-release.html">onFullRelease</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="714421622%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">open override fun <a href="on-full-release.html">onFullRelease</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1799053957%2FFunctions%2F788909594" anchor-label="release" id="1799053957%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs/-ref-counted/release.html">release</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1799053957%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">open override fun <a href="../../baaahs/-ref-counted/release.html">release</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-646265723%2FFunctions%2F788909594" anchor-label="use" id="-646265723%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs/-ref-counted/use.html">use</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-646265723%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">open override fun <a href="../../baaahs/-ref-counted/use.html">use</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="1417691992%2FProperties%2F788909594" anchor-label="allControls" id="1417691992%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="all-controls.html">allControls</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1417691992%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="1417691992%2FProperties%2F788909594" anchor-label="allControls" id="1417691992%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="all-controls.html">allControls</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-open-control/index.html">OpenControl</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1271287906%2FProperties%2F788909594" anchor-label="allDataSources" id="-1271287906%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="all-data-sources.html">allDataSources</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1271287906%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-1271287906%2FProperties%2F788909594" anchor-label="allDataSources" id="-1271287906%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="all-data-sources.html">allDataSources</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="../../baaahs.show/-data-source/index.html">DataSource</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="856797722%2FProperties%2F788909594" anchor-label="allProblems" id="856797722%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="all-problems.html">allProblems</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="856797722%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="856797722%2FProperties%2F788909594" anchor-label="allProblems" id="856797722%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="all-problems.html">allProblems</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../../baaahs/-show-problem/index.html">ShowProblem</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="276127080%2FProperties%2F788909594" anchor-label="controlLayout" id="276127080%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#276127080%2FProperties%2F788909594">controlLayout</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="276127080%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="276127080%2FProperties%2F788909594" anchor-label="controlLayout" id="276127080%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="index.html#276127080%2FProperties%2F788909594">controlLayout</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="../../baaahs.show/-panel/index.html">Panel</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-open-control/index.html">OpenControl</a>&gt;&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1501998214%2FProperties%2F788909594" anchor-label="feeds" id="-1501998214%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="feeds.html">feeds</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1501998214%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-1501998214%2FProperties%2F788909594" anchor-label="feeds" id="-1501998214%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="feeds.html">feeds</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="../../baaahs.show/-data-source/index.html">DataSource</a>, <a href="../../baaahs.gl.data/-feed/index.html">Feed</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1000264816%2FProperties%2F788909594" anchor-label="id" id="-1000264816%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="id.html">id</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1000264816%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-1000264816%2FProperties%2F788909594" anchor-label="id" id="-1000264816%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="id.html">id</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1697967494%2FProperties%2F788909594" anchor-label="layouts" id="1697967494%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="layouts.html">layouts</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1697967494%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="1697967494%2FProperties%2F788909594" anchor-label="layouts" id="1697967494%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="layouts.html">layouts</a>: <a href="../../baaahs.show/-layouts/index.html">Layouts</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-59080263%2FProperties%2F788909594" anchor-label="patches" id="-59080263%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-59080263%2FProperties%2F788909594">patches</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-59080263%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-59080263%2FProperties%2F788909594" anchor-label="patches" id="-59080263%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="index.html#-59080263%2FProperties%2F788909594">patches</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-open-patch/index.html">OpenPatch</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1056323002%2FProperties%2F788909594" anchor-label="problemLevel" id="-1056323002%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-1056323002%2FProperties%2F788909594">problemLevel</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1056323002%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-1056323002%2FProperties%2F788909594" anchor-label="problemLevel" id="-1056323002%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="index.html#-1056323002%2FProperties%2F788909594">problemLevel</a>: <a href="../../baaahs/-severity/index.html">Severity</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-544886121%2FProperties%2F788909594" anchor-label="problems" id="-544886121%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#-544886121%2FProperties%2F788909594">problems</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-544886121%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-544886121%2FProperties%2F788909594" anchor-label="problems" id="-544886121%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="index.html#-544886121%2FProperties%2F788909594">problems</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../../baaahs/-show-problem/index.html">ShowProblem</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="571453719%2FProperties%2F788909594" anchor-label="title" id="571453719%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="index.html#571453719%2FProperties%2F788909594">title</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="571453719%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="571453719%2FProperties%2F788909594" anchor-label="title" id="571453719%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="index.html#571453719%2FProperties%2F788909594">title</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

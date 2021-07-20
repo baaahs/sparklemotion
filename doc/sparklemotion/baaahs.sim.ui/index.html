@@ -1,216 +1,568 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>baaahs.sim.ui - sparklemotion</title>
-<link rel="stylesheet" href="../../style.css">
-</HEAD>
-<BODY>
-<a href="../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="./index.html">baaahs.sim.ui</a><br/>
-<br/>
-<h2>Package baaahs.sim.ui</h2>
-<h3>Types</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-brain-indicator/index.html">BrainIndicator</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">BrainIndicator</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.ui/-b-component/index.html"><span class="identifier">BComponent</span></a><span class="symbol">&lt;</span><a href="-brain-indicator-props/index.html"><span class="identifier">BrainIndicatorProps</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../baaahs.ui/-observer/index.html"><span class="identifier">Observer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-brain-indicator-props/index.html">BrainIndicatorProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">BrainIndicatorProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-console/index.html">Console</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Console</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.ui/-b-component/index.html"><span class="identifier">BComponent</span></a><span class="symbol">&lt;</span><a href="-console-props/index.html"><span class="identifier">ConsoleProps</span></a><span class="symbol">,</span>&nbsp;<a href="-console-state/index.html"><span class="identifier">ConsoleState</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../baaahs.ui/-observer/index.html"><span class="identifier">Observer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-console-props/index.html">ConsoleProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">ConsoleProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-console-state/index.html">ConsoleState</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">ConsoleState</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-fake-client-device-props/index.html">FakeClientDeviceProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">FakeClientDeviceProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-framerate-panel/index.html">FrameratePanel</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">FrameratePanel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.ui/-b-component/index.html"><span class="identifier">BComponent</span></a><span class="symbol">&lt;</span><a href="-framerate-panel-props/index.html"><span class="identifier">FrameratePanelProps</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../baaahs.ui/-observer/index.html"><span class="identifier">Observer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-framerate-panel-props/index.html">FrameratePanelProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">FrameratePanelProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-generated-glsl-palette-props/index.html">GeneratedGlslPaletteProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">GeneratedGlslPaletteProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-network-panel/index.html">NetworkPanel</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">NetworkPanel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.ui/-b-component/index.html"><span class="identifier">BComponent</span></a><span class="symbol">&lt;</span><a href="-network-panel-props/index.html"><span class="identifier">NetworkPanelProps</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../baaahs.ui/-observer/index.html"><span class="identifier">Observer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-network-panel-props/index.html">NetworkPanelProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">NetworkPanelProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-pinky-panel/index.html">PinkyPanel</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">PinkyPanel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.ui/-b-component/index.html"><span class="identifier">BComponent</span></a><span class="symbol">&lt;</span><a href="-pinky-panel-props/index.html"><span class="identifier">PinkyPanelProps</span></a><span class="symbol">,</span>&nbsp;<a href="-pinky-panel-state/index.html"><span class="identifier">PinkyPanelState</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><a href="../baaahs.ui/-observer/index.html"><span class="identifier">Observer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-pinky-panel-props/index.html">PinkyPanelProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">PinkyPanelProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-pinky-panel-state/index.html">PinkyPanelState</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">PinkyPanelState</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-styles/index.html">Styles</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">Styles</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-views/index.html">Views</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">Views</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-web-client-window-props/index.html">WebClientWindowProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">WebClientWindowProps</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-b-o-r-d-e-r_-w-i-d-t-h.html">BORDER_WIDTH</a></h4>
-</td>
-<td>
-<code><span class="keyword">const</span> <span class="keyword">val </span><span class="identifier">BORDER_WIDTH</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-fake-client-device.html">FakeClientDevice</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">FakeClientDevice</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-generated-glsl-palette.html">GeneratedGlslPalette</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">GeneratedGlslPalette</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-web-client-window.html">WebClientWindow</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">WebClientWindow</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="brain-indicator.html">brainIndicator</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">brainIndicator</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.ui$brainIndicator(, ((baaahs.sim.ui.BrainIndicatorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-brain-indicator-props/index.html"><span class="identifier">BrainIndicatorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="fake-client-device.html">fakeClientDevice</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">fakeClientDevice</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.ui$fakeClientDevice(, ((baaahs.sim.ui.FakeClientDeviceProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-fake-client-device-props/index.html"><span class="identifier">FakeClientDeviceProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="framerate-panel.html">frameratePanel</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">frameratePanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.ui$frameratePanel(, ((baaahs.sim.ui.FrameratePanelProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-framerate-panel-props/index.html"><span class="identifier">FrameratePanelProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="generated-glsl-palette.html">generatedGlslPalette</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">generatedGlslPalette</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.ui$generatedGlslPalette(, ((baaahs.sim.ui.GeneratedGlslPaletteProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-generated-glsl-palette-props/index.html"><span class="identifier">GeneratedGlslPaletteProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="network-panel.html">networkPanel</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">networkPanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.ui$networkPanel(, ((baaahs.sim.ui.NetworkPanelProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-network-panel-props/index.html"><span class="identifier">NetworkPanelProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="pinky-panel.html">pinkyPanel</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">pinkyPanel</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.ui$pinkyPanel(, ((baaahs.sim.ui.PinkyPanelProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-pinky-panel-props/index.html"><span class="identifier">PinkyPanelProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>baaahs.sim.ui</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script><script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../styles/style.css" rel="Stylesheet"><link href="../../styles/logo-styles.css" rel="Stylesheet"><link href="../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.sim.ui////PointingToDeclaration//371682492">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../index.html">sparklemotion</a>/<a href="index.html">baaahs.sim.ui</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector js-like" data-active="" data-filter=":dokkaHtml/jsMain">js</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Package baaahs.</span><wbr></wbr><span>sim.</span><wbr></wbr><span>ui</span></h1>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="508229112%2FClasslikes%2F371682492" anchor-label="BrainIndicator" id="508229112%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-brain-indicator/index.html">BrainIndicator</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="508229112%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-brain-indicator/index.html">BrainIndicator</a>(props: <a href="-brain-indicator-props/index.html">BrainIndicatorProps</a>) : <a href="../baaahs.ui/-b-component/index.html">BComponent</a>&lt;<a href="-brain-indicator-props/index.html">BrainIndicatorProps</a>, <span data-unresolved-link="react/RState///PointingToDeclaration/">RState</span>&gt; , <a href="../baaahs.ui/-observer/index.html">Observer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1779647622%2FClasslikes%2F371682492" anchor-label="BrainIndicatorProps" id="-1779647622%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-brain-indicator-props/index.html">BrainIndicatorProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1779647622%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-brain-indicator-props/index.html">BrainIndicatorProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-562665638%2FClasslikes%2F371682492" anchor-label="Console" id="-562665638%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-console/index.html">Console</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-562665638%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-console/index.html">Console</a>(props: <a href="-console-props/index.html">ConsoleProps</a>) : <a href="../baaahs.ui/-b-component/index.html">BComponent</a>&lt;<a href="-console-props/index.html">ConsoleProps</a>, <a href="-console-state/index.html">ConsoleState</a>&gt; , <a href="../baaahs.ui/-observer/index.html">Observer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1283795112%2FClasslikes%2F371682492" anchor-label="ConsoleProps" id="-1283795112%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-console-props/index.html">ConsoleProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1283795112%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-console-props/index.html">ConsoleProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1475087529%2FClasslikes%2F371682492" anchor-label="ConsoleState" id="-1475087529%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-console-state/index.html">ConsoleState</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1475087529%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-console-state/index.html">ConsoleState</a> : <span data-unresolved-link="react/RState///PointingToDeclaration/">RState</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="169660663%2FClasslikes%2F371682492" anchor-label="FakeClientDeviceProps" id="169660663%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-fake-client-device-props/index.html">FakeClientDeviceProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="169660663%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-fake-client-device-props/index.html">FakeClientDeviceProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="288763194%2FClasslikes%2F371682492" anchor-label="FrameratePanel" id="288763194%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-framerate-panel/index.html">FrameratePanel</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="288763194%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-framerate-panel/index.html">FrameratePanel</a>(props: <a href="-framerate-panel-props/index.html">FrameratePanelProps</a>) : <a href="../baaahs.ui/-b-component/index.html">BComponent</a>&lt;<a href="-framerate-panel-props/index.html">FrameratePanelProps</a>, <span data-unresolved-link="react/RState///PointingToDeclaration/">RState</span>&gt; , <a href="../baaahs.ui/-observer/index.html">Observer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="151764344%2FClasslikes%2F371682492" anchor-label="FrameratePanelProps" id="151764344%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-framerate-panel-props/index.html">FrameratePanelProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="151764344%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-framerate-panel-props/index.html">FrameratePanelProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-218691953%2FClasslikes%2F371682492" anchor-label="GeneratedGlslPaletteProps" id="-218691953%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-generated-glsl-palette-props/index.html">GeneratedGlslPaletteProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-218691953%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-generated-glsl-palette-props/index.html">GeneratedGlslPaletteProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-623491109%2FClasslikes%2F371682492" anchor-label="NetworkPanel" id="-623491109%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-network-panel/index.html">NetworkPanel</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-623491109%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-network-panel/index.html">NetworkPanel</a>(props: <a href="-network-panel-props/index.html">NetworkPanelProps</a>) : <a href="../baaahs.ui/-b-component/index.html">BComponent</a>&lt;<a href="-network-panel-props/index.html">NetworkPanelProps</a>, <span data-unresolved-link="react/RState///PointingToDeclaration/">RState</span>&gt; , <a href="../baaahs.ui/-observer/index.html">Observer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1272438921%2FClasslikes%2F371682492" anchor-label="NetworkPanelProps" id="-1272438921%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-network-panel-props/index.html">NetworkPanelProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1272438921%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-network-panel-props/index.html">NetworkPanelProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="836616368%2FClasslikes%2F371682492" anchor-label="PinkyPanel" id="836616368%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-pinky-panel/index.html">PinkyPanel</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="836616368%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-pinky-panel/index.html">PinkyPanel</a>(props: <a href="-pinky-panel-props/index.html">PinkyPanelProps</a>) : <a href="../baaahs.ui/-b-component/index.html">BComponent</a>&lt;<a href="-pinky-panel-props/index.html">PinkyPanelProps</a>, <a href="-pinky-panel-state/index.html">PinkyPanelState</a>&gt; , <a href="../baaahs.ui/-observer/index.html">Observer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-628890686%2FClasslikes%2F371682492" anchor-label="PinkyPanelProps" id="-628890686%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-pinky-panel-props/index.html">PinkyPanelProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-628890686%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-pinky-panel-props/index.html">PinkyPanelProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-820183103%2FClasslikes%2F371682492" anchor-label="PinkyPanelState" id="-820183103%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-pinky-panel-state/index.html">PinkyPanelState</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-820183103%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-pinky-panel-state/index.html">PinkyPanelState</a> : <span data-unresolved-link="react/RState///PointingToDeclaration/">RState</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1104065775%2FClasslikes%2F371682492" anchor-label="Styles" id="1104065775%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-styles/index.html">Styles</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1104065775%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">object <a href="-styles/index.html">Styles</a> : <span data-unresolved-link="styled/StyleSheet///PointingToDeclaration/">StyleSheet</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="380531235%2FClasslikes%2F371682492" anchor-label="Views" id="380531235%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-views/index.html">Views</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="380531235%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">object <a href="-views/index.html">Views</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1662155024%2FClasslikes%2F371682492" anchor-label="WebClientWindowProps" id="1662155024%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-web-client-window-props/index.html">WebClientWindowProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1662155024%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-web-client-window-props/index.html">WebClientWindowProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="-1467003038%2FFunctions%2F371682492" anchor-label="brainIndicator" id="-1467003038%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="brain-indicator.html">brainIndicator</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1467003038%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="brain-indicator.html">brainIndicator</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-brain-indicator-props/index.html">BrainIndicatorProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1933150850%2FFunctions%2F371682492" anchor-label="fakeClientDevice" id="1933150850%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="fake-client-device.html">fakeClientDevice</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1933150850%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="fake-client-device.html">fakeClientDevice</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-fake-client-device-props/index.html">FakeClientDeviceProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="834826914%2FFunctions%2F371682492" anchor-label="frameratePanel" id="834826914%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="framerate-panel.html">frameratePanel</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="834826914%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="framerate-panel.html">frameratePanel</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-framerate-panel-props/index.html">FrameratePanelProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1500732926%2FFunctions%2F371682492" anchor-label="generatedGlslPalette" id="-1500732926%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="generated-glsl-palette.html">generatedGlslPalette</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1500732926%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="generated-glsl-palette.html">generatedGlslPalette</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-generated-glsl-palette-props/index.html">GeneratedGlslPaletteProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="575585794%2FFunctions%2F371682492" anchor-label="networkPanel" id="575585794%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="network-panel.html">networkPanel</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="575585794%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="network-panel.html">networkPanel</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-network-panel-props/index.html">NetworkPanelProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1944260706%2FFunctions%2F371682492" anchor-label="pinkyPanel" id="1944260706%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="pinky-panel.html">pinkyPanel</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1944260706%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="pinky-panel.html">pinkyPanel</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-pinky-panel-props/index.html">PinkyPanelProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="1475660539%2FProperties%2F371682492" anchor-label="BORDER_WIDTH" id="1475660539%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-b-o-r-d-e-r_-w-i-d-t-h.html">BORDER_WIDTH</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1475660539%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1475660539%2FProperties%2F371682492" anchor-label="BORDER_WIDTH" id="1475660539%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">const val <a href="-b-o-r-d-e-r_-w-i-d-t-h.html">BORDER_WIDTH</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a> = 28<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-520033896%2FProperties%2F371682492" anchor-label="FakeClientDevice" id="-520033896%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-fake-client-device.html">FakeClientDevice</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-520033896%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-520033896%2FProperties%2F371682492" anchor-label="FakeClientDevice" id="-520033896%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-fake-client-device.html">FakeClientDevice</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-fake-client-device-props/index.html">FakeClientDeviceProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="26039424%2FProperties%2F371682492" anchor-label="GeneratedGlslPalette" id="26039424%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-generated-glsl-palette.html">GeneratedGlslPalette</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="26039424%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="26039424%2FProperties%2F371682492" anchor-label="GeneratedGlslPalette" id="26039424%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-generated-glsl-palette.html">GeneratedGlslPalette</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-generated-glsl-palette-props/index.html">GeneratedGlslPaletteProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1861415005%2FProperties%2F371682492" anchor-label="WebClientWindow" id="1861415005%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-web-client-window.html">WebClientWindow</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1861415005%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1861415005%2FProperties%2F371682492" anchor-label="WebClientWindow" id="1861415005%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-web-client-window.html">WebClientWindow</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-web-client-window-props/index.html">WebClientWindowProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

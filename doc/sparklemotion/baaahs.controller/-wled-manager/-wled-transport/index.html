@@ -1,63 +1,111 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>WledManager.WledTransport - sparklemotion</title>
-<link rel="stylesheet" href="../../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.controller</a>&nbsp;/&nbsp;<a href="../index.html">WledManager</a>&nbsp;/&nbsp;<a href="./index.html">WledTransport</a><br/>
-<br/>
-<h1>WledTransport</h1>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">WledTransport</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../../baaahs.fixtures/-transport/index.html"><span class="identifier">Transport</span></a></code>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-init-.html">&lt;init&gt;</a></h4>
-</td>
-<td>
-<code><span class="identifier">WledTransport</span><span class="symbol">(</span><span class="identifier" id="baaahs.controller.WledManager.WledTransport$<init>(baaahs.controller.WledDevice, baaahs.controller.SacnLink.SacnDevice, baaahs.model.Model.Entity, kotlin.collections.List((baaahs.geom.Vector3F)))/wledDevice">wledDevice</span><span class="symbol">:</span>&nbsp;<a href="../../-wled-device/index.html"><span class="identifier">WledDevice</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.controller.WledManager.WledTransport$<init>(baaahs.controller.WledDevice, baaahs.controller.SacnLink.SacnDevice, baaahs.model.Model.Entity, kotlin.collections.List((baaahs.geom.Vector3F)))/sacnDevice">sacnDevice</span><span class="symbol">:</span>&nbsp;<span class="identifier">SacnDevice</span><span class="symbol">, </span><span class="identifier" id="baaahs.controller.WledManager.WledTransport$<init>(baaahs.controller.WledDevice, baaahs.controller.SacnLink.SacnDevice, baaahs.model.Model.Entity, kotlin.collections.List((baaahs.geom.Vector3F)))/entity">entity</span><span class="symbol">:</span>&nbsp;<span class="identifier">Entity</span><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.controller.WledManager.WledTransport$<init>(baaahs.controller.WledDevice, baaahs.controller.SacnLink.SacnDevice, baaahs.model.Model.Entity, kotlin.collections.List((baaahs.geom.Vector3F)))/pixelLocations">pixelLocations</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.geom/-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">&gt;</span><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="fixture.html">fixture</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">fixture</span><span class="symbol">: </span><a href="../../../baaahs.fixtures/-fixture/index.html"><span class="identifier">Fixture</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="name.html">name</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">name</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="stats.html">stats</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">stats</span><span class="symbol">: </span><span class="identifier">SacnStats</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="send.html">send</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">send</span><span class="symbol">(</span><span class="identifier" id="baaahs.controller.WledManager.WledTransport$send(baaahs.fixtures.Fixture, kotlin.collections.List((baaahs.fixtures.ResultView)))/fixture">fixture</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.fixtures/-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.controller.WledManager.WledTransport$send(baaahs.fixtures.Fixture, kotlin.collections.List((baaahs.fixtures.ResultView)))/resultViews">resultViews</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.fixtures/-result-view/index.html"><span class="identifier">ResultView</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>WledTransport</title>
+<link href="../../../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script><script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../../styles/style.css" rel="Stylesheet"><link href="../../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.controller/WledManager.WledTransport///PointingToDeclaration//788909594">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../../index.html">sparklemotion</a>/<a href="../../index.html">baaahs.controller</a>/<a href="../index.html">WledManager</a>/<a href="index.html">WledTransport</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":dokkaHtml/commonMain">common</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Wled</span><wbr></wbr><span>Transport</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">inner class <a href="index.html">WledTransport</a>(wledDevice: <a href="../../-wled-device/index.html">WledDevice</a>, sacnDevice: <a href="../../-sacn-link/-sacn-device/index.html">SacnLink.SacnDevice</a>, entity: <a href="../../../baaahs.model/-model/-entity/index.html">Model.Entity</a>?, pixelLocations: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../../../baaahs.geom/-vector3-f/index.html">Vector3F</a>&gt;) : <a href="../../../baaahs.fixtures/-transport/index.html">Transport</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="-456205407%2FFunctions%2F788909594" anchor-label="send" id="-456205407%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="send.html">send</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-456205407%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">open override fun <a href="send.html">send</a>(fixture: <a href="../../../baaahs.fixtures/-fixture/index.html">Fixture</a>, resultViews: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../../../baaahs.fixtures/-result-view/index.html">ResultView</a>&gt;)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="832131730%2FProperties%2F788909594" anchor-label="fixture" id="832131730%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="fixture.html">fixture</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="832131730%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="832131730%2FProperties%2F788909594" anchor-label="fixture" id="832131730%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="fixture.html">fixture</a>: <a href="../../../baaahs.fixtures/-fixture/index.html">Fixture</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-2036303980%2FProperties%2F788909594" anchor-label="name" id="-2036303980%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="name.html">name</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2036303980%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-2036303980%2FProperties%2F788909594" anchor-label="name" id="-2036303980%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">open override val <a href="name.html">name</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-787835844%2FProperties%2F788909594" anchor-label="stats" id="-787835844%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="stats.html">stats</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-787835844%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-787835844%2FProperties%2F788909594" anchor-label="stats" id="-787835844%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="stats.html">stats</a>: <a href="../../-sacn-link/-sacn-stats/index.html">SacnLink.SacnStats</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

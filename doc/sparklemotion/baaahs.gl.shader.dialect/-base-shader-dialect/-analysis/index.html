@@ -1,86 +1,169 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>BaseShaderDialect.Analysis - sparklemotion</title>
-<link rel="stylesheet" href="../../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../../index.html">baaahs.gl.shader.dialect</a>&nbsp;/&nbsp;<a href="../index.html">BaseShaderDialect</a>&nbsp;/&nbsp;<a href="./index.html">Analysis</a><br/>
-<br/>
-<h1>Analysis</h1>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Analysis</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../../baaahs.gl.glsl/-shader-analysis/index.html"><span class="identifier">ShaderAnalysis</span></a></code>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-init-.html">&lt;init&gt;</a></h4>
-</td>
-<td>
-<code><span class="identifier">Analysis</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl.shader.dialect.BaseShaderDialect.Analysis$<init>(baaahs.gl.glsl.GlslCode, baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.collections.List((baaahs.gl.shader.InputPort)), kotlin.collections.List((baaahs.gl.shader.OutputPort)), baaahs.show.Shader)/glslCode">glslCode</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.gl.glsl/-glsl-code/index.html"><span class="identifier">GlslCode</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.dialect.BaseShaderDialect.Analysis$<init>(baaahs.gl.glsl.GlslCode, baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.collections.List((baaahs.gl.shader.InputPort)), kotlin.collections.List((baaahs.gl.shader.OutputPort)), baaahs.show.Shader)/entryPoint">entryPoint</span><span class="symbol">:</span>&nbsp;<span class="identifier">GlslFunction</span><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.dialect.BaseShaderDialect.Analysis$<init>(baaahs.gl.glsl.GlslCode, baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.collections.List((baaahs.gl.shader.InputPort)), kotlin.collections.List((baaahs.gl.shader.OutputPort)), baaahs.show.Shader)/inputPorts">inputPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.dialect.BaseShaderDialect.Analysis$<init>(baaahs.gl.glsl.GlslCode, baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.collections.List((baaahs.gl.shader.InputPort)), kotlin.collections.List((baaahs.gl.shader.OutputPort)), baaahs.show.Shader)/outputPorts">outputPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.gl.shader/-output-port/index.html"><span class="identifier">OutputPort</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.gl.shader.dialect.BaseShaderDialect.Analysis$<init>(baaahs.gl.glsl.GlslCode, baaahs.gl.glsl.GlslCode.GlslFunction, kotlin.collections.List((baaahs.gl.shader.InputPort)), kotlin.collections.List((baaahs.gl.shader.OutputPort)), baaahs.show.Shader)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">?</span><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="entry-point.html">entryPoint</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">entryPoint</span><span class="symbol">: </span><span class="identifier">GlslFunction</span><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="errors.html">errors</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">errors</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.gl.glsl/-glsl-error/index.html"><span class="identifier">GlslError</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="glsl-code.html">glslCode</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">glslCode</span><span class="symbol">: </span><a href="../../../baaahs.gl.glsl/-glsl-code/index.html"><span class="identifier">GlslCode</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="input-ports.html">inputPorts</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">inputPorts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.gl.shader/-input-port/index.html"><span class="identifier">InputPort</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="is-valid.html">isValid</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">isValid</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="output-ports.html">outputPorts</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">outputPorts</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html"><span class="identifier">List</span></a><span class="symbol">&lt;</span><a href="../../../baaahs.gl.shader/-output-port/index.html"><span class="identifier">OutputPort</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="shader.html">shader</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">shader</span><span class="symbol">: </span><a href="../../../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="shader-dialect.html">shaderDialect</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">shaderDialect</span><span class="symbol">: </span><a href="../index.html"><span class="identifier">BaseShaderDialect</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Analysis</title>
+<link href="../../../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script><script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../../styles/style.css" rel="Stylesheet"><link href="../../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.gl.shader.dialect/BaseShaderDialect.Analysis///PointingToDeclaration//788909594">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../../index.html">sparklemotion</a>/<a href="../../index.html">baaahs.gl.shader.dialect</a>/<a href="../index.html">BaseShaderDialect</a>/<a href="index.html">Analysis</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":dokkaHtml/commonMain">common</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Analysis</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">inner class <a href="index.html">Analysis</a>(glslCode: <a href="../../../baaahs.gl.glsl/-glsl-code/index.html">GlslCode</a>, entryPoint: <a href="../../../baaahs.gl.glsl/-glsl-code/-glsl-function/index.html">GlslCode.GlslFunction</a>?, inputPorts: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../../../baaahs.gl.shader/-input-port/index.html">InputPort</a>&gt;, outputPorts: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../../../baaahs.gl.shader/-output-port/index.html">OutputPort</a>&gt;, shader: <a href="../../../baaahs.show/-shader/index.html">Shader</a>?) : <a href="../../../baaahs.gl.glsl/-shader-analysis/index.html">ShaderAnalysis</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Properties">Properties</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="2117802807%2FProperties%2F788909594" anchor-label="entryPoint" id="2117802807%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="entry-point.html">entryPoint</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2117802807%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="2117802807%2FProperties%2F788909594" anchor-label="entryPoint" id="2117802807%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">open override val <a href="entry-point.html">entryPoint</a>: <a href="../../../baaahs.gl.glsl/-glsl-code/-glsl-function/index.html">GlslCode.GlslFunction</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1444464470%2FProperties%2F788909594" anchor-label="errors" id="-1444464470%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="errors.html">errors</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1444464470%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-1444464470%2FProperties%2F788909594" anchor-label="errors" id="-1444464470%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">open override val <a href="errors.html">errors</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../../../baaahs.gl.glsl/-glsl-error/index.html">GlslError</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-2025868022%2FProperties%2F788909594" anchor-label="glslCode" id="-2025868022%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="glsl-code.html">glslCode</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2025868022%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-2025868022%2FProperties%2F788909594" anchor-label="glslCode" id="-2025868022%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">open override val <a href="glsl-code.html">glslCode</a>: <a href="../../../baaahs.gl.glsl/-glsl-code/index.html">GlslCode</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="531256397%2FProperties%2F788909594" anchor-label="inputPorts" id="531256397%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="input-ports.html">inputPorts</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="531256397%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="531256397%2FProperties%2F788909594" anchor-label="inputPorts" id="531256397%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">open override val <a href="input-ports.html">inputPorts</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../../../baaahs.gl.shader/-input-port/index.html">InputPort</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-755575789%2FProperties%2F788909594" anchor-label="isValid" id="-755575789%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="is-valid.html">isValid</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-755575789%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-755575789%2FProperties%2F788909594" anchor-label="isValid" id="-755575789%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">open override val <a href="is-valid.html">isValid</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="2070890068%2FProperties%2F788909594" anchor-label="outputPorts" id="2070890068%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="output-ports.html">outputPorts</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2070890068%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="2070890068%2FProperties%2F788909594" anchor-label="outputPorts" id="2070890068%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">open override val <a href="output-ports.html">outputPorts</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../../../baaahs.gl.shader/-output-port/index.html">OutputPort</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-979186320%2FProperties%2F788909594" anchor-label="shader" id="-979186320%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="shader.html">shader</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-979186320%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-979186320%2FProperties%2F788909594" anchor-label="shader" id="-979186320%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">open override val <a href="shader.html">shader</a>: <a href="../../../baaahs.show/-shader/index.html">Shader</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1493585764%2FProperties%2F788909594" anchor-label="shaderDialect" id="1493585764%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="shader-dialect.html">shaderDialect</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1493585764%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="1493585764%2FProperties%2F788909594" anchor-label="shaderDialect" id="1493585764%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">open override val <a href="shader-dialect.html">shaderDialect</a>: <a href="../index.html">BaseShaderDialect</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

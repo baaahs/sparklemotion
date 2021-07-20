@@ -1,84 +1,159 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>FixturesSimulator - sparklemotion</title>
-<link rel="stylesheet" href="../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.sim</a>&nbsp;/&nbsp;<a href="./index.html">FixturesSimulator</a><br/>
-<br/>
-<h1>FixturesSimulator</h1>
-<code><span class="keyword">class </span><span class="identifier">FixturesSimulator</span></code>
-<p>Steps to setting up a simulator:</p>
-<ol><li>Create a fixture simulation for each model entity.</li>
-<li>Generate fixture mapping data linking controllers to model entities.</li>
-<li>Generate pixel mapping data.</li>
-<li>Register mapping data.</li>
-<li>Launch controller simulations for each fixture.</li>
-<li>Generate fixture visualizers and add them to the simulation visualizer.</li>
-</ol>
-<h3>Types</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-facade/index.html">Facade</a></h4>
-</td>
-<td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Facade</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-facade/index.html"><span class="identifier">Facade</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-init-.html">&lt;init&gt;</a></h4>
-</td>
-<td>
-<p>Steps to setting up a simulator:</p>
-<code><span class="identifier">FixturesSimulator</span><span class="symbol">(</span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/visualizer">visualizer</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.visualizer/-visualizer/index.html"><span class="identifier">Visualizer</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/dmxUniverse">dmxUniverse</span><span class="symbol">:</span>&nbsp;<a href="../-fake-dmx-universe/index.html"><span class="identifier">FakeDmxUniverse</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/fs">fs</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/mapperFs">mapperFs</span><span class="symbol">:</span>&nbsp;<a href="../-fake-fs/index.html"><span class="identifier">FakeFs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/clock">clock</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.util/-clock/index.html"><span class="identifier">Clock</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.sim.FixturesSimulator$<init>(baaahs.visualizer.Visualizer, baaahs.model.Model, baaahs.net.Network, baaahs.sim.FakeDmxUniverse, baaahs.io.Fs, baaahs.sim.FakeFs, baaahs.util.Clock, baaahs.plugin.Plugins, baaahs.visualizer.PixelArranger)/pixelArranger">pixelArranger</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.visualizer/-pixel-arranger/index.html"><span class="identifier">PixelArranger</span></a><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="facade.html">facade</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">facade</span><span class="symbol">: </span><span class="identifier">Facade</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="add-to-visualizer.html">addToVisualizer</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">addToVisualizer</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="generate-mapping-data.html">generateMappingData</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">generateMappingData</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="launch-controllers.html">launchControllers</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">launchControllers</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>FixturesSimulator</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.sim/FixturesSimulator///PointingToDeclaration//371682492">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../index.html">sparklemotion</a>/<a href="../index.html">baaahs.sim</a>/<a href="index.html">FixturesSimulator</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector js-like" data-active="" data-filter=":dokkaHtml/jsMain">js</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Fixtures</span><wbr></wbr><span>Simulator</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="index.html">FixturesSimulator</a>(visualizer: <a href="../../baaahs.visualizer/-visualizer/index.html">Visualizer</a>, model: <a href="../../baaahs.model/-model/index.html">Model</a>, network: <a href="../../baaahs.net/-network/index.html">Network</a>, dmxUniverse: <a href="../-fake-dmx-universe/index.html">FakeDmxUniverse</a>, fs: <a href="../../baaahs.io/-fs/index.html">Fs</a>, mapperFs: <a href="../-fake-fs/index.html">FakeFs</a>, clock: <a href="../../baaahs.util/-clock/index.html">Clock</a>, plugins: <a href="../../baaahs.plugin/-plugins/index.html">Plugins</a>, pixelArranger: <a href="../../baaahs.visualizer/-pixel-arranger/index.html">PixelArranger</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Steps to setting up a simulator:</p><ol><li><p class="paragraph">Create a fixture simulation for each model entity.</p></li><li><p class="paragraph">Generate fixture mapping data linking controllers to model entities.</p></li><li><p class="paragraph">Generate pixel mapping data.</p></li><li><p class="paragraph">Register mapping data.</p></li><li><p class="paragraph">Launch controller simulations for each fixture.</p></li><li><p class="paragraph">Generate fixture visualizers and add them to the simulation visualizer.</p></li></ol></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+            <div class="tabs-section-body">
+              <h2 class="tabbedcontent">Constructors</h2>
+              <div class="table" data-togglable="Constructors"><a data-name="-1176008124%2FConstructors%2F371682492" anchor-label="FixturesSimulator" id="-1176008124%2FConstructors%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue TabbedContent">
+                    <div class=""><span class="inline-flex"><a href="-fixtures-simulator.html">FixturesSimulator</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1176008124%2FConstructors%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <a href="-fixtures-simulator.html">FixturesSimulator</a>(visualizer: <a href="../../baaahs.visualizer/-visualizer/index.html">Visualizer</a>, model: <a href="../../baaahs.model/-model/index.html">Model</a>, network: <a href="../../baaahs.net/-network/index.html">Network</a>, dmxUniverse: <a href="../-fake-dmx-universe/index.html">FakeDmxUniverse</a>, fs: <a href="../../baaahs.io/-fs/index.html">Fs</a>, mapperFs: <a href="../-fake-fs/index.html">FakeFs</a>, clock: <a href="../../baaahs.util/-clock/index.html">Clock</a>, plugins: <a href="../../baaahs.plugin/-plugins/index.html">Plugins</a>, pixelArranger: <a href="../../baaahs.visualizer/-pixel-arranger/index.html">PixelArranger</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="743207943%2FClasslikes%2F371682492" anchor-label="Facade" id="743207943%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-facade/index.html">Facade</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="743207943%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">inner class <a href="-facade/index.html">Facade</a> : <a href="../../baaahs.ui/-facade/index.html">Facade</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="548829108%2FFunctions%2F371682492" anchor-label="addToVisualizer" id="548829108%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="add-to-visualizer.html">addToVisualizer</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="548829108%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <a href="add-to-visualizer.html">addToVisualizer</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-781681813%2FFunctions%2F371682492" anchor-label="generateMappingData" id="-781681813%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="generate-mapping-data.html">generateMappingData</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-781681813%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <a href="generate-mapping-data.html">generateMappingData</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1235055882%2FFunctions%2F371682492" anchor-label="launchControllers" id="1235055882%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="launch-controllers.html">launchControllers</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1235055882%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <a href="launch-controllers.html">launchControllers</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="-2122118766%2FProperties%2F371682492" anchor-label="facade" id="-2122118766%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="facade.html">facade</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2122118766%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-2122118766%2FProperties%2F371682492" anchor-label="facade" id="-2122118766%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="facade.html">facade</a>: <a href="-facade/index.html">FixturesSimulator.Facade</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

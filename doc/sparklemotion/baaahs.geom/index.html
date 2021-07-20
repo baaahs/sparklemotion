@@ -1,85 +1,220 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>baaahs.geom - sparklemotion</title>
-<link rel="stylesheet" href="../../style.css">
-</HEAD>
-<BODY>
-<a href="../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="./index.html">baaahs.geom</a><br/>
-<br/>
-<h2>Package baaahs.geom</h2>
-<h3>Types</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-matrix4/index.html">Matrix4</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Matrix4</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-vector2/index.html">Vector2</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Vector2</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-vector2-f/index.html">Vector2F</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Vector2F</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-vector3-f/index.html">Vector3F</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Vector3F</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-vector4-f/index.html">Vector4F</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Vector4F</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="bounding-box.html">boundingBox</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">boundingBox</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom$boundingBox(kotlin.collections.Collection((baaahs.geom.Vector3F)))/vectors">vectors</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html"><span class="identifier">Pair</span></a><span class="symbol">&lt;</span><a href="-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">,</span>&nbsp;<a href="-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="center.html">center</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">center</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom$center(kotlin.collections.Collection((baaahs.geom.Vector3F)))/vectors">vectors</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-vector3-f/index.html"><span class="identifier">Vector3F</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="create-matrix-with-position-and-orientation.html">createMatrixWithPositionAndOrientation</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">createMatrixWithPositionAndOrientation</span><span class="symbol">(</span><span class="identifier" id="baaahs.geom$createMatrixWithPositionAndOrientation(baaahs.geom.Vector3F, baaahs.geom.Vector3F)/origin">origin</span><span class="symbol">:</span>&nbsp;<a href="-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.geom$createMatrixWithPositionAndOrientation(baaahs.geom.Vector3F, baaahs.geom.Vector3F)/heading">heading</span><span class="symbol">:</span>&nbsp;<a href="-vector3-f/index.html"><span class="identifier">Vector3F</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-matrix4/index.html"><span class="identifier">Matrix4</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="to-vector3-f.html">toVector3F</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><a href="../three.js/-vector3/index.html"><span class="identifier">Vector3</span></a><span class="symbol">.</span><span class="identifier">toVector3F</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-vector3-f/index.html"><span class="identifier">Vector3F</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>baaahs.geom</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script><script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../styles/style.css" rel="Stylesheet"><link href="../../styles/logo-styles.css" rel="Stylesheet"><link href="../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.geom////PointingToDeclaration//-712551682">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../index.html">sparklemotion</a>/<a href="index.html">baaahs.geom</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":dokkaHtml/commonMain">common</button><button class="platform-tag platform-selector js-like" data-active="" data-filter=":dokkaHtml/jsMain">js</button><button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":dokkaHtml/jvmMain">jvm</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Package baaahs.</span><wbr></wbr><span>geom</span></h1>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="162398349%2FClasslikes%2F788909594" anchor-label="Matrix4" id="162398349%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-matrix4/index.html">Matrix4</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="162398349%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-matrix4/index.html">Matrix4</a>(elements: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double-array/index.html">DoubleArray</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1216813743%2FClasslikes%2F-712551682" anchor-label="Vector2" id="-1216813743%2FClasslikes%2F-712551682" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-vector2/index.html">Vector2</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1216813743%2FClasslikes%2F-712551682"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain" data-active="" data-toggle=":dokkaHtml/commonMain">common</button><button class="platform-bookmark js-like" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain" data-toggle=":dokkaHtml/jsMain">js</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-vector2/index.html">Vector2</a>(x: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a>, y: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div><div class="content sourceset-depenent-content" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-vector2/index.html">Vector2</a>(x: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a>, y: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a>) : <a href="../three.js/-vector2/index.html">Vector2</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>    </div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-543529589%2FClasslikes%2F788909594" anchor-label="Vector2F" id="-543529589%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-vector2-f/index.html">Vector2F</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-543529589%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-vector2-f/index.html">Vector2F</a>(x: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>, y: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="418084428%2FClasslikes%2F788909594" anchor-label="Vector3F" id="418084428%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-vector3-f/index.html">Vector3F</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="418084428%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">data class <a href="-vector3-f/index.html">Vector3F</a>(x: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>, y: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>, z: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1379698445%2FClasslikes%2F788909594" anchor-label="Vector4F" id="1379698445%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-vector4-f/index.html">Vector4F</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1379698445%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-vector4-f/index.html">Vector4F</a>(x: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>, y: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>, z: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>, w: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="-1553725718%2FFunctions%2F788909594" anchor-label="boundingBox" id="-1553725718%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="bounding-box.html">boundingBox</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1553725718%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="bounding-box.html">boundingBox</a>(vectors: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a>&lt;<a href="-vector3-f/index.html">Vector3F</a>&gt;): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html">Pair</a>&lt;<a href="-vector3-f/index.html">Vector3F</a>, <a href="-vector3-f/index.html">Vector3F</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="307137016%2FFunctions%2F788909594" anchor-label="center" id="307137016%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="center.html">center</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="307137016%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="center.html">center</a>(vectors: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a>&lt;<a href="-vector3-f/index.html">Vector3F</a>&gt;): <a href="-vector3-f/index.html">Vector3F</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-445013017%2FFunctions%2F-712551682" anchor-label="createMatrixWithPositionAndOrientation" id="-445013017%2FFunctions%2F-712551682" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="create-matrix-with-position-and-orientation.html">createMatrixWithPositionAndOrientation</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-445013017%2FFunctions%2F-712551682"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain" data-active="" data-toggle=":dokkaHtml/commonMain">common</button><button class="platform-bookmark js-like" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain" data-toggle=":dokkaHtml/jsMain">js</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="create-matrix-with-position-and-orientation.html">createMatrixWithPositionAndOrientation</a>(origin: <a href="-vector3-f/index.html">Vector3F</a>, heading: <a href="-vector3-f/index.html">Vector3F</a>): <a href="-matrix4/index.html">Matrix4</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div><div class="content sourceset-depenent-content" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <a href="create-matrix-with-position-and-orientation.html">createMatrixWithPositionAndOrientation</a>(origin: <a href="-vector3-f/index.html#418084428%2FExtensions%2F371682492">Vector3F</a>, heading: <a href="-vector3-f/index.html#418084428%2FExtensions%2F371682492">Vector3F</a>): <a href="-matrix4/index.html">Matrix4</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>    </div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-22096761%2FFunctions%2F371682492" anchor-label="toVector3F" id="-22096761%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="to-vector3-f.html">toVector3F</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-22096761%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <a href="../three.js/-vector3/index.html">Vector3</a>.<a href="to-vector3-f.html">toVector3F</a>(): <a href="-vector3-f/index.html#418084428%2FExtensions%2F371682492">Vector3F</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

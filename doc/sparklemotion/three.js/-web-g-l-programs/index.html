@@ -1,77 +1,159 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>WebGLPrograms - sparklemotion</title>
-<link rel="stylesheet" href="../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">three.js</a>&nbsp;/&nbsp;<a href="./index.html">WebGLPrograms</a><br/>
-<br/>
-<h1>WebGLPrograms</h1>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">WebGLPrograms</span></code>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-init-.html">&lt;init&gt;</a></h4>
-</td>
-<td>
-<code><span class="identifier">WebGLPrograms</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLPrograms$<init>(three.js.WebGLRenderer, three.js.WebGLCubeMaps, three.js.WebGLExtensions, three.js.WebGLCapabilities, three.js.WebGLBindingStates, three.js.WebGLClipping)/renderer">renderer</span><span class="symbol">:</span>&nbsp;<a href="../-web-g-l-renderer/index.html"><span class="identifier">WebGLRenderer</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLPrograms$<init>(three.js.WebGLRenderer, three.js.WebGLCubeMaps, three.js.WebGLExtensions, three.js.WebGLCapabilities, three.js.WebGLBindingStates, three.js.WebGLClipping)/cubemaps">cubemaps</span><span class="symbol">:</span>&nbsp;<a href="../-web-g-l-cube-maps/index.html"><span class="identifier">WebGLCubeMaps</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLPrograms$<init>(three.js.WebGLRenderer, three.js.WebGLCubeMaps, three.js.WebGLExtensions, three.js.WebGLCapabilities, three.js.WebGLBindingStates, three.js.WebGLClipping)/extensions">extensions</span><span class="symbol">:</span>&nbsp;<a href="../-web-g-l-extensions/index.html"><span class="identifier">WebGLExtensions</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLPrograms$<init>(three.js.WebGLRenderer, three.js.WebGLCubeMaps, three.js.WebGLExtensions, three.js.WebGLCapabilities, three.js.WebGLBindingStates, three.js.WebGLClipping)/capabilities">capabilities</span><span class="symbol">:</span>&nbsp;<a href="../-web-g-l-capabilities/index.html"><span class="identifier">WebGLCapabilities</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLPrograms$<init>(three.js.WebGLRenderer, three.js.WebGLCubeMaps, three.js.WebGLExtensions, three.js.WebGLCapabilities, three.js.WebGLBindingStates, three.js.WebGLClipping)/bindingStates">bindingStates</span><span class="symbol">:</span>&nbsp;<a href="../-web-g-l-binding-states/index.html"><span class="identifier">WebGLBindingStates</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLPrograms$<init>(three.js.WebGLRenderer, three.js.WebGLCubeMaps, three.js.WebGLExtensions, three.js.WebGLCapabilities, three.js.WebGLBindingStates, three.js.WebGLClipping)/clipping">clipping</span><span class="symbol">:</span>&nbsp;<a href="../-web-g-l-clipping/index.html"><span class="identifier">WebGLClipping</span></a><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="programs.html">programs</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">var </span><span class="identifier">programs</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="../-web-g-l-program/index.html"><span class="identifier">WebGLProgram</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="acquire-program.html">acquireProgram</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">acquireProgram</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLPrograms$acquireProgram(kotlin.Any, kotlin.String)/parameters">parameters</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLPrograms$acquireProgram(kotlin.Any, kotlin.String)/cacheKey">cacheKey</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-web-g-l-program/index.html"><span class="identifier">WebGLProgram</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-parameters.html">getParameters</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getParameters</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLPrograms$getParameters(three.js.Material, kotlin.Any, kotlin.Array((kotlin.Any)), three.js.Scene, kotlin.Any)/material">material</span><span class="symbol">:</span>&nbsp;<a href="../-material/index.html"><span class="identifier">Material</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLPrograms$getParameters(three.js.Material, kotlin.Any, kotlin.Array((kotlin.Any)), three.js.Scene, kotlin.Any)/lights">lights</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLPrograms$getParameters(three.js.Material, kotlin.Any, kotlin.Array((kotlin.Any)), three.js.Scene, kotlin.Any)/shadows">shadows</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="three.js.WebGLPrograms$getParameters(three.js.Material, kotlin.Any, kotlin.Array((kotlin.Any)), three.js.Scene, kotlin.Any)/scene">scene</span><span class="symbol">:</span>&nbsp;<a href="../-scene/index.html"><span class="identifier">Scene</span></a><span class="symbol">, </span><span class="identifier" id="three.js.WebGLPrograms$getParameters(three.js.Material, kotlin.Any, kotlin.Array((kotlin.Any)), three.js.Scene, kotlin.Any)/obj">obj</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-program-cache-key.html">getProgramCacheKey</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getProgramCacheKey</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLPrograms$getProgramCacheKey(kotlin.Any)/parameters">parameters</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-uniforms.html">getUniforms</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">getUniforms</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLPrograms$getUniforms(three.js.Material)/material">material</span><span class="symbol">:</span>&nbsp;<a href="../-material/index.html"><span class="identifier">Material</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="release-program.html">releaseProgram</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">releaseProgram</span><span class="symbol">(</span><span class="identifier" id="three.js.WebGLPrograms$releaseProgram(three.js.WebGLProgram)/program">program</span><span class="symbol">:</span>&nbsp;<a href="../-web-g-l-program/index.html"><span class="identifier">WebGLProgram</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>WebGLPrograms</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::three.js/WebGLPrograms///PointingToDeclaration//371682492">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../index.html">sparklemotion</a>/<a href="../index.html">three.js</a>/<a href="index.html">WebGLPrograms</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector js-like" data-active="" data-filter=":dokkaHtml/jsMain">js</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Web</span><wbr></wbr><span>G</span><wbr></wbr><span>L</span><wbr></wbr><span>Programs</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open external class <a href="index.html">WebGLPrograms</a>(renderer: <a href="../-web-g-l-renderer/index.html">WebGLRenderer</a>, cubemaps: <a href="../-web-g-l-cube-maps/index.html">WebGLCubeMaps</a>, extensions: <a href="../-web-g-l-extensions/index.html">WebGLExtensions</a>, capabilities: <a href="../-web-g-l-capabilities/index.html">WebGLCapabilities</a>, bindingStates: <a href="../-web-g-l-binding-states/index.html">WebGLBindingStates</a>, clipping: <a href="../-web-g-l-clipping/index.html">WebGLClipping</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="577341048%2FFunctions%2F371682492" anchor-label="acquireProgram" id="577341048%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="acquire-program.html">acquireProgram</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="577341048%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="acquire-program.html">acquireProgram</a>(parameters: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>, cacheKey: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>): <a href="../-web-g-l-program/index.html">WebGLProgram</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-209755133%2FFunctions%2F371682492" anchor-label="getParameters" id="-209755133%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="get-parameters.html">getParameters</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-209755133%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="get-parameters.html">getParameters</a>(material: <a href="../-material/index.html">Material</a>, lights: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>, shadows: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?&gt;, scene: <a href="../-scene/index.html">Scene</a>, obj: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="984253718%2FFunctions%2F371682492" anchor-label="getProgramCacheKey" id="984253718%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="get-program-cache-key.html">getProgramCacheKey</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="984253718%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="get-program-cache-key.html">getProgramCacheKey</a>(parameters: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-821873343%2FFunctions%2F371682492" anchor-label="getUniforms" id="-821873343%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="get-uniforms.html">getUniforms</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-821873343%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="get-uniforms.html">getUniforms</a>(material: <a href="../-material/index.html">Material</a>): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1613600895%2FFunctions%2F371682492" anchor-label="releaseProgram" id="1613600895%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="release-program.html">releaseProgram</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1613600895%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">open fun <a href="release-program.html">releaseProgram</a>(program: <a href="../-web-g-l-program/index.html">WebGLProgram</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="1594878481%2FProperties%2F371682492" anchor-label="programs" id="1594878481%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="programs.html">programs</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1594878481%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1594878481%2FProperties%2F371682492" anchor-label="programs" id="1594878481%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">open var <a href="programs.html">programs</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a>&lt;<a href="../-web-g-l-program/index.html">WebGLProgram</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

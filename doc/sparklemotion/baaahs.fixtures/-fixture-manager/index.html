@@ -1,117 +1,281 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>FixtureManager - sparklemotion</title>
-<link rel="stylesheet" href="../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.fixtures</a>&nbsp;/&nbsp;<a href="./index.html">FixtureManager</a><br/>
-<br/>
-<h1>FixtureManager</h1>
-<code><span class="keyword">class </span><span class="identifier">FixtureManager</span></code>
-<h3>Types</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-facade/index.html">Facade</a></h4>
-</td>
-<td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Facade</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-facade/index.html"><span class="identifier">Facade</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-fixtures-changes/index.html">FixturesChanges</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">FixturesChanges</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-init-.html">&lt;init&gt;</a></h4>
-</td>
-<td>
-<code><span class="identifier">FixtureManager</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, baaahs.model.Model, baaahs.mapper.MappingResults, baaahs.glsl.SurfacePixelStrategy, kotlin.collections.Map((baaahs.fixtures.Fixture, baaahs.gl.render.FixtureRenderTarget)))/renderManager">renderManager</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.render/-render-manager/index.html"><span class="identifier">RenderManager</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, baaahs.model.Model, baaahs.mapper.MappingResults, baaahs.glsl.SurfacePixelStrategy, kotlin.collections.Map((baaahs.fixtures.Fixture, baaahs.gl.render.FixtureRenderTarget)))/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, baaahs.model.Model, baaahs.mapper.MappingResults, baaahs.glsl.SurfacePixelStrategy, kotlin.collections.Map((baaahs.fixtures.Fixture, baaahs.gl.render.FixtureRenderTarget)))/mappingResults">mappingResults</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.mapper/-mapping-results/index.html"><span class="identifier">MappingResults</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, baaahs.model.Model, baaahs.mapper.MappingResults, baaahs.glsl.SurfacePixelStrategy, kotlin.collections.Map((baaahs.fixtures.Fixture, baaahs.gl.render.FixtureRenderTarget)))/surfacePixelStrategy">surfacePixelStrategy</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.glsl/-surface-pixel-strategy/index.html"><span class="identifier">SurfacePixelStrategy</span></a>&nbsp;<span class="symbol">=</span>&nbsp;LinearSurfacePixelStrategy()<span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$<init>(baaahs.gl.render.RenderManager, baaahs.model.Model, baaahs.mapper.MappingResults, baaahs.glsl.SurfacePixelStrategy, kotlin.collections.Map((baaahs.fixtures.Fixture, baaahs.gl.render.FixtureRenderTarget)))/initialRenderTargets">initialRenderTargets</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.gl.render/-fixture-render-target/index.html"><span class="identifier">FixtureRenderTarget</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="facade.html">facade</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">facade</span><span class="symbol">: </span><span class="identifier">Facade</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="active-patch-set-changed.html">activePatchSetChanged</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">activePatchSetChanged</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$activePatchSetChanged(baaahs.show.live.ActivePatchSet)/activePatchSet">activePatchSet</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show.live/-active-patch-set/index.html"><span class="identifier">ActivePatchSet</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="add-frame-listener.html">addFrameListener</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">addFrameListener</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$addFrameListener(kotlin.Function0((kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="create-fixture-for.html">createFixtureFor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">createFixtureFor</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$createFixtureFor(baaahs.mapper.ControllerId, kotlin.String, baaahs.fixtures.Transport)/controllerId">controllerId</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.mapper/-controller-id/index.html"><span class="identifier">ControllerId</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$createFixtureFor(baaahs.mapper.ControllerId, kotlin.String, baaahs.fixtures.Transport)/entityName">entityName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$createFixtureFor(baaahs.mapper.ControllerId, kotlin.String, baaahs.fixtures.Transport)/transport">transport</span><span class="symbol">:</span>&nbsp;<a href="../-transport/index.html"><span class="identifier">Transport</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-fixture/index.html"><span class="identifier">Fixture</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="fixtures-changed.html">fixturesChanged</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">fixturesChanged</span><span class="symbol">(</span><span class="identifier" id="baaahs.fixtures.FixtureManager$fixturesChanged(kotlin.collections.Collection((baaahs.fixtures.Fixture)), kotlin.collections.Collection((baaahs.fixtures.Fixture)))/addedFixtures">addedFixtures</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">&gt;</span><span class="symbol">, </span><span class="identifier" id="baaahs.fixtures.FixtureManager$fixturesChanged(kotlin.collections.Collection((baaahs.fixtures.Fixture)), kotlin.collections.Collection((baaahs.fixtures.Fixture)))/removedFixtures">removedFixtures</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-render-targets_-for-test-only.html">getRenderTargets_ForTestOnly</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getRenderTargets_ForTestOnly</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../-fixture/index.html"><span class="identifier">Fixture</span></a><span class="symbol">,</span>&nbsp;<a href="../../baaahs.gl.render/-render-target/index.html"><span class="identifier">RenderTarget</span></a><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="has-active-render-plan.html">hasActiveRenderPlan</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">hasActiveRenderPlan</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="maybe-update-render-plans.html">maybeUpdateRenderPlans</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">maybeUpdateRenderPlans</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="send-frame.html">sendFrame</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">sendFrame</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>FixtureManager</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.fixtures/FixtureManager///PointingToDeclaration//788909594">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../index.html">sparklemotion</a>/<a href="../index.html">baaahs.fixtures</a>/<a href="index.html">FixtureManager</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":dokkaHtml/commonMain">common</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Fixture</span><wbr></wbr><span>Manager</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="index.html">FixtureManager</a>(renderManager: <a href="../../baaahs.gl.render/-render-manager/index.html">RenderManager</a>, model: <a href="../../baaahs.model/-model/index.html">Model</a>, mappingResults: <a href="../../baaahs.mapper/-mapping-results/index.html">MappingResults</a>, surfacePixelStrategy: <a href="../../baaahs.glsl/-surface-pixel-strategy/index.html">SurfacePixelStrategy</a>, initialRenderTargets: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="../-fixture/index.html">Fixture</a>, <a href="../../baaahs.gl.render/-fixture-render-target/index.html">FixtureRenderTarget</a>&gt;)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="951781550%2FClasslikes%2F788909594" anchor-label="Companion" id="951781550%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-companion/index.html">Companion</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="951781550%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">object <a href="-companion/index.html">Companion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1910995822%2FClasslikes%2F788909594" anchor-label="Facade" id="1910995822%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-facade/index.html">Facade</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1910995822%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">inner class <a href="-facade/index.html">Facade</a> : <a href="../../baaahs.ui/-facade/index.html">Facade</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1006210497%2FClasslikes%2F788909594" anchor-label="FixturesChanges" id="1006210497%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-fixtures-changes/index.html">FixturesChanges</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1006210497%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">data class <a href="-fixtures-changes/index.html">FixturesChanges</a>(added: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a>&lt;<a href="../-fixture/index.html">Fixture</a>&gt;, removed: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a>&lt;<a href="../-fixture/index.html">Fixture</a>&gt;)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="-345592006%2FFunctions%2F788909594" anchor-label="activePatchSetChanged" id="-345592006%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="active-patch-set-changed.html">activePatchSetChanged</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-345592006%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="active-patch-set-changed.html">activePatchSetChanged</a>(activePatchSet: <a href="../../baaahs.show.live/-active-patch-set/index.html">ActivePatchSet</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1236104691%2FFunctions%2F788909594" anchor-label="addFrameListener" id="1236104691%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="add-frame-listener.html">addFrameListener</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1236104691%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="add-frame-listener.html">addFrameListener</a>(callback: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1953003489%2FFunctions%2F788909594" anchor-label="createFixtureFor" id="1953003489%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="create-fixture-for.html">createFixtureFor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1953003489%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="create-fixture-for.html">createFixtureFor</a>(controllerId: <a href="../../baaahs.mapper/-controller-id/index.html">ControllerId</a>, entityName: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>?, transport: <a href="../-transport/index.html">Transport</a>): <a href="../-fixture/index.html">Fixture</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="863518050%2FFunctions%2F788909594" anchor-label="fixturesChanged" id="863518050%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="fixtures-changed.html">fixturesChanged</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="863518050%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="fixtures-changed.html">fixturesChanged</a>(addedFixtures: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a>&lt;<a href="../-fixture/index.html">Fixture</a>&gt;, removedFixtures: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a>&lt;<a href="../-fixture/index.html">Fixture</a>&gt;)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1099021739%2FFunctions%2F788909594" anchor-label="getRenderTargets_ForTestOnly" id="-1099021739%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="get-render-targets_-for-test-only.html">getRenderTargets_ForTestOnly</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1099021739%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="get-render-targets_-for-test-only.html">getRenderTargets_ForTestOnly</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="../-fixture/index.html">Fixture</a>, <a href="../../baaahs.gl.render/-render-target/index.html">RenderTarget</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="837315464%2FFunctions%2F788909594" anchor-label="hasActiveRenderPlan" id="837315464%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="has-active-render-plan.html">hasActiveRenderPlan</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="837315464%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="has-active-render-plan.html">hasActiveRenderPlan</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1728869552%2FFunctions%2F788909594" anchor-label="maybeUpdateRenderPlans" id="-1728869552%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="maybe-update-render-plans.html">maybeUpdateRenderPlans</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1728869552%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="maybe-update-render-plans.html">maybeUpdateRenderPlans</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1904906306%2FFunctions%2F788909594" anchor-label="sendFrame" id="1904906306%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="send-frame.html">sendFrame</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1904906306%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="send-frame.html">sendFrame</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="-954330887%2FProperties%2F788909594" anchor-label="facade" id="-954330887%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="facade.html">facade</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-954330887%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-954330887%2FProperties%2F788909594" anchor-label="facade" id="-954330887%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="facade.html">facade</a>: <a href="-facade/index.html">FixtureManager.Facade</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

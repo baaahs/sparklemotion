@@ -1,132 +1,193 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>Observable - sparklemotion</title>
-<link rel="stylesheet" href="../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs.ui</a>&nbsp;/&nbsp;<a href="./index.html">Observable</a><br/>
-<br/>
-<h1>Observable</h1>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Observable</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-i-observable/index.html"><span class="identifier">IObservable</span></a></code>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-init-.html">&lt;init&gt;</a></h4>
-</td>
-<td>
-<code><span class="identifier">Observable</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="add-observer.html">addObserver</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">addObserver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.Observable$addObserver(baaahs.ui.Observer)/observer">observer</span><span class="symbol">:</span>&nbsp;<a href="../-observer/index.html"><span class="identifier">Observer</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-observer/index.html"><span class="identifier">Observer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="notify-changed.html">notifyChanged</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">notifyChanged</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="notify-on-change.html">notifyOnChange</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">V</span><span class="symbol">&gt;</span> <span class="identifier">notifyOnChange</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.Observable$notifyOnChange(baaahs.ui.Observable.notifyOnChange.V)/initialValue">initialValue</span><span class="symbol">:</span>&nbsp;<span class="identifier">V</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.properties/-read-write-property/index.html"><span class="identifier">ReadWriteProperty</span></a><span class="symbol">&lt;</span><a href="./index.html"><span class="identifier">Observable</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">V</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="remove-observer.html">removeObserver</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">fun </span><span class="identifier">removeObserver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui.Observable$removeObserver(baaahs.ui.Observer)/observer">observer</span><span class="symbol">:</span>&nbsp;<a href="../-observer/index.html"><span class="identifier">Observer</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Extension Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="../add-observer.html">addObserver</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../-i-observable/index.html"><span class="identifier">IObservable</span></a><span class="symbol">&gt;</span> <span class="identifier">T</span><span class="symbol">.</span><span class="identifier">addObserver</span><span class="symbol">(</span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Boolean, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/fireImmediately">fireImmediately</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">, </span><span class="identifier" id="baaahs.ui$addObserver(baaahs.ui.addObserver.T, kotlin.Boolean, kotlin.Function1((baaahs.ui.addObserver.T, kotlin.Unit)))/callback">callback</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">T</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../-removable-observer/index.html"><span class="identifier">RemovableObserver</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Inheritors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="../../baaahs.plugin.beatlink/-beat-link-beat-source/index.html">BeatLinkBeatSource</a></h4>
-</td>
-<td>
-<p>Listens to all connected CDJs' beat and tempo updates.</p>
-<code><span class="keyword">class </span><span class="identifier">BeatLinkBeatSource</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Observable</span></a><span class="symbol">, </span><a href="../../baaahs.plugin.beatlink/-beat-source/index.html"><span class="identifier">BeatSource</span></a><span class="symbol">, </span><span class="identifier">BeatListener</span><span class="symbol">, </span><span class="identifier">OnAirListener</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="../../baaahs.show.mutable/-editing-shader/index.html">EditingShader</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">EditingShader</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Observable</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="../-facade/index.html">Facade</a></h4>
-</td>
-<td>
-<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">Facade</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Observable</span></a><span class="symbol">, </span><a href="../-observer/index.html"><span class="identifier">Observer</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="../../baaahs.util/-framerate/index.html">Framerate</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Framerate</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Observable</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="../../baaahs/-gadget-manager/index.html">GadgetManager</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">GadgetManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Observable</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="../../baaahs.mapper/-js-mapper-ui/index.html">JsMapperUi</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JsMapperUi</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Observable</span></a><span class="symbol">, </span><a href="../../baaahs.mapper/-mapper-ui/index.html"><span class="identifier">MapperUi</span></a><span class="symbol">, </span><a href="../../baaahs.sim/-hosted-web-app/index.html"><span class="identifier">HostedWebApp</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="../../baaahs.mapper/-mapper-status/index.html">MapperStatus</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">MapperStatus</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Observable</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="../../baaahs.gl.preview/-preview-shader-builder/index.html">PreviewShaderBuilder</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">PreviewShaderBuilder</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="./index.html"><span class="identifier">Observable</span></a><span class="symbol">, </span><a href="../../baaahs.gl.preview/-shader-builder/index.html"><span class="identifier">ShaderBuilder</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Observable</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.ui/Observable///PointingToDeclaration//788909594">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../index.html">sparklemotion</a>/<a href="../index.html">baaahs.ui</a>/<a href="index.html">Observable</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":dokkaHtml/commonMain">common</button><button class="platform-tag platform-selector js-like" data-active="" data-filter=":dokkaHtml/jsMain">js</button><button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":dokkaHtml/jvmMain">jvm</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Observable</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">open class <a href="index.html">Observable</a> : <a href="../-i-observable/index.html">IObservable</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="395389999%2FFunctions%2F788909594" anchor-label="addObserver" id="395389999%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="add-observer.html">addObserver</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="395389999%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">open override fun <a href="add-observer.html">addObserver</a>(observer: <a href="../-observer/index.html">Observer</a>): <a href="../-observer/index.html">Observer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="543581159%2FFunctions%2F788909594" anchor-label="notifyChanged" id="543581159%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="notify-changed.html">notifyChanged</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="543581159%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="notify-changed.html">notifyChanged</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1510903454%2FFunctions%2F788909594" anchor-label="removeObserver" id="-1510903454%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="remove-observer.html">removeObserver</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1510903454%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">open override fun <a href="remove-observer.html">removeObserver</a>(observer: <a href="../-observer/index.html">Observer</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Inheritors</h2>
+              <div class="table" data-togglable="Inheritors"><a data-name="-1701104779%2FInheritors%2F788909594" anchor-label="GadgetManager" id="-1701104779%2FInheritors%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs/-gadget-manager/index.html">GadgetManager</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1701104779%2FInheritors%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+<a data-name="-1005339145%2FInheritors%2F788909594" anchor-label="PreviewShaderBuilder" id="-1005339145%2FInheritors%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs.gl.preview/-preview-shader-builder/index.html">PreviewShaderBuilder</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1005339145%2FInheritors%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+<a data-name="1415721028%2FInheritors%2F788909594" anchor-label="BeatSource" id="1415721028%2FInheritors%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs.plugin.beatlink/-beat-source/-none/index.html">BeatSource</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1415721028%2FInheritors%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+<a data-name="-1375910550%2FInheritors%2F788909594" anchor-label="EditingShader" id="-1375910550%2FInheritors%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs.show.mutable/-editing-shader/index.html">EditingShader</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1375910550%2FInheritors%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+<a data-name="-1590260288%2FInheritors%2F788909594" anchor-label="Facade" id="-1590260288%2FInheritors%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../-facade/index.html">Facade</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1590260288%2FInheritors%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+<a data-name="673021005%2FInheritors%2F788909594" anchor-label="Framerate" id="673021005%2FInheritors%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs.util/-framerate/index.html">Framerate</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="673021005%2FInheritors%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+<a data-name="1760502804%2FInheritors%2F371682492" anchor-label="MapperStatus" id="1760502804%2FInheritors%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs.mapper/-mapper-status/index.html">MapperStatus</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1760502804%2FInheritors%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+<a data-name="-1432886167%2FInheritors%2F371682492" anchor-label="JsMapperUi" id="-1432886167%2FInheritors%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs.mapper/-js-mapper-ui/index.html">JsMapperUi</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1432886167%2FInheritors%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+<a data-name="2116772387%2FInheritors%2F371682492" anchor-label="BridgeClient" id="2116772387%2FInheritors%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs.sim/-bridge-client/-bridged-beat-source/index.html">BridgeClient</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2116772387%2FInheritors%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+<a data-name="1115811784%2FInheritors%2F-879532132" anchor-label="BeatLinkBeatSource" id="1115811784%2FInheritors%2F-879532132" data-filterable-set=":dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../baaahs.plugin.beatlink/-beat-link-beat-source/index.html">BeatLinkBeatSource</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1115811784%2FInheritors%2F-879532132"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

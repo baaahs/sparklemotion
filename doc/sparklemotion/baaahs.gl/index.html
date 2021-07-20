@@ -1,129 +1,405 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>baaahs.gl - sparklemotion</title>
-<link rel="stylesheet" href="../../style.css">
-</HEAD>
-<BODY>
-<a href="../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="./index.html">baaahs.gl</a><br/>
-<br/>
-<h2>Package baaahs.gl</h2>
-<h3>Types</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-caching-toolchain/index.html">CachingToolchain</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">CachingToolchain</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-toolchain/index.html"><span class="identifier">Toolchain</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-gl-base/index.html">GlBase</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">GlBase</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-gl-context/index.html">GlContext</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">GlContext</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-gl-manager/index.html">GlManager</a></h4>
-</td>
-<td>
-<code><span class="keyword">abstract</span> <span class="keyword">class </span><span class="identifier">GlManager</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-jogl-gl-manager/index.html">JoglGlManager</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">JoglGlManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-gl-manager/index.html"><span class="identifier">GlManager</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-kgl-tracer/index.html">KglTracer</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">KglTracer</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Kgl</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-lwjgl-gl-manager/index.html">LwjglGlManager</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">LwjglGlManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-gl-manager/index.html"><span class="identifier">GlManager</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-root-toolchain/index.html">RootToolchain</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">RootToolchain</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-toolchain/index.html"><span class="identifier">Toolchain</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-toolchain/index.html">Toolchain</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">Toolchain</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-toolchain-stats/index.html">ToolchainStats</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">ToolchainStats</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.util/-stats/index.html"><span class="identifier">Stats</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-vec3/index.html">Vec3</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Vec3</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-vec4/index.html">Vec4</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Vec4</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="auto-wire.html">autoWire</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><a href="-toolchain/index.html"><span class="identifier">Toolchain</span></a><span class="symbol">.</span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.show.Shader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.show.Shader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/defaultPorts">defaultPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<a href="../baaahs.show.mutable/-mutable-port/index.html"><span class="identifier">MutablePort</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">, </span><span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.show.Shader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/shaderChannel">shaderChannel</span><span class="symbol">:</span>&nbsp;<a href="../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a>&nbsp;<span class="symbol">=</span>&nbsp;ShaderChannel.Main<span class="symbol">, </span><span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.show.Shader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/deviceTypes">deviceTypes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../baaahs.fixtures/-device-type/index.html"><span class="identifier">DeviceType</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyList()<span class="symbol">)</span><span class="symbol">: </span><a href="../baaahs.gl.patch/-unresolved-patch/index.html"><span class="identifier">UnresolvedPatch</span></a></code><br/>
-<code><span class="keyword">fun </span><a href="-toolchain/index.html"><span class="identifier">Toolchain</span></a><span class="symbol">.</span><span class="identifier">autoWire</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/shaders">shaders</span><span class="symbol">:</span>&nbsp;<a href="../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/defaultPorts">defaultPorts</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html"><span class="identifier">Map</span></a><span class="symbol">&lt;</span><a href="../baaahs.gl.patch/-content-type/index.html"><span class="identifier">ContentType</span></a><span class="symbol">,</span>&nbsp;<a href="../baaahs.show.mutable/-mutable-port/index.html"><span class="identifier">MutablePort</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyMap()<span class="symbol">, </span><span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/shaderChannel">shaderChannel</span><span class="symbol">:</span>&nbsp;<a href="../baaahs.show/-shader-channel/index.html"><span class="identifier">ShaderChannel</span></a>&nbsp;<span class="symbol">=</span>&nbsp;ShaderChannel.Main<span class="symbol">, </span><span class="identifier" id="baaahs.gl$autoWire(baaahs.gl.Toolchain, kotlin.Array((baaahs.gl.shader.OpenShader)), kotlin.collections.Map((baaahs.gl.patch.ContentType, baaahs.show.mutable.MutablePort)), baaahs.show.ShaderChannel, kotlin.collections.Collection((baaahs.fixtures.DeviceType)))/deviceTypes">deviceTypes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html"><span class="identifier">Collection</span></a><span class="symbol">&lt;</span><a href="../baaahs.fixtures/-device-type/index.html"><span class="identifier">DeviceType</span></a><span class="symbol">&gt;</span>&nbsp;<span class="symbol">=</span>&nbsp;emptyList()<span class="symbol">)</span><span class="symbol">: </span><a href="../baaahs.gl.patch/-unresolved-patch/index.html"><span class="identifier">UnresolvedPatch</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="open-shader.html">openShader</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><a href="-toolchain/index.html"><span class="identifier">Toolchain</span></a><span class="symbol">.</span><span class="identifier">openShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl$openShader(baaahs.gl.Toolchain, baaahs.show.Shader)/shader">shader</span><span class="symbol">:</span>&nbsp;<a href="../baaahs.show/-shader/index.html"><span class="identifier">Shader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a></code><br/>
-<code><span class="keyword">fun </span><a href="-toolchain/index.html"><span class="identifier">Toolchain</span></a><span class="symbol">.</span><span class="identifier">openShader</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl$openShader(baaahs.gl.Toolchain, baaahs.show.mutable.MutableShader)/mutableShader">mutableShader</span><span class="symbol">:</span>&nbsp;<a href="../baaahs.show.mutable/-mutable-shader/index.html"><span class="identifier">MutableShader</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../baaahs.gl.shader/-open-shader/index.html"><span class="identifier">OpenShader</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="with-cache.html">withCache</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><a href="-toolchain/index.html"><span class="identifier">Toolchain</span></a><span class="symbol">.</span><span class="identifier">withCache</span><span class="symbol">(</span><span class="identifier" id="baaahs.gl$withCache(baaahs.gl.Toolchain, kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="-caching-toolchain/index.html"><span class="identifier">CachingToolchain</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>baaahs.gl</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script><script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../styles/style.css" rel="Stylesheet"><link href="../../styles/logo-styles.css" rel="Stylesheet"><link href="../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.gl////PointingToDeclaration//-712551682">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../index.html">sparklemotion</a>/<a href="index.html">baaahs.gl</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":dokkaHtml/commonMain">common</button><button class="platform-tag platform-selector js-like" data-active="" data-filter=":dokkaHtml/jsMain">js</button><button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":dokkaHtml/jvmMain">jvm</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Package baaahs.</span><wbr></wbr><span>gl</span></h1>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="980605697%2FClasslikes%2F788909594" anchor-label="CachingToolchain" id="980605697%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-caching-toolchain/index.html">CachingToolchain</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="980605697%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-caching-toolchain/index.html">CachingToolchain</a>(delegate: <a href="-toolchain/index.html">Toolchain</a>, name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>) : <a href="-toolchain/index.html">Toolchain</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-406276395%2FClasslikes%2F-712551682" anchor-label="GlBase" id="-406276395%2FClasslikes%2F-712551682" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-gl-base/index.html">GlBase</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-406276395%2FClasslikes%2F-712551682"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"><div class="with-platform-tags"><span class="pull-right">
+  <div class="platform-tags ">
+    <div class="platform-tag common-like">common</div>
+  </div>
+</span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">object <a href="-gl-base/index.html">GlBase</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1063660781%2FClasslikes%2F788909594" anchor-label="GlContext" id="1063660781%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-gl-context/index.html">GlContext</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1063660781%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">abstract class <a href="-gl-context/index.html">GlContext</a>(kgl: <span data-unresolved-link="com.danielgergely.kgl/Kgl///PointingToDeclaration/">Kgl</span>, glslVersion: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, checkForErrors: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, state: <a href="-gl-context/-state/index.html">GlContext.State</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-125113169%2FClasslikes%2F788909594" anchor-label="GlManager" id="-125113169%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-gl-manager/index.html">GlManager</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-125113169%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">abstract class <a href="-gl-manager/index.html">GlManager</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1916721209%2FClasslikes%2F-879532132" anchor-label="JoglGlManager" id="1916721209%2FClasslikes%2F-879532132" data-filterable-set=":dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-jogl-gl-manager/index.html">JoglGlManager</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1916721209%2FClasslikes%2F-879532132"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag jvm-like">jvm</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/jvmMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jvmMain"><div class="symbol monospace">class <a href="-jogl-gl-manager/index.html">JoglGlManager</a> : <a href="-gl-manager/index.html">GlManager</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="625439450%2FClasslikes%2F788909594" anchor-label="KglTracer" id="625439450%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-kgl-tracer/index.html">KglTracer</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="625439450%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-kgl-tracer/index.html">KglTracer</a>(kgl: <span data-unresolved-link="com.danielgergely.kgl/Kgl///PointingToDeclaration/">Kgl</span>) : <span data-unresolved-link="com.danielgergely.kgl/Kgl///PointingToDeclaration/">Kgl</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-68298777%2FClasslikes%2F-879532132" anchor-label="LwjglGlManager" id="-68298777%2FClasslikes%2F-879532132" data-filterable-set=":dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-lwjgl-gl-manager/index.html">LwjglGlManager</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-68298777%2FClasslikes%2F-879532132"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag jvm-like">jvm</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/jvmMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jvmMain"><div class="symbol monospace">class <a href="-lwjgl-gl-manager/index.html">LwjglGlManager</a> : <a href="-gl-manager/index.html">GlManager</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="954034224%2FClasslikes%2F788909594" anchor-label="RootToolchain" id="954034224%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-root-toolchain/index.html">RootToolchain</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="954034224%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-root-toolchain/index.html">RootToolchain</a>(plugins: <a href="../baaahs.plugin/-plugins/index.html">Plugins</a>, glslParser: <a href="../baaahs.gl.glsl/-glsl-parser/index.html">GlslParser</a>, glslAnalyzer: <a href="../baaahs.gl.glsl/-glsl-analyzer/index.html">GlslAnalyzer</a>, autoWirer: <a href="../baaahs.gl.patch/-auto-wirer/index.html">AutoWirer</a>) : <a href="-toolchain/index.html">Toolchain</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-13041742%2FClasslikes%2F371682492" anchor-label="SharedGlContext" id="-13041742%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-shared-gl-context/index.html">SharedGlContext</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-13041742%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-shared-gl-context/index.html">SharedGlContext</a>(glContext: <a href="-gl-base/-js-gl-context/index.html">GlBase.JsGlContext</a>) : <a href="-gl-base/-js-gl-context/index.html">GlBase.JsGlContext</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-606808402%2FClasslikes%2F788909594" anchor-label="Toolchain" id="-606808402%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-toolchain/index.html">Toolchain</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-606808402%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-toolchain/index.html">Toolchain</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1755087925%2FClasslikes%2F788909594" anchor-label="ToolchainStats" id="1755087925%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-toolchain-stats/index.html">ToolchainStats</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1755087925%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-toolchain-stats/index.html">ToolchainStats</a> : <a href="../baaahs.util/-stats/index.html">Stats</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="144126767%2FClasslikes%2F371682492" anchor-label="WebGL2RenderingContext" id="144126767%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-web-g-l2-rendering-context/index.html">WebGL2RenderingContext</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="144126767%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">abstract external class <a href="-web-g-l2-rendering-context/index.html">WebGL2RenderingContext</a> : <span data-unresolved-link="com.danielgergely.kgl/WebGL2RenderingContext///PointingToDeclaration/">WebGL2RenderingContext</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-478878781%2FClasslikes%2F371682492" anchor-label="WebGLSync" id="-478878781%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-web-g-l-sync/index.html">WebGLSync</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-478878781%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external class <a href="-web-g-l-sync/index.html">WebGLSync</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/org.khronos.webgl/-web-g-l-object/index.html">WebGLObject</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="980456743%2FFunctions%2F788909594" anchor-label="autoWire" id="980456743%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="auto-wire.html">autoWire</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="980456743%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="-toolchain/index.html">Toolchain</a>.<a href="auto-wire.html">autoWire</a>(vararg shaders: <a href="../baaahs.gl.shader/-open-shader/index.html">OpenShader</a>, defaultPorts: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="../baaahs.gl.patch/-content-type/index.html">ContentType</a>, <a href="../baaahs.show.mutable/-mutable-port/index.html">MutablePort</a>&gt; = emptyMap(), shaderChannel: <a href="../baaahs.show/-shader-channel/index.html">ShaderChannel</a> = ShaderChannel.Main, deviceTypes: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a>&lt;<a href="../baaahs.fixtures/-device-type/index.html">DeviceType</a>&gt; = emptyList()): <a href="../baaahs.gl.patch/-unresolved-patch/index.html">UnresolvedPatch</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace">fun <a href="-toolchain/index.html">Toolchain</a>.<a href="auto-wire.html">autoWire</a>(vararg shaders: <a href="../baaahs.show/-shader/index.html">Shader</a>, defaultPorts: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="../baaahs.gl.patch/-content-type/index.html">ContentType</a>, <a href="../baaahs.show.mutable/-mutable-port/index.html">MutablePort</a>&gt; = emptyMap(), shaderChannel: <a href="../baaahs.show/-shader-channel/index.html">ShaderChannel</a> = ShaderChannel.Main, deviceTypes: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a>&lt;<a href="../baaahs.fixtures/-device-type/index.html">DeviceType</a>&gt; = emptyList()): <a href="../baaahs.gl.patch/-unresolved-patch/index.html">UnresolvedPatch</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="866471854%2FFunctions%2F788909594" anchor-label="openShader" id="866471854%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="open-shader.html">openShader</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="866471854%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="-toolchain/index.html">Toolchain</a>.<a href="open-shader.html">openShader</a>(shader: <a href="../baaahs.show/-shader/index.html">Shader</a>): <a href="../baaahs.gl.shader/-open-shader/index.html">OpenShader</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace">fun <a href="-toolchain/index.html">Toolchain</a>.<a href="open-shader.html">openShader</a>(mutableShader: <a href="../baaahs.show.mutable/-mutable-shader/index.html">MutableShader</a>): <a href="../baaahs.gl.shader/-open-shader/index.html">OpenShader</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1966888402%2FFunctions%2F-712551682" anchor-label="toStringMaybeWithNote" id="-1966888402%2FFunctions%2F-712551682" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="to-string-maybe-with-note.html">toStringMaybeWithNote</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1966888402%2FFunctions%2F-712551682"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"><div class="with-platform-tags"><span class="pull-right">
+  <div class="platform-tags ">
+    <div class="platform-tag common-like">common</div>
+  </div>
+</span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun &lt;<a href="to-string-maybe-with-note.html">T</a>&gt; <a href="to-string-maybe-with-note.html">T</a>.<a href="to-string-maybe-with-note.html">toStringMaybeWithNote</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1415677710%2FFunctions%2F788909594" anchor-label="withCache" id="1415677710%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="with-cache.html">withCache</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1415677710%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="-toolchain/index.html">Toolchain</a>.<a href="with-cache.html">withCache</a>(name: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>): <a href="-caching-toolchain/index.html">CachingToolchain</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="585266016%2FFunctions%2F-712551682" anchor-label="withNote" id="585266016%2FFunctions%2F-712551682" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="with-note.html">withNote</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="585266016%2FFunctions%2F-712551682"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"><div class="with-platform-tags"><span class="pull-right">
+  <div class="platform-tags ">
+    <div class="platform-tag common-like">common</div>
+  </div>
+</span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun &lt;<a href="with-note.html">T</a>&gt; <a href="with-note.html">T</a>.<a href="with-note.html">withNote</a>(note: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>): <a href="with-note.html">T</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

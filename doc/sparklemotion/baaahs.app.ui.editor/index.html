@@ -1,475 +1,1273 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>baaahs.app.ui.editor - sparklemotion</title>
-<link rel="stylesheet" href="../../style.css">
-</HEAD>
-<BODY>
-<a href="../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="./index.html">baaahs.app.ui.editor</a><br/>
-<br/>
-<h2>Package baaahs.app.ui.editor</h2>
-<h3>Types</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-button-group-props-editor/index.html">ButtonGroupPropsEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ButtonGroupPropsEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-props-editor/index.html"><span class="identifier">PropsEditor</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-button-group-props-editor-props/index.html">ButtonGroupPropsEditorProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">ButtonGroupPropsEditorProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-button-props-editor/index.html">ButtonPropsEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ButtonPropsEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-props-editor/index.html"><span class="identifier">PropsEditor</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-button-props-editor-props/index.html">ButtonPropsEditorProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">ButtonPropsEditorProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-document/index.html">Document</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">Document</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-editable-manager/index.html">EditableManager</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">EditableManager</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.ui/-facade/index.html"><span class="identifier">Facade</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-editable-manager-ui-props/index.html">EditableManagerUiProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">EditableManagerUiProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-editable-styles/index.html">EditableStyles</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">EditableStyles</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-editor-panel-views/index.html">EditorPanelViews</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">EditorPanelViews</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-extraction-candidate/index.html">ExtractionCandidate</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ExtractionCandidate</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-fixtures-list-props/index.html">FixturesListProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">FixturesListProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-gadgets-preview-props/index.html">GadgetsPreviewProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">GadgetsPreviewProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-gadgets-preview-styles/index.html">GadgetsPreviewStyles</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">GadgetsPreviewStyles</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-generic-properties-editor-panel/index.html">GenericPropertiesEditorPanel</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">GenericPropertiesEditorPanel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.app.ui/-editor-panel/index.html"><span class="identifier">EditorPanel</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-link-option/index.html">LinkOption</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">LinkOption</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-links-editor-props/index.html">LinksEditorProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">LinksEditorProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-link-source-editor-props/index.html">LinkSourceEditorProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">LinkSourceEditorProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-new-source-port-option/index.html">NewSourcePortOption</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">NewSourcePortOption</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-link-option/index.html"><span class="identifier">LinkOption</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-no-source-port-option/index.html">NoSourcePortOption</a></h4>
-</td>
-<td>
-<code><span class="keyword">object </span><span class="identifier">NoSourcePortOption</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-link-option/index.html"><span class="identifier">LinkOption</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-patch-editor-panel/index.html">PatchEditorPanel</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PatchEditorPanel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.app.ui/-editor-panel/index.html"><span class="identifier">EditorPanel</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-patch-holder-editor-panel/index.html">PatchHolderEditorPanel</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">PatchHolderEditorPanel</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../baaahs.app.ui/-editor-panel/index.html"><span class="identifier">EditorPanel</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-patch-overview-props/index.html">PatchOverviewProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">PatchOverviewProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-port-link-option/index.html">PortLinkOption</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">PortLinkOption</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-link-option/index.html"><span class="identifier">LinkOption</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-props-editor/index.html">PropsEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">PropsEditor</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-editor-props/index.html">ShaderEditorProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">ShaderEditorProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-editor-styles/index.html">ShaderEditorStyles</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">ShaderEditorStyles</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-instance-editor-props/index.html">ShaderInstanceEditorProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">ShaderInstanceEditorProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-library-dialog-props/index.html">ShaderLibraryDialogProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">ShaderLibraryDialogProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-properties-editor-props/index.html">ShaderPropertiesEditorProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">ShaderPropertiesEditorProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-refactor/index.html">ShaderRefactor</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">ShaderRefactor</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-text-editor-props/index.html">TextEditorProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">TextEditorProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-text-field-editor-props/index.html">TextFieldEditorProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">TextFieldEditorProps</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-title-props-editor/index.html">TitlePropsEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">TitlePropsEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-props-editor/index.html"><span class="identifier">PropsEditor</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-visualizer-props-editor/index.html">VisualizerPropsEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">VisualizerPropsEditor</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-props-editor/index.html"><span class="identifier">PropsEditor</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-visualizer-props-editor-props/index.html">VisualizerPropsEditorProps</a></h4>
-</td>
-<td>
-<code><span class="keyword">interface </span><span class="identifier">VisualizerPropsEditorProps</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-editable-manager-ui.html">EditableManagerUi</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">EditableManagerUi</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="editor-panel-views.html">editorPanelViews</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">editorPanelViews</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-fixtures-list.html">FixturesList</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">FixturesList</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-gadgets-preview.html">GadgetsPreview</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">GadgetsPreview</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-links-editor.html">LinksEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">LinksEditor</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-link-source-editor.html">LinkSourceEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">LinkSourceEditor</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-patch-overview.html">PatchOverview</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">PatchOverview</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-editor.html">ShaderEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">ShaderEditor</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-instance-editor.html">ShaderInstanceEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">ShaderInstanceEditor</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-library-dialog.html">ShaderLibraryDialog</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">ShaderLibraryDialog</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-shader-properties-editor.html">ShaderPropertiesEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">ShaderPropertiesEditor</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-text-editor.html">TextEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">TextEditor</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-text-field-editor.html">TextFieldEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">TextFieldEditor</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><span class="identifier">P</span><span class="symbol">&gt;</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="button-group-props-editor.html">buttonGroupPropsEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">buttonGroupPropsEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$buttonGroupPropsEditor(, ((baaahs.app.ui.editor.ButtonGroupPropsEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-button-group-props-editor-props/index.html"><span class="identifier">ButtonGroupPropsEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="button-props-editor.html">buttonPropsEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">buttonPropsEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$buttonPropsEditor(, ((baaahs.app.ui.editor.ButtonPropsEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-button-props-editor-props/index.html"><span class="identifier">ButtonPropsEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="editable-manager-ui.html">editableManagerUi</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">editableManagerUi</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$editableManagerUi(, ((baaahs.app.ui.editor.EditableManagerUiProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-editable-manager-ui-props/index.html"><span class="identifier">EditableManagerUiProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="fixtures-list.html">fixturesList</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">fixturesList</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$fixturesList(, ((baaahs.app.ui.editor.FixturesListProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-fixtures-list-props/index.html"><span class="identifier">FixturesListProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="gadgets-preview.html">gadgetsPreview</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">gadgetsPreview</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$gadgetsPreview(, ((baaahs.app.ui.editor.GadgetsPreviewProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-gadgets-preview-props/index.html"><span class="identifier">GadgetsPreviewProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="get-editor-panel-views.html">getEditorPanelViews</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">getEditorPanelViews</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-editor-panel-views/index.html"><span class="identifier">EditorPanelViews</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="links-editor.html">linksEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">linksEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$linksEditor(, ((baaahs.app.ui.editor.LinksEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-links-editor-props/index.html"><span class="identifier">LinksEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="link-source-editor.html">linkSourceEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">linkSourceEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$linkSourceEditor(, ((baaahs.app.ui.editor.LinkSourceEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-link-source-editor-props/index.html"><span class="identifier">LinkSourceEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="patch-overview.html">patchOverview</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">patchOverview</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$patchOverview(, ((baaahs.app.ui.editor.PatchOverviewProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-patch-overview-props/index.html"><span class="identifier">PatchOverviewProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="shader-editor.html">shaderEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">shaderEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$shaderEditor(, ((baaahs.app.ui.editor.ShaderEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-shader-editor-props/index.html"><span class="identifier">ShaderEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="shader-instance-editor.html">shaderInstanceEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">shaderInstanceEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$shaderInstanceEditor(, ((baaahs.app.ui.editor.ShaderInstanceEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-shader-instance-editor-props/index.html"><span class="identifier">ShaderInstanceEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="shader-library-dialog.html">shaderLibraryDialog</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">shaderLibraryDialog</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$shaderLibraryDialog(, ((baaahs.app.ui.editor.ShaderLibraryDialogProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-shader-library-dialog-props/index.html"><span class="identifier">ShaderLibraryDialogProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="shader-properties-editor.html">shaderPropertiesEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">shaderPropertiesEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$shaderPropertiesEditor(, ((baaahs.app.ui.editor.ShaderPropertiesEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-shader-properties-editor-props/index.html"><span class="identifier">ShaderPropertiesEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="text-editor.html">textEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">textEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$textEditor(, ((baaahs.app.ui.editor.TextEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-text-editor-props/index.html"><span class="identifier">TextEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="text-field-editor.html">textFieldEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">textFieldEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$textFieldEditor(, ((baaahs.app.ui.editor.TextFieldEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-text-field-editor-props/index.html"><span class="identifier">TextFieldEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="visualizer-props-editor.html">visualizerPropsEditor</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">.</span><span class="identifier">visualizerPropsEditor</span><span class="symbol">(</span><span class="identifier" id="baaahs.app.ui.editor$visualizerPropsEditor(, ((baaahs.app.ui.editor.VisualizerPropsEditorProps)))/handler">handler</span><span class="symbol">:</span>&nbsp;<span class="identifier">&lt;ERROR CLASS&gt;</span><span class="symbol">&lt;</span><a href="-visualizer-props-editor-props/index.html"><span class="identifier">VisualizerPropsEditorProps</span></a><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">&lt;ERROR CLASS&gt;</span></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>baaahs.app.ui.editor</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script><script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../styles/style.css" rel="Stylesheet"><link href="../../styles/logo-styles.css" rel="Stylesheet"><link href="../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs.app.ui.editor////PointingToDeclaration//-712551682">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../index.html">sparklemotion</a>/<a href="index.html">baaahs.app.ui.editor</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":dokkaHtml/commonMain">common</button><button class="platform-tag platform-selector js-like" data-active="" data-filter=":dokkaHtml/jsMain">js</button><button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":dokkaHtml/jvmMain">jvm</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Package baaahs.</span><wbr></wbr><span>app.</span><wbr></wbr><span>ui.</span><wbr></wbr><span>editor</span></h1>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="271218472%2FClasslikes%2F788909594" anchor-label="ButtonGroupPropsEditor" id="271218472%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-button-group-props-editor/index.html">ButtonGroupPropsEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="271218472%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">data class <a href="-button-group-props-editor/index.html">ButtonGroupPropsEditor</a>(mutableButtonGroupControl: <a href="../baaahs.control/-mutable-button-group-control/index.html">MutableButtonGroupControl</a>) : <a href="-props-editor/index.html">PropsEditor</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1786673226%2FClasslikes%2F371682492" anchor-label="ButtonGroupPropsEditorProps" id="1786673226%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-button-group-props-editor-props/index.html">ButtonGroupPropsEditorProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1786673226%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-button-group-props-editor-props/index.html">ButtonGroupPropsEditorProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1002047103%2FClasslikes%2F788909594" anchor-label="ButtonPropsEditor" id="1002047103%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-button-props-editor/index.html">ButtonPropsEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1002047103%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">data class <a href="-button-props-editor/index.html">ButtonPropsEditor</a>(mutableButtonControl: <a href="../baaahs.control/-mutable-button-control/index.html">MutableButtonControl</a>) : <a href="-props-editor/index.html">PropsEditor</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1178212525%2FClasslikes%2F371682492" anchor-label="ButtonPropsEditorProps" id="-1178212525%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-button-props-editor-props/index.html">ButtonPropsEditorProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1178212525%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-button-props-editor-props/index.html">ButtonPropsEditorProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-2146742531%2FClasslikes%2F371682492" anchor-label="Document" id="-2146742531%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-document/index.html">Document</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2146742531%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-document/index.html">Document</a>(key: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, content: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="968088129%2FClasslikes%2F788909594" anchor-label="EditableManager" id="968088129%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-editable-manager/index.html">EditableManager</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="968088129%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-editable-manager/index.html">EditableManager</a>(onApply: (<a href="../baaahs.show/-show/index.html">Show</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>) : <a href="../baaahs.ui/-facade/index.html">Facade</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-654722939%2FClasslikes%2F371682492" anchor-label="EditableManagerUiProps" id="-654722939%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-editable-manager-ui-props/index.html">EditableManagerUiProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-654722939%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-editable-manager-ui-props/index.html">EditableManagerUiProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1531298002%2FClasslikes%2F371682492" anchor-label="EditableStyles" id="1531298002%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-editable-styles/index.html">EditableStyles</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1531298002%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">object <a href="-editable-styles/index.html">EditableStyles</a> : <span data-unresolved-link="styled/StyleSheet///PointingToDeclaration/">StyleSheet</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1268309887%2FClasslikes%2F788909594" anchor-label="EditorPanelViews" id="-1268309887%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-editor-panel-views/index.html">EditorPanelViews</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1268309887%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-editor-panel-views/index.html">EditorPanelViews</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-823608210%2FClasslikes%2F371682492" anchor-label="ExtractionCandidate" id="-823608210%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-extraction-candidate/index.html">ExtractionCandidate</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-823608210%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">data class <a href="-extraction-candidate/index.html">ExtractionCandidate</a>(range: <a href="../acex/-range/index.html">Range</a>, text: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1665031550%2FClasslikes%2F371682492" anchor-label="FixturesListProps" id="-1665031550%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-fixtures-list-props/index.html">FixturesListProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1665031550%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-fixtures-list-props/index.html">FixturesListProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-741260453%2FClasslikes%2F371682492" anchor-label="GadgetsPreviewProps" id="-741260453%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-gadgets-preview-props/index.html">GadgetsPreviewProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-741260453%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-gadgets-preview-props/index.html">GadgetsPreviewProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1727989195%2FClasslikes%2F371682492" anchor-label="GadgetsPreviewStyles" id="-1727989195%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-gadgets-preview-styles/index.html">GadgetsPreviewStyles</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1727989195%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">object <a href="-gadgets-preview-styles/index.html">GadgetsPreviewStyles</a> : <span data-unresolved-link="styled/StyleSheet///PointingToDeclaration/">StyleSheet</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-488784117%2FClasslikes%2F788909594" anchor-label="GenericPropertiesEditorPanel" id="-488784117%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-generic-properties-editor-panel/index.html">GenericPropertiesEditorPanel</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-488784117%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">data class <a href="-generic-properties-editor-panel/index.html">GenericPropertiesEditorPanel</a>(editableManager: <a href="-editable-manager/index.html">EditableManager</a>, propsEditors: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="-props-editor/index.html">PropsEditor</a>&gt;) : <a href="../baaahs.app.ui/-editor-panel/index.html">EditorPanel</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="850015177%2FClasslikes%2F788909594" anchor-label="LinkOption" id="850015177%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-link-option/index.html">LinkOption</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="850015177%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-link-option/index.html">LinkOption</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1677310610%2FClasslikes%2F371682492" anchor-label="LinksEditorProps" id="-1677310610%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-links-editor-props/index.html">LinksEditorProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1677310610%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-links-editor-props/index.html">LinksEditorProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="498329532%2FClasslikes%2F371682492" anchor-label="LinkSourceEditorProps" id="498329532%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-link-source-editor-props/index.html">LinkSourceEditorProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="498329532%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-link-source-editor-props/index.html">LinkSourceEditorProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="847865561%2FClasslikes%2F788909594" anchor-label="NewSourcePortOption" id="847865561%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-new-source-port-option/index.html">NewSourcePortOption</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="847865561%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">object <a href="-new-source-port-option/index.html">NewSourcePortOption</a> : <a href="-link-option/index.html">LinkOption</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-2082204538%2FClasslikes%2F788909594" anchor-label="NoSourcePortOption" id="-2082204538%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-no-source-port-option/index.html">NoSourcePortOption</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2082204538%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">object <a href="-no-source-port-option/index.html">NoSourcePortOption</a> : <a href="-link-option/index.html">LinkOption</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1236924311%2FClasslikes%2F788909594" anchor-label="PatchEditorPanel" id="-1236924311%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-patch-editor-panel/index.html">PatchEditorPanel</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1236924311%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">data class <a href="-patch-editor-panel/index.html">PatchEditorPanel</a>(editableManager: <a href="-editable-manager/index.html">EditableManager</a>, mutablePatch: <a href="../baaahs.show.mutable/-mutable-patch/index.html">MutablePatch</a>) : <a href="../baaahs.app.ui/-editor-panel/index.html">EditorPanel</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1048589557%2FClasslikes%2F788909594" anchor-label="PatchHolderEditorPanel" id="1048589557%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-patch-holder-editor-panel/index.html">PatchHolderEditorPanel</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1048589557%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">data class <a href="-patch-holder-editor-panel/index.html">PatchHolderEditorPanel</a>(editableManager: <a href="-editable-manager/index.html">EditableManager</a>, mutablePatchHolder: <a href="../baaahs.show.mutable/-mutable-patch-holder/index.html">MutablePatchHolder</a>) : <a href="../baaahs.app.ui/-editor-panel/index.html">EditorPanel</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1793627703%2FClasslikes%2F371682492" anchor-label="PatchOverviewProps" id="-1793627703%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-patch-overview-props/index.html">PatchOverviewProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1793627703%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-patch-overview-props/index.html">PatchOverviewProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-2093035512%2FClasslikes%2F788909594" anchor-label="PortLinkOption" id="-2093035512%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-port-link-option/index.html">PortLinkOption</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2093035512%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-port-link-option/index.html">PortLinkOption</a>(mutablePort: <a href="../baaahs.show.mutable/-mutable-port/index.html">MutablePort</a>, isPluginRef: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, wasPurposeBuilt: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, isShaderChannel: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, isLocalShaderOut: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, isPluginSuggestion: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, isExactContentType: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, isDefaultBinding: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, createsFilter: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>) : <a href="-link-option/index.html">LinkOption</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1020652819%2FClasslikes%2F788909594" anchor-label="PropsEditor" id="-1020652819%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-props-editor/index.html">PropsEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1020652819%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">interface <a href="-props-editor/index.html">PropsEditor</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1930214252%2FClasslikes%2F371682492" anchor-label="ShaderEditorProps" id="1930214252%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-shader-editor-props/index.html">ShaderEditorProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1930214252%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-shader-editor-props/index.html">ShaderEditorProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-516651964%2FClasslikes%2F371682492" anchor-label="ShaderEditorStyles" id="-516651964%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-shader-editor-styles/index.html">ShaderEditorStyles</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-516651964%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-shader-editor-styles/index.html">ShaderEditorStyles</a>(theme: <span data-unresolved-link="materialui.styles.muitheme/MuiTheme///PointingToDeclaration/">MuiTheme</span>) : <span data-unresolved-link="styled/StyleSheet///PointingToDeclaration/">StyleSheet</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="26845089%2FClasslikes%2F371682492" anchor-label="ShaderInstanceEditorProps" id="26845089%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-shader-instance-editor-props/index.html">ShaderInstanceEditorProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="26845089%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-shader-instance-editor-props/index.html">ShaderInstanceEditorProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1413462042%2FClasslikes%2F371682492" anchor-label="ShaderLibraryDialogProps" id="-1413462042%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-shader-library-dialog-props/index.html">ShaderLibraryDialogProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1413462042%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-shader-library-dialog-props/index.html">ShaderLibraryDialogProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-467656257%2FClasslikes%2F371682492" anchor-label="ShaderPropertiesEditorProps" id="-467656257%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-shader-properties-editor-props/index.html">ShaderPropertiesEditorProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-467656257%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-shader-properties-editor-props/index.html">ShaderPropertiesEditorProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1481886737%2FClasslikes%2F371682492" anchor-label="ShaderRefactor" id="1481886737%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-shader-refactor/index.html">ShaderRefactor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1481886737%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">class <a href="-shader-refactor/index.html">ShaderRefactor</a>(editingShader: <a href="../baaahs.show.mutable/-editing-shader/index.html">EditingShader</a>, editor: <a href="../acex/-editor/index.html">Editor</a>, appContext: <a href="../baaahs.app.ui/-app-context/index.html">AppContext</a>, onChange: () -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1289337100%2FClasslikes%2F371682492" anchor-label="TextEditorProps" id="-1289337100%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-text-editor-props/index.html">TextEditorProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1289337100%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-text-editor-props/index.html">TextEditorProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1998487550%2FClasslikes%2F371682492" anchor-label="TextFieldEditorProps" id="-1998487550%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-text-field-editor-props/index.html">TextFieldEditorProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1998487550%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-text-field-editor-props/index.html">TextFieldEditorProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1584205101%2FClasslikes%2F788909594" anchor-label="TitlePropsEditor" id="-1584205101%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-title-props-editor/index.html">TitlePropsEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1584205101%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">data class <a href="-title-props-editor/index.html">TitlePropsEditor</a>(mutablePatchHolder: <a href="../baaahs.show.mutable/-mutable-patch-holder/index.html">MutablePatchHolder</a>) : <a href="-props-editor/index.html">PropsEditor</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1918901675%2FClasslikes%2F788909594" anchor-label="VisualizerPropsEditor" id="1918901675%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-visualizer-props-editor/index.html">VisualizerPropsEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1918901675%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">data class <a href="-visualizer-props-editor/index.html">VisualizerPropsEditor</a>(mutableVisualizerControl: <a href="../baaahs.control/-mutable-visualizer-control/index.html">MutableVisualizerControl</a>) : <a href="-props-editor/index.html">PropsEditor</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1164667815%2FClasslikes%2F371682492" anchor-label="VisualizerPropsEditorProps" id="1164667815%2FClasslikes%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-visualizer-props-editor-props/index.html">VisualizerPropsEditorProps</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1164667815%2FClasslikes%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">external interface <a href="-visualizer-props-editor-props/index.html">VisualizerPropsEditorProps</a> : <span data-unresolved-link="react/RProps///PointingToDeclaration/">RProps</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="-2007986072%2FFunctions%2F371682492" anchor-label="buttonGroupPropsEditor" id="-2007986072%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="button-group-props-editor.html">buttonGroupPropsEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2007986072%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="button-group-props-editor.html">buttonGroupPropsEditor</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-button-group-props-editor-props/index.html">ButtonGroupPropsEditorProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-91950192%2FFunctions%2F371682492" anchor-label="buttonPropsEditor" id="-91950192%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="button-props-editor.html">buttonPropsEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-91950192%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="button-props-editor.html">buttonPropsEditor</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-button-props-editor-props/index.html">ButtonPropsEditorProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="116312272%2FFunctions%2F371682492" anchor-label="editableManagerUi" id="116312272%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="editable-manager-ui.html">editableManagerUi</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="116312272%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="editable-manager-ui.html">editableManagerUi</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-editable-manager-ui-props/index.html">EditableManagerUiProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="722348120%2FFunctions%2F371682492" anchor-label="fixturesList" id="722348120%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="fixtures-list.html">fixturesList</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="722348120%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="fixtures-list.html">fixturesList</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-fixtures-list-props/index.html">FixturesListProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1021029962%2FFunctions%2F371682492" anchor-label="gadgetsPreview" id="1021029962%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="gadgets-preview.html">gadgetsPreview</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1021029962%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="gadgets-preview.html">gadgetsPreview</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-gadgets-preview-props/index.html">GadgetsPreviewProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="473801126%2FFunctions%2F-712551682" anchor-label="getEditorPanelViews" id="473801126%2FFunctions%2F-712551682" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="get-editor-panel-views.html">getEditorPanelViews</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="473801126%2FFunctions%2F-712551682"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain" data-filterable-set=":dokkaHtml/commonMain :dokkaHtml/jsMain :dokkaHtml/jvmMain"><div class="with-platform-tags"><span class="pull-right">
+  <div class="platform-tags ">
+    <div class="platform-tag common-like">common</div>
+  </div>
+</span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="get-editor-panel-views.html">getEditorPanelViews</a>(): <a href="-editor-panel-views/index.html">EditorPanelViews</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="365844720%2FFunctions%2F371682492" anchor-label="linksEditor" id="365844720%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="links-editor.html">linksEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="365844720%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="links-editor.html">linksEditor</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-links-editor-props/index.html">LinksEditorProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1705247436%2FFunctions%2F371682492" anchor-label="linkSourceEditor" id="1705247436%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="link-source-editor.html">linkSourceEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1705247436%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="link-source-editor.html">linkSourceEditor</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-link-source-editor-props/index.html">LinkSourceEditorProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="254252752%2FFunctions%2F371682492" anchor-label="patchOverview" id="254252752%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="patch-overview.html">patchOverview</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="254252752%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="patch-overview.html">patchOverview</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-patch-overview-props/index.html">PatchOverviewProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1653912020%2FFunctions%2F371682492" anchor-label="shaderEditor" id="-1653912020%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="shader-editor.html">shaderEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1653912020%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="shader-editor.html">shaderEditor</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-shader-editor-props/index.html">ShaderEditorProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-611003498%2FFunctions%2F371682492" anchor-label="shaderInstanceEditor" id="-611003498%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="shader-instance-editor.html">shaderInstanceEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-611003498%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="shader-instance-editor.html">shaderInstanceEditor</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-shader-instance-editor-props/index.html">ShaderInstanceEditorProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="2105503728%2FFunctions%2F371682492" anchor-label="shaderLibraryDialog" id="2105503728%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="shader-library-dialog.html">shaderLibraryDialog</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2105503728%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="shader-library-dialog.html">shaderLibraryDialog</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-shader-library-dialog-props/index.html">ShaderLibraryDialogProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-791417070%2FFunctions%2F371682492" anchor-label="shaderPropertiesEditor" id="-791417070%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="shader-properties-editor.html">shaderPropertiesEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-791417070%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="shader-properties-editor.html">shaderPropertiesEditor</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-shader-properties-editor-props/index.html">ShaderPropertiesEditorProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-357485252%2FFunctions%2F371682492" anchor-label="textEditor" id="-357485252%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="text-editor.html">textEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-357485252%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="text-editor.html">textEditor</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-text-editor-props/index.html">TextEditorProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="323735408%2FFunctions%2F371682492" anchor-label="textFieldEditor" id="323735408%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="text-field-editor.html">textFieldEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="323735408%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="text-field-editor.html">textFieldEditor</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-text-field-editor-props/index.html">TextFieldEditorProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1887955856%2FFunctions%2F371682492" anchor-label="visualizerPropsEditor" id="1887955856%2FFunctions%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="visualizer-props-editor.html">visualizerPropsEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1887955856%2FFunctions%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><div class="symbol monospace">fun <span data-unresolved-link="react/RBuilder///PointingToDeclaration/">RBuilder</span>.<a href="visualizer-props-editor.html">visualizerPropsEditor</a>(handler: <span data-unresolved-link="react/RHandler///PointingToDeclaration/">RHandler</span>&lt;<a href="-visualizer-props-editor-props/index.html">VisualizerPropsEditorProps</a>&gt;): <span data-unresolved-link="react/ReactElement///PointingToDeclaration/">ReactElement</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="1214651318%2FProperties%2F371682492" anchor-label="EditableManagerUi" id="1214651318%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-editable-manager-ui.html">EditableManagerUi</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1214651318%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1214651318%2FProperties%2F371682492" anchor-label="EditableManagerUi" id="1214651318%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-editable-manager-ui.html">EditableManagerUi</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-editable-manager-ui-props/index.html">EditableManagerUiProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-768555408%2FProperties%2F788909594" anchor-label="editorPanelViews" id="-768555408%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="editor-panel-views.html">editorPanelViews</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-768555408%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-768555408%2FProperties%2F788909594" anchor-label="editorPanelViews" id="-768555408%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="editor-panel-views.html">editorPanelViews</a>: <a href="-editor-panel-views/index.html">EditorPanelViews</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1620268737%2FProperties%2F371682492" anchor-label="FixturesList" id="-1620268737%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-fixtures-list.html">FixturesList</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1620268737%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1620268737%2FProperties%2F371682492" anchor-label="FixturesList" id="-1620268737%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-fixtures-list.html">FixturesList</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-fixtures-list-props/index.html">FixturesListProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-535642106%2FProperties%2F371682492" anchor-label="GadgetsPreview" id="-535642106%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-gadgets-preview.html">GadgetsPreview</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-535642106%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-535642106%2FProperties%2F371682492" anchor-label="GadgetsPreview" id="-535642106%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-gadgets-preview.html">GadgetsPreview</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-gadgets-preview-props/index.html">GadgetsPreviewProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1578040045%2FProperties%2F371682492" anchor-label="LinksEditor" id="1578040045%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-links-editor.html">LinksEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1578040045%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1578040045%2FProperties%2F371682492" anchor-label="LinksEditor" id="1578040045%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-links-editor.html">LinksEditor</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-links-editor-props/index.html">LinksEditorProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1982459461%2FProperties%2F371682492" anchor-label="LinkSourceEditor" id="1982459461%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-link-source-editor.html">LinkSourceEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1982459461%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1982459461%2FProperties%2F371682492" anchor-label="LinkSourceEditor" id="1982459461%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-link-source-editor.html">LinkSourceEditor</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-link-source-editor-props/index.html">LinkSourceEditorProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1134970482%2FProperties%2F371682492" anchor-label="PatchOverview" id="1134970482%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-patch-overview.html">PatchOverview</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1134970482%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="1134970482%2FProperties%2F371682492" anchor-label="PatchOverview" id="1134970482%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-patch-overview.html">PatchOverview</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-patch-overview-props/index.html">PatchOverviewProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1264835051%2FProperties%2F371682492" anchor-label="ShaderEditor" id="-1264835051%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-shader-editor.html">ShaderEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1264835051%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1264835051%2FProperties%2F371682492" anchor-label="ShaderEditor" id="-1264835051%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-shader-editor.html">ShaderEditor</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-shader-editor-props/index.html">ShaderEditorProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1828437568%2FProperties%2F371682492" anchor-label="ShaderInstanceEditor" id="-1828437568%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-shader-instance-editor.html">ShaderInstanceEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1828437568%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1828437568%2FProperties%2F371682492" anchor-label="ShaderInstanceEditor" id="-1828437568%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-shader-instance-editor.html">ShaderInstanceEditor</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-shader-instance-editor-props/index.html">ShaderInstanceEditorProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-56221579%2FProperties%2F371682492" anchor-label="ShaderLibraryDialog" id="-56221579%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-shader-library-dialog.html">ShaderLibraryDialog</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-56221579%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-56221579%2FProperties%2F371682492" anchor-label="ShaderLibraryDialog" id="-56221579%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-shader-library-dialog.html">ShaderLibraryDialog</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-shader-library-dialog-props/index.html">ShaderLibraryDialogProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1085030366%2FProperties%2F371682492" anchor-label="ShaderPropertiesEditor" id="-1085030366%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-shader-properties-editor.html">ShaderPropertiesEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1085030366%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-1085030366%2FProperties%2F371682492" anchor-label="ShaderPropertiesEditor" id="-1085030366%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-shader-properties-editor.html">ShaderPropertiesEditor</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-shader-properties-editor-props/index.html">ShaderPropertiesEditorProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-46458291%2FProperties%2F371682492" anchor-label="TextEditor" id="-46458291%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-text-editor.html">TextEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-46458291%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-46458291%2FProperties%2F371682492" anchor-label="TextEditor" id="-46458291%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-text-editor.html">TextEditor</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-text-editor-props/index.html">TextEditorProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-888914599%2FProperties%2F371682492" anchor-label="TextFieldEditor" id="-888914599%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/jsMain" data-filterable-set=":dokkaHtml/jsMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-text-field-editor.html">TextFieldEditor</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-888914599%2FProperties%2F371682492"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag js-like">js</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/jsMain"><a data-name="-888914599%2FProperties%2F371682492" anchor-label="TextFieldEditor" id="-888914599%2FProperties%2F371682492" data-filterable-set=":dokkaHtml/jsMain"></a><div class="symbol monospace">val <a href="-text-field-editor.html">TextFieldEditor</a>: <span data-unresolved-link="react/FunctionComponent///PointingToDeclaration/">FunctionComponent</span>&lt;<a href="-text-field-editor-props/index.html">TextFieldEditorProps</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

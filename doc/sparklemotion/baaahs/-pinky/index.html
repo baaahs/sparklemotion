@@ -1,199 +1,445 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>Pinky - sparklemotion</title>
-<link rel="stylesheet" href="../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../index.html">sparklemotion</a>&nbsp;/&nbsp;<a href="../index.html">baaahs</a>&nbsp;/&nbsp;<a href="./index.html">Pinky</a><br/>
-<br/>
-<h1>Pinky</h1>
-<code><span class="keyword">class </span><span class="identifier">Pinky</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">CoroutineScope</span><span class="symbol">, </span><span class="identifier">UdpListener</span></code>
-<h3>Types</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-facade/index.html">Facade</a></h4>
-</td>
-<td>
-<code><span class="keyword">inner</span> <span class="keyword">class </span><span class="identifier">Facade</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="../../baaahs.ui/-facade/index.html"><span class="identifier">Facade</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-network-stats/index.html">NetworkStats</a></h4>
-</td>
-<td>
-<code><span class="keyword">class </span><span class="identifier">NetworkStats</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="-server-notice/index.html">ServerNotice</a></h4>
-</td>
-<td>
-<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ServerNotice</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="-init-.html">&lt;init&gt;</a></h4>
-</td>
-<td>
-<code><span class="identifier">Pinky</span><span class="symbol">(</span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.model.Model, baaahs.net.Network, baaahs.util.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.gl.render.RenderManager, baaahs.plugin.Plugins, kotlinx.coroutines.CoroutineDispatcher, baaahs.net.Network.Link, baaahs.net.Network.HttpServer, baaahs.PubSub.Server, baaahs.dmx.DmxManager)/model">model</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.model/-model/index.html"><span class="identifier">Model</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.model.Model, baaahs.net.Network, baaahs.util.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.gl.render.RenderManager, baaahs.plugin.Plugins, kotlinx.coroutines.CoroutineDispatcher, baaahs.net.Network.Link, baaahs.net.Network.HttpServer, baaahs.PubSub.Server, baaahs.dmx.DmxManager)/network">network</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.model.Model, baaahs.net.Network, baaahs.util.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.gl.render.RenderManager, baaahs.plugin.Plugins, kotlinx.coroutines.CoroutineDispatcher, baaahs.net.Network.Link, baaahs.net.Network.HttpServer, baaahs.PubSub.Server, baaahs.dmx.DmxManager)/clock">clock</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.util/-clock/index.html"><span class="identifier">Clock</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.model.Model, baaahs.net.Network, baaahs.util.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.gl.render.RenderManager, baaahs.plugin.Plugins, kotlinx.coroutines.CoroutineDispatcher, baaahs.net.Network.Link, baaahs.net.Network.HttpServer, baaahs.PubSub.Server, baaahs.dmx.DmxManager)/fs">fs</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.io/-fs/index.html"><span class="identifier">Fs</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.model.Model, baaahs.net.Network, baaahs.util.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.gl.render.RenderManager, baaahs.plugin.Plugins, kotlinx.coroutines.CoroutineDispatcher, baaahs.net.Network.Link, baaahs.net.Network.HttpServer, baaahs.PubSub.Server, baaahs.dmx.DmxManager)/firmwareDaddy">firmwareDaddy</span><span class="symbol">:</span>&nbsp;<a href="../-firmware-daddy/index.html"><span class="identifier">FirmwareDaddy</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.model.Model, baaahs.net.Network, baaahs.util.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.gl.render.RenderManager, baaahs.plugin.Plugins, kotlinx.coroutines.CoroutineDispatcher, baaahs.net.Network.Link, baaahs.net.Network.HttpServer, baaahs.PubSub.Server, baaahs.dmx.DmxManager)/renderManager">renderManager</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.gl.render/-render-manager/index.html"><span class="identifier">RenderManager</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.model.Model, baaahs.net.Network, baaahs.util.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.gl.render.RenderManager, baaahs.plugin.Plugins, kotlinx.coroutines.CoroutineDispatcher, baaahs.net.Network.Link, baaahs.net.Network.HttpServer, baaahs.PubSub.Server, baaahs.dmx.DmxManager)/plugins">plugins</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.model.Model, baaahs.net.Network, baaahs.util.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.gl.render.RenderManager, baaahs.plugin.Plugins, kotlinx.coroutines.CoroutineDispatcher, baaahs.net.Network.Link, baaahs.net.Network.HttpServer, baaahs.PubSub.Server, baaahs.dmx.DmxManager)/pinkyMainDispatcher">pinkyMainDispatcher</span><span class="symbol">:</span>&nbsp;<span class="identifier">CoroutineDispatcher</span><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.model.Model, baaahs.net.Network, baaahs.util.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.gl.render.RenderManager, baaahs.plugin.Plugins, kotlinx.coroutines.CoroutineDispatcher, baaahs.net.Network.Link, baaahs.net.Network.HttpServer, baaahs.PubSub.Server, baaahs.dmx.DmxManager)/link">link</span><span class="symbol">:</span>&nbsp;<span class="identifier">Link</span><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.model.Model, baaahs.net.Network, baaahs.util.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.gl.render.RenderManager, baaahs.plugin.Plugins, kotlinx.coroutines.CoroutineDispatcher, baaahs.net.Network.Link, baaahs.net.Network.HttpServer, baaahs.PubSub.Server, baaahs.dmx.DmxManager)/httpServer">httpServer</span><span class="symbol">:</span>&nbsp;<span class="identifier">HttpServer</span><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.model.Model, baaahs.net.Network, baaahs.util.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.gl.render.RenderManager, baaahs.plugin.Plugins, kotlinx.coroutines.CoroutineDispatcher, baaahs.net.Network.Link, baaahs.net.Network.HttpServer, baaahs.PubSub.Server, baaahs.dmx.DmxManager)/pubSub">pubSub</span><span class="symbol">:</span>&nbsp;<span class="identifier">Server</span><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$<init>(baaahs.model.Model, baaahs.net.Network, baaahs.util.Clock, baaahs.io.Fs, baaahs.FirmwareDaddy, baaahs.gl.render.RenderManager, baaahs.plugin.Plugins, kotlinx.coroutines.CoroutineDispatcher, baaahs.net.Network.Link, baaahs.net.Network.HttpServer, baaahs.PubSub.Server, baaahs.dmx.DmxManager)/dmxManager">dmxManager</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.dmx/-dmx-manager/index.html"><span class="identifier">DmxManager</span></a><span class="symbol">)</span></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="address.html">address</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">address</span><span class="symbol">: </span><span class="identifier">Address</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="clock.html">clock</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">clock</span><span class="symbol">: </span><a href="../../baaahs.util/-clock/index.html"><span class="identifier">Clock</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="coroutine-context.html">coroutineContext</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">coroutineContext</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html"><span class="identifier">CoroutineContext</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="dmx-universe.html">dmxUniverse</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">dmxUniverse</span><span class="symbol">: </span><span class="identifier">Universe</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="facade.html">facade</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">facade</span><span class="symbol">: </span><span class="identifier">Facade</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="firmware-daddy.html">firmwareDaddy</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">firmwareDaddy</span><span class="symbol">: </span><a href="../-firmware-daddy/index.html"><span class="identifier">FirmwareDaddy</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="gadget-manager.html">gadgetManager</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">gadgetManager</span><span class="symbol">: </span><a href="../-gadget-manager/index.html"><span class="identifier">GadgetManager</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="http-server.html">httpServer</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">httpServer</span><span class="symbol">: </span><span class="identifier">HttpServer</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="model.html">model</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">model</span><span class="symbol">: </span><a href="../../baaahs.model/-model/index.html"><span class="identifier">Model</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="network.html">network</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">network</span><span class="symbol">: </span><a href="../../baaahs.net/-network/index.html"><span class="identifier">Network</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="pinky-main-dispatcher.html">pinkyMainDispatcher</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">pinkyMainDispatcher</span><span class="symbol">: </span><span class="identifier">CoroutineDispatcher</span></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="plugins.html">plugins</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">plugins</span><span class="symbol">: </span><a href="../../baaahs.plugin/-plugins/index.html"><span class="identifier">Plugins</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="stage-manager.html">stageManager</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">stageManager</span><span class="symbol">: </span><a href="../-stage-manager/index.html"><span class="identifier">StageManager</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="toolchain.html">toolchain</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">toolchain</span><span class="symbol">: </span><a href="../../baaahs.gl/-root-toolchain/index.html"><span class="identifier">RootToolchain</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="load-config.html">loadConfig</a></h4>
-</td>
-<td>
-<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">loadConfig</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="receive.html">receive</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">receive</span><span class="symbol">(</span><span class="identifier" id="baaahs.Pinky$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/fromAddress">fromAddress</span><span class="symbol">:</span>&nbsp;<span class="identifier">Address</span><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/fromPort">fromPort</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$receive(baaahs.net.Network.Address, kotlin.Int, kotlin.ByteArray)/bytes">bytes</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html"><span class="identifier">ByteArray</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="start-and-run.html">startAndRun</a></h4>
-</td>
-<td>
-<code><span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">startAndRun</span><span class="symbol">(</span><span class="identifier" id="baaahs.Pinky$startAndRun(kotlin.Boolean)/simulateBrains">simulateBrains</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a>&nbsp;<span class="symbol">=</span>&nbsp;false<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-<tr>
-<td>
-<h4><a href="switch-to.html">switchTo</a></h4>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">switchTo</span><span class="symbol">(</span><span class="identifier" id="baaahs.Pinky$switchTo(baaahs.show.Show, baaahs.io.Fs.File)/newShow">newShow</span><span class="symbol">:</span>&nbsp;<a href="../../baaahs.show/-show/index.html"><span class="identifier">Show</span></a><span class="symbol">?</span><span class="symbol">, </span><span class="identifier" id="baaahs.Pinky$switchTo(baaahs.show.Show, baaahs.io.Fs.File)/file">file</span><span class="symbol">:</span>&nbsp;<span class="identifier">File</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
-</tr>
-</tbody>
-</table>
-<h3>Companion Object Properties</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<h4><a href="logger.html">logger</a></h4>
-</td>
-<td>
-<code><span class="keyword">val </span><span class="identifier">logger</span><span class="symbol">: </span><a href="../../baaahs.util/-logger/index.html"><span class="identifier">Logger</span></a></code></td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Pinky</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../scripts/main.js" async="async"></script>  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn"><a href="../../../index.html">
+          <div id="logo"></div>
+        </a>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+<script type="text/javascript" src="../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="sparklemotion::baaahs/Pinky///PointingToDeclaration//788909594">
+          <div class="navigation-wrapper" id="navigation-wrapper">
+            <div class="breadcrumbs"><a href="../../../index.html">sparklemotion</a>/<a href="../index.html">baaahs</a>/<a href="index.html">Pinky</a></div>
+            <div class="pull-right d-flex">
+              <div class="filter-section" id="filter-section"><button class="platform-tag platform-selector common-like" data-active="" data-filter=":dokkaHtml/commonMain">common</button></div>
+              <div id="searchBar"></div>
+            </div>
+          </div>
+          <div class="cover ">
+            <h1 class="cover"><span>Pinky</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="index.html">Pinky</a>(model: <a href="../../baaahs.model/-model/index.html">Model</a>, network: <a href="../../baaahs.net/-network/index.html">Network</a>, clock: <a href="../../baaahs.util/-clock/index.html">Clock</a>, fs: <a href="../../baaahs.io/-fs/index.html">Fs</a>, firmwareDaddy: <a href="../-firmware-daddy/index.html">FirmwareDaddy</a>, renderManager: <a href="../../baaahs.gl.render/-render-manager/index.html">RenderManager</a>, plugins: <a href="../../baaahs.plugin/-plugins/index.html">Plugins</a>, pinkyMainDispatcher: <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span>, link: <a href="../../baaahs.net/-network/-link/index.html">Network.Link</a>, httpServer: <a href="../../baaahs.net/-network/-http-server/index.html">Network.HttpServer</a>, pubSub: <a href="../-pub-sub/-server/index.html">PubSub.Server</a>, dmxManager: <a href="../../baaahs.dmx/-dmx-manager/index.html">DmxManager</a>, pinkySettings: <a href="../-pinky-settings/index.html">PinkySettings</a>) : <span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span>, <a href="../../baaahs.net/-network/-udp-listener/index.html">Network.UdpListener</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Types</h2>
+              <div class="table" data-togglable="Types"><a data-name="1768382325%2FClasslikes%2F788909594" anchor-label="Companion" id="1768382325%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-companion/index.html">Companion</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1768382325%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">object <a href="-companion/index.html">Companion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="637858311%2FClasslikes%2F788909594" anchor-label="Facade" id="637858311%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-facade/index.html">Facade</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="637858311%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">inner class <a href="-facade/index.html">Facade</a> : <a href="../../baaahs.ui/-facade/index.html">Facade</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1492663152%2FClasslikes%2F788909594" anchor-label="NetworkStats" id="1492663152%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-network-stats/index.html">NetworkStats</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1492663152%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">class <a href="-network-stats/index.html">NetworkStats</a>(bytesSent: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, packetsSent: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="415787462%2FClasslikes%2F788909594" anchor-label="ServerNotice" id="415787462%2FClasslikes%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="-server-notice/index.html">ServerNotice</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="415787462%2FClasslikes%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">data class <a href="-server-notice/index.html">ServerNotice</a>(title: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, message: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>?, stackTrace: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>?, id: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="1124624548%2FFunctions%2F788909594" anchor-label="loadConfig" id="1124624548%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="load-config.html">loadConfig</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1124624548%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">suspend fun <a href="load-config.html">loadConfig</a>()<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1078516534%2FFunctions%2F788909594" anchor-label="receive" id="-1078516534%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="receive.html">receive</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1078516534%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">open override fun <a href="receive.html">receive</a>(fromAddress: <a href="../../baaahs.net/-network/-address/index.html">Network.Address</a>, fromPort: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, bytes: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html">ByteArray</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-964972611%2FFunctions%2F788909594" anchor-label="startAndRun" id="-964972611%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="start-and-run.html">startAndRun</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-964972611%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">suspend fun <a href="start-and-run.html">startAndRun</a>(simulateBrains: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a> = false)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="842041065%2FFunctions%2F788909594" anchor-label="switchTo" id="842041065%2FFunctions%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="switch-to.html">switchTo</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="842041065%2FFunctions%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><div class="symbol monospace">fun <a href="switch-to.html">switchTo</a>(newShow: <a href="../../baaahs.show/-show/index.html">Show</a>?, file: <a href="../../baaahs.io/-fs/-file/index.html">Fs.File</a>? = null)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="-1315670790%2FProperties%2F788909594" anchor-label="address" id="-1315670790%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="address.html">address</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1315670790%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-1315670790%2FProperties%2F788909594" anchor-label="address" id="-1315670790%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="address.html">address</a>: <a href="../../baaahs.net/-network/-address/index.html">Network.Address</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-639132064%2FProperties%2F788909594" anchor-label="clock" id="-639132064%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="clock.html">clock</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-639132064%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-639132064%2FProperties%2F788909594" anchor-label="clock" id="-639132064%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="clock.html">clock</a>: <a href="../../baaahs.util/-clock/index.html">Clock</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-452727723%2FProperties%2F788909594" anchor-label="coroutineContext" id="-452727723%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="coroutine-context.html">coroutineContext</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-452727723%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-452727723%2FProperties%2F788909594" anchor-label="coroutineContext" id="-452727723%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">open override val <a href="coroutine-context.html">coroutineContext</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1978280954%2FProperties%2F788909594" anchor-label="dmxUniverse" id="1978280954%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="dmx-universe.html">dmxUniverse</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1978280954%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="1978280954%2FProperties%2F788909594" anchor-label="dmxUniverse" id="1978280954%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="dmx-universe.html">dmxUniverse</a>: <a href="../../baaahs.dmx/-dmx/-universe/index.html">Dmx.Universe</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="2067498898%2FProperties%2F788909594" anchor-label="facade" id="2067498898%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="facade.html">facade</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2067498898%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="2067498898%2FProperties%2F788909594" anchor-label="facade" id="2067498898%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="facade.html">facade</a>: <a href="-facade/index.html">Pinky.Facade</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="2094108525%2FProperties%2F788909594" anchor-label="firmwareDaddy" id="2094108525%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="firmware-daddy.html">firmwareDaddy</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2094108525%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="2094108525%2FProperties%2F788909594" anchor-label="firmwareDaddy" id="2094108525%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="firmware-daddy.html">firmwareDaddy</a>: <a href="../-firmware-daddy/index.html">FirmwareDaddy</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1615998195%2FProperties%2F788909594" anchor-label="gadgetManager" id="-1615998195%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="gadget-manager.html">gadgetManager</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1615998195%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-1615998195%2FProperties%2F788909594" anchor-label="gadgetManager" id="-1615998195%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="gadget-manager.html">gadgetManager</a>: <a href="../-gadget-manager/index.html">GadgetManager</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1145415711%2FProperties%2F788909594" anchor-label="httpServer" id="-1145415711%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="http-server.html">httpServer</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1145415711%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-1145415711%2FProperties%2F788909594" anchor-label="httpServer" id="-1145415711%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="http-server.html">httpServer</a>: <a href="../../baaahs.net/-network/-http-server/index.html">Network.HttpServer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="2014716837%2FProperties%2F788909594" anchor-label="model" id="2014716837%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="model.html">model</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2014716837%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="2014716837%2FProperties%2F788909594" anchor-label="model" id="2014716837%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="model.html">model</a>: <a href="../../baaahs.model/-model/index.html">Model</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1436988416%2FProperties%2F788909594" anchor-label="network" id="-1436988416%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="network.html">network</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1436988416%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-1436988416%2FProperties%2F788909594" anchor-label="network" id="-1436988416%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="network.html">network</a>: <a href="../../baaahs.net/-network/index.html">Network</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="970405995%2FProperties%2F788909594" anchor-label="pinkyMainDispatcher" id="970405995%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="pinky-main-dispatcher.html">pinkyMainDispatcher</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="970405995%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="970405995%2FProperties%2F788909594" anchor-label="pinkyMainDispatcher" id="970405995%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="pinky-main-dispatcher.html">pinkyMainDispatcher</a>: <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="115729768%2FProperties%2F788909594" anchor-label="pinkySettings" id="115729768%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="pinky-settings.html">pinkySettings</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="115729768%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="115729768%2FProperties%2F788909594" anchor-label="pinkySettings" id="115729768%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="pinky-settings.html">pinkySettings</a>: <a href="../-pinky-settings/index.html">PinkySettings</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="1030083278%2FProperties%2F788909594" anchor-label="plugins" id="1030083278%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="plugins.html">plugins</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1030083278%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="1030083278%2FProperties%2F788909594" anchor-label="plugins" id="1030083278%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="plugins.html">plugins</a>: <a href="../../baaahs.plugin/-plugins/index.html">Plugins</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-80600131%2FProperties%2F788909594" anchor-label="stageManager" id="-80600131%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="stage-manager.html">stageManager</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-80600131%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-80600131%2FProperties%2F788909594" anchor-label="stageManager" id="-80600131%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="stage-manager.html">stageManager</a>: <a href="../-stage-manager/index.html">StageManager</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-1693797851%2FProperties%2F788909594" anchor-label="toolchain" id="-1693797851%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/commonMain" data-filterable-set=":dokkaHtml/commonMain">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="toolchain.html">toolchain</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1693797851%2FProperties%2F788909594"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="platform-tags ">
+                        <div class="platform-tag common-like">common</div>
+                      </div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/commonMain"><a data-name="-1693797851%2FProperties%2F788909594" anchor-label="toolchain" id="-1693797851%2FProperties%2F788909594" data-filterable-set=":dokkaHtml/commonMain"></a><div class="symbol monospace">val <a href="toolchain.html">toolchain</a>: <a href="../../baaahs.gl/-root-toolchain/index.html">RootToolchain</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+
