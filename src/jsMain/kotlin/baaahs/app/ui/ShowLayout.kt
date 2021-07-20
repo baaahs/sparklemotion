@@ -25,7 +25,6 @@ import materialui.components.menuitem.menuItem
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.icon
-import materialui.icons.Icons
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
@@ -47,96 +46,97 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     var showAddMenuFor by state<ControlDisplay.PanelBuckets.PanelBucket?> { null }
     var showAddMenuForAnchorEl by state<EventTarget?> { null }
 
-    div(+Styles.showLayout) {
-        if (currentTab != null) {
-            val colCount = currentTab.columns.size
-            val rowCount = currentTab.rows.size
-            if (currentTab.areas.size != colCount * rowCount) {
-                error("Invalid layout! " +
-                        "Area count (${currentTab.areas.size} != cell count " +
-                        "($colCount columns * $rowCount rows)")
-            }
-
-            val areas = mutableListOf<String>()
-            currentTab.rows.indices.forEach { rowIndex ->
-                val cols = mutableListOf<String>()
-
-                currentTab.columns.indices.forEach { columnIndex ->
-                    cols.add(currentTab.areas[rowIndex * colCount + columnIndex])
+    sharedGlContext {
+        div(+Styles.showLayout) {
+            if (currentTab != null) {
+                val colCount = currentTab.columns.size
+                val rowCount = currentTab.rows.size
+                if (currentTab.areas.size != colCount * rowCount) {
+                    error("Invalid layout! " +
+                            "Area count (${currentTab.areas.size} != cell count " +
+                            "($colCount columns * $rowCount rows)")
                 }
-                areas.add(cols.joinToString(" ") { it.replace(" ", "") })
-            }
 
-            inlineStyles {
-                gridTemplateAreas = GridTemplateAreas(areas.joinToString(" ") { "\"$it\"" })
-                gridTemplateColumns = GridTemplateColumns(currentTab.columns.joinToString(" "))
-                gridTemplateRows = GridTemplateRows(currentTab.rows.joinToString(" "))
-            }
-        }
+                val areas = mutableListOf<String>()
+                currentTab.rows.indices.forEach { rowIndex ->
+                    val cols = mutableListOf<String>()
 
+                    currentTab.columns.indices.forEach { columnIndex ->
+                        cols.add(currentTab.areas[rowIndex * colCount + columnIndex])
+                    }
+                    areas.add(cols.joinToString(" ") { it.replace(" ", "") })
+                }
 
-        currentTab?.areas?.forEach { panelId ->
-            val panel = props.show.layouts.panels.getBang(panelId, "panel")
-            paper(Styles.layoutPanelPaper on PaperStyle.root) {
                 inlineStyles {
-                    put("gridArea", panelId)
-                    // TODO: panel flow direction could change here.
-                    flexDirection = FlexDirection.column
+                    gridTemplateAreas = GridTemplateAreas(areas.joinToString(" ") { "\"$it\"" })
+                    gridTemplateColumns = GridTemplateColumns(currentTab.columns.joinToString(" "))
+                    gridTemplateRows = GridTemplateRows(currentTab.rows.joinToString(" "))
                 }
+            }
 
-                header { +panel.title }
+            currentTab?.areas?.distinct()?.forEach { panelId ->
+                val panel = props.show.layouts.panels.getBang(panelId, "panel")
+                paper(Styles.layoutPanelPaper on PaperStyle.root) {
+                    inlineStyles {
+                        put("gridArea", panelId)
+                        // TODO: panel flow direction could change here.
+                        flexDirection = FlexDirection.column
+                    }
 
-                paper(Styles.layoutPanel and editModeStyle on PaperStyle.root) {
-                    props.controlDisplay.render(panel) { panelBucket ->
-                        droppable({
-                            this.droppableId = panelBucket.dropTargetId
-                            this.type = panelBucket.type
-                            this.direction = Direction.horizontal.name
-                            this.isDropDisabled = !props.editMode
-                        }) { droppableProvided, _ ->
-                            val style = if (Styles.controlSections.size > panelBucket.section.depth)
-                                Styles.controlSections[panelBucket.section.depth]
-                            else
-                                Styles.controlSections.last()
+                    header { +panel.title }
 
-                            div(+Styles.layoutControls and style) {
-                                install(droppableProvided)
+                    paper(Styles.layoutPanel and editModeStyle on PaperStyle.root) {
+                        props.controlDisplay.render(panel) { panelBucket ->
+                            droppable({
+                                this.droppableId = panelBucket.dropTargetId
+                                this.type = panelBucket.type
+                                this.direction = Direction.horizontal.name
+                                this.isDropDisabled = !props.editMode
+                            }) { droppableProvided, _ ->
+                                val style = if (Styles.controlSections.size > panelBucket.section.depth)
+                                    Styles.controlSections[panelBucket.section.depth]
+                                else
+                                    Styles.controlSections.last()
 
-                                div(+Styles.controlPanelHelpText) { +panelBucket.section.title }
-                                panelBucket.controls.forEachIndexed { index, placedControl ->
-                                    val control = placedControl.control
-                                    val draggableId = control.id
+                                div(+Styles.layoutControls and style) {
+                                    install(droppableProvided)
 
-                                    draggable({
-                                        this.key = draggableId
-                                        this.draggableId = draggableId
-                                        this.isDragDisabled = !props.editMode
-                                        this.index = index
-                                    }) { draggableProvided, _ ->
-                                        controlWrapper {
-                                            attrs.control = control
-                                            attrs.controlProps = props.controlProps
-                                            attrs.draggableProvided = draggableProvided
+                                    div(+Styles.controlPanelHelpText) { +panelBucket.section.title }
+                                    panelBucket.controls.forEachIndexed { index, placedControl ->
+                                        val control = placedControl.control
+                                        val draggableId = control.id
+
+                                        draggable({
+                                            this.key = draggableId
+                                            this.draggableId = draggableId
+                                            this.isDragDisabled = !props.editMode
+                                            this.index = index
+                                        }) { draggableProvided, _ ->
+                                            controlWrapper {
+                                                attrs.control = control
+                                                attrs.controlProps = props.controlProps
+                                                attrs.draggableProvided = draggableProvided
+                                            }
                                         }
                                     }
-                                }
 
-                                insertPlaceholder(droppableProvided)
+                                    insertPlaceholder(droppableProvided)
 
-                                iconButton(+Styles.addToSectionButton on IconButtonStyle.root) {
-                                    attrs.onClickFunction = handleAddButtonClick.getOrPut(panelBucket.suggestId()) {
-                                        { event: Event ->
-                                            showAddMenuFor = panelBucket
-                                            showAddMenuForAnchorEl = event.target
-                                        }
-                                    }.withEvent()
-                                    icon(Icons.AddCircleOutline)
+                                    iconButton(+Styles.addToSectionButton on IconButtonStyle.root) {
+                                        attrs.onClickFunction = handleAddButtonClick.getOrPut(panelBucket.suggestId()) {
+                                            { event: Event ->
+                                                showAddMenuFor = panelBucket
+                                                showAddMenuForAnchorEl = event.target
+                                            }
+                                        }.withEvent()
+                                        icon(materialui.icons.AddCircleOutline)
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
+                }
             }
         }
     }

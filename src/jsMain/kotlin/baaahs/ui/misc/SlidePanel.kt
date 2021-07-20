@@ -15,9 +15,9 @@ import styled.styledDiv
 import kotlin.math.min
 
 val SlidePanel = xComponent<SlidePanelProps>("SlidePanel") { props ->
-    val rootEl = ref<HTMLDivElement?>()
-    val sliderEl = ref<HTMLDivElement?>()
-    val panelEls = (0..10).map { ref<HTMLDivElement?>() }
+    val rootEl = ref<HTMLDivElement>()
+    val sliderEl = ref<HTMLDivElement>()
+    val panelEls = (0..10).map { ref<HTMLDivElement>() }
 
     onMount(props.panels) {
         resize(props, rootEl, panelEls)
@@ -51,8 +51,8 @@ val SlidePanel = xComponent<SlidePanelProps>("SlidePanel") { props ->
 
 private fun resize(
     props: SlidePanelProps,
-    rootEl: RMutableRef<HTMLDivElement?>,
-    panelEls: List<RMutableRef<HTMLDivElement?>>
+    rootEl: RReadableRef<HTMLDivElement>,
+    panelEls: List<RReadableRef<HTMLDivElement>>
 ) {
     props.panels.forEachIndexed { index, _ ->
         val div = panelEls[index].current!!

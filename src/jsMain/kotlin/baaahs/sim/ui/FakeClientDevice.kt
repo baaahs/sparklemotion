@@ -27,7 +27,7 @@ const val BORDER_WIDTH = 28
 val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { props ->
     var isOpen by state { true }
     var zoom by state { .5f }
-    val clientDeviceContentRef = useRef<HTMLElement?>(null)
+    val clientDeviceContentRef = useRef<HTMLElement>(null)
 
     val handleZoomOut by eventHandler { zoom *= .5f }
     val handleZoomIn by eventHandler { zoom *= 2f }

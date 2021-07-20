@@ -13,13 +13,12 @@ import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.components.typography.typographyH6
 import materialui.icon
-import materialui.icons.Icons
 import org.w3c.dom.HTMLElement
 import react.*
 import react.dom.div
 
 val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { props ->
-    val unplacedControlPaletteDiv = ref<HTMLElement?>()
+    val unplacedControlPaletteDiv = ref<HTMLElement>()
 
     val editModeStyle =
         if (props.editMode) Styles.editModeOn else Styles.editModeOff
@@ -32,7 +31,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
             ref = unplacedControlPaletteDiv
 
             div(+Styles.dragHandle and randomStyleForHandle) {
-                icon(Icons.DragIndicator)
+                icon(materialui.icons.DragIndicator)
             }
 
             paper(Styles.unplacedControlsPaper on PaperStyle.root) {

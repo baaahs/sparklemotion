@@ -70,10 +70,11 @@ object EditableStyles : StyleSheet("app-ui-Editable", isStatic = true) {
     }
 
     val patchOverview by css {
+        position = Position.relative
         backgroundColor = StuffThatShouldComeFromTheTheme.lightBackgroundColor
         display = Display.grid
         gridTemplateColumns = GridTemplateColumns.repeat("auto-fit, minmax(175px, 1fr)")
-        gap = Gap(1.em.toString())
+        gap = 1.em
         padding(1.em)
     }
 

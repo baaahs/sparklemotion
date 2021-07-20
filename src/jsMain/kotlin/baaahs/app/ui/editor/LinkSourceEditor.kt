@@ -27,7 +27,7 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { p
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.shaderEditor
 
-    val lastLinkOptions = ref<List<LinkOption>?>(null)
+    val lastLinkOptions = ref<List<LinkOption>>()
     val linkOptions = props.editingShader.linkOptionsFor(props.inputPort)
         ?.also { lastLinkOptions.current = it }
         ?: lastLinkOptions.current
@@ -53,7 +53,7 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { p
     ) + NewSourcePortOption
 
     var showAdvanced by state { false }
-    val showAdvancedCheckbox = ref<HTMLElement?>(null)
+    val showAdvancedCheckbox = ref<HTMLElement>()
     val anyAdvanced = linkOptions.any { it.isAdvanced }
     val handleToggleShowAdvanced by eventHandler { event: Event ->
         showAdvanced = !showAdvanced

@@ -38,7 +38,6 @@ import materialui.components.listsubheader.enums.ListSubheaderStyle
 import materialui.components.listsubheader.listSubheader
 import materialui.components.textfield.textField
 import materialui.icon
-import materialui.icons.Icons
 import materialui.lab.components.togglebutton.toggleButton
 import org.w3c.dom.events.Event
 import react.*
@@ -66,18 +65,18 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
 
     var showCode by state { false }
     var errorMessage by state<String?> { null }
-    val changed = ref { false }
+    val changed = ref(false)
 
     var currentFormat by state<String?> { "default" }
 
     val formatsSerializer = MapSerializer(String.serializer(), Layout.serializer())
     fun getLayoutsFromJson(): Map<String, Layout> {
-        val layoutJson = aceEditor.current.editor.session.getDocument()
+        val layoutJson = aceEditor.current!!.editor.session.getDocument()
         return json.decodeFromString(formatsSerializer, layoutJson.getValue())
     }
 
     val checkLayout = callback {
-        if (showCode && changed.current) {
+        if (showCode && changed.current == true) {
             errorMessage = try {
                 panelIds = getLayoutsFromJson().getPanelIds().toMutableSet()
                 null
@@ -140,7 +139,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                 attrs["selected"] = showCode
                 attrs["size"] = ButtonSize.small.name
                 attrs.onClickFunction = handleShowCodeButton
-                icon(Icons.Code)
+                icon(materialui.icons.Code)
             }
         }
 
@@ -235,7 +234,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                                                     props.onApply(mutableShow)
                                                 }
                                             }
-                                            icon(Icons.Delete)
+                                            icon(materialui.icons.Delete)
                                         }
                                     }
                                 }

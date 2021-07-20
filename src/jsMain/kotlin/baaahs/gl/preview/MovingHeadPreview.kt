@@ -1,7 +1,7 @@
 package baaahs.gl.preview
 
 import baaahs.fixtures.*
-import baaahs.gl.GlBase
+import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ModelRenderEngine
 import baaahs.model.Model
@@ -11,7 +11,7 @@ import org.w3c.dom.HTMLCanvasElement
 
 class MovingHeadPreview(
     canvas2d: HTMLCanvasElement,
-    gl: GlBase.JsGlContext,
+    gl: GlContext,
     private var width: Int,
     private var height: Int,
     model: Model,
@@ -39,6 +39,7 @@ class MovingHeadPreview(
     override fun destroy() {
         stop()
         movingHeadProgram?.release()
+        renderEngine.release()
     }
 
     override fun setProgram(program: GlslProgram?) {

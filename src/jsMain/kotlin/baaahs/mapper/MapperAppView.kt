@@ -23,14 +23,14 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
     // onscreen renderer for registration UI:
     val wireframe = ui.wireframe
 
-    val screenRef = useRef<HTMLElement?>(null)
-    val ui2dCanvasRef = useRef<HTMLCanvasElement?>(null)
-    val ui3dDivRef = useRef<HTMLElement?>(null)
-    val baseCanvasRef = useRef<HTMLCanvasElement?>(null)
-    val diffCanvasRef = useRef<HTMLCanvasElement?>(null)
-    val snapshotCanvasRef = useRef<HTMLCanvasElement?>(null)
-    val panelMaskCanvasRef = useRef<HTMLCanvasElement?>(null)
-    val perfStatsRef = useRef<HTMLElement?>(null)
+    val screenRef = useRef<HTMLElement>(null)
+    val ui2dCanvasRef = useRef<HTMLCanvasElement>(null)
+    val ui3dDivRef = useRef<HTMLElement>(null)
+    val baseCanvasRef = useRef<HTMLCanvasElement>(null)
+    val diffCanvasRef = useRef<HTMLCanvasElement>(null)
+    val snapshotCanvasRef = useRef<HTMLCanvasElement>(null)
+    val panelMaskCanvasRef = useRef<HTMLCanvasElement>(null)
+    val perfStatsRef = useRef<HTMLElement>(null)
 
     // init:
     onMount(props.statusListener) {

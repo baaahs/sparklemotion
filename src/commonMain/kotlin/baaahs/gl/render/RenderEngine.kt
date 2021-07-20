@@ -8,6 +8,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.gl.patch.LinkedPatch
 import baaahs.show.DataSource
+import baaahs.time
 import baaahs.timeSync
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
@@ -34,10 +35,10 @@ abstract class RenderEngine(val gl: GlContext) {
 
     abstract fun onBind(engineFeed: EngineFeed)
 
-    fun draw(finish: Boolean = true) {
+    fun draw() {
         gl.runInContext {
             stats.prepareMs += timeSync {
-                beforeFrame()
+                beforeRender()
                 bindResults()
             }
 
@@ -45,25 +46,20 @@ abstract class RenderEngine(val gl: GlContext) {
                 gl.check { clearColor(0f, .5f, 0f, 1f) }
                 gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
                 render()
+                afterRender()
             }
-
-            if (finish) doFinish()
         }
     }
 
-    fun finish() {
-        gl.runInContext { doFinish() }
-    }
-
-    /** This is run from within a GL context. */
-    private fun doFinish() {
-        stats.finishMs += timeSync { gl.check { finish() } }
-        stats.readPxMs += timeSync { afterFrame() }
+    suspend fun finish() {
+        gl.asyncRunInContext {
+            stats.readPxMs += time { awaitResults() }
+        }
         stats.frameCount++
     }
 
     /** This is run from within a GL context. */
-    abstract fun beforeFrame()
+    abstract fun beforeRender()
 
     /** This is run from within a GL context. */
     abstract fun bindResults()
@@ -72,7 +68,10 @@ abstract class RenderEngine(val gl: GlContext) {
     protected abstract fun render()
 
     /** This is run from within a GL context. */
-    abstract fun afterFrame()
+    abstract fun afterRender()
+
+    /** This is run from within a GL context. */
+    abstract suspend fun awaitResults()
 
     fun release() {
         gl.runInContext {
@@ -87,7 +86,6 @@ abstract class RenderEngine(val gl: GlContext) {
     class Stats {
         var prepareMs = 0; internal set
         var renderMs = 0; internal set
-        var finishMs = 0; internal set
         var readPxMs = 0; internal set
         var frameCount = 0; internal set
 
@@ -98,16 +96,14 @@ abstract class RenderEngine(val gl: GlContext) {
                 "Average time drawing $frameCount frames:\n" +
                         " prepareMs=${prepareMs.pretty()}ms/frame\n" +
                         "  renderMs=${renderMs.pretty()}ms/frame\n" +
-                        "  finishMs=${finishMs.pretty()}ms/frame\n" +
                         "  readPxMs=${readPxMs.pretty()}ms/frame\n" +
-                        "   totalMs=${(prepareMs + renderMs + finishMs + readPxMs).pretty()}ms/frame"
+                        "   totalMs=${(prepareMs + renderMs + readPxMs).pretty()}ms/frame"
             )
         }
 
         fun reset() {
             prepareMs = 0
             renderMs = 0
-            finishMs = 0
             readPxMs = 0
             frameCount = 0
         }

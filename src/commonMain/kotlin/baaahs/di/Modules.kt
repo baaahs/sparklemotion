@@ -51,6 +51,7 @@ interface PinkyModule : KModule {
     val Scope.pinkyLink: Network.Link get() = get<Network>().link("pinky")
     val Scope.dmxDriver: Dmx.Driver
     val Scope.renderManager: RenderManager
+    val Scope.pinkySettings: PinkySettings
 
     override fun getModule(): Module = module {
         scope<Pinky> {
@@ -67,6 +68,7 @@ interface PinkyModule : KModule {
             scoped { dmxDriver }
             scoped { DmxManager(get(), get(), get(named("Fallback"))) }
             scoped { renderManager }
+            scoped { pinkySettings }
             scoped { get<Network.Link>(named("PinkyLink")).startHttpServer(Ports.PINKY_UI_TCP) }
             scoped {
                 Pinky(
@@ -76,7 +78,8 @@ interface PinkyModule : KModule {
                     link = get(named("PinkyLink")),
                     httpServer = get(),
                     pubSub = get(),
-                    dmxManager = get()
+                    dmxManager = get(),
+                    pinkySettings = get()
                 )
             }
         }

@@ -2,7 +2,6 @@ package baaahs.ui
 
 import baaahs.util.Logger
 import baaahs.window
-import external.react.memo
 import org.w3c.dom.events.Event
 import react.RMutableRef
 import react.RProps
@@ -17,19 +16,16 @@ fun <P : RProps> xComponent(
     name: String,
     isPure: Boolean = false,
     func: XBuilder.(props: P) -> Unit
-): react.FunctionalComponent<P> {
+): react.FunctionComponent<P> {
     val logger = Logger(name)
-    val component = { props: P ->
-        react.buildElements {
-            val xBuilder = XBuilder(logger)
-            xBuilder.func(props)
-            this.childList.addAll(xBuilder.childList)
-            xBuilder.renderFinished()
-        }
+    val component = react.fc(name) { props: P ->
+        val xBuilder = XBuilder(logger)
+        xBuilder.func(props)
+        this.childList.addAll(xBuilder.childList)
+        xBuilder.renderFinished()
     }
-    component.asDynamic().displayName = name
     return if (isPure)
-        memo(component) { a, b ->
+        react.memo(component) { a, b ->
             val keys = hashSetOf(*a.keys).also {
                 it.addAll(b.keys)
             }
@@ -48,36 +44,36 @@ private class CounterIncr {
     fun next(): Int = ++i
 }
 
-class XBuilder(val logger: Logger) : react.RBuilder() {
+class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     private var firstTime = false
     private var dataIndex = 0
     private var changeDetectorIndex = 0
 
-    private val context = react.useMemo({
+    private val context = react.useMemo {
         firstTime = true
         Context()
-    }, emptyArray())
+    }
 
-    private val counterIncr = react.rawUseState { CounterIncr() }
-    private val counter = react.rawUseState { counterIncr.component1().next() }
+    private val counterIncr = external.react.rawUseState { CounterIncr() }
+    private val counter = external.react.rawUseState { counterIncr.component1().next() }
     private var inRender = true
     private var stateHasChanged = false
 
     init {
-        react.useEffectWithCleanup(emptyList()) {
-            return@useEffectWithCleanup {
+        react.useEffectOnce {
+            cleanup {
                 context.changeDetectors.forEach { it.runCleanups() }
             }
         }
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> ref(block: (() -> T)? = null): RMutableRef<T> =
-        react.useRef(if (block != null) block() else null as T)
+    fun <T: Any> ref(initialValue: T? = null): RMutableRef<T> =
+        react.useRef(initialValue)
 
     fun <T> memo(vararg watch: Any?, callback: ChangeDetector.() -> T): T {
         return if (firstTime) {
-            val memo = Memo<T>(watch, logger, callback)
+            val memo = Memo(watch, logger, callback)
             context.changeDetectors.add(memo)
             memo.memoizedValue
         } else {
@@ -131,10 +127,10 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
     }
 
     fun onMount(vararg watch: Any?, callback: ChangeDetector.() -> Unit) {
-        react.useEffectWithCleanup(watch.toList()) {
+        react.useEffect(watch.toList()) {
             val sideEffect = ChangeDetector(watch, logger)
             sideEffect.callback()
-            return@useEffectWithCleanup { sideEffect.runCleanups() }
+            cleanup { sideEffect.runCleanups() }
         }
     }
 
@@ -281,4 +277,3 @@ class XBuilder(val logger: Logger) : react.RBuilder() {
         }
     }
 }
-

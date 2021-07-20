@@ -4,7 +4,7 @@ import baaahs.fixtures.DeviceTypeRenderPlan
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
-import baaahs.gl.GlBase
+import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ModelRenderEngine
 import baaahs.model.Model
@@ -15,7 +15,7 @@ import org.w3c.dom.Path2D
 
 class ProjectionPreview(
     canvas2d: HTMLCanvasElement,
-    gl: GlBase.JsGlContext,
+    gl: GlContext,
     private var width: Int,
     private var height: Int,
     model: Model,
@@ -44,6 +44,7 @@ class ProjectionPreview(
     override fun destroy() {
         stop()
         projectionProgram?.release()
+        renderEngine.release()
     }
 
     override fun setProgram(program: GlslProgram?) {

@@ -5,7 +5,8 @@ import com.danielgergely.kgl.*
 
 class KglTracer(private val kgl: Kgl) : Kgl {
     private val id = tracerCounter++
-    private val logger = Logger("KglTracer[$id]")
+    private val logger = Logger("KglTracer")
+    private var nextObjId = 0
 
     override fun activeTexture(texture: Int) {
         log("activeTexture", texture)
@@ -79,7 +80,7 @@ class KglTracer(private val kgl: Kgl) : Kgl {
 
     override fun createBuffer(): GlBuffer {
         return kgl.createBuffer().also {
-            log("createBuffer") { it }
+            log("createBuffer") { it.withNote("buffer ${nextObjId++}") }
         }
     }
 
@@ -91,30 +92,31 @@ class KglTracer(private val kgl: Kgl) : Kgl {
 
     override fun createFramebuffer(): Framebuffer {
         return kgl.createFramebuffer().also {
-            log("createFramebuffer") { it }
+            log("createFramebuffer") { it.withNote("Framebuffer ${nextObjId++}") }
         }
     }
 
     override fun createProgram(): Program? {
         return kgl.createProgram().also {
-            log("createProgram") { it }
+            log("createProgram") { it.withNote("Program ${nextObjId++}") }
         }
     }
 
     override fun createRenderbuffer(): Renderbuffer {
         return kgl.createRenderbuffer().also {
-            log("createRenderbuffer") { it }
+            log("createRenderbuffer") { it.withNote("Renderbuffer ${nextObjId++}") }
         }
     }
 
     override fun createShader(type: Int): Shader? {
-        log("createShader", type)
-        return kgl.createShader(type)
+        return kgl.createShader(type).also {
+            log("createShader", type) { it.withNote("Shader ${nextObjId++}") }
+        }
     }
 
     override fun createTexture(): Texture {
         return kgl.createTexture().also {
-            log("createTexture") { it }
+            log("createTexture") { it.withNote("Texture ${nextObjId++}") }
         }
     }
 
@@ -126,7 +128,7 @@ class KglTracer(private val kgl: Kgl) : Kgl {
 
     override fun createVertexArray(): VertexArrayObject {
         return kgl.createVertexArray().also {
-            log("createVertexArray") { it }
+            log("createVertexArray") { it.withNote("VertexArray ${nextObjId++}") }
         }
     }
 
@@ -217,7 +219,9 @@ class KglTracer(private val kgl: Kgl) : Kgl {
 
     override fun getAttribLocation(programId: Program, name: String): Int {
         return kgl.getAttribLocation(programId, name).also {
-            log("getAttribLocation", programId, name) { it }
+            log("getAttribLocation", programId, name) {
+                it.withNote("AttribLocation $name on ${stringify(programId)}")
+            }
         }
     }
 
@@ -249,7 +253,9 @@ class KglTracer(private val kgl: Kgl) : Kgl {
 
     override fun getUniformLocation(programId: Program, name: String): UniformLocation? {
         return kgl.getUniformLocation(programId, name).also {
-            log("getUniformLocation", programId, name) { it }
+            log("getUniformLocation", programId, name) {
+                it.withNote("Uniform $name on ${stringify(programId)}")
+            }
         }
     }
 
@@ -409,9 +415,12 @@ class KglTracer(private val kgl: Kgl) : Kgl {
             "[${it.joinToString(",")}]"
         } else if (it is Array<*>) {
             "[${it.joinToString(",")}]"
-        } else it.toString()
+        } else it.toStringMaybeWithNote()
 
     companion object {
         private var tracerCounter = 0
     }
 }
+
+expect fun <T: Any?> T.withNote(note: String): T
+expect fun <T: Any?> T.toStringMaybeWithNote(): String

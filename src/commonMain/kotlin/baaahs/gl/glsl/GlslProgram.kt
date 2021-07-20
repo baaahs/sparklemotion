@@ -18,6 +18,7 @@ interface GlslProgram {
     val vertexAttribLocation: Int
 
     fun setResolution(x: Float, y: Float)
+
     fun aboutToRenderFrame()
     fun aboutToRenderFixture(renderTarget: RenderTarget)
     fun getUniform(name: String): Uniform?
@@ -27,6 +28,10 @@ interface GlslProgram {
 
     interface ResolutionListener {
         fun onResolution(x: Float, y: Float)
+    }
+
+    interface RasterOffsetListener {
+        fun onRasterOffset(left: Int, bottom: Int)
     }
 }
 
@@ -49,7 +54,6 @@ class GlslProgramImpl(
 
     private val feeds = gl.runInContext {
         linkedPatch.dataSourceLinks.mapNotNull { (dataSource, id) ->
-            if (dataSource.isImplicit()) return@mapNotNull null
             val engineFeed = engineFeedResolver.openFeed(id, dataSource)
 
             if (engineFeed != null) {
@@ -57,12 +61,12 @@ class GlslProgramImpl(
                 if (programFeed.isValid) {
                     programFeed
                 } else {
-                    logger.debug { "unused uniform for $dataSource?" }
+                    logger.debug { "Invalid feed for $dataSource $id: $programFeed" }
                     programFeed.release()
                     null
                 }
             } else {
-                logger.warn { "no UniformProvider bound for $dataSource" }
+                logger.warn { "No feed bound for $dataSource $id." }
                 null
             }
         }

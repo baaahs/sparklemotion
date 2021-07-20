@@ -37,13 +37,13 @@ val FixturesList = xComponent<FixturesListProps>("FixturesList") { props ->
                     props.editableManager.openPanel(mutablePatch.getEditorPanel(props.editableManager))
                 }
 
-                listItemIcon { icon(materialui.icons.Icons.FilterList) }
+                listItemIcon { icon(materialui.icons.FilterList) }
                 listItemText { +mutablePatch.surfaces.name }
             }
         }
 
         listItem {
-            listItemIcon { icon(materialui.icons.Icons.AddCircleOutline) }
+            listItemIcon { icon(materialui.icons.AddCircleOutline) }
             listItemText { +"New…" }
 
             attrs.onClickFunction = {

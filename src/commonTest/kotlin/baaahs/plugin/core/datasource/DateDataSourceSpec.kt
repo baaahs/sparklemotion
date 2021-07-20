@@ -33,7 +33,7 @@ object DateDataSourceSpec : Spek({
             val gl = FakeGlContext()
             val fakeProgram = object : StubGlslProgram() {
                 override fun getUniform(name: String): Uniform = uniform
-                override fun <T> withProgram(fn: Kgl.() -> T): T = fn(gl.kgl)
+                override fun <T> withProgram(fn: Kgl.() -> T): T = fn(gl.fakeKgl)
             }
 
             dataSource.createFeed(showPlayer, "date")

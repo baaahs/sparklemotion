@@ -28,7 +28,6 @@ import materialui.components.tab.tab
 import materialui.components.tabs.enums.TabsStyle
 import materialui.components.tabs.tabs
 import materialui.icon
-import materialui.icons.Icons
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
@@ -147,7 +146,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
             div(+shaderEditorStyles.settingsMenuAffordance) {
                 attrs.onClickFunction = showSettingsMenu
 
-                icon(Icons.Settings)
+                icon(materialui.icons.Settings)
             }
         }
     }

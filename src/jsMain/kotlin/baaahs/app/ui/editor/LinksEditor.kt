@@ -19,7 +19,6 @@ import materialui.components.typography.enums.TypographyColor
 import materialui.components.typography.typography
 import materialui.components.typography.typographyH6
 import materialui.icon
-import materialui.icons.Icons
 import react.*
 import react.dom.b
 import react.dom.code
@@ -27,7 +26,7 @@ import react.dom.code
 val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     observe(props.editingShader)
 
-    val lastShaderInputPorts = ref<List<InputPort>?>(null)
+    val lastShaderInputPorts = ref<List<InputPort>>()
     val shaderInputPorts = props.editingShader.inputPorts
         ?.also { lastShaderInputPorts.current = it }
         ?: lastShaderInputPorts.current
@@ -95,7 +94,7 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
                                     props.editingShader.changeInputPortLink(portId, null)
                                     props.editableManager.onChange()
                                 }
-                                icon(Icons.Delete)
+                                icon(materialui.icons.Delete)
                             }
                         }
                     }

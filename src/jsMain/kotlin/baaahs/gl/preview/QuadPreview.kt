@@ -1,15 +1,14 @@
 package baaahs.gl.preview
 
-import baaahs.gl.GlContext
+import baaahs.gl.GlBase
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.PreviewRenderEngine
-import baaahs.window
 
 class QuadPreview(
-    private val gl: GlContext,
+    private val gl: GlBase.JsGlContext,
     private var width: Int,
     private var height: Int,
-    private val preRenderCallback: (() -> Unit)? = null
+    private val preRenderCallback: ((QuadPreview) -> Unit)? = null
 ) : ShaderPreview {
     private var running = false
     override var renderEngine = PreviewRenderEngine(gl, width, height)
@@ -35,9 +34,10 @@ class QuadPreview(
     override fun render() {
         if (!running) return
 
-        preRenderCallback?.invoke()
+        preRenderCallback?.invoke(this)
         renderEngine.render()
-        window.requestAnimationFrame { render() }
+
+        gl.requestAnimationFrame { render() }
     }
 
     override fun resize(width: Int, height: Int) {

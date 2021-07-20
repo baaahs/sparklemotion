@@ -25,6 +25,15 @@ class JoglGlManager : GlManager() {
                 context.release()
             }
         }
+
+        override suspend fun <T> asyncRunInContext(fn: suspend () -> T): T {
+            context.makeCurrent()
+            try {
+                return fn()
+            } finally {
+                context.release()
+            }
+        }
     }
 
     companion object {

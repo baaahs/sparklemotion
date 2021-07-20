@@ -164,7 +164,7 @@ class StageManager(
         facade.notifyChanged()
     }
 
-    fun renderAndSendNextFrame(dontProcrastinate: Boolean = true) {
+    suspend fun renderAndSendNextFrame(dontProcrastinate: Boolean = true) {
         showRunner?.let { showRunner ->
             // Unless otherwise instructed, = generate and send the next frame right away,
             // then perform any housekeeping tasks immediately afterward, to avoid frame lag.

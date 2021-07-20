@@ -71,14 +71,14 @@ class ShowRunnerTest {
     }
 
     @Test @Ignore // TODO
-    fun whenNoKnownSurfaces_shouldStillCreateShow() {
+    fun whenNoKnownSurfaces_shouldStillCreateShow() = doRunBlocking {
         stageManager.renderAndSendNextFrame()
         expect(renderTargets.size).toBe(1)
         expect(surface1Messages.size).toBe(0)
     }
 
     @Test
-    fun shouldRenderShow() {
+    fun shouldRenderShow() = doRunBlocking {
         fixtureManager.fixturesChanged(listOf(surface1Fixture, surface2Fixture), emptyList())
         stageManager.renderAndSendNextFrame()
         expect(renderTargets.size).toBe(2)
@@ -100,7 +100,7 @@ class ShowRunnerTest {
     }
 
     @Test
-    fun inProcrastinationMode_whenSurfacesAreAddedOrRemoved_shouldUpdateShowAfterNextFrame() {
+    fun inProcrastinationMode_whenSurfacesAreAddedOrRemoved_shouldUpdateShowAfterNextFrame() = doRunBlocking {
         stageManager.renderAndSendNextFrame(false) // No surfaces so no show created, nothing rendered.
         expect(renderTargets.size).toBe(0)
 
@@ -137,7 +137,7 @@ class ShowRunnerTest {
     }
 
     @Test
-    fun inNoProcrastinationMode_whenSurfacesAreAddedOrRemoved_shouldUpdateShowAfterNextFrame() {
+    fun inNoProcrastinationMode_whenSurfacesAreAddedOrRemoved_shouldUpdateShowAfterNextFrame() = doRunBlocking {
         stageManager.renderAndSendNextFrame() // No surfaces so no show created, nothing rendered.
         expect(renderTargets.size).toBe(0)
 
@@ -174,7 +174,7 @@ class ShowRunnerTest {
     }
 
     @Test @Ignore // all shows support surface changes.
-    fun forShowsThatDontSupportSurfaceChanges_whenSurfacesAreAddedOrRemoved_shouldRecreateShowAfterNextFrame() {
+    fun forShowsThatDontSupportSurfaceChanges_whenSurfacesAreAddedOrRemoved_shouldRecreateShowAfterNextFrame() = doRunBlocking {
 //        renderSurfaces.supportsSurfaceChange = false
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
@@ -206,7 +206,7 @@ class ShowRunnerTest {
     }
 
     @Test
-    fun forShowsThatDontSupportSurfaceChanges_whenShowIsRecreated_gadgetSettingsAreRestored() {
+    fun forShowsThatDontSupportSurfaceChanges_whenShowIsRecreated_gadgetSettingsAreRestored() = doRunBlocking {
 //        renderSurfaces.supportsSurfaceChange = false
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
@@ -226,7 +226,7 @@ class ShowRunnerTest {
     }
 
     @Test
-    fun forShowsThatDontSupportSurfaceChanges_whenShowIsRecreated_publishedActiveGadgetsAreUnchanged() {
+    fun forShowsThatDontSupportSurfaceChanges_whenShowIsRecreated_publishedActiveGadgetsAreUnchanged() = doRunBlocking {
 //        renderSurfaces.supportsSurfaceChange = false
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
@@ -248,7 +248,7 @@ class ShowRunnerTest {
     }
 
     @Test
-    fun shouldUpdateDmxAfterEveryFrame() {
+    fun shouldUpdateDmxAfterEveryFrame() = doRunBlocking {
         expect(dmxEvents).isEmpty()
 
         stageManager.renderAndSendNextFrame()
@@ -263,7 +263,7 @@ class ShowRunnerTest {
     }
 
     @Test
-    fun whenSurfaceIsReAddedAndNewBufferIsRegistered_shouldHaveForgottenAboutOldOne() {
+    fun whenSurfaceIsReAddedAndNewBufferIsRegistered_shouldHaveForgottenAboutOldOne() = doRunBlocking {
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
         stageManager.renderAndSendNextFrame() // Creates show and registers a buffer for surface1.
 

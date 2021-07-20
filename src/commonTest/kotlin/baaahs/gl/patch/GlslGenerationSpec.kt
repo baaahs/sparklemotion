@@ -169,6 +169,10 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
+                        // Data source: Raster Coordinate
+                        uniform vec2 ds_rasterCoordinate_offset;
+                        vec4 in_rasterCoordinate;
+
                         // Data source: Resolution
                         uniform vec2 in_resolution;
 
@@ -189,8 +193,11 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
+                            // Invoke Raster Coordinate
+                            in_rasterCoordinate = gl_FragCoord - vec4(ds_rasterCoordinate_offset, 0., 0.);
+
                             // Invoke Untitled Shader
-                            p0_untitledShader_main(gl_FragCoord.xy);
+                            p0_untitledShader_main(in_rasterCoordinate.xy);
 
                             sm_result = p0_untitledShader_gl_FragColor;
                         }
@@ -248,6 +255,10 @@ object GlslGenerationSpec : Spek({
                         // Data source: Blueness Slider
                         uniform float in_bluenessSlider;
 
+                        // Data source: Raster Coordinate
+                        uniform vec2 ds_rasterCoordinate_offset;
+                        vec4 in_rasterCoordinate;
+
                         // Data source: Resolution
                         uniform vec2 in_resolution;
 
@@ -286,8 +297,11 @@ object GlslGenerationSpec : Spek({
                             // Init This Shader's Name.
                             p0_thisShaderSNamei_init();
 
+                            // Invoke Raster Coordinate
+                            in_rasterCoordinate = gl_FragCoord - vec4(ds_rasterCoordinate_offset, 0., 0.);
+
                             // Invoke This Shader's Name
-                            p0_thisShaderSName_mainImage(p0_thisShaderSName_fragColor, gl_FragCoord.xy);
+                            p0_thisShaderSName_mainImage(p0_thisShaderSName_fragColor, in_rasterCoordinate.xy);
 
                             sm_result = p0_thisShaderSName_fragColor;
                         }
@@ -492,6 +506,10 @@ object GlslGenerationSpec : Spek({
                         // Data source: Fade Slider
                         uniform float in_fadeSlider;
 
+                        // Data source: Raster Coordinate
+                        uniform vec2 ds_rasterCoordinate_offset;
+                        vec4 in_rasterCoordinate;
+
                         // Shader: Main Paint Shader; namespace: p0
                         // Main Paint Shader
 
@@ -525,11 +543,14 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
+                            // Invoke Raster Coordinate
+                            in_rasterCoordinate = gl_FragCoord - vec4(ds_rasterCoordinate_offset, 0., 0.);
+
                             // Invoke Main Paint Shader
                             p0_mainPaintShader_main();
 
                             // Invoke Other Paint Shader
-                            p1_otherPaintShader_mainImage(p1_otherPaintShader_fragColor, gl_FragCoord.xy);
+                            p1_otherPaintShader_mainImage(p1_otherPaintShader_fragColor, in_rasterCoordinate.xy);
 
                             // Invoke Cross-fade shader
                             p2_crossFadeShaderi_result = p2_crossFadeShader_main(p0_mainPaintShader_gl_FragColor, p1_otherPaintShader_fragColor);
@@ -943,6 +964,10 @@ object GlslGenerationSpec : Spek({
                         // Data source: Fade Slider
                         uniform float in_fadeSlider;
 
+                        // Data source: Raster Coordinate
+                        uniform vec2 ds_rasterCoordinate_offset;
+                        vec4 in_rasterCoordinate;
+                        
                         // Data source: Time
                         uniform float in_time;
 
@@ -984,7 +1009,7 @@ object GlslGenerationSpec : Spek({
                         vec4 p2_crossFadeShader_channelB(float time) {
                             // Invoke Channel B Shader
                             p1_global_time = time;
-                            p1_channelBShader_mainImage(p1_channelBShader_fragColor, gl_FragCoord.xy);
+                            p1_channelBShader_mainImage(p1_channelBShader_fragColor, in_rasterCoordinate.xy);
 
                             return p1_channelBShader_fragColor;
                         }
@@ -1001,8 +1026,11 @@ object GlslGenerationSpec : Spek({
 
                         #line 10001
                         void main() {
+                            // Invoke Raster Coordinate
+                            in_rasterCoordinate = gl_FragCoord - vec4(ds_rasterCoordinate_offset, 0., 0.);
+
                             // Invoke Cross-fade shader
-                            p2_crossFadeShaderi_result = p2_crossFadeShader_main(gl_FragCoord.xy);
+                            p2_crossFadeShaderi_result = p2_crossFadeShader_main(in_rasterCoordinate.xy);
 
                             sm_result = p2_crossFadeShaderi_result;
                         }

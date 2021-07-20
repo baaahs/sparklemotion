@@ -40,7 +40,8 @@ class Pinky(
     private val link: Network.Link,
     val httpServer: Network.HttpServer,
     pubSub: PubSub.Server,
-    dmxManager: DmxManager
+    dmxManager: DmxManager,
+    val pinkySettings: PinkySettings
 ) : CoroutineScope, Network.UdpListener {
     val facade = Facade()
     private val storage = Storage(fs, plugins)
@@ -133,36 +134,33 @@ class Pinky(
         }
     }
 
-    private var frameDelay = 30L
-
     private suspend fun run() {
         while (keepRunning) {
-            if (mapperIsRunning) {
-                disableDmx()
-                delay(50)
-                continue
-            }
-
-            updateFixtures()
-
-            networkStats.reset()
-            val elapsedMs = time {
-                try {
-                    stageManager.renderAndSendNextFrame()
-                } catch (e: Exception) {
-                    logger.error(e) { "Error rendering frame for ${stageManager.facade.currentShow?.title}"}
-                    if (e is CompilationException) {
-                        e.source?.let { logger.info { it } }
-                    }
-                    delay(1000)
+            throttle(pinkySettings.targetFramerate) {
+                if (mapperIsRunning) {
+                    disableDmx()
+                    return@throttle
                 }
+
+                updateFixtures()
+
+                networkStats.reset()
+                val elapsedMs = time {
+                    try {
+                        stageManager.renderAndSendNextFrame()
+                    } catch (e: Exception) {
+                        logger.error(e) { "Error rendering frame for ${stageManager.facade.currentShow?.title}"}
+                        if (e is CompilationException) {
+                            e.source?.let { logger.info { it } }
+                        }
+                        delay(1000)
+                    }
+                }
+                facade.notifyChanged()
+                facade.framerate.elapsed(elapsedMs)
+
+                maybeChangeThingsIfUsersAreIdle()
             }
-            facade.notifyChanged()
-            facade.framerate.elapsed(elapsedMs)
-
-            maybeChangeThingsIfUsersAreIdle()
-
-            delay(frameDelay)
         }
     }
 
@@ -238,7 +236,7 @@ class Pinky(
 //        }
     }
 
-    internal fun renderAndSendNextFrame() {
+    internal suspend fun renderAndSendNextFrame() {
         stageManager.renderAndSendNextFrame()
     }
 
@@ -340,6 +338,10 @@ class Pinky(
 @Serializable
 data class PinkyConfig(
     val runningShowPath: String?
+)
+
+data class PinkySettings(
+    var targetFramerate: Float = 30f, // Frames per second
 )
 
 @Serializable

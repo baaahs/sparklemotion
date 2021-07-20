@@ -10,6 +10,7 @@ import kotlinx.css.pct
 import kotlinx.css.top
 import react.*
 import react.dom.div
+import react.dom.setProp
 import styled.inlineStyles
 
 private val handle = xComponent<HandleProps>("Handle") { props ->
