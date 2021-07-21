@@ -127,7 +127,7 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     }
 
     fun onMount(vararg watch: Any?, callback: ChangeDetector.() -> Unit) {
-        react.useEffect(watch.toList()) {
+        react.useEffect(*watch) {
             val sideEffect = ChangeDetector(watch, logger)
             sideEffect.callback()
             cleanup { sideEffect.runCleanups() }
