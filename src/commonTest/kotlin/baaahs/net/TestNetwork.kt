@@ -16,24 +16,25 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
         val packetsToSend = mutableListOf<ByteArray>()
         val receviedPackets = mutableListOf<ByteArray>()
 
-        private var udpListener: Network.UdpListener? = null
+        var udpListeners: MutableMap<Int, Network.UdpListener> = mutableMapOf()
 
-        fun sendTo(link: Link) {
+        fun sendTo(link: Link, port: Int) {
             packetsToSend.forEach { bytes ->
-                link.receiveUdp(bytes)
+                link.receiveUdp(bytes, port)
             }
             packetsToSend.clear()
         }
 
-        private fun receiveUdp(bytes: ByteArray) {
+        private fun receiveUdp(bytes: ByteArray, port: Int) {
             receviedPackets += bytes
-            udpListener?.receive(myAddress, 1234, bytes)
+            (udpListeners[port] ?: error("No listener on port $port."))
+                .receive(myAddress, 1234, bytes)
         }
 
         override val udpMtu = mtu
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
-            this.udpListener = udpListener
+            this.udpListeners[port] = udpListener
             return TestUdpSocket(port)
         }
 

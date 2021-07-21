@@ -7,14 +7,18 @@ import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Logger
 import kotlinx.serialization.Serializable
 
-class DmxManager(
+interface DmxManager {
+    val dmxUniverse: Dmx.Universe
+}
+
+class DmxManagerImpl(
     private val dmxDriver: Dmx.Driver,
     pubSub: PubSub.Server,
     private val fakeDmxUniverse: FakeDmxUniverse // For fallback.
-) {
+) : DmxManager {
     private var deviceData by publishProperty(pubSub, Topics.dmxDevices, emptyMap())
     private val listDevices = listDevices()
-    val dmxUniverse = findDmxUniverse(listDevices)
+    override val dmxUniverse = findDmxUniverse(listDevices)
 
     init {
         deviceData = listDevices.map { device ->

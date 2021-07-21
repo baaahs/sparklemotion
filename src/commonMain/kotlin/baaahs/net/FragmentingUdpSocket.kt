@@ -129,6 +129,10 @@ class FragmentingUdpSocket(
         }
     }
 
+    internal fun receiveBypassingFragmentation(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+        udpListener.receive(fromAddress, fromPort, bytes)
+    }
+
     /**
      * Header is 12 bytes long; format is:
      * * message ID (short)

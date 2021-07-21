@@ -21,7 +21,7 @@ object FragmentingUdpSocketSpec : Spek({
                 override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
                 }
             }).sendUdp(recvLink.myAddress, port, payload)
-            sendLink.sendTo(recvLink)
+            sendLink.sendTo(recvLink, port)
         }
 
         beforeEachTest {

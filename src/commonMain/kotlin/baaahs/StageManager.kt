@@ -110,7 +110,7 @@ class StageManager(
         super.registerGadget(id, gadget, controlledDataSource)
     }
 
-    fun onGadgetChange() {
+    private fun onGadgetChange() {
         showRunner?.onSelectedPatchesChanged()
 
         // Start housekeeping early -- as soon as we see a change -- in hopes of avoiding jank.
