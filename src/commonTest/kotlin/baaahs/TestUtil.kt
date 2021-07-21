@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.dmx.Dmx
+import baaahs.dmx.DmxManager
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgram
@@ -138,6 +140,10 @@ class TestRenderContext(
             )
         )
     }
+}
+
+class FakeDmxManager(private val universe: Dmx.Universe) : DmxManager {
+    override val dmxUniverse: Dmx.Universe get() = universe
 }
 
 object ImmediateDispatcher : CoroutineDispatcher() {

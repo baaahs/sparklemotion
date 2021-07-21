@@ -7,6 +7,7 @@ import baaahs.io.ByteArrayWriter
 import baaahs.mapper.ControllerId
 import baaahs.mapper.MappingResults
 import baaahs.net.Network
+import baaahs.net.listenFragmentingUdp
 import baaahs.proto.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.util.Clock
@@ -16,6 +17,8 @@ import baaahs.util.asMillis
 import baaahs.visualizer.remote.RemoteVisualizable
 import baaahs.visualizer.remote.RemoteVisualizerServer
 import baaahs.visualizer.remote.RemoteVisualizers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -23,16 +26,35 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlin.coroutines.CoroutineContext
 
 class BrainManager(
     private val fixtureManager: FixtureManager,
     private val firmwareDaddy: FirmwareDaddy,
     private val mappingResults: MappingResults,
-    private val udpSocket: Network.UdpSocket,
+    link: Network.Link,
     private val networkStats: Pinky.NetworkStats,
     private val clock: Clock,
-    pubSub: PubSub.IServer
+    pubSub: PubSub.IServer,
+    coroutineContext: CoroutineContext
 ) : RemoteVisualizable {
+    private var isStartedUp = false
+    private var mapperMessageCalback: ((MapperHelloMessage) -> Unit)? = null
+
+    private val udpSocket = link.listenFragmentingUdp(Ports.PINKY, object : Network.UdpListener {
+        override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+            if (!isStartedUp) return
+
+            CoroutineScope(coroutineContext).launch {
+                when (val message = parse(bytes)) {
+                    is BrainHelloMessage -> foundBrain(fromAddress, message)
+                    is PingMessage -> receivedPing(fromAddress, message)
+                    is MapperHelloMessage -> mapperMessageCalback?.invoke(message)
+                }
+            }
+        }
+    })
+
     internal val activeBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
     private val pendingBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
     private val remoteVisualizers = RemoteVisualizers()
@@ -41,6 +63,11 @@ class BrainManager(
 
     val brainCount: Int
         get() = activeBrains.size
+
+    fun listenForMapperMessages(handler: (MapperHelloMessage) -> Unit) {
+        isStartedUp = true
+        mapperMessageCalback = handler
+    }
 
     /**
      * Incorporate any pending brain changes.

@@ -1,8 +1,8 @@
 package baaahs
 
-import baaahs.dmx.Dmx
+import baaahs.dmx.DmxManager
 import baaahs.fixtures.*
-import baaahs.model.MovingHead
+import baaahs.model.Model
 import baaahs.util.Logger
 import baaahs.visualizer.remote.RemoteVisualizable
 import baaahs.visualizer.remote.RemoteVisualizerServer
@@ -10,13 +10,13 @@ import baaahs.visualizer.remote.RemoteVisualizers
 
 class MovingHeadManager(
     private val fixtureManager: FixtureManager,
-    private val dmxUniverse: Dmx.Universe,
-    movingHeads: List<MovingHead>
+    private val dmxManager: DmxManager,
+    model: Model
 ) : RemoteVisualizable {
     private val remoteVisualizers = RemoteVisualizers()
 
-    private val fixtures = movingHeads.map { movingHead ->
-        val movingHeadBuffer = movingHead.newBuffer(dmxUniverse)
+    private val fixtures = model.movingHeads.map { movingHead ->
+        val movingHeadBuffer = movingHead.newBuffer(dmxManager.dmxUniverse)
 
         Fixture(movingHead, 1, emptyList(), MovingHeadDevice, transport = object : Transport {
             override val name: String
@@ -42,7 +42,7 @@ class MovingHeadManager(
 
     init {
         fixtureManager.addFrameListener {
-            dmxUniverse.sendFrame()
+            dmxManager.dmxUniverse.sendFrame()
         }
     }
 
