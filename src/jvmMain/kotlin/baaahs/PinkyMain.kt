@@ -16,6 +16,7 @@ import com.xenomachina.argparser.mainBody
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.content.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -101,9 +102,12 @@ class PinkyMain(private val args: Args) {
                         repoDir.resolve("$jsPackageDir/vendors.js.map").toFile())
 
                     files(jsResDir.toFile())
-                    route("mapper") { default("mapper/index.html") }
-                    route("monitor") { default("monitor/index.html") }
-                    route("ui") { default("ui/index.html") }
+                    get("mapper") { call.respondRedirect("mapper/") }
+                    route("mapper/") { default("mapper/index.html") }
+                    get("monitor") { call.respondRedirect("monitor/") }
+                    route("monitor/") { default("monitor/index.html") }
+                    get("ui") { call.respondRedirect("ui/") }
+                    route("ui/") { default("ui/index.html") }
                     default("ui-index.html")
                 }
             }
