@@ -13,38 +13,48 @@ import baaahs.sim.MovingHeadSimulation
 import baaahs.sim.SimulationEnv
 import kotlinx.serialization.Serializable
 
-abstract class MovingHead(
+interface MovingHeadAdapter {
+    val dmxChannelCount: Int
+
+    val colorModel: MovingHead.ColorModel
+    val colorWheelColors: List<Shenzarpy.WheelColor>
+    /** Seconds required to rotate through full color wheel range. */
+    val colorWheelMotorSpeed: Float
+
+    val dimmerChannel: Dmx.Channel
+    val shutterChannel: Dmx.Channel
+
+    val panChannel: Dmx.Channel
+    val panFineChannel: Dmx.Channel?
+    /** In radians. */
+    val panRange: ClosedRange<Float>
+    /** Seconds required to rotate through full pan range. */
+    val panMotorSpeed: Float
+
+    val tiltChannel: Dmx.Channel
+    val tiltFineChannel: Dmx.Channel?
+    /** In radians. */
+    val tiltRange: ClosedRange<Float>
+    /** Seconds required to rotate through full tilt range. */
+    val tiltMotorSpeed: Float
+
+    fun newBuffer(dmxBuffer: Dmx.Buffer): MovingHead.Buffer
+
+    fun newBuffer(universe: Dmx.Universe, baseDmxChannel: Int): MovingHead.Buffer {
+        return newBuffer(universe.writer(baseDmxChannel, dmxChannelCount))
+    }
+}
+
+class MovingHead(
     override val name: String,
     override val description: String,
     val baseDmxChannel: Int,
+    val adapter: MovingHeadAdapter,
     override val origin: Vector3F,
     override val heading: Vector3F
 ) : Model.Entity, Model.FixtureInfo {
-    abstract val dmxChannelCount: Int
 
-    abstract val colorModel: ColorModel
-    abstract val colorWheelColors: List<Shenzarpy.WheelColor>
-    /** Seconds required to rotate through full color wheel range. */
-    abstract val colorWheelMotorSpeed: Float
-
-    abstract val dimmerChannel: Dmx.Channel
-    abstract val shutterChannel: Dmx.Channel
-
-    abstract val panChannel: Dmx.Channel
-    abstract val panFineChannel: Dmx.Channel?
-    /** In radians. */
-    abstract val panRange: ClosedRange<Float>
-    /** Seconds required to rotate through full pan range. */
-    abstract val panMotorSpeed: Float
-
-    abstract val tiltChannel: Dmx.Channel
-    abstract val tiltFineChannel: Dmx.Channel?
-    /** In radians. */
-    abstract val tiltRange: ClosedRange<Float>
-    /** Seconds required to rotate through full tilt range. */
-    abstract val tiltMotorSpeed: Float
-
-    override val matrix: Matrix4?
+    override val matrix: Matrix4
         get() = createMatrixWithPositionAndOrientation(origin, heading)
 
     enum class ColorModel {
@@ -53,21 +63,21 @@ abstract class MovingHead(
         RGBW
     }
 
-    abstract class BaseBuffer(private val movingHead: MovingHead) : Buffer {
+    abstract class BaseBuffer(private val adapter: MovingHeadAdapter) : Buffer {
         override var pan: Float
-            get() = getFloat(movingHead.panChannel, movingHead.panFineChannel)
-            set(value) = setFloat(movingHead.panChannel, movingHead.panFineChannel, value)
+            get() = getFloat(adapter.panChannel, adapter.panFineChannel)
+            set(value) = setFloat(adapter.panChannel, adapter.panFineChannel, value)
 
         override var tilt: Float
-            get() = getFloat(movingHead.tiltChannel, movingHead.tiltFineChannel)
-            set(value) = setFloat(movingHead.tiltChannel, movingHead.tiltFineChannel, value)
+            get() = getFloat(adapter.tiltChannel, adapter.tiltFineChannel)
+            set(value) = setFloat(adapter.tiltChannel, adapter.tiltFineChannel, value)
 
         override var dimmer: Float
-            get() = getFloat(movingHead.dimmerChannel)
-            set(value) = setFloat(movingHead.dimmerChannel, value)
+            get() = getFloat(adapter.dimmerChannel)
+            set(value) = setFloat(adapter.dimmerChannel, value)
         override var shutter: Int
-            get() = dmxBuffer[movingHead.shutterChannel].toInt()
-            set(value) { dmxBuffer[movingHead.shutterChannel] = value.toByte() }
+            get() = dmxBuffer[adapter.shutterChannel].toInt()
+            set(value) { dmxBuffer[adapter.shutterChannel] = value.toByte() }
     }
 
     interface Buffer {
@@ -129,12 +139,6 @@ abstract class MovingHead(
             dmxBuffer[fineChannel] = (scaled and 0xff).toByte()
         }
     }
-
-    fun newBuffer(universe: Dmx.Universe): Buffer {
-        return newBuffer(universe.writer(baseDmxChannel, dmxChannelCount))
-    }
-
-    abstract fun newBuffer(dmxBuffer: Dmx.Buffer): Buffer
 
     @Serializable
     data class MovingHeadPosition(

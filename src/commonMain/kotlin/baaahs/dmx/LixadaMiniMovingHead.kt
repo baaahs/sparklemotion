@@ -1,20 +1,14 @@
 package baaahs.dmx
 
 import baaahs.Color
-import baaahs.geom.Vector3F
 import baaahs.model.MovingHead
+import baaahs.model.MovingHeadAdapter
 import baaahs.toRadians
 
-class LixadaMiniMovingHead(
-    name: String,
-    description: String,
-    baseDmxChannel: Int,
-    origin: Vector3F,
-    heading: Vector3F
-) : MovingHead(name, description, baseDmxChannel, origin, heading) {
+class LixadaMiniMovingHead : MovingHeadAdapter {
     override val dmxChannelCount: Int get() = 9 // TODO: ?
 
-    override val colorModel: ColorModel get() = ColorModel.RGBW
+    override val colorModel: MovingHead.ColorModel get() = MovingHead.ColorModel.RGBW
     override val colorWheelColors: List<Shenzarpy.WheelColor> get() = emptyList()
     override val colorWheelMotorSpeed: Float = 1f
 
@@ -52,7 +46,7 @@ class LixadaMiniMovingHead(
         override val offset = ordinal
     }
 
-    inner class Buffer(override val dmxBuffer: Dmx.Buffer) : BaseBuffer(this) {
+    inner class Buffer(override val dmxBuffer: Dmx.Buffer) : MovingHead.BaseBuffer(this) {
         init {
             dimmer = 134 * 256 / 65535f
             dmxBuffer[Channel.WHITE] = 255.toByte()

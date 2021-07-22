@@ -15,17 +15,19 @@ class SheepModel : ObjModel("baaahs-model.obj") {
     private val wallEyedness = (0.1f * PI / 2).toFloat()
 
     override val movingHeads: List<MovingHead> = arrayListOf(
-        Shenzarpy(
+        MovingHead(
             "leftEye",
             "Left Eye",
             1,
+            Shenzarpy(),
             origin = Vector3F(-11f, 202.361f, -24.5f),
             heading = Vector3F(0f, wallEyedness, (PI / 2).toFloat())
         ),
-        Shenzarpy(
+        MovingHead(
             "rightEye",
             "Right Eye",
             17,
+            Shenzarpy(),
             origin = Vector3F(-11f, 202.361f, 27.5f),
             heading = Vector3F(0f, -wallEyedness, (PI / 2).toFloat())
         )

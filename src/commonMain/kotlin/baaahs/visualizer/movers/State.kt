@@ -1,7 +1,7 @@
 package baaahs.visualizer.movers
 
 import baaahs.Color
-import baaahs.model.MovingHead
+import baaahs.model.MovingHeadAdapter
 import kotlin.math.absoluteValue
 import kotlin.math.min
 
@@ -12,12 +12,12 @@ data class State(
     val dimmer: Float = 1f,
     val color: Color = Color.BLACK
 ) {
-    fun moveToward(momentumState: State, requestedState: State, movingHead: MovingHead, elapsed: Float): State {
+    fun moveToward(momentumState: State, requestedState: State, adapter: MovingHeadAdapter, elapsed: Float): State {
         return State(
-            move(pan, momentumState.pan, movingHead.panMotorSpeed, elapsed),
-            move(tilt, momentumState.tilt, movingHead.tiltMotorSpeed, elapsed),
+            move(pan, momentumState.pan, adapter.panMotorSpeed, elapsed),
+            move(tilt, momentumState.tilt, adapter.tiltMotorSpeed, elapsed),
             // TODO: The color wheel can spin freely so we should pick the shortest path (e.g. from .9 -> .1).
-            move(colorWheelPosition, momentumState.colorWheelPosition, movingHead.colorWheelMotorSpeed, elapsed),
+            move(colorWheelPosition, momentumState.colorWheelPosition, adapter.colorWheelMotorSpeed, elapsed),
             requestedState.dimmer,
             requestedState.color
         )

@@ -1,8 +1,10 @@
 package baaahs.visualizer.movers
 
 import baaahs.FakeClock
-import baaahs.TestMovingHead
+import baaahs.TestMovingHeadAdapter
 import baaahs.describe
+import baaahs.geom.Vector3F
+import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
 import baaahs.visualizer.VizScene
 import org.spekframework.spek2.Spek
@@ -10,10 +12,13 @@ import org.spekframework.spek2.Spek
 object VizMovingHeadSpec: Spek({
     describe<MovingHeadVisualizer> {
         val movingHead by value {
-            TestMovingHead(
-                panMotorSpeed = 2f,
-                tiltMotorSpeed = 1f,
-                colorWheelMotorSpeed = 1f
+            MovingHead("test", "Test", 1,
+                TestMovingHeadAdapter(
+                    panMotorSpeed = 2f,
+                    tiltMotorSpeed = 1f,
+                    colorWheelMotorSpeed = 1f
+                ),
+                Vector3F.origin, Vector3F.origin
             )
         }
         val dmxUniverse by value { FakeDmxUniverse() }
@@ -25,7 +30,7 @@ object VizMovingHeadSpec: Spek({
             { elapsedTime, pan, tilt, colorWheelPosition, dimmer ->
                 fakeClock.time += elapsedTime
 
-                val buffer = movingHead.newBuffer(dmxUniverse)
+                val buffer = movingHead.adapter.newBuffer(dmxUniverse, 1)
                 buffer.pan = pan
                 buffer.tilt = tilt
                 buffer.colorWheelPosition = colorWheelPosition
