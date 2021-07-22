@@ -9,6 +9,7 @@ import baaahs.gl.render.RenderTarget
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.glsl.SurfacePixelStrategy
 import baaahs.mapper.ControllerId
+import baaahs.mapper.FixtureMapping
 import baaahs.mapper.MappingResults
 import baaahs.model.Model
 import baaahs.show.live.ActivePatchSet
@@ -42,15 +43,15 @@ class FixtureManager(
         entityName: String?,
         transport: Transport
     ): Fixture {
-        val mappingData = mappingResults.dataForController(controllerId)
+        val fixtureMapping = mappingResults.dataForController(controllerId)
             ?: mappingResults.dataForEntity(entityName ?: "__nope")
-            ?: entityName?.let { MappingResults.Info(model.findEntity(it), null) }
+            ?: entityName?.let { FixtureMapping(model.findEntity(it), null) }
 
-        val modelEntity = mappingData?.entity
-        val pixelCount = mappingData?.pixelLocations?.size
+        val modelEntity = fixtureMapping?.entity
+        val pixelCount = fixtureMapping?.pixelLocations?.size
             ?: (modelEntity as? Model.Surface)?.expectedPixelCount
             ?: SparkleMotion.MAX_PIXEL_COUNT
-        val pixelLocations = mappingData?.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) }
+        val pixelLocations = fixtureMapping?.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) }
             ?: surfacePixelStrategy.forFixture(pixelCount, modelEntity, model)
 
         return Fixture(modelEntity, pixelCount, pixelLocations, PixelArrayDevice, transport = transport)
