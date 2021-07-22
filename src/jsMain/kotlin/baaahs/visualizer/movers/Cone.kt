@@ -67,14 +67,14 @@ actual class Cone actual constructor(
         setColor(colorMode.getColor(movingHead, state), state.dimmer)
 
         val rotation = Vector3(
-            movingHead.panRange.scale(state.pan),
+            movingHead.adapter.panRange.scale(state.pan),
             0f,
-            movingHead.tiltRange.scale(state.tilt)
+            movingHead.adapter.tiltRange.scale(state.tilt)
         )
 
         // `0` indicates just the primary color, `.5` indicates a 50/50 mix, and `1.` indicates
         // just the adjacent color.
-        val colorSplit = (state.colorWheelPosition * movingHead.colorWheelColors.size) % 1f
+        val colorSplit = (state.colorWheelPosition * movingHead.adapter.colorWheelColors.size) % 1f
         setRotation(rotation, colorSplit)
     }
 

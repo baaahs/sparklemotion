@@ -1,20 +1,14 @@
 package baaahs.dmx
 
 import baaahs.Color
-import baaahs.geom.Vector3F
 import baaahs.model.MovingHead
+import baaahs.model.MovingHeadAdapter
 import baaahs.toRadians
 
-class Shenzarpy(
-    name: String,
-    description: String,
-    baseDmxChannel: Int,
-    origin: Vector3F,
-    heading: Vector3F
-) : MovingHead(name, description, baseDmxChannel, origin, heading) {
+class Shenzarpy : MovingHeadAdapter {
     override val dmxChannelCount: Int get() = 16
 
-    override val colorModel: ColorModel get() = ColorModel.ColorWheel
+    override val colorModel: MovingHead.ColorModel get() = MovingHead.ColorModel.ColorWheel
     override val colorWheelColors: List<WheelColor> = WheelColor.values.toList()
     override val colorWheelMotorSpeed: Float = .3f
     private val colorWheelChannel: Dmx.Channel get() = Channel.COLOR_WHEEL

@@ -16,7 +16,7 @@ class MovingHeadManager(
     private val remoteVisualizers = RemoteVisualizers()
 
     private val fixtures = model.movingHeads.map { movingHead ->
-        val movingHeadBuffer = movingHead.newBuffer(dmxManager.dmxUniverse)
+        val movingHeadBuffer = movingHead.adapter.newBuffer(dmxManager.dmxUniverse, movingHead.baseDmxChannel)
 
         Fixture(movingHead, 1, emptyList(), MovingHeadDevice, transport = object : Transport {
             override val name: String

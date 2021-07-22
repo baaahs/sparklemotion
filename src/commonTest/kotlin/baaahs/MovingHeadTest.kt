@@ -5,7 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class MovingHeadTest {
-    val testMovingHead = TestMovingHead()
+    val testMovingHead = TestMovingHeadAdapter()
     val buffer = testMovingHead.newBuffer(Dmx.Buffer(ByteArray(16), 0, 16))
 
     @Test
