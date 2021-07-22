@@ -1,11 +1,12 @@
 package baaahs
 
 import baaahs.mapper.ControllerId
+import baaahs.mapper.FixtureMapping
 import baaahs.mapper.MappingResults
 
 class FakeMappingResults(
-    resultsByBrainId: Map<BrainId, MappingResults.Info> = mapOf(),
-    resultsBySurfaceName: Map<String, MappingResults.Info> = mapOf()
+    resultsByBrainId: Map<BrainId, FixtureMapping> = mapOf(),
+    resultsBySurfaceName: Map<String, FixtureMapping> = mapOf()
 ) : MappingResults {
     private val resultsByControllerId = resultsByBrainId
         .mapKeys { (k, _) -> k.asControllerId() }
@@ -13,7 +14,7 @@ class FakeMappingResults(
 
     private val resultsBySurfaceName = resultsBySurfaceName.toMutableMap()
 
-    override fun dataForController(controllerId: ControllerId): MappingResults.Info? =
+    override fun dataForController(controllerId: ControllerId): FixtureMapping? =
         resultsByControllerId[controllerId]
 
     override fun dataForEntity(entityName: String) = resultsBySurfaceName[entityName]

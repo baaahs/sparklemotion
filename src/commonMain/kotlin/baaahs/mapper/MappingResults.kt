@@ -1,20 +1,13 @@
 package baaahs.mapper
 
-import baaahs.geom.Vector3F
 import baaahs.model.Model
 import baaahs.util.Logger
 
 interface MappingResults {
-    fun dataForController(controllerId: ControllerId): Info?
+    fun dataForController(controllerId: ControllerId): FixtureMapping?
 
-    fun dataForEntity(entityName: String): Info?
+    fun dataForEntity(entityName: String): FixtureMapping?
 
-    class Info(
-        val entity: Model.Entity,
-
-        /** Pixel's estimated position within the model. */
-        val pixelLocations: List<Vector3F?>?
-    )
 }
 
 data class ControllerId(val controllerType: String, val id: String) {
@@ -22,7 +15,7 @@ data class ControllerId(val controllerType: String, val id: String) {
 }
 
 class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>) : MappingResults {
-    val controllerData = mutableMapOf<ControllerId, MappingResults.Info>()
+    val controllerData = mutableMapOf<ControllerId, FixtureMapping>()
 
     init {
         mappingSessions.forEach { mappingSession ->
@@ -34,7 +27,7 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
                     val modelEntity = model.findEntity(entityName)
                     val pixelLocations = surfaceData.pixels.map { it?.modelPosition }
 
-                    controllerData[controllerId] = MappingResults.Info(modelEntity, pixelLocations)
+                    controllerData[controllerId] = FixtureMapping(modelEntity, pixelLocations)
                 } catch (e: Exception) {
                     logger.warn(e) { "Skipping $entityName." }
                 }
@@ -42,10 +35,10 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
         }
     }
 
-    override fun dataForController(controllerId: ControllerId): MappingResults.Info? =
+    override fun dataForController(controllerId: ControllerId): FixtureMapping? =
         controllerData[controllerId]
 
-    override fun dataForEntity(entityName: String): MappingResults.Info? {
+    override fun dataForEntity(entityName: String): FixtureMapping? {
         return controllerData.values.find { it.entity.name == entityName }
     }
 

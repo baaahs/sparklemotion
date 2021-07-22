@@ -12,7 +12,7 @@ import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.testToolchain
 import baaahs.glsl.LinearSurfacePixelStrategy
-import baaahs.mapper.MappingResults
+import baaahs.mapper.FixtureMapping
 import baaahs.model.Model
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
@@ -33,8 +33,8 @@ object FixtureManagerSpec : Spek({
         val model by value { fakeModel(modelEntities) }
         val renderManager by value { RenderManager(model) { FakeGlContext() } }
         val renderTargets by value { linkedMapOf<Fixture, FixtureRenderTarget>() }
-        val resultsByBrainId by value { mutableMapOf<BrainId, MappingResults.Info>() }
-        val resultsBySurfaceName by value { mutableMapOf<String, MappingResults.Info>() }
+        val resultsByBrainId by value { mutableMapOf<BrainId, FixtureMapping>() }
+        val resultsBySurfaceName by value { mutableMapOf<String, FixtureMapping>() }
         val mappingResults by value { FakeMappingResults(resultsByBrainId, resultsBySurfaceName) }
         val surfacePixelStrategy by value { LinearSurfacePixelStrategy(Random(1)) }
 
@@ -70,7 +70,7 @@ object FixtureManagerSpec : Spek({
                     Vector3F(2f, 1f, 2f)
                 )) }
                 val pixelLocations by value<List<Vector3F?>?> { null }
-                val mappingInfo by value { MappingResults.Info(surface, pixelLocations) }
+                val mappingInfo by value { FixtureMapping(surface, pixelLocations) }
                 val controllerId by value { BrainId(brainId).asControllerId() }
 
                 val subject by value { fixtureManager.createFixtureFor(controllerId, msgSurfaceName, NullTransport) }

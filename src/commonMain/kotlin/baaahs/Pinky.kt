@@ -324,14 +324,14 @@ enum class PinkyState {
 class FutureMappingResults : MappingResults {
     var actualMappingResults: MappingResults? = null
 
-    override fun dataForController(controllerId: ControllerId): MappingResults.Info? {
+    override fun dataForController(controllerId: ControllerId): FixtureMapping? {
         if (actualMappingResults == null) {
             Pinky.logger.warn { "Mapping results for $controllerId requested before available." }
         }
         return actualMappingResults?.dataForController(controllerId)
     }
 
-    override fun dataForEntity(entityName: String): MappingResults.Info? {
+    override fun dataForEntity(entityName: String): FixtureMapping? {
         if (actualMappingResults == null) {
             Pinky.logger.warn { "Mapping results for $entityName requested before available." }
         }
