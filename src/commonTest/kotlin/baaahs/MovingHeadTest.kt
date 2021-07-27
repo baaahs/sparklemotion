@@ -6,7 +6,7 @@ import kotlin.test.assertTrue
 
 class MovingHeadTest {
     val testMovingHead = TestMovingHeadAdapter()
-    val buffer = testMovingHead.newBuffer(Dmx.Buffer(ByteArray(16), 0, 16))
+    val buffer = testMovingHead.newBuffer(Dmx.Buffer(ByteArray(16)))
 
     @Test
     fun floatValues() {

@@ -1,22 +1,23 @@
 package baaahs.fixtures
 
 import baaahs.Color
+import baaahs.Pixels
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.geom.Vector4F
 import baaahs.gl.GlContext
 import com.danielgergely.kgl.*
 
-interface ResultType {
+interface ResultType<T : ResultBuffer> {
     val renderPixelFormat: Int
     val readPixelFormat: Int
     val readType: Int
     val stride: Int
 
-    fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer
+    fun createResultBuffer(gl: GlContext, index: Int): T
 }
 
-object ColorResultType : ResultType {
+object ColorResultType : ResultType<ColorResultType.Buffer> {
     override val renderPixelFormat: Int
         get() = GlContext.GL_RGBA8
     override val readPixelFormat: Int
@@ -51,69 +52,92 @@ object ColorResultType : ResultType {
             )
         }
 
-        override fun getView(pixelOffset: Int, pixelCount: Int): ColorResultView {
-            return ColorResultView(this, pixelOffset, pixelCount)
+        override fun getFixtureView(fixture: Fixture, bufferOffset: Int): ColorFixtureResults {
+            return ColorFixtureResults(this, bufferOffset, fixture.pixelCount, fixture.transport)
         }
     }
 
-    class ColorResultView(
+    class ColorFixtureResults(
         private val buffer: Buffer,
         pixelOffset: Int,
-        pixelCount: Int
-    ) : ResultView(pixelOffset, pixelCount), Iterable<Color> {
-        operator fun get(pixelIndex: Int): Color = buffer[pixelOffset + pixelIndex]
+        pixelCount: Int,
+        private val transport: Transport
+    ) : FixtureResults(pixelOffset, pixelCount), Pixels {
+        override val size: Int
+            get() = pixelCount
+
+        override operator fun get(i: Int): Color = buffer[pixelOffset + i]
+
+        override fun set(i: Int, color: Color) = TODO("not implemented")
+
+        override fun set(colors: Array<Color>) = TODO("not implemented")
 
         override fun iterator(): Iterator<Color> {
             return iterator {
                 for (i in 0 until pixelCount) yield(get(i))
             }
         }
+
+        override fun send() {
+            val buf = ByteArray(pixelCount * 3)
+            var j = 0
+            for (i in 0 until pixelCount) {
+                val color = get(i)
+                buf[j++] = color.redB
+                buf[j++] = color.greenB
+                buf[j++] = color.blueB
+            }
+
+            transport.deliverBytes(buf)
+        }
     }
 }
 
 // Yuck. XY and XYZ fail, at least on WebGL. Maybe they work on others?
 
-object FloatResultType : FloatsResultType(
+object FloatResultType : FloatsResultType<FloatResultType.ResultBuffer>(
     // Haven't tested this, but I'm assuming it doesn't work.
     1, GL_R32F, GL_RED
 ) {
-    override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+    override fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer {
         return ResultBuffer(gl, index, this)
     }
 
-    class ResultBuffer(gl: GlContext, index: Int, type: ResultType) : Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: ResultType<ResultBuffer>) : Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Float {
             val offset = pixelIndex * type.stride
 
             return floatBuffer[offset]
         }
 
-        override fun getView(pixelOffset: Int, pixelCount: Int): ResultView {
-            return FloatResultView(this, pixelOffset, pixelCount)
+        override fun getFixtureView(fixture: Fixture, bufferOffset: Int): FixtureResults {
+            return FloatFixtureResults(this, bufferOffset, fixture.pixelCount)
         }
     }
 
-    class FloatResultView(
+    class FloatFixtureResults(
         private val buffer: ResultBuffer,
         pixelOffset: Int,
         pixelCount: Int
-    ) : ResultView(pixelOffset, pixelCount) {
+    ) : FixtureResults(pixelOffset, pixelCount) {
         operator fun get(pixelIndex: Int): Float = buffer[pixelOffset + pixelIndex]
+
+        override fun send() = TODO("FloatFixtureResults.send() not implemented")
     }
 }
 
-object Vec2ResultType : FloatsResultType(
+object Vec2ResultType : FloatsResultType<Vec2ResultType.ResultBuffer>(
     // This doesn't work in WebGL2 because... dunno.
     //    2, GL_RG32F, GL_RG
     // readPixels() fails with INVALID_OPERATION.
     // Instead we use four floats and ignore one:
     4, GlContext.GL_RGBA32F, GL_RGBA
 ) {
-    override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+    override fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer {
         return ResultBuffer(gl, index, this)
     }
 
-    class ResultBuffer(gl: GlContext, index: Int, type: ResultType) : Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: ResultType<ResultBuffer>) : Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Vector2F {
             val offset = pixelIndex * type.stride
 
@@ -123,32 +147,36 @@ object Vec2ResultType : FloatsResultType(
             )
         }
 
-        override fun getView(pixelOffset: Int, pixelCount: Int): ResultView {
-            return Vec2ResultView(this, pixelOffset, pixelCount)
+        override fun getFixtureView(fixture: Fixture, bufferOffset: Int): FixtureResults {
+            return Vec2FixtureResults(this, bufferOffset, fixture.pixelCount)
         }
     }
 
-    class Vec2ResultView(
+    class Vec2FixtureResults(
         private val buffer: ResultBuffer,
         pixelOffset: Int,
         pixelCount: Int
-    ) : ResultView(pixelOffset, pixelCount) {
+    ) : FixtureResults(pixelOffset, pixelCount) {
         operator fun get(pixelIndex: Int): Vector2F = buffer[pixelOffset + pixelIndex]
+
+        override fun send() {
+            TODO("Vec2FixtureResults.send() not implemented")
+        }
     }
 }
 
-object Vec3ResultType : FloatsResultType(
+object Vec3ResultType : FloatsResultType<Vec3ResultType.ResultBuffer>(
     // This doesn't work in WebGL2 because EXT_color_buffer_float doesn't have RGB32F!?
     //    3, GlContext.GL_RGB32F, GL_RGB
     // framebufferRenderbuffer() fails with INVALID_ENUM.
     // Instead we use four floats and ignore one:
     4, GlContext.GL_RGBA32F, GL_RGBA
 ) {
-    override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+    override fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer {
         return ResultBuffer(gl, index, this)
     }
 
-    class ResultBuffer(gl: GlContext, index: Int, type: ResultType) : Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: ResultType<ResultBuffer>) : Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Vector3F {
             val offset = pixelIndex * type.stride
 
@@ -159,26 +187,30 @@ object Vec3ResultType : FloatsResultType(
             )
         }
 
-        override fun getView(pixelOffset: Int, pixelCount: Int): ResultView {
-            return Vec3ResultView(this, pixelOffset, pixelCount)
+        override fun getFixtureView(fixture: Fixture, bufferOffset: Int): FixtureResults {
+            return Vec3FixtureResults(this, bufferOffset, fixture.pixelCount)
         }
     }
 
-    class Vec3ResultView(
+    class Vec3FixtureResults(
         private val buffer: ResultBuffer,
         pixelOffset: Int,
         pixelCount: Int
-    ) : ResultView(pixelOffset, pixelCount) {
+    ) : FixtureResults(pixelOffset, pixelCount) {
         operator fun get(pixelIndex: Int): Vector3F = buffer[pixelOffset + pixelIndex]
+
+        override fun send() {
+            TODO("Vec3FixtureResults.send() not implemented")
+        }
     }
 }
 
-object Vec4ResultType : FloatsResultType(4, GlContext.GL_RGBA32F, GL_RGBA) {
-    override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
+object Vec4ResultType : FloatsResultType<Vec4ResultType.ResultBuffer>(4, GlContext.GL_RGBA32F, GL_RGBA) {
+    override fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer {
         return ResultBuffer(gl, index, this)
     }
 
-    class ResultBuffer(gl: GlContext, index: Int, type: ResultType) : Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: ResultType<ResultBuffer>) : Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Vector4F {
             val offset = pixelIndex * type.stride
 
@@ -190,33 +222,37 @@ object Vec4ResultType : FloatsResultType(4, GlContext.GL_RGBA32F, GL_RGBA) {
             )
         }
 
-        override fun getView(pixelOffset: Int, pixelCount: Int): ResultView {
-            return Vec4ResultView(this, pixelOffset, pixelCount)
+        override fun getFixtureView(fixture: Fixture, bufferOffset: Int): FixtureResults {
+            return Vec4FixtureResults(this, bufferOffset, fixture.pixelCount)
         }
     }
 
-    class Vec4ResultView(
+    class Vec4FixtureResults(
         private val buffer: ResultBuffer,
         pixelOffset: Int,
         pixelCount: Int
-    ) : ResultView(pixelOffset, pixelCount) {
+    ) : FixtureResults(pixelOffset, pixelCount) {
         operator fun get(pixelIndex: Int): Vector4F = buffer[pixelOffset + pixelIndex]
+
+        override fun send() {
+            TODO("Vec4FixtureResults.send() not implemented")
+        }
     }
 }
 
 
-abstract class FloatsResultType(
+abstract class FloatsResultType<T : FloatsResultType.Buffer>(
     private val floatCount: Int,
     override val renderPixelFormat: Int,
     override val readPixelFormat: Int
-) : ResultType {
+) : ResultType<T> {
     override val readType: Int
         get() = GL_FLOAT
     override val stride: Int
         get() = floatCount
 
     abstract class Buffer(
-        gl: GlContext, index: Int, type: ResultType
+        gl: GlContext, index: Int, type: ResultType<*>
     ) : ResultBuffer(
         gl.also { gl.ensureResultBufferCanContainFloats() }, index, type
     ) {

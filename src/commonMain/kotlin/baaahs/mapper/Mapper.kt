@@ -134,7 +134,7 @@ class Mapper(
                 val session = webSocketClient.loadSession(name)
                 session.surfaces.forEach { surfaceData ->
                     val surfaceVisualizer = surfaceVisualizers.getBang(surfaceData.entityName, "visible surface")
-                    surfaceData.pixels.forEachIndexed { index, pixelData ->
+                    surfaceData.pixels?.forEachIndexed { index, pixelData ->
                         if (pixelData?.modelPosition != null) {
                             surfaceVisualizer.setPixel(index, pixelData.modelPosition)
                         }
@@ -381,7 +381,9 @@ class Mapper(
                         BrainManager.controllerTypeName,
                         brainToMap.brainId,
                         visibleSurface.modelSurface.name,
+                        pixels.size,
                         pixels,
+                        null,
                         brainToMap.deltaImageName,
                         screenAreaInSqPixels = null,
                         screenAngle = null

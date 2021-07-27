@@ -1,8 +1,6 @@
 package baaahs.sim
 
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.MovingHeadDevice
-import baaahs.fixtures.ResultView
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
@@ -11,7 +9,7 @@ import baaahs.util.Clock
 import baaahs.visualizer.movers.MovingHeadVisualizer
 
 actual class MovingHeadSimulation actual constructor(
-    val movingHead: MovingHead,
+    private val movingHead: MovingHead,
     private val simulationEnv: SimulationEnv
 ) : FixtureSimulation {
     private val dmxUniverse = simulationEnv[FakeDmxUniverse::class]
@@ -27,15 +25,13 @@ actual class MovingHeadSimulation actual constructor(
     private val buffer = dmxUniverse.writer(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount)
 
     override val previewFixture: Fixture by lazy {
-        val transport = PreviewTransport()
-
         Fixture(
             movingHead,
             1,
             listOf(movingHead.origin),
             movingHead.deviceType,
             movingHead.name,
-            transport
+            PreviewTransport()
         )
     }
 
@@ -55,17 +51,15 @@ actual class MovingHeadSimulation actual constructor(
     }
 
     inner class PreviewTransport : Transport {
-        private val movingHeadBuffer = movingHead.adapter.newBuffer(dmxUniverse, movingHead.baseDmxChannel)
+        private val movingHeadBuffer = dmxUniverse.writer(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount)
 
         override val name: String
             get() = movingHead.name
 
-        override fun send(fixture: Fixture, resultViews: List<ResultView>) {
-            val params = MovingHeadDevice.getResults(resultViews)[0]
-            movingHeadBuffer.pan = params.pan
-            movingHeadBuffer.tilt = params.tilt
-            movingHeadBuffer.colorWheelPosition = params.colorWheel
-            movingHeadBuffer.dimmer = params.dimmer
+        override fun deliverBytes(byteArray: ByteArray) {
+            for (i in byteArray.indices) {
+                movingHeadBuffer[i] = byteArray[i]
+            }
         }
     }
 }

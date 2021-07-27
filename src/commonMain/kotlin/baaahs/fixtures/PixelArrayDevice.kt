@@ -9,9 +9,12 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.FixtureRenderTarget
+import baaahs.gl.render.RenderResults
 import baaahs.gl.render.RenderTarget
+import baaahs.gl.render.ResultStorage
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
+import baaahs.model.Model
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
@@ -30,10 +33,6 @@ object PixelArrayDevice : DeviceType {
 
     override val dataSourceBuilders: List<DataSourceBuilder<*>>
         get() = listOf(PixelLocationDataSource)
-
-    override val resultParams: List<ResultParam> = listOf(
-        ResultParam("Pixel Color", ColorResultType)
-    )
 
     override val resultContentType: ContentType
         get() = ContentType.Color
@@ -59,11 +58,28 @@ object PixelArrayDevice : DeviceType {
             """.trimIndent()
         )
 
+    override val defaultConfig: FixtureConfig
+        get() = Config()
 
-    fun getColorResults(resultViews: List<ResultView>) =
-        resultViews[0] as ColorResultType.ColorResultView
+    override fun createResultStorage(renderResults: RenderResults): ResultStorage {
+        val resultBuffer = renderResults.allocate("Pixel Color", ColorResultType)
+        return SingleResultStorage(resultBuffer)
+    }
+
+    fun getColorResults(fixtureResults: List<FixtureResults>) =
+        fixtureResults[0] as ColorResultType.ColorFixtureResults
 
     override fun toString(): String = id
+
+    data class Config(@Transient private val `_`: Boolean = false) : FixtureConfig {
+        // e.g. RGB vs RGBA vs GRB vs ...?
+
+        override val deviceType: DeviceType
+            get() = PixelArrayDevice
+
+        override fun bufferSize(entity: Model.Entity?, pixelCount: Int): Int =
+            3 * pixelCount
+    }
 }
 
 @Serializable

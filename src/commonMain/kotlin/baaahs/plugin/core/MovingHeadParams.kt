@@ -1,11 +1,12 @@
 package baaahs.plugin.core
 
-import baaahs.fixtures.FloatsResultType
-import baaahs.fixtures.ResultType
+import baaahs.dmx.Dmx
+import baaahs.fixtures.*
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.model.MovingHead
 import com.danielgergely.kgl.GL_RGBA
 
 data class MovingHeadParams(
@@ -14,6 +15,12 @@ data class MovingHeadParams(
     val colorWheel: Float,
     val dimmer: Float
 ) {
+    fun send(buffer: MovingHead.Buffer) {
+        buffer.pan = pan
+        buffer.tilt = tilt
+        buffer.colorWheelPosition = colorWheel
+        buffer.dimmer = dimmer
+    }
 
     companion object {
         val struct = GlslType.Struct(
@@ -30,14 +37,13 @@ data class MovingHeadParams(
             struct, outputRepresentation = GlslType.Vec4
         )
 
-        val resultType: ResultType = object : FloatsResultType(4, GlContext.GL_RGBA32F, GL_RGBA) {
-            override fun createResultBuffer(gl: GlContext, index: Int): baaahs.fixtures.ResultBuffer {
-                return ResultBuffer(gl, index, this)
-            }
+        val resultType = object : FloatsResultType<ResultBuffer>(4, GlContext.GL_RGBA32F, GL_RGBA) {
+            override fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer =
+                ResultBuffer(gl, index, this)
         }
     }
 
-    class ResultBuffer(gl: GlContext, index: Int, type: ResultType) : FloatsResultType.Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: ResultType<ResultBuffer>) : FloatsResultType.Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): MovingHeadParams {
             val offset = pixelIndex * type.stride
 
@@ -49,16 +55,26 @@ data class MovingHeadParams(
             )
         }
 
-        override fun getView(pixelOffset: Int, pixelCount: Int): baaahs.fixtures.ResultView {
-            return ResultView(this, pixelOffset, pixelCount)
-        }
-    }
+        override fun getFixtureView(fixture: Fixture, bufferOffset: Int): baaahs.fixtures.FixtureResults =
+            FixtureResults(fixture, bufferOffset)
 
-    class ResultView(
-        val buffer: ResultBuffer,
-        pixelOffset: Int,
-        pixelCount: Int
-    ) : baaahs.fixtures.ResultView(pixelOffset, pixelCount) {
-        operator fun get(pixelIndex: Int): MovingHeadParams = buffer[pixelOffset + pixelIndex]
+        inner class FixtureResults(
+            private val fixture: Fixture,
+            pixelOffset: Int
+        ) : baaahs.fixtures.FixtureResults(pixelOffset, pixelCount) {
+            val movingHeadParams get() = this@ResultBuffer[pixelOffset]
+
+            override fun send() {
+                val transport = fixture.transport
+
+                val movingHead = fixture.modelEntity as MovingHead
+                val adapter = movingHead.adapter
+
+                val size = adapter.dmxChannelCount
+                val channels = ByteArray(size)
+                movingHeadParams.send(adapter.newBuffer(Dmx.Buffer(channels)))
+                transport.deliverBytes(channels)
+            }
+        }
     }
 }

@@ -1,8 +1,6 @@
 package baaahs.gl.render
 
-import baaahs.fixtures.DeviceType
-import baaahs.fixtures.DeviceTypeRenderPlan
-import baaahs.fixtures.Fixture
+import baaahs.fixtures.*
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
 import baaahs.gl.data.PerPixelEngineFeed
@@ -32,14 +30,18 @@ class ModelRenderEngine(
     private val renderTargets: MutableList<FixtureRenderTarget> = mutableListOf()
     private var renderPlan: DeviceTypeRenderPlan? = null
 
-    private val resultBuffers = gl.runInContext {
-        deviceType.resultParams
-            .mapIndexed { index, deviceParam -> deviceParam.allocate(gl, index) }
+    private val resultStorage = gl.runInContext {
+        deviceType.createResultStorage(object : RenderResults {
+            var index = 0
+
+            override fun <T: ResultBuffer> allocate(title: String, resultType: ResultType<T>): T =
+                resultType.createResultBuffer(gl, index++)
+        })
     }
 
     private val frameBuffer = gl.runInContext {
         gl.createFrameBuffer()
-            .also { fb -> resultBuffers.forEach { it.attachTo(fb) } }
+            .also { fb -> resultStorage.attachTo(fb) }
             .also { it.check() }
     }
 
@@ -60,7 +62,7 @@ class ModelRenderEngine(
             fixture
         )
         val renderTarget = FixtureRenderTarget(
-            fixture, nextRectOffset, rects, modelInfo, fixture.pixelCount, nextPixelOffset, resultBuffers
+            fixture, nextRectOffset, rects, modelInfo, fixture.pixelCount, nextPixelOffset, resultStorage
         )
         nextPixelOffset += fixture.pixelCount
         nextRectOffset += rects.size
@@ -98,9 +100,7 @@ class ModelRenderEngine(
     }
 
     override fun bindResults() {
-        if (resultBuffers.isNotEmpty()) {
-            frameBuffer.bind()
-        }
+        frameBuffer.bind()
     }
 
     override fun render() {
@@ -112,11 +112,11 @@ class ModelRenderEngine(
     }
 
     override fun afterRender() {
-        resultDeliveryStrategy.afterRender(frameBuffer, resultBuffers)
+        resultDeliveryStrategy.afterRender(frameBuffer, resultStorage)
     }
 
     override suspend fun awaitResults() {
-        resultDeliveryStrategy.awaitResults(frameBuffer, resultBuffers)
+        resultDeliveryStrategy.awaitResults(frameBuffer, resultStorage)
     }
 
     // This must be run from within a GL context.
@@ -145,7 +145,7 @@ class ModelRenderEngine(
 
     override fun onRelease() {
         arrangement.release()
-        resultBuffers.forEach { it.release() }
+        resultStorage.release()
         frameBuffer.release()
     }
 
@@ -168,9 +168,7 @@ class ModelRenderEngine(
                 engineFeed.maybeResizeAndPopulate(this, addedRenderTargets)
             }
 
-            resultBuffers.forEach {
-                it.resize(safeWidth, safeHeight)
-            }
+            resultStorage.resize(safeWidth, safeHeight)
         }
 
         private val quad: Quad =
@@ -259,4 +257,8 @@ class ModelRenderEngine(
             }
         }
     }
+}
+
+interface RenderResults {
+    fun <T : ResultBuffer> allocate(title: String, resultType: ResultType<T>): T
 }

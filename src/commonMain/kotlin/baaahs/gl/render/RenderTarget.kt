@@ -1,7 +1,6 @@
 package baaahs.gl.render
 
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.ResultBuffer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.model.ModelInfo
 
@@ -21,15 +20,16 @@ class FixtureRenderTarget(
     override val modelInfo: ModelInfo,
     override val pixelCount: Int,
     val pixel0Index: Int,
-    resultBuffers: List<ResultBuffer>
+    private val resultStorage: ResultStorage
 ) : RenderTarget {
     var program: GlslProgram? = null
         private set
 
-    val resultViews = resultBuffers.map { it.getView(pixel0Index, pixelCount) }
+    val fixtureResults = resultStorage.getFixtureResults(fixture, pixel0Index)
 
     override fun sendFrame() {
-        fixture.transport.send(fixture, resultViews)
+        fixtureResults.send()
+//        fixture.transport.send(fixture, fixtureResultss)
     }
 
     override fun release() {

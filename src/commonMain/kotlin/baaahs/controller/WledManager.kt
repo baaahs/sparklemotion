@@ -144,13 +144,12 @@ class WledManager(
             PixelArrayDevice, wledDevice.id, this
         )
 
-        override fun send(fixture: Fixture, resultViews: List<ResultView>) {
-            val resultColors = PixelArrayDevice.getColorResults(resultViews)
-            sacnDevice.sendDataPacket(resultColors)
+        override fun deliverBytes(byteArray: ByteArray) {
+            sacnDevice.sendDataPacket(byteArray)
 
-            remoteVisualizers.sendFrameData(fixture) { outBuf ->
-                outBuf.writeInt(resultColors.pixelCount)
-                resultColors.forEach { color -> color.serializeWithoutAlpha(outBuf) }
+            remoteVisualizers.sendFrameData(fixture.modelEntity) { outBuf ->
+                outBuf.writeInt(byteArray.size)
+                outBuf.writeBytes(byteArray)
             }
         }
     }

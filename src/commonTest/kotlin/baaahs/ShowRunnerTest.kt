@@ -1,6 +1,9 @@
 package baaahs
 
-import baaahs.fixtures.*
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.PixelArrayDevice
+import baaahs.fixtures.Transport
 import baaahs.gadgets.Slider
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
@@ -36,11 +39,11 @@ class ShowRunnerTest {
     private val surface1Messages = mutableListOf<String>()
     private val surface1Fixture =
         Fixture(SheepModel.Panel("surface 1"), 1, emptyList(), PixelArrayDevice,
-            transport = FakeTransport { _, _ -> surface1Messages.add("frame") })
+            transport = FakeTransport { surface1Messages.add("frame") })
     private val surface2Messages = mutableListOf<String>()
     private val surface2Fixture =
         Fixture(SheepModel.Panel("surface 2"), 1, emptyList(), PixelArrayDevice,
-            transport = FakeTransport { _, _ -> surface2Messages.add("frame") })
+            transport = FakeTransport { surface2Messages.add("frame") })
     private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
@@ -277,10 +280,10 @@ class ShowRunnerTest {
 
     class FakeTransport(
         override val name: String = "Fake Transport",
-        private val fn: (fixture: Fixture, resultViews: List<ResultView>) -> Unit
+        private val fn: (byteArray: ByteArray) -> Unit
     ) : Transport {
-        override fun send(fixture: Fixture, resultViews: List<ResultView>) {
-            fn(fixture, resultViews)
+        override fun deliverBytes(byteArray: ByteArray) {
+            fn(byteArray)
         }
     }
 }

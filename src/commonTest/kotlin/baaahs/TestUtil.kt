@@ -91,6 +91,7 @@ class TestModelSurface(
     override fun allVertices(): Collection<Vector3F> = vertices
 }
 
+fun fakeModel(vararg entities: Model.Entity) = ModelForTest(entities.toList())
 fun fakeModel(entities: List<Model.Entity>) = ModelForTest(entities)
 
 object TestModel : ModelForTest(listOf(TestModelSurface("Panel")))

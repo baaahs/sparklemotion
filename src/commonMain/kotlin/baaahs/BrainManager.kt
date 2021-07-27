@@ -1,6 +1,8 @@
 package baaahs
 
-import baaahs.fixtures.*
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.Transport
 import baaahs.geom.Vector2F
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
@@ -184,11 +186,6 @@ class BrainManager(
         pendingBrains[brainId] = transport
     }
 
-    fun createFixtureFor(msg: BrainHelloMessage, transport: Transport): Fixture {
-        val controllerId = BrainId(msg.brainId).asControllerId()
-        return fixtureManager.createFixtureFor(controllerId, msg.surfaceName, transport)
-    }
-
     inner class BrainTransport(
         internal val brainAddress: Network.Address,
         val brainId: BrainId,
@@ -197,7 +194,10 @@ class BrainManager(
         val firmwareVersion: String? = null,
         val idfVersion: String? = null
     ) : Transport {
-        val fixture: Fixture = createFixtureFor(msg, this)
+        val fixture: Fixture = run {
+            val controllerId = BrainId(msg.brainId).asControllerId()
+            fixtureManager.createFixtureFor(controllerId, msg.surfaceName, this)
+        }
 
         var hadException: Boolean = false
             private set
@@ -207,17 +207,18 @@ class BrainManager(
         override val name: String
             get() = "Brain ${brainId.uuid} at $brainAddress"
 
-        override fun send(fixture: Fixture, resultViews: List<ResultView>) {
-            val resultColors =
-                PixelArrayDevice.getColorResults(resultViews)
+        override fun deliverBytes(byteArray: ByteArray) {
+            val pixelCount = byteArray.size / 3
 
-            if (resultColors.pixelCount != pixelBuffer.colors.size) {
-                pixelBuffer = pixelShader.createBuffer(resultColors.pixelCount)
+            if (pixelCount != pixelBuffer.colors.size) {
+                pixelBuffer = pixelShader.createBuffer(pixelCount)
             }
 
-            pixelBuffer.indices.forEach { i ->
-                pixelBuffer.colors[i] = resultColors[i]
+            for (i in 0 until pixelCount) {
+                val j = i * 3
+                pixelBuffer.colors[i] = Color(byteArray[j], byteArray[j+1], byteArray[j+2])
             }
+
             val message = BrainShaderMessage(pixelBuffer.brainShader, pixelBuffer).toBytes()
             try {
                 if (!isSimulatedBrain)
@@ -233,7 +234,7 @@ class BrainManager(
             networkStats.packetsSent++
             networkStats.bytesSent += message.size
 
-            remoteVisualizers.sendFrameData(fixture) { outBuf ->
+            remoteVisualizers.sendFrameData(fixture.modelEntity) { outBuf ->
                 val colors = pixelBuffer.colors
                 outBuf.writeInt(colors.size)
                 colors.forEach { color -> color.serializeWithoutAlpha(outBuf) }

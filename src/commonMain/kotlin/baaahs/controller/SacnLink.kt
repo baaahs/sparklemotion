@@ -2,7 +2,6 @@ package baaahs.controller
 
 import baaahs.Color
 import baaahs.Pixels
-import baaahs.fixtures.ColorResultType
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
@@ -31,10 +30,21 @@ class SacnLink(
         val stats = SacnStats()
         private var sequenceNumber = 0
 
-        fun sendDataPacket(colors: ColorResultType.ColorResultView) {
+        fun sendDataPacket(colors: Iterable<Color>) {
             stats.sendDataPacket.time {
-                this@SacnLink.sendDataPacket(address, sequenceNumber++, colors)
+                val buf = ByteArrayWriter(512)
+                for (color in colors) {
+                    buf.writeByte(color.redB)
+                    buf.writeByte(color.greenB)
+                    buf.writeByte(color.blueB)
+                }
+
+                this@SacnLink.sendDataPacket(address, sequenceNumber++, buf.toBytes())
             }
+        }
+
+        fun sendDataPacket(data: ByteArray) {
+            this@SacnLink.sendDataPacket(address, sequenceNumber++, data)
         }
     }
 
@@ -50,8 +60,10 @@ class SacnLink(
     private fun sendDataPacket(
         address: Network.Address,
         sequenceNumber: Int,
-        colors: ColorResultType.ColorResultView
+        dataBytes: ByteArray
     ) {
+        if (dataBytes.size > 512) error("Too many DMX channels ($dataBytes > 512).")
+
         val bytes = ByteArrayWriter().apply {
             // Root Layer
             writeShort(0x10) // Preamble size
@@ -82,14 +94,10 @@ class SacnLink(
             writeByte(0xA1.toByte()) // Address type & data type
             writeShort(0x0) // First property address
             writeShort(0x1) // Address increment
-            writeShort(1 + colors.pixelCount * 3) // Property value count
+            writeShort(1 + dataBytes.size) // Property value count
             // Property values...
             writeByte(0x0) // START code
-            for (color in colors) {
-                writeByte(color.redB)
-                writeByte(color.greenB)
-                writeByte(color.blueB)
-            }
+            for (b in dataBytes) writeByte(b)
 
             at(rootLayerPdu).writeShort(0x7000 or offset - rootLayerPdu)
             at(framingLayerPdu).writeShort(0x7000 or offset - framingLayerPdu)

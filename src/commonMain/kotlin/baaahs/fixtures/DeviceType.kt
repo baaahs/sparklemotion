@@ -6,8 +6,10 @@ import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.FixtureRenderTarget
-import baaahs.gl.render.ResultDeliveryStrategy
+import baaahs.gl.render.RenderResults
+import baaahs.gl.render.ResultStorage
 import baaahs.glsl.Uniform
+import baaahs.model.Model
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import com.danielgergely.kgl.*
@@ -22,10 +24,12 @@ interface DeviceType {
     val id: String
     val title: String
     val dataSourceBuilders: List<DataSourceBuilder<*>>
-    val resultParams: List<ResultParam>
     val resultContentType: ContentType
     val likelyPipelines: List<Pair<ContentType, ContentType>>
     val errorIndicatorShader: Shader
+    val defaultConfig: FixtureConfig
+
+    fun createResultStorage(renderResults: RenderResults): ResultStorage
 
     class Serializer(private val knownDeviceTypes: Map<String, DeviceType>) : KSerializer<DeviceType> {
         override val descriptor: SerialDescriptor
@@ -39,6 +43,13 @@ interface DeviceType {
             return knownDeviceTypes.getBang(decoder.decodeString(), "device type")
         }
     }
+}
+
+interface FixtureConfig {
+    val deviceType: DeviceType
+
+    /** When sent using [ByteArrayTransport]; in bytes. */
+    fun bufferSize(entity: Model.Entity?, pixelCount: Int): Int
 }
 
 interface ParamBuffer {
@@ -166,16 +177,10 @@ class FloatsPixelParam(
     }
 }
 
-class ResultParam(val title: String, val type: ResultType) {
-    fun allocate(gl: GlContext, index: Int): ResultBuffer {
-        return type.createResultBuffer(gl, index)
-    }
-}
-
 abstract class ResultBuffer(
     gl: GlContext,
     private val resultIndex: Int,
-    val type: ResultType
+    val type: ResultType<*>
 ) {
     var pixelCount: Int = 0
         private set
@@ -211,14 +216,16 @@ abstract class ResultBuffer(
         fb.attach(gpuBuffer, GL_COLOR_ATTACHMENT0 + resultIndex)
     }
 
-    abstract fun getView(pixelOffset: Int, pixelCount: Int): ResultView
+    abstract fun getFixtureView(fixture: Fixture, bufferOffset: Int): FixtureResults
 
     fun release() {
         gpuBuffer.release()
     }
 }
 
-abstract class ResultView(
+abstract class FixtureResults(
     val pixelOffset: Int,
     val pixelCount: Int
-)
+) {
+    abstract fun send()
+}

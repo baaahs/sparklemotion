@@ -1,6 +1,5 @@
 package baaahs.ui
 
-import baaahs.util.Logger
 import external.DroppableProvided
 import external.copyFrom
 import kotlinx.css.CSSBuilder
@@ -16,8 +15,6 @@ import materialui.components.typography.typography
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.RBuilder
-import react.RMutableRef
-import react.RProps
 import react.ReactElement
 import react.dom.RDOMBuilder
 import react.dom.setProp
@@ -26,24 +23,6 @@ import kotlin.reflect.KProperty
 
 @Suppress("UNCHECKED_CAST")
 fun <T> nuffin(): T = null as T
-
-@Suppress("UNCHECKED_CAST")
-fun <T: Any> useRef(): RMutableRef<T> = react.useRef(null as T)
-
-fun <T : Function<*>> useCallback(vararg dependencies: dynamic, callback: T): T {
-    return react.useCallback(callback, dependencies)
-}
-
-fun useEffect(vararg dependencies: dynamic, name: String? = "Effect", effect: () -> Unit) {
-    return react.useEffect(dependencies.toList()) {
-        logger.debug {
-            "useEffect $name run due to change: ${dependencies.map {
-                it?.toString().truncate(12)
-            }}"
-        }
-        effect()
-    }
-}
 
 fun <T> List<T>.replace(index: Int, newValueBlock: (T) -> T): List<T> =
     mapIndexed { i, item -> if (i == index) newValueBlock(item) else item }
@@ -67,13 +46,6 @@ fun Function<*>.withEvent(): (Event) -> Unit = this as (Event) -> Unit
 
 val EventTarget?.value: String
         get() = asDynamic()!!.value as String
-
-private val jsObj = js("Object")
-fun RProps.copyInto(dest: RProps) {
-    val src = this.asDynamic()
-    val keys = jsObj.keys(this).unsafeCast<Array<String>>()
-    keys.forEach { key -> dest.asDynamic()[key] = src[key] }
-}
 
 val RuleSet.name: String
     get() = CSSBuilder().apply { +this@name }.classes.joinToString(" ")
@@ -159,5 +131,3 @@ fun renderWrapper(block: RBuilder.() -> Unit): View {
         }
     }
 }
-
-private val logger = Logger("util.kt")

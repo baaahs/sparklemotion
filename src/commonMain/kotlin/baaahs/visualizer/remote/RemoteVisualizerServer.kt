@@ -2,6 +2,7 @@ package baaahs.visualizer.remote
 
 import baaahs.fixtures.Fixture
 import baaahs.io.ByteArrayWriter
+import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.util.Logger
 
@@ -42,11 +43,11 @@ class RemoteVisualizerServer(
             }
         }
 
-        override fun sendFrameData(fixture: Fixture, block: (ByteArrayWriter) -> Unit) {
-            if (fixture.modelEntity != null) {
+        override fun sendFrameData(entity: Model.Entity?, block: (ByteArrayWriter) -> Unit) {
+            if (entity != null) {
                 outBuf.reset()
                 outBuf.writeByte(Opcode.FrameData.byteValue)
-                outBuf.writeString(fixture.modelEntity.name)
+                outBuf.writeString(entity.name)
                 block(outBuf)
                 tcpConnection.send(outBuf.toBytes())
             }
@@ -72,6 +73,6 @@ class RemoteVisualizerServer(
 
     interface Listener {
         fun sendFixtureInfo(fixture: Fixture)
-        fun sendFrameData(fixture: Fixture, block: (ByteArrayWriter) -> Unit)
+        fun sendFrameData(entity: Model.Entity?, block: (ByteArrayWriter) -> Unit)
     }
 }

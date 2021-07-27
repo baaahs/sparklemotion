@@ -1,7 +1,6 @@
 package baaahs.gl.render
 
 import baaahs.document
-import baaahs.fixtures.ResultBuffer
 import baaahs.gl.GlBase
 import baaahs.gl.GlContext
 import baaahs.gl.WebGL2RenderingContext
@@ -30,12 +29,12 @@ class SwitchingResultDeliveryStrategy(private val gl: GlBase.JsGlContext): Resul
         pickStrategy().beforeRender()
     }
 
-    override fun afterRender(frameBuffer: GlContext.FrameBuffer, resultBuffers: List<ResultBuffer>) {
-        pickStrategy().afterRender(frameBuffer, resultBuffers)
+    override fun afterRender(frameBuffer: GlContext.FrameBuffer, resultStorage: ResultStorage) {
+        pickStrategy().afterRender(frameBuffer, resultStorage)
     }
 
-    override suspend fun awaitResults(frameBuffer: GlContext.FrameBuffer, resultBuffers: List<ResultBuffer>) {
-        pickStrategy().awaitResults(frameBuffer, resultBuffers)
+    override suspend fun awaitResults(frameBuffer: GlContext.FrameBuffer, resultStorage: ResultStorage) {
+        pickStrategy().awaitResults(frameBuffer, resultStorage)
     }
 }
 
@@ -45,8 +44,8 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
 
     val bufs: MutableList<Pair<Buffer, GlBuffer>> = arrayListOf()
 
-    override fun afterRender(frameBuffer: GlContext.FrameBuffer, resultBuffers: List<ResultBuffer>) {
-        resultBuffers.forEach {
+    override fun afterRender(frameBuffer: GlContext.FrameBuffer, resultStorage: ResultStorage) {
+        resultStorage.resultBuffers.forEach {
             val gpuBuffer = it.gpuBuffer
             val resultType = it.type
             val cpuBuffer: Buffer = it.cpuBuffer
@@ -69,7 +68,7 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
         }
     }
 
-    override suspend fun awaitResults(frameBuffer: GlContext.FrameBuffer, resultBuffers: List<ResultBuffer>) {
+    override suspend fun awaitResults(frameBuffer: GlContext.FrameBuffer, resultStorage: ResultStorage) {
         FenceSync(gl).await()
 
         bufs.forEach { (cpuBuffer, glBuf) ->
