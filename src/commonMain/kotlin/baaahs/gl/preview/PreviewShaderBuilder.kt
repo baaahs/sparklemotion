@@ -12,6 +12,8 @@ import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderResults
+import baaahs.gl.render.ResultStorage
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
@@ -259,10 +261,6 @@ object ProjectionPreviewDevice: DeviceType {
     override val id: String get() = "ProjectionPreview"
     override val title: String get() = "Projection Preview"
     override val dataSourceBuilders: List<DataSourceBuilder<*>> get() = PixelArrayDevice.dataSourceBuilders
-    override val resultParams: List<ResultParam>
-        get() = listOf(
-            ResultParam("Vertex Location", Vec2ResultType)
-        )
     override val resultContentType: ContentType
         get() = ContentType.UvCoordinate
 
@@ -275,8 +273,16 @@ object ProjectionPreviewDevice: DeviceType {
             ""
         )
 
-    fun getVertexLocations(resultViews: List<ResultView>): Vec2ResultType.Vec2ResultView {
-        return resultViews[0] as Vec2ResultType.Vec2ResultView
+    override val defaultConfig: FixtureConfig
+        get() = TODO("not implemented")
+
+    override fun createResultStorage(renderResults: RenderResults): ResultStorage {
+        val resultBuffer = renderResults.allocate("Vertex Location", Vec2ResultType)
+        return SingleResultStorage(resultBuffer)
+    }
+
+    fun  getVertexLocations(fixtureResults: List<FixtureResults>): Vec2ResultType.Vec2FixtureResults {
+        return fixtureResults[0] as Vec2ResultType.Vec2FixtureResults
     }
 
     override fun toString(): String = id

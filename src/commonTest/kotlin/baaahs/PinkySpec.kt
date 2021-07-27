@@ -108,7 +108,7 @@ object PinkySpec : Spek({
             doRunBlocking {
                 panelMappings.forEach { (brainId, surface) ->
                     val surfaceData = MappingSession.SurfaceData(
-                        BrainManager.controllerTypeName, brainId.uuid, surface.name, emptyList(), null, null, null
+                        BrainManager.controllerTypeName, brainId.uuid, surface.name, null, null, null
                     )
                     val mappingSessionPath = storage.saveSession(
                         MappingSession(

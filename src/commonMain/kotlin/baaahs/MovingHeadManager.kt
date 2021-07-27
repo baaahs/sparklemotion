@@ -1,7 +1,11 @@
 package baaahs
 
+import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
-import baaahs.fixtures.*
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.MovingHeadDevice
+import baaahs.fixtures.Transport
 import baaahs.model.Model
 import baaahs.util.Logger
 import baaahs.visualizer.remote.RemoteVisualizable
@@ -22,14 +26,14 @@ class MovingHeadManager(
             override val name: String
                 get() = "DMX Transport"
 
-            override fun send(fixture: Fixture, resultViews: List<ResultView>) {
-                val params = MovingHeadDevice.getResults(resultViews)[0]
+            override fun deliverBytes(byteArray: ByteArray) {
+                val params = movingHead.adapter.newBuffer(Dmx.Buffer(byteArray))
                 movingHeadBuffer.pan = params.pan
                 movingHeadBuffer.tilt = params.tilt
-                movingHeadBuffer.colorWheelPosition = params.colorWheel
+                movingHeadBuffer.colorWheelPosition = params.colorWheelPosition
                 movingHeadBuffer.dimmer = params.dimmer
 
-                remoteVisualizers.sendFrameData(fixture) { outBuf ->
+                remoteVisualizers.sendFrameData(movingHead) { outBuf ->
                     val dmxBuffer = movingHeadBuffer.dmxBuffer
                     outBuf.writeShort(dmxBuffer.channelCount)
                     repeat(dmxBuffer.channelCount) { i ->

@@ -1,14 +1,13 @@
 package baaahs.gl.preview
 
-import baaahs.fixtures.DeviceTypeRenderPlan
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.NullTransport
-import baaahs.fixtures.ProgramRenderPlan
+import baaahs.fixtures.*
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ModelRenderEngine
 import baaahs.model.Model
 import baaahs.window
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.Path2D
@@ -27,7 +26,10 @@ class ProjectionPreview(
     private var projectionProgram: GlslProgram? = null
     private val renderTargets = model.allSurfaces.associateWith { surface ->
         val lineVertices = surface.lines.flatMap { it.vertices }
-        val fixture = Fixture(surface, lineVertices.size, lineVertices, deviceType, transport = NullTransport)
+        val fixture = Fixture(
+            surface, lineVertices.size, lineVertices, deviceType,
+            transport = NullTransport
+        )
         renderEngine.addFixture(fixture)
     }
     private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D
@@ -59,10 +61,15 @@ class ProjectionPreview(
     override fun render() {
         if (!running) return
 
+        GlobalScope.launch { asyncRender() }
+    }
+
+    private suspend fun asyncRender() {
         if (projectionProgram != null) {
             preRenderCallback?.invoke()
 
             renderEngine.draw()
+            renderEngine.finish()
 
             context2d.strokeStyle = "#ffffff"
             context2d.lineWidth = 2.0
@@ -76,7 +83,7 @@ class ProjectionPreview(
             val overflows = arrayListOf<DoubleArray>()
 
             renderTargets.forEach { (surface, renderTarget) ->
-                val projectedVertices = deviceType.getVertexLocations(renderTarget.resultViews)
+                val projectedVertices = renderTarget.fixtureResults as Vec2ResultType.Vec2FixtureResults
                 var vertexIndex = 0
 
                 val path = Path2D()

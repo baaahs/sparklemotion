@@ -2,6 +2,7 @@ package baaahs.visualizer.remote
 
 import baaahs.fixtures.Fixture
 import baaahs.io.ByteArrayWriter
+import baaahs.model.Model
 
 class RemoteVisualizers {
     private val listeners = hashSetOf<RemoteVisualizerServer.Listener>()
@@ -18,8 +19,8 @@ class RemoteVisualizers {
         listeners.forEach { it.sendFixtureInfo(fixture) }
     }
 
-    fun sendFrameData(fixture: Fixture, block: (ByteArrayWriter) -> Unit) {
-        listeners.forEach { it.sendFrameData(fixture, block) }
+    fun sendFrameData(entity: Model.Entity?, block: (ByteArrayWriter) -> Unit) {
+        listeners.forEach { it.sendFrameData(entity, block) }
     }
 }
 

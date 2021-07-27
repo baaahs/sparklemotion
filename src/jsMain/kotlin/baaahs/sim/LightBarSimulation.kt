@@ -2,9 +2,6 @@ package baaahs.sim
 
 import baaahs.controller.WledManager
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.PixelArrayDevice
-import baaahs.fixtures.ResultView
-import baaahs.fixtures.Transport
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
@@ -31,6 +28,7 @@ actual class LightBarSimulation actual constructor(
             WledManager.controllerTypeName,
             "wled-X${lightBar.name}X",
             lightBar.name,
+            pixelLocations.size,
             pixelLocations.map { MappingSession.SurfaceData.PixelData(it) }
         )
 
@@ -48,7 +46,7 @@ actual class LightBarSimulation actual constructor(
             pixelLocations,
             lightBar.deviceType,
             lightBar.name,
-            PreviewTransport()
+            PixelArrayPreviewTransport(lightBar.name, vizPixels)
         )
     }
 
@@ -67,18 +65,6 @@ actual class LightBarSimulation actual constructor(
 
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
         entityVisualizer.vizPixels?.readColors(reader)
-    }
-
-    inner class PreviewTransport : Transport {
-        override val name: String
-            get() = lightBar.name
-
-        override fun send(fixture: Fixture, resultViews: List<ResultView>) {
-            val resultColors = PixelArrayDevice.getColorResults(resultViews)
-            for (i in 0 until pixelCount) {
-                vizPixels[i] = resultColors[i]
-            }
-        }
     }
 
     companion object {

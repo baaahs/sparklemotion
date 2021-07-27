@@ -5,7 +5,7 @@ import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 import baaahs.toRadians
 
-class LixadaMiniMovingHead : MovingHeadAdapter {
+object LixadaMiniMovingHead : MovingHeadAdapter {
     override val dmxChannelCount: Int get() = 9 // TODO: ?
 
     override val colorModel: MovingHead.ColorModel get() = MovingHead.ColorModel.RGBW
@@ -46,7 +46,7 @@ class LixadaMiniMovingHead : MovingHeadAdapter {
         override val offset = ordinal
     }
 
-    inner class Buffer(override val dmxBuffer: Dmx.Buffer) : MovingHead.BaseBuffer(this) {
+    class Buffer(override val dmxBuffer: Dmx.Buffer) : MovingHead.BaseBuffer(LixadaMiniMovingHead) {
         init {
             dimmer = 134 * 256 / 65535f
             dmxBuffer[Channel.WHITE] = 255.toByte()

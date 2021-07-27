@@ -7,7 +7,6 @@ interface MappingResults {
     fun dataForController(controllerId: ControllerId): FixtureMapping?
 
     fun dataForEntity(entityName: String): FixtureMapping?
-
 }
 
 data class ControllerId(val controllerType: String, val id: String) {
@@ -25,9 +24,11 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
 
                 try {
                     val modelEntity = model.findEntity(entityName)
-                    val pixelLocations = surfaceData.pixels.map { it?.modelPosition }
+                    val pixelLocations = surfaceData.pixels?.map { it?.modelPosition }
+                        ?.ifEmpty { null }
+                    val pixelCount = surfaceData.pixelCount ?: pixelLocations?.size
 
-                    controllerData[controllerId] = FixtureMapping(modelEntity, pixelLocations)
+                    controllerData[controllerId] = FixtureMapping(modelEntity, pixelCount, pixelLocations)
                 } catch (e: Exception) {
                     logger.warn(e) { "Skipping $entityName." }
                 }
@@ -39,7 +40,7 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
         controllerData[controllerId]
 
     override fun dataForEntity(entityName: String): FixtureMapping? {
-        return controllerData.values.find { it.entity.name == entityName }
+        return controllerData.values.find { it.entity?.name == entityName }
     }
 
     companion object {

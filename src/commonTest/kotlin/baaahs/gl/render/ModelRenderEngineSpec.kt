@@ -5,8 +5,8 @@ import baaahs.describe
 import baaahs.englishize
 import baaahs.fixtures.DeviceType
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.NullTransport
-import baaahs.fixtures.ResultParam
 import baaahs.geom.Vector3F
 import baaahs.gl.*
 import baaahs.gl.glsl.GlslProgram
@@ -277,10 +277,12 @@ class DeviceTypeForTest(
             }
         }
 
-    override val resultParams: List<ResultParam>
-        get() = emptyList()
     override val errorIndicatorShader: Shader
         get() = Shader("Ω Guru Meditation Error Ω", "")
+    override val defaultConfig: FixtureConfig
+        get() = TODO("not implemented")
+    override fun createResultStorage(renderResults: RenderResults): ResultStorage = ResultStorage.Empty
+
     override fun toString(): String = id
 }
 

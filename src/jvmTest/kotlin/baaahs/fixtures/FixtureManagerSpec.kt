@@ -70,7 +70,7 @@ object FixtureManagerSpec : Spek({
                     Vector3F(2f, 1f, 2f)
                 )) }
                 val pixelLocations by value<List<Vector3F?>?> { null }
-                val mappingInfo by value { FixtureMapping(surface, pixelLocations) }
+                val mappingInfo by value { FixtureMapping(surface, null, pixelLocations) }
                 val controllerId by value { BrainId(brainId).asControllerId() }
 
                 val subject by value { fixtureManager.createFixtureFor(controllerId, msgSurfaceName, NullTransport) }

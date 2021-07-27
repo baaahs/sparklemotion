@@ -5,7 +5,10 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ModelRenderEngine
 import baaahs.model.Model
+import baaahs.plugin.core.MovingHeadParams
 import baaahs.window
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 
@@ -21,8 +24,8 @@ class MovingHeadPreview(
     private val deviceType = MovingHeadDevice
     override val renderEngine = ModelRenderEngine(gl, model, deviceType)
     private var movingHeadProgram: GlslProgram? = null
-    private val renderTargets = model.movingHeads.associateWith { surface ->
-        val fixture = Fixture(surface, 1, emptyList(), deviceType, transport = NullTransport)
+    private val renderTargets = model.movingHeads.associateWith { movingHead ->
+        val fixture = Fixture(movingHead, 1, emptyList(), deviceType, transport = NullTransport)
         renderEngine.addFixture(fixture)
     }
     private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D
@@ -54,10 +57,15 @@ class MovingHeadPreview(
     override fun render() {
         if (!running) return
 
+        GlobalScope.launch { asyncRender() }
+    }
+
+    private suspend fun asyncRender() {
         if (movingHeadProgram != null) {
             preRenderCallback?.invoke()
 
             renderEngine.draw()
+            renderEngine.finish()
 
             context2d.strokeStyle = "#ffffff"
             context2d.lineWidth = 2.0
@@ -68,10 +76,14 @@ class MovingHeadPreview(
             context2d.fillText("Fixture\tPan\tTilt\tColor\tDimmer", 3.0, 15.0)
             var y = 30.0
 
-            renderTargets.forEach { (surface, renderTarget) ->
-                val params = deviceType.getResults(renderTarget.resultViews).buffer.get(0)
-                context2d.fillText("${surface.name}\t${params.pan}\t${params.tilt}\t${params.colorWheel}\t${params.dimmer}",
-                    3.0, y)
+            renderTargets.forEach { (movingHead, renderTarget) ->
+                val params = (renderTarget.fixtureResults as MovingHeadParams.ResultBuffer.FixtureResults)
+                    .movingHeadParams
+
+                context2d.fillText(
+                    "${movingHead.name}\t${params.pan}\t${params.tilt}\t${params.colorWheel}\t${params.dimmer}",
+                    3.0, y
+                )
                 y += 15.0
             }
         }

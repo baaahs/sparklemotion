@@ -1,11 +1,18 @@
 package baaahs.mapper
 
+import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Vector3F
 import baaahs.model.Model
 
 class FixtureMapping(
-    val entity: Model.Entity,
+    val entity: Model.Entity?,
+
+    val pixelCount: Int?,
 
     /** Pixel's estimated position within the model. */
-    val pixelLocations: List<Vector3F?>?
+    val pixelLocations: List<Vector3F?>?,
+
+    val fixtureConfig: FixtureConfig? = null,
+
+    val deviceOffset: Int? = null
 )

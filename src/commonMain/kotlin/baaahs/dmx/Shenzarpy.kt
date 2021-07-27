@@ -5,7 +5,7 @@ import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 import baaahs.toRadians
 
-class Shenzarpy : MovingHeadAdapter {
+object Shenzarpy : MovingHeadAdapter {
     override val dmxChannelCount: Int get() = 16
 
     override val colorModel: MovingHead.ColorModel get() = MovingHead.ColorModel.ColorWheel
@@ -30,7 +30,7 @@ class Shenzarpy : MovingHeadAdapter {
 
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
 
-    inner class Buffer(override val dmxBuffer: Dmx.Buffer) : MovingHead.BaseBuffer(this@Shenzarpy) {
+    class Buffer(override val dmxBuffer: Dmx.Buffer) : MovingHead.BaseBuffer(Shenzarpy) {
         override var colorWheelPosition: Float
             get() = colorWheel.toInt() / 128f
             set(value) { colorWheel = (value * 128f).toInt().toByte() }

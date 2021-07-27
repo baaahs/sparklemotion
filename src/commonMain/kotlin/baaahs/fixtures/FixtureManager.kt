@@ -16,6 +16,10 @@ import baaahs.show.live.ActivePatchSet
 import baaahs.timeSync
 import baaahs.util.Logger
 
+interface FixtureListener {
+    fun fixturesChanged(addedFixtures: Collection<Fixture>, removedFixtures: Collection<Fixture>)
+}
+
 class FixtureManager(
     private val renderManager: RenderManager,
     private val model: Model,
@@ -45,7 +49,7 @@ class FixtureManager(
     ): Fixture {
         val fixtureMapping = mappingResults.dataForController(controllerId)
             ?: mappingResults.dataForEntity(entityName ?: "__nope")
-            ?: entityName?.let { FixtureMapping(model.findEntity(it), null) }
+            ?: entityName?.let { FixtureMapping(model.findEntity(it), null, null) }
 
         val modelEntity = fixtureMapping?.entity
         val pixelCount = fixtureMapping?.pixelLocations?.size

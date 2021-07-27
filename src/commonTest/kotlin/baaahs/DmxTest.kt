@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 class DmxTest {
     @Test
     fun testShenzarpyPan() {
-        val shenzarpy = Shenzarpy()
+        val shenzarpy = Shenzarpy
         val universe = FakeDmxUniverse()
         val buffer = shenzarpy.newBuffer(universe, 0)
 

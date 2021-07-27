@@ -102,7 +102,7 @@ class Pinky(
                 BrainManager.controllerTypeName -> {
                     brainManager.foundBrain(
                         FakeNetwork.FakeAddress("Simulated Brain ${controllerId.id}"),
-                        BrainHelloMessage(controllerId.id, info.entity.name, null, null),
+                        BrainHelloMessage(controllerId.id, info.entity!!.name, null, null),
                         isSimulatedBrain = true
                     )
                 }
