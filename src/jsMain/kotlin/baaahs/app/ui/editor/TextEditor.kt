@@ -25,9 +25,8 @@ import react.dom.div
 val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { props ->
     val appContext = useContext(appContext)
 
-    val rootEl = baaahs.ui.useRef<Element>()
-    val aceEditor = baaahs.ui.useRef<AceEditor>()
-
+    val rootEl = ref<Element>()
+    val aceEditor = ref<AceEditor>()
     val src = ref("")
     val srcLastChangedAt = ref<Time>()
 
