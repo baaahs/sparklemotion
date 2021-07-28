@@ -253,7 +253,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
     val layoutControls by css {
         display = Display.inlineFlex
-        flex()
+        grow(Grow.NONE)
         position = Position.relative
         height = 100.pct
         verticalAlign = VerticalAlign.top
