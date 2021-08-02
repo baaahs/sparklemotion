@@ -16,6 +16,17 @@ actual fun log(id: String, level: LogLevel, message: () -> String, exception: Th
     }
 }
 
+actual fun logEnabled(id: String, level: LogLevel): Boolean {
+    val logger = LoggerFactory.getLogger(id)
+
+    return when (level) {
+        LogLevel.DEBUG -> logger.isDebugEnabled
+        LogLevel.INFO -> logger.isInfoEnabled
+        LogLevel.WARN -> logger.isWarnEnabled
+        LogLevel.ERROR -> logger.isErrorEnabled
+    }
+}
+
 actual fun logGroupBegin(id: String, message: String) {
     log(id, LogLevel.INFO, { ">> $message" })
 }
