@@ -37,6 +37,8 @@ class Logger(val id: String) {
         }
     }
 
+    fun enabled(level: LogLevel): Boolean = logEnabled(id, level)
+
     companion object {
         private val FORMAT by lazy { DateFormat("yyyy-MM-dd HH:mm:ss.SSS") }
 
@@ -57,5 +59,6 @@ enum class LogLevel {
 inline fun <reified T> Logger() = Logger(T::class.simpleName ?: "unknown")
 
 expect fun log(id: String, level: LogLevel, message: () -> String, exception: Throwable? = null)
+expect fun logEnabled(id: String, level: LogLevel): Boolean
 expect fun logGroupBegin(id: String, message: String)
 expect fun logGroupEnd(id: String, message: String)

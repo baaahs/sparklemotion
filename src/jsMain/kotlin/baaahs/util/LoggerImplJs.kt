@@ -10,6 +10,7 @@ actual fun log(id: String, level: LogLevel, message: () -> String, exception: Th
     }
 }
 
+actual fun logEnabled(id: String, level: LogLevel): Boolean = level >= LoggerConfig.levelFor(id)
 
 private fun logMessage(level: LogLevel, message: String, exception: Throwable?) {
     when (level) {
