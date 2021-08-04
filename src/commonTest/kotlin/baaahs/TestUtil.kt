@@ -78,6 +78,9 @@ class FakeModelEntity(
     override val deviceType: DeviceType = PixelArrayDevice,
     override val description: String = name
 ) : Model.Entity {
+    override val modelBounds: Pair<Vector3F, Vector3F>
+        get() = Vector3F.origin to Vector3F.origin
+
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation {
         TODO("not implemented")
     }
@@ -102,11 +105,6 @@ open class ModelForTest(private val entities: List<Entity>) : Model() {
     override val allSurfaces: List<Surface> get() = entities.filterIsInstance<Surface>()
     override val allEntities: List<Entity> get() = entities
     override val geomVertices: List<Vector3F> = emptyList()
-
-    override val center: Vector3F
-        get() = Vector3F(.5f, .5f, .5f)
-    override val extents: Vector3F
-        get() = Vector3F(1f, 1f, 1f)
 }
 
 class TestRenderContext(
