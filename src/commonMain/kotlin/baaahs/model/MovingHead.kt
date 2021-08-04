@@ -53,6 +53,8 @@ class MovingHead(
     override val origin: Vector3F,
     override val heading: Vector3F
 ) : Model.Entity, Model.FixtureInfo {
+    override val modelBounds: Pair<Vector3F, Vector3F>
+        get() = origin to origin
 
     override val matrix: Matrix4
         get() = createMatrixWithPositionAndOrientation(origin, heading)
