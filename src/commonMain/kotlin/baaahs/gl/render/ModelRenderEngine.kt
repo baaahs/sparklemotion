@@ -19,6 +19,7 @@ class ModelRenderEngine(
     private val modelInfo: ModelInfo,
     private val deviceType: DeviceType,
     private val minTextureWidth: Int = 16,
+    private val maxFramebufferWidth: Int = fbMaxPixWidth,
     private val resultDeliveryStrategy: ResultDeliveryStrategy = SyncResultDeliveryStrategy()
 ) : RenderEngine(gl) {
     private val renderTargetsToAdd: MutableList<FixtureRenderTarget> = mutableListOf()
@@ -58,7 +59,7 @@ class ModelRenderEngine(
 
         val rects = mapFixturePixelsToRects(
             nextPixelOffset,
-            fbMaxPixWidth,
+            maxFramebufferWidth,
             fixture
         )
         val renderTarget = FixtureRenderTarget(
@@ -149,8 +150,8 @@ class ModelRenderEngine(
         frameBuffer.release()
     }
 
-    val Int.bufWidth: Int get() = max(minTextureWidth, min(this, fbMaxPixWidth))
-    val Int.bufHeight: Int get() = this / fbMaxPixWidth + 1
+    val Int.bufWidth: Int get() = max(minTextureWidth, min(this, maxFramebufferWidth))
+    val Int.bufHeight: Int get() = this / maxFramebufferWidth + 1
     val Int.bufSize: Int get() = bufWidth * bufHeight
 
     inner class Arrangement(val pixelCount: Int, addedRenderTargets: List<FixtureRenderTarget>) {
@@ -176,10 +177,10 @@ class ModelRenderEngine(
                 it.rects.map { rect ->
                     // Remap from pixel coordinates to normalized device coordinates.
                     Quad.Rect(
-                        -(rect.top / pixHeight * 2 - 1),
-                        rect.left / pixWidth * 2 - 1,
-                        -(rect.bottom / pixHeight * 2 - 1),
-                        rect.right / pixWidth * 2 - 1
+                        rect.top,
+                        rect.left,
+                        rect.bottom,
+                        rect.right
                     )
                 }
             })
@@ -197,6 +198,7 @@ class ModelRenderEngine(
                 val program = programRenderPlan.program
                 if (program != null) {
                     gl.useProgram(program)
+                    program.setPixDimens(arrangement.pixWidth, arrangement.pixHeight)
                     program.aboutToRenderFrame()
 
                     quad.prepareToRender(program.vertexAttribLocation) {

@@ -473,6 +473,7 @@ open class StubGlslProgram : GlslProgram {
     override val vertexAttribLocation: Int get() = TODO("not implemented")
     override fun setResolution(x: Float, y: Float): Unit = TODO("not implemented")
     override fun aboutToRenderFrame(): Unit = TODO("not implemented")
+    override fun setPixDimens(width: Int, height: Int) = TODO("not implemented")
     override fun aboutToRenderFixture(renderTarget: RenderTarget): Unit = TODO("not implemented")
     override fun getUniform(name: String): Uniform? = TODO("not implemented")
     override fun <T> withProgram(fn: Kgl.() -> T): T = TODO("not implemented")
