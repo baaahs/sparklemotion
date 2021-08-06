@@ -1,6 +1,6 @@
 package baaahs
 
-import baaahs.controller.WledManager
+import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManager
@@ -12,6 +12,7 @@ import baaahs.gl.testPlugins
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
+import baaahs.mapping.MappingManagerImpl
 import baaahs.model.Model
 import baaahs.models.SheepModel
 import baaahs.net.FragmentingUdpSocket
@@ -22,6 +23,7 @@ import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.BrainHelloMessage
 import baaahs.proto.Ports
 import baaahs.proto.Type
+import baaahs.scene.SceneManager
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
@@ -56,20 +58,26 @@ object PinkySpec : Spek({
             val pubSub = PubSub.Server(httpServer, CoroutineScope(ImmediateDispatcher))
             val renderManager = fakeGlslContext.runInContext { RenderManager(model) { fakeGlslContext } }
             val fakeDmxUniverse = FakeDmxUniverse()
-            val mappingResults = FutureMappingResults()
             val toolchain = RootToolchain(plugins)
-            val fixtureManager = FixtureManager(renderManager, model, mappingResults)
+            val fixtureManager = FixtureManager(renderManager, model)
             val clock = FakeClock()
             val gadgetManager = GadgetManager(pubSub, clock, ImmediateDispatcher)
             val dmxManager = object : DmxManager {
+                override fun allOff() = TODO("not implemented")
+
                 override val dmxUniverse: Dmx.Universe get() = fakeDmxUniverse
             }
 
+            val brainManager = BrainManager(
+                PermissiveFirmwareDaddy(), link, Pinky.NetworkStats(), clock, pubSub, ImmediateDispatcher
+            )
+            val mappingManager = MappingManagerImpl(storage, model)
+            val controllersManager = ControllersManager(listOf(brainManager), mappingManager, model, fixtureManager)
+            val stageManager = StageManager(toolchain, renderManager, pubSub, storage, fixtureManager, clock, model,
+                gadgetManager, controllersManager)
+            val sceneManager = SceneManager(storage, controllersManager)
             Pinky(
-                model,
-                network,
                 clock,
-                fakeFs,
                 PermissiveFirmwareDaddy(),
                 plugins,
                 storage,
@@ -77,14 +85,14 @@ object PinkySpec : Spek({
                 httpServer,
                 pubSub,
                 dmxManager,
-                mappingResults,
+                mappingManager,
                 fixtureManager,
                 ImmediateDispatcher,
                 toolchain,
-                StageManager(toolchain, renderManager, pubSub, storage, fixtureManager, clock, model, gadgetManager),
-                BrainManager(fixtureManager, PermissiveFirmwareDaddy(), mappingResults, link, Pinky.NetworkStats(), clock, pubSub, ImmediateDispatcher),
-                MovingHeadManager(fixtureManager, dmxManager, model),
-                WledManager(fixtureManager, model, link, pubSub, ImmediateDispatcher, clock),
+                stageManager,
+                sceneManager,
+                controllersManager,
+                brainManager,
                 ShaderLibraryManager(storage, pubSub),
                 Pinky.NetworkStats(),
                 PinkySettings()
@@ -141,7 +149,7 @@ object PinkySpec : Spek({
                 }
 
                 it("should send pixels but not not send mapping to the brain") {
-                    val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpSocket.headerSize]) }
+                    val packetTypes = pinkyLink.packetsToSend.map { Type.get(it.data[FragmentingUdpSocket.headerSize]) }
                     expect(packetTypes)
                         .containsExactly(Type.BRAIN_PANEL_SHADE) // Should send no mapping packet.
                 }
@@ -150,32 +158,16 @@ object PinkySpec : Spek({
             context("which are mapped to surfaces") {
                 override(panelMappings) { listOf(BrainId("brain1") to panel17) }
 
-                context("for which the brain provides its mapping") {
-                    override(brainHelloMessage) { BrainHelloMessage("brain1", panel17.name) }
-
-                    it("should notify show") {
-                        val fixture = renderTargets.keys.only()
-                        expect(fixture.modelEntity).toBe(panel17)
-                        expect(fixture.name).toBe(panel17.name)
-                    }
-
-                    it("should send pixels but not mapping to the brain") {
-                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpSocket.headerSize]) }
-                        expect(packetTypes)
-                            .containsExactly(Type.BRAIN_PANEL_SHADE) // Should send no mapping packet.
-                    }
-                }
-
                 context("for which Pinky has a mapping") {
                     override(brainHelloMessage) { BrainHelloMessage("brain1", null) }
 
                     it("should notify show") {
-                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it[FragmentingUdpSocket.headerSize]) }
-                        expect(packetTypes)
-                            .containsExactly(Type.BRAIN_MAPPING,Type.BRAIN_PANEL_SHADE) // Should send a mapping packet.
+                        val packetTypes = pinkyLink.packetsToSend.map { Type.get(it.data[FragmentingUdpSocket.headerSize]) }
+                        expect(packetTypes).containsExactly(Type.BRAIN_PANEL_SHADE)
                     }
 
-                    it("should send mapping and pixels to the brain") {
+                    it("should send pixels to the brain") {
+                        println(pinky)
                         val fixture = renderTargets.keys.only()
                         expect(fixture.modelEntity).toBe(panel17)
                     }
@@ -233,6 +225,10 @@ object PinkySpec : Spek({
         }
     }
 })
+
+private fun Pinky.updateFixtures() {
+//    fixtureManager.maybeUpdateRenderPlans()
+}
 
 class StubBeatSource : Observable(), BeatSource {
     override fun getBeatData(): BeatData = BeatData(0.0, 0, confidence = 0f)

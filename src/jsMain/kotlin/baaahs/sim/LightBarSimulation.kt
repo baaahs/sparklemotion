@@ -1,6 +1,6 @@
 package baaahs.sim
 
-import baaahs.controller.WledManager
+import baaahs.controller.SacnManager
 import baaahs.fixtures.Fixture
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
@@ -11,7 +11,6 @@ import baaahs.visualizer.VizPixels
 import baaahs.visualizer.toVector3
 import three.js.Vector3
 
-/** LightBarSimulation doesn't actually simulate WLED communications. It prolly should at some point. */
 actual class LightBarSimulation actual constructor(
     val lightBar: LightBar,
     private val simulationEnv: SimulationEnv
@@ -25,7 +24,7 @@ actual class LightBarSimulation actual constructor(
 
     override val mappingData: MappingSession.SurfaceData
         get() = MappingSession.SurfaceData(
-            WledManager.controllerTypeName,
+            SacnManager.controllerTypeName,
             "wled-X${lightBar.name}X",
             lightBar.name,
             pixelLocations.size,
@@ -44,7 +43,7 @@ actual class LightBarSimulation actual constructor(
             lightBar,
             pixelCount,
             pixelLocations,
-            lightBar.deviceType,
+            lightBar.deviceType.defaultConfig,
             lightBar.name,
             PixelArrayPreviewTransport(lightBar.name, vizPixels)
         )

@@ -1,5 +1,8 @@
 package baaahs
 
+import baaahs.controller.ControllersManager
+import baaahs.controllers.FakeFixtureListener
+import baaahs.controllers.FakeMappingManager
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
@@ -38,10 +41,11 @@ object StageManagerSpec : Spek({
                 renderManager,
                 pubSub.server,
                 Storage(fakeFs, plugins),
-                FixtureManager(renderManager, model, FakeMappingResults()),
+                FixtureManager(renderManager, model),
                 FakeClock(),
                 model,
-                GadgetManager(pubSub.server, FakeClock(), ImmediateDispatcher)
+                GadgetManager(pubSub.server, FakeClock(), ImmediateDispatcher),
+                ControllersManager(emptyList(), FakeMappingManager(), model, FakeFixtureListener())
             )
         }
         val editingClient by value { pubSub.client("editingClient") }

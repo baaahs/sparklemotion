@@ -236,7 +236,7 @@ class RenderEngineTest {
                 val offset = i * .2f
                 Vector3F(0f + offset, .1f + offset, 0f)
             },
-            PixelArrayDevice,
+            PixelArrayDevice.defaultConfig,
             transport = NullTransport
         )
     }
@@ -245,7 +245,7 @@ class RenderEngineTest {
         return Fixture(
             TestModelSurface(name), pixelCount,
             (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) },
-            PixelArrayDevice,
+            PixelArrayDevice.defaultConfig,
             transport = NullTransport
         )
     }

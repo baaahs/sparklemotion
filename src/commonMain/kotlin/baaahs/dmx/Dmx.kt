@@ -18,6 +18,7 @@ interface Dmx {
     }
 
     abstract class Universe {
+        /** @param baseChannel Zero-based. */
         abstract fun writer(baseChannel: Int, channelCount: Int): Buffer
         abstract fun sendFrame()
         abstract fun allOff()

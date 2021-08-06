@@ -30,6 +30,7 @@ import baaahs.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
 interface ShaderBuilder : IObservable {
     val shader: Shader
@@ -281,9 +282,12 @@ object ProjectionPreviewDevice: DeviceType {
         return SingleResultStorage(resultBuffer)
     }
 
-    fun  getVertexLocations(fixtureResults: List<FixtureResults>): Vec2ResultType.Vec2FixtureResults {
-        return fixtureResults[0] as Vec2ResultType.Vec2FixtureResults
-    }
-
     override fun toString(): String = id
+
+    @Serializable
+    class Config : FixtureConfig {
+        override val deviceType: DeviceType
+            get() = TODO("not implemented")
+
+    }
 }

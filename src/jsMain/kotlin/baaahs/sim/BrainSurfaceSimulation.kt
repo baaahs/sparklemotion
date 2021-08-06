@@ -47,7 +47,7 @@ actual class BrainSurfaceSimulation actual constructor(
             surface,
             pixelPositions.size,
             pixelPositions.map { it.toVector3F() },
-            surface.deviceType,
+            surface.deviceType.defaultConfig,
             surface.name,
             PixelArrayPreviewTransport(surface.name, vizPixels)
         )

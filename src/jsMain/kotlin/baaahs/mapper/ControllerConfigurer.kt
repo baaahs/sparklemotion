@@ -79,7 +79,7 @@ private val ControllerConfigurer = xComponent<DeviceConfigurerProps>("Controller
             }
 
             tableBody {
-                adminClient.wledDevices.values
+                adminClient.sacnDevices.values
                     .sortedBy { it.id }
                     .forEach { wledDevice ->
                         tableRow {

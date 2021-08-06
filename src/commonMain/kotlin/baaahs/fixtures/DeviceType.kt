@@ -1,5 +1,6 @@
 package baaahs.fixtures
 
+import baaahs.geom.Vector3F
 import baaahs.getBang
 import baaahs.gl.GlContext
 import baaahs.gl.data.ProgramFeed
@@ -12,12 +13,14 @@ import baaahs.glsl.Uniform
 import baaahs.model.Model
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
+import baaahs.visualizer.remote.RemoteVisualizers
 import com.danielgergely.kgl.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.modules.SerializersModule
 import kotlin.math.min
 
 interface DeviceType {
@@ -28,6 +31,7 @@ interface DeviceType {
     val likelyPipelines: List<Pair<ContentType, ContentType>>
     val errorIndicatorShader: Shader
     val defaultConfig: FixtureConfig
+    val serialModule: SerializersModule get() = SerializersModule {}
 
     fun createResultStorage(renderResults: RenderResults): ResultStorage
 
@@ -48,8 +52,7 @@ interface DeviceType {
 interface FixtureConfig {
     val deviceType: DeviceType
 
-    /** When sent using [ByteArrayTransport]; in bytes. */
-    fun bufferSize(entity: Model.Entity?, pixelCount: Int): Int
+    fun generatePixelLocations(pixelCount: Int, entity: Model.Entity?, model: Model): List<Vector3F>? = null
 }
 
 interface ParamBuffer {
@@ -227,5 +230,6 @@ abstract class FixtureResults(
     val pixelOffset: Int,
     val pixelCount: Int
 ) {
-    abstract fun send()
+    // TODO: This is pretty janky, having send() call RemoteVisualizers. Find a better way.
+    abstract fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers)
 }

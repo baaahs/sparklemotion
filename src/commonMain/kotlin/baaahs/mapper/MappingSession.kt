@@ -30,7 +30,8 @@ data class MappingSession(
         val fixtureConfig: FixtureConfig? = null,
         val deltaImage: String? = null,
         val screenAreaInSqPixels: Float? = null,
-        val screenAngle: Float? = null
+        val screenAngle: Float? = null,
+        val channels: Channels? = null
     ) {
         val controllerId: ControllerId get() =
             ControllerId(controllerType ?: BrainManager.controllerTypeName, brainId)
@@ -41,6 +42,21 @@ data class MappingSession(
             val modelPosition: Vector3F?,
             val screenPosition: Vector2F? = null,
             val deltaImage: String? = null
+        )
+
+        /**
+         * A range of DMX channels.
+         *
+         * For example, a device using 16 channels starting from the first channel in a universe would
+         * be `Channels(0, 15)`, and represent DMX channels 1 through 16. Ick.
+         *
+         * @param start Starting channel, _zero based_.
+         * @param end Ending channel, inclusive, _zero based_.
+         */
+        @Serializable
+        data class Channels(
+            val start: Int,
+            val end: Int
         )
     }
 }

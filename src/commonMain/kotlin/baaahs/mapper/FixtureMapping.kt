@@ -14,5 +14,12 @@ class FixtureMapping(
 
     val fixtureConfig: FixtureConfig? = null,
 
-    val deviceOffset: Int? = null
+    val transportConfig: TransportConfig? = null
 )
+
+interface TransportConfig
+
+data class SacnTransportConfig(
+    val startChannel: Int,
+    val endChannel: Int
+) : TransportConfig

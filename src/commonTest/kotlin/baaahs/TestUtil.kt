@@ -100,6 +100,8 @@ fun fakeModel(entities: List<Model.Entity>) = ModelForTest(entities)
 object TestModel : ModelForTest(listOf(TestModelSurface("Panel")))
 
 open class ModelForTest(private val entities: List<Entity>) : Model() {
+    constructor(vararg entities: Entity) : this(entities.toList())
+
     override val name: String = "Test Model"
     override val movingHeads: List<MovingHead> get() = entities.filterIsInstance<MovingHead>()
     override val allSurfaces: List<Surface> get() = entities.filterIsInstance<Surface>()
@@ -127,7 +129,7 @@ class TestRenderContext(
     fun addFixtures() {
         renderTargets.addAll(
             modelEntities.map { entity ->
-                renderEngine.addFixture(Fixture(entity, 1, emptyList(), deviceType, transport = NullTransport))
+                renderEngine.addFixture(Fixture(entity, 1, emptyList(), deviceType.defaultConfig, transport = NullTransport))
             }
         )
     }
@@ -143,6 +145,8 @@ class TestRenderContext(
 
 class FakeDmxManager(private val universe: Dmx.Universe) : DmxManager {
     override val dmxUniverse: Dmx.Universe get() = universe
+
+    override fun allOff():Unit = TODO("not implemented")
 }
 
 object ImmediateDispatcher : CoroutineDispatcher() {

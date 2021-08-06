@@ -14,6 +14,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlin.js.JsName
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -105,6 +106,11 @@ data class Color(val argb: Int) {
         }
     }
 
+    fun withRed(redB: Byte): Color = Color(redB, greenB, blueB, alphaB)
+    fun withGreen(greenB: Byte): Color = Color(redB, greenB, blueB, alphaB)
+    fun withBlue(blueB: Byte): Color = Color(redB, greenB, blueB, alphaB)
+    fun withAlpha(alphaB: Byte): Color = Color(redB, greenB, blueB, alphaB)
+
     /** Super-naive approximation of desaturation. */
     fun withSaturation(saturation: Float): Color {
         val desaturation = 1 - saturation
@@ -150,6 +156,15 @@ data class Color(val argb: Int) {
 
     override fun toString(): String {
         return "Color(${toHexString()})"
+    }
+
+    fun gammaCorrected(invGamma: Float): Color {
+        return Color(
+            redF.pow(invGamma),
+            greenF.pow(invGamma),
+            blueF.pow(invGamma),
+            alphaF
+        )
     }
 
     @Serializer(forClass = Color::class)

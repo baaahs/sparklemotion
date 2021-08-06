@@ -6,6 +6,7 @@ import baaahs.io.FsServerSideSerializer
 import baaahs.libraries.ShaderLibraryIndexFile
 import baaahs.model.Model
 import baaahs.plugin.Plugins
+import baaahs.scene.SceneConfig
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
 import baaahs.util.Logger
@@ -50,7 +51,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
         fs.saveFile(file, imageData)
     }
 
-    suspend fun loadMappingData(model: Model): MappingResults {
+    suspend fun loadMappingData(model: Model): SessionMappingResults {
         val sessions = arrayListOf<MappingSession>()
         val path = fs.resolve("mapping", model.name)
         fs.listFiles(path).forEach { dir ->
@@ -71,7 +72,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
 
     suspend fun loadMappingSession(f: Fs.File): MappingSession {
         val mappingJson = fs.loadFile(f)
-        val mappingSession = json.decodeFromString(MappingSession.serializer(), mappingJson!!)
+        val mappingSession = plugins.json.decodeFromString(MappingSession.serializer(), mappingJson!!)
         mappingSession.surfaces.forEach { surface ->
             logger.debug { "Found pixel mapping for ${surface.entityName} (${surface.controllerId.shortName()})" }
         }
@@ -91,6 +92,8 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     private suspend fun <T> loadJson(configFile: Fs.File, serializer: KSerializer<T>): T? {
         return fs.loadFile(configFile)?.let { plugins.json.decodeFromString(serializer, it) }
     }
+
+    suspend fun loadSceneConfig() = loadJson(fs.resolve("scene.json"), SceneConfig.serializer())
 
     suspend fun loadShow(file: Fs.File): Show? {
         return loadJson(file, ShowMigrator)

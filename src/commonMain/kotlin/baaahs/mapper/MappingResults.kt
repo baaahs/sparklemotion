@@ -1,19 +1,16 @@
 package baaahs.mapper
 
+import baaahs.dmx.DmxTransportConfig
 import baaahs.model.Model
 import baaahs.util.Logger
+import kotlinx.serialization.Serializable
 
-interface MappingResults {
-    fun dataForController(controllerId: ControllerId): FixtureMapping?
-
-    fun dataForEntity(entityName: String): FixtureMapping?
-}
-
+@Serializable
 data class ControllerId(val controllerType: String, val id: String) {
     fun shortName(): String = "$controllerType:$id"
 }
 
-class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>) : MappingResults {
+class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>) {
     val controllerData = mutableMapOf<ControllerId, FixtureMapping>()
 
     init {
@@ -27,8 +24,16 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
                     val pixelLocations = surfaceData.pixels?.map { it?.modelPosition }
                         ?.ifEmpty { null }
                     val pixelCount = surfaceData.pixelCount ?: pixelLocations?.size
+                    val transportConfig = when (controllerId.controllerType) {
+                        "SACN" -> surfaceData.channels?.let { SacnTransportConfig(it.start, it.end) }
+                        "DMX" -> surfaceData.channels?.let { DmxTransportConfig(it.start, it.end) }
+                        else -> null
+                    }
 
-                    controllerData[controllerId] = FixtureMapping(modelEntity, pixelCount, pixelLocations)
+                    controllerData[controllerId] = FixtureMapping(
+                        modelEntity, pixelCount, pixelLocations,
+                        transportConfig = transportConfig
+                    )
                 } catch (e: Exception) {
                     logger.warn(e) { "Skipping $entityName." }
                 }
@@ -36,12 +41,8 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
         }
     }
 
-    override fun dataForController(controllerId: ControllerId): FixtureMapping? =
+    fun dataForController(controllerId: ControllerId): FixtureMapping? =
         controllerData[controllerId]
-
-    override fun dataForEntity(entityName: String): FixtureMapping? {
-        return controllerData.values.find { it.entity?.name == entityName }
-    }
 
     companion object {
         private val logger = Logger("SessionMappingResults")

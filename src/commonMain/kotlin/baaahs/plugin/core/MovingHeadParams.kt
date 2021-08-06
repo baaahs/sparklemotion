@@ -6,7 +6,9 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.model.Model
 import baaahs.model.MovingHead
+import baaahs.visualizer.remote.RemoteVisualizers
 import com.danielgergely.kgl.GL_RGBA
 
 data class MovingHeadParams(
@@ -64,7 +66,7 @@ data class MovingHeadParams(
         ) : baaahs.fixtures.FixtureResults(pixelOffset, pixelCount) {
             val movingHeadParams get() = this@ResultBuffer[pixelOffset]
 
-            override fun send() {
+            override fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers) {
                 val transport = fixture.transport
 
                 val movingHead = fixture.modelEntity as MovingHead
@@ -74,6 +76,7 @@ data class MovingHeadParams(
                 val channels = ByteArray(size)
                 movingHeadParams.send(adapter.newBuffer(Dmx.Buffer(channels)))
                 transport.deliverBytes(channels)
+                remoteVisualizers.sendFrameData(entity) { out -> out.writeBytes(channels) }
             }
         }
     }

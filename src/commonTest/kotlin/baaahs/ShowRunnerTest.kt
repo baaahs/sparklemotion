@@ -1,5 +1,7 @@
 package baaahs
 
+import baaahs.controller.ControllersManager
+import baaahs.controllers.FakeMappingManager
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.PixelArrayDevice
@@ -38,11 +40,11 @@ class ShowRunnerTest {
     private lateinit var renderTargets: Map<Fixture, RenderTarget>
     private val surface1Messages = mutableListOf<String>()
     private val surface1Fixture =
-        Fixture(SheepModel.Panel("surface 1"), 1, emptyList(), PixelArrayDevice,
+        Fixture(SheepModel.Panel("surface 1"), 1, emptyList(), PixelArrayDevice.defaultConfig,
             transport = FakeTransport { surface1Messages.add("frame") })
     private val surface2Messages = mutableListOf<String>()
     private val surface2Fixture =
-        Fixture(SheepModel.Panel("surface 2"), 1, emptyList(), PixelArrayDevice,
+        Fixture(SheepModel.Panel("surface 2"), 1, emptyList(), PixelArrayDevice.defaultConfig,
             transport = FakeTransport { surface2Messages.add("frame") })
     private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse
@@ -60,10 +62,11 @@ class ShowRunnerTest {
         dmxUniverse.listen(1, 1) { dmxEvents.add("dmx frame sent") }
         val model = TestModel
         val renderManager = RenderManager(model) { fakeGlslContext }
-        fixtureManager = FixtureManager(renderManager, model, FakeMappingResults())
+        fixtureManager = FixtureManager(renderManager, model)
         stageManager = StageManager(
             testToolchain, renderManager, server, Storage(fs, testPlugins()), fixtureManager,
-            FakeClock(), sheepModel, GadgetManager(server, FakeClock(), dispatcher)
+            FakeClock(), sheepModel, GadgetManager(server, FakeClock(), dispatcher),
+            ControllersManager(emptyList(), FakeMappingManager(), model, fixtureManager)
         )
         stageManager.switchTo(SampleData.sampleShow)
         renderTargets = fixtureManager.getRenderTargets_ForTestOnly()
