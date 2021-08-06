@@ -1,7 +1,7 @@
 package baaahs.scene
 
-import baaahs.fixtures.DeviceType
-import baaahs.fixtures.PixelArrayDevice
+import baaahs.device.DeviceType
+import baaahs.device.PixelArrayDevice
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
 

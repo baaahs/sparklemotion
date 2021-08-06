@@ -1,6 +1,6 @@
 package baaahs.model
 
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox

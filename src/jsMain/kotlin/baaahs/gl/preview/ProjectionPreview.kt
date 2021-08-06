@@ -1,9 +1,13 @@
 package baaahs.gl.preview
 
-import baaahs.fixtures.*
+import baaahs.fixtures.DeviceTypeRenderPlan
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.NullTransport
+import baaahs.fixtures.ProgramRenderPlan
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ModelRenderEngine
+import baaahs.gl.result.Vec2ResultType
 import baaahs.model.Model
 import baaahs.window
 import kotlinx.coroutines.GlobalScope

@@ -1,12 +1,16 @@
 package baaahs.gl.render
 
-import baaahs.fixtures.*
+import baaahs.device.DeviceType
+import baaahs.fixtures.DeviceTypeRenderPlan
+import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
 import baaahs.gl.data.PerPixelEngineFeed
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.result.ResultBuffer
+import baaahs.gl.result.ResultType
 import baaahs.model.ModelInfo
 import baaahs.util.Logger
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT

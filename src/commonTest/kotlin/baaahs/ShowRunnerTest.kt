@@ -2,9 +2,9 @@ package baaahs
 
 import baaahs.controller.ControllersManager
 import baaahs.controllers.FakeMappingManager
+import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.fixtures.Transport
 import baaahs.gadgets.Slider
 import baaahs.gl.render.RenderManager

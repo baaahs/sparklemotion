@@ -3,10 +3,10 @@ package baaahs.shaders
 import baaahs.BrainShader
 import baaahs.Color
 import baaahs.Pixels
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
+import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model

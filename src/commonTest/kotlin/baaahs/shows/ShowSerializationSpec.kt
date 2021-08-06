@@ -4,7 +4,7 @@ import baaahs.control.ButtonControl
 import baaahs.control.ButtonGroupControl
 import baaahs.control.ColorPickerControl
 import baaahs.control.SliderControl
-import baaahs.fixtures.PixelLocationDataSource
+import baaahs.device.PixelLocationDataSource
 import baaahs.gl.kexpect
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkControl

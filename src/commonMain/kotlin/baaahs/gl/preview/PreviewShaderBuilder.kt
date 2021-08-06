@@ -4,7 +4,10 @@ import baaahs.BaseShowPlayer
 import baaahs.control.OpenButtonControl
 import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
-import baaahs.fixtures.*
+import baaahs.device.DeviceType
+import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.SingleResultStorage
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
@@ -14,6 +17,7 @@ import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.RenderEngine
 import baaahs.gl.render.RenderResults
 import baaahs.gl.render.ResultStorage
+import baaahs.gl.result.Vec2ResultType
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo

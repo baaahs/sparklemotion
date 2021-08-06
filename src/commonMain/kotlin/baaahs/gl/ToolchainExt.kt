@@ -1,6 +1,6 @@
 package baaahs.gl
 
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.UnresolvedPatch
 import baaahs.gl.shader.OpenShader

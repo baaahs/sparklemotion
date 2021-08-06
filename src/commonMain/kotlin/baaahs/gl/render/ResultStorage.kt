@@ -1,9 +1,9 @@
 package baaahs.gl.render
 
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureResults
-import baaahs.fixtures.ResultBuffer
 import baaahs.gl.GlContext
+import baaahs.gl.result.FixtureResults
+import baaahs.gl.result.ResultBuffer
 import baaahs.model.Model
 import baaahs.visualizer.remote.RemoteVisualizers
 

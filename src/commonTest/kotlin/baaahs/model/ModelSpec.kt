@@ -1,8 +1,8 @@
 package baaahs.model
 
 import baaahs.describe
+import baaahs.device.PixelArrayDevice
 import baaahs.fakeModel
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect

@@ -1,7 +1,7 @@
 package baaahs.gl.render
 
 import baaahs.*
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.NullTransport

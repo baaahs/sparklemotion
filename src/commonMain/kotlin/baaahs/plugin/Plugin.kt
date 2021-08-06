@@ -1,6 +1,6 @@
 package baaahs.plugin
 
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.ShaderDialect
 import baaahs.gl.shader.type.ShaderType

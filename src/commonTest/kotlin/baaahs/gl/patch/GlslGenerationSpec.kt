@@ -1,6 +1,6 @@
 package baaahs.gl.patch
 
-import baaahs.fixtures.PixelLocationDataSource
+import baaahs.device.PixelLocationDataSource
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.kexpect
 import baaahs.gl.override

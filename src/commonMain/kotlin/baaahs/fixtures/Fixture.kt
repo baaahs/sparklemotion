@@ -1,5 +1,6 @@
 package baaahs.fixtures
 
+import baaahs.device.DeviceType
 import baaahs.geom.Vector3F
 import baaahs.model.Model
 

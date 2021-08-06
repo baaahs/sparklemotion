@@ -6,8 +6,12 @@ import baaahs.controller.ControllerListener
 import baaahs.controller.ControllerManager
 import baaahs.controller.ControllersManager
 import baaahs.describe
+import baaahs.device.PixelArrayDevice
 import baaahs.fakeModel
-import baaahs.fixtures.*
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.FixtureListener
+import baaahs.fixtures.Transport
 import baaahs.geom.Vector3F
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.mapper.ControllerId

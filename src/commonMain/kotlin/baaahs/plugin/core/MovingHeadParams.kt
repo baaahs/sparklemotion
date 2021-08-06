@@ -1,11 +1,13 @@
 package baaahs.plugin.core
 
 import baaahs.dmx.Dmx
-import baaahs.fixtures.*
+import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.result.FloatsResultType
+import baaahs.gl.result.ResultType
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.visualizer.remote.RemoteVisualizers
@@ -57,13 +59,13 @@ data class MovingHeadParams(
             )
         }
 
-        override fun getFixtureView(fixture: Fixture, bufferOffset: Int): baaahs.fixtures.FixtureResults =
+        override fun getFixtureView(fixture: Fixture, bufferOffset: Int): baaahs.gl.result.FixtureResults =
             FixtureResults(fixture, bufferOffset)
 
         inner class FixtureResults(
             private val fixture: Fixture,
             pixelOffset: Int
-        ) : baaahs.fixtures.FixtureResults(pixelOffset, pixelCount) {
+        ) : baaahs.gl.result.FixtureResults(pixelOffset, pixelCount) {
             val movingHeadParams get() = this@ResultBuffer[pixelOffset]
 
             override fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers) {

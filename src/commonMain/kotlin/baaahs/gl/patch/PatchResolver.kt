@@ -1,7 +1,7 @@
 package baaahs.gl.patch
 
 import baaahs.ShowRunner
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
 import baaahs.fixtures.DeviceTypeRenderPlan
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.fixtures.RenderPlan
