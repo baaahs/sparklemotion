@@ -305,5 +305,12 @@ abstract class GlContext(
         const val GL_RG32F = 0x8230
         const val GL_RGB32F = 0x8815
         const val GL_RGBA32F = 0x8814
+        const val GL_RGBA16I = 0x8D88
+        const val GL_RGB16I = 0x8D89
+
+        const val GL_RED_INTEGER = 0x8d94
+        const val GL_RG_INTEGER = 0x8228
+        const val GL_RGB_INTEGER = 0x8D98
+        const val GL_RGBA_INTEGER = 0x8D99
     }
 }
