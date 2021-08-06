@@ -3,15 +3,15 @@ package baaahs.gl.render
 import baaahs.Color
 import baaahs.TestModel
 import baaahs.TestModelSurface
-import baaahs.fixtures.ColorResultType
+import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.gl.*
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
+import baaahs.gl.result.ColorResultType
 import baaahs.plugin.core.datasource.ColorPickerDataSource
 import baaahs.plugin.core.datasource.SliderDataSource
 import baaahs.show.Shader

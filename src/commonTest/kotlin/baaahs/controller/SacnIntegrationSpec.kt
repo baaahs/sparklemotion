@@ -2,9 +2,9 @@ package baaahs.controller
 
 import baaahs.*
 import baaahs.controllers.FakeMappingManager
+import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureListener
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.mapper.*

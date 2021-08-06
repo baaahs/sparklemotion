@@ -1,10 +1,12 @@
 package baaahs.fixtures
 
+import baaahs.device.DeviceType
 import baaahs.dmx.Shenzarpy
 import baaahs.gl.GlContext
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
 import baaahs.gl.render.ResultStorage
+import baaahs.gl.result.ResultBuffer
 import baaahs.model.MovingHeadAdapter
 import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.MovingHeadParams

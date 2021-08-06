@@ -3,7 +3,7 @@ package baaahs.plugin
 import baaahs.Gadget
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.controller.SacnControllerConfig
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.glsl.LinkException

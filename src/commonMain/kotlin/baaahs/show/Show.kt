@@ -3,7 +3,7 @@ package baaahs.show
 import baaahs.SparkleMotion
 import baaahs.app.ui.Editable
 import baaahs.camelize
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.plugin.Plugins

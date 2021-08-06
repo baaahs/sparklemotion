@@ -1,8 +1,13 @@
 package baaahs
 
+import baaahs.device.DeviceType
+import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
-import baaahs.fixtures.*
+import baaahs.fixtures.DeviceTypeRenderPlan
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.NullTransport
+import baaahs.fixtures.ProgramRenderPlan
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.openShader

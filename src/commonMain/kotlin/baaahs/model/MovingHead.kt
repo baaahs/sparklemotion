@@ -1,9 +1,9 @@
 package baaahs.model
 
 import baaahs.Color
+import baaahs.device.DeviceType
 import baaahs.dmx.Dmx
 import baaahs.dmx.Shenzarpy
-import baaahs.fixtures.DeviceType
 import baaahs.fixtures.MovingHeadDevice
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F

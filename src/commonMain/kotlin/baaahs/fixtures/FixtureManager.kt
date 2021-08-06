@@ -1,5 +1,6 @@
 package baaahs.fixtures
 
+import baaahs.device.DeviceType
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager

@@ -2,7 +2,7 @@ package baaahs.glsl
 
 import baaahs.BaseShowPlayer
 import baaahs.Gadget
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.gl.autoWire

@@ -1,7 +1,7 @@
 package baaahs.models
 
+import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Shenzarpy
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.getResource
 import baaahs.model.MovingHead

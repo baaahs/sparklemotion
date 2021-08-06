@@ -3,8 +3,8 @@ package baaahs
 import baaahs.controller.Controller
 import baaahs.controller.ControllerListener
 import baaahs.controller.ControllerManager
+import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.fixtures.Transport
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayReader
