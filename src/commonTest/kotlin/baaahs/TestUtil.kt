@@ -1,6 +1,13 @@
 package baaahs
 
-import baaahs.fixtures.*
+import baaahs.device.DeviceType
+import baaahs.device.PixelArrayDevice
+import baaahs.dmx.Dmx
+import baaahs.dmx.DmxManager
+import baaahs.fixtures.DeviceTypeRenderPlan
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.NullTransport
+import baaahs.fixtures.ProgramRenderPlan
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.openShader
@@ -76,6 +83,9 @@ class FakeModelEntity(
     override val deviceType: DeviceType = PixelArrayDevice,
     override val description: String = name
 ) : Model.Entity {
+    override val modelBounds: Pair<Vector3F, Vector3F>
+        get() = Vector3F.origin to Vector3F.origin
+
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation {
         TODO("not implemented")
     }
@@ -89,21 +99,19 @@ class TestModelSurface(
     override fun allVertices(): Collection<Vector3F> = vertices
 }
 
+fun fakeModel(vararg entities: Model.Entity) = ModelForTest(entities.toList())
 fun fakeModel(entities: List<Model.Entity>) = ModelForTest(entities)
 
 object TestModel : ModelForTest(listOf(TestModelSurface("Panel")))
 
 open class ModelForTest(private val entities: List<Entity>) : Model() {
+    constructor(vararg entities: Entity) : this(entities.toList())
+
     override val name: String = "Test Model"
     override val movingHeads: List<MovingHead> get() = entities.filterIsInstance<MovingHead>()
     override val allSurfaces: List<Surface> get() = entities.filterIsInstance<Surface>()
     override val allEntities: List<Entity> get() = entities
     override val geomVertices: List<Vector3F> = emptyList()
-
-    override val center: Vector3F
-        get() = Vector3F(.5f, .5f, .5f)
-    override val extents: Vector3F
-        get() = Vector3F(1f, 1f, 1f)
 }
 
 class TestRenderContext(
@@ -126,7 +134,7 @@ class TestRenderContext(
     fun addFixtures() {
         renderTargets.addAll(
             modelEntities.map { entity ->
-                renderEngine.addFixture(Fixture(entity, 1, emptyList(), deviceType, transport = NullTransport))
+                renderEngine.addFixture(Fixture(entity, 1, emptyList(), deviceType.defaultConfig, transport = NullTransport))
             }
         )
     }
@@ -138,6 +146,12 @@ class TestRenderContext(
             )
         )
     }
+}
+
+class FakeDmxManager(private val universe: Dmx.Universe) : DmxManager {
+    override val dmxUniverse: Dmx.Universe get() = universe
+
+    override fun allOff():Unit = TODO("not implemented")
 }
 
 object ImmediateDispatcher : CoroutineDispatcher() {

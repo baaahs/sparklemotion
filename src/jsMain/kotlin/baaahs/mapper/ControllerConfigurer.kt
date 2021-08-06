@@ -21,12 +21,14 @@ private val ControllerConfigurer = xComponent<DeviceConfigurerProps>("Controller
 
         table {
             tableHead {
-                thCell { +"ID" }
-                thCell { +"Address" }
-                thCell { +"Model Element" }
-                thCell { +"Pixels" }
-                thCell { +"Mapped" }
-                thCell { +"Status" }
+                tableRow {
+                    thCell { +"ID" }
+                    thCell { +"Address" }
+                    thCell { +"Model Element" }
+                    thCell { +"Pixels" }
+                    thCell { +"Mapped" }
+                    thCell { +"Status" }
+                }
             }
 
             tableBody {
@@ -49,13 +51,15 @@ private val ControllerConfigurer = xComponent<DeviceConfigurerProps>("Controller
 
         table {
             tableHead {
-                thCell { +"Interface" }         // DMX Dongle, sACN
-                thCell { +"Universe" }          // int, for sACN only
-                thCell { +"Device" }            // "Light Bar 1", "Left Sharpy"
-                thCell { +"Type" }              // PixelArrayDevice, MovingHeadDevice, LightBarDevice
-                thCell { +"DMX Base Channel" }  // 1
-                thCell { +"Model Element" }     // "Light Bar 1", "Left Eye"
-                thCell { +"Status" }
+                tableRow {
+                    thCell { +"Interface" }         // DMX Dongle, sACN
+                    thCell { +"Universe" }          // int, for sACN only
+                    thCell { +"Device" }            // "Light Bar 1", "Left Sharpy"
+                    thCell { +"Type" }              // PixelArrayDevice, MovingHeadDevice, LightBarDevice
+                    thCell { +"DMX Base Channel" }  // 1
+                    thCell { +"Model Element" }     // "Light Bar 1", "Left Eye"
+                    thCell { +"Status" }
+                }
             }
 
             tableBody {
@@ -63,29 +67,29 @@ private val ControllerConfigurer = xComponent<DeviceConfigurerProps>("Controller
                     .sortedBy { it.id }
                     .forEach { dmxInfo ->
                         tableRow {
-                            thCell { +dmxInfo.id }
-                            thCell { +(dmxInfo.universe?.toString() ?: "?") }
-                            thCell { +"DMX" }
-                            thCell { +dmxInfo.type }
-                            thCell { +"—" }
-                            thCell { +"—" }
-                            thCell { +"—" }
+                            tdCell { +dmxInfo.id }
+                            tdCell { +(dmxInfo.universe?.toString() ?: "?") }
+                            tdCell { +"DMX" }
+                            tdCell { +dmxInfo.type }
+                            tdCell { +"—" }
+                            tdCell { +"—" }
+                            tdCell { +"—" }
                         }
                     }
             }
 
             tableBody {
-                adminClient.wledDevices.values
+                adminClient.sacnDevices.values
                     .sortedBy { it.id }
                     .forEach { wledDevice ->
                         tableRow {
-                            thCell { +wledDevice.id }
-                            thCell { +"—" }
-                            thCell { +"sACN" }
-                            thCell { +"—" }
-                            thCell { +"—" }
-                            thCell { +"—" }
-                            thCell { +"Online since ${wledDevice.onlineSince}" }
+                            tdCell { +wledDevice.id }
+                            tdCell { +"—" }
+                            tdCell { +"sACN" }
+                            tdCell { +"—" }
+                            tdCell { +"—" }
+                            tdCell { +"—" }
+                            tdCell { +"Online since ${wledDevice.onlineSince}" }
                         }
                     }
             }

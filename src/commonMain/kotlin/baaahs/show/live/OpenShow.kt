@@ -66,7 +66,7 @@ class OpenShow(
 
     fun getPanel(id: String) = show.layouts.panels.getBang(id, "panel")
 
-    val feeds = show.dataSources.entries.associate { (id, dataSource) ->
+    val feeds = allDataSources.entries.associate { (id, dataSource) ->
         val feed = showPlayer.openFeed(id, dataSource)
         dataSource to feed
     }

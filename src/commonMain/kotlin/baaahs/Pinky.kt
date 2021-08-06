@@ -1,81 +1,59 @@
 package baaahs
 
 import baaahs.api.ws.WebSocketRouter
-import baaahs.controller.WledManager
-import baaahs.dmx.Dmx
+import baaahs.controller.ControllersManager
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManager
-import baaahs.gl.RootToolchain
+import baaahs.gl.Toolchain
 import baaahs.gl.glsl.CompilationException
-import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibraryManager
-import baaahs.mapper.*
-import baaahs.model.Model
+import baaahs.mapper.PinkyMapperHandlers
+import baaahs.mapper.Storage
+import baaahs.mapping.MappingManager
 import baaahs.net.Network
-import baaahs.net.listenFragmentingUdp
 import baaahs.plugin.Plugins
-import baaahs.proto.*
+import baaahs.proto.BrainHelloMessage
+import baaahs.scene.SceneManager
 import baaahs.show.Show
 import baaahs.sim.FakeNetwork
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
-import baaahs.visualizer.remote.RemoteVisualizerServer
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
 
 class Pinky(
-    val model: Model,
-    val network: Network,
     val clock: Clock,
-    fs: Fs,
     val firmwareDaddy: FirmwareDaddy,
+    val plugins: Plugins,
 //    private val switchShowAfterIdleSeconds: Int? = 600,
 //    private val adjustShowAfterIdleSeconds: Int? = null,
-    renderManager: RenderManager,
-    val plugins: Plugins,
-    val pinkyMainDispatcher: CoroutineDispatcher,
+    private val storage: Storage,
     private val link: Network.Link,
     val httpServer: Network.HttpServer,
     pubSub: PubSub.Server,
-    dmxManager: DmxManager,
+    private val dmxManager: DmxManager,
+    private val mappingManager: MappingManager,
+    internal val fixtureManager: FixtureManager,
+    override val coroutineContext: CoroutineContext,
+    val toolchain: Toolchain,
+    val stageManager: StageManager,
+    private val sceneManager: SceneManager,
+    private val controllersManager: ControllersManager,
+    val brainManager: BrainManager,
+    private val shaderLibraryManager: ShaderLibraryManager,
+    private val networkStats: NetworkStats,
     val pinkySettings: PinkySettings
-) : CoroutineScope, Network.UdpListener {
+) : CoroutineScope {
     val facade = Facade()
-    private val storage = Storage(fs, plugins)
-    private val mappingResults = FutureMappingResults()
-
-    private val pinkyJob = SupervisorJob()
-    override val coroutineContext: CoroutineContext = pinkyMainDispatcher + pinkyJob
-
-    val gadgetManager = GadgetManager(pubSub, clock, coroutineContext)
-    internal val fixtureManager = FixtureManager(renderManager, model, mappingResults)
-
-    val toolchain = RootToolchain(plugins)
-    val stageManager: StageManager = StageManager(
-        toolchain, renderManager, pubSub, storage, fixtureManager, clock, model, gadgetManager
-    )
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {
         stageManager.switchTo(newShow, file = file)
     }
 
-//    private var selectedNewShowAt = DateTime.now()
-
     val address: Network.Address get() = link.myAddress
-    private val networkStats = NetworkStats()
-
-    // This needs to go last-ish, otherwise we start getting network traffic too early.
-    private val udpSocket = link.listenFragmentingUdp(Ports.PINKY, this)
-    private val brainManager =
-        BrainManager(fixtureManager, firmwareDaddy, mappingResults, udpSocket, networkStats, clock, pubSub)
-    private val movingHeadManager = MovingHeadManager(fixtureManager, dmxManager.dmxUniverse, model.movingHeads)
-    private val wledManager = WledManager(fixtureManager, model, link, pubSub, pinkyMainDispatcher, clock)
-    val dmxUniverse: Dmx.Universe = dmxManager.dmxUniverse
-
-    private val shaderLibraryManager = ShaderLibraryManager(storage, pubSub)
 
     private val serverNotices = arrayListOf<ServerNotice>()
     private val serverNoticesChannel = pubSub.publish(Topics.serverNotices, serverNotices) {
@@ -95,11 +73,10 @@ class Pinky(
         }
 
         httpServer.listenWebSocket("/ws/visualizer") {
-            RemoteVisualizerServer(brainManager, wledManager, movingHeadManager)
+            fixtureManager.newRemoteVisualizerServer()
         }
     }
 
-    private var isStartedUp = false
     private var keepRunning = true
 
     suspend fun startAndRun(simulateBrains: Boolean = false) {
@@ -117,13 +94,13 @@ class Pinky(
     }
 
     private fun addSimulatedBrains() {
-        val mappingInfos = (mappingResults.actualMappingResults as SessionMappingResults).controllerData
+        val mappingInfos = mappingManager.getAllControllerMappings()
         mappingInfos.forEach { (controllerId, info) ->
             when (controllerId.controllerType) {
                 BrainManager.controllerTypeName -> {
                     brainManager.foundBrain(
                         FakeNetwork.FakeAddress("Simulated Brain ${controllerId.id}"),
-                        BrainHelloMessage(controllerId.id, info.entity.name, null, null),
+                        BrainHelloMessage(controllerId.id, info.entity!!.name, null, null),
                         isSimulatedBrain = true
                     )
                 }
@@ -141,8 +118,6 @@ class Pinky(
                     disableDmx()
                     return@throttle
                 }
-
-                updateFixtures()
 
                 networkStats.reset()
                 val elapsedMs = time {
@@ -170,14 +145,28 @@ class Pinky(
         return CoroutineScope(coroutineContext).launch {
             CoroutineScope(coroutineContext).launch {
                 launch { firmwareDaddy.start() }
-                launch { movingHeadManager.start() }
-                mappingResultsLoaderJob =
-                    launch { mappingResults.actualMappingResults = storage.loadMappingData(model) }
+                mappingResultsLoaderJob = launch { mappingManager.start() }
                 launch { loadConfig() }
                 launch { shaderLibraryManager.start() }
+                launch { sceneManager.onStart() }
             }.join()
 
-            isStartedUp = true
+            brainManager.listenForMapperMessages { message ->
+                logger.info { "Mapper isRunning=${message.isRunning}" }
+                if (pinkyState == PinkyState.Running && message.isRunning) {
+                    pinkyState = PinkyState.Mapping
+                    pinkyStateChannel.onChange(PinkyState.Mapping)
+                    mapperIsRunning = true
+                } else if (pinkyState == PinkyState.Mapping && !message.isRunning) {
+                    pinkyState = PinkyState.Running
+                    pinkyStateChannel.onChange(PinkyState.Running)
+                    mapperIsRunning = false
+                }
+            }
+
+            // This needs to go last-ish, otherwise we start getting network traffic too early.
+            launch { controllersManager.start() }
+
             updatePinkyState(PinkyState.Running)
         }
     }
@@ -203,7 +192,8 @@ class Pinky(
                     if (mapperIsRunning) {
                         logger.info { "Mapping ${brainManager.brainCount} brains." }
                     } else {
-                        logger.info { "Sending pixels to ${brainManager.brainCount} brains." }
+                        stageManager.logStatus()
+                        controllersManager.logStatus()
                     }
                     delay(10000)
                 }
@@ -240,37 +230,8 @@ class Pinky(
         stageManager.renderAndSendNextFrame()
     }
 
-    internal fun updateFixtures() {
-        if (brainManager.updateFixtures()) {
-            facade.notifyChanged()
-        }
-    }
-
     private fun disableDmx() {
-        dmxUniverse.allOff()
-    }
-
-    override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
-        if (!isStartedUp) return
-
-        CoroutineScope(coroutineContext).launch {
-            when (val message = parse(bytes)) {
-                is BrainHelloMessage -> brainManager.foundBrain(fromAddress, message)
-                is PingMessage -> brainManager.receivedPing(fromAddress, message)
-                is MapperHelloMessage -> {
-                    logger.info { "Mapper isRunning=${message.isRunning}" }
-                    if (pinkyState == PinkyState.Running && message.isRunning) {
-                        pinkyState = PinkyState.Mapping
-                        pinkyStateChannel.onChange(PinkyState.Mapping)
-                        mapperIsRunning = true
-                    } else if (pinkyState == PinkyState.Mapping && !message.isRunning) {
-                        pinkyState = PinkyState.Running
-                        pinkyStateChannel.onChange(PinkyState.Running)
-                        mapperIsRunning = false
-                    }
-                }
-            }
-        }
+        dmxManager.allOff()
     }
 
     class NetworkStats(var bytesSent: Int = 0, var packetsSent: Int = 0) {
@@ -325,7 +286,7 @@ class Pinky(
         val networkStats: NetworkStats
             get() = this@Pinky.networkStats
 
-        val brains: List<BrainManager.BrainTransport>
+        val brains: List<BrainManager.BrainController>
             get() = this@Pinky.brainManager.activeBrains.values.toList()
 
         val clock: Clock
@@ -350,22 +311,4 @@ enum class PinkyState {
     Running,
     Mapping,
     ShuttingDown
-}
-
-private class FutureMappingResults : MappingResults {
-    var actualMappingResults: MappingResults? = null
-
-    override fun dataForController(controllerId: ControllerId): MappingResults.Info? {
-        if (actualMappingResults == null) {
-            Pinky.logger.warn { "Mapping results for $controllerId requested before available." }
-        }
-        return actualMappingResults?.dataForController(controllerId)
-    }
-
-    override fun dataForEntity(entityName: String): MappingResults.Info? {
-        if (actualMappingResults == null) {
-            Pinky.logger.warn { "Mapping results for $entityName requested before available." }
-        }
-        return actualMappingResults?.dataForEntity(entityName)
-    }
 }

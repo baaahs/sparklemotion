@@ -1,7 +1,8 @@
 package baaahs.fixtures
 
-import baaahs.*
-import baaahs.geom.Vector3F
+import baaahs.FakeModelEntity
+import baaahs.describe
+import baaahs.fakeModel
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
@@ -12,8 +13,8 @@ import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.testToolchain
 import baaahs.glsl.LinearSurfacePixelStrategy
-import baaahs.mapper.MappingResults
 import baaahs.model.Model
+import baaahs.only
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
 import baaahs.show.live.FakeOpenShader
@@ -33,13 +34,10 @@ object FixtureManagerSpec : Spek({
         val model by value { fakeModel(modelEntities) }
         val renderManager by value { RenderManager(model) { FakeGlContext() } }
         val renderTargets by value { linkedMapOf<Fixture, FixtureRenderTarget>() }
-        val resultsByBrainId by value { mutableMapOf<BrainId, MappingResults.Info>() }
-        val resultsBySurfaceName by value { mutableMapOf<String, MappingResults.Info>() }
-        val mappingResults by value { FakeMappingResults(resultsByBrainId, resultsBySurfaceName) }
         val surfacePixelStrategy by value { LinearSurfacePixelStrategy(Random(1)) }
 
         // Maintain stable fixture order for test:
-        val fixtureManager by value { FixtureManager(renderManager, model, mappingResults, surfacePixelStrategy, renderTargets) }
+        val fixtureManager by value { FixtureManager(renderManager, model, surfacePixelStrategy, renderTargets) }
 
         context("when fixtures of multiple types have been added") {
             val fogginess by value { ContentType("fogginess", "Fogginess", GlslType.Float) }
@@ -58,45 +56,6 @@ object FixtureManagerSpec : Spek({
 
             beforeEachTest {
                 fixtureManager.fixturesChanged(initialFixtures, emptyList())
-            }
-
-            context("#createFixtureFor") {
-                val brainId by value { "brain1" }
-                val msgSurfaceName by value<String?> { null }
-                val surface by value { TestModelSurface("surface1", 2, vertices = listOf(
-                    Vector3F(1f, 1f, 1f),
-                    Vector3F(2f, 2f, 1f),
-                    Vector3F(1f, 2f, 2f),
-                    Vector3F(2f, 1f, 2f)
-                )) }
-                val pixelLocations by value<List<Vector3F?>?> { null }
-                val mappingInfo by value { MappingResults.Info(surface, pixelLocations) }
-                val controllerId by value { BrainId(brainId).asControllerId() }
-
-                val subject by value { fixtureManager.createFixtureFor(controllerId, msgSurfaceName, NullTransport) }
-
-                context("when the brain id is mapped to a model element") {
-                    override(resultsByBrainId) { mapOf(BrainId(brainId) to mappingInfo) }
-
-                    it("should create a fixture") {
-                        expect(subject.modelEntity).toBe(surface)
-                        expect(subject.pixelCount).toBe(2)
-
-                        // LinearSurfacePixelStrategy(Random(1))
-                        expect(subject.pixelLocations).toBe(LinearSurfacePixelStrategy(Random(1)).forKnownSurface(2, surface, TestModel))
-                    }
-                }
-
-                context("when the surface name is specified") {
-                    override(msgSurfaceName) { "surface1" }
-                    override(resultsBySurfaceName) { mapOf(msgSurfaceName to mappingInfo) }
-
-                    it("should create a fixture") {
-                        expect(subject.modelEntity).toBe(surface)
-                        expect(subject.pixelCount).toBe(2)
-                        expect(subject.pixelLocations).toBe(LinearSurfacePixelStrategy(Random(1)).forKnownSurface(2, surface, TestModel))
-                    }
-                }
             }
 
             context("generating programs to cover every fixture") {

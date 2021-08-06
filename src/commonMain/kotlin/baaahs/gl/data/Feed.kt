@@ -1,9 +1,9 @@
 package baaahs.gl.data
 
 import baaahs.RefCounted
-import baaahs.fixtures.ParamBuffer
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.param.ParamBuffer
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
 import baaahs.show.UpdateMode

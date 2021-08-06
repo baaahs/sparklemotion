@@ -10,4 +10,5 @@ open external class OrbitControls(theObject: Any, domElement: Any) {
     var enableKeys: Boolean
 
     fun update()
+    fun dispose()
 }

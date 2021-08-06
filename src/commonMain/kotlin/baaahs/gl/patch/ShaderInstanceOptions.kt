@@ -2,7 +2,7 @@ package baaahs.gl.patch
 
 import baaahs.app.ui.editor.LinkOption
 import baaahs.app.ui.editor.PortLinkOption
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
 import baaahs.gl.Toolchain
 import baaahs.gl.glsl.LinkException
 import baaahs.gl.openShader

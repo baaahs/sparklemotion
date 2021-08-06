@@ -4,7 +4,10 @@ import baaahs.BaseShowPlayer
 import baaahs.control.OpenButtonControl
 import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
-import baaahs.fixtures.*
+import baaahs.device.DeviceType
+import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.SingleResultStorage
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
@@ -12,6 +15,9 @@ import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.render.RenderEngine
+import baaahs.gl.render.RenderResults
+import baaahs.gl.render.ResultStorage
+import baaahs.gl.result.Vec2ResultType
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
@@ -28,6 +34,7 @@ import baaahs.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
 interface ShaderBuilder : IObservable {
     val shader: Shader
@@ -259,10 +266,6 @@ object ProjectionPreviewDevice: DeviceType {
     override val id: String get() = "ProjectionPreview"
     override val title: String get() = "Projection Preview"
     override val dataSourceBuilders: List<DataSourceBuilder<*>> get() = PixelArrayDevice.dataSourceBuilders
-    override val resultParams: List<ResultParam>
-        get() = listOf(
-            ResultParam("Vertex Location", Vec2ResultType)
-        )
     override val resultContentType: ContentType
         get() = ContentType.UvCoordinate
 
@@ -275,9 +278,20 @@ object ProjectionPreviewDevice: DeviceType {
             ""
         )
 
-    fun getVertexLocations(resultViews: List<ResultView>): Vec2ResultType.Vec2ResultView {
-        return resultViews[0] as Vec2ResultType.Vec2ResultView
+    override val defaultConfig: FixtureConfig
+        get() = TODO("not implemented")
+
+    override fun createResultStorage(renderResults: RenderResults): ResultStorage {
+        val resultBuffer = renderResults.allocate("Vertex Location", Vec2ResultType)
+        return SingleResultStorage(resultBuffer)
     }
 
     override fun toString(): String = id
+
+    @Serializable
+    class Config : FixtureConfig {
+        override val deviceType: DeviceType
+            get() = TODO("not implemented")
+
+    }
 }

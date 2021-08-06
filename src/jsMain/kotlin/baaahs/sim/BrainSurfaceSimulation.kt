@@ -2,9 +2,6 @@ package baaahs.sim
 
 import baaahs.BrainManager
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.PixelArrayDevice
-import baaahs.fixtures.ResultView
-import baaahs.fixtures.Transport
 import baaahs.geom.Vector3F
 import baaahs.geom.toVector3F
 import baaahs.io.ByteArrayReader
@@ -36,6 +33,7 @@ actual class BrainSurfaceSimulation actual constructor(
                 BrainManager.controllerTypeName,
                 brain.id,
                 surface.name,
+                pixelPositions.size,
                 pixelPositions.map {
                     MappingSession.SurfaceData.PixelData(it.toVector3F(), null, null)
                 }, null, null, null
@@ -45,14 +43,13 @@ actual class BrainSurfaceSimulation actual constructor(
     override val entityVisualizer: SurfaceVisualizer by lazy { SurfaceVisualizer(surfaceGeometry, vizPixels) }
 
     override val previewFixture: Fixture by lazy {
-        val transport = PixelArrayPreviewTransport()
         Fixture(
             surface,
             pixelPositions.size,
             pixelPositions.map { it.toVector3F() },
-            surface.deviceType,
+            surface.deviceType.defaultConfig,
             surface.name,
-            transport
+            PixelArrayPreviewTransport(surface.name, vizPixels)
         )
     }
 
@@ -74,17 +71,5 @@ actual class BrainSurfaceSimulation actual constructor(
 
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
         entityVisualizer.vizPixels?.readColors(reader)
-    }
-
-    inner class PixelArrayPreviewTransport : Transport {
-        override val name: String
-            get() = surface.name
-
-        override fun send(fixture: Fixture, resultViews: List<ResultView>) {
-            val resultColors = PixelArrayDevice.getColorResults(resultViews)
-            for (i in vizPixels.indices) {
-                vizPixels[i] = resultColors[i]
-            }
-        }
     }
 }

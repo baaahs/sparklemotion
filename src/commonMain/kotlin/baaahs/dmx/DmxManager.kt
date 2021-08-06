@@ -2,27 +2,62 @@ package baaahs.dmx
 
 import baaahs.PubSub
 import baaahs.Topics
+import baaahs.controller.ControllerListener
+import baaahs.controller.ControllerManager
 import baaahs.publishProperty
+import baaahs.scene.ControllerConfig
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Logger
 import kotlinx.serialization.Serializable
 
-class DmxManager(
+interface DmxManager {
+    fun allOff()
+
+    val dmxUniverse: Dmx.Universe
+}
+
+class DmxManagerImpl(
     private val dmxDriver: Dmx.Driver,
     pubSub: PubSub.Server,
     private val fakeDmxUniverse: FakeDmxUniverse // For fallback.
-) {
+) : DmxManager, ControllerManager {
+    override val controllerType: String
+        get() = "DMX"
+
     private var deviceData by publishProperty(pubSub, Topics.dmxDevices, emptyMap())
-    private val listDevices = listDevices()
-    val dmxUniverse = findDmxUniverse(listDevices)
+    private val attachedDevices = findAttachedDevices()
+    override val dmxUniverse = findDmxUniverse(attachedDevices)
+    private var controllerListener: ControllerListener? = null
 
     init {
-        deviceData = listDevices.map { device ->
+        deviceData = attachedDevices.map { device ->
             DmxInfo(device.id, device.name, "DMX USB", null)
         }.associateBy { it.id }
     }
 
-    private fun listDevices(): List<Dmx.Device> = dmxDriver.findDmxDevices()
+    override fun start(controllerListener: ControllerListener) {
+        this.controllerListener = controllerListener
+        if (attachedDevices.isNotEmpty()) {
+            attachedDevices.forEach { device -> controllerListener.onAdd(DirectDmxController(device)) }
+        }
+    }
+
+    override fun onConfigChange(controllerConfigs: List<ControllerConfig>) {
+    }
+
+    override fun stop() {
+        TODO("not implemented")
+    }
+
+    override fun logStatus() {
+        logger.info { "Sending to ${attachedDevices.size} attached DMX controllers." }
+    }
+
+    override fun allOff() {
+        dmxUniverse.allOff()
+    }
+
+    private fun findAttachedDevices(): List<Dmx.Device> = dmxDriver.findDmxDevices()
 
     private fun findDmxUniverse(dmxDevices: List<Dmx.Device>): Dmx.Universe {
         if (dmxDevices.isNotEmpty()) {

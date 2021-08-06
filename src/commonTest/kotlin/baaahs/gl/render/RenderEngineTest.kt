@@ -3,15 +3,15 @@ package baaahs.gl.render
 import baaahs.Color
 import baaahs.TestModel
 import baaahs.TestModelSurface
-import baaahs.fixtures.ColorResultType
+import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.gl.*
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
+import baaahs.gl.result.ColorResultType
 import baaahs.plugin.core.datasource.ColorPickerDataSource
 import baaahs.plugin.core.datasource.SliderDataSource
 import baaahs.show.Shader
@@ -236,7 +236,7 @@ class RenderEngineTest {
                 val offset = i * .2f
                 Vector3F(0f + offset, .1f + offset, 0f)
             },
-            PixelArrayDevice,
+            PixelArrayDevice.defaultConfig,
             transport = NullTransport
         )
     }
@@ -245,7 +245,7 @@ class RenderEngineTest {
         return Fixture(
             TestModelSurface(name), pixelCount,
             (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) },
-            PixelArrayDevice,
+            PixelArrayDevice.defaultConfig,
             transport = NullTransport
         )
     }
@@ -307,5 +307,5 @@ private val directXyProjection = Shader(
     """.trimIndent()
 )
 
-val FixtureRenderTarget.colors: ColorResultType.ColorResultView
-    get() = PixelArrayDevice.getColorResults(this.resultViews)
+val FixtureRenderTarget.colors: ColorResultType.ColorFixtureResults
+    get() = TODO("PixelArrayDevice.getColorResults(this.fixtureResults)")

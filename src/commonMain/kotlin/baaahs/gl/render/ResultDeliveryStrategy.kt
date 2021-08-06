@@ -1,6 +1,5 @@
 package baaahs.gl.render
 
-import baaahs.fixtures.ResultBuffer
 import baaahs.gl.GlContext
 
 interface ResultDeliveryStrategy {
@@ -8,18 +7,18 @@ interface ResultDeliveryStrategy {
 
     fun afterRender(
         frameBuffer: GlContext.FrameBuffer,
-        resultBuffers: List<ResultBuffer>
+        resultStorage: ResultStorage
     ) {}
 
     suspend fun awaitResults(
         frameBuffer: GlContext.FrameBuffer,
-        resultBuffers: List<ResultBuffer>
+        resultStorage: ResultStorage
     ) {}
 }
 
 class SyncResultDeliveryStrategy : ResultDeliveryStrategy {
-    override suspend fun awaitResults(frameBuffer: GlContext.FrameBuffer, resultBuffers: List<ResultBuffer>) {
-        resultBuffers.forEach {
+    override suspend fun awaitResults(frameBuffer: GlContext.FrameBuffer, resultStorage: ResultStorage) {
+        resultStorage.resultBuffers.forEach {
             val gpuBuffer = it.gpuBuffer
             val resultType = it.type
 

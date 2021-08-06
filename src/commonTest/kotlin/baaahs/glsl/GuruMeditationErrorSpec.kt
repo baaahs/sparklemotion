@@ -1,7 +1,7 @@
 package baaahs.glsl
 
 import baaahs.describe
-import baaahs.fixtures.PixelArrayDevice
+import baaahs.device.PixelArrayDevice
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeKgl

@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.app.ui.CommonIcons
+import baaahs.controller.ControllersManager
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.RenderPlan
 import baaahs.gl.Toolchain
@@ -64,7 +65,8 @@ class StageManager(
     private val fixtureManager: FixtureManager,
     private val clock: Clock,
     modelInfo: ModelInfo,
-    private val gadgetManager: GadgetManager
+    private val gadgetManager: GadgetManager,
+    private val controllersManager: ControllersManager
 ) : BaseShowPlayer(toolchain, modelInfo) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
@@ -110,7 +112,7 @@ class StageManager(
         super.registerGadget(id, gadget, controlledDataSource)
     }
 
-    fun onGadgetChange() {
+    private fun onGadgetChange() {
         showRunner?.onSelectedPatchesChanged()
 
         // Start housekeeping early -- as soon as we see a change -- in hopes of avoiding jank.
@@ -170,9 +172,11 @@ class StageManager(
             // then perform any housekeeping tasks immediately afterward, to avoid frame lag.
             if (dontProcrastinate) housekeeping()
 
+            controllersManager.beforeFrame()
             if (showRunner.renderNextFrame()) {
                 fixtureManager.sendFrame()
             }
+            controllersManager.afterFrame()
 
             if (!dontProcrastinate) housekeeping()
         }
@@ -185,6 +189,10 @@ class StageManager(
     fun shutDown() {
         showRunner?.release()
         showEditorStateChannel.unsubscribe()
+    }
+
+    fun logStatus() {
+        renderManager.logStatus()
     }
 
     inner class ShowEditSession(remoteFsSerializer: RemoteFsSerializer) {

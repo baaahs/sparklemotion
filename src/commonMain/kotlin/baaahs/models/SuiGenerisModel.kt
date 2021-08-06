@@ -1,6 +1,6 @@
 package baaahs.models
 
-import baaahs.fixtures.PixelArrayDevice
+import baaahs.device.PixelArrayDevice
 import baaahs.model.Model
 import baaahs.model.ObjModel
 

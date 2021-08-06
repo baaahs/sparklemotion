@@ -1,6 +1,6 @@
 package baaahs.gl.render
 
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
 import baaahs.fixtures.DeviceTypeRenderPlan
 import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
@@ -9,6 +9,8 @@ import baaahs.gl.data.PerPixelEngineFeed
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.result.ResultBuffer
+import baaahs.gl.result.ResultType
 import baaahs.model.ModelInfo
 import baaahs.util.Logger
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
@@ -21,6 +23,7 @@ class ModelRenderEngine(
     private val modelInfo: ModelInfo,
     private val deviceType: DeviceType,
     private val minTextureWidth: Int = 16,
+    private val maxFramebufferWidth: Int = fbMaxPixWidth,
     private val resultDeliveryStrategy: ResultDeliveryStrategy = SyncResultDeliveryStrategy()
 ) : RenderEngine(gl) {
     private val renderTargetsToAdd: MutableList<FixtureRenderTarget> = mutableListOf()
@@ -32,14 +35,18 @@ class ModelRenderEngine(
     private val renderTargets: MutableList<FixtureRenderTarget> = mutableListOf()
     private var renderPlan: DeviceTypeRenderPlan? = null
 
-    private val resultBuffers = gl.runInContext {
-        deviceType.resultParams
-            .mapIndexed { index, deviceParam -> deviceParam.allocate(gl, index) }
+    private val resultStorage = gl.runInContext {
+        deviceType.createResultStorage(object : RenderResults {
+            var index = 0
+
+            override fun <T: ResultBuffer> allocate(title: String, resultType: ResultType<T>): T =
+                resultType.createResultBuffer(gl, index++)
+        })
     }
 
     private val frameBuffer = gl.runInContext {
         gl.createFrameBuffer()
-            .also { fb -> resultBuffers.forEach { it.attachTo(fb) } }
+            .also { fb -> resultStorage.attachTo(fb) }
             .also { it.check() }
     }
 
@@ -56,11 +63,11 @@ class ModelRenderEngine(
 
         val rects = mapFixturePixelsToRects(
             nextPixelOffset,
-            fbMaxPixWidth,
+            maxFramebufferWidth,
             fixture
         )
         val renderTarget = FixtureRenderTarget(
-            fixture, nextRectOffset, rects, modelInfo, fixture.pixelCount, nextPixelOffset, resultBuffers
+            fixture, nextRectOffset, rects, modelInfo, fixture.pixelCount, nextPixelOffset, resultStorage
         )
         nextPixelOffset += fixture.pixelCount
         nextRectOffset += rects.size
@@ -98,9 +105,7 @@ class ModelRenderEngine(
     }
 
     override fun bindResults() {
-        if (resultBuffers.isNotEmpty()) {
-            frameBuffer.bind()
-        }
+        frameBuffer.bind()
     }
 
     override fun render() {
@@ -112,11 +117,11 @@ class ModelRenderEngine(
     }
 
     override fun afterRender() {
-        resultDeliveryStrategy.afterRender(frameBuffer, resultBuffers)
+        resultDeliveryStrategy.afterRender(frameBuffer, resultStorage)
     }
 
     override suspend fun awaitResults() {
-        resultDeliveryStrategy.awaitResults(frameBuffer, resultBuffers)
+        resultDeliveryStrategy.awaitResults(frameBuffer, resultStorage)
     }
 
     // This must be run from within a GL context.
@@ -145,12 +150,16 @@ class ModelRenderEngine(
 
     override fun onRelease() {
         arrangement.release()
-        resultBuffers.forEach { it.release() }
+        resultStorage.release()
         frameBuffer.release()
     }
 
-    val Int.bufWidth: Int get() = max(minTextureWidth, min(this, fbMaxPixWidth))
-    val Int.bufHeight: Int get() = this / fbMaxPixWidth + 1
+    fun logStatus() {
+        logger.info { "Rendering $pixelCount pixels for ${renderTargets.size} fixtures."}
+    }
+
+    val Int.bufWidth: Int get() = max(minTextureWidth, min(this, maxFramebufferWidth))
+    val Int.bufHeight: Int get() = this / maxFramebufferWidth + 1
     val Int.bufSize: Int get() = bufWidth * bufHeight
 
     inner class Arrangement(val pixelCount: Int, addedRenderTargets: List<FixtureRenderTarget>) {
@@ -168,9 +177,7 @@ class ModelRenderEngine(
                 engineFeed.maybeResizeAndPopulate(this, addedRenderTargets)
             }
 
-            resultBuffers.forEach {
-                it.resize(safeWidth, safeHeight)
-            }
+            resultStorage.resize(safeWidth, safeHeight)
         }
 
         private val quad: Quad =
@@ -178,10 +185,10 @@ class ModelRenderEngine(
                 it.rects.map { rect ->
                     // Remap from pixel coordinates to normalized device coordinates.
                     Quad.Rect(
-                        -(rect.top / pixHeight * 2 - 1),
-                        rect.left / pixWidth * 2 - 1,
-                        -(rect.bottom / pixHeight * 2 - 1),
-                        rect.right / pixWidth * 2 - 1
+                        rect.top,
+                        rect.left,
+                        rect.bottom,
+                        rect.right
                     )
                 }
             })
@@ -199,6 +206,7 @@ class ModelRenderEngine(
                 val program = programRenderPlan.program
                 if (program != null) {
                     gl.useProgram(program)
+                    program.setPixDimens(arrangement.pixWidth, arrangement.pixHeight)
                     program.aboutToRenderFrame()
 
                     quad.prepareToRender(program.vertexAttribLocation) {
@@ -259,4 +267,8 @@ class ModelRenderEngine(
             }
         }
     }
+}
+
+interface RenderResults {
+    fun <T : ResultBuffer> allocate(title: String, resultType: ResultType<T>): T
 }

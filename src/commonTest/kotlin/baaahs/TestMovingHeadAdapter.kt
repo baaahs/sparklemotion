@@ -2,13 +2,13 @@ package baaahs
 
 import baaahs.dmx.Dmx
 import baaahs.dmx.Shenzarpy
-import baaahs.geom.Vector3F
 import baaahs.model.MovingHead
+import baaahs.model.MovingHeadAdapter
 
-class TestMovingHead(
+class TestMovingHeadAdapter(
     override val dmxChannelCount: Int = 10,
 
-    override val colorModel: ColorModel = ColorModel.RGB,
+    override val colorModel: MovingHead.ColorModel = MovingHead.ColorModel.RGB,
     override val colorWheelColors: List<Shenzarpy.WheelColor> = emptyList(),
     override val colorWheelMotorSpeed: Float = 1f,
 
@@ -25,10 +25,10 @@ class TestMovingHead(
     override val tiltMotorSpeed: Float = 1f,
 
     override val shutterChannel: Dmx.Channel = TestChannel(6)
-) : MovingHead("test", "Test", 1, Vector3F.origin, Vector3F.origin) {
+) : MovingHeadAdapter {
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
 
-    inner class Buffer(override val dmxBuffer: Dmx.Buffer) : BaseBuffer(this) {
+    inner class Buffer(override val dmxBuffer: Dmx.Buffer) : MovingHead.BaseBuffer(this) {
         override var colorWheelPosition: Float
             get() = colorWheel.toInt() / 128f
             set(value) { colorWheel = (value * 128f).toInt().toByte() }

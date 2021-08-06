@@ -2,6 +2,7 @@ package baaahs.visualizer.movers
 
 import baaahs.Color
 import baaahs.model.MovingHead
+import baaahs.model.MovingHeadAdapter
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
 import baaahs.visualizer.EntityVisualizer
@@ -14,13 +15,16 @@ class MovingHeadVisualizer(
     private val dmxUniverse: FakeDmxUniverse,
     private val beam: Beam = Beam.selectFor(movingHead)
 ) : EntityVisualizer {
+    override val title: String
+        get() = movingHead.name
     override var mapperIsRunning: Boolean = false
+    override var selected: Boolean = false // TODO: Show that the device is selected.
 
     private val buffer = run {
-        val dmxBufferReader = dmxUniverse.listen(movingHead.baseDmxChannel, movingHead.dmxChannelCount) {
+        val dmxBufferReader = dmxUniverse.listen(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount) {
             receivedDmxFrame()
         }
-        movingHead.newBuffer(dmxBufferReader)
+        movingHead.adapter.newBuffer(dmxBufferReader)
     }
 
     private var lastUpdate = clock.now()
@@ -42,7 +46,7 @@ class MovingHeadVisualizer(
             buffer.dimmer
         )
 
-        val attainableState = currentState.moveToward(momentumState, requestedState, movingHead, elapsed)
+        val attainableState = currentState.moveToward(momentumState, requestedState, movingHead.adapter, elapsed)
         beam.update(attainableState)
 
         lastUpdate = now
@@ -56,8 +60,8 @@ enum class ColorMode(
     val getColor: MovingHead.(State) -> Color
 ) {
     Rgb(false, { state -> state.color }),
-    Primary(true, { state -> this.colorAtPosition(state.colorWheelPosition) }),
-    Secondary(true, { state -> this.colorAtPosition(state.colorWheelPosition, next = true) })
+    Primary(true, { state -> this.adapter.colorAtPosition(state.colorWheelPosition) }),
+    Secondary(true, { state -> this.adapter.colorAtPosition(state.colorWheelPosition, next = true) })
 }
 
 fun ClosedRange<Float>.scale(value: Float) =
@@ -67,7 +71,7 @@ val ClosedRange<Float>.diff
     get() =
         (endInclusive - start).absoluteValue
 
-fun MovingHead.colorAtPosition(position: Float, next: Boolean = false): Color {
+fun MovingHeadAdapter.colorAtPosition(position: Float, next: Boolean = false): Color {
     var colorIndex = (position.absoluteValue % 1f * colorWheelColors.size).toInt()
     if (next) colorIndex = (colorIndex + 1) % colorWheelColors.size
     return colorWheelColors[colorIndex].color
