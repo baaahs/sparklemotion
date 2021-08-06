@@ -11,11 +11,11 @@ import baaahs.sim.SimulationEnv
 
 abstract class Model : ModelInfo {
     abstract val name: String
-    abstract val movingHeads: List<MovingHead>
-    abstract val allSurfaces: List<Surface>
+    open val movingHeads: List<MovingHead> get() = emptyList()
+    open val allSurfaces: List<Surface> get() = emptyList()
     abstract val allEntities: List<Entity>
 
-    abstract val geomVertices: List<Vector3F>
+    open val geomVertices: List<Vector3F> get() = emptyList()
 
     private val allSurfacesByName: Map<String, Entity> by lazy { allEntities.associateBy { it.name } }
 

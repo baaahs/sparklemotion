@@ -1,17 +1,20 @@
 package baaahs.visualizer
 
 import three.js.Object3D
-import three.js.Scene
 
-actual class VizScene(private val scene: Scene) {
+actual class VizScene(private val sceneListener: SceneListener) {
     actual fun add(obj: VizObj) {
-        scene.add(obj.obj)
+        sceneListener.add(obj.obj)
     }
 
     actual fun remove(obj: VizObj) {
-        scene.add(obj.obj)
+        sceneListener.add(obj.obj)
     }
 }
 
 actual class VizObj(val obj: Object3D)
 
+interface SceneListener {
+    fun add(obj: Object3D)
+    fun remove(obj: Object3D)
+}

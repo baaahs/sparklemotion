@@ -2,6 +2,7 @@ package baaahs.plugin
 
 import baaahs.Gadget
 import baaahs.app.ui.editor.PortLinkOption
+import baaahs.controller.SacnControllerConfig
 import baaahs.fixtures.DeviceType
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
@@ -9,6 +10,7 @@ import baaahs.gl.glsl.LinkException
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.core.CorePlugin
+import baaahs.scene.ControllerConfig
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.appearsToBePurposeBuiltFor
@@ -88,6 +90,8 @@ class Plugins private constructor(
 
     val deviceTypes = DeviceTypes()
 
+    val controllers = Controllers()
+
     val shaderDialects = ShaderDialects()
     val shaderTypes = ShaderTypes()
 
@@ -109,6 +113,7 @@ class Plugins private constructor(
         include(controlSerialModule)
         include(dataSourceBuilders.serialModule)
         include(deviceTypes.serialModule)
+        include(controllers.serialModule)
     }
 
     val json = Json { serializersModule = this@Plugins.serialModule }
@@ -273,6 +278,7 @@ class Plugins private constructor(
             all.forEach { deviceType ->
                 @Suppress("UNCHECKED_CAST")
                 contextual(deviceType::class as KClass<DeviceType>, serializer)
+                include(deviceType.serialModule)
             }
         }
 
@@ -280,6 +286,14 @@ class Plugins private constructor(
             return all.flatMap { deviceType ->
                 deviceType.dataSourceBuilders.filter { dataSource -> dataSource.contentType == contentType }
             }.map { it.build(inputPort) }
+        }
+    }
+
+    inner class Controllers {
+        val serialModule = SerializersModule {
+            polymorphic(ControllerConfig::class) {
+                subclass(SacnControllerConfig::class, SacnControllerConfig.serializer())
+            }
         }
     }
 

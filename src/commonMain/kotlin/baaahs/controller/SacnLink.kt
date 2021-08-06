@@ -1,12 +1,12 @@
 package baaahs.controller
 
 import baaahs.Color
-import baaahs.Pixels
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
 import baaahs.util.Logger
 import baaahs.util.Stats
+import kotlin.math.min
 
 class SacnLink(
     link: Network.Link,
@@ -24,9 +24,9 @@ class SacnLink(
     })
 
 
-    fun deviceAt(address: Network.Address): SacnDevice = SacnDevice(address)
+    fun deviceAt(address: Network.Address): SacnNode = SacnNode(address)
 
-    inner class SacnDevice(private val address: Network.Address) {
+    inner class SacnNode(private val address: Network.Address) {
         val stats = SacnStats()
         private var sequenceNumber = 0
 
@@ -39,12 +39,15 @@ class SacnLink(
                     buf.writeByte(color.blueB)
                 }
 
-                this@SacnLink.sendDataPacket(address, sequenceNumber++, buf.toBytes())
+                this@SacnLink.sendDataPacket(address, sequenceNumber++, 0x1, buf.toBytes())
             }
         }
 
-        fun sendDataPacket(data: ByteArray) {
-            this@SacnLink.sendDataPacket(address, sequenceNumber++, data)
+        fun sendDataPacket(
+            data: ByteArray, universe: Int = 1, dataOffset: Int = 0, dataLength: Int = -1, sequenceNumber: Int = -1
+        ) {
+            val seqNum = if (sequenceNumber == -1) this.sequenceNumber++ else sequenceNumber
+            this@SacnLink.sendDataPacket(address, seqNum, universe, data, dataOffset, dataLength)
         }
     }
 
@@ -60,9 +63,13 @@ class SacnLink(
     private fun sendDataPacket(
         address: Network.Address,
         sequenceNumber: Int,
-        dataBytes: ByteArray
+        universe: Int,
+        dataBytes: ByteArray,
+        dataOffset: Int = 0,
+        dataLength: Int = -1
     ) {
-        if (dataBytes.size > 512) error("Too many DMX channels ($dataBytes > 512).")
+        val length = if (dataLength == -1) min(dataBytes.size, 512) else dataLength
+        if (length > 512) error("Too many DMX channels ($dataBytes > 512).")
 
         val bytes = ByteArrayWriter().apply {
             // Root Layer
@@ -83,9 +90,9 @@ class SacnLink(
             writeBytes(sourceNameBytes)
             writeByte(199.toByte()) // Priority
             writeShort(0x0) // Synchronization address
-            writeByte(sequenceNumber.toByte()) // Sequence number
+            writeByte((sequenceNumber and 0xFF).toByte()) // Sequence number
             writeByte(0x0) // Options
-            writeShort(0x1) // Universe
+            writeShort(universe) // Universe
 
             // DMP Layer
             val dmpLayerPdu = offset
@@ -94,10 +101,11 @@ class SacnLink(
             writeByte(0xA1.toByte()) // Address type & data type
             writeShort(0x0) // First property address
             writeShort(0x1) // Address increment
-            writeShort(1 + dataBytes.size) // Property value count
+            writeShort(1 + length) // Property value count
             // Property values...
             writeByte(0x0) // START code
-            for (b in dataBytes) writeByte(b)
+            for (i in dataOffset until dataOffset + length)
+                writeByte(dataBytes[i])
 
             at(rootLayerPdu).writeShort(0x7000 or offset - rootLayerPdu)
             at(framingLayerPdu).writeShort(0x7000 or offset - framingLayerPdu)
@@ -107,53 +115,10 @@ class SacnLink(
         udpSocket.sendUdp(address, sAcnPort, bytes)
     }
 
-    fun readDataFrame(byteArray: ByteArray, pixels: Pixels) {
-        ByteArrayReader(byteArray).apply {
-            // Root Layer
-            readShort(/*0x10*/) // Preamble size
-            readShort(/*0x0*/) // Post-amble size
-            // ACN packet identifier:
-            readBytes(12 /*0x41, 0x53, 0x43, 0x2d, 0x45, 0x31, 0x2e, 0x31, 0x37, 0x00, 0x00, 0x00*/)
-
-//            val rootLayerPdu = offset
-            readShort(/*0*/) // PDU length
-            readInt(/*VECTOR_ROOT_E131_DATA*/) // Vector
-            readBytes(16 /*senderCid*/) // Sender's CID
-
-            // Framing Layer
-//            val framingLayerPdu = offset
-            readShort(/*0*/) // PDU length
-            readInt(/*VECTOR_E131_DATA_PACKET*/) // Vector
-            readBytes(sourceNameBytes)
-            readByte(/*199.toByte()*/) // Priority
-            readShort(/*0x0*/) // Synchronization address
-            readByte(/*sequenceNumber.toByte()*/) // Sequence number
-            readByte(/*0x0*/) // Options
-            readShort(/*0x1*/) // Universe
-
-            // DMP Layer
-//            val dmpLayerPdu = offset
-            readShort(/*0*/) // PDU length
-            readByte(/*VECTOR_DMP_SET_PROPERTY.toByte()*/) // Vector
-            readByte(/*0xA1.toByte()*/) // Address type & data type
-            readShort(/*0x0*/) // First property address
-            readShort(/*0x1*/) // Address increment
-            val pixelCount = readShort() / 3 - 1 - 3// (/*1 + colors.pixelCount * 3*/) // Property value count
-            // Property values...
-            readByte(/*0x0*/) // START code
-            for (i in 0 until pixelCount) {
-                pixels[i] = Color(
-                    readByte(/*color.redB*/),
-                    readByte(/*color.greenB*/),
-                    readByte(/*color.blueB*/)
-                )
-            }
-
-//            at(rootLayerPdu).writeShort(0x7000 or offset - rootLayerPdu)
-//            at(framingLayerPdu).writeShort(0x7000 or offset - framingLayerPdu)
-//            at(dmpLayerPdu).writeShort(0x7000 or offset - dmpLayerPdu)
-        }
-    }
+    class DataFrame(
+        val universe: Int,
+        val channels: ByteArray
+    )
 
     fun sendUniverseDiscoveryPacket() {
         logger.warn { "Sending Universe Discovery Packet" }
@@ -196,7 +161,7 @@ class SacnLink(
     companion object {
         const val sAcnPort = 5568
 
-        private const val VECTOR_ROOT_E131_DATA = 0x4
+        const val VECTOR_ROOT_E131_DATA = 0x4
         private const val VECTOR_ROOT_E131_EXTENDED = 0x8
 
         private const val VECTOR_DMP_SET_PROPERTY = 0x2
@@ -206,6 +171,53 @@ class SacnLink(
         private const val VECTOR_E131_EXTENDED_SYNCHRONIZATION = 0x1
         private const val VECTOR_E131_EXTENDED_DISCOVERY = 0x2
         private const val VECTOR_UNIVERSE_DISCOVERY_UNIVERSE_LIST = 0x1
+
+        fun readDataFrame(byteArray: ByteArray): DataFrame {
+            ByteArrayReader(byteArray).apply {
+                // Root Layer
+                readShort(/*0x10*/) // Preamble size
+                readShort(/*0x0*/) // Post-amble size
+                // ACN packet identifier:
+                readBytes(12 /*0x41, 0x53, 0x43, 0x2d, 0x45, 0x31, 0x2e, 0x31, 0x37, 0x00, 0x00, 0x00*/)
+
+//            val rootLayerPdu = offset
+                readShort(/*0*/) // PDU length
+                readInt(/*VECTOR_ROOT_E131_DATA*/) // Vector
+                readBytes(16 /*senderCid*/) // Sender's CID
+
+                // Framing Layer
+//            val framingLayerPdu = offset
+                readShort(/*0*/) // PDU length
+                readInt(/*VECTOR_E131_DATA_PACKET*/) // Vector
+                readBytes(64)
+                readByte(/*199.toByte()*/) // Priority
+                readShort(/*0x0*/) // Synchronization address
+                readByte(/*sequenceNumber.toByte()*/) // Sequence number
+                readByte(/*0x0*/) // Options
+                val universe = readShort(/*0x1*/).toInt() // Universe
+
+                // DMP Layer
+//            val dmpLayerPdu = offset
+                readShort(/*0*/) // PDU length
+                readByte(/*VECTOR_DMP_SET_PROPERTY.toByte()*/) // Vector
+                readByte(/*0xA1.toByte()*/) // Address type & data type
+                readShort(/*0x0*/) // First property address
+                readShort(/*0x1*/) // Address increment
+                val channelCount = readShort() - 1// (/*1 + colors.pixelCount * 3*/) // Property value count
+                // Property values...
+                readByte(/*0x0*/) // START code
+                val channels = ByteArray(channelCount)
+                for (i in 0 until channelCount) {
+                    channels[i] = readByte()
+                }
+
+//            at(rootLayerPdu).writeShort(0x7000 or offset - rootLayerPdu)
+//            at(framingLayerPdu).writeShort(0x7000 or offset - framingLayerPdu)
+//            at(dmpLayerPdu).writeShort(0x7000 or offset - dmpLayerPdu)
+
+                return DataFrame(universe, channels)
+            }
+        }
 
 //        E131_E131_UNIVERSE_DISCOVERY_INTERVAL = 10 seconds
 //        E131_NETWORK_DATA_LOSS_TIMEOUT = 2.5 seconds

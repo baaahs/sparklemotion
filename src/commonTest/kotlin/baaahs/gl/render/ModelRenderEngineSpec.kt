@@ -302,7 +302,7 @@ object ModelRenderEngineSpec : Spek({
 })
 
 private fun testFixture(deviceType: DeviceTypeForTest, pixelCount: Int, initial: Float = 0f) =
-    Fixture(null, pixelCount, someVectors(pixelCount, initial), deviceType, transport = NullTransport)
+    Fixture(null, pixelCount, someVectors(pixelCount, initial), deviceType.defaultConfig, transport = NullTransport)
 
 private fun someVectors(count: Int, initial: Float = 0f): List<Vector3F> =
     (0 until count).map { Vector3F(initial + count / 10f, 0f, 0f) }
@@ -333,10 +333,17 @@ class DeviceTypeForTest(
     override val errorIndicatorShader: Shader
         get() = Shader("Ω Guru Meditation Error Ω", "")
     override val defaultConfig: FixtureConfig
-        get() = TODO("not implemented")
+        get() = Config()
+
     override fun createResultStorage(renderResults: RenderResults): ResultStorage = ResultStorage.Empty
 
     override fun toString(): String = id
+
+    inner class Config : FixtureConfig {
+        override val deviceType: DeviceType
+            get() = this@DeviceTypeForTest
+
+    }
 }
 
 fun Boolean.truify(): Boolean {

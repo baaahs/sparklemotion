@@ -6,6 +6,8 @@ import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.geom.Vector4F
 import baaahs.gl.GlContext
+import baaahs.model.Model
+import baaahs.visualizer.remote.RemoteVisualizers
 import com.danielgergely.kgl.*
 
 interface ResultType<T : ResultBuffer> {
@@ -53,16 +55,17 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
         }
 
         override fun getFixtureView(fixture: Fixture, bufferOffset: Int): ColorFixtureResults {
-            return ColorFixtureResults(this, bufferOffset, fixture.pixelCount, fixture.transport)
+            return ColorFixtureResults(this, bufferOffset, fixture)
         }
     }
 
     class ColorFixtureResults(
         private val buffer: Buffer,
         pixelOffset: Int,
-        pixelCount: Int,
-        private val transport: Transport
-    ) : FixtureResults(pixelOffset, pixelCount), Pixels {
+        private val fixture: Fixture,
+    ) : FixtureResults(pixelOffset, fixture.pixelCount), Pixels {
+        private val transport = fixture.transport
+
         override val size: Int
             get() = pixelCount
 
@@ -78,17 +81,15 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
             }
         }
 
-        override fun send() {
-            val buf = ByteArray(pixelCount * 3)
-            var j = 0
-            for (i in 0 until pixelCount) {
-                val color = get(i)
-                buf[j++] = color.redB
-                buf[j++] = color.greenB
-                buf[j++] = color.blueB
-            }
+        override fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers) {
+            val fixtureConfig = fixture.fixtureConfig as PixelArrayDevice.Config
+            val buf = fixtureConfig.writeData(this)
 
             transport.deliverBytes(buf)
+            remoteVisualizers.sendFrameData(entity) { out ->
+                out.writeInt(fixture.pixelCount)
+                out.writeBytes(buf)
+            }
         }
     }
 }
@@ -122,7 +123,7 @@ object FloatResultType : FloatsResultType<FloatResultType.ResultBuffer>(
     ) : FixtureResults(pixelOffset, pixelCount) {
         operator fun get(pixelIndex: Int): Float = buffer[pixelOffset + pixelIndex]
 
-        override fun send() = TODO("FloatFixtureResults.send() not implemented")
+        override fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers) = TODO("FloatFixtureResults.send() not implemented")
     }
 }
 
@@ -159,7 +160,7 @@ object Vec2ResultType : FloatsResultType<Vec2ResultType.ResultBuffer>(
     ) : FixtureResults(pixelOffset, pixelCount) {
         operator fun get(pixelIndex: Int): Vector2F = buffer[pixelOffset + pixelIndex]
 
-        override fun send() {
+        override fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers) {
             TODO("Vec2FixtureResults.send() not implemented")
         }
     }
@@ -199,7 +200,7 @@ object Vec3ResultType : FloatsResultType<Vec3ResultType.ResultBuffer>(
     ) : FixtureResults(pixelOffset, pixelCount) {
         operator fun get(pixelIndex: Int): Vector3F = buffer[pixelOffset + pixelIndex]
 
-        override fun send() {
+        override fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers) {
             TODO("Vec3FixtureResults.send() not implemented")
         }
     }
@@ -234,7 +235,7 @@ object Vec4ResultType : FloatsResultType<Vec4ResultType.ResultBuffer>(4, GlConte
     ) : FixtureResults(pixelOffset, pixelCount) {
         operator fun get(pixelIndex: Int): Vector4F = buffer[pixelOffset + pixelIndex]
 
-        override fun send() {
+        override fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers) {
             TODO("Vec4FixtureResults.send() not implemented")
         }
     }

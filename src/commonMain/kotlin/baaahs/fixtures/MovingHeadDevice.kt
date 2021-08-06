@@ -5,12 +5,14 @@ import baaahs.gl.GlContext
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
 import baaahs.gl.render.ResultStorage
-import baaahs.model.Model
 import baaahs.model.MovingHeadAdapter
 import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.MovingHeadParams
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 
 object MovingHeadDevice : DeviceType {
     override val id: String get() = "MovingHead"
@@ -42,6 +44,12 @@ object MovingHeadDevice : DeviceType {
         )
     override val defaultConfig: FixtureConfig
         get() = Config(Shenzarpy)
+    override val serialModule: SerializersModule
+        get() = SerializersModule {
+            polymorphic(FixtureConfig::class) {
+                subclass(Config::class, Config.serializer())
+            }
+        }
 
     override fun createResultStorage(renderResults: RenderResults): ResultStorage {
         val resultBuffer = renderResults.allocate("Moving Head Params", MovingHeadParams.resultType)
@@ -50,12 +58,11 @@ object MovingHeadDevice : DeviceType {
 
     override fun toString(): String = id
 
+    @Serializable
     data class Config(val adapter: MovingHeadAdapter) : FixtureConfig {
         override val deviceType: DeviceType
             get() = MovingHeadDevice
 
-        override fun bufferSize(entity: Model.Entity?, pixelCount: Int): Int =
-            adapter.dmxChannelCount
     }
 }
 

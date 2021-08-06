@@ -1,20 +1,17 @@
 package baaahs.fixtures
 
-import baaahs.SparkleMotion
-import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.glsl.SurfacePixelStrategy
-import baaahs.mapper.ControllerId
-import baaahs.mapper.FixtureMapping
-import baaahs.mapper.MappingResults
 import baaahs.model.Model
 import baaahs.show.live.ActivePatchSet
 import baaahs.timeSync
 import baaahs.util.Logger
+import baaahs.visualizer.remote.RemoteVisualizerServer
+import baaahs.visualizer.remote.RemoteVisualizers
 
 interface FixtureListener {
     fun fixturesChanged(addedFixtures: Collection<Fixture>, removedFixtures: Collection<Fixture>)
@@ -23,10 +20,9 @@ interface FixtureListener {
 class FixtureManager(
     private val renderManager: RenderManager,
     private val model: Model,
-    private val mappingResults: MappingResults,
     private val surfacePixelStrategy: SurfacePixelStrategy = LinearSurfacePixelStrategy(),
     initialRenderTargets: Map<Fixture, FixtureRenderTarget> = emptyMap()
-) {
+) : FixtureListener {
     val facade = Facade()
 
     private val renderTargets: MutableMap<Fixture, FixtureRenderTarget> = initialRenderTargets.toMutableMap()
@@ -38,34 +34,36 @@ class FixtureManager(
     internal var currentRenderPlan: RenderPlan? = null
         private set
 
+    private val remoteVisualizers = RemoteVisualizers()
+
     fun addFrameListener(callback: () -> Unit) {
         frameListeners.add(callback)
     }
 
-    fun createFixtureFor(
-        controllerId: ControllerId,
-        entityName: String?,
-        transport: Transport
-    ): Fixture {
-        val fixtureMapping = mappingResults.dataForController(controllerId)
-            ?: mappingResults.dataForEntity(entityName ?: "__nope")
-            ?: entityName?.let { FixtureMapping(model.findEntity(it), null, null) }
-
-        val modelEntity = fixtureMapping?.entity
-        val pixelCount = fixtureMapping?.pixelLocations?.size
-            ?: (modelEntity as? Model.Surface)?.expectedPixelCount
-            ?: SparkleMotion.MAX_PIXEL_COUNT
-        val pixelLocations = fixtureMapping?.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) }
-            ?: surfacePixelStrategy.forFixture(pixelCount, modelEntity, model)
-
-        return Fixture(modelEntity, pixelCount, pixelLocations, PixelArrayDevice, transport = transport)
-    }
+//    fun createFixtureFor(
+//        controllerId: ControllerId,
+//        entityName: String?,
+//        transport: Transport
+//    ): Fixture {
+//        val fixtureMapping = mappingResults.dataForController(controllerId)
+//            ?: mappingResults.dataForEntity(entityName ?: "__nope")
+//            ?: entityName?.let { FixtureMapping(model.findEntity(it), null, null) }
+//
+//        val modelEntity = fixtureMapping?.entity
+//        val pixelCount = fixtureMapping?.pixelLocations?.size
+//            ?: (modelEntity as? Model.Surface)?.expectedPixelCount
+//            ?: SparkleMotion.MAX_PIXEL_COUNT
+//        val pixelLocations = fixtureMapping?.pixelLocations?.map { it ?: Vector3F(0f, 0f, 0f) }
+//            ?: surfacePixelStrategy.forFixture(pixelCount, modelEntity, model)
+//
+//        return Fixture(modelEntity, pixelCount, pixelLocations, fixtureMapping!!.fixtureConfig!!, transport = transport)
+//    }
 
     fun getRenderTargets_ForTestOnly(): Map<Fixture, RenderTarget> {
         return renderTargets
     }
 
-    fun fixturesChanged(addedFixtures: Collection<Fixture>, removedFixtures: Collection<Fixture>) {
+    override fun fixturesChanged(addedFixtures: Collection<Fixture>, removedFixtures: Collection<Fixture>) {
         changedFixtures.add(FixturesChanges(addedFixtures.toList(), removedFixtures.toList()))
     }
 
@@ -92,7 +90,7 @@ class FixtureManager(
         renderTargets.values.forEach { renderTarget ->
             // TODO(tom): The send might return an error, at which point this fixture should be nuked
             // from the list of fixtures. I'm not quite sure the best way to do that so I'm leaving this note.
-            renderTarget.sendFrame()
+            renderTarget.sendFrame(remoteVisualizers)
         }
         frameListeners.forEach { it.invoke() }
     }
@@ -100,7 +98,9 @@ class FixtureManager(
     private fun addFixture(fixture: Fixture) {
         renderTargets.getOrPut(fixture) {
             logger.debug { "Adding fixture ${fixture.title}" }
-            renderManager.addFixture(fixture)
+            renderManager.addFixture(fixture).also {
+                remoteVisualizers.sendFixtureInfo(fixture)
+            }
         }
     }
 
@@ -109,6 +109,7 @@ class FixtureManager(
             logger.debug { "Removing fixture ${fixture.title}" }
             renderManager.removeRenderTarget(renderTarget)
             renderTarget.release()
+            // TODO: remove from RemoteVisualizers
         } ?: throw IllegalStateException("huh? can't remove unknown fixture $fixture")
     }
 
@@ -152,6 +153,19 @@ class FixtureManager(
 
     fun hasActiveRenderPlan(): Boolean {
         return currentRenderPlan != null
+    }
+
+    fun newRemoteVisualizerServer(): RemoteVisualizerServer {
+        return RemoteVisualizerServer(this)
+    }
+
+    fun addRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener) {
+        remoteVisualizers.addListener(listener)
+        renderTargets.keys.forEach { fixture -> remoteVisualizers.sendFixtureInfo(fixture) }
+    }
+
+    fun removeRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener) {
+        remoteVisualizers.removeListener(listener)
     }
 
     data class FixturesChanges(val added: Collection<Fixture>, val removed: Collection<Fixture>)

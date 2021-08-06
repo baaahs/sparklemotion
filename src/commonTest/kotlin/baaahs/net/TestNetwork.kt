@@ -13,22 +13,22 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
     inner class Link(mtu: Int) : Network.Link {
         override val myAddress = Address()
         override val myHostname: String get() = "TestHost"
-        val packetsToSend = mutableListOf<ByteArray>()
-        val receviedPackets = mutableListOf<ByteArray>()
+        val packetsToSend = mutableListOf<Packet>()
+        val receviedPackets = mutableListOf<Packet>()
 
         var udpListeners: MutableMap<Int, Network.UdpListener> = mutableMapOf()
 
-        fun sendTo(link: Link, port: Int) {
-            packetsToSend.forEach { bytes ->
-                link.receiveUdp(bytes, port)
+        fun sendTo(link: Link) {
+            packetsToSend.forEach { packet ->
+                link.receiveUdp(packet)
             }
             packetsToSend.clear()
         }
 
-        private fun receiveUdp(bytes: ByteArray, port: Int) {
-            receviedPackets += bytes
-            (udpListeners[port] ?: error("No listener on port $port."))
-                .receive(myAddress, 1234, bytes)
+        private fun receiveUdp(packet: Packet) {
+            receviedPackets += packet
+            (udpListeners[packet.port] ?: error("No listener on port ${packet.port}."))
+                .receive(myAddress, 1234, packet.data)
         }
 
         override val udpMtu = mtu
@@ -42,11 +42,11 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
 
         inner class TestUdpSocket(override val serverPort: Int) : Network.UdpSocket {
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
-                packetsToSend += bytes
+                packetsToSend += Packet(toAddress, port, bytes)
             }
 
             override fun broadcastUdp(port: Int, bytes: ByteArray) {
-                packetsToSend += bytes
+                packetsToSend += Packet(createAddress("*"), port, bytes)
             }
 
         }
@@ -84,4 +84,10 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
         override fun asString(): String = name
         override fun toString(): String = asString()
     }
+
+    data class Packet(
+        val address: Network.Address,
+        val port: Int,
+        val data: ByteArray
+    )
 }

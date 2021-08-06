@@ -15,7 +15,10 @@ class MovingHeadVisualizer(
     private val dmxUniverse: FakeDmxUniverse,
     private val beam: Beam = Beam.selectFor(movingHead)
 ) : EntityVisualizer {
+    override val title: String
+        get() = movingHead.name
     override var mapperIsRunning: Boolean = false
+    override var selected: Boolean = false // TODO: Show that the device is selected.
 
     private val buffer = run {
         val dmxBufferReader = dmxUniverse.listen(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount) {

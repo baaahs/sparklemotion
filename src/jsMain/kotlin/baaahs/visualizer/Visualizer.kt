@@ -1,5 +1,6 @@
 package baaahs.visualizer
 
+import baaahs.document
 import baaahs.mapper.JsMapperUi
 import baaahs.model.Model
 import baaahs.util.Clock
@@ -7,6 +8,8 @@ import baaahs.util.Framerate
 import baaahs.util.asMillis
 import baaahs.window
 import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLSpanElement
+import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 import three.js.*
 import three_ext.OrbitControls
@@ -63,6 +66,28 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     private val originDot: Mesh<*, *>
 
     private val entityVisualizers = arrayListOf<EntityVisualizer>()
+    private val sceneObjs = mutableMapOf<Number, EntityVisualizer>()
+    private val selectionSpan = document.createElement("span") as HTMLSpanElement
+    private var selectedEntity: EntityVisualizer? = null
+        set(value) {
+            field?.let {
+                console.log("Deselecting ${it.title}")
+                it.selected = false
+            }
+            field = value
+
+            if (value == null) {
+                selectionSpan.style.display = "none"
+                selectionSpan.innerText = ""
+            } else {
+                console.log("Selecting ${value.title}")
+                selectionSpan.style.display = "inherit"
+                selectionSpan.innerText = "Selected: ${value.title}"
+            }
+
+            facade.selectedEntity = value
+            facade.notifyChanged()
+        }
 
     init {
         scene.add(camera)
@@ -95,6 +120,8 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
     private fun containerAttached() {
         container!!.appendChild(renderer.domElement)
+        container!!.appendChild(selectionSpan)
+        container!!.addEventListener("pointerdown", this::onMouseDown)
 
         controls = OrbitControls(camera, container!!).apply {
             minPolarAngle = PI / 2 - .25 // radians
@@ -109,6 +136,9 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
 
     private fun containerWillDetach() {
         container?.removeChild(renderer.domElement)
+        container?.removeChild(selectionSpan)
+        container?.removeEventListener("pointerdown", this::onMouseDown)
+        controls?.dispose()
         stopRendering = true
         controls = null
     }
@@ -129,7 +159,9 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         frameListeners.remove(frameListener)
     }
 
-    fun onMouseDown(event: MouseEvent) {
+    fun onMouseDown(event: Event) {
+        event as MouseEvent
+
         container?.let {
             mouse = Vector2(
                 (event.clientX.toDouble() / it.offsetWidth) * 2 - 1,
@@ -139,17 +171,20 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     }
 
     fun addEntityVisualizer(entityVisualizer: EntityVisualizer) {
-        entityVisualizer.addTo(VizScene(scene))
+        entityVisualizer.addTo(VizScene(object : SceneListener {
+            override fun add(obj: Object3D) {
+                obj.name = entityVisualizer.title
+                sceneObjs[obj.id] = entityVisualizer
+                scene.add(obj)
+            }
+
+            override fun remove(obj: Object3D) {
+                scene.remove(obj)
+                sceneObjs.remove(obj.id)
+            }
+        }))
+
         entityVisualizers.add(entityVisualizer)
-    }
-
-    fun addSurface(surfaceGeometry: SurfaceGeometry): SurfaceVisualizer {
-        // if (p.name !== '15R') return
-        // if (omitPanels.includes(p.name)) return
-
-        val surfaceVisualizer = SurfaceVisualizer(surfaceGeometry)
-        addEntityVisualizer(surfaceVisualizer)
-        return surfaceVisualizer
     }
 
     private fun startRender() {
@@ -176,13 +211,19 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
             mouse = null
             raycaster.setFromCamera(mouseClick, camera)
             val intersections = raycaster.intersectObjects(scene.children, false)
+            var acceptedIntersection = false
             intersections.forEach { intersection ->
                 val intersectedObject = intersection.`object`
-                SurfaceVisualizer.getFromObject(intersectedObject)?.let {
-                    facade.selectedSurface = it
-                    facade.notifyChanged()
-                    return@forEach
+                console.log("Found intersection with ${intersectedObject.name} at ${intersection.distance}.")
+                if (!acceptedIntersection) {
+                    sceneObjs[intersectedObject.id]?.let {
+                        selectedEntity = it
+                        acceptedIntersection = true
+                    }
                 }
+            }
+            if (intersections.isEmpty()) {
+                selectedEntity = null
             }
         }
 
@@ -249,13 +290,11 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
                 this@Visualizer.rotate = value
             }
 
-        var selectedSurface: SurfaceVisualizer? = null
+        var selectedEntity: EntityVisualizer? = null
 
         val framerate = Framerate()
 
-        fun onAnimationFrame() = this@Visualizer.render()
         fun resize() = this@Visualizer.resize()
-        fun onMouseDown(event: MouseEvent) = this@Visualizer.onMouseDown(event)
     }
 
     companion object {

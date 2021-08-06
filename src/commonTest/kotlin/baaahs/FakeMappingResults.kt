@@ -2,20 +2,29 @@ package baaahs
 
 import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
-import baaahs.mapper.MappingResults
+import baaahs.mapping.MappingManager
+import baaahs.ui.Observable
 
-class FakeMappingResults(
+class FakeMappingManager(
     resultsByBrainId: Map<BrainId, FixtureMapping> = mapOf(),
     resultsBySurfaceName: Map<String, FixtureMapping> = mapOf()
-) : MappingResults {
+) : Observable(), MappingManager {
     private val resultsByControllerId = resultsByBrainId
         .mapKeys { (k, _) -> k.asControllerId() }
         .toMutableMap()
 
+    override val dataHasLoaded: Boolean get() = true
+
     private val resultsBySurfaceName = resultsBySurfaceName.toMutableMap()
 
-    override fun dataForController(controllerId: ControllerId): FixtureMapping? =
-        resultsByControllerId[controllerId]
+    override suspend fun start() {
+    }
 
-    override fun dataForEntity(entityName: String) = resultsBySurfaceName[entityName]
+    override fun findMappings(controllerId: ControllerId): List<FixtureMapping> {
+        return listOfNotNull(resultsByControllerId[controllerId])
+    }
+
+    override fun getAllControllerMappings(): Map<ControllerId, FixtureMapping> {
+        return resultsByControllerId
+    }
 }
