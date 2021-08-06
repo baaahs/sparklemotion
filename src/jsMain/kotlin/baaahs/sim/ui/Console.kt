@@ -70,8 +70,8 @@ class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(prop
                 }
 
                 div {
-                    simulator.visualizer.selectedSurface?.let {
-                        +"Selected: ${it.name}"
+                    simulator.visualizer.selectedEntity?.let {
+                        +"Selected: ${it.title}"
                     }
                 }
             }

@@ -1,7 +1,8 @@
 package baaahs.di
 
 import baaahs.*
-import baaahs.controller.WledManager
+import baaahs.controller.ControllersManager
+import baaahs.controller.SacnManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.dmx.DmxManagerImpl
@@ -11,16 +12,20 @@ import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibraryManager
-import baaahs.mapper.MappingResults
 import baaahs.mapper.Storage
+import baaahs.mapping.MappingManager
+import baaahs.mapping.MappingManagerImpl
 import baaahs.model.Model
 import baaahs.model.ModelInfo
+import baaahs.model.ModelManager
+import baaahs.model.ModelManagerImpl
 import baaahs.net.Network
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
+import baaahs.scene.SceneManager
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.util.Clock
@@ -87,23 +92,29 @@ interface PinkyModule : KModule {
                 scoped { renderManager }
                 scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
                 scoped { Storage(get(), get()) }
-                scoped { FutureMappingResults() }
-                scoped<MappingResults> { get<FutureMappingResults>() }
-                scoped { FixtureManager(get(), get(), get()) }
+                scoped { FixtureManager(get(), get()) }
                 scoped { GadgetManager(get(), get(), get(pinkyContext)) }
                 scoped<Toolchain> { RootToolchain(get()) }
-                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get()) }
+                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
                 scoped { Pinky.NetworkStats() }
-                scoped { BrainManager(get(), get(), get(), get(), get(), get(), get(), get(pinkyContext)) }
-                scoped { MovingHeadManager(get(), get(), get()) }
-                scoped { WledManager(get(), get(), get(), get(), get(pinkyMainDispatcher), get()) }
+                scoped { BrainManager(get(), get(), get(), get(), get(), get(pinkyContext)) }
+                scoped { SacnManager(get(), get(), get(pinkyMainDispatcher), get()) }
+                scoped { SceneManager(get(), get()) }
+                scoped<MappingManager> { MappingManagerImpl(get(), get()) }
+                scoped<ModelManager> { ModelManagerImpl() }
+                scoped(named("ControllerManagers")) {
+                    listOf(
+                        get<BrainManager>(), get<DmxManager>(), get<SacnManager>()
+                    )
+                }
+                scoped { ControllersManager(get(named("ControllerManagers")), get(), get(), get<FixtureManager>()) }
                 scoped { ShaderLibraryManager(get(), get()) }
                 scoped { pinkySettings }
                 scoped {
                     Pinky(
-                        get(), get(), get(), get(), get(), get(), get(), get(),
-                        get(), get(), get(), get(), get(), get(pinkyContext),
-                        get(), get(), get(), get(), get(), get(), get(), get()
+                        get(), get(), get(), get(), get(), get(),
+                        get(), get(), get(), get(), get(pinkyContext), get(), get(),
+                        get(), get(), get(), get(), get(), get()
                     )
                 }
             }

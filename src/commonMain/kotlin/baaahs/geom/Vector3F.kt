@@ -9,6 +9,8 @@ import kotlin.math.sqrt
 
 @Serializable
 data class Vector3F(val x: Float, val y: Float, val z: Float) {
+    constructor(x: Double, y: Double, z: Double): this(x.toFloat(), y.toFloat(), z.toFloat())
+
     fun min(other: Vector3F): Vector3F = Vector3F(min(x, other.x), min(y, other.y), min(z, other.z))
 
     fun max(other: Vector3F): Vector3F = Vector3F(max(x, other.x), max(y, other.y), max(z, other.z))
@@ -18,6 +20,8 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
     operator fun minus(other: Vector3F): Vector3F = Vector3F(x - other.x, y - other.y, z - other.z)
 
     operator fun times(scalar: Float): Vector3F = Vector3F(x * scalar, y * scalar, z * scalar)
+
+    operator fun times(scalar: Double): Vector3F = Vector3F(x * scalar, y * scalar, z * scalar)
 
     operator fun times(other: Vector3F): Vector3F = Vector3F(x * other.x, y * other.y, z * other.z)
 

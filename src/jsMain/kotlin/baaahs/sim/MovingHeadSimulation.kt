@@ -29,7 +29,7 @@ actual class MovingHeadSimulation actual constructor(
             movingHead,
             1,
             listOf(movingHead.origin),
-            movingHead.deviceType,
+            movingHead.deviceType.defaultConfig,
             movingHead.name,
             PreviewTransport()
         )

@@ -1,13 +1,14 @@
 package baaahs.visualizer.remote
 
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureManager
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.util.Logger
 
 class RemoteVisualizerServer(
-    private vararg val remoteVisualizables: RemoteVisualizable
+    private val fixtureManager: FixtureManager
 ) : Network.WebSocketListener {
     private val id = "Remote Visualizer ${nextId++}"
     lateinit var tcpConnection: Network.TcpConnection
@@ -16,7 +17,7 @@ class RemoteVisualizerServer(
     override fun connected(tcpConnection: Network.TcpConnection) {
         this.tcpConnection = tcpConnection
 
-        remoteVisualizables.forEach { it.addRemoteVisualizer(listener) }
+        fixtureManager.addRemoteVisualizerListener(listener)
         logger.info { "$id: connected from ${tcpConnection.fromAddress.asString()}." }
     }
 
@@ -26,7 +27,7 @@ class RemoteVisualizerServer(
 
     override fun reset(tcpConnection: Network.TcpConnection) {
         logger.info { "$id: connection reset." }
-        remoteVisualizables.forEach { it.removeRemoteVisualizer(listener) }
+        fixtureManager.removeRemoteVisualizerListener(listener)
     }
 
     private val listener = ListenerImpl()

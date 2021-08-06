@@ -3,13 +3,14 @@ package baaahs.gl.render
 import baaahs.fixtures.Fixture
 import baaahs.gl.glsl.GlslProgram
 import baaahs.model.ModelInfo
+import baaahs.visualizer.remote.RemoteVisualizers
 
 interface RenderTarget {
     val fixture: Fixture
     val modelInfo: ModelInfo
     val pixelCount: Int
 
-    fun sendFrame()
+    fun sendFrame(remoteVisualizers: RemoteVisualizers)
     fun release()
 }
 
@@ -27,9 +28,8 @@ class FixtureRenderTarget(
 
     val fixtureResults = resultStorage.getFixtureResults(fixture, pixel0Index)
 
-    override fun sendFrame() {
-        fixtureResults.send()
-//        fixture.transport.send(fixture, fixtureResultss)
+    override fun sendFrame(remoteVisualizers: RemoteVisualizers) {
+        fixtureResults.send(fixture.modelEntity, remoteVisualizers)
     }
 
     override fun release() {

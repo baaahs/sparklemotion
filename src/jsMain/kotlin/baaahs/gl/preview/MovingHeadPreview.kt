@@ -25,7 +25,7 @@ class MovingHeadPreview(
     override val renderEngine = ModelRenderEngine(gl, model, deviceType)
     private var movingHeadProgram: GlslProgram? = null
     private val renderTargets = model.movingHeads.associateWith { movingHead ->
-        val fixture = Fixture(movingHead, 1, emptyList(), deviceType, transport = NullTransport)
+        val fixture = Fixture(movingHead, 1, emptyList(), deviceType.defaultConfig, transport = NullTransport)
         renderEngine.addFixture(fixture)
     }
     private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D

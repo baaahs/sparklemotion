@@ -27,7 +27,7 @@ class ProjectionPreview(
     private val renderTargets = model.allSurfaces.associateWith { surface ->
         val lineVertices = surface.lines.flatMap { it.vertices }
         val fixture = Fixture(
-            surface, lineVertices.size, lineVertices, deviceType,
+            surface, lineVertices.size, lineVertices, deviceType.defaultConfig,
             transport = NullTransport
         )
         renderEngine.addFixture(fixture)

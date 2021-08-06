@@ -18,7 +18,7 @@ class LightBar(
         get() = startVertex to endVertex
 
     val length: Float
-        get() = startVertex.let { endVertex.minus(it).length() }
+        get() = startVertex.let { (endVertex - it).length() }
 
     fun getPixelLocations(pixelCount: Int): List<Vector3F> {
         return LinearSurfacePixelStrategy()

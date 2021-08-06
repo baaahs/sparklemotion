@@ -3,7 +3,7 @@ package baaahs.admin
 import baaahs.BrainInfo
 import baaahs.PubSub
 import baaahs.Topics
-import baaahs.controller.WledDevice
+import baaahs.controller.SacnDevice
 import baaahs.dmx.DmxInfo
 import baaahs.net.Network
 import baaahs.proto.Ports
@@ -32,7 +32,7 @@ class AdminClient(
         val dmxDevices: Map<String, DmxInfo>
             get() = this@AdminClient.dmxDevices
 
-        val wledDevices: Map<String, WledDevice>
+        val sacnDevices: Map<String, SacnDevice>
             get() = this@AdminClient.sacnDevices
     }
 

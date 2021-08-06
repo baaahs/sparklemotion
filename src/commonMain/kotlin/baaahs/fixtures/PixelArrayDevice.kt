@@ -3,6 +3,7 @@ package baaahs.fixtures
 import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.ShowPlayer
+import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.data.*
 import baaahs.gl.glsl.GlslProgram
@@ -13,6 +14,7 @@ import baaahs.gl.render.RenderResults
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.render.ResultStorage
 import baaahs.gl.shader.InputPort
+import baaahs.glsl.SurfacePixelStrategy
 import baaahs.glsl.Uniform
 import baaahs.model.Model
 import baaahs.plugin.SerializerRegistrar
@@ -25,6 +27,8 @@ import baaahs.util.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import kotlin.math.min
 
 object PixelArrayDevice : DeviceType {
@@ -59,26 +63,78 @@ object PixelArrayDevice : DeviceType {
         )
 
     override val defaultConfig: FixtureConfig
-        get() = Config()
+        get() = Config(null, PixelFormat.RGB8)
+    override val serialModule: SerializersModule
+        get() = SerializersModule {
+            polymorphic(FixtureConfig::class) {
+                subclass(Config::class, Config.serializer())
+            }
+        }
 
     override fun createResultStorage(renderResults: RenderResults): ResultStorage {
         val resultBuffer = renderResults.allocate("Pixel Color", ColorResultType)
         return SingleResultStorage(resultBuffer)
     }
 
-    fun getColorResults(fixtureResults: List<FixtureResults>) =
-        fixtureResults[0] as ColorResultType.ColorFixtureResults
-
     override fun toString(): String = id
 
-    data class Config(@Transient private val `_`: Boolean = false) : FixtureConfig {
-        // e.g. RGB vs RGBA vs GRB vs ...?
-
+    @Serializable
+    data class Config(
+        val pixelCount: Int? = null,
+        val pixelFormat: PixelFormat,
+        val gammaCorrection: Float = 1f,
+        val pixelArrangement: SurfacePixelStrategy? = null
+    ) : FixtureConfig {
         override val deviceType: DeviceType
             get() = PixelArrayDevice
 
-        override fun bufferSize(entity: Model.Entity?, pixelCount: Int): Int =
-            3 * pixelCount
+        override fun generatePixelLocations(pixelCount: Int, entity: Model.Entity?, model: Model): List<Vector3F>? {
+            return pixelArrangement?.forFixture(pixelCount, entity, model)
+        }
+
+        fun writeData(results: ColorResultType.ColorFixtureResults): ByteArray {
+            return pixelFormat.writeData(results)
+        }
+    }
+
+    enum class PixelFormat {
+        RGB8 {
+            override val bytesPerPixel: Int = 3
+
+            override fun writeData(results: ColorResultType.ColorFixtureResults): ByteArray {
+                val pixelCount = results.pixelCount
+                val buf = ByteArray(pixelCount * 3)
+                var j = 0
+                for (i in 0 until pixelCount) {
+                    val color = results[i]
+
+                    buf[j++] = color.redB
+                    buf[j++] = color.greenB
+                    buf[j++] = color.blueB
+                }
+                return buf
+            }
+        },
+        GRB8 {
+            override val bytesPerPixel: Int = 3
+
+            override fun writeData(results: ColorResultType.ColorFixtureResults): ByteArray {
+                val pixelCount = results.pixelCount
+                val buf = ByteArray(pixelCount * 3)
+                var j = 0
+                for (i in 0 until pixelCount) {
+                    val color = results[i]
+
+                    buf[j++] = color.greenB
+                    buf[j++] = color.redB
+                    buf[j++] = color.blueB
+                }
+                return buf
+            }
+        };
+
+        abstract val bytesPerPixel: Int
+        abstract fun writeData(results: ColorResultType.ColorFixtureResults): ByteArray
     }
 }
 

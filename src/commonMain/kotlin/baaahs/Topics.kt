@@ -1,6 +1,6 @@
 package baaahs
 
-import baaahs.controller.WledDevice
+import baaahs.controller.SacnDevice
 import baaahs.dmx.DmxInfo
 import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibrary
@@ -28,7 +28,7 @@ object Topics {
         PubSub.Topic("dmx/devices", MapSerializer(String.serializer(), DmxInfo.serializer()))
 
     val sacnDevices =
-        PubSub.Topic("sacn/devices", MapSerializer(String.serializer(), WledDevice.serializer()))
+        PubSub.Topic("sacn/devices", MapSerializer(String.serializer(), SacnDevice.serializer()))
 
     val showProblems =
         PubSub.Topic("showProblems", ListSerializer(ShowProblem.serializer()))

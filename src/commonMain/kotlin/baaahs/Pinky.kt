@@ -1,50 +1,48 @@
 package baaahs
 
 import baaahs.api.ws.WebSocketRouter
-import baaahs.controller.WledManager
+import baaahs.controller.ControllersManager
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.Toolchain
 import baaahs.gl.glsl.CompilationException
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibraryManager
-import baaahs.mapper.*
-import baaahs.model.Model
+import baaahs.mapper.PinkyMapperHandlers
+import baaahs.mapper.Storage
+import baaahs.mapping.MappingManager
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.proto.BrainHelloMessage
+import baaahs.scene.SceneManager
 import baaahs.show.Show
 import baaahs.sim.FakeNetwork
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
-import baaahs.visualizer.remote.RemoteVisualizerServer
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
 
 class Pinky(
-    val model: Model,
-    val network: Network,
     val clock: Clock,
-    fs: Fs,
     val firmwareDaddy: FirmwareDaddy,
+    val plugins: Plugins,
 //    private val switchShowAfterIdleSeconds: Int? = 600,
 //    private val adjustShowAfterIdleSeconds: Int? = null,
-    val plugins: Plugins,
     private val storage: Storage,
     private val link: Network.Link,
     val httpServer: Network.HttpServer,
     pubSub: PubSub.Server,
     private val dmxManager: DmxManager,
-    private val mappingResults: FutureMappingResults,
+    private val mappingManager: MappingManager,
     internal val fixtureManager: FixtureManager,
     override val coroutineContext: CoroutineContext,
     val toolchain: Toolchain,
     val stageManager: StageManager,
+    private val sceneManager: SceneManager,
+    private val controllersManager: ControllersManager,
     val brainManager: BrainManager,
-    private val movingHeadManager: MovingHeadManager,
-    private val wledManager: WledManager,
     private val shaderLibraryManager: ShaderLibraryManager,
     private val networkStats: NetworkStats,
     val pinkySettings: PinkySettings
@@ -75,7 +73,7 @@ class Pinky(
         }
 
         httpServer.listenWebSocket("/ws/visualizer") {
-            RemoteVisualizerServer(brainManager, wledManager, movingHeadManager)
+            fixtureManager.newRemoteVisualizerServer()
         }
     }
 
@@ -96,7 +94,7 @@ class Pinky(
     }
 
     private fun addSimulatedBrains() {
-        val mappingInfos = (mappingResults.actualMappingResults as SessionMappingResults).controllerData
+        val mappingInfos = mappingManager.getAllControllerMappings()
         mappingInfos.forEach { (controllerId, info) ->
             when (controllerId.controllerType) {
                 BrainManager.controllerTypeName -> {
@@ -120,8 +118,6 @@ class Pinky(
                     disableDmx()
                     return@throttle
                 }
-
-                updateFixtures()
 
                 networkStats.reset()
                 val elapsedMs = time {
@@ -149,14 +145,12 @@ class Pinky(
         return CoroutineScope(coroutineContext).launch {
             CoroutineScope(coroutineContext).launch {
                 launch { firmwareDaddy.start() }
-                launch { movingHeadManager.start() }
-                mappingResultsLoaderJob =
-                    launch { mappingResults.actualMappingResults = storage.loadMappingData(model) }
+                mappingResultsLoaderJob = launch { mappingManager.start() }
                 launch { loadConfig() }
                 launch { shaderLibraryManager.start() }
+                launch { sceneManager.onStart() }
             }.join()
 
-            // This needs to go last-ish, otherwise we start getting network traffic too early.
             brainManager.listenForMapperMessages { message ->
                 logger.info { "Mapper isRunning=${message.isRunning}" }
                 if (pinkyState == PinkyState.Running && message.isRunning) {
@@ -169,6 +163,9 @@ class Pinky(
                     mapperIsRunning = false
                 }
             }
+
+            // This needs to go last-ish, otherwise we start getting network traffic too early.
+            launch { controllersManager.start() }
 
             updatePinkyState(PinkyState.Running)
         }
@@ -195,7 +192,8 @@ class Pinky(
                     if (mapperIsRunning) {
                         logger.info { "Mapping ${brainManager.brainCount} brains." }
                     } else {
-                        logger.info { "Sending pixels to ${brainManager.brainCount} brains." }
+                        stageManager.logStatus()
+                        controllersManager.logStatus()
                     }
                     delay(10000)
                 }
@@ -232,14 +230,8 @@ class Pinky(
         stageManager.renderAndSendNextFrame()
     }
 
-    internal fun updateFixtures() {
-        if (brainManager.updateFixtures()) {
-            facade.notifyChanged()
-        }
-    }
-
     private fun disableDmx() {
-        dmxManager.dmxUniverse.allOff()
+        dmxManager.allOff()
     }
 
     class NetworkStats(var bytesSent: Int = 0, var packetsSent: Int = 0) {
@@ -294,7 +286,7 @@ class Pinky(
         val networkStats: NetworkStats
             get() = this@Pinky.networkStats
 
-        val brains: List<BrainManager.BrainTransport>
+        val brains: List<BrainManager.BrainController>
             get() = this@Pinky.brainManager.activeBrains.values.toList()
 
         val clock: Clock
@@ -319,22 +311,4 @@ enum class PinkyState {
     Running,
     Mapping,
     ShuttingDown
-}
-
-class FutureMappingResults : MappingResults {
-    var actualMappingResults: MappingResults? = null
-
-    override fun dataForController(controllerId: ControllerId): FixtureMapping? {
-        if (actualMappingResults == null) {
-            Pinky.logger.warn { "Mapping results for $controllerId requested before available." }
-        }
-        return actualMappingResults?.dataForController(controllerId)
-    }
-
-    override fun dataForEntity(entityName: String): FixtureMapping? {
-        if (actualMappingResults == null) {
-            Pinky.logger.warn { "Mapping results for $entityName requested before available." }
-        }
-        return actualMappingResults?.dataForEntity(entityName)
-    }
 }

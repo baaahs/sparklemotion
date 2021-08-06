@@ -150,6 +150,10 @@ class ModelRenderEngine(
         frameBuffer.release()
     }
 
+    fun logStatus() {
+        logger.info { "Rendering $pixelCount pixels for ${renderTargets.size} fixtures."}
+    }
+
     val Int.bufWidth: Int get() = max(minTextureWidth, min(this, maxFramebufferWidth))
     val Int.bufHeight: Int get() = this / maxFramebufferWidth + 1
     val Int.bufSize: Int get() = bufWidth * bufHeight

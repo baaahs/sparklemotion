@@ -1,6 +1,5 @@
 package baaahs.monitor
 
-import baaahs.Pluggables
 import baaahs.document
 import baaahs.model.Model
 import baaahs.net.Network
@@ -44,6 +43,4 @@ class MonitorUi(
         visualizer.stopRendering = true
         visualizerListenerClient.close()
     }
-
-    private fun selectModel(): Model = Pluggables.getModel()
 }

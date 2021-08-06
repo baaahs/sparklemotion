@@ -1,23 +1,27 @@
 package baaahs
 
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureManager
+import baaahs.controller.Controller
+import baaahs.controller.ControllerListener
+import baaahs.controller.ControllerManager
+import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.PixelArrayDevice
 import baaahs.fixtures.Transport
-import baaahs.geom.Vector2F
+import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.mapper.ControllerId
-import baaahs.mapper.MappingResults
+import baaahs.mapper.FixtureMapping
+import baaahs.mapper.TransportConfig
+import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
 import baaahs.proto.*
+import baaahs.scene.ControllerConfig
 import baaahs.shaders.PixelBrainShader
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
 import baaahs.util.asMillis
-import baaahs.visualizer.remote.RemoteVisualizable
-import baaahs.visualizer.remote.RemoteVisualizerServer
 import baaahs.visualizer.remote.RemoteVisualizers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -31,17 +35,19 @@ import kotlinx.serialization.encoding.Encoder
 import kotlin.coroutines.CoroutineContext
 
 class BrainManager(
-    private val fixtureManager: FixtureManager,
     private val firmwareDaddy: FirmwareDaddy,
-    private val mappingResults: MappingResults,
     link: Network.Link,
     private val networkStats: Pinky.NetworkStats,
     private val clock: Clock,
     pubSub: PubSub.IServer,
     coroutineContext: CoroutineContext
-) : RemoteVisualizable {
+) : ControllerManager {
+    override val controllerType: String
+        get() = controllerTypeName
+
     private var isStartedUp = false
-    private var mapperMessageCalback: ((MapperHelloMessage) -> Unit)? = null
+    private lateinit var controllerListener: ControllerListener
+    private var mapperMessageCallback: ((MapperHelloMessage) -> Unit)? = null
 
     private val udpSocket = link.listenFragmentingUdp(Ports.PINKY, object : Network.UdpListener {
         override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
@@ -51,14 +57,14 @@ class BrainManager(
                 when (val message = parse(bytes)) {
                     is BrainHelloMessage -> foundBrain(fromAddress, message)
                     is PingMessage -> receivedPing(fromAddress, message)
-                    is MapperHelloMessage -> mapperMessageCalback?.invoke(message)
+                    is MapperHelloMessage -> mapperMessageCallback?.invoke(message)
                 }
             }
         }
     })
 
-    internal val activeBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
-    private val pendingBrains: MutableMap<BrainId, BrainTransport> = mutableMapOf()
+    internal val activeBrains: MutableMap<BrainId, BrainController> = mutableMapOf()
+    private val pendingBrains: MutableMap<BrainId, BrainController> = mutableMapOf()
     private val remoteVisualizers = RemoteVisualizers()
 
     private var brainData by publishProperty(pubSub, Topics.brains, emptyMap())
@@ -67,58 +73,19 @@ class BrainManager(
         get() = activeBrains.size
 
     fun listenForMapperMessages(handler: (MapperHelloMessage) -> Unit) {
-        isStartedUp = true
-        mapperMessageCalback = handler
+        mapperMessageCallback = handler
     }
 
-    /**
-     * Incorporate any pending brain changes.
-     *
-     * @return true if anything changed.
-     */
-    fun updateFixtures(): Boolean {
-        if (pendingBrains.isEmpty())
-            return false
+    override fun start(controllerListener: ControllerListener) {
+        this.controllerListener = controllerListener
+        isStartedUp = true
+    }
 
-        val fixturesToAdd = mutableListOf<Fixture>()
-        val fixturesToRemove = mutableListOf<Fixture>()
-        val newBrainData = brainData.toMutableMap()
+    override fun onConfigChange(controllerConfigs: List<ControllerConfig>) {
+    }
 
-        pendingBrains.forEach { (brainId, incomingBrainTransport) ->
-            val priorBrainTransport = activeBrains[brainId]
-            if (priorBrainTransport != null) {
-                fixturesToRemove.add(priorBrainTransport.fixture)
-            }
-
-            if (incomingBrainTransport.hadException) {
-                // Existing Brain has had exceptions so we're forgetting about it.
-                activeBrains.remove(brainId)
-                newBrainData.remove(brainId.uuid)
-            } else {
-                val fixture = incomingBrainTransport.fixture
-
-                fixturesToAdd.add(fixture)
-                activeBrains[brainId] = incomingBrainTransport
-
-                newBrainData[brainId.uuid] = BrainInfo(
-                    brainId,
-                    incomingBrainTransport.brainAddress.asString(),
-                    fixture.modelEntity?.name,
-                    fixture.pixelCount,
-                    fixture.pixelLocations.size,
-                    BrainInfo.Status.Online,
-                    clock.now()
-                )
-            }
-        }
-
-        fixtureManager.fixturesChanged(fixturesToAdd, fixturesToRemove)
-        fixturesToAdd.forEach { remoteVisualizers.sendFixtureInfo(it) }
-
-        pendingBrains.clear()
-        brainData = newBrainData
-
-        return true
+    override fun stop() {
+        TODO("not implemented")
     }
 
     fun foundBrain(
@@ -129,7 +96,7 @@ class BrainManager(
         val brainId = BrainId(msg.brainId)
 
         logger.debug {
-            "Hello from ${brainId} (surface=${msg.surfaceName ?: "[unknown]"}) at $brainAddress"
+            "Hello from $brainId (surface=${msg.surfaceName ?: "[unknown]"}) at $brainAddress"
         }
 
         // Decide whether or not to tell this brain it should use a different firmware
@@ -137,7 +104,6 @@ class BrainManager(
             // You need the new hotness bro
             logger.debug {
                 "The firmware daddy doesn't like $brainId" +
-                        " (${mappingResults.dataForController(brainId.asControllerId())?.entity?.name ?: "[unknown]"})" +
                         " having ${msg.firmwareVersion}" +
                         " so we'll send ${firmwareDaddy.urlForPreferredVersion}"
             }
@@ -145,60 +111,64 @@ class BrainManager(
             udpSocket.sendUdp(brainAddress, Ports.BRAIN, newHotness)
         }
 
-        val transport = BrainTransport(brainAddress, brainId, isSimulatedBrain, msg)
-        val fixture = transport.fixture
-
-        fixture.modelEntity?.let { modelSurface ->
-            if (msg.surfaceName != modelSurface.name) {
-                logger.debug {
-                    "Sending BrainMappingMessage to $brainId, " +
-                            "identified as ${modelSurface.name} with ${fixture.pixelCount} pixels"
-                }
-                val mappingMsg = BrainMappingMessage(
-                    brainId, modelSurface.name, null, Vector2F(0f, 0f),
-                    Vector2F(0f, 0f), fixture.pixelCount, fixture.pixelLocations
-                )
-                udpSocket.sendUdp(brainAddress, Ports.BRAIN, mappingMsg)
-            } else {
-                logger.debug {
-                    "Not sending BrainMappingMessage to $brainId, its mapping is already correct (${modelSurface.name})."
-                }
-            }
+        val existingController = activeBrains[brainId]
+        if (existingController != null) {
+            // Duplicate packet?
+            logger.debug { "Ignore hello from ${existingController.controllerId}, duplicate packet?" }
+            return
         }
 
-        val priorBrainTransport = activeBrains[brainId]
-        if (priorBrainTransport != null) {
-            if (priorBrainTransport.fixture.modelEntity == fixture.modelEntity) {
-                // Duplicate packet?
-                logger.debug {
-                    "Ignore hello from ${priorBrainTransport.brainId} (${priorBrainTransport.fixture.title}), " +
-                            "duplicate packet?"
-                }
-                return
-            }
+        val controller = BrainController(brainAddress, brainId, isSimulatedBrain, msg)
+        activeBrains[brainId] = controller
+        controllerListener.onAdd(controller)
 
-//            logger.debug(
-//                "Remapping ${priorBrainInfo.brainId} from ${priorBrainInfo.surface.describe()} ->" +
-//                        " ${surface.describe()}"
-//            )
+        brainData.toMutableMap().apply {
+            this[msg.brainId] = BrainInfo(
+                brainId, brainAddress.asString(), null, 0, 0,
+                BrainInfo.Status.Online, clock.now()
+            )
+        }
+        brainData
+    }
+
+    override fun logStatus() {
+        logger.info { "Sending to $brainCount brains." }
+    }
+
+    inner class BrainController(
+        private val brainAddress: Network.Address,
+        private val brainId: BrainId,
+        private val isSimulatedBrain: Boolean,
+        private val msg: BrainHelloMessage
+    ) : Controller {
+        override val controllerId: ControllerId
+            get() = brainId.asControllerId()
+
+        override val fixtureMapping: FixtureMapping
+            get() = FixtureMapping(null, defaultPixelCount, null, defaultFixtureConfig)
+
+        override fun createTransport(
+            entity: Model.Entity?,
+            fixtureConfig: FixtureConfig,
+            transportConfig: TransportConfig?,
+            pixelCount: Int
+        ): Transport {
+            return BrainTransport(this, brainAddress, brainId, isSimulatedBrain)
         }
 
-        pendingBrains[brainId] = transport
+        override fun getAnonymousFixtureMappings(): List<FixtureMapping> {
+            return listOf(FixtureMapping(null, defaultPixelCount, null, defaultFixtureConfig))
+        }
     }
 
     inner class BrainTransport(
+        private val brainController: BrainController,
         internal val brainAddress: Network.Address,
         val brainId: BrainId,
         private val isSimulatedBrain: Boolean,
-        msg: BrainHelloMessage,
         val firmwareVersion: String? = null,
         val idfVersion: String? = null
     ) : Transport {
-        val fixture: Fixture = run {
-            val controllerId = BrainId(msg.brainId).asControllerId()
-            fixtureManager.createFixtureFor(controllerId, msg.surfaceName, this)
-        }
-
         var hadException: Boolean = false
             private set
 
@@ -216,7 +186,7 @@ class BrainManager(
 
             for (i in 0 until pixelCount) {
                 val j = i * 3
-                pixelBuffer.colors[i] = Color(byteArray[j], byteArray[j+1], byteArray[j+2])
+                pixelBuffer.colors[i] = Color(byteArray[j], byteArray[j + 1], byteArray[j + 2])
             }
 
             val message = BrainShaderMessage(pixelBuffer.brainShader, pixelBuffer).toBytes()
@@ -226,19 +196,14 @@ class BrainManager(
             } catch (e: Exception) {
                 // Couldn't send to Brain? Schedule to remove it.
                 hadException = true
-                pendingBrains[brainId] = this
+                controllerListener.onError(brainController)
+//                pendingBrains[brainId] = this
 
                 logger.error(e) { "Error sending to $brainId, will take offline" }
             }
 
             networkStats.packetsSent++
             networkStats.bytesSent += message.size
-
-            remoteVisualizers.sendFrameData(fixture.modelEntity) { outBuf ->
-                val colors = pixelBuffer.colors
-                outBuf.writeInt(colors.size)
-                colors.forEach { color -> color.serializeWithoutAlpha(outBuf) }
-            }
         }
     }
 
@@ -257,20 +222,15 @@ class BrainManager(
         }
     }
 
-    override fun addRemoteVisualizer(listener: RemoteVisualizerServer.Listener) {
-        remoteVisualizers.addListener(listener)
-
-        activeBrains.values.forEach {
-            listener.sendFixtureInfo(it.fixture)
-        }
-    }
-
-    override fun removeRemoteVisualizer(listener: RemoteVisualizerServer.Listener) {
-        remoteVisualizers.removeListener(listener)
-    }
-
     companion object {
-        val controllerTypeName: String = "Brain"
+        const val controllerTypeName: String = "Brain"
+        const val defaultPixelCount = 2048
+        private val defaultFixtureConfig = PixelArrayDevice.Config(
+            defaultPixelCount,
+            PixelArrayDevice.PixelFormat.RGB8,
+            1f,
+            LinearSurfacePixelStrategy()
+        )
 
         private val logger = Logger<BrainManager>()
         private val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.DIRECT_RGB)
