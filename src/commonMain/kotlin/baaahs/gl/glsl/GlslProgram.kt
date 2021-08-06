@@ -18,7 +18,7 @@ interface GlslProgram {
     val vertexAttribLocation: Int
 
     fun setResolution(x: Float, y: Float)
-
+    fun setPixDimens(width: Int, height: Int)
     fun aboutToRenderFrame()
     fun aboutToRenderFixture(renderTarget: RenderTarget)
     fun getUniform(name: String): Uniform?
@@ -28,10 +28,6 @@ interface GlslProgram {
 
     interface ResolutionListener {
         fun onResolution(x: Float, y: Float)
-    }
-
-    interface RasterOffsetListener {
-        fun onRasterOffset(left: Int, bottom: Int)
     }
 }
 
@@ -72,6 +68,8 @@ class GlslProgramImpl(
         }
     }
 
+    private val vertexShader_resolution by lazy { getUniform("vertexShader_resolution") }
+
     init {
         gl.runInContext {
             feeds.forEach { programFeed ->
@@ -101,6 +99,10 @@ class GlslProgramImpl(
 
     override fun setResolution(x: Float, y: Float) {
         feedsOf<GlslProgram.ResolutionListener>().forEach { it.onResolution(x, y) }
+    }
+
+    override fun setPixDimens(width: Int, height: Int) {
+        vertexShader_resolution!!.set(width.toFloat(), height.toFloat())
     }
 
     override fun aboutToRenderFrame() {
@@ -148,18 +150,19 @@ class GlslProgramImpl(
     companion object {
         private val logger = Logger("GlslProgram")
 
+        /**language=glsl*/
         val vertexShader = """
-            precision lowp float;
+            precision highp float;
 
-            // xy = vertex position in normalized device coordinates ([-1,+1] range).
+            // xy = vertex position in device pixel coordinates.
             in vec2 Vertex;
-
-            const vec2 scale = vec2(0.5, 0.5);
+            
+            uniform vec2 vertexShader_resolution;
 
             void main()
             {
-                vec2 vTexCoords  = Vertex * scale + scale; // scale vertex attribute to [0,1] range
-                gl_Position = vec4(Vertex, 0.0, 1.0);
+                // scale vertex attribute to [-1,1] range
+                gl_Position = vec4(Vertex / vertexShader_resolution * 2. - 1., 0.0, 1.0);
             }
         """.trimIndent()
     }

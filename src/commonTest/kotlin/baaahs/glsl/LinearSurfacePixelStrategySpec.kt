@@ -10,7 +10,7 @@ import org.spekframework.spek2.Spek
 import kotlin.random.Random
 
 @Suppress("unused")
-object LinearSurfacePixelStrategySpek : Spek({
+object LinearSurfacePixelStrategySpec : Spek({
     describe<LinearSurfacePixelStrategy> {
         val strategy by value { LinearSurfacePixelStrategy(Random(1)) }
         context("#forKnownSurface") {
@@ -36,12 +36,12 @@ object LinearSurfacePixelStrategySpek : Spek({
         }
 
         context("#forUnknownSurface") {
-            it("interpolates between vertex 0 and the surface's center") {
+            it("interpolates between two random vertices within the model's bounds") {
                 expect(strategy.forUnknownSurface(3, TestModel))
                     .containsExactly(
-                        Vector3F(x=0.13972723f, y=0.6433261f, z=0.87724733f),
-                        Vector3F(x=0.3837537f, y=0.7586312f, z=0.57177293f),
-                        Vector3F(x=0.62778014f, y=0.8739363f, z=0.26629853f)
+                        Vector3F(x=-0.36027277f, y=0.1433261f, z=0.37724733f),
+                        Vector3F(x=-0.11624631f, y=0.2586312f, z=0.07177293f),
+                        Vector3F(x=0.12778014f, y=0.3739363f, z=-0.23370147f)
                     )
             }
         }

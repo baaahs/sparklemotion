@@ -1,6 +1,6 @@
 package baaahs.model
 
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
@@ -11,11 +11,11 @@ import baaahs.sim.SimulationEnv
 
 abstract class Model : ModelInfo {
     abstract val name: String
-    abstract val movingHeads: List<MovingHead>
-    abstract val allSurfaces: List<Surface>
+    open val movingHeads: List<MovingHead> get() = emptyList()
+    open val allSurfaces: List<Surface> get() = emptyList()
     abstract val allEntities: List<Entity>
 
-    abstract val geomVertices: List<Vector3F>
+    open val geomVertices: List<Vector3F> get() = emptyList()
 
     private val allSurfacesByName: Map<String, Entity> by lazy { allEntities.associateBy { it.name } }
 
@@ -26,18 +26,20 @@ abstract class Model : ModelInfo {
         hashSetOf<Vector3F>().apply { allSurfaces.map { addAll(it.allVertices()) } }
     }
 
-    // TODO: modelBounds et al. should be based on allEntities, not allVertices.
-    private val modelBounds by lazy { boundingBox(allVertices) }
+    val modelBounds by lazy {
+        boundingBox(allEntities.flatMap { entity -> entity.modelBounds.let { listOf(it.first, it.second)} })
+    }
     private val modelExtents by lazy { val (min, max) = modelBounds; max - min }
     private val modelCenter by lazy { center(allVertices) }
 
-    override val extents get() = modelExtents
+    override val extents get() = modelExtents.let { if (it == Vector3F.origin) Vector3F(1f, 1f, 1f) else it }
     override val center: Vector3F get() = modelCenter
 
     interface Entity {
         val name: String
         val description: String
         val deviceType: DeviceType
+        val modelBounds: Pair<Vector3F, Vector3F>
 
         fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation
     }
@@ -57,6 +59,9 @@ abstract class Model : ModelInfo {
         val faces: List<Face>,
         val lines: List<Line>
     ) : Entity {
+        override val modelBounds: Pair<Vector3F, Vector3F>
+            get() = boundingBox(allVertices())
+
         open fun allVertices(): Collection<Vector3F> {
             val vertices = hashSetOf<Vector3F>()
             vertices.addAll(lines.flatMap { it.vertices })
@@ -67,7 +72,9 @@ abstract class Model : ModelInfo {
             BrainSurfaceSimulation(this, simulationEnv)
     }
 
-    data class Line(val vertices: List<Vector3F>)
+    data class Line(val vertices: List<Vector3F>) {
+        constructor(vararg vertices: Vector3F) : this(vertices.toList())
+    }
 
     class Face(
         internal val allVertices: List<Vector3F>,
@@ -75,6 +82,8 @@ abstract class Model : ModelInfo {
         val vertexB: Int,
         val vertexC: Int
     ) {
+        constructor(a: Vector3F, b: Vector3F, c: Vector3F) : this(listOf(a, b, c), 0, 1, 2)
+
         val a: Vector3F get() = allVertices[vertexA]
         val b: Vector3F get() = allVertices[vertexB]
         val c: Vector3F get() = allVertices[vertexC]

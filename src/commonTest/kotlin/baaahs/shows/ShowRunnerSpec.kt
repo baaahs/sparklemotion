@@ -1,4 +1,6 @@
 import baaahs.*
+import baaahs.controller.ControllersManager
+import baaahs.controllers.FakeMappingManager
 import baaahs.fixtures.FixtureManager
 import baaahs.gadgets.ColorPicker
 import baaahs.gl.GlContext.Companion.GL_RGB32F
@@ -86,12 +88,14 @@ object ShowRunnerSpec : Spek({
             PubSub.Server(httpServer, CoroutineScope(dispatcher))
         }
         val renderManager by value { RenderManager(TestModel) { fakeGlslContext } }
-        val fixtureManager by value { FixtureManager(renderManager, model, FakeMappingResults()) }
+        val fixtureManager by value { FixtureManager(renderManager, model) }
         val stageManager by value {
             val fs = FakeFs()
             StageManager(
                 testToolchain, renderManager, pubSub, Storage(fs, testPlugins()), fixtureManager,
-                FakeClock(), model, GadgetManager(pubSub, FakeClock(), dispatcher))
+                FakeClock(), model, GadgetManager(pubSub, FakeClock(), dispatcher),
+                ControllersManager(emptyList(), FakeMappingManager(), model, fixtureManager)
+            )
         }
 
         val fakeProgram by value { fakeGlslContext.programs.only("program") }

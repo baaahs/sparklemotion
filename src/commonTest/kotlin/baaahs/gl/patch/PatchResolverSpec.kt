@@ -3,7 +3,7 @@ package baaahs.gl.patch
 import baaahs.TestModel
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.control.OpenButtonControl
-import baaahs.fixtures.PixelArrayDevice
+import baaahs.device.PixelArrayDevice
 import baaahs.getBang
 import baaahs.gl.autoWire
 import baaahs.gl.kexpect

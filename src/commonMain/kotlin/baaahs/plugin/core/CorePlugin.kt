@@ -3,9 +3,9 @@ package baaahs.plugin.core
 import baaahs.Gadget
 import baaahs.app.ui.CommonIcons
 import baaahs.control.*
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
+import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.MovingHeadDevice
-import baaahs.fixtures.PixelArrayDevice
 import baaahs.gl.data.Feed
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.GenericShaderDialect

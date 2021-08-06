@@ -6,7 +6,20 @@ class SurfaceVisualizer(
     val surfaceGeometry: SurfaceGeometry,
     vizPixels: VizPixels? = null
 ) : EntityVisualizer {
-    val name: String get() = surfaceGeometry.name
+    override val title: String get() = surfaceGeometry.name
+    override var mapperIsRunning: Boolean = false
+        set(isRunning) {
+            field = isRunning
+            faceMaterial.transparent = !isRunning
+        }
+
+    override var selected: Boolean = false
+        set(value) {
+            lineMaterial.linewidth = if (value) 3 else 1
+            lineMaterial.needsUpdate = true
+            field = value
+        }
+
     private val lineMaterial = LineBasicMaterial().apply { color.set(0xaaaaaa) }
     private var faceMaterial = MeshBasicMaterial().apply { color.set(0x222222) }
     private val mesh = Mesh(surfaceGeometry.geometry, this.faceMaterial)
@@ -30,9 +43,6 @@ class SurfaceVisualizer(
 
         mesh.asDynamic().name = "Surface: ${surfaceGeometry.name}"
 
-        // so we can get back to the SurfaceVisualizer from a raycaster intersection:
-        this.mesh.userData.asDynamic()["SurfaceVisualizer"] = this
-
         this.lines = surfaceGeometry.lines.map { line -> Line(line, lineMaterial) }
 
     }
@@ -43,16 +53,4 @@ class SurfaceVisualizer(
         vizPixels?.addToScene(scene)
         vizScene = scene
     }
-
-    override var mapperIsRunning: Boolean = false
-        set(isRunning) {
-            field = isRunning
-            faceMaterial.transparent = !isRunning
-        }
-
-    companion object {
-        fun getFromObject(object3D: Object3D): SurfaceVisualizer? =
-            object3D.userData.asDynamic()["SurfaceVisualizer"] as SurfaceVisualizer?
-    }
-
 }

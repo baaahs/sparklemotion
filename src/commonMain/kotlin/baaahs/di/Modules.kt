@@ -1,17 +1,31 @@
 package baaahs.di
 
 import baaahs.*
+import baaahs.controller.ControllersManager
+import baaahs.controller.SacnManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
+import baaahs.dmx.DmxManagerImpl
+import baaahs.fixtures.FixtureManager
+import baaahs.gl.RootToolchain
+import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
+import baaahs.libraries.ShaderLibraryManager
+import baaahs.mapper.Storage
+import baaahs.mapping.MappingManager
+import baaahs.mapping.MappingManagerImpl
 import baaahs.model.Model
+import baaahs.model.ModelInfo
+import baaahs.model.ModelManager
+import baaahs.model.ModelManagerImpl
 import baaahs.net.Network
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
+import baaahs.scene.SceneManager
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.util.Clock
@@ -53,34 +67,56 @@ interface PinkyModule : KModule {
     val Scope.renderManager: RenderManager
     val Scope.pinkySettings: PinkySettings
 
-    override fun getModule(): Module = module {
-        scope<Pinky> {
-            scoped { fs }
-            scoped(named("firmwareDir")) { firmwareDir }
-            scoped { firmwareDaddy }
-            scoped(named("PinkyLink")) { pinkyLink }
-            scoped(named("PinkyMainDispatcher")) { pinkyMainDispatcher }
-            scoped<Job>(named("PinkyJob")) { SupervisorJob() }
-            scoped(named("PinkyContext")) {
-                get<CoroutineDispatcher>(named("PinkyMainDispatcher")) + get<Job>(named("PinkyJob"))
-            }
-            scoped { PubSub.Server(get(), CoroutineScope(get(named("PinkyContext")))) }
-            scoped { dmxDriver }
-            scoped { DmxManager(get(), get(), get(named("Fallback"))) }
-            scoped { renderManager }
-            scoped { pinkySettings }
-            scoped { get<Network.Link>(named("PinkyLink")).startHttpServer(Ports.PINKY_UI_TCP) }
-            scoped {
-                Pinky(
-                    get(), get(), get(), get(), get(),
-                    get(), get(),
-                    pinkyMainDispatcher = get(named("PinkyMainDispatcher")),
-                    link = get(named("PinkyLink")),
-                    httpServer = get(),
-                    pubSub = get(),
-                    dmxManager = get(),
-                    pinkySettings = get()
-                )
+    override fun getModule(): Module {
+        val pinkyContext = named("PinkyContext")
+        val pinkyMainDispatcher = named("PinkyMainDispatcher")
+        val pinkyJob = named("PinkyJob")
+        val fallbackDmxUniverse = named("Fallback")
+
+        return module {
+            scope<Pinky> {
+                scoped { fs }
+                scoped(named("firmwareDir")) { firmwareDir }
+                scoped { firmwareDaddy }
+                scoped { this.pinkyLink }
+                scoped(pinkyMainDispatcher) { this.pinkyMainDispatcher }
+                scoped<Job>(pinkyJob) { SupervisorJob() }
+                scoped(pinkyContext) {
+                    get<CoroutineDispatcher>(pinkyMainDispatcher) + get<Job>(pinkyJob)
+                }
+                scoped { PubSub.Server(get(), CoroutineScope(get(pinkyContext))) }
+                scoped<PubSub.IServer> { get<PubSub.Server>() }
+                scoped { dmxDriver }
+                scoped<ModelInfo> { get<Model>() }
+                scoped<DmxManager> { DmxManagerImpl(get(), get(), get(fallbackDmxUniverse)) }
+                scoped { renderManager }
+                scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
+                scoped { Storage(get(), get()) }
+                scoped { FixtureManager(get(), get()) }
+                scoped { GadgetManager(get(), get(), get(pinkyContext)) }
+                scoped<Toolchain> { RootToolchain(get()) }
+                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+                scoped { Pinky.NetworkStats() }
+                scoped { BrainManager(get(), get(), get(), get(), get(), get(pinkyContext)) }
+                scoped { SacnManager(get(), get(), get(pinkyMainDispatcher), get()) }
+                scoped { SceneManager(get(), get()) }
+                scoped<MappingManager> { MappingManagerImpl(get(), get()) }
+                scoped<ModelManager> { ModelManagerImpl() }
+                scoped(named("ControllerManagers")) {
+                    listOf(
+                        get<BrainManager>(), get<DmxManager>(), get<SacnManager>()
+                    )
+                }
+                scoped { ControllersManager(get(named("ControllerManagers")), get(), get(), get<FixtureManager>()) }
+                scoped { ShaderLibraryManager(get(), get()) }
+                scoped { pinkySettings }
+                scoped {
+                    Pinky(
+                        get(), get(), get(), get(), get(), get(),
+                        get(), get(), get(), get(), get(pinkyContext), get(), get(),
+                        get(), get(), get(), get(), get(), get()
+                    )
+                }
             }
         }
     }

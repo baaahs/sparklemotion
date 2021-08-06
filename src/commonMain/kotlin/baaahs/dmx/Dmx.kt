@@ -18,6 +18,7 @@ interface Dmx {
     }
 
     abstract class Universe {
+        /** @param baseChannel Zero-based. */
         abstract fun writer(baseChannel: Int, channelCount: Int): Buffer
         abstract fun sendFrame()
         abstract fun allOff()
@@ -25,8 +26,8 @@ interface Dmx {
 
     class Buffer(
         private val channels: ByteArray,
-        private val baseChannel: Int,
-        val channelCount: Int
+        private val baseChannel: Int = 0,
+        val channelCount: Int = channels.size
     ) {
         operator fun get(channel: Channel): Byte = get(channel.offset)
 

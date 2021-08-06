@@ -29,7 +29,7 @@ class ClientPreview(
     private val glContext = GlBase.jsManager.createContext()
     private val renderManager = RenderManager(model) { glContext }
     private val mappingResults = SessionMappingResults(model, emptyList()) // TODO: use real data.
-    private val fixtureManager = FixtureManager(renderManager, model, mappingResults)
+    private val fixtureManager = FixtureManager(renderManager, model)
     private val dmxUniverse = FakeDmxUniverse()
     private val theVisualizer = Visualizer(model, clock)
     private var patchSetChanged = true

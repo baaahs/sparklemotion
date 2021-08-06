@@ -9,7 +9,7 @@ interface Beam {
 
     companion object {
         fun selectFor(movingHead: MovingHead): Beam {
-            return when (movingHead.colorModel) {
+            return when (movingHead.adapter.colorModel) {
                 MovingHead.ColorModel.ColorWheel -> ColorWheelBeam(movingHead)
                 MovingHead.ColorModel.RGB -> RgbBeam(movingHead)
                 MovingHead.ColorModel.RGBW -> RgbBeam(movingHead)

@@ -1,12 +1,10 @@
 package baaahs.gl.render
 
-import baaahs.TestModel
-import baaahs.describe
-import baaahs.englishize
-import baaahs.fixtures.DeviceType
+import baaahs.*
+import baaahs.device.DeviceType
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.NullTransport
-import baaahs.fixtures.ResultParam
 import baaahs.geom.Vector3F
 import baaahs.gl.*
 import baaahs.gl.glsl.GlslProgram
@@ -14,7 +12,6 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.shader.InputPort
-import baaahs.only
 import baaahs.plugin.SerializerRegistrar
 import baaahs.show.*
 import baaahs.show.Shader
@@ -38,7 +35,10 @@ object ModelRenderEngineSpec : Spek({
         val pixelDataSource by value { PerPixelDataSourceForTest(updateMode) }
         val dataSource by value<DataSource> { fixtureDataSource }
         val deviceType by value { DeviceTypeForTest(dataSource) }
-        val renderEngine by value { ModelRenderEngine(gl, TestModel, deviceType, minTextureWidth = 1,) }
+        val maxFramebufferWidth by value { 64 }
+        val renderEngine by value {
+            ModelRenderEngine(gl, TestModel, deviceType, minTextureWidth = 1, maxFramebufferWidth)
+        }
         val texture by value { gl.textures.only("texture") }
 
         context("when engine has just been started") {
@@ -138,7 +138,60 @@ object ModelRenderEngineSpec : Spek({
                 }
             }
 
-            context("when a fixtures are added") {
+            context("when a fixture with maxFramebufferWidth pixels is added") {
+                val fixture1Target by value {
+                    renderEngine.addFixture(testFixture(deviceType, maxFramebufferWidth, 0f))
+                }
+
+                val addFixture by value { { fixture1Target.run { } } }
+                val renderPlan by value { renderPlanFor(initialProgram[0]!!, fixture1Target) }
+                val drawTwoFrames by value {
+                    {
+                        renderEngine.setRenderPlan(renderPlan)
+                        renderEngine.draw()
+                        renderEngine.draw()
+                    }
+                }
+
+                beforeEachTest { addFixture() }
+
+                context("when two frames are rendered") {
+                    beforeEachTest {
+                        // Two frames so we can observe when uniforms are updated.
+                        drawTwoFrames()
+                    }
+
+                    it("should generate a RenderTarget with appropriate rects") {
+                        expect(fixture1Target.pixel0Index).toEqual(0)
+                        expect(fixture1Target.pixelCount).toEqual(maxFramebufferWidth)
+
+                        expect(fixture1Target.rect0Index).toEqual(0)
+                        expect(fixture1Target.rects).toEqual(listOf(
+                            Quad.Rect(0f, 0f, 1f, 64f)
+                        ))
+                    }
+
+                    context("when the data source is per-pixel") {
+                        override(dataSource) { pixelDataSource }
+
+                        it("should allocate a texture to hold per-pixel data for all fixtures") {
+                            expect(texture.width to texture.height)
+                                .toBe(64 to 2)
+                            expect(fakeGlProgram.renders.map { it.textureBuffers.only("texture buffer") })
+                                .containsExactly(
+                                    listOf(10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f, 18f, 19f, 20f, 21f, 22f, 23f, 24f, 25f, 26f, 27f, 28f, 29f, 30f, 31f, 32f, 33f, 34f, 35f, 36f, 37f, 38f, 39f, 40f, 41f, 42f, 43f, 44f, 45f, 46f, 47f, 48f, 49f, 50f, 51f, 52f, 53f, 54f, 55f, 56f, 57f, 58f, 59f, 60f, 61f, 62f, 63f, 64f, 65f, 66f, 67f, 68f, 69f, 70f, 71f, 72f, 73f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f),
+                                    listOf(10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f, 18f, 19f, 20f, 21f, 22f, 23f, 24f, 25f, 26f, 27f, 28f, 29f, 30f, 31f, 32f, 33f, 34f, 35f, 36f, 37f, 38f, 39f, 40f, 41f, 42f, 43f, 44f, 45f, 46f, 47f, 48f, 49f, 50f, 51f, 52f, 53f, 54f, 55f, 56f, 57f, 58f, 59f, 60f, 61f, 62f, 63f, 64f, 65f, 66f, 67f, 68f, 69f, 70f, 71f, 72f, 73f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+//                                    listOf(10f, 20f, 21f), // First frame, fixture1.
+//                                    listOf(10f, 20f, 21f), // First frame, fixture2.
+//                                    listOf(10f, 20f, 21f), // Second frame, fixture1.
+//                                    listOf(10f, 20f, 21f)  // Second frame, fixture2.
+                                )
+                        }
+                    }
+                }
+            }
+
+            context("when fixtures are added") {
                 val fixture1Target by value {
                     renderEngine.addFixture(testFixture(deviceType, 1, 0f))
                 }
@@ -249,7 +302,7 @@ object ModelRenderEngineSpec : Spek({
 })
 
 private fun testFixture(deviceType: DeviceTypeForTest, pixelCount: Int, initial: Float = 0f) =
-    Fixture(null, pixelCount, someVectors(pixelCount, initial), deviceType, transport = NullTransport)
+    Fixture(null, pixelCount, someVectors(pixelCount, initial), deviceType.defaultConfig, transport = NullTransport)
 
 private fun someVectors(count: Int, initial: Float = 0f): List<Vector3F> =
     (0 until count).map { Vector3F(initial + count / 10f, 0f, 0f) }
@@ -277,11 +330,20 @@ class DeviceTypeForTest(
             }
         }
 
-    override val resultParams: List<ResultParam>
-        get() = emptyList()
     override val errorIndicatorShader: Shader
         get() = Shader("Ω Guru Meditation Error Ω", "")
+    override val defaultConfig: FixtureConfig
+        get() = Config()
+
+    override fun createResultStorage(renderResults: RenderResults): ResultStorage = ResultStorage.Empty
+
     override fun toString(): String = id
+
+    inner class Config : FixtureConfig {
+        override val deviceType: DeviceType
+            get() = this@DeviceTypeForTest
+
+    }
 }
 
 fun Boolean.truify(): Boolean {

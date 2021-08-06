@@ -1,6 +1,11 @@
 package baaahs
 
-import baaahs.fixtures.*
+import baaahs.controller.ControllersManager
+import baaahs.controllers.FakeMappingManager
+import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.Transport
 import baaahs.gadgets.Slider
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
@@ -35,12 +40,12 @@ class ShowRunnerTest {
     private lateinit var renderTargets: Map<Fixture, RenderTarget>
     private val surface1Messages = mutableListOf<String>()
     private val surface1Fixture =
-        Fixture(SheepModel.Panel("surface 1"), 1, emptyList(), PixelArrayDevice,
-            transport = FakeTransport { _, _ -> surface1Messages.add("frame") })
+        Fixture(SheepModel.Panel("surface 1"), 1, emptyList(), PixelArrayDevice.defaultConfig,
+            transport = FakeTransport { surface1Messages.add("frame") })
     private val surface2Messages = mutableListOf<String>()
     private val surface2Fixture =
-        Fixture(SheepModel.Panel("surface 2"), 1, emptyList(), PixelArrayDevice,
-            transport = FakeTransport { _, _ -> surface2Messages.add("frame") })
+        Fixture(SheepModel.Panel("surface 2"), 1, emptyList(), PixelArrayDevice.defaultConfig,
+            transport = FakeTransport { surface2Messages.add("frame") })
     private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
@@ -57,11 +62,11 @@ class ShowRunnerTest {
         dmxUniverse.listen(1, 1) { dmxEvents.add("dmx frame sent") }
         val model = TestModel
         val renderManager = RenderManager(model) { fakeGlslContext }
-        fixtureManager = FixtureManager(renderManager, model, FakeMappingResults())
-        MovingHeadManager(fixtureManager, dmxUniverse, emptyList())
+        fixtureManager = FixtureManager(renderManager, model)
         stageManager = StageManager(
             testToolchain, renderManager, server, Storage(fs, testPlugins()), fixtureManager,
-            FakeClock(), sheepModel, GadgetManager(server, FakeClock(), dispatcher)
+            FakeClock(), sheepModel, GadgetManager(server, FakeClock(), dispatcher),
+            ControllersManager(emptyList(), FakeMappingManager(), model, fixtureManager)
         )
         stageManager.switchTo(SampleData.sampleShow)
         renderTargets = fixtureManager.getRenderTargets_ForTestOnly()
@@ -278,10 +283,10 @@ class ShowRunnerTest {
 
     class FakeTransport(
         override val name: String = "Fake Transport",
-        private val fn: (fixture: Fixture, resultViews: List<ResultView>) -> Unit
+        private val fn: (byteArray: ByteArray) -> Unit
     ) : Transport {
-        override fun send(fixture: Fixture, resultViews: List<ResultView>) {
-            fn(fixture, resultViews)
+        override fun deliverBytes(byteArray: ByteArray) {
+            fn(byteArray)
         }
     }
 }

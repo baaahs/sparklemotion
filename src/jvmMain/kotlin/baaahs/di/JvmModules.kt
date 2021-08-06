@@ -58,7 +58,7 @@ class JvmPinkyModule : PinkyModule {
     override val Scope.firmwareDaddy: FirmwareDaddy
         get() {
             val fwDir = get<Fs.File>(named("firmwareDir"))
-            val link = get<Network.Link>(named("PinkyLink"))
+            val link = get<Network.Link>()
             val myAddress = link.myAddress as JvmNetwork.IpAddress
             val fwUrlBase = "http://${myAddress.address.hostAddress}:${Ports.PINKY_UI_TCP}/fw"
             return DirectoryDaddy(fwDir, fwUrlBase)

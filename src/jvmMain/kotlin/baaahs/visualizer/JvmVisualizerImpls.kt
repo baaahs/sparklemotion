@@ -8,6 +8,8 @@ actual class VizScene {
 actual class VizObj
 
 actual interface EntityVisualizer {
+    actual val title: String
     actual var mapperIsRunning: Boolean
+    actual var selected: Boolean
     actual fun addTo(scene: VizScene)
 }

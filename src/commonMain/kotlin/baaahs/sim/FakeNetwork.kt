@@ -50,7 +50,7 @@ class FakeNetwork(
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
             val serverPort = if (port == 0) nextAvailablePort++ else port
-            udpListeners.put(Pair(myAddress, serverPort), udpListener)
+            udpListeners[Pair(myAddress, serverPort)] = udpListener
             val portListeners = udpListenersByPort.getOrPut(serverPort) { mutableListOf() }
             portListeners.add(udpListener)
             return FakeUdpSocket(serverPort)

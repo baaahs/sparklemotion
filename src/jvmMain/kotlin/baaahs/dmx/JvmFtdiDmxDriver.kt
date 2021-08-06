@@ -8,7 +8,7 @@ object JvmFtdiDmxDriver : Dmx.Driver {
         return try {
             Service.listDevicesByType(DeviceType.FT_DEVICE_232R).map { JvmDmxDevice(it) }
         } catch (e: UnsatisfiedLinkError) {
-            DmxManager.logger.warn { "DMX driver not found, DMX will be disabled." }
+            DmxManagerImpl.logger.warn { "DMX driver not found, DMX will be disabled." }
             e.printStackTrace()
             emptyList()
         }

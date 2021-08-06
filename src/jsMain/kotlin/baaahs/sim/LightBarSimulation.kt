@@ -1,10 +1,7 @@
 package baaahs.sim
 
-import baaahs.controller.WledManager
+import baaahs.controller.SacnManager
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.PixelArrayDevice
-import baaahs.fixtures.ResultView
-import baaahs.fixtures.Transport
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
@@ -14,7 +11,6 @@ import baaahs.visualizer.VizPixels
 import baaahs.visualizer.toVector3
 import three.js.Vector3
 
-/** LightBarSimulation doesn't actually simulate WLED communications. It prolly should at some point. */
 actual class LightBarSimulation actual constructor(
     val lightBar: LightBar,
     private val simulationEnv: SimulationEnv
@@ -28,9 +24,10 @@ actual class LightBarSimulation actual constructor(
 
     override val mappingData: MappingSession.SurfaceData
         get() = MappingSession.SurfaceData(
-            WledManager.controllerTypeName,
+            SacnManager.controllerTypeName,
             "wled-X${lightBar.name}X",
             lightBar.name,
+            pixelLocations.size,
             pixelLocations.map { MappingSession.SurfaceData.PixelData(it) }
         )
 
@@ -46,9 +43,9 @@ actual class LightBarSimulation actual constructor(
             lightBar,
             pixelCount,
             pixelLocations,
-            lightBar.deviceType,
+            lightBar.deviceType.defaultConfig,
             lightBar.name,
-            PreviewTransport()
+            PixelArrayPreviewTransport(lightBar.name, vizPixels)
         )
     }
 
@@ -67,18 +64,6 @@ actual class LightBarSimulation actual constructor(
 
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
         entityVisualizer.vizPixels?.readColors(reader)
-    }
-
-    inner class PreviewTransport : Transport {
-        override val name: String
-            get() = lightBar.name
-
-        override fun send(fixture: Fixture, resultViews: List<ResultView>) {
-            val resultColors = PixelArrayDevice.getColorResults(resultViews)
-            for (i in 0 until pixelCount) {
-                vizPixels[i] = resultColors[i]
-            }
-        }
     }
 
     companion object {

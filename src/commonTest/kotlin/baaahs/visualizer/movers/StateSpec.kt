@@ -1,6 +1,6 @@
 package baaahs.visualizer.movers
 
-import baaahs.TestMovingHead
+import baaahs.TestMovingHeadAdapter
 import baaahs.describe
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
@@ -11,8 +11,8 @@ object StateSpec : Spek({
     describe<State> {
         val startingState by value { State() }
         val destinationState by value { State(.75f, .75f, .25f, 1f) }
-        val movingHead by value {
-            TestMovingHead(
+        val adapter by value {
+            TestMovingHeadAdapter(
                 panMotorSpeed = 2f,
                 tiltMotorSpeed = 1f,
                 colorWheelMotorSpeed = 1f
@@ -22,7 +22,7 @@ object StateSpec : Spek({
         context("#moveToward") {
             val elapsedTime by value { .25f }
             val interpolatedState by value {
-                startingState.moveToward(destinationState, destinationState, movingHead, elapsedTime)
+                startingState.moveToward(destinationState, destinationState, adapter, elapsedTime)
             }
 
             it("should move as far as motors can move in the elapsed time") {

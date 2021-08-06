@@ -1,16 +1,16 @@
 package baaahs.gl.render
 
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.ResultBuffer
 import baaahs.gl.glsl.GlslProgram
 import baaahs.model.ModelInfo
+import baaahs.visualizer.remote.RemoteVisualizers
 
 interface RenderTarget {
     val fixture: Fixture
     val modelInfo: ModelInfo
     val pixelCount: Int
 
-    fun sendFrame()
+    fun sendFrame(remoteVisualizers: RemoteVisualizers)
     fun release()
 }
 
@@ -21,15 +21,15 @@ class FixtureRenderTarget(
     override val modelInfo: ModelInfo,
     override val pixelCount: Int,
     val pixel0Index: Int,
-    resultBuffers: List<ResultBuffer>
+    private val resultStorage: ResultStorage
 ) : RenderTarget {
     var program: GlslProgram? = null
         private set
 
-    val resultViews = resultBuffers.map { it.getView(pixel0Index, pixelCount) }
+    val fixtureResults = resultStorage.getFixtureResults(fixture, pixel0Index)
 
-    override fun sendFrame() {
-        fixture.transport.send(fixture, resultViews)
+    override fun sendFrame(remoteVisualizers: RemoteVisualizers) {
+        fixtureResults.send(fixture.modelEntity, remoteVisualizers)
     }
 
     override fun release() {

@@ -1,6 +1,6 @@
 package baaahs.models
 
-import baaahs.fixtures.PixelArrayDevice
+import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.model.LightBar
 import baaahs.model.ObjModel

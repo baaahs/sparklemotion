@@ -2,14 +2,15 @@ package baaahs.fixtures
 
 interface Transport {
     val name: String
-    fun send(fixture: Fixture, resultViews: List<ResultView>)
+
+    fun deliverBytes(byteArray: ByteArray)
 }
 
 object NullTransport : Transport {
     override val name: String
         get() = "Null Transport"
 
-    override fun send(fixture: Fixture, resultViews: List<ResultView>) {
+    override fun deliverBytes(byteArray: ByteArray) {
         // No-op.
     }
 }

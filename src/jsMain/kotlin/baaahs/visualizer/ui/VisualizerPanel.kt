@@ -3,18 +3,15 @@ package baaahs.visualizer.ui
 import baaahs.ui.BComponent
 import baaahs.ui.Observable
 import baaahs.ui.Observer
+import baaahs.ui.unaryPlus
 import baaahs.visualizer.Visualizer
-import kotlinx.css.height
-import kotlinx.css.pct
-import kotlinx.html.id
-import kotlinx.html.js.onMouseDownFunction
+import kotlinx.css.*
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RProps
 import react.RState
-import styled.css
-import styled.styledDiv
+import react.dom.div
+import styled.StyleSheet
 
 class VisualizerPanel(props: Props) : BComponent<VisualizerPanel.Props, VisualizerPanel.State>(props), Observer {
     private val container = react.createRef<HTMLDivElement>()
@@ -32,16 +29,8 @@ class VisualizerPanel(props: Props) : BComponent<VisualizerPanel.Props, Visualiz
     }
 
     override fun RBuilder.render() {
-        styledDiv {
+        div(+Styles.visualizerPanel) {
             ref = container
-            css {
-                +"sheepView"
-                height = 100.pct
-            }
-            attrs.id = "sheepView"
-            attrs.onMouseDownFunction = { event: Event ->
-                props.visualizer.onMouseDown(event.asDynamic())
-            }
         }
     }
 
@@ -50,4 +39,18 @@ class VisualizerPanel(props: Props) : BComponent<VisualizerPanel.Props, Visualiz
     ) : RProps
 
     class State : RState
+}
+
+object Styles : StyleSheet("visualizer-ui", isStatic = true) {
+    val visualizerPanel by css {
+        height = 100.pct
+        position = Position.relative
+
+        span {
+            fontWeight = FontWeight.bold
+            position = Position.absolute
+            left = 1.em
+            bottom = 2.em
+        }
+    }
 }

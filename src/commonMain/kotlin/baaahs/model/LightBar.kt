@@ -1,6 +1,6 @@
 package baaahs.model
 
-import baaahs.fixtures.DeviceType
+import baaahs.device.DeviceType
 import baaahs.geom.Vector3F
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.sim.FixtureSimulation
@@ -11,19 +11,18 @@ class LightBar(
     override val name: String,
     override val description: String,
     override val deviceType: DeviceType,
-    val startVertex: Vector3F?,
-    val endVertex: Vector3F?
+    val startVertex: Vector3F,
+    val endVertex: Vector3F
 ) : Model.Entity {
-    val length: Float?
-        get() = startVertex?.let { endVertex?.minus(it)?.length() }
+    override val modelBounds: Pair<Vector3F, Vector3F>
+        get() = startVertex to endVertex
+
+    val length: Float
+        get() = startVertex.let { (endVertex - it).length() }
 
     fun getPixelLocations(pixelCount: Int): List<Vector3F> {
         return LinearSurfacePixelStrategy()
-            .betweenPoints(
-                startVertex ?: error("no start vertex!"),
-                endVertex ?: error("no end vertex!"),
-                pixelCount
-            )
+            .betweenPoints(startVertex, endVertex, pixelCount)
     }
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =

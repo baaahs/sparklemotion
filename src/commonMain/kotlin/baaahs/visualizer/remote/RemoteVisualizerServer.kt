@@ -1,12 +1,14 @@
 package baaahs.visualizer.remote
 
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureManager
 import baaahs.io.ByteArrayWriter
+import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.util.Logger
 
 class RemoteVisualizerServer(
-    private vararg val remoteVisualizables: RemoteVisualizable
+    private val fixtureManager: FixtureManager
 ) : Network.WebSocketListener {
     private val id = "Remote Visualizer ${nextId++}"
     lateinit var tcpConnection: Network.TcpConnection
@@ -15,7 +17,7 @@ class RemoteVisualizerServer(
     override fun connected(tcpConnection: Network.TcpConnection) {
         this.tcpConnection = tcpConnection
 
-        remoteVisualizables.forEach { it.addRemoteVisualizer(listener) }
+        fixtureManager.addRemoteVisualizerListener(listener)
         logger.info { "$id: connected from ${tcpConnection.fromAddress.asString()}." }
     }
 
@@ -25,7 +27,7 @@ class RemoteVisualizerServer(
 
     override fun reset(tcpConnection: Network.TcpConnection) {
         logger.info { "$id: connection reset." }
-        remoteVisualizables.forEach { it.removeRemoteVisualizer(listener) }
+        fixtureManager.removeRemoteVisualizerListener(listener)
     }
 
     private val listener = ListenerImpl()
@@ -42,11 +44,11 @@ class RemoteVisualizerServer(
             }
         }
 
-        override fun sendFrameData(fixture: Fixture, block: (ByteArrayWriter) -> Unit) {
-            if (fixture.modelEntity != null) {
+        override fun sendFrameData(entity: Model.Entity?, block: (ByteArrayWriter) -> Unit) {
+            if (entity != null) {
                 outBuf.reset()
                 outBuf.writeByte(Opcode.FrameData.byteValue)
-                outBuf.writeString(fixture.modelEntity.name)
+                outBuf.writeString(entity.name)
                 block(outBuf)
                 tcpConnection.send(outBuf.toBytes())
             }
@@ -72,6 +74,6 @@ class RemoteVisualizerServer(
 
     interface Listener {
         fun sendFixtureInfo(fixture: Fixture)
-        fun sendFrameData(fixture: Fixture, block: (ByteArrayWriter) -> Unit)
+        fun sendFrameData(entity: Model.Entity?, block: (ByteArrayWriter) -> Unit)
     }
 }
