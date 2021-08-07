@@ -22,7 +22,7 @@ internal class BrowserUdpProxy(
         toSend.clear()
     }
 
-    override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
+    override suspend fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
         try {
             if (bytes.isEmpty()) return
 
