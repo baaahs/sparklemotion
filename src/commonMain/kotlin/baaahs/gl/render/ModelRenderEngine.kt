@@ -110,7 +110,7 @@ class ModelRenderEngine(
 
     override fun render() {
         gl.setViewport(0, 0, arrangement.pixWidth, arrangement.pixHeight)
-        gl.check { clearColor(.1f, .2f, 0f, 1f) }
+        gl.check { clearColor(.1f, .5f, 0f, 1f) }
         gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
         arrangement.render()
@@ -155,7 +155,7 @@ class ModelRenderEngine(
     }
 
     fun logStatus() {
-        logger.info { "Rendering $pixelCount pixels for ${renderTargets.size} fixtures."}
+        logger.info { "Rendering $pixelCount pixels for ${renderTargets.size} ${deviceType.title} fixtures."}
     }
 
     val Int.bufWidth: Int get() = max(minTextureWidth, min(this, maxFramebufferWidth))

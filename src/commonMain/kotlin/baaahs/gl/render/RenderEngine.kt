@@ -10,8 +10,6 @@ import baaahs.gl.patch.LinkedPatch
 import baaahs.show.DataSource
 import baaahs.time
 import baaahs.timeSync
-import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
-import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import kotlin.math.roundToInt
 
 abstract class RenderEngine(val gl: GlContext) {
@@ -43,8 +41,6 @@ abstract class RenderEngine(val gl: GlContext) {
             }
 
             stats.renderMs += timeSync {
-                gl.check { clearColor(0f, .5f, 0f, 1f) }
-                gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
                 render()
                 afterRender()
             }
