@@ -37,7 +37,7 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
                         .add(
                             FixtureMapping(
                                 modelEntity, pixelCount, pixelLocations,
-                                transportConfig = transportConfig
+                                surfaceData.fixtureConfig, transportConfig
                             )
                         )
                 } catch (e: Exception) {

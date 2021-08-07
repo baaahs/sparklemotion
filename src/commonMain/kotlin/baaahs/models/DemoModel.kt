@@ -23,7 +23,7 @@ class DemoModel : ObjModel("decom-2019-panels.obj") {
     )
 
     fun lightBar(name: String, startVertex: Vector3F, endVertex: Vector3F) =
-        LightBar(name, name, PixelArrayDevice, startVertex, endVertex)
+        LightBar(name, name, startVertex, endVertex)
 
     override fun createSurface(name: String, faces: List<Face>, lines: List<Line>) =
         Surface(name, name, PixelArrayDevice, 16 * 60, faces, lines)

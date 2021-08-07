@@ -29,7 +29,7 @@ abstract class Model : ModelInfo {
     }
 
     val modelBounds by lazy {
-        boundingBox(allEntities.flatMap { entity -> entity.modelBounds.let { listOf(it.first, it.second)} })
+        boundingBox(allEntities.flatMap { entity -> entity.bounds.let { listOf(it.first, it.second)} })
     }
     private val modelExtents by lazy { val (min, max) = modelBounds; max - min }
     private val modelCenter by lazy { center(allVertices) }
@@ -41,7 +41,7 @@ abstract class Model : ModelInfo {
         val name: String
         val description: String
         val deviceType: DeviceType
-        val modelBounds: Pair<Vector3F, Vector3F>
+        val bounds: Pair<Vector3F, Vector3F>
 
         fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation
     }
@@ -61,7 +61,7 @@ abstract class Model : ModelInfo {
         val faces: List<Face>,
         val lines: List<Line>
     ) : Entity {
-        override val modelBounds: Pair<Vector3F, Vector3F>
+        override val bounds: Pair<Vector3F, Vector3F>
             get() = boundingBox(allVertices())
 
         open fun allVertices(): Collection<Vector3F> {

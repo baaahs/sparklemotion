@@ -1,6 +1,7 @@
 package baaahs.model
 
 import baaahs.device.DeviceType
+import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.model.WtfMaths.cross
@@ -14,13 +15,15 @@ import kotlin.math.sin
 class LightRing(
     override val name: String,
     override val description: String,
-    override val deviceType: DeviceType,
     val center: Vector3F,
     val radius: Float,
     val planeNormal: Vector3F
-) : Model.Entity {
-    override val modelBounds: Pair<Vector3F, Vector3F>
-        get() = boundingBox(getPixelLocations(4)) // This oughta cover it, right?
+) : Model.Entity, LinearPixelArray {
+    override val deviceType: DeviceType
+        get() = PixelArrayDevice
+
+    override val bounds: Pair<Vector3F, Vector3F>
+        get() = boundingBox(calculatePixelLocations(4)) // This oughta cover it, right?
 
     val circumference: Float
         get() = (radius * PI).toFloat()
@@ -28,15 +31,19 @@ class LightRing(
     val length: Float
         get() = circumference
 
-    fun getPixelLocations(pixelCount: Int): List<Vector3F> {
+    // For calculating pixel positions around a circle, given planeNormal.
+    private val pixelPlotVectors by lazy {
         val v3 = planeNormal.normalize()
         val v1 = Vector3F(v3.z, 0f, -v3.x).normalize()
         val v2 = v3.cross(v1)
+        v1 to v2
+    }
 
-        return (0 until pixelCount).map { i ->
-            val a = 2 * PI * (i / pixelCount.toDouble())
-            center + (v1 * cos(a) + v2 * sin(a)) * radius
-        }
+    /** A light ring's pixels are evenly spaced along its circumference. */
+    override fun calculatePixelLocation(index: Int, count: Int): Vector3F {
+        val (v1, v2) = pixelPlotVectors
+        val a = 2 * PI * (index / count.toDouble())
+        return center + (v1 * cos(a) + v2 * sin(a)) * radius
     }
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =

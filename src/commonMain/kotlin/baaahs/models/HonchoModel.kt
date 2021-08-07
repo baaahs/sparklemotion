@@ -1,6 +1,5 @@
 package baaahs.models
 
-import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.model.LightRing
 import baaahs.model.Model
@@ -19,7 +18,7 @@ class HonchoModel : Model() {
     )
 
     fun lightRing(name: String, center: Vector3F, radius: Float) =
-        LightRing(name, name, PixelArrayDevice, center, radius, Vector3F(0f, 0f, 1f))
+        LightRing(name, name, center, radius, Vector3F(0f, 0f, 1f))
 
     val Number.m: Float get() = toFloat() * 100f / 2.54f
 }
