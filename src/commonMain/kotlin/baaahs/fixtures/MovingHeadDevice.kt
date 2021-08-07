@@ -12,6 +12,7 @@ import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.MovingHeadParams
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -60,7 +61,7 @@ object MovingHeadDevice : DeviceType {
 
     override fun toString(): String = id
 
-    @Serializable
+    @Serializable @SerialName("baaahs.Core:MovingHeadDevice")
     data class Config(val adapter: MovingHeadAdapter) : FixtureConfig {
         override val deviceType: DeviceType
             get() = MovingHeadDevice

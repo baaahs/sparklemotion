@@ -3,6 +3,9 @@ package baaahs.glsl
 import baaahs.geom.Vector3F
 import baaahs.model.Model
 import baaahs.model.ModelInfo
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlin.random.Random
 
 interface SurfacePixelStrategy {
@@ -18,7 +21,10 @@ interface SurfacePixelStrategy {
     fun forUnknownSurface(pixelCount: Int, modelInfo: ModelInfo): List<Vector3F>
 }
 
-class RandomSurfacePixelStrategy(private val random: Random = Random) : SurfacePixelStrategy {
+@Serializable @SerialName("Random")
+class RandomSurfacePixelStrategy(
+    @Transient private val random: Random = Random
+) : SurfacePixelStrategy {
     override fun forKnownSurface(pixelCount: Int, surface: Model.Surface, model: ModelInfo): List<Vector3F> {
         // Randomly pick locations within the surface.
         val surfaceVertices = surface.allVertices().toList()
@@ -41,7 +47,10 @@ class RandomSurfacePixelStrategy(private val random: Random = Random) : SurfaceP
     }
 }
 
-class LinearSurfacePixelStrategy(private val random: Random = Random) : SurfacePixelStrategy {
+@Serializable @SerialName("Linear")
+class LinearSurfacePixelStrategy(
+    @Transient private val random: Random = Random
+) : SurfacePixelStrategy {
     override fun forKnownSurface(pixelCount: Int, surface: Model.Surface, model: ModelInfo): List<Vector3F> {
         // Generate pixel locations along a line from one vertex to the surface's center.
         val surfaceVertices = surface.allVertices()
