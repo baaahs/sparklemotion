@@ -21,7 +21,7 @@ class RemoteVisualizerServer(
         logger.info { "$id: connected from ${tcpConnection.fromAddress.asString()}." }
     }
 
-    override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
+    override suspend fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
         TODO("not implemented")
     }
 

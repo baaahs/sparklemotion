@@ -175,7 +175,7 @@ abstract class PubSub {
         }
     }
 
-    class CommandChannels(private val handlerScope: CoroutineScope) {
+    class CommandChannels {
         private val serverChannels: MutableMap<String, ServerCommandChannel<*, *>> = hashMapOf()
         private val clientChannels: MutableMap<String, ClientCommandChannel<*, *>> = hashMapOf()
 
@@ -220,25 +220,22 @@ abstract class PubSub {
             val name = commandPort.name
             if (hasServerChannel(name)) error("Command channel $name already exists.")
             putServerChannel(name,
-                ServerCommandChannel(commandPort, handlerScope) { command -> callback(command) })
+                ServerCommandChannel(commandPort) { command -> callback(command) })
         }
 
         class ServerCommandChannel<C, R>(
             private val commandPort: CommandPort<C, R>,
-            private val handlerScope: CoroutineScope,
             private val callback: suspend (command: C) -> R
         ) {
-            fun receiveCommand(commandJson: String, commandId: String, fromConnection: Connection) {
-                handlerScope.launch {
-                    val reply = try {
-                        callback.invoke(commandPort.fromJson(commandJson))
-                    } catch (e: Exception) {
-                        logger.warn(e) { "Error in remote command invocation ($commandId)." }
-                        fromConnection.sendError(commandPort, e.message ?: "unknown error", commandId)
-                        return@launch
-                    }
-                    fromConnection.sendReply(commandPort, reply, commandId)
+            suspend fun receiveCommand(commandJson: String, commandId: String, fromConnection: Connection) {
+                val reply = try {
+                    callback.invoke(commandPort.fromJson(commandJson))
+                } catch (e: Exception) {
+                    logger.warn(e) { "Error in remote command invocation ($commandId)." }
+                    fromConnection.sendError(commandPort, e.message ?: "unknown error", commandId)
+                    return
                 }
+                fromConnection.sendReply(commandPort, reply, commandId)
             }
         }
 
@@ -251,20 +248,20 @@ abstract class PubSub {
 
             override suspend fun send(command: C): R {
                 val commandId = nextCommandId++.toString(16)
-                val handler = Client.CommandHandler<R>(commandId, CoroutineScope(currentCoroutineContext()))
+                val handler = Client.CommandHandler<R>(commandId)
                 handlers[commandId] = handler
                 connection.sendCommand(commandPort, command, commandId)
                 return handler.receive()
             }
 
-            fun receiveReply(replyJson: String, commandId: String) {
+            suspend fun receiveReply(replyJson: String, commandId: String) {
                 handlers.remove(commandId)?.let { handler ->
                     val reply = commandPort.replyFromJson(replyJson)
                     handler.onReply(reply)
                 }
             }
 
-            fun receiveError(message: String, commandId: String) {
+            suspend fun receiveError(message: String, commandId: String) {
                 handlers.remove(commandId)?.onError(message)
             }
         }
@@ -273,7 +270,8 @@ abstract class PubSub {
     abstract class Connection(
         private val name: String,
         private val topics: Topics,
-        private val commandChannels: CommandChannels
+        private val commandChannels: CommandChannels,
+        private val handlerScope: CoroutineScope
     ) : Origin("connection $name"), Network.WebSocketListener {
         var isConnected: Boolean = false
 
@@ -293,7 +291,13 @@ abstract class PubSub {
             override fun onUpdate(data: JsonElement) = sendTopicUpdate(topicInfo, data)
         }
 
-        override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
+        override suspend fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
+            withContext(handlerScope.coroutineContext) {
+                doReceive(tcpConnection, bytes)
+            }
+        }
+
+        private suspend fun doReceive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
             val reader = ByteArrayReader(bytes)
             when (val command = reader.readString()) {
                 "sub" -> {
@@ -451,8 +455,9 @@ abstract class PubSub {
     class ConnectionFromClient(
         name: String,
         topics: Topics,
-        override val commandChannels: CommandChannels
-    ) : Connection(name, topics, commandChannels), CommandRecipient
+        override val commandChannels: CommandChannels,
+        handlerScope: CoroutineScope
+    ) : Connection(name, topics, commandChannels, handlerScope), CommandRecipient
 
     interface CommandRecipient {
         val commandChannels: CommandChannels
@@ -497,13 +502,13 @@ abstract class PubSub {
     class Server(httpServer: Network.HttpServer, private val handlerScope: CoroutineScope) : Endpoint(), IServer {
         private val publisher = Origin("Server-side publisher")
         private val topics: Topics = Topics()
-        override val commandChannels: CommandChannels = CommandChannels(handlerScope)
+        override val commandChannels: CommandChannels = CommandChannels()
         private val connectionListeners: MutableList<(ConnectionFromClient) -> Unit> = mutableListOf()
 
         init {
             httpServer.listenWebSocket("/sm/ws") { incomingConnection ->
                 val name = "server ${incomingConnection.toAddress} to ${incomingConnection.fromAddress}"
-                ConnectionFromClient(name, topics, commandChannels)
+                ConnectionFromClient(name, topics, commandChannels, handlerScope)
                     .also { connection -> connectionListeners.forEach { it.invoke(connection) } }
             }
         }
@@ -517,9 +522,7 @@ abstract class PubSub {
 
             @Suppress("UNCHECKED_CAST")
             val topicInfo = topics.getOrPut(topicName) { TopicInfo(topic) } as TopicInfo<T>
-            val listener = PublisherListener(topicInfo, publisher) {
-                handlerScope.launch { onUpdate(it) }
-            }
+            val listener = PublisherListener(topicInfo, publisher, onUpdate)
             topicInfo.addListener(listener)
             topicInfo.notify(data, publisher)
 
@@ -582,7 +585,7 @@ abstract class PubSub {
         private val port: Int,
         private val coroutineScope: CoroutineScope = GlobalScope
     ) : Endpoint(), CommandRecipient {
-        override val commandChannels: CommandChannels = CommandChannels((coroutineScope))
+        override val commandChannels: CommandChannels = CommandChannels()
 
         @JsName("isConnected")
         val isConnected: Boolean
@@ -596,7 +599,8 @@ abstract class PubSub {
         inner class ConnectionToServer : Connection(
             "Client-side connection from ${link.myAddress} to server at $serverAddress",
             topics,
-            commandChannels
+            commandChannels,
+            coroutineScope
         ) {
             var attemptReconnect: Boolean = true
 
@@ -720,10 +724,7 @@ abstract class PubSub {
             stateChangeListeners.forEach { callback -> callback() }
         }
 
-        class CommandHandler<R>(
-            private val commandId: String,
-            private val scope: CoroutineScope
-        ) {
+        class CommandHandler<R>(private val commandId: String) {
             private val coroutineChannel = kotlinx.coroutines.channels.Channel<Pair<R?, String?>>()
 
             suspend fun receive(): R {
@@ -731,11 +732,11 @@ abstract class PubSub {
                 return reply ?: error(error ?: "Unknown error; command=$commandId")
             }
 
-            fun onReply(reply: R) = scope.launch {
+            suspend fun onReply(reply: R) {
                 coroutineChannel.send(reply to null)
             }
 
-            fun onError(message: String) = scope.launch {
+            suspend fun onError(message: String) {
                 coroutineChannel.send(null to message)
             }
         }

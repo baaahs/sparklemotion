@@ -49,7 +49,7 @@ class RemoteVisualizerClient(
         this.tcpConnection = tcpConnection
     }
 
-    override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
+    override suspend fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
         val reader = ByteArrayReader(bytes)
         when (RemoteVisualizerServer.Opcode.get(reader.readByte())) {
             FixtureInfo -> {

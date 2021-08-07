@@ -158,7 +158,7 @@ interface Network {
 
     interface WebSocketListener {
         fun connected(tcpConnection: TcpConnection)
-        fun receive(tcpConnection: TcpConnection, bytes: ByteArray)
+        suspend fun receive(tcpConnection: TcpConnection, bytes: ByteArray)
         fun reset(tcpConnection: TcpConnection)
     }
 
