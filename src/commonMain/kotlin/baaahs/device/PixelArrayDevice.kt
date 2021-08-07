@@ -20,7 +20,11 @@ object PixelArrayDevice : DeviceType {
     override val title: String get() = "Pixel Array"
 
     override val dataSourceBuilders: List<DataSourceBuilder<*>>
-        get() = listOf(PixelLocationDataSource)
+        get() = listOf(
+            PixelLocationDataSource,
+            PixelIndexDataSource,
+            PixelCountDataSource,
+        )
 
     override val resultContentType: ContentType
         get() = ContentType.Color
