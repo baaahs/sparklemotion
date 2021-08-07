@@ -128,7 +128,7 @@ object ControllersManagerSpec : Spek({
                     it("generates pixel positions within the model bounds") {
                         expect(addedFixture.pixelCount).toBe(3)
                         expect(addedFixture.pixelLocations)
-                            .toBe(LinearSurfacePixelStrategy(Random(1)).forUnknownSurface(3, model))
+                            .toBe(LinearSurfacePixelStrategy(Random(1)).forUnknownEntity(3, model))
                     }
                 }
             }
@@ -149,7 +149,7 @@ object ControllersManagerSpec : Spek({
                 it("generates pixel positions within the entity bounds") {
                     expect(addedFixture.pixelCount).toBe(3)
                     expect(addedFixture.pixelLocations)
-                        .toBe(LinearSurfacePixelStrategy(Random(1)).forKnownSurface(3, panel, model))
+                        .toBe(LinearSurfacePixelStrategy(Random(1)).forKnownEntity(3, panel, model))
                 }
 
                 context("with pixel location data") {

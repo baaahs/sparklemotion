@@ -117,6 +117,8 @@ object SacnIntegrationSpec : Spek({
                     0.0, listOf(
                         MappingSession.SurfaceData(
                             "SACN", "sacn1", "bar1",
+                            pixelCount = 3,
+                            fixtureConfig = PixelArrayDevice.Config(3, PixelArrayDevice.PixelFormat.RGB8),
                             channels = MappingSession.SurfaceData.Channels(0, 511)
                         )
                     )
@@ -128,6 +130,11 @@ object SacnIntegrationSpec : Spek({
             it("transforms it into FixtureConfigs") {
                 val data = mappingData.dataForController(ControllerId("SACN", "sacn1"))
                     .only("fixture config")
+
+                val fixtureConfig = data.fixtureConfig as PixelArrayDevice.Config
+                expect(fixtureConfig.pixelCount).toEqual(3)
+                expect(fixtureConfig.pixelFormat).toEqual(PixelArrayDevice.PixelFormat.RGB8)
+
                 val transportConfig = data.transportConfig as SacnTransportConfig
                 expect(transportConfig.startChannel..transportConfig.endChannel).toEqual(0..511)
             }
@@ -141,7 +148,7 @@ private fun fixtureMapping(model: ModelForTest, entityName: String, baseChannel:
         transportConfig = SacnTransportConfig(baseChannel, pixelCount * 3)
     )
 
-fun entity(name: String) = LightBar(name, name, PixelArrayDevice, Vector3F.origin, Vector3F(1f, 1f, 1f))
+fun entity(name: String) = LightBar(name, name, Vector3F.origin, Vector3F.unit3d)
 
 fun pixelColors(startingAt: Int, count: Int): ByteArray {
     return (startingAt until startingAt + count).flatMap { i ->

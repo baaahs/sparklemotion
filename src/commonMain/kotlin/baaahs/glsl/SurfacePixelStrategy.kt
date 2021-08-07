@@ -1,6 +1,7 @@
 package baaahs.glsl
 
 import baaahs.geom.Vector3F
+import baaahs.model.LinearPixelArray
 import baaahs.model.Model
 import baaahs.model.ModelInfo
 import kotlinx.serialization.SerialName
@@ -10,32 +11,29 @@ import kotlin.random.Random
 
 interface SurfacePixelStrategy {
     fun forFixture(pixelCount: Int, entity: Model.Entity?, model: ModelInfo): List<Vector3F> {
-        return if (entity is Model.Surface) {
-            forKnownSurface(pixelCount, entity, model)
-        } else {
-            forUnknownSurface(pixelCount, model)
-        }
+        return entity?.let { forKnownEntity(pixelCount, entity, model) }
+            ?: forUnknownEntity(pixelCount, model)
     }
 
-    fun forKnownSurface(pixelCount: Int, surface: Model.Surface, model: ModelInfo): List<Vector3F>
-    fun forUnknownSurface(pixelCount: Int, modelInfo: ModelInfo): List<Vector3F>
+    fun forKnownEntity(pixelCount: Int, entity: Model.Entity, model: ModelInfo): List<Vector3F>
+    fun forUnknownEntity(pixelCount: Int, modelInfo: ModelInfo): List<Vector3F>
 }
 
 @Serializable @SerialName("Random")
 class RandomSurfacePixelStrategy(
     @Transient private val random: Random = Random
 ) : SurfacePixelStrategy {
-    override fun forKnownSurface(pixelCount: Int, surface: Model.Surface, model: ModelInfo): List<Vector3F> {
+    override fun forKnownEntity(pixelCount: Int, entity: Model.Entity, model: ModelInfo): List<Vector3F> {
         // Randomly pick locations within the surface.
-        val surfaceVertices = surface.allVertices().toList()
-        var lastPixelLocation = surfaceVertices.random()
+        val entityVertices = entity.bounds.toList()
+        var lastPixelLocation = entityVertices.random()
         return (0 until pixelCount).map {
-            lastPixelLocation = (lastPixelLocation + surfaceVertices.random(random)) / 2f
+            lastPixelLocation = (lastPixelLocation + entityVertices.random(random)) / 2f
             lastPixelLocation
         }
     }
 
-    override fun forUnknownSurface(pixelCount: Int, modelInfo: ModelInfo): List<Vector3F> {
+    override fun forUnknownEntity(pixelCount: Int, modelInfo: ModelInfo): List<Vector3F> {
         // Randomly pick locations. TODO: this should be based on model extents.
         val min = Vector3F(0f, 0f, 0f)
         val max = Vector3F(100f, 100f, 100f)
@@ -51,18 +49,22 @@ class RandomSurfacePixelStrategy(
 class LinearSurfacePixelStrategy(
     @Transient private val random: Random = Random
 ) : SurfacePixelStrategy {
-    override fun forKnownSurface(pixelCount: Int, surface: Model.Surface, model: ModelInfo): List<Vector3F> {
-        // Generate pixel locations along a line from one vertex to the surface's center.
-        val surfaceVertices = surface.allVertices()
-        if (surfaceVertices.isEmpty()) return forUnknownSurface(pixelCount, model)
+    override fun forKnownEntity(pixelCount: Int, entity: Model.Entity, model: ModelInfo): List<Vector3F> {
+        if (entity is LinearPixelArray) {
+            return entity.calculatePixelLocations(pixelCount)
+        }
 
-        val surfaceCenter = surfaceVertices.average()
-        val vertex1 = surfaceVertices.first()
+        // Generate pixel locations along a line from one vertex to the surface's center.
+        val entityVertices = entity.bounds.toList()
+        if (entityVertices.isEmpty()) return forUnknownEntity(pixelCount, model)
+
+        val surfaceCenter = entityVertices.average()
+        val vertex1 = entityVertices.first()
 
         return interpolate(vertex1, surfaceCenter, pixelCount)
     }
 
-    override fun forUnknownSurface(pixelCount: Int, modelInfo: ModelInfo): List<Vector3F> {
+    override fun forUnknownEntity(pixelCount: Int, modelInfo: ModelInfo): List<Vector3F> {
         val min = modelInfo.boundsMin
         val max = modelInfo.boundsMax
 

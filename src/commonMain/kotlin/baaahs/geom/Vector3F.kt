@@ -25,6 +25,8 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
 
     operator fun times(other: Vector3F): Vector3F = Vector3F(x * other.x, y * other.y, z * other.z)
 
+    operator fun div(scalar: Double): Vector3F = Vector3F(x / scalar, y / scalar, z / scalar)
+
     operator fun div(scalar: Float): Vector3F = Vector3F(x / scalar, y / scalar, z / scalar)
 
     operator fun div(other: Vector3F): Vector3F = Vector3F(x / other.x, y / other.y, z / other.z)
@@ -50,6 +52,8 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
 
     companion object {
         val origin = Vector3F(0f, 0f, 0f)
+        val unit3d = Vector3F(1f, 1f, 1f)
+        val unitNormal = unit3d.normalize()
 
         fun parse(reader: ByteArrayReader) =
             Vector3F(reader.readFloat(), reader.readFloat(), reader.readFloat())

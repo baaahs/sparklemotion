@@ -83,7 +83,7 @@ class FakeModelEntity(
     override val deviceType: DeviceType = PixelArrayDevice,
     override val description: String = name
 ) : Model.Entity {
-    override val modelBounds: Pair<Vector3F, Vector3F>
+    override val bounds: Pair<Vector3F, Vector3F>
         get() = Vector3F.origin to Vector3F.origin
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation {

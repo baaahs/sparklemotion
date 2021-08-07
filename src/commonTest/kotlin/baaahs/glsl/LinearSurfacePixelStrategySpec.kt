@@ -4,6 +4,9 @@ import baaahs.TestModel
 import baaahs.TestModelSurface
 import baaahs.describe
 import baaahs.geom.Vector3F
+import baaahs.gl.override
+import baaahs.model.LightBar
+import baaahs.model.Model
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -14,7 +17,7 @@ object LinearSurfacePixelStrategySpec : Spek({
     describe<LinearSurfacePixelStrategy> {
         val strategy by value { LinearSurfacePixelStrategy(Random(1)) }
         context("#forKnownSurface") {
-            val surfaceWithVertices by value {
+            val entity by value<Model.Entity> {
                 TestModelSurface(
                     "zyx", vertices = listOf(
                         Vector3F(1f, 1f, 1f),
@@ -26,18 +29,32 @@ object LinearSurfacePixelStrategySpec : Spek({
             }
 
             it("interpolates between vertex 0 and the surface's center") {
-                expect(strategy.forKnownSurface(3, surfaceWithVertices, TestModel))
+                expect(strategy.forKnownEntity(3, entity, TestModel))
                     .containsExactly(
                         Vector3F(1f, 1f, 1f),
                         Vector3F(1.25f, 1.25f, 1.25f),
                         Vector3F(1.5f, 1.5f, 1.5f)
                     )
             }
+
+            context("for LinearPixelArray entities") {
+                override(entity) { LightBar("", "", Vector3F.origin, Vector3F.unit3d) }
+
+                it("interpolates along its entire length") {
+                    expect(strategy.forKnownEntity(3, entity, TestModel))
+                        .containsExactly(
+                            Vector3F(0f, 0f, 0f),
+                            Vector3F(.5f, .5f, .5f),
+                            Vector3F(1f, 1f, 1f)
+                        )
+                }
+
+            }
         }
 
         context("#forUnknownSurface") {
             it("interpolates between two random vertices within the model's bounds") {
-                expect(strategy.forUnknownSurface(3, TestModel))
+                expect(strategy.forUnknownEntity(3, TestModel))
                     .containsExactly(
                         Vector3F(x=-0.36027277f, y=0.1433261f, z=0.37724733f),
                         Vector3F(x=-0.11624631f, y=0.2586312f, z=0.07177293f),
