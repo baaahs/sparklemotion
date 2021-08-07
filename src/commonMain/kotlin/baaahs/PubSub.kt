@@ -281,7 +281,7 @@ abstract class PubSub {
         private val cleanups = Cleanups()
 
         override fun connected(tcpConnection: Network.TcpConnection) {
-            debug("connection $name established")
+            debug { "connection $name established" }
             connection = tcpConnection
             isConnected = true
         }
@@ -348,7 +348,7 @@ abstract class PubSub {
 
         fun sendTopicUpdate(topicInfo: TopicInfo<*>, data: JsonElement) {
             if (isConnected) {
-                if (verbose) debug("update ${topicInfo.name} ${topicInfo.stringify(data)}")
+                if (verbose) debug { "update ${topicInfo.name} ${topicInfo.stringify(data)}" }
 
                 val writer = ByteArrayWriter()
                 writer.writeString("update")
@@ -356,39 +356,39 @@ abstract class PubSub {
                 writer.writeString(topicInfo.stringify(data))
                 sendMessage(writer.toBytes())
             } else {
-                debug("not connected, so no update $name $data")
+                debug { "not connected, so no update $name $data" }
             }
         }
 
         fun sendTopicSub(topicInfo: TopicInfo<*>) {
             if (isConnected) {
-                debug("sub ${topicInfo.name}")
+                debug { "sub ${topicInfo.name}" }
 
                 val writer = ByteArrayWriter()
                 writer.writeString("sub")
                 writer.writeString(topicInfo.name)
                 sendMessage(writer.toBytes())
             } else {
-                debug("not connected, so no sub ${topicInfo.name}")
+                debug { "not connected, so no sub ${topicInfo.name}" }
             }
         }
 
         fun sendTopicUnsub(topicInfo: TopicInfo<*>) {
             if (isConnected) {
-                debug("unsub ${topicInfo.name}")
+                debug { "unsub ${topicInfo.name}" }
 
                 val writer = ByteArrayWriter()
                 writer.writeString("unsub")
                 writer.writeString(topicInfo.name)
                 sendMessage(writer.toBytes())
             } else {
-                debug("not connected, so no unsub ${topicInfo.name}")
+                debug { "not connected, so no unsub ${topicInfo.name}" }
             }
         }
 
         fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String) {
             if (isConnected) {
-                if (verbose) debug("command ${commandPort.name} ${commandPort.toJson(command)}")
+                if (verbose) debug { "command ${commandPort.name} ${commandPort.toJson(command)}" }
 
                 val writer = ByteArrayWriter()
                 writer.writeString("command")
@@ -397,13 +397,13 @@ abstract class PubSub {
                 writer.writeString(commandPort.toJson(command))
                 sendMessage(writer.toBytes())
             } else {
-                debug("not connected, so no command ${commandPort.name}")
+                debug { "not connected, so no command ${commandPort.name}" }
             }
         }
 
         fun <C, R> sendReply(commandPort: CommandPort<C, R>, reply: R, commandId: String) {
             if (isConnected) {
-                if (verbose) debug("commandReply ${commandPort.name} $commandId ${commandPort.replyToJson(reply)}")
+                if (verbose) debug { "commandReply ${commandPort.name} $commandId ${commandPort.replyToJson(reply)}" }
 
                 val writer = ByteArrayWriter()
                 writer.writeString("commandReply")
@@ -412,13 +412,13 @@ abstract class PubSub {
                 writer.writeString(commandPort.replyToJson(reply))
                 sendMessage(writer.toBytes())
             } else {
-                debug("not connected, so no reply ${commandPort.name}")
+                debug { "not connected, so no reply ${commandPort.name}" }
             }
         }
 
         fun <C, R> sendError(commandPort: CommandPort<C, R>, message: String, commandId: String) {
             if (isConnected) {
-                if (verbose) debug("commandError ${commandPort.name} $commandId $message")
+                if (verbose) debug { "commandError ${commandPort.name} $commandId $message" }
 
                 val writer = ByteArrayWriter()
                 writer.writeString("commandError")
@@ -427,7 +427,7 @@ abstract class PubSub {
                 writer.writeString(message)
                 sendMessage(writer.toBytes())
             } else {
-                debug("not connected, so no error ${commandPort.name}")
+                debug { "not connected, so no error ${commandPort.name}" }
             }
         }
 
@@ -441,8 +441,8 @@ abstract class PubSub {
             connection?.send(bytes)
         }
 
-        private fun debug(message: String) {
-            logger.info { "[$name${if (!isConnected) " (not connected)" else ""}]: $message" }
+        private fun debug(message: () -> String) {
+            logger.debug { "[$name${if (!isConnected) " (not connected)" else ""}]: ${message.invoke()}" }
         }
 
         override fun toString(): String = "Connection from $name"
