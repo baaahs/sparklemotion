@@ -42,7 +42,7 @@ class DmxManagerImpl(
         }
     }
 
-    override fun onConfigChange(controllerConfigs: List<ControllerConfig>) {
+    override fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>) {
     }
 
     override fun stop() {

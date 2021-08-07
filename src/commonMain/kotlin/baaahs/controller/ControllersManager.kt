@@ -99,9 +99,10 @@ class ControllersManager(
 
         sceneConfig.controllers.entries
             .groupByTo(hashMapOf()) { (_, v) -> v.controllerType }
+            .mapValues { (_, v) -> v.associate { (k, v) -> k to v } }
             .map { (controllerType, controllers) ->
                 val controllerManager = byType.getBang(controllerType, "controller manager")
-                controllerManager.onConfigChange(controllers.map { (_, v) -> v })
+                controllerManager.onConfigChange(controllers)
             }
     }
 

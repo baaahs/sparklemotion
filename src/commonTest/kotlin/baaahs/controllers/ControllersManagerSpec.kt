@@ -201,7 +201,7 @@ class FakeMappingManager : Observable(), MappingManager {
         return data[controllerId] ?: emptyList()
     }
 
-    override fun getAllControllerMappings(): Map<ControllerId, FixtureMapping> {
+    override fun getAllControllerMappings(): Map<ControllerId, List<FixtureMapping>> {
         TODO("not implemented")
     }
 }
@@ -223,7 +223,7 @@ class FakeControllerManager : ControllerManager {
         myControllers.forEach { controllerListener.onAdd(it) }
     }
 
-    override fun onConfigChange(controllerConfigs: List<ControllerConfig>) {
+    override fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>) {
         TODO("not implemented")
     }
 
