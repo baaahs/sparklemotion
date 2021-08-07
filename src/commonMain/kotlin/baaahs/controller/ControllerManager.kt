@@ -7,7 +7,7 @@ interface ControllerManager {
     val controllerType: String
 
     fun start(controllerListener: ControllerListener)
-    fun onConfigChange(controllerConfigs: List<ControllerConfig>)
+    fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>)
     fun stop()
     fun logStatus()
 }

@@ -11,7 +11,7 @@ data class ControllerId(val controllerType: String, val id: String) {
 }
 
 class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>) {
-    val controllerData = mutableMapOf<ControllerId, FixtureMapping>()
+    val controllerData = mutableMapOf<ControllerId, MutableList<FixtureMapping>>()
 
     init {
         mappingSessions.forEach { mappingSession ->
@@ -30,10 +30,13 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
                         else -> null
                     }
 
-                    controllerData[controllerId] = FixtureMapping(
-                        modelEntity, pixelCount, pixelLocations,
-                        transportConfig = transportConfig
-                    )
+                    controllerData.getOrPut(controllerId) { arrayListOf() }
+                        .add(
+                            FixtureMapping(
+                                modelEntity, pixelCount, pixelLocations,
+                                transportConfig = transportConfig
+                            )
+                        )
                 } catch (e: Exception) {
                     logger.warn(e) { "Skipping $entityName." }
                 }
@@ -41,8 +44,8 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
         }
     }
 
-    fun dataForController(controllerId: ControllerId): FixtureMapping? =
-        controllerData[controllerId]
+    fun dataForController(controllerId: ControllerId): List<FixtureMapping> =
+        controllerData[controllerId] ?: emptyList()
 
     companion object {
         private val logger = Logger("SessionMappingResults")

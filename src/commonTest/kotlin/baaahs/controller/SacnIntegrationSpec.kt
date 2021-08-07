@@ -29,7 +29,7 @@ object SacnIntegrationSpec : Spek({
         val mappings by value { mapOf<ControllerId, List<FixtureMapping>>() }
         val mappingManager by value { FakeMappingManager().also { it.data.putAll(mappings); it.dataHasLoaded = true } }
         val controllersManager by value { ControllersManager(listOf(sacnManager), mappingManager, TestModel, listener) }
-        val configs by value { listOf<ControllerConfig>() }
+        val configs by value { mapOf<String, ControllerConfig>() }
 
         beforeEachTest {
             sacnManager.onConfigChange(configs)
@@ -44,7 +44,7 @@ object SacnIntegrationSpec : Spek({
 
         context("with a controller has two fixtures") {
             override(configs) {
-                listOf(SacnControllerConfig("sacn1", "SACN Controller", "192.168.1.150", 1))
+                mapOf("sacn1" to SacnControllerConfig("SACN Controller", "192.168.1.150", 1))
             }
 
             val bar1Mapping by value { fixtureMapping(model, "bar1", 0, 2) }
@@ -87,7 +87,7 @@ object SacnIntegrationSpec : Spek({
                     override(bar1Bytes) { pixelColors(1, 180) }
                     override(bar2Bytes) { pixelColors(602, 2) }
                     override(configs) {
-                        listOf(SacnControllerConfig("sacn1", "SACN Controller", "192.168.1.150", 2))
+                        mapOf("sacn1" to SacnControllerConfig("SACN Controller", "192.168.1.150", 2))
                     }
 
                     it("sends a DMX frame to multiple universes") {
@@ -126,7 +126,8 @@ object SacnIntegrationSpec : Spek({
             val mappingData by value { SessionMappingResults(model, listOf(mappingSession)) }
 
             it("transforms it into FixtureConfigs") {
-                val data = mappingData.dataForController(ControllerId("SACN", "sacn1"))!!
+                val data = mappingData.dataForController(ControllerId("SACN", "sacn1"))
+                    .only("fixture config")
                 val transportConfig = data.transportConfig as SacnTransportConfig
                 expect(transportConfig.startChannel..transportConfig.endChannel).toEqual(0..511)
             }
