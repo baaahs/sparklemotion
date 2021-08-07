@@ -20,7 +20,10 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
                 val entityName = surfaceData.entityName
 
                 try {
-                    val modelEntity = model.findEntity(entityName)
+                    val modelEntity = model.getEntity(entityName)
+                    if (modelEntity == null)
+                        logger.warn { "Unknown model entity \"$entityName\"." }
+
                     val pixelLocations = surfaceData.pixels?.map { it?.modelPosition }
                         ?.ifEmpty { null }
                     val pixelCount = surfaceData.pixelCount ?: pixelLocations?.size

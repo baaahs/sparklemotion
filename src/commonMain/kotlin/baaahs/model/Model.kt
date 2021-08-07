@@ -22,6 +22,8 @@ abstract class Model : ModelInfo {
     fun findEntity(name: String) =
         allSurfacesByName[name] ?: throw RuntimeException("no such model surface $name")
 
+    fun getEntity(name: String) = allSurfacesByName[name]
+
     private val allVertices by lazy {
         hashSetOf<Vector3F>().apply { allSurfaces.map { addAll(it.allVertices()) } }
     }
