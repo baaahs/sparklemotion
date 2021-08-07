@@ -1,6 +1,8 @@
 package baaahs.gl.param
 
 import baaahs.gl.GlContext
+import baaahs.gl.GlContext.Companion.GL_RGB32F
+import baaahs.gl.GlContext.Companion.GL_RGBA32F
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.FixtureRenderTarget
@@ -32,19 +34,18 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
             bindTexture(texture)
             configure(GL_NEAREST, GL_NEAREST)
 
-            val format = when(stride) {
-                1 -> GL_RED
-                2 -> GL_RG
-                3 -> GL_RGB
-                4 -> GL_RGBA
+            val (internalFormat, format) = when(stride) {
+                1 -> GL_R32F to GL_RED
+                2 -> GL_RG32F to GL_RG
+                3 -> GL_RGB32F to GL_RGB
+                4 -> GL_RGBA32F to GL_RGBA
                 else -> error("Stride currently has to be between 1 and 4.")
             }
 
             uploadTexture(
                 0,
-                GlContext.GL_RGB32F, width, height, 0,
-                format,
-                GL_FLOAT, FloatBuffer(floats)
+                internalFormat, width, height, 0,
+                format, GL_FLOAT, FloatBuffer(floats)
             )
         }
     }

@@ -99,7 +99,7 @@ object ModelRenderEngineSpec : Spek({
 
                 it("should allocate a texture to hold per-pixel data") {
                     expect(texture.width to texture.height).toBe(1 to 1)
-                    expect(texture.internalFormat).toBe(GlContext.GL_RGB32F)
+                    expect(texture.internalFormat).toBe(GlContext.GL_R32F)
                     expect(texture.format).toBe(GL_RED)
                     expect(texture.type).toBe(GL_FLOAT)
                     expect(texture.params[GL_TEXTURE_MIN_FILTER]).toBe(GL_NEAREST)
