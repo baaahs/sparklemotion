@@ -180,7 +180,6 @@ class SacnManager(
 
 @Serializable @SerialName("SACN")
 data class SacnControllerConfig(
-    override val id: String,
     override val title: String,
     val address: String,
     val universes: Int

@@ -14,33 +14,29 @@
     {
       "controllerType": "SACN",
       "brainId": "sacn-192.168.0.113",
-      "panelName": "bar 3",
-      "channels": [{"start": 0, "end": 509}],
+      "panelName": "ring 1",
+      "channels": {"start": 0, "end": 509},
       "pixelCount": 170,
       "fixtureConfig": {
-        "type": "baaahs.fixtures.PixelArrayDevice.Config",
+        "type": "baaahs.Core:PixelArrayDevice",
         "pixelCount": 170,
         "pixelFormat": "GRB8",
         "gammaCorrection": 2.2,
-        "pixelArrangement": {
-          "type": "Linear"
-        }
+        "pixelArrangement": {"type": "Linear"}
       }
     },
     {
       "controllerType": "SACN",
       "brainId": "sacn-192.168.0.113",
-      "panelName": "ring 1",
-      "channels": [{"start": 512, "end": 1412}],
+      "panelName": "ring 3a",
+      "channels": {"start": 512, "end": 1412},
       "pixelCount": 300,
       "fixtureConfig": {
-        "type": "baaahs.fixtures.PixelArrayDevice.Config",
+        "type": "baaahs.Core:PixelArrayDevice",
         "pixelCount": 300,
         "pixelFormat": "GRB8",
         "gammaCorrection": 2.2,
-        "pixelArrangement": {
-          "type": "Linear"
-        }
+        "pixelArrangement": {"type": "Linear"}
       }
     }
   ],

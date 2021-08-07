@@ -14,7 +14,6 @@ data class SceneConfig(
 @Polymorphic
 interface ControllerConfig {
     val controllerType: String
-    val id: String
     val title: String
 }
 

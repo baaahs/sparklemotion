@@ -11,6 +11,7 @@ import baaahs.glsl.SurfacePixelStrategy
 import baaahs.model.Model
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -66,7 +67,7 @@ object PixelArrayDevice : DeviceType {
 
     override fun toString(): String = id
 
-    @Serializable
+    @Serializable @SerialName("baaahs.Core:PixelArrayDevice")
     data class Config(
         val pixelCount: Int? = null,
         val pixelFormat: PixelFormat,
