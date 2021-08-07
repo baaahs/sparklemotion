@@ -63,7 +63,8 @@ class LwjglGlManager : GlManager() {
 
         // This is initialization stuff that has to run on the main thread.
         private val glWindow: Long by lazy {
-            println("init LwjglGlslManager")
+            logger.debug { "Initializing LwjglGlslManager." }
+
             if (Thread.currentThread().name != "main") {
                 logger.warn { "GLSL not available. On a Mac, start java with `-XstartOnFirstThread`" }
                 0L
