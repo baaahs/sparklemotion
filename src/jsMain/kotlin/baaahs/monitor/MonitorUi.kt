@@ -1,11 +1,7 @@
 package baaahs.monitor
 
 import baaahs.document
-import baaahs.model.Model
-import baaahs.net.Network
 import baaahs.sim.HostedWebApp
-import baaahs.util.Clock
-import baaahs.util.JsClock
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.remote.RemoteVisualizerClient
 import kotlinext.js.jsObject
@@ -15,16 +11,10 @@ import react.createElement
 import react.rClass
 
 class MonitorUi(
-    network: Network,
-    pinkyAddress: Network.Address,
-    model: Model,
-    clock: Clock = JsClock
+    private val visualizer: Visualizer,
+    private val remoteVisualizerClient: RemoteVisualizerClient
 ) : HostedWebApp {
-    private val clientLink = network.link("monitor")
     private val container = document.createElement("div") as HTMLDivElement
-    private val visualizer = Visualizer(model, clock)
-    private val visualizerListenerClient =
-        RemoteVisualizerClient(clientLink, pinkyAddress, visualizer, model, clock)
 
     init {
         container.className = "adminModelVisualizerContainer"
@@ -41,6 +31,6 @@ class MonitorUi(
 
     override fun onClose() {
         visualizer.stopRendering = true
-        visualizerListenerClient.close()
+        remoteVisualizerClient.close()
     }
 }

@@ -1,7 +1,9 @@
 package baaahs.sim
 
 import baaahs.BrainManager
+import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Vector3F
 import baaahs.geom.toVector3F
 import baaahs.io.ByteArrayReader
@@ -57,15 +59,11 @@ actual class BrainSurfaceSimulation actual constructor(
         brain.run {}
     }
 
-    override fun receiveRemoteVisualizationFixtureInfo(reader: ByteArrayReader) {
-        val pixelCount = reader.readInt()
-        val pixelLocations = (0 until pixelCount).map {
-            Vector3F.parse(reader).toVector3()
-        }.toTypedArray()
-
+    override fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
         entityVisualizer.vizPixels = VizPixels(
-            pixelLocations,
-            entityVisualizer.surfaceGeometry.panelNormal
+            pixelLocations.map { it.toVector3() }.toTypedArray(),
+            entityVisualizer.surfaceGeometry.panelNormal,
+            fixtureConfig as PixelArrayDevice.Config
         )
     }
 

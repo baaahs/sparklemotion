@@ -7,6 +7,7 @@ import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.mapper.SessionMappingResults
 import baaahs.model.Model
+import baaahs.plugin.Plugins
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
 import baaahs.throttle
@@ -24,12 +25,13 @@ import org.w3c.dom.get
 class ClientPreview(
     model: Model,
     private val stageManager: ClientStageManager,
-    clock: Clock
+    clock: Clock,
+    plugins: Plugins
 ) : ClientStageManager.Listener {
     private val glContext = GlBase.jsManager.createContext()
     private val renderManager = RenderManager(model) { glContext }
     private val mappingResults = SessionMappingResults(model, emptyList()) // TODO: use real data.
-    private val fixtureManager = FixtureManager(renderManager, model)
+    private val fixtureManager = FixtureManager(renderManager, plugins)
     private val dmxUniverse = FakeDmxUniverse()
     private val theVisualizer = Visualizer(model, clock)
     private var patchSetChanged = true

@@ -5,10 +5,12 @@ import baaahs.fixtures.FixtureManager
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.net.Network
+import baaahs.plugin.Plugins
 import baaahs.util.Logger
 
 class RemoteVisualizerServer(
-    private val fixtureManager: FixtureManager
+    private val fixtureManager: FixtureManager,
+    private val plugins: Plugins
 ) : Network.WebSocketListener {
     private val id = "Remote Visualizer ${nextId++}"
     lateinit var tcpConnection: Network.TcpConnection
@@ -35,23 +37,33 @@ class RemoteVisualizerServer(
     inner class ListenerImpl() : Listener {
         override fun sendFixtureInfo(fixture: Fixture) {
             if (fixture.modelEntity != null) {
-                outBuf.reset()
-                outBuf.writeByte(Opcode.FixtureInfo.byteValue)
-                outBuf.writeString(fixture.modelEntity.name)
-                outBuf.writeInt(fixture.pixelCount)
-                fixture.pixelLocations.forEach { it.serialize(outBuf) }
-                tcpConnection.send(outBuf.toBytes())
+                sendPacket(Opcode.FixtureInfo, fixture.modelEntity) {
+                    outBuf.writeString(
+                        plugins.json.encodeToString(
+                            FixtureConfigWrapper.serializer(),
+                            FixtureConfigWrapper(fixture.fixtureConfig)
+                        )
+                    )
+
+
+                    outBuf.writeInt(fixture.pixelCount)
+                    fixture.pixelLocations.forEach { it.serialize(outBuf) }
+                }
             }
         }
 
         override fun sendFrameData(entity: Model.Entity?, block: (ByteArrayWriter) -> Unit) {
             if (entity != null) {
-                outBuf.reset()
-                outBuf.writeByte(Opcode.FrameData.byteValue)
-                outBuf.writeString(entity.name)
-                block(outBuf)
-                tcpConnection.send(outBuf.toBytes())
+                sendPacket(Opcode.FrameData, entity, block)
             }
+        }
+
+        private fun sendPacket(opcode: Opcode, entity: Model.Entity, block: (ByteArrayWriter) -> Unit) {
+            outBuf.reset()
+            outBuf.writeByte(opcode.byteValue)
+            outBuf.writeString(entity.name)
+            block(outBuf)
+            tcpConnection.send(outBuf.toBytes())
         }
     }
 

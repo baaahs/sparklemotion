@@ -5,9 +5,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
-import baaahs.glsl.LinearSurfacePixelStrategy
-import baaahs.glsl.SurfacePixelStrategy
-import baaahs.model.Model
+import baaahs.plugin.Plugins
 import baaahs.show.live.ActivePatchSet
 import baaahs.timeSync
 import baaahs.util.Logger
@@ -20,8 +18,7 @@ interface FixtureListener {
 
 class FixtureManager(
     private val renderManager: RenderManager,
-    private val model: Model,
-    private val surfacePixelStrategy: SurfacePixelStrategy = LinearSurfacePixelStrategy(),
+    private val plugins: Plugins,
     initialRenderTargets: Map<Fixture, FixtureRenderTarget> = emptyMap()
 ) : FixtureListener {
     val facade = Facade()
@@ -138,7 +135,7 @@ class FixtureManager(
     }
 
     fun newRemoteVisualizerServer(): RemoteVisualizerServer {
-        return RemoteVisualizerServer(this)
+        return RemoteVisualizerServer(this, plugins)
     }
 
     fun addRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener) {

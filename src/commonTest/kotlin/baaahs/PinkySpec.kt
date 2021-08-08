@@ -59,7 +59,7 @@ object PinkySpec : Spek({
             val renderManager = fakeGlslContext.runInContext { RenderManager(model) { fakeGlslContext } }
             val fakeDmxUniverse = FakeDmxUniverse()
             val toolchain = RootToolchain(plugins)
-            val fixtureManager = FixtureManager(renderManager, model)
+            val fixtureManager = FixtureManager(renderManager, plugins)
             val clock = FakeClock()
             val gadgetManager = GadgetManager(pubSub, clock, ImmediateDispatcher)
             val dmxManager = object : DmxManager {

@@ -11,6 +11,7 @@ import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
+import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.model.Model
@@ -37,7 +38,7 @@ object FixtureManagerSpec : Spek({
         val surfacePixelStrategy by value { LinearSurfacePixelStrategy(Random(1)) }
 
         // Maintain stable fixture order for test:
-        val fixtureManager by value { FixtureManager(renderManager, model, surfacePixelStrategy, renderTargets) }
+        val fixtureManager by value { FixtureManager(renderManager, testPlugins(), renderTargets) }
 
         context("when fixtures of multiple types have been added") {
             val fogginess by value { ContentType("fogginess", "Fogginess", GlslType.Float) }
