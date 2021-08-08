@@ -1,5 +1,6 @@
 package baaahs.device
 
+import baaahs.Color
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.SingleResultStorage
 import baaahs.geom.Vector3F
@@ -8,9 +9,11 @@ import baaahs.gl.render.RenderResults
 import baaahs.gl.render.ResultStorage
 import baaahs.gl.result.ColorResultType
 import baaahs.glsl.SurfacePixelStrategy
+import baaahs.io.ByteArrayReader
 import baaahs.model.Model
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
+import baaahs.sim.FixtureSimulation
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
@@ -82,47 +85,61 @@ object PixelArrayDevice : DeviceType {
         }
 
         fun writeData(results: ColorResultType.ColorFixtureResults): ByteArray {
-            return pixelFormat.writeData(results)
+            val pixelCount = results.pixelCount
+            val bytesPerPixel = pixelFormat.channelsPerPixel
+            val buf = ByteArray(pixelCount * bytesPerPixel)
+            for (i in 0 until pixelCount) {
+                pixelFormat.writeColor(results[i], buf, i * bytesPerPixel)
+            }
+            return buf
+        }
+
+        override fun receiveRemoteVisualizationFixtureInfo(
+            reader: ByteArrayReader,
+            fixtureSimulation: FixtureSimulation
+        ) {
+            val pixelCount = reader.readInt()
+            val pixelLocations = (0 until pixelCount).map {
+                Vector3F.parse(reader)
+            }.toTypedArray()
+
+            fixtureSimulation.updateVisualizerWith(this, pixelCount, pixelLocations)
         }
     }
 
     enum class PixelFormat {
         RGB8 {
-            override val bytesPerPixel: Int = 3
+            override val channelsPerPixel: Int = 3
 
-            override fun writeData(results: ColorResultType.ColorFixtureResults): ByteArray {
-                val pixelCount = results.pixelCount
-                val buf = ByteArray(pixelCount * 3)
-                var j = 0
-                for (i in 0 until pixelCount) {
-                    val color = results[i]
+            override fun readColor(reader: ByteArrayReader): Color {
+                return Color.parseWithoutAlpha(reader)
+            }
 
-                    buf[j++] = color.redB
-                    buf[j++] = color.greenB
-                    buf[j++] = color.blueB
-                }
-                return buf
+            override fun writeColor(color: Color, buf: ByteArray, i: Int) {
+                buf[i] = color.redB
+                buf[i + 1] = color.greenB
+                buf[i + 2] = color.blueB
             }
         },
         GRB8 {
-            override val bytesPerPixel: Int = 3
+            override val channelsPerPixel: Int = 3
 
-            override fun writeData(results: ColorResultType.ColorFixtureResults): ByteArray {
-                val pixelCount = results.pixelCount
-                val buf = ByteArray(pixelCount * 3)
-                var j = 0
-                for (i in 0 until pixelCount) {
-                    val color = results[i]
+            override fun readColor(reader: ByteArrayReader): Color {
+                val greenB = reader.readByte()
+                val redB = reader.readByte()
+                val blueB = reader.readByte()
+                return Color(redB, greenB, blueB)
+            }
 
-                    buf[j++] = color.greenB
-                    buf[j++] = color.redB
-                    buf[j++] = color.blueB
-                }
-                return buf
+            override fun writeColor(color: Color, buf: ByteArray, i: Int) {
+                buf[i] = color.greenB
+                buf[i + 1] = color.redB
+                buf[i + 2] = color.blueB
             }
         };
 
-        abstract val bytesPerPixel: Int
-        abstract fun writeData(results: ColorResultType.ColorFixtureResults): ByteArray
+        abstract val channelsPerPixel: Int
+        abstract fun readColor(reader: ByteArrayReader): Color
+        abstract fun writeColor(color: Color, buf: ByteArray, i: Int)
     }
 }

@@ -20,6 +20,8 @@ import baaahs.plugin.core.CorePlugin
 import baaahs.sim.BrowserSandboxFs
 import baaahs.util.Clock
 import baaahs.util.JsClock
+import baaahs.visualizer.Visualizer
+import baaahs.visualizer.remote.RemoteVisualizerClient
 import org.koin.core.module.Module
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
@@ -71,7 +73,9 @@ class JsAdminClientModule(
 
         scope<MonitorUi> {
             scoped { get<Network>().link("monitor") }
-            scoped { MonitorUi(get(), pinkyAddress, get(), get()) }
+            scoped { Visualizer(get(), get()) }
+            scoped { RemoteVisualizerClient(get(), pinkyAddress, get(), get(), get(), get()) }
+            scoped { MonitorUi(get(), get()) }
         }
     }
 }

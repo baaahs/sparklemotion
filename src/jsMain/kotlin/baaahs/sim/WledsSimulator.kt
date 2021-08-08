@@ -5,7 +5,6 @@ import baaahs.Pixels
 import baaahs.controller.SacnLink
 import baaahs.net.Network
 import baaahs.randomDelay
-import baaahs.util.Clock
 import baaahs.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,8 +12,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.sign
 
 class WledsSimulator(
-    private val network: Network,
-    private var clock: Clock
+    private val network: Network
 ) {
     private val wledScope = CoroutineScope(Dispatchers.Main)
     internal val fakeWledDevices: MutableList<FakeWledDevice> = mutableListOf()

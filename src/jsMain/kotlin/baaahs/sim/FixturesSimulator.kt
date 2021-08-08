@@ -37,7 +37,7 @@ class FixturesSimulator(
     val facade = Facade()
 
     private val brainsSimulator = BrainsSimulator(network, clock)
-    private val wledsSimulator = WledsSimulator(network, clock)
+    private val wledsSimulator = WledsSimulator(network)
 
     private val fixtureSimulations by lazy {
         val simulationEnv = SimulationEnv {

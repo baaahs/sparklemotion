@@ -65,7 +65,6 @@ object MovingHeadDevice : DeviceType {
     data class Config(val adapter: MovingHeadAdapter) : FixtureConfig {
         override val deviceType: DeviceType
             get() = MovingHeadDevice
-
     }
 }
 
