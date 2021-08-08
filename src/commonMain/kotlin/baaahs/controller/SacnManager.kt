@@ -145,6 +145,7 @@ class SacnManager(
             transportConfig: TransportConfig?,
             pixelCount: Int
         ): Transport = SacnTransport(transportConfig as SacnTransportConfig?)
+            .also { it.validate() }
 
         override fun getAnonymousFixtureMappings(): List<FixtureMapping> = emptyList()
 
@@ -152,6 +153,13 @@ class SacnManager(
             override val name: String get() = id
             private val startChannel = transportConfig?.startChannel ?: 0
             private val endChannel = transportConfig?.endChannel
+
+            fun validate() {
+                if (startChannel >= channels.size)
+                    error("For $name, start channel $startChannel won't fit in $universeCount universes")
+                if (endChannel != null && endChannel >= channels.size)
+                    error("For $name, end channel $endChannel won't fit in $universeCount universes")
+            }
 
             override fun deliverBytes(byteArray: ByteArray) {
                 val channelCount = min(byteArray.size, endChannel ?: Int.MAX_VALUE)
