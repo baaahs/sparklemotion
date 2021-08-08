@@ -5,6 +5,8 @@ import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.geom.center
+import baaahs.mapper.ControllerId
+import baaahs.mapper.FixtureMapping
 import baaahs.sim.BrainSurfaceSimulation
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
@@ -36,6 +38,8 @@ abstract class Model : ModelInfo {
 
     override val extents get() = modelExtents.let { if (it == Vector3F.origin) Vector3F(1f, 1f, 1f) else it }
     override val center: Vector3F get() = modelCenter
+
+    open fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> = emptyMap()
 
     interface Entity {
         val name: String
