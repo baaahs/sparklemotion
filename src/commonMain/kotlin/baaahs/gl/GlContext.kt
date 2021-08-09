@@ -247,8 +247,9 @@ abstract class GlContext(
         }
     }
 
-    open fun ensureResultBufferCanContainFloats() {
-    }
+    open fun ensureResultBufferCanContainFloats() {}
+
+    open fun ensureResultBufferCanContainHalfFloats() {}
 
     fun <T> noCheck(fn: Kgl.() -> T): T {
         return kgl.fn()
@@ -308,5 +309,10 @@ abstract class GlContext(
         const val GL_RG32F = 0x8230
         const val GL_RGB32F = 0x8815
         const val GL_RGBA32F = 0x8814
+
+        const val GL_R16F = 0x822D
+        const val GL_RG16F = 0x822F
+        const val GL_RGB16F  = 0x881B
+        const val GL_RGBA16F = 0x881A
     }
 }

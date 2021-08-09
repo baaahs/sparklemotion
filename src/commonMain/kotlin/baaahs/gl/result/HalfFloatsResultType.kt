@@ -4,8 +4,8 @@ import baaahs.gl.GlContext
 import com.danielgergely.kgl.FloatBuffer
 import com.danielgergely.kgl.GL_FLOAT
 
-/** This doesn't work on iOS devices as of iOS 14.7. */
-abstract class FloatsResultType<T : FloatsResultType.Buffer>(
+/** This works on iOS devices as of iOS 14.7. */
+abstract class HalfFloatsResultType<T : HalfFloatsResultType.Buffer>(
     private val floatCount: Int,
     override val renderPixelFormat: Int,
     override val readPixelFormat: Int
@@ -18,7 +18,7 @@ abstract class FloatsResultType<T : FloatsResultType.Buffer>(
     abstract class Buffer(
         gl: GlContext, index: Int, type: ResultType<*>
     ) : ResultBuffer(
-        gl.also { gl.ensureResultBufferCanContainFloats() }, index, type
+        gl.also { gl.ensureResultBufferCanContainHalfFloats() }, index, type
     ) {
         protected lateinit var floatBuffer: FloatBuffer
 

@@ -57,8 +57,13 @@ actual object GlBase {
         override suspend fun <T> asyncRunInContext(fn: suspend () -> T): T = fn()
 
         override fun ensureResultBufferCanContainFloats() {
-            // For RGBA32F in FloatXyzwParam:
+            // For RGBA32F in FloatsResultType:
             ensureExtension("EXT_color_buffer_float")
+        }
+
+        override fun ensureResultBufferCanContainHalfFloats() {
+            // For RGBA16F in FloatsResultType:
+            ensureExtension("EXT_color_buffer_half_float")
         }
 
         /** Creates a related context with shared state and the given Kgl. */
