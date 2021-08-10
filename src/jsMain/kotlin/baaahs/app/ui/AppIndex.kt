@@ -10,6 +10,8 @@ import baaahs.client.ClientStageManager
 import baaahs.client.WebClient
 import baaahs.gl.withCache
 import baaahs.io.Fs
+import baaahs.io.ResourcesFs
+import baaahs.mapper.Storage
 import baaahs.show.SampleData
 import baaahs.ui.*
 import baaahs.util.JsClock
@@ -17,6 +19,8 @@ import baaahs.util.UndoStack
 import baaahs.window
 import external.ErrorBoundary
 import kotlinext.js.jsObject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.html.js.onClickFunction
 import materialui.components.backdrop.backdrop
 import materialui.components.backdrop.enum.BackdropStyle
@@ -169,6 +173,25 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             }
                             listItemText {
                                 attrs.primary { +"Sample template" }
+                            }
+                        }
+                    }
+                    list {
+                        listItem {
+                            attrs.button = true
+                            attrs.onClickFunction = { _ ->
+                                GlobalScope.launch {
+                                    val fs = ResourcesFs()
+                                    val file = fs.resolve("Honcho.sparkle")
+                                    val show = Storage(fs, webClient.plugins).loadShow(file)
+                                        ?.copy(title = "New Show")
+                                        ?: error("Couldn't find show")
+                                    webClient.onNewShow(show)
+                                    renderDialog = null
+                                }
+                            }
+                            listItemText {
+                                attrs.primary { +"Fancy template" }
                             }
                         }
                     }
