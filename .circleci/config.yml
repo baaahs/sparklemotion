@@ -59,8 +59,8 @@ jobs:
 
               cp -r build/distributions/* build/gh-pages
 
-              mkdir -p build/gh-pages/doc
-              cp -r build/javadoc/* build/gh-pages/doc/.
+#              mkdir -p build/gh-pages/doc
+#              cp -r build/javadoc/* build/gh-pages/doc/.
 
               # don't ignore files starting with _
               touch build/gh-pages/.nojekyll
