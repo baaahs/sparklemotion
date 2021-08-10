@@ -24,6 +24,8 @@ import kotlinx.serialization.Serializable
 @SerialName("baaahs.Core:Image")
 data class ImageDataSource(val imageTitle: String) : DataSource {
     companion object : DataSourceBuilder<ImageDataSource> {
+        override val title: String get() = "Image"
+        override val description: String get() = "A user-provided image."
         override val resourceName: String get() = "Image"
         override val contentType: ContentType get() = ContentType.Color
         override val serializerRegistrar get() = classSerializer(serializer())

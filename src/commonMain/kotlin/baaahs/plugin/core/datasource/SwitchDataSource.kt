@@ -73,6 +73,8 @@ data class SwitchDataSource(
     }
 
     companion object : DataSourceBuilder<SwitchDataSource> {
+        override val title: String get() = "Switch"
+        override val description: String get() = "A user-adjustable on/off switch."
         override val resourceName: String get() = "Switch"
         override val contentType: ContentType get() = ContentType.Boolean
         override val serializerRegistrar get() = classSerializer(serializer())

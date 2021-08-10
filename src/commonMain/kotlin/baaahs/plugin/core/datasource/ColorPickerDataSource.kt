@@ -59,6 +59,8 @@ data class ColorPickerDataSource(
     }
 
     companion object : DataSourceBuilder<ColorPickerDataSource> {
+        override val title: String get() = "Color Picker"
+        override val description: String get() = "A user-adjustable color picker."
         override val resourceName: String get() = "ColorPicker"
         override val contentType: ContentType get() = ContentType.Color
         override val serializerRegistrar get() = classSerializer(serializer())
