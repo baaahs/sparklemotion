@@ -266,6 +266,7 @@ tasks.named<ProcessResources>("jsProcessResources") {
 }
 
 tasks.named<ProcessResources>("jvmProcessResources") {
+    dependsOn("jsBrowserDistributeResources")
     from("build/distributions") { include("sparklemotion.js") }
 
     doLast {

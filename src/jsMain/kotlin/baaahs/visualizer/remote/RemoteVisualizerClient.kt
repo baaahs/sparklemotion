@@ -16,16 +16,18 @@ import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.FixtureInfo
 import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.FrameData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class RemoteVisualizerClient(
-    link: Network.Link,
-    address: Network.Address,
+    private val link: Network.Link,
+    private val address: Network.Address,
     private val visualizer: Visualizer,
     model: Model,
     clock: Clock,
     private val plugins: Plugins
-) :
-    Network.WebSocketListener, CoroutineScope by MainScope() {
+) : Network.WebSocketListener, CoroutineScope by MainScope() {
+    val facade = Facade()
 
     private val simulationEnv = SimulationEnv {
         component(clock)
@@ -42,13 +44,20 @@ class RemoteVisualizerClient(
     }
 
     private lateinit var tcpConnection: Network.TcpConnection
+    private var isConnected = false
 
     init {
+        launch { connect() }
+    }
+
+    private fun connect() {
         link.connectWebSocket(address, Ports.PINKY_UI_TCP, "/ws/visualizer", this)
     }
 
     override fun connected(tcpConnection: Network.TcpConnection) {
         this.tcpConnection = tcpConnection
+        isConnected = true
+        facade.notifyChanged()
     }
 
     override suspend fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
@@ -76,10 +85,29 @@ class RemoteVisualizerClient(
 
     override fun reset(tcpConnection: Network.TcpConnection) {
         logger.info { "Visualizer disconnected from Pinky!" }
+        isConnected = false
+        facade.notifyChanged()
+
+        launch {
+            delay(5000)
+            connect()
+        }
     }
 
     fun close() {
         tcpConnection.close()
+        isConnected = false
+        facade.notifyChanged()
+
+        launch {
+            delay(5000)
+            connect()
+        }
+    }
+
+    inner class Facade : baaahs.ui.Facade() {
+        val isConnected: Boolean
+            get() = this@RemoteVisualizerClient.isConnected
     }
 
     companion object {

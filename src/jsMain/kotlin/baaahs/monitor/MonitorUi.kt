@@ -26,6 +26,7 @@ class MonitorUi(
         return createElement(MonitorPage::class.rClass, jsObject {
             this.containerDiv = container
             this.visualizer = this@MonitorUi.visualizer
+            this.client = remoteVisualizerClient.facade
         })
     }
 
