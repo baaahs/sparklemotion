@@ -8,6 +8,7 @@ import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.SacnTransportConfig
 import baaahs.model.LightRing
+import baaahs.model.LightRing.Companion.facingForward
 import baaahs.model.Model
 import kotlin.math.PI
 
@@ -77,8 +78,6 @@ class HonchoModel : Model() {
         )
     }
 
-    val Number.m: Float get() = toFloat() * 100f / 2.54f
-
     data class LightRingConfig(
         val name: String,
         val centerX: Float,
@@ -89,10 +88,15 @@ class HonchoModel : Model() {
         val orientation: Vector3F = facingForward
     ) {
         val entity =
-            LightRing(name, name, Vector3F(centerX, centerY, 0f), (circumference / PI).toFloat(), facingForward)
+            LightRing(
+                name, name,
+                Vector3F(centerX - 7.m, centerY, 0f),
+                (circumference / PI).toFloat(),
+                facingForward
+            )
     }
 
     companion object {
-        val facingForward = Vector3F(0f, 0f, 1f)
+        private val Number.m: Float get() = toFloat() * 100f / 2.54f
     }
 }

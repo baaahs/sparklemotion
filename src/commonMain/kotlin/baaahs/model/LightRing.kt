@@ -48,6 +48,10 @@ class LightRing(
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
         LightRingSimulation(this, simulationEnv)
+
+    companion object {
+        val facingForward = Vector3F(0f, 0f, 1f)
+    }
 }
 
 object WtfMaths {
