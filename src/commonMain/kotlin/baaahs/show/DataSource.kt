@@ -14,10 +14,14 @@ import kotlinx.serialization.Polymorphic
 
 
 interface DataSourceBuilder<T : DataSource> {
+    val title: String
+    val description: String
+
     /** The unique ID for this resource within a plugin. Should be CamelCase alphanums, like a class name. */
     val resourceName: String
     val contentType: ContentType
     val serializerRegistrar: SerializerRegistrar<T>
+    val internalOnly: Boolean get() = false
 
     fun suggestDataSources(
         inputPort: InputPort,

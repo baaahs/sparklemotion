@@ -31,9 +31,12 @@ import kotlinx.serialization.Transient
 @SerialName("baaahs.Core:RasterCoordinate")
 data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : DataSource {
     companion object : DataSourceBuilder<RasterCoordinateDataSource> {
+        override val title: String get() = "Raster Coordinate"
+        override val description: String get() = "Internal use only."
         override val resourceName: String get() = "RasterCoordinate"
         override val contentType: ContentType get() = ContentType.RasterCoordinate
         override val serializerRegistrar get() = classSerializer(serializer())
+        override val internalOnly: Boolean = true
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
         override fun build(inputPort: InputPort): RasterCoordinateDataSource =

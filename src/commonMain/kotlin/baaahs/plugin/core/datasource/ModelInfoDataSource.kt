@@ -24,7 +24,9 @@ import kotlinx.serialization.Transient
 @SerialName("baaahs.Core:ModelInfo")
 data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource {
     companion object : DataSourceBuilder<ModelInfoDataSource> {
-        override val resourceName: String get() = "Model Info"
+        override val title: String get() = "Model Info"
+        override val description: String get() = "Information about the model."
+        override val resourceName: String get() = "ModelInfo"
         override val contentType: ContentType get() = ContentType.ModelInfo
         override val serializerRegistrar get() = classSerializer(serializer())
         private val modelInfoType = ContentType.ModelInfo.glslType

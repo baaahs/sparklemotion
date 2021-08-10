@@ -75,6 +75,8 @@ data class SliderDataSource(
     }
 
     companion object : DataSourceBuilder<SliderDataSource> {
+        override val title: String get() = "Slider"
+        override val description: String get() = "A user-adjustable slider."
         override val resourceName: String get() = "Slider"
         override val contentType: ContentType get() = ContentType.Float
         override val serializerRegistrar get() = classSerializer(serializer())

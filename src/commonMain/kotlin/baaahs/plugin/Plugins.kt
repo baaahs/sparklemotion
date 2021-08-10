@@ -41,6 +41,7 @@ data class PluginRef(
     val resourceName: String
 ) {
     fun toRef() = "$pluginId:$resourceName"
+    fun shortRef() = if (pluginId == CorePlugin.id) resourceName else toRef()
 
     companion object {
         fun hasPackage(identString: String): Boolean {
@@ -89,7 +90,7 @@ class Plugins private constructor(
         registerSerializers { controlSerializers }
     }
 
-    private val dataSourceBuilders = DataSourceBuilders()
+    val dataSourceBuilders = DataSourceBuilders()
 
     val deviceTypes = DeviceTypes()
 
@@ -249,7 +250,7 @@ class Plugins private constructor(
     }
 
     inner class DataSourceBuilders {
-        private val withPlugin = plugins.flatMap { plugin -> plugin.dataSourceBuilders.map { plugin to it } }
+        val withPlugin = plugins.flatMap { plugin -> plugin.dataSourceBuilders.map { plugin to it } }
 
         val all = withPlugin.map { it.second }
 

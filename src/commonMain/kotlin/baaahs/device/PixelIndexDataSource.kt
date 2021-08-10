@@ -57,6 +57,8 @@ data class PixelIndexDataSource(@Transient val `_`: Boolean = true) : DataSource
     }
 
     companion object : DataSourceBuilder<PixelIndexDataSource> {
+        override val title: String get() = "Pixel Index"
+        override val description: String get() = "The index of this pixel within its fixture."
         override val resourceName: String
             get() = "PixelIndex"
         override val contentType: ContentType

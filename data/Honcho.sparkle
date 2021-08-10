@@ -95,7 +95,7 @@
               "1fr",
               "3fr",
               "1fr",
-              "1fr"
+              "3fr"
             ],
             "rows": [
               "2fr",
@@ -193,6 +193,10 @@
     "untitledMoverShader": {
       "title": "Untitled Mover Shader",
       "src": "struct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\n\n// @param inParams moving-head-params\n// @param params moving-head-params\nvoid main(in MovingHeadParams inParams, out MovingHeadParams params) {\n    params = inParams;\n    params.tilt = inParams.tilt + sin(time) * .1;\n}"
+    },
+    "acidAtTheDisco": {
+      "title": "Acid at the Disco",
+      "src": "// Acid at the Disco\n// From: https://www.shadertoy.com/view/4sfXRB\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord.xy / iResolution.xy;\n    float time = iTime;\n    float depth = sin(uv.y*2.0+sin(time)*1.5+1.0+sin(uv.x*3.0+time*1.2))*cos(uv.y*2.0+time)+sin((uv.x*3.0+time));\n    float texey = (uv.x-0.5);\n    float xband = sin(sqrt(uv.y/uv.y)*16.0/(depth)+time*3.0);\n    float final = (\n    sin(texey/abs(depth)*32.0+time*16.0+sin(uv.y*uv.x*32.0*sin(depth*3.0)))*(depth)*xband\n    );\n\n\n    fragColor = vec4(-final*abs(sin(time)),(-final*sin(time)*2.0),(final),1.0)*1.5;\n}"
     },
     "bandlimitedSynthesis1": {
       "title": "Bandlimited Synthesis 1 ",
@@ -312,7 +316,7 @@
     },
     "crawl": {
       "title": "Crawl",
-      "src": "// @return color\n// @param pixelIndex pixel-index\n// @param pixelCount pixel-count\nvec4 main(int pixelIndex, int pixelCount, float time) {\n    return vec4(mod(float(pixelIndex) / float(pixelCount) + mod(time, 1.), 1.), 0., 0., 1.);\n}"
+      "src": "#define PI 3.14159\n\nuniform float width = .25; // @@Slider min=.05 max=1 default=.1\nuniform float hardness = 2.; // @@Slider min=.5 max=10 default=1\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\nfloat curve(float dist, float width) {\n    return sin((clamp(dist / width, -.25, .25) * 2. + .5) * PI) * hardness;\n}\n\n// @return color\nvec4 main(\n    vec4 inColor, // @type color\n    vec4 color, // @type color\n    int pixelIndex, // @type pixel-index\n    int pixelCount, // @type pixel-count\n    float time\n) {\n    float pos = float(pixelIndex) / float(pixelCount);\n    float target = floor(beatInfo.beat) / 4.;\n    float dist = target - pos;\n    float w = width * beatInfo.intensity;\n    float mixAmount = min(1., curve(dist, w) + curve(dist - 1., w));\n    return mix(inColor, color, mixAmount);\n}\n"
     },
     "untitledFilterShader2": {
       "title": "Untitled Filter Shader",
@@ -357,7 +361,7 @@
           "dataSourceId": "beatBrightnessSlider"
         }
       },
-      "priority": 10.0
+      "priority": 10
     },
     "saturation-inst": {
       "shaderId": "saturation",
@@ -371,7 +375,7 @@
           "dataSourceId": "saturationSlider"
         }
       },
-      "priority": 10.0
+      "priority": 10
     },
     "scale-inst": {
       "shaderId": "scale",
@@ -385,7 +389,7 @@
           "shaderChannel": "main"
         }
       },
-      "priority": 10.0
+      "priority": 10
     },
     "sharpyDefault-inst": {
       "shaderId": "sharpyDefault",
@@ -471,7 +475,7 @@
           "dataSourceId": "centerXyPad"
         }
       },
-      "priority": 1.0
+      "priority": 1
     },
     "smpteColorBars-inst": {
       "shaderId": "smpteColorBars",
@@ -635,6 +639,23 @@
         "inParams": {
           "type": "shader-channel",
           "shaderChannel": "main"
+        }
+      }
+    },
+    "acidAtTheDisco-inst": {
+      "shaderId": "acidAtTheDisco",
+      "incomingLinks": {
+        "iTime": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "fragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "iResolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
         }
       }
     },
@@ -1217,9 +1238,37 @@
     "crawl-inst": {
       "shaderId": "crawl",
       "incomingLinks": {
+        "beat": {
+          "type": "datasource",
+          "dataSourceId": "beatLink"
+        },
         "time": {
           "type": "datasource",
           "dataSourceId": "time"
+        },
+        "color": {
+          "type": "datasource",
+          "dataSourceId": "colorColorPicker"
+        },
+        "width": {
+          "type": "datasource",
+          "dataSourceId": "widthSlider2"
+        },
+        "hardness": {
+          "type": "datasource",
+          "dataSourceId": "hardnessSlider2"
+        },
+        "beatInfo": {
+          "type": "datasource",
+          "dataSourceId": "beatInfo"
+        },
+        "beatinfo": {
+          "type": "datasource",
+          "dataSourceId": "beatInfo"
+        },
+        "inColor": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
         },
         "pixelIndex": {
           "type": "datasource",
@@ -1276,9 +1325,12 @@
       "type": "baaahs.Core:Button",
       "title": "Pleistocene",
       "controlLayout": {
-        "backdrops": [],
-        "controls": [],
-        "scenes": [],
+        "backdrops": [
+        ],
+        "controls": [
+        ],
+        "scenes": [
+        ],
         "preview": [
           "zzzButton"
         ]
@@ -1288,7 +1340,8 @@
       "type": "baaahs.Core:ButtonGroup",
       "title": "Backdrops",
       "direction": "Vertical",
-      "buttonIds": []
+      "buttonIds": [
+      ]
     },
     "holoceneButton": {
       "type": "baaahs.Core:Button",
@@ -1350,7 +1403,8 @@
       "type": "baaahs.Core:Button",
       "title": "None",
       "controlLayout": {
-        "backdrops": []
+        "backdrops": [
+        ]
       }
     },
     "dissolveButton": {
@@ -1522,7 +1576,7 @@
       "type": "baaahs.Core:Slider",
       "title": "Gamma",
       "minValue": 0.5,
-      "maxValue": 2.0,
+      "maxValue": 2,
       "controlledDataSourceId": "gammaSlider"
     },
     "tintSliderControl": {
@@ -1571,6 +1625,20 @@
           "shaderInstanceIds": [
             "pulse2-inst",
             "untitledMoverShader-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
+    "acidAtTheDiscoButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Acid at the Disco",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "acidAtTheDisco-inst"
           ],
           "surfaces": {
             "name": "All Surfaces"
@@ -1664,7 +1732,8 @@
           "whitenessSliderControl",
           "checkerboardSizeSliderControl"
         ],
-        "backdrops": []
+        "backdrops": [
+        ]
       }
     },
     "circularDependencyButton": {
@@ -1731,17 +1800,17 @@
     "conflagrationSliderControl": {
       "type": "baaahs.Core:Slider",
       "title": "Conflagration",
-      "initialValue": 15.0,
-      "minValue": 5.0,
-      "maxValue": 20.0,
+      "initialValue": 15,
+      "minValue": 5,
+      "maxValue": 20,
       "controlledDataSourceId": "conflagrationSlider"
     },
     "intensitySlider2Control": {
       "type": "baaahs.Core:Slider",
       "title": "Intensity",
-      "initialValue": 15.0,
-      "minValue": 5.0,
-      "maxValue": 20.0,
+      "initialValue": 15,
+      "minValue": 5,
+      "maxValue": 20,
       "controlledDataSourceId": "intensitySlider2"
     },
     "fireButton": {
@@ -1799,9 +1868,9 @@
     "zoomSliderControl": {
       "type": "baaahs.Core:Slider",
       "title": "Zoom",
-      "initialValue": 2.0,
-      "minValue": 1.0,
-      "maxValue": 10.0,
+      "initialValue": 2,
+      "minValue": 1,
+      "maxValue": 10,
       "controlledDataSourceId": "zoomSlider"
     },
     "hippieTrapButton": {
@@ -1943,8 +2012,8 @@
       "title": "Backdrops",
       "direction": "Vertical",
       "buttonIds": [
+        "acidAtTheDiscoButton",
         "bandlimitedSynthesis1Button",
-        "pinksButton",
         "blueHeartsButton",
         "bluesCluesButton",
         "checkerboardButton",
@@ -1959,6 +2028,7 @@
         "huenamiButton",
         "orangeSnowflakeButton",
         "picassoSNightmareButton",
+        "pinksButton",
         "quiverButton",
         "redYellowGreenBlueButton",
         "scannerButton",
@@ -2106,28 +2176,28 @@
     "brightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Brightness",
-      "initialValue": 1.0,
-      "minValue": 0.0,
+      "initialValue": 1,
+      "minValue": 0,
       "maxValue": 1.25
     },
     "beatBrightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Brightness",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 0,
+      "minValue": 0,
+      "maxValue": 1
     },
     "saturationSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Saturation",
-      "initialValue": 1.0,
-      "minValue": 0.0,
+      "initialValue": 1,
+      "minValue": 0,
       "maxValue": 1.25
     },
     "sizeSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Size",
-      "initialValue": 1.0,
+      "initialValue": 1,
       "minValue": 0.75,
       "maxValue": 1.25
     },
@@ -2135,7 +2205,7 @@
       "type": "baaahs.Core:Time"
     },
     "fixtureInfo": {
-      "type": "baaahs.Core.FixtureInfo"
+      "type": "baaahs.Core:FixtureInfo"
     },
     "colorColorPicker": {
       "type": "baaahs.Core:ColorPicker",
@@ -2145,16 +2215,16 @@
     "fadeSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Fade",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "scaleSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Scale",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "centerXyPad": {
       "type": "baaahs.Core:XyPad",
@@ -2164,9 +2234,9 @@
     "beatSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "resolution": {
       "type": "baaahs.Core:Resolution"
@@ -2175,22 +2245,22 @@
       "type": "baaahs.Core:Slider",
       "title": "Size",
       "initialValue": 0.1,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "minValue": 0,
+      "maxValue": 1
     },
     "tintSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Tint",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "gammaSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Gamma",
-      "initialValue": 1.0,
+      "initialValue": 1,
       "minValue": 0.5,
-      "maxValue": 2.0
+      "maxValue": 2
     },
     "tintColorColorPicker": {
       "type": "baaahs.Core:ColorPicker",
@@ -2205,23 +2275,23 @@
     "rednessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Redness",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "checkerboardSizeSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Checkerboard Size",
       "initialValue": 0.1,
       "minValue": 0.001,
-      "maxValue": 1.0
+      "maxValue": 1
     },
     "whitenessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Whiteness",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "date": {
       "type": "baaahs.Core:Date"
@@ -2237,22 +2307,22 @@
       "type": "baaahs.Core:Slider",
       "title": "Rate1",
       "initialValue": 1.9,
-      "minValue": -3.0,
-      "maxValue": 3.0
+      "minValue": -3,
+      "maxValue": 3
     },
     "rate2Slider": {
       "type": "baaahs.Core:Slider",
       "title": "Rate2",
       "initialValue": 0.6,
-      "minValue": -3.0,
-      "maxValue": 3.0
+      "minValue": -3,
+      "maxValue": 3
     },
     "loopcycleSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Loopcycle",
-      "initialValue": 85.0,
-      "minValue": 20.0,
-      "maxValue": 100.0
+      "initialValue": 85,
+      "minValue": 20,
+      "maxValue": 100
     },
     "color1Slider": {
       "type": "baaahs.Core:Slider",
@@ -2264,7 +2334,7 @@
     "color2Slider": {
       "type": "baaahs.Core:Slider",
       "title": "Color2",
-      "initialValue": 1.0,
+      "initialValue": 1,
       "minValue": -1.25,
       "maxValue": 1.125
     },
@@ -2299,72 +2369,88 @@
     "conflagrationSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Conflagration",
-      "initialValue": 15.0,
-      "minValue": 5.0,
-      "maxValue": 20.0
+      "initialValue": 15,
+      "minValue": 5,
+      "maxValue": 20
     },
     "intensitySlider": {
       "type": "baaahs.Core:Slider",
       "title": "Intensity",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "intensitySlider2": {
       "type": "baaahs.Core:Slider",
       "title": "Intensity",
-      "initialValue": 15.0,
-      "minValue": 5.0,
-      "maxValue": 20.0
+      "initialValue": 15,
+      "minValue": 5,
+      "maxValue": 20
     },
     "zoomSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Zoom",
-      "initialValue": 2.0,
-      "minValue": 1.0,
-      "maxValue": 10.0
+      "initialValue": 2,
+      "minValue": 1,
+      "maxValue": 10
     },
     "beatWarpinessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Warpiness",
-      "initialValue": 1.0,
+      "initialValue": 1,
       "minValue": 0.5,
-      "maxValue": 3.0
+      "maxValue": 3
     },
     "rippleSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Ripple",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "fakeybeatSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Fakeybeat",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 5.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 5
     },
     "widthSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Width",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "hardnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Hardness",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "pixelIndex": {
       "type": "baaahs.Core:PixelIndex"
     },
     "pixelCount": {
       "type": "baaahs.Core:PixelCount"
+    },
+    "widthSlider2": {
+      "type": "baaahs.Core:Slider",
+      "title": "Width",
+      "initialValue": 0.1,
+      "minValue": 0.05,
+      "maxValue": 1
+    },
+    "hardnessSlider2": {
+      "type": "baaahs.Core:Slider",
+      "title": "Hardness",
+      "initialValue": 1,
+      "minValue": 0.5,
+      "maxValue": 10
+    },
+    "beatInfo": {
+      "type": "baaahs.BeatLink:BeatInfo"
     }
-  },
-  "version": 4
+  }
 }

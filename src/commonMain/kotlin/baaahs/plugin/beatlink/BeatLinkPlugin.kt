@@ -51,6 +51,9 @@ class BeatLinkPlugin internal constructor(
     override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
         get() = listOf(
             object : DataSourceBuilder<BeatLinkDataSource> {
+                override val title: String get() = "Beat Link"
+                override val description: String get() =
+                    "A float representing the current beat intensity, between 0 and 1."
                 override val resourceName: String get() = "BeatLink"
                 override val contentType: ContentType get() = beatDataContentType
                 override val serializerRegistrar get() =
@@ -64,6 +67,8 @@ class BeatLinkPlugin internal constructor(
                 override fun build(inputPort: InputPort): BeatLinkDataSource = beatLinkDataSource
             },
             object : DataSourceBuilder<BeatInfoDataSource> {
+                override val title: String get() = "Beat Info"
+                override val description: String get() = "A struct containing information about the beat."
                 override val resourceName: String get() = "BeatInfo"
                 override val contentType: ContentType get() = beatInfoContentType
                 override val serializerRegistrar get() =

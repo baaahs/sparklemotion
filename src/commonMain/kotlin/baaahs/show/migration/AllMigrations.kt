@@ -6,5 +6,6 @@ val AllMigrations: List<ShowMigrator.Migration> = listOf(
     V1_UpdateDataSourceRefs,
     V2_RemoveShaderType,
     V3_UpdateLayouts,
-    V4_FlattenGadgetControls
+    V4_FlattenGadgetControls,
+    V5_FixFixtureInfoRefs
 )

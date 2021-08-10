@@ -34,7 +34,7 @@ import react.*
 import react.dom.div
 
 private enum class PageTabs {
-    Properties, Ports, Gadgets
+    Properties, Ports, Gadgets, Help
 }
 
 val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstanceEditor") { props ->
@@ -123,8 +123,10 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                         attrs.editableManager = props.editableManager
                         attrs.editingShader = editingShader
                     }
-
                     PageTabs.Gadgets -> gadgetsPreview {
+                        attrs.editingShader = editingShader
+                    }
+                    PageTabs.Help -> shaderHelp {
                         attrs.editingShader = editingShader
                     }
                 }
