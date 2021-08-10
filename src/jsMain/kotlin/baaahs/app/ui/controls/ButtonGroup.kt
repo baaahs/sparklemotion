@@ -35,6 +35,8 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
     val editMode = props.controlProps.editMode
     val onShowStateChange = props.controlProps.onShowStateChange
 
+    val showPreview = appContext.uiSettings.renderButtonPreviews
+
 //    val sceneDropTargets = props.show.scenes.mapIndexed { index, _ ->
 //        val sceneDropTarget = SceneDropTarget(props.show, index)
 //        val sceneDropTargetId = appContext.dragNDrop.addDropTarget(sceneDropTarget)
@@ -48,7 +50,6 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 //        }
 //    }
 
-    val propsRef = ref(props)
     val handleEditButtonClick = callback(buttonGroupControl) { event: Event, index: Int ->
         val button = buttonGroupControl.buttons[index]
         button.getEditIntent()?.let { appContext.openEditor(it) }
@@ -80,8 +81,7 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
 //                    attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
 
                 buttonGroupControl.buttons.forEachIndexed { index, buttonControl ->
-                    val shaderForPreview = if (appContext.uiSettings.renderButtonPreviews)
-                        buttonControl.shaderForPreview() else null
+                    val shaderForPreview = if (showPreview) buttonControl.shaderForPreview() else null
 
                     draggable({
                         this.key = buttonControl.id
@@ -119,8 +119,11 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                             }
 
                             toggleButton {
-                                if (shaderForPreview != null) {
-                                    attrs.classes(Styles.buttonLabelWhenPreview on ToggleButtonStyle.label)
+                                if (showPreview) {
+                                    attrs.classes(
+                                        Styles.buttonLabelWhenPreview on ToggleButtonStyle.label,
+                                        Styles.buttonSelectedWhenPreview on SelectedStyle.selected
+                                    )
                                 }
 
                                 attrs["value"] = index

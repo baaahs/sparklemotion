@@ -26,6 +26,8 @@ data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : Dat
         override val resourceName: String get() = "PreviewResolution"
         override val contentType: ContentType get() = ContentType.PreviewResolution
         override val serializerRegistrar get() = classSerializer(serializer())
+
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
         override fun build(inputPort: InputPort): PreviewResolutionDataSource =
             PreviewResolutionDataSource()
     }
