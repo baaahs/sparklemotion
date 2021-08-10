@@ -23,8 +23,3 @@ class RemoteVisualizers {
         listeners.forEach { it.sendFrameData(entity, block) }
     }
 }
-
-interface RemoteVisualizable {
-    fun addRemoteVisualizer(listener: RemoteVisualizerServer.Listener)
-    fun removeRemoteVisualizer(listener: RemoteVisualizerServer.Listener)
-}

@@ -95,14 +95,16 @@ class Pinky(
 
     private fun addSimulatedBrains() {
         val mappingInfos = mappingManager.getAllControllerMappings()
-        mappingInfos.forEach { (controllerId, info) ->
+        mappingInfos.forEach { (controllerId, mappings) ->
             when (controllerId.controllerType) {
                 BrainManager.controllerTypeName -> {
-                    brainManager.foundBrain(
-                        FakeNetwork.FakeAddress("Simulated Brain ${controllerId.id}"),
-                        BrainHelloMessage(controllerId.id, info.entity!!.name, null, null),
-                        isSimulatedBrain = true
-                    )
+                    mappings.forEach { mapping ->
+                        brainManager.foundBrain(
+                            FakeNetwork.FakeAddress("Simulated Brain ${controllerId.id}"),
+                            BrainHelloMessage(controllerId.id, mapping.entity!!.name, null, null),
+                            isSimulatedBrain = true
+                        )
+                    }
                 }
                 else -> {
                     logger.error { "Unknown controller type for $controllerId." }

@@ -11,8 +11,11 @@ class PreviewRenderEngine(
     private var width: Int,
     private var height: Int
 ) : RenderEngine(gl) {
-    private val quad = gl.runInContext { Quad(gl, listOf(Quad.quadRect2x2)) }
+    private var quad = calcQuad(width, height)
     private var program: GlslProgram? = null
+
+    private fun calcQuad(height: Int, width: Int) =
+        gl.runInContext { Quad(gl, listOf(Quad.Rect(height.toFloat(), 0f, 0f, width.toFloat()))) }
 
     fun useProgram(glslProgram: GlslProgram?) {
         this.program?.release()
@@ -22,6 +25,7 @@ class PreviewRenderEngine(
     }
 
     private fun GlslProgram.setResolution() {
+        setPixDimens(width, height)
         setResolution(width.toFloat(), height.toFloat())
     }
 
@@ -29,6 +33,7 @@ class PreviewRenderEngine(
         this.width = width
         this.height = height
         program?.setResolution()
+        quad = calcQuad(height, width)
     }
 
     override fun onBind(engineFeed: EngineFeed) {

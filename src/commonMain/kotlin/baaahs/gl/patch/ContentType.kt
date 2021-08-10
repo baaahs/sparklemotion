@@ -108,6 +108,11 @@ class ContentType(
         val FrameIndex = ContentType("frame-index", "Frame Index", GlslType.Int,
             description = "Starting from 0.")
 
+        val PixelIndex = ContentType("pixel-index", "Pixel Index", GlslType.Int,
+            description = "Pixel index within fixture, starting from zero.")
+        val PixelCount = ContentType("pixel-count", "Pixel Index", GlslType.Int,
+            description = "Pixel count for this fixture.")
+
         val Boolean = ContentType("boolean", "Boolean", GlslType.Bool)
         val Float = ContentType("float", "Float", GlslType.Float)
         val Int = ContentType("int", "Integer", GlslType.Int)
@@ -131,6 +136,9 @@ class ContentType(
             Date,
             PassIndex,
             FrameIndex,
+
+            PixelIndex,
+            PixelCount,
 
             Boolean,
             Float,

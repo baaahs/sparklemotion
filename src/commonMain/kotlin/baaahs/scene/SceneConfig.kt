@@ -8,18 +8,17 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SceneConfig(
     val controllers: Map<String, ControllerConfig>,
-    val fixtures: Map<String, FixtureConfig>,
+    val fixtures: Map<String, FixtureConfigNew>,
 )
 
 @Polymorphic
 interface ControllerConfig {
     val controllerType: String
-    val id: String
     val title: String
 }
 
 @Serializable
-data class FixtureConfig(
+data class FixtureConfigNew(
     val controllerId: String,
     val entityId: String? = null,
 //    val controllerConfig: FixtureControllerConfig? = null,

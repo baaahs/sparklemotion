@@ -9,6 +9,7 @@ import baaahs.mapping.MappingManager
 import baaahs.model.Model
 import baaahs.scene.SceneConfig
 import baaahs.ui.addObserver
+import baaahs.util.Logger
 
 class ControllersManager(
     private val controllerManagers: List<ControllerManager>,
@@ -99,14 +100,23 @@ class ControllersManager(
 
         sceneConfig.controllers.entries
             .groupByTo(hashMapOf()) { (_, v) -> v.controllerType }
+            .mapValues { (_, v) -> v.associate { (k, v) -> k to v } }
             .map { (controllerType, controllers) ->
                 val controllerManager = byType.getBang(controllerType, "controller manager")
-                controllerManager.onConfigChange(controllers.map { (_, v) -> v })
+                controllerManager.onConfigChange(controllers)
             }
     }
 
     fun logStatus() {
-        controllerManagers.forEach { it.logStatus() }
+        val controllerCounts = controllers.keys
+            .groupBy { it.controllerType }
+            .mapValues { (_, v) -> v.size }
+            .entries.sortedBy { (k, _) -> k }
+
+        val total = controllerCounts.sumOf { (_, count) -> count }
+        logger.info { "$total controllers online (${
+            controllerCounts.joinToString(", ") { (type, count) -> "$type=$count" }
+        })." }
     }
 
     private fun maybeStartManagers() {
@@ -124,4 +134,8 @@ class ControllersManager(
         val controller: Controller,
         val fixtures: List<Fixture>
     )
+
+    companion object {
+        private val logger = Logger<ControllersManager>()
+    }
 }

@@ -6,16 +6,20 @@ import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
 import baaahs.gl.shader.OpenShader
+import baaahs.internalTimerClock
 import baaahs.show.*
 import baaahs.show.mutable.ShowBuilder
 import baaahs.util.CacheBuilder
 import baaahs.util.Logger
+import baaahs.util.elapsedMs
 
 open class ShowOpener(
     private val toolchain: Toolchain,
     private val show: Show,
     private val showPlayer: ShowPlayer
 ): OpenContext {
+    private val startTime = internalTimerClock.now()
+
     init { logger.debug { "Opening show ${show.title}" } }
 
     private val implicitControls = mutableMapOf<String, Control>()
@@ -73,6 +77,7 @@ open class ShowOpener(
         return OpenShow(show, showPlayer, this, implicitOpenControls)
             .also { if (showState != null) it.applyState(showState) }
             .also { it.applyConstraints() }
+            .also { logger.info { "Opened \"${show.title}\" in ${startTime.elapsedMs() }ms." } }
     }
 
     open fun openShader(shader: Shader) =

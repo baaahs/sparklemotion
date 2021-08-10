@@ -11,38 +11,53 @@ data class ControllerId(val controllerType: String, val id: String) {
 }
 
 class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>) {
-    val controllerData = mutableMapOf<ControllerId, FixtureMapping>()
+    val controllerData = mutableMapOf<ControllerId, MutableList<FixtureMapping>>()
 
     init {
         mappingSessions.forEach { mappingSession ->
-            mappingSession.surfaces.forEach { surfaceData ->
-                val controllerId = surfaceData.controllerId
-                val entityName = surfaceData.entityName
+            mappingSession.surfaces.forEach { entityData ->
+                val controllerId = entityData.controllerId
+                val entityName = entityData.entityName
 
                 try {
-                    val modelEntity = model.findEntity(entityName)
-                    val pixelLocations = surfaceData.pixels?.map { it?.modelPosition }
+                    val modelEntity = model.getEntity(entityName)
+                    if (modelEntity == null)
+                        logger.warn { "Unknown model entity \"$entityName\"." }
+
+                    val pixelLocations = entityData.pixels?.map { it?.modelPosition }
                         ?.ifEmpty { null }
-                    val pixelCount = surfaceData.pixelCount ?: pixelLocations?.size
+                    val pixelCount = entityData.pixelCount ?: pixelLocations?.size
                     val transportConfig = when (controllerId.controllerType) {
-                        "SACN" -> surfaceData.channels?.let { SacnTransportConfig(it.start, it.end) }
-                        "DMX" -> surfaceData.channels?.let { DmxTransportConfig(it.start, it.end) }
+                        "SACN" -> entityData.channels?.let { SacnTransportConfig(it.start, it.end) }
+                        "DMX" -> entityData.channels?.let { DmxTransportConfig(it.start, it.end) }
                         else -> null
                     }
 
-                    controllerData[controllerId] = FixtureMapping(
+                    val fixtureMapping = FixtureMapping(
                         modelEntity, pixelCount, pixelLocations,
-                        transportConfig = transportConfig
+                        entityData.fixtureConfig, transportConfig
                     )
+                    add(controllerId, fixtureMapping)
                 } catch (e: Exception) {
                     logger.warn(e) { "Skipping $entityName." }
                 }
             }
         }
+
+        model.generateFixtureMappings().forEach { (controllerId, fixtureMappings) ->
+            fixtureMappings.forEach { fixtureMapping ->
+                add(controllerId, fixtureMapping)
+            }
+        }
     }
 
-    fun dataForController(controllerId: ControllerId): FixtureMapping? =
-        controllerData[controllerId]
+    private fun add(controllerId: ControllerId, fixtureMapping: FixtureMapping) {
+        controllerData.getOrPut(controllerId) { arrayListOf() }
+            .add(fixtureMapping)
+    }
+
+    fun dataForController(controllerId: ControllerId): List<FixtureMapping> =
+        controllerData[controllerId] ?: emptyList()
 
     companion object {
         private val logger = Logger("SessionMappingResults")

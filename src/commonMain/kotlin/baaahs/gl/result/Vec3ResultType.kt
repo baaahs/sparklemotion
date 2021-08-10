@@ -12,13 +12,13 @@ object Vec3ResultType : FloatsResultType<Vec3ResultType.ResultBuffer>(
     //    3, GlContext.GL_RGB32F, GL_RGB
     // framebufferRenderbuffer() fails with INVALID_ENUM.
     // Instead we use four floats and ignore one:
-    4, GlContext.GL_RGBA32F, GL_RGBA
+    4, GL_RGBA
 ) {
     override fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer {
         return ResultBuffer(gl, index, this)
     }
 
-    class ResultBuffer(gl: GlContext, index: Int, type: ResultType<ResultBuffer>) : Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: FloatsResultType<ResultBuffer>) : Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Vector3F {
             val offset = pixelIndex * type.stride
 

@@ -274,6 +274,10 @@
       "title": "Solid Color",
       "src": "// @return color\n// @param uvIn uv-coordinate\n// @param color color\nvec4 main(vec2 uvIn, vec4 color) {\n    return vec4(color.rgb, 1.);\n}"
     },
+    "crawl": {
+      "title": "Crawl",
+      "src": "// @return color\n// @param pixelIndex pixel-index\n// @param pixelCount pixel-count\nvec4 main(int pixelIndex, int pixelCount, float time) {\n    return vec4(mod(float(pixelIndex) / float(pixelCount) + mod(time, 1.), 1.), 0., 0., 1.);\n}"
+    },
     "beatWarp": {
       "title": "Beat Warp",
       "src": "uniform float beatWarpiness; // @@Slider default=1. min=0 max=2\n\n// @return time\n// @param inTime time\n// @param beat beat;\nfloat main(float inTime, float beat) {\n    return inTime + beat * beatWarpiness;\n}"
@@ -1064,6 +1068,23 @@
         }
       }
     },
+    "crawl-inst": {
+      "shaderId": "crawl",
+      "incomingLinks": {
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "pixelIndex": {
+          "type": "datasource",
+          "dataSourceId": "pixelIndex"
+        },
+        "pixelCount": {
+          "type": "datasource",
+          "dataSourceId": "pixelCount"
+        }
+      }
+    },
     "beatWarp-inst": {
       "shaderId": "beatWarp",
       "incomingLinks": {
@@ -1843,6 +1864,20 @@
         }
       ]
     },
+    "crawlButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Crawl",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "crawl-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
     "backdropsButtonGroup2": {
       "type": "baaahs.Core:ButtonGroup",
       "title": "Backdrops",
@@ -1868,7 +1903,8 @@
         "redYellowGreenBlueButton",
         "scannerButton",
         "yasQueenButton",
-        "solidColorButton"
+        "solidColorButton",
+        "crawlButton"
       ]
     },
     "beatWarpButton": {
@@ -2193,6 +2229,12 @@
       "initialValue": 2.0,
       "minValue": 1.0,
       "maxValue": 10.0
+    },
+    "pixelIndex": {
+      "type": "baaahs.Core:PixelIndex"
+    },
+    "pixelCount": {
+      "type": "baaahs.Core:PixelCount"
     },
     "beatWarpinessSlider": {
       "type": "baaahs.Core:Slider",

@@ -9,6 +9,9 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.glsl.LinkException
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.glsl.LinearSurfacePixelStrategy
+import baaahs.glsl.RandomSurfacePixelStrategy
+import baaahs.glsl.SurfacePixelStrategy
 import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig
 import baaahs.show.DataSource
@@ -114,6 +117,11 @@ class Plugins private constructor(
         include(dataSourceBuilders.serialModule)
         include(deviceTypes.serialModule)
         include(controllers.serialModule)
+
+        polymorphic(SurfacePixelStrategy::class) {
+            subclass(LinearSurfacePixelStrategy::class, LinearSurfacePixelStrategy.serializer())
+            subclass(RandomSurfacePixelStrategy::class, RandomSurfacePixelStrategy.serializer())
+        }
     }
 
     val json = Json { serializersModule = this@Plugins.serialModule }

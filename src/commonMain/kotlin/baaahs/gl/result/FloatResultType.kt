@@ -4,19 +4,18 @@ import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
 import baaahs.model.Model
 import baaahs.visualizer.remote.RemoteVisualizers
-import com.danielgergely.kgl.GL_R32F
 import com.danielgergely.kgl.GL_RED
 
 // Yuck. XY and XYZ fail, at least on WebGL. Maybe they work on others?
 object FloatResultType : FloatsResultType<FloatResultType.ResultBuffer>(
     // Haven't tested this, but I'm assuming it doesn't work.
-    1, GL_R32F, GL_RED
+    1, GL_RED
 ) {
     override fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer {
         return ResultBuffer(gl, index, this)
     }
 
-    class ResultBuffer(gl: GlContext, index: Int, type: ResultType<ResultBuffer>) : Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: FloatsResultType<ResultBuffer>) : Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Float {
             val offset = pixelIndex * type.stride
 

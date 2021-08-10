@@ -7,12 +7,12 @@ import baaahs.model.Model
 import baaahs.visualizer.remote.RemoteVisualizers
 import com.danielgergely.kgl.GL_RGBA
 
-object Vec4ResultType : FloatsResultType<Vec4ResultType.ResultBuffer>(4, GlContext.GL_RGBA32F, GL_RGBA) {
+object Vec4ResultType : FloatsResultType<Vec4ResultType.ResultBuffer>(4, GL_RGBA) {
     override fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer {
         return ResultBuffer(gl, index, this)
     }
 
-    class ResultBuffer(gl: GlContext, index: Int, type: ResultType<ResultBuffer>) : Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: FloatsResultType<ResultBuffer>) : Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Vector4F {
             val offset = pixelIndex * type.stride
 

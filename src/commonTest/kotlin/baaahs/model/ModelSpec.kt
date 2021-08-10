@@ -34,8 +34,8 @@ object ModelSpec : Spek({
                 val v4 = Vector3F(7f, -3f, 5.25f)
 
                 expect(fakeModel(
-                    LightBar("bar1", "bar2", PixelArrayDevice, v1, v2),
-                    LightBar("bar2", "bar2", PixelArrayDevice, v3, v4)
+                    LightBar("bar1", "bar2", v1, v2),
+                    LightBar("bar2", "bar2", v3, v4)
                 ).modelBounds).toEqual(
                     Vector3F(-1f, -3f, -.25f) to Vector3F(7f, 1f, 5.25f)
                 )

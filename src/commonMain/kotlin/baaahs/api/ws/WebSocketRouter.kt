@@ -2,8 +2,7 @@ package baaahs.api.ws
 
 import baaahs.net.Network
 import baaahs.util.Logger
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
 import kotlin.coroutines.CoroutineContext
 
@@ -11,8 +10,6 @@ class WebSocketRouter(
     val coroutineContext: CoroutineContext,
     handlers: HandlerBuilder.() -> Unit
 ) : Network.WebSocketListener {
-    private val handlerScope = CoroutineScope(coroutineContext)
-
     companion object {
         val json = Json
         val logger = Logger("WebSocketEndpoint")
@@ -24,13 +21,13 @@ class WebSocketRouter(
         logger.info { "Received connection from ${tcpConnection.fromAddress}" }
     }
 
-    override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
+    override suspend fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
         val args = json.parseToJsonElement(bytes.decodeToString()).jsonArray
         val command = args.first().jsonPrimitive.contentOrNull
         var status = "success"
         var response: JsonElement
 
-        handlerScope.launch {
+        withContext(coroutineContext) {
             try {
                 val handler = handlerMap[command]
                     ?: throw UnsupportedOperationException("unknown command \"$command\"")

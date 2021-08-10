@@ -15,7 +15,7 @@ interface MappingManager : IObservable {
 
     fun findMappings(controllerId: ControllerId): List<FixtureMapping>
 
-    fun getAllControllerMappings(): Map<ControllerId, FixtureMapping>
+    fun getAllControllerMappings(): Map<ControllerId, List<FixtureMapping>>
 }
 
 class MappingManagerImpl(
@@ -35,10 +35,10 @@ class MappingManagerImpl(
         val results = sessionMappingResults
             ?: error("Mapping results requested before available.")
 
-        return listOfNotNull(results.dataForController(controllerId))
+        return results.dataForController(controllerId)
     }
 
-    override fun getAllControllerMappings(): Map<ControllerId, FixtureMapping> {
+    override fun getAllControllerMappings(): Map<ControllerId, List<FixtureMapping>> {
         val results = sessionMappingResults
             ?: error("Mapping results requested before available.")
 

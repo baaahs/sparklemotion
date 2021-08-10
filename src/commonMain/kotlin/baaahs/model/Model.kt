@@ -5,6 +5,8 @@ import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.geom.center
+import baaahs.mapper.ControllerId
+import baaahs.mapper.FixtureMapping
 import baaahs.sim.BrainSurfaceSimulation
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
@@ -22,12 +24,14 @@ abstract class Model : ModelInfo {
     fun findEntity(name: String) =
         allSurfacesByName[name] ?: throw RuntimeException("no such model surface $name")
 
+    fun getEntity(name: String) = allSurfacesByName[name]
+
     private val allVertices by lazy {
         hashSetOf<Vector3F>().apply { allSurfaces.map { addAll(it.allVertices()) } }
     }
 
     val modelBounds by lazy {
-        boundingBox(allEntities.flatMap { entity -> entity.modelBounds.let { listOf(it.first, it.second)} })
+        boundingBox(allEntities.flatMap { entity -> entity.bounds.let { listOf(it.first, it.second)} })
     }
     private val modelExtents by lazy { val (min, max) = modelBounds; max - min }
     private val modelCenter by lazy { center(allVertices) }
@@ -35,11 +39,13 @@ abstract class Model : ModelInfo {
     override val extents get() = modelExtents.let { if (it == Vector3F.origin) Vector3F(1f, 1f, 1f) else it }
     override val center: Vector3F get() = modelCenter
 
+    open fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> = emptyMap()
+
     interface Entity {
         val name: String
         val description: String
         val deviceType: DeviceType
-        val modelBounds: Pair<Vector3F, Vector3F>
+        val bounds: Pair<Vector3F, Vector3F>
 
         fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation
     }
@@ -59,7 +65,7 @@ abstract class Model : ModelInfo {
         val faces: List<Face>,
         val lines: List<Line>
     ) : Entity {
-        override val modelBounds: Pair<Vector3F, Vector3F>
+        override val bounds: Pair<Vector3F, Vector3F>
             get() = boundingBox(allVertices())
 
         open fun allVertices(): Collection<Vector3F> {

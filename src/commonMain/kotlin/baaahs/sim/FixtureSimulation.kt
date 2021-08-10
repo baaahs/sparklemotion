@@ -1,6 +1,8 @@
 package baaahs.sim
 
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureConfig
+import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.visualizer.EntityVisualizer
@@ -12,7 +14,7 @@ interface FixtureSimulation {
 
     fun launch()
 
-    fun receiveRemoteVisualizationFixtureInfo(reader: ByteArrayReader) {
+    fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
         // No-op by default.
     }
 

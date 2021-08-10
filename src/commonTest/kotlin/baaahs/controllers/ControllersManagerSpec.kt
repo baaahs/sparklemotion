@@ -128,7 +128,7 @@ object ControllersManagerSpec : Spek({
                     it("generates pixel positions within the model bounds") {
                         expect(addedFixture.pixelCount).toBe(3)
                         expect(addedFixture.pixelLocations)
-                            .toBe(LinearSurfacePixelStrategy(Random(1)).forUnknownSurface(3, model))
+                            .toBe(LinearSurfacePixelStrategy(Random(1)).forUnknownEntity(3, model))
                     }
                 }
             }
@@ -149,7 +149,7 @@ object ControllersManagerSpec : Spek({
                 it("generates pixel positions within the entity bounds") {
                     expect(addedFixture.pixelCount).toBe(3)
                     expect(addedFixture.pixelLocations)
-                        .toBe(LinearSurfacePixelStrategy(Random(1)).forKnownSurface(3, panel, model))
+                        .toBe(LinearSurfacePixelStrategy(Random(1)).forKnownEntity(3, panel, model))
                 }
 
                 context("with pixel location data") {
@@ -201,7 +201,7 @@ class FakeMappingManager : Observable(), MappingManager {
         return data[controllerId] ?: emptyList()
     }
 
-    override fun getAllControllerMappings(): Map<ControllerId, FixtureMapping> {
+    override fun getAllControllerMappings(): Map<ControllerId, List<FixtureMapping>> {
         TODO("not implemented")
     }
 }
@@ -223,7 +223,7 @@ class FakeControllerManager : ControllerManager {
         myControllers.forEach { controllerListener.onAdd(it) }
     }
 
-    override fun onConfigChange(controllerConfigs: List<ControllerConfig>) {
+    override fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>) {
         TODO("not implemented")
     }
 
