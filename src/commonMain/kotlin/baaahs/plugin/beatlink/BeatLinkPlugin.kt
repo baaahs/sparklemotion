@@ -4,7 +4,6 @@ import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.ShowPlayer
 import baaahs.app.ui.CommonIcons
-import baaahs.app.ui.editor.PortLinkOption
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
 import baaahs.gl.data.ProgramFeed
@@ -16,7 +15,6 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
-import baaahs.show.mutable.MutableDataSourcePort
 import kotlinx.serialization.SerialName
 
 class BeatLinkPlugin internal constructor(
@@ -58,53 +56,23 @@ class BeatLinkPlugin internal constructor(
                 override val serializerRegistrar get() =
                     objectSerializer("baaahs.BeatLink:BeatLink", beatLinkDataSource)
 
-                override fun suggestDataSources(
-                    inputPort: InputPort,
-                    suggestedContentTypes: Set<ContentType>
-                ): List<PortLinkOption> {
-                    return if (inputPort.contentType == beatDataContentType
-                        || suggestedContentTypes.contains(beatDataContentType)
-                        || inputPort.type == GlslType.Float
-                    ) {
-                        listOf(
-                            PortLinkOption(
-                                MutableDataSourcePort(beatLinkDataSource),
-                                wasPurposeBuilt = true,
-                                isExactContentType = inputPort.contentType == beatDataContentType
-                                        || inputPort.contentType.isUnknown(),
-                                isPluginSuggestion = true
-                            )
-                        )
-                    } else emptyList()
-                }
+                override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
+                    inputPort.contentType == beatDataContentType
+                            || suggestedContentTypes.contains(beatDataContentType)
+                            || inputPort.type == GlslType.Float
 
                 override fun build(inputPort: InputPort): BeatLinkDataSource = beatLinkDataSource
             },
             object : DataSourceBuilder<BeatInfoDataSource> {
                 override val resourceName: String get() = "BeatInfo"
-                override val contentType: ContentType get() = beatDataContentType
+                override val contentType: ContentType get() = beatInfoContentType
                 override val serializerRegistrar get() =
                     objectSerializer("baaahs.BeatLink:BeatInfo", beatInfoDataSource)
 
-                override fun suggestDataSources(
-                    inputPort: InputPort,
-                    suggestedContentTypes: Set<ContentType>
-                ): List<PortLinkOption> {
-                    return if (inputPort.contentType == beatDataContentType
-                        || suggestedContentTypes.contains(beatDataContentType)
-                        || inputPort.type == beatInfoStruct
-                    ) {
-                        listOf(
-                            PortLinkOption(
-                                MutableDataSourcePort(beatInfoDataSource),
-                                wasPurposeBuilt = true,
-                                isExactContentType = inputPort.contentType == beatInfoContentType
-                                        || inputPort.contentType.isUnknown(),
-                                isPluginSuggestion = true
-                            )
-                        )
-                    } else emptyList()
-                }
+                override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
+                    inputPort.contentType == beatInfoContentType
+                            || suggestedContentTypes.contains(beatInfoContentType)
+                            || inputPort.type == beatInfoStruct
 
                 override fun build(inputPort: InputPort): BeatInfoDataSource = beatInfoDataSource
             }

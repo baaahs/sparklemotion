@@ -32,7 +32,7 @@ data class RadioButtonStripDataSource(
         override val contentType: ContentType get() = ContentType.Int
         override val serializerRegistrar get() = classSerializer(serializer())
 
-        override fun looksValid(inputPort: InputPort): Boolean =
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.dataTypeIs(GlslType.Int)
 
         override fun build(inputPort: InputPort): RadioButtonStripDataSource {

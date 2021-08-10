@@ -79,7 +79,7 @@ data class SliderDataSource(
         override val contentType: ContentType get() = ContentType.Float
         override val serializerRegistrar get() = classSerializer(serializer())
 
-        override fun looksValid(inputPort: InputPort): Boolean =
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.dataTypeIs(GlslType.Float)
 
         override fun build(inputPort: InputPort): SliderDataSource {
