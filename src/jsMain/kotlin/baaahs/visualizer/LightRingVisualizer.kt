@@ -1,10 +1,7 @@
 package baaahs.visualizer
 
 import baaahs.model.LightRing
-import three.js.Mesh
-import three.js.MeshNormalMaterial
-import three.js.RingGeometry
-import three.js.Vector3
+import three.js.*
 
 class LightRingVisualizer(
     lightRing: LightRing,
@@ -31,7 +28,7 @@ class LightRingVisualizer(
             field = value
         }
 
-    private val ringMesh: Mesh<RingGeometry, MeshNormalMaterial>
+    private val ringMesh: Mesh<RingGeometry, MeshBasicMaterial>
 
     init {
         val center = lightRing.center
@@ -48,7 +45,10 @@ class LightRingVisualizer(
 
         with(center) { ringGeom.translate(x, y, z) }
 
-        ringMesh = Mesh(ringGeom, MeshNormalMaterial().apply {
+        ringMesh = Mesh(ringGeom, MeshBasicMaterial().apply {
+            color = Color(0x4444FF)
+            opacity = .25
+            transparent = true
             wireframe = true
         })
     }
