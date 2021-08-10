@@ -247,9 +247,9 @@ abstract class GlContext(
         }
     }
 
-    open fun ensureResultBufferCanContainFloats() {}
+    open fun checkIfResultBufferCanContainFloats(required: Boolean = false): Boolean = true
 
-    open fun ensureResultBufferCanContainHalfFloats() {}
+    open fun checkIfResultBufferCanContainHalfFloats(required: Boolean = false): Boolean = true
 
     fun <T> noCheck(fn: Kgl.() -> T): T {
         return kgl.fn()

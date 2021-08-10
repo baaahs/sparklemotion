@@ -8,7 +8,8 @@ import com.danielgergely.kgl.GL_COLOR_ATTACHMENT0
 abstract class ResultBuffer(
     gl: GlContext,
     private val resultIndex: Int,
-    val type: ResultType<*>
+    val type: ResultType<*>,
+    private val storageFormat: Int
 ) {
     var pixelCount: Int = 0
         private set
@@ -26,7 +27,7 @@ abstract class ResultBuffer(
     }
 
     fun resize(width: Int, height: Int) {
-        gpuBuffer.storage(type.renderPixelFormat, width, height)
+        gpuBuffer.storage(storageFormat, width, height)
         curWidth = width
         curHeight = height
 

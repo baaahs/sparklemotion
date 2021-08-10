@@ -51,19 +51,17 @@ actual object GlBase {
         checkForErrors: Boolean = false,
         state: State = State()
     ) : GlContext(kgl, glslVersion, checkForErrors, state) {
-        private val checkedExtensions = hashSetOf<String>()
-
         override fun <T> runInContext(fn: () -> T): T = fn()
         override suspend fun <T> asyncRunInContext(fn: suspend () -> T): T = fn()
 
-        override fun ensureResultBufferCanContainFloats() {
-            // For RGBA32F in FloatsResultType:
-            ensureExtension("EXT_color_buffer_float")
+        // For RGBA32F in FloatsResultType.
+        override fun checkIfResultBufferCanContainFloats(required: Boolean): Boolean {
+            return ensureExtension("EXT_color_buffer_float", required)
         }
 
-        override fun ensureResultBufferCanContainHalfFloats() {
-            // For RGBA16F in FloatsResultType:
-            ensureExtension("EXT_color_buffer_half_float")
+        // For RGBA16F in FloatsResultType.
+        override fun checkIfResultBufferCanContainHalfFloats(required: Boolean): Boolean {
+            return ensureExtension("EXT_color_buffer_half_float", required)
         }
 
         /** Creates a related context with shared state and the given Kgl. */
@@ -71,11 +69,13 @@ actual object GlBase {
             window.requestAnimationFrame(callback)
         }
 
-        private fun ensureExtension(name: String) {
-            if (checkedExtensions.add(name) && webgl.getExtension(name) == null) {
+        private fun ensureExtension(name: String, required: Boolean): Boolean {
+            val extension = webgl.getExtension(name)
+            if (required && extension == null) {
                 window.alert("$name not supported")
                 throw Exception("$name not supported")
             }
+            return extension != null
         }
     }
 }
