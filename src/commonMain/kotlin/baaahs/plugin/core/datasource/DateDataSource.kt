@@ -34,6 +34,10 @@ data class DateDataSource(
         override val resourceName: String get() = "Date"
         override val contentType: ContentType get() = ContentType.Date
         override val serializerRegistrar get() = classSerializer(serializer())
+
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
+            inputPort.contentType == contentType
+
         override fun build(inputPort: InputPort): DateDataSource =
             DateDataSource(
                 inputPort.pluginConfig?.get("zeroBasedMonth") == JsonPrimitive(true),

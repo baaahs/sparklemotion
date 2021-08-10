@@ -43,13 +43,15 @@ class VizPixels(
 
         val rotator = Rotator(Vector3(0, 0, 1), normal)
         planeGeometry = BufferGeometryUtils.mergeBufferGeometries(positions.map { position ->
-            PlaneBufferGeometry(2 + Random.nextFloat() * 8, 2 + Random.nextFloat() * 8).apply {
+            PlaneBufferGeometry(pixelDimension(), pixelDimension()).apply {
                 rotator.rotate(this)
                 translate(position.x, position.y, position.z)
             }
         }.toTypedArray())
         planeGeometry.setAttribute("color", vertexColorBufferAttr)
     }
+
+    private fun pixelDimension() = 4 + Random.nextFloat() * 8
 
     private val pixelsMesh = Mesh(planeGeometry, MeshBasicMaterial().apply {
         side = FrontSide

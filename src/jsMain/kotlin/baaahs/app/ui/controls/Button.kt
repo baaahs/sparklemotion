@@ -24,8 +24,8 @@ private val Button = xComponent<ButtonProps>("Button") { props ->
 
     val buttonControl = props.buttonControl
     val onShowStateChange = props.controlProps.onShowStateChange
-    val shaderForPreview = if (appContext.uiSettings.renderButtonPreviews)
-        buttonControl.shaderForPreview() else null
+    val showPreview = appContext.uiSettings.renderButtonPreviews
+    val shaderForPreview = if (showPreview) buttonControl.shaderForPreview() else null
 
     val handleToggleClick by eventHandler(onShowStateChange) {
         buttonControl.click()
@@ -57,8 +57,11 @@ private val Button = xComponent<ButtonProps>("Button") { props ->
                 //   background: radial-gradient(rgba(255, 255, 255, .75), transparent);
                 //   color: black
                 toggleButton {
-                    if (shaderForPreview != null) {
-                        attrs.classes(Styles.buttonLabelWhenPreview on ToggleButtonStyle.label)
+                    if (showPreview) {
+                        attrs.classes(
+                            Styles.buttonLabelWhenPreview on ToggleButtonStyle.label,
+                            Styles.buttonSelectedWhenPreview on SelectedStyle.selected
+                        )
                     }
 
                     attrs["value"] = "n/a"
@@ -71,8 +74,11 @@ private val Button = xComponent<ButtonProps>("Button") { props ->
 
             ButtonControl.ActivationType.Momentary ->
                 muiButton {
-                    if (shaderForPreview != null) {
-                        attrs.classes(Styles.buttonLabelWhenPreview on ButtonStyle.label)
+                    if (showPreview) {
+                        attrs.classes(
+                            Styles.buttonLabelWhenPreview on ButtonStyle.label,
+                            Styles.buttonSelectedWhenPreview on SelectedStyle.selected
+                        )
                     }
 
                     attrs["value"] = "n/a"
@@ -85,6 +91,10 @@ private val Button = xComponent<ButtonProps>("Button") { props ->
         }
     }
 }
+
+// This is stupid. No evident way to override `selected` class?
+internal enum class SelectedStyle { selected }
+
 
 external interface ButtonProps : RProps {
     var controlProps: ControlProps

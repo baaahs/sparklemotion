@@ -34,7 +34,7 @@ abstract class Model : ModelInfo {
         boundingBox(allEntities.flatMap { entity -> entity.bounds.let { listOf(it.first, it.second)} })
     }
     private val modelExtents by lazy { val (min, max) = modelBounds; max - min }
-    private val modelCenter by lazy { center(allVertices) }
+    private val modelCenter by lazy { center(modelBounds.toList()) }
 
     override val extents get() = modelExtents.let { if (it == Vector3F.origin) Vector3F(1f, 1f, 1f) else it }
     override val center: Vector3F get() = modelCenter

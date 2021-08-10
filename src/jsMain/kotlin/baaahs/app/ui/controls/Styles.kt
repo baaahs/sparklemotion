@@ -4,6 +4,7 @@ import baaahs.ui.descendants
 import baaahs.ui.name
 import kotlinx.css.*
 import kotlinx.css.properties.Timing
+import kotlinx.css.properties.border
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import materialui.styles.muitheme.MuiTheme
@@ -13,13 +14,15 @@ import materialui.styles.palette.paper
 import styled.StyleSheet
 
 object Styles : StyleSheet("app-ui-controls", isStatic = true) {
+    val editTransitionDuration = 0.25.s
+
     val buttonGroupCard by css {
         display = Display.flex
         backgroundColor = Color.transparent
         overflowY = Overflow.scroll
 
         descendants(controlButton) {
-            transition(::transform, duration = 0.25.s, timing = Timing.linear)
+            transition(::transform, duration = editTransitionDuration, timing = Timing.linear)
         }
     }
 
@@ -41,8 +44,10 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val editButton by css {
+        display = Display.none
+        transition(::display, duration = 0.s)
         opacity = 0
-        transition(::opacity, duration = 0.25.s, timing = Timing.linear)
+        transition(::opacity, duration = editTransitionDuration, timing = Timing.linear)
         position = Position.absolute
         right = 2.px
         bottom = (-2).px + 2.em
@@ -80,8 +85,10 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val dragHandle by css {
+        display = Display.none
+        transition(::display, duration = 0.s)
         opacity = 0
-        transition(::opacity, duration = 0.25.s, timing = Timing.linear)
+        transition(::opacity, duration = editTransitionDuration, timing = Timing.linear)
         position = Position.absolute
         right = 2.px
         bottom = (-2).px
@@ -106,7 +113,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
             }
         }
 
-        transition(::transform, duration = 0.25.s, timing = Timing.linear)
+        transition(::transform, duration = editTransitionDuration, timing = Timing.linear)
     }
 
     val dataSourceTitle by css {
@@ -150,6 +157,11 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val buttonLabelWhenPreview by css {
         color = Color.black
+        background = "radial-gradient(rgba(255,255,255,.8), transparent)"
+    }
+
+    val buttonSelectedWhenPreview by css {
+        border(5.px, BorderStyle.solid, Color.orange.withAlpha(.75))
         background = "radial-gradient(rgba(255,255,255,.8), transparent)"
     }
 

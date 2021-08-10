@@ -43,6 +43,7 @@ data class PixelCountDataSource(@Transient val `_`: Boolean = true) : DataSource
         override val serializerRegistrar: SerializerRegistrar<PixelCountDataSource>
             get() = classSerializer(serializer())
 
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
         override fun build(inputPort: InputPort): PixelCountDataSource =
             PixelCountDataSource()
     }

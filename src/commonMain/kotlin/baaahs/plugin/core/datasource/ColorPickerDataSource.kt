@@ -63,9 +63,6 @@ data class ColorPickerDataSource(
         override val contentType: ContentType get() = ContentType.Color
         override val serializerRegistrar get() = classSerializer(serializer())
 
-        override fun looksValid(inputPort: InputPort): Boolean =
-            inputPort.dataTypeIs(GlslType.Vec4)
-
         override fun build(inputPort: InputPort): ColorPickerDataSource {
             val default = inputPort.pluginConfig?.get("default")?.jsonPrimitive?.contentOrNull
 
