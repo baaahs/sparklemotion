@@ -6,8 +6,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
-import baaahs.gl.result.HalfFloatsResultType
-import baaahs.gl.result.ResultType
+import baaahs.gl.result.FloatsResultType
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.visualizer.remote.RemoteVisualizers
@@ -41,13 +40,13 @@ data class MovingHeadParams(
             struct, outputRepresentation = GlslType.Vec4
         )
 
-        val resultType = object : HalfFloatsResultType<ResultBuffer>(4, GlContext.GL_RGBA16F, GL_RGBA) {
+        val resultType = object : FloatsResultType<ResultBuffer>(4, GL_RGBA) {
             override fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer =
                 ResultBuffer(gl, index, this)
         }
     }
 
-    class ResultBuffer(gl: GlContext, index: Int, type: ResultType<ResultBuffer>) : HalfFloatsResultType.Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: FloatsResultType<ResultBuffer>) : FloatsResultType.Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): MovingHeadParams {
             val offset = pixelIndex * type.stride
 

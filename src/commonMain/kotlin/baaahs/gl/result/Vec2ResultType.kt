@@ -12,13 +12,13 @@ object Vec2ResultType : FloatsResultType<Vec2ResultType.ResultBuffer>(
     //    2, GL_RG32F, GL_RG
     // readPixels() fails with INVALID_OPERATION.
     // Instead we use four floats and ignore one:
-    4, GlContext.GL_RGBA32F, GL_RGBA
+    4, GL_RGBA
 ) {
     override fun createResultBuffer(gl: GlContext, index: Int): ResultBuffer {
         return ResultBuffer(gl, index, this)
     }
 
-    class ResultBuffer(gl: GlContext, index: Int, type: ResultType<ResultBuffer>) : Buffer(gl, index, type) {
+    class ResultBuffer(gl: GlContext, index: Int, type: FloatsResultType<ResultBuffer>) : Buffer(gl, index, type) {
         operator fun get(pixelIndex: Int): Vector2F {
             val offset = pixelIndex * type.stride
 
