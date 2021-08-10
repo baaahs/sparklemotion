@@ -4,6 +4,7 @@ import baaahs.ui.descendants
 import baaahs.ui.name
 import kotlinx.css.*
 import kotlinx.css.properties.Timing
+import kotlinx.css.properties.border
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import materialui.styles.muitheme.MuiTheme
@@ -150,6 +151,11 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val buttonLabelWhenPreview by css {
         color = Color.black
+        background = "radial-gradient(rgba(255,255,255,.8), transparent)"
+    }
+
+    val buttonSelectedWhenPreview by css {
+        border(5.px, BorderStyle.solid, Color.orange.withAlpha(.75))
         background = "radial-gradient(rgba(255,255,255,.8), transparent)"
     }
 
