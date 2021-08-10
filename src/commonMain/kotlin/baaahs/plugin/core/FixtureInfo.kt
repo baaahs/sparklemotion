@@ -34,7 +34,7 @@ val fixtureInfoStruct = GlslType.Struct(
 val fixtureInfoContentType = ContentType("fixture-info", "Fixture Info", fixtureInfoStruct)
 
 @Serializable
-@SerialName("baaahs.Core.FixtureInfo")
+@SerialName("baaahs.Core:FixtureInfo")
 data class FixtureInfoDataSource(@Transient val `_`: Boolean = true) : DataSource {
     override val pluginPackage: String get() = CorePlugin.id
     override val title: String get() = "Fixture Info"
@@ -47,7 +47,10 @@ data class FixtureInfoDataSource(@Transient val `_`: Boolean = true) : DataSourc
     }
 
     companion object : DataSourceBuilder<FixtureInfoDataSource> {
-        override val resourceName: String get() = "baaahs.Core.FixtureInfo"
+        override val title: String get() = "Fixture Info"
+        override val description: String get() =
+            "Information about the fixture's position and orientation in the model."
+        override val resourceName: String get() = "FixtureInfo"
         override val contentType: ContentType get() = fixtureInfoContentType
         override val serializerRegistrar get() = classSerializer(serializer())
 

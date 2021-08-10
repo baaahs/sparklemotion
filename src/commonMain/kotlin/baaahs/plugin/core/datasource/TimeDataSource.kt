@@ -24,6 +24,8 @@ import kotlinx.serialization.Transient
 @SerialName("baaahs.Core:Time")
 data class TimeDataSource(@Transient val `_`: Boolean = true) : DataSource {
     companion object : DataSourceBuilder<TimeDataSource> {
+        override val title: String get() = "Time"
+        override val description: String get() = "The current time."
         override val resourceName: String get() = "Time"
         override val contentType: ContentType get() = ContentType.Time
         override val serializerRegistrar get() = classSerializer(serializer())

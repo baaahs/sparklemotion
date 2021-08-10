@@ -28,7 +28,9 @@ data class RadioButtonStripDataSource(
     }
 
     companion object : DataSourceBuilder<RadioButtonStripDataSource> {
-        override val resourceName: String get() = "Radio Button Strip"
+        override val title: String get() = "Radio Button Strip"
+        override val description: String get() = "A user-adjustable button strip."
+        override val resourceName: String get() = "RadioButtonStrip"
         override val contentType: ContentType get() = ContentType.Int
         override val serializerRegistrar get() = classSerializer(serializer())
 

@@ -31,6 +31,12 @@ data class DateDataSource(
     companion object : DataSourceBuilder<DateDataSource> {
         const val SECONDS_PER_DAY = (24 * 60 * 60).toDouble()
 
+        override val title: String get() = "Date"
+        override val description: String get() = "The current date in a `vec4`:\n" +
+                "<br/>`x`: year\n" +
+                "<br/>`y`: month (January == 1)\n" +
+                "<br/>`z`: day of month (First == 1)\n" +
+                "<br/>`w`: time of day in milliseconds past midnight"
         override val resourceName: String get() = "Date"
         override val contentType: ContentType get() = ContentType.Date
         override val serializerRegistrar get() = classSerializer(serializer())

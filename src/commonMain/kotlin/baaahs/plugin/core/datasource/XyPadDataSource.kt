@@ -27,6 +27,8 @@ data class XyPadDataSource(
     val varPrefix: String
 ) : DataSource {
     companion object : DataSourceBuilder<XyPadDataSource> {
+        override val title: String get() = "X/Y Pad"
+        override val description: String get() = "A user-adjustable two-dimensional input pad."
         override val resourceName: String get() = "XyPad"
         override val contentType: ContentType get() = ContentType.XyCoordinate
         override val serializerRegistrar get() = classSerializer(serializer())
