@@ -23,7 +23,7 @@ interface DataSourceBuilder<T : DataSource> {
         inputPort: InputPort,
         suggestedContentTypes: Set<ContentType> = emptySet()
     ): List<PortLinkOption> {
-        return if (looksValid(inputPort)) {
+        return if (looksValid(inputPort, suggestedContentTypes)) {
             listOf(build(inputPort)).map { dataSource ->
                 PortLinkOption(
                     MutableDataSourcePort(dataSource),
@@ -36,7 +36,7 @@ interface DataSourceBuilder<T : DataSource> {
         } else emptyList()
     }
 
-    fun looksValid(inputPort: InputPort): Boolean = false
+    fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
 
     fun build(inputPort: InputPort): T
 }

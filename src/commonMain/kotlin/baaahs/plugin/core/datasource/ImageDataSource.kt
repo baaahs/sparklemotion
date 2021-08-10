@@ -27,7 +27,7 @@ data class ImageDataSource(val imageTitle: String) : DataSource {
         override val resourceName: String get() = "Image"
         override val contentType: ContentType get() = ContentType.Color
         override val serializerRegistrar get() = classSerializer(serializer())
-        override fun looksValid(inputPort: InputPort): Boolean =
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.dataTypeIs(GlslType.Sampler2D)
 
         override fun build(inputPort: InputPort): ImageDataSource =

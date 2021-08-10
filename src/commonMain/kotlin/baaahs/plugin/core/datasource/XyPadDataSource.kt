@@ -31,7 +31,7 @@ data class XyPadDataSource(
         override val contentType: ContentType get() = ContentType.XyCoordinate
         override val serializerRegistrar get() = classSerializer(serializer())
 
-        override fun looksValid(inputPort: InputPort): Boolean =
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.dataTypeIs(GlslType.Vec2)
 
         override fun build(inputPort: InputPort): XyPadDataSource =
