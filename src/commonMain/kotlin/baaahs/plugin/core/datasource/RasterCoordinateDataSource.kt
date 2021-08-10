@@ -34,6 +34,8 @@ data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : Data
         override val resourceName: String get() = "RasterCoordinate"
         override val contentType: ContentType get() = ContentType.RasterCoordinate
         override val serializerRegistrar get() = classSerializer(serializer())
+
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
         override fun build(inputPort: InputPort): RasterCoordinateDataSource =
             RasterCoordinateDataSource()
     }
