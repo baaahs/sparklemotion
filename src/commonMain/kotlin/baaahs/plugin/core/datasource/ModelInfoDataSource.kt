@@ -29,7 +29,6 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
         override val serializerRegistrar get() = classSerializer(serializer())
         private val modelInfoType = ContentType.ModelInfo.glslType
 
-        // TODO: dataType should be something like "{vec3,vec3}" probably.
         override fun looksValid(inputPort: InputPort): Boolean =
             inputPort.type == modelInfoType || inputPort.contentType == ContentType.ModelInfo
 
