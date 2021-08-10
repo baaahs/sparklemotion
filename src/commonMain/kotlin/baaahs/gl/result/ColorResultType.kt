@@ -7,14 +7,12 @@ import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
 import baaahs.model.Model
 import baaahs.visualizer.remote.RemoteVisualizers
-import com.danielgergely.kgl.Buffer
 import com.danielgergely.kgl.ByteBuffer
 import com.danielgergely.kgl.GL_RGBA
 import com.danielgergely.kgl.GL_UNSIGNED_BYTE
 
 object ColorResultType : ResultType<ColorResultType.Buffer> {
-    override val renderPixelFormat: Int
-        get() = GlContext.GL_RGBA8
+    private val renderPixelFormat: Int = GlContext.GL_RGBA8
     override val readPixelFormat: Int
         get() = GL_RGBA
     override val readType: Int
@@ -26,7 +24,7 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
         return Buffer(gl, index)
     }
 
-    class Buffer(gl: GlContext, resultIndex: Int) : ResultBuffer(gl, resultIndex, ColorResultType) {
+    class Buffer(gl: GlContext, resultIndex: Int) : ResultBuffer(gl, resultIndex, ColorResultType, renderPixelFormat) {
         private lateinit var byteBuffer: ByteBuffer
 
         override val cpuBuffer: com.danielgergely.kgl.Buffer

@@ -123,7 +123,7 @@ abstract class GlContext(
 
                 val status = check { checkFramebufferStatus(GL_FRAMEBUFFER) }
                 if (status != GL_FRAMEBUFFER_COMPLETE) {
-                    logger.warn { "FrameBuffer huh? $status" }
+                    logger.warn { "FrameBuffer huh? ${decodeGlConst(status) ?: status}" }
                 }
             }
         }
@@ -247,8 +247,9 @@ abstract class GlContext(
         }
     }
 
-    open fun ensureResultBufferCanContainFloats() {
-    }
+    open fun checkIfResultBufferCanContainFloats(required: Boolean = false): Boolean = true
+
+    open fun checkIfResultBufferCanContainHalfFloats(required: Boolean = false): Boolean = true
 
     fun <T> noCheck(fn: Kgl.() -> T): T {
         return kgl.fn()
@@ -265,22 +266,25 @@ abstract class GlContext(
     private fun checkForGlError() {
         val error = kgl.getError()
 
-        val code = when (error) {
-            GL_INVALID_ENUM -> "GL_INVALID_ENUM"
-            GL_INVALID_VALUE -> "GL_INVALID_VALUE"
-            GL_INVALID_OPERATION -> "GL_INVALID_OPERATION"
-            GL_INVALID_FRAMEBUFFER_OPERATION -> "GL_INVALID_FRAMEBUFFER_OPERATION"
-            GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT -> "FRAMEBUFFER_INCOMPLETE_ATTACHMENT"
-//            GL_CONTEXT_LOST_WEBGL -> "GL_CONTEXT_LOST_WEBGL"
-            GL_OUT_OF_MEMORY -> "GL_OUT_OF_MEMORY"
-            else -> "unknown error $error"
-        }
+        val code = decodeGlConst(error) ?: "unknown error $error"
 
         if (error != 0) {
             logger.error { "OpenGL Error: $code" }
             throw RuntimeException("OpenGL Error: $code")
         }
     }
+
+    private fun decodeGlConst(error: Int) =
+        when (error) {
+            GL_INVALID_ENUM -> "GL_INVALID_ENUM"
+            GL_INVALID_VALUE -> "GL_INVALID_VALUE"
+            GL_INVALID_OPERATION -> "GL_INVALID_OPERATION"
+            GL_INVALID_FRAMEBUFFER_OPERATION -> "GL_INVALID_FRAMEBUFFER_OPERATION"
+            GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT -> "FRAMEBUFFER_INCOMPLETE_ATTACHMENT"
+            //            GL_CONTEXT_LOST_WEBGL -> "GL_CONTEXT_LOST_WEBGL"
+            GL_OUT_OF_MEMORY -> "GL_OUT_OF_MEMORY"
+            else -> null
+        }
 
     open fun release() {
         if (kgl is ReleasableKgl) {
@@ -305,5 +309,10 @@ abstract class GlContext(
         const val GL_RG32F = 0x8230
         const val GL_RGB32F = 0x8815
         const val GL_RGBA32F = 0x8814
+
+        const val GL_R16F = 0x822D
+        const val GL_RG16F = 0x822F
+        const val GL_RGB16F  = 0x881B
+        const val GL_RGBA16F = 0x881A
     }
 }

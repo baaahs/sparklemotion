@@ -11,15 +11,38 @@
   <link rel="stylesheet" href="fontawesome-free/css/all.min.css">
 </head>
 <body>
-<div id="app"></div>
+<div id="app">
+  <div style="
+    background: white;
+    color: black;
+    font-family: 'Press Start 2P', monospace;
+    border: 2px solid black;
+    display: flex;
+    margin: auto;
+    padding: 1em;
+    height: 150px;
+    align-items: center;
+  ">
+    <img style="transform: scale(.5);" src="loading.gif" alt=""/>
+    <div style="padding-right: 5em;">Patience...</div>
+  </div>
+</div>
 
 <script type="application/javascript">
   document.resourcesBase = ".";
   document.sparklemotionMode = "Simulator";
-</script>
-<script type="application/javascript" src="vendors.js"></script>
-<script type="application/javascript" src="1.js"></script><!-- for http://baaahs.github.io/sparklemotion/ -->
-<script type="application/javascript" src="sparklemotion.js"></script>
 
+  setTimeout(function () {
+    function loadJs(path) {
+      let el = document.createElement("script");
+      el.setAttribute("src", path);
+      document.head.appendChild(el);
+    }
+
+    loadJs("vendors.js");
+    loadJs("1.js"); // for http://baaahs.github.io/sparklemotion/
+    loadJs("sparklemotion.js");
+  })();
+</script>
 </body>
 </html>

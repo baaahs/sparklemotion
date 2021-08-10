@@ -2,6 +2,7 @@ package baaahs.visualizer
 
 import baaahs.Color
 import baaahs.Pixels
+import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector2
 import baaahs.io.ByteArrayReader
 import baaahs.resourcesBase
@@ -17,7 +18,8 @@ import kotlin.random.Random
 
 class VizPixels(
     val positions: Array<Vector3>,
-    val normal: Vector3
+    val normal: Vector3,
+    val pixelArrayConfig: PixelArrayDevice.Config? = null
 ) : Pixels {
     override val size = positions.size
     private val pixGeometry = BufferGeometry()
@@ -145,8 +147,10 @@ class VizPixels(
     fun readColors(reader: ByteArrayReader) {
         val pixelCount = reader.readInt()
         val minPixCount = min(size, pixelCount)
+        val pixelFormat = pixelArrayConfig?.pixelFormat ?: PixelArrayDevice.PixelFormat.RGB8
+
         for (i in 0 until minPixCount) {
-            this[i] = Color.parseWithoutAlpha(reader)
+            this[i] = pixelFormat.readColor(reader)
         }
     }
 

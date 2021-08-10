@@ -3,6 +3,7 @@ package baaahs.visualizer.remote
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
 import baaahs.net.Network
+import baaahs.plugin.Plugins
 import baaahs.proto.Ports
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
@@ -21,7 +22,8 @@ class RemoteVisualizerClient(
     address: Network.Address,
     private val visualizer: Visualizer,
     model: Model,
-    clock: Clock
+    clock: Clock,
+    private val plugins: Plugins
 ) :
     Network.WebSocketListener, CoroutineScope by MainScope() {
 
@@ -49,13 +51,19 @@ class RemoteVisualizerClient(
         this.tcpConnection = tcpConnection
     }
 
-    override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
+    override suspend fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
         val reader = ByteArrayReader(bytes)
         when (RemoteVisualizerServer.Opcode.get(reader.readByte())) {
             FixtureInfo -> {
                 val entityName = reader.readString()
+                val fixtureConfig = plugins.json.decodeFromString(
+                    FixtureConfigWrapper.serializer(),
+                    reader.readString()
+                ).fixtureConfig
                 val fixtureSimulation = fixtureSimulations[entityName]
-                fixtureSimulation?.receiveRemoteVisualizationFixtureInfo(reader)
+                fixtureSimulation?.let {
+                    fixtureConfig.receiveRemoteVisualizationFixtureInfo(reader, it)
+                }
             }
 
             FrameData -> {

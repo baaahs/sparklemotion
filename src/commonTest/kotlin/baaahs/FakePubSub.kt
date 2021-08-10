@@ -59,7 +59,7 @@ class TestRig {
 class SpyPubSub(
     dispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
 ) : PubSub.Endpoint() {
-    override val commandChannels: PubSub.CommandChannels = PubSub.CommandChannels(CoroutineScope(dispatcher))
+    override val commandChannels: PubSub.CommandChannels = PubSub.CommandChannels()
 
     private val onUpdates = mutableMapOf<String, (Any?) -> Unit>()
     val events = arrayListOf<String>()

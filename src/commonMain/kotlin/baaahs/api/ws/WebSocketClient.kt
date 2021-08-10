@@ -7,18 +7,14 @@ import baaahs.net.Network
 import baaahs.proto.Ports
 import baaahs.util.Logger
 import com.soywiz.klock.DateTime
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.*
 
-class WebSocketClient(link: Network.Link, address: Network.Address) : Network.WebSocketListener,
-    CoroutineScope by MainScope() {
+class WebSocketClient(link: Network.Link, address: Network.Address) : Network.WebSocketListener {
     private lateinit var tcpConnection: Network.TcpConnection
     private var connected = false
     private lateinit var responses: Channel<ByteArray>
@@ -97,9 +93,9 @@ class WebSocketClient(link: Network.Link, address: Network.Address) : Network.We
         connected = true
     }
 
-    override fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
+    override suspend fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
         logger.debug { "Received ${bytes.decodeToString()}" }
-        launch { responses.send(bytes) }
+        responses.send(bytes)
     }
 
     override fun reset(tcpConnection: Network.TcpConnection) {

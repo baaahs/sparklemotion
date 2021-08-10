@@ -4,8 +4,6 @@ import baaahs.PubSub
 import baaahs.Topics
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
-import baaahs.glsl.LinearSurfacePixelStrategy
-import baaahs.glsl.SurfacePixelStrategy
 import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.SacnTransportConfig
@@ -27,13 +25,12 @@ class SacnManager(
     private val link: Network.Link,
     pubSub: PubSub.Server,
     private val mainDispatcher: CoroutineDispatcher,
-    private val clock: Clock,
-    private val surfacePixelStrategy: SurfacePixelStrategy = LinearSurfacePixelStrategy()
+    private val clock: Clock
 ) : ControllerManager {
     private val senderCid = "SparkleMotion000".encodeToByteArray()
     private val sacnLink = SacnLink(link, senderCid, "SparkleMotion")
     private var sacnDevices by publishProperty(pubSub, Topics.sacnDevices, emptyMap())
-    private var configs: MutableList<SacnControllerConfig> = arrayListOf()
+    private val configs: MutableMap<String, SacnControllerConfig> = mutableMapOf()
     private var controllerListener: ControllerListener? = null
 
     override val controllerType: String
@@ -45,9 +42,11 @@ class SacnManager(
         handleConfigs()
     }
 
-    override fun onConfigChange(controllerConfigs: List<ControllerConfig>) {
+    override fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>) {
         configs.clear()
-        configs.addAll(controllerConfigs.filterIsInstance<SacnControllerConfig>())
+        controllerConfigs.forEach { (k, v) ->
+            if (v is SacnControllerConfig) configs[k] = v
+        }
         handleConfigs()
     }
 
@@ -62,8 +61,8 @@ class SacnManager(
 
     private fun handleConfigs() {
         controllerListener?.let { listener ->
-            configs.forEach { config ->
-                val controller = SacnController(config.id, config.address, null, config.universes, clock.now())
+            configs.forEach { (id, config) ->
+                val controller = SacnController(id, config.address, null, config.universes, clock.now())
                 listener.onAdd(controller)
                 updateWledDevices(controller)
             }
@@ -146,6 +145,7 @@ class SacnManager(
             transportConfig: TransportConfig?,
             pixelCount: Int
         ): Transport = SacnTransport(transportConfig as SacnTransportConfig?)
+            .also { it.validate() }
 
         override fun getAnonymousFixtureMappings(): List<FixtureMapping> = emptyList()
 
@@ -153,6 +153,13 @@ class SacnManager(
             override val name: String get() = id
             private val startChannel = transportConfig?.startChannel ?: 0
             private val endChannel = transportConfig?.endChannel
+
+            fun validate() {
+                if (startChannel >= channels.size)
+                    error("For $name, start channel $startChannel won't fit in $universeCount universes")
+                if (endChannel != null && endChannel >= channels.size)
+                    error("For $name, end channel $endChannel won't fit in $universeCount universes")
+            }
 
             override fun deliverBytes(byteArray: ByteArray) {
                 val channelCount = min(byteArray.size, endChannel ?: Int.MAX_VALUE)
@@ -181,7 +188,6 @@ class SacnManager(
 
 @Serializable @SerialName("SACN")
 data class SacnControllerConfig(
-    override val id: String,
     override val title: String,
     val address: String,
     val universes: Int

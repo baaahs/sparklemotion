@@ -88,7 +88,7 @@ object ShowRunnerSpec : Spek({
             PubSub.Server(httpServer, CoroutineScope(dispatcher))
         }
         val renderManager by value { RenderManager(TestModel) { fakeGlslContext } }
-        val fixtureManager by value { FixtureManager(renderManager, model) }
+        val fixtureManager by value { FixtureManager(renderManager, testPlugins()) }
         val stageManager by value {
             val fs = FakeFs()
             StageManager(
