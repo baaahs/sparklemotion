@@ -32,6 +32,7 @@ data class ResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource
         override val contentType: ContentType get() = ContentType.Resolution
         override val serializerRegistrar get() = classSerializer(serializer())
 
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
         override fun build(inputPort: InputPort): ResolutionDataSource =
             ResolutionDataSource()
     }

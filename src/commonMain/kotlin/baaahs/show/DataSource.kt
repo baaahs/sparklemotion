@@ -36,7 +36,9 @@ interface DataSourceBuilder<T : DataSource> {
         } else emptyList()
     }
 
-    fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
+    fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
+        inputPort.contentType == contentType ||
+                inputPort.dataTypeIs(contentType.glslType)
 
     fun build(inputPort: InputPort): T
 }

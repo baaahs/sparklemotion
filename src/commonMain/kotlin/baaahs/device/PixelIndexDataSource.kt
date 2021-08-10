@@ -64,6 +64,7 @@ data class PixelIndexDataSource(@Transient val `_`: Boolean = true) : DataSource
         override val serializerRegistrar: SerializerRegistrar<PixelIndexDataSource>
             get() = classSerializer(serializer())
 
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
         override fun build(inputPort: InputPort): PixelIndexDataSource =
             PixelIndexDataSource()
     }

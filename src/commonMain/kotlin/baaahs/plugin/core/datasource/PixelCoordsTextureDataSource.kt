@@ -27,6 +27,7 @@ data class PixelCoordsTextureDataSource(@Transient val `_`: Boolean = true) : Da
         override val resourceName: String get() = "PixelCoords"
         override val contentType: ContentType get() = ContentType.PixelCoordinatesTexture
         override val serializerRegistrar get() = classSerializer(serializer())
+
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
         override fun build(inputPort: InputPort): PixelCoordsTextureDataSource =
             PixelCoordsTextureDataSource()
