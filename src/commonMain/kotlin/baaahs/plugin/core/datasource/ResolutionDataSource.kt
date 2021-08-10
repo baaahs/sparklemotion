@@ -28,6 +28,8 @@ import kotlinx.serialization.Transient
 @SerialName("baaahs.Core:Resolution")
 data class ResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource {
     companion object : DataSourceBuilder<ResolutionDataSource> {
+        override val title: String get() = "Resolution"
+        override val description: String get() = "The resolution of the render viewport, in pixels."
         override val resourceName: String get() = "Resolution"
         override val contentType: ContentType get() = ContentType.Resolution
         override val serializerRegistrar get() = classSerializer(serializer())

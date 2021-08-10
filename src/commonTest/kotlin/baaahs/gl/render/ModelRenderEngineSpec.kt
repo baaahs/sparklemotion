@@ -323,6 +323,8 @@ class DeviceTypeForTest(
     override val dataSourceBuilders: List<DataSourceBuilder<*>>
         get() = fixtureDataSources.map { dataSource ->
             object : DataSourceBuilder<DataSource> {
+                override val title: String get() = dataSource.title
+                override val description: String get() = "Description"
                 override val resourceName: String get() = "resName$dataSource"
                 override val contentType: ContentType get() = dataSource.contentType
                 override val serializerRegistrar: SerializerRegistrar<DataSource> get() = TODO("not implemented")

@@ -24,9 +24,12 @@ import kotlinx.serialization.Transient
 @SerialName("baaahs.Core:PixelCoordsTexture")
 data class PixelCoordsTextureDataSource(@Transient val `_`: Boolean = true) : DataSource {
     companion object : DataSourceBuilder<PixelCoordsTextureDataSource> {
+        override val title: String get() = "Pixel Coordinates"
+        override val description: String get() = "Internal use only."
         override val resourceName: String get() = "PixelCoords"
         override val contentType: ContentType get() = ContentType.PixelCoordinatesTexture
         override val serializerRegistrar get() = classSerializer(serializer())
+        override val internalOnly: Boolean = true
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
         override fun build(inputPort: InputPort): PixelCoordsTextureDataSource =

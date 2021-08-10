@@ -36,6 +36,8 @@ data class PixelCountDataSource(@Transient val `_`: Boolean = true) : DataSource
     }
 
     companion object : DataSourceBuilder<PixelCountDataSource> {
+        override val title: String get() = "Pixel Count"
+        override val description: String get() = "The number of pixels in this fixture."
         override val resourceName: String
             get() = "PixelCount"
         override val contentType: ContentType

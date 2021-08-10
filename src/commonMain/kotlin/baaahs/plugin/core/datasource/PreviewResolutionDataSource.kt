@@ -23,9 +23,12 @@ import kotlinx.serialization.Transient
 @SerialName("baaahs.Core:PreviewResolution")
 data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource {
     companion object : DataSourceBuilder<PreviewResolutionDataSource> {
+        override val title: String get() = "Preview Resolution"
+        override val description: String get() = "Internal use only."
         override val resourceName: String get() = "PreviewResolution"
         override val contentType: ContentType get() = ContentType.PreviewResolution
         override val serializerRegistrar get() = classSerializer(serializer())
+        override val internalOnly: Boolean = true
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
         override fun build(inputPort: InputPort): PreviewResolutionDataSource =

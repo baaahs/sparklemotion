@@ -88,6 +88,7 @@ data class MutableButtonGroupControl(
         buttons.add(toIndex, buttons.removeAt(fromIndex))
     }
 }
+
 class OpenButtonGroupControl(
     override val id: String,
     private val buttonGroupControl: ButtonGroupControl,
