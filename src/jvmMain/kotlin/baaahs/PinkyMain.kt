@@ -72,9 +72,12 @@ class PinkyMain(private val args: Args) {
             ktor.application.routing {
                 static {
                     resources("htdocs")
-                    route("mapper") { default("htdocs/mapper/index.html") }
-                    route("monitor") { default("htdocs/monitor/index.html") }
-                    route("ui") { default("htdocs/ui/index.html") }
+                    get("mapper") { call.respondRedirect("mapper/") }
+                    route("mapper/") { defaultResource("htdocs/mapper/index.html") }
+                    get("monitor") { call.respondRedirect("monitor/") }
+                    route("monitor/") { defaultResource("htdocs/monitor/index.html") }
+                    get("ui") { call.respondRedirect("ui/") }
+                    route("ui/") { defaultResource("htdocs/ui/index.html") }
                     defaultResource("htdocs/ui-index.html")
                 }
             }
