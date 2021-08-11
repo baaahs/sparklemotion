@@ -8,7 +8,8 @@
         "brightness-inst",
         "saturation-inst",
         "scale-inst",
-        "sharpyDefault-inst"
+        "sharpyDefault-inst",
+        "timeShift-inst"
       ],
       "surfaces": {
         "name": "All Surfaces"
@@ -24,7 +25,9 @@
       "brightnessSliderControl",
       "beatBrightnessSliderControl",
       "saturationSliderControl",
-      "sizeSliderControl"
+      "sizeSliderControl",
+      "timeShiftSliderControl",
+      "timeScaleSliderControl"
     ],
     "controls": [
       "Vacuity"
@@ -50,7 +53,6 @@
       "ripplesButton",
       "scannerButton2",
       "sparklezButton",
-      "timeWarpButton",
       "crawlButton"
     ],
     "overlays": [
@@ -113,7 +115,7 @@
               "overlays",
               "backdrops",
               "moreControls",
-              "transition",
+              "moreControls",
               "transition"
             ]
           }
@@ -145,6 +147,10 @@
     "sharpyDefault": {
       "title": "Sharpy Default",
       "src": "struct FixtureInfo {\n    vec3 origin;\n    vec3 heading;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\nuniform FixtureInfo fixtureInfo;\n\n// @return moving-head-params\nMovingHeadParams main() {\n    // float pan = sin(time/5.) / 2. + .5;\n    // float tilt = sin(time/5.) / 4. + .5;\n    float pan = 0.;\n    float tilt = .5;\n    // float pan = mod(time * 2., 1.);\n    // float tilt = mod(time * 2., 1.);\n    float colorWheel = mod(time/20., 1.);\n    return MovingHeadParams(pan, tilt, colorWheel, 1.);\n    // return vec4(fixtureInfo.origin.x, fixtureInfo.origin.z, 0., 0.);\n}"
+    },
+    "timeShift": {
+      "title": "Time Shift",
+      "src": "uniform float timeShift; // @@Slider default=1 min=0 max=5\nuniform float timeScale; // @@Slider default=1 min=1 max=5\nuniform float time; // @type time\n\n// @return time\nfloat main() {\n    return time * timeScale + timeShift;\n}"
     },
     "untitledFilterShader": {
       "title": "Untitled Filter Shader",
@@ -238,10 +244,6 @@
       "title": "Fire Ball",
       "src": "// Fire Ball\n// From http://glslsandbox.com/e#61108.0\n\n// Fire ball by David Robles\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n//#extension GL_OES_standard_derivatives : enable\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n\nconst float PI = 3.141592;\n\nuniform float conflagration; // @@Slider min=5 max=20 default=15.\nuniform float width; // @@Slider default=1 min=0 max=1\n\nvec2 hash( vec2 p ) // replace this by something better\n{\n    p = vec2( dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)) );\n    return -1.0 + 2.0*fract(sin(p)*43758.5453123);\n}\n\nfloat noise( in vec2 p )\n{\n    const float K1 = 0.366025404; // (sqrt(3)-1)/2;\n    const float K2 = 0.211324865; // (3-sqrt(3))/6;\n\n    vec2  i = floor( p + (p.x+p.y)*K1 );\n    vec2  a = p - i + (i.x+i.y)*K2;\n    float m = step(a.y,a.x);\n    vec2  o = vec2(m,1.0-m);\n    vec2  b = a - o + K2;\n    vec2  c = a - 1.0 + 2.0*K2;\n    vec3  h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );\n    vec3  n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));\n    return dot( n, vec3(70.0) );\n}\n\nfloat circleShape(vec2 coord, vec2 pos){\n    float dist = distance(coord, pos);\n    return clamp(   log(dist*(15.+conflagration+4.*noise(vec2(time*.8))))  ,0.,1.);\n}\n\nvec2 sineWave(vec2 p){\n    float Ax = .05;\n    float wx = 1.50 * PI;\n    float x = sin(wx * p.x) * Ax * sin(noise(vec2(time)));\n\n    float Ay = .05;\n    float wy = PI * 10.;\n    float y = sin(wy*p.y) * Ay * noise(vec2(time));\n\n    return vec2(p.x + x, p.y + y);\n}\n\nvoid main( void ) {\n\n    vec2 pos = gl_FragCoord.xy / resolution.xy;\n    vec2 uv = pos;\n\n    uv += vec2(-.5, -.5);\n    uv *= vec2(2.3, 1.3);\n    uv.x /= (width + 1.5);\n\n    float luz = clamp(1.05 - (pow(uv.x, 2.) + pow(uv.y * 1.6, 6.))*2., 0., 1.);\n    //vec3 color = vec3(0.3059, 0.1922, 0.0431);\n    vec3 color = vec3(0.7333, 0.2902, 0.0314);\n    //vec3 color = vec3(0.3882, 0.1686, 0.251);\n    float grad = circleShape(sineWave(pos), vec2(.5, .32));\n\n    float ruido = 0.;\n\n    pos *= 5.0;\n    float xoff = 1.05;\n    float yoff = 2.1;\n    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );\n    ruido = 0.7500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.2500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.5000*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.1250*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n\n\n    ruido = 0.5 + 0.5*ruido;\n    ruido = clamp(ruido, 0., 1.);\n\n    /////////////////////////////////////////////////////////////\n    pos = uv;\n    pos *= 3.0;\n    float ruido2 = 0.;\n    xoff = 1.5;\n    yoff = 1.5;\n    m = mat2( -2.1,  .5, -.5,  2.1 );\n    ruido2 = 0.2500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.5000*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.1250*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.0625*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n\n    ruido2 = 0.5 + 0.5*ruido2;\n    ruido2 = clamp(ruido2, 0., 1.);\n\n    float f = 0.;\n    f += 1.0 - ( (1.0-luz) / (ruido2 + 0.001) );\n    f /= grad;\n    f /= ruido;\n\n    gl_FragColor = vec4(f*color*luz*(.5-.5*noise(vec2(time*.8))), 1.);\n    //gl_FragColor = vec4(color/grad, 1.);\n}"
     },
-    "adjustTilt": {
-      "title": "Adjust tilt",
-      "src": "struct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\n\n// @param upstream moving-head-params\n// @param result moving-head-params\nvoid main(in MovingHeadParams upstream, out MovingHeadParams result) {\n    result = upstream;\n    result.tilt += sin(time) * .1;\n}"
-    },
     "gaiaSOrgasm": {
       "title": "Gaia's Orgasm",
       "src": "// Gaia's Orgasm\n// From http://glslsandbox.com/e#46597\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n//from https://www.shadertoy.com/view/4dl3zn\n\nvoid main( void ) {\n\n\tvec2 uv = -1.0 + 2.0*gl_FragCoord.xy / resolution.xy;\n\tuv.x *=  resolution.x / resolution.y;\n\n    // background\n\tvec3 color = vec3(0.8 + 0.2*uv.y);\n\n    // bubbles\n\tfor( int i=0; i<40; i++ )\n\t{\n        // bubble seeds\n\t\tfloat pha =      sin(float(i)*546.13+1.0)*0.5 + 0.5;\n\t\tfloat siz = pow( sin(float(i)*651.74+5.0)*0.5 + 0.5, 4.0 );\n\t\tfloat pox =      sin(float(i)*321.55+4.1) * resolution.x / resolution.y;\n\n        // buble size, position and color\n\t\tfloat rad = 0.1 + 0.5*siz;\n\t\tvec2  pos = vec2( pox, -1.0-rad + (2.0+2.0*rad)*mod(pha+0.1*time*(0.2+0.8*siz),1.0));\n\t\tfloat dis = length( uv - pos );\n\t\tvec3  col = mix( vec3(0.94,0.3,0.0), vec3(0.1,0.4,0.8), 0.5+0.5*sin(float(i)*1.2+1.9));\n\t\t//    col+= 8.0*smoothstep( rad*0.95, rad, dis );\n\n        // render\n\t\tfloat f = length(uv-pos)/rad;\n\t\tf = sqrt(clamp(1.0-f*f,0.0,1.0));\n\t\tcolor -= col.zyx *(1.0-smoothstep( rad*0.95, rad, dis )) * f;\n\t}\n\n    // vigneting\n\tcolor *= sqrt(1.5-0.5*length(uv));\n\n\tgl_FragColor = vec4(color,1.0);\n}\n"
@@ -306,13 +308,9 @@
       "title": "Sparklez™",
       "src": "//Based on https://www.youtube.com/watch?v=3CycKKJiwis\n\nfloat random(vec2 par){\n   return fract(sin(dot(par.xy,vec2(12.9898,78.233))) * 43758.5453);\n}\n\nvec2 random2(vec2 par){\n\tfloat rand = random(par);\n\treturn vec2(rand, random(par+rand));\n}\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    // Normalized pixel coordinates (from 0 to 1)\n    vec2 uv = fragCoord/iResolution.xy;\n\t\n    //The ratio of the width and height of the screen\n    float widthHeightRatio = iResolution.x/iResolution.y;\n    \n    float t = iTime * 0.01;\n    float dist = 0.0;\n    float layers = 16.0;\n    float scale = 32.0;\n    float depth;\n    float phase;\n    float rotationAngle = iTime * -0.01;\n    \n    vec2 offset;\n    vec2 local_uv;\n    vec2 index;\n    vec2 pos;\n    vec2 seed;\n    vec2 centre = vec2(0.5, 0.5);\n    \n    mat2 rotation = mat2(cos(rotationAngle), -sin(rotationAngle), \n                         sin(rotationAngle),  cos(rotationAngle));\n \t\n    for(float i = 0.0; i < layers; i++){\n        depth = fract(i/layers + t);\n        \n        //Move centre in a circle depending on the depth of the layer\n        centre.x = 0.5 + 0.1 * cos(t) * depth;\n        centre.y = 0.5 + 0.1 * sin(t) * depth;\n        \n        //Get uv from the fragment coordinates, rotation and depth\n    \tuv = centre-fragCoord/iResolution.xy;\n    \tuv.y /= widthHeightRatio;\n        uv *= rotation;\n    \tuv *= mix(scale, 0.0, depth);\n        \n        //The local cell\n        index = floor(uv);\n        \n        //Local cell seed;\n        seed = 20.0 * i + index;\n        \n        //The local cell coordinates\n        local_uv = fract(i + uv) - 0.5;\n        \n        //Get a random position for the local cell\n        pos = 1.8 * (random2(seed) - 0.5);\n        \n        //Get a random phase\n        phase = 128.0 * random(seed);\n        \n        //Get distance to the generated point, add fading to distant points\n        //Add the distance to the sum\n    \tdist += pow(abs(1.0-length(local_uv-pos)), 50.0 + 20.0 * sin(phase + 8.0 * iTime)) \n            * min(1.0, depth*2.0);\n        \n    }\n    fragColor = upstreamColor(fragCoord) + vec4(vec3(dist),1.0) * 10.;\n}"
     },
-    "timeWarp": {
-      "title": "Time Warp",
-      "src": "uniform float fakeybeat; // @@Slider default=1. min=0 max=5\nuniform float time; // @type time\n\n// @return time\nfloat main() {\n    return time + fakeybeat;\n}"
-    },
     "crawlverlay": {
       "title": "Crawlverlay",
-      "src": "#define PI 3.14159\n\nuniform float width = .25; // @@Slider min=.05 max=1 default=.1\nuniform float hardness = 2.; // @@Slider min=.5 max=10 default=1\n\nfloat curve(float dist) {\n    return sin((clamp(dist / width, -.25, .25) * 2. + .5) * PI) * hardness;\n}\n\n// @return color\nvec4 main(\n    vec4 inColor, // @type color\n    vec4 color, // @type color\n    int pixelIndex, // @type pixel-index\n    int pixelCount, // @type pixel-count\n    float time,\n    float beat // @type beat-link\n) {\n    float pos = float(pixelIndex) / float(pixelCount);\n    float target = mod(time, 1.);\n    float dist = target - pos;\n    float mixAmount = min(1., curve(dist) + curve(dist - 1.));\n    return mix(inColor, color, mixAmount);\n}\n"
+      "src": "#define PI 3.14159\n\nuniform float width = .25;\nuniform float hardness = 2.; // @@Slider min=.5 max=10 default=1\n\nfloat curve(float dist) {\n    return sin((clamp(dist / width, -.25, .25) * 2. + .5) * PI) * hardness;\n}\n\n// @return color\nvec4 main(\n    vec4 inColor, // @type color\n    vec4 color, // @type color\n    int pixelIndex, // @type pixel-index\n    int pixelCount, // @type pixel-count\n    float time,\n    float beat // @type beat-link\n) {\n    float pos = float(pixelIndex) / float(pixelCount);\n    float target = beat;\n    float dist = target - pos;\n    float mixAmount = min(1., curve(dist) + curve(dist - 1.));\n    return mix(inColor, color, mixAmount);\n}\n"
     },
     "crawl": {
       "title": "Crawl",
@@ -339,7 +337,8 @@
     },
     "darkness-inst": {
       "shaderId": "darkness",
-      "incomingLinks": {}
+      "incomingLinks": {
+      }
     },
     "brightness-inst": {
       "shaderId": "brightness",
@@ -403,6 +402,24 @@
           "dataSourceId": "fixtureInfo"
         }
       }
+    },
+    "timeShift-inst": {
+      "shaderId": "timeShift",
+      "incomingLinks": {
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "timeScale": {
+          "type": "datasource",
+          "dataSourceId": "timeScaleSlider"
+        },
+        "timeShift": {
+          "type": "datasource",
+          "dataSourceId": "timeShiftSlider"
+        }
+      },
+      "shaderChannel": "time"
     },
     "untitledFilterShader-inst": {
       "shaderId": "untitledFilterShader",
@@ -893,19 +910,6 @@
         }
       }
     },
-    "adjustTilt-inst": {
-      "shaderId": "adjustTilt",
-      "incomingLinks": {
-        "time": {
-          "type": "datasource",
-          "dataSourceId": "time"
-        },
-        "upstream": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        }
-      }
-    },
     "gaiaSOrgasm-inst": {
       "shaderId": "gaiaSOrgasm",
       "incomingLinks": {
@@ -1184,20 +1188,6 @@
         }
       }
     },
-    "timeWarp-inst": {
-      "shaderId": "timeWarp",
-      "incomingLinks": {
-        "time": {
-          "type": "datasource",
-          "dataSourceId": "time"
-        },
-        "fakeybeat": {
-          "type": "datasource",
-          "dataSourceId": "fakeybeatSlider"
-        }
-      },
-      "shaderChannel": "time"
-    },
     "crawlverlay-inst": {
       "shaderId": "crawlverlay",
       "incomingLinks": {
@@ -1388,6 +1378,19 @@
       "minValue": 0.75,
       "maxValue": 1.25,
       "controlledDataSourceId": "sizeSlider"
+    },
+    "timeShiftSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Time Shift",
+      "maxValue": 5,
+      "controlledDataSourceId": "timeShiftSlider"
+    },
+    "timeScaleSliderControl": {
+      "type": "baaahs.Core:Slider",
+      "title": "Time Scale",
+      "minValue": 1,
+      "maxValue": 5,
+      "controlledDataSourceId": "timeScaleSlider"
     },
     "Vacuity": {
       "type": "baaahs.Core:Vacuity",
@@ -1819,8 +1822,7 @@
       "patches": [
         {
           "shaderInstanceIds": [
-            "fireBall-inst",
-            "adjustTilt-inst"
+            "fireBall-inst"
           ],
           "surfaces": {
             "name": "All Surfaces"
@@ -2106,20 +2108,6 @@
         }
       ]
     },
-    "timeWarpButton": {
-      "type": "baaahs.Core:Button",
-      "title": "Time Warp",
-      "patches": [
-        {
-          "shaderInstanceIds": [
-            "timeWarp-inst"
-          ],
-          "surfaces": {
-            "name": "All Surfaces"
-          }
-        }
-      ]
-    },
     "crawlButton": {
       "type": "baaahs.Core:Button",
       "title": "Crawl",
@@ -2183,7 +2171,7 @@
     "beatBrightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Brightness",
-      "initialValue": 0,
+      "initialValue": 1,
       "minValue": 0,
       "maxValue": 1
     },
@@ -2206,6 +2194,20 @@
     },
     "fixtureInfo": {
       "type": "baaahs.Core:FixtureInfo"
+    },
+    "timeScaleSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Time Scale",
+      "initialValue": 1,
+      "minValue": 1,
+      "maxValue": 5
+    },
+    "timeShiftSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Time Shift",
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 5
     },
     "colorColorPicker": {
       "type": "baaahs.Core:ColorPicker",
@@ -2407,13 +2409,6 @@
       "initialValue": 1,
       "minValue": 0,
       "maxValue": 1
-    },
-    "fakeybeatSlider": {
-      "type": "baaahs.Core:Slider",
-      "title": "Fakeybeat",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 5
     },
     "widthSlider": {
       "type": "baaahs.Core:Slider",
