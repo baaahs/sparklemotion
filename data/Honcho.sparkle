@@ -33,14 +33,6 @@
       "control",
       "control2"
     ],
-    "transition": [
-      "transitionEffectButtonGroup",
-      "fadeSliderControl",
-      "newButtonGroupButtonGroup",
-      "control3",
-      "isfShaderButton",
-      "pulse2Button"
-    ],
     "backdrops": [
       "backdropsButtonGroup"
     ],
@@ -72,9 +64,6 @@
       },
       "moreControls": {
         "title": "More Controls"
-      },
-      "transition": {
-        "title": "Transition"
       },
       "filters": {
         "title": "Filters"
@@ -112,7 +101,7 @@
               "backdrops",
               "moreControls",
               "moreControls",
-              "transition"
+              "moreControls"
             ]
           }
         ]
