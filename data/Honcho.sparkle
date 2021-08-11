@@ -2452,5 +2452,6 @@
     "beatInfo": {
       "type": "baaahs.BeatLink:BeatInfo"
     }
-  }
+  },
+  "version": 5
 }
