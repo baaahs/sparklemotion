@@ -137,46 +137,6 @@
       "title": "Time Shift",
       "src": "uniform float timeShift; // @@Slider default=1 min=0 max=5\nuniform float timeScale; // @@Slider default=1 min=1 max=5\nuniform float time; // @type time\n\n// @return time\nfloat main() {\n    return time * timeScale + timeShift;\n}"
     },
-    "crossFade": {
-      "title": "Cross Fade",
-      "src": "varying vec4 inColor2; // @type color\nuniform float fade;\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    return mix(inColor, inColor2, fade);\n}"
-    },
-    "slideLeft": {
-      "title": "Slide Left",
-      "src": "// @param uv uv-coordinate\n// @return color\nvec4 channelA(vec2 uv);\n\n// @param uv uv-coordinate\n// @return color\nvec4 channelB(vec2 uv);\n\nuniform float fade; // @type float\n\n// @return color\nvec4 main() {\n    if (1. - gl_FragCoord.x > fade) {\n        return channelA(gl_FragCoord + vec2(fade, 0));\n    } else {\n        return channelB(gl_FragCoord + vec2(fade - 1., 0));\n    }\n}"
-    },
-    "smpteColorBars": {
-      "title": "SMPTE Color Bars",
-      "src": "\n// Robby Kraft\n// from https://www.shadertoy.com/view/XlGXRz\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    float br = 0.75; // a less popular SMPTE version uses 1.0\n\n\tvec2 st = fragCoord.xy/iResolution.xy;\n\n\tbool sev1 = bool( step(st.x, 1.0/7.0) );\n\tbool sev2 = bool( step(st.x, 2.0/7.0) );\n\tbool sev3 = bool( step(st.x, 3.0/7.0) );\n\tbool sev4 = bool( step(st.x, 4.0/7.0) );\n\tbool sev5 = bool( step(st.x, 5.0/7.0) );\n\tbool sev6 = bool( step(st.x, 6.0/7.0) );\n\n\tbool row1 = !bool( step(st.y, 0.3333) );\n\tbool row2 = !bool( step(st.y, 0.25) );\n\n\t/////////////////////////////////////////\n\t// R : 0.75  1.0            1.0  1.0      \n\t// G : 0.75  1.0  1.0  1.0                \n\t// B : 0.75       1.0       1.0       1.0\n\t/////////////////////////////////////////\n\tfloat top_red =   br * float((sev6 && !sev4) || sev2 );\n\tfloat top_green = br * float(sev4);\n\tfloat top_blue =  br * float(!sev6 || (sev5 && !sev4) || (sev3 && !sev2) || sev1 );\n\n\t/////////////////////////////////////////\n\t// R :           1.0                 0.75      \n\t// G :                     1.0       0.75                \n\t// B : 1.0       1.0       1.0       0.75\n\t/////////////////////////////////////////\n\tfloat mid_red =   0.075*float( (sev6 && !sev5)||(sev4 && !sev3)||(sev2 && !sev1) ) + br * float(!sev6 || (sev3 && !sev2) );\n\tfloat mid_green = 0.075*float( (sev6 && !sev5)||(sev4 && !sev3)||(sev2 && !sev1) ) + br * float(!sev6 || (sev5 && !sev4) );\n\tfloat mid_blue =  0.075*float( (sev6 && !sev5)||(sev4 && !sev3)||(sev2 && !sev1) ) + br * float(!sev6 || (sev5 && !sev4) || (sev3 && !sev2) || sev1);\n\n\t///////////////////////\n\t// R: 0.00  1.0  0.22\n\t// G: 0.24  1.0  0.00\n\t// B: 0.35  1.0  0.5\n\t/////////////////////// \n\tbool fourth1 = bool( step(st.x, 1.0*(5.0/7.0)/4.0 ));\n\tbool fourth2 = bool( step(st.x, 2.0*(5.0/7.0)/4.0 ));\n\tbool fourth3 = bool( step(st.x, 3.0*(5.0/7.0)/4.0 ));\n\tbool fourth4 = bool( step(st.x, (5.0/7.0) ));\n\n\tbool littleThird1 = bool( step(st.x, 5.0/7.0 + 1.0/7.0/3.0) );\n\tbool littleThird2 = bool( step(st.x, 5.0/7.0 + 1.0/7.0/3.0*2.0) );\n\tbool littleThird3 = bool( step(st.x, 5.0/7.0 + 1.0/7.0/3.0*3.0) );\n\n\tfloat bottom_red =                         float(fourth2 && !fourth1) + 0.22*float(fourth3 && !fourth2) + 0.075*float(fourth4 && !fourth3) + 0.075*float(littleThird2 && !littleThird1) + 0.15*float(littleThird3 && !littleThird2) + 0.075*float(!sev6);\n\tfloat bottom_green = 0.24*float(fourth1) + float(fourth2 && !fourth1)                                   + 0.075*float(fourth4 && !fourth3) + 0.075*float(littleThird2 && !littleThird1) + 0.15*float(littleThird3 && !littleThird2) + 0.075*float(!sev6);\n\tfloat bottom_blue =  0.35*float(fourth1) + float(fourth2 && !fourth1) + 0.5*float(fourth3 && !fourth2)  + 0.075*float(fourth4 && !fourth3) + 0.075*float(littleThird2 && !littleThird1) + 0.15*float(littleThird3 && !littleThird2) + 0.075*float(!sev6);\n\n\tfragColor = vec4(top_red*float(row1)   + mid_red*float(row2 && !row1) + bottom_red*float(!row2), \n\t                 top_green*float(row1) + mid_green*float(row2 && !row1) + bottom_green*float(!row2), \n\t                 top_blue*float(row1)  + mid_blue*float(row2 && !row1) + bottom_blue*float(!row2),1.);\n}\n"
-    },
-    "green": {
-      "title": "Green",
-      "src": "struct Thing {\n    float a;\n    float b;\n};\n\nvoid main(void) {\n    Thing t = Thing(0., 1.);\n    gl_FragColor = vec4(t.a, t.b, 0., 1.);\n}\n"
-    },
-    "blue": {
-      "title": "Blue",
-      "src": "uniform float time;\n\nvoid main(void) {\n    gl_FragColor = vec4(0., 0., mod(time, 1.), 1.);\n}"
-    },
-    "moarHippies": {
-      "title": "Moar Hippies",
-      "src": "mat2 rot(float a){return mat2(cos(a),-sin(a),sin(a),cos(a));}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n\n    vec3 col;\n    float t;\n    \n    for(int c=0;c<3;c++){\n\t    vec2 uv = (fragCoord*50.0-iResolution.xy)/iResolution.y;\n        t = iTime+float(c)/10.;\n        for(int i=0;i<20;i++)\n        {\n            uv=abs(uv.yx);\n            uv /= 1.1;\n        \tuv -= 1.0;\n        \tuv=uv*rot(t/float(i+2))+col.xy;\n        }\n     col[c] = fract((uv.x)/(uv.y));\n\t}\n    \n    fragColor = vec4(vec3(col),1.0);\n    \n}\n"
-    },
-    "plots": {
-      "title": "Plots",
-      "src": "vec3 f(float x) {\n\tconst float PI = radians(180.0);\n    vec3 t = vec3(-1.0, 0.0, 1.0)/12.0 + 2.0*cos(PI*x) + iTime;\n    return 0.5 + x*(1.0-x)*sin(2.0*PI*t);\n}\n\nvec3 sdf(vec2 xy) {\n    return f(xy.x) - xy.y;\n}\n\nvec3 de(vec2 xy, vec2 px) {\n    const vec2 e = vec2(1.0, 0.0);\n    vec3 x = sdf(xy + e.xy*px) - sdf(xy - e.xy*px);\n    vec3 y = sdf(xy + e.yx*px) - sdf(xy - e.yx*px);\n    return sdf(xy)/sqrt(x*x + y*y)*(2.0*e.x);\n}\n\nvec3 de(vec2 xy) {\n    vec3 d = sdf(xy);\n    vec3 x = dFdx(d);\n    vec3 y = dFdy(d);\n    return d/sqrt(x*x + y*y);\n}\n\nvoid mainImage(out vec4 fragColor, in vec2 fragCoord) {\n    vec2 px = 1.0/iResolution.xy;\n    vec2 uv = vec2(fragCoord.x+.25, fragCoord.y);\n    vec3 rgb = mix(de(uv, px), de(uv), step(0.5, uv.x));\n    rgb = smoothstep(2.5, 0.0, abs(rgb));\n    rgb = mix(rgb, vec3(1.0), smoothstep(2.5, 0.0, abs(uv.x - 0.5)/px.x));\n    fragColor = vec4(rgb, 1.0);\n}"
-    },
-    "isfShader": {
-      "title": "ISF Shader",
-      "src": "/*{\n\t\"DESCRIPTION\": \"ASCII Art\",\n\t\"CREDIT\": \"by VIDVOX (Ported from https://www.shadertoy.com/view/lssGDj)\",\n\t\"ISFVSN\": \"2\",\n\t\"CATEGORIES\": [\n\t\t\"Stylize\", \"Retro\"\n\t],\n\t\"INPUTS\": [\n\t\t{\n\t\t\t\"NAME\": \"inputImage\",\n\t\t\t\"TYPE\": \"image\"\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"size\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 1.0,\n\t\t\t\"DEFAULT\": 0.1\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"gamma\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"DEFAULT\": 1.0,\n\t\t\t\"MIN\": 0.5,\n\t\t\t\"MAX\": 2.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"tint\",\n\t\t\t\"TYPE\": \"float\",\n\t\t\t\"MIN\": 0.0,\n\t\t\t\"MAX\": 1.0,\n\t\t\t\"DEFAULT\": 1.0\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"tintColor\",\n\t\t\t\"TYPE\": \"color\",\n\t\t\t\"DEFAULT\": [\n\t\t\t\t0.0,\n\t\t\t\t1.0,\n\t\t\t\t0.0,\n\t\t\t\t1.0\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"NAME\": \"alphaMode\",\n\t\t\t\"TYPE\": \"bool\",\n\t\t\t\"DEFAULT\": 0.0\n\t\t}\n\t]\n\t\n}*/\n\n\n\nfloat character(float n, vec2 p) // some compilers have the word \"char\" reserved\n{\n\tp = floor(p*vec2(4.0, -4.0) + 2.5);\n\tif (clamp(p.x, 0.0, 4.0) == p.x && clamp(p.y, 0.0, 4.0) == p.y)\n\t{\n\t\tif (int(mod(n/exp2(p.x + 5.0*p.y), 2.0)) == 1) return 1.0;\n\t}\t\n\treturn 0.0;\n}\n\nvec4 IMG_NORM_PIXEL(vec4 image, vec2 uv) {\n    return vec4(gl_FragCoord.xy, 0., 1.);\n}\n\nvoid main()\t{\n\tfloat _size = size*36.0+8.0;\n\tvec2 uv = gl_FragCoord.xy;\n\tvec4 inputColor = IMG_NORM_PIXEL(inputImage, (floor(uv/_size)*_size/RENDERSIZE.xy));\n\tvec3 col = inputColor.rgb;\n\tfloat gray = (col.r + col.g + col.b)/3.0;\n\tgray = pow(gray, gamma);\n\tcol = mix(tintColor.rgb, col.rgb, 1.0-tint);\n\t\n\tfloat n =  65536.0;             // .\n\tif (gray > 0.2) n = 65600.0;    // :\n\tif (gray > 0.3) n = 332772.0;   // *\n\tif (gray > 0.4) n = 15255086.0; // o \n\tif (gray > 0.5) n = 23385164.0; // &\n\tif (gray > 0.6) n = 15252014.0; // 8\n\tif (gray > 0.7) n = 13199452.0; // @\n\tif (gray > 0.8) n = 11512810.0; // #\n\t\t\n\tvec2 p = mod(uv/(_size/2.0), 2.0) - vec2(1.0);\n\tcol = col*character(n, p);\n\tfloat alpha = mix(tintColor.a * inputColor.a, inputColor.a, 1.0-tint);\n\tif (alphaMode)\t{\n\t\talpha = (col.r + col.g + col.b)/3.0;\n\t\talpha = (alpha > 0.01) ? tintColor.a : alpha;\n\t}\n\talpha = 1.;\n\t\n\tgl_FragColor = vec4(col,alpha);\n\n}\n"
-    },
-    "pulse2": {
-      "title": "Pulse 2",
-      "src": "uniform float time;\nuniform float beat; // @type beat-link\nuniform vec2 center; // @type xy-coordinate\nuniform float scale; // @type float\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    float dist = mod(length(center - gl_FragCoord.xy), scale) / scale;\n    float val = mod(dist + mod(time, 1.0) / 1.0, 1.0);\n    return inColor + vec4(val, 0.0, 0.0, 1.0);\n}"
-    },
-    "untitledMoverShader": {
-      "title": "Untitled Mover Shader",
-      "src": "struct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\n\n// @param inParams moving-head-params\n// @param params moving-head-params\nvoid main(in MovingHeadParams inParams, out MovingHeadParams params) {\n    params = inParams;\n    params.tilt = inParams.tilt + sin(time) * .1;\n}"
-    },
     "acidAtTheDisco": {
       "title": "Acid at the Disco",
       "src": "// Acid at the Disco\n// From: https://www.shadertoy.com/view/4sfXRB\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord.xy / iResolution.xy;\n    float time = iTime;\n    float depth = sin(uv.y*2.0+sin(time)*1.5+1.0+sin(uv.x*3.0+time*1.2))*cos(uv.y*2.0+time)+sin((uv.x*3.0+time));\n    float texey = (uv.x-0.5);\n    float xband = sin(sqrt(uv.y/uv.y)*16.0/(depth)+time*3.0);\n    float final = (\n    sin(texey/abs(depth)*32.0+time*16.0+sin(uv.y*uv.x*32.0*sin(depth*3.0)))*(depth)*xband\n    );\n\n\n    fragColor = vec4(-final*abs(sin(time)),(-final*sin(time)*2.0),(final),1.0)*1.5;\n}"
@@ -269,6 +229,10 @@
       "title": "Solid Color",
       "src": "// @return color\n// @param uvIn uv-coordinate\n// @param color color\nvec4 main(vec2 uvIn, vec4 color) {\n    return vec4(color.rgb, 1.);\n}"
     },
+    "swirlies": {
+      "title": "Swirlies",
+      "src": "void mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord/iResolution.xy;\n    uv-=.5;\n    uv.x*= iResolution.x/iResolution.y;\n    \n    vec3 col = vec3(0.);\n    float d = length(uv)*20.;\n    float a = atan(uv.y, uv.x);\n    col.r = smoothstep(0.1, .2, abs(mod(d+iTime, 2.)-1.));\n\tcol.g = col.r*floor(mod(d*.5+.5+iTime*.5, 2.));\n    float f = smoothstep(-.1, .1,sin(a*3.+(sin(iTime*.5)*2.)*d-iTime));\n    col.rg = mix(col.rg, 1.-col.rg, f);\n\n    // Output to screen\n    fragColor = vec4(col,1.0);\n}"
+    },
     "beatWarp": {
       "title": "Beat Warp",
       "src": "uniform float beatWarpiness; // @@Slider default=1. min=0 max=2\n\n// @return time\n// @param inTime time\n// @param beat beat;\nfloat main(float inTime, float beat) {\n    return inTime + beat * beatWarpiness;\n}"
@@ -336,7 +300,7 @@
           "dataSourceId": "beatBrightnessSlider"
         }
       },
-      "priority": 10.0
+      "priority": 10
     },
     "saturation-inst": {
       "shaderId": "saturation",
@@ -350,7 +314,7 @@
           "dataSourceId": "saturationSlider"
         }
       },
-      "priority": 10.0
+      "priority": 10
     },
     "scale-inst": {
       "shaderId": "scale",
@@ -364,7 +328,7 @@
           "shaderChannel": "main"
         }
       },
-      "priority": 10.0
+      "priority": 10
     },
     "sharpyDefault-inst": {
       "shaderId": "sharpyDefault",
@@ -396,209 +360,6 @@
         }
       },
       "shaderChannel": "time"
-    },
-    "crossFade-inst": {
-      "shaderId": "crossFade",
-      "incomingLinks": {
-        "fade": {
-          "type": "datasource",
-          "dataSourceId": "fadeSlider"
-        },
-        "inColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "inColor2": {
-          "type": "shader-channel",
-          "shaderChannel": "other"
-        }
-      }
-    },
-    "slideLeft-inst": {
-      "shaderId": "slideLeft",
-      "incomingLinks": {
-        "fade": {
-          "type": "datasource",
-          "dataSourceId": "fadeSlider"
-        },
-        "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "channelA": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "channelB": {
-          "type": "shader-channel",
-          "shaderChannel": "other"
-        }
-      }
-    },
-    "smpteColorBars-inst": {
-      "shaderId": "smpteColorBars",
-      "incomingLinks": {
-        "sm_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "iResolution": {
-          "type": "datasource",
-          "dataSourceId": "resolution"
-        }
-      },
-      "shaderChannel": "other"
-    },
-    "green-inst": {
-      "shaderId": "green",
-      "incomingLinks": {
-        "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        }
-      },
-      "shaderChannel": "other"
-    },
-    "blue-inst": {
-      "shaderId": "blue",
-      "incomingLinks": {
-        "time": {
-          "type": "datasource",
-          "dataSourceId": "time"
-        }
-      },
-      "shaderChannel": "other"
-    },
-    "moarHippies-inst": {
-      "shaderId": "moarHippies",
-      "incomingLinks": {
-        "iTime": {
-          "type": "datasource",
-          "dataSourceId": "time"
-        },
-        "sm_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "iResolution": {
-          "type": "datasource",
-          "dataSourceId": "resolution"
-        }
-      },
-      "shaderChannel": "other"
-    },
-    "plots-inst": {
-      "shaderId": "plots",
-      "incomingLinks": {
-        "iTime": {
-          "type": "datasource",
-          "dataSourceId": "time"
-        },
-        "sm_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "iResolution": {
-          "type": "datasource",
-          "dataSourceId": "resolution"
-        }
-      },
-      "shaderChannel": "other"
-    },
-    "isfShader-inst": {
-      "shaderId": "isfShader",
-      "incomingLinks": {
-        "size": {
-          "type": "datasource",
-          "dataSourceId": "sizeSlider2"
-        },
-        "tint": {
-          "type": "datasource",
-          "dataSourceId": "tintSlider"
-        },
-        "gamma": {
-          "type": "datasource",
-          "dataSourceId": "gammaSlider"
-        },
-        "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "tintColor": {
-          "type": "datasource",
-          "dataSourceId": "tintColorColorPicker"
-        },
-        "inputImage": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "RENDERSIZE": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "alphaMode": {
-          "type": "datasource",
-          "dataSourceId": "alphaModeSwitch"
-        }
-      }
-    },
-    "pulse2-inst": {
-      "shaderId": "pulse2",
-      "incomingLinks": {
-        "beat": {
-          "type": "datasource",
-          "dataSourceId": "beatLink"
-        },
-        "time": {
-          "type": "datasource",
-          "dataSourceId": "time"
-        },
-        "scale": {
-          "type": "datasource",
-          "dataSourceId": "scaleSlider"
-        },
-        "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "inColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "center": {
-          "type": "datasource",
-          "dataSourceId": "centerXyPad"
-        }
-      }
-    },
-    "untitledMoverShader-inst": {
-      "shaderId": "untitledMoverShader",
-      "incomingLinks": {
-        "time": {
-          "type": "datasource",
-          "dataSourceId": "time"
-        },
-        "inParams": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        }
-      }
     },
     "acidAtTheDisco-inst": {
       "shaderId": "acidAtTheDisco",
@@ -935,8 +696,8 @@
           "dataSourceId": "time"
         },
         "mouse": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "datasource",
+          "dataSourceId": "mouseXyPad"
         },
         "gl_FragCoord": {
           "type": "shader-channel",
@@ -993,7 +754,7 @@
           "dataSourceId": "centerXyPad"
         }
       },
-      "priority": 1.0
+      "priority": 1
     },
     "quiver-inst": {
       "shaderId": "quiver",
@@ -1073,6 +834,23 @@
         "color": {
           "type": "datasource",
           "dataSourceId": "colorColorPicker"
+        }
+      }
+    },
+    "swirlies-inst": {
+      "shaderId": "swirlies",
+      "incomingLinks": {
+        "iTime": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "fragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "iResolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
         }
       }
     },
@@ -1199,10 +977,6 @@
     "crawl-inst": {
       "shaderId": "crawl",
       "incomingLinks": {
-        "beat": {
-          "type": "datasource",
-          "dataSourceId": "beatLink"
-        },
         "time": {
           "type": "datasource",
           "dataSourceId": "time"
@@ -1220,10 +994,6 @@
           "dataSourceId": "hardnessSlider2"
         },
         "beatInfo": {
-          "type": "datasource",
-          "dataSourceId": "beatInfo"
-        },
-        "beatinfo": {
           "type": "datasource",
           "dataSourceId": "beatInfo"
         },
@@ -1275,14 +1045,14 @@
     "timeShiftSliderControl": {
       "type": "baaahs.Core:Slider",
       "title": "Time Shift",
-      "maxValue": 5.0,
+      "maxValue": 5,
       "controlledDataSourceId": "timeShiftSlider"
     },
     "timeScaleSliderControl": {
       "type": "baaahs.Core:Slider",
       "title": "Time Scale",
-      "minValue": 1.0,
-      "maxValue": 5.0,
+      "minValue": 1,
+      "maxValue": 5,
       "controlledDataSourceId": "timeScaleSlider"
     },
     "Vacuity": {
@@ -1294,207 +1064,6 @@
     },
     "control2": {
       "type": "baaahs.BeatLink:BeatLink"
-    },
-    "noneButton": {
-      "type": "baaahs.Core:Button",
-      "title": "None",
-      "controlLayout": {
-        "backdrops": []
-      }
-    },
-    "dissolveButton": {
-      "type": "baaahs.Core:Button",
-      "title": "Dissolve",
-      "patches": [
-        {
-          "shaderInstanceIds": [
-            "crossFade-inst"
-          ],
-          "surfaces": {
-            "name": "All Surfaces"
-          }
-        }
-      ]
-    },
-    "slideLeftButton": {
-      "type": "baaahs.Core:Button",
-      "title": "Slide Left",
-      "patches": [
-        {
-          "shaderInstanceIds": [
-            "slideLeft-inst"
-          ],
-          "surfaces": {
-            "name": "All Surfaces"
-          }
-        }
-      ]
-    },
-    "transitionEffectButtonGroup": {
-      "type": "baaahs.Core:ButtonGroup",
-      "title": "Transition Effect",
-      "direction": "Vertical",
-      "buttonIds": [
-        "noneButton",
-        "dissolveButton",
-        "slideLeftButton"
-      ]
-    },
-    "fadeSliderControl": {
-      "type": "baaahs.Core:Slider",
-      "title": "Fade",
-      "controlledDataSourceId": "fadeSlider"
-    },
-    "smtpeButton": {
-      "type": "baaahs.Core:Button",
-      "title": "SMTPE",
-      "patches": [
-        {
-          "shaderInstanceIds": [
-            "smpteColorBars-inst"
-          ],
-          "surfaces": {
-            "name": "All Surfaces"
-          }
-        }
-      ]
-    },
-    "greenButton": {
-      "type": "baaahs.Core:Button",
-      "title": "Green",
-      "patches": [
-        {
-          "shaderInstanceIds": [
-            "green-inst"
-          ],
-          "surfaces": {
-            "name": "All Surfaces"
-          }
-        }
-      ]
-    },
-    "blueButton": {
-      "type": "baaahs.Core:Button",
-      "title": "Blue",
-      "patches": [
-        {
-          "shaderInstanceIds": [
-            "blue-inst"
-          ],
-          "surfaces": {
-            "name": "All Surfaces"
-          }
-        }
-      ]
-    },
-    "hippieTrap2HippieSRevengeButton": {
-      "type": "baaahs.Core:Button",
-      "title": "Hippie Trap 2: Hippie's Revenge",
-      "patches": [
-        {
-          "shaderInstanceIds": [
-            "moarHippies-inst"
-          ],
-          "surfaces": {
-            "name": "All Surfaces"
-          }
-        }
-      ]
-    },
-    "heartbeatButton": {
-      "type": "baaahs.Core:Button",
-      "title": "Heartbeat",
-      "patches": [
-        {
-          "shaderInstanceIds": [
-            "plots-inst"
-          ],
-          "surfaces": {
-            "name": "All Surfaces"
-          }
-        }
-      ]
-    },
-    "newButtonGroupButtonGroup": {
-      "type": "baaahs.Core:ButtonGroup",
-      "title": "New Button Group",
-      "direction": "Vertical",
-      "buttonIds": [
-        "smtpeButton",
-        "greenButton",
-        "blueButton",
-        "hippieTrap2HippieSRevengeButton",
-        "heartbeatButton"
-      ]
-    },
-    "control3": {
-      "type": "baaahs.Core:Transition"
-    },
-    "sizeSlider2Control": {
-      "type": "baaahs.Core:Slider",
-      "title": "Size",
-      "initialValue": 0.1,
-      "controlledDataSourceId": "sizeSlider2"
-    },
-    "gammaSliderControl": {
-      "type": "baaahs.Core:Slider",
-      "title": "Gamma",
-      "minValue": 0.5,
-      "maxValue": 2.0,
-      "controlledDataSourceId": "gammaSlider"
-    },
-    "tintSliderControl": {
-      "type": "baaahs.Core:Slider",
-      "title": "Tint",
-      "controlledDataSourceId": "tintSlider"
-    },
-    "tintColorColorPickerControl": {
-      "type": "baaahs.Core:ColorPicker",
-      "title": "Tint Color",
-      "controlledDataSourceId": "tintColorColorPicker"
-    },
-    "alphaModeButton": {
-      "type": "baaahs.Core:Button",
-      "title": "Alpha Mode",
-      "controlledDataSourceId": "alphaModeSwitch"
-    },
-    "isfShaderButton": {
-      "type": "baaahs.Core:Button",
-      "title": "ISF Shader",
-      "patches": [
-        {
-          "shaderInstanceIds": [
-            "isfShader-inst"
-          ],
-          "surfaces": {
-            "name": "All Surfaces"
-          }
-        }
-      ],
-      "controlLayout": {
-        "backdrops": [
-          "sizeSlider2Control",
-          "gammaSliderControl",
-          "tintSliderControl",
-          "tintColorColorPickerControl",
-          "alphaModeButton"
-        ]
-      }
-    },
-    "pulse2Button": {
-      "type": "baaahs.Core:Button",
-      "title": "Pulse 2",
-      "patches": [
-        {
-          "shaderInstanceIds": [
-            "pulse2-inst",
-            "untitledMoverShader-inst"
-          ],
-          "surfaces": {
-            "name": "All Surfaces"
-          }
-        }
-      ]
     },
     "acidAtTheDiscoButton": {
       "type": "baaahs.Core:Button",
@@ -1649,17 +1218,17 @@
     "conflagrationSliderControl": {
       "type": "baaahs.Core:Slider",
       "title": "Conflagration",
-      "initialValue": 15.0,
-      "minValue": 5.0,
-      "maxValue": 20.0,
+      "initialValue": 15,
+      "minValue": 5,
+      "maxValue": 20,
       "controlledDataSourceId": "conflagrationSlider"
     },
     "intensitySlider2Control": {
       "type": "baaahs.Core:Slider",
       "title": "Intensity",
-      "initialValue": 15.0,
-      "minValue": 5.0,
-      "maxValue": 20.0,
+      "initialValue": 15,
+      "minValue": 5,
+      "maxValue": 20,
       "controlledDataSourceId": "intensitySlider2"
     },
     "fireButton": {
@@ -1716,9 +1285,9 @@
     "zoomSliderControl": {
       "type": "baaahs.Core:Slider",
       "title": "Zoom",
-      "initialValue": 2.0,
-      "minValue": 1.0,
-      "maxValue": 10.0,
+      "initialValue": 2,
+      "minValue": 1,
+      "maxValue": 10,
       "controlledDataSourceId": "zoomSlider"
     },
     "hippieTrapButton": {
@@ -1883,6 +1452,20 @@
         }
       ]
     },
+    "swirliesButton": {
+      "type": "baaahs.Core:Button",
+      "title": "Swirlies",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "swirlies-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
     "backdropsButtonGroup": {
       "type": "baaahs.Core:ButtonGroup",
       "title": "Backdrops",
@@ -1910,7 +1493,8 @@
         "redYellowGreenBlueButton",
         "scannerButton",
         "yasQueenButton",
-        "solidColorButton"
+        "solidColorButton",
+        "swirliesButton"
       ]
     },
     "beatWarpButton": {
@@ -2025,28 +1609,28 @@
     "brightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Brightness",
-      "initialValue": 1.0,
-      "minValue": 0.0,
+      "initialValue": 1,
+      "minValue": 0,
       "maxValue": 1.25
     },
     "beatBrightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Brightness",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "saturationSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Saturation",
-      "initialValue": 1.0,
-      "minValue": 0.0,
+      "initialValue": 1,
+      "minValue": 0,
       "maxValue": 1.25
     },
     "sizeSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Size",
-      "initialValue": 1.0,
+      "initialValue": 1,
       "minValue": 0.75,
       "maxValue": 1.25
     },
@@ -2059,88 +1643,38 @@
     "timeScaleSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Time Scale",
-      "initialValue": 1.0,
-      "minValue": 1.0,
-      "maxValue": 5.0
+      "initialValue": 1,
+      "minValue": 1,
+      "maxValue": 5
     },
     "timeShiftSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Time Shift",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 5.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 5
     },
     "colorColorPicker": {
       "type": "baaahs.Core:ColorPicker",
       "title": "Color",
       "initialValue": -1
     },
-    "fadeSlider": {
-      "type": "baaahs.Core:Slider",
-      "title": "Fade",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
-    },
     "resolution": {
       "type": "baaahs.Core:Resolution"
-    },
-    "sizeSlider2": {
-      "type": "baaahs.Core:Slider",
-      "title": "Size",
-      "initialValue": 0.1,
-      "minValue": 0.0,
-      "maxValue": 1.0
-    },
-    "tintSlider": {
-      "type": "baaahs.Core:Slider",
-      "title": "Tint",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
-    },
-    "gammaSlider": {
-      "type": "baaahs.Core:Slider",
-      "title": "Gamma",
-      "initialValue": 1.0,
-      "minValue": 0.5,
-      "maxValue": 2.0
-    },
-    "tintColorColorPicker": {
-      "type": "baaahs.Core:ColorPicker",
-      "title": "Tint Color",
-      "initialValue": -1
-    },
-    "alphaModeSwitch": {
-      "type": "baaahs.Core:Switch",
-      "title": "Alpha Mode",
-      "initiallyEnabled": false
-    },
-    "scaleSlider": {
-      "type": "baaahs.Core:Slider",
-      "title": "Scale",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
-    },
-    "centerXyPad": {
-      "type": "baaahs.Core:XyPad",
-      "title": "Center",
-      "varPrefix": "centerVec2"
     },
     "checkerboardSizeSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Checkerboard Size",
       "initialValue": 0.1,
       "minValue": 0.001,
-      "maxValue": 1.0
+      "maxValue": 1
     },
     "whitenessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Whiteness",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "date": {
       "type": "baaahs.Core:Date"
@@ -2156,22 +1690,22 @@
       "type": "baaahs.Core:Slider",
       "title": "Rate1",
       "initialValue": 1.9,
-      "minValue": -3.0,
-      "maxValue": 3.0
+      "minValue": -3,
+      "maxValue": 3
     },
     "rate2Slider": {
       "type": "baaahs.Core:Slider",
       "title": "Rate2",
       "initialValue": 0.6,
-      "minValue": -3.0,
-      "maxValue": 3.0
+      "minValue": -3,
+      "maxValue": 3
     },
     "loopcycleSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Loopcycle",
-      "initialValue": 85.0,
-      "minValue": 20.0,
-      "maxValue": 100.0
+      "initialValue": 85,
+      "minValue": 20,
+      "maxValue": 100
     },
     "color1Slider": {
       "type": "baaahs.Core:Slider",
@@ -2183,7 +1717,7 @@
     "color2Slider": {
       "type": "baaahs.Core:Slider",
       "title": "Color2",
-      "initialValue": 1.0,
+      "initialValue": 1,
       "minValue": -1.25,
       "maxValue": 1.125
     },
@@ -2218,65 +1752,82 @@
     "conflagrationSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Conflagration",
-      "initialValue": 15.0,
-      "minValue": 5.0,
-      "maxValue": 20.0
+      "initialValue": 15,
+      "minValue": 5,
+      "maxValue": 20
     },
     "intensitySlider": {
       "type": "baaahs.Core:Slider",
       "title": "Intensity",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "intensitySlider2": {
       "type": "baaahs.Core:Slider",
       "title": "Intensity",
-      "initialValue": 15.0,
-      "minValue": 5.0,
-      "maxValue": 20.0
+      "initialValue": 15,
+      "minValue": 5,
+      "maxValue": 20
     },
     "zoomSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Zoom",
-      "initialValue": 2.0,
-      "minValue": 1.0,
-      "maxValue": 10.0
+      "initialValue": 2,
+      "minValue": 1,
+      "maxValue": 10
+    },
+    "mouseXyPad": {
+      "type": "baaahs.Core:XyPad",
+      "title": "Mouse",
+      "varPrefix": "mouseVec2"
     },
     "rednessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Redness",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
+    },
+    "scaleSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Scale",
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
+    },
+    "centerXyPad": {
+      "type": "baaahs.Core:XyPad",
+      "title": "Center",
+      "varPrefix": "centerVec2"
     },
     "beatWarpinessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Warpiness",
-      "initialValue": 1.0,
+      "initialValue": 1,
       "minValue": 0.5,
-      "maxValue": 3.0
+      "maxValue": 3
     },
     "rippleSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Ripple",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "widthSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Width",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "hardnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Hardness",
-      "initialValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
     },
     "pixelIndex": {
       "type": "baaahs.Core:PixelIndex"
@@ -2289,14 +1840,14 @@
       "title": "Width",
       "initialValue": 0.1,
       "minValue": 0.05,
-      "maxValue": 1.0
+      "maxValue": 1
     },
     "hardnessSlider2": {
       "type": "baaahs.Core:Slider",
       "title": "Hardness",
-      "initialValue": 1.0,
+      "initialValue": 1,
       "minValue": 0.5,
-      "maxValue": 10.0
+      "maxValue": 10
     },
     "beatInfo": {
       "type": "baaahs.BeatLink:BeatInfo"
