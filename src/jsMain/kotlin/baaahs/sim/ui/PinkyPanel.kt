@@ -17,9 +17,6 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
     override fun RBuilder.render() {
         val pinky = props.pinky
 
-        if (state.showGlsl) {
-        }
-
         val currentShowTitle = pinky.stageManager.currentShow?.title
         styledDiv {
             css { +SimulatorStyles.section }
@@ -117,7 +114,6 @@ external interface PinkyPanelProps : RProps {
 }
 
 external interface PinkyPanelState : RState {
-    var showGlsl: Boolean
 }
 
 fun RBuilder.pinkyPanel(handler: RHandler<PinkyPanelProps>): ReactElement =

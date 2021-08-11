@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.io.Fs
+import baaahs.sim.ui.generatedGlslPalette
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
 import baaahs.ui.withEvent
@@ -36,6 +37,11 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
     val handleDownloadShow by eventHandler { _: Event ->
         val show = appContext.webClient.show!!
         UiActions.downloadShow(show, appContext.plugins)
+    }
+
+    var showGlslInspector by state { false }
+    val handleToggleGlslInspector by eventHandler { _: Event ->
+        showGlslInspector = !showGlslInspector
     }
 
     drawer(
@@ -145,6 +151,23 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                         }
                     }
                     attrs.label { typographyH6 { +"Dark Mode" } }
+                }
+            }
+
+            if (showGlslInspector) {
+                generatedGlslPalette {
+                    attrs.onClose = handleToggleGlslInspector.asDynamic()
+                }
+            }
+            listItem {
+                formControlLabel {
+                    attrs.control {
+                        switch {
+                            attrs.checked = showGlslInspector
+                            attrs.onChangeFunction = handleToggleGlslInspector.withEvent()
+                        }
+                    }
+                    attrs.label { typographyH6 { +"GLSL Inspector" } }
                 }
             }
 

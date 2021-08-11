@@ -64,6 +64,7 @@ val GeneratedGlslPalette = xComponent<GeneratedGlslPaletteProps>("GeneratedGlslP
 
 external interface GeneratedGlslPaletteProps : RProps {
     var pinky: Pinky.Facade
+    var onClose: () -> Unit
 }
 
 fun RBuilder.generatedGlslPalette(handler: RHandler<GeneratedGlslPaletteProps>) =

@@ -58,7 +58,7 @@ class WebClient(
         facade.notifyChanged()
     }
 
-    private val stageManager = ClientStageManager(toolchain, pubSub, model)
+    private val stageManager = ClientStageManager(toolchain, pubSub, model, fixtu)
     private val showEditStateChannel =
         pubSub.subscribe(
             ShowEditorState.createTopic(toolchain.plugins, remoteFsSerializer)

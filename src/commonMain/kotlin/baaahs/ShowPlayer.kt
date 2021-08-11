@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.fixtures.RenderPlan
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.shader.OpenShader
@@ -10,6 +11,9 @@ import baaahs.show.Shader
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
 import baaahs.show.live.ShowOpener
+import baaahs.ui.IObservable
+import baaahs.ui.Observable
+import baaahs.ui.Observer
 
 interface ShowPlayer {
     val toolchain: Toolchain
@@ -28,6 +32,18 @@ interface ShowPlayer {
     fun openFeed(id: String, dataSource: DataSource): Feed
 
     fun releaseUnused()
+
+    abstract class Facade : baaahs.ui.Facade(), IObservable by Observable() {
+        abstract val currentRenderPlan: RenderPlan
+
+        override fun addObserver(observer: Observer): Observer {
+            return super.addObserver(observer)
+        }
+
+        override fun removeObserver(observer: Observer) {
+            super.removeObserver(observer)
+        }
+    }
 }
 
 abstract class BaseShowPlayer(

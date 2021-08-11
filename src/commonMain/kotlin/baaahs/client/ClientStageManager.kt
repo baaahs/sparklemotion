@@ -1,6 +1,8 @@
 package baaahs.client
 
 import baaahs.*
+import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.RenderPlan
 import baaahs.gl.Toolchain
 import baaahs.model.Model
 import baaahs.show.DataSource
@@ -12,7 +14,8 @@ import kotlinx.serialization.json.JsonElement
 class ClientStageManager(
     toolchain: Toolchain,
     private val pubSub: PubSub.Client,
-    model: Model
+    model: Model,
+    private val fixtureManager: FixtureManager
 ) : BaseShowPlayer(toolchain, model) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
     private val listeners = mutableListOf<Listener>()
@@ -82,5 +85,10 @@ class ClientStageManager(
 
     interface Listener {
         fun onPatchSetChanged()
+    }
+
+    class Facade : ShowPlayer.Facade() {
+        override val currentRenderPlan: RenderPlan
+            get() = TODO("not implemented")
     }
 }

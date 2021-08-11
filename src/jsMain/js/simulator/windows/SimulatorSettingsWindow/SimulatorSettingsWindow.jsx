@@ -39,7 +39,9 @@ const SimulatorSettingsWindow = (props) => {
       </div>
 
       {isConsoleOpen ? <Console simulator={simulator}/> : <div/>}
-      {isGlslPaletteOpen ? <GeneratedGlslPalette pinky={simulator.pinky}/> : <div/>}
+      {isGlslPaletteOpen
+          ? <GeneratedGlslPalette pinky={simulator.pinky} onClose={setIsGlslPaletteOpen(false)}/>
+          : <div/>}
     </div>
   );
 };
