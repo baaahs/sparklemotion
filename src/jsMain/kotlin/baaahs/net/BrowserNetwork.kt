@@ -20,11 +20,8 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
 
         override val myHostname: String get() = "Browser"
 
-        var udpProxy: BrowserUdpProxy? = null
-        init {
-            udpProxyAddress?.let {
-                udpProxy = BrowserUdpProxy(this, it, udpProxyPort)
-            }
+        private val udpProxy: BrowserUdpProxy? by lazy {
+            udpProxyAddress?.let { BrowserUdpProxy(this, it, udpProxyPort) }
         }
 
         override val udpMtu = 1500
