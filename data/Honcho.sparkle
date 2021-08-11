@@ -1616,7 +1616,7 @@
     "beatBrightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Brightness",
-      "initialValue": 1,
+      "initialValue": 0,
       "minValue": 0,
       "maxValue": 1
     },
