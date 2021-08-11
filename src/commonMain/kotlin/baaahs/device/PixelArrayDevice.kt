@@ -115,6 +115,13 @@ object PixelArrayDevice : DeviceType {
                 return Color.parseWithoutAlpha(reader)
             }
 
+            override fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit) {
+                val redF = reader.readByte().asUnsignedToInt() / 255f
+                val greenF = reader.readByte().asUnsignedToInt() / 255f
+                val blueF = reader.readByte().asUnsignedToInt() / 255f
+                setter(redF, greenF, blueF)
+            }
+
             override fun writeColor(color: Color, buf: ByteArray, i: Int) {
                 buf[i] = color.redB
                 buf[i + 1] = color.greenB
@@ -131,6 +138,13 @@ object PixelArrayDevice : DeviceType {
                 return Color(redB, greenB, blueB)
             }
 
+            override fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit) {
+                val greenF = reader.readByte().asUnsignedToInt() / 255f
+                val redF = reader.readByte().asUnsignedToInt() / 255f
+                val blueF = reader.readByte().asUnsignedToInt() / 255f
+                setter(redF, greenF, blueF)
+            }
+
             override fun writeColor(color: Color, buf: ByteArray, i: Int) {
                 buf[i] = color.greenB
                 buf[i + 1] = color.redB
@@ -140,6 +154,9 @@ object PixelArrayDevice : DeviceType {
 
         abstract val channelsPerPixel: Int
         abstract fun readColor(reader: ByteArrayReader): Color
+        abstract fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit)
         abstract fun writeColor(color: Color, buf: ByteArray, i: Int)
     }
 }
+
+private fun Byte.asUnsignedToInt(): Int = this.toInt().and(0xFF)
