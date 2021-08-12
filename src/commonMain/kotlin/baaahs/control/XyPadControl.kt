@@ -88,6 +88,9 @@ class OpenXyPadControl(
     override fun toNewMutable(mutableShow: MutableShow): MutableControl =
         MutableXyPadControl(xyPad.title, xyPad.initialValue, xyPad.minValue, xyPad.maxValue, controlledDataSource)
 
+    override fun controlledDataSources(): Set<DataSource> =
+        setOf(controlledDataSource)
+
     override fun getView(controlProps: ControlProps): View =
         controlViews.forXyPad(this, controlProps)
 
