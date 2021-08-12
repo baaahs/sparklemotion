@@ -4,6 +4,7 @@ import baaahs.PubSub
 import baaahs.Topics
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
+import baaahs.io.ByteArrayWriter
 import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.SacnTransportConfig
@@ -106,7 +107,7 @@ class SacnManager(
                                 id,
                                 wledAddress.asString(),
                                 FixtureMapping(null, pixelCount, null),
-                                pixelCount  * 3 / 512 + 1,
+                                pixelCount  * 3 / channelsPerUniverse + 1,
                                 onlineSince
                             )
                             controllerListener!!.onAdd(sacnController)
@@ -134,7 +135,7 @@ class SacnManager(
         val onlineSince: Time
     ) : Controller {
         override val controllerId: ControllerId = ControllerId(controllerTypeName, id)
-        private val channels = ByteArray(512 * universeCount)
+        private val channels = ByteArray(channelsPerUniverse * universeCount)
         private val node = sacnLink.deviceAt(link.createAddress(address))
         val stats get() = node.stats
         private var sequenceNumber = 0
@@ -151,8 +152,13 @@ class SacnManager(
 
         inner class SacnTransport(transportConfig: SacnTransportConfig?) : Transport {
             override val name: String get() = id
+
             private val startChannel = transportConfig?.startChannel ?: 0
             private val endChannel = transportConfig?.endChannel
+            private val componentsStartAtUniverseBoundaries =
+                transportConfig?.componentsStartAtUniverseBoundaries ?: true
+
+            private val writer = ByteArrayWriter(channels)
 
             fun validate() {
                 if (startChannel >= channels.size)
@@ -165,13 +171,38 @@ class SacnManager(
                 val channelCount = min(byteArray.size, endChannel ?: Int.MAX_VALUE)
                 byteArray.copyInto(channels, startChannel, 0, channelCount)
             }
+
+            override fun deliverComponents(
+                componentCount: Int,
+                bytesPerComponent: Int,
+                fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
+            ) {
+                if (componentsStartAtUniverseBoundaries) {
+                    val componentsPerUniverse = channelsPerUniverse / bytesPerComponent
+                    val effectiveChannelsPerUniverse = componentsPerUniverse * bytesPerComponent
+                    for (componentIndex in 0 until componentCount) {
+                        val i = startChannel + componentIndex * bytesPerComponent
+                        val universeIndex = i / effectiveChannelsPerUniverse
+                        val channelIndex = i % effectiveChannelsPerUniverse
+                        writer.offset = universeIndex * channelsPerUniverse + channelIndex
+                        fn(componentIndex, writer)
+                    }
+                } else {
+                    for (componentIndex in 0 until componentCount) {
+                        writer.offset = startChannel + componentIndex * bytesPerComponent
+                        fn(componentIndex, writer)
+                    }
+                }
+            }
         }
 
         override fun afterFrame() {
             sequenceNumber++
             for (universeIndex in 0 until universeCount) {
                 node.sendDataPacket(
-                    channels, universeIndex + 1, universeIndex * 512, 512, sequenceNumber
+                    channels, universeIndex + 1,
+                    universeIndex * channelsPerUniverse, channelsPerUniverse,
+                    sequenceNumber
                 )
             }
         }
@@ -179,6 +210,9 @@ class SacnManager(
 
     companion object {
         val controllerTypeName = "SACN"
+
+        val channelsPerUniverse = 512
+
         private val logger = Logger<SacnManager>()
         private val json = Json {
             ignoreUnknownKeys = true

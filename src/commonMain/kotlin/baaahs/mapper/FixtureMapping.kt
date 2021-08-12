@@ -21,5 +21,6 @@ interface TransportConfig
 
 data class SacnTransportConfig(
     val startChannel: Int,
-    val endChannel: Int
+    val endChannel: Int,
+    val componentsStartAtUniverseBoundaries: Boolean = true
 ) : TransportConfig
