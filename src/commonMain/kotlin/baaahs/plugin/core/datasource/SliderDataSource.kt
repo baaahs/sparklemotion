@@ -48,9 +48,8 @@ data class SliderDataSource(
     fun createGadget(): Slider =
         Slider(sliderTitle, initialValue, minValue, maxValue, stepValue)
 
-    override fun buildControl(): MutableControl {
-        return MutableSliderControl(sliderTitle, initialValue, minValue, maxValue, stepValue, this)
-    }
+    override fun buildControl(): MutableControl =
+        MutableSliderControl(sliderTitle, initialValue, minValue, maxValue, stepValue, this)
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
 //        val channel = showPlayer.useChannel<Float>(id)
@@ -64,7 +63,6 @@ data class SliderDataSource(
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
                     return SingleUniformFeed(glslProgram, this@SliderDataSource, id) { uniform ->
-//                        uniform.set(channel.value)
                         uniform.set(slider.position)
                     }
                 }

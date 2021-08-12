@@ -37,6 +37,7 @@ interface ControlViews {
     fun forTransition(openTransitionControl: OpenTransitionControl, controlProps: ControlProps): View
     fun forVacuity(openVacuityControl: OpenVacuityControl, controlProps: ControlProps): View
     fun forVisualizer(openVisualizerControl: OpenVisualizerControl, controlProps: ControlProps): View
+    fun forXyPad(openXyPadControl: OpenXyPadControl, controlProps: ControlProps): View
 }
 
 data class ControlProps(

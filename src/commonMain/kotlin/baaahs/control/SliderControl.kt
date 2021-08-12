@@ -77,13 +77,12 @@ data class MutableSliderControl(
 ) : MutableControl {
     override var asBuiltId: String? = null
 
-    override fun getEditorPanels(editableManager: EditableManager): List<EditorPanel> {
-        return emptyList()
-    }
+    override fun getEditorPanels(editableManager: EditableManager): List<EditorPanel> = emptyList()
 
     override fun build(showBuilder: ShowBuilder): SliderControl {
         return SliderControl(
-            title, initialValue, minValue, maxValue, stepValue, showBuilder.idFor(controlledDataSource)
+            title, initialValue, minValue, maxValue, stepValue,
+            showBuilder.idFor(controlledDataSource)
         )
     }
 

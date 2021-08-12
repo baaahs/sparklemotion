@@ -150,6 +150,8 @@ class ThemedStyles(val theme: MuiTheme) : StyleSheet("app-ui-gadgets-Slider", is
         fontSize = 10.px
         color = Color("#aeaeae")
         transform.translateY(50.pct)
+        pointerEvents = PointerEvents.none
+        userSelect = UserSelect.none
     }
 
     val track by css {

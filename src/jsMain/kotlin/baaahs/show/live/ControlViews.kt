@@ -55,4 +55,11 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
             attrs.visualizerControl = openVisualizerControl
         }
     }
+
+    override fun forXyPad(openXyPadControl: OpenXyPadControl, controlProps: ControlProps)  = renderWrapper {
+        xyPad {
+            attrs.controlProps = controlProps
+            attrs.xyPadControl = openXyPadControl
+        }
+    }
 }
