@@ -68,6 +68,12 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         }
     }
 
+    fun writeBytes(vararg bytes: Byte) {
+        for (byte in bytes) {
+            writeByte(byte)
+        }
+    }
+
     fun writeBytes(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
         val size = endIndex - startIndex
 
@@ -88,8 +94,14 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
     }
 
     fun toBytes(): ByteArray {
-        return bytes.copyOf(offset)
+        return if (bytes.size == offset)
+            bytes
+        else
+            bytes.copyOf(offset)
     }
+
+    fun copyBytes(): ByteArray =
+        bytes.copyOf(offset)
 
     fun at(offset: Int): ByteArrayWriter = ByteArrayWriter(bytes, offset)
 

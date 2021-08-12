@@ -63,7 +63,7 @@ class RemoteVisualizerServer(
             outBuf.writeByte(opcode.byteValue)
             outBuf.writeString(entity.name)
             block(outBuf)
-            tcpConnection.send(outBuf.toBytes())
+            tcpConnection.send(outBuf.copyBytes())
         }
     }
 

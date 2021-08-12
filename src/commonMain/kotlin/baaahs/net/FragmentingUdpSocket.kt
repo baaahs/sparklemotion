@@ -80,7 +80,7 @@ class FragmentingUdpSocket(
             writer.writeInt(bytes.size)
             writer.writeInt(offset)
             writer.writeBytes(bytes, offset, offset + thisFrameSize)
-            fn(writer.toBytes())
+            fn(writer.copyBytes())
 
 //                println("Sending UDP: messageId=$messageId thisFrameSize=${thisFrameSize.toShort()} totalSize=${bytes.size} offset=${offset}")
 
