@@ -17,7 +17,6 @@ import react.*
 import react.dom.div
 import styled.StyleSheet
 import styled.inlineStyles
-import kotlin.Float
 
 
 val XyPad = xComponent<XyPadProps>("XyPad") { props ->
@@ -55,25 +54,29 @@ val XyPad = xComponent<XyPadProps>("XyPad") { props ->
     val handleMouseEvent by eventHandler(xyPad, helper) { e: Event ->
         val bounds = backgroundRef.current!!.getBoundingClientRect()
         val clickPosPx = Vector2F(
-            (e.asDynamic().clientX - bounds.left) as Float,
-            (e.asDynamic().clientY - bounds.top) as Float
+            (e.clientX - bounds.left).toFloat(),
+            (e.clientY - bounds.top).toFloat()
         )
 
         xyPad.position = helper.positionFromPx(clickPosPx)
     }
 
     val handleMouseDownEvent by eventHandler(handleMouseEvent) { e: Event ->
-        mouseDraggingState.current = true
+        if (e.buttons == primaryButton) mouseDraggingState.current = true
         handleMouseEvent(e)
+        e.preventDefault()
     }
 
     val handleMouseUpEvent by eventHandler(handleMouseEvent) { e: Event ->
         handleMouseEvent(e)
         mouseDraggingState.current = false
+        e.preventDefault()
     }
 
     val handleMouseMoveEvent by eventHandler(handleMouseEvent) { e: Event ->
-        if (mouseDraggingState.current == true) handleMouseEvent(e)
+        if (mouseDraggingState.current == true && e.buttons == primaryButton)
+            handleMouseEvent(e)
+        e.preventDefault()
     }
 
     val knobPositionPx = helper.knobPositionPx
@@ -139,6 +142,11 @@ val XyPad = xComponent<XyPadProps>("XyPad") { props ->
         div(+Styles.dataSourceTitle) { +xyPad.title }
     }
 }
+
+private val primaryButton = 1
+private val Event.buttons: Int get() = asDynamic().buttons as Int
+private val Event.clientX: Int get() = asDynamic().clientX as Int
+private val Event.clientY: Int get() = asDynamic().clientY as Int
 
 external interface XyPadProps : RProps {
     var controlProps: ControlProps
