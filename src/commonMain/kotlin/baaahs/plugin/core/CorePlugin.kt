@@ -1,12 +1,10 @@
 package baaahs.plugin.core
 
-import baaahs.Gadget
 import baaahs.app.ui.CommonIcons
 import baaahs.control.*
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.MovingHeadDevice
-import baaahs.gl.data.Feed
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.GenericShaderDialect
 import baaahs.gl.shader.dialect.IsfShaderDialect
@@ -92,29 +90,24 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             MoverShader
         )
 
-    interface GadgetFeed : Feed {
-        val id: String
-        val gadget: Gadget
-    }
-
     companion object : PluginBuilder {
         override val id = "baaahs.Core"
 
         override fun build(pluginContext: PluginContext) = CorePlugin(pluginContext)
 
         private val dataSourceBuilders = listOf(
-            PixelCoordsTextureDataSource,
-            ModelInfoDataSource,
-            XyPadDataSource,
             ColorPickerDataSource,
             DateDataSource,
-            TimeDataSource,
-            ResolutionDataSource,
-            PreviewResolutionDataSource,
-            SwitchDataSource,
-            SliderDataSource,
             FixtureInfoDataSource,
-            RasterCoordinateDataSource
+            ModelInfoDataSource,
+            PixelCoordsTextureDataSource,
+            PreviewResolutionDataSource,
+            RasterCoordinateDataSource,
+            ResolutionDataSource,
+            SliderDataSource,
+            SwitchDataSource,
+            TimeDataSource,
+            XyPadDataSource
         )
 
         private val logger = Logger("CorePlugin")
