@@ -82,7 +82,7 @@ val XyPad = xComponent<XyPadProps>("XyPad") { props ->
     val knobPositionPx = helper.knobPositionPx
     val crosshairPositionPx = helper.crosshairPositionPx
     div {
-        div(+XyPadStyles.container) {
+        div(+XyPadStyles.container + props.xyPadControl.inUseStyle) {
             div(+XyPadStyles.background) {
                 ref = backgroundRef
                 inlineStyles {

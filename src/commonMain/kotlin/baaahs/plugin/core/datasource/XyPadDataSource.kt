@@ -16,6 +16,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.plugin.PluginRef
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.DataSource
@@ -24,6 +25,10 @@ import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.float
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
 @SerialName("baaahs.Core:XyPad")
@@ -38,19 +43,17 @@ data class XyPadDataSource(
     override fun getType(): GlslType = GlslType.Vec2
     override val contentType: ContentType
         get() = ContentType.XyCoordinate
+
     override fun suggestId(): String = "$title XY Pad".camelize()
 
-    fun createGadget(): XyPad =
-        XyPad(title, initialValue, minValue, maxValue)
-
-    override fun buildControl(): MutableControl? =
+    override fun buildControl(): MutableControl =
         MutableXyPadControl(title, initialValue, minValue, maxValue, this)
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
         val xyPad = showPlayer.useGadget(this)
             ?: run {
                 logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
-                createGadget()
+                XyPad(title, initialValue, minValue, maxValue)
             }
 
         return object : Feed, RefCounted by RefCounter() {
@@ -72,9 +75,30 @@ data class XyPadDataSource(
         override val resourceName: String get() = "XyPad"
         override val contentType: ContentType get() = ContentType.XyCoordinate
         override val serializerRegistrar get() = classSerializer(serializer())
+        val pluginRef = PluginRef(CorePlugin.id, resourceName)
 
-        override fun build(inputPort: InputPort): XyPadDataSource =
-            XyPadDataSource(inputPort.title)
+        override fun build(inputPort: InputPort): XyPadDataSource {
+            val config = inputPort.pluginConfig
+            return XyPadDataSource(
+                inputPort.title,
+                initialValue = config.getVector2F("default") ?: Vector2F.origin,
+                minValue = config.getVector2F("min") ?: Vector2F.origin,
+                maxValue = config.getVector2F("max") ?: Vector2F.unit2d
+            )
+        }
+
+        private fun JsonObject?.getVector2F(key: String): Vector2F? {
+            return try {
+                this?.get(key)?.jsonArray?.let {
+                    Vector2F(it[0].jsonPrimitive.float, it[1].jsonPrimitive.float)
+                }
+            } catch (e: NumberFormatException) {
+                logger.debug(e) {
+                    "Invalid value for key \"$key\": ${this?.get(key)}"
+                }
+                null
+            }
+        }
 
         private val logger = Logger<XyPadDataSource>()
     }

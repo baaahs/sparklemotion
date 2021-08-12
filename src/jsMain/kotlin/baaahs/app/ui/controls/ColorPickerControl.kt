@@ -2,7 +2,6 @@ package baaahs.app.ui.controls
 
 import baaahs.control.OpenColorPickerControl
 import baaahs.jsx.ColorPicker
-import baaahs.jsx.ColorPickerProps
 import baaahs.show.live.ControlProps
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -16,11 +15,13 @@ import react.dom.div
 val ColorPickerControl = xComponent<ColorPickerControlProps>("ColorPickerControl") { props ->
     val colorPickerControl = props.colorPickerControl
 
-    child(ColorPicker, jsObject<ColorPickerProps> {
-        gadget = colorPickerControl.colorPicker
-    }) {}
+    div(+props.colorPickerControl.inUseStyle) {
+        child(ColorPicker, jsObject {
+            gadget = colorPickerControl.colorPicker
+        }) {}
 
-    div(+Styles.dataSourceTitle) { +colorPickerControl.colorPicker.title }
+        div(+Styles.dataSourceTitle) { +colorPickerControl.colorPicker.title }
+    }
 }
 
 external interface ColorPickerControlProps : RProps {
