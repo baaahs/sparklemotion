@@ -25,6 +25,14 @@ interface OpenControl {
     fun getEditIntent(): EditIntent? = ControlEditIntent(id)
 }
 
+abstract class DataSourceOpenControl : OpenControl {
+    abstract val controlledDataSource: DataSource
+
+    var inUse: Boolean = false
+
+    override fun controlledDataSources(): Set<DataSource> = setOf(controlledDataSource)
+}
+
 interface ControlContainer {
     fun containedControls() : List<OpenControl>
 }

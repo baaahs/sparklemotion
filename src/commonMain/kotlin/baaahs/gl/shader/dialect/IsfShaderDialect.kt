@@ -10,10 +10,12 @@ import baaahs.gl.shader.OutputPort
 import baaahs.listOf
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
+import baaahs.plugin.core.datasource.XyPadDataSource
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
@@ -65,7 +67,7 @@ object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
                 is IsfBoolInput -> createSwitch(input)
                 is IsfLongInput -> null
                 is IsfFloatInput -> createSlider(input)
-                is IsfPoint2DInput -> null
+                is IsfPoint2DInput -> createXyPad(input)
                 is IsfColorInput -> createColor(input)
                 is IsfImageInput -> createImage(input)
                 is IsfAudioInput -> null
@@ -80,7 +82,7 @@ object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
             input.NAME, ContentType.Boolean, title = input.LABEL ?: input.NAME.englishize(),
             pluginRef = PluginRef("baaahs.Core", "Switch"),
             pluginConfig = buildJsonObject {
-                input.DEFAULT?.let<String, Unit> { put("default", JsonPrimitive(it.toFloat() != 0f)) }
+                input.DEFAULT?.let { put("default", JsonPrimitive(it.toFloat() != 0f)) }
             }
         )
     }
@@ -92,7 +94,19 @@ object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
             pluginConfig = buildJsonObject {
                 input.MIN?.let { put("min", JsonPrimitive(it.toFloat())) }
                 input.MAX?.let { put("max", JsonPrimitive(it.toFloat())) }
-                input.DEFAULT?.let<String, Unit> { put("default", JsonPrimitive(it.toFloat())) }
+                input.DEFAULT?.let { put("default", JsonPrimitive(it.toFloat())) }
+            }
+        )
+    }
+
+    private fun createXyPad(input: IsfPoint2DInput): InputPort {
+        return InputPort(
+            input.NAME, ContentType.XyCoordinate, title = input.LABEL ?: input.NAME.englishize(),
+            pluginRef = XyPadDataSource.pluginRef,
+            pluginConfig = buildJsonObject {
+                input.MIN?.let { put("min", JsonArray(it.map { n -> JsonPrimitive(n) })) }
+                input.MAX?.let { put("max", JsonArray(it.map { n -> JsonPrimitive(n) })) }
+                input.DEFAULT?.let { put("default", JsonArray(it.map { n -> JsonPrimitive(n) })) }
             }
         )
     }
@@ -225,6 +239,9 @@ private class IsfPoint2DInput(
     override val NAME: String,
     override val TYPE: String,
     override val LABEL: String? = null,
+    val DEFAULT: Array<Float>? = null,
+    val MIN: Array<Float>? = null,
+    val MAX: Array<Float>? = null
 ) : IsfInput()
 
 @Serializable

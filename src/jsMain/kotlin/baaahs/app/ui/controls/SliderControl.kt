@@ -35,23 +35,26 @@ private val SliderControl = xComponent<SliderControlProps>("SliderControl") { pr
         slider.position = newPosition
     }
 
-    slider {
-        attrs.title = slider.title
+    div(+sliderControl.inUseStyle) {
+        slider {
+            attrs.title = slider.title
 //        attrs.position = channel.value
-        attrs.position = position
-        attrs.contextPosition = null
-        attrs.minValue = slider.minValue
-        attrs.maxValue = slider.maxValue
-        attrs.stepValue = slider.stepValue
-        attrs.reversed = true
-        attrs.showTicks = true
-        if (slider.maxValue  <= 2) {
-            attrs.ticksScale = 100f
+            attrs.position = position
+            attrs.contextPosition = null
+            attrs.minValue = slider.minValue
+            attrs.maxValue = slider.maxValue
+            attrs.stepValue = slider.stepValue
+            attrs.reversed = true
+            attrs.showTicks = true
+            if (slider.maxValue  <= 2) {
+                attrs.ticksScale = 100f
+            }
+
+            attrs.onChange = handlePositionChange
         }
 
-        attrs.onChange = handlePositionChange
+        div(+Styles.dataSourceTitle) { +title }
     }
-    div(+Styles.dataSourceTitle) { +title }
 }
 
 external interface SliderControlProps : RProps {

@@ -8,10 +8,7 @@ import baaahs.gadgets.Slider
 import baaahs.randomId
 import baaahs.show.Control
 import baaahs.show.DataSource
-import baaahs.show.live.ControlProps
-import baaahs.show.live.OpenContext
-import baaahs.show.live.OpenControl
-import baaahs.show.live.controlViews
+import baaahs.show.live.*
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
@@ -95,8 +92,8 @@ data class MutableSliderControl(
 class OpenSliderControl(
     override val id: String,
     val slider: Slider,
-    val controlledDataSource: DataSource
-) : OpenControl {
+    override val controlledDataSource: DataSource
+) : DataSourceOpenControl() {
     override fun getState(): Map<String, JsonElement> = slider.state
 
     override fun applyState(state: Map<String, JsonElement>) = slider.applyState(state)
