@@ -412,7 +412,9 @@ class GlslParser {
                 override fun visitText(value: String): ParseState {
                     val trimmed = value.trim()
                     if (trimmed.isNotEmpty()) {
-                        if (qualifier == null && (trimmed == "in" || trimmed == "out" || trimmed == "inout")) {
+                        if (trimmed == "const") {
+                            // Ignore.
+                        } else if (qualifier == null && (trimmed == "in" || trimmed == "out" || trimmed == "inout")) {
                             qualifier = trimmed
                         } else if (type == null) {
                             type = GlslType.from(trimmed)

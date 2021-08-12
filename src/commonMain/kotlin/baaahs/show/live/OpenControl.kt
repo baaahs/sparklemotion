@@ -25,6 +25,14 @@ interface OpenControl {
     fun getEditIntent(): EditIntent? = ControlEditIntent(id)
 }
 
+abstract class DataSourceOpenControl : OpenControl {
+    abstract val controlledDataSource: DataSource
+
+    var inUse: Boolean = false
+
+    override fun controlledDataSources(): Set<DataSource> = setOf(controlledDataSource)
+}
+
 interface ControlContainer {
     fun containedControls() : List<OpenControl>
 }
@@ -37,6 +45,7 @@ interface ControlViews {
     fun forTransition(openTransitionControl: OpenTransitionControl, controlProps: ControlProps): View
     fun forVacuity(openVacuityControl: OpenVacuityControl, controlProps: ControlProps): View
     fun forVisualizer(openVisualizerControl: OpenVisualizerControl, controlProps: ControlProps): View
+    fun forXyPad(openXyPadControl: OpenXyPadControl, controlProps: ControlProps): View
 }
 
 data class ControlProps(

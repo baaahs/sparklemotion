@@ -3,6 +3,7 @@ package baaahs.app.ui
 import baaahs.document
 import baaahs.plugin.Plugins
 import baaahs.show.Show
+import baaahs.show.ShowMigrator
 import baaahs.window
 import encodeURIComponent
 import kotlinext.js.jsObject
@@ -16,7 +17,7 @@ object UiActions {
         val contentType = "application/json;charset=utf-8;"
         val showJson = Json(plugins.json) {
             prettyPrint = true
-        }.encodeToString(Show.serializer(), show)
+        }.encodeToString(ShowMigrator, show)
         val navigator = window.navigator
         if (navigator.asDynamic()?.msSaveOrOpenBlob != null) {
             val blob = Blob(arrayOf(showJson), jsObject { type = contentType })

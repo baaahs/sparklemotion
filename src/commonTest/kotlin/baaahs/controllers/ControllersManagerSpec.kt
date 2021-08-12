@@ -14,6 +14,7 @@ import baaahs.fixtures.FixtureListener
 import baaahs.fixtures.Transport
 import baaahs.geom.Vector3F
 import baaahs.glsl.LinearSurfacePixelStrategy
+import baaahs.io.ByteArrayWriter
 import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.TransportConfig
@@ -252,6 +253,11 @@ class FakeController(
     inner class FakeTransport : Transport {
         override val name: String get() = this@FakeController.name
         override fun deliverBytes(byteArray: ByteArray) {}
+        override fun deliverComponents(
+            componentCount: Int,
+            bytesPerComponent: Int,
+            fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
+        ) {}
     }
 }
 

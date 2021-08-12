@@ -462,6 +462,7 @@ class FakeUniform : Uniform {
     override fun set(x: Float, y: Float, z: Float) { value = Vector3F(x, y, z) }
     override fun set(x: Float, y: Float, z: Float, w: Float) { value = Vector4F(x, y, z, w) }
     override fun set(matrix: Matrix4) { value = matrix }
+    override fun set(vector2F: Vector2F) { value = vector2F }
     override fun set(vector3F: Vector3F) { value = vector3F }
     override fun set(vector4F: Vector4F) { value = vector4F }
     override fun set(textureUnit: GlContext.TextureUnit) { value = textureUnit }

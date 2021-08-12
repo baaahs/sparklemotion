@@ -6,7 +6,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.MouseEvent
 import react.RClass
 import react.RProps
-import react.ReactElement
+import react.RReadableRef
 
 @JsName("default")
 external val Draggable : RClass<DraggableProps>
@@ -48,16 +48,17 @@ external interface PositionOffsetControlPosition {
 external interface DraggableCoreProps: RProps {
     var allowAnyClick: Boolean
     var cancel: String
-    var children: ReactElement
     var disabled: Boolean
     var enableUserSelectHack: Boolean
     var offsetParent: HTMLElement
     var grid: Array<Number>
     var handle: String
+    var nodeRef: RReadableRef<HTMLElement>?
     var onStart: DraggableEventHandler
     var onDrag: DraggableEventHandler
     var onStop: DraggableEventHandler
     var onMouseDown: (e: MouseEvent) -> Unit
+    var scale: Number
 }
 
 external interface DraggableProps: DraggableCoreProps {
@@ -66,10 +67,9 @@ external interface DraggableProps: DraggableCoreProps {
     var defaultClassName: String
     var defaultClassNameDragging: String
     var defaultClassNameDragged: String
-    var defaultPosition: ControlPosition
+    var defaultPosition: ControlPosition?
     var positionOffset: PositionOffsetControlPosition
-    var position: ControlPosition
-    var scale: Number
+    var position: ControlPosition?
 }
 
 external interface RDraggableState {

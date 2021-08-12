@@ -11,6 +11,7 @@ import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
+import baaahs.io.ByteArrayWriter
 import baaahs.mapper.Storage
 import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
@@ -76,7 +77,8 @@ class ShowRunnerTest {
         dmxEvents.clear()
     }
 
-    @Test @Ignore // TODO
+    @Test
+    @Ignore // TODO
     fun whenNoKnownSurfaces_shouldStillCreateShow() = doRunBlocking {
         stageManager.renderAndSendNextFrame()
         expect(renderTargets.size).toBe(1)
@@ -288,6 +290,18 @@ class ShowRunnerTest {
     ) : Transport {
         override fun deliverBytes(byteArray: ByteArray) {
             fn(byteArray)
+        }
+
+        override fun deliverComponents(
+            componentCount: Int,
+            bytesPerComponent: Int,
+            fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
+        ) {
+            val buf = ByteArrayWriter(componentCount * bytesPerComponent)
+            for (componentIndex in 0 until componentCount) {
+                buf.offset = componentIndex * bytesPerComponent
+            }
+            fn(buf.toBytes())
         }
     }
 }

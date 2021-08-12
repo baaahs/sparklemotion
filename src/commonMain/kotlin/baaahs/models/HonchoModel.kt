@@ -17,9 +17,9 @@ class HonchoModel : Model() {
 
     val controllerId = ControllerId(
         SacnManager.controllerTypeName,
-        "sacn-192.168.0.113"
+        "sacn-main"
     )
-    val pixelFormat = PixelArrayDevice.PixelFormat.RGB8 // ... could be RGB8 or GRB8.
+    val pixelFormat = PixelArrayDevice.PixelFormat.GRB8 // ... could be RGB8 or GRB8.
 
     val lightRings = listOf(
 //        12x four meter circumference (240 pixels)

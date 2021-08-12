@@ -5,6 +5,7 @@ import baaahs.Pixels
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
+import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.visualizer.remote.RemoteVisualizers
 import com.danielgergely.kgl.ByteBuffer
@@ -74,12 +75,21 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
 
         override fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers) {
             val fixtureConfig = fixture.fixtureConfig as PixelArrayDevice.Config
-            val buf = fixtureConfig.writeData(this)
+            val bytesPerPixel = fixtureConfig.pixelFormat.channelsPerPixel
+            transport.deliverComponents(pixelCount, bytesPerPixel) { i, buf ->
+                fixtureConfig.pixelFormat.writeColor(this[i], buf)
+            }
 
-            transport.deliverBytes(buf)
+            val remoteVisualizersBytes by lazy {
+                val buf = ByteArrayWriter()
+                for (i in 0 until pixelCount) {
+                    fixtureConfig.pixelFormat.writeColor(this[i], buf)
+                }
+                buf.toBytes()
+            }
             remoteVisualizers.sendFrameData(entity) { out ->
                 out.writeInt(fixture.pixelCount)
-                out.writeBytes(buf)
+                out.writeBytes(remoteVisualizersBytes)
             }
         }
     }
