@@ -207,7 +207,7 @@
     },
     "pulse": {
       "title": "Pulse",
-      "src": "uniform float time;\nuniform vec2 center;\nuniform float scale;\nuniform vec4 color; // @@ColorPicker\n\nvoid main(void) {\n    float dist = mod(length(gl_FragCoord.xy - .5 - center), scale) / scale;\n    float val = mod(dist + mod(time, 1.0) / 1.0, 1.0);\n    gl_FragColor = vec4(color.xyz * val, 1.);\n}"
+      "src": "uniform float time;\nuniform vec2 center;\nuniform float pulseWidth;\nuniform vec4 color; // @@ColorPicker\n\nvoid main(void) {\n    float dist = 1. - mod(length(gl_FragCoord.xy - .5 - center), pulseWidth) / pulseWidth;\n    float val = mod(dist + mod(time, 1.0) / 1.0, 1.0);\n    gl_FragColor = vec4(color.xyz * val, 1.);\n}"
     },
     "quiver": {
       "title": "Quiver",
@@ -232,6 +232,10 @@
     "swirlies": {
       "title": "Swirlies",
       "src": "void mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord/iResolution.xy;\n    uv-=.5;\n    uv.x*= iResolution.x/iResolution.y;\n    \n    vec3 col = vec3(0.);\n    float d = length(uv)*20.;\n    float a = atan(uv.y, uv.x);\n    col.r = smoothstep(0.1, .2, abs(mod(d+iTime, 2.)-1.));\n\tcol.g = col.r*floor(mod(d*.5+.5+iTime*.5, 2.));\n    float f = smoothstep(-.1, .1,sin(a*3.+(sin(iTime*.5)*2.)*d-iTime));\n    col.rg = mix(col.rg, 1.-col.rg, f);\n\n    // Output to screen\n    fragColor = vec4(col,1.0);\n}"
+    },
+    "primeWaves": {
+      "title": "PrimeWaves",
+      "src": "/*{\n  \"CREDIT\": \"by mojovideotech\",\n  \"CATEGORIES\" : [\n    \"Generator\",\n    \"waves\"\n  ],\n  \"DESCRIPTION\" : \"\",\n  \"INPUTS\" : [\n    {\n      \"NAME\" : \"center\",\n      \"TYPE\" : \"point2D\",\n       \"DEFAULT\": [\n\t\t-2,\n\t\t-1\n\t  ],\n      \"MAX\" : [\n        10,\n        10\n      ],\n      \"MIN\" : [\n        -10,\n        -10\n      ]\n    },\n    {\n\t\t\"NAME\": \"rate\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": -1,\n\t\t\"MIN\": -3,\n\t\t\"MAX\": 3\n\t},\n\t{\n\t\t\"NAME\": \"zoom\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 5,\n\t\t\"MIN\": -10,\n\t\t\"MAX\": 10\n\t},\n\t{\n\t\t\"NAME\": \"depth\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 0.6,\n\t\t\"MIN\": 0.0,\n\t\t\"MAX\": 1.0\n\t},\n\t{\n\t\t\"NAME\": \"rxy\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 11,\n\t\t\"MIN\": 1,\n\t\t\"MAX\": 17\n\t},\n\t{\n\t\t\"NAME\": \"rxz\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 13,\n\t\t\"MIN\": 1,\n\t\t\"MAX\": 17\n\t}\n  ]\n}\n*/\n\n// PrimeWaves by mojovideotech\n// based on:\n// glslsandbox.com/e#21344.0\n\n#ifdef GL_ES\nprecision highp float;\n#endif\n\nvec2 distort(vec2 p)\n{\n    float theta  = atan(p.y, p.x);\n    float radius = length(p);\n    radius = pow(radius, 1.0+depth);\n    p.x = radius * cos(theta);\n    p.y = radius * sin(theta);\n    return 0.5 * (p + 1.0);\n}\n\t\nvec4 pattern(vec2 p)\n{\n\tvec2 m=mod(p.xy+p.x+p.y,2.)-1.;\n\treturn vec4(length(m+p*0.1));\n}\n\nfloat hash(float n)\n{\n\treturn fract(sin(n)*29712.15073);\n}\n\nfloat noise(vec3 x, float y, float z)\n{\n\tvec3 p=floor(x); vec3 f=fract(x);\n\tf=f*f*(3.0-2.0*f);\n\tfloat n=p.x+p.y*y+p.z*z;\n\tfloat r1=mix(mix(hash(n+0.0),hash(n+1.0),f.x),mix(hash(n+y),hash(n+y+1.0),f.x),f.y);\n    float r2=mix(mix(hash(n+z),hash(n+z+1.0),f.x),mix(hash(n+y+z),hash(n+y+z+1.0),f.x),f.y);\n\treturn mix(r1,r2,f.z);\n}\nvoid main( void ) {\n\t\n\tfloat RY = 0.0;\tfloat RZ = 0.0;\n\tif (rxy <= 1.)\t\t\t{\tRY += 11.;\t}\n\telse if (rxy <= 2.)\t\t{\tRY += 13.; \t}\n\telse if (rxy <= 3.)\t\t{\tRY += 17.; \t}\n\telse if (rxy <= 4.)\t\t{\tRY += 19.; \t}\n\telse if (rxy <= 5.)\t\t{\tRY += 23.; \t}\n\telse if (rxy <= 6.)\t\t{\tRY += 29.; \t}\n\telse if (rxy <= 8.)\t\t{\tRY += 31.; \t}\n\telse if (rxy <= 9.)\t\t{\tRY += 37.; \t}\n\telse if (rxy <= 10.)\t{\tRY += 41.; \t}\n\telse if (rxy <= 11.)\t{\tRY += 43.; \t}\n\telse if (rxy <= 12.)\t{\tRY += 47.; \t}\n\telse if (rxy <= 13.)\t{\tRY += 53.; \t}\n\telse if (rxy <= 14.)\t{\tRY += 59.; \t}\n\telse if (rxy <= 15.)\t{\tRY += 61.; \t}\n\telse if (rxy <= 16.)\t{\tRY += 67.; \t}\n\tif (rxz <= 1.)\t\t\t{\tRZ += 11.; \t}\n\telse if (rxz <= 2.)\t\t{\tRZ += 13.; \t}\n\telse if (rxz <= 3.)\t\t{\tRZ += 17.; \t}\n\telse if (rxz <= 4.)\t\t{\tRZ += 19.; \t}\n\telse if (rxz <= 5.)\t\t{\tRZ += 23.; \t}\n\telse if (rxz <= 6.)\t\t{\tRZ += 29.; \t}\n\telse if (rxz <= 8.)\t\t{\tRZ += 31.; \t}\n\telse if (rxz <= 9.)\t\t{\tRZ += 37.; \t}\n\telse if (rxz <= 10.)\t{\tRZ += 41.; \t}\n\telse if (rxz <= 11.)\t{\tRZ += 43.; \t}\n\telse if (rxz <= 12.)\t{\tRZ += 47.; \t}\n\telse if (rxz <= 13.)\t{\tRZ += 53.; \t}\n\telse if (rxz <= 14.)\t{\tRZ += 59.; \t}\n\telse if (rxz <= 15.)\t{\tRZ += 61.; \t}\n\telse if (rxz <= 16.)\t{\tRZ += 67.; \t}\n\t\n\tvec2 pos = ( gl_FragCoord.xy / RENDERSIZE.xy * zoom )+center;\n\tfloat col = noise(pos.xyx + (TIME*rate),RY,RZ);\n\tvec4 c = pattern(distort(pos+col));\n\t  c.xy = distort(c.xy);\n\tgl_FragColor = vec4(c.x - col, sin(c.y) - col, cos(c.z), 1.0);\n\n}"
     },
     "beatWarp": {
       "title": "Beat Warp",
@@ -741,10 +745,6 @@
           "type": "datasource",
           "dataSourceId": "colorColorPicker"
         },
-        "scale": {
-          "type": "datasource",
-          "dataSourceId": "scaleSlider"
-        },
         "gl_FragCoord": {
           "type": "shader-channel",
           "shaderChannel": "main"
@@ -752,6 +752,10 @@
         "center": {
           "type": "datasource",
           "dataSourceId": "centerXyPad"
+        },
+        "pulseWidth": {
+          "type": "datasource",
+          "dataSourceId": "pulseWidthSlider"
         }
       },
       "priority": 1
@@ -851,6 +855,47 @@
         "iResolution": {
           "type": "datasource",
           "dataSourceId": "resolution"
+        }
+      }
+    },
+    "primeWaves-inst": {
+      "shaderId": "primeWaves",
+      "incomingLinks": {
+        "rxy": {
+          "type": "datasource",
+          "dataSourceId": "rxySlider"
+        },
+        "rxz": {
+          "type": "datasource",
+          "dataSourceId": "rxzSlider"
+        },
+        "TIME": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "rate": {
+          "type": "datasource",
+          "dataSourceId": "rateSlider"
+        },
+        "zoom": {
+          "type": "datasource",
+          "dataSourceId": "zoomSlider2"
+        },
+        "depth": {
+          "type": "datasource",
+          "dataSourceId": "depthSlider"
+        },
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "RENDERSIZE": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        },
+        "center": {
+          "type": "datasource",
+          "dataSourceId": "centerXyPad2"
         }
       }
     },
@@ -1466,6 +1511,20 @@
         }
       ]
     },
+    "primeWavesButton": {
+      "type": "baaahs.Core:Button",
+      "title": "PrimeWaves",
+      "patches": [
+        {
+          "shaderInstanceIds": [
+            "primeWaves-inst"
+          ],
+          "surfaces": {
+            "name": "All Surfaces"
+          }
+        }
+      ]
+    },
     "backdropsButtonGroup": {
       "type": "baaahs.Core:ButtonGroup",
       "title": "Backdrops",
@@ -1488,6 +1547,7 @@
         "orangeSnowflakeButton",
         "picassoSNightmareButton",
         "pinksButton",
+        "primeWavesButton",
         "pulseButton",
         "quiverButton",
         "redYellowGreenBlueButton",
@@ -1792,17 +1852,68 @@
       "minValue": 0,
       "maxValue": 1
     },
-    "scaleSlider": {
-      "type": "baaahs.Core:Slider",
-      "title": "Scale",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
-    },
     "centerXyPad": {
       "type": "baaahs.Core:XyPad",
       "title": "Center",
       "varPrefix": "centerVec2"
+    },
+    "pulseWidthSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Pulse Width",
+      "initialValue": 1,
+      "minValue": 0,
+      "maxValue": 1
+    },
+    "rxySlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Rxy",
+      "initialValue": 11,
+      "minValue": 1,
+      "maxValue": 17
+    },
+    "rxzSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Rxz",
+      "initialValue": 13,
+      "minValue": 1,
+      "maxValue": 17
+    },
+    "rateSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Rate",
+      "initialValue": -1,
+      "minValue": -3,
+      "maxValue": 3
+    },
+    "zoomSlider2": {
+      "type": "baaahs.Core:Slider",
+      "title": "Zoom",
+      "initialValue": 5,
+      "minValue": -10,
+      "maxValue": 10
+    },
+    "depthSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Depth",
+      "initialValue": 0.6,
+      "minValue": 0,
+      "maxValue": 1
+    },
+    "centerXyPad2": {
+      "type": "baaahs.Core:XyPad",
+      "title": "Center",
+      "initialValue": {
+        "x": -2,
+        "y": -1
+      },
+      "minValue": {
+        "x": -10,
+        "y": -10
+      },
+      "maxValue": {
+        "x": 10,
+        "y": 10
+      }
     },
     "beatWarpinessSlider": {
       "type": "baaahs.Core:Slider",
