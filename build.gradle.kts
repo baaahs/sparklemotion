@@ -184,7 +184,7 @@ kotlin {
 
                 implementation(npm("react-compound-slider", "^3.3.1"))
                 implementation(npm("react-dom", "^16.13.1"))
-                implementation(npm("react-draggable", "^3.3.0"))
+                implementation(npm("react-draggable", "4.4.3"))
                 implementation(npm("react-hot-loader", "^4.11.0"))
                 implementation(npm("sass-loader", "^7.1.0"))
                 implementation(npm("style-loader", "^0.23.1"))
