@@ -111,7 +111,7 @@
   "shaders": {
     "flatProjection": {
       "title": "Flat Projection",
-      "src": "\n// Cylindrical Projection\n// !SparkleMotion:internal\n\nstruct ModelInfo {\n    vec3 center;\n    vec3 extents;\n};\nuniform ModelInfo modelInfo;\n\nconst float PI = 3.141592654;\n\n// @return uv-coordinate\n// @param pixelLocation xyz-coordinate\nvec2 main(vec3 pixelLocation) {\n    vec3 pixelOffset = (pixelLocation - modelInfo.center) / modelInfo.extents + .5;\n    return vec2(1.-pixelOffset.x, pixelOffset.y);\n    // vec3 normalDelta = normalize(pixelOffset);\n    // float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]\n    // if (theta < 0.0) theta += (2.0f * PI);                 // theta in range [0,2π)\n    // float u = theta / (2.0f * PI);                         // u in range [0,1)\n    // float v = (pixelOffset.y + modelInfo.extents.y / 2.0f) / modelInfo.extents.y;\n    // return vec2(u, v);\n}\n"
+      "src": "\n// Cylindrical Projection\n// !SparkleMotion:internal\n\nstruct ModelInfo {\n    vec3 center;\n    vec3 extents;\n};\nuniform ModelInfo modelInfo;\n\nconst float PI = 3.141592654;\n\n// @return uv-coordinate\n// @param pixelLocation xyz-coordinate\nvec2 main(vec3 pixelLocation) {\n    vec3 pixelOffset = (pixelLocation - modelInfo.center) / modelInfo.extents + .5;\n    return vec2(pixelOffset.x, pixelOffset.y);\n    // vec3 normalDelta = normalize(pixelOffset);\n    // float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]\n    // if (theta < 0.0) theta += (2.0f * PI);                 // theta in range [0,2π)\n    // float u = theta / (2.0f * PI);                         // u in range [0,1)\n    // float v = (pixelOffset.y + modelInfo.extents.y / 2.0f) / modelInfo.extents.y;\n    // return vec2(u, v);\n}\n"
     },
     "darkness": {
       "title": "Darkness",
@@ -1616,9 +1616,9 @@
     "beatBrightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Brightness",
-      "initialValue": 0,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 0.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "saturationSlider": {
       "type": "baaahs.Core:Slider",
