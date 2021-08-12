@@ -28,8 +28,8 @@ fun <T> List<T>.replacing(index: Int, replacement: T): List<T> {
 
 fun toRadians(degrees: Float) = (degrees * PI / 180).toFloat()
 
-fun constrain(value: Float, minValue: Float, maxValue: Float): Float {
-    return max(min(value, maxValue), minValue)
+fun Float.clamp(minValue: Float, maxValue: Float): Float {
+    return max(min(this, maxValue), minValue)
 }
 
 suspend fun randomDelay(timeMs: Int) {

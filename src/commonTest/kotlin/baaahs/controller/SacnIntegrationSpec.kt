@@ -5,6 +5,7 @@ import baaahs.controllers.FakeMappingManager
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureListener
+import baaahs.fixtures.Transport
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.mapper.*
@@ -47,8 +48,8 @@ object SacnIntegrationSpec : Spek({
                 mapOf("sacn1" to SacnControllerConfig("SACN Controller", "192.168.1.150", 1))
             }
 
-            val bar1Mapping by value { fixtureMapping(model, "bar1", 0, 2) }
-            val bar2Mapping by value { fixtureMapping(model, "bar2", 6, 2) }
+            val bar1Mapping by value { fixtureMapping(model, "bar1", 0, 2, false) }
+            val bar2Mapping by value { fixtureMapping(model, "bar2", 6, 2, false) }
 
             override(mappings) {
                 mapOf(ControllerId(SacnManager.controllerTypeName, "sacn1") to listOf(bar1Mapping, bar2Mapping))
@@ -62,13 +63,13 @@ object SacnIntegrationSpec : Spek({
             }
 
             context("when a frame is sent") {
-                val bar1Bytes by value { pixelColors(1, 2) }
-                val bar2Bytes by value { pixelColors(3, 2) }
+                val bar1Bytes by value { PixelColors(1, 2) }
+                val bar2Bytes by value { PixelColors(3, 2) }
 
                 beforeEachTest {
                     controllersManager.beforeFrame()
-                    bar1Fixture.transport.deliverBytes(bar1Bytes)
-                    bar2Fixture.transport.deliverBytes(bar2Bytes)
+                    bar1Bytes.deliverTo(bar1Fixture.transport)
+                    bar2Bytes.deliverTo(bar2Fixture.transport)
                     controllersManager.afterFrame()
                 }
 
@@ -82,10 +83,10 @@ object SacnIntegrationSpec : Spek({
 
                 context("spanning multiple universes") {
                     // A single DMX universe has 512 channels, which can accommodate 170 and 2/3 pixels.
-                    override(bar1Mapping) { fixtureMapping(model, "bar1", 0, 180) }
-                    override(bar2Mapping) { fixtureMapping(model, "bar2", 540, 2) }
-                    override(bar1Bytes) { pixelColors(1, 180) }
-                    override(bar2Bytes) { pixelColors(602, 2) }
+                    override(bar1Mapping) { fixtureMapping(model, "bar1", 0, 180, false) }
+                    override(bar2Mapping) { fixtureMapping(model, "bar2", 540, 2, false) }
+                    override(bar1Bytes) { PixelColors(1, 180) }
+                    override(bar2Bytes) { PixelColors(602, 2) }
                     override(configs) {
                         mapOf("sacn1" to SacnControllerConfig("SACN Controller", "192.168.1.150", 2))
                     }
@@ -97,15 +98,39 @@ object SacnIntegrationSpec : Spek({
                         val universe1Data = SacnLink.readDataFrame(universe1Frame.data)
                         expect(universe1Data.universe).toEqual(1)
                         expect(universe1Data.channels.toList()).toEqual(
-                            bar1Bytes.toList().subList(0, 512)
+                            bar1Bytes.bytes.subList(0, 512)
                         )
 
                         val universe2Frame = link.packetsToSend[1]
                         val universe2Data = SacnLink.readDataFrame(universe2Frame.data)
                         expect(universe2Data.universe).toEqual(2)
                         expect(universe2Data.channels.toList()).toEqual(
-                            (bar1Bytes.toList().subList(512, 512 + 28) + bar2Bytes.toList()).paddedTo(512)
+                            (bar1Bytes.bytes.subList(512, 512 + 28) + bar2Bytes.bytes).paddedTo(512)
                         )
+                    }
+
+
+                    describe("when components must start at universe boundaries") {
+                        override(bar1Mapping) { fixtureMapping(model, "bar1", 0, 180, true) }
+                        override(bar2Mapping) { fixtureMapping(model, "bar2", 540, 2, true) }
+
+                        it("sends a DMX frame to multiple universes, with pixels honoring universe boundaries") {
+                            expect(link.packetsToSend.size).toEqual(2)
+
+                            val universe1Frame = link.packetsToSend[0]
+                            val universe1Data = SacnLink.readDataFrame(universe1Frame.data)
+                            expect(universe1Data.universe).toEqual(1)
+                            expect(universe1Data.channels.toList()).toEqual(
+                                bar1Bytes.bytes.subList(0, 510).paddedTo(512)
+                            )
+
+                            val universe2Frame = link.packetsToSend[1]
+                            val universe2Data = SacnLink.readDataFrame(universe2Frame.data)
+                            expect(universe2Data.universe).toEqual(2)
+                            expect(universe2Data.channels.toList()).toEqual(
+                                (bar1Bytes.bytes.subList(510, 510 + 30) + bar2Bytes.bytes).paddedTo(512)
+                            )
+                        }
                     }
                 }
             }
@@ -142,18 +167,33 @@ object SacnIntegrationSpec : Spek({
     }
 })
 
-private fun fixtureMapping(model: ModelForTest, entityName: String, baseChannel: Int, pixelCount: Int) =
+private fun fixtureMapping(
+    model: ModelForTest,
+    entityName: String,
+    baseChannel: Int,
+    pixelCount: Int,
+    componentsStartAtUniverseBoundaries: Boolean
+) =
     FixtureMapping(
         model.findEntity(entityName), pixelCount, null,
-        transportConfig = SacnTransportConfig(baseChannel, pixelCount * 3)
+        transportConfig = SacnTransportConfig(
+            baseChannel, pixelCount * 3, componentsStartAtUniverseBoundaries
+        )
     )
 
 fun entity(name: String) = LightBar(name, name, Vector3F.origin, Vector3F.unit3d)
 
-fun pixelColors(startingAt: Int, count: Int): ByteArray {
-    return (startingAt until startingAt + count).flatMap { i ->
-        listOf(i.toByte(), 2, 3)
-    }.toByteArray()
+class PixelColors(private val startingAt: Int, private val count: Int) {
+    val bytes get() =
+        (startingAt until startingAt + count).flatMap { i ->
+            listOf(i.toByte(), 2, 3)
+        }
+
+    fun deliverTo(transport: Transport) {
+        transport.deliverComponents(count, 3) { componentIndex, buf ->
+            buf.writeBytes((startingAt + componentIndex).toByte(), 2.toByte(), 3.toByte())
+        }
+    }
 }
 
 fun List<Byte>.paddedTo(size: Int): List<Byte> {

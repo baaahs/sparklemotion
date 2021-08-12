@@ -84,6 +84,10 @@ class VizPixels(
         val greenF = color.greenF / 2
         val blueF = color.blueF / 2
 
+        set(i, redF, greenF, blueF)
+    }
+
+    private fun set(i: Int, redF: Float, greenF: Float, blueF: Float) {
         val rgb3Buf = vertexColorBufferAttr
         rgb3Buf.setXYZ(i * 4, redF, greenF, blueF)
         rgb3Buf.setXYZ(i * 4 + 1, redF, greenF, blueF)
@@ -125,11 +129,11 @@ class VizPixels(
         val min = boundingBox.min
         val size = boundingBox.max - boundingBox.min
 
-        val translate = Matrix4().makeTranslation(-min.x.toDouble(), -min.y.toDouble(), -min.z.toDouble())
+        val translate = Matrix4().makeTranslation(-min.x, -min.y, -min.z)
         panelGeom.applyMatrix4(translate)
         pixGeom.applyMatrix4(translate)
 
-        val scale = Matrix4().makeScale(1.0 / size.x.toDouble(), 1.0 / size.y.toDouble(), 1.0)
+        val scale = Matrix4().makeScale(1.0 / size.x, 1.0 / size.y, 1.0)
         panelGeom.applyMatrix4(scale)
         pixGeom.applyMatrix4(scale)
 
@@ -152,7 +156,9 @@ class VizPixels(
         val pixelFormat = pixelArrayConfig?.pixelFormat ?: PixelArrayDevice.PixelFormat.RGB8
 
         for (i in 0 until minPixCount) {
-            this[i] = pixelFormat.readColor(reader)
+            pixelFormat.readColor(reader) { r, g, b ->
+                set(i, r, g, b)
+            }
         }
     }
 

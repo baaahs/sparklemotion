@@ -1,9 +1,6 @@
 package baaahs
 
-import baaahs.gadgets.ColorPicker
-import baaahs.gadgets.PalettePicker
-import baaahs.gadgets.Slider
-import baaahs.gadgets.Switch
+import baaahs.gadgets.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
@@ -111,6 +108,7 @@ abstract class Gadget {
                 subclass(PalettePicker::class, PalettePicker.serializer())
                 subclass(Slider::class, Slider.serializer())
                 subclass(Switch::class, Switch.serializer())
+                subclass(XyPad::class, XyPad.serializer())
             }
         }
     }

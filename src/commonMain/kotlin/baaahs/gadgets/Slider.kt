@@ -1,7 +1,7 @@
 package baaahs.gadgets
 
 import baaahs.Gadget
-import baaahs.constrain
+import baaahs.clamp
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
@@ -33,6 +33,6 @@ data class Slider(
         val factor = .125f
         val spread = maxValue - minValue
         val amount = (Random.nextFloat() - .5f) * spread * factor
-        position = constrain(position + amount, minValue, maxValue)
+        position = (position + amount).clamp(minValue, maxValue)
     }
 }

@@ -1,5 +1,6 @@
 package baaahs.app.ui.controls
 
+import baaahs.show.live.DataSourceOpenControl
 import baaahs.ui.descendants
 import baaahs.ui.name
 import kotlinx.css.*
@@ -123,10 +124,19 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         top = 0.5.em
         left = 0.5.px
         declarations["writing-mode"] = "vertical-lr"
+        userSelect = UserSelect.none
+        pointerEvents = PointerEvents.none
     }
 
     val dataSourceLonelyTitle by css {
         fontWeight = FontWeight.bold
+    }
+
+    val inUse by css {
+    }
+
+    val notInUse by css {
+        opacity = .75
     }
 
     val controlButton by css {
@@ -176,6 +186,8 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         }
     }
 }
+
+val DataSourceOpenControl.inUseStyle get() = if (this.inUse) Styles.inUse else Styles.notInUse
 
 class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-controls-theme", isStatic = true) {
     val static = Styles

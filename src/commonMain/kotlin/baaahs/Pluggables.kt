@@ -10,7 +10,7 @@ import kotlin.js.JsName
 
 object Pluggables {
     @JsName("defaultModel")
-    const val defaultModel = "BAAAHS"
+    const val defaultModel = "Honcho"
 
     @JsName("loadModel")
     fun loadModel(name: String): Model {

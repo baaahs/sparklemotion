@@ -3,6 +3,7 @@ package baaahs.sim
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
 import baaahs.mapper.MappingSession
 import baaahs.model.MovingHead
 import baaahs.util.Clock
@@ -56,6 +57,23 @@ actual class MovingHeadSimulation actual constructor(
         override fun deliverBytes(byteArray: ByteArray) {
             for (i in byteArray.indices) {
                 movingHeadBuffer[i] = byteArray[i]
+            }
+        }
+
+        override fun deliverComponents(
+            componentCount: Int,
+            bytesPerComponent: Int,
+            fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
+        ) {
+            val buf = ByteArrayWriter()
+            for (componentIndex in 0 until componentCount) {
+                buf.offset = 0
+                fn(componentIndex, buf)
+
+                val bytes = buf.toBytes()
+                for (i in 0 until bytesPerComponent) {
+                    movingHeadBuffer[i] = bytes[i]
+                }
             }
         }
     }

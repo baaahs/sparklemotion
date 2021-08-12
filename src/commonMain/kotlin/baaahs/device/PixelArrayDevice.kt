@@ -10,6 +10,7 @@ import baaahs.gl.render.ResultStorage
 import baaahs.gl.result.ColorResultType
 import baaahs.glsl.SurfacePixelStrategy
 import baaahs.io.ByteArrayReader
+import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
@@ -84,16 +85,6 @@ object PixelArrayDevice : DeviceType {
             return pixelArrangement?.forFixture(pixelCount, entity, model)
         }
 
-        fun writeData(results: ColorResultType.ColorFixtureResults): ByteArray {
-            val pixelCount = results.pixelCount
-            val bytesPerPixel = pixelFormat.channelsPerPixel
-            val buf = ByteArray(pixelCount * bytesPerPixel)
-            for (i in 0 until pixelCount) {
-                pixelFormat.writeColor(results[i], buf, i * bytesPerPixel)
-            }
-            return buf
-        }
-
         override fun receiveRemoteVisualizationFixtureInfo(
             reader: ByteArrayReader,
             fixtureSimulation: FixtureSimulation
@@ -115,10 +106,17 @@ object PixelArrayDevice : DeviceType {
                 return Color.parseWithoutAlpha(reader)
             }
 
-            override fun writeColor(color: Color, buf: ByteArray, i: Int) {
-                buf[i] = color.redB
-                buf[i + 1] = color.greenB
-                buf[i + 2] = color.blueB
+            override fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit) {
+                val redF = reader.readByte().asUnsignedToInt() / 255f
+                val greenF = reader.readByte().asUnsignedToInt() / 255f
+                val blueF = reader.readByte().asUnsignedToInt() / 255f
+                setter(redF, greenF, blueF)
+            }
+
+            override fun writeColor(color: Color, buf: ByteArrayWriter) {
+                buf.writeByte(color.redB)
+                buf.writeByte(color.greenB)
+                buf.writeByte(color.blueB)
             }
         },
         GRB8 {
@@ -131,15 +129,25 @@ object PixelArrayDevice : DeviceType {
                 return Color(redB, greenB, blueB)
             }
 
-            override fun writeColor(color: Color, buf: ByteArray, i: Int) {
-                buf[i] = color.greenB
-                buf[i + 1] = color.redB
-                buf[i + 2] = color.blueB
+            override fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit) {
+                val greenF = reader.readByte().asUnsignedToInt() / 255f
+                val redF = reader.readByte().asUnsignedToInt() / 255f
+                val blueF = reader.readByte().asUnsignedToInt() / 255f
+                setter(redF, greenF, blueF)
+            }
+
+            override fun writeColor(color: Color, buf: ByteArrayWriter) {
+                buf.writeByte(color.greenB)
+                buf.writeByte(color.redB)
+                buf.writeByte(color.blueB)
             }
         };
 
         abstract val channelsPerPixel: Int
         abstract fun readColor(reader: ByteArrayReader): Color
-        abstract fun writeColor(color: Color, buf: ByteArray, i: Int)
+        abstract fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit)
+        abstract fun writeColor(color: Color, buf: ByteArrayWriter)
     }
 }
+
+private fun Byte.asUnsignedToInt(): Int = this.toInt().and(0xFF)

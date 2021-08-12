@@ -75,8 +75,14 @@ class ControlDisplay(
         this.relevantUnplacedControls = unplacedControls.filter { control ->
             activeDataSources.containsAll(control.controlledDataSources())
         }.sortedBy { control ->
+            (control as? DataSourceOpenControl)?.inUse = true
             control.controlledDataSources().firstOrNull()?.title
                 ?: "zzzzz"
+        }
+
+        placedControls.forEach { control ->
+            (control as? DataSourceOpenControl)?.inUse =
+                activeDataSources.containsAll(control.controlledDataSources())
         }
     }
 

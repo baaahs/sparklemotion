@@ -189,6 +189,30 @@ class BrainManager(
                 pixelBuffer.colors[i] = Color(byteArray[j], byteArray[j + 1], byteArray[j + 2])
             }
 
+            deliverShaderMessage()
+        }
+
+        override fun deliverComponents(
+            componentCount: Int,
+            bytesPerComponent: Int,
+            fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
+        ) {
+            if (componentCount != pixelBuffer.colors.size) {
+                pixelBuffer = pixelShader.createBuffer(componentCount)
+            }
+
+            val buf = ByteArrayWriter(bytesPerComponent)
+            for (i in 0 until componentCount) {
+                buf.offset = 0
+                fn(i, buf)
+                val colorBytes = buf.toBytes()
+                pixelBuffer.colors[i] = Color(colorBytes[0], colorBytes[1], colorBytes[2])
+            }
+
+            deliverShaderMessage()
+        }
+
+        private fun deliverShaderMessage() {
             val message = BrainShaderMessage(pixelBuffer.brainShader, pixelBuffer).toBytes()
             try {
                 if (!isSimulatedBrain)
@@ -197,7 +221,7 @@ class BrainManager(
                 // Couldn't send to Brain? Schedule to remove it.
                 hadException = true
                 controllerListener.onError(brainController)
-//                pendingBrains[brainId] = this
+                //                pendingBrains[brainId] = this
 
                 logger.error(e) { "Error sending to $brainId, will take offline" }
             }

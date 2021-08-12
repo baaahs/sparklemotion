@@ -107,7 +107,7 @@ object GlslParserSpec : Spek({
                                 lineNumber = 18
                             ),
                             GlslFunction(
-                                "mainFunc",
+                                "main",
                                 GlslType.Void,
                                 params = emptyList(),
                                 fullText = "void main() {\n" +
@@ -287,6 +287,21 @@ object GlslParserSpec : Spek({
                                 "vec3 mod289(in vec3 x)",
                                 "vec4 mod289(in vec4 x)",
                                 "void main()"
+                            )
+                    }
+                }
+
+                context("with functions with const args") {
+                    override(shaderText) {
+                        """
+                            float foo(const float x, const float y) { return 0.; }
+                        """.trimIndent()
+                    }
+
+                    it("ignores the const qualifier") {
+                        expect(glslCode.functions.map { it.prettify() })
+                            .containsExactly(
+                                "float foo(in float x, in float y)"
                             )
                     }
                 }
