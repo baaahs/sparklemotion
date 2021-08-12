@@ -65,6 +65,7 @@ class ControlDisplay(
             activePatch.shaderInstances.forEach { shaderInstance ->
                 shaderInstance.incomingLinks.forEach { (_, link) ->
                     if (link is LiveShaderInstance.DataSourceLink) {
+                        println("${link.dataSource.title} is used by ${shaderInstance.title}")
                         activeDataSources.add(link.dataSource)
                     }
                 }
