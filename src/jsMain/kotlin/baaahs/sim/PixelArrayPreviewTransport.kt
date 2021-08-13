@@ -26,7 +26,7 @@ class PixelArrayPreviewTransport(
         val buf = ByteArrayWriter(bytesPerComponent)
         for (componentIndex in 0 until componentCount) {
             buf.offset = 0
-            fn(componentCount, buf)
+            fn(componentIndex, buf)
 
             vizPixels[componentIndex] = Color.parseWithoutAlpha(ByteArrayReader(buf.toBytes()))
         }
