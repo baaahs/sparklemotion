@@ -110,9 +110,9 @@ object SacnIntegrationSpec : Spek({
                     }
 
 
-                    describe("when components must start at universe boundaries") {
+                    context("when components must start at universe boundaries") {
                         override(bar1Mapping) { fixtureMapping(model, "bar1", 0, 180, true) }
-                        override(bar2Mapping) { fixtureMapping(model, "bar2", 540, 2, true) }
+                        override(bar2Mapping) { fixtureMapping(model, "bar2", 542, 2, true) }
 
                         it("sends a DMX frame to multiple universes, with pixels honoring universe boundaries") {
                             expect(link.packetsToSend.size).toEqual(2)
@@ -130,6 +130,27 @@ object SacnIntegrationSpec : Spek({
                             expect(universe2Data.channels.toList()).toEqual(
                                 (bar1Bytes.bytes.subList(510, 510 + 30) + bar2Bytes.bytes)
                             )
+                        }
+
+                        context("when universes are skipped") {
+                            override(bar1Mapping) { fixtureMapping(model, "bar1", 540, 2, true) }
+                            override(bar2Mapping) { fixtureMapping(model, "bar2", 530, 2, true) }
+                            override(bar1Bytes) { PixelColors(1, 2) }
+                            override(bar2Bytes) { PixelColors(3, 2) }
+
+                            it("sends a DMX frame to active universes only") {
+                                expect(link.packetsToSend.size).toEqual(1)
+
+                                val universe2Frame = link.packetsToSend[0]
+                                val universe2Data = SacnLink.readDataFrame(universe2Frame.data)
+                                expect(universe2Data.universe).toEqual(2)
+                                expect(universe2Data.channels.toList()).toEqual(
+                                    ByteArray(18).toList() +  // starting at 512
+                                            bar2Bytes.bytes.subList(0, 6) + // starting at 530
+                                            ByteArray(4).toList() +    // starting at 540
+                                            bar1Bytes.bytes
+                                )
+                            }
                         }
                     }
                 }
