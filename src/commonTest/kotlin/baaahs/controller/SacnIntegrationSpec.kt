@@ -78,7 +78,7 @@ object SacnIntegrationSpec : Spek({
                     val dataFrame = SacnLink.readDataFrame(link.packetsToSend.first().data)
                     expect(dataFrame.universe).toEqual(1)
                     expect(dataFrame.channels.toList())
-                        .toEqual(listOf<Byte>(1, 2, 3, 2, 2, 3, 3, 2, 3, 4, 2, 3).paddedTo(512))
+                        .toEqual(listOf(1, 2, 3, 2, 2, 3, 3, 2, 3, 4, 2, 3))
                 }
 
                 context("spanning multiple universes") {
@@ -105,7 +105,7 @@ object SacnIntegrationSpec : Spek({
                         val universe2Data = SacnLink.readDataFrame(universe2Frame.data)
                         expect(universe2Data.universe).toEqual(2)
                         expect(universe2Data.channels.toList()).toEqual(
-                            (bar1Bytes.bytes.subList(512, 512 + 28) + bar2Bytes.bytes).paddedTo(512)
+                            (bar1Bytes.bytes.subList(512, 512 + 28) + bar2Bytes.bytes)
                         )
                     }
 
@@ -121,14 +121,14 @@ object SacnIntegrationSpec : Spek({
                             val universe1Data = SacnLink.readDataFrame(universe1Frame.data)
                             expect(universe1Data.universe).toEqual(1)
                             expect(universe1Data.channels.toList()).toEqual(
-                                bar1Bytes.bytes.subList(0, 510).paddedTo(512)
+                                bar1Bytes.bytes.subList(0, 510)
                             )
 
                             val universe2Frame = link.packetsToSend[1]
                             val universe2Data = SacnLink.readDataFrame(universe2Frame.data)
                             expect(universe2Data.universe).toEqual(2)
                             expect(universe2Data.channels.toList()).toEqual(
-                                (bar1Bytes.bytes.subList(510, 510 + 30) + bar2Bytes.bytes).paddedTo(512)
+                                (bar1Bytes.bytes.subList(510, 510 + 30) + bar2Bytes.bytes)
                             )
                         }
                     }
@@ -194,11 +194,6 @@ class PixelColors(private val startingAt: Int, private val count: Int) {
             buf.writeBytes((startingAt + componentIndex).toByte(), 2.toByte(), 3.toByte())
         }
     }
-}
-
-fun List<Byte>.paddedTo(size: Int): List<Byte> {
-    return if (this.size > size) this.subList(0, size - 1) else this +
-            List(size - this.size) { 0 }
 }
 
 class SpyFixtureListener : FixtureListener {

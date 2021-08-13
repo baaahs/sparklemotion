@@ -136,6 +136,7 @@ class SacnManager(
     ) : Controller {
         override val controllerId: ControllerId = ControllerId(controllerTypeName, id)
         private val channels = ByteArray(channelsPerUniverse * universeCount)
+        private val universeMaxChannel = IntArray(universeCount)
         private val node = sacnLink.deviceAt(link.createAddress(address))
         val stats get() = node.stats
         private var sequenceNumber = 0
@@ -186,12 +187,20 @@ class SacnManager(
                         val channelIndex = i % effectiveChannelsPerUniverse
                         writer.offset = universeIndex * channelsPerUniverse + channelIndex
                         fn(componentIndex, writer)
+                        universeMaxChannel[universeIndex] = channelIndex + bytesPerComponent
                     }
                 } else {
                     for (componentIndex in 0 until componentCount) {
-                        writer.offset = startChannel + componentIndex * bytesPerComponent
+                        val channelIndex = startChannel + componentIndex * bytesPerComponent
+                        writer.offset = channelIndex
+                        for (i in channelIndex until channelIndex + bytesPerComponent) {
+                            val universeIndex = i / channelsPerUniverse
+                            val bIndex = i % channelsPerUniverse
+                            universeMaxChannel[universeIndex] = bIndex + 1
+                        }
                         fn(componentIndex, writer)
                     }
+
                 }
             }
         }
@@ -200,10 +209,13 @@ class SacnManager(
             sequenceNumber++
             for (universeIndex in 0 until universeCount) {
                 node.sendDataPacket(
-                    channels, universeIndex + 1,
-                    universeIndex * channelsPerUniverse, channelsPerUniverse,
+                    channels,
+                    universeIndex + 1,
+                    universeIndex * channelsPerUniverse,
+                    universeMaxChannel[universeIndex],
                     sequenceNumber
                 )
+                universeMaxChannel[universeIndex] = 0
             }
         }
     }
