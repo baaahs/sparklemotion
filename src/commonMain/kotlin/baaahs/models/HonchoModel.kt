@@ -20,6 +20,8 @@ class HonchoModel : Model() {
         "sacn-main"
     )
     val pixelFormat = PixelArrayDevice.PixelFormat.GRB8 // ... could be RGB8 or GRB8.
+    val firstPixelRadians = PI / 2.0 // 12:00 noon.
+    val pixelDirection = LightRing.PixelDirection.Clockwise
 
     val lightRings = listOf(
 //        12x four meter circumference (240 pixels)
@@ -54,7 +56,7 @@ class HonchoModel : Model() {
         LightRingConfig("ring 8.01", 7.m * 2, 3.m, 8.m, 480, 49),
     )
 
-    override val allEntities: List<Entity> = lightRings.map { it.entity }
+    override val allEntities: List<Entity> = lightRings.map { it.createEntity() }
 
     override fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> {
         return mapOf(
@@ -64,7 +66,7 @@ class HonchoModel : Model() {
                         val endChannel = startChannel + config.pixelCount * pixelFormat.channelsPerPixel
 
                         FixtureMapping(
-                            config.entity,
+                            config.createEntity(),
                             config.pixelCount,
                             null,
                             PixelArrayDevice.Config(
@@ -78,6 +80,8 @@ class HonchoModel : Model() {
         )
     }
 
+    fun LightRingConfig.createEntity() = createEntity(firstPixelRadians.toFloat(), pixelDirection)
+
     data class LightRingConfig(
         val name: String,
         val centerX: Float,
@@ -87,12 +91,14 @@ class HonchoModel : Model() {
         val startingUniverse: Int,
         val orientation: Vector3F = facingForward
     ) {
-        val entity =
+        fun createEntity(firstPixelRadians: Float, pixelDirection: LightRing.PixelDirection) =
             LightRing(
                 name, name,
                 Vector3F(centerX - 7.m, centerY, 0f),
                 (circumference / PI).toFloat(),
-                facingForward
+                facingForward,
+                firstPixelRadians,
+                pixelDirection
             )
     }
 
