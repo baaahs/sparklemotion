@@ -46,7 +46,7 @@ class DirectDmxController(private val device: Dmx.Device) : Controller {
                 fn(componentIndex, buf)
 
                 val bytes = buf.toBytes()
-                val startChannel = componentCount * bytesPerComponent
+                val startChannel = componentIndex * bytesPerComponent
                 for (i in 0 until bytesPerComponent) {
                     buffer[startChannel + i] = bytes[i]
                 }
