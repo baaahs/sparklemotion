@@ -231,7 +231,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val handlePromptClose = callback { prompt = null }
 
-    val forceAppDrawerOpen = webClient.isLoaded && webClient.show == null
+    val forceAppDrawerOpen = webClient.isLoaded && webClient.isNoOpenShow
     val renderAppDrawerOpen = appDrawerOpen && !layoutEditorDialogOpen || forceAppDrawerOpen
 
     val appDrawerStateStyle = if (renderAppDrawerOpen)
@@ -332,7 +332,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                         if (show == null) {
                             paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
-                                if (webClient.isLoaded) {
+                                if (webClient.isLoaded && webClient.isNoOpenShow) {
                                     icon(materialui.icons.NotificationImportant)
                                     typographyH6 { +"No open show." }
                                     p { +"Maybe you'd like to open one? " }

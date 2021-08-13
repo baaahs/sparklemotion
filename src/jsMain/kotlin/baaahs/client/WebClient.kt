@@ -189,7 +189,10 @@ class WebClient(
             get() = this@WebClient.clientData?.fsRoot
 
         val isLoaded: Boolean
-            get() = this@WebClient.pinkyState == PinkyState.Running && clientData != null
+            get() = this@WebClient.pinkyState != PinkyState.Initializing && clientData != null
+
+        val isNoOpenShow: Boolean
+            get() = this@WebClient.pinkyState == PinkyState.NoShow
 
         val isMapping: Boolean
             get() = this@WebClient.pinkyState == PinkyState.Mapping

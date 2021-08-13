@@ -12,6 +12,7 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import java.io.IOException
 import java.net.*
 import java.nio.ByteBuffer
@@ -225,6 +226,8 @@ class JvmNetwork : Network {
                                     logger.warn { "wait huh? received weird data: $frame" }
                                 }
                             }
+                        } catch (e: ClosedReceiveChannelException) {
+                            logger.info { "Channel for $path closed." }
                         } catch (e: Exception) {
                             logger.error(e) { "Error reading websocket frame." }
                             close(CloseReason(

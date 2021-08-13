@@ -65,7 +65,6 @@ class Pinky(
 
     private var pinkyState = PinkyState.Initializing
     private val pinkyStateChannel = pubSub.publish(Topics.pinkyState, pinkyState) {}
-    private var mapperIsRunning = false
 
     init {
         httpServer.listenWebSocket("/ws/api") {
@@ -116,7 +115,7 @@ class Pinky(
     private suspend fun run() {
         while (keepRunning) {
             throttle(pinkySettings.targetFramerate) {
-                if (mapperIsRunning) {
+                if (pinkyState == PinkyState.Mapping) {
                     disableDmx()
                     return@throttle
                 }
@@ -156,13 +155,9 @@ class Pinky(
             brainManager.listenForMapperMessages { message ->
                 logger.info { "Mapper isRunning=${message.isRunning}" }
                 if (pinkyState == PinkyState.Running && message.isRunning) {
-                    pinkyState = PinkyState.Mapping
-                    pinkyStateChannel.onChange(PinkyState.Mapping)
-                    mapperIsRunning = true
+                    setPinkyState(PinkyState.Mapping)
                 } else if (pinkyState == PinkyState.Mapping && !message.isRunning) {
-                    pinkyState = PinkyState.Running
-                    pinkyStateChannel.onChange(PinkyState.Running)
-                    mapperIsRunning = false
+                    setPinkyState(PinkyState.Running)
                 }
             }
 
@@ -171,6 +166,17 @@ class Pinky(
 
             updatePinkyState(PinkyState.Running)
         }
+    }
+
+    private fun setPinkyState(newState: PinkyState) {
+        val fixedState = when {
+            newState == PinkyState.Running &&
+                    stageManager.facade.currentShow == null -> PinkyState.NoShow
+            else -> newState
+        }
+
+        pinkyState = fixedState
+        pinkyStateChannel.onChange(fixedState)
     }
 
     internal suspend fun awaitMappingResultsLoaded() {
@@ -191,7 +197,7 @@ class Pinky(
         return CoroutineScope(coroutineContext).launch {
             launch {
                 while (true) {
-                    if (mapperIsRunning) {
+                    if (pinkyState == PinkyState.Mapping) {
                         logger.info { "Mapping ${brainManager.brainCount} brains." }
                     } else {
                         stageManager.logStatus()
@@ -310,6 +316,7 @@ data class PinkySettings(
 @Serializable
 enum class PinkyState {
     Initializing,
+    NoShow,
     Running,
     Mapping,
     ShuttingDown
