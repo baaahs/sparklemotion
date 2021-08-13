@@ -20,6 +20,7 @@ import kotlinx.coroutines.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlin.math.max
 import kotlin.math.min
 
 class SacnManager(
@@ -178,16 +179,25 @@ class SacnManager(
                 bytesPerComponent: Int,
                 fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
             ) {
+                fun bumpUniverseMax(universeIndex: Int, channelIndex: Int) {
+                    universeMaxChannel[universeIndex] =
+                        max(channelIndex, universeMaxChannel[universeIndex])
+                }
+
                 if (componentsStartAtUniverseBoundaries) {
                     val componentsPerUniverse = channelsPerUniverse / bytesPerComponent
                     val effectiveChannelsPerUniverse = componentsPerUniverse * bytesPerComponent
+                    val startUniverseIndex = startChannel / channelsPerUniverse
+                    val startChannelIndex = startChannel % channelsPerUniverse
+
                     for (componentIndex in 0 until componentCount) {
-                        val i = startChannel + componentIndex * bytesPerComponent
-                        val universeIndex = i / effectiveChannelsPerUniverse
-                        val channelIndex = i % effectiveChannelsPerUniverse
+                        val componentByteOffset = startChannelIndex + componentIndex * bytesPerComponent
+                        val universeOffset = componentByteOffset / effectiveChannelsPerUniverse
+                        val channelIndex = componentByteOffset % effectiveChannelsPerUniverse
+                        val universeIndex = startUniverseIndex + universeOffset
                         writer.offset = universeIndex * channelsPerUniverse + channelIndex
                         fn(componentIndex, writer)
-                        universeMaxChannel[universeIndex] = channelIndex + bytesPerComponent
+                        bumpUniverseMax(universeIndex, channelIndex + bytesPerComponent)
                     }
                 } else {
                     for (componentIndex in 0 until componentCount) {
@@ -196,7 +206,7 @@ class SacnManager(
                         for (i in channelIndex until channelIndex + bytesPerComponent) {
                             val universeIndex = i / channelsPerUniverse
                             val bIndex = i % channelsPerUniverse
-                            universeMaxChannel[universeIndex] = bIndex + 1
+                            bumpUniverseMax(universeIndex, bIndex + 1)
                         }
                         fn(componentIndex, writer)
                     }
@@ -208,13 +218,16 @@ class SacnManager(
         override fun afterFrame() {
             sequenceNumber++
             for (universeIndex in 0 until universeCount) {
-                node.sendDataPacket(
-                    channels,
-                    universeIndex + 1,
-                    universeIndex * channelsPerUniverse,
-                    universeMaxChannel[universeIndex],
-                    sequenceNumber
-                )
+                val maxChannel = universeMaxChannel[universeIndex]
+                if (maxChannel > 0) {
+                    node.sendDataPacket(
+                        channels,
+                        universeIndex + 1,
+                        universeIndex * channelsPerUniverse,
+                        maxChannel,
+                        sequenceNumber
+                    )
+                }
                 universeMaxChannel[universeIndex] = 0
             }
         }
