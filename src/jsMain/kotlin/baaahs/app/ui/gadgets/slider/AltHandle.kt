@@ -1,6 +1,7 @@
 package baaahs.app.ui.gadgets.slider
 
 import baaahs.app.ui.appContext
+import baaahs.ui.mixin
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.react_compound_slider.SliderItem
@@ -21,6 +22,8 @@ private val altHandle = xComponent<HandleProps>("AltHandle") { props ->
     val styles = appContext.allStyles.gadgetsSlider
 
     div(+styles.altHandleWrapper) {
+        mixin(props.getHandleProps(props.handle.id))
+
         setProp("role", "slider")
         setProp("aria-valuemin", props.domain[9])
         setProp("aria-valuemax", props.domain[1])
