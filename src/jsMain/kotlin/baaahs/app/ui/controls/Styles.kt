@@ -133,6 +133,12 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         fontWeight = FontWeight.bold
     }
 
+    val beatLinkedSwitch by css {
+        position = Position.absolute
+        left = 0.px
+        bottom = 0.px
+    }
+
     val inUse by css {
     }
 

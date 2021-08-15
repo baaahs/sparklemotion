@@ -246,7 +246,6 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
     val layoutPanel by css {
         display = Display.flex
-        height = 100.pct
         overflow = Overflow.scroll
     }
 

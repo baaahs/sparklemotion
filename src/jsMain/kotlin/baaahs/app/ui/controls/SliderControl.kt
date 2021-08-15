@@ -5,11 +5,18 @@ import baaahs.app.ui.gadgets.slider.slider
 import baaahs.control.OpenSliderControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.unaryPlus
+import baaahs.ui.withEvent
 import baaahs.ui.xComponent
 import react.Props
+import kotlinx.css.Color
+import kotlinx.css.backgroundColor
+import kotlinx.html.js.onClickFunction
+import materialui.icon
+import materialui.icons.MusicNote
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import styled.inlineStyles
 
 private val SliderControl = xComponent<SliderControlProps>("SliderControl") { props ->
     val sliderControl = props.sliderControl
@@ -24,8 +31,14 @@ private val SliderControl = xComponent<SliderControlProps>("SliderControl") { pr
 
     val slider = sliderControl.slider
     var position by state { slider.position }
+    var floorPosition by state { slider.floor }
+    var beatLinked by state { slider.beatLinked }
     onMount(slider) {
-        val listener: GadgetListener = { position = slider.position }
+        val listener: GadgetListener = {
+            position = slider.position
+            floorPosition = slider.floor
+            beatLinked = slider.beatLinked
+        }
         slider.listen(listener)
         withCleanup { slider.unlisten(listener) }
     }
@@ -34,11 +47,23 @@ private val SliderControl = xComponent<SliderControlProps>("SliderControl") { pr
         slider.position = newPosition
     }
 
+    val handleFloorPositionChange by handler(slider) { newPosition: Float ->
+        slider.floor = newPosition
+    }
+
+    val handleToggleBeatLinked by handler(slider) {
+        slider.beatLinked = !slider.beatLinked
+        slider.floor = slider.position
+    }
+
     div(+sliderControl.inUseStyle) {
         slider {
             attrs.title = slider.title
 //        attrs.position = channel.value
             attrs.position = position
+            if (beatLinked) {
+                attrs.floorPosition = floorPosition
+            }
             attrs.contextPosition = null
             attrs.minValue = slider.minValue
             attrs.maxValue = slider.maxValue
@@ -49,8 +74,21 @@ private val SliderControl = xComponent<SliderControlProps>("SliderControl") { pr
                 attrs.ticksScale = 100f
             }
 
-            attrs.onChange = handlePositionChange
+            attrs.onPositionChange = handlePositionChange
+            attrs.onFloorPositionChange = handleFloorPositionChange
         }
+
+        div(+Styles.beatLinkedSwitch) {
+            attrs.onClickFunction = handleToggleBeatLinked.withEvent()
+
+            if (beatLinked) {
+                inlineStyles {
+                    backgroundColor = Color.orange
+                }
+            }
+            icon(MusicNote)
+        }
+
 
         div(+Styles.dataSourceTitle) { +title }
     }

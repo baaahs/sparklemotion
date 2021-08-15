@@ -14,9 +14,22 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.gadgetsSlider
 
-    val handleChange by handler(props.onChange) { value: Array<Number> ->
-        val newValue = value[0].toFloat()
-        props.onChange(newValue)
+    val priorValuesRef = ref<Array<Number>>(arrayOf(0f, 0f))
+    val handleChange by handler(priorValuesRef, props.onPositionChange) { values: Array<Number> ->
+        val priorValues = priorValuesRef.current!!
+        val newPosition = values[0].toFloat()
+        if (newPosition != priorValues[0]) {
+            priorValues[0] = newPosition
+            props.onPositionChange(newPosition)
+        }
+
+        if (values.size > 1) {
+            val newFloorPosition = values[1].toFloat()
+            if (newFloorPosition != priorValues[1]) {
+                priorValues[0] = newFloorPosition
+                props.onFloorPositionChange?.invoke(newFloorPosition)
+            }
+        }
     }
 
     val handleUpdate = throttle({ value: Array<Number> ->
@@ -37,14 +50,14 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             attrs.className = styles.slider.name
             attrs.vertical = true
             attrs.reversed = props.reversed
-            attrs.mode = 1
+            attrs.mode = 3
             attrs.step = props.stepValue ?: ((props.maxValue - props.minValue) / 256)
             attrs.domain = domain.asDynamic()
             attrs.onSlideStart = disableScroll.asDynamic()
             attrs.onSlideEnd = enableScroll.asDynamic()
             attrs.onUpdate = handleUpdate
             attrs.onChange = handleChange
-            attrs.values = listOfNotNull(props.position, props.contextPosition).toTypedArray()
+            attrs.values = listOfNotNull(props.position, props.floorPosition, props.contextPosition).toTypedArray()
 
             Rail {
                 attrs.children = { railObject ->
@@ -61,15 +74,17 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                     buildElement {
                         div(+styles.handles) {
                             handlesObject.handles.forEachIndexed { index, handle ->
-                                if (index == 0) {
+                                when (index) {
+                                0 -> {
                                     handle {
                                         key = handle.id
                                         attrs.domain = domain
                                         attrs.handle = handle
                                         attrs.getHandleProps = handlesObject.getHandleProps
                                     }
-                                } else {
-                                    // Non-draggable alt handle.
+                                }
+                                1 -> {
+                                    // Floor handle.
                                     altHandle {
                                         key = handle.id
                                         attrs.domain = domain
@@ -77,7 +92,17 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                                         attrs.getHandleProps = handlesObject.getHandleProps
                                     }
                                 }
+//                                else -> {
+//                                    // Non-draggable alt handle.
+//                                    altHandle {
+//                                        key = handle.id
+//                                        attrs.domain = domain
+//                                        attrs.handle = handle
+//                                        attrs.getHandleProps = handlesObject.getHandleProps
+//                                    }
+//                                }
                             }
+                        }
 
                         }
                     }
@@ -86,7 +111,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 
             Tracks {
                 attrs.left = false
-                attrs.right = true
+                attrs.right = props.floorPosition == null
                 attrs.children = { tracksObject ->
                     buildElement {
                         div(+styles.tracks) {
@@ -131,6 +156,10 @@ external interface SliderProps : Props {
     var title: String
 
     var position: Float
+
+    /** If non-null, this is a second slider constrained to less than the main slider, representing a floor. */
+    var floorPosition: Float?
+
     /** If non-null, this position is displayed as uneditable context. */
     var contextPosition: Float?
 
@@ -142,7 +171,8 @@ external interface SliderProps : Props {
     var showTicks: Boolean?
     var ticksScale: Float?
 
-    var onChange: (Float) -> Unit
+    var onPositionChange: (Float) -> Unit
+    var onFloorPositionChange: ((Float) -> Unit)?
 }
 
 fun RBuilder.slider(handler: RHandler<SliderProps>) =
