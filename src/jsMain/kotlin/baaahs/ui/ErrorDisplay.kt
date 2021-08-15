@@ -67,7 +67,13 @@ val ErrorDisplay = functionalComponent<ErrorDisplayProps> { props ->
                 div {
                     h2 { +"Something went horribly wrong." }
 
-                    pre { +(props.error.message ?: "Unknown error") }
+                    pre {
+                        inlineStyles {
+                            whiteSpace = WhiteSpace.preWrap
+
+                        }
+                        +(props.error.message ?: "Unknown error")
+                    }
                 }
 
                 if (props.resetErrorBoundary != null) {

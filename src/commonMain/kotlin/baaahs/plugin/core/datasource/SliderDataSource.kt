@@ -15,6 +15,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.DataSource
@@ -52,6 +53,7 @@ data class SliderDataSource(
         MutableSliderControl(sliderTitle, initialValue, minValue, maxValue, stepValue, this)
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+        val clock = showPlayer.toolchain.plugins.pluginContext.clock
 //        val channel = showPlayer.useChannel<Float>(id)
         val slider = showPlayer.useGadget(this)
             ?: run {
@@ -63,6 +65,20 @@ data class SliderDataSource(
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
                     return SingleUniformFeed(glslProgram, this@SliderDataSource, id) { uniform ->
+                        if (slider.beatLinked) {
+                            val beatData = BeatLinkPlugin.yuckGlobalBeatSource?.getBeatData()
+                            beatData?.let {
+                                if (beatData.confidence > .2f) {
+                                    uniform.set(
+                                        (slider.position - slider.floor) *
+                                                beatData.fractionTillNextBeat(clock) +
+                                                slider.floor
+                                    )
+                                    return@SingleUniformFeed
+                                }
+                            }
+                        }
+
                         uniform.set(slider.position)
                     }
                 }
