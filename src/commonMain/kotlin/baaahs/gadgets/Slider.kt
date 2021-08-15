@@ -28,6 +28,8 @@ data class Slider(
 ) : Gadget() {
     /** The selected value. */
     var position: Float by updatable("position", initialValue, Float.serializer())
+    var floor: Float by updatable("floor", minValue, Float.serializer())
+    var beatLinked: Boolean by updatable("beatLinked", false, Boolean.serializer())
 
     override fun adjustALittleBit() {
         val factor = .125f
