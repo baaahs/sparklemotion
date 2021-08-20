@@ -3,7 +3,7 @@ package baaahs.mapper
 import baaahs.admin.AdminClient
 import baaahs.app.ui.AllStyles
 import baaahs.app.ui.Styles
-import baaahs.client.WebClient
+import baaahs.app.ui.appContext
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.JsClock
@@ -21,10 +21,7 @@ import materialui.styles.palette.PaletteType
 import materialui.styles.palette.options.type
 import materialui.styles.themeprovider.themeProvider
 import org.w3c.dom.events.Event
-import react.RBuilder
-import react.RHandler
-import react.RProps
-import react.child
+import react.*
 import react.dom.div
 import styled.inlineStyles
 
@@ -35,6 +32,8 @@ private enum class PageTabs {
 }
 
 val MapperIndexView = xComponent<MapperIndexViewProps>("MapperIndexView") { props ->
+    val appContext = useContext(appContext)
+
     val theme = memo {
         createMuiTheme {
             palette { type = PaletteType.dark }
@@ -42,7 +41,7 @@ val MapperIndexView = xComponent<MapperIndexViewProps>("MapperIndexView") { prop
     }
 
     val clock = memo { JsClock }
-    val plugins = memo { WebClient.createPlugins() }
+    val plugins = appContext.plugins
 
     val myAppContext = memo(theme) {
         jsObject<MapperAppContext> {

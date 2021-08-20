@@ -16,7 +16,7 @@ import baaahs.show.mutable.*
 
 object SampleData {
     val plugins = Plugins.safe(Plugins.dummyContext) +
-            BeatLinkPlugin.Builder(BeatSource.None)
+            BeatLinkPlugin.BeatLinkPluginBuilder(BeatSource.None)
     val beatLinkPlugin = plugins.findPlugin<BeatLinkPlugin>()
 
     private val toolchain = RootToolchain(plugins)

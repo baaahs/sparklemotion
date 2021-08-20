@@ -15,6 +15,7 @@ import baaahs.net.Network
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.sim.*
+import baaahs.sim.bridge.BridgeClient
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer

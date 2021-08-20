@@ -15,6 +15,10 @@ import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkBeatSource
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
+import baaahs.plugin.sound_analysis.AudioInput
+import baaahs.plugin.sound_analysis.JvmSoundAnalysisPlatform
+import baaahs.plugin.sound_analysis.SoundAnalysisPlatform
+import baaahs.plugin.sound_analysis.SoundAnalysisPlugin
 import baaahs.proto.Ports
 import baaahs.util.Clock
 import baaahs.util.SystemClock
@@ -35,7 +39,7 @@ class JvmPlatformModule(private val args: PinkyMain.Args) : PlatformModule {
     override val Scope.pluginContext
         get() = PluginContext(get())
     override val Scope.plugins: Plugins
-        get() = Plugins.safe(get()) + BeatLinkPlugin.Builder(get())
+        get() = Plugins.safe(get()) + get<BeatLinkPlugin.BeatLinkPluginBuilder>() + get<SoundAnalysisPlugin.SoundAnalysisPluginBuilder>()
     override val Scope.mediaDevices: MediaDevices
         get() = object : MediaDevices {
             override suspend fun enumerate(): List<MediaDevices.Device> = emptyList()
@@ -84,11 +88,12 @@ class JvmBeatLinkPluginModule(private val args: PinkyMain.Args) : BeatLinkPlugin
         } else {
             BeatSource.None
         }
-
 }
 
-class JvmSoundAnalysisPluginModule(private val args: PinkyMain.Args) : SoundAnalysisPluginModule {
-    override val soundAnalyzer: SoundAnalyzer
-        get() = JvmSoundAnalyzer()
-
+class JvmSoundAnalysisPluginModule(
+    private val args: PinkyMain.Args,
+    override val audioInput: AudioInput
+) : SoundAnalysisPluginModule {
+    override val soundAnalysisPlatform: SoundAnalysisPlatform
+        get() = JvmSoundAnalysisPlatform()
 }

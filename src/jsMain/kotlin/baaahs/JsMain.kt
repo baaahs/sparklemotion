@@ -2,10 +2,7 @@ package baaahs
 
 import baaahs.DeadCodeEliminationDefeater.noDCE
 import baaahs.client.WebClient
-import baaahs.di.JsAdminClientModule
-import baaahs.di.JsBeatLinkPluginModule
-import baaahs.di.JsPlatformModule
-import baaahs.di.JsWebClientModule
+import baaahs.di.*
 import baaahs.jsx.sim.MosaicApp
 import baaahs.jsx.sim.MosaicAppProps
 import baaahs.mapper.JsMapperUi
@@ -110,7 +107,7 @@ private fun launchUi(
                 modules(
                     JsPlatformModule(network, model).getModule(),
                     JsBeatLinkPluginModule(BeatSource.None).getModule(),
-    //            JsSoundAnalysisPluginModule(args).getModule()
+                    JsSoundAnalysisPluginModule().getModule()
                 )
             }
             val koin = webAppInjector.koin

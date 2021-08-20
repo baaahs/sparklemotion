@@ -1,7 +1,7 @@
-package baaahs
+package baaahs.plugin.sound_analysis
 
 interface SoundAnalyzer {
-    val frequencies: FloatArray
+    val numberOfBuckets: Int
 
     fun listen(analysisListener: AnalysisListener)
     fun unlisten(analysisListener: AnalysisListener)

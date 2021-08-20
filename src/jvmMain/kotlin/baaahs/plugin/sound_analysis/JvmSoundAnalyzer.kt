@@ -1,4 +1,4 @@
-package baaahs
+package baaahs.plugin.sound_analysis
 
 import baaahs.util.Logger
 import be.tarsos.dsp.AudioDispatcher
@@ -6,22 +6,18 @@ import be.tarsos.dsp.AudioEvent
 import be.tarsos.dsp.AudioProcessor
 import be.tarsos.dsp.ConstantQ
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import javax.sound.sampled.*
 import kotlin.concurrent.thread
 
-class JvmSoundAnalyzer : SoundAnalyzer {
-    override val frequencies: FloatArray
-        get() = cqtAnalyzer.frequencies
+class JvmSoundAnalyzer(
+    mixer: Mixer,
+    private val sampleRate: Float
+) : SoundAnalyzer {
+    override val numberOfBuckets: Int
+        get() = cqtAnalyzer.numberOfBuckets
 
-    private val sampleRate = 44100f
-    private var cqtAnalyzer: CqtAnalyzer
+    private var cqtAnalyzer: CqtAnalyzer = createConstantQAnalyzer(mixer)
     private val listeners = mutableListOf<SoundAnalyzer.AnalysisListener>()
-
-    init {
-        cqtAnalyzer = createConstantQAnalyzer(getAudioInput())
-    }
 
     override fun listen(analysisListener: SoundAnalyzer.AnalysisListener) {
         listeners.add(analysisListener)
@@ -41,6 +37,7 @@ class JvmSoundAnalyzer : SoundAnalyzer {
     }
 
     inner class CqtAnalyzer(mixer: Mixer) {
+        val numberOfBuckets: Int
         val frequencies: FloatArray
 
         private val dispatcher: AudioDispatcher
@@ -59,8 +56,8 @@ class JvmSoundAnalyzer : SoundAnalyzer {
             val line: TargetDataLine
             line = mixer.getLine(dataLineInfo) as TargetDataLine
             val bufferSize = constantQ.ffTlength
-            val numberOfSamples = bufferSize
-            line.open(format, numberOfSamples)
+            numberOfBuckets = bufferSize
+            line.open(format, numberOfBuckets)
             line.start()
             val stream = AudioInputStream(line)
 
@@ -74,10 +71,7 @@ class JvmSoundAnalyzer : SoundAnalyzer {
                 override fun process(audioEvent: AudioEvent?): Boolean {
                     constantQ.process(audioEvent)
                     val analysis = SoundAnalyzer.Analysis(frequencies, constantQ.magnitudes.copyOf())
-
-                    GlobalScope.launch {
-                        listeners.forEach { it.onSample(analysis) }
-                    }
+                    listeners.forEach { it.onSample(analysis) }
                     return true
                 }
 
@@ -101,22 +95,5 @@ class JvmSoundAnalyzer : SoundAnalyzer {
             dispatcher.stop()
             thread.join()
         }
-    }
-
-    private fun getAudioInput(): Mixer {
-        val playbackMixerInfos = getPlaybackMixerInfos()
-        logger.debug { "${playbackMixerInfos.size} playback mixers available:" }
-        playbackMixerInfos.forEach { logger.debug { "* ${it.name}" } }
-        val mixer = AudioSystem.getMixer(playbackMixerInfos.find { it.name == "Default Audio Device" })
-        return mixer!!
-    }
-
-    fun getPlaybackMixerInfos(): List<Mixer.Info> {
-        return AudioSystem.getMixerInfo().mapNotNull { info ->
-            val mixer = AudioSystem.getMixer(info)
-            // Mixer capable of audio play back if source LineWavelet length != 0
-            if (mixer.sourceLineInfo.isNotEmpty()) info else null
-        }
-
     }
 }

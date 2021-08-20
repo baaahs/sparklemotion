@@ -305,7 +305,7 @@ tasks.create<JavaExec>("runBrainJvm") {
 
 tasks.create<JavaExec>("runBridgeJvm") {
     dependsOn("compileKotlinJvm")
-    main = "baaahs.SimulatorBridgeKt"
+    main = "baaahs.sim.bridge.SimulatorBridgeKt"
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles

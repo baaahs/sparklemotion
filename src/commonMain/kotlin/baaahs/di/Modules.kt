@@ -24,6 +24,9 @@ import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
+import baaahs.plugin.sound_analysis.AudioInput
+import baaahs.plugin.sound_analysis.SoundAnalysisPlatform
+import baaahs.plugin.sound_analysis.SoundAnalysisPlugin
 import baaahs.proto.Ports
 import baaahs.scene.SceneManager
 import baaahs.sim.FakeDmxUniverse
@@ -127,15 +130,21 @@ interface BeatLinkPluginModule : KModule {
 
     override fun getModule(): Module = module {
         single { beatSource }
-        single { BeatLinkPlugin.Builder(get()) }
+        single { BeatLinkPlugin.BeatLinkPluginBuilder(get()) }
     }
 }
 
 interface SoundAnalysisPluginModule : KModule {
-    val soundAnalyzer: SoundAnalyzer
+    val soundAnalysisPlatform: SoundAnalysisPlatform
+    val audioInput: AudioInput
 
     override fun getModule(): Module = module {
-        single { soundAnalyzer }
+        single { soundAnalysisPlatform }
+        single {
+            val platform = get<SoundAnalysisPlatform>()
+            platform.createConstantQAnalyzer(audioInput, 44100f)
+        }
+        single { SoundAnalysisPlugin.SoundAnalysisPluginBuilder(get()) }
     }
 }
 

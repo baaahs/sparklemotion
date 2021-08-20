@@ -37,7 +37,7 @@ import kotlin.collections.set
 @InternalCoroutinesApi
 object EditingShaderSpec : Spek({
     describe<EditingShader> {
-        val plugins by value { testPlugins() + BeatLinkPlugin.Builder(StubBeatSource()) }
+        val plugins by value { testPlugins() + BeatLinkPlugin.BeatLinkPluginBuilder(StubBeatSource()) }
         val toolchain by value { RootToolchain(plugins) }
         val beatLinkDataSource by value {
             (plugins.find(BeatLinkPlugin.id) as BeatLinkPlugin).beatLinkDataSource

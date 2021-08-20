@@ -11,17 +11,13 @@ import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.libraries.ShaderLibraries
 import baaahs.model.Model
 import baaahs.net.Network
-import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
-import baaahs.plugin.beatlink.BeatLinkPlugin
-import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableShow
 import baaahs.sim.HostedWebApp
-import baaahs.util.JsClock
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
@@ -33,9 +29,10 @@ import react.createElement
 class WebClient(
     network: Network,
     pinkyAddress: Network.Address,
-    private val toolchain: Toolchain = RootToolchain(createPlugins()),
     private val model: Model,
-    private val storage: ClientStorage
+    private val storage: ClientStorage,
+    private val plugins: Plugins,
+    private val toolchain: Toolchain = RootToolchain(plugins)
 ) : HostedWebApp {
     private val facade = Facade()
 
@@ -273,11 +270,5 @@ class WebClient(
         fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {
             this@WebClient.updateUiSettings(newSettings, saveToStorage)
         }
-    }
-
-    companion object {
-        fun createPlugins() =
-            Plugins.safe(PluginContext(JsClock)) +
-                    BeatLinkPlugin.Builder(BeatSource.None)
     }
 }

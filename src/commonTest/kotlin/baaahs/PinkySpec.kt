@@ -233,13 +233,3 @@ private fun Pinky.updateFixtures() {
 class StubBeatSource : Observable(), BeatSource {
     override fun getBeatData(): BeatData = BeatData(0.0, 0, confidence = 0f)
 }
-
-class StubSoundAnalyzer : SoundAnalyzer {
-    override val frequencies = floatArrayOf()
-
-    override fun listen(analysisListener: SoundAnalyzer.AnalysisListener) {
-    }
-
-    override fun unlisten(analysisListener: SoundAnalyzer.AnalysisListener) {
-    }
-}

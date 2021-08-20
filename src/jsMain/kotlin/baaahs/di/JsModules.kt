@@ -16,7 +16,10 @@ import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
-import baaahs.plugin.core.CorePlugin
+import baaahs.plugin.sound_analysis.AudioInput
+import baaahs.plugin.sound_analysis.SoundAnalysisPlatform
+import baaahs.plugin.sound_analysis.SoundAnalysisPlugin
+import baaahs.plugin.sound_analysis.SoundAnalyzer
 import baaahs.sim.BrowserSandboxFs
 import baaahs.util.Clock
 import baaahs.util.JsClock
@@ -37,7 +40,7 @@ open class JsPlatformModule(
     override val Scope.pluginContext: PluginContext
         get() = PluginContext(get())
     override val Scope.plugins: Plugins
-        get() = Plugins(listOf(CorePlugin, get<BeatLinkPlugin.Builder>()), get())
+        get() = Plugins.safe(get()) + get<BeatLinkPlugin.BeatLinkPluginBuilder>() + get<SoundAnalysisPlugin.SoundAnalysisPluginBuilder>()
     override val Scope.mediaDevices: MediaDevices
         get() = RealMediaDevices()
 }
@@ -51,7 +54,7 @@ class JsWebClientModule(
         scope<WebClient> {
             scoped { get<Network>().link("app") }
             scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage"))  }
-            scoped { WebClient(get(), pinkyAddress, RootToolchain(get()), get(), get()) }
+            scoped { WebClient(get(), pinkyAddress, get(), get(), get(), RootToolchain(get())) }
         }
     }
 }
@@ -85,8 +88,32 @@ class JsBeatLinkPluginModule(private val beatSource_: BeatSource) : BeatLinkPlug
         get() = beatSource_
 }
 
-//class JsSoundAnalysisPluginModule : SoundAnalysisPluginModule {
-//    override val soundAnalyzer: SoundAnalyzer
-//        get() =
-//
-//}
+class JsSoundAnalysisPluginModule : SoundAnalysisPluginModule {
+    override val audioInput: AudioInput
+        get() = object : AudioInput {
+            override val id: String
+                get() = "fake"
+            override val title: String
+                get() = "fake"
+        }
+    override val soundAnalysisPlatform: SoundAnalysisPlatform
+        get() = object : SoundAnalysisPlatform {
+            override suspend fun listAudioInputs(): List<AudioInput> {
+                return emptyList()
+            }
+
+            override fun createConstantQAnalyzer(audioInput: AudioInput, sampleRate: Float): SoundAnalyzer {
+                return object : SoundAnalyzer {
+                    override val numberOfBuckets: Int
+                        get() = 1
+
+                    override fun listen(analysisListener: SoundAnalyzer.AnalysisListener) {
+                    }
+
+                    override fun unlisten(analysisListener: SoundAnalyzer.AnalysisListener) {
+                        TODO("not implemented")
+                    }
+                }
+            }
+        }
+}

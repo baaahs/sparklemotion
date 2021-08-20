@@ -8,6 +8,7 @@ import baaahs.gl.GlBase
 import baaahs.io.Fs
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
+import baaahs.plugin.sound_analysis.JvmSoundAnalysisPlatform
 import baaahs.util.KoinLogger
 import baaahs.util.Logger
 import com.xenomachina.argparser.ArgParser
@@ -49,11 +50,17 @@ class PinkyMain(private val args: Args) {
         val pinkyInjector = koinApplication {
             logger(KoinLogger())
 
+            val soundPlatform = JvmSoundAnalysisPlatform()
+            val audioInputs = runBlocking {
+                soundPlatform.listAudioInputs()
+            }
+            val soundAnalysisPluginModule = JvmSoundAnalysisPluginModule(args, audioInputs[0])
+
             modules(
                 JvmPlatformModule(args).getModule(),
                 JvmPinkyModule().getModule(),
                 JvmBeatLinkPluginModule(args).getModule(),
-                JvmSoundAnalysisPluginModule(args).getModule()
+                soundAnalysisPluginModule.getModule()
             )
         }
 

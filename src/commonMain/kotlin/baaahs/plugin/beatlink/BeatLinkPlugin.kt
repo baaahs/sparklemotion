@@ -57,7 +57,7 @@ class BeatLinkPlugin internal constructor(
                 override val resourceName: String get() = "BeatLink"
                 override val contentType: ContentType get() = beatDataContentType
                 override val serializerRegistrar get() =
-                    objectSerializer("baaahs.BeatLink:BeatLink", beatLinkDataSource)
+                    objectSerializer("$id:BeatLink", beatLinkDataSource)
 
                 override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
                     inputPort.contentType == beatDataContentType
@@ -87,9 +87,9 @@ class BeatLinkPlugin internal constructor(
     inner class BeatLinkDataSource internal constructor(): DataSource {
         override val pluginPackage: String get() = id
         override val title: String get() = "BeatLink"
+        override val contentType: ContentType get() = beatDataContentType
+
         override fun getType(): GlslType = GlslType.Float
-        override val contentType: ContentType
-            get() = beatDataContentType
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): baaahs.gl.data.Feed {
             return object : baaahs.gl.data.Feed, RefCounted by RefCounter() {
@@ -165,7 +165,7 @@ class BeatLinkPlugin internal constructor(
         val beatInfoContentType = ContentType("beat-info", "Beat Info", beatInfoStruct)
     }
 
-    class Builder(internal val beatSource: BeatSource) : PluginBuilder {
+    class BeatLinkPluginBuilder(internal val beatSource: BeatSource) : PluginBuilder {
         override val id = BeatLinkPlugin.id
 
         override fun build(pluginContext: PluginContext): Plugin {
