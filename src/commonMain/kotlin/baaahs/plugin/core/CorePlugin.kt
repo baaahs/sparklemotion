@@ -65,7 +65,8 @@ class CorePlugin(private val pluginContext: PluginContext) : Plugin {
             classSerializer(SliderControl.serializer()),
             classSerializer(TransitionControl.serializer()),
             classSerializer(VacuityControl.serializer()),
-            classSerializer(VisualizerControl.serializer())
+            classSerializer(VisualizerControl.serializer()),
+            classSerializer(XyPadControl.serializer())
         )
 
     override val deviceTypes: List<DeviceType>
