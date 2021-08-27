@@ -55,9 +55,8 @@ val ShaderHelp = xComponent<ShaderHelpProps>("ShaderHelp") { props ->
                                             +"\n"
                                         }
                                 }
-                                +"uniform ${type.glslLiteral} ${dataSourceBuilder.resourceName.lowercase()};"
-                                +" // @@${pluginRef.shortRef()}\n"
-
+                                val varName = dataSourceBuilder.resourceName.replaceFirstChar { it.lowercase() }
+                                +"uniform ${type.glslLiteral} $varName; // @@${pluginRef.shortRef()}\n"
                             }
                         }
                         tdCell { +contentType.id }

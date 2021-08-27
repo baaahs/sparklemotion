@@ -17,7 +17,9 @@ class LightRing(
     override val description: String,
     val center: Vector3F,
     val radius: Float,
-    val planeNormal: Vector3F
+    val planeNormal: Vector3F,
+    val firstPixelRadians: Float = 0f,
+    val pixelDirection: PixelDirection = PixelDirection.Clockwise
 ) : Model.Entity, LinearPixelArray {
     override val deviceType: DeviceType
         get() = PixelArrayDevice
@@ -41,13 +43,22 @@ class LightRing(
 
     /** A light ring's pixels are evenly spaced along its circumference. */
     override fun calculatePixelLocation(index: Int, count: Int): Vector3F {
+        val pI = when (pixelDirection) {
+            PixelDirection.Clockwise -> if (index == 0) 0 else count - index
+            PixelDirection.Counterclockwise -> index
+        }
         val (v1, v2) = pixelPlotVectors
-        val a = 2 * PI * (index / count.toDouble())
+        val a = 2 * PI * (pI / count.toDouble()) + firstPixelRadians
         return center + (v1 * cos(a) + v2 * sin(a)) * radius
     }
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
         LightRingSimulation(this, simulationEnv)
+
+    enum class PixelDirection {
+        Clockwise,
+        Counterclockwise
+    }
 
     companion object {
         val facingForward = Vector3F(0f, 0f, 1f)

@@ -34,6 +34,16 @@
       "srcFile": "Movers On.glsl"
     },
     {
+      "id": "hsb",
+      "title": "HSB",
+      "description": "Hue, saturation, & brightness adjustments.",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=filter"
+      ],
+      "srcFile": "HSB.glsl"
+    },
+    {
       "id": "movers-swirl",
       "title": "Movers Swirl Filter",
       "description": "Swirl sharpys around whatever they're aimed at!",
