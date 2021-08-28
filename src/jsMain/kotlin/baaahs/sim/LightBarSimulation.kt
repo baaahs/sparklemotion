@@ -8,18 +8,18 @@ import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.LightBar
+import baaahs.model.PixelArray
 import baaahs.visualizer.LightBarVisualizer
 import baaahs.visualizer.VizPixels
 import baaahs.visualizer.toVector3
 import three.js.Vector3
 
 actual class LightBarSimulation actual constructor(
-    val lightBar: LightBar,
+    val pixelArray: PixelArray,
     private val simulationEnv: SimulationEnv
 ) : FixtureSimulation {
-    private val pixelCount = 59
 
-    private val pixelLocations by lazy { lightBar.calculatePixelLocations(pixelCount) }
+    private val pixelLocations by lazy { pixelArray.calculatePixelLocations(59) }
     private val vizPixels by lazy {
         VizPixels(pixelLocations.map { it.toVector3() }.toTypedArray(), pixelVisualizationNormal)
     }
@@ -27,27 +27,27 @@ actual class LightBarSimulation actual constructor(
     override val mappingData: MappingSession.SurfaceData
         get() = MappingSession.SurfaceData(
             SacnManager.controllerTypeName,
-            "wled-X${lightBar.name}X",
-            lightBar.name,
+            "wled-X${pixelArray.name}X",
+            pixelArray.name,
             pixelLocations.size,
             pixelLocations.map { MappingSession.SurfaceData.PixelData(it) }
         )
 
-    override val entityVisualizer: LightBarVisualizer by lazy { LightBarVisualizer(lightBar, vizPixels) }
+    override val entityVisualizer: LightBarVisualizer by lazy { LightBarVisualizer(pixelArray, vizPixels) }
 
     val wledSimulator by lazy {
         val wledsSimulator = simulationEnv[WledsSimulator::class]
-        wledsSimulator.createFakeWledDevice(lightBar.name, vizPixels)
+        wledsSimulator.createFakeWledDevice(pixelArray.name, vizPixels)
     }
 
     override val previewFixture: Fixture by lazy {
         Fixture(
-            lightBar,
-            pixelCount,
+            pixelArray,
+            pixelLocations.size,
             pixelLocations,
-            lightBar.deviceType.defaultConfig,
-            lightBar.name,
-            PixelArrayPreviewTransport(lightBar.name, vizPixels)
+            pixelArray.deviceType.defaultConfig,
+            pixelArray.name,
+            PixelArrayPreviewTransport(pixelArray.name, vizPixels)
         )
     }
 
