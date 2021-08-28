@@ -2,12 +2,18 @@ package baaahs.model
 
 import baaahs.geom.Vector3F
 
-interface LinearPixelArray {
+interface LinearPixelArray : PixelArray {
     fun calculatePixelLocation(index: Int, count: Int): Vector3F
 
-    fun calculatePixelLocations(pixelCount: Int): List<Vector3F> {
-        return (0 until pixelCount).map { i ->
-            calculatePixelLocation(i, pixelCount)
+    override fun calculatePixelLocations(expectedPixelCount: Int): List<Vector3F> {
+        return (0 until expectedPixelCount).map { i ->
+            calculatePixelLocation(i, expectedPixelCount)
         }
     }
+}
+
+interface PlacedPixelArray : PixelArray
+
+interface PixelArray : Model.Entity {
+    fun calculatePixelLocations(expectedPixelCount: Int): List<Vector3F>
 }
