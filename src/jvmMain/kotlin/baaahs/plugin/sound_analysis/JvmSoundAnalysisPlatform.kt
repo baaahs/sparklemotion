@@ -20,7 +20,7 @@ class JvmSoundAnalysisPlatform : SoundAnalysisPlatform {
 
     private fun getPlaybackMixerInfos(): List<Mixer.Info> {
         return AudioSystem.getMixerInfo().mapNotNull { mixerInfo ->
-            if (mixerInfo.name != "Default Audio Device") return@mapNotNull null
+            if (mixerInfo.name != "DJM-900NXS2") return@mapNotNull null
 
             val mixer = AudioSystem.getMixer(mixerInfo)
             logger.warn { "* ${mixer.mixerInfo.name}" }

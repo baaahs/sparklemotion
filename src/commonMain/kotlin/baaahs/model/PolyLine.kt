@@ -52,5 +52,7 @@ class PolyLine(
             val delta = endVertex - startVertex
             return delta * index.toDouble() / (count - 1).toDouble() + startVertex
         }
+
+        fun reverse(): Segment = Segment(endVertex, startVertex, pixelCount)
     }
 }
