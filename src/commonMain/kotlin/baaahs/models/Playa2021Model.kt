@@ -37,7 +37,9 @@ class Playa2021Model : Model() {
                 Vector3F(left, bottom + yOff, 0f),
                 Vector3F(left + width, bottom + yOff, 0f),
                 xPixels
-            )
+            ).let {
+                if (yI % 2 == 1) it.reverse() else it
+            }
         })
     }
 
