@@ -1,16 +1,16 @@
 package baaahs.visualizer
 
-import baaahs.model.LightBar
+import baaahs.model.PixelArray
 import three.js.BoxGeometry
 import three.js.Mesh
 import three.js.MeshNormalMaterial
 import three.js.Vector3
 
 class LightBarVisualizer(
-    lightBar: LightBar,
+    pixelArray: PixelArray,
     vizPixels: VizPixels? = null
 ) : EntityVisualizer {
-    override val title: String = lightBar.name
+    override val title: String = pixelArray.name
     override var mapperIsRunning: Boolean = false
 
     override var selected: Boolean = false
@@ -34,14 +34,17 @@ class LightBarVisualizer(
     private val boxMesh: Mesh<BoxGeometry, MeshNormalMaterial>
 
     init {
-        val length = lightBar.length
-
-        val startVertex = lightBar.startVertex
-        val endVertex = lightBar.endVertex
+        val bounds = pixelArray.bounds
+        val startVertex = bounds.first
+        val endVertex = bounds.second
         val normal = endVertex.minus(startVertex).normalize()
 
-        val boxGeom = BoxGeometry(1, length, 1)
-        boxGeom.translate(0, length / 2, 0)
+        // TODO: This is wrong.
+        val width = endVertex.x - startVertex.x
+        val length = endVertex.y - startVertex.y
+
+        val boxGeom = BoxGeometry(width, length, 1)
+        boxGeom.translate(width / 2, length / 2, 0)
 
         Rotator(Vector3(0, 1, 0), normal.toVector3())
             .rotate(boxGeom)
