@@ -95,7 +95,7 @@ val Transition = xComponent<TransitionProps>("Transition") { props ->
                 attrs.reversed = false
                 attrs.showTicks = false
 
-                attrs.onChange = handlePositionChange
+                attrs.onPositionChange = handlePositionChange
             }
         }
 

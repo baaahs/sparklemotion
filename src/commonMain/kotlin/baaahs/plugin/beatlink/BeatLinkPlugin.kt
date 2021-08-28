@@ -163,12 +163,15 @@ class BeatLinkPlugin internal constructor(
             "confidence" to GlslType.Float
         )
         val beatInfoContentType = ContentType("beat-info", "Beat Info", beatInfoStruct)
+
+        var yuckGlobalBeatSource: BeatSource? = null
     }
 
     class BeatLinkPluginBuilder(internal val beatSource: BeatSource) : PluginBuilder {
         override val id = BeatLinkPlugin.id
 
         override fun build(pluginContext: PluginContext): Plugin {
+            yuckGlobalBeatSource = beatSource
             return BeatLinkPlugin(beatSource, pluginContext)
         }
     }
