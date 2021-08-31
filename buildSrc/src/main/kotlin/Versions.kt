@@ -1,5 +1,5 @@
 object Versions {
-    const val kotlin = "1.5.21"
+    const val kotlin = "1.5.30"
     const val coroutines = "1.5.1"
     const val serializationRuntime = "1.2.2"
     const val ktor = "1.6.1"
@@ -17,7 +17,8 @@ object Versions {
     const val kotlinReact = "17.0.2-$wrappersBuild"
     const val kotlinxHtml = "0.7.3"
     const val styledComponents = "5.3.0"
-    const val kotlinStyled = "$styledComponents-$wrappersBuild"
+    const val kotlinStyled = "$styledComponents-pre.218-kotlin-1.5.21"
+//    const val kotlinStyled = "$styledComponents-$wrappersBuild"
     const val kotlinMaterialUi = "0.6.0"
 
     // Test:
