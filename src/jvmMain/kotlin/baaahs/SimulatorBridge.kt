@@ -52,6 +52,7 @@ object SimulatorBridge {
                                 webSocketConnections.remove(this)
                             }
                         }
+                        else -> error("Unsupported frame type ${frame::class}")
                     }
                 }
 
