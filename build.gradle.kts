@@ -212,7 +212,7 @@ kotlin {
         sourceSets.all {
             languageSettings.apply {
                 progressiveMode = true
-                useExperimentalAnnotation("kotlin.ExperimentalStdlibApi")
+                optIn("kotlin.ExperimentalStdlibApi")
             }
         }
     }
