@@ -123,7 +123,7 @@ class BridgeClient(private val url: String) {
             GlobalScope.launch { request.send(audioInputs) }
         }
 
-        override fun createConstantQAnalyzer(audioInput: AudioInput, sampleRate: Float): SoundAnalyzer {
+        override fun createConstantQAnalyzer(audioInput: AudioInput?, sampleRate: Float): SoundAnalyzer {
             val requestId = nextAnalyzerRequestId++
             webSocket.send(buildJsonArray { add("createConstantQAnalyzer"); add(requestId) }.toString())
             return BridgedSoundAnalyzer()

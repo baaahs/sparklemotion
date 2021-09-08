@@ -136,7 +136,7 @@ interface BeatLinkPluginModule : KModule {
 
 interface SoundAnalysisPluginModule : KModule {
     val soundAnalysisPlatform: SoundAnalysisPlatform
-    val audioInput: AudioInput
+    val audioInput: AudioInput?
 
     override fun getModule(): Module = module {
         single { soundAnalysisPlatform }

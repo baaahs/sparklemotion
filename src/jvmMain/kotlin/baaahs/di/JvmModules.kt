@@ -23,7 +23,6 @@ import baaahs.proto.Ports
 import baaahs.util.Clock
 import baaahs.util.SystemClock
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import org.koin.core.qualifier.named
@@ -68,7 +67,6 @@ class JvmPinkyModule : PinkyModule {
             return DirectoryDaddy(fwDir, fwUrlBase)
         }
 
-    @ObsoleteCoroutinesApi
     override val Scope.pinkyMainDispatcher: CoroutineDispatcher
         get() = newSingleThreadContext("Pinky Main")
     override val Scope.dmxDriver: Dmx.Driver
@@ -92,7 +90,7 @@ class JvmBeatLinkPluginModule(private val args: PinkyMain.Args) : BeatLinkPlugin
 
 class JvmSoundAnalysisPluginModule(
     private val args: PinkyMain.Args,
-    override val audioInput: AudioInput
+    override val audioInput: AudioInput?
 ) : SoundAnalysisPluginModule {
     override val soundAnalysisPlatform: SoundAnalysisPlatform
         get() = JvmSoundAnalysisPlatform()

@@ -11,17 +11,31 @@ class JvmSoundAnalysisPlatform : SoundAnalysisPlatform {
         return getPlaybackMixerInfos().map { JvmAudioInput(it) }
     }
 
-    override fun createConstantQAnalyzer(audioInput: AudioInput, sampleRate: Float): SoundAnalyzer {
-        audioInput as JvmAudioInput
+    override fun createConstantQAnalyzer(audioInput: AudioInput?, sampleRate: Float): SoundAnalyzer {
+        audioInput as JvmAudioInput?
 
-        val mixer = AudioSystem.getMixer(audioInput.mixerInfo)
-        return JvmSoundAnalyzer(mixer, sampleRate)
+        if (audioInput != null) {
+            val mixer = AudioSystem.getMixer(audioInput.mixerInfo)
+            return JvmSoundAnalyzer(mixer, sampleRate)
+        } else {
+            logger.warn { "No audio input found, sound aalysis disabled." }
+            return NullSoundAnalyzer()
+        }
+    }
+
+    inner class NullSoundAnalyzer : SoundAnalyzer {
+        override val numberOfBuckets: Int
+            get() = 1
+
+        override fun listen(analysisListener: SoundAnalyzer.AnalysisListener) {
+        }
+
+        override fun unlisten(analysisListener: SoundAnalyzer.AnalysisListener) {
+        }
     }
 
     private fun getPlaybackMixerInfos(): List<Mixer.Info> {
         return AudioSystem.getMixerInfo().mapNotNull { mixerInfo ->
-            if (mixerInfo.name != "DJM-900NXS2") return@mapNotNull null
-
             val mixer = AudioSystem.getMixer(mixerInfo)
             logger.warn { "* ${mixer.mixerInfo.name}" }
             mixer.sourceLineInfo.forEach { lineInfo: Line.Info? ->

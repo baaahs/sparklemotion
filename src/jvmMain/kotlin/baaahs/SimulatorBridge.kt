@@ -1,9 +1,7 @@
 package baaahs
 
-import baaahs.plugin.beatlink.BeatData
 import baaahs.plugin.beatlink.BeatLinkBeatSource
 import baaahs.plugin.sound_analysis.JvmSoundAnalysisPlatform
-import baaahs.plugin.sound_analysis.SoundAnalyzer
 import baaahs.proto.Ports
 import baaahs.sim.bridge.BridgeAudioInput
 import baaahs.util.SystemClock
@@ -64,6 +62,7 @@ object SimulatorBridge {
                                 else -> error("Unknown bridge command \"$opcode\"")
                             }
                         }
+                        else -> error("huh?")
                     }
                 }
 

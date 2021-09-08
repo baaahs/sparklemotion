@@ -4,7 +4,7 @@ interface SoundAnalysisPlatform {
     suspend fun listAudioInputs(): List<AudioInput>
 
     fun createConstantQAnalyzer(
-        audioInput: AudioInput,
+        audioInput: AudioInput?,
         sampleRate: Float,
 
     ): SoundAnalyzer

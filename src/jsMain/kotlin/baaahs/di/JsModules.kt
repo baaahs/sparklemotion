@@ -89,7 +89,7 @@ class JsBeatLinkPluginModule(private val beatSource_: BeatSource) : BeatLinkPlug
 }
 
 class JsSoundAnalysisPluginModule : SoundAnalysisPluginModule {
-    override val audioInput: AudioInput
+    override val audioInput: AudioInput?
         get() = object : AudioInput {
             override val id: String
                 get() = "fake"
@@ -102,7 +102,7 @@ class JsSoundAnalysisPluginModule : SoundAnalysisPluginModule {
                 return emptyList()
             }
 
-            override fun createConstantQAnalyzer(audioInput: AudioInput, sampleRate: Float): SoundAnalyzer {
+            override fun createConstantQAnalyzer(audioInput: AudioInput?, sampleRate: Float): SoundAnalyzer {
                 return object : SoundAnalyzer {
                     override val numberOfBuckets: Int
                         get() = 1

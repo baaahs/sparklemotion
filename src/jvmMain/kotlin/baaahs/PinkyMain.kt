@@ -53,8 +53,9 @@ class PinkyMain(private val args: Args) {
             val soundPlatform = JvmSoundAnalysisPlatform()
             val audioInputs = runBlocking {
                 soundPlatform.listAudioInputs()
-            }
-            val soundAnalysisPluginModule = JvmSoundAnalysisPluginModule(args, audioInputs[0])
+            }.filter { it.title == args.audioInput }
+
+            val soundAnalysisPluginModule = JvmSoundAnalysisPluginModule(args, audioInputs.firstOrNull())
 
             modules(
                 JvmPlatformModule(args).getModule(),
@@ -167,6 +168,8 @@ class PinkyMain(private val args: Args) {
             .default<Int?>(null)
 
         val enableBeatLink by parser.flagging("Enable beat detection").default(true)
+
+        val audioInput by parser.storing("Audio input for spectral analysys").default<String?>(null)
 
         val simulateBrains by parser.flagging("Simulate connected brains").default(false)
     }
