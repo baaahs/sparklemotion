@@ -7,13 +7,10 @@ import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.SacnTransportConfig
-import baaahs.model.LightRing
-import baaahs.model.LightRing.Companion.facingForward
-import baaahs.model.Model
+import baaahs.model.ObjModel
 import baaahs.model.PolyLine
-import kotlin.math.PI
 
-class Playa2021Model : Model() {
+class Playa2021Model : ObjModel("playa-2021-panels.obj") {
     override val name: String = "Playa2021"
 
     val controllerId = ControllerId(
@@ -43,7 +40,10 @@ class Playa2021Model : Model() {
         })
     }
 
-    override val allEntities: List<Entity> = allGridBoards
+//    override val allEntities: List<Entity> = allGridBoards
+
+    override fun createSurface(name: String, faces: List<Face>, lines: List<Line>): Surface =
+        Surface(name, name, PixelArrayDevice, 16 * 60, faces, lines)
 
     override fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> {
         return mapOf(
