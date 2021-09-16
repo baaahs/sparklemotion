@@ -2,10 +2,10 @@ package baaahs.sim.ui
 
 import baaahs.Brain
 import baaahs.Brain.State.*
+import baaahs.sim.ui.SimulatorStyles.brainIndicator
 import baaahs.ui.BComponent
 import baaahs.ui.Observable
 import baaahs.ui.Observer
-import baaahs.ui.SimulatorStyles.brainIndicator
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onMouseOverFunction
 import react.*

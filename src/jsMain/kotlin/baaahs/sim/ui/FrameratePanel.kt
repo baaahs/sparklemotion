@@ -1,7 +1,10 @@
 package baaahs.sim.ui
 
-import baaahs.ui.*
-import baaahs.ui.SimulatorStyles.section
+import baaahs.sim.ui.SimulatorStyles.section
+import baaahs.ui.BComponent
+import baaahs.ui.Observable
+import baaahs.ui.Observer
+import baaahs.ui.unaryPlus
 import baaahs.util.Framerate
 import kotlinx.css.*
 import kotlinx.html.id

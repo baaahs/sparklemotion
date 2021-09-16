@@ -3,7 +3,9 @@
 
 package external.mosaic
 
-import react.*
+import react.RClass
+import react.RProps
+import react.ReactElement
 
 external interface MosaicWindowProps<T>: RProps {
     var title: String
@@ -42,4 +44,4 @@ external interface MosaicWindowProps<T>: RProps {
 
 //abstract external class MosaicWindow<T> : Component<MosaicWindowProps<T>, RState>
 
-external val MosaicWindow: RClass<MosaicWindowProps<String>>
+external val MosaicWindow: RClass<MosaicWindowProps<*>>

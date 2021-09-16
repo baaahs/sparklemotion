@@ -2,22 +2,18 @@ package baaahs.sim.ui
 
 import baaahs.Brain
 import baaahs.SheepSimulator
+import baaahs.sim.ui.SimulatorStyles.console
 import baaahs.ui.BComponent
 import baaahs.ui.Observable
 import baaahs.ui.Observer
-import baaahs.ui.SimulatorStyles
-import baaahs.ui.SimulatorStyles.console
-import react.RBuilder
-import react.RProps
-import react.RState
+import react.*
 import react.dom.b
 import react.dom.div
 import react.dom.hr
-import react.setState
 import styled.css
 import styled.styledDiv
 
-class Console(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(props), Observer {
+class ConsoleView(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(props), Observer {
     override fun observing(props: ConsoleProps, state: ConsoleState): List<Observable?> {
         return listOf(
             props.simulator,
@@ -86,3 +82,6 @@ external interface ConsoleProps : RProps {
 external interface ConsoleState : RState {
     var selectedBrain: Brain.Facade?
 }
+
+fun RBuilder.console(handler: RHandler<ConsoleProps>) =
+    child(ConsoleView::class, handler = handler)
