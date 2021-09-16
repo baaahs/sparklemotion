@@ -1,11 +1,77 @@
-package baaahs.ui
+package baaahs.sim.ui
 
+import baaahs.ui.Styles
 import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.css.properties.boxShadow
 import styled.StyleSheet
 
 object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
+    val app by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        position = Position.absolute
+        top = 0.px
+        left = 0.px
+        width = 100.pct
+        height = 100.pct
+    }
+
+    val menuBar by css {
+        display = Display.flex
+        justifyContent = JustifyContent.spaceBetween
+        padding = "8px 16px"
+        background = "#182128"
+        declarations["box-shadow"] = "0px 1px 5px rgba(0, 0, 0, 0.4)"
+    }
+
+    val title by css {
+        fontSize = 18.px
+        color = Color.white
+    }
+
+    val menu by css {
+    }
+
+    val panelToolbar by css {
+        padding = "0 8px"
+    }
+
+    val windowContainer by css {
+        display = Display.flex
+        alignItems = Align.stretch
+        position = Position.absolute
+        top = 0.px
+        left = 0.px
+        width = 100.pct
+        height = 100.pct
+
+        child("*") {
+            position = Position.absolute
+            top = 0.px
+            left = 0.px
+            width = 100.pct
+            height = 100.pct
+            display = Display.flex
+            flexDirection = FlexDirection.column
+            overflow = Overflow.hidden
+        }
+    }
+
+    val modelSimulation by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+    }
+
+    val vizToolbar by css {
+        flex(0.0, 0.0, FlexBasis.auto)
+        padding = "0 16px"
+        justifyContent = JustifyContent.spaceBetween
+        display = Display.flex
+    }
+
+    val statusPanelToolbar by css {}
+
     val console by css {
         color = Color.black
         backgroundColor = Color.white

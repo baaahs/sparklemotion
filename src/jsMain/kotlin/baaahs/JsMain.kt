@@ -1,13 +1,10 @@
 package baaahs
 
-import baaahs.DeadCodeEliminationDefeater.noDCE
 import baaahs.client.WebClient
 import baaahs.di.JsAdminClientModule
 import baaahs.di.JsBeatLinkPluginModule
 import baaahs.di.JsPlatformModule
 import baaahs.di.JsWebClientModule
-import baaahs.jsx.sim.MosaicApp
-import baaahs.jsx.sim.MosaicAppProps
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.MapperUi
 import baaahs.model.Model
@@ -18,9 +15,10 @@ import baaahs.net.BrowserNetwork.BrowserAddress
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.sim.HostedWebApp
-import baaahs.sim.ui.WebClientWindow
+import baaahs.sim.ui.SimulatorAppProps
+import baaahs.sim.ui.SimulatorAppView
+import baaahs.sim.ui.WebClientWindowView
 import baaahs.ui.ErrorDisplay
-import baaahs.ui.ErrorDisplayProps
 import baaahs.util.ConsoleFormatters
 import baaahs.util.KoinLogger
 import baaahs.util.Logger
@@ -37,7 +35,6 @@ import three_ext.installCameraControls
 
 fun main(args: Array<String>) {
     @Suppress("ConstantConditionIf", "SimplifyBooleanWithConstants")
-    if (1 + 1 == 3) noDCE()
     ConsoleFormatters.install()
     installCameraControls()
 
@@ -68,7 +65,7 @@ private fun launchUi(
             onLaunch()
 
             val contentDiv = document.getElementById("content")
-            render(createElement(WebClientWindow, jsObject {
+            render(createElement(WebClientWindowView, jsObject {
                 this.hostedWebApp = this@launch
             }), contentDiv)
         }
@@ -87,14 +84,14 @@ private fun launchUi(
             }
             hostedWebApp.onLaunch()
 
-            val props = jsObject<MosaicAppProps> {
-                this.simulator = simulator
+            val props = jsObject<SimulatorAppProps> {
+                this.simulator = simulator.facade
                 this.hostedWebApp = hostedWebApp
             }
             val simulatorEl = document.getElementById("app")
 
             GlobalScope.launch {
-                render(createElement(MosaicApp, props), simulatorEl)
+                render(createElement(SimulatorAppView, props), simulatorEl)
             }
 
             GlobalScope.promise {
@@ -102,6 +99,7 @@ private fun launchUi(
             }.catch {
                 window.alert("Failed to launch simulator: $it")
                 Logger("JsMain").error(it) { "Failed to launch simulator." }
+                throw it
             }
         } else {
             val webAppInjector = koinApplication {
@@ -147,7 +145,7 @@ private fun launchUi(
         }
     } catch (e: Exception) {
         val container = document.getElementById("content") ?: document.getElementById("app")
-        render(createElement(ErrorDisplay, jsObject<ErrorDisplayProps> {
+        render(createElement(ErrorDisplay, jsObject {
             this.error = e.asDynamic()
             this.componentStack = e.stackTraceToString()
             this.resetErrorBoundary = { window.location.reload() }

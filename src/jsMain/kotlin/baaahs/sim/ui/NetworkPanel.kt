@@ -1,8 +1,11 @@
 package baaahs.sim.ui
 
 import baaahs.sim.FakeNetwork
-import baaahs.ui.*
-import baaahs.ui.SimulatorStyles.networkPacketLossRate
+import baaahs.sim.ui.SimulatorStyles.networkPacketLossRate
+import baaahs.ui.BComponent
+import baaahs.ui.Observable
+import baaahs.ui.Observer
+import baaahs.ui.unaryPlus
 import baaahs.util.percent
 import kotlinx.css.*
 import kotlinx.html.id

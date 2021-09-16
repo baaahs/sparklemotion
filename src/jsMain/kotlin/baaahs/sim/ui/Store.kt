@@ -1,7 +1,7 @@
 @file:JsModule("js/simulator/store.jsx")
 @file:JsNonModule
 
-package baaahs.jsx.sim
+package baaahs.sim.ui
 
 import baaahs.SheepSimulator
 import react.RContext
