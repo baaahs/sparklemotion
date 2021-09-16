@@ -40,8 +40,11 @@ class MergedFs(
     }
 
     override suspend fun delete(file: Fs.File) {
-        overlayFses.forEach { it.delete(file) }
-        baseFs.delete(file)
+        overlayFses.forEach {
+            if (it.exists(file)) it.delete(file)
+        }
+
+        if (baseFs.exists(file)) baseFs.delete(file)
     }
 }
 
