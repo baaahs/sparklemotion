@@ -432,6 +432,10 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         }
     }
 
+    val serverNoticeAlertMessage by css {
+        maxWidth = 40.em
+    }
+
     val serverNoticeMessage by css {
         fontWeight = FontWeight.bold
     }
