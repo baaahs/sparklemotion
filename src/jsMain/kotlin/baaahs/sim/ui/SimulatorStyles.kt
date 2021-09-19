@@ -1,6 +1,5 @@
 package baaahs.sim.ui
 
-import baaahs.ui.Styles
 import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.css.properties.boxShadow
@@ -152,7 +151,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         child(".online") { backgroundColor = Color.orange }
     }
 
-    val dataWithUnit by Styles.css {
+    val dataWithUnit by css {
         textAlign = TextAlign.right
     }
 

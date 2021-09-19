@@ -1,9 +1,9 @@
 package baaahs.mapper
 
-import baaahs.jsx.useResizeListener
 import baaahs.ui.unaryPlus
 import baaahs.ui.withEvent
 import baaahs.ui.xComponent
+import baaahs.util.useResizeListener
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.tabIndex
