@@ -69,7 +69,7 @@ class ColorWheel(
                     max(1f - (polar.r - (radius - featheringPx)) / featheringPx, 0f)
                 } else 1f
 
-                val color = polar.toColor(radius.toFloat(), alpha)
+                val color = polar.copy(r = polar.r / radius).toColor(alpha)
 
                 bitmap.setPixel(x + radius, y + radius, color)
             }
@@ -82,7 +82,7 @@ class ColorWheel(
      * @param xy Coordinate within color wheel, centered at (0,0).
      */
     fun getUpdatedColors(xy: Vector2F, index: Int): Array<Color> {
-        val color = xy.toPolar().toColor(radius.toFloat())
+        val color = (xy / radius.toFloat()).toPolar().toColor()
 
         val updatedColors = colors.copyOf()
         updatedColors[index] = color

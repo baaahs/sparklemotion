@@ -131,3 +131,19 @@ fun renderWrapper(block: RBuilder.() -> Unit): View {
         }
     }
 }
+
+val preventDefault: (Event) -> Unit = { event -> event.preventDefault() }
+val disableScroll = {
+    baaahs.document.body?.addEventListener("touchmove", preventDefault, js("{ passive: false }"))
+}
+val enableScroll = {
+    baaahs.document.body?.removeEventListener("touchmove", preventDefault)
+}
+
+object Events {
+    const val primaryButton = 1
+}
+
+val Event.buttons: Int get() = asDynamic().buttons as Int
+val Event.clientX: Int get() = asDynamic().clientX as Int
+val Event.clientY: Int get() = asDynamic().clientY as Int

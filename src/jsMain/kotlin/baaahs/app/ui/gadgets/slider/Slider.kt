@@ -1,11 +1,7 @@
 package baaahs.app.ui.gadgets.slider
 
 import baaahs.app.ui.appContext
-import baaahs.app.ui.disableScroll
-import baaahs.app.ui.enableScroll
-import baaahs.ui.name
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import external.react_compound_slider.*
 import external.throttle
 import react.*
@@ -42,7 +38,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             attrs.vertical = true
             attrs.reversed = props.reversed
             attrs.mode = 1
-            attrs.step = props.stepValue ?: (props.maxValue - props.minValue) / 256
+            attrs.step = props.stepValue ?: ((props.maxValue - props.minValue) / 256)
             attrs.domain = domain.asDynamic()
             attrs.onSlideStart = disableScroll.asDynamic()
             attrs.onSlideEnd = enableScroll.asDynamic()
