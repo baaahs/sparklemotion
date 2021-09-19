@@ -1,8 +1,8 @@
 package baaahs.ui.misc
 
-import baaahs.jsx.useResizeListener
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import baaahs.util.useResizeListener
 import kotlinx.css.*
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition

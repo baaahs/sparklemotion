@@ -1,8 +1,8 @@
 package baaahs.visualizer.ui
 
-import baaahs.jsx.useResizeListener
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import baaahs.util.useResizeListener
 import baaahs.visualizer.Visualizer
 import kotlinx.css.*
 import org.w3c.dom.HTMLElement

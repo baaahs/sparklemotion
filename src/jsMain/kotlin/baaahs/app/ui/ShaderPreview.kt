@@ -7,12 +7,12 @@ import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.preview.ShaderPreview
-import baaahs.jsx.useResizeListener
 import baaahs.show.Shader
 import baaahs.ui.addObserver
 import baaahs.ui.inPixels
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import baaahs.util.useResizeListener
 import external.IntersectionObserver
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction

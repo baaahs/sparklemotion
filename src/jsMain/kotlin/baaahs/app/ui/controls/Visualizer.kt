@@ -3,10 +3,10 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.app.ui.preview.ClientPreview
 import baaahs.control.OpenVisualizerControl
-import baaahs.jsx.useResizeListener
 import baaahs.show.live.ControlProps
 import baaahs.ui.on
 import baaahs.ui.xComponent
+import baaahs.util.useResizeListener
 import materialui.components.card.card
 import materialui.components.paper.enums.PaperStyle
 import org.w3c.dom.Element
