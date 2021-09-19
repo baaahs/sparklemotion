@@ -34,19 +34,19 @@ fun deg2rad(deg: Float): Float {
     return ((deg * (2 * PI)) - PI).toFloat()
 }
 
-fun Polar.toColor(radius: Float, alpha: Float = 1f): Color {
+fun Polar.toColor(alpha: Float = 1f): Color {
     return Color.HSB(
         hue = rad2deg(phi),
-        saturation = r / radius,
+        saturation = r,
         brightness = 1.0f
     ).toRGB(alpha)
 }
 
-fun Color.toXy(radius: Float): Vector2F {
+fun Color.toPolar(): Polar {
     // Convert the color to polar coordinates
     val hsb = toHSB()
     val deg = if (hsb.hue.isNaN()) 0f else hsb.hue; // hue will be NaN for white :-/
     val phi = deg2rad(deg)
-    val r = hsb.saturation * radius
-    return Polar(r, phi).toXy()
+    val r = hsb.saturation
+    return Polar(r, phi)
 }

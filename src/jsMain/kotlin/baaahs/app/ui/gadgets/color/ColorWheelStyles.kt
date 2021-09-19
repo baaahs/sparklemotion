@@ -16,6 +16,11 @@ object ColorWheelStyles : StyleSheet("ui", isStatic = true) {
         minWidth = 200.px
     }
 
+    val dragging by css {}
+    val grabbing by css {}
+    val selected by css {}
+    val active by css {}
+
     val canvasWrapper by css {
         position = Position.relative
     }
@@ -63,11 +68,32 @@ object ColorWheelStyles : StyleSheet("ui", isStatic = true) {
         }
     }
 
-    val dragging by css {}
-    val grabbing by css {}
-    val selected by css {}
-    val active by css {}
+    val harmonyModes by css {
+        display = Display.flex
+        flex(1.0, 1.0, FlexBasis.auto)
+        marginTop = 1.em
+        justifyContent = JustifyContent.spaceBetween
+    }
 
-    val harmonyModes by css {}
-    val harmonyMode by css {}
+    val harmonyMode by css {
+        textTransform = TextTransform.uppercase
+        fontSize = 12.px
+        color = Color.white
+        backgroundColor = rgba(32, 32, 32, 0.91)
+        border = "none"
+        display = Display.flex
+        flex(1.0, 1.0, FlexBasis.auto)
+        cursor = Cursor.pointer
+        padding = "8px"
+        outline = Outline.none
+
+        descendants(".active") {
+            backgroundColor = Color("#4BBDC2")
+        }
+
+        descendants("+ &") {
+            borderLeft = "1px solid rgba(13, 13, 13, 0.91)"
+
+        }
+    }
 }
