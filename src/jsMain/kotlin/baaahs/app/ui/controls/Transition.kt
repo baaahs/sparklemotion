@@ -106,31 +106,31 @@ val Transition = xComponent<TransitionProps>("Transition") { props ->
             inlineStyles { gridArea = "speed" }
             +"Speed: "
             toggleButton(styles.speedButton on ToggleButtonStyle.label) {
-                attrs["selected"] = speed == ".25s"; +"¼s"
+                attrs.selected = speed == ".25s"; +"¼s"
             }
             toggleButton(styles.speedButton on ToggleButtonStyle.label) {
-                attrs["selected"] = speed == ".5s"; +"½s"
+                attrs.selected = speed == ".5s"; +"½s"
             }
             toggleButton(styles.speedButton on ToggleButtonStyle.label) {
-                attrs["selected"] = speed == "1s"; +"1s"
+                attrs.selected = speed == "1s"; +"1s"
             }
             toggleButton(styles.speedButton on ToggleButtonStyle.label) {
-                attrs["selected"] = speed == "2s"; +"2s"
+                attrs.selected = speed == "2s"; +"2s"
             }
         }
 
         div {
             inlineStyles { gridArea = "shape" }
             +"Shape: "
-            toggleButton { attrs["selected"] = shape == "linear"; +"Linear" }
-            toggleButton { attrs["selected"] = shape == "ease"; +"Ease" }
+            toggleButton { attrs.selected = shape == "linear"; +"Linear" }
+            toggleButton { attrs.selected = shape == "ease"; +"Ease" }
         }
 
         div {
             inlineStyles { gridArea = "effect" }
             +"Effect: "
-            toggleButton { attrs["selected"] = effect == "fade"; +"Fade" }
-            toggleButton { attrs["selected"] = effect == "dissolve"; +"Dissolve" }
+            toggleButton { attrs.selected = effect == "fade"; +"Fade" }
+            toggleButton { attrs.selected = effect == "dissolve"; +"Dissolve" }
         }
     }
 }

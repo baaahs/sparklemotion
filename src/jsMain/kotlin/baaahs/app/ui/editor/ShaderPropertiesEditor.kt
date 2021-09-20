@@ -85,7 +85,7 @@ val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderProp
                     attrs.onChangeFunction = handleSelectShaderChannel
 
                     menuItem {
-                        attrs["value"] = main.id
+                        attrs.value = main.id
                         listItemIcon { icon(CommonIcons.ShaderChannel) }
                         listItemText { +"${main.id.englishize()} (default)" }
                     }
@@ -96,7 +96,7 @@ val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderProp
                     shaderChannels.forEach { shaderChannel ->
                         if (shaderChannel.id != main.id) {
                             menuItem {
-                                attrs["value"] = shaderChannel.id
+                                attrs.value = shaderChannel.id
                                 listItemIcon { icon(CommonIcons.ShaderChannel) }
                                 listItemText { +shaderChannel.id.englishize() }
                             }
@@ -105,7 +105,7 @@ val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderProp
 
                     divider {}
                     menuItem {
-                        attrs["value"] = "__new__"
+                        attrs.value = "__new__"
                         listItemIcon { icon(CommonIcons.Add) }
                         listItemText { +"New Channel…" }
                     }
