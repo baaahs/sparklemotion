@@ -12,8 +12,11 @@ import materialui.components.listitemtext.listItemText
 import materialui.components.menuitem.menuItem
 import materialui.components.select.select
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 
 val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props ->
     val appContext = useContext(appContext)
@@ -43,7 +46,7 @@ val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props -
     }
 }
 
-external interface LayoutAreaCellProps : RProps {
+external interface LayoutAreaCellProps : Props {
     var layouts: MutableLayouts
     var tab: MutableTab
     var columnIndex: Int

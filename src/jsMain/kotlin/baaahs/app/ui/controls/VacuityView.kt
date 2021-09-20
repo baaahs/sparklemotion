@@ -5,8 +5,11 @@ import baaahs.control.OpenVacuityControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 
 val Vacuity = xComponent<VacuityProps>("Vacuity") { props ->
     val appContext = useContext(appContext)
@@ -44,7 +47,7 @@ val Vacuity = xComponent<VacuityProps>("Vacuity") { props ->
     }
 }
 
-external interface VacuityProps : RProps {
+external interface VacuityProps : Props {
     var controlProps: ControlProps
     var vacuityControl: OpenVacuityControl
 }

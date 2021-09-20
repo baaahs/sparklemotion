@@ -5,10 +5,10 @@ package external.react_compound_slider
 
 import org.w3c.dom.TouchEvent
 import org.w3c.dom.events.MouseEvent
-import react.RClass
-import react.RProps
+import react.ElementType
+import react.Props
 
-external val Tracks : RClass<TracksProps>
+external val Tracks : ElementType<TracksProps>
 
 external interface TrackItem {
     var id: String
@@ -28,7 +28,7 @@ external interface TracksObject {
     var getTrackProps: GetTrackProps
 }
 
-external interface TracksProps : RProps {
+external interface TracksProps : Props {
     var left: Boolean?
         get() = definedExternally
         set(value) = definedExternally

@@ -11,10 +11,9 @@ import materialui.components.listitem.listItem
 import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
 import materialui.icon
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.br
 import react.dom.header
 
@@ -55,7 +54,7 @@ val FixturesList = xComponent<FixturesListProps>("FixturesList") { props ->
     }
 }
 
-external interface FixturesListProps : RProps {
+external interface FixturesListProps : Props {
     var editableManager: EditableManager
     var mutablePatchHolder: MutablePatchHolder
 }

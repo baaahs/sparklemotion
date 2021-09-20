@@ -167,7 +167,6 @@ kotlin {
 
                 implementation(npm("react-compound-slider", "^3.3.1"))
                 implementation(npm("react-draggable", "^3.3.0"))
-                implementation(npm("react-hot-loader", "^4.11.0"))
                 implementation(npm("three", "^0.120.0", generateExternals = false))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
                 implementation(npm("react-mosaic-component", "^4.0.0"))

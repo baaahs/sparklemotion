@@ -16,9 +16,12 @@ import kotlinx.html.js.onClickFunction
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import org.w3c.dom.events.MouseEvent
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
 import react.dom.i
+import react.useRef
 import styled.inlineStyles
 
 const val BORDER_WIDTH = 28
@@ -97,7 +100,7 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
     }
 }
 
-external interface FakeClientDeviceProps : RProps {
+external interface FakeClientDeviceProps : Props {
     var name: String
     var width: Int
     var height: Int

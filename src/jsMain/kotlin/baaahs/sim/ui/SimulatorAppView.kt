@@ -44,7 +44,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
             attrs.zeroStateView = document.createElement("div")
 
             attrs.renderTile = { window, path ->
-                // TODO: Ugh, are there more idiomatic ways to do any of this?
+                // TODO: Ugh, are there more idiomatic ways to do any of this? Yes! buildElement {}
 
                 createElement(MosaicWindow,
                     jsObject<MosaicWindowProps<SimulatorWindows>> {
@@ -52,8 +52,10 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
                         this.title = window.name
                         this.path = path
                         this.renderToolbar = { props, isDraggable ->
-                            div(+SimulatorStyles.panelToolbar) {
-                                +props.title
+                            buildElement {
+                                div(+SimulatorStyles.panelToolbar) {
+                                    +props.title
+                                }
                             }
                         }
                     },

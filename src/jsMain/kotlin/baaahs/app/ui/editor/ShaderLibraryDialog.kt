@@ -27,8 +27,11 @@ import materialui.components.formcontrol.formControl
 import materialui.components.formhelpertext.formHelperText
 import materialui.components.textfield.textField
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 import styled.inlineStyles
 
 val ShaderLibraryDialog = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDialog") { props ->
@@ -133,7 +136,7 @@ val ShaderLibraryDialog = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDia
     }
 }
 
-external interface ShaderLibraryDialogProps : RProps {
+external interface ShaderLibraryDialogProps : Props {
     var onSelect: (Shader?) -> Unit
 }
 

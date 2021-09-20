@@ -164,7 +164,7 @@ private fun <T> ButtonGroupControl.Direction.decode(horizontal: T, vertical: T):
     }
 }
 
-external interface ButtonGroupProps : RProps {
+external interface ButtonGroupProps : Props {
     var controlProps: ControlProps
     var buttonGroupControl: OpenButtonGroupControl
 }

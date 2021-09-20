@@ -2,11 +2,11 @@
 
 package external
 
-import react.RClass
-import react.RProps
+import react.ElementType
+import react.Props
 
-external val ErrorBoundary: RClass<ErrorBoundaryProps>
+external val ErrorBoundary: ElementType<ErrorBoundaryProps>
 
-external interface ErrorBoundaryProps: RProps {
+external interface ErrorBoundaryProps: Props {
     var FallbackComponent: Any
 }

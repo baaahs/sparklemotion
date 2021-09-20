@@ -54,7 +54,7 @@ val Help = xComponent<HelpProps>("Help", isPure = true) { props ->
     }
 }
 
-external interface HelpProps : RProps {
+external interface HelpProps : Props {
     var divClass: String?
     var children: Array<ReactElement>?
 }

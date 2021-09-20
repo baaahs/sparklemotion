@@ -11,10 +11,9 @@ import materialui.components.paper.paper
 import materialui.components.portal.portal
 import materialui.components.typography.typographyH6
 import materialui.icon
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 import react.dom.header
 import react.dom.i
@@ -62,7 +61,7 @@ val GeneratedGlslPalette = xComponent<GeneratedGlslPaletteProps>("GeneratedGlslP
     }
 }
 
-external interface GeneratedGlslPaletteProps : RProps {
+external interface GeneratedGlslPaletteProps : Props {
     var pinky: Pinky.Facade
 }
 

@@ -3,10 +3,9 @@ package baaahs.ui
 import external.markdownit.MarkdownIt
 import kotlinext.js.jsObject
 import org.w3c.dom.HTMLElement
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.span
 
 val Markdown = xComponent<MarkdownProps>("Markdown", isPure = true) { props ->
@@ -28,7 +27,7 @@ val Markdown = xComponent<MarkdownProps>("Markdown", isPure = true) { props ->
     }
 }
 
-external interface MarkdownProps : RProps {
+external interface MarkdownProps : Props {
     var children : dynamic
 }
 

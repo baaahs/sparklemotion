@@ -33,10 +33,9 @@ import materialui.lab.components.alert.alert
 import materialui.lab.components.alert.enums.AlertSeverity
 import materialui.lab.components.alerttitle.alertTitle
 import org.w3c.dom.events.Event
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 import react.dom.form
 import react.dom.header
@@ -234,7 +233,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
     }
 }
 
-external interface EditableManagerUiProps : RProps {
+external interface EditableManagerUiProps : Props {
     var editMode: Boolean
     var editableManager: EditableManager
 }

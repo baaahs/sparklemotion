@@ -19,7 +19,9 @@ import materialui.components.typography.enums.TypographyColor
 import materialui.components.typography.typography
 import materialui.components.typography.typographyH6
 import materialui.icon
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.b
 import react.dom.code
 
@@ -104,10 +106,10 @@ val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     }
 }
 
-external interface LinksEditorProps : RProps {
+external interface LinksEditorProps : Props {
     var editableManager: EditableManager
     var editingShader: EditingShader
 }
 
-fun RBuilder.linksEditor(handler: RHandler<LinksEditorProps>): ReactElement =
+fun RBuilder.linksEditor(handler: RHandler<LinksEditorProps>) =
     child(LinksEditor, handler = handler)

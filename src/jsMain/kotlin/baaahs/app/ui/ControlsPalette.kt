@@ -14,8 +14,11 @@ import materialui.components.paper.paper
 import materialui.components.typography.typographyH6
 import materialui.icon
 import org.w3c.dom.HTMLElement
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.key
 
 val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { props ->
     val unplacedControlPaletteDiv = ref<HTMLElement>()
@@ -84,7 +87,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
     }
 }
 
-external interface ControlsPaletteProps : RProps {
+external interface ControlsPaletteProps : Props {
     var controlDisplay: ControlDisplay
     var controlProps: ControlProps
     var show: OpenShow

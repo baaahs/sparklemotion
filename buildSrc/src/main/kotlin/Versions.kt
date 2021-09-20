@@ -12,14 +12,13 @@ object Versions {
     const val lwjgl = "3.2.3"
 
     // JS:
-    const val wrappersBuild = "pre.218-kotlin-$kotlin"
+    const val wrappersBuild = "pre.246-kotlin-$kotlin"
     const val kotlinWrappers = "0.0.1-$wrappersBuild"
     const val kotlinReact = "17.0.2-$wrappersBuild"
     const val kotlinxHtml = "0.7.3"
-    const val styledComponents = "5.3.0"
-    const val kotlinStyled = "$styledComponents-pre.218-kotlin-1.5.21"
-//    const val kotlinStyled = "$styledComponents-$wrappersBuild"
-    const val kotlinMaterialUi = "0.6.0"
+    const val styledComponents = "5.3.1"
+    const val kotlinStyled = "$styledComponents-$wrappersBuild"
+    const val kotlinMaterialUi = "0.7.0"
 
     // Test:
     const val junit = "5.7.2"

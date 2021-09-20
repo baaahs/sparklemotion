@@ -9,7 +9,7 @@ import react.dom.setProp
 @JsModule("js/lib/react-beautiful-dnd-13.0-fixed.js")
 private external val reactBeautifulDndModule: dynamic
 
-external interface DragDropContextProps : RProps, Responders {
+external interface DragDropContextProps : Props, Responders {
     // Read out by screen readers when focusing on a drag handle
     var dragHandleUsageInstructions: String?
     // Used for strict content security policies
@@ -21,19 +21,17 @@ external interface DragDropContextProps : RProps, Responders {
 }
 
 @Suppress("UnsafeCastFromDynamic")
-private val DragDropContext: FunctionalComponent<DragDropContextProps> = reactBeautifulDndModule.DragDropContext
+private val DragDropContext: FunctionComponent<DragDropContextProps> = reactBeautifulDndModule.DragDropContext
 
 fun RBuilder.dragDropContext(
     attrs: DragDropContextProps.() -> Unit,
     children: RBuilder.() -> Any
-): ReactElement =
-    child(
-        DragDropContext,
-        jsObject<DragDropContextProps>().apply { attrs() },
-        RBuilder().apply { children() }.childList
-    )
+) =
+    child(DragDropContext, jsObject<DragDropContextProps>().apply { attrs() }) {
+        children()
+    }
 
-external interface DraggableProps : RProps {
+external interface DraggableProps : Props {
     var draggableId: String
     var index: Int
     var isDragDisabled: Boolean
@@ -43,17 +41,16 @@ external interface DraggableProps : RProps {
 }
 
 @Suppress("UnsafeCastFromDynamic")
-private val Draggable: FunctionalComponent<DraggableProps> = reactBeautifulDndModule.Draggable
+private val Draggable: FunctionComponent<DraggableProps> = reactBeautifulDndModule.Draggable
 
-fun RBuilder.draggable(
+fun RDOMBuilder<*>.draggable(
     attrs: DraggableProps.() -> Unit,
-    children: (provided: DraggableProvided, snapshot: DraggableStateSnapshot) -> ReactElement
-): ReactElement =
-    child(
-        Draggable,
-        jsObject<DraggableProps>().apply { attrs() },
-        RBuilder().childList.apply { add(children) }
-    )
+    children: (provided: DraggableProvided, snapshot: DraggableStateSnapshot) -> Unit
+) {
+    child(Draggable, jsObject<DraggableProps>().apply { attrs() }) {
+        child(children.unsafeCast<ReactNode>())
+    }
+}
 
 external interface DraggableStateSnapshot {
     var isDragging: Boolean
@@ -88,14 +85,14 @@ external interface DragHandleProps: CopyableProps {
 
 external interface DroppableProvided: CopyableProps {
     var droppableProps: CopyableProps
-    var placeholder: FunctionalComponent<RProps>
-    var innerRef: RRef
+    var placeholder: FunctionComponent<Props>
+    var innerRef: Ref<*>
 }
 
 external interface DraggableProvided: CopyableProps {
     var draggableProps: CopyableProps
     var dragHandleProps: CopyableProps
-    var innerRef: RRef
+    var innerRef: Ref<*>
 }
 
 @Suppress("EnumEntryName")
@@ -108,7 +105,7 @@ external interface Combine {
     var droppableId: DroppableId
 }
 
-external interface DroppableProps : RProps, CopyableProps {
+external interface DroppableProps : Props, CopyableProps {
     var droppableId: DroppableId
     var type: TypeId
     var isDropDisabled: Boolean
@@ -170,17 +167,19 @@ enum class MovementMode {
 }
 
 @Suppress("UnsafeCastFromDynamic")
-private val Droppable: FunctionalComponent<DroppableProps> = reactBeautifulDndModule.Droppable
+private val Droppable: FunctionComponent<DroppableProps> = reactBeautifulDndModule.Droppable
 
 fun RBuilder.droppable(
     attrs: DroppableProps.() -> Unit,
-    children: (provided: DroppableProvided, snapshot: Any) -> ReactElement
-): ReactElement =
+    children: (provided: DroppableProvided, snapshot: Any) -> Unit
+) {
     child(
         Droppable,
-        jsObject<DroppableProps>().apply { attrs() },
-        RBuilder().childList.apply { add(children) }
-    )
+        jsObject<DroppableProps>().apply { attrs() }
+    ) {
+        childList.add(children as ReactNode)
+    }
+}
 
 private val noOpDroppableProvided = jsObject<DroppableProvided> {
 }

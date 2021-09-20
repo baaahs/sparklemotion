@@ -13,8 +13,11 @@ import materialui.components.card.card
 import materialui.components.paper.enums.PaperStyle
 import materialui.icon
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 
 val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
     val appContext = useContext(appContext)
@@ -55,12 +58,12 @@ val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
     }
 }
 
-external interface ControlWrapperProps : RProps {
+external interface ControlWrapperProps : Props {
     var control: OpenControl
     var controlProps: ControlProps
     var draggableProvided: DraggableProvided?
     var disableEdit: Boolean
 }
 
-fun RBuilder.controlWrapper(handler: RHandler<ControlWrapperProps>): ReactElement =
+fun RBuilder.controlWrapper(handler: RHandler<ControlWrapperProps>) =
     child(ControlWrapper, handler = handler)

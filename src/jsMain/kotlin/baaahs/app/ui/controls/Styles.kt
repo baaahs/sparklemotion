@@ -175,7 +175,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         background = "radial-gradient(rgba(255,255,255,.8), transparent)"
     }
 
-    val global = CSSBuilder().apply {
+    val global = CssBuilder().apply {
         ".${baaahs.app.ui.Styles.editModeOff.name}" {
             ".${editButton.name}" {
                 put("opacity", "0 !important")

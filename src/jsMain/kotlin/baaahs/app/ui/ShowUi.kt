@@ -7,7 +7,10 @@ import baaahs.ui.nuffin
 import baaahs.ui.xComponent
 import external.dragDropContext
 import materialui.components.portal.portal
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.useContext
 
 val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val appContext = useContext(appContext)
@@ -58,11 +61,11 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     }
 }
 
-external interface ShowUiProps : RProps {
+external interface ShowUiProps : Props {
     var show: OpenShow
     var editMode: Boolean
     var onShowStateChange: () -> Unit
 }
 
-fun RBuilder.showUi(handler: RHandler<ShowUiProps>): ReactElement =
+fun RBuilder.showUi(handler: RHandler<ShowUiProps>) =
     child(ShowUi, handler = handler)

@@ -192,7 +192,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
     }
 }
 
-external interface FileDialogProps : RProps {
+external interface FileDialogProps : Props {
     var title: String
     var isOpen: Boolean
     var isSaveAs: Boolean
@@ -209,5 +209,5 @@ class FileDisplay(
     var isSelectable: Boolean = true
 )
 
-fun RBuilder.fileDialog(handler: RHandler<FileDialogProps>): ReactElement =
+fun RBuilder.fileDialog(handler: RHandler<FileDialogProps>) =
     child(FileDialog, handler = handler)

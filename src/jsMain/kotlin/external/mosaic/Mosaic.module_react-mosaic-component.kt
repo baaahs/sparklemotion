@@ -5,11 +5,11 @@ package external.mosaic
 
 import org.w3c.dom.Element
 import react.Component
-import react.RProps
-import react.RState
+import react.Props
+import react.State
 
 
-external interface MosaicBaseProps<T>: RProps {
+external interface MosaicBaseProps<T>: Props {
     var renderTile: TileRenderer<T>
     var onChange: ((newNode: dynamic /* MosaicParent<T> | T */) -> Unit)?
         get() = definedExternally
@@ -92,4 +92,4 @@ external interface `T$0` {
 //    open fun render(): Element
 //}
 
-abstract external class Mosaic<T> : Component<MosaicControlledProps<T>, RState>
+abstract external class Mosaic<T> : Component<MosaicControlledProps<T>, State>

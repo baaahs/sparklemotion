@@ -4,10 +4,13 @@ import baaahs.app.ui.appContext
 import baaahs.ui.*
 import external.react_compound_slider.*
 import external.throttle
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
 import react.dom.label
 import react.dom.setProp
+import react.useContext
 import kotlin.math.floor
 
 private val slider = xComponent<SliderProps>("Slider") { props ->
@@ -119,7 +122,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
     }
 }
 
-external interface SliderProps : RProps {
+external interface SliderProps : Props {
     var title: String
 
     var position: Float

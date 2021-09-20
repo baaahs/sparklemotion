@@ -10,12 +10,12 @@ import materialui.components.container.container
 import materialui.components.paper.paper
 import materialui.icon
 import org.w3c.dom.HTMLElement
-import react.RProps
+import react.Props
 import react.dom.*
-import react.functionalComponent
+import react.functionComponent
 import styled.inlineStyles
 
-val ErrorDisplay = functionalComponent<ErrorDisplayProps> { props ->
+val ErrorDisplay = functionComponent<ErrorDisplayProps> { props ->
     val guruMediationBox = react.useRef<HTMLElement>(null)
 
     react.useEffect {
@@ -100,7 +100,7 @@ val ErrorDisplay = functionalComponent<ErrorDisplayProps> { props ->
     }
 }
 
-external interface ErrorDisplayProps : RProps {
+external interface ErrorDisplayProps : Props {
     var error: Error
     var componentStack: String
     var resetErrorBoundary: (() -> Unit)?

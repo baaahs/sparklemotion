@@ -165,7 +165,7 @@ private fun <E> List<E>.getBounded(index: Int): E? {
     return get(index)
 }
 
-external interface ShowLayoutProps : RProps {
+external interface ShowLayoutProps : Props {
     var show: OpenShow
     var onShowStateChange: () -> Unit
     var layout: Layout
@@ -174,5 +174,5 @@ external interface ShowLayoutProps : RProps {
     var editMode: Boolean
 }
 
-fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>): ReactElement =
+fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>) =
     child(ShowLayout, handler = handler)

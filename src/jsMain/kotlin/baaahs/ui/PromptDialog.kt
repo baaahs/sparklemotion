@@ -13,10 +13,9 @@ import materialui.components.dialogtitle.dialogTitle
 import materialui.components.formcontrol.enums.FormControlMargin
 import materialui.components.textfield.textField
 import org.w3c.dom.events.Event
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 
 val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
     val prompt = props.prompt
@@ -103,7 +102,7 @@ class Prompt(
     val onCancel: () -> Unit = {}
 )
 
-external interface PromptDialogProps : RProps {
+external interface PromptDialogProps : Props {
     var prompt: Prompt
     var onClose: () -> Unit
 }

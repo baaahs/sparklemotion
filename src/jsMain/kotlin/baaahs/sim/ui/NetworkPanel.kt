@@ -10,7 +10,10 @@ import baaahs.util.percent
 import kotlinx.css.*
 import kotlinx.html.id
 import kotlinx.html.js.onClickFunction
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.State
 import react.dom.attrs
 import react.dom.tbody
 import react.dom.td
@@ -20,8 +23,8 @@ import styled.styledTable
 import styled.styledTd
 import styled.styledTh
 
-class NetworkPanel(props: NetworkPanelProps) : BComponent<NetworkPanelProps, RState>(props), Observer {
-    override fun observing(props: NetworkPanelProps, state: RState): List<Observable?> {
+class NetworkPanel(props: NetworkPanelProps) : BComponent<NetworkPanelProps, State>(props), Observer {
+    override fun observing(props: NetworkPanelProps, state: State): List<Observable?> {
         return listOf(props.network)
     }
 
@@ -70,9 +73,9 @@ class NetworkPanel(props: NetworkPanelProps) : BComponent<NetworkPanelProps, RSt
     }
 }
 
-external interface NetworkPanelProps : RProps {
+external interface NetworkPanelProps : Props {
     var network: FakeNetwork.Facade?
 }
 
-fun RBuilder.networkPanel(handler: RHandler<NetworkPanelProps>): ReactElement =
+fun RBuilder.networkPanel(handler: RHandler<NetworkPanelProps>) =
     child(NetworkPanel::class, handler = handler)

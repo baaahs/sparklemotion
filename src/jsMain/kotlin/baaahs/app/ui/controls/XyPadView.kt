@@ -13,8 +13,11 @@ import kotlinx.html.js.onMouseMoveFunction
 import kotlinx.html.js.onMouseUpFunction
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useRef
 import styled.StyleSheet
 import styled.inlineStyles
 
@@ -143,7 +146,7 @@ val XyPad = xComponent<XyPadProps>("XyPad") { props ->
     }
 }
 
-external interface XyPadProps : RProps {
+external interface XyPadProps : Props {
     var controlProps: ControlProps
     var xyPadControl: OpenXyPadControl
 }

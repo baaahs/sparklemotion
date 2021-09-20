@@ -11,10 +11,9 @@ import materialui.components.formlabel.formLabel
 import materialui.components.radio.radio
 import materialui.components.radiogroup.radioGroup
 import org.w3c.dom.HTMLInputElement
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 
 private val buttonGroupPropsEditor =
@@ -48,7 +47,7 @@ private val buttonGroupPropsEditor =
                     ButtonGroupControl.Direction.values().forEach {
                         formControlLabel {
                             attrs.value = it.name
-                            attrs.control = radio {}
+                            attrs.control { radio {} }
                             attrs.label { +it.name }
                         }
                     }
@@ -57,7 +56,7 @@ private val buttonGroupPropsEditor =
         }
     }
 
-external interface ButtonGroupPropsEditorProps : RProps {
+external interface ButtonGroupPropsEditorProps : Props {
     var editableManager: EditableManager
     var mutableButtonGroupControl: MutableButtonGroupControl
 }

@@ -4,10 +4,9 @@ import baaahs.control.OpenColorPickerControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 
 val ColorPickerControl = xComponent<ColorPickerControlProps>("ColorPickerControl") { props ->
@@ -22,7 +21,7 @@ val ColorPickerControl = xComponent<ColorPickerControlProps>("ColorPickerControl
     }
 }
 
-external interface ColorPickerControlProps : RProps {
+external interface ColorPickerControlProps : Props {
     var controlProps: ControlProps
     var colorPickerControl: OpenColorPickerControl
 }
