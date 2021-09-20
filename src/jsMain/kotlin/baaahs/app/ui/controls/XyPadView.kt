@@ -4,8 +4,8 @@ import baaahs.Gadget
 import baaahs.control.OpenXyPadControl
 import baaahs.geom.Vector2F
 import baaahs.show.live.ControlProps
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
+import baaahs.ui.Events.primaryButton
 import kotlinx.css.*
 import kotlinx.css.properties.boxShadow
 import kotlinx.html.js.onMouseDownFunction
@@ -142,11 +142,6 @@ val XyPad = xComponent<XyPadProps>("XyPad") { props ->
         div(+Styles.dataSourceTitle) { +xyPad.title }
     }
 }
-
-private val primaryButton = 1
-private val Event.buttons: Int get() = asDynamic().buttons as Int
-private val Event.clientX: Int get() = asDynamic().clientX as Int
-private val Event.clientY: Int get() = asDynamic().clientY as Int
 
 external interface XyPadProps : RProps {
     var controlProps: ControlProps

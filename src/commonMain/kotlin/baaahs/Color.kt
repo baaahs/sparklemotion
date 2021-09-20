@@ -12,10 +12,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlin.js.JsName
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 import kotlin.random.Random
 
 /**
@@ -111,25 +108,11 @@ data class Color(val argb: Int) {
     fun withBlue(blueB: Byte): Color = Color(redB, greenB, blueB, alphaB)
     fun withAlpha(alphaB: Byte): Color = Color(redB, greenB, blueB, alphaB)
 
-    /** Super-naive approximation of desaturation. */
-    fun withSaturation(saturation: Float): Color {
-        val desaturation = 1 - saturation
-        return Color(
-            redF + (1 - redF) * desaturation,
-            greenF + (1 - greenF) * desaturation,
-            blueF + (1 - blueF) * desaturation,
-            alphaF
-        )
-    }
+    fun withSaturation(saturation: Float): Color =
+        toHSB().withSaturation(saturation).toRGB(alphaF)
 
-    fun withBrightness(brightness: Float): Color {
-        return Color(
-            redF * brightness,
-            greenF * brightness,
-            blueF * brightness,
-            alphaF
-        )
-    }
+    fun withBrightness(brightness: Float): Color =
+        toHSB().withBrightness(brightness).toRGB(alphaF)
 
     fun distanceTo(other: Color): Float {
         val dist = square(other.redF - redF) + square(other.greenF - greenF) + square(other.blueF - blueF)
@@ -165,6 +148,125 @@ data class Color(val argb: Int) {
             blueF.pow(invGamma),
             alphaF
         )
+    }
+
+    /**
+     * Converts the components of a color, as specified by the default RGB
+     * model, to an equivalent set of values for hue, saturation, and
+     * brightness that are the three components of the HSB model.
+     *
+     * Adapted from OpenJDK's [java.awt.Color#RGBtoHSB].
+     *
+     * @return    an HSB containing the hue, saturation,
+     * and brightness (in that order), of the color with
+     * the indicated red, green, and blue components.
+     * @see java.awt.Color.getRGB
+     * @see java.awt.Color.Color
+     * @see java.awt.image.ColorModel.getRGBdefault
+     * @since     1.0
+     */
+    fun toHSB(): HSB {
+        var hue: Float
+        val saturation: Float
+        val brightness: Float
+        var cmax = if (redI > greenI) redI else greenI
+        if (blueI > cmax) cmax = blueI
+        var cmin = if (redI < greenI) redI else greenI
+        if (blueI < cmin) cmin = blueI
+        brightness = cmax.toFloat() / 255.0f
+        saturation = if (cmax != 0) (cmax - cmin).toFloat() / cmax.toFloat() else 0f
+        if (saturation == 0f) hue = 0f else {
+            val redc = (cmax - redI).toFloat() / (cmax - cmin).toFloat()
+            val greenc = (cmax - greenI).toFloat() / (cmax - cmin).toFloat()
+            val bluec = (cmax - blueI).toFloat() / (cmax - cmin).toFloat()
+            hue = if (redI == cmax) bluec - greenc else if (greenI == cmax) 2.0f + redc - bluec else 4.0f + greenc - redc
+            hue /= 6.0f
+            if (hue < 0) hue += 1.0f
+        }
+        return HSB(hue, saturation, brightness)
+    }
+
+    data class HSB(
+        val hue: Float,
+        val saturation: Float,
+        val brightness: Float
+    ) {
+        /**
+         * Converts the components of a color, as specified by the HSB
+         * model, to an equivalent set of values for the default RGB model.
+         *
+         * The `saturation` and `brightness` components
+         * should be floating-point values between zero and one
+         * (numbers in the range 0.0-1.0).  The `hue` component
+         * can be any floating-point number.  The floor of this number is
+         * subtracted from it to create a fraction between 0 and 1.  This
+         * fractional number is then multiplied by 360 to produce the hue
+         * angle in the HSB color model.
+         *
+         * A [Color] is returned.
+         *
+         * Adapted from OpenJDK's [java.awt.Color#HSBtoRGB].
+         *
+         * @return    the RGB value of the color with the indicated hue,
+         * saturation, and brightness.
+         * @see java.awt.Color.getRGB
+         * @see java.awt.Color.Color
+         * @see java.awt.image.ColorModel.getRGBdefault
+         * @since     1.0
+         */
+        fun toRGB(alpha: Float = 1f): Color {
+            var r = 0
+            var g = 0
+            var b = 0
+            if (saturation == 0f) {
+                b = (brightness * 255.0f + 0.5f).toInt()
+                g = b
+                r = g
+            } else {
+                val h = (hue - floor(hue)) * 6.0f
+                val f = h - floor(h)
+                val p = brightness * (1.0f - saturation)
+                val q = brightness * (1.0f - saturation * f)
+                val t = brightness * (1.0f - saturation * (1.0f - f))
+                when (h.toInt()) {
+                    0 -> {
+                        r = (brightness * 255.0f + 0.5f).toInt()
+                        g = (t * 255.0f + 0.5f).toInt()
+                        b = (p * 255.0f + 0.5f).toInt()
+                    }
+                    1 -> {
+                        r = (q * 255.0f + 0.5f).toInt()
+                        g = (brightness * 255.0f + 0.5f).toInt()
+                        b = (p * 255.0f + 0.5f).toInt()
+                    }
+                    2 -> {
+                        r = (p * 255.0f + 0.5f).toInt()
+                        g = (brightness * 255.0f + 0.5f).toInt()
+                        b = (t * 255.0f + 0.5f).toInt()
+                    }
+                    3 -> {
+                        r = (p * 255.0f + 0.5f).toInt()
+                        g = (q * 255.0f + 0.5f).toInt()
+                        b = (brightness * 255.0f + 0.5f).toInt()
+                    }
+                    4 -> {
+                        r = (t * 255.0f + 0.5f).toInt()
+                        g = (p * 255.0f + 0.5f).toInt()
+                        b = (brightness * 255.0f + 0.5f).toInt()
+                    }
+                    5 -> {
+                        r = (brightness * 255.0f + 0.5f).toInt()
+                        g = (p * 255.0f + 0.5f).toInt()
+                        b = (q * 255.0f + 0.5f).toInt()
+                    }
+                }
+            }
+            return Color(r, g, b, (alpha * 255).toInt())
+        }
+
+        fun withHue(newHue: Float): HSB = copy(hue = newHue)
+        fun withSaturation(newSaturation: Float): HSB = copy(saturation = newSaturation)
+        fun withBrightness(newBrightness: Float): HSB = copy(brightness = newBrightness)
     }
 
     @Serializer(forClass = Color::class)
@@ -220,8 +322,7 @@ data class Color(val argb: Int) {
         }
 
         private fun asArgb(red: Float, green: Float, blue: Float, alpha: Float = 1f): Int {
-            val asArgb = asArgb(asInt(red), asInt(green), asInt(blue), asInt(alpha))
-            return asArgb
+            return asArgb(asInt(red), asInt(green), asInt(blue), asInt(alpha))
         }
 
         private fun asArgb(red: Int, green: Int, blue: Int, alpha: Int = 255): Int {

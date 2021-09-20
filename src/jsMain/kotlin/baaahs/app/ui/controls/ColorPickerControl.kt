@@ -1,11 +1,9 @@
 package baaahs.app.ui.controls
 
 import baaahs.control.OpenColorPickerControl
-import baaahs.jsx.ColorPicker
 import baaahs.show.live.ControlProps
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinext.js.jsObject
 import react.RBuilder
 import react.RHandler
 import react.RProps
@@ -16,9 +14,9 @@ val ColorPickerControl = xComponent<ColorPickerControlProps>("ColorPickerControl
     val colorPickerControl = props.colorPickerControl
 
     div(+props.colorPickerControl.inUseStyle) {
-        child(ColorPicker, jsObject {
-            gadget = colorPickerControl.colorPicker
-        }) {}
+        colorPicker {
+            attrs.gadget = colorPickerControl.colorPicker
+        }
 
         div(+Styles.dataSourceTitle) { +colorPickerControl.colorPicker.title }
     }

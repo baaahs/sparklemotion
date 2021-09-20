@@ -1,27 +1,14 @@
 package baaahs.app.ui.gadgets.slider
 
 import baaahs.app.ui.appContext
-import baaahs.ui.name
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import external.react_compound_slider.*
 import external.throttle
-import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 import react.dom.label
 import react.dom.setProp
 import kotlin.math.floor
-
-private val preventDefault: (Event) -> Unit = { event -> event.preventDefault() }
-
-private val disableScroll = {
-    baaahs.document.body?.addEventListener("touchmove", preventDefault, js("{ passive: false }"))
-}
-
-private val enableScroll = {
-    baaahs.document.body?.removeEventListener("touchmove", preventDefault)
-}
 
 private val slider = xComponent<SliderProps>("Slider") { props ->
     val appContext = useContext(appContext)
@@ -51,7 +38,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             attrs.vertical = true
             attrs.reversed = props.reversed
             attrs.mode = 1
-            attrs.step = props.stepValue ?: (props.maxValue - props.minValue) / 256
+            attrs.step = props.stepValue ?: ((props.maxValue - props.minValue) / 256)
             attrs.domain = domain.asDynamic()
             attrs.onSlideStart = disableScroll.asDynamic()
             attrs.onSlideEnd = enableScroll.asDynamic()
