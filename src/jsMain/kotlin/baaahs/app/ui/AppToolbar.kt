@@ -110,7 +110,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                     iconButton {
                         icon(materialui.icons.Undo)
-                        attrs["disabled"] = !undoStack.canUndo()
+                        attrs.disabled = !undoStack.canUndo()
                         attrs.onClickFunction = handleUndo
 
                         typographyH6 { +"Undo" }
@@ -118,7 +118,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                     iconButton {
                         icon(materialui.icons.Redo)
-                        attrs["disabled"] = !undoStack.canRedo()
+                        attrs.disabled = !undoStack.canRedo()
                         attrs.onClickFunction = handleRedo
 
                         typographyH6 { +"Redo" }
@@ -133,7 +133,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     } else {
                         iconButton {
                             icon(materialui.icons.Save)
-                            attrs["disabled"] = !webClient.showIsModified
+                            attrs.disabled = !webClient.showIsModified
                             attrs.onClickFunction = props.onSaveShow.withEvent()
                             typographyH6 { +"Save" }
                         }

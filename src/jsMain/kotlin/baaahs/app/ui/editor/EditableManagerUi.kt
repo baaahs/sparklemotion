@@ -129,7 +129,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
                     div(+EditableStyles.dialogTitleButtons) {
                         iconButton(Styles.buttons on IconButtonStyle.root) {
                             icon(materialui.icons.Undo)
-                            attrs["disabled"] = !props.editableManager.canUndo()
+                            attrs.disabled = !props.editableManager.canUndo()
                             attrs.onClickFunction = handleUndo
 
                             typographyH6 { +"Undo" }
@@ -137,7 +137,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                         iconButton(Styles.buttons on IconButtonStyle.root) {
                             icon(materialui.icons.Redo)
-                            attrs["disabled"] = !props.editableManager.canRedo()
+                            attrs.disabled = !props.editableManager.canRedo()
                             attrs.onClickFunction = handleRedo
 
                             typographyH6 { +"Redo" }
@@ -223,7 +223,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                     button {
                         +"Apply"
-                        attrs["disabled"] = !props.editableManager.isModified()
+                        attrs.disabled = !props.editableManager.isModified()
                         attrs.color = ButtonColor.primary
                         attrs.onClickFunction = handleApply
                     }

@@ -13,13 +13,13 @@ import external.copyFrom
 import external.draggable
 import external.droppable
 import kotlinx.html.js.onClickFunction
-import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
 import materialui.components.iconbutton.iconButton
 import materialui.components.paper.enums.PaperStyle
 import materialui.icon
 import materialui.lab.components.togglebutton.enums.ToggleButtonStyle
 import materialui.lab.components.togglebutton.toggleButton
+import materialui.lab.components.togglebuttongroup.enums.ToggleButtonGroupOrientation
 import materialui.lab.components.togglebuttongroup.enums.ToggleButtonGroupStyle
 import materialui.lab.components.togglebuttongroup.toggleButtonGroup
 import org.w3c.dom.events.Event
@@ -75,10 +75,10 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                 ) {
                     install(sceneDropProvided)
 
-                    attrs["orientation"] = buttonGroupControl.direction
-                        .decode(ButtonGroupOrientation.horizontal, ButtonGroupOrientation.vertical).name
-                    attrs["exclusive"] = true
-//                    attrs["value"] = props.selected // ... but this is busted.
+                    attrs.orientation = buttonGroupControl.direction
+                        .decode(ToggleButtonGroupOrientation.horizontal, ToggleButtonGroupOrientation.vertical)
+                    attrs.exclusive = true
+//                    attrs.value = props.selected // ... but this is busted.
 //                    attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
 
                     buttonGroupControl.buttons.forEachIndexed { index, buttonControl ->
@@ -127,8 +127,8 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                                             )
                                         }
 
-                                        attrs["value"] = index
-                                        attrs["selected"] = buttonControl.isPressed
+                                        attrs.value = index.toString()
+                                        attrs.selected = buttonControl.isPressed
                                         attrs.onClickFunction = {
                                             buttonGroupControl.clickOn(index)
                                             onShowStateChange()

@@ -38,7 +38,7 @@ val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props -
 
             props.layouts.panels.entries.sortedBy { (_, v) -> v.title }.forEach { (panelId, panel) ->
                 menuItem {
-                    attrs["value"] = panelId
+                    attrs.value = panelId
                     listItemText { +panel.title }
                 }
             }

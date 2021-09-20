@@ -139,7 +139,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                 inlineStyles {
                     float = Float.right
                 }
-                attrs["selected"] = showCode
+                attrs.selected = showCode
                 attrs["size"] = ButtonSize.small.name
                 attrs.onClickFunction = handleShowCodeButton
                 icon(materialui.icons.Code)

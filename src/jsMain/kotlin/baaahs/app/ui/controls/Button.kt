@@ -67,9 +67,9 @@ private val Button = xComponent<ButtonProps>("Button") { props ->
                         )
                     }
 
-                    attrs["value"] = "n/a"
+                    attrs.value = "n/a"
                     // Yep, for some reason you need to set it directly or it doesn't work.
-                    attrs["selected"] = buttonControl.isPressed
+                    attrs.selected = buttonControl.isPressed
                     attrs.onClickFunction = handleToggleClick.withEvent()
 
                     +buttonControl.title
@@ -84,7 +84,7 @@ private val Button = xComponent<ButtonProps>("Button") { props ->
                         )
                     }
 
-                    attrs["value"] = "n/a"
+                    attrs.value = "n/a"
                     attrs["selected"] = buttonControl.isPressed
                     attrs.onMouseDownFunction = handleMomentaryPress.withEvent()
                     attrs.onMouseUpFunction = handleMomentaryRelease.withEvent()
