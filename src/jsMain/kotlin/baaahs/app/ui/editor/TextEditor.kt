@@ -8,11 +8,11 @@ import acex.Mode
 import acex.Theme
 import acex.Themes
 import baaahs.app.ui.appContext
-import baaahs.jsx.useResizeListener
 import baaahs.ui.Styles
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.Time
+import baaahs.util.useResizeListener
 import baaahs.window
 import kotlinext.js.jsObject
 import materialui.styles.palette.PaletteType

@@ -10,10 +10,6 @@ import baaahs.ui.*
 import external.Direction
 import external.draggable
 import external.droppable
-import external.mosaic.Mosaic
-import external.mosaic.MosaicControlledProps
-import external.mosaic.MosaicWindow
-import external.mosaic.MosaicWindowProps
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import materialui.components.iconbutton.enums.IconButtonStyle
@@ -31,7 +27,6 @@ import react.*
 import react.dom.div
 import react.dom.header
 import styled.inlineStyles
-import kotlin.reflect.KClass
 
 val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     val appContext = useContext(appContext)
@@ -181,11 +176,3 @@ external interface ShowLayoutProps : RProps {
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>): ReactElement =
     child(ShowLayout, handler = handler)
-
-@Suppress("UNCHECKED_CAST")
-fun <T> RBuilder.mosaic(handler: MosaicControlledProps<T>.() -> Unit): ReactElement =
-    child(Mosaic::class as KClass<out Component<MosaicControlledProps<T>, *>>) { attrs { handler() } }
-
-@Suppress("UNCHECKED_CAST")
-fun <T> RBuilder.mosaicWindow(handler: MosaicWindowProps<T>.() -> Unit): ReactElement =
-    child(MosaicWindow::class as KClass<out Component<MosaicWindowProps<T>, *>>) { attrs { handler() } }

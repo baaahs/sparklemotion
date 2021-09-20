@@ -2,7 +2,7 @@ package baaahs.plugin.beatlink
 
 import baaahs.app.ui.appContext
 import baaahs.show.live.ControlProps
-import baaahs.ui.SimulatorStyles
+import baaahs.sim.ui.SimulatorStyles
 import baaahs.ui.addObserver
 import baaahs.ui.on
 import baaahs.ui.xComponent

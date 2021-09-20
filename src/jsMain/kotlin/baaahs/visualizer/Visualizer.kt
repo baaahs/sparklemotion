@@ -7,12 +7,13 @@ import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.asMillis
 import baaahs.window
-import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 import three.js.*
 import three_ext.OrbitControls
+import kotlin.collections.set
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -20,7 +21,7 @@ import kotlin.math.sin
 class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusListener {
     val facade = Facade()
 
-    private var container: HTMLDivElement? = null
+    private var container: HTMLElement? = null
         set(value) {
             if (value != null) {
                 field = value
@@ -278,7 +279,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     }
 
     inner class Facade : baaahs.ui.Facade() {
-        var container: HTMLDivElement?
+        var container: HTMLElement?
             get() = this@Visualizer.container
             set(value) {
                 this@Visualizer.container = value

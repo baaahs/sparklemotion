@@ -1,7 +1,6 @@
 package baaahs.sim.ui
 
 import baaahs.sim.HostedWebApp
-import baaahs.ui.SimulatorStyles
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.react_draggable.Draggable

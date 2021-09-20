@@ -148,29 +148,12 @@ kotlin {
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react:${Versions.kotlinReact}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:${Versions.kotlinReact}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:${Versions.kotlinStyled}")
-                implementation(npm("styled-components", Versions.styledComponents))
-                implementation(npm("inline-style-prefixer", "^6.0.0"))
-
-                implementation(npm("babel-loader", "^8.0.6"))
-                implementation(npm("@babel/core", "^7.4.5"))
-                implementation(npm("@babel/plugin-proposal-class-properties", "^7.4.4"))
-                implementation(npm("@babel/plugin-proposal-object-rest-spread", "^7.4.4"))
-                implementation(npm("@babel/preset-env", "^7.4.5"))
-                implementation(npm("@babel/preset-react", "^7.0.0"))
-//                implementation(npm("prettier", "1.19.1"))
 
                 implementation(npm("camera-controls", "^1.25.3"))
-                implementation(npm("chroma-js", "^2.0.3"))
-                implementation(npm("css-loader", "^2.1.1"))
 
                 implementation("net.subroh0508.kotlinmaterialui:core:${Versions.kotlinMaterialUi}")
                 implementation("net.subroh0508.kotlinmaterialui:lab:${Versions.kotlinMaterialUi}")
-//                implementation(npm("@material-ui/core", "4.12.1"))
                 implementation(npm("@material-ui/icons", "~4.9.1"))
-//                implementation(npm("@material-ui/lab", "4.0.0-alpha.60"))
-
-                implementation(npm("node-sass", "^4.12.0"))
-                implementation(npm("react", "^16.13.1"))
 
                 // TODO: re-enable when https://github.com/atlassian/react-beautiful-dnd/pull/1890 is addressed
 //                implementation(npm("react-beautiful-dnd", "^13.0.0"))
@@ -183,16 +166,12 @@ kotlin {
                 // </react-beautiful-dnd bug workaround>
 
                 implementation(npm("react-compound-slider", "^3.3.1"))
-                implementation(npm("react-dom", "^16.13.1"))
                 implementation(npm("react-draggable", "^3.3.0"))
                 implementation(npm("react-hot-loader", "^4.11.0"))
-                implementation(npm("sass-loader", "^7.1.0"))
-                implementation(npm("style-loader", "^0.23.1"))
                 implementation(npm("three", "^0.120.0", generateExternals = false))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
                 implementation(npm("react-mosaic-component", "^4.0.0"))
                 implementation(npm("react-error-boundary", "^2.2.2"))
-                implementation(npm("resize-observer-polyfill", "^1.5.1"))
                 implementation(npm("react-ace", "^9.0.0"))
                 implementation(npm("ace-builds", "^1.4.11"))
                 implementation(npm("markdown-it", "~11.0.0"))
