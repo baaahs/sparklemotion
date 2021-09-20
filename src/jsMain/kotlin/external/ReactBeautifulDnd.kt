@@ -45,7 +45,7 @@ private val Draggable: FunctionComponent<DraggableProps> = reactBeautifulDndModu
 
 fun RDOMBuilder<*>.draggable(
     attrs: DraggableProps.() -> Unit,
-    children: (provided: DraggableProvided, snapshot: DraggableStateSnapshot) -> Unit
+    children: (provided: DraggableProvided, snapshot: DraggableStateSnapshot) -> ReactElement
 ) {
     child(Draggable, jsObject<DraggableProps>().apply { attrs() }) {
         child(children.unsafeCast<ReactNode>())
@@ -85,7 +85,7 @@ external interface DragHandleProps: CopyableProps {
 
 external interface DroppableProvided: CopyableProps {
     var droppableProps: CopyableProps
-    var placeholder: FunctionComponent<Props>
+    var placeholder: ReactNode
     var innerRef: Ref<*>
 }
 
@@ -171,7 +171,7 @@ private val Droppable: FunctionComponent<DroppableProps> = reactBeautifulDndModu
 
 fun RBuilder.droppable(
     attrs: DroppableProps.() -> Unit,
-    children: (provided: DroppableProvided, snapshot: Any) -> Unit
+    children: (provided: DroppableProvided, snapshot: Any) -> ReactElement
 ) {
     child(
         Droppable,

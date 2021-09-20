@@ -4,13 +4,10 @@ import baaahs.app.ui.appContext
 import baaahs.ui.*
 import external.react_compound_slider.*
 import external.throttle
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.div
 import react.dom.label
 import react.dom.setProp
-import react.useContext
 import kotlin.math.floor
 
 private val slider = xComponent<SliderProps>("Slider") { props ->
@@ -51,34 +48,38 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 
             Rail {
                 attrs.children = { railObject ->
-                    sliderRail {
-                        attrs.getRailProps = railObject.getRailProps
+                    buildElement {
+                        sliderRail {
+                            attrs.getRailProps = railObject.getRailProps
+                        }
                     }
                 }
             }
 
             Handles {
                 attrs.children = { handlesObject: HandlesObject ->
-                    div(+styles.handles) {
-                        handlesObject.handles.forEachIndexed { index, handle ->
-                            if (index == 0) {
-                                handle {
-                                    key = handle.id
-                                    attrs.domain = domain
-                                    attrs.handle = handle
-                                    attrs.getHandleProps = handlesObject.getHandleProps
-                                }
-                            } else {
-                                // Non-draggable alt handle.
-                                altHandle {
-                                    key = handle.id
-                                    attrs.domain = domain
-                                    attrs.handle = handle
-                                    attrs.getHandleProps = handlesObject.getHandleProps
+                    buildElement {
+                        div(+styles.handles) {
+                            handlesObject.handles.forEachIndexed { index, handle ->
+                                if (index == 0) {
+                                    handle {
+                                        key = handle.id
+                                        attrs.domain = domain
+                                        attrs.handle = handle
+                                        attrs.getHandleProps = handlesObject.getHandleProps
+                                    }
+                                } else {
+                                    // Non-draggable alt handle.
+                                    altHandle {
+                                        key = handle.id
+                                        attrs.domain = domain
+                                        attrs.handle = handle
+                                        attrs.getHandleProps = handlesObject.getHandleProps
+                                    }
                                 }
                             }
-                        }
 
+                        }
                     }
                 }
             }
@@ -87,13 +88,15 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                 attrs.left = false
                 attrs.right = true
                 attrs.children = { tracksObject ->
-                    div(+styles.tracks) {
-                        tracksObject.tracks.forEach { track ->
-                            track {
-                                key = track.id
-                                attrs.source = track.source
-                                attrs.target = track.target
-                                attrs.getTrackProps = tracksObject.getTrackProps
+                    buildElement {
+                        div(+styles.tracks) {
+                            tracksObject.tracks.forEach { track ->
+                                track {
+                                    key = track.id
+                                    attrs.source = track.source
+                                    attrs.target = track.target
+                                    attrs.getTrackProps = tracksObject.getTrackProps
+                                }
                             }
                         }
                     }
@@ -104,13 +107,15 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                 Ticks {
                     attrs.count = 10
                     attrs.children = { ticksObject ->
-                        div(+styles.ticks) {
-                            ticksObject.ticks.forEach { tick ->
-                                tick {
-                                    key = tick.id
-                                    attrs.tick = tick
-                                    attrs.format = { item ->
-                                        floor(item.value.toFloat() * (props.ticksScale ?: 1f)).toString()
+                        buildElement {
+                            div(+styles.ticks) {
+                                ticksObject.ticks.forEach { tick ->
+                                    tick {
+                                        key = tick.id
+                                        attrs.tick = tick
+                                        attrs.format = { item ->
+                                            floor(item.value.toFloat() * (props.ticksScale ?: 1f)).toString()
+                                        }
                                     }
                                 }
                             }

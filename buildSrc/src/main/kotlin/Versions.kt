@@ -13,7 +13,6 @@ object Versions {
 
     // JS:
     const val wrappersBuild = "pre.246-kotlin-$kotlin"
-    const val kotlinWrappers = "0.0.1-$wrappersBuild"
     const val kotlinReact = "17.0.2-$wrappersBuild"
     const val kotlinxHtml = "0.7.3"
     const val styledComponents = "5.3.1"

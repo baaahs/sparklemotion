@@ -5,6 +5,7 @@ package external.react_compound_slider
 
 import react.ElementType
 import react.Props
+import react.ReactElement
 
 external val Ticks : ElementType<TicksProps>
 
@@ -42,5 +43,5 @@ external interface TicksProps : Props {
      * The function receives an object with an array of ticks. Note: `getEventData` can be called with an event and get the value and percent at that location (used for tooltips etc). `activeHandleID` will be a string or null.  Function signature:
      * `({ getEventData, activeHandleID, ticks  }): element`
      */
-    var children: (ticksObject: TicksObject) -> Unit
+    var children: (ticksObject: TicksObject) -> ReactElement
 }
