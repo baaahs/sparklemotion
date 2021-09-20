@@ -31,21 +31,20 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
     }
 
     onMount(useSharedContexts) {
-        if (useSharedContexts) {
+        val canvasParent = canvasParentRef.current
+        if (useSharedContexts && canvasParent != null) {
             val sharedGlContext = appGlContext.sharedGlContext!!
 
             val canvas = sharedGlContext.canvas
             canvas.classList.add(SharedGlContextStyles.canvas.name)
-            canvasParentRef.current!!.let { parent ->
-                if (props.inFront == true) {
-                    parent.appendChild(canvas)
-                } else {
-                    parent.insertBefore(canvas, parent.firstChild)
-                }
+            if (props.inFront == true) {
+                canvasParent.appendChild(canvas)
+            } else {
+                canvasParent.insertBefore(canvas, canvasParent.firstChild)
             }
 
             withCleanup {
-                canvasParentRef.current!!.removeChild(canvas)
+                canvasParent.removeChild(canvas)
             }
         }
     }

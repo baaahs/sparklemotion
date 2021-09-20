@@ -7,6 +7,7 @@ import org.w3c.dom.TouchEvent
 import org.w3c.dom.events.MouseEvent
 import react.ElementType
 import react.Props
+import react.ReactElement
 
 external val Tracks : ElementType<TracksProps>
 
@@ -53,5 +54,5 @@ external interface TracksProps : Props {
 //    var emitTouch: EmitTouch?
 //        get() = definedExternally
 //        set(value) = definedExternally
-    var children: (tracksObject: TracksObject) -> dynamic
+    var children: (tracksObject: TracksObject) -> ReactElement
 }

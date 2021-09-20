@@ -130,10 +130,12 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
     useResizeListener(canvasParent) {
         // Tell Kotlin controller the window was resized
-        shaderPreview?.resize(
-            canvasParent.current!!.clientWidth,
-            canvasParent.current!!.clientHeight
-        )
+        canvasParent.current?.let { parent ->
+            shaderPreview?.resize(
+                parent.clientWidth,
+                parent.clientHeight
+            )
+        }
     }
 
     div(+ShaderPreviewStyles.container) {

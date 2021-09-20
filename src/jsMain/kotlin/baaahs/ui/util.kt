@@ -88,10 +88,6 @@ fun RDOMBuilder<*>.install(droppableProvided: DroppableProvided) {
     copyFrom(droppableProvided.droppableProps)
 }
 
-fun RDOMBuilder<*>.insertPlaceholder(droppableProvided: DroppableProvided) {
-    this.child(droppableProvided.placeholder)
-}
-
 inline fun RBuilder.typographySubtitle1(vararg classMap: Pair<TypographyStyle, String>, crossinline block: TypographyElementBuilder<DIV, TypographyProps>.() -> Unit)
         = typography(*classMap, factory = { DIV(mapOf(), it) }) {
     attrs.variant = TypographyVariant.subtitle1

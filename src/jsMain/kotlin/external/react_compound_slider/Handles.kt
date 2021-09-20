@@ -5,6 +5,7 @@ package external.react_compound_slider
 
 import react.ElementType
 import react.Props
+import react.ReactElement
 
 external interface `T$15` {
 //    var onKeyDown: (e: React.KeyboardEvent<Element>) -> Unit
@@ -36,7 +37,7 @@ external interface HandlesProps : Props {
 //    var emitTouch: EmitTouch?
 //        get() = definedExternally
 //        set(value) = definedExternally
-    var children: (handlesObject: HandlesObject) -> Unit
+    var children: (handlesObject: HandlesObject) -> ReactElement
 }
 
 external interface HandleItem {

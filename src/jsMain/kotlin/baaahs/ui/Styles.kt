@@ -91,4 +91,34 @@ object Styles : StyleSheet("ui", isStatic = true) {
         display = Display.inline
         padding(0.em, .5.em)
     }
+
+    val guruMeditationErrorContainer by css {
+        backgroundColor = Color.black
+        color = Color.red
+        margin = "0"
+        padding = ".5em"
+    }
+
+    val guruMeditationErrorBox by css {
+        margin = 1.em.toString()
+        padding = 1.em.toString()
+        display = Display.flex
+        flexDirection = FlexDirection.row
+        alignItems = Align.center
+        justifyContent = JustifyContent.spaceEvenly
+
+        pre {
+            whiteSpace = WhiteSpace.preWrap
+        }
+
+        button {
+            border = "1px solid red"
+            color = Color.red
+        }
+    }
+
+    val guruMeditationErrorIcon by css {
+        float = Float.left
+        paddingRight = 2.em
+    }
 }
