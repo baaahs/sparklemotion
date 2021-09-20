@@ -9,8 +9,11 @@ import external.react_compound_slider.SliderItem
 import kotlinx.css.height
 import kotlinx.css.pct
 import kotlinx.css.top
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 import styled.inlineStyles
 
 private val track = xComponent<TrackProps>("Track") { props ->
@@ -27,7 +30,7 @@ private val track = xComponent<TrackProps>("Track") { props ->
     }
 }
 
-external interface TrackProps : RProps {
+external interface TrackProps : Props {
     var source: SliderItem
     var target: SliderItem
     var getTrackProps: GetTrackProps

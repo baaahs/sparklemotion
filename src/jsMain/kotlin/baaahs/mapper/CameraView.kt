@@ -2,10 +2,9 @@ package baaahs.mapper
 
 import baaahs.ui.xComponent
 import kotlinx.css.px
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.canvas
 
 private val CameraView = xComponent<CameraViewProps>("CameraView") { props ->
@@ -16,7 +15,7 @@ private val CameraView = xComponent<CameraViewProps>("CameraView") { props ->
     }
 }
 
-external interface CameraViewProps : RProps {
+external interface CameraViewProps : Props {
     var mapperUi: MapperUi
     var width: Int
     var height: Int

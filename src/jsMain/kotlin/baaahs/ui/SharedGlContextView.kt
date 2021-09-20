@@ -6,8 +6,11 @@ import baaahs.app.ui.appGlContext
 import kotlinext.js.jsObject
 import kotlinx.css.*
 import org.w3c.dom.HTMLElement
-import react.*
+import react.PropsWithChildren
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 import styled.StyleSheet
 
 private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext") { props ->
@@ -62,7 +65,7 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
     }
 }
 
-external interface SharedGlContextProps : RProps {
+external interface SharedGlContextProps : PropsWithChildren {
     var inFront: Boolean?
 }
 

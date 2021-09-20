@@ -3,11 +3,10 @@
 
 package external.react_compound_slider
 
-import react.RClass
-import react.RProps
-import react.ReactElement
+import react.ElementType
+import react.Props
 
-external val Ticks : RClass<TicksProps>
+external val Ticks : ElementType<TicksProps>
 
 external interface TicksObject {
     val activeHandleID: String
@@ -15,7 +14,7 @@ external interface TicksObject {
     val ticks: Array<SliderItem>
 }
 
-external interface TicksProps : RProps {
+external interface TicksProps : Props {
     /** @ignore */
     var scale: LinearScale?
     /**
@@ -43,5 +42,5 @@ external interface TicksProps : RProps {
      * The function receives an object with an array of ticks. Note: `getEventData` can be called with an event and get the value and percent at that location (used for tooltips etc). `activeHandleID` will be a string or null.  Function signature:
      * `({ getEventData, activeHandleID, ticks  }): element`
      */
-    var children: (ticksObject: TicksObject) -> ReactElement
+    var children: (ticksObject: TicksObject) -> Unit
 }

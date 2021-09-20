@@ -23,10 +23,13 @@ import materialui.components.typography.enums.TypographyColor
 import materialui.components.typography.typography
 import materialui.icon
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.b
 import react.dom.br
 import react.dom.div
+import react.useContext
 
 val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderPropertiesEditor") { props ->
     val appContext = useContext(appContext)
@@ -152,7 +155,7 @@ val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderProp
     }
 }
 
-external interface ShaderPropertiesEditorProps : RProps {
+external interface ShaderPropertiesEditorProps : Props {
     var editableManager: EditableManager
     var editingShader: EditingShader
     var mutableShaderInstance: MutableShaderInstance

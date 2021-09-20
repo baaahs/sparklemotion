@@ -14,11 +14,14 @@ import materialui.components.card.card
 import materialui.components.paper.enums.PaperStyle
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.b
 import react.dom.br
 import react.dom.div
 import react.dom.span
+import react.useContext
 import styled.StyleSheet
 import styled.css
 import styled.styledDiv
@@ -106,7 +109,7 @@ object Styles : StyleSheet("baaahs.Beatlink", isStatic = true) {
     }
 }
 
-external interface BeatLinkControlProps : RProps {
+external interface BeatLinkControlProps : Props {
     var controlProps: ControlProps
     var beatLinkControl: OpenBeatLinkControl
 }

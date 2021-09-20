@@ -3,8 +3,8 @@ package baaahs.ui
 import baaahs.util.Logger
 import baaahs.window
 import org.w3c.dom.events.Event
-import react.RMutableRef
-import react.RProps
+import react.MutableRefObject
+import react.Props
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -12,7 +12,7 @@ import kotlin.reflect.KProperty
 /**
  * Get functional component from [func]
  */
-fun <P : RProps> xComponent(
+fun <P : Props> xComponent(
     name: String,
     isPure: Boolean = false,
     func: XBuilder.(props: P) -> Unit
@@ -35,8 +35,8 @@ fun <P : RProps> xComponent(
         component
 }
 
-private val RProps.keys get() = jsObj.keys(this).unsafeCast<Array<String>>()
-private operator fun RProps.get(key: String): Any? = asDynamic()[key]
+private val Props.keys get() = jsObj.keys(this).unsafeCast<Array<String>>()
+private operator fun Props.get(key: String): Any? = asDynamic()[key]
 private val jsObj = js("Object")
 
 private class CounterIncr {
@@ -68,7 +68,7 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T: Any> ref(initialValue: T? = null): RMutableRef<T> =
+    fun <T: Any> ref(initialValue: T? = null): MutableRefObject<T> =
         react.useRef(initialValue)
 
     fun <T> memo(vararg watch: Any?, callback: ChangeDetector.() -> T): T {
@@ -135,7 +135,7 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     }
 
     fun <T : Function<*>> callback(vararg dependencies: dynamic, callback: T): T {
-        return react.useCallback(callback, dependencies)
+        return react.useCallback(*dependencies, callback = callback)
     }
 
     @Suppress("FunctionName")

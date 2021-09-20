@@ -17,8 +17,11 @@ import materialui.lab.components.togglebutton.enums.ToggleButtonStyle
 import materialui.lab.components.togglebutton.toggleButton
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 import styled.inlineStyles
 
 val Transition = xComponent<TransitionProps>("Transition") { props ->
@@ -136,7 +139,7 @@ var StyledElement.gridArea: String
     get() = error("Not supported.")
     set(value) = put("gridArea", value)
 
-external interface TransitionProps : RProps {
+external interface TransitionProps : Props {
     var controlProps: ControlProps
     var transitionControl: OpenTransitionControl
 }

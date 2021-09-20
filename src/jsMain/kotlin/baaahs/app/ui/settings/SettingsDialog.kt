@@ -17,7 +17,10 @@ import materialui.components.list.list
 import materialui.components.listitem.listItem
 import materialui.components.switches.switch
 import materialui.components.typography.typographyH6
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.useContext
 
 private val SettingsDialog = xComponent<SettingsDialogProps>("SettingsDialog") { props ->
     val appContext = useContext(appContext)
@@ -98,7 +101,7 @@ private val SettingsDialog = xComponent<SettingsDialogProps>("SettingsDialog") {
     }
 }
 
-external interface SettingsDialogProps : RProps {
+external interface SettingsDialogProps : Props {
     var changeUiSettings: ((UiSettings) -> UiSettings) -> Unit
     var onClose: () -> Unit
 }

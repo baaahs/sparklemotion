@@ -2,7 +2,7 @@ package baaahs.ui
 
 import external.DroppableProvided
 import external.copyFrom
-import kotlinx.css.CSSBuilder
+import kotlinx.css.CssBuilder
 import kotlinx.css.LinearDimension
 import kotlinx.css.RuleSet
 import kotlinx.css.StyledElement
@@ -48,7 +48,7 @@ val EventTarget?.value: String
         get() = asDynamic()!!.value as String
 
 val RuleSet.name: String
-    get() = CSSBuilder().apply { +this@name }.classes.joinToString(" ")
+    get() = CssBuilder().apply { +this@name }.classes.joinToString(" ")
 
 val RuleSet.selector: String
     get() = ".$name"
@@ -61,11 +61,11 @@ infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> = clazz to joinToStrin
 infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> = mutableListOf(this, that)
 infix fun String.and(that: String): String = "$this $that"
 
-fun CSSBuilder.child(ruleSet: RuleSet, block: RuleSet) = child(ruleSet.selector, block)
-fun CSSBuilder.descendants(ruleSet: RuleSet, block: RuleSet) = descendants(ruleSet.selector, block)
-fun CSSBuilder.within(ruleSet: RuleSet, block: RuleSet) = "${ruleSet.selector} &"(block)
+fun CssBuilder.child(ruleSet: RuleSet, block: RuleSet) = child(ruleSet.selector, block)
+fun CssBuilder.descendants(ruleSet: RuleSet, block: RuleSet) = descendants(ruleSet.selector, block)
+fun CssBuilder.within(ruleSet: RuleSet, block: RuleSet) = "${ruleSet.selector} &"(block)
 
-fun CSSBuilder.mixIn(mixin: CSSBuilder) = declarations.putAll(mixin.declarations)
+fun CssBuilder.mixIn(mixin: CssBuilder) = declarations.putAll(mixin.declarations)
 
 fun keys(jsObj: dynamic) = js("Object").keys(jsObj).unsafeCast<Array<String>>()
 
@@ -75,8 +75,8 @@ fun RDOMBuilder<*>.mixin(jsObj: dynamic) {
     }
 }
 
-fun StyleSheet.partial(block: CSSBuilder.() -> Unit): CSSBuilder {
-    return CSSBuilder().apply { block() }
+fun StyleSheet.partial(block: CssBuilder.() -> Unit): CssBuilder {
+    return CssBuilder().apply { block() }
 }
 
 fun <T> StyledElement.important(property: KProperty<T>, value: T) {
@@ -89,7 +89,7 @@ fun RDOMBuilder<*>.install(droppableProvided: DroppableProvided) {
 }
 
 fun RDOMBuilder<*>.insertPlaceholder(droppableProvided: DroppableProvided) {
-    this.childList.add(droppableProvided.placeholder)
+    this.child(droppableProvided.placeholder)
 }
 
 inline fun RBuilder.typographySubtitle1(vararg classMap: Pair<TypographyStyle, String>, crossinline block: TypographyElementBuilder<DIV, TypographyProps>.() -> Unit)

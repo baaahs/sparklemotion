@@ -46,7 +46,9 @@ import materialui.styles.muitheme.options.palette
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.options.type
 import materialui.styles.themeprovider.themeProvider
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
 import react.dom.p
 import react.dom.pre
@@ -431,12 +433,12 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     }
 }
 
-external interface AppIndexProps : RProps {
+external interface AppIndexProps : Props {
     var id: String
     var webClient: WebClient.Facade
     var undoStack: UndoStack<ShowEditorState>
     var stageManager: ClientStageManager
 }
 
-fun RBuilder.appIndex(handler: RHandler<AppIndexProps>): ReactElement =
+fun RBuilder.appIndex(handler: RHandler<AppIndexProps>) =
     child(AppIndex, handler = handler)

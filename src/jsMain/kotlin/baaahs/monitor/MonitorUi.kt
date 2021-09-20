@@ -8,7 +8,7 @@ import kotlinext.js.jsObject
 import org.w3c.dom.HTMLDivElement
 import react.ReactElement
 import react.createElement
-import react.rClass
+import react.react
 
 class MonitorUi(
     private val visualizer: Visualizer,
@@ -23,7 +23,7 @@ class MonitorUi(
     }
 
     override fun render(): ReactElement {
-        return createElement(MonitorPage::class.rClass, jsObject {
+        return createElement(MonitorPage::class.react, jsObject {
             this.containerDiv = container
             this.visualizer = this@MonitorUi.visualizer
         })

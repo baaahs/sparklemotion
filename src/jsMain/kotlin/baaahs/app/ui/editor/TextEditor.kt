@@ -19,8 +19,11 @@ import materialui.styles.palette.PaletteType
 import materialui.styles.palette.type
 import materialui.useTheme
 import org.w3c.dom.Element
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 
 val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { props ->
     val appContext = useContext(appContext)
@@ -111,7 +114,7 @@ val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { prop
 class Document(val key: String, var content: String)
 
 
-external interface TextEditorProps : RProps {
+external interface TextEditorProps : Props {
     var document: Document
     var mode: Mode?
     var theme: Theme?

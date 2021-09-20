@@ -4,12 +4,12 @@ package external.react_draggable
 
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.MouseEvent
-import react.RClass
-import react.RProps
+import react.ElementType
+import react.Props
 import react.ReactElement
 
 @JsName("default")
-external val Draggable : RClass<DraggableProps>
+external val Draggable : ElementType<DraggableProps>
 
 external interface DraggableCoreState {
     var dragging: Boolean
@@ -45,7 +45,7 @@ external interface PositionOffsetControlPosition {
     var y: Any // Number|string
 }
 
-external interface DraggableCoreProps: RProps {
+external interface DraggableCoreProps: Props {
     var allowAnyClick: Boolean
     var cancel: String
     var children: ReactElement

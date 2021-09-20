@@ -161,7 +161,7 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
     }
 }
 
-external interface LayoutEditorProps : RProps {
+external interface LayoutEditorProps : Props {
     var mutableShow: MutableShow
     var format: String
     var onGridChange: () -> Unit

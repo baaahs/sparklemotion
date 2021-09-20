@@ -22,10 +22,9 @@ import materialui.components.typography.enums.TypographyStyle
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.icon
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 
 val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { props ->
     val styles = EditableStyles
@@ -83,7 +82,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
     }
 }
 
-external interface ShaderInstanceCardProps : RProps {
+external interface ShaderInstanceCardProps : Props {
     var mutableShaderInstance: MutableShaderInstance
     var onSelect: () -> Unit
     var onDelete: (() -> Unit)?

@@ -6,8 +6,11 @@ import baaahs.ui.xComponent
 import external.react_compound_slider.SliderItem
 import kotlinx.css.bottom
 import kotlinx.css.pct
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 import styled.inlineStyles
 
 private val tick = xComponent<TickProps>("Tick") { props ->
@@ -31,7 +34,7 @@ private val tick = xComponent<TickProps>("Tick") { props ->
     }
 }
 
-external interface TickProps: RProps {
+external interface TickProps: Props {
     var tick: SliderItem
     var format: (SliderItem) -> String
 }

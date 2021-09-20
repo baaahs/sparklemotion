@@ -4,11 +4,11 @@ import external.ResizeObserver
 import external.throttle
 import org.w3c.dom.Element
 import react.RBuilder
-import react.RReadableRef
+import react.RefObject
 import react.useCallback
 import react.useEffect
 
-fun RBuilder.useResizeListener(elementRef: RReadableRef<Element>, onResized: () -> Unit) {
+fun RBuilder.useResizeListener(elementRef: RefObject<Element>, onResized: () -> Unit) {
     val onResizedThrottled = useCallback(elementRef, callback = throttle(onResized, 40))
 
     // Fire the callback anytime the ref is resized

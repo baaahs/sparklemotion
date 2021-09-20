@@ -200,7 +200,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
     }
 }
 
-external interface MapperAppViewProps : RProps {
+external interface MapperAppViewProps : Props {
     var mapper: Mapper.Facade
     var mapperUi: JsMapperUi
     var listener: MapperUi.Listener

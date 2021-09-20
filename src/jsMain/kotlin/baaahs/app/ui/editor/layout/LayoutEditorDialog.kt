@@ -40,9 +40,12 @@ import materialui.components.textfield.textField
 import materialui.icon
 import materialui.lab.components.togglebutton.toggleButton
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
 import react.dom.i
+import react.useContext
 import styled.inlineStyles
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -308,12 +311,12 @@ private fun Map<String, Layout>.getPanelIds(): Set<String> {
     }
 }
 
-external interface LayoutEditorDialogProps : RProps {
+external interface LayoutEditorDialogProps : Props {
     var open: Boolean
     var show: Show
     var onApply: (MutableShow) -> Unit
     var onClose: () -> Unit
 }
 
-fun RBuilder.layoutEditorDialog(handler: RHandler<LayoutEditorDialogProps>): ReactElement =
+fun RBuilder.layoutEditorDialog(handler: RHandler<LayoutEditorDialogProps>) =
     child(LayoutEditorDialog, handler = handler)

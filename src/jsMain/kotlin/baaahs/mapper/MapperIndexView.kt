@@ -21,10 +21,9 @@ import materialui.styles.palette.PaletteType
 import materialui.styles.palette.options.type
 import materialui.styles.themeprovider.themeProvider
 import org.w3c.dom.events.Event
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 import styled.inlineStyles
 
@@ -116,7 +115,7 @@ private fun RBuilder.tabPanel(tab: PageTabs, selectedTab: PageTabs, block: RBuil
     }
 }
 
-external interface MapperIndexViewProps : RProps {
+external interface MapperIndexViewProps : Props {
     var adminClient: AdminClient.Facade
     var mapperUi: JsMapperUi
 }

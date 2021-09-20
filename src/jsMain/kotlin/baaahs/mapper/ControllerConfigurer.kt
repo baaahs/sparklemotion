@@ -9,7 +9,10 @@ import materialui.components.tablecell.thCell
 import materialui.components.tablehead.tableHead
 import materialui.components.tablerow.tableRow
 import materialui.components.typography.typographyH4
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.useContext
 
 private val ControllerConfigurer = xComponent<DeviceConfigurerProps>("ControllerConfigurer") { props ->
     val adminContext = useContext(mapperAppContext)
@@ -97,7 +100,7 @@ private val ControllerConfigurer = xComponent<DeviceConfigurerProps>("Controller
     }
 }
 
-external interface DeviceConfigurerProps : RProps {
+external interface DeviceConfigurerProps : Props {
 }
 
 fun RBuilder.deviceConfigurer(handler: RHandler<DeviceConfigurerProps>) =

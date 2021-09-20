@@ -30,8 +30,11 @@ import materialui.icon
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 
 val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
     val appContext = useContext(appContext)
@@ -178,7 +181,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
     }
 }
 
-external interface PatchOverviewProps : RProps {
+external interface PatchOverviewProps : Props {
     var editableManager: EditableManager
     var mutablePatch: MutablePatch
 }
