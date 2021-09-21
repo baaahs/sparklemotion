@@ -25,8 +25,11 @@ import materialui.icon
 import materialui.styles.muitheme.direction
 import materialui.useTheme
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 
 val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props ->
     val appContext = useContext(appContext)
@@ -158,7 +161,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
     }
 }
 
-external interface AppDrawerProps : RProps {
+external interface AppDrawerProps : Props {
     var open: Boolean
     var forcedOpen: Boolean
     var onClose: () -> Unit

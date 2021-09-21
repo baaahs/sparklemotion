@@ -7,11 +7,11 @@ package ReactAce.Ace
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import react.Component
-import react.RClass
-import react.RProps
-import react.RState
+import react.ElementType
+import react.Props
+import react.State
 
-external interface IAceEditorProps : RProps {
+external interface IAceEditorProps : Props {
     var name: String?
         get() = definedExternally
         set(value) = definedExternally
@@ -298,10 +298,10 @@ external interface `T$0` {
 }
 
 @JsName("default")
-external val reactAce : RClass<IAceEditorProps>
+external val reactAce : ElementType<IAceEditorProps>
 
 //@JsName("default")
-external open class ReactAce(props: IAceEditorProps) : Component<IAceEditorProps, RState> {
+external open class ReactAce(props: IAceEditorProps) : Component<IAceEditorProps, State> {
     open var editor: Any
     open var refEditor: HTMLElement
     open var debounce: (fn: Any, delay: Number) -> (args: Any) -> Unit

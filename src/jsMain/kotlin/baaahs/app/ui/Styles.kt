@@ -7,7 +7,6 @@ import baaahs.mapper.MapperStyles
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
-import materialui.styles.mixins.toolbar
 import materialui.styles.muitheme.MuiTheme
 import materialui.styles.palette.contrastText
 import materialui.styles.palette.dark
@@ -58,7 +57,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 
     }
 
-    val global = CSSBuilder().apply {
+    val global = CssBuilder().apply {
         "header" {
             color = theme.palette.primary.contrastText
             backgroundColor = theme.palette.primary.dark
@@ -86,7 +85,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
         transform { translateX(0.px) }
         theme.transitions.create("transform") {
             easing = theme.transitions.easing.sharp
-            duration = theme.transitions.duration.enteringScreen
+                duration = theme.transitions.duration.enteringScreen
         }
     }
 
@@ -446,7 +445,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         overflow = Overflow.scroll
     }
 
-    val global = CSSBuilder().apply {
+    val global = CssBuilder().apply {
         ".${editModeOn.name}.${unplacedControlsPalette.name}" {
             opacity = 1
             pointerEvents = PointerEvents.auto

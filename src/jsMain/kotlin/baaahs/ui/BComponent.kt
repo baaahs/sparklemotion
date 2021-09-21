@@ -1,12 +1,12 @@
 package baaahs.ui
 
 import baaahs.window
+import react.Props
 import react.RComponent
-import react.RProps
-import react.RState
+import react.State
 import kotlin.js.Promise
 
-abstract class BComponent<P : RProps, S : RState>(props: P) : RComponent<P, S>(props), Observer {
+abstract class BComponent<P : Props, S : State>(props: P) : RComponent<P, S>(props), Observer {
     private var valid = true;
 
     open fun observing(props: P, state: S): List<Observable?> = emptyList()

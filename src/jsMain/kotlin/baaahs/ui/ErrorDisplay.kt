@@ -1,7 +1,10 @@
 package baaahs.ui
 
 import baaahs.window
-import kotlinx.css.*
+import kotlinx.css.Overflow
+import kotlinx.css.em
+import kotlinx.css.overflow
+import kotlinx.css.paddingBottom
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.role
 import materialui.components.button.button
@@ -10,12 +13,12 @@ import materialui.components.container.container
 import materialui.components.paper.paper
 import materialui.icon
 import org.w3c.dom.HTMLElement
-import react.RProps
+import react.Props
 import react.dom.*
-import react.functionalComponent
+import react.functionComponent
 import styled.inlineStyles
 
-val ErrorDisplay = functionalComponent<ErrorDisplayProps> { props ->
+val ErrorDisplay = functionComponent<ErrorDisplayProps> { props ->
     val guruMediationBox = react.useRef<HTMLElement>(null)
 
     react.useEffect {
@@ -36,31 +39,11 @@ val ErrorDisplay = functionalComponent<ErrorDisplayProps> { props ->
     paper {
         attrs.role = "alert"
 
-        div {
-            inlineStyles {
-                backgroundColor = Color.black
-                color = Color.red
-                margin = "0"
-                padding = ".5em"
-            }
-
-            div {
+        div(+Styles.guruMeditationErrorContainer) {
+            div(+Styles.guruMeditationErrorBox) {
                 ref = guruMediationBox
 
-                inlineStyles {
-                    margin = 1.em.toString()
-                    padding = 1.em.toString()
-                    display = Display.flex
-                    flexDirection = FlexDirection.row
-                    alignItems = Align.center
-                    justifyContent = JustifyContent.spaceEvenly
-                }
-
-                span {
-                    inlineStyles {
-                        float = Float.left
-                        paddingRight = 2.em
-                    }
+                span(+Styles.guruMeditationErrorIcon) {
                     icon(materialui.icons.NotificationImportant)
                 }
 
@@ -72,11 +55,6 @@ val ErrorDisplay = functionalComponent<ErrorDisplayProps> { props ->
 
                 if (props.resetErrorBoundary != null) {
                     button {
-                        inlineStyles {
-                            border = "1px solid red"
-                            color = Color.red
-                        }
-
                         attrs.variant = ButtonVariant.outlined
                         attrs.onClickFunction = { props.resetErrorBoundary?.invoke() }
 
@@ -100,7 +78,7 @@ val ErrorDisplay = functionalComponent<ErrorDisplayProps> { props ->
     }
 }
 
-external interface ErrorDisplayProps : RProps {
+external interface ErrorDisplayProps : Props {
     var error: Error
     var componentStack: String
     var resetErrorBoundary: (() -> Unit)?

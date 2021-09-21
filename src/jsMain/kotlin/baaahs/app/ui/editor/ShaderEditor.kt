@@ -27,8 +27,11 @@ import materialui.components.popover.vertical
 import materialui.icon
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 import styled.inlineStyles
 
 val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
@@ -155,7 +158,7 @@ val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
 }
 
 
-external interface ShaderEditorProps : RProps {
+external interface ShaderEditorProps : Props {
     var editingShader: EditingShader
 }
 

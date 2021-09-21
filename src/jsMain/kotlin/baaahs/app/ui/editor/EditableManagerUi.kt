@@ -33,10 +33,9 @@ import materialui.lab.components.alert.alert
 import materialui.lab.components.alert.enums.AlertSeverity
 import materialui.lab.components.alerttitle.alertTitle
 import org.w3c.dom.events.Event
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 import react.dom.form
 import react.dom.header
@@ -130,7 +129,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
                     div(+EditableStyles.dialogTitleButtons) {
                         iconButton(Styles.buttons on IconButtonStyle.root) {
                             icon(materialui.icons.Undo)
-                            attrs["disabled"] = !props.editableManager.canUndo()
+                            attrs.disabled = !props.editableManager.canUndo()
                             attrs.onClickFunction = handleUndo
 
                             typographyH6 { +"Undo" }
@@ -138,7 +137,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                         iconButton(Styles.buttons on IconButtonStyle.root) {
                             icon(materialui.icons.Redo)
-                            attrs["disabled"] = !props.editableManager.canRedo()
+                            attrs.disabled = !props.editableManager.canRedo()
                             attrs.onClickFunction = handleRedo
 
                             typographyH6 { +"Redo" }
@@ -224,7 +223,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                     button {
                         +"Apply"
-                        attrs["disabled"] = !props.editableManager.isModified()
+                        attrs.disabled = !props.editableManager.isModified()
                         attrs.color = ButtonColor.primary
                         attrs.onClickFunction = handleApply
                     }
@@ -234,7 +233,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
     }
 }
 
-external interface EditableManagerUiProps : RProps {
+external interface EditableManagerUiProps : Props {
     var editMode: Boolean
     var editableManager: EditableManager
 }

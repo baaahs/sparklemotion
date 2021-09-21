@@ -6,10 +6,9 @@ import baaahs.control.OpenSliderControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 
 private val SliderControl = xComponent<SliderControlProps>("SliderControl") { props ->
@@ -57,7 +56,7 @@ private val SliderControl = xComponent<SliderControlProps>("SliderControl") { pr
     }
 }
 
-external interface SliderControlProps : RProps {
+external interface SliderControlProps : Props {
     var controlProps: ControlProps
     var sliderControl: OpenSliderControl
 }

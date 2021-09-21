@@ -7,10 +7,13 @@ import external.react_compound_slider.SliderItem
 import kotlinx.css.pct
 import kotlinx.css.top
 import kotlinx.html.unsafe
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
 import react.dom.setProp
 import react.dom.svg
+import react.useContext
 import styled.inlineStyles
 
 private val altHandle = xComponent<HandleProps>("AltHandle") { props ->
@@ -40,7 +43,7 @@ private val altHandle = xComponent<HandleProps>("AltHandle") { props ->
     }
 }
 
-external interface AltHandleProps : RProps {
+external interface AltHandleProps : Props {
     var domain: Array<Float>
     var handle: SliderItem
     var getHandleProps: (id: String) -> dynamic

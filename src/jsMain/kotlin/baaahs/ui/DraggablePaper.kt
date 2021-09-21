@@ -5,9 +5,9 @@ import materialui.components.paper.PaperProps
 import materialui.components.paper.paper
 import react.RBuilder
 import react.RComponent
-import react.RState
+import react.State
 
-class DraggablePaper(props: PaperProps) : RComponent<PaperProps, RState>(props) {
+class DraggablePaper(props: PaperProps) : RComponent<PaperProps, State>(props) {
     override fun RBuilder.render() {
         Draggable {
             attrs.handle = ".$handleClassName"

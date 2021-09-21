@@ -13,10 +13,9 @@ import materialui.components.radiogroup.radioGroup
 import materialui.components.switches.switch
 import materialui.components.typography.typographyH6
 import org.w3c.dom.HTMLInputElement
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 
 private val visualizerPropsEditor = xComponent<VisualizerPropsEditorProps>("VisualizerPropsEditor") { props ->
@@ -39,7 +38,7 @@ private val visualizerPropsEditor = xComponent<VisualizerPropsEditorProps>("Visu
                 VisualizerControl.SurfaceDisplayMode.values().forEach {
                     formControlLabel {
                         attrs.value = it.name
-                        attrs.control = radio {}
+                        attrs.control { radio {} }
                         attrs.label { +it.name }
                     }
                 }
@@ -64,7 +63,7 @@ private val visualizerPropsEditor = xComponent<VisualizerPropsEditorProps>("Visu
     }
 }
 
-external interface VisualizerPropsEditorProps : RProps {
+external interface VisualizerPropsEditorProps : Props {
     var editableManager: EditableManager
     var mutableVisualizerControl: MutableVisualizerControl
 }

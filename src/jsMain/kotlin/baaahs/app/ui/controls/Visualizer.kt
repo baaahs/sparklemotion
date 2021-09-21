@@ -11,8 +11,11 @@ import materialui.components.card.card
 import materialui.components.paper.enums.PaperStyle
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLDivElement
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.i
+import react.useContext
 
 val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
     val appContext = useContext(appContext)
@@ -50,7 +53,7 @@ val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
     }
 }
 
-external interface VisualizerProps : RProps {
+external interface VisualizerProps : Props {
     var controlProps: ControlProps
     var visualizerControl: OpenVisualizerControl
 }

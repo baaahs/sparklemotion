@@ -7,7 +7,10 @@ import kotlinx.css.*
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import org.w3c.dom.HTMLDivElement
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.RefObject
 import react.dom.div
 import styled.StyleSheet
 import styled.css
@@ -51,8 +54,8 @@ val SlidePanel = xComponent<SlidePanelProps>("SlidePanel") { props ->
 
 private fun resize(
     props: SlidePanelProps,
-    rootEl: RReadableRef<HTMLDivElement>,
-    panelEls: List<RReadableRef<HTMLDivElement>>
+    rootEl: RefObject<HTMLDivElement>,
+    panelEls: List<RefObject<HTMLDivElement>>
 ) {
     props.panels.forEachIndexed { index, _ ->
         val div = panelEls[index].current!!
@@ -83,7 +86,7 @@ object SlidePanelStyles : StyleSheet("ui-misc-SlidePanel", isStatic = true) {
     }
 }
 
-external interface SlidePanelProps : RProps {
+external interface SlidePanelProps : Props {
     var panels: List<RBuilder.() -> Unit>
     var index: Int?
     var margins: LinearDimension?

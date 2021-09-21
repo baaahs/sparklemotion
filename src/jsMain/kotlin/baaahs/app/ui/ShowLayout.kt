@@ -88,49 +88,52 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                 this.direction = Direction.horizontal.name
                                 this.isDropDisabled = !props.editMode
                             }) { droppableProvided, _ ->
-                                val style = if (Styles.controlSections.size > panelBucket.section.depth)
-                                    Styles.controlSections[panelBucket.section.depth]
-                                else
-                                    Styles.controlSections.last()
+                                buildElement {
+                                    val style = if (Styles.controlSections.size > panelBucket.section.depth)
+                                        Styles.controlSections[panelBucket.section.depth]
+                                    else
+                                        Styles.controlSections.last()
 
-                                div(+Styles.layoutControls and style) {
-                                    install(droppableProvided)
+                                    div(+Styles.layoutControls and style) {
+                                        install(droppableProvided)
 
-                                    div(+Styles.controlPanelHelpText) { +panelBucket.section.title }
-                                    panelBucket.controls.forEachIndexed { index, placedControl ->
-                                        val control = placedControl.control
-                                        val draggableId = control.id
+                                        div(+Styles.controlPanelHelpText) { +panelBucket.section.title }
+                                        panelBucket.controls.forEachIndexed { index, placedControl ->
+                                            val control = placedControl.control
+                                            val draggableId = control.id
 
-                                        draggable({
-                                            this.key = draggableId
-                                            this.draggableId = draggableId
-                                            this.isDragDisabled = !props.editMode
-                                            this.index = index
-                                        }) { draggableProvided, _ ->
-                                            controlWrapper {
-                                                attrs.control = control
-                                                attrs.controlProps = props.controlProps
-                                                attrs.draggableProvided = draggableProvided
+                                            draggable({
+                                                this.key = draggableId
+                                                this.draggableId = draggableId
+                                                this.isDragDisabled = !props.editMode
+                                                this.index = index
+                                            }) { draggableProvided, _ ->
+                                                buildElement {
+                                                    controlWrapper {
+                                                        attrs.control = control
+                                                        attrs.controlProps = props.controlProps
+                                                        attrs.draggableProvided = draggableProvided
+                                                    }
+                                                }
                                             }
                                         }
-                                    }
 
-                                    insertPlaceholder(droppableProvided)
+                                        child(droppableProvided.placeholder)
 
-                                    iconButton(+Styles.addToSectionButton on IconButtonStyle.root) {
-                                        attrs.onClickFunction = handleAddButtonClick.getOrPut(panelBucket.suggestId()) {
-                                            { event: Event ->
-                                                showAddMenuFor = panelBucket
-                                                showAddMenuForAnchorEl = event.target
-                                            }
-                                        }.withEvent()
-                                        icon(materialui.icons.AddCircleOutline)
+                                        iconButton(+Styles.addToSectionButton on IconButtonStyle.root) {
+                                            attrs.onClickFunction = handleAddButtonClick.getOrPut(panelBucket.suggestId()) {
+                                                { event: Event ->
+                                                    showAddMenuFor = panelBucket
+                                                    showAddMenuForAnchorEl = event.target
+                                                }
+                                            }.withEvent()
+                                            icon(materialui.icons.AddCircleOutline)
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-
                 }
             }
         }
@@ -165,7 +168,7 @@ private fun <E> List<E>.getBounded(index: Int): E? {
     return get(index)
 }
 
-external interface ShowLayoutProps : RProps {
+external interface ShowLayoutProps : Props {
     var show: OpenShow
     var onShowStateChange: () -> Unit
     var layout: Layout
@@ -174,5 +177,5 @@ external interface ShowLayoutProps : RProps {
     var editMode: Boolean
 }
 
-fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>): ReactElement =
+fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>) =
     child(ShowLayout, handler = handler)

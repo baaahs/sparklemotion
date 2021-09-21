@@ -3,8 +3,8 @@
 
 package external.react_compound_slider
 
-import react.RClass
-import react.RProps
+import react.ElementType
+import react.Props
 import react.ReactElement
 
 external interface `T$15` {
@@ -13,7 +13,7 @@ external interface `T$15` {
 //    var onTouchStart: (e: React.TouchEvent<Element>) -> Unit
 }
 
-external val Handles : RClass<HandlesProps>
+external val Handles : ElementType<HandlesProps>
 
 external interface HandlesObject {
     var handles: Array<SliderItem>
@@ -21,7 +21,7 @@ external interface HandlesObject {
     var getHandleProps: GetHandleProps
 }
 
-external interface HandlesProps : RProps {
+external interface HandlesProps : Props {
     var activeHandleID: String?
         get() = definedExternally
         set(value) = definedExternally

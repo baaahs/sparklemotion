@@ -3,8 +3,8 @@
 
 package external.react_compound_slider
 
-import react.RClass
-import react.RProps
+import react.ElementType
+import react.Props
 import react.ReactElement
 
 external interface `T$13` {
@@ -16,9 +16,9 @@ external interface SliderData {
     var activeHandleID: String
 }
 
-external val Slider : RClass<SliderProps>
+external val Slider : ElementType<SliderProps>
 
-external interface SliderProps : RProps {
+external interface SliderProps : Props {
     /**
      * String component used for slider root. Defaults to 'div'.
      */

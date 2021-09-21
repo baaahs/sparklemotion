@@ -7,10 +7,9 @@ import baaahs.ui.addObserver
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.*
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 import styled.StyleSheet
 
@@ -53,7 +52,7 @@ object GadgetsPreviewStyles : StyleSheet("app-ui-editor-GadgetsPreview", isStati
     }
 }
 
-external interface GadgetsPreviewProps : RProps {
+external interface GadgetsPreviewProps : Props {
     var editingShader: EditingShader
 }
 

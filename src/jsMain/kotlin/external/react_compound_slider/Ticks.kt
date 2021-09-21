@@ -3,11 +3,11 @@
 
 package external.react_compound_slider
 
-import react.RClass
-import react.RProps
+import react.ElementType
+import react.Props
 import react.ReactElement
 
-external val Ticks : RClass<TicksProps>
+external val Ticks : ElementType<TicksProps>
 
 external interface TicksObject {
     val activeHandleID: String
@@ -15,7 +15,7 @@ external interface TicksObject {
     val ticks: Array<SliderItem>
 }
 
-external interface TicksProps : RProps {
+external interface TicksProps : Props {
     /** @ignore */
     var scale: LinearScale?
     /**

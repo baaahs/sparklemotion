@@ -75,11 +75,11 @@ class ConsoleView(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(
     }
 }
 
-external interface ConsoleProps : RProps {
+external interface ConsoleProps : Props {
     var simulator: SheepSimulator.Facade
 }
 
-external interface ConsoleState : RState {
+external interface ConsoleState : State {
     var selectedBrain: Brain.Facade?
 }
 
