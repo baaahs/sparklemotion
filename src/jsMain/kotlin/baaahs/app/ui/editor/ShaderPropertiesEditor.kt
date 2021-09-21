@@ -23,10 +23,13 @@ import materialui.components.typography.enums.TypographyColor
 import materialui.components.typography.typography
 import materialui.icon
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.b
 import react.dom.br
 import react.dom.div
+import react.useContext
 
 val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderPropertiesEditor") { props ->
     val appContext = useContext(appContext)
@@ -82,7 +85,7 @@ val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderProp
                     attrs.onChangeFunction = handleSelectShaderChannel
 
                     menuItem {
-                        attrs["value"] = main.id
+                        attrs.value = main.id
                         listItemIcon { icon(CommonIcons.ShaderChannel) }
                         listItemText { +"${main.id.englishize()} (default)" }
                     }
@@ -93,7 +96,7 @@ val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderProp
                     shaderChannels.forEach { shaderChannel ->
                         if (shaderChannel.id != main.id) {
                             menuItem {
-                                attrs["value"] = shaderChannel.id
+                                attrs.value = shaderChannel.id
                                 listItemIcon { icon(CommonIcons.ShaderChannel) }
                                 listItemText { +shaderChannel.id.englishize() }
                             }
@@ -102,7 +105,7 @@ val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderProp
 
                     divider {}
                     menuItem {
-                        attrs["value"] = "__new__"
+                        attrs.value = "__new__"
                         listItemIcon { icon(CommonIcons.Add) }
                         listItemText { +"New Channel…" }
                     }
@@ -152,7 +155,7 @@ val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderProp
     }
 }
 
-external interface ShaderPropertiesEditorProps : RProps {
+external interface ShaderPropertiesEditorProps : Props {
     var editableManager: EditableManager
     var editingShader: EditingShader
     var mutableShaderInstance: MutableShaderInstance

@@ -8,15 +8,18 @@ import baaahs.ui.unaryPlus
 import baaahs.util.Framerate
 import kotlinx.css.*
 import kotlinx.html.id
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.State
 import react.dom.*
 import styled.css
 import styled.styledTable
 import styled.styledTh
 import kotlin.math.roundToInt
 
-class FrameratePanel(props: FrameratePanelProps) : BComponent<FrameratePanelProps, RState>(props), Observer {
-    override fun observing(props: FrameratePanelProps, state: RState): List<Observable?> {
+class FrameratePanel(props: FrameratePanelProps) : BComponent<FrameratePanelProps, State>(props), Observer {
+    override fun observing(props: FrameratePanelProps, state: State): List<Observable?> {
         return listOf(
             props.pinkyFramerate,
             props.visualizerFramerate
@@ -63,10 +66,10 @@ class FrameratePanel(props: FrameratePanelProps) : BComponent<FrameratePanelProp
     }
 }
 
-external interface FrameratePanelProps : RProps {
+external interface FrameratePanelProps : Props {
     var pinkyFramerate: Framerate
     var visualizerFramerate: Framerate
 }
 
-fun RBuilder.frameratePanel(handler: RHandler<FrameratePanelProps>): ReactElement =
+fun RBuilder.frameratePanel(handler: RHandler<FrameratePanelProps>) =
     child(FrameratePanel::class, handler = handler)

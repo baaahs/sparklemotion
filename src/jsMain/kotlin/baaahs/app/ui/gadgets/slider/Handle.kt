@@ -8,9 +8,12 @@ import baaahs.ui.xComponent
 import external.react_compound_slider.SliderItem
 import kotlinx.css.pct
 import kotlinx.css.top
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
 import react.dom.setProp
+import react.useContext
 import styled.inlineStyles
 
 private val handle = xComponent<HandleProps>("Handle") { props ->
@@ -45,7 +48,7 @@ private val handle = xComponent<HandleProps>("Handle") { props ->
     }
 }
 
-external interface HandleProps : RProps {
+external interface HandleProps : Props {
     var domain: Array<Float>
     var handle: SliderItem
     var getHandleProps: (id: String) -> dynamic

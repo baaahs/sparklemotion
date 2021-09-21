@@ -2,8 +2,11 @@ package baaahs.mapper
 
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.*
+import react.useContext
 import kotlin.math.min
 
 private val StatusBar = xComponent<StatusBarProps>("StatusBar") { props ->
@@ -43,7 +46,7 @@ private val StatusBar = xComponent<StatusBarProps>("StatusBar") { props ->
     }
 }
 
-external interface StatusBarProps : RProps {
+external interface StatusBarProps : Props {
     var mapperStatus: MapperStatus
 }
 

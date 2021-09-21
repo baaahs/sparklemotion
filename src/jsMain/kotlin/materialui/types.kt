@@ -15,9 +15,8 @@ import materialui.components.svgicon.enums.SvgIconStyle
 import materialui.components.svgicon.htmlColor
 import react.ComponentType
 import react.RBuilder
-import react.RClass
 
-typealias Icon = RClass<SvgIconProps>
+typealias Icon = ComponentType<SvgIconProps>
 
 fun RBuilder.icon(
     icon: Icon,

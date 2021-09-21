@@ -1,9 +1,15 @@
 package baaahs.sim.ui
 
 import baaahs.Pinky
-import baaahs.ui.*
+import baaahs.ui.BComponent
+import baaahs.ui.Observable
+import baaahs.ui.Observer
+import baaahs.ui.descendants
 import kotlinx.css.*
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.State
 import react.dom.*
 import styled.StyleSheet
 import styled.css
@@ -112,13 +118,13 @@ object Styles : StyleSheet("sim-pinky", isStatic = true) {
     }
 }
 
-external interface PinkyPanelProps : RProps {
+external interface PinkyPanelProps : Props {
     var pinky: Pinky.Facade
 }
 
-external interface PinkyPanelState : RState {
+external interface PinkyPanelState : State {
     var showGlsl: Boolean
 }
 
-fun RBuilder.pinkyPanel(handler: RHandler<PinkyPanelProps>): ReactElement =
+fun RBuilder.pinkyPanel(handler: RHandler<PinkyPanelProps>) =
     child(PinkyPanel::class, handler = handler)

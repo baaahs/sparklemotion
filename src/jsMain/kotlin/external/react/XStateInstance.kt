@@ -51,4 +51,4 @@ private constructor() {
     message = "Legacy name for `XStateInstance`",
     replaceWith = ReplaceWith("XStateInstance<T>"),
 )
-typealias RStateDelegate<T> = XStateInstance<T>
+typealias StateDelegate<T> = XStateInstance<T>

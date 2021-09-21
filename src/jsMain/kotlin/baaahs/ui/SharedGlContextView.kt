@@ -6,8 +6,11 @@ import baaahs.app.ui.appGlContext
 import kotlinext.js.jsObject
 import kotlinx.css.*
 import org.w3c.dom.HTMLElement
-import react.*
+import react.PropsWithChildren
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 import styled.StyleSheet
 
 private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext") { props ->
@@ -28,21 +31,20 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
     }
 
     onMount(useSharedContexts) {
-        if (useSharedContexts) {
+        val canvasParent = canvasParentRef.current
+        if (useSharedContexts && canvasParent != null) {
             val sharedGlContext = appGlContext.sharedGlContext!!
 
             val canvas = sharedGlContext.canvas
             canvas.classList.add(SharedGlContextStyles.canvas.name)
-            canvasParentRef.current!!.let { parent ->
-                if (props.inFront == true) {
-                    parent.appendChild(canvas)
-                } else {
-                    parent.insertBefore(canvas, parent.firstChild)
-                }
+            if (props.inFront == true) {
+                canvasParent.appendChild(canvas)
+            } else {
+                canvasParent.insertBefore(canvas, canvasParent.firstChild)
             }
 
             withCleanup {
-                canvasParentRef.current!!.removeChild(canvas)
+                canvasParent.removeChild(canvas)
             }
         }
     }
@@ -62,7 +64,7 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
     }
 }
 
-external interface SharedGlContextProps : RProps {
+external interface SharedGlContextProps : PropsWithChildren {
     var inFront: Boolean?
 }
 

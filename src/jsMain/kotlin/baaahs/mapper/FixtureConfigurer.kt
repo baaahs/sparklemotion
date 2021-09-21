@@ -1,10 +1,9 @@
 package baaahs.mapper
 
 import baaahs.ui.xComponent
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 
 private val FixtureConfigurer = xComponent<FixtureConfigurerProps>("FixtureConfigurer") { props ->
@@ -13,7 +12,7 @@ private val FixtureConfigurer = xComponent<FixtureConfigurerProps>("FixtureConfi
     }
 }
 
-external interface FixtureConfigurerProps : RProps {
+external interface FixtureConfigurerProps : Props {
 }
 
 fun RBuilder.fixtureConfigurer(handler: RHandler<FixtureConfigurerProps>) =

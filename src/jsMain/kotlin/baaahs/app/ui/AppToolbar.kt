@@ -29,11 +29,14 @@ import materialui.components.typography.enums.TypographyStyle
 import materialui.components.typography.typographyH6
 import materialui.icon
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.b
 import react.dom.div
 import react.dom.h4
 import react.dom.i
+import react.useContext
 import styled.css
 import styled.styledDiv
 
@@ -107,7 +110,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                     iconButton {
                         icon(materialui.icons.Undo)
-                        attrs["disabled"] = !undoStack.canUndo()
+                        attrs.disabled = !undoStack.canUndo()
                         attrs.onClickFunction = handleUndo
 
                         typographyH6 { +"Undo" }
@@ -115,7 +118,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                     iconButton {
                         icon(materialui.icons.Redo)
-                        attrs["disabled"] = !undoStack.canRedo()
+                        attrs.disabled = !undoStack.canRedo()
                         attrs.onClickFunction = handleRedo
 
                         typographyH6 { +"Redo" }
@@ -130,7 +133,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     } else {
                         iconButton {
                             icon(materialui.icons.Save)
-                            attrs["disabled"] = !webClient.showIsModified
+                            attrs.disabled = !webClient.showIsModified
                             attrs.onClickFunction = props.onSaveShow.withEvent()
                             typographyH6 { +"Save" }
                         }
@@ -186,7 +189,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
 private val Severity.cssClass get() = name.toLowerCase() + "Severity"
 
-external interface AppToolbarProps : RProps {
+external interface AppToolbarProps : Props {
     var editMode: Boolean
     var onEditModeChange: () -> Unit
     var onMenuButtonClick: () -> Unit

@@ -8,10 +8,9 @@ import materialui.components.divider.divider
 import materialui.components.popover.enums.PopoverStyle
 import materialui.components.popover.popover
 import org.w3c.dom.events.EventTarget
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.code
 import react.dom.div
 import react.dom.header
@@ -54,7 +53,7 @@ val ShaderDiagnostics = xComponent<ShaderDiagnosticsProps>("ShaderDiagnostics") 
     }
 }
 
-external interface ShaderDiagnosticsProps : RProps {
+external interface ShaderDiagnosticsProps : Props {
     var anchor: EventTarget?
     var builder: ShaderBuilder
     var onClose: () -> Unit

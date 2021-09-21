@@ -10,7 +10,7 @@ import kotlinx.css.LinearDimension
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
-import react.RReadableRef
+import react.RefObject
 
 actual interface ShaderPreviewBootstrapper {
     fun createHelper(sharedGlContext: SharedGlContext?): Helper =
@@ -22,7 +22,7 @@ actual interface ShaderPreviewBootstrapper {
     fun bootstrap(
         visibleCanvas: HTMLCanvasElement,
         model: Model,
-        preRenderHook: RReadableRef<() -> Unit>
+        preRenderHook: RefObject<() -> Unit>
     ): ShaderPreview
 
     abstract class Helper {
@@ -42,7 +42,7 @@ actual interface ShaderPreviewBootstrapper {
             }
         }
 
-        abstract fun bootstrap(model: Model, preRenderHook: RReadableRef<() -> Unit>): ShaderPreview
+        abstract fun bootstrap(model: Model, preRenderHook: RefObject<() -> Unit>): ShaderPreview
 
         abstract fun release(gl: GlContext)
     }
@@ -55,7 +55,7 @@ interface SharedGlContextCapableBootstrapper : ShaderPreviewBootstrapper {
         height: Int,
         sharedGlContext: SharedGlContext,
         model: Model,
-        preRenderHook: RReadableRef<() -> Unit>
+        preRenderHook: RefObject<() -> Unit>
     ): ShaderPreview
 }
 
@@ -66,7 +66,7 @@ class StandaloneCanvasHelper(
         document.createElement("canvas") as HTMLCanvasElement
 
 
-    override fun bootstrap(model: Model, preRenderHook: RReadableRef<() -> Unit>): ShaderPreview {
+    override fun bootstrap(model: Model, preRenderHook: RefObject<() -> Unit>): ShaderPreview {
         return bootstrapper.bootstrap(container, model, preRenderHook)
     }
 
@@ -80,7 +80,7 @@ class SharedCanvasHelper(
     override val container: HTMLDivElement =
         document.createElement("div") as HTMLDivElement
 
-    override fun bootstrap(model: Model, preRenderHook: RReadableRef<() -> Unit>): ShaderPreview =
+    override fun bootstrap(model: Model, preRenderHook: RefObject<() -> Unit>): ShaderPreview =
         bootstrapper.bootstrapShared(
             container,
             width?.inPixels() ?: 10,
@@ -99,7 +99,7 @@ actual object MovingHeadPreviewBootstrapper : ShaderPreviewBootstrapper {
     override fun bootstrap(
         visibleCanvas: HTMLCanvasElement,
         model: Model,
-        preRenderHook: RReadableRef<() -> Unit>
+        preRenderHook: RefObject<() -> Unit>
     ): ShaderPreview {
         @Suppress("UnnecessaryVariable")
         val canvas2d = visibleCanvas
@@ -115,7 +115,7 @@ actual object ProjectionPreviewBootstrapper : ShaderPreviewBootstrapper {
     override fun bootstrap(
         visibleCanvas: HTMLCanvasElement,
         model: Model,
-        preRenderHook: RReadableRef<() -> Unit>
+        preRenderHook: RefObject<() -> Unit>
     ): ShaderPreview {
         @Suppress("UnnecessaryVariable")
         val canvas2d = visibleCanvas
@@ -131,7 +131,7 @@ actual object QuadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedGlConte
     override fun bootstrap(
         visibleCanvas: HTMLCanvasElement,
         model: Model,
-        preRenderHook: RReadableRef<() -> Unit>
+        preRenderHook: RefObject<() -> Unit>
     ): ShaderPreview {
         val glslContext = GlBase.jsManager.createContext(visibleCanvas)
         return QuadPreview(glslContext, visibleCanvas.width, visibleCanvas.height) {
@@ -145,7 +145,7 @@ actual object QuadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedGlConte
         height: Int,
         sharedGlContext: SharedGlContext,
         model: Model,
-        preRenderHook: RReadableRef<() -> Unit>
+        preRenderHook: RefObject<() -> Unit>
     ): ShaderPreview {
         val glslContext = sharedGlContext.createSubContext(container)
         return QuadPreview(glslContext, width, height) {

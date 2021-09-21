@@ -13,8 +13,11 @@ import materialui.components.tablecell.tdCell
 import materialui.components.tablecell.thCell
 import materialui.components.tablehead.tableHead
 import materialui.components.tablerow.tableRow
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.code
+import react.useContext
 import styled.StyleSheet
 import styled.inlineStyles
 
@@ -74,7 +77,7 @@ object ShaderHelpStyles : StyleSheet("app-ui-editor-ShaderHelp", isStatic = true
     }
 }
 
-external interface ShaderHelpProps : RProps {
+external interface ShaderHelpProps : Props {
     var editingShader: EditingShader
 }
 

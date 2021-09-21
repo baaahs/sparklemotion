@@ -22,9 +22,12 @@ import materialui.components.textfield.textField
 import materialui.icon
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
 import react.dom.span
+import react.useContext
 import styled.inlineStyles
 
 val LayoutSizeCell = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props ->
@@ -117,7 +120,7 @@ val LayoutSizeCell = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props -
     }
 }
 
-external interface LayoutSizeCellProps : RProps {
+external interface LayoutSizeCellProps : Props {
     var dimen: MutableLayoutDimen
     var type: String
     var onChange: () -> Unit

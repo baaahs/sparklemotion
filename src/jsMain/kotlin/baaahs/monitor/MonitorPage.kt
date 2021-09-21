@@ -4,8 +4,6 @@ import baaahs.visualizer.Visualizer
 import org.w3c.dom.HTMLDivElement
 import react.RBuilder
 import react.RComponent
-import react.RProps
-import react.RState
 import react.dom.div
 
 class MonitorPage(props: Props) : RComponent<MonitorPage.Props, MonitorPage.State>(props) {
@@ -27,7 +25,7 @@ class MonitorPage(props: Props) : RComponent<MonitorPage.Props, MonitorPage.Stat
     class Props(
         var containerDiv: HTMLDivElement,
         var visualizer: Visualizer
-    ) : RProps
+    ) : react.Props
 
-    class State : RState
+    class State : react.State
 }

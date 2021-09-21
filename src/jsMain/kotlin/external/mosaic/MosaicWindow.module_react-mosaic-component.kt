@@ -3,11 +3,11 @@
 
 package external.mosaic
 
-import react.RClass
-import react.RProps
+import react.ElementType
+import react.Props
 import react.ReactElement
 
-external interface MosaicWindowProps<T>: RProps {
+external interface MosaicWindowProps<T>: Props {
     var title: String
     var path: Array<String /* 'first' | 'second' */>
     var className: String?
@@ -42,6 +42,6 @@ external interface MosaicWindowProps<T>: RProps {
         set(value) = definedExternally
 }
 
-//abstract external class MosaicWindow<T> : Component<MosaicWindowProps<T>, RState>
+//abstract external class MosaicWindow<T> : Component<MosaicWindowProps<T>, State>
 
-external val MosaicWindow: RClass<MosaicWindowProps<*>>
+external val MosaicWindow: ElementType<MosaicWindowProps<*>>

@@ -67,7 +67,7 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { p
                 this@xComponent.logger.warn { "Huh? None of the LinkOptions are active for ${props.inputPort.id}?" }
             }
             attrs.renderValue<LinkOption> {
-                typography { +it.title }
+                buildElement { typography { +it.title } }
             }
             attrs.onChangeFunction = handleChange
             attrs.disabled = props.editingShader.isBuilding()
@@ -113,7 +113,7 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { p
     }
 }
 
-external interface LinkSourceEditorProps : RProps {
+external interface LinkSourceEditorProps : Props {
     var editableManager: EditableManager
     var editingShader: EditingShader
     var inputPort: InputPort

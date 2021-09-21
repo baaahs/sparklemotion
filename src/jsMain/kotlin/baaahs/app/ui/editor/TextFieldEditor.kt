@@ -9,10 +9,9 @@ import materialui.components.formcontrol.formControl
 import materialui.components.formhelpertext.formHelperText
 import materialui.components.textfield.textField
 import org.w3c.dom.events.Event
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 
 val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { props ->
     val valueOnUndoStack = ref(props.getValue())
@@ -57,7 +56,7 @@ val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { prop
     }
 }
 
-external interface TextFieldEditorProps : RProps {
+external interface TextFieldEditorProps : Props {
     var label: String
     var helperText: String?
     var autoFocus: Boolean?

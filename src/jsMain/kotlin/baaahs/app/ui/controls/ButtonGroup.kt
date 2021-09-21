@@ -13,13 +13,13 @@ import external.copyFrom
 import external.draggable
 import external.droppable
 import kotlinx.html.js.onClickFunction
-import materialui.components.buttongroup.enums.ButtonGroupOrientation
 import materialui.components.card.card
 import materialui.components.iconbutton.iconButton
 import materialui.components.paper.enums.PaperStyle
 import materialui.icon
 import materialui.lab.components.togglebutton.enums.ToggleButtonStyle
 import materialui.lab.components.togglebutton.toggleButton
+import materialui.lab.components.togglebuttongroup.enums.ToggleButtonGroupOrientation
 import materialui.lab.components.togglebuttongroup.enums.ToggleButtonGroupStyle
 import materialui.lab.components.togglebuttongroup.toggleButtonGroup
 import org.w3c.dom.events.Event
@@ -68,87 +68,90 @@ private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
                 .decode(Direction.horizontal, Direction.vertical).name
             isDropDisabled = !editMode
         }) { sceneDropProvided, _ ->
-            toggleButtonGroup(
-                ToggleButtonGroupStyle.root to buttonGroupControl.direction
-                    .decode(Styles.horizontalButtonList, Styles.verticalButtonList).name
-            ) {
-                install(sceneDropProvided)
+            buildElement {
+                toggleButtonGroup(
+                    ToggleButtonGroupStyle.root to buttonGroupControl.direction
+                        .decode(Styles.horizontalButtonList, Styles.verticalButtonList).name
+                ) {
+                    install(sceneDropProvided)
 
-                attrs["orientation"] = buttonGroupControl.direction
-                    .decode(ButtonGroupOrientation.horizontal, ButtonGroupOrientation.vertical).name
-                attrs["exclusive"] = true
-//                    attrs["value"] = props.selected // ... but this is busted.
+                    attrs.orientation = buttonGroupControl.direction
+                        .decode(ToggleButtonGroupOrientation.horizontal, ToggleButtonGroupOrientation.vertical)
+                    attrs.exclusive = true
+//                    attrs.value = props.selected // ... but this is busted.
 //                    attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
 
-                buttonGroupControl.buttons.forEachIndexed { index, buttonControl ->
-                    val shaderForPreview = if (showPreview) buttonControl.shaderForPreview() else null
+                    buttonGroupControl.buttons.forEachIndexed { index, buttonControl ->
+                        val shaderForPreview = if (showPreview) buttonControl.shaderForPreview() else null
 
-                    draggable({
-                        this.key = buttonControl.id
-                        this.draggableId = buttonControl.id
-                        this.isDragDisabled = !editMode
-                        this.index = index
-                    }) { sceneDragProvided, _ ->
+                        draggable({
+                            this.key = buttonControl.id
+                            this.draggableId = buttonControl.id
+                            this.isDragDisabled = !editMode
+                            this.index = index
+                        }) { sceneDragProvided, _ ->
 //                            div {
 //                                +"Handle"
+                            buildElement {
+                                div(+Styles.controlButton) {
+                                    ref = sceneDragProvided.innerRef
+                                    copyFrom(sceneDragProvided.draggableProps)
 
-                        div(+Styles.controlButton) {
-                            ref = sceneDragProvided.innerRef
-                            copyFrom(sceneDragProvided.draggableProps)
+                                    problemBadge(buttonControl as OpenControl)
 
-                            problemBadge(buttonControl as OpenControl)
+                                    div(+Styles.editButton) {
+                                        if (editMode) {
+                                            attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
+                                        }
 
-                            div(+Styles.editButton) {
-                                if (editMode) {
-                                    attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
-                                }
-
-                                icon(materialui.icons.Edit)
-                            }
-                            div(+Styles.dragHandle) {
-                                copyFrom(sceneDragProvided.dragHandleProps)
-                                icon(materialui.icons.DragIndicator)
-                            }
-
-                            if (shaderForPreview != null) {
-                                div(+Styles.buttonShaderPreviewContainer) {
-                                    shaderPreview {
-                                        attrs.shader = shaderForPreview.shader
+                                        icon(materialui.icons.Edit)
                                     }
-                                }
-                            }
+                                    div(+Styles.dragHandle) {
+                                        copyFrom(sceneDragProvided.dragHandleProps)
+                                        icon(materialui.icons.DragIndicator)
+                                    }
 
-                            toggleButton {
-                                if (showPreview) {
-                                    attrs.classes(
-                                        Styles.buttonLabelWhenPreview on ToggleButtonStyle.label,
-                                        Styles.buttonSelectedWhenPreview on SelectedStyle.selected
-                                    )
-                                }
+                                    if (shaderForPreview != null) {
+                                        div(+Styles.buttonShaderPreviewContainer) {
+                                            shaderPreview {
+                                                attrs.shader = shaderForPreview.shader
+                                            }
+                                        }
+                                    }
 
-                                attrs["value"] = index
-                                attrs["selected"] = buttonControl.isPressed
-                                attrs.onClickFunction = {
-                                    buttonGroupControl.clickOn(index)
-                                    onShowStateChange()
-                                }
+                                    toggleButton {
+                                        if (showPreview) {
+                                            attrs.classes(
+                                                Styles.buttonLabelWhenPreview on ToggleButtonStyle.label,
+                                                Styles.buttonSelectedWhenPreview on SelectedStyle.selected
+                                            )
+                                        }
 
-                                +buttonControl.title
-                            }
+                                        attrs.value = index.toString()
+                                        attrs.selected = buttonControl.isPressed
+                                        attrs.onClickFunction = {
+                                            buttonGroupControl.clickOn(index)
+                                            onShowStateChange()
+                                        }
+
+                                        +buttonControl.title
+                                    }
 //                            }
+                                }
+                            }
                         }
+
+//                            }
                     }
 
-//                            }
-                }
+                    child(sceneDropProvided.placeholder)
 
-                insertPlaceholder(sceneDropProvided)
-
-                if (editMode) {
-                    iconButton {
-                        icon(materialui.icons.AddCircleOutline)
-                        attrs.onClickFunction = { _: Event ->
-                            appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
+                    if (editMode) {
+                        iconButton {
+                            icon(materialui.icons.AddCircleOutline)
+                            attrs.onClickFunction = { _: Event ->
+                                appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
+                            }
                         }
                     }
                 }
@@ -164,7 +167,7 @@ private fun <T> ButtonGroupControl.Direction.decode(horizontal: T, vertical: T):
     }
 }
 
-external interface ButtonGroupProps : RProps {
+external interface ButtonGroupProps : Props {
     var controlProps: ControlProps
     var buttonGroupControl: OpenButtonGroupControl
 }

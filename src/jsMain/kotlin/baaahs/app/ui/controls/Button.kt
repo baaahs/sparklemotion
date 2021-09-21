@@ -15,8 +15,11 @@ import kotlinx.html.js.onMouseUpFunction
 import materialui.components.button.enums.ButtonStyle
 import materialui.lab.components.togglebutton.enums.ToggleButtonStyle
 import materialui.lab.components.togglebutton.toggleButton
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 import materialui.components.button.button as muiButton
 
 private val Button = xComponent<ButtonProps>("Button") { props ->
@@ -64,9 +67,9 @@ private val Button = xComponent<ButtonProps>("Button") { props ->
                         )
                     }
 
-                    attrs["value"] = "n/a"
+                    attrs.value = "n/a"
                     // Yep, for some reason you need to set it directly or it doesn't work.
-                    attrs["selected"] = buttonControl.isPressed
+                    attrs.selected = buttonControl.isPressed
                     attrs.onClickFunction = handleToggleClick.withEvent()
 
                     +buttonControl.title
@@ -81,7 +84,7 @@ private val Button = xComponent<ButtonProps>("Button") { props ->
                         )
                     }
 
-                    attrs["value"] = "n/a"
+                    attrs.value = "n/a"
                     attrs["selected"] = buttonControl.isPressed
                     attrs.onMouseDownFunction = handleMomentaryPress.withEvent()
                     attrs.onMouseUpFunction = handleMomentaryRelease.withEvent()
@@ -96,7 +99,7 @@ private val Button = xComponent<ButtonProps>("Button") { props ->
 internal enum class SelectedStyle { selected }
 
 
-external interface ButtonProps : RProps {
+external interface ButtonProps : Props {
     var controlProps: ControlProps
     var buttonControl: OpenButtonControl
 }
