@@ -416,7 +416,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                         }
 
                                         serverNotice.message?.let {
-                                            div(+Styles.serverNoticeMessage) { +it }
+                                            div(+Styles.serverNoticeMessage) {
+                                                markdown { +it }
+                                            }
                                         }
 
                                         serverNotice.stackTrace?.let {

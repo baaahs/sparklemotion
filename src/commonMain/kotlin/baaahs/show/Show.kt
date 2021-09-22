@@ -1,3 +1,5 @@
+@file:UseContextualSerialization(DataSource::class)
+
 package baaahs.show
 
 import baaahs.SparkleMotion
@@ -11,6 +13,7 @@ import baaahs.show.mutable.*
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseContextualSerialization
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
