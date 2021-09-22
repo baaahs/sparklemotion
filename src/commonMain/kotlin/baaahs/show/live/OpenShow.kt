@@ -8,9 +8,7 @@ import baaahs.gl.data.Feed
 import baaahs.gl.patch.PatchResolver
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
-import baaahs.show.DataSource
-import baaahs.show.Panel
-import baaahs.show.Show
+import baaahs.show.*
 import baaahs.show.mutable.MutableShow
 import baaahs.util.Logger
 
@@ -49,27 +47,46 @@ class OpenShow(
     internal val implicitControls: List<OpenControl>,
 ) : OpenPatchHolder(show, openContext), RefCounted by RefCounter() {
     val id = randomId("show")
-    val allProblems: List<ShowProblem>
-        get() = run {
-            arrayListOf<ShowProblem>().apply {
-                object : OpenShowVisitor() {
-                    override fun visitPatchHolder(openPatchHolder: OpenPatchHolder) {
-                        addAll(openPatchHolder.problems)
-                        super.visitPatchHolder(openPatchHolder)
-                    }
-                }.apply { visitShow(this@OpenShow) }
-            }
-        }
     val layouts get() = show.layouts
     val allDataSources = show.dataSources
     val allControls: List<OpenControl> get() = openContext.allControls
-
-    fun getPanel(id: String) = show.layouts.panels.getBang(id, "panel")
-
     val feeds = allDataSources.entries.associate { (id, dataSource) ->
         val feed = showPlayer.openFeed(id, dataSource)
         dataSource to feed
     }
+
+    val missingPlugins: List<PluginDesc>
+        get() = run {
+            val unknownDataSources = allDataSources.values
+                .filterIsInstance<UnknownDataSource>()
+            unknownDataSources
+                .map { ds -> ds.pluginRef.pluginId }
+                .distinct()
+                .map { pluginId ->
+                    PluginDesc(pluginId, pluginId, null, null, null)
+                }
+                .sortedBy { it.title }
+        }
+
+    val allProblems: List<ShowProblem>
+        get() = buildList {
+            addAll(missingPlugins.map { desc ->
+                ShowProblem(
+                    "Missing plugin \"${desc.title}\".",
+                    "Some things may not work properly.",
+                    severity = Severity.WARN
+                )
+            })
+
+            object : OpenShowVisitor() {
+                override fun visitPatchHolder(openPatchHolder: OpenPatchHolder) {
+                    addAll(openPatchHolder.problems)
+                    super.visitPatchHolder(openPatchHolder)
+                }
+            }.apply { visitShow(this@OpenShow) }
+        }
+
+    fun getPanel(id: String) = show.layouts.panels.getBang(id, "panel")
 
     /**
      * Don't hold on to MutableShows; create them, apply changes, and commit or abandon them promptly!

@@ -436,7 +436,6 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     }
 
     val serverNoticeMessage by css {
-        fontWeight = FontWeight.bold
     }
 
     val serverNoticeStackTrace by css {

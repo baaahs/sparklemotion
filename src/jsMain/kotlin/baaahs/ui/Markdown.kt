@@ -8,7 +8,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.span
 
-val Markdown = xComponent<MarkdownProps>("Markdown", isPure = true) { props ->
+private val MarkdownView = xComponent<MarkdownProps>("Markdown", isPure = true) { props ->
     val mdRef = ref<HTMLElement>()
     val mdHtml = memo(props.children) {
         MarkdownIt(jsObject {
@@ -32,4 +32,4 @@ external interface MarkdownProps : Props {
 }
 
 fun RBuilder.markdown(handler: RHandler<MarkdownProps>) =
-    child(Markdown, handler = handler)
+    child(MarkdownView, handler = handler)

@@ -8,11 +8,15 @@ import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
+import baaahs.plugin.PluginRef
 import baaahs.show.ShaderChannel
+import baaahs.show.UnknownDataSource
 import baaahs.show.live.LiveShaderInstance.*
 import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import org.spekframework.spek2.Spek
 
 object LiveShaderInstanceSpec : Spek({
@@ -63,7 +67,39 @@ object LiveShaderInstanceSpec : Spek({
                 it("fails to validate") {
                     println("problems: ${instance.problems}")
                     expect(instance.problems.map { it.copy(id = "") })
-                        .contains(ShowProblem("Result content type is unknown for shader \"${instance.title}\".", severity = Severity.ERROR, id = ""))
+                        .contains(
+                            ShowProblem(
+                                "Result content type is unknown for shader \"${instance.title}\".",
+                                severity = Severity.ERROR, id = ""
+                            )
+                        )
+                }
+            }
+
+            context("when a datasource is unknown") {
+                override(links) {
+                    mapOf(
+                        "someDatasource" to DataSourceLink(UnknownDataSource(
+                            PluginRef("some.plugin", "SomeDataSource"),
+                            "Missing plugin.",
+                            ContentType.Unknown,
+                            buildJsonObject {
+                                put("whateverData", "whateverValue")
+                            }
+                        ), "ds")
+                    )
+                }
+
+                it("fails to validate") {
+                    println("problems: ${instance.problems}")
+                    expect(instance.problems.map { it.copy(id = "") })
+                        .contains(
+                            ShowProblem(
+                                "Unresolved data source for shader \"${instance.title}\".",
+                                "Missing plugin.",
+                                severity = Severity.WARN, id = ""
+                            )
+                        )
                 }
             }
         }

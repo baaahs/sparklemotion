@@ -26,6 +26,7 @@ import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.scene.SceneManager
+import baaahs.server.ServerNotices
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.util.Clock
@@ -95,7 +96,7 @@ interface PinkyModule : KModule {
                 scoped { FixtureManager(get(), get()) }
                 scoped { GadgetManager(get(), get(), get(pinkyContext)) }
                 scoped<Toolchain> { RootToolchain(get()) }
-                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
                 scoped { Pinky.NetworkStats() }
                 scoped { BrainManager(get(), get(), get(), get(), get(), get(pinkyContext)) }
                 scoped { SacnManager(get(), get(), get(pinkyMainDispatcher), get()) }
@@ -110,11 +111,12 @@ interface PinkyModule : KModule {
                 scoped { ControllersManager(get(named("ControllerManagers")), get(), get(), get<FixtureManager>()) }
                 scoped { ShaderLibraryManager(get(), get()) }
                 scoped { pinkySettings }
+                scoped { ServerNotices(get(), get(pinkyContext)) }
                 scoped {
                     Pinky(
                         get(), get(), get(), get(), get(), get(),
                         get(), get(), get(), get(), get(pinkyContext), get(), get(),
-                        get(), get(), get(), get(), get(), get()
+                        get(), get(), get(), get(), get(), get(), get()
                     )
                 }
             }

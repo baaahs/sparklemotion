@@ -10,11 +10,13 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.SerializerRegistrar
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.ui.Markdown
 import kotlinx.serialization.Polymorphic
 
 
 interface DataSourceBuilder<T : DataSource> {
     val title: String
+    @Markdown
     val description: String
 
     /** The unique ID for this resource within a plugin. Should be CamelCase alphanums, like a class name. */
@@ -55,6 +57,7 @@ interface DataSource {
     val pluginPackage: String
     /** Short English name for this datasource. */
     val title: String
+    val isUnknown: Boolean get() = false
 
     // TODO: kill this
     fun isImplicit(): Boolean = false
