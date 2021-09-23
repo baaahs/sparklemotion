@@ -15,6 +15,7 @@ import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.proto.BrainHelloMessage
 import baaahs.scene.SceneManager
+import baaahs.server.ServerNotices
 import baaahs.show.Show
 import baaahs.sim.FakeNetwork
 import baaahs.util.Clock
@@ -45,7 +46,8 @@ class Pinky(
     val brainManager: BrainManager,
     private val shaderLibraryManager: ShaderLibraryManager,
     private val networkStats: NetworkStats,
-    val pinkySettings: PinkySettings
+    val pinkySettings: PinkySettings,
+    val serverNotices: ServerNotices
 ) : CoroutineScope {
     val facade = Facade()
 
@@ -54,14 +56,6 @@ class Pinky(
     }
 
     val address: Network.Address get() = link.myAddress
-
-    private val serverNotices = arrayListOf<ServerNotice>()
-    private val serverNoticesChannel = pubSub.publish(Topics.serverNotices, serverNotices) {
-        launch {
-            serverNotices.clear()
-            serverNotices.addAll(it)
-        }
-    }
 
     private var pinkyState = PinkyState.Initializing
     private val pinkyStateChannel = pubSub.publish(Topics.pinkyState, pinkyState) {}
@@ -262,17 +256,8 @@ class Pinky(
 
     private fun reportError(message: String, e: Exception) {
         logger.error(e) { message }
-        serverNotices.add(ServerNotice(message, e.message, e.stackTraceToString()))
-        serverNoticesChannel.onChange(serverNotices)
+        serverNotices.add(message, e.message, e.stackTraceToString())
     }
-
-    @Serializable
-    data class ServerNotice(
-        val title: String,
-        val message: String?,
-        val stackTrace: String?,
-        val id: String = randomId("error")
-    )
 
     companion object {
         val logger = Logger("Pinky")

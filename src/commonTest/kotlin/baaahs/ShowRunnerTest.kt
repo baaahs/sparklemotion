@@ -15,6 +15,7 @@ import baaahs.io.ByteArrayWriter
 import baaahs.mapper.Storage
 import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
+import baaahs.server.ServerNotices
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
@@ -68,7 +69,8 @@ class ShowRunnerTest {
         stageManager = StageManager(
             testToolchain, renderManager, server, Storage(fs, plugins), fixtureManager,
             FakeClock(), sheepModel, GadgetManager(server, FakeClock(), dispatcher),
-            ControllersManager(emptyList(), FakeMappingManager(), model, fixtureManager)
+            ControllersManager(emptyList(), FakeMappingManager(), model, fixtureManager),
+            ServerNotices(server, dispatcher)
         )
         stageManager.switchTo(SampleData.sampleShow)
         renderTargets = fixtureManager.getRenderTargets_ForTestOnly()

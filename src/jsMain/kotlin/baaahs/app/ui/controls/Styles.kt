@@ -66,6 +66,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         top = .5.em
         zIndex = 1
         opacity = .75
+        filter = "drop-shadow( 2px 2px 2px rgba(0, 0, 0, .7))"
     }
 
     val cardProblemInfo by css {

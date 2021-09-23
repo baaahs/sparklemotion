@@ -12,6 +12,7 @@ import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
 import baaahs.mapper.Storage
 import baaahs.plugin.core.datasource.ColorPickerDataSource
+import baaahs.server.ServerNotices
 import baaahs.shaders.fakeFixture
 import baaahs.show.Panel
 import baaahs.show.Shader
@@ -94,7 +95,8 @@ object ShowRunnerSpec : Spek({
             StageManager(
                 testToolchain, renderManager, pubSub, Storage(fs, testPlugins()), fixtureManager,
                 FakeClock(), model, GadgetManager(pubSub, FakeClock(), dispatcher),
-                ControllersManager(emptyList(), FakeMappingManager(), model, fixtureManager)
+                ControllersManager(emptyList(), FakeMappingManager(), model, fixtureManager),
+                ServerNotices(pubSub, dispatcher)
             )
         }
 

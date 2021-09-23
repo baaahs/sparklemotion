@@ -95,14 +95,12 @@ class GlslCode(
         val lineNumber: Int?
         val comments: List<String>
 
-        fun stripSource(): GlslStatement
-
-        fun toGlsl(substitutions: Substitutions): String {
-            return substituteGlsl(fullText, substitutions, lineNumber)
+        fun toGlsl(fileNumber: Int?, substitutions: Substitutions): String {
+            return substituteGlsl(fullText, substitutions, fileNumber)
         }
 
-        fun substituteGlsl(text: String, substitutions: Substitutions, lineNumber: Int?): String {
-            return "${lineNumber?.let { "\n#line $lineNumber\n" }}" +
+        fun substituteGlsl(text: String, substitutions: Substitutions, fileNumber: Int?): String {
+            return lineNumber?.let { "\n#line $lineNumber${fileNumber?.let { " $it" } ?: ""}\n" } +
                     replaceCodeWords(text) { substitutions.substitute(it) }
         }
     }
@@ -113,7 +111,6 @@ class GlslCode(
         override val lineNumber: Int?,
         override val comments: List<String> = emptyList()
     ) : GlslStatement {
-        override fun stripSource() = copy(fullText = "", lineNumber = null)
     }
 
     data class GlslStruct(
@@ -126,8 +123,6 @@ class GlslCode(
         override val comments: List<String> = emptyList()
     ) : GlslStatement {
         val glslType: GlslType.Struct = GlslType.Struct(name, fields)
-
-        override fun stripSource() = copy(fullText = "", lineNumber = null)
 
         fun getSyntheticVar(): GlslVar {
             val structType = GlslType.Struct(this)
@@ -166,18 +161,16 @@ class GlslCode(
         override val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
         val deferInitialization: Boolean = !isConst && initExpr != null
 
-        override fun stripSource() = copy(fullText = "", lineNumber = null)
-
-        fun declarationToGlsl(substitutions: Substitutions): String {
+        fun declarationToGlsl(fileNumber: Int?, substitutions: Substitutions): String {
             val declaration = if (deferInitialization) {
                 fullText.substring(0, fullText.indexOf(initExpr!!)) + ";"
             } else fullText
-            return substituteGlsl(declaration, substitutions, lineNumber)
+            return substituteGlsl(declaration, substitutions, fileNumber)
         }
 
-        fun assignmentToGlsl(substitutions: Substitutions): String {
+        fun assignmentToGlsl(fileNumber: Int?, substitutions: Substitutions): String {
             val assignment = "  $name$initExpr;"
-            return substituteGlsl(assignment, substitutions, lineNumber)
+            return substituteGlsl(assignment, substitutions, fileNumber)
         }
     }
 
@@ -257,15 +250,13 @@ class GlslCode(
 
         override val hint: Hint? by lazy { Hint.from(comments, lineNumber) }
 
-        override fun stripSource() = copy(lineNumber = null)
-
         override fun findInjectedData(plugins: Plugins): Map<String, ContentType> {
             return params.associate { it.name to (it.findContentType(plugins, this) ?: ContentType.Unknown) }
         }
 
-        override fun toGlsl(substitutions: Substitutions): String {
+        override fun toGlsl(fileNumber: Int?, substitutions: Substitutions): String {
             // Chomp trailing ';' if it's an abstract method.
-            return super.toGlsl(substitutions)
+            return super.toGlsl(fileNumber, substitutions)
                 .let { if (isAbstract) it.trimEnd(';') else it }
         }
 

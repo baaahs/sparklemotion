@@ -84,7 +84,7 @@ class ShaderComponent(
 
         appendInjectionCode(buf)
 
-        buf.append(openShader.toGlsl(substitutions), "\n")
+        buf.append(openShader.toGlsl(index, substitutions), "\n")
     }
 
     private fun appendInjectionCode(buf: StringBuilder) {
@@ -117,7 +117,7 @@ class ShaderComponent(
         link: ProgramNode
     ) {
         val fn = inputPort.glslArgSite as GlslCode.GlslFunction
-        buf.append(fn.toGlsl {
+        buf.append(fn.toGlsl(index) {
             if (it == fn.name) namespace.qualify(it) else it
         })
         buf.append(" {\n")

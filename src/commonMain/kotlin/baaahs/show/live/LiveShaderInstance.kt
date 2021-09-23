@@ -37,6 +37,20 @@ class LiveShaderInstance(
     val problems: List<ShowProblem>
         get() =
             arrayListOf<ShowProblem>().apply {
+                incomingLinks
+                    .forEach { (_, link) ->
+                        val dataSourceLink = link as? DataSourceLink
+                        val unknownDataSource = dataSourceLink?.dataSource as? UnknownDataSource
+                        unknownDataSource?.let {
+                            add(
+                                ShowProblem(
+                                    "Unresolved data source for shader \"$title\".",
+                                    it.errorMessage, severity = Severity.WARN
+                                )
+                            )
+                        }
+                    }
+
                 if (extraLinks.isNotEmpty()) {
                     add(
                         ShowProblem(
@@ -46,6 +60,7 @@ class LiveShaderInstance(
                         )
                     )
                 }
+
                 if (missingLinks.isNotEmpty()) {
                     add(
                         ShowProblem(
@@ -55,6 +70,7 @@ class LiveShaderInstance(
                         )
                     )
                 }
+
                 if (shader.outputPort.contentType.isUnknown()) {
                     add(
                         ShowProblem(
@@ -62,6 +78,7 @@ class LiveShaderInstance(
                         )
                     )
                 }
+
                 if (shader.errors.isNotEmpty()) {
                     add(
                         ShowProblem(

@@ -16,21 +16,24 @@ import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.UnknownDataSource
 import baaahs.show.appearsToBePurposeBuiltFor
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.util.Clock
 import baaahs.util.Time
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.serializer
 import kotlin.reflect.KClass
 
 @Serializable
@@ -99,6 +102,18 @@ class Plugins private constructor(
     val shaderDialects = ShaderDialects()
     val shaderTypes = ShaderTypes()
 
+    private inline fun <reified T : Any> serializersMap(
+        getSerializersFn: Plugin.() -> List<SerializerRegistrar<out T>>
+    ) = plugins.associate { plugin ->
+        plugin.packageName to SerializersModule {
+            polymorphic(T::class) {
+                plugin.getSerializersFn().forEach { classSerializer ->
+                    with(classSerializer) { register(this@polymorphic) }
+                }
+            }
+        }
+    }
+
     private inline fun <reified T : Any> SerializersModuleBuilder.registerSerializers(
         getSerializersFn: Plugin.() -> List<SerializerRegistrar<out T>>
     ) {
@@ -111,10 +126,55 @@ class Plugins private constructor(
         }
     }
 
+    class PluginDataSourceSerializer(
+        private val byPlugin: Map<String, SerializersModule>
+    ) : KSerializer<DataSource> {
+        override val descriptor: SerialDescriptor = buildClassSerialDescriptor("baaahs.show.DataSource") {
+            element("type", String.serializer().descriptor)
+        }
+
+        override fun deserialize(decoder: Decoder): DataSource {
+            val obj = JsonObject(MapSerializer(String.serializer(), JsonElement.serializer()).deserialize(decoder))
+            val type = obj["type"]?.jsonPrimitive?.contentOrNull ?: error("Huh? No type?")
+            val pluginRef = PluginRef.from(type)
+            val plugin = byPlugin[pluginRef.pluginId]
+                ?: return UnknownDataSource(
+                    pluginRef, "Unknown plugin \"${pluginRef.pluginId}\".", ContentType.Unknown, obj
+                )
+
+            val serializer = plugin.getPolymorphic(DataSource::class, type)
+                ?: return UnknownDataSource(
+                    pluginRef, "Unknown datasource \"${pluginRef.toRef()}\".", ContentType.Unknown, obj
+                )
+
+            try {
+                return Json.decodeFromJsonElement(serializer, buildJsonObject {
+                    (obj.keys - "type").forEach { put(it, obj[it]!!) }
+                })
+            } catch (e: Exception) {
+                return UnknownDataSource(
+                    pluginRef, e.message ?: "wha? unknown datasource?", ContentType.Unknown, obj
+                )
+            }
+        }
+
+        override fun serialize(encoder: Encoder, value: DataSource) {
+            if (value is UnknownDataSource) {
+                encoder.encodeSerializableValue(JsonObject.serializer(), value.data)
+                return
+            }
+
+            val serializersModule = byPlugin.getBang(value.pluginPackage, "plugin id")
+            val serializer = serializersModule.serializer<DataSource>()
+            encoder.encodeSerializableValue(serializer, value)
+        }
+    }
+
     val serialModule = SerializersModule {
         include(Gadget.serialModule)
         include(contentTypes.serialModule)
         include(controlSerialModule)
+        contextual(DataSource::class, PluginDataSourceSerializer(dataSourceBuilders.serialModulesByPlugin))
         include(dataSourceBuilders.serialModule)
         include(deviceTypes.serialModule)
         include(controllers.serialModule)
@@ -260,12 +320,19 @@ class Plugins private constructor(
 
         val byContentType = all.groupBy { builder -> builder.contentType }
 
+        val serialModulesByPlugin = serializersMap {
+            dataSourceSerlializerRegistrars()
+        }
+
         val serialModule = SerializersModule {
             registerSerializers {
-                dataSourceBuilders.map { it.serializerRegistrar } +
-                        deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializerRegistrar } }
+                dataSourceSerlializerRegistrars()
             }
         }
+
+        private fun Plugin.dataSourceSerlializerRegistrars() =
+            dataSourceBuilders.map { it.serializerRegistrar } +
+                    deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializerRegistrar } }
 
         fun buildForContentType(
             contentType: ContentType?,

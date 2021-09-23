@@ -12,6 +12,7 @@ import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.models.SheepModel
+import baaahs.server.ServerNotices
 import baaahs.show.SampleData
 import baaahs.show.mutable.MutableShow
 import baaahs.shows.FakeGlContext
@@ -45,7 +46,8 @@ object StageManagerSpec : Spek({
                 FakeClock(),
                 model,
                 GadgetManager(pubSub.server, FakeClock(), ImmediateDispatcher),
-                ControllersManager(emptyList(), FakeMappingManager(), model, FakeFixtureListener())
+                ControllersManager(emptyList(), FakeMappingManager(), model, FakeFixtureListener()),
+                ServerNotices(pubSub.server, ImmediateDispatcher)
             )
         }
         val editingClient by value { pubSub.client("editingClient") }

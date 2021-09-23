@@ -1,16 +1,28 @@
 package baaahs.shows
 
+import baaahs.ShowPlayer
 import baaahs.control.ButtonControl
 import baaahs.control.ButtonGroupControl
 import baaahs.control.ColorPickerControl
 import baaahs.control.SliderControl
 import baaahs.device.PixelLocationDataSource
+import baaahs.gl.data.Feed
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.kexpect
-import baaahs.plugin.Plugins
+import baaahs.gl.override
+import baaahs.gl.patch.ContentType
+import baaahs.gl.shader.InputPort
+import baaahs.glsl.Shaders
+import baaahs.plugin.*
 import baaahs.plugin.beatlink.BeatLinkControl
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.core.datasource.*
 import baaahs.show.*
+import baaahs.toEqual
+import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -24,18 +36,88 @@ object ShowSerializationSpec : Spek({
         val origShow by value { SampleData.sampleShowWithBeatLink }
         val showJson by value { origShow.toJson(jsonWithDefaults) }
 
-        context("to json") {
-            it("serializes") {
-                plugins.expectJson(forJson(origShow)) { showJson }
+        it("serializes as expected") {
+            plugins.expectJson(forJson(origShow)) { showJson }
+        }
+
+        it("deserializes to an equivalent object") {
+            plugins.expectJson(forJson(origShow)) {
+                val jsonStr = jsonPrettyPrint.encodeToString(JsonElement.serializer(), showJson)
+                forJson(Show.fromJson(plugins, jsonStr))
             }
         }
 
-        context("fromJson") {
-            it("deserializes equally") {
-                plugins.expectJson(forJson(origShow)) {
-                    val jsonStr = jsonPrettyPrint.encodeToString(
-                        JsonElement.serializer(), origShow.toJson(jsonWithDefaults))
-                    forJson(Show.fromJson(plugins, jsonStr))
+        context("referencing an unresolvable datasource") {
+            val fakePluginBuilder by value {
+                FakePlugin.Builder("some.plugin", listOf(FakeDataSource.Builder))
+            }
+            override(origShow) {
+                SampleData.createSimpleShow {
+                    addButton(findPanel("controls"), "Button") {
+                        addPatch {
+                            addShaderInstance(Shaders.red) {
+                                link(
+                                    "somePort",
+                                    FakeDataSource("foo")
+                                )
+                            }
+                        }
+                    }
+                }.getShow()
+            }
+            override(showJson) { origShow.toJson((plugins + fakePluginBuilder).json) }
+
+            it("serializes as expected") {
+                plugins.expectJson(buildJsonObject {
+                    put("somePluginDataSource", buildJsonObject {
+                        put("type", "some.plugin:Fake")
+                        put("whateverValue", "foo")
+                    })
+                }) { showJson.jsonObject["dataSources"]!! }
+            }
+
+            context("when the plugin is unknown") {
+                it("deserializes to an UnknownDataSource") {
+                    val show = Show.fromJson(plugins, showJson.toString())
+                    val dataSource = show.dataSources["somePluginDataSource"]!!
+                    expect(dataSource).toEqual(
+                        UnknownDataSource(
+                            PluginRef("some.plugin", "Fake"),
+                            "Unknown plugin \"some.plugin\".",
+                            ContentType.Unknown,
+                            buildJsonObject {
+                                put("type", "some.plugin:Fake")
+                                put("whateverValue", "foo")
+                            }
+                        )
+                    )
+                }
+
+                it("reserializes to equivalent JSON") {
+                    plugins.expectJson(forJson(origShow)) {
+                        val jsonStr = jsonPrettyPrint.encodeToString(JsonElement.serializer(), showJson)
+                        forJson(Show.fromJson(plugins, jsonStr))
+                    }
+                }
+            }
+
+            context("when the datasource is unknown") {
+                override(plugins) { SampleData.plugins + FakePlugin.Builder("some.plugin") }
+
+                it("deserializes to an UnknownDataSource") {
+                    val show = Show.fromJson(plugins, showJson.toString())
+                    val dataSource = show.dataSources["somePluginDataSource"]!!
+                    expect(dataSource).toEqual(
+                        UnknownDataSource(
+                            PluginRef("some.plugin", "Fake"),
+                            "Unknown datasource \"some.plugin:Fake\".",
+                            ContentType.Unknown,
+                            buildJsonObject {
+                                put("type", "some.plugin:Fake")
+                                put("whateverValue", "foo")
+                            }
+                        )
+                    )
                 }
             }
         }
@@ -236,6 +318,49 @@ fun Plugins.expectJson(expected: JsonElement, block: () -> JsonElement) {
         prettyPrint = true
         serializersModule = serialModule
     }
+
     fun JsonElement.toStr() = json.encodeToString(JsonElement.serializer(), this)
     kexpect(block().toStr()).toBe(expected.toStr())
+}
+
+@Serializable @SerialName("some.plugin:Fake")
+class FakeDataSource(
+    @Suppress("unused")
+    val whateverValue: String
+) : DataSource {
+    @Transient
+    override val pluginPackage = "some.plugin"
+
+    @Transient
+    override val title: String = "$pluginPackage DataSource"
+
+    @Transient
+    override val contentType: ContentType = ContentType.Unknown
+
+    override fun getType(): GlslType = TODO("not implemented")
+    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed = TODO("not implemented")
+
+    object Builder : DataSourceBuilder<FakeDataSource> {
+        override val title: String get() = TODO("not implemented")
+        override val description: String get() = TODO("not implemented")
+        override val resourceName: String get() = "some.plugin:Fake"
+        override val contentType: ContentType get() = ContentType.Unknown
+        override val serializerRegistrar: SerializerRegistrar<FakeDataSource>
+            get() = classSerializer(serializer())
+
+        override fun build(inputPort: InputPort): FakeDataSource = TODO("not implemented")
+    }
+}
+
+class FakePlugin(
+    override val packageName: String,
+    override val title: String,
+    override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> = emptyList()
+) : Plugin {
+    class Builder(
+        override val id: String,
+        val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> = emptyList()
+    ) : PluginBuilder {
+        override fun build(pluginContext: PluginContext): Plugin = FakePlugin(id, "$id Plugin", dataSourceBuilders)
+    }
 }

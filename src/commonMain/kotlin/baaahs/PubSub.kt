@@ -229,9 +229,10 @@ abstract class PubSub {
         ) {
             suspend fun receiveCommand(commandJson: String, commandId: String, fromConnection: Connection) {
                 val reply = try {
-                    callback.invoke(commandPort.fromJson(commandJson))
+                    val command = commandPort.fromJson(commandJson)
+                    callback.invoke(command)
                 } catch (e: Exception) {
-                    logger.warn(e) { "Error in remote command invocation ($commandId)." }
+                    logger.warn(e) { "Error in remote command invocation (${commandPort.name} $commandJson $commandId)." }
                     fromConnection.sendError(commandPort, e.message ?: "unknown error", commandId)
                     return
                 }
@@ -729,7 +730,8 @@ abstract class PubSub {
 
             suspend fun receive(): R {
                 val (reply, error) = coroutineChannel.receive()
-                return reply ?: error(error ?: "Unknown error; command=$commandId")
+                return reply
+                    ?: throw RemoteException(error ?: "Unknown error; command=$commandId")
             }
 
             suspend fun onReply(reply: R) {
@@ -756,6 +758,8 @@ abstract class PubSub {
             cleanups.clear()
         }
     }
+
+    class RemoteException(message: String) : Exception(message)
 }
 
 fun <T: Any?> publishProperty(

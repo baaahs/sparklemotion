@@ -184,9 +184,9 @@ object SampleData {
 
     val sampleShow: Show get() = createSampleShow().getShow()
 
-    fun createSampleShow(withHeadlightsMode: Boolean = false) = MutableShow("Sample Show") {
-        println("Initialize sampleShow!")
+    fun createSimpleShow(block: MutableShow.() -> Unit = {}) = MutableShow(buildEmptyShow()).apply(block)
 
+    fun createSampleShow(withHeadlightsMode: Boolean = false) = MutableShow("Sample Show") {
         val scenesPanel = MutablePanel("Scenes")
         val backdropsPanel = MutablePanel("Backdrops")
         val moreControlsPanel = MutablePanel("More Controls")
