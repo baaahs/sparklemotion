@@ -233,7 +233,7 @@ object GlslParserSpec : Spek({
                         it("handles nested macro expansions") {
                             val glslFunction = glslCode.functions.only()
 
-                            val glsl = glslFunction.toGlsl { text ->
+                            val glsl = glslFunction.toGlsl(null) { text ->
                                 if (text == "main") Namespace("ns").qualify(text) else text
                             }
 

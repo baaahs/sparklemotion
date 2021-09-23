@@ -16,6 +16,7 @@ import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
+import baaahs.server.ServerNotice
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.EditHandler
@@ -24,6 +25,7 @@ import baaahs.sim.HostedWebApp
 import baaahs.util.JsClock
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.modules.SerializersModule
@@ -76,13 +78,15 @@ class WebClient(
         }
     }
 
-    private val serverNotices = arrayListOf<Pinky.ServerNotice>()
+    private val serverNotices = arrayListOf<ServerNotice>()
     private val serverNoticesChannel =
         pubSub.subscribe(Topics.serverNotices) {
             serverNotices.clear()
             serverNotices.addAll(it)
             facade.notifyChanged()
         }
+
+    var clientError: ServerNotice? = null
 
     private val showProblems = arrayListOf<ShowProblem>()
     init {
@@ -123,7 +127,7 @@ class WebClient(
     private var uiSettings = UiSettings()
 
     init {
-        GlobalScope.launch {
+        launch {
             storage.loadSettings()?.let { updateUiSettings(it, saveToStorage = false) }
         }
     }
@@ -170,7 +174,7 @@ class WebClient(
             facade.notifyChanged()
 
             if (saveToStorage) {
-                GlobalScope.launch { storage.saveSettings(newSettings) }
+                launch { storage.saveSettings(newSettings) }
             }
         }
     }
@@ -209,8 +213,8 @@ class WebClient(
         val openShow: OpenShow?
             get() = this@WebClient.openShow
 
-        val serverNotices : List<Pinky.ServerNotice>
-            get() = this@WebClient.serverNotices
+        val serverNotices : List<ServerNotice>
+            get() = this@WebClient.serverNotices + listOfNotNull(this@WebClient.clientError)
 
         val showProblems : List<ShowProblem>
             get() = this@WebClient.showProblems
@@ -246,28 +250,44 @@ class WebClient(
             facade.notifyChanged()
         }
 
-        fun onNewShow(newShow: Show? = null) {
-            GlobalScope.launch { serverCommands.newShow(NewShowCommand(newShow)) }
+        private fun launchAndReportErrors(block: suspend () -> Unit) {
+            launch {
+                try {
+                    block()
+                } catch(e: Exception) {
+                    clientError = ServerNotice(
+                        "Command Failed",
+                        e.message,
+                        e.stackTraceToString(),
+                        "_clientError_"
+                    )
+                    notifyChanged()
+                }
+            }
         }
 
-        fun onOpenShow(file: Fs.File?) {
-            GlobalScope.launch { serverCommands.switchToShow(SwitchToShowCommand(file)) }
-        }
+        fun onNewShow(newShow: Show? = null) =
+            launchAndReportErrors { serverCommands.newShow(NewShowCommand(newShow)) }
 
-        fun onSaveShow() {
-            GlobalScope.launch { serverCommands.saveShow(SaveShowCommand()) }
-        }
+        fun onOpenShow(file: Fs.File?) =
+            launchAndReportErrors { serverCommands.switchToShow(SwitchToShowCommand(file)) }
 
-        fun onSaveAsShow(file: Fs.File) {
-            GlobalScope.launch { serverCommands.saveAsShow(SaveAsShowCommand(file)) }
-        }
+        fun onSaveShow() =
+            launchAndReportErrors { serverCommands.saveShow(SaveShowCommand()) }
 
-        fun onCloseShow() {
-            GlobalScope.launch { serverCommands.switchToShow(SwitchToShowCommand(null)) }
-        }
+        fun onSaveAsShow(file: Fs.File) =
+            launchAndReportErrors { serverCommands.saveAsShow(SaveAsShowCommand(file)) }
+
+        fun onCloseShow() =
+            launchAndReportErrors { serverCommands.switchToShow(SwitchToShowCommand(null)) }
 
         fun confirmServerNotice(id: String) {
-            this@WebClient.confirmServerNotice(id)
+            if (id == "_clientError_") {
+                this@WebClient.clientError = null
+                notifyChanged()
+            } else {
+                this@WebClient.confirmServerNotice(id)
+            }
         }
 
         fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {
@@ -276,6 +296,9 @@ class WebClient(
     }
 
     companion object {
+        private fun launch(block: suspend CoroutineScope.() -> Unit) =
+            GlobalScope.launch(block = block)
+
         fun createPlugins() =
             Plugins.safe(PluginContext(JsClock)) +
                     BeatLinkPlugin.Builder(BeatSource.None)

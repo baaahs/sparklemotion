@@ -5,6 +5,7 @@ import baaahs.dmx.DmxInfo
 import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibrary
 import baaahs.model.MovingHead
+import baaahs.server.ServerNotice
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.nullable
@@ -16,7 +17,7 @@ object Topics {
         PubSub.Topic("clientData", ClientData.serializer().nullable, fsSerializer.serialModule)
 
     val serverNotices =
-        PubSub.Topic("serverNotices", ListSerializer(Pinky.ServerNotice.serializer()))
+        PubSub.Topic("serverNotices", ListSerializer(ServerNotice.serializer()))
 
     val pinkyState =
         PubSub.Topic("pinkyState", PinkyState.serializer())

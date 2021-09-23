@@ -12,9 +12,11 @@ import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibrary
 import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
+import baaahs.server.ServerNotices
 import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.buildEmptyShow
+import baaahs.show.live.OpenShow
 import baaahs.ui.Icon
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
@@ -66,7 +68,8 @@ class StageManager(
     private val clock: Clock,
     modelInfo: ModelInfo,
     private val gadgetManager: GadgetManager,
-    private val controllersManager: ControllersManager
+    private val controllersManager: ControllersManager,
+    private val serverNotices: ServerNotices
 ) : BaseShowPlayer(toolchain, modelInfo) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
@@ -121,6 +124,19 @@ class StageManager(
 
     override fun <T : Gadget> useGadget(id: String): T {
         return gadgetManager.useGadget(id)
+    }
+
+    override fun openShow(show: Show, showState: ShowState?): OpenShow {
+        return super.openShow(show, showState).also {
+            val missingPlugins = it.missingPlugins
+            if (missingPlugins.isNotEmpty()) {
+                serverNotices.add(
+                    "Missing Plugins",
+                    "The following plugin(s) are unavailable, " +
+                            "so some features may not work as expected:\n" +
+                            "* " + missingPlugins.joinToString("\n* ") { desc -> desc.title })
+            }
+        }
     }
 
     fun switchTo(

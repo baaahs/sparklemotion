@@ -24,6 +24,7 @@ import baaahs.proto.BrainHelloMessage
 import baaahs.proto.Ports
 import baaahs.proto.Type
 import baaahs.scene.SceneManager
+import baaahs.server.ServerNotices
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
@@ -73,8 +74,11 @@ object PinkySpec : Spek({
             )
             val mappingManager = MappingManagerImpl(storage, model)
             val controllersManager = ControllersManager(listOf(brainManager), mappingManager, model, fixtureManager)
-            val stageManager = StageManager(toolchain, renderManager, pubSub, storage, fixtureManager, clock, model,
-                gadgetManager, controllersManager)
+            val serverNotices = ServerNotices(pubSub, ImmediateDispatcher)
+            val stageManager = StageManager(
+                toolchain, renderManager, pubSub, storage, fixtureManager, clock, model,
+                gadgetManager, controllersManager, serverNotices
+            )
             val sceneManager = SceneManager(storage, controllersManager)
             Pinky(
                 clock,
@@ -95,7 +99,8 @@ object PinkySpec : Spek({
                 brainManager,
                 ShaderLibraryManager(storage, pubSub),
                 Pinky.NetworkStats(),
-                PinkySettings()
+                PinkySettings(),
+                serverNotices
             )
         }
         val pinkyLink by value { network.links.only() }
