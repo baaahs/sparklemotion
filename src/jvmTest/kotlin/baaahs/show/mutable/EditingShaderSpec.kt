@@ -387,7 +387,7 @@ object EditingShaderSpec : Spek({
 
                     vec2 p0_screenCoordsi_result = vec2(0.);
 
-                    #line 4
+                    #line 4 0
                     vec2 p0_screenCoords_main(
                         vec4 fragCoords 
                     ) {
@@ -399,7 +399,7 @@ object EditingShaderSpec : Spek({
 
                     vec4 p1_paint_gl_FragColor = vec4(0., 0., 0., 1.);
 
-                    #line 2
+                    #line 2 1
                     void p1_paint_main(void) {
                         p1_paint_gl_FragColor = vec4(p0_screenCoordsi_result.x, p0_screenCoordsi_result.y, mod(in_time, 1.), 1.);
                     }

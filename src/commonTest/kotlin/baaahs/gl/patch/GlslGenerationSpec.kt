@@ -91,19 +91,19 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p0_thisShaderSName_gl_FragColor = vec4(0., 0., 0., 1.);
 
-                        #line 7
+                        #line 7 0
                         int p0_thisShaderSName_someGlobalVar;
 
-                        #line 8
+                        #line 8 0
                         int p0_thisShaderSName_anotherGlobalVar;
 
-                        #line 9
+                        #line 9 0
                         const int p0_thisShaderSName_someConstVar = 123;
 
-                        #line 11
+                        #line 11 0
                         int p0_thisShaderSName_anotherFunc(int i) { return i; }
 
-                        #line 13
+                        #line 13 0
                         void p0_thisShaderSName_main( void ) {
                             vec2 uv = gl_FragCoord.xy / in_resolution.xy;
                             p0_thisShaderSName_someGlobalVar = p0_thisShaderSName_anotherFunc(p0_thisShaderSName_someConstVar);
@@ -111,10 +111,10 @@ object GlslGenerationSpec : Spek({
                         }
 
                         void p0_thisShaderSNamei_init() {    
-                        #line 7
+                        #line 7 0
                           p0_thisShaderSName_someGlobalVar = int(in_bluenessSlider * 100.);;
                             
-                        #line 8
+                        #line 8 0
                           p0_thisShaderSName_anotherGlobalVar = p0_thisShaderSName_someGlobalVar + 1;;
                         }
 
@@ -181,10 +181,10 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p0_untitledShader_gl_FragColor = vec4(0., 0., 0., 1.);
 
-                        #line 2
+                        #line 2 0
                         vec2 p0_untitledShader_anotherFunc(vec2 fragCoord) { return fragCoord; }
 
-                        #line 5
+                        #line 5 0
                         void p0_untitledShader_main(vec2 fragCoord) {
                             vec2 uv = p0_untitledShader_anotherFunc(fragCoord) / in_resolution.xy;
                             p0_untitledShader_gl_FragColor = vec4(uv.xy, 0., 1.);
@@ -270,16 +270,16 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p0_thisShaderSName_fragColor = vec4(0., 0., 0., 1.);
 
-                        #line 5
+                        #line 5 0
                         int p0_thisShaderSName_someGlobalVar;
 
-                        #line 6
+                        #line 6 0
                         const int p0_thisShaderSName_someConstVar = 123;
 
-                        #line 8
+                        #line 8 0
                         int p0_thisShaderSName_anotherFunc(int i) { return i; }
 
-                        #line 10
+                        #line 10 0
                         void p0_thisShaderSName_mainImage( out vec4 fragColor, in vec2 fragCoord ) {
                             vec2 uv = fragCoord.xy / in_resolution.xy;
                             p0_thisShaderSName_someGlobalVar = p0_thisShaderSName_anotherFunc(p0_thisShaderSName_someConstVar) + in_time * 0.;
@@ -287,7 +287,7 @@ object GlslGenerationSpec : Spek({
                         }
 
                         void p0_thisShaderSNamei_init() {    
-                        #line 5
+                        #line 5 0
                           p0_thisShaderSName_someGlobalVar = int(in_bluenessSlider * 100.);;
                         }
 
@@ -370,10 +370,10 @@ object GlslGenerationSpec : Spek({
 
                         vec2 p0_cylindricalProjectioni_result = vec2(0.);
 
-                        #line 10
+                        #line 10 0
                         const float p0_cylindricalProjection_PI = 3.141592654;
 
-                        #line 14
+                        #line 14 0
                         vec2 p0_cylindricalProjection_main(vec3 pixelLocation) {
                             vec3 pixelOffset = pixelLocation - in_modelInfo.center;
                             vec3 normalDelta = normalize(pixelOffset);
@@ -389,19 +389,19 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p1_thisShaderSName_gl_FragColor = vec4(0., 0., 0., 1.);
 
-                        #line 7
+                        #line 7 1
                         int p1_thisShaderSName_someGlobalVar;
 
-                        #line 8
+                        #line 8 1
                         int p1_thisShaderSName_anotherGlobalVar;
 
-                        #line 9
+                        #line 9 1
                         const int p1_thisShaderSName_someConstVar = 123;
 
-                        #line 11
+                        #line 11 1
                         int p1_thisShaderSName_anotherFunc(int i) { return i; }
 
-                        #line 13
+                        #line 13 1
                         void p1_thisShaderSName_main( void ) {
                             vec2 uv = p0_cylindricalProjectioni_result.xy / in_resolution.xy;
                             p1_thisShaderSName_someGlobalVar = p1_thisShaderSName_anotherFunc(p1_thisShaderSName_someConstVar);
@@ -409,10 +409,10 @@ object GlslGenerationSpec : Spek({
                         }
 
                         void p1_thisShaderSNamei_init() {    
-                        #line 7
+                        #line 7 1
                           p1_thisShaderSName_someGlobalVar = int(in_bluenessSlider * 100.);;
                             
-                        #line 8
+                        #line 8 1
                           p1_thisShaderSName_anotherGlobalVar = p1_thisShaderSName_someGlobalVar + 1;;
                         }
 
@@ -515,7 +515,7 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p0_mainPaintShader_gl_FragColor = vec4(0., 0., 0., 1.);
 
-                        #line 2
+                        #line 2 0
                         void p0_mainPaintShader_main( void ) {
                             p0_mainPaintShader_gl_FragColor = vec4(1., 0., 0., 1.);
                         }
@@ -525,7 +525,7 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p1_otherPaintShader_fragColor = vec4(0., 0., 0., 1.);
 
-                        #line 2
+                        #line 2 1
                         void p1_otherPaintShader_mainImage( out vec4 fragColor, in vec2 fragCoord ) {
                             fragColor = vec4(0., 1., 0., 1.);
                         }
@@ -535,7 +535,7 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p2_crossFadeShaderi_result = vec4(0., 0., 0., 1.);
 
-                        #line 7
+                        #line 7 2
                         vec4 p2_crossFadeShader_main(vec4 inColor, vec4 inColor2) {
                             return mix(inColor, inColor2, in_fadeSlider);
                         }
@@ -593,7 +593,7 @@ object GlslGenerationSpec : Spek({
 
                             vec4 p0_mainPaintShader_gl_FragColor = vec4(0., 0., 0., 1.);
 
-                            #line 2
+                            #line 2 0
                             void p0_mainPaintShader_main( void ) {
                                 p0_mainPaintShader_gl_FragColor = vec4(1., 0., 0., 1.);
                             }
@@ -603,7 +603,7 @@ object GlslGenerationSpec : Spek({
 
                             vec4 p1_crossFadeShaderi_result = vec4(0., 0., 0., 1.);
 
-                            #line 7
+                            #line 7 1
                             vec4 p1_crossFadeShader_main(vec4 inColor, vec4 inColor2) {
                                 return mix(inColor, inColor2, in_fadeSlider);
                             }
@@ -694,7 +694,7 @@ object GlslGenerationSpec : Spek({
 
                         MovingHeadParams p0_untitledShader_params = MovingHeadParams(0., 0., 0., 1.);
 
-                        #line 17
+                        #line 17 0
                         void p0_untitledShader_main(out MovingHeadParams params) {
                             params.pan = in_fixtureInfo.origin.x;
                             params.tilt = in_fixtureInfo.origin.y,
@@ -781,10 +781,10 @@ object GlslGenerationSpec : Spek({
 
                         MovingHeadParams p0_untitledShaderi_result = MovingHeadParams(0., 0., 0., 1.);
 
-                        #line 5
+                        #line 5 0
                         p0_untitledShader_AnotherStruct p0_untitledShader_a;
 
-                        #line 15
+                        #line 15 0
                         MovingHeadParams p0_untitledShader_main() {
                             p0_untitledShader_AnotherStruct b;
                             return MovingHeadParams(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
@@ -854,10 +854,10 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p0_untitledShaderi_result = vec4(0., 0., 0., 1.);
 
-                        #line 1
+                        #line 1 0
                         p0_untitledShader_AnotherStruct p0_untitledShader_a;
 
-                        #line 7
+                        #line 7 0
                         vec4 p0_untitledShader_main() {
                             p0_untitledShader_AnotherStruct b;
                             return vec4(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
@@ -977,7 +977,7 @@ object GlslGenerationSpec : Spek({
                         vec4 p0_channelAShader_gl_FragColor = vec4(0., 0., 0., 1.);
                         vec2 p0_global_gl_FragCoord = vec2(0.);
 
-                        #line 3
+                        #line 3 0
                         void p0_channelAShader_main(void) { p0_channelAShader_gl_FragColor = vec4(1. * in_time, 0., p0_global_gl_FragCoord.y, 1.); }
 
                         // Shader: Channel B Shader; namespace: p1
@@ -986,7 +986,7 @@ object GlslGenerationSpec : Spek({
                         vec4 p1_channelBShader_fragColor = vec4(0., 0., 0., 1.);
                         float p1_global_time = 0.;
 
-                        #line 3
+                        #line 3 1
                         void p1_channelBShader_mainImage(out vec4 fragColor, in vec2 fragCoord) {
                             fragColor = vec4(0., 1. * p1_global_time, fragCoord.x, 1.);
                         }
@@ -996,7 +996,7 @@ object GlslGenerationSpec : Spek({
 
                         vec4 p2_crossFadeShaderi_result = vec4(0., 0., 0., 1.);
 
-                        #line 6
+                        #line 6 2
                         vec4 p2_crossFadeShader_channelA(vec2 uv) {
                             // Invoke Channel A Shader
                             p0_global_gl_FragCoord = uv;
@@ -1005,7 +1005,7 @@ object GlslGenerationSpec : Spek({
                             return p0_channelAShader_gl_FragColor;
                         }
 
-                        #line 10
+                        #line 10 2
                         vec4 p2_crossFadeShader_channelB(float time) {
                             // Invoke Channel B Shader
                             p1_global_time = time;
@@ -1014,7 +1014,7 @@ object GlslGenerationSpec : Spek({
                             return p1_channelBShader_fragColor;
                         }
 
-                        #line 17
+                        #line 17 2
                         vec4 p2_crossFadeShader_main(vec2 uvIn) {
                             return mix(
                                 p2_crossFadeShader_channelA(uvIn - in_fadeSlider),

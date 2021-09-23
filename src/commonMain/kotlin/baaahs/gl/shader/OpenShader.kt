@@ -38,7 +38,7 @@ interface OpenShader : RefCounted {
         (inputPorts.map { it.contentType.glslType } + outputPort.contentType.glslType)
             .filterIsInstance<GlslType.Struct>()
 
-    fun toGlsl(substitutions: GlslCode.Substitutions): String
+    fun toGlsl(fileNumber: Int?, substitutions: GlslCode.Substitutions): String
 
     fun invoker(
         namespace: Namespace,
@@ -66,15 +66,15 @@ interface OpenShader : RefCounted {
 
         override val requiresInit = globalVars.any { it.deferInitialization }
 
-        override fun toGlsl(substitutions: GlslCode.Substitutions): String {
+        override fun toGlsl(fileNumber: Int?, substitutions: GlslCode.Substitutions): String {
             val buf = StringBuilder()
             globalVars.forEach { glslVar ->
-                buf.append(glslVar.declarationToGlsl(substitutions))
+                buf.append(glslVar.declarationToGlsl(fileNumber, substitutions))
                 buf.append("\n")
             }
 
             glslCode.functions.filterNot { it.isAbstract }.forEach { glslFunction ->
-                buf.append(glslFunction.toGlsl(substitutions))
+                buf.append(glslFunction.toGlsl(fileNumber, substitutions))
                 buf.append("\n")
             }
 
@@ -83,7 +83,7 @@ interface OpenShader : RefCounted {
                 buf.append("void ${substitutions.substitute(ShaderSubstitutions.initFnName)}() {")
                 globalVars.forEach {
                     if (it.deferInitialization) {
-                        buf.append("    ${it.assignmentToGlsl(substitutions)};\n")
+                        buf.append("    ${it.assignmentToGlsl(fileNumber, substitutions)};\n")
                     }
                 }
                 buf.append("}\n")
