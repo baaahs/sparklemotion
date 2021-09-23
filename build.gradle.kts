@@ -1,5 +1,4 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationToRunnableFiles
@@ -30,9 +29,10 @@ val lwjglNatives = when {
 
 plugins {
     kotlin("multiplatform") version Versions.kotlin
+    application //to run JVM part
     kotlin("plugin.serialization") version Versions.kotlin
     id("org.jetbrains.dokka") version Versions.dokka
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+//    id("com.github.johnrengelman.shadow") version "5.2.0"
     id("com.github.ben-manes.versions") version "0.29.0"
     id("maven-publish")
     id("name.remal.check-dependency-updates") version "1.0.211"
@@ -51,9 +51,14 @@ group = "org.baaahs"
 version = "0.0.1"
 
 kotlin {
-    jvm()
+    jvm {
+        withJava()
+    }
+
     js {
         browser {
+            binaries.executable()
+
             useCommonJs()
 
             webpackTask {
@@ -87,9 +92,11 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting {
             dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:${Versions.kotlinxHtml}")
                 implementation("io.ktor:ktor-server-core:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-netty:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-host-common:${Versions.ktor}")
+                implementation("io.ktor:ktor-html-builder:${Versions.ktor}")
                 implementation("io.ktor:ktor-websockets:${Versions.ktor}")
                 implementation("ch.qos.logback:logback-classic:1.2.3")
                 implementation("com.xenomachina:kotlin-argparser:2.0.7")
@@ -196,15 +203,31 @@ kotlin {
     }
 }
 
-// workaround for https://youtrack.jetbrains.com/issue/KT-24463:
-tasks.named<KotlinCompile>("compileKotlinJvm") {
-    dependsOn(":copySheepModel")
+application {
+    mainClass.set("baaahs.PinkyMainKt")
+
+    applicationDefaultJvmArgs = listOf(
+        "-Djava.library.path=${file("src/jvmMain/jni")}",
+        "-Dio.ktor.development=true"
+    )
+
+    if (isMac()) {
+        applicationDefaultJvmArgs += listOf(
+            "-XstartOnFirstThread", // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
+            "-Djava.awt.headless=true" // required for Beat Link; otherwise we get this: https://jogamp.org/bugzilla/show_bug.cgi?id=485
+        )
+    }
 }
 
-tasks.create<Copy>("copySheepModel") {
-    from("src/commonMain/resources")
-    into("build/classes/kotlin/jvm/main")
-}
+//// workaround for https://youtrack.jetbrains.com/issue/KT-24463:
+//tasks.named<KotlinCompile>("compileKotlinJvm") {
+//    dependsOn(":copySheepModel")
+//}
+
+//tasks.create<Copy>("copySheepModel") {
+//    from("src/commonMain/resources")
+//    into("build/classes/kotlin/jvm/main")
+//}
 
 tasks.withType(Kotlin2JsCompile::class) {
     kotlinOptions.sourceMap = true
@@ -221,7 +244,7 @@ tasks.withType(KotlinCompile::class) {
 }
 
 tasks.named<ProcessResources>("jsProcessResources") {
-    dependsOn("kotlinNpmInstall") // for node_modules stuff
+//    dependsOn("kotlinNpmInstall") // for node_modules stuff
 
     from("build/js/node_modules/requirejs") { include("require.js") }
     from("build/js/node_modules/three/build") { include("three.js") }
@@ -245,9 +268,9 @@ tasks.named<ProcessResources>("jsProcessResources") {
 }
 
 tasks.named<ProcessResources>("jvmProcessResources") {
-    dependsOn("jsBrowserDevelopmentWebpack")
-
-    from("build/distributions") { include("sparklemotion.js") }
+//    dependsOn("jsBrowserDevelopmentWebpack")
+//
+//    from("build/distributions") { include("sparklemotion.js") }
 
     doLast {
         createResourceFilesList(File(buildDir, "processedResources/jvm/main"))
@@ -302,27 +325,43 @@ tasks.create<JavaExec>("runGlslJvmTests") {
     }
 }
 
-tasks.create<Copy>("packageClientResources") {
-    dependsOn("jsProcessResources", "jsBrowserWebpack")
-    duplicatesStrategy = DuplicatesStrategy.WARN
-    from(project.file("build/processedResources/js/main"))
-    from(project.file("build/distributions"))
-    into("build/classes/kotlin/jvm/main/htdocs")
+//tasks.create<Copy>("packageClientResources") {
+//    dependsOn("jsProcessResources", "jsBrowserWebpack")
+//    duplicatesStrategy = DuplicatesStrategy.WARN
+//    from(project.file("build/processedResources/js/main"))
+//    from(project.file("build/distributions"))
+//    into("build/classes/kotlin/jvm/main/htdocs")
+//}
+
+//tasks.named<Jar>("jvmJar") {
+//    dependsOn("packageClientResources")
+//    duplicatesStrategy = DuplicatesStrategy.WARN
+//}
+
+//// include JS artifacts in any JAR we generate
+//tasks.getByName<Jar>("jvmJar") {
+//    val taskName = if (project.hasProperty("isProduction")) {
+//        "jsBrowserProductionWebpack"
+//    } else {
+//        "jsBrowserDevelopmentWebpack"
+//    }
+//    val webpackTask = tasks.getByName<KotlinWebpack>(taskName)
+//    dependsOn(webpackTask) // make sure JS gets compiled first
+//    from(File(webpackTask.destinationDirectory, webpackTask.outputFileName)) // bring output file along into the JAR
+//}
+
+tasks.getByName<JavaExec>("run") {
+    classpath(tasks.getByName<Jar>("jvmJar")) // so that the JS artifacts generated by `jvmJar` can be found and served
 }
 
-tasks.named<Jar>("jvmJar") {
-    dependsOn("packageClientResources")
-    duplicatesStrategy = DuplicatesStrategy.WARN
-}
-
-tasks.create<ShadowJar>("shadowJar") {
-    dependsOn("jvmJar")
-    from(tasks.named<Jar>("jvmJar").get().archiveFile)
-    configurations = listOf(project.configurations["jvmRuntimeClasspath"])
-    manifest {
-        attributes["Main-Class"] = "baaahs.PinkyMainKt"
-    }
-}
+//tasks.create<ShadowJar>("shadowJar") {
+//    dependsOn("jvmJar")
+//    from(tasks.named<Jar>("jvmJar").get().archiveFile)
+//    configurations = listOf(project.configurations["jvmRuntimeClasspath"])
+//    manifest {
+//        attributes["Main-Class"] = "baaahs.PinkyMainKt"
+//    }
+//}
 
 tasks.withType(Test::class) {
     useJUnitPlatform {

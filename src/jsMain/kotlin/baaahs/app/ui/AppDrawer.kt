@@ -71,7 +71,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                 attrs.button = true
                 attrs.onClickFunction = props.onNewShow.withEvent()
                 listItemIcon { icon(materialui.icons.Add) }
-                listItemText { attrs.primary { +"New Show…" } }
+                listItemText { attrs.primary { +"zNew Show…" } }
             }
 
             listItem {
