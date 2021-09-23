@@ -26,7 +26,7 @@ class FakeOpenShader(
     override val entryPoint: GlslCode.GlslFunction
         get() = TODO("not implemented")
 
-    override fun toGlsl(substitutions: GlslCode.Substitutions): String =
+    override fun toGlsl(fileNumber: Int?, substitutions: GlslCode.Substitutions): String =
         "// GLSL for $title"
 
     override fun invoker(
