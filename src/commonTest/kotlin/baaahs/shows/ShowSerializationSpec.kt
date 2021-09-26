@@ -356,11 +356,11 @@ class FakePlugin(
     override val packageName: String,
     override val title: String,
     override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> = emptyList()
-) : Plugin {
+) : OpenPlugin {
     class Builder(
         override val id: String,
         val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> = emptyList()
-    ) : PluginBuilder {
-        override fun build(pluginContext: PluginContext): Plugin = FakePlugin(id, "$id Plugin", dataSourceBuilders)
+    ) : Plugin {
+        override fun open(pluginContext: PluginContext): OpenPlugin = FakePlugin(id, "$id Plugin", dataSourceBuilders)
     }
 }
