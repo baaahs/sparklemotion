@@ -20,7 +20,7 @@ import kotlinx.serialization.SerialName
 class BeatLinkPlugin internal constructor(
     internal val beatSource: BeatSource,
     pluginContext: PluginContext
-) : Plugin {
+) : OpenPlugin {
     override val packageName: String = id
     override val title: String = "Beat Link"
 
@@ -165,10 +165,10 @@ class BeatLinkPlugin internal constructor(
         val beatInfoContentType = ContentType("beat-info", "Beat Info", beatInfoStruct)
     }
 
-    class Builder(internal val beatSource: BeatSource) : PluginBuilder {
+    class Builder(internal val beatSource: BeatSource) : Plugin {
         override val id = BeatLinkPlugin.id
 
-        override fun build(pluginContext: PluginContext): Plugin {
+        override fun open(pluginContext: PluginContext): OpenPlugin {
             return BeatLinkPlugin(beatSource, pluginContext)
         }
     }

@@ -21,7 +21,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlin.reflect.KClass
 
-interface Plugin {
+interface OpenPlugin {
     val packageName: String
     val title: String
 
@@ -73,9 +73,9 @@ inline fun <reified T : Any> classSerializer(serializer: KSerializer<T>) =
 inline fun <reified T : Any> objectSerializer(serialName: String, t: T) =
     classSerializer(ObjectSerializer(serialName, t))
 
-interface PluginBuilder {
+interface Plugin {
     val id: String
-    fun build(pluginContext: PluginContext): Plugin
+    fun open(pluginContext: PluginContext): OpenPlugin
 }
 
 class PluginContext(

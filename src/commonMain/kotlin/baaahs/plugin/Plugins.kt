@@ -71,21 +71,21 @@ data class PluginRef(
 
 class Plugins private constructor(
     val pluginContext: PluginContext,
-    private val plugins: List<Plugin>
+    private val openPlugins: List<OpenPlugin>
 ) {
     constructor(
-        pluginBuilders: List<PluginBuilder>,
+        plugins: List<Plugin>,
         pluginContext: PluginContext
-    ) : this(pluginContext, pluginBuilders.map { it.build(pluginContext) })
+    ) : this(pluginContext, plugins.map { it.open(pluginContext) })
 
     constructor(
-        vararg pluginBuilders: PluginBuilder,
+        vararg plugins: Plugin,
         pluginContext: PluginContext
-    ) : this(pluginContext, pluginBuilders.map { it.build(pluginContext) })
+    ) : this(pluginContext, plugins.map { it.open(pluginContext) })
 
-    private val byPackage: Map<String, Plugin> = plugins.associateBy { it.packageName }
+    private val byPackage: Map<String, OpenPlugin> = openPlugins.associateBy { it.packageName }
 
-    val addControlMenuItems: List<AddControlMenuItem> = plugins.flatMap { it.addControlMenuItems }
+    val addControlMenuItems: List<AddControlMenuItem> = openPlugins.flatMap { it.addControlMenuItems }
 
     private val contentTypes = ContentTypes()
 
@@ -103,8 +103,8 @@ class Plugins private constructor(
     val shaderTypes = ShaderTypes()
 
     private inline fun <reified T : Any> serializersMap(
-        getSerializersFn: Plugin.() -> List<SerializerRegistrar<out T>>
-    ) = plugins.associate { plugin ->
+        getSerializersFn: OpenPlugin.() -> List<SerializerRegistrar<out T>>
+    ) = openPlugins.associate { plugin ->
         plugin.packageName to SerializersModule {
             polymorphic(T::class) {
                 plugin.getSerializersFn().forEach { classSerializer ->
@@ -115,10 +115,10 @@ class Plugins private constructor(
     }
 
     private inline fun <reified T : Any> SerializersModuleBuilder.registerSerializers(
-        getSerializersFn: Plugin.() -> List<SerializerRegistrar<out T>>
+        getSerializersFn: OpenPlugin.() -> List<SerializerRegistrar<out T>>
     ) {
         polymorphic(T::class) {
-            plugins.forEach { plugin ->
+            openPlugins.forEach { plugin ->
                 plugin.getSerializersFn().forEach { classSerializer ->
                     with(classSerializer) { register(this@polymorphic) }
                 }
@@ -187,12 +187,12 @@ class Plugins private constructor(
 
     val json = Json { serializersModule = this@Plugins.serialModule }
 
-    fun <T: Plugin > findPlugin(pluginKlass: KClass<T>): T {
+    fun <T: OpenPlugin > findPlugin(pluginKlass: KClass<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return plugins.find { it::class == pluginKlass } as T
+        return openPlugins.find { it::class == pluginKlass } as T
     }
 
-    inline fun <reified T : Plugin> findPlugin(): T = findPlugin(T::class)
+    inline fun <reified T : OpenPlugin> findPlugin(): T = findPlugin(T::class)
 
     fun resolveContentType(name: String): ContentType? {
         return contentTypes.byId[name]
@@ -251,7 +251,7 @@ class Plugins private constructor(
         }
     }
 
-    private fun getPlugin(packageName: String): Plugin {
+    private fun getPlugin(packageName: String): OpenPlugin {
         return byPackage[packageName]
             ?: error("no such plugin \"$packageName\"")
     }
@@ -260,11 +260,11 @@ class Plugins private constructor(
         TODO("not implemented")
     }
 
-    operator fun plus(pluginBuilder: PluginBuilder): Plugins {
-        return Plugins(pluginContext, plugins + pluginBuilder.build(pluginContext))
+    operator fun plus(plugin: Plugin): Plugins {
+        return Plugins(pluginContext, openPlugins + plugin.open(pluginContext))
     }
 
-    fun find(packageName: String): Plugin {
+    fun find(packageName: String): OpenPlugin {
         return byPackage.getBang(packageName, "package")
     }
 
@@ -283,7 +283,7 @@ class Plugins private constructor(
     }
 
     inner class ContentTypes {
-        val all = plugins.flatMap { it.contentTypes }.toSet()
+        val all = openPlugins.flatMap { it.contentTypes }.toSet()
         internal val byId = all.associateBy { it.id }
         private val byGlslType = all.filter { it.suggest }.groupBy({ it.glslType }, { it })
 
@@ -310,7 +310,7 @@ class Plugins private constructor(
     }
 
     inner class DataSourceBuilders {
-        val withPlugin = plugins.flatMap { plugin -> plugin.dataSourceBuilders.map { plugin to it } }
+        val withPlugin = openPlugins.flatMap { plugin -> plugin.dataSourceBuilders.map { plugin to it } }
 
         val all = withPlugin.map { it.second }
 
@@ -330,7 +330,7 @@ class Plugins private constructor(
             }
         }
 
-        private fun Plugin.dataSourceSerlializerRegistrars() =
+        private fun OpenPlugin.dataSourceSerlializerRegistrars() =
             dataSourceBuilders.map { it.serializerRegistrar } +
                     deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializerRegistrar } }
 
@@ -345,7 +345,7 @@ class Plugins private constructor(
     }
 
     inner class DeviceTypes {
-        val all = plugins.flatMap { it.deviceTypes }
+        val all = openPlugins.flatMap { it.deviceTypes }
 
         val serialModule = SerializersModule {
             val serializer = DeviceType.Serializer(all.associateBy { it.id })
@@ -374,10 +374,10 @@ class Plugins private constructor(
     }
 
     inner class ShaderDialects {
-        val all = plugins.flatMap { it.shaderDialects }
+        val all = openPlugins.flatMap { it.shaderDialects }
     }
 
     inner class ShaderTypes {
-        val all = plugins.flatMap { it.shaderTypes }
+        val all = openPlugins.flatMap { it.shaderTypes }
     }
 }
