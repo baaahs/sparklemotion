@@ -6,10 +6,12 @@ import baaahs.Topics
 import baaahs.controller.SacnDevice
 import baaahs.dmx.DmxInfo
 import baaahs.net.Network
+import baaahs.plugin.ClientPlugins
 import baaahs.proto.Ports
 import baaahs.subscribeProperty
 
 class AdminClient(
+    private val plugins: ClientPlugins,
     network: Network,
     pinkyAddress: Network.Address
 ) {
@@ -26,6 +28,9 @@ class AdminClient(
     private val sacnDevices by subscribeProperty(pubSub, Topics.sacnDevices, emptyMap()) { facade.notifyChanged() }
 
     inner class Facade : baaahs.ui.Facade() {
+        val plugins: ClientPlugins
+            get() = this@AdminClient.plugins
+
         val brains: Map<String, BrainInfo>
             get() = this@AdminClient.brains
 

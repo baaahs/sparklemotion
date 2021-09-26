@@ -34,7 +34,7 @@ class JvmPlatformModule(private val args: PinkyMain.Args) : PlatformModule {
     override val Scope.pluginContext
         get() = PluginContext(get())
     override val Scope.plugins: Plugins
-        get() = Plugins.safe(get()) + BeatLinkPlugin.Builder(get())
+        get() = Plugins.buildForServer(get(), listOf(BeatLinkPlugin.Builder(get())))
     override val Scope.mediaDevices: MediaDevices
         get() = object : MediaDevices {
             override suspend fun enumerate(): List<MediaDevices.Device> = emptyList()

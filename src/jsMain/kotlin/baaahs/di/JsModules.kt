@@ -16,7 +16,6 @@ import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.BeatSource
-import baaahs.plugin.core.CorePlugin
 import baaahs.sim.BrowserSandboxFs
 import baaahs.util.Clock
 import baaahs.util.JsClock
@@ -37,7 +36,7 @@ open class JsPlatformModule(
     override val Scope.pluginContext: PluginContext
         get() = PluginContext(get())
     override val Scope.plugins: Plugins
-        get() = Plugins(listOf(CorePlugin, get<BeatLinkPlugin.Builder>()), get())
+        get() = Plugins.buildForClient(get(), listOf(get<BeatLinkPlugin.Builder>()))
     override val Scope.mediaDevices: MediaDevices
         get() = RealMediaDevices()
 }
@@ -63,7 +62,7 @@ class JsAdminClientModule(
         scope<MapperUi> {
             scoped { get<Network>().link("mapper") }
             scoped {
-                val adminClient = AdminClient(get(), pinkyAddress)
+                val adminClient = AdminClient(get(), get(), pinkyAddress)
                 JsMapperUi(adminClient).also {
                     // This has side-effects on mapperUi. Ugly.
                     Mapper(get(), get(), it, get(), pinkyAddress, get())

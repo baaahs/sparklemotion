@@ -11,7 +11,7 @@ import org.spekframework.spek2.Spek
 @Suppress("unused")
 object PluginsSpec : Spek({
     describe<Plugins> {
-        val plugins by value { Plugins(listOf(CorePlugin), PluginContext(FakeClock())) }
+        val plugins by value { ServerPlugins(PluginContext(FakeClock()), listOf(CorePlugin)) }
 
         it("should resolve content types") {
             expect(plugins.resolveContentType("color"))

@@ -3,12 +3,18 @@ package baaahs.show.mutable
 import baaahs.*
 import baaahs.app.ui.editor.LinkOption
 import baaahs.app.ui.editor.PortLinkOption
-import baaahs.gl.*
+import baaahs.gl.RootToolchain
+import baaahs.gl.kexpect
+import baaahs.gl.openShader
+import baaahs.gl.override
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
 import baaahs.glsl.Shaders
+import baaahs.plugin.Plugins
+import baaahs.plugin.ServerPlugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
+import baaahs.plugin.core.CorePlugin
 import baaahs.plugin.core.datasource.SliderDataSource
 import baaahs.show.Panel
 import baaahs.show.Shader
@@ -37,7 +43,9 @@ import kotlin.collections.set
 @InternalCoroutinesApi
 object EditingShaderSpec : Spek({
     describe<EditingShader> {
-        val plugins by value { testPlugins() + BeatLinkPlugin.Builder(StubBeatSource()) }
+        val plugins by value {
+            ServerPlugins(Plugins.Companion.dummyContext, listOf(CorePlugin, BeatLinkPlugin.Builder(StubBeatSource())))
+        }
         val toolchain by value { RootToolchain(plugins) }
         val beatLinkDataSource by value {
             (plugins.find(BeatLinkPlugin.id) as BeatLinkPlugin).beatLinkDataSource
