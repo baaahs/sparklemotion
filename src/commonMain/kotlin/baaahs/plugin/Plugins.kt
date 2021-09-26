@@ -69,20 +69,62 @@ data class PluginRef(
     }
 }
 
-class Plugins private constructor(
+class SafePlugins(
+    pluginContext: PluginContext,
+    plugins: List<OpenPlugin>
+) : Plugins(pluginContext, plugins)
+
+class ServerPlugins : Plugins {
+    constructor(pluginContext: PluginContext, plugins: List<Plugin>) : super(
+        pluginContext,
+        plugins.map { it.openForServer(pluginContext) }
+    )
+
+    constructor(
+        plugins: List<OpenServerPlugin>,
+        pluginContext: PluginContext
+    ) : super(pluginContext, plugins)
+}
+
+class ClientPlugins : Plugins {
+    constructor(pluginContext: PluginContext, plugins: List<Plugin>) : super(
+        pluginContext,
+        plugins.map { it.openForClient(pluginContext) }
+    )
+
+    constructor(
+        plugins: List<OpenClientPlugin>,
+        pluginContext: PluginContext
+    ) : super(pluginContext, plugins)
+}
+
+class SimulatorPlugins(pluginContext: PluginContext, plugins: List<Plugin>) {
+    val clientPlugins: Plugins
+    val serverPlugins: Plugins
+    val simulatorPlugins: List<OpenSimulatorPlugin>
+
+    init {
+        val forSimulator = mutableListOf<OpenSimulatorPlugin>()
+        val clientToServer = plugins.map {
+            if (it is SimulatorPlugin) {
+                val simulatorPlugin = it.openForSimulator(pluginContext)
+                forSimulator.add(simulatorPlugin)
+                simulatorPlugin.getClientPlugin() to simulatorPlugin.getServerPlugin()
+            } else {
+                it.openForClient(pluginContext) to it.openForServer(pluginContext)
+            }
+        }
+        simulatorPlugins = forSimulator
+        clientPlugins = ClientPlugins(clientToServer.map { it.first }, pluginContext)
+        serverPlugins = ServerPlugins(clientToServer.map { it.second }, pluginContext)
+    }
+}
+
+sealed class Plugins private constructor(
+    @Deprecated("Don't use this directly")
     val pluginContext: PluginContext,
     private val openPlugins: List<OpenPlugin>
 ) {
-    constructor(
-        plugins: List<Plugin>,
-        pluginContext: PluginContext
-    ) : this(pluginContext, plugins.map { it.open(pluginContext) })
-
-    constructor(
-        vararg plugins: Plugin,
-        pluginContext: PluginContext
-    ) : this(pluginContext, plugins.map { it.open(pluginContext) })
-
     private val byPackage: Map<String, OpenPlugin> = openPlugins.associateBy { it.packageName }
 
     val addControlMenuItems: List<AddControlMenuItem> = openPlugins.flatMap { it.addControlMenuItems }
@@ -147,12 +189,12 @@ class Plugins private constructor(
                     pluginRef, "Unknown datasource \"${pluginRef.toRef()}\".", ContentType.Unknown, obj
                 )
 
-            try {
-                return Json.decodeFromJsonElement(serializer, buildJsonObject {
+            return try {
+                Json.decodeFromJsonElement(serializer, buildJsonObject {
                     (obj.keys - "type").forEach { put(it, obj[it]!!) }
                 })
             } catch (e: Exception) {
-                return UnknownDataSource(
+                UnknownDataSource(
                     pluginRef, e.message ?: "wha? unknown datasource?", ContentType.Unknown, obj
                 )
             }
@@ -260,17 +302,22 @@ class Plugins private constructor(
         TODO("not implemented")
     }
 
-    operator fun plus(plugin: Plugin): Plugins {
-        return Plugins(pluginContext, openPlugins + plugin.open(pluginContext))
-    }
-
     fun find(packageName: String): OpenPlugin {
         return byPackage.getBang(packageName, "package")
     }
 
     companion object {
+        fun buildForServer(pluginContext: PluginContext, plugins: List<Plugin>): ServerPlugins =
+            ServerPlugins(pluginContext, listOf(CorePlugin) + plugins)
+
+        fun buildForClient(pluginContext: PluginContext, plugins: List<Plugin>): ClientPlugins =
+            ClientPlugins(pluginContext, listOf(CorePlugin) + plugins)
+
+        fun buildForSimulator(pluginContext: PluginContext, plugins: List<Plugin>): SimulatorPlugins =
+            SimulatorPlugins(pluginContext, listOf(CorePlugin) + plugins)
+
         fun safe(pluginContext: PluginContext): Plugins =
-            Plugins(listOf(CorePlugin), pluginContext)
+            SafePlugins(pluginContext, listOf(CorePlugin.openSafe(pluginContext)))
 
         val default = CorePlugin.id
 

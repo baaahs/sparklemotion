@@ -3,7 +3,6 @@ package baaahs.mapper
 import baaahs.admin.AdminClient
 import baaahs.app.ui.AllStyles
 import baaahs.app.ui.Styles
-import baaahs.client.WebClient
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.JsClock
@@ -41,7 +40,7 @@ val MapperIndexView = xComponent<MapperIndexViewProps>("MapperIndexView") { prop
     }
 
     val clock = memo { JsClock }
-    val plugins = memo { WebClient.createPlugins() }
+    val plugins = props.adminClient.plugins
 
     val myAppContext = memo(theme) {
         jsObject<MapperAppContext> {

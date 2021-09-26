@@ -14,7 +14,7 @@ import baaahs.plugin.*
 import baaahs.plugin.core.datasource.*
 import baaahs.util.Logger
 
-class CorePlugin(private val pluginContext: PluginContext) : OpenPlugin {
+class CorePlugin(private val pluginContext: PluginContext) : OpenServerPlugin, OpenClientPlugin {
     override val packageName: String = id
     override val title: String = "SparkleMotion Core"
 
@@ -94,7 +94,13 @@ class CorePlugin(private val pluginContext: PluginContext) : OpenPlugin {
     companion object : Plugin {
         override val id = "baaahs.Core"
 
-        override fun open(pluginContext: PluginContext) = CorePlugin(pluginContext)
+        override fun openForServer(pluginContext: PluginContext): OpenServerPlugin =
+            CorePlugin(pluginContext)
+
+        override fun openForClient(pluginContext: PluginContext): OpenClientPlugin =
+            CorePlugin(pluginContext)
+
+        fun openSafe(pluginContext: PluginContext) = CorePlugin(pluginContext)
 
         private val dataSourceBuilders = listOf(
             ColorPickerDataSource,

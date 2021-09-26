@@ -47,6 +47,13 @@ interface OpenPlugin {
         get() = emptyList()
 }
 
+interface OpenServerPlugin : OpenPlugin
+interface OpenClientPlugin : OpenPlugin
+interface OpenSimulatorPlugin {
+    fun getServerPlugin(): OpenServerPlugin
+    fun getClientPlugin(): OpenClientPlugin
+}
+
 class SerializerRegistrar<T : Any>(val klass: KClass<T>, val serializer: KSerializer<T>) {
     fun register(polymorphicModuleBuilder: PolymorphicModuleBuilder<T>) {
         polymorphicModuleBuilder.subclass(klass, serializer)
@@ -75,7 +82,13 @@ inline fun <reified T : Any> objectSerializer(serialName: String, t: T) =
 
 interface Plugin {
     val id: String
-    fun open(pluginContext: PluginContext): OpenPlugin
+
+    fun openForServer(pluginContext: PluginContext): OpenServerPlugin
+    fun openForClient(pluginContext: PluginContext): OpenClientPlugin
+}
+
+interface SimulatorPlugin : Plugin {
+    fun openForSimulator(pluginContext: PluginContext): OpenSimulatorPlugin
 }
 
 class PluginContext(

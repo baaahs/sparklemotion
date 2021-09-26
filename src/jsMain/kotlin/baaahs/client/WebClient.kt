@@ -4,17 +4,13 @@ import baaahs.*
 import baaahs.app.ui.AppIndex
 import baaahs.app.ui.AppIndexProps
 import baaahs.app.ui.settings.UiSettings
-import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.libraries.ShaderLibraries
 import baaahs.model.Model
 import baaahs.net.Network
-import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
-import baaahs.plugin.beatlink.BeatLinkPlugin
-import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.server.ServerNotice
 import baaahs.show.Show
@@ -22,7 +18,6 @@ import baaahs.show.live.OpenShow
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableShow
 import baaahs.sim.HostedWebApp
-import baaahs.util.JsClock
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +30,7 @@ import react.createElement
 class WebClient(
     network: Network,
     pinkyAddress: Network.Address,
-    private val toolchain: Toolchain = RootToolchain(createPlugins()),
+    private val toolchain: Toolchain,
     private val model: Model,
     private val storage: ClientStorage
 ) : HostedWebApp {
@@ -298,9 +293,5 @@ class WebClient(
     companion object {
         private fun launch(block: suspend CoroutineScope.() -> Unit) =
             GlobalScope.launch(block = block)
-
-        fun createPlugins() =
-            Plugins.safe(PluginContext(JsClock)) +
-                    BeatLinkPlugin.Builder(BeatSource.None)
     }
 }
