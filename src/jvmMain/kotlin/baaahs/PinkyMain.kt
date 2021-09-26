@@ -10,14 +10,14 @@ import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
 import baaahs.util.KoinLogger
 import baaahs.util.Logger
-import com.xenomachina.argparser.ArgParser
-import com.xenomachina.argparser.default
-import com.xenomachina.argparser.mainBody
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.content.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import kotlinx.cli.ArgParser
+import kotlinx.cli.ArgType
+import kotlinx.cli.default
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -32,9 +32,10 @@ import kotlin.system.exitProcess
 
 @ObsoleteCoroutinesApi
 fun main(args: Array<String>) {
-    mainBody(PinkyMain::class.simpleName) {
-        PinkyMain(ArgParser(args).parseInto(PinkyMain::Args)).run()
-    }
+    val argParser = ArgParser(PinkyMain::class.simpleName ?: "Pinky")
+    val pinkyArgs = PinkyMain.Args(argParser)
+    argParser.parse(args)
+    PinkyMain(pinkyArgs).run()
 }
 
 @ObsoleteCoroutinesApi
@@ -153,23 +154,24 @@ class PinkyMain(private val args: Args) {
     }
 
     class Args(parser: ArgParser) {
-        val model by parser.storing("model").default(Pluggables.defaultModel)
+        val model by parser.option(ArgType.String, shortName = "m")
+            .default(Pluggables.defaultModel)
 
-        val showName by parser.storing("show").default<String?>(null)
+        val showName by parser.option(ArgType.String, "show", "s")
 
-        val switchShowAfter by parser.storing(
-            "Switch show after no input for x seconds",
-            transform = { if (isNullOrEmpty()) null else toInt() })
-            .default<Int?>(600)
+        val switchShowAfter by parser.option(ArgType.Int, description = "Switch show after no input for x seconds")
+            .default(600)
 
-        val adjustShowAfter by parser.storing(
-            "Start adjusting show inputs after no input for x seconds",
-            transform = { if (isNullOrEmpty()) null else toInt() })
-            .default<Int?>(null)
+        val adjustShowAfter by parser.option(
+            ArgType.Int,
+            description = "Start adjusting show inputs after no input for x seconds"
+        )
 
-        val enableBeatLink by parser.flagging("Enable beat detection").default(true)
+        val enableBeatLink by parser.option(ArgType.Boolean, description = "Enable beat detection")
+            .default(true)
 
-        val simulateBrains by parser.flagging("Simulate connected brains").default(false)
+        val simulateBrains by parser.option(ArgType.Boolean, description = "Simulate connected brains")
+            .default(false)
     }
 }
 
