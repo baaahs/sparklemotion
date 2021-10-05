@@ -12,12 +12,10 @@ import baaahs.net.JvmNetwork
 import baaahs.net.Network
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
-import baaahs.plugin.beatlink.BeatLinkBeatSource
-import baaahs.plugin.beatlink.BeatLinkPlugin
-import baaahs.plugin.beatlink.BeatSource
+import baaahs.plugin.ServerPlugins
 import baaahs.proto.Ports
+import baaahs.server.PinkyArgs
 import baaahs.util.Clock
-import baaahs.util.SystemClock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
@@ -25,16 +23,14 @@ import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import java.io.File
 
-class JvmPlatformModule(private val args: PinkyMain.Args) : PlatformModule {
+class JvmPlatformModule(
+    private val clock_: Clock
+) : PlatformModule {
     override val network: Network = JvmNetwork()
     override val Scope.clock: Clock
-        get() = SystemClock
-    override val Scope.model: Model
-        get() = Pluggables.loadModel(args.model)
+        get() = clock_
     override val Scope.pluginContext
         get() = PluginContext(get())
-    override val Scope.plugins: Plugins
-        get() = Plugins.buildForServer(get(), listOf(BeatLinkPlugin.Builder(get())))
     override val Scope.mediaDevices: MediaDevices
         get() = object : MediaDevices {
             override suspend fun enumerate(): List<MediaDevices.Device> = emptyList()
@@ -43,9 +39,14 @@ class JvmPlatformModule(private val args: PinkyMain.Args) : PlatformModule {
         }
 }
 
-class JvmPinkyModule : PinkyModule {
+class JvmPinkyModule(
+    private val programName: String,
+    private val startupArgs: Array<String>
+) : PinkyModule {
     private val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
 
+    override val Scope.serverPlugins: ServerPlugins
+        get() = Plugins.buildForServer(get(), get(named(PluginsModule.Qualifier.ActivePlugins)), programName, startupArgs)
     override val Scope.fs: Fs
         get() = RealFs("Sparkle Motion Data", dataDir)
     override val Scope.firmwareDir: Fs.File
@@ -67,6 +68,8 @@ class JvmPinkyModule : PinkyModule {
         get() = newSingleThreadContext("Pinky Main")
     override val Scope.dmxDriver: Dmx.Driver
         get() = JvmFtdiDmxDriver
+    override val Scope.model: Model
+        get() = Pluggables.loadModel(get<PinkyArgs>().model)
     override val Scope.renderManager: RenderManager
         get() = runBlocking(get(named("PinkyContext"))) {
             RenderManager(get()) { GlBase.manager.createContext() }
@@ -75,17 +78,7 @@ class JvmPinkyModule : PinkyModule {
         get() = PinkySettings()
 }
 
-class JvmBeatLinkPluginModule(private val args: PinkyMain.Args) : BeatLinkPluginModule {
-    override val Scope.beatSource: BeatSource
-        get() = if (args.enableBeatLink) {
-            BeatLinkBeatSource(get()).also { it.start() }
-        } else {
-            BeatSource.None
-        }
-
-}
-
-class JvmSoundAnalysisPluginModule(private val args: PinkyMain.Args) : SoundAnalysisPluginModule {
+class JvmSoundAnalysisPluginModule : SoundAnalysisPluginModule {
     override val soundAnalyzer: SoundAnalyzer
         get() = JvmSoundAnalyzer()
 

@@ -14,6 +14,7 @@ import baaahs.glsl.RandomSurfacePixelStrategy
 import baaahs.glsl.SurfacePixelStrategy
 import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig
+import baaahs.server.PinkyArgs
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.UnknownDataSource
@@ -21,6 +22,7 @@ import baaahs.show.appearsToBePurposeBuiltFor
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.util.Clock
 import baaahs.util.Time
+import kotlinx.cli.ArgParser
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.MapSerializer
@@ -74,20 +76,14 @@ class SafePlugins(
     plugins: List<OpenPlugin>
 ) : Plugins(pluginContext, plugins)
 
-class ServerPlugins : Plugins {
-    constructor(pluginContext: PluginContext, plugins: List<Plugin>) : super(
-        pluginContext,
-        plugins.map { it.openForServer(pluginContext) }
-    )
-
-    constructor(
-        plugins: List<OpenServerPlugin>,
-        pluginContext: PluginContext
-    ) : super(pluginContext, plugins)
-}
+class ServerPlugins(
+    plugins: List<OpenServerPlugin>,
+    pluginContext: PluginContext,
+    val pinkyArgs: PinkyArgs
+) : Plugins(pluginContext, plugins)
 
 class ClientPlugins : Plugins {
-    constructor(pluginContext: PluginContext, plugins: List<Plugin>) : super(
+    constructor(pluginContext: PluginContext, plugins: List<Plugin<*>>) : super(
         pluginContext,
         plugins.map { it.openForClient(pluginContext) }
     )
@@ -98,25 +94,31 @@ class ClientPlugins : Plugins {
     ) : super(pluginContext, plugins)
 }
 
-class SimulatorPlugins(pluginContext: PluginContext, plugins: List<Plugin>) {
-    val clientPlugins: Plugins
-    val serverPlugins: Plugins
+class SimulatorPlugins(
+    private val bridgeUrl: String,
+    pluginContext: PluginContext,
+    plugins: List<Plugin<*>>
+) {
+    val clientPlugins: ClientPlugins
+    val serverPlugins: ServerPlugins
     val simulatorPlugins: List<OpenSimulatorPlugin>
 
     init {
         val forSimulator = mutableListOf<OpenSimulatorPlugin>()
         val clientToServer = plugins.map {
+            it as Plugin<Any>
             if (it is SimulatorPlugin) {
                 val simulatorPlugin = it.openForSimulator(pluginContext)
                 forSimulator.add(simulatorPlugin)
-                simulatorPlugin.getClientPlugin() to simulatorPlugin.getServerPlugin()
+                simulatorPlugin.getClientPlugin() to simulatorPlugin.getServerPlugin(bridgeUrl)
             } else {
-                it.openForClient(pluginContext) to it.openForServer(pluginContext)
+                val args = it.getArgs(ArgParser("void"))
+                it.openForClient(pluginContext) to it.openForServer(pluginContext, args)
             }
         }
         simulatorPlugins = forSimulator
         clientPlugins = ClientPlugins(clientToServer.map { it.first }, pluginContext)
-        serverPlugins = ServerPlugins(clientToServer.map { it.second }, pluginContext)
+        serverPlugins = ServerPlugins(clientToServer.map { it.second }, pluginContext, PinkyArgs.defaults)
     }
 }
 
@@ -307,14 +309,33 @@ sealed class Plugins private constructor(
     }
 
     companion object {
-        fun buildForServer(pluginContext: PluginContext, plugins: List<Plugin>): ServerPlugins =
-            ServerPlugins(pluginContext, listOf(CorePlugin) + plugins)
+        fun buildForServer(
+            pluginContext: PluginContext,
+            plugins: List<Plugin<*>>,
+            programName: String,
+            startupArgs: Array<String>
+        ): ServerPlugins {
+            val parser = ArgParser(programName)
+            val pinkyArgs = PinkyArgs(parser)
+            val pluginToArgs = (listOf(CorePlugin) + plugins).map {
+                it as Plugin<Any>
+                it to it.getArgs(parser)
+            }
 
-        fun buildForClient(pluginContext: PluginContext, plugins: List<Plugin>): ClientPlugins =
+            parser.parse(startupArgs)
+
+            val serverPlugins = pluginToArgs.map { (plugin, pluginArgs) ->
+                plugin.openForServer(pluginContext, pluginArgs)
+            }
+
+            return ServerPlugins(serverPlugins, pluginContext, pinkyArgs)
+        }
+
+        fun buildForClient(pluginContext: PluginContext, plugins: List<Plugin<*>>): ClientPlugins =
             ClientPlugins(pluginContext, listOf(CorePlugin) + plugins)
 
-        fun buildForSimulator(pluginContext: PluginContext, plugins: List<Plugin>): SimulatorPlugins =
-            SimulatorPlugins(pluginContext, listOf(CorePlugin) + plugins)
+        fun buildForSimulator(bridgeUrl: String, pluginContext: PluginContext, plugins: List<Plugin<*>>): SimulatorPlugins =
+            SimulatorPlugins(bridgeUrl, pluginContext, listOf(CorePlugin) + plugins)
 
         fun safe(pluginContext: PluginContext): Plugins =
             SafePlugins(pluginContext, listOf(CorePlugin.openSafe(pluginContext)))

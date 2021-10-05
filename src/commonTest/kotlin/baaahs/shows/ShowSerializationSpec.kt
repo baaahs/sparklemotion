@@ -16,7 +16,6 @@ import baaahs.glsl.Shaders
 import baaahs.plugin.*
 import baaahs.plugin.beatlink.BeatLinkControl
 import baaahs.plugin.beatlink.BeatLinkPlugin
-import baaahs.plugin.beatlink.BeatSource
 import baaahs.plugin.core.CorePlugin
 import baaahs.plugin.core.datasource.*
 import baaahs.show.*
@@ -24,6 +23,7 @@ import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.show.mutable.MutableShow
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.cli.ArgParser
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -34,7 +34,7 @@ import org.spekframework.spek2.style.specification.describe
 @Suppress("unused")
 object ShowSerializationSpec : Spek({
     describe("Show serialization") {
-        val plugins by value { TestSampleData.plugins }
+        val plugins by value<Plugins> { TestSampleData.plugins }
         val jsonWithDefaults by value { Json(plugins.json) { encodeDefaults = true } }
         val jsonPrettyPrint by value { Json(plugins.json) { prettyPrint = true } }
         val origShow by value { TestSampleData.sampleShowWithBeatLink }
@@ -129,7 +129,7 @@ object ShowSerializationSpec : Spek({
 })
 
 private fun buildPlugins(fakePlugin: FakePlugin.Builder) =
-    ServerPlugins(Plugins.dummyContext, listOf(CorePlugin) + fakePlugin)
+    Plugins.buildForServer(Plugins.dummyContext, listOf(fakePlugin), "fake", emptyArray())
 
 private fun JsonObjectBuilder.mapTo(k: String, v: JsonElement) = put(k, v)
 
@@ -367,9 +367,11 @@ class FakePlugin(
 ) : OpenServerPlugin {
     class Builder(
         override val id: String,
-        val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> = emptyList()
-    ) : Plugin {
-        override fun openForServer(pluginContext: PluginContext): OpenServerPlugin =
+        private val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> = emptyList()
+    ) : Plugin<Any> {
+        override fun getArgs(parser: ArgParser): Any = Unit
+
+        override fun openForServer(pluginContext: PluginContext, args: Any): OpenServerPlugin =
             FakePlugin(id, "$id Plugin", dataSourceBuilders)
 
         override fun openForClient(pluginContext: PluginContext): OpenClientPlugin =
@@ -378,9 +380,7 @@ class FakePlugin(
 }
 
 object TestSampleData {
-    val plugins = ServerPlugins(Plugins.dummyContext, listOf(
-        CorePlugin, BeatLinkPlugin.Builder(BeatSource.None)
-    ))
+    val plugins = Plugins.buildForClient(Plugins.dummyContext, listOf(BeatLinkPlugin))
     private val beatLinkPlugin = plugins.findPlugin<BeatLinkPlugin>()
 
     val sampleShowWithBeatLink: Show

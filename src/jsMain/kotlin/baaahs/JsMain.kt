@@ -2,7 +2,6 @@ package baaahs
 
 import baaahs.client.WebClient
 import baaahs.di.JsAdminClientModule
-import baaahs.di.JsBeatLinkPluginModule
 import baaahs.di.JsPlatformModule
 import baaahs.di.JsWebClientModule
 import baaahs.mapper.JsMapperUi
@@ -12,7 +11,6 @@ import baaahs.model.ObjModel
 import baaahs.monitor.MonitorUi
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
-import baaahs.plugin.beatlink.BeatSource
 import baaahs.proto.Ports
 import baaahs.sim.HostedWebApp
 import baaahs.sim.ui.SimulatorAppProps
@@ -106,8 +104,7 @@ private fun launchUi(
                 logger(KoinLogger())
 
                 modules(
-                    JsPlatformModule(network, model).getModule(),
-                    JsBeatLinkPluginModule(BeatSource.None).getModule(),
+                    JsPlatformModule(network).getModule(),
     //            JsSoundAnalysisPluginModule(args).getModule()
                 )
             }
@@ -115,7 +112,7 @@ private fun launchUi(
 
             when (mode) {
                 "Mapper" -> {
-                    koin.loadModules(listOf(JsAdminClientModule(pinkyAddress).getModule()))
+                    koin.loadModules(listOf(JsAdminClientModule(pinkyAddress, model).getModule()))
 
                     (model as? ObjModel)?.load()
 
@@ -124,14 +121,14 @@ private fun launchUi(
                 }
 
                 "Monitor" -> {
-                    koin.loadModules(listOf(JsAdminClientModule(pinkyAddress).getModule()))
+                    koin.loadModules(listOf(JsAdminClientModule(pinkyAddress, model).getModule()))
 //                    val monitorApp = MonitorUi(koin.get(), pinkyAddress, model)
                     val monitorApp = koin.createScope<MonitorUi>().get<MonitorUi>()
                     monitorApp.launch()
                 }
 
                 "UI" -> {
-                    koin.loadModules(listOf(JsWebClientModule(pinkyAddress).getModule()))
+                    koin.loadModules(listOf(JsWebClientModule(pinkyAddress, model).getModule()))
 
                     val uiApp = koin.createScope<WebClient>().get<WebClient>()
                     uiApp.launch()
@@ -147,7 +144,14 @@ private fun launchUi(
         val container = document.getElementById("content") ?: document.getElementById("app")
         render(createElement(ErrorDisplay, jsObject {
             this.error = e.asDynamic()
-            this.componentStack = e.stackTraceToString()
+            this.componentStack = e.stackTraceToString().let {
+                if (it.contains("@webpack-internal:")) {
+                    it.replace(Regex("webpack-internal:///.*/"), "")
+                        .replace(".prototype.", "#")
+                        .replace(Regex("([A-Z][A-Za-z]+)\$")) { it.groupValues.first() }
+                        .replace("@", " @ ")
+                } else it
+            }
             this.resetErrorBoundary = { window.location.reload() }
 
         }), container)

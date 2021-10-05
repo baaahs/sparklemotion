@@ -12,7 +12,9 @@ import baaahs.io.Fs
 import baaahs.io.ResourcesFs
 import baaahs.model.Model
 import baaahs.net.Network
-import baaahs.plugin.beatlink.BeatSource
+import baaahs.plugin.Plugins
+import baaahs.plugin.ServerPlugins
+import baaahs.plugin.SimulatorPlugins
 import baaahs.proto.Ports
 import baaahs.sim.*
 import baaahs.visualizer.PixelArranger
@@ -25,14 +27,14 @@ import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 
 class JsSimPlatformModule(
-    network: FakeNetwork = FakeNetwork(),
-    model: Model
-) : JsPlatformModule(network, model) {
+    network: FakeNetwork = FakeNetwork()
+) : JsPlatformModule(network) {
     override val Scope.mediaDevices: MediaDevices
         get() = FakeMediaDevices(get(), RealMediaDevices())
 }
 
 class JsSimulatorModule(
+    private val model_: Model,
     private val simHostName: String,
     private val pixelDensity: Float = 0.2f,
     private val pixelSpacing: Float = 2f
@@ -47,10 +49,14 @@ class JsSimulatorModule(
                 name = "Browser Data"
             )
         }
+    override val Scope.model: Model
+        get() = model_
 
     override fun getModule(): Module {
+        val bridgeUrl = "$simHostName:${Ports.SIMULATOR_BRIDGE_TCP}"
+
         return super.getModule().apply {
-            single { BridgeClient("$simHostName:${Ports.SIMULATOR_BRIDGE_TCP}") }
+            single { BridgeClient(bridgeUrl) }
             single { Visualizer(get(), get()) }
             single<PixelArranger> { SwirlyPixelArranger(pixelDensity, pixelSpacing) }
             single {
@@ -61,25 +67,24 @@ class JsSimulatorModule(
                     get(), get(), get()
                 )
             }
+            single {
+                Plugins.buildForSimulator(bridgeUrl, get(), get(named(PluginsModule.Qualifier.ActivePlugins)))
+            }
         }
     }
 }
 
-class JsSimBeatLinkPluginModule : BeatLinkPluginModule {
-    override val Scope.beatSource: BeatSource
-        get() = get<BridgeClient>().beatSource
-}
-
 class JsSimPinkyModule(
+    private val model_: Model,
     private val pinkyLink_: Network.Link,
     private val pinkySettings_: PinkySettings
 ) : PinkyModule {
+    override val Scope.serverPlugins: ServerPlugins
+        get() = get<SimulatorPlugins>().serverPlugins
     override val Scope.fs: Fs
         get() = get(named(SimulatorModule.Qualifier.PinkyFs))
-
     override val Scope.firmwareDir: Fs.File
         get() = TODO("not implemented")
-
     override val Scope.firmwareDaddy: FirmwareDaddy
         get() = PermissiveFirmwareDaddy()
     override val Scope.pinkyMainDispatcher: CoroutineDispatcher
@@ -88,6 +93,8 @@ class JsSimPinkyModule(
         get() = pinkyLink_
     override val Scope.dmxDriver: Dmx.Driver
         get() = SimDmxDriver(get(named("Fallback")))
+    override val Scope.model: Model
+        get() = model_
     override val Scope.renderManager: RenderManager
         get() = RenderManager(get()) { GlBase.manager.createContext() }
     override val Scope.pinkySettings: PinkySettings

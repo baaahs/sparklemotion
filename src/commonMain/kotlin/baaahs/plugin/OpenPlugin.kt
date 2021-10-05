@@ -4,6 +4,7 @@ import baaahs.device.DeviceType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.ShaderDialect
 import baaahs.gl.shader.type.ShaderType
+import baaahs.net.Network
 import baaahs.show.Control
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
@@ -11,6 +12,7 @@ import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.Icon
 import baaahs.util.Clock
+import kotlinx.cli.ArgParser
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -18,6 +20,10 @@ import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.descriptors.buildSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlin.reflect.KClass
 
@@ -49,8 +55,38 @@ interface OpenPlugin {
 
 interface OpenServerPlugin : OpenPlugin
 interface OpenClientPlugin : OpenPlugin
+interface OpenBridgePlugin {
+    fun onConnectionOpen(tcpConnection: Network.TcpConnection) = Unit
+    fun onConnectionClose(tcpConnection: Network.TcpConnection) = Unit
+
+    companion object {
+        internal val json = Json
+    }
+}
+
+fun Network.TcpConnection.sendToClient(command: String, json: JsonElement) {
+    val frame = toWsMessage(command, json)
+    send(frame.encodeToByteArray())
+}
+
+internal fun toWsMessage(command: String, json: JsonElement): String {
+    return OpenBridgePlugin.json.encodeToString(
+        JsonElement.serializer(),
+        buildJsonArray {
+            add(command)
+            add(json)
+        })
+}
+
+
 interface OpenSimulatorPlugin {
-    fun getServerPlugin(): OpenServerPlugin
+    /** This plugin is used in the Simulator Bridge running on the JVM. */
+    fun getBridgePlugin(): OpenBridgePlugin?
+
+    /** This plugin is used by Pinky running in the Simulator. */
+    fun getServerPlugin(serverUrl: String): OpenServerPlugin
+
+    /** This plugin is used on the client when running in the Simulator. */
     fun getClientPlugin(): OpenClientPlugin
 }
 
@@ -80,14 +116,23 @@ inline fun <reified T : Any> classSerializer(serializer: KSerializer<T>) =
 inline fun <reified T : Any> objectSerializer(serialName: String, t: T) =
     classSerializer(ObjectSerializer(serialName, t))
 
-interface Plugin {
+interface Plugin<T> {
     val id: String
 
-    fun openForServer(pluginContext: PluginContext): OpenServerPlugin
+    fun getArgs(parser: ArgParser): T
+
+    /** This plugin is used by Pinky running on JVM. */
+    fun openForServer(pluginContext: PluginContext, args: T): OpenServerPlugin
+
+    /** This plugin is used on the client when connected to Pinky running on JVM. */
     fun openForClient(pluginContext: PluginContext): OpenClientPlugin
 }
 
-interface SimulatorPlugin : Plugin {
+/**
+ * If a plugin implements [SimulatorPlugin], then the Simulator will create server and
+ * client plugins via [#openForSimulator].
+ */
+interface SimulatorPlugin {
     fun openForSimulator(pluginContext: PluginContext): OpenSimulatorPlugin
 }
 
