@@ -1,20 +1,21 @@
 package baaahs.ui
 
 import baaahs.window
-import kotlinx.css.Overflow
-import kotlinx.css.em
-import kotlinx.css.overflow
-import kotlinx.css.paddingBottom
+import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.role
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonVariant
 import materialui.components.container.container
+import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.icon
 import org.w3c.dom.HTMLElement
 import react.Props
-import react.dom.*
+import react.dom.div
+import react.dom.h2
+import react.dom.pre
+import react.dom.span
 import react.functionComponent
 import styled.inlineStyles
 
@@ -36,8 +37,11 @@ val ErrorDisplay = functionComponent<ErrorDisplayProps> { props ->
         blink()
     }
 
-    paper {
+    container {
         attrs.role = "alert"
+        inlineStyles {
+            height = 100.vh
+        }
 
         div(+Styles.guruMeditationErrorContainer) {
             div(+Styles.guruMeditationErrorBox) {
@@ -64,8 +68,10 @@ val ErrorDisplay = functionComponent<ErrorDisplayProps> { props ->
             }
         }
 
-        container {
-            h6 { +"Stack Trace" }
+        paper(+Styles.guruMeditationErrorStackTrace on PaperStyle.root) {
+            attrs.elevation = 5
+
+            h2 { +"Stack Trace" }
             pre {
                 inlineStyles {
                     paddingBottom = 2.em
