@@ -28,6 +28,7 @@ import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.system.exitProcess
 
 @ObsoleteCoroutinesApi
 fun main(args: Array<String>) {
@@ -132,8 +133,15 @@ class PinkyMain(private val args: Args) {
         )
         logger.info { responses.random() }
 
-        runBlocking(pinkyScope.get<CoroutineDispatcher>(named("PinkyMainDispatcher"))) {
-            pinky.startAndRun(simulateBrains = args.simulateBrains)
+        try {
+            runBlocking(pinkyScope.get<CoroutineDispatcher>(named("PinkyMainDispatcher"))) {
+                pinky.startAndRun(simulateBrains = pinkyScope.get<PinkyArgs>().simulateBrains)
+            }
+        } catch(e: Throwable) {
+            logger.error(e) { "Failed to start Pinky." }
+        } finally {
+            logger.info { "Exiting." }
+            exitProcess(1)
         }
     }
 
