@@ -19,16 +19,17 @@ class BeatLinkBeatSource(
     private val clock: Clock
 ) : Observable(), BeatSource, BeatListener, OnAirListener {
 
+    @Volatile
     var currentBeat: BeatData = BeatData(0.0, 0, confidence = 0f)
 
     private val logger = Logger("BeatLinkBeatSource")
     private val currentlyAudibleChannels: MutableSet<Int> = hashSetOf()
+    @Volatile
     private var lastBeatAt: Time? = null
 
     fun start() {
         logger.info { "Starting Beat Sync" }
         val deviceFinder = DeviceFinder.getInstance()
-        deviceFinder.start()
         deviceFinder.addDeviceAnnouncementListener(object : DeviceAnnouncementListener {
             override fun deviceLost(announcement: DeviceAnnouncement) {
                 logger.info { "Lost device: ${announcement.deviceName}" }
@@ -55,36 +56,47 @@ class BeatLinkBeatSource(
                 logger.info { "VirtualCdj started as device ${virtualCdj.deviceNumber}" }
             }
         })
-        virtualCdj.start()
 
-        thread(isDaemon = true, name = "VirtualCdj watchdog") {
+        val beatListener = BeatFinder.getInstance()
+        beatListener.addBeatListener(this)
+        beatListener.addOnAirListener(this)
+
+        thread(isDaemon = true, name = "BeatLinkPlugin Watchdog") {
             while (true) {
-                Thread.sleep(5000)
+                if (!deviceFinder.isRunning) {
+                    logger.info { "Attempting to start DeviceFinder..." }
+                    deviceFinder.start()
+                }
 
                 if (!virtualCdj.isRunning) {
-                    logger.info { "Attempting to restart VirtualCdj..." }
+                    logger.info { "Attempting to start VirtualCdj..." }
                     virtualCdj.start()
                 }
+
+                if (!beatListener.isRunning) {
+                    logger.info { "Attempting to start BeatListener..." }
+                    beatListener.start()
+                }
+
+                Thread.sleep(5000)
             }
         }
 
-        thread(isDaemon = true, name = "Beat confidence decay") {
+        thread(isDaemon = true, name = "BeatLinkPlugin Confidence Decay") {
             while (true) {
                 Thread.sleep(32)
 
                 lastBeatAt?.let {
                     if (it < clock.now() - currentBeat.beatIntervalMs * currentBeat.beatsPerMeasure) {
                         currentBeat = currentBeat.copy(confidence = currentBeat.confidence * .9f)
+
+                        // TODO: This is pretty MT-dodgy, refactor all this to use coroutines.
                         notifyChanged()
                     }
                 }
             }
         }
 
-        val beatListener = BeatFinder.getInstance()
-        beatListener.addBeatListener(this)
-        beatListener.addOnAirListener(this)
-        beatListener.start()
         logger.info { "Started" }
     }
 
