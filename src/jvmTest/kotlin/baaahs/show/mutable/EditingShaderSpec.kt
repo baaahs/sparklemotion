@@ -44,7 +44,7 @@ import kotlin.collections.set
 object EditingShaderSpec : Spek({
     describe<EditingShader> {
         val plugins by value {
-            ServerPlugins(Plugins.Companion.dummyContext, listOf(CorePlugin, BeatLinkPlugin.Builder(StubBeatSource())))
+            Plugins.buildForClient(Plugins.Companion.dummyContext, listOf(BeatLinkPlugin.forTest(StubBeatSource())))
         }
         val toolchain by value { RootToolchain(plugins) }
         val beatLinkDataSource by value {

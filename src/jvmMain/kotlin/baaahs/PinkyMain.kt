@@ -1,23 +1,22 @@
 package baaahs
 
-import baaahs.di.JvmBeatLinkPluginModule
 import baaahs.di.JvmPinkyModule
 import baaahs.di.JvmPlatformModule
 import baaahs.di.JvmSoundAnalysisPluginModule
+import baaahs.di.PluginsModule
 import baaahs.gl.GlBase
 import baaahs.io.Fs
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
+import baaahs.server.PinkyArgs
 import baaahs.util.KoinLogger
 import baaahs.util.Logger
+import baaahs.util.SystemClock
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.content.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import kotlinx.cli.ArgParser
-import kotlinx.cli.ArgType
-import kotlinx.cli.default
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -32,14 +31,11 @@ import kotlin.system.exitProcess
 
 @ObsoleteCoroutinesApi
 fun main(args: Array<String>) {
-    val argParser = ArgParser(PinkyMain::class.simpleName ?: "Pinky")
-    val pinkyArgs = PinkyMain.Args(argParser)
-    argParser.parse(args)
-    PinkyMain(pinkyArgs).run()
+    PinkyMain(args).run()
 }
 
 @ObsoleteCoroutinesApi
-class PinkyMain(private val args: Args) {
+class PinkyMain(private val args: Array<String>) {
     private val logger = Logger("PinkyMain")
 
     fun run() {
@@ -48,14 +44,19 @@ class PinkyMain(private val args: Args) {
 
         GlBase.manager // Need to wake up OpenGL on the main thread.
 
+        val programName = PinkyMain::class.simpleName ?: "Pinky"
+        val clock = SystemClock
+//        val pluginContext = PluginContext(clock)
+//        val plugins = pluginBuilders.map { it.invoke(pluginContext) }
+
         val pinkyInjector = koinApplication {
             logger(KoinLogger())
 
             modules(
-                JvmPlatformModule(args).getModule(),
-                JvmPinkyModule().getModule(),
-                JvmBeatLinkPluginModule(args).getModule(),
-                JvmSoundAnalysisPluginModule(args).getModule()
+                PluginsModule(Pluggables.plugins).getModule(),
+                JvmPlatformModule(clock).getModule(),
+                JvmPinkyModule(programName, args).getModule(),
+                JvmSoundAnalysisPluginModule().getModule()
             )
         }
 
@@ -151,27 +152,6 @@ class PinkyMain(private val args: Args) {
         if (!Files.exists(indexHtml)) {
             throw FileNotFoundException("$indexHtml doesn't exist and it really probably should!")
         }
-    }
-
-    class Args(parser: ArgParser) {
-        val model by parser.option(ArgType.String, shortName = "m")
-            .default(Pluggables.defaultModel)
-
-        val showName by parser.option(ArgType.String, "show", "s")
-
-        val switchShowAfter by parser.option(ArgType.Int, description = "Switch show after no input for x seconds")
-            .default(600)
-
-        val adjustShowAfter by parser.option(
-            ArgType.Int,
-            description = "Start adjusting show inputs after no input for x seconds"
-        )
-
-        val enableBeatLink by parser.option(ArgType.Boolean, description = "Enable beat detection")
-            .default(true)
-
-        val simulateBrains by parser.option(ArgType.Boolean, description = "Simulate connected brains")
-            .default(false)
     }
 }
 

@@ -8,7 +8,7 @@ import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.net.Network
-import baaahs.plugin.Plugins
+import baaahs.plugin.SimulatorPlugins
 import baaahs.util.Clock
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.Visualizer
@@ -31,7 +31,7 @@ class FixturesSimulator(
     private val fs: Fs,
     private val mapperFs: FakeFs,
     private val clock: Clock,
-    private val plugins: Plugins,
+    private val plugins: SimulatorPlugins,
     private val pixelArranger: PixelArranger
 ) {
     val facade = Facade()
@@ -64,7 +64,7 @@ class FixturesSimulator(
         )
 
         doRunBlocking {
-            val mappingSessionPath = Storage(mapperFs, plugins).saveSession(mappingSession)
+            val mappingSessionPath = Storage(mapperFs, plugins.serverPlugins).saveSession(mappingSession)
             val mappingDataPath = fs.resolve("mapping", model.name, "simulated", mappingSessionPath.name)
             mapperFs.renameFile(mappingSessionPath, mappingDataPath)
         }

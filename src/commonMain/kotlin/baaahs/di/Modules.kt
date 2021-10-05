@@ -20,10 +20,10 @@ import baaahs.model.ModelInfo
 import baaahs.model.ModelManager
 import baaahs.model.ModelManagerImpl
 import baaahs.net.Network
+import baaahs.plugin.Plugin
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
-import baaahs.plugin.beatlink.BeatLinkPlugin
-import baaahs.plugin.beatlink.BeatSource
+import baaahs.plugin.ServerPlugins
 import baaahs.proto.Ports
 import baaahs.scene.SceneManager
 import baaahs.server.ServerNotices
@@ -39,32 +39,41 @@ import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
+class PluginsModule(private val plugins: List<Plugin<*>>) : KModule {
+    override fun getModule(): Module = module {
+        single(named(Qualifier.ActivePlugins)) { plugins }
+    }
+
+    enum class Qualifier {
+        ActivePlugins
+    }
+}
+
 interface PlatformModule : KModule {
     val network: Network
     val Scope.clock: Clock
-    val Scope.model: Model
     val Scope.pluginContext: PluginContext
-    val Scope.plugins: Plugins
     val Scope.mediaDevices: MediaDevices
 
     override fun getModule(): Module = module {
         single { network }
         single { clock }
-        single { model }
         single { pluginContext }
-        single { plugins }
         single { mediaDevices }
         single(named("Fallback")) { FakeDmxUniverse() }
     }
+
 }
 
 interface PinkyModule : KModule {
+    val Scope.serverPlugins: ServerPlugins
     val Scope.fs: Fs
     val Scope.firmwareDir: Fs.File
     val Scope.firmwareDaddy: FirmwareDaddy
     val Scope.pinkyMainDispatcher: CoroutineDispatcher
     val Scope.pinkyLink: Network.Link get() = get<Network>().link("pinky")
     val Scope.dmxDriver: Dmx.Driver
+    val Scope.model: Model
     val Scope.renderManager: RenderManager
     val Scope.pinkySettings: PinkySettings
 
@@ -77,6 +86,9 @@ interface PinkyModule : KModule {
         return module {
             scope<Pinky> {
                 scoped { fs }
+                scoped { serverPlugins }
+                scoped { get<ServerPlugins>().pinkyArgs }
+                scoped<Plugins> { get<ServerPlugins>() }
                 scoped(named("firmwareDir")) { firmwareDir }
                 scoped { firmwareDaddy }
                 scoped { this.pinkyLink }
@@ -90,6 +102,7 @@ interface PinkyModule : KModule {
                 scoped { dmxDriver }
                 scoped<ModelInfo> { get<Model>() }
                 scoped<DmxManager> { DmxManagerImpl(get(), get(), get(fallbackDmxUniverse)) }
+                scoped { model }
                 scoped { renderManager }
                 scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
                 scoped { Storage(get(), get()) }
@@ -124,15 +137,6 @@ interface PinkyModule : KModule {
     }
 }
 
-interface BeatLinkPluginModule : KModule {
-    val Scope.beatSource: BeatSource
-
-    override fun getModule(): Module = module {
-        single { beatSource }
-        single { BeatLinkPlugin.Builder(get()) }
-    }
-}
-
 interface SoundAnalysisPluginModule : KModule {
     val soundAnalyzer: SoundAnalyzer
 
@@ -142,9 +146,11 @@ interface SoundAnalysisPluginModule : KModule {
 }
 
 interface SimulatorModule : KModule {
+    val Scope.model: Model
     val Scope.fs: Fs
 
     override fun getModule(): Module = module {
+        single { model }
         single(named(Qualifier.PinkyFs)) { fs }
         single(named(Qualifier.MapperFs)) { FakeFs("Temporary Mapping Files") }
         single<Fs>(named(Qualifier.MapperFs)) { get<FakeFs>(named(Qualifier.MapperFs)) }

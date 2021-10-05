@@ -13,6 +13,7 @@ import baaahs.gl.shader.type.*
 import baaahs.plugin.*
 import baaahs.plugin.core.datasource.*
 import baaahs.util.Logger
+import kotlinx.cli.ArgParser
 
 class CorePlugin(private val pluginContext: PluginContext) : OpenServerPlugin, OpenClientPlugin {
     override val packageName: String = id
@@ -91,10 +92,12 @@ class CorePlugin(private val pluginContext: PluginContext) : OpenServerPlugin, O
             MoverShader
         )
 
-    companion object : Plugin {
+    companion object : Plugin<Any> {
         override val id = "baaahs.Core"
 
-        override fun openForServer(pluginContext: PluginContext): OpenServerPlugin =
+        override fun getArgs(parser: ArgParser): Any = Any()
+
+        override fun openForServer(pluginContext: PluginContext, args: Any): OpenServerPlugin =
             CorePlugin(pluginContext)
 
         override fun openForClient(pluginContext: PluginContext): OpenClientPlugin =

@@ -7,6 +7,7 @@ import baaahs.mapper.JsMapperUi
 import baaahs.mapper.MapperUi
 import baaahs.model.Model
 import baaahs.monitor.MonitorUi
+import baaahs.proto.Ports
 import baaahs.sim.FakeNetwork
 import baaahs.sim.FixturesSimulator
 import baaahs.sim.Launcher
@@ -41,13 +42,16 @@ class SheepSimulator(val model: Model) {
     val injector = koinApplication {
         logger(KoinLogger())
 
+        val simHostName = window.location.hostname
+        val bridgeUrl = "$simHostName:${Ports.SIMULATOR_BRIDGE_TCP}"
+
         modules(
-            JsSimPlatformModule(network, model).getModule(),
-            JsSimulatorModule(window.location.hostname, pixelDensity, pixelSpacing).getModule(),
-            JsSimPinkyModule(pinkyLink, pinkySettings).getModule(),
-            JsWebClientModule(pinkyLink.myAddress).getModule(),
-            JsAdminClientModule(pinkyLink.myAddress).getModule(),
-            JsSimBeatLinkPluginModule().getModule()
+            PluginsModule(Pluggables.plugins).getModule(),
+            JsSimPlatformModule(network).getModule(),
+            JsSimulatorModule(model, window.location.hostname, pixelDensity, pixelSpacing).getModule(),
+            JsSimPinkyModule(model, pinkyLink, pinkySettings).getModule(),
+            JsWebClientModule(pinkyLink.myAddress, model).getModule(),
+            JsAdminClientModule(pinkyLink.myAddress, model).getModule(),
         )
     }.koin
 
