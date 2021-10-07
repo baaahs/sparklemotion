@@ -189,15 +189,15 @@ class BeatLinkPlugin internal constructor(
         override fun openForClient(pluginContext: PluginContext): OpenClientPlugin =
             BeatLinkPlugin(BeatSource.None, pluginContext)
 
-        override fun openForSimulator(pluginContext: PluginContext): OpenSimulatorPlugin =
+        override fun openForSimulator(): OpenSimulatorPlugin =
             object : OpenSimulatorPlugin {
-                override fun getBridgePlugin(): OpenBridgePlugin =
+                override fun getBridgePlugin(pluginContext: PluginContext): OpenBridgePlugin =
                     BeatLinkBridgePlugin(createServerBeatSource(pluginContext))
 
-                override fun getServerPlugin(serverUrl: String): OpenServerPlugin =
+                override fun getServerPlugin(serverUrl: String, pluginContext: PluginContext): OpenServerPlugin =
                     BeatLinkPlugin(createBridgeBeatSource(serverUrl), pluginContext)
 
-                override fun getClientPlugin(): OpenClientPlugin =
+                override fun getClientPlugin(pluginContext: PluginContext): OpenClientPlugin =
                     openForClient(pluginContext)
             }
 

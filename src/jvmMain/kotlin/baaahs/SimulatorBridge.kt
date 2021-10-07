@@ -3,10 +3,8 @@ package baaahs
 import baaahs.net.JvmNetwork
 import baaahs.net.Network
 import baaahs.plugin.OpenBridgePlugin
-import baaahs.plugin.PluginContext
 import baaahs.plugin.toWsMessage
 import baaahs.proto.Ports
-import baaahs.util.SystemClock
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.http.cio.websocket.CloseReason.Codes.*
@@ -25,7 +23,7 @@ import java.time.Duration
 class SimulatorBridge {
     private val webSocketConnections = mutableListOf<WebSocketServerSession>()
     private val plugins = Pluggables.plugins.mapNotNull {
-        val simulatorPlugin = it.openForSimulator(PluginContext(SystemClock))
+        val simulatorPlugin = it.openForSimulator()
         simulatorPlugin.getBridgePlugin()
     }
 

@@ -1,6 +1,7 @@
 package baaahs.di
 
 import baaahs.MediaDevices
+import baaahs.PubSub
 import baaahs.admin.AdminClient
 import baaahs.browser.RealMediaDevices
 import baaahs.client.ClientStorage
@@ -15,6 +16,7 @@ import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
+import baaahs.proto.Ports
 import baaahs.sim.BrowserSandboxFs
 import baaahs.util.Clock
 import baaahs.util.JsClock
@@ -30,57 +32,74 @@ open class JsPlatformModule(
 ) : PlatformModule {
     override val Scope.clock: Clock
         get() = JsClock
-    override val Scope.pluginContext: PluginContext
-        get() = PluginContext(get())
     override val Scope.mediaDevices: MediaDevices
         get() = RealMediaDevices()
 
 }
 
-interface WebClientModule : KModule
+class JsStandaloneWebClientModule(
+    private val pinkyAddress: Network.Address
+) : KModule {
+    override fun getModule(): Module = module {
+        single(named(WebClientModule.Qualifier.PinkyAddress)) { pinkyAddress }
+    }
+}
 
-class JsWebClientModule(
-    private val pinkyAddress: Network.Address,
+open class JsUiWebClientModule(
     private val model: Model
-) : WebClientModule {
+) : WebClientModule() {
     override fun getModule(): Module = module {
         scope<WebClient> {
             scoped { get<Network>().link("app") }
+            scoped { PluginContext(get(), get()) }
+            scoped { PubSub.Client(get(), get(named(Qualifier.PinkyAddress)), Ports.PINKY_UI_TCP) }
+            scoped<PubSub.Endpoint> { get<PubSub.Client>() }
+            scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
+            scoped<Plugins> { get<ClientPlugins>() }
             scoped { model }
             scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage"))  }
-            scoped { WebClient(get(), pinkyAddress, RootToolchain(get()), get(), get()) }
-            scoped {
-                Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins)))
-            }
-            scoped<Plugins> { get<ClientPlugins>() }
+            scoped { WebClient(get(), get(), RootToolchain(get()), get(), get()) }
         }
     }
 }
 
-class JsAdminClientModule(
-    private val pinkyAddress: Network.Address,
+class JsAdminWebClientModule(
     private val model: Model
 ) : KModule {
     override fun getModule(): Module = module {
         scope<MapperUi> {
             scoped { get<Network>().link("mapper") }
+            scoped { PluginContext(get(), get()) }
+            scoped { PubSub.Client(get(), pinkyAddress(), Ports.PINKY_UI_TCP) }
+            scoped<PubSub.Endpoint> { get<PubSub.Client>() }
+            scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
+            scoped<Plugins> { get<ClientPlugins>() }
             scoped { model }
+            scoped { AdminClient(get(), get(), pinkyAddress()) }
             scoped {
-                val adminClient = AdminClient(get(), get(), pinkyAddress)
-                JsMapperUi(adminClient).also {
+                JsMapperUi(get()).also {
                     // This has side-effects on mapperUi. Ugly.
-                    Mapper(get(), get(), it, get(), pinkyAddress, get())
+                    Mapper(get(), get(), it, get(), pinkyAddress(), get())
                 }
             }
         }
 
         scope<MonitorUi> {
             scoped { get<Network>().link("monitor") }
+            scoped { PluginContext(get(), get()) }
+            scoped { PubSub.Client(get(), pinkyAddress(), Ports.PINKY_UI_TCP) }
+            scoped<PubSub.Endpoint> { get<PubSub.Client>() }
+            scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
+            scoped<Plugins> { get<ClientPlugins>() }
+            scoped { model }
             scoped { Visualizer(get(), get()) }
-            scoped { RemoteVisualizerClient(get(), pinkyAddress, get(), get(), get(), get()) }
+            scoped { RemoteVisualizerClient(get(), pinkyAddress(), get(), get(), get(), get()) }
             scoped { MonitorUi(get(), get()) }
         }
     }
+
+    private fun Scope.pinkyAddress(): Network.Address =
+        get(named(WebClientModule.Qualifier.PinkyAddress))
 }
 
 //class JsSoundAnalysisPluginModule : SoundAnalysisPluginModule {

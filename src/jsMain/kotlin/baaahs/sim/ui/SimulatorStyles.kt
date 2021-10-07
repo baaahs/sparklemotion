@@ -166,7 +166,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         color = Color.white
         right = 5.px
         bottom = 5.px
-        boxShadow(rgba(0, 0, 0, 0.15), 1.px, 5.px)
+        boxShadow(rgba(0, 0, 0, 0.25), 4.px, 5.px, 2.px, 2.px)
     }
     
     val fakeClientDeviceControls by css {

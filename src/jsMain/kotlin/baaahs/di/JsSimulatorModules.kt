@@ -1,9 +1,6 @@
 package baaahs.di
 
-import baaahs.FirmwareDaddy
-import baaahs.MediaDevices
-import baaahs.PermissiveFirmwareDaddy
-import baaahs.PinkySettings
+import baaahs.*
 import baaahs.browser.RealMediaDevices
 import baaahs.dmx.Dmx
 import baaahs.gl.GlBase
@@ -22,13 +19,12 @@ import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import org.koin.core.Koin
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 
-class JsSimPlatformModule(
-    network: FakeNetwork = FakeNetwork()
-) : JsPlatformModule(network) {
+class JsSimPlatformModule : JsPlatformModule(FakeNetwork()) {
     override val Scope.mediaDevices: MediaDevices
         get() = FakeMediaDevices(get(), RealMediaDevices())
 }
@@ -59,28 +55,27 @@ class JsSimulatorModule(
             single { BridgeClient(bridgeUrl) }
             single { Visualizer(get(), get()) }
             single<PixelArranger> { SwirlyPixelArranger(pixelDensity, pixelSpacing) }
-            single {
+            single { Plugins.buildForSimulator(bridgeUrl, get(named(PluginsModule.Qualifier.ActivePlugins))) }
+            single { (plugins: Plugins) ->
                 FixturesSimulator(
                     get(), get(), get(), get(named("Fallback")),
                     get(named(SimulatorModule.Qualifier.PinkyFs)),
                     get(named(SimulatorModule.Qualifier.MapperFs)),
-                    get(), get(), get()
+                    get(), plugins, get()
                 )
             }
-            single {
-                Plugins.buildForSimulator(bridgeUrl, get(), get(named(PluginsModule.Qualifier.ActivePlugins)))
-            }
+            single(named(SimulatorModule.Qualifier.PinkyLink)) { get<Network>().link("pinky") }
+            single { (koin: Koin) -> SheepSimulator(get(), get()) { koin } }
         }
     }
 }
 
 class JsSimPinkyModule(
     private val model_: Model,
-    private val pinkyLink_: Network.Link,
     private val pinkySettings_: PinkySettings
 ) : PinkyModule {
     override val Scope.serverPlugins: ServerPlugins
-        get() = get<SimulatorPlugins>().serverPlugins
+        get() = get<SimulatorPlugins>().openServerPlugins(get())
     override val Scope.fs: Fs
         get() = get(named(SimulatorModule.Qualifier.PinkyFs))
     override val Scope.firmwareDir: Fs.File
@@ -90,7 +85,7 @@ class JsSimPinkyModule(
     override val Scope.pinkyMainDispatcher: CoroutineDispatcher
         get() = Dispatchers.Main
     override val Scope.pinkyLink: Network.Link
-        get() = pinkyLink_
+        get() = get(named(SimulatorModule.Qualifier.PinkyLink))
     override val Scope.dmxDriver: Dmx.Driver
         get() = SimDmxDriver(get(named("Fallback")))
     override val Scope.model: Model

@@ -3,10 +3,9 @@ package baaahs.sim.ui
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.id
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 
 private val MenuBarView = xComponent<MenuBarProps>("MenuBar") { props ->
@@ -21,7 +20,7 @@ private val MenuBarView = xComponent<MenuBarProps>("MenuBar") { props ->
     }
 }
 
-external interface MenuBarProps : RProps {
+external interface MenuBarProps : Props {
 }
 
 fun RBuilder.menuBar(handler: RHandler<MenuBarProps>) =
