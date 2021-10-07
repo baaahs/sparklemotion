@@ -11,7 +11,6 @@ import baaahs.libraries.ShaderLibraries
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.plugin.Plugins
-import baaahs.proto.Ports
 import baaahs.server.ServerNotice
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
@@ -28,16 +27,14 @@ import react.ReactElement
 import react.createElement
 
 class WebClient(
-    network: Network,
-    pinkyAddress: Network.Address,
+    private val webClientLink: Network.Link,
+    private val pubSub: PubSub.Client,
     private val toolchain: Toolchain,
     private val model: Model,
     private val storage: ClientStorage
 ) : HostedWebApp {
     private val facade = Facade()
 
-    private val webClientLink = network.link("app")
-    private val pubSub = PubSub.Client(webClientLink, pinkyAddress, Ports.PINKY_UI_TCP)
     private val pubSubListener = { facade.notifyChanged() }.also {
         pubSub.addStateChangeListener(it)
     }

@@ -10,7 +10,6 @@ import baaahs.io.RealFs
 import baaahs.model.Model
 import baaahs.net.JvmNetwork
 import baaahs.net.Network
-import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
 import baaahs.proto.Ports
@@ -29,8 +28,6 @@ class JvmPlatformModule(
     override val network: Network = JvmNetwork()
     override val Scope.clock: Clock
         get() = clock_
-    override val Scope.pluginContext
-        get() = PluginContext(get())
     override val Scope.mediaDevices: MediaDevices
         get() = object : MediaDevices {
             override suspend fun enumerate(): List<MediaDevices.Device> = emptyList()

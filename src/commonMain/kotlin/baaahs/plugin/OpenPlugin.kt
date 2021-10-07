@@ -1,5 +1,6 @@
 package baaahs.plugin
 
+import baaahs.PubSub
 import baaahs.device.DeviceType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.ShaderDialect
@@ -81,13 +82,13 @@ internal fun toWsMessage(command: String, json: JsonElement): String {
 
 interface OpenSimulatorPlugin {
     /** This plugin is used in the Simulator Bridge running on the JVM. */
-    fun getBridgePlugin(): OpenBridgePlugin?
+    fun getBridgePlugin(pluginContext: PluginContext): OpenBridgePlugin?
 
     /** This plugin is used by Pinky running in the Simulator. */
-    fun getServerPlugin(serverUrl: String): OpenServerPlugin
+    fun getServerPlugin(serverUrl: String, pluginContext: PluginContext): OpenServerPlugin
 
     /** This plugin is used on the client when running in the Simulator. */
-    fun getClientPlugin(): OpenClientPlugin
+    fun getClientPlugin(pluginContext: PluginContext): OpenClientPlugin
 }
 
 class SerializerRegistrar<T : Any>(val klass: KClass<T>, val serializer: KSerializer<T>) {
@@ -133,11 +134,12 @@ interface Plugin<T> {
  * client plugins via [#openForSimulator].
  */
 interface SimulatorPlugin {
-    fun openForSimulator(pluginContext: PluginContext): OpenSimulatorPlugin
+    fun openForSimulator(): OpenSimulatorPlugin
 }
 
 class PluginContext(
-    val clock: Clock
+    val clock: Clock,
+    val pubSub: PubSub.Endpoint
 )
 
 data class AddControlMenuItem(

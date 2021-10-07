@@ -1,6 +1,7 @@
 package baaahs.plugin
 
 import baaahs.Gadget
+import baaahs.PubSub
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.controller.SacnControllerConfig
 import baaahs.device.DeviceType
@@ -96,30 +97,45 @@ class ClientPlugins : Plugins {
 
 class SimulatorPlugins(
     private val bridgeUrl: String,
-    pluginContext: PluginContext,
     plugins: List<Plugin<*>>
 ) {
-    val clientPlugins: ClientPlugins
-    val serverPlugins: ServerPlugins
-    val simulatorPlugins: List<OpenSimulatorPlugin>
+    private val simulatorPlugins: List<OpenSimulatorPlugin>
+    private var pluginsToSimulatorPlugins: List<Pair<Plugin<*>, OpenSimulatorPlugin?>>
 
     init {
         val forSimulator = mutableListOf<OpenSimulatorPlugin>()
-        val clientToServer = plugins.map {
+
+        pluginsToSimulatorPlugins = plugins.map {
             it as Plugin<Any>
-            if (it is SimulatorPlugin) {
-                val simulatorPlugin = it.openForSimulator(pluginContext)
-                forSimulator.add(simulatorPlugin)
-                simulatorPlugin.getClientPlugin() to simulatorPlugin.getServerPlugin(bridgeUrl)
-            } else {
-                val args = it.getArgs(ArgParser("void"))
-                it.openForClient(pluginContext) to it.openForServer(pluginContext, args)
-            }
+            it to (it as? SimulatorPlugin)?.openForSimulator()
         }
         simulatorPlugins = forSimulator
-        clientPlugins = ClientPlugins(clientToServer.map { it.first }, pluginContext)
-        serverPlugins = ServerPlugins(clientToServer.map { it.second }, pluginContext, PinkyArgs.defaults)
     }
+
+    fun openServerPlugins(pluginContext: PluginContext) =
+        ServerPlugins(
+            pluginsToSimulatorPlugins.map { (plugin, simulatorPlugin) ->
+                simulatorPlugin?.getServerPlugin(bridgeUrl, pluginContext)
+                    ?: run {
+                        plugin as Plugin<Any>
+                        val parser = ArgParser("void")
+                        val args = plugin.getArgs(parser)
+//                        parser.parse(emptyArray())
+                        plugin.openForServer(pluginContext, args)
+                    }
+            },
+            pluginContext,
+            PinkyArgs.defaults
+        )
+
+    fun openClientPlugins(pluginContext: PluginContext) =
+        ClientPlugins(
+            pluginsToSimulatorPlugins.map { (plugin, simulatorPlugin) ->
+                simulatorPlugin?.getClientPlugin(pluginContext)
+                    ?: plugin.openForClient(pluginContext)
+            },
+            pluginContext
+        )
 }
 
 sealed class Plugins private constructor(
@@ -334,8 +350,8 @@ sealed class Plugins private constructor(
         fun buildForClient(pluginContext: PluginContext, plugins: List<Plugin<*>>): ClientPlugins =
             ClientPlugins(pluginContext, listOf(CorePlugin) + plugins)
 
-        fun buildForSimulator(bridgeUrl: String, pluginContext: PluginContext, plugins: List<Plugin<*>>): SimulatorPlugins =
-            SimulatorPlugins(bridgeUrl, pluginContext, listOf(CorePlugin) + plugins)
+        fun buildForSimulator(bridgeUrl: String, plugins: List<Plugin<*>>): SimulatorPlugins =
+            SimulatorPlugins(bridgeUrl, listOf(CorePlugin) + plugins)
 
         fun safe(pluginContext: PluginContext): Plugins =
             SafePlugins(pluginContext, listOf(CorePlugin.openSafe(pluginContext)))
@@ -343,7 +359,18 @@ sealed class Plugins private constructor(
         val default = CorePlugin.id
 
         /** Don't use me except from [baaahs.show.SampleData] and [baaahs.glsl.GuruMeditationError]. */
-        internal val dummyContext = PluginContext(ZeroClock())
+        internal val dummyContext = PluginContext(ZeroClock(), object : PubSub.Endpoint() {
+            override val commandChannels: PubSub.CommandChannels
+                get() = TODO("not implemented")
+
+            override fun <T> openChannel(
+                topic: PubSub.Topic<T>,
+                initialValue: T,
+                onUpdate: (T) -> Unit
+            ): PubSub.Channel<T> {
+                TODO("not implemented")
+            }
+        })
 
         private class ZeroClock : Clock {
             override fun now(): Time = 0.0

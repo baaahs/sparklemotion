@@ -29,6 +29,7 @@ import baaahs.scene.SceneManager
 import baaahs.server.ServerNotices
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
+import baaahs.sim.FakeNetwork
 import baaahs.util.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -52,17 +53,14 @@ class PluginsModule(private val plugins: List<Plugin<*>>) : KModule {
 interface PlatformModule : KModule {
     val network: Network
     val Scope.clock: Clock
-    val Scope.pluginContext: PluginContext
     val Scope.mediaDevices: MediaDevices
 
     override fun getModule(): Module = module {
         single { network }
         single { clock }
-        single { pluginContext }
         single { mediaDevices }
         single(named("Fallback")) { FakeDmxUniverse() }
     }
-
 }
 
 interface PinkyModule : KModule {
@@ -86,18 +84,20 @@ interface PinkyModule : KModule {
         return module {
             scope<Pinky> {
                 scoped { fs }
+                scoped { PluginContext(get(), get()) }
                 scoped { serverPlugins }
-                scoped { get<ServerPlugins>().pinkyArgs }
                 scoped<Plugins> { get<ServerPlugins>() }
+                scoped { get<ServerPlugins>().pinkyArgs }
                 scoped(named("firmwareDir")) { firmwareDir }
                 scoped { firmwareDaddy }
-                scoped { this.pinkyLink }
+                scoped { pinkyLink }
                 scoped(pinkyMainDispatcher) { this.pinkyMainDispatcher }
                 scoped<Job>(pinkyJob) { SupervisorJob() }
                 scoped(pinkyContext) {
                     get<CoroutineDispatcher>(pinkyMainDispatcher) + get<Job>(pinkyJob)
                 }
                 scoped { PubSub.Server(get(), CoroutineScope(get(pinkyContext))) }
+                scoped<PubSub.Endpoint> { get<PubSub.Server>() }
                 scoped<PubSub.IServer> { get<PubSub.Server>() }
                 scoped { dmxDriver }
                 scoped<ModelInfo> { get<Model>() }
@@ -137,6 +137,12 @@ interface PinkyModule : KModule {
     }
 }
 
+abstract class WebClientModule : KModule {
+    enum class Qualifier {
+        PinkyAddress
+    }
+}
+
 interface SoundAnalysisPluginModule : KModule {
     val soundAnalyzer: SoundAnalyzer
 
@@ -150,24 +156,22 @@ interface SimulatorModule : KModule {
     val Scope.fs: Fs
 
     override fun getModule(): Module = module {
+        single { FakeNetwork() }
         single { model }
         single(named(Qualifier.PinkyFs)) { fs }
         single(named(Qualifier.MapperFs)) { FakeFs("Temporary Mapping Files") }
         single<Fs>(named(Qualifier.MapperFs)) { get<FakeFs>(named(Qualifier.MapperFs)) }
+        single(named(WebClientModule.Qualifier.PinkyAddress)) { get<Network.Link>(named(Qualifier.PinkyLink)).myAddress }
     }
 
     enum class Qualifier {
         PinkyFs,
-        MapperFs
+        MapperFs,
+        PinkyLink
     }
 }
 
 interface KModule {
     fun getModule(): Module
-}
-
-enum class Scopes {
-    Admin,
-    WebClient
 }
 

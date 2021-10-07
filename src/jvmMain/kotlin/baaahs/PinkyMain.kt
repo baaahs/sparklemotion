@@ -46,9 +46,6 @@ class PinkyMain(private val args: Array<String>) {
 
         val programName = PinkyMain::class.simpleName ?: "Pinky"
         val clock = SystemClock
-//        val pluginContext = PluginContext(clock)
-//        val plugins = pluginBuilders.map { it.invoke(pluginContext) }
-
         val pinkyInjector = koinApplication {
             logger(KoinLogger())
 
