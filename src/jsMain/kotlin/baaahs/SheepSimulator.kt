@@ -7,7 +7,9 @@ import baaahs.mapper.MapperUi
 import baaahs.monitor.MonitorUi
 import baaahs.sim.FakeNetwork
 import baaahs.sim.FixturesSimulator
+import baaahs.sim.HostedWebApp
 import baaahs.sim.Launcher
+import baaahs.sim.ui.LaunchItem
 import baaahs.util.LoggerConfig
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.coroutineScope
@@ -42,11 +44,6 @@ class SheepSimulator(
 
         launch { pinky.startAndRun() }
 
-        val launcher = Launcher(document.getElementById("launcher")!!)
-        launcher.add("Web UI") { createWebClientApp() }
-        launcher.add("Mapper") { createMapperApp() }
-        launcher.add("Monitor") { createMonitorApp() }
-
         pinky.awaitMappingResultsLoaded() // Otherwise controllers might report in before they can be mapped.
         fixturesSimulator.launchControllers()
         fixturesSimulator.addToVisualizer()
@@ -67,6 +64,9 @@ class SheepSimulator(
         }
     }
 
+    private fun launchItem(title: String, block: () -> HostedWebApp) =
+        LaunchItem(title) { Launcher.launch(title, block) }
+
     inner class Facade : baaahs.ui.Facade() {
         val pinky: Pinky.Facade
             get() = this@SheepSimulator.pinky.facade
@@ -76,5 +76,11 @@ class SheepSimulator(
             get() = this@SheepSimulator.visualizer.facade
         val fixturesSimulator: FixturesSimulator.Facade
             get() = this@SheepSimulator.fixturesSimulator.facade
+        val launchItems: List<LaunchItem> =
+            listOf(
+                launchItem("Web UI") { createWebClientApp() },
+                launchItem("Mapper") { createMapperApp() },
+                launchItem("Monitor") { createMonitorApp() }
+            )
     }
 }
