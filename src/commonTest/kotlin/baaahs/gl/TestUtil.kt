@@ -1,6 +1,7 @@
 package baaahs.gl
 
 import baaahs.FakeClock
+import baaahs.StubPubSub
 import baaahs.fixtures.DeviceTypeRenderPlan
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.gl.glsl.GlslCode
@@ -19,7 +20,7 @@ import org.spekframework.spek2.style.specification.Suite
 import kotlin.test.assertEquals
 
 fun testPlugins(clock: Clock = FakeClock(0.0)) =
-    Plugins.safe(PluginContext(clock))
+    Plugins.safe(PluginContext(clock, StubPubSub()))
 
 fun <T> LifecycleAware.override(letValue: T, factory: () -> T) {
     value(letValue, factory)

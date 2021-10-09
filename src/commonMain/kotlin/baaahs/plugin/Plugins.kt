@@ -21,6 +21,7 @@ import baaahs.show.DataSourceBuilder
 import baaahs.show.UnknownDataSource
 import baaahs.show.appearsToBePurposeBuiltFor
 import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.sim.BridgeClient
 import baaahs.util.Clock
 import baaahs.util.Time
 import kotlinx.cli.ArgParser
@@ -96,7 +97,7 @@ class ClientPlugins : Plugins {
 }
 
 class SimulatorPlugins(
-    private val bridgeUrl: String,
+    private val bridgeClient: BridgeClient,
     plugins: List<Plugin<*>>
 ) {
     private val simulatorPlugins: List<OpenSimulatorPlugin>
@@ -115,7 +116,7 @@ class SimulatorPlugins(
     fun openServerPlugins(pluginContext: PluginContext) =
         ServerPlugins(
             pluginsToSimulatorPlugins.map { (plugin, simulatorPlugin) ->
-                simulatorPlugin?.getServerPlugin(bridgeUrl, pluginContext)
+                simulatorPlugin?.getServerPlugin(pluginContext, bridgeClient)
                     ?: run {
                         plugin as Plugin<Any>
                         val parser = ArgParser("void")
@@ -350,8 +351,8 @@ sealed class Plugins private constructor(
         fun buildForClient(pluginContext: PluginContext, plugins: List<Plugin<*>>): ClientPlugins =
             ClientPlugins(pluginContext, listOf(CorePlugin) + plugins)
 
-        fun buildForSimulator(bridgeUrl: String, plugins: List<Plugin<*>>): SimulatorPlugins =
-            SimulatorPlugins(bridgeUrl, listOf(CorePlugin) + plugins)
+        fun buildForSimulator(bridgeClient: BridgeClient, plugins: List<Plugin<*>>): SimulatorPlugins =
+            SimulatorPlugins(bridgeClient, listOf(CorePlugin) + plugins)
 
         fun safe(pluginContext: PluginContext): Plugins =
             SafePlugins(pluginContext, listOf(CorePlugin.openSafe(pluginContext)))
@@ -359,21 +360,23 @@ sealed class Plugins private constructor(
         val default = CorePlugin.id
 
         /** Don't use me except from [baaahs.show.SampleData] and [baaahs.glsl.GuruMeditationError]. */
-        internal val dummyContext = PluginContext(ZeroClock(), object : PubSub.Endpoint() {
-            override val commandChannels: PubSub.CommandChannels
-                get() = TODO("not implemented")
-
-            override fun <T> openChannel(
-                topic: PubSub.Topic<T>,
-                initialValue: T,
-                onUpdate: (T) -> Unit
-            ): PubSub.Channel<T> {
-                TODO("not implemented")
-            }
-        })
+        internal val dummyContext = PluginContext(ZeroClock(), StubPubSub())
 
         private class ZeroClock : Clock {
             override fun now(): Time = 0.0
+        }
+
+        private class StubPubSub : PubSub.Endpoint() {
+            override val commandChannels: PubSub.CommandChannels
+                get() = PubSub.CommandChannels()
+
+            override fun <T> openChannel(topic: PubSub.Topic<T>, initialValue: T, onUpdate: (T) -> Unit): PubSub.Channel<T> {
+                return object : PubSub.Channel<T> {
+                    override fun onChange(t: T) {}
+                    override fun replaceOnUpdate(onUpdate: (T) -> Unit) {}
+                    override fun unsubscribe() {} }
+
+            }
         }
     }
 

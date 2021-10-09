@@ -84,20 +84,25 @@ class BeatLinkBeatSource(
 
         thread(isDaemon = true, name = "BeatLinkPlugin Confidence Decay") {
             while (true) {
-                Thread.sleep(32)
-
-                lastBeatAt?.let {
-                    if (it < clock.now() - currentBeat.beatIntervalMs * currentBeat.beatsPerMeasure) {
-                        currentBeat = currentBeat.copy(confidence = currentBeat.confidence * .9f)
-
-                        // TODO: This is pretty MT-dodgy, refactor all this to use coroutines.
-                        notifyChanged()
-                    }
-                }
+                Thread.sleep(100)
+                adjustConfidence()
             }
         }
 
         logger.info { "Started" }
+    }
+
+    internal fun adjustConfidence() {
+        lastBeatAt?.let { lastBeatAt ->
+            val nextBeatExpectedAt = lastBeatAt + currentBeat.beatIntervalMs / 1000.0 * currentBeat.beatsPerMeasure
+
+            if (clock.now() > nextBeatExpectedAt) {
+                currentBeat = currentBeat.copy(confidence = currentBeat.confidence * .99f)
+
+                // TODO: This is pretty MT-dodgy, refactor all this to use coroutines.
+                notifyChanged()
+            }
+        }
     }
 
     override fun channelsOnAir(audibleChannels: MutableSet<Int>?) {
