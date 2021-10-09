@@ -11,6 +11,7 @@ import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
+import baaahs.sim.BridgeClient
 import baaahs.ui.Icon
 import baaahs.util.Clock
 import kotlinx.cli.ArgParser
@@ -57,8 +58,8 @@ interface OpenPlugin {
 interface OpenServerPlugin : OpenPlugin
 interface OpenClientPlugin : OpenPlugin
 interface OpenBridgePlugin {
-    fun onConnectionOpen(tcpConnection: Network.TcpConnection) = Unit
-    fun onConnectionClose(tcpConnection: Network.TcpConnection) = Unit
+    fun onConnectionOpen(tcpConnection: PubSub.Connection) = Unit
+    fun onConnectionClose(tcpConnection: PubSub.Connection) = Unit
 
     companion object {
         internal val json = Json
@@ -85,7 +86,7 @@ interface OpenSimulatorPlugin {
     fun getBridgePlugin(pluginContext: PluginContext): OpenBridgePlugin?
 
     /** This plugin is used by Pinky running in the Simulator. */
-    fun getServerPlugin(serverUrl: String, pluginContext: PluginContext): OpenServerPlugin
+    fun getServerPlugin(pluginContext: PluginContext, bridgeClient: BridgeClient): OpenServerPlugin
 
     /** This plugin is used on the client when running in the Simulator. */
     fun getClientPlugin(pluginContext: PluginContext): OpenClientPlugin

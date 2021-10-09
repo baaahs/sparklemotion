@@ -66,6 +66,35 @@ object BeatLinkBeatSourceSpec : Spek({
                 expect(beatSource.currentBeat.beatIntervalMs).toBe(485)
             }
         }
+
+        describe("confidence adjustment") {
+            beforeEachTest {
+                beatSource.channelsOnAir(hashSetOf(1))
+                beatSource.newBeat(mockBeat(120.0, 1))
+            }
+
+            context("when we hear beat updates at appropriate intervals") {
+                beforeEachTest {
+                    fakeClock.time += 2.0
+                    beatSource.adjustConfidence()
+                }
+
+                it("retains high confidence") {
+                    expect(beatSource.currentBeat.confidence).toBe(1f)
+                }
+            }
+
+            context("when we haven't heard a beat update for more than a measure") {
+                beforeEachTest {
+                    fakeClock.time += 2.1
+                    beatSource.adjustConfidence()
+                }
+
+                it("reduces the confidence") {
+                    expect(beatSource.currentBeat.confidence).toBe(.99f)
+                }
+            }
+        }
     }
 })
 

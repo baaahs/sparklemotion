@@ -1,5 +1,6 @@
 package baaahs.plugin.beatlink
 
+import baaahs.PubSub
 import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.ShowPlayer
@@ -12,11 +13,13 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
-import baaahs.net.Network
 import baaahs.plugin.*
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.sim.BridgeClient
+import baaahs.ui.Observable
 import baaahs.ui.addObserver
+import baaahs.util.Logger
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
@@ -38,7 +41,7 @@ class BeatLinkPlugin internal constructor(
 
     override val addControlMenuItems: List<AddControlMenuItem>
         get() = listOf(
-            AddControlMenuItem("New BeatLink Control…", CommonIcons.BeatLinkControl) { mutableShow ->
+            AddControlMenuItem("New BeatLink Control…", CommonIcons.BeatLinkControl) {
                 MutableBeatLinkControl()
             }
         )
@@ -165,6 +168,8 @@ class BeatLinkPlugin internal constructor(
     }
 
     companion object : Plugin<Args>, SimulatorPlugin {
+        private val logger = Logger<BeatLinkPlugin>()
+
         override val id = "baaahs.BeatLink"
         val beatDataContentType = ContentType("beat-link", "Beat Link", GlslType.Float)
 
@@ -178,24 +183,33 @@ class BeatLinkPlugin internal constructor(
 
         val beatInfoContentType = ContentType("beat-info", "Beat Info", beatInfoStruct)
 
+        private val simulatorDefaultBpm = BeatData(0.0, 500, confidence = 1f)
+        private val unknownBpm = BeatData(0.0, 500, confidence = 0f)
+
         override fun getArgs(parser: ArgParser): Args = Args(parser)
 
-        override fun openForServer(pluginContext: PluginContext, args: Args): OpenServerPlugin =
-            BeatLinkPlugin(
-                if (args.enableBeatLink) createServerBeatSource(pluginContext) else BeatSource.None,
+        override fun openForServer(pluginContext: PluginContext, args: Args): OpenServerPlugin {
+            val beatSource = if (args.enableBeatLink) createServerBeatSource(pluginContext) else BeatSource.None
+            return BeatLinkPlugin(
+                PubSubPublisher(beatSource, pluginContext),
                 pluginContext
             )
+        }
 
         override fun openForClient(pluginContext: PluginContext): OpenClientPlugin =
-            BeatLinkPlugin(BeatSource.None, pluginContext)
+            BeatLinkPlugin(PubSubBeatSource(pluginContext.pubSub), pluginContext)
 
         override fun openForSimulator(): OpenSimulatorPlugin =
             object : OpenSimulatorPlugin {
                 override fun getBridgePlugin(pluginContext: PluginContext): OpenBridgePlugin =
-                    BeatLinkBridgePlugin(createServerBeatSource(pluginContext))
+                    BeatLinkBridgePlugin(createServerBeatSource(pluginContext), pluginContext)
 
-                override fun getServerPlugin(serverUrl: String, pluginContext: PluginContext): OpenServerPlugin =
-                    BeatLinkPlugin(createBridgeBeatSource(serverUrl), pluginContext)
+                override fun getServerPlugin(pluginContext: PluginContext, bridgeClient: BridgeClient) =
+                    BeatLinkPlugin(
+                        PubSubPublisher(
+                            PubSubBeatSource(bridgeClient.pubSub, simulatorDefaultBpm),
+                            pluginContext),
+                        pluginContext)
 
                 override fun getClientPlugin(pluginContext: PluginContext): OpenClientPlugin =
                     openForClient(pluginContext)
@@ -207,35 +221,58 @@ class BeatLinkPlugin internal constructor(
                     BeatLinkPlugin(beatSource, pluginContext)
             }
         }
+
+        private val beatDataTopic = PubSub.Topic("plugins/$id/beatData", BeatData.serializer())
     }
 
+    /** Copy beat data from [beatSource] to a bridge PubSub channel. */
     class BeatLinkBridgePlugin(
-        private val beatSource: BeatSource
+        private val beatSource: BeatSource,
+        pluginContext: PluginContext
     ) : OpenBridgePlugin {
-        private val connections = hashSetOf<Network.TcpConnection>()
+        private val channel = pluginContext.pubSub.openChannel(beatDataTopic, unknownBpm) { }
 
         init {
-            beatSource.addObserver {
-                val beatData = beatSource.getBeatData()
-                connections.forEach { connection ->
-                    connection.sendToClient(
-                        "beatData",
-                        OpenBridgePlugin.json.encodeToJsonElement(BeatData.serializer(), beatData)
-                    )
-                }
+            beatSource.addObserver { channel.onChange(it.getBeatData()) }
+        }
+    }
+
+    class PubSubPublisher(
+        beatSource: BeatSource,
+        pluginContext: PluginContext
+    ) : Observable(), BeatSource {
+        private var beatData: BeatData = beatSource.getBeatData()
+
+        val channel = pluginContext.pubSub.openChannel(beatDataTopic, beatData) {
+            logger.warn { "BeatData update from client? Huh?" }
+            beatData = it
+            notifyChanged()
+        }
+
+        init {
+            beatSource.addObserver { channel.onChange(it.getBeatData()) }
+        }
+
+        override fun getBeatData(): BeatData = beatData
+
+    }
+
+    class PubSubBeatSource(
+        pubSub: PubSub.Endpoint,
+        defaultBeatData: BeatData = unknownBpm
+    ) : Observable(), BeatSource {
+        private var beatData: BeatData = defaultBeatData
+
+        init {
+            pubSub.openChannel(beatDataTopic, beatData) {
+                beatData = it
+                notifyChanged()
             }
         }
 
-        override fun onConnectionOpen(tcpConnection: Network.TcpConnection) {
-            connections.add(tcpConnection)
-        }
+        override fun getBeatData(): BeatData = beatData
 
-        override fun onConnectionClose(tcpConnection: Network.TcpConnection) {
-            connections.remove(tcpConnection)
-        }
     }
 }
 
 internal expect fun createServerBeatSource(pluginContext: PluginContext): BeatSource
-
-internal expect fun createBridgeBeatSource(serverUrl: String): BeatSource

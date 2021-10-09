@@ -99,17 +99,15 @@ class SpyPubSub(
     }
 }
 
-class StubPubSubServer : PubSub.IServer {
-    override fun <T> publish(topic: PubSub.Topic<T>, data: T, onUpdate: (T) -> Unit): PubSub.Channel<T> {
+class StubPubSub : PubSub.Endpoint() {
+    override val commandChannels: PubSub.CommandChannels
+        get() = PubSub.CommandChannels()
+
+    override fun <T> openChannel(topic: PubSub.Topic<T>, initialValue: T, onUpdate: (T) -> Unit): PubSub.Channel<T> {
         return object : PubSub.Channel<T> {
-            override fun onChange(t: T) {
-            }
-
-            override fun replaceOnUpdate(onUpdate: (T) -> Unit) {
-            }
-
-            override fun unsubscribe() {
-            }
+            override fun onChange(t: T) {}
+            override fun replaceOnUpdate(onUpdate: (T) -> Unit) {}
+            override fun unsubscribe() {}
         }
     }
 }

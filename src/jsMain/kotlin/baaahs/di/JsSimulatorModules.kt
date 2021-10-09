@@ -8,11 +8,11 @@ import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.ResourcesFs
 import baaahs.model.Model
+import baaahs.net.BrowserNetwork
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
 import baaahs.plugin.SimulatorPlugins
-import baaahs.proto.Ports
 import baaahs.sim.*
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
@@ -31,7 +31,8 @@ class JsSimPlatformModule : JsPlatformModule(FakeNetwork()) {
 
 class JsSimulatorModule(
     private val model_: Model,
-    private val simHostName: String,
+    private val bridgeNetwork_: BrowserNetwork,
+    private val pinkyAddress_: Network.Address,
     private val pixelDensity: Float = 0.2f,
     private val pixelSpacing: Float = 2f
 ) : SimulatorModule {
@@ -49,13 +50,11 @@ class JsSimulatorModule(
         get() = model_
 
     override fun getModule(): Module {
-        val bridgeUrl = "$simHostName:${Ports.SIMULATOR_BRIDGE_TCP}"
-
         return super.getModule().apply {
-            single { BridgeClient(bridgeUrl) }
             single { Visualizer(get(), get()) }
             single<PixelArranger> { SwirlyPixelArranger(pixelDensity, pixelSpacing) }
-            single { Plugins.buildForSimulator(bridgeUrl, get(named(PluginsModule.Qualifier.ActivePlugins))) }
+            single { BridgeClient(bridgeNetwork_, pinkyAddress_) }
+            single { Plugins.buildForSimulator(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             single { (plugins: Plugins) ->
                 FixturesSimulator(
                     get(), get(), get(), get(named("Fallback")),

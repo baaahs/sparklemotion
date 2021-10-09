@@ -1,94 +1,104 @@
 package baaahs
 
 import baaahs.net.JvmNetwork
-import baaahs.net.Network
 import baaahs.plugin.OpenBridgePlugin
+import baaahs.plugin.PluginContext
 import baaahs.plugin.toWsMessage
 import baaahs.proto.Ports
-import io.ktor.application.*
-import io.ktor.http.cio.websocket.*
-import io.ktor.http.cio.websocket.CloseReason.Codes.*
+import baaahs.util.SystemClock
 import io.ktor.http.cio.websocket.Frame.*
-import io.ktor.request.*
-import io.ktor.routing.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
-import java.nio.ByteBuffer
-import java.time.Duration
 
 class SimulatorBridge {
-    private val webSocketConnections = mutableListOf<WebSocketServerSession>()
-    private val plugins = Pluggables.plugins.mapNotNull {
-        val simulatorPlugin = it.openForSimulator()
-        simulatorPlugin.getBridgePlugin()
+    private val pubSub: PubSub.Server
+
+    init {
+        val context = newSingleThreadContext("Bridge Main")
+        val network = JvmNetwork()
+        val link = network.link("bridge")
+        val httpServer = link.startHttpServer(Ports.SIMULATOR_BRIDGE_TCP)
+        val handlerScope = CoroutineScope(context)
+        pubSub = PubSub.Server(httpServer, handlerScope)
     }
 
-    private val soundAnalyzer = JvmSoundAnalyzer()
+    private val plugins = Pluggables.plugins.mapNotNull {
+        val simulatorPlugin = it.openForSimulator()
+        simulatorPlugin.getBridgePlugin(PluginContext(SystemClock, pubSub))
+    }
 
-    private val httpServer = embeddedServer(Netty, Ports.SIMULATOR_BRIDGE_TCP) {
-        install(WebSockets) {
-            pingPeriod = Duration.ofSeconds(15)
-            timeout = Duration.ofSeconds(15)
-            maxFrameSize = Long.MAX_VALUE
-            masking = false
-        }
-
-        routing {
-            webSocket("/bridge") {
-                println("Connection from ${this.call.request.host()}…")
-                webSocketConnections.add(this)
-
-                val tcpConnection = object : Network.TcpConnection {
-                    override val fromAddress: Network.Address get() = TODO("not implemented")
-                    override val toAddress: Network.Address get() = TODO("not implemented")
-                    override val port: Int get() = TODO("not implemented")
-
-                    override fun send(bytes: ByteArray) {
-                        val frame = Binary(true, ByteBuffer.wrap(bytes.clone()))
-                        JvmNetwork.networkScope.launch {
-                            this@webSocket.send(frame)
-                            this@webSocket.flush()
-                        }
-                    }
-
-                    override fun close() {
-                        JvmNetwork.networkScope.launch {
-                            this@webSocket.close()
-                        }
-                    }
-                }
-
-                plugins.forEach { bridgePlugin ->
-                    bridgePlugin.onConnectionOpen(tcpConnection)
-                }
-
-                sendFrequencies(this)
-
-                for (frame in incoming) {
-                    when (frame) {
-                        is Text -> {
-                            val text = frame.readText()
-                            if (text.equals("bye", ignoreCase = true)) {
-                                close(CloseReason(NORMAL, "Client said BYE"))
-                                webSocketConnections.remove(this)
-                            }
-                        }
-                        else -> error("Unsupported frame type ${frame::class}")
-                    }
-                }
-
-                plugins.forEach { bridgePlugin ->
-                    bridgePlugin.onConnectionClose(tcpConnection)
-                }
-
-                webSocketConnections.remove(this)
+    init {
+        pubSub.listenForConnections { connectionFromClient ->
+            plugins.forEach { bridgePlugin ->
+                bridgePlugin.onConnectionOpen(connectionFromClient)
             }
         }
     }
+    private val soundAnalyzer = JvmSoundAnalyzer()
+
+//    private val httpServerz = embeddedServer(Netty, Ports.SIMULATOR_BRIDGE_TCP) {
+//        install(WebSockets) {
+//            pingPeriod = Duration.ofSeconds(15)
+//            timeout = Duration.ofSeconds(15)
+//            maxFrameSize = Long.MAX_VALUE
+//            masking = false
+//        }
+//
+//        routing {
+//            webSocket("/bridge") {
+//                println("Connection from ${this.call.request.host()}…")
+//                webSocketConnections.add(this)
+//
+//                val tcpConnection = object : Network.TcpConnection {
+//                    override val fromAddress: Network.Address get() = TODO("not implemented")
+//                    override val toAddress: Network.Address get() = TODO("not implemented")
+//                    override val port: Int get() = TODO("not implemented")
+//
+//                    override fun send(bytes: ByteArray) {
+//                        val frame = Binary(true, ByteBuffer.wrap(bytes.clone()))
+//                        JvmNetwork.networkScope.launch {
+//                            this@webSocket.send(frame)
+//                            this@webSocket.flush()
+//                        }
+//                    }
+//
+//                    override fun close() {
+//                        JvmNetwork.networkScope.launch {
+//                            this@webSocket.close()
+//                        }
+//                    }
+//                }
+//
+//                plugins.forEach { bridgePlugin ->
+//                    bridgePlugin.onConnectionOpen(tcpConnection)
+//                }
+//
+//                sendFrequencies(this)
+//
+//                for (frame in incoming) {
+//                    when (frame) {
+//                        is Text -> {
+//                            val text = frame.readText()
+//                            if (text.equals("bye", ignoreCase = true)) {
+//                                close(CloseReason(NORMAL, "Client said BYE"))
+//                                webSocketConnections.remove(this)
+//                            }
+//                        }
+//                        else -> error("Unsupported frame type ${frame::class}")
+//                    }
+//                }
+//
+//                plugins.forEach { bridgePlugin ->
+//                    bridgePlugin.onConnectionClose(tcpConnection)
+//                }
+//
+//                webSocketConnections.remove(this)
+//            }
+//        }
+//    }
 
     private fun sendFrequencies(connection: WebSocketServerSession) {
         connection.outgoing.trySend(
@@ -115,7 +125,7 @@ class SimulatorBridge {
             }
         })
 
-        httpServer.start(true)
+//        httpServer.start(true)
     }
 }
 

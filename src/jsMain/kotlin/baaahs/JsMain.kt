@@ -52,7 +52,7 @@ fun main(args: Array<String>) {
 
 private fun launchUi(appName: String?, model: Model) {
     tryCatchAndShowErrors {
-        val pinkyAddress = BrowserAddress(websocketsUrl())
+        val pinkyAddress = myBrowserAddress()
         val network = BrowserNetwork(pinkyAddress, Ports.PINKY)
 
         val webAppInjector = koinApplication {
@@ -97,7 +97,8 @@ private fun launchSimulator(
     val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
     val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
 
-//            val pinkyLink = network.link("pinky")
+    val pinkyAddress = myBrowserAddress()
+    val network = BrowserNetwork(pinkyAddress, Ports.PINKY)
     val pinkySettings = PinkySettings()
 
     val injector = koinApplication {
@@ -106,7 +107,7 @@ private fun launchSimulator(
         modules(
             PluginsModule(Pluggables.plugins).getModule(),
             JsSimPlatformModule().getModule(),
-            JsSimulatorModule(model, window.location.hostname, pixelDensity, pixelSpacing).getModule(),
+            JsSimulatorModule(model, network, pinkyAddress, pixelDensity, pixelSpacing).getModule(),
             JsSimPinkyModule(model, pinkySettings).getModule(),
             JsUiWebClientModule(model).getModule(),
             JsAdminWebClientModule(model).getModule(),
@@ -173,8 +174,6 @@ private fun tryCatchAndShowErrors(block: () -> Unit) {
     }
 }
 
-private fun websocketsUrl(): String {
-    val l = window.location
-    val proto = if (l.protocol === "https:") "wss:" else "ws:"
-    return "$proto//${l.host}/"
+private fun myBrowserAddress(): BrowserAddress {
+    return with(window.location) { BrowserAddress(protocol, hostname, port) }
 }
