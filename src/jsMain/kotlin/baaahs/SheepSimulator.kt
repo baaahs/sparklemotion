@@ -1,101 +1,71 @@
 package baaahs
 
 import baaahs.client.WebClient
-import baaahs.di.*
 import baaahs.io.Fs
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.MapperUi
-import baaahs.model.Model
 import baaahs.monitor.MonitorUi
 import baaahs.sim.FakeNetwork
 import baaahs.sim.FixturesSimulator
+import baaahs.sim.HostedWebApp
 import baaahs.sim.Launcher
-import baaahs.util.KoinLogger
+import baaahs.sim.ui.LaunchItem
 import baaahs.util.LoggerConfig
 import baaahs.visualizer.Visualizer
-import decodeQueryParams
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.dsl.koinApplication
+import org.koin.core.Koin
+import org.koin.core.parameter.parametersOf
 
-class SheepSimulator(val model: Model) {
-    @Suppress("unused")
+class SheepSimulator(
+    private val network: FakeNetwork,
+    private val visualizer: Visualizer,
+    private val getKoin: () -> Koin
+) {
     val facade = Facade()
 
-    private val queryParams = decodeQueryParams(document.location!!)
-    val network = FakeNetwork()
+    private lateinit var pinky: Pinky
+    private lateinit var fixturesSimulator: FixturesSimulator
 
     init {
         window.asDynamic().simulator = this
         window.asDynamic().LoggerConfig = LoggerConfig
-//  TODO      GlslBase.plugins.add(SoundAnalysisPlugin(bridgeClient.soundAnalyzer))
     }
 
-    val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
-    val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
+    suspend fun start() = coroutineScope {
+        val pinkyScope = getKoin().createScope<Pinky>()
+        launch { cleanUpBrowserStorage(pinkyScope.get<Fs>()) }
 
-    val pinkyLink = network.link("pinky")
-    val pinkySettings = PinkySettings()
+        pinky = pinkyScope.get()
+        fixturesSimulator = pinkyScope.get(parameters = { parametersOf(pinky.plugins) })
 
-    val injector = koinApplication {
-        logger(KoinLogger())
-
-        modules(
-            JsSimPlatformModule(network, model).getModule(),
-            JsSimulatorModule(window.location.hostname, pixelDensity, pixelSpacing).getModule(),
-            JsSimPinkyModule(pinkyLink, pinkySettings).getModule(),
-            JsWebClientModule(pinkyLink.myAddress).getModule(),
-            JsAdminClientModule(pinkyLink.myAddress).getModule(),
-            JsSimBeatLinkPluginModule().getModule()
-        )
-    }.koin
-
-    private val pinkyScope = injector.createScope<Pinky>()
-    private val pinky = pinkyScope.get<Pinky>()
-    private val visualizer = injector.get<Visualizer>()
-    private val fixturesSimulator = injector.get<FixturesSimulator>()
-
-    init {
-        GlobalScope.launch { cleanUpBrowserStorage() }
-    }
-
-    suspend fun start() {
         fixturesSimulator.generateMappingData()
 
-        GlobalScope.launch {
-            pinky.startAndRun()
-        }
-
-        val launcher = Launcher(document.getElementById("launcher")!!)
-        launcher.add("Web UI") { createWebClientApp() }
-        launcher.add("Mapper") { createMapperApp() }
-        launcher.add("Monitor") { createMonitorApp() }
+        launch { pinky.startAndRun() }
 
         pinky.awaitMappingResultsLoaded() // Otherwise controllers might report in before they can be mapped.
         fixturesSimulator.launchControllers()
         fixturesSimulator.addToVisualizer()
-
-//        val users = storage.users.transaction { store -> store.getAll() }
-//        println("users = ${users}")
 
         facade.notifyChanged()
 
         delay(200000L)
     }
 
-    fun createWebClientApp(): WebClient = injector.createScope<WebClient>().get()
-    fun createMapperApp(): JsMapperUi = injector.createScope<MapperUi>().get()
-    fun createMonitorApp(): MonitorUi = injector.createScope<MonitorUi>().get()
+    fun createWebClientApp(): WebClient = getKoin().createScope<WebClient>().get()
+    fun createMapperApp(): JsMapperUi = getKoin().createScope<MapperUi>().get()
+    fun createMonitorApp(): MonitorUi = getKoin().createScope<MonitorUi>().get()
 
-    private suspend fun cleanUpBrowserStorage() {
-        val fs = pinkyScope.get<Fs>()
-
+    private suspend fun cleanUpBrowserStorage(fs: Fs) {
         // [2021-03-13] Delete old 2019-era show files.
         fs.resolve("shaders").listFiles().forEach { file ->
             file.delete()
         }
     }
+
+    private fun launchItem(title: String, block: () -> HostedWebApp) =
+        LaunchItem(title) { Launcher.launch(title, block) }
 
     inner class Facade : baaahs.ui.Facade() {
         val pinky: Pinky.Facade
@@ -106,5 +76,11 @@ class SheepSimulator(val model: Model) {
             get() = this@SheepSimulator.visualizer.facade
         val fixturesSimulator: FixturesSimulator.Facade
             get() = this@SheepSimulator.fixturesSimulator.facade
+        val launchItems: List<LaunchItem> =
+            listOf(
+                launchItem("Web UI") { createWebClientApp() },
+                launchItem("Mapper") { createMapperApp() },
+                launchItem("Monitor") { createMonitorApp() }
+            )
     }
 }

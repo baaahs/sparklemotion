@@ -69,6 +69,7 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationRuntime}")
+                implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.3")
                 implementation("io.insert-koin:koin-core:${Versions.koin}")
                 implementation("com.soywiz.korlibs.klock:klock:2.1.2")
                 api("com.danielgergely.kgl:kgl-metadata:${Versions.kgl}")
@@ -92,7 +93,6 @@ kotlin {
                 implementation("io.ktor:ktor-server-host-common:${Versions.ktor}")
                 implementation("io.ktor:ktor-websockets:${Versions.ktor}")
                 implementation("ch.qos.logback:logback-classic:1.2.3")
-                implementation("com.xenomachina:kotlin-argparser:2.0.7")
                 implementation("org.deepsymmetry:beat-link:0.6.3")
 
                 implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))

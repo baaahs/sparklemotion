@@ -26,7 +26,7 @@ import baaahs.visualizer.Visualizer
 class FixturesSimulator(
     private val visualizer: Visualizer,
     private val model: Model,
-    private val network: Network,
+    network: Network,
     private val dmxUniverse: FakeDmxUniverse,
     private val fs: Fs,
     private val mapperFs: FakeFs,

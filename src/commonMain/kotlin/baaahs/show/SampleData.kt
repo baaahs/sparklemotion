@@ -8,19 +8,13 @@ import baaahs.gl.RootToolchain
 import baaahs.gl.autoWire
 import baaahs.glsl.Shaders
 import baaahs.plugin.Plugins
-import baaahs.plugin.beatlink.BeatLinkPlugin
-import baaahs.plugin.beatlink.BeatSource
 import baaahs.plugin.core.datasource.ColorPickerDataSource
 import baaahs.plugin.core.datasource.SliderDataSource
 import baaahs.show.mutable.*
 
 object SampleData {
-    val plugins = Plugins.safe(Plugins.dummyContext) +
-            BeatLinkPlugin.Builder(BeatSource.None)
-    val beatLinkPlugin = plugins.findPlugin<BeatLinkPlugin>()
-
+    val plugins = Plugins.safe(Plugins.dummyContext)
     private val toolchain = RootToolchain(plugins)
-
     private val uvShader get() = wireUp(Shaders.xyProjection)
 
     private val showDefaultPaint = toolchain.autoWire(
@@ -286,23 +280,6 @@ object SampleData {
             addPatch(wireUp(Shaders.ripple))
         }
     }
-
-    val sampleShowWithBeatLink: Show get() = MutableShow(sampleShow).apply {
-        addPatch {
-            addShaderInstance(Shader(
-                "BeatLink",
-                /**language=glsl*/
-                """
-                    uniform float beat;
-                    void main(void) {
-                        gl_FragColor = vec4(beat, 0., 0., 1.);
-                    }
-                """.trimIndent()
-            )) {
-                link("beat", MutableDataSourcePort(beatLinkPlugin.beatLinkDataSource))
-            }
-        }
-    }.getShow()
 
     private fun wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {
         val unresolvedPatch = toolchain.autoWire(shader)

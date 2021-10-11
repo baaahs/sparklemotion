@@ -115,6 +115,13 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                 }
                 ShaderBuilder.State.Success -> {
                     shaderPreview?.setProgram(it.glslProgram)
+
+                    if (props.dumpShader) {
+                        println(
+                            "Shader: ${it.glslProgram?.title} (${it.state})\n\n" +
+                                    "${it.glslProgram?.fragShader?.source}"
+                        )
+                    }
                 }
                 else -> {
                 }
@@ -246,6 +253,7 @@ external interface ShaderPreviewProps : Props {
     var height: LinearDimension?
     var adjustGadgets: GadgetAdjuster.Mode?
     var toolchain: Toolchain?
+    var dumpShader: Boolean
 }
 
 fun RBuilder.shaderPreview(handler: RHandler<ShaderPreviewProps>) =

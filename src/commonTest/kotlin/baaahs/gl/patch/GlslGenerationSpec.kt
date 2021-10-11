@@ -112,10 +112,10 @@ object GlslGenerationSpec : Spek({
 
                         void p0_thisShaderSNamei_init() {    
                         #line 7 0
-                          p0_thisShaderSName_someGlobalVar = int(in_bluenessSlider * 100.);;
+                          p0_thisShaderSName_someGlobalVar = int(in_bluenessSlider * 100.);
                             
                         #line 8 0
-                          p0_thisShaderSName_anotherGlobalVar = p0_thisShaderSName_someGlobalVar + 1;;
+                          p0_thisShaderSName_anotherGlobalVar = p0_thisShaderSName_someGlobalVar + 1;
                         }
 
 
@@ -288,7 +288,7 @@ object GlslGenerationSpec : Spek({
 
                         void p0_thisShaderSNamei_init() {    
                         #line 5 0
-                          p0_thisShaderSName_someGlobalVar = int(in_bluenessSlider * 100.);;
+                          p0_thisShaderSName_someGlobalVar = int(in_bluenessSlider * 100.);
                         }
 
 
@@ -410,10 +410,10 @@ object GlslGenerationSpec : Spek({
 
                         void p1_thisShaderSNamei_init() {    
                         #line 7 1
-                          p1_thisShaderSName_someGlobalVar = int(in_bluenessSlider * 100.);;
+                          p1_thisShaderSName_someGlobalVar = int(in_bluenessSlider * 100.);
                             
                         #line 8 1
-                          p1_thisShaderSName_anotherGlobalVar = p1_thisShaderSName_someGlobalVar + 1;;
+                          p1_thisShaderSName_anotherGlobalVar = p1_thisShaderSName_someGlobalVar + 1;
                         }
 
 
@@ -1033,6 +1033,75 @@ object GlslGenerationSpec : Spek({
                             p2_crossFadeShaderi_result = p2_crossFadeShader_main(in_rasterCoordinate.xy);
 
                             sm_result = p2_crossFadeShaderi_result;
+                        }
+                    """.trimIndent()
+                )
+            }
+        }
+
+        context("when a shader sets a global variable with the same name as a struct member") {
+            override(shaderText) {
+                """
+                    struct BeatInfo {
+                        float beat;
+                    };
+                    uniform BeatInfo beatInfo;
+
+                    float beat = beatInfo.beat;
+
+                    // @return color
+                    vec4 main() {
+                        float uhh = 1. + beat; 
+                        return vec4(beat, uh, 0., 1.);
+                    }
+                """.trimIndent()
+            }
+
+            beforeEachTest {
+                mutablePatch.addShaderInstance(mainShader) {}
+            }
+
+            it("doesn't perform namespacing on struct member names") {
+                kexpect(glsl).toBe(
+                    /**language=glsl*/
+                    """
+                        #ifdef GL_ES
+                        precision mediump float;
+                        #endif
+
+                        // SparkleMotion-generated GLSL
+
+                        layout(location = 0) out vec4 sm_result;
+
+                        // Shader: Untitled Shader; namespace: p0
+                        // Untitled Shader
+
+                        vec4 p0_untitledShaderi_result = vec4(0., 0., 0., 1.);
+
+                        #line 6 0
+                        float p0_untitledShader_beat;
+
+                        #line 9 0
+                        vec4 p0_untitledShader_main() {
+                            float uhh = 1. + p0_untitledShader_beat; 
+                            return vec4(p0_untitledShader_beat, uh, 0., 1.);
+                        }
+
+                        void p0_untitledShaderi_init() {    
+                        #line 6 0
+                          p0_untitledShader_beat = p0_untitledShader_beatInfo.beat;
+                        }
+
+
+                        #line 10001
+                        void main() {
+                            // Init Untitled Shader.
+                            p0_untitledShaderi_init();
+
+                            // Invoke Untitled Shader
+                            p0_untitledShaderi_result = p0_untitledShader_main();
+
+                            sm_result = p0_untitledShaderi_result;
                         }
                     """.trimIndent()
                 )

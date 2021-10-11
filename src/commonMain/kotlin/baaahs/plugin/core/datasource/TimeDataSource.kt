@@ -16,6 +16,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.util.makeSafeForGlsl
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -45,7 +46,7 @@ data class TimeDataSource(@Transient val `_`: Boolean = true) : DataSource {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
                     val clock = showPlayer.toolchain.plugins.pluginContext.clock
                     return SingleUniformFeed(glslProgram, this@TimeDataSource, id) { uniform ->
-                        val thisTime = (clock.now() % 10000.0).toFloat()
+                        val thisTime = clock.now().makeSafeForGlsl()
                         uniform.set(thisTime)
                     }
                 }

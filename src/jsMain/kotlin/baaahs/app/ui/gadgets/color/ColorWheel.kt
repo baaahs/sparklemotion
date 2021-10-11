@@ -19,7 +19,10 @@ private class Bitmap(
     private val width: Int,
     height: Int
 ) {
-    private val image = ctx.createImageData(width.toDouble(), height.toDouble())
+    private val image = ctx.createImageData(
+        max(width.toDouble(), 1.0),
+        max(height.toDouble(), 1.0)
+    )
     private val data = image.data
 
     fun setPixel(x: Int, y: Int, color: Color) {

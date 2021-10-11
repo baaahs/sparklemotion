@@ -44,7 +44,11 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
             path: String,
             webSocketListener: Network.WebSocketListener
         ): Network.TcpConnection {
-            val webSocket = WebSocket((toAddress as BrowserAddress).urlString.trimEnd('/') + path)
+            toAddress as BrowserAddress
+            val proto = if (toAddress.isSSL) "wss" else "ws"
+            val maybeSlash = if (path.startsWith("/")) "" else "/"
+            val url = "$proto://${toAddress.host}:$port$maybeSlash$path"
+            val webSocket = WebSocket(url)
             webSocket.binaryType = BinaryType.ARRAYBUFFER
 
             val tcpConnection = object : Network.TcpConnection {
@@ -92,11 +96,18 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
             TODO("not implemented")
         }
 
-        override fun createAddress(name: String): Network.Address = BrowserAddress(name)
+        override fun createAddress(name: String): Network.Address =
+            TODO("BrowserNetwork.createAddress not implemented")
     }
 
-    class BrowserAddress(val urlString: String) : Network.Address {
-        override fun asString(): String = urlString
+    data class BrowserAddress(
+        val protocol: String,
+        val host: String,
+        val port: String
+    ) : Network.Address {
+        val isSSL: Boolean get() = protocol == "https"
+
+        override fun asString(): String = "$protocol://$host:$port/"
         override fun toString(): String = asString()
     }
 

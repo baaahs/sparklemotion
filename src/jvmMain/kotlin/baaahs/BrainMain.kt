@@ -2,9 +2,9 @@ package baaahs
 
 import baaahs.net.JvmNetwork
 import baaahs.util.SystemClock
-import com.xenomachina.argparser.ArgParser
-import com.xenomachina.argparser.default
-import com.xenomachina.argparser.mainBody
+import kotlinx.cli.ArgParser
+import kotlinx.cli.ArgType
+import kotlinx.cli.default
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,9 +19,10 @@ import kotlin.math.sqrt
 import kotlin.random.Random
 
 fun main(args: Array<String>) {
-    mainBody(BrainMain::class.simpleName) {
-        BrainMain(ArgParser(args).parseInto(BrainMain::Args)).run()
-    }
+    val argParser = ArgParser(BrainMain::class.simpleName ?: "Brain")
+    val brainArgs = BrainMain.Args(argParser)
+    argParser.parse(args)
+    BrainMain(brainArgs).run()
 }
 
 class BrainMain(private val args: Args) {
@@ -51,10 +52,15 @@ class BrainMain(private val args: Args) {
     }
 
     class Args(parser: ArgParser) {
-        val model by parser.storing("model").default(Pluggables.defaultModel)
-        val brainId by parser.storing("brain ID").default<String?>(null)
-        val surfaceName by parser.storing("surface name").default<String?>(null)
-        val anonymous by parser.flagging("anonymous surface").default(false)
+        val model by parser.option(ArgType.String, shortName = "m")
+            .default(Pluggables.defaultModel)
+
+        val brainId by parser.option(ArgType.String, description = "brain ID")
+
+        val surfaceName by parser.option(ArgType.String, description = "surface name")
+
+        val anonymous by parser.option(ArgType.Boolean, description = "anonymous surface")
+            .default(false)
     }
 }
 

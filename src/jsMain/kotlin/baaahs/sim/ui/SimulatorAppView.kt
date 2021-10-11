@@ -35,7 +35,9 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
     }
 
     div(+SimulatorStyles.app) {
-        menuBar {}
+        menuBar {
+            attrs.launchItems = props.simulator.launchItems
+        }
 
         mosaic<SimulatorWindows> {
             attrs.value = currentNode

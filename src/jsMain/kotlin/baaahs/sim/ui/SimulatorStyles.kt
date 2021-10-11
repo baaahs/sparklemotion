@@ -104,21 +104,6 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         border(2.px, BorderStyle.solid, Color.gray, 0.5.em)
     }
 
-    val beatsDiv by css(subsection) {
-        child("div") {
-            backgroundColor = Color.lightCyan
-            display = Display.inlineBlock
-            width = 1.em
-            padding(0.2.em)
-            marginRight = 2.px
-            textAlign = TextAlign.center
-        }
-
-        child("div.selected") {
-            backgroundColor = Color.lightCoral
-        }
-    }
-
     val bpmDisplay by css {
         bottom = 20.px
         padding(20.px)
@@ -166,7 +151,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         color = Color.white
         right = 5.px
         bottom = 5.px
-        boxShadow(rgba(0, 0, 0, 0.15), 1.px, 5.px)
+        boxShadow(rgba(0, 0, 0, 0.25), 4.px, 5.px, 2.px, 2.px)
     }
     
     val fakeClientDeviceControls by css {

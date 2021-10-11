@@ -21,6 +21,7 @@ import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceInfo
 import javax.jmdns.ServiceListener
 import kotlin.collections.set
+import kotlin.concurrent.thread
 
 
 class JvmNetwork : Network {
@@ -69,7 +70,7 @@ class JvmNetwork : Network {
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
             val socket = JvmUdpSocket(port)
-            Thread {
+            thread(isDaemon = true) {
                 val data = ByteArray(MAX_UDP_SIZE)
                 while (true) {
                     val packetIn = DatagramPacket(data, MAX_UDP_SIZE)
@@ -86,7 +87,7 @@ class JvmNetwork : Network {
                         }
                     }
                 }
-            }.start()
+            }
             return socket
         }
 

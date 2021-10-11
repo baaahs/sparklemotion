@@ -1759,6 +1759,9 @@
     "beatLink": {
       "type": "baaahs.BeatLink:BeatLink"
     },
+    "beatInfo": {
+      "type": "baaahs.BeatLink:BeatInfo"
+    },
     "conflagrationSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Conflagration",
