@@ -52,7 +52,7 @@ version = "0.0.1"
 
 kotlin {
     jvm()
-    js {
+    js(IR) {
         browser {
             useCommonJs()
 
@@ -197,12 +197,11 @@ kotlin {
 }
 
 val webpackTask =
-(    if (project.hasProperty("isProduction")) {
+    if (project.hasProperty("isProduction")) {
         "jsBrowserProductionWebpack"
     } else {
         "jsBrowserDevelopmentWebpack"
     }
-).also { println("Mode=$it")}
 
 // workaround for https://youtrack.jetbrains.com/issue/KT-24463:
 tasks.named<KotlinCompile>("compileKotlinJvm") {
