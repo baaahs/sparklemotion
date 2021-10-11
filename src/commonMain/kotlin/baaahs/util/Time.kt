@@ -8,6 +8,7 @@ typealias Time = Double
 fun Interval(n: Number): Time = n.toDouble()
 
 fun Time.elapsedMs() = ((internalTimerClock.now() - this) * 10000).roundToInt() / 10.0
+fun Time.makeSafeForGlsl() = (this % 100000.0).toFloat()
 
 interface Clock {
     fun now(): Time
