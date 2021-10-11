@@ -10,7 +10,7 @@ import baaahs.client.ClientStageManager
 import baaahs.client.WebClient
 import baaahs.gl.withCache
 import baaahs.io.Fs
-import baaahs.io.ResourcesFs
+import baaahs.io.resourcesFs
 import baaahs.mapper.Storage
 import baaahs.show.SampleData
 import baaahs.ui.*
@@ -184,9 +184,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             attrs.button = true
                             attrs.onClickFunction = { _ ->
                                 GlobalScope.launch {
-                                    val fs = ResourcesFs()
-                                    val file = fs.resolve("Honcho.sparkle")
-                                    val show = Storage(fs, webClient.plugins).loadShow(file)
+                                    val file = resourcesFs.resolve("Honcho.sparkle")
+                                    val show = Storage(resourcesFs, webClient.plugins).loadShow(file)
                                         ?.copy(title = "New Show")
                                         ?: error("Couldn't find show")
                                     webClient.onNewShow(show)

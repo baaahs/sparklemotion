@@ -1,7 +1,7 @@
 package baaahs.model
 
 import baaahs.geom.Vector3F
-import baaahs.getResource
+import baaahs.io.getResource
 import baaahs.util.Logger
 
 abstract class ObjModel(private val objResourceName: String) : Model() {
