@@ -101,13 +101,13 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
     }
 
     data class BrowserAddress(
-        val protocol: String,
+        private val protocol: String,
         val host: String,
         val port: String
     ) : Network.Address {
-        val isSSL: Boolean get() = protocol == "https"
+        val isSSL: Boolean get() = protocol == "https:"
 
-        override fun asString(): String = "$protocol://$host:$port/"
+        override fun asString(): String = "$protocol//$host:$port/"
         override fun toString(): String = asString()
     }
 
