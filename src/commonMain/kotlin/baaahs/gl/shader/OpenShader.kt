@@ -83,7 +83,7 @@ interface OpenShader : RefCounted {
                 buf.append("void ${substitutions.substitute(ShaderSubstitutions.initFnName)}() {")
                 globalVars.forEach {
                     if (it.deferInitialization) {
-                        buf.append("    ${it.assignmentToGlsl(fileNumber, substitutions)};\n")
+                        buf.append("    ${it.assignmentToGlsl(fileNumber, substitutions)}\n")
                     }
                 }
                 buf.append("}\n")

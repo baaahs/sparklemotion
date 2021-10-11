@@ -16,10 +16,14 @@ import baaahs.glsl.Shaders
 import baaahs.plugin.*
 import baaahs.plugin.beatlink.BeatLinkControl
 import baaahs.plugin.beatlink.BeatLinkPlugin
+import baaahs.plugin.core.CorePlugin
 import baaahs.plugin.core.datasource.*
 import baaahs.show.*
+import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.show.mutable.MutableShow
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.cli.ArgParser
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -30,10 +34,10 @@ import org.spekframework.spek2.style.specification.describe
 @Suppress("unused")
 object ShowSerializationSpec : Spek({
     describe("Show serialization") {
-        val plugins by value { SampleData.plugins }
+        val plugins by value<Plugins> { TestSampleData.plugins }
         val jsonWithDefaults by value { Json(plugins.json) { encodeDefaults = true } }
         val jsonPrettyPrint by value { Json(plugins.json) { prettyPrint = true } }
-        val origShow by value { SampleData.sampleShowWithBeatLink }
+        val origShow by value { TestSampleData.sampleShowWithBeatLink }
         val showJson by value { origShow.toJson(jsonWithDefaults) }
 
         it("serializes as expected") {
@@ -65,7 +69,7 @@ object ShowSerializationSpec : Spek({
                     }
                 }.getShow()
             }
-            override(showJson) { origShow.toJson((plugins + fakePluginBuilder).json) }
+            override(showJson) { origShow.toJson(buildPlugins(fakePluginBuilder).json) }
 
             it("serializes as expected") {
                 plugins.expectJson(buildJsonObject {
@@ -102,7 +106,7 @@ object ShowSerializationSpec : Spek({
             }
 
             context("when the datasource is unknown") {
-                override(plugins) { SampleData.plugins + FakePlugin.Builder("some.plugin") }
+                override(plugins) { buildPlugins(FakePlugin.Builder("some.plugin")) }
 
                 it("deserializes to an UnknownDataSource") {
                     val show = Show.fromJson(plugins, showJson.toString())
@@ -123,6 +127,9 @@ object ShowSerializationSpec : Spek({
         }
     }
 })
+
+private fun buildPlugins(fakePlugin: FakePlugin.Builder) =
+    Plugins.buildForServer(Plugins.dummyContext, listOf(fakePlugin), "fake", emptyArray())
 
 private fun JsonObjectBuilder.mapTo(k: String, v: JsonElement) = put(k, v)
 
@@ -323,7 +330,8 @@ fun Plugins.expectJson(expected: JsonElement, block: () -> JsonElement) {
     kexpect(block().toStr()).toBe(expected.toStr())
 }
 
-@Serializable @SerialName("some.plugin:Fake")
+@Serializable
+@SerialName("some.plugin:Fake")
 class FakeDataSource(
     @Suppress("unused")
     val whateverValue: String
@@ -356,11 +364,42 @@ class FakePlugin(
     override val packageName: String,
     override val title: String,
     override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> = emptyList()
-) : Plugin {
+) : OpenServerPlugin {
     class Builder(
         override val id: String,
-        val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> = emptyList()
-    ) : PluginBuilder {
-        override fun build(pluginContext: PluginContext): Plugin = FakePlugin(id, "$id Plugin", dataSourceBuilders)
+        private val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> = emptyList()
+    ) : Plugin<Any> {
+        override fun getArgs(parser: ArgParser): Any = Unit
+
+        override fun openForServer(pluginContext: PluginContext, args: Any): OpenServerPlugin =
+            FakePlugin(id, "$id Plugin", dataSourceBuilders)
+
+        override fun openForClient(pluginContext: PluginContext): OpenClientPlugin =
+            TODO("not implemented")
     }
+}
+
+object TestSampleData {
+    val plugins = Plugins.buildForClient(Plugins.dummyContext, listOf(BeatLinkPlugin))
+    private val beatLinkPlugin = plugins.findPlugin<BeatLinkPlugin>()
+
+    val sampleShowWithBeatLink: Show
+        get() = MutableShow(SampleData.sampleShow).apply {
+            addPatch {
+                addShaderInstance(
+                    Shader(
+                        "BeatLink",
+                        /**language=glsl*/
+                        """
+                    uniform float beat;
+                    void main(void) {
+                        gl_FragColor = vec4(beat, 0., 0., 1.);
+                    }
+                """.trimIndent()
+                    )
+                ) {
+                    link("beat", MutableDataSourcePort(beatLinkPlugin.beatLinkDataSource))
+                }
+            }
+        }.getShow()
 }

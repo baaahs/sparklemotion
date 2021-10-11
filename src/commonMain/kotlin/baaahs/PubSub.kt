@@ -66,6 +66,11 @@ abstract class PubSub {
         val serializer: KSerializer<T>,
         val serialModule: SerializersModule = SerializersModule { }
     )
+    
+    interface ConnectionListener {
+        fun onConnectionOpen(connection: Connection)
+        fun onConnectionClose(connection: Connection)
+    }
 
     abstract class Listener(private val origin: Origin) {
         fun onUpdate(data: JsonElement, fromOrigin: Origin) {
@@ -479,7 +484,7 @@ abstract class PubSub {
         }
     }
 
-    abstract class Endpoint() {
+    abstract class Endpoint {
         protected abstract val commandChannels: CommandChannels
 
         protected fun <T> buildTopicInfo(topic: Topic<T>): TopicInfo<T> {

@@ -6,9 +6,12 @@ import baaahs.models.Decom2019Model
 import baaahs.models.HonchoModel
 import baaahs.models.SheepModel
 import baaahs.models.SuiGenerisModel
+import baaahs.plugin.beatlink.BeatLinkPlugin
 import kotlin.js.JsName
 
 object Pluggables {
+    val plugins = listOf(BeatLinkPlugin)
+
     @JsName("defaultModel")
     const val defaultModel = "Honcho"
 

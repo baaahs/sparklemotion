@@ -4,6 +4,7 @@ import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
 import baaahs.describe
 import baaahs.gadgets.Slider
+import baaahs.gl.glsl.GlslError
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
@@ -45,7 +46,7 @@ object PreviewShaderBuilderSpec : Spek({
                 expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Analyzing)
             }
 
-            context("after first pass") {
+            context("when Analyzing succeeds") {
                 beforeEachTest { dispatcher.runOne() }
 
                 it("is in Linking state") {
@@ -118,6 +119,29 @@ object PreviewShaderBuilderSpec : Spek({
                             }
                         }
                     }
+                }
+            }
+
+            context("when Analyzing fails") {
+                override(shader) {
+                    Shader(
+                        "Shader",
+                        /**language=glsl*/
+                        """
+                            #unknownDirective BAIL BAIL BAIL
+                            vec4 main(vec4 inColor) {
+                                return inColor;
+                            }
+                        """.trimIndent()
+                    )
+                }
+                beforeEachTest { dispatcher.runOne() }
+
+                it("should result in a build error") {
+                    expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Errors)
+                    expect(previewShaderBuilder.openShader!!.errors).containsExactly(
+                        GlslError("unknown directive #unknownDirective BAIL BAIL BAIL", row = 1)
+                    )
                 }
             }
         }

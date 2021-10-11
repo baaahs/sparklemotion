@@ -66,21 +66,39 @@ class GlslCode(
             val buf = StringBuilder()
 
             var inComment = false
-            Regex("(.*?)(\\w+|//|\n|$)", RegexOption.MULTILINE).findAll(originalText).forEach { matchResult ->
-                val (before, str) = matchResult.destructured
-                buf.append(before)
-                when (str) {
-                    "//" -> {
-                        inComment = true; buf.append(str)
-                    }
-                    "\n" -> {
-                        inComment = false; buf.append(str)
-                    }
-                    else -> {
-                        buf.append(if (inComment) str else replaceFn(str))
+            var inDotTraversal = false
+            Regex(
+                "(.*?)" +
+                        "(" +
+                        "[a-zA-Z_][a-zA-Z0-9_]*" + // Any valid symbol.
+                        "|[0-9]+[.][0-9]*" +       // Floats like 1. or 1.1.
+                        "|[.][0-9]+" +             // Floats like .1.
+                        "|[.\n]" +                 // '.' or newline.
+                        "|$" +                     // EOL.
+                        ")", RegexOption.MULTILINE)
+                .findAll(originalText)
+                .forEach { matchResult ->
+                    val (before, str) = matchResult.destructured
+                    buf.append(before)
+                    when (str) {
+                        "//" -> {
+                            inComment = true; buf.append(str)
+                        }
+                        "." -> {
+                            if (!inComment) inDotTraversal = true; buf.append(str)
+                        }
+                        "\n" -> {
+                            inComment = false; buf.append(str)
+                        }
+                        else -> {
+                            buf.append(
+                                if (inComment || inDotTraversal) str
+                                else replaceFn(str)
+                            )
+                            inDotTraversal = false
+                        }
                     }
                 }
-            }
             return buf.toString()
         }
     }

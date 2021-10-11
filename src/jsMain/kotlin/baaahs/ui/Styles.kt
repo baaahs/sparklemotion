@@ -121,4 +121,14 @@ object Styles : StyleSheet("ui", isStatic = true) {
         float = Float.left
         paddingRight = 2.em
     }
+
+    val guruMeditationErrorStackTrace by css {
+        marginTop = 2.em
+        marginBottom = 2.em
+        paddingLeft = 2.em
+        paddingRight = 2.em
+        maxHeight = 70.vh
+        display = Display.flex
+        flexDirection = FlexDirection.column
+    }
 }

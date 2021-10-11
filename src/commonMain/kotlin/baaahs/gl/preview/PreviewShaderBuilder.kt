@@ -142,7 +142,11 @@ class PreviewShaderBuilder(
         this.shaderAnalysis = shaderAnalysis
         openShader = toolchain.openShader(shaderAnalysis)
 
-        transitionTo(ShaderBuilder.State.Linking)
+        if (!shaderAnalysis.isValid) {
+            transitionTo(ShaderBuilder.State.Errors)
+        } else {
+            transitionTo(ShaderBuilder.State.Linking)
+        }
     }
 
     fun link() {

@@ -1,5 +1,6 @@
 package baaahs.plugin.beatlink
 
+import baaahs.PubSub
 import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.ShowPlayer
@@ -15,12 +16,20 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.sim.BridgeClient
+import baaahs.ui.Observable
+import baaahs.ui.addObserver
+import baaahs.util.Logger
+import baaahs.util.makeSafeForGlsl
+import kotlinx.cli.ArgParser
+import kotlinx.cli.ArgType
+import kotlinx.cli.default
 import kotlinx.serialization.SerialName
 
 class BeatLinkPlugin internal constructor(
     internal val beatSource: BeatSource,
     pluginContext: PluginContext
-) : Plugin {
+) : OpenServerPlugin, OpenClientPlugin {
     override val packageName: String = id
     override val title: String = "Beat Link"
 
@@ -30,17 +39,19 @@ class BeatLinkPlugin internal constructor(
     // is using object identity), and there's no overhead.
     internal val beatLinkDataSource = BeatLinkDataSource()
     internal val beatInfoDataSource = BeatInfoDataSource()
+    internal val rawBeatInfoDataSource = RawBeatInfoDataSource()
 
     override val addControlMenuItems: List<AddControlMenuItem>
         get() = listOf(
-            AddControlMenuItem("New BeatLink Control…", CommonIcons.BeatLinkControl) { mutableShow ->
+            AddControlMenuItem("New BeatLink Control…", CommonIcons.BeatLinkControl) {
                 MutableBeatLinkControl()
             }
         )
     override val contentTypes: List<ContentType>
         get() = listOf(
             beatDataContentType,
-            beatInfoContentType
+            beatInfoContentType,
+            rawBeatInfoContentType
         )
 
     override val controlSerializers
@@ -52,12 +63,12 @@ class BeatLinkPlugin internal constructor(
         get() = listOf(
             object : DataSourceBuilder<BeatLinkDataSource> {
                 override val title: String get() = "Beat Link"
-                override val description: String get() =
-                    "A float representing the current beat intensity, between 0 and 1."
+                override val description: String
+                    get() = "A float representing the current beat intensity, between 0 and 1."
                 override val resourceName: String get() = "BeatLink"
                 override val contentType: ContentType get() = beatDataContentType
-                override val serializerRegistrar get() =
-                    objectSerializer("baaahs.BeatLink:BeatLink", beatLinkDataSource)
+                override val serializerRegistrar
+                    get() = objectSerializer("baaahs.BeatLink:BeatLink", beatLinkDataSource)
 
                 override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
                     inputPort.contentType == beatDataContentType
@@ -71,8 +82,8 @@ class BeatLinkPlugin internal constructor(
                 override val description: String get() = "A struct containing information about the beat."
                 override val resourceName: String get() = "BeatInfo"
                 override val contentType: ContentType get() = beatInfoContentType
-                override val serializerRegistrar get() =
-                    objectSerializer("baaahs.BeatLink:BeatInfo", beatInfoDataSource)
+                override val serializerRegistrar
+                    get() = objectSerializer("baaahs.BeatLink:BeatInfo", beatInfoDataSource)
 
                 override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
                     inputPort.contentType == beatInfoContentType
@@ -80,11 +91,28 @@ class BeatLinkPlugin internal constructor(
                             || inputPort.type == beatInfoStruct
 
                 override fun build(inputPort: InputPort): BeatInfoDataSource = beatInfoDataSource
+            },
+            object : DataSourceBuilder<RawBeatInfoDataSource> {
+                override val title: String get() = "Raw Beat Data"
+                override val description: String get() = "A struct containing low-level information about the beat."
+                override val resourceName: String get() = "RawBeatInfo"
+                override val contentType: ContentType get() = rawBeatInfoContentType
+                override val serializerRegistrar
+                    get() = objectSerializer("baaahs.BeatLink:RawBeatInfo", rawBeatInfoDataSource)
+                override val internalOnly: Boolean
+                    get() = true
+
+                override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
+                    inputPort.contentType == rawBeatInfoContentType
+                            || suggestedContentTypes.contains(rawBeatInfoContentType)
+                            || inputPort.type == rawBeatInfoStruct
+
+                override fun build(inputPort: InputPort): RawBeatInfoDataSource = rawBeatInfoDataSource
             }
         )
 
     @SerialName("baaahs.BeatLink:BeatLink")
-    inner class BeatLinkDataSource internal constructor(): DataSource {
+    inner class BeatLinkDataSource internal constructor() : DataSource {
         override val pluginPackage: String get() = id
         override val title: String get() = "BeatLink"
         override fun getType(): GlslType = GlslType.Float
@@ -108,7 +136,7 @@ class BeatLinkPlugin internal constructor(
     }
 
     @SerialName("baaahs.BeatLink:BeatInfo")
-    inner class BeatInfoDataSource internal constructor(): DataSource {
+    inner class BeatInfoDataSource internal constructor() : DataSource {
         override val pluginPackage: String get() = id
         override val title: String get() = "BeatInfo"
         override fun getType(): GlslType = beatInfoStruct
@@ -151,8 +179,62 @@ class BeatLinkPlugin internal constructor(
         }
     }
 
-    companion object {
-        val id = "baaahs.BeatLink"
+    @SerialName("baaahs.BeatLink:RawBeatInfo")
+    inner class RawBeatInfoDataSource internal constructor() : DataSource {
+        override val pluginPackage: String get() = id
+        override val title: String get() = "RawBeatInfo"
+        override fun getType(): GlslType = rawBeatInfoStruct
+        override val contentType: ContentType
+            get() = rawBeatInfoContentType
+
+        override fun createFeed(showPlayer: ShowPlayer, id: String): baaahs.gl.data.Feed {
+            val varPrefix = getVarName(id)
+            return object : baaahs.gl.data.Feed, RefCounted by RefCounter() {
+                override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
+                    override fun bind(glslProgram: GlslProgram): ProgramFeed {
+                        return object : ProgramFeed {
+                            val measureStartTime = glslProgram.getUniform("${varPrefix}.measureStartTime")
+                            val beatIntervalMsUniform = glslProgram.getUniform("${varPrefix}.beatIntervalMs")
+                            val bpmUniform = glslProgram.getUniform("${varPrefix}.bpm")
+                            val beatsPerMeasureUniform = glslProgram.getUniform("${varPrefix}.beatsPerMeasure")
+                            val confidenceUniform = glslProgram.getUniform("${varPrefix}.confidence")
+
+                            override val isValid: Boolean
+                                get() = measureStartTime != null ||
+                                        beatIntervalMsUniform != null ||
+                                        bpmUniform != null ||
+                                        beatsPerMeasureUniform != null ||
+                                        confidenceUniform != null
+
+                            override fun setOnProgram() {
+                                val beatData = beatSource.getBeatData()
+
+                                measureStartTime?.set(beatData.measureStartTime.makeSafeForGlsl())
+                                beatIntervalMsUniform?.set(beatData.beatIntervalMs.toFloat())
+                                bpmUniform?.set(beatData.bpm)
+                                beatsPerMeasureUniform?.set(beatData.beatsPerMeasure.toFloat())
+                                confidenceUniform?.set(beatData.confidence)
+                            }
+                        }
+                    }
+                }
+
+                override fun release() {
+                    super.release()
+                }
+            }
+        }
+    }
+
+    class Args(parser: ArgParser) {
+        val enableBeatLink by parser.option(ArgType.Boolean, description = "Enable beat detection")
+            .default(true)
+    }
+
+    companion object : Plugin<Args>, SimulatorPlugin {
+        private val logger = Logger<BeatLinkPlugin>()
+
+        override val id = "baaahs.BeatLink"
         val beatDataContentType = ContentType("beat-link", "Beat Link", GlslType.Float)
 
         val beatInfoStruct = GlslType.Struct(
@@ -162,14 +244,111 @@ class BeatLinkPlugin internal constructor(
             "intensity" to GlslType.Float,
             "confidence" to GlslType.Float
         )
+
         val beatInfoContentType = ContentType("beat-info", "Beat Info", beatInfoStruct)
+
+        val rawBeatInfoStruct = GlslType.Struct(
+            "RawBeatInfo",
+            "measureStartTime" to GlslType.Float,
+            "beatIntervalMs" to GlslType.Float,
+            "bpm" to GlslType.Float,
+            "beatsPerMeasure" to GlslType.Float,
+            "confidence" to GlslType.Float
+        )
+        val rawBeatInfoContentType = ContentType("raw-beat-info", "Raw Beat Info", rawBeatInfoStruct)
+
+        private val simulatorDefaultBpm = BeatData(0.0, 500, confidence = 1f)
+        private val unknownBpm = BeatData(0.0, 500, confidence = 0f)
+
+        override fun getArgs(parser: ArgParser): Args = Args(parser)
+
+        override fun openForServer(pluginContext: PluginContext, args: Args): OpenServerPlugin {
+            val beatSource = if (args.enableBeatLink) createServerBeatSource(pluginContext) else BeatSource.None
+            return BeatLinkPlugin(
+                PubSubPublisher(beatSource, pluginContext),
+                pluginContext
+            )
+        }
+
+        override fun openForClient(pluginContext: PluginContext): OpenClientPlugin =
+            BeatLinkPlugin(PubSubBeatSource(pluginContext.pubSub), pluginContext)
+
+        override fun openForSimulator(): OpenSimulatorPlugin =
+            object : OpenSimulatorPlugin {
+                override fun getBridgePlugin(pluginContext: PluginContext): OpenBridgePlugin =
+                    BeatLinkBridgePlugin(createServerBeatSource(pluginContext), pluginContext)
+
+                override fun getServerPlugin(pluginContext: PluginContext, bridgeClient: BridgeClient) =
+                    BeatLinkPlugin(
+                        PubSubPublisher(
+                            PubSubBeatSource(bridgeClient.pubSub, simulatorDefaultBpm),
+                            pluginContext
+                        ),
+                        pluginContext
+                    )
+
+                override fun getClientPlugin(pluginContext: PluginContext): OpenClientPlugin =
+                    openForClient(pluginContext)
+            }
+
+        fun forTest(beatSource: BeatSource): Plugin<Args> {
+            return object : Plugin<Args> by BeatLinkPlugin {
+                override fun openForServer(pluginContext: PluginContext, args: Args): OpenServerPlugin =
+                    BeatLinkPlugin(beatSource, pluginContext)
+            }
+        }
+
+        private val beatDataTopic = PubSub.Topic("plugins/$id/beatData", BeatData.serializer())
     }
 
-    class Builder(internal val beatSource: BeatSource) : PluginBuilder {
-        override val id = BeatLinkPlugin.id
+    /** Copy beat data from [beatSource] to a bridge PubSub channel. */
+    class BeatLinkBridgePlugin(
+        private val beatSource: BeatSource,
+        pluginContext: PluginContext
+    ) : OpenBridgePlugin {
+        private val channel = pluginContext.pubSub.openChannel(beatDataTopic, unknownBpm) { }
 
-        override fun build(pluginContext: PluginContext): Plugin {
-            return BeatLinkPlugin(beatSource, pluginContext)
+        init {
+            beatSource.addObserver { channel.onChange(it.getBeatData()) }
         }
     }
+
+    class PubSubPublisher(
+        beatSource: BeatSource,
+        pluginContext: PluginContext
+    ) : Observable(), BeatSource {
+        private var beatData: BeatData = beatSource.getBeatData()
+
+        val channel = pluginContext.pubSub.openChannel(beatDataTopic, beatData) {
+            logger.warn { "BeatData update from client? Huh?" }
+            beatData = it
+            notifyChanged()
+        }
+
+        init {
+            beatSource.addObserver { channel.onChange(it.getBeatData()) }
+        }
+
+        override fun getBeatData(): BeatData = beatData
+
+    }
+
+    class PubSubBeatSource(
+        pubSub: PubSub.Endpoint,
+        defaultBeatData: BeatData = unknownBpm
+    ) : Observable(), BeatSource {
+        private var beatData: BeatData = defaultBeatData
+
+        init {
+            pubSub.openChannel(beatDataTopic, beatData) {
+                beatData = it
+                notifyChanged()
+            }
+        }
+
+        override fun getBeatData(): BeatData = beatData
+
+    }
 }
+
+internal expect fun createServerBeatSource(pluginContext: PluginContext): BeatSource
