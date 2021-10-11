@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Build
           command: |
-            ./gradlew build -x jsBrowserTest --stacktrace --no-daemon --no-parallel --info
+            ./gradlew build -PisProduction -xjsBrowserTest --stacktrace --no-daemon --no-parallel --info
 
       - add_ssh_keys:
           fingerprints:
@@ -62,7 +62,7 @@ jobs:
               # don't ignore files starting with _
               touch build/gh-pages/.nojekyll
 
-              date > build/gh-pages/BUILT.txt
+              echo "Build ${CIRCLE_BUILD_NUM:-unknown} at `date`." > build/gh-pages/BUILT.txt
 
               git config --global user.email "ci-build@baaahs.org"
               git config --global user.name "CI Builder"
