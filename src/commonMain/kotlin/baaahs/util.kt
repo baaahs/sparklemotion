@@ -3,8 +3,7 @@ package baaahs
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.asMillis
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.*
 import kotlin.math.PI
 import kotlin.math.max
 import kotlin.math.min
@@ -124,4 +123,12 @@ suspend fun throttle(targetRatePerSecond: Float, logger: Logger? = null, block: 
     } else {
         delay(delayMs.toLong())
     }
+}
+
+
+fun <T> futureAsync(scope: CoroutineScope = GlobalScope, block: suspend () -> T): Deferred<T> =
+    scope.async { block.invoke() }
+
+fun <T> Deferred<T>.onAvailable(callback: (T) -> Unit) {
+    this.invokeOnCompletion { callback.invoke(this.getCompleted()) }
 }
