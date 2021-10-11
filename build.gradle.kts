@@ -196,6 +196,14 @@ kotlin {
     }
 }
 
+val webpackTask =
+(    if (project.hasProperty("isProduction")) {
+        "jsBrowserProductionWebpack"
+    } else {
+        "jsBrowserDevelopmentWebpack"
+    }
+).also { println("Mode=$it")}
+
 // workaround for https://youtrack.jetbrains.com/issue/KT-24463:
 tasks.named<KotlinCompile>("compileKotlinJvm") {
     dependsOn(":copySheepModel")
@@ -245,7 +253,7 @@ tasks.named<ProcessResources>("jsProcessResources") {
 }
 
 tasks.named<ProcessResources>("jvmProcessResources") {
-    dependsOn("jsBrowserDevelopmentWebpack")
+    dependsOn(webpackTask)
 
     from("build/distributions") { include("sparklemotion.js") }
 
@@ -260,7 +268,7 @@ tasks.named<DokkaTask>("dokkaHtml") {
 
 tasks.create<JavaExec>("runPinkyJvm") {
     dependsOn("compileKotlinJvm")
-    dependsOn("jsBrowserDevelopmentWebpack")
+    dependsOn(webpackTask)
     main = "baaahs.PinkyMainKt"
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
