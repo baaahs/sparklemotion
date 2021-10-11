@@ -2,6 +2,7 @@
 Honcho.sparkle
 baaahs-model.obj
 baaahs-panel-info.txt
+baaahs/plugin/beatlink/BeatLinkControl.glsl
 blueprintjs/core/lib/css/blueprint.css
 blueprintjs/icons/lib/css/blueprint-icons.css
 decom-2019-panels.obj
