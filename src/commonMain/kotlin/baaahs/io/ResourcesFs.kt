@@ -14,7 +14,7 @@ class ResourcesFs : BaseFakeFs() {
             }
 
     override suspend fun loadFile(file: Fs.File): String {
-        return getResource(file.fullPath)
+        return getResourceAsync(file.fullPath)
     }
 
     override suspend fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
@@ -31,5 +31,6 @@ class ResourcesFs : BaseFakeFs() {
 }
 
 expect fun getResource(name: String): String
+expect suspend fun getResourceAsync(name: String): String
 
 val resourcesFs = ResourcesFs()

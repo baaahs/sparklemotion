@@ -2,7 +2,9 @@ package baaahs.plugin.beatlink
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderPreview
-import baaahs.io.getResource
+import baaahs.futureAsync
+import baaahs.io.getResourceAsync
+import baaahs.onAvailable
 import baaahs.show.Shader
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
@@ -20,7 +22,9 @@ import styled.StyleSheet
 import kotlin.math.roundToInt
 
 private val beatLinkVisualizerShader =
-    Shader("BeatLink Visualizer", getResource("baaahs/plugin/beatlink/BeatLinkControl.glsl"))
+    futureAsync {
+        Shader("BeatLink Visualizer", getResourceAsync("baaahs/plugin/beatlink/BeatLinkControl.glsl"))
+    }
 
 private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl") { _ ->
     val appContext = useContext(appContext)
@@ -45,10 +49,13 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
         withCleanup { observer.remove() }
     }
 
+    var shader by state<Shader?> { null }
+    beatLinkVisualizerShader.onAvailable { shader = it }
+
     card(Styles.card on PaperStyle.root) {
         div(+Styles.card) {
             shaderPreview {
-                attrs.shader = beatLinkVisualizerShader
+                attrs.shader = shader
                 attrs.width = 300.px
                 attrs.height = 200.px
                 attrs.dumpShader = true
