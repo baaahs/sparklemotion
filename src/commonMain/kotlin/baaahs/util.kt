@@ -62,8 +62,6 @@ expect val internalTimerClock: Clock
 
 expect fun doRunBlocking(block: suspend () -> Unit)
 
-expect fun getResource(name: String): String
-
 expect fun decodeBase64(s: String): ByteArray
 
 internal suspend fun time(function: suspend () -> Unit) = internalTimerClock.time(function)

@@ -3,7 +3,7 @@ package baaahs.models
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Shenzarpy
 import baaahs.geom.Vector3F
-import baaahs.getResource
+import baaahs.io.getResource
 import baaahs.model.MovingHead
 import baaahs.model.ObjModel
 import kotlin.math.PI

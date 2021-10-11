@@ -1,6 +1,5 @@
 package baaahs.io
 
-import baaahs.getResource
 import baaahs.sim.BaseFakeFs
 
 class ResourcesFs : BaseFakeFs() {
@@ -14,7 +13,7 @@ class ResourcesFs : BaseFakeFs() {
                     .also { println("resource files: $it") }
             }
 
-    override suspend fun loadFile(file: Fs.File): String? {
+    override suspend fun loadFile(file: Fs.File): String {
         return getResource(file.fullPath)
     }
 
@@ -30,3 +29,7 @@ class ResourcesFs : BaseFakeFs() {
         throw UnsupportedOperationException("Resources filesystem is read-only.")
     }
 }
+
+expect fun getResource(name: String): String
+
+val resourcesFs = ResourcesFs()
