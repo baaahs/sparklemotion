@@ -150,6 +150,7 @@ private val beatLinkShaderGlsl = """precision mediump float;
     
         // Draw beats.
         color += o * drawBeats((pos - beatsBottomLeft) / beatsDimen).rgb;
+    	color = mix(color.rrr * .125 + color.ggg * .25 + color.bbb * .125, color, rawBeatInfo.confidence);
 
         gl_FragColor = vec4(color, 1.);
     }
