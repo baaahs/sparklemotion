@@ -310,7 +310,7 @@ tasks.create<JavaExec>("runGlslJvmTests") {
 }
 
 tasks.create<Copy>("packageClientResources") {
-    dependsOn("jsProcessResources", "jsBrowserWebpack")
+    dependsOn("jsProcessResources", webpackTask)
     duplicatesStrategy = DuplicatesStrategy.WARN
     from(project.file("build/processedResources/js/main"))
     from(project.file("build/distributions"))
