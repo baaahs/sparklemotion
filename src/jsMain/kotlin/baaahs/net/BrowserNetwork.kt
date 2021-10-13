@@ -1,5 +1,7 @@
 package baaahs.net
 
+import baaahs.util.JsPlatform
+import baaahs.util.Logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.khronos.webgl.ArrayBuffer
@@ -14,9 +16,7 @@ import org.w3c.dom.WebSocket
  */
 class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, private val udpProxyPort: Int = 0) : Network {
     override fun link(name: String): Network.Link = object : Network.Link {
-        override val myAddress: Network.Address = object : Network.Address {
-            override fun asString(): String = "BrowserNetwork:localhost"
-        }
+        override val myAddress: Network.Address = JsPlatform.myAddress
 
         override val myHostname: String get() = "Browser"
 
@@ -111,4 +111,7 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
         override fun toString(): String = asString()
     }
 
+    companion object {
+        private val logger = Logger<BrowserNetwork>()
+    }
 }

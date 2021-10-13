@@ -6,7 +6,6 @@ import baaahs.admin.AdminClient
 import baaahs.browser.RealMediaDevices
 import baaahs.client.ClientStorage
 import baaahs.client.WebClient
-import baaahs.gl.RootToolchain
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.Mapper
 import baaahs.mapper.MapperUi
@@ -16,6 +15,9 @@ import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
+import baaahs.plugin.sound_analysis.AudioInput
+import baaahs.plugin.sound_analysis.SoundAnalysisPlatform
+import baaahs.plugin.sound_analysis.SoundAnalyzer
 import baaahs.proto.Ports
 import baaahs.sim.BrowserSandboxFs
 import baaahs.util.Clock
@@ -58,7 +60,7 @@ open class JsUiWebClientModule(
             scoped<Plugins> { get<ClientPlugins>() }
             scoped { model }
             scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage"))  }
-            scoped { WebClient(get(), get(), RootToolchain(get()), get(), get()) }
+            scoped { WebClient(get(), get(), get(), get(), get()) }
         }
     }
 }
@@ -101,9 +103,3 @@ class JsAdminWebClientModule(
     private fun Scope.pinkyAddress(): Network.Address =
         get(named(WebClientModule.Qualifier.PinkyAddress))
 }
-
-//class JsSoundAnalysisPluginModule : SoundAnalysisPluginModule {
-//    override val soundAnalyzer: SoundAnalyzer
-//        get() =
-//
-//}
