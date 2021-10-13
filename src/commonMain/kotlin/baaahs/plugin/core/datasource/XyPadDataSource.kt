@@ -64,8 +64,6 @@ data class XyPadDataSource(
                     }
                 }
             }
-
-            override fun release() = Unit
         }
     }
 

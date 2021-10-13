@@ -40,6 +40,8 @@ abstract class BaseShowPlayer(
     private val dataSourceGadgets: MutableMap<DataSource, Gadget> = mutableMapOf()
 
     override fun openFeed(id: String, dataSource: DataSource): Feed {
+        // TODO: This is another reference to feeds, so we should .use() it... but then we'll never release them!
+        // TODO: Also, it could conceivably be handed out after it's had onRelease() called. How should we handle this?
         return feeds.getOrPut(dataSource) {
             dataSource.createFeed(this, id)
         }

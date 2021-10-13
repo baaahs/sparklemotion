@@ -62,7 +62,5 @@ data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : Dat
                         }
                     }
             }
-
-            override fun release() = Unit
         }
 }

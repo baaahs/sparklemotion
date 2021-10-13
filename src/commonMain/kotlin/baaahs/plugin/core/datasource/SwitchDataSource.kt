@@ -67,8 +67,6 @@ data class SwitchDataSource(
                     }
                 }
             }
-
-            override fun release() = Unit
         }
     }
 

@@ -64,8 +64,6 @@ data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : Data
                         }
                     }
             }
-
-            override fun release() = Unit
         }
 
     override fun isImplicit(): Boolean = true
