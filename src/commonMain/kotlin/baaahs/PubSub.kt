@@ -280,6 +280,7 @@ abstract class PubSub {
         private val handlerScope: CoroutineScope
     ) : Origin("connection $name"), Network.WebSocketListener {
         var isConnected: Boolean = false
+        var everConnected: Boolean = false
 
         private var connection: Network.TcpConnection? = null
         private val cleanups = Cleanups()
@@ -288,6 +289,7 @@ abstract class PubSub {
             debug { "connection $name established" }
             connection = tcpConnection
             isConnected = true
+            everConnected = true
         }
 
         inner class ClientListener(
@@ -593,9 +595,10 @@ abstract class PubSub {
     ) : Endpoint(), CommandRecipient {
         override val commandChannels: CommandChannels = CommandChannels()
 
-        @JsName("isConnected")
         val isConnected: Boolean
             get() = connectionToServer.isConnected
+        val everConnected: Boolean
+            get() = connectionToServer.everConnected
         private val stateChangeListeners = mutableListOf<() -> Unit>()
 
         private val topics: Topics = Topics()
@@ -694,22 +697,22 @@ abstract class PubSub {
 
         fun <T> state(
             topic: Topic<T>,
-            initialValue: T? = null,
+            initialValue: T,
             callback: (T) -> Unit = {}
-        ): ReadWriteProperty<Any, T?> {
-            return object : ReadWriteProperty<Any, T?> {
-                private var value: T? = initialValue
+        ): ReadWriteProperty<Any, T> {
+            return object : ReadWriteProperty<Any, T> {
+                private var value: T = initialValue
 
                 private val channel = subscribe(topic) {
                     value = it
                     callback(it)
                 }
 
-                override fun getValue(thisRef: Any, property: KProperty<*>): T? {
+                override fun getValue(thisRef: Any, property: KProperty<*>): T {
                     return value
                 }
 
-                override fun setValue(thisRef: Any, property: KProperty<*>, value: T?) {
+                override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
                     this.value = value
                     channel.onChange(value!!)
                 }

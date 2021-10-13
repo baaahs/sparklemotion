@@ -7,10 +7,14 @@ import baaahs.models.HonchoModel
 import baaahs.models.SheepModel
 import baaahs.models.SuiGenerisModel
 import baaahs.plugin.beatlink.BeatLinkPlugin
+import baaahs.plugin.sound_analysis.SoundAnalysisPlugin
 import kotlin.js.JsName
 
 object Pluggables {
-    val plugins = listOf(BeatLinkPlugin)
+    val plugins = listOf(
+        BeatLinkPlugin,
+        SoundAnalysisPlugin
+    )
 
     @JsName("defaultModel")
     const val defaultModel = "Honcho"

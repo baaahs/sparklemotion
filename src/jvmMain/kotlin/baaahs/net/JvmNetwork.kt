@@ -173,7 +173,7 @@ class JvmNetwork : Network {
                 // Let's give brains lots of time for OTA download:
                 responseWriteTimeoutSeconds = 3000
             }) {
-                install(io.ktor.websocket.WebSockets) {
+                install(WebSockets) {
                     pingPeriod = Duration.ofSeconds(15)
                     timeout = Duration.ofSeconds(15)
                     maxFrameSize = Long.MAX_VALUE
