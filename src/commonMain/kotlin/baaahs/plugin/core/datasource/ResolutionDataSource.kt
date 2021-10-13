@@ -53,7 +53,5 @@ data class ResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource
                         uniform.set(1f, 1f)
                     }
             }
-
-            override fun release() = Unit
         }
 }

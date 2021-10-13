@@ -20,6 +20,7 @@ class ShowRunner(
     private var activePatchSetChanged: Boolean = true
 
     init {
+        openShow.use()
         logger.debug { "Running show ${openShow.title}" }
         updateProblems(openShow.allProblems)
     }
@@ -54,7 +55,7 @@ class ShowRunner(
     }
 
     fun release() {
-        openShow.release()
+        openShow.disuse()
     }
 
     companion object {

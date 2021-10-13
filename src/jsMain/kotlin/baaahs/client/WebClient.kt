@@ -130,7 +130,7 @@ class WebClient(
         val newIsUnsaved = showEditorState?.isUnsaved ?: false
         val newFile = showEditorState?.file
         val newOpenShow = newShow?.let { stageManager.openShow(newShow, newShowState) }
-        openShow?.release()
+        openShow?.disuse()
         openShow = newOpenShow
         this.show = newShow
         this.showIsUnsaved = newIsUnsaved

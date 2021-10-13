@@ -30,8 +30,6 @@ data class UnknownDataSource(
 
     class UnknownFeed : Feed, RefCounted by RefCounter() {
         override fun bind(gl: GlContext): EngineFeed = UnknownEngineFeed()
-
-        override fun release() {}
     }
 
     class UnknownEngineFeed : EngineFeed {

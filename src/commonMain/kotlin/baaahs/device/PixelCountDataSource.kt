@@ -52,9 +52,8 @@ data class PixelCountDataSource(@Transient val `_`: Boolean = true) : DataSource
 }
 
 class PixelCountFeed(
-    private val id: String,
-    private val refCounter: RefCounter = RefCounter()
-) : Feed, RefCounted by refCounter {
+    private val id: String
+) : Feed, RefCounted by RefCounter() {
 
     override fun bind(gl: GlContext) = object : EngineFeed {
         override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {
@@ -68,9 +67,5 @@ class PixelCountFeed(
                 uniform?.set(renderTarget.pixelCount)
             }
         }
-    }
-
-    override fun release() {
-        refCounter.release()
     }
 }

@@ -127,10 +127,6 @@ class BeatLinkPlugin internal constructor(
                             uniform.set(beatSource.getBeatData().fractionTillNextBeat(clock))
                         }
                 }
-
-                override fun release() {
-                    super.release()
-                }
             }
         }
     }
@@ -170,10 +166,6 @@ class BeatLinkPlugin internal constructor(
                             }
                         }
                     }
-                }
-
-                override fun release() {
-                    super.release()
                 }
             }
         }
@@ -217,10 +209,6 @@ class BeatLinkPlugin internal constructor(
                             }
                         }
                     }
-                }
-
-                override fun release() {
-                    super.release()
                 }
             }
         }

@@ -4,9 +4,11 @@ import baaahs.control.OpenButtonGroupControl
 import baaahs.control.OpenSliderControl
 import baaahs.describe
 import baaahs.gadgets.Slider
+import baaahs.getBang
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.testToolchain
 import baaahs.only
+import baaahs.plugin.core.datasource.TimeDataSource
 import baaahs.show.Layout
 import baaahs.show.Layouts
 import baaahs.show.Panel
@@ -51,6 +53,28 @@ object OpenShowSpec : Spek({
                 expect(openShow.title).toBe("Show")
 
                 expect(openShow.activePatchSet().activePatches).isEmpty()
+            }
+        }
+
+        context("resource allocation") {
+            beforeEachTest {
+                mutableShow.addPatch(
+                    testToolchain.wireUp(Shader("Shader", "uniform float time;\nvoid main() { ... }"))
+                )
+            }
+
+            it("opens feeds") {
+                openShow.run {}
+                val timeFeed = showPlayer.feeds.getBang(TimeDataSource(), "datasource key")
+                expect(timeFeed.inUse()).toBe(true)
+            }
+
+            context("when released") {
+                it("closes feeds") {
+                    openShow.onRelease()
+                    val timeFeed = showPlayer.feeds.getBang(TimeDataSource(), "datasource key")
+                    expect(timeFeed.inUse()).toBe(false)
+                }
             }
         }
 

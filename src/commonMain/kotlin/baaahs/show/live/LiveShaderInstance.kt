@@ -89,7 +89,7 @@ class LiveShaderInstance(
             }
 
     fun release() {
-        shader.release()
+        shader.disuse()
     }
 
     fun maybeWithInjectedData(injectedData: Set<ContentType>): LiveShaderInstance {

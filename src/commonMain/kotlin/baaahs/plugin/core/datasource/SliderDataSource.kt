@@ -67,8 +67,6 @@ data class SliderDataSource(
                     }
                 }
             }
-
-            override fun release() = Unit
         }
     }
 
