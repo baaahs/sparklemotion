@@ -10,15 +10,16 @@ import baaahs.monitor.MonitorUi
 import baaahs.net.BrowserNetwork
 import baaahs.net.BrowserNetwork.BrowserAddress
 import baaahs.proto.Ports
+import baaahs.plugin.beatlink.BeatSource
 import baaahs.sim.HostedWebApp
 import baaahs.sim.ui.SimulatorAppProps
 import baaahs.sim.ui.SimulatorAppView
 import baaahs.sim.ui.WebClientWindowView
 import baaahs.ui.ErrorDisplay
 import baaahs.util.ConsoleFormatters
+import baaahs.util.JsPlatform
 import baaahs.util.KoinLogger
 import baaahs.util.Logger
-import decodeQueryParams
 import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -40,7 +41,6 @@ fun main(args: Array<String>) {
 
     val queryParams = decodeQueryParams(document.location!!)
     val model = Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
-
 
     GlobalScope.launch {
         when (mode) {

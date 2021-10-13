@@ -18,7 +18,7 @@ fun <P : Props> xComponent(
     func: XBuilder.(props: P) -> Unit
 ): react.FunctionComponent<P> {
     val logger = Logger(name)
-    val component = react.fc(name) { props: P ->
+    val component = react.functionComponent(name) { props: P ->
         val xBuilder = XBuilder(logger)
         xBuilder.func(props)
         this.childList.addAll(xBuilder.childList)

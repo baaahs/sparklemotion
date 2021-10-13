@@ -2,7 +2,6 @@ package baaahs
 
 import baaahs.di.JvmPinkyModule
 import baaahs.di.JvmPlatformModule
-import baaahs.di.JvmSoundAnalysisPluginModule
 import baaahs.di.PluginsModule
 import baaahs.gl.GlBase
 import baaahs.io.Fs
@@ -52,8 +51,7 @@ class PinkyMain(private val args: Array<String>) {
             modules(
                 PluginsModule(Pluggables.plugins).getModule(),
                 JvmPlatformModule(clock).getModule(),
-                JvmPinkyModule(programName, args).getModule(),
-                JvmSoundAnalysisPluginModule().getModule()
+                JvmPinkyModule(programName, args).getModule()
             )
         }
 

@@ -5,7 +5,7 @@ import baaahs.plugin.Plugins
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
 import baaahs.window
-import encodeURIComponent
+import baaahs.util.encodeURIComponent
 import kotlinext.js.jsObject
 import kotlinx.serialization.json.Json
 import org.w3c.dom.HTMLAnchorElement
