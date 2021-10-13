@@ -66,6 +66,10 @@ data class BeatData(
         if (beatIntervalMs == 0) -1f else 1 - timeSinceMeasure(clock)
 
     private fun clamp(f: Float): Float = min(1f, max(f, 0f))
+
+    companion object {
+        val UNKNOWN = BeatData(0.0, 0, 4, 0f)
+    }
 }
 
 

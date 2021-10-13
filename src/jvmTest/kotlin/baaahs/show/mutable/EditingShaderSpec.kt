@@ -12,9 +12,7 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
 import baaahs.glsl.Shaders
 import baaahs.plugin.Plugins
-import baaahs.plugin.ServerPlugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
-import baaahs.plugin.core.CorePlugin
 import baaahs.plugin.core.datasource.SliderDataSource
 import baaahs.show.Panel
 import baaahs.show.Shader

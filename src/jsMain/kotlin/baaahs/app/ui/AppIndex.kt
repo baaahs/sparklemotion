@@ -270,7 +270,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             themeProvider(theme) {
                 cssBaseline { }
 
-                div(+Styles.root and appDrawerStateStyle and editModeStyle) {
+                div(+Styles.root and themeStyles.appRoot and appDrawerStateStyle and editModeStyle) {
                     appToolbar {
                         attrs.editMode = editMode
                         attrs.onEditModeChange = handleEditModeChange
