@@ -1,9 +1,9 @@
 package baaahs.client
 
 import baaahs.*
+import baaahs.app.settings.UiSettings
 import baaahs.app.ui.AppIndex
 import baaahs.app.ui.AppIndexProps
-import baaahs.app.ui.settings.UiSettings
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsClientBackend
@@ -132,6 +132,8 @@ class WebClient(
         val newOpenShow = newShow?.let { stageManager.openShow(newShow, newShowState) }
         openShow?.disuse()
         openShow = newOpenShow
+        openShow?.use()
+
         this.show = newShow
         this.showIsUnsaved = newIsUnsaved
         this.showFile = newFile

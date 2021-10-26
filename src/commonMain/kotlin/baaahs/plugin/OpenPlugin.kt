@@ -1,6 +1,7 @@
 package baaahs.plugin
 
 import baaahs.PubSub
+import baaahs.app.ui.dialog.DialogPanel
 import baaahs.device.DeviceType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.ShaderDialect
@@ -56,7 +57,11 @@ interface OpenPlugin {
 }
 
 interface OpenServerPlugin : OpenPlugin
-interface OpenClientPlugin : OpenPlugin
+
+interface OpenClientPlugin : OpenPlugin {
+    fun getSettingsPanel(): DialogPanel? = null
+}
+
 interface OpenBridgePlugin {
     fun onConnectionOpen(tcpConnection: PubSub.Connection) = Unit
     fun onConnectionClose(tcpConnection: PubSub.Connection) = Unit

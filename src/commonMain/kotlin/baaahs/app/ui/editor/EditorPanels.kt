@@ -2,7 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.Severity
 import baaahs.app.ui.CommonIcons
-import baaahs.app.ui.EditorPanel
+import baaahs.app.ui.dialog.DialogPanel
 import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
 import baaahs.control.MutableVisualizerControl
@@ -19,7 +19,7 @@ import baaahs.ui.View
 data class GenericPropertiesEditorPanel(
     private val editableManager: EditableManager,
     private val propsEditors: List<PropsEditor>
-) : EditorPanel {
+) : DialogPanel {
     constructor(
         editableManager: EditableManager,
         vararg propsEditors: PropsEditor
@@ -39,7 +39,7 @@ data class GenericPropertiesEditorPanel(
 data class PatchHolderEditorPanel(
     private val editableManager: EditableManager,
     private val mutablePatchHolder: MutablePatchHolder
-) : EditorPanel {
+) : DialogPanel {
     override val title: String
         get() = "Patches"
     override val listSubhead: String?
@@ -47,7 +47,7 @@ data class PatchHolderEditorPanel(
     override val icon: Icon
         get() = CommonIcons.Patch
 
-    override fun getNestedEditorPanels(): List<EditorPanel> {
+    override fun getNestedDialogPanels(): List<DialogPanel> {
         return mutablePatchHolder.patches.map { mutablePatch -> mutablePatch.getEditorPanel(editableManager) }
     }
 
@@ -58,7 +58,7 @@ data class PatchHolderEditorPanel(
 data class PatchEditorPanel(
     private val editableManager: EditableManager,
     private val mutablePatch: MutablePatch
-) : EditorPanel {
+) : DialogPanel {
     override val title: String
         get() = mutablePatch.surfaces.name
     override val listSubhead: String
@@ -66,7 +66,7 @@ data class PatchEditorPanel(
     override val icon: Icon
         get() = CommonIcons.Fixture
 
-    override fun getNestedEditorPanels(): List<EditorPanel> {
+    override fun getNestedDialogPanels(): List<DialogPanel> {
         return mutablePatch.mutableShaderInstances.map { mutableShaderInstance ->
             mutableShaderInstance.getEditorPanel(this)
         }
@@ -77,7 +77,7 @@ data class PatchEditorPanel(
 
     inner class ShaderInstanceEditorPanel(
         private val mutableShaderInstance: MutableShaderInstance
-    ) : EditorPanel {
+    ) : DialogPanel {
         // TODO: This is a clunky way to get our cached toolchain... clean up somehow.
         val toolchain = editableManager.session!!.toolchain
         private val openShader = toolchain.openShader(mutableShaderInstance.mutableShader.build())

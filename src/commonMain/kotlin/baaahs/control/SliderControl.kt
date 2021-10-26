@@ -1,7 +1,7 @@
 package baaahs.control
 
 import baaahs.ShowPlayer
-import baaahs.app.ui.EditorPanel
+import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.camelize
 import baaahs.gadgets.Slider
@@ -74,7 +74,7 @@ data class MutableSliderControl(
 ) : MutableControl {
     override var asBuiltId: String? = null
 
-    override fun getEditorPanels(editableManager: EditableManager): List<EditorPanel> = emptyList()
+    override fun getEditorPanels(editableManager: EditableManager): List<DialogPanel> = emptyList()
 
     override fun build(showBuilder: ShowBuilder): SliderControl {
         return SliderControl(

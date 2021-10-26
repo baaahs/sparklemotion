@@ -26,6 +26,7 @@ actual fun getCommonIcons() = object : PlatformIcons {
     override val ButtonGroup get() = icon(materialui.icons.ViewModule)
     override val ColorPalette get() = icon(materialui.icons.Palette)
     override val ShaderLibrary get() = icon(materialui.icons.PhotoLibrary)
+    override val SoundAnalysisControl get() = icon(materialui.icons.Equalizer)
     override val Vacuity get() = icon(materialui.icons.CheckBoxOutlineBlank)
     override val Visualizer get() = icon(materialui.icons.Visibility)
 

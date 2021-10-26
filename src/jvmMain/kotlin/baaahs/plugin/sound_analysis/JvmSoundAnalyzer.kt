@@ -1,5 +1,6 @@
 package baaahs.plugin.sound_analysis
 
+import baaahs.plugin.PluginContext
 import baaahs.util.Clock
 import baaahs.util.Logger
 import be.tarsos.dsp.ConstantQ
@@ -28,33 +29,40 @@ class JvmSoundAnalyzer(
         logger.debug { "FFT length: ${constantQ.ffTlength}; bins: ${constantQ.numberOfOutputBands}" }
 
         thread(isDaemon = true, name = "JvmSoundAnalyzer Source Watcher") {
-            sleep(5000)
-            val newMixerInfos = getPlaybackMixerInfos()
-            val newAudioInputs = newMixerInfos.map { it.toAudioInput() }
-            if (newAudioInputs != audioInputs) {
-                mixerInfos = newMixerInfos
-                audioInputs = newAudioInputs
+            while (true) {
+                sleep(5000)
+                val newMixerInfos = getPlaybackMixerInfos()
+                val newAudioInputs = newMixerInfos.map { it.toAudioInput() }
+                if (newAudioInputs != audioInputs) {
+                    mixerInfos = newMixerInfos
+                    audioInputs = newAudioInputs
 
-                inputsListeners.forEach { it.onChange(newAudioInputs) }
+                    inputsListeners.forEach { it.onChange(newAudioInputs) }
+                }
             }
         }
     }
 
     override fun listAudioInputs(): List<AudioInput> = audioInputs
 
-    override fun switchTo(audioInput: AudioInput?) {
+    override suspend fun switchTo(audioInput: AudioInput?) {
         if (audioInput == currentAudioInput) return
-        currentAnalyzerStream?.release()
 
-        if (audioInput == null) return
+        if (audioInput == null) {
+            currentAnalyzerStream?.release()
+            currentAnalyzerStream = null
+            currentAudioInput = audioInput
+        } else {
+            val mixerInfo = mixerInfos.find { audioInput.matches(it) }
+                ?: return
 
-        val mixerInfo = mixerInfos.find { audioInput.matches(it) }
-            ?: return
+            val mixer = AudioSystem.getMixer(mixerInfo)
 
-        val mixer = AudioSystem.getMixer(mixerInfo)
-
-        currentAnalyzerStream = AnalyzerStream(mixer, audioFormat, constantQ, clock) { magnitudes, time ->
-            listeners.forEach { it.onSample(SoundAnalyzer.Analysis(constantQ.freqencies, magnitudes, time)) }
+            currentAnalyzerStream?.release()
+            currentAnalyzerStream = AnalyzerStream(mixer, audioFormat, constantQ, clock) { magnitudes, time ->
+                listeners.forEach { it.onSample(SoundAnalyzer.Analysis(constantQ.freqencies, magnitudes, time)) }
+            }
+            currentAudioInput = audioInput
         }
     }
 
@@ -79,14 +87,11 @@ class JvmSoundAnalyzer(
     private fun getPlaybackMixerInfos(): List<Mixer.Info> {
         return AudioSystem.getMixerInfo().mapNotNull { mixerInfo ->
             val mixer = AudioSystem.getMixer(mixerInfo)
-            logger.warn { "* ${mixerInfo.name}:" }
-            mixer.sourceLineInfo.forEach { logger.warn { "** sourceLine: $it"} }
-            mixer.targetLineInfo.forEach { logger.warn { "** targetLine: $it"} }
-            if (mixer.sourceLineInfo.isNotEmpty()) mixerInfo else null
+            if (mixer.targetLineInfo.isNotEmpty()) mixerInfo else null
         }.also {
-            logger.warn { "${it.size} playback mixers available:" }
+            logger.debug { "${it.size} playback mixers available:" }
             it.forEach {
-                logger.warn { "* ${it.name} (${it.description})" }
+                logger.debug { "* ${it.name} (${it.description})" }
             }
         }
     }
@@ -107,3 +112,9 @@ class JvmSoundAnalyzer(
         )
     }
 }
+
+internal actual fun createServerSoundAnalyzer(pluginContext: PluginContext): SoundAnalyzer =
+    JvmSoundAnalyzer(pluginContext.clock)
+
+actual fun getSoundAnalysisViews(): SoundAnalysisViews =
+    TODO("Sound analysis plugin view not implemented on JVM")

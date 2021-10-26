@@ -4,6 +4,8 @@ import baaahs.PubSub
 import baaahs.RefCounted
 import baaahs.RefCounter
 import baaahs.ShowPlayer
+import baaahs.app.ui.CommonIcons
+import baaahs.app.ui.dialog.DialogPanel
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
 import baaahs.gl.data.Feed
@@ -13,18 +15,19 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
+import baaahs.show.Control
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
-import baaahs.util.Logger
+import baaahs.sim.BridgeClient
 import baaahs.util.Time
 import com.danielgergely.kgl.*
 import kotlinx.cli.ArgParser
-import kotlinx.cli.ArgType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.FloatArraySerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.nullable
+import kotlinx.serialization.builtins.serializer
 
 class SoundAnalysisPlugin internal constructor(
     val soundAnalyzer: SoundAnalyzer,
@@ -34,8 +37,20 @@ class SoundAnalysisPlugin internal constructor(
     override val packageName: String = id
     override val title: String = "Sound Analysis"
 
+    override val addControlMenuItems: List<AddControlMenuItem>
+        get() = listOf(
+            AddControlMenuItem("New Sound Analysis Control…", CommonIcons.SoundAnalysisControl) {
+                MutableSoundAnalysisControl()
+            }
+        )
+
     override val contentTypes: List<ContentType>
         get() = dataSourceBuilders.map { it.contentType }
+
+    override val controlSerializers: List<SerializerRegistrar<out Control>>
+        get() = listOf(
+            classSerializer(SoundAnalysisControl.serializer())
+        )
 
     override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
         get() = listOf(
@@ -52,6 +67,8 @@ class SoundAnalysisPlugin internal constructor(
 
     internal val dataSource = SoundAnalysisDataSource()
 
+    override fun getSettingsPanel(): DialogPanel = SoundAnalysisSettingsPanel()
+
     @SerialName("baaahs.SoundAnalysis:SoundAnalysis")
     inner class SoundAnalysisDataSource internal constructor() : DataSource {
         override val pluginPackage: String get() = id
@@ -63,9 +80,7 @@ class SoundAnalysisPlugin internal constructor(
             SoundAnalysisFeed(getVarName(id), soundAnalyzer, historySize)
     }
 
-    companion object : Plugin<Args> /*, SimulatorPlugin*/ {
-        private val logger = Logger<SoundAnalysisPlugin>()
-
+    companion object : Plugin<Args>, SimulatorPlugin {
         override val id = "baaahs.SoundAnalysis"
 
         val soundAnalysisStruct = GlslType.Struct(
@@ -86,85 +101,139 @@ class SoundAnalysisPlugin internal constructor(
         }
 
         override fun openForClient(pluginContext: PluginContext): OpenClientPlugin {
-            return SoundAnalysisPlugin(PubSubSubscriber(pluginContext.pubSub))
+            return SoundAnalysisPlugin(PubSubSubscriber(pluginContext.pubSub, "client"))
         }
 
-//        override fun openForSimulator(): OpenSimulatorPlugin =
-//            object : OpenSimulatorPlugin {
-//                override fun getBridgePlugin(pluginContext: PluginContext): OpenBridgePlugin? =
-//                    SoundAnalysisBridgePlugin(createServerSoundAnalyzer(pluginContext))
-//
-//                override fun getServerPlugin(pluginContext: PluginContext, bridgeClient: BridgeClient) =
-//                    SoundAnalysisPlugin(
-//                        PubSubSoundAnalysisData(
-//                            PubSubPublisherz<SoundAnalysis>(
-//                                PubSubSoundAnalyzer
-//                            )
-//                        )
-//                    )
-//
-//                override fun getClientPlugin(pluginContext: PluginContext): OpenClientPlugin {
-//                    TODO("not implemented")
-//                }
-//            }
+        override fun openForSimulator(): OpenSimulatorPlugin =
+            object : OpenSimulatorPlugin {
+                override fun getBridgePlugin(pluginContext: PluginContext): OpenBridgePlugin =
+                    PubSubPublisher(createServerSoundAnalyzer(pluginContext), pluginContext)
+
+                override fun getServerPlugin(pluginContext: PluginContext, bridgeClient: BridgeClient): SoundAnalysisPlugin {
+                    val soundAnalyzer = PubSubSubscriber(bridgeClient.pubSub, "server")
+                    PubSubPublisher(soundAnalyzer, pluginContext)
+                    return SoundAnalysisPlugin(soundAnalyzer)
+                }
+
+                override fun getClientPlugin(pluginContext: PluginContext): OpenClientPlugin =
+                    openForClient(pluginContext)
+            }
 
         private val inputsTopic = PubSub.Topic("plugins/${id}/inputs", ListSerializer(AudioInput.serializer()))
         private val currentInputTopic = PubSub.Topic("plugins/${id}/currentInput", AudioInput.serializer().nullable)
-        private val magnitudesTopic = PubSub.Topic("plugins/${id}/magnitudes", FloatArraySerializer())
-        private val frequenciesTopic = PubSub.Topic("plugins/${id}/frequencies", AnalysisData.serializer())
+        private val magnitudesTopic = PubSub.Topic("plugins/${id}/magnitudes", AnalysisData.serializer())
+        private val frequenciesTopic = PubSub.Topic("plugins/${id}/frequencies", FloatArraySerializer())
+
+        private val switchToTopic = PubSub.CommandPort(
+            "plugins/${id}/switchTo",
+            SwitchToCommand.serializer(),
+            Unit.serializer()
+        )
+
+        @Serializable
+        class SwitchToCommand(val audioInput: AudioInput?)
     }
 
     @Serializable
-    class AnalysisData(val frequencies: FloatArray, val timestamp: Time)
+    class AnalysisData(val magnitudes: FloatArray, val timestamp: Time)
 
     class Args(parser: ArgParser) {
-        val audioInput by parser.option(ArgType.String, description = "Audio input for spectral analysys")
+//        val audioInput by parser.option(ArgType.String, description = "Audio input for spectral analysys")
     }
 
     class PubSubPublisher(
         soundAnalyzer: SoundAnalyzer,
         pluginContext: PluginContext
-    ) {
+    ) : OpenBridgePlugin {
         private var audioInputs: List<AudioInput> = soundAnalyzer.listAudioInputs()
 
         private val pubSub = pluginContext.pubSub
 
-        val inputsChannel = pubSub.openChannel(inputsTopic, audioInputs) { audioInputs = it }
-        val magnitudesChannel = pubSub.openChannel(magnitudesTopic, floatArrayOf()) {}
-        val frequenciesChannel = pubSub.openChannel(frequenciesTopic, AnalysisData(floatArrayOf(), 0.0)) { }
+        private val inputsChannel = pubSub.openChannel(inputsTopic, audioInputs) {
+            error("Huh? Don't update inputs!")
+        }
+
+        private val currentInputChannel = pubSub.openChannel(currentInputTopic, soundAnalyzer.currentAudioInput) {
+            error("Not allowed!")
+        }
+
+        init {
+            soundAnalyzer.listen { inputs: List<AudioInput> ->
+                inputsChannel.onChange(inputs)
+            }
+
+            pubSub.listenOnCommandChannel(switchToTopic) {
+                soundAnalyzer.switchTo(it.audioInput)
+                currentInputChannel.onChange(it.audioInput)
+            }
+
+        }
+        private var priorMagnitudes = floatArrayOf()
+        private val magnitudesChannel = pubSub.openChannel(magnitudesTopic, AnalysisData(priorMagnitudes, 0.0)) {
+            error("Huh? Don't update magnitudes!")
+        }
+        private var priorFrequencies = floatArrayOf()
+        private val frequenciesChannel = pubSub.openChannel(frequenciesTopic, priorFrequencies) {
+            error("Huh? Don't update frequencies!")
+        }
 
         init {
             soundAnalyzer.listen { analysis: SoundAnalyzer.Analysis ->
-                magnitudesChannel.onChange(analysis.magnitudes)
-                frequenciesChannel.onChange(AnalysisData(analysis.frequencies, analysis.timestamp))
+                if (!analysis.magnitudes.contentEquals(priorMagnitudes)) {
+                    magnitudesChannel.onChange(AnalysisData(analysis.magnitudes, analysis.timestamp))
+                    priorMagnitudes = analysis.magnitudes
+                }
+
+                if (!analysis.frequencies.contentEquals(priorFrequencies)) {
+                    frequenciesChannel.onChange(analysis.frequencies)
+                    priorFrequencies = analysis.frequencies
+                }
             }
         }
     }
 
-    class PubSubSubscriber(pubSub: PubSub.Endpoint) : SoundAnalyzer {
-        override val currentAudioInput: AudioInput? = null
+    class PubSubSubscriber(pubSub: PubSub.Endpoint, role: String) : SoundAnalyzer {
+        override var currentAudioInput: AudioInput? = null
+            private set
         private var audioInputs: List<AudioInput> = emptyList()
-        private var magnitudes: FloatArray? = null
-        private var frequencies: FloatArray? = null
+        private var magnitudes: FloatArray = floatArrayOf()
+        private var sampleTimestamp: Time = 0.0
+        private var frequencies: FloatArray = floatArrayOf()
         private val listeners = mutableSetOf<SoundAnalyzer.AnalysisListener>()
         private val inputsListeners = mutableSetOf<SoundAnalyzer.InputsListener>()
 
+        private val currentInputChannel: PubSub.Channel<AudioInput?>
+        private val switchToCommand = (pubSub as PubSub.Client).commandSender(switchToTopic)
         init {
-            pubSub.openChannel(inputsTopic, audioInputs) { audioInputs = it }
-            pubSub.openChannel(magnitudesTopic, floatArrayOf()) {
-                magnitudes = it
+            pubSub.openChannel(inputsTopic, audioInputs) { inputs ->
+                audioInputs = inputs
+                inputsListeners.forEach { it.onChange(inputs) }
             }
-            pubSub.openChannel(frequenciesTopic, AnalysisData(floatArrayOf(), 0.0)) {
-                frequencies = it.frequencies
-                val analysis = SoundAnalyzer.Analysis(it.frequencies, magnitudes!!, it.timestamp)
+            currentInputChannel = pubSub.openChannel(currentInputTopic, null) { input ->
+                currentAudioInput = input
+            }
+            pubSub.openChannel(magnitudesTopic, AnalysisData(floatArrayOf(), 0.0)) {
+                magnitudes = it.magnitudes
+                sampleTimestamp = it.timestamp
+                sendSample()
+            }
+            pubSub.openChannel(frequenciesTopic, floatArrayOf()) {
+                frequencies = it
+                sendSample()
+            }
+        }
+
+        private fun sendSample() {
+            if (frequencies.isNotEmpty() && magnitudes.isNotEmpty()) {
+                val analysis = SoundAnalyzer.Analysis(frequencies, magnitudes, sampleTimestamp)
                 listeners.forEach { it.onSample(analysis) }
             }
         }
 
         override fun listAudioInputs(): List<AudioInput> = audioInputs
 
-        override fun switchTo(audioInput: AudioInput?) {
-            TODO("not implemented")
+        override suspend fun switchTo(audioInput: AudioInput?) {
+            switchToCommand(SwitchToCommand(audioInput))
         }
 
         override fun listen(analysisListener: SoundAnalyzer.AnalysisListener): SoundAnalyzer.AnalysisListener {
