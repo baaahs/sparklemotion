@@ -1,7 +1,7 @@
 package baaahs.control
 
 import baaahs.ShowPlayer
-import baaahs.app.ui.EditorPanel
+import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.ButtonGroupPropsEditor
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.GenericPropertiesEditorPanel
@@ -59,7 +59,7 @@ data class MutableButtonGroupControl(
         return control
     }
 
-    override fun getEditorPanels(editableManager: EditableManager): List<EditorPanel> {
+    override fun getEditorPanels(editableManager: EditableManager): List<DialogPanel> {
         return listOf(
             GenericPropertiesEditorPanel(
                 editableManager,
