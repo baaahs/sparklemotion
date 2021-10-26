@@ -6,7 +6,7 @@ interface SoundAnalyzer {
     val currentAudioInput: AudioInput?
 
     fun listAudioInputs(): List<AudioInput>
-    fun switchTo(audioInput: AudioInput?)
+    suspend fun switchTo(audioInput: AudioInput?)
 
     fun listen(analysisListener: AnalysisListener): AnalysisListener
     fun unlisten(analysisListener: AnalysisListener)

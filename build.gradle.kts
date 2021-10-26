@@ -223,6 +223,10 @@ tasks.withType(KotlinWebpack::class) {
     inputs.dir("src/jsMain/js")
 }
 
+rootProject.plugins.withType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin::class.java) {
+    rootProject.the<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>().versions.webpackCli.version = "4.9.0"
+}
+
 tasks.withType(KotlinCompile::class) {
     kotlinOptions.jvmTarget = "1.8"
 }

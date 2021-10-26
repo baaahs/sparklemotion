@@ -1,6 +1,6 @@
 package baaahs.client
 
-import baaahs.app.ui.settings.UiSettings
+import baaahs.app.settings.UiSettings
 import baaahs.sim.BrowserSandboxFs
 import kotlinx.serialization.json.Json
 

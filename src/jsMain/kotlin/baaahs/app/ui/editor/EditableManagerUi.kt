@@ -1,10 +1,11 @@
 package baaahs.app.ui.editor
 
-import baaahs.app.ui.EditorPanel
-import baaahs.app.ui.PatchHolderEditorHelpText
-import baaahs.app.ui.controls.problemBadge
-import baaahs.ui.*
-import external.ErrorBoundary
+import baaahs.app.ui.dialog.DialogStyles
+import baaahs.app.ui.dialog.dialogPanels
+import baaahs.ui.Styles
+import baaahs.ui.on
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
 import materialui.components.button.button
@@ -18,13 +19,6 @@ import materialui.components.drawer.enums.DrawerVariant
 import materialui.components.iconbutton.enums.IconButtonStyle
 import materialui.components.iconbutton.iconButton
 import materialui.components.link.link
-import materialui.components.list.enums.ListStyle
-import materialui.components.list.list
-import materialui.components.listitem.listItem
-import materialui.components.listitemicon.listItemIcon
-import materialui.components.listitemtext.listItemText
-import materialui.components.listsubheader.enums.ListSubheaderStyle
-import materialui.components.listsubheader.listSubheader
 import materialui.components.portal.portal
 import materialui.components.snackbar.snackbar
 import materialui.components.typography.typographyH6
@@ -38,7 +32,6 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.dom.form
-import react.dom.header
 
 val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") { props ->
     observe(props.editableManager)
@@ -69,47 +62,8 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
     val handleClose = callback { _: Event -> props.editableManager.close() }
     val handleApply = callback { _: Event -> props.editableManager.applyChanges() }
 
-    val editorPanels = props.editableManager.editorPanels
+    val editorPanels = props.editableManager.dialogPanels
     val selectedPanel = props.editableManager.selectedPanel
-
-    fun RBuilder.recursingList(editorPanels: List<EditorPanel>) {
-        list(EditableStyles.tabsList on ListStyle.root) {
-            var previousListSubhead: String? = null
-            editorPanels.forEach { editorPanel ->
-                editorPanel.listSubhead?.let { subhead ->
-                    if (previousListSubhead != subhead) {
-                        listSubheader(EditableStyles.tabsSubheader on ListSubheaderStyle.root) { +subhead }
-                        previousListSubhead = subhead
-                    }
-                }
-
-                listItem {
-                    attrs.button = true
-                    attrs.selected = selectedPanel == editorPanel
-                    attrs.onClickFunction = { props.editableManager.openPanel(editorPanel) }
-
-                    editorPanel.icon?.let {
-                        listItemIcon(+EditableStyles.tabsListItemIcon) {
-                            icon(it)
-                        }
-                    }
-
-                    listItemText {
-                        +editorPanel.title
-                    }
-
-                    editorPanel.problemLevel?.let {
-                        problemBadge(it)
-                    }
-                }
-
-                val nestedPanels = editorPanel.getNestedEditorPanels()
-                if (nestedPanels.isNotEmpty()) {
-                    recursingList(nestedPanels)
-                }
-            }
-        }
-    }
 
     portal {
         form {
@@ -122,11 +76,11 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
                 attrs.open = props.editableManager.isEditing()
                 attrs.onClose = handleDrawerClose
 
-                dialogTitle(+EditableStyles.dialogTitle) {
+                dialogTitle(+DialogStyles.dialogTitle) {
                     attrs.disableTypography = true
                     typographyH6 { +props.editableManager.uiTitle }
 
-                    div(+EditableStyles.dialogTitleButtons) {
+                    div(+DialogStyles.dialogTitleButtons) {
                         iconButton(Styles.buttons on IconButtonStyle.root) {
                             icon(materialui.icons.Undo)
                             attrs.disabled = !props.editableManager.canUndo()
@@ -145,39 +99,10 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
                     }
                 }
 
-                div(+EditableStyles.panel and EditableStyles.columns) {
-                    div(+EditableStyles.tabsListCol) {
-                        header {
-                            +"Tabs"
-                            help {
-                                attrs.divClass = Styles.helpInline.name
-                                attrs.inject(PatchHolderEditorHelpText.fixtures)
-                            }
-                        }
-
-                        recursingList(editorPanels)
-                    }
-
-                    div(+EditableStyles.editorCol) {
-                        selectedPanel?.let { editorPanel ->
-                            header {
-                                +editorPanel.title
-
-                                help {
-                                    attrs.divClass = Styles.helpInline.name
-                                    // TODO: this should come from editorPanel:
-                                    attrs.inject(PatchHolderEditorHelpText.patchOverview)
-                                }
-                            }
-
-                            val panelView = editorPanel.getView()
-                            ErrorBoundary {
-                                attrs.FallbackComponent = ErrorDisplay
-
-                                with (panelView) { render() }
-                            }
-                        }
-                    }
+                dialogPanels {
+                    attrs.panels = editorPanels
+                    attrs.selectedPanel = selectedPanel
+                    attrs.onSelectPanel = props.editableManager::openPanel
                 }
 
                 dialogActions {

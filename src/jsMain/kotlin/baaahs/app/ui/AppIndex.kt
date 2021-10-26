@@ -1,10 +1,10 @@
 package baaahs.app.ui
 
 import baaahs.ShowEditorState
+import baaahs.app.settings.UiSettings
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layout.layoutEditorDialog
-import baaahs.app.ui.settings.UiSettings
 import baaahs.app.ui.settings.settingsDialog
 import baaahs.client.ClientStageManager
 import baaahs.client.WebClient
