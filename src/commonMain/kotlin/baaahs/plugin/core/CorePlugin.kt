@@ -15,7 +15,9 @@ import baaahs.plugin.core.datasource.*
 import baaahs.util.Logger
 import kotlinx.cli.ArgParser
 
-class CorePlugin(private val pluginContext: PluginContext) : OpenServerPlugin, OpenClientPlugin {
+class CorePlugin(
+    private val pluginContext: PluginContext
+) : OpenServerPlugin, OpenClientPlugin {
     override val packageName: String = id
     override val title: String = "SparkleMotion Core"
 

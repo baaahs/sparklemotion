@@ -1,7 +1,6 @@
 package baaahs.util
 
 import baaahs.net.BrowserNetwork
-import baaahs.proto.Ports
 import baaahs.window
 import org.w3c.dom.Location
 
@@ -9,9 +8,7 @@ external fun encodeURIComponent(uri: String): String
 external fun decodeURIComponent(encodedURI: String): String
 
 object JsPlatform {
-    val myAddress = BrowserNetwork.BrowserAddress(hostname())
-    val network by lazy { BrowserNetwork() }
-    val networkWithUdpProxy by lazy { BrowserNetwork(myAddress, Ports.PINKY) }
+    val myAddress by lazy { with(window.location) { BrowserNetwork.BrowserAddress(protocol, hostname, port) } }
 
     fun decodeQueryParams(location: Location): Map<String, String> {
         val query = location.search
@@ -38,13 +35,4 @@ object JsPlatform {
         }.toMap()
     }
 
-    private fun hostname(): String {
-        return window.location.hostname
-    }
-
-    private fun websocketsUrl(): String {
-        val l = window.location
-        val proto = if (l.protocol === "https:") "wss:" else "ws:"
-        return "$proto//${l.hostname}/"
-    }
 }

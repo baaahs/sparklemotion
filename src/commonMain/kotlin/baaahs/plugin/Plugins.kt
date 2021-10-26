@@ -2,6 +2,7 @@ package baaahs.plugin
 
 import baaahs.Gadget
 import baaahs.PubSub
+import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.controller.SacnControllerConfig
 import baaahs.device.DeviceType
@@ -323,6 +324,11 @@ sealed class Plugins private constructor(
 
     fun find(packageName: String): OpenPlugin {
         return byPackage.getBang(packageName, "package")
+    }
+
+    fun getSettingsPanels(): List<DialogPanel> {
+        return byPackage.values.filterIsInstance<OpenClientPlugin>()
+            .mapNotNull { plugin -> plugin.getSettingsPanel() }
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package baaahs.plugin.core
+package baaahs.plugin.sound_analysis
 
 import baaahs.ShowPlayer
 import baaahs.app.ui.dialog.DialogPanel
@@ -9,7 +9,6 @@ import baaahs.show.Control
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenContext
 import baaahs.show.live.OpenControl
-import baaahs.show.live.controlViews
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
@@ -20,21 +19,21 @@ import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonElement
 
 @Serializable
-@SerialName("baaahs.Core:Transition")
-data class TransitionControl(@Transient private val `_`: Boolean = false) : Control {
-    override val title: String get() = "Transition"
+@SerialName("baaahs.SoundAnalysis:SoundAnalysis")
+data class SoundAnalysisControl(@Transient private val `_`: Boolean = false) : Control {
+    override val title: String get() = "SoundAnalysis"
 
     override fun createMutable(mutableShow: MutableShow): MutableControl {
-        return MutableTransitionControl()
+        return MutableSoundAnalysisControl()
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
-        return OpenTransitionControl(id)
+        return OpenSoundAnalysisControl(id)
     }
 }
 
-class MutableTransitionControl : MutableControl {
-    override val title: String get() = "Transition"
+class MutableSoundAnalysisControl : MutableControl {
+    override val title: String get() = "SoundAnalysis"
 
     override var asBuiltId: String? = null
 
@@ -42,16 +41,16 @@ class MutableTransitionControl : MutableControl {
         return emptyList()
     }
 
-    override fun build(showBuilder: ShowBuilder): Control {
-        return TransitionControl()
+    override fun build(showBuilder: ShowBuilder): SoundAnalysisControl {
+        return SoundAnalysisControl()
     }
 
     override fun previewOpen(): OpenControl {
-        return OpenTransitionControl(randomId(title.camelize()))
+        return OpenSoundAnalysisControl(randomId(title.camelize()))
     }
 }
 
-class OpenTransitionControl(
+class OpenSoundAnalysisControl(
     override val id: String
 ) : OpenControl {
     override fun getState(): Map<String, JsonElement>? = null
@@ -59,9 +58,18 @@ class OpenTransitionControl(
     override fun applyState(state: Map<String, JsonElement>) {}
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl {
-        return MutableTransitionControl()
+        return MutableSoundAnalysisControl()
     }
 
     override fun getView(controlProps: ControlProps): View =
-        controlViews.forTransition(this, controlProps)
+        soundAnalysisViews.forControl(this, controlProps)
 }
+
+interface SoundAnalysisViews {
+    fun forControl(openButtonControl: OpenSoundAnalysisControl, controlProps: ControlProps): View
+
+    fun forSettingsPanel(): View
+}
+
+val soundAnalysisViews by lazy { getSoundAnalysisViews() }
+expect fun getSoundAnalysisViews(): SoundAnalysisViews

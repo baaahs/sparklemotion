@@ -1,6 +1,5 @@
 package baaahs.net
 
-import baaahs.util.JsPlatform
 import baaahs.util.Logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -16,7 +15,9 @@ import org.w3c.dom.WebSocket
  */
 class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, private val udpProxyPort: Int = 0) : Network {
     override fun link(name: String): Network.Link = object : Network.Link {
-        override val myAddress: Network.Address = JsPlatform.myAddress
+        override val myAddress: Network.Address = object : Network.Address {
+            override fun asString(): String = "BrowserNetwork:localhost"
+        }
 
         override val myHostname: String get() = "Browser"
 
@@ -83,8 +84,12 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
                 }
             }
 
-            webSocket.onerror = { console.error("WebSocket error!", it) }
+            webSocket.onerror = {
+                logger.error { "WebSocket error!" }
+                console.error("WebSocket error!", it)
+            }
             webSocket.onclose = {
+                logger.error { "WebSocket close!" }
                 console.error("WebSocket close!", it)
                 webSocketListener.reset(tcpConnection)
             }
