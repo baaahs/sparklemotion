@@ -34,6 +34,7 @@ mapper-index.html
 mapper/index.html
 monitor/index.html
 normalize.css
+playa-2021-panels.obj
 react-mosaic-component.css
 shader-libraries/built-in/Brightness.glsl
 shader-libraries/built-in/Fireball.glsl
