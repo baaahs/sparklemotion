@@ -283,7 +283,7 @@ object ProjectionPreviewDevice: DeviceType {
         )
 
     override val defaultConfig: FixtureConfig
-        get() = TODO("not implemented")
+        get() = Config()
 
     override fun createResultStorage(renderResults: RenderResults): ResultStorage {
         val resultBuffer = renderResults.allocate("Vertex Location", Vec2ResultType)
@@ -295,7 +295,6 @@ object ProjectionPreviewDevice: DeviceType {
     @Serializable
     class Config : FixtureConfig {
         override val deviceType: DeviceType
-            get() = TODO("not implemented")
-
+            get() = ProjectionPreviewDevice
     }
 }
