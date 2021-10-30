@@ -230,7 +230,7 @@ class PreviewShaderBuilder(
     }
 
     fun release() {
-        feeds.forEach { feed -> feed.release() }
+        feeds.forEach { feed -> feed.disuse() }
     }
 
     fun finalize() {

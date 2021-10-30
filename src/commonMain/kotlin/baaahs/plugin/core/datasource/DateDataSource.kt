@@ -73,7 +73,5 @@ data class DateDataSource(
                     }
                 }
             }
-
-            override fun release() = Unit
         }
 }

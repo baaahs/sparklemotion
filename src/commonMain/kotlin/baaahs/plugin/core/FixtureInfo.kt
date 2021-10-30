@@ -61,9 +61,8 @@ data class FixtureInfoDataSource(@Transient val `_`: Boolean = true) : DataSourc
 }
 
 class FixtureInfoFeed(
-    private val id: String,
-    private val refCounter: RefCounter = RefCounter()
-) : Feed, RefCounted by refCounter {
+    private val id: String
+) : Feed, RefCounted by RefCounter() {
     override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
         override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {
             override val updateMode: UpdateMode get() = UpdateMode.PER_FIXTURE
@@ -82,9 +81,5 @@ class FixtureInfoFeed(
                 matrixUniform?.set(fixtureInfo?.matrix ?: Matrix4())
             }
         }
-    }
-
-    override fun release() {
-        refCounter.release()
     }
 }
