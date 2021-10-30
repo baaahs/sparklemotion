@@ -132,6 +132,7 @@ class WebClient(
         val newOpenShow = newShow?.let { stageManager.openShow(newShow, newShowState) }
         openShow?.disuse()
         openShow = newOpenShow
+        newOpenShow?.use()
         this.show = newShow
         this.showIsUnsaved = newIsUnsaved
         this.showFile = newFile
