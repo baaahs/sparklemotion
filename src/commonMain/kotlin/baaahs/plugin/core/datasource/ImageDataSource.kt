@@ -51,7 +51,5 @@ data class ImageDataSource(val imageTitle: String) : DataSource {
                         // no-op
                     }
             }
-
-            override fun release() = Unit
         }
 }

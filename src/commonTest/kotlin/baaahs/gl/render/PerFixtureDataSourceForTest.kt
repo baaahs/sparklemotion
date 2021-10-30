@@ -31,7 +31,7 @@ class PerFixtureDataSourceForTest(val updateMode: UpdateMode) : DataSource {
     inner class TestFeed(val id: String) : Feed, RefCounted by RefCounter() {
         var released = false
         override fun bind(gl: GlContext): EngineFeed = TestEngineFeed().also { engineFeeds.add(it) }
-        override fun release() = run { super.release(); released = released.truify() }
+        override fun onRelease() { released = released.truify() }
     }
 
     inner class TestEngineFeed : EngineFeed {

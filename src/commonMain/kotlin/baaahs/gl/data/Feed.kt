@@ -10,8 +10,6 @@ import baaahs.show.UpdateMode
 
 interface Feed : RefCounted {
     fun bind(gl: GlContext): EngineFeed
-
-    override fun release() = Unit
 }
 
 /**

@@ -74,9 +74,8 @@ data class PixelIndexDataSource(@Transient val `_`: Boolean = true) : DataSource
 
 class PixelIndexFeed(
     private val id: String,
-    private val textureUniformId: String,
-    private val refCounter: RefCounter = RefCounter()
-) : Feed, RefCounted by refCounter {
+    private val textureUniformId: String
+) : Feed, RefCounted by RefCounter() {
 
     override fun bind(gl: GlContext): EngineFeed = EngineFeed(gl)
 
@@ -104,10 +103,6 @@ class PixelIndexFeed(
                 ?: error("no uniform $textureUniformId")
             override val isValid: Boolean get() = true
         }
-    }
-
-    override fun release() {
-        refCounter.release()
     }
 
     companion object {

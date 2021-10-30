@@ -45,7 +45,6 @@ data class PixelCoordsTextureDataSource(@Transient val `_`: Boolean = true) : Da
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
         object : Feed, RefCounted by RefCounter() {
-            override fun release() = super.release()
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed {
                     override val isValid: Boolean get() = false

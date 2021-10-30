@@ -53,8 +53,6 @@ data class ColorPickerDataSource(
                     }
                 }
             }
-
-            override fun release() = Unit
         }
     }
 

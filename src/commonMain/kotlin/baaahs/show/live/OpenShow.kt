@@ -52,6 +52,7 @@ class OpenShow(
     val allControls: List<OpenControl> get() = openContext.allControls
     val feeds = allDataSources.entries.associate { (id, dataSource) ->
         val feed = showPlayer.openFeed(id, dataSource)
+        feed.use()
         dataSource to feed
     }
 
@@ -100,9 +101,9 @@ class OpenShow(
         return builder.build()
     }
 
-    override fun onFullRelease() {
+    override fun onRelease() {
         openContext.release()
-        feeds.values.forEach { it.release() }
+        feeds.values.forEach { it.disuse() }
     }
 
     fun applyConstraints() {

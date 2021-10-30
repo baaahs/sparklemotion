@@ -66,8 +66,6 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
                     }
                 }
             }
-
-            override fun release() = Unit
         }
     }
 }
