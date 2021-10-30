@@ -4,6 +4,7 @@ import baaahs.geom.Vector3F
 import baaahs.model.LinearPixelArray
 import baaahs.model.Model
 import baaahs.model.ModelInfo
+import baaahs.model.PixelArray
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -50,7 +51,7 @@ class LinearSurfacePixelStrategy(
     @Transient private val random: Random = Random
 ) : SurfacePixelStrategy {
     override fun forKnownEntity(pixelCount: Int, entity: Model.Entity, model: ModelInfo): List<Vector3F> {
-        if (entity is LinearPixelArray) {
+        if (entity is PixelArray) {
             return entity.calculatePixelLocations(pixelCount)
         }
 

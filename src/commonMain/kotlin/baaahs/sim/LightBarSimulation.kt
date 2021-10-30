@@ -1,8 +1,8 @@
 package baaahs.sim
 
-import baaahs.model.LightBar
+import baaahs.model.PixelArray
 
 expect class LightBarSimulation(
-    lightBar: LightBar,
+    pixelArray: PixelArray,
     simulationEnv: SimulationEnv
 ) : FixtureSimulation
