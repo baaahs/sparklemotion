@@ -1,6 +1,6 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.settings.UiSettings
+import baaahs.app.settings.UiSettings
 import baaahs.client.ClientStageManager
 import baaahs.client.WebClient
 import baaahs.gl.Toolchain

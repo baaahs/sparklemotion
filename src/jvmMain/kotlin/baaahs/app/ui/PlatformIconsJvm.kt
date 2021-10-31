@@ -23,6 +23,7 @@ actual fun getCommonIcons(): PlatformIcons = object : PlatformIcons {
     override val ButtonGroup = FakeIcon
     override val ColorPalette: Icon = FakeIcon
     override val ShaderLibrary: Icon = FakeIcon
+    override val SoundAnalysisControl: Icon = FakeIcon
     override val Vacuity: Icon = FakeIcon
     override val Visualizer: Icon = FakeIcon
     override val Info: Icon = FakeIcon

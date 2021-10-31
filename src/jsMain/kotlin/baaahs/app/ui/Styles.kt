@@ -97,6 +97,10 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
         }
     }
 
+    val appRoot by css {
+        height = 100.vh
+    }
+
     val appDrawerOpen by css {}
     val appDrawerClosed by css {}
 

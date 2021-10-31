@@ -12,6 +12,7 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import java.io.IOException
 import java.net.*
 import java.nio.ByteBuffer
@@ -173,7 +174,7 @@ class JvmNetwork : Network {
                 // Let's give brains lots of time for OTA download:
                 responseWriteTimeoutSeconds = 3000
             }) {
-                install(io.ktor.websocket.WebSockets) {
+                install(WebSockets) {
                     pingPeriod = Duration.ofSeconds(15)
                     timeout = Duration.ofSeconds(15)
                     maxFrameSize = Long.MAX_VALUE
@@ -226,6 +227,10 @@ class JvmNetwork : Network {
                                     logger.warn { "wait huh? received weird data: $frame" }
                                 }
                             }
+                        } catch (e: ClosedReceiveChannelException) {
+                            logger.info { "Websocket closed." }
+                            close(CloseReason(
+                                CloseReason.Codes.NORMAL, "Closed."))
                         } catch (e: Exception) {
                             logger.error(e) { "Error reading websocket frame." }
                             close(CloseReason(
