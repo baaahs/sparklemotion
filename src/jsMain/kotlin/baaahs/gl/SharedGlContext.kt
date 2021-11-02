@@ -97,6 +97,8 @@ class SharedGlContext(
             val rect = containerRect
                 .intersectionWith(sharedCanvasRect)
                 .relativeToBottomLeftOf(sharedCanvasRect)
+                .withWidthAndHeightNoLessThanZero()
+
             setViewport(rect.left, rect.bottom, rect.width, rect.height)
             glContext.webgl.scissor(rect.left, rect.bottom, rect.width, rect.height)
         }
@@ -142,6 +144,14 @@ class SharedGlContext(
                 max(left, other.left),
                 min(bottom, other.bottom),
                 min(right, other.right)
+            )
+
+        fun withWidthAndHeightNoLessThanZero() =
+            Rect(
+                top,
+                left,
+                max(bottom, top),
+                max(right, left)
             )
     }
 }

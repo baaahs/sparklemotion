@@ -298,6 +298,8 @@ class SoundAnalysisFeed(
                         bucketsUniform != null
 
             override fun setOnProgram() {
+                if (bucketCount == 0 || historySize == 0) return
+
                 bucketCountUniform?.set(bucketCount)
                 sampleHistoryCountUniform?.set(historySize)
                 with(textureUnit) {
