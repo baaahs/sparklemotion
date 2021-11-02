@@ -27,6 +27,7 @@ actual fun getCommonIcons() = object : PlatformIcons {
     override val ColorPalette get() = icon(materialui.icons.Palette)
     override val ShaderLibrary get() = icon(materialui.icons.PhotoLibrary)
     override val SoundAnalysisControl get() = icon(materialui.icons.Equalizer)
+    override val SoundInput get() = icon(materialui.icons.Mic)
     override val Vacuity get() = icon(materialui.icons.CheckBoxOutlineBlank)
     override val Visualizer get() = icon(materialui.icons.Visibility)
 
@@ -37,6 +38,6 @@ actual fun getCommonIcons() = object : PlatformIcons {
     fun icon(materialIcon: materialui.Icon) = JsIcon(materialIcon)
 }
 
-private class JsIcon(private val icon: materialui.Icon) : baaahs.ui.Icon {
+private class JsIcon(private val icon: materialui.Icon) : Icon {
     override fun getReactIcon(): materialui.Icon = icon
 }

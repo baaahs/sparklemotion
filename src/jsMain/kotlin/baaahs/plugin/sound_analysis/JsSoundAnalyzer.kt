@@ -7,7 +7,7 @@ import baaahs.ui.View
 import baaahs.ui.renderWrapper
 
 internal actual fun createServerSoundAnalyzer(pluginContext: PluginContext): SoundAnalyzer =
-    SoundAnalysisPlugin.PubSubSubscriber(pluginContext.pubSub, "client")
+    SoundAnalysisPlugin.PubSubSubscriber(pluginContext.pubSub)
 
 actual fun getSoundAnalysisViews(): SoundAnalysisViews =
     object : SoundAnalysisViews {
@@ -20,8 +20,6 @@ actual fun getSoundAnalysisViews(): SoundAnalysisViews =
             }
 
         override fun forSettingsPanel(): View = renderWrapper {
-            soundAnalysisSettingsPanel {
-//        attrs.changeUiSettings = changeUiSettings
-            }
+            soundAnalysisSettingsPanel {}
         }
     }
