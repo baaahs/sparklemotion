@@ -274,8 +274,7 @@
           "type": "datasource",
           "dataSourceId": "pixelLocation"
         }
-      },
-      "priority": 20
+      }
     },
     "darkness-inst": {
       "shaderId": "darkness",
