@@ -11,6 +11,7 @@ struct SoundAnalysis {
     int bucketCount;
     int sampleHistoryCount;
     sampler2D buckets;
+    float maxMagnitude;
 };
 uniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis
 
@@ -47,13 +48,15 @@ vec3 background(vec2 pos) {
 
 vec4 drawEq(vec2 pos) {
     vec3 color = vec3(0.);
-    float o = 1.;
 
-    color += texture(soundAnalysis.buckets, pos).rrr;
-    o -= 1.;
-
-    // Background.
-    color += o * background(pos);
+    vec2 txPos = vec2(pos.y, pow(1. - pos.x, 2.));
+    float magnitude = texture(soundAnalysis.buckets, txPos).r;
+    vec3 eqColor = vec3(
+        magnitude,
+        (magnitude - .333) * 3. / 2.,
+        (magnitude - .666) * 3.
+    );
+    color += clamp(eqColor, 0., 1.);
 
     return vec4(color, 1.);
 }
@@ -65,7 +68,7 @@ void main(void) {
 
     // Draw border.
     float border = 1. - rect(eqBottomLeft, eqTopRight, pos);
-    color += border * borderColor;
+    color += border * borderColor * soundAnalysis.maxMagnitude;
     o -= o * border;
 
     // Draw eq.

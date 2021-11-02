@@ -7,6 +7,7 @@ import be.tarsos.dsp.ConstantQ
 import java.lang.Thread.sleep
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
+import javax.sound.sampled.DataLine
 import javax.sound.sampled.Mixer
 import kotlin.concurrent.thread
 
@@ -37,7 +38,7 @@ class JvmSoundAnalyzer(
                     mixerInfos = newMixerInfos
                     audioInputs = newAudioInputs
 
-                    inputsListeners.forEach { it.onChange(newAudioInputs) }
+                    notifyChanged()
                 }
             }
         }
@@ -64,6 +65,8 @@ class JvmSoundAnalyzer(
             }
             currentAudioInput = audioInput
         }
+
+        notifyChanged()
     }
 
     override fun listen(analysisListener: SoundAnalyzer.AnalysisListener): SoundAnalyzer.AnalysisListener {
@@ -84,10 +87,14 @@ class JvmSoundAnalyzer(
         inputsListeners.remove(inputsListener)
     }
 
+    private fun notifyChanged() {
+        inputsListeners.forEach { it.onChange(audioInputs, currentAudioInput) }
+    }
+
     private fun getPlaybackMixerInfos(): List<Mixer.Info> {
         return AudioSystem.getMixerInfo().mapNotNull { mixerInfo ->
             val mixer = AudioSystem.getMixer(mixerInfo)
-            if (mixer.targetLineInfo.isNotEmpty()) mixerInfo else null
+            if (mixer.targetLineInfo.any { it is DataLine.Info }) mixerInfo else null
         }.also {
             logger.debug { "${it.size} playback mixers available:" }
             it.forEach {
