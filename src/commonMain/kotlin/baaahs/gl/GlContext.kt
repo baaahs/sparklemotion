@@ -256,6 +256,8 @@ abstract class GlContext(
 
     open fun checkIfResultBufferCanContainHalfFloats(required: Boolean = false): Boolean = true
 
+    open fun checkForLinearFilteringOfFloatTextures(required: Boolean = false): Boolean = true
+
     fun <T> noCheck(fn: Kgl.() -> T): T {
         return kgl.fn()
     }

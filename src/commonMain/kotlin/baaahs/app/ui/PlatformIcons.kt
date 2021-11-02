@@ -29,6 +29,7 @@ interface PlatformIcons {
     val ColorPalette: Icon
     val ShaderLibrary: Icon
     val SoundAnalysisControl: Icon
+    val SoundInput: Icon
     val Vacuity: Icon
     val Visualizer: Icon
 

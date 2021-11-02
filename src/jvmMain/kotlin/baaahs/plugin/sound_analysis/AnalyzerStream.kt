@@ -12,8 +12,8 @@ import javax.sound.sampled.*
 import kotlin.concurrent.thread
 
 class AnalyzerStream(
-    private val mixer: Mixer,
-    private val audioFormat: AudioFormat,
+    mixer: Mixer,
+    audioFormat: AudioFormat,
     private val constantQ: ConstantQ,
     private val clock: Clock,
     private val onProcess: (magnitudes: FloatArray, time: Time) -> Unit

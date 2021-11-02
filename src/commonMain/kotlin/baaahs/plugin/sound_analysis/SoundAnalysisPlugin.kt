@@ -19,6 +19,7 @@ import baaahs.show.Control
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.sim.BridgeClient
+import baaahs.util.Logger
 import baaahs.util.Time
 import com.danielgergely.kgl.*
 import kotlinx.cli.ArgParser
@@ -31,7 +32,7 @@ import kotlinx.serialization.builtins.serializer
 
 class SoundAnalysisPlugin internal constructor(
     val soundAnalyzer: SoundAnalyzer,
-    val historySize: Int = 300
+    val historySize: Int = 100
 ) : OpenServerPlugin, OpenClientPlugin {
 
     override val packageName: String = id
@@ -87,7 +88,8 @@ class SoundAnalysisPlugin internal constructor(
             "SoundAnalysis",
             "bucketCount" to GlslType.Int,
             "sampleHistoryCount" to GlslType.Int,
-            "buckets" to GlslType.Sampler2D
+            "buckets" to GlslType.Sampler2D,
+            "maxMagnitude" to GlslType.Float
         )
 
         val soundAnalysisContentType = ContentType("sound-analysis", "Sound Analysis", soundAnalysisStruct)
@@ -101,7 +103,7 @@ class SoundAnalysisPlugin internal constructor(
         }
 
         override fun openForClient(pluginContext: PluginContext): OpenClientPlugin {
-            return SoundAnalysisPlugin(PubSubSubscriber(pluginContext.pubSub, "client"))
+            return SoundAnalysisPlugin(PubSubSubscriber(pluginContext.pubSub))
         }
 
         override fun openForSimulator(): OpenSimulatorPlugin =
@@ -110,7 +112,7 @@ class SoundAnalysisPlugin internal constructor(
                     PubSubPublisher(createServerSoundAnalyzer(pluginContext), pluginContext)
 
                 override fun getServerPlugin(pluginContext: PluginContext, bridgeClient: BridgeClient): SoundAnalysisPlugin {
-                    val soundAnalyzer = PubSubSubscriber(bridgeClient.pubSub, "server")
+                    val soundAnalyzer = PubSubSubscriber(bridgeClient.pubSub)
                     PubSubPublisher(soundAnalyzer, pluginContext)
                     return SoundAnalysisPlugin(soundAnalyzer)
                 }
@@ -146,6 +148,7 @@ class SoundAnalysisPlugin internal constructor(
         pluginContext: PluginContext
     ) : OpenBridgePlugin {
         private var audioInputs: List<AudioInput> = soundAnalyzer.listAudioInputs()
+        private var currentInput: AudioInput? = soundAnalyzer.currentAudioInput
 
         private val pubSub = pluginContext.pubSub
 
@@ -158,8 +161,16 @@ class SoundAnalysisPlugin internal constructor(
         }
 
         init {
-            soundAnalyzer.listen { inputs: List<AudioInput> ->
-                inputsChannel.onChange(inputs)
+            soundAnalyzer.listen { inputs: List<AudioInput>, currentInput: AudioInput? ->
+                if (audioInputs != inputs) {
+                    audioInputs = inputs
+                    inputsChannel.onChange(inputs)
+                }
+
+                if (this.currentInput != currentInput) {
+                    this.currentInput = currentInput
+                    currentInputChannel.onChange(currentInput)
+                }
             }
 
             pubSub.listenOnCommandChannel(switchToTopic) {
@@ -192,7 +203,7 @@ class SoundAnalysisPlugin internal constructor(
         }
     }
 
-    class PubSubSubscriber(pubSub: PubSub.Endpoint, role: String) : SoundAnalyzer {
+    class PubSubSubscriber(pubSub: PubSub.Endpoint) : SoundAnalyzer {
         override var currentAudioInput: AudioInput? = null
             private set
         private var audioInputs: List<AudioInput> = emptyList()
@@ -204,23 +215,32 @@ class SoundAnalysisPlugin internal constructor(
 
         private val currentInputChannel: PubSub.Channel<AudioInput?>
         private val switchToCommand = (pubSub as PubSub.Client).commandSender(switchToTopic)
+
         init {
             pubSub.openChannel(inputsTopic, audioInputs) { inputs ->
                 audioInputs = inputs
-                inputsListeners.forEach { it.onChange(inputs) }
+                notifyChanged()
             }
+
             currentInputChannel = pubSub.openChannel(currentInputTopic, null) { input ->
                 currentAudioInput = input
+                notifyChanged()
             }
+
             pubSub.openChannel(magnitudesTopic, AnalysisData(floatArrayOf(), 0.0)) {
                 magnitudes = it.magnitudes
                 sampleTimestamp = it.timestamp
                 sendSample()
             }
+
             pubSub.openChannel(frequenciesTopic, floatArrayOf()) {
                 frequencies = it
                 sendSample()
             }
+        }
+
+        private fun notifyChanged() {
+            inputsListeners.forEach { it.onChange(audioInputs, currentAudioInput) }
         }
 
         private fun sendSample() {
@@ -263,6 +283,7 @@ class SoundAnalysisFeed(
 ) : Feed, RefCounted by RefCounter(), SoundAnalyzer.AnalysisListener {
     private var bucketCount = 0
     private var textureBuffer = FloatArray(0)
+    private var maxMagnitude = 0f
 
     init { soundAnalyzer.listen(this) }
 
@@ -278,24 +299,34 @@ class SoundAnalysisFeed(
         textureBuffer.copyInto(textureBuffer, bucketCount, 0, bucketCount * historySize - bucketCount)
 
         // Copy this sample's data into the buffer.
-        analysis.magnitudes.forEachIndexed { index, magitude ->
-            textureBuffer[index] = magitude * bucketCount
+        var max = 0f
+        analysis.magnitudes.forEachIndexed { index, magnitude ->
+            val normalizedMagnitude = magnitude * bucketCount
+            textureBuffer[index] = normalizedMagnitude
+            if (normalizedMagnitude > max) max = normalizedMagnitude
         }
+        maxMagnitude = max
     }
 
-    override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
+    override fun bind(gl: GlContext): EngineFeed = SoundAnalysisEngineFeed(gl)
+
+    inner class SoundAnalysisEngineFeed(private val gl: GlContext) : EngineFeed {
         private val textureUnit = gl.getTextureUnit(this)
         private val texture = gl.check { createTexture() }
+
+        init { gl.checkForLinearFilteringOfFloatTextures() }
 
         override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed {
             val bucketCountUniform = glslProgram.getUniform("${varPrefix}.bucketCount")
             val sampleHistoryCountUniform = glslProgram.getUniform("${varPrefix}.sampleHistoryCount")
             val bucketsUniform = glslProgram.getUniform("${varPrefix}.buckets")
+            val maxMagnitudeUniform = glslProgram.getUniform("${varPrefix}.maxMagnitude")
 
             override val isValid: Boolean
                 get() = bucketCountUniform != null ||
                         sampleHistoryCountUniform != null ||
-                        bucketsUniform != null
+                        bucketsUniform != null ||
+                        maxMagnitudeUniform != null
 
             override fun setOnProgram() {
                 if (bucketCount == 0 || historySize == 0) return
@@ -311,6 +342,7 @@ class SoundAnalysisFeed(
                     )
                 }
                 bucketsUniform?.set(textureUnit)
+                maxMagnitudeUniform?.set(maxMagnitude)
             }
         }
 
@@ -322,6 +354,10 @@ class SoundAnalysisFeed(
 
     override fun onRelease() {
         soundAnalyzer.unlisten(this)
+    }
+
+    companion object {
+        private val logger = Logger<SoundAnalysisFeed>()
     }
 }
 

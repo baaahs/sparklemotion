@@ -64,6 +64,10 @@ actual object GlBase {
             return ensureExtension("EXT_color_buffer_half_float", required)
         }
 
+        override fun checkForLinearFilteringOfFloatTextures(required: Boolean): Boolean {
+            return ensureExtension("OES_texture_float_linear", required)
+        }
+
         /** Creates a related context with shared state and the given Kgl. */
         open fun requestAnimationFrame(callback: (Double) -> Unit) {
             window.requestAnimationFrame(callback)

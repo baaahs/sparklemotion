@@ -19,7 +19,7 @@ interface SoundAnalyzer {
     }
 
     fun interface InputsListener {
-        fun onChange(audioInputs: List<AudioInput>)
+        fun onChange(audioInputs: List<AudioInput>, currentInput: AudioInput?)
     }
 
     class Analysis(val frequencies: FloatArray, val magnitudes: FloatArray, val timestamp: Time)
