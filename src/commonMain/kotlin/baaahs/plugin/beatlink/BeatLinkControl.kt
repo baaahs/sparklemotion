@@ -1,7 +1,7 @@
 package baaahs.plugin.beatlink
 
 import baaahs.ShowPlayer
-import baaahs.app.ui.EditorPanel
+import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.camelize
 import baaahs.randomId
@@ -37,7 +37,7 @@ class MutableBeatLinkControl : MutableControl {
 
     override var asBuiltId: String? = null
 
-    override fun getEditorPanels(editableManager: EditableManager): List<EditorPanel> {
+    override fun getEditorPanels(editableManager: EditableManager): List<DialogPanel> {
         return emptyList()
     }
 

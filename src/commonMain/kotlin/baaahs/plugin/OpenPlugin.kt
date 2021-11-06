@@ -1,6 +1,7 @@
 package baaahs.plugin
 
 import baaahs.PubSub
+import baaahs.app.ui.dialog.DialogPanel
 import baaahs.device.DeviceType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.ShaderDialect
@@ -56,7 +57,11 @@ interface OpenPlugin {
 }
 
 interface OpenServerPlugin : OpenPlugin
-interface OpenClientPlugin : OpenPlugin
+
+interface OpenClientPlugin : OpenPlugin {
+    fun getSettingsPanel(): DialogPanel? = null
+}
+
 interface OpenBridgePlugin {
     fun onConnectionOpen(tcpConnection: PubSub.Connection) = Unit
     fun onConnectionClose(tcpConnection: PubSub.Connection) = Unit
@@ -96,6 +101,8 @@ class SerializerRegistrar<T : Any>(val klass: KClass<T>, val serializer: KSerial
     fun register(polymorphicModuleBuilder: PolymorphicModuleBuilder<T>) {
         polymorphicModuleBuilder.subclass(klass, serializer)
     }
+
+    override fun toString(): String = "SerializerRegistrar[${klass.simpleName} -> $serializer]"
 }
 
 @OptIn(InternalSerializationApi::class)
@@ -110,6 +117,9 @@ class ObjectSerializer<T : Any>(serialName: String, private val objectInstance: 
         decoder.beginStructure(descriptor).endStructure(descriptor)
         return objectInstance
     }
+
+    override fun toString(): String =
+        "[ObjectSerializer ${descriptor.serialName} -> ${objectInstance::class.simpleName}]"
 }
 
 inline fun <reified T : Any> classSerializer(serializer: KSerializer<T>) =

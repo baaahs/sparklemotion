@@ -1,17 +1,14 @@
 package baaahs
 
 import baaahs.net.JvmNetwork
-import baaahs.plugin.OpenBridgePlugin
 import baaahs.plugin.PluginContext
-import baaahs.plugin.toWsMessage
+import baaahs.plugin.SimulatorPlugin
 import baaahs.proto.Ports
 import baaahs.util.SystemClock
-import io.ktor.http.cio.websocket.Frame.*
+import io.ktor.util.reflect.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.serializer
 
 class SimulatorBridge {
     private val pubSub: PubSub.Server
@@ -25,7 +22,7 @@ class SimulatorBridge {
         pubSub = PubSub.Server(httpServer, handlerScope)
     }
 
-    private val plugins = Pluggables.plugins.mapNotNull {
+    private val plugins = Pluggables.plugins.filterIsInstance<SimulatorPlugin>().mapNotNull {
         val simulatorPlugin = it.openForSimulator()
         simulatorPlugin.getBridgePlugin(PluginContext(SystemClock, pubSub))
     }
@@ -37,7 +34,7 @@ class SimulatorBridge {
             }
         }
     }
-    private val soundAnalyzer = JvmSoundAnalyzer()
+//    private val soundAnalyzer = JvmSoundAnalyzer()
 
 //    private val httpServerz = embeddedServer(Netty, Ports.SIMULATOR_BRIDGE_TCP) {
 //        install(WebSockets) {
@@ -82,6 +79,16 @@ class SimulatorBridge {
 //                    when (frame) {
 //                        is Text -> {
 //                            val text = frame.readText()
+//    "listAudioInputs" -> {
+//        val inputs = soundAnalysisPlatform.listAudioInputs().map { audioInput ->
+//            BridgeAudioInput(audioInput.id, audioInput.title)
+//        }
+//        val inputsJson = json.encodeToString(
+//            ListSerializer(BridgeAudioInput.serializer()),
+//            inputs
+//        )
+//        send(toWsMessage("onAudioInputs", buildJsonObject {  }))
+//    }
 //                            if (text.equals("bye", ignoreCase = true)) {
 //                                close(CloseReason(NORMAL, "Client said BYE"))
 //                                webSocketConnections.remove(this)
@@ -101,29 +108,29 @@ class SimulatorBridge {
 //    }
 
     private fun sendFrequencies(connection: WebSocketServerSession) {
-        connection.outgoing.trySend(
-            Text(
-                toWsMessage(
-                    "soundFrequencies",
-                    OpenBridgePlugin.json.encodeToJsonElement(
-                        ListSerializer(Float.serializer()),
-                        soundAnalyzer.frequencies.toList()
-                    )
-                )
-            )
-        ).isSuccess
+//        connection.outgoing.trySend(
+//            Text(
+//                toWsMessage(
+//                    "soundFrequencies",
+//                    OpenBridgePlugin.json.encodeToJsonElement(
+//                        ListSerializer(Float.serializer()),
+//                        soundAnalyzer.frequencies.toList()
+//                    )
+//                )
+//            )
+//        ).isSuccess
     }
 
     fun run() {
-        soundAnalyzer.listen(object : SoundAnalyzer.AnalysisListener {
-            override fun onSample(analysis: SoundAnalyzer.Analysis) {
-                // todo: don't send more frequently than framerate
-//                sendToClients(
-//                    "soundMagnitudes",
-//                    json.encodeToJsonElement(ListSerializer(Float.serializer()), analysis.magnitudes.toList())
-//                )
-            }
-        })
+//        soundAnalyzer.listen(object : SoundAnalyzer.AnalysisListener {
+//            override fun onSample(analysis: SoundAnalyzer.Analysis) {
+//                // todo: don't send more frequently than framerate
+////                sendToClients(
+////                    "soundMagnitudes",
+////                    json.encodeToJsonElement(ListSerializer(Float.serializer()), analysis.magnitudes.toList())
+////                )
+//            }
+//        })
 
 //        httpServer.start(true)
     }

@@ -2,6 +2,8 @@ package baaahs.ui
 
 import baaahs.window
 import kotlinx.css.*
+import kotlinx.css.properties.deg
+import kotlinx.css.properties.rotate
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.role
 import materialui.components.button.button
@@ -12,10 +14,7 @@ import materialui.components.paper.paper
 import materialui.icon
 import org.w3c.dom.HTMLElement
 import react.Props
-import react.dom.div
-import react.dom.h2
-import react.dom.pre
-import react.dom.span
+import react.dom.*
 import react.functionComponent
 import styled.inlineStyles
 
@@ -38,6 +37,9 @@ val ErrorDisplay = functionComponent<ErrorDisplayProps> { props ->
     }
 
     container {
+        inlineStyles {
+            height = 100.vh
+        }
         attrs.role = "alert"
         inlineStyles {
             height = 100.vh
@@ -71,10 +73,19 @@ val ErrorDisplay = functionComponent<ErrorDisplayProps> { props ->
         paper(+Styles.guruMeditationErrorStackTrace on PaperStyle.root) {
             attrs.elevation = 5
 
-            h2 { +"Stack Trace" }
+            h3 {
+                inlineStyles {
+                    position = Position.absolute
+                    transform.rotate((-90).deg)
+                    declarations["transformOrigin"] = "top right"
+                    left = 0.em
+                }
+                +"Stack Trace"
+            }
             pre {
                 inlineStyles {
                     paddingBottom = 2.em
+                    height = 100.pct
                     overflow = Overflow.scroll
                 }
 

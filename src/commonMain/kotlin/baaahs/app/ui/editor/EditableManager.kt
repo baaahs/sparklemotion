@@ -1,8 +1,8 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.EditIntent
-import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
+import baaahs.app.ui.dialog.DialogPanel
 import baaahs.gl.Toolchain
 import baaahs.show.Show
 import baaahs.show.mutable.MutableShow
@@ -30,22 +30,22 @@ class EditableManager(
     val uiTitle: String
         get() = session?.uiTitle ?: ""
 
-    val editorPanels: List<EditorPanel>
+    val dialogPanels: List<DialogPanel>
         get() = session?.getEditorPanels() ?: emptyList()
 
-    private fun flatEditorPanels(): List<EditorPanel> {
-        val list = arrayListOf<EditorPanel>()
-        fun add(editorPanel: EditorPanel) {
-            list.add(editorPanel)
-            editorPanel.getNestedEditorPanels().forEach { add(it) }
+    private fun flatEditorPanels(): List<DialogPanel> {
+        val list = arrayListOf<DialogPanel>()
+        fun add(dialogPanel: DialogPanel) {
+            list.add(dialogPanel)
+            dialogPanel.getNestedDialogPanels().forEach { add(it) }
         }
-        editorPanels.forEach { add(it) }
+        dialogPanels.forEach { add(it) }
         return list
     }
 
     private var selectedPanelIndex: Int = 0
 
-    val selectedPanel: EditorPanel?
+    val selectedPanel: DialogPanel?
         get() {
             val flatList = flatEditorPanels()
             if (selectedPanelIndex >= flatList.size) return flatList.lastOrNull()
@@ -62,16 +62,16 @@ class EditableManager(
         notifyChanged()
     }
 
-    fun openPanel(editorPanel: EditorPanel) {
-        val index = flatEditorPanels().indexOf(editorPanel)
+    fun openPanel(dialogPanel: DialogPanel) {
+        val index = flatEditorPanels().indexOf(dialogPanel)
         if (index == -1) {
-            logger.warn { "Unknown panel $editorPanel" }
+            logger.warn { "Unknown panel $dialogPanel" }
         }
         selectedPanelIndex = max(0, index)
         notifyChanged()
     }
 
-    /** [EditorPanel]s should call this when they've made a change to the [MutableEditable]. */
+    /** [DialogPanel]s should call this when they've made a change to the [MutableEditable]. */
     fun onChange(pushToUndoStack: Boolean = true) {
         session!!.onChange(pushToUndoStack)
         notifyChanged()
@@ -128,7 +128,7 @@ class EditableManager(
         val uiTitle: String
             get() = "Editing ${mutableEditable.title}"
 
-        fun getEditorPanels(): List<EditorPanel> =
+        fun getEditorPanels(): List<DialogPanel> =
             mutableEditable.getEditorPanels(this@EditableManager)
 
         fun isChanged(): Boolean {

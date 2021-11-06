@@ -10,7 +10,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 class SharedGlContext(
-    private val glContext: GlBase.JsGlContext = GlBase.jsManager.createContext(trace = true)
+    private val glContext: GlBase.JsGlContext = GlBase.jsManager.createContext()
 ) : GlBase.JsGlContext(glContext.canvas, glContext.kgl, glContext.glslVersion, glContext.webgl) {
     private val sharedCanvas = glContext.canvas
     private var sharedLastFrameTimestamp = 0.0
@@ -81,6 +81,8 @@ class SharedGlContext(
         override fun release() {
             this@SharedGlContext.releaseSubContext()
         }
+
+        override fun toString() = "${this::class.simpleName}#$id(${glContext})"
     }
 
     inner class SubKgl(
@@ -97,6 +99,8 @@ class SharedGlContext(
             val rect = containerRect
                 .intersectionWith(sharedCanvasRect)
                 .relativeToBottomLeftOf(sharedCanvasRect)
+                .withWidthAndHeightNoLessThanZero()
+
             setViewport(rect.left, rect.bottom, rect.width, rect.height)
             glContext.webgl.scissor(rect.left, rect.bottom, rect.width, rect.height)
         }
@@ -142,6 +146,14 @@ class SharedGlContext(
                 max(left, other.left),
                 min(bottom, other.bottom),
                 min(right, other.right)
+            )
+
+        fun withWidthAndHeightNoLessThanZero() =
+            Rect(
+                top,
+                left,
+                max(bottom, top),
+                max(right, left)
             )
     }
 }

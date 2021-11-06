@@ -1,4 +1,4 @@
-package baaahs.app.ui.settings
+package baaahs.app.settings
 
 import kotlinx.serialization.Serializable
 
@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class UiSettings(
     val darkMode: Boolean = false,
     val useSharedContexts: Boolean = true,
-    val renderButtonPreviews: Boolean = false,
+    val renderButtonPreviews: Boolean = false
 )

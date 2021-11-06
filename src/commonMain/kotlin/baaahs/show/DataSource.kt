@@ -61,8 +61,9 @@ interface DataSource {
 
     // TODO: kill this
     fun isImplicit(): Boolean = false
-    fun getType(): GlslType
     val contentType: ContentType
+
+    fun getType(): GlslType
     fun getVarName(id: String): String = "in_$id"
 
     fun createFeed(showPlayer: ShowPlayer, id: String): Feed

@@ -1,5 +1,6 @@
 package baaahs.net
 
+import baaahs.util.Logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.khronos.webgl.ArrayBuffer
@@ -83,8 +84,12 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
                 }
             }
 
-            webSocket.onerror = { console.error("WebSocket error!", it) }
+            webSocket.onerror = {
+                logger.error { "WebSocket error!" }
+                console.error("WebSocket error!", it)
+            }
             webSocket.onclose = {
+                logger.error { "WebSocket close!" }
                 console.error("WebSocket close!", it)
                 webSocketListener.reset(tcpConnection)
             }
@@ -111,4 +116,7 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
         override fun toString(): String = asString()
     }
 
+    companion object {
+        private val logger = Logger<BrowserNetwork>()
+    }
 }

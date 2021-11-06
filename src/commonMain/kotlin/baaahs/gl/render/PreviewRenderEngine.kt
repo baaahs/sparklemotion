@@ -48,13 +48,11 @@ class PreviewRenderEngine(
     public override fun render() {
         val program = program ?: return
 
-        gl.useProgram(program)
-        program.aboutToRenderFrame()
-
         gl.check { viewport(0, 0, width, height) }
         gl.check { clearColor(1f, 0f, 0f, 1f) }
         gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
+        gl.useProgram(program)
         program.aboutToRenderFrame()
         quad.prepareToRender(program.vertexAttribLocation) {
             quad.renderRect(0)

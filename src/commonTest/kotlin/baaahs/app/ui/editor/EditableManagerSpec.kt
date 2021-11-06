@@ -40,7 +40,7 @@ object EditableManagerSpec : Spek({
             }
 
             it("editorPanels is empty") {
-                expect(editableManager.editorPanels).isEmpty()
+                expect(editableManager.dialogPanels).isEmpty()
             }
         }
 
@@ -58,7 +58,7 @@ object EditableManagerSpec : Spek({
             }
 
             it("editorPanels comes from the show") {
-                expect(editableManager.editorPanels.map { it.title })
+                expect(editableManager.dialogPanels.map { it.title })
                     .toBe(arrayListOf("Properties", "Patches"))
             }
 

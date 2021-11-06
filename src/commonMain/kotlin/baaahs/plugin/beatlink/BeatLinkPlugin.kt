@@ -68,7 +68,7 @@ class BeatLinkPlugin internal constructor(
                 override val resourceName: String get() = "BeatLink"
                 override val contentType: ContentType get() = beatDataContentType
                 override val serializerRegistrar
-                    get() = objectSerializer("baaahs.BeatLink:BeatLink", beatLinkDataSource)
+                    get() = objectSerializer("$id:BeatLink", beatLinkDataSource)
 
                 override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
                     inputPort.contentType == beatDataContentType
@@ -115,9 +115,9 @@ class BeatLinkPlugin internal constructor(
     inner class BeatLinkDataSource internal constructor() : DataSource {
         override val pluginPackage: String get() = id
         override val title: String get() = "BeatLink"
+        override val contentType: ContentType get() = beatDataContentType
+
         override fun getType(): GlslType = GlslType.Float
-        override val contentType: ContentType
-            get() = beatDataContentType
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): baaahs.gl.data.Feed {
             return object : baaahs.gl.data.Feed, RefCounted by RefCounter() {
@@ -259,7 +259,7 @@ class BeatLinkPlugin internal constructor(
         }
 
         override fun openForClient(pluginContext: PluginContext): OpenClientPlugin =
-            BeatLinkPlugin(PubSubBeatSource(pluginContext.pubSub), pluginContext)
+            BeatLinkPlugin(PubSubSubscriber(pluginContext.pubSub), pluginContext)
 
         override fun openForSimulator(): OpenSimulatorPlugin =
             object : OpenSimulatorPlugin {
@@ -269,7 +269,7 @@ class BeatLinkPlugin internal constructor(
                 override fun getServerPlugin(pluginContext: PluginContext, bridgeClient: BridgeClient) =
                     BeatLinkPlugin(
                         PubSubPublisher(
-                            PubSubBeatSource(bridgeClient.pubSub, simulatorDefaultBpm),
+                            PubSubSubscriber(bridgeClient.pubSub, simulatorDefaultBpm),
                             pluginContext
                         ),
                         pluginContext
@@ -321,7 +321,7 @@ class BeatLinkPlugin internal constructor(
 
     }
 
-    class PubSubBeatSource(
+    class PubSubSubscriber(
         pubSub: PubSub.Endpoint,
         defaultBeatData: BeatData = unknownBpm
     ) : Observable(), BeatSource {

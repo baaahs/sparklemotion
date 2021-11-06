@@ -11,10 +11,12 @@ import com.danielgergely.kgl.*
 abstract class GlContext(
     internal val kgl: Kgl,
     val glslVersion: String,
-    var checkForErrors: Boolean = true,
+    var checkForErrors: Boolean = false,
     val state: State = State()
 ) {
-    init { logger.debug { "Created ${this::class.simpleName}" } }
+    val id = nextId++
+    init { logger.debug { "Created $this." } }
+
     abstract fun <T> runInContext(fn: () -> T): T
     abstract suspend fun <T> asyncRunInContext(fn: suspend () -> T): T
 
@@ -123,7 +125,7 @@ abstract class GlContext(
 
                 val status = check { checkFramebufferStatus(GL_FRAMEBUFFER) }
                 if (status != GL_FRAMEBUFFER_COMPLETE) {
-                    logger.warn { "FrameBuffer huh? ${decodeGlConst(status) ?: status}" }
+                    logger.warn { "$this: FrameBuffer huh? ${decodeGlConst(status) ?: status}" }
                 }
             }
         }
@@ -197,16 +199,18 @@ abstract class GlContext(
     }
 
     fun getTextureUnit(key: Any): TextureUnit {
-        return textureUnits[key] ?: allocTextureUnit(key).also { textureUnits[key] = it }
+        return textureUnits.getOrPut(key) { allocTextureUnit(key) }
     }
 
     private fun allocTextureUnit(key: Any): TextureUnit {
-        val nextTextureUnit = textureUnits.size
-        check(nextTextureUnit <= maxTextureUnit) { "too many texture units" }
+        val allocatedTextureUnits = textureUnits.values.map { it.unitNumber }.toSet()
+        val nextTextureUnit = (0 until maxTextureUnit).firstOrNull { !allocatedTextureUnits.contains(it) }
+            ?: error("Too many texture units in use; max=$maxTextureUnit.")
+        logger.debug { "$this: Allocated texture unit $nextTextureUnit for ${key::class.simpleName}." }
         return TextureUnit(key, nextTextureUnit)
     }
 
-    inner class TextureUnit(private val key: Any, private val unitNumber: Int) {
+    inner class TextureUnit(private val key: Any, internal val unitNumber: Int) {
         var boundTexture: Texture? = null
 
         private fun activate() {
@@ -244,12 +248,15 @@ abstract class GlContext(
 
         fun release() {
             textureUnits.remove(key)
+            logger.debug { "$this: Released texture unit $unitNumber for $key." }
         }
     }
 
     open fun checkIfResultBufferCanContainFloats(required: Boolean = false): Boolean = true
 
     open fun checkIfResultBufferCanContainHalfFloats(required: Boolean = false): Boolean = true
+
+    open fun checkForLinearFilteringOfFloatTextures(required: Boolean = false): Boolean = true
 
     fun <T> noCheck(fn: Kgl.() -> T): T {
         return kgl.fn()
@@ -269,7 +276,7 @@ abstract class GlContext(
         val code = decodeGlConst(error) ?: "unknown error $error"
 
         if (error != 0) {
-            logger.error { "OpenGL Error: $code" }
+            logger.error { "$this: OpenGL Error: $code" }
             throw RuntimeException("OpenGL Error: $code")
         }
     }
@@ -294,6 +301,8 @@ abstract class GlContext(
 //        TODO("not implemented")
     }
 
+    override fun toString() = "${this::class.simpleName}#$id"
+
     interface ReleasableKgl {
         fun release()
     }
@@ -301,7 +310,8 @@ abstract class GlContext(
     data class RasterOffset(val bottom: Int, val left: Int)
 
     companion object {
-        private val logger = Logger("GlslContext")
+        private val logger = Logger<GlContext>()
+        private var nextId = 0
 
         const val GL_RGBA8 = 0x8058
 

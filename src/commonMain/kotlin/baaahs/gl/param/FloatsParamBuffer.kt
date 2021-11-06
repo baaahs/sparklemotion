@@ -30,6 +30,8 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
     }
 
     override fun uploadToTexture() {
+        if (width == 0 || height == 0) return
+
         with(textureUnit) {
             bindTexture(texture)
             configure(GL_NEAREST, GL_NEAREST)
