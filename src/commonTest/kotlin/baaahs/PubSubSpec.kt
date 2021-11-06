@@ -4,6 +4,7 @@ import baaahs.gl.override
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -236,6 +237,46 @@ object PubSubSpec : Spek({
             beforeEachTest {
                 serverCommandChannel.run {}
                 clientCommandChannel.run {}
+            }
+
+            describe("async command handling") {
+                context("when a command suspends") {
+                    val otherCommandPort by value { PubSub.CommandPort("otherCommand", String.serializer(), String.serializer()) }
+                    val serverOtherCommandChannel by value {
+                        testRig.server.listenOnCommandChannel(otherCommandPort) { command: String -> "immediate reply for $command" }
+                    }
+                    val clientOtherCommandChannel by value { testRig.client1.commandSender(otherCommandPort) }
+                    val future by value { CompletableDeferred<String>() }
+                    val result by value { arrayListOf<String>() }
+
+                    override(serverCommandHandler) {
+                        val x: suspend (String) -> String = { s: String -> "deferred reply for ${future.await()}" }; x
+                    }
+
+                    beforeEachTest {
+                        serverOtherCommandChannel.run {}
+
+                        testRig.testCoroutineScope.launch {
+                            result.add("response: " + clientCommandChannel("the command"))
+                        }
+
+                        testRig.testCoroutineScope.launch {
+                            result.add("response: " + clientOtherCommandChannel("other command"))
+                        }
+                    }
+
+                    it("can handle additional commands meanwhile") {
+                        testRig.dispatcher.runCurrent()
+                        expect(result).containsExactly("response: immediate reply for other command")
+
+                        future.complete("with completion value")
+                        testRig.dispatcher.runCurrent()
+                        expect(result).containsExactly(
+                            "response: immediate reply for other command",
+                            "response: deferred reply for with completion value"
+                        )
+                    }
+                }
             }
 
             context("when a client sends a command") {

@@ -5,9 +5,7 @@ import baaahs.app.ui.appContext
 import baaahs.ui.asTextNode
 import baaahs.ui.value
 import baaahs.ui.xComponent
-import baaahs.window
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import baaahs.util.globalLaunch
 import kotlinx.html.js.onChangeFunction
 import materialui.components.divider.divider
 import materialui.components.formcontrol.formControl
@@ -46,7 +44,7 @@ private val SoundAnalysisSettingsPanelView =
                 attrs.onChangeFunction = {
                     val inputId = it.target.value
                     val input = availableAudioInputs.find { it.id == inputId }
-                    alertErrors {
+                    globalLaunch {
                         soundAnalyzer.switchTo(input)
                     }
                 }
@@ -71,17 +69,6 @@ private val SoundAnalysisSettingsPanelView =
             }
         }
     }
-
-fun alertErrors(block: suspend () -> Unit) {
-    GlobalScope.launch {
-        try {
-            block()
-        } catch(e: Exception) {
-            window.alert(e.message ?: "Unknown error.")
-            throw e
-        }
-    }
-}
 
 external interface SoundAnalysisSettingsPanelProps : Props {
 }

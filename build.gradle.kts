@@ -88,6 +88,7 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting {
             dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:${Versions.coroutines}")
                 implementation("io.ktor:ktor-server-core:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-netty:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-host-common:${Versions.ktor}")
