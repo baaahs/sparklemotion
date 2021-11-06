@@ -7,6 +7,7 @@ import baaahs.browser.RealMediaDevices
 import baaahs.client.ClientStorage
 import baaahs.client.WebClient
 import baaahs.gl.RootToolchain
+import baaahs.gl.Toolchain
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.Mapper
 import baaahs.mapper.MapperUi
@@ -58,7 +59,8 @@ open class JsUiWebClientModule(
             scoped<Plugins> { get<ClientPlugins>() }
             scoped { model }
             scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage"))  }
-            scoped { WebClient(get(), get(), RootToolchain(get()), get(), get()) }
+            scoped<Toolchain> { RootToolchain(get()) }
+            scoped { WebClient(get(), get(), get(), get(), get()) }
         }
     }
 }
@@ -101,9 +103,3 @@ class JsAdminWebClientModule(
     private fun Scope.pinkyAddress(): Network.Address =
         get(named(WebClientModule.Qualifier.PinkyAddress))
 }
-
-//class JsSoundAnalysisPluginModule : SoundAnalysisPluginModule {
-//    override val soundAnalyzer: SoundAnalyzer
-//        get() =
-//
-//}

@@ -1,8 +1,8 @@
 package baaahs.show.mutable
 
 import baaahs.*
-import baaahs.app.ui.EditorPanel
 import baaahs.app.ui.MutableEditable
+import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.*
 import baaahs.control.*
 import baaahs.gl.Toolchain
@@ -32,7 +32,7 @@ abstract class MutablePatchHolder(
 
     override var title = basePatchHolder.title
 
-    override fun getEditorPanels(editableManager: EditableManager): List<EditorPanel> {
+    override fun getEditorPanels(editableManager: EditableManager): List<DialogPanel> {
         return listOf(
             GenericPropertiesEditorPanel(editableManager, getPropertiesComponents()),
             PatchHolderEditorPanel(editableManager, this)
@@ -423,7 +423,7 @@ data class MutableShaderInstance(
         incomingLinks.forEach { (_, port) -> port.accept(visitor, log) }
     }
 
-    fun getEditorPanel(patchEditorPanel: PatchEditorPanel): EditorPanel =
+    fun getEditorPanel(patchEditorPanel: PatchEditorPanel): DialogPanel =
         patchEditorPanel.ShaderInstanceEditorPanel(this)
 
     fun isFilter(openShader: OpenShader): Boolean = with(openShader) {

@@ -74,9 +74,3 @@ class JvmPinkyModule(
     override val Scope.pinkySettings: PinkySettings
         get() = PinkySettings()
 }
-
-class JvmSoundAnalysisPluginModule : SoundAnalysisPluginModule {
-    override val soundAnalyzer: SoundAnalyzer
-        get() = JvmSoundAnalyzer()
-
-}

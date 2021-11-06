@@ -1,6 +1,6 @@
 package baaahs.app.ui
 
-import baaahs.Severity
+import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.control.ButtonControl
 import baaahs.control.MutableButtonControl
@@ -8,8 +8,6 @@ import baaahs.control.MutableButtonGroupControl
 import baaahs.show.live.ControlDisplay
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
-import baaahs.ui.Icon
-import baaahs.ui.View
 
 interface Editable {
     val title: String
@@ -17,7 +15,7 @@ interface Editable {
 
 interface MutableEditable {
     val title: String
-    fun getEditorPanels(editableManager: EditableManager): List<EditorPanel>
+    fun getEditorPanels(editableManager: EditableManager): List<DialogPanel>
 }
 
 interface EditIntent {
@@ -104,14 +102,4 @@ class AddControlToPanelBucket<MC : MutableControl>(
             .editControlLayout(panelBucket.panel)
             .add(mutableControl)
     }
-}
-
-interface EditorPanel {
-    val title: String
-    val listSubhead: String?
-    val icon: Icon?
-    val problemLevel: Severity? get() = null
-
-    fun getNestedEditorPanels(): List<EditorPanel> = emptyList()
-    fun getView(): View
 }

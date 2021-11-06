@@ -143,14 +143,6 @@ abstract class WebClientModule : KModule {
     }
 }
 
-interface SoundAnalysisPluginModule : KModule {
-    val soundAnalyzer: SoundAnalyzer
-
-    override fun getModule(): Module = module {
-        single { soundAnalyzer }
-    }
-}
-
 interface SimulatorModule : KModule {
     val Scope.model: Model
     val Scope.fs: Fs

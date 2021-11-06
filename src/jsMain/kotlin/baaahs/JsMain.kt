@@ -8,7 +8,6 @@ import baaahs.model.Model
 import baaahs.model.ObjModel
 import baaahs.monitor.MonitorUi
 import baaahs.net.BrowserNetwork
-import baaahs.net.BrowserNetwork.BrowserAddress
 import baaahs.proto.Ports
 import baaahs.sim.HostedWebApp
 import baaahs.sim.ui.SimulatorAppProps
@@ -16,9 +15,10 @@ import baaahs.sim.ui.SimulatorAppView
 import baaahs.sim.ui.WebClientWindowView
 import baaahs.ui.ErrorDisplay
 import baaahs.util.ConsoleFormatters
+import baaahs.util.JsPlatform
+import baaahs.util.JsPlatform.decodeQueryParams
 import baaahs.util.KoinLogger
 import baaahs.util.Logger
-import decodeQueryParams
 import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -41,7 +41,6 @@ fun main(args: Array<String>) {
     val queryParams = decodeQueryParams(document.location!!)
     val model = Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
 
-
     GlobalScope.launch {
         when (mode) {
             "Simulator" -> launchSimulator(model, queryParams)
@@ -52,7 +51,7 @@ fun main(args: Array<String>) {
 
 private fun launchUi(appName: String?, model: Model) {
     tryCatchAndShowErrors {
-        val pinkyAddress = myBrowserAddress()
+        val pinkyAddress = JsPlatform.myAddress
         val network = BrowserNetwork(pinkyAddress, Ports.PINKY)
 
         val webAppInjector = koinApplication {
@@ -97,7 +96,7 @@ private fun launchSimulator(
     val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
     val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
 
-    val pinkyAddress = myBrowserAddress()
+    val pinkyAddress = JsPlatform.myAddress
     val network = BrowserNetwork(pinkyAddress, Ports.PINKY)
     val pinkySettings = PinkySettings()
 
@@ -172,8 +171,4 @@ private fun tryCatchAndShowErrors(block: () -> Unit) {
         }), container)
         throw e
     }
-}
-
-private fun myBrowserAddress(): BrowserAddress {
-    return with(window.location) { BrowserAddress(protocol, hostname, port) }
 }

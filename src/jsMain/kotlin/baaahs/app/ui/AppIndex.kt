@@ -1,10 +1,10 @@
 package baaahs.app.ui
 
 import baaahs.ShowEditorState
+import baaahs.app.settings.UiSettings
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layout.layoutEditorDialog
-import baaahs.app.ui.settings.UiSettings
 import baaahs.app.ui.settings.settingsDialog
 import baaahs.client.ClientStageManager
 import baaahs.client.WebClient
@@ -270,7 +270,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             themeProvider(theme) {
                 cssBaseline { }
 
-                div(+Styles.root and appDrawerStateStyle and editModeStyle) {
+                div(+Styles.root and themeStyles.appRoot and appDrawerStateStyle and editModeStyle) {
                     appToolbar {
                         attrs.editMode = editMode
                         attrs.onEditModeChange = handleEditModeChange

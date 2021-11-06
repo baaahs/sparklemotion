@@ -4,10 +4,9 @@ import baaahs.ui.StuffThatShouldComeFromTheTheme
 import baaahs.ui.child
 import baaahs.ui.important
 import kotlinx.css.*
-import kotlinx.css.properties.LineHeight
 import styled.StyleSheet
 
-object EditableStyles : StyleSheet("app-ui-Editable", isStatic = true) {
+object EditableStyles : StyleSheet("app-ui-editor-Editable", isStatic = true) {
     val cardWidth = 175.px
 
     val drawer by css {
@@ -16,57 +15,8 @@ object EditableStyles : StyleSheet("app-ui-Editable", isStatic = true) {
         important(::maxHeight, 85.vh)
     }
 
-    val dialogTitle by css {
-        position = Position.relative
-    }
-
-    val dialogTitleButtons by css {
-        display = Display.flex
-        position = Position.absolute
-        top = 1.em
-        right = 1.em
-    }
-
-    val dialogContent by css {
-        display = Display.flex
-        alignItems = Align.stretch
-        child("*") {
-            flex(1.0)
-        }
-    }
-
-    val panel by css {
-        display = Display.flex
-        grow(Grow.GROW)
-        flexDirection = FlexDirection.column
-        alignContent = Align.stretch
-        alignItems = Align.stretch
-        justifyContent = JustifyContent.stretch
-    }
-
-    val columns by css {
-        flexDirection = FlexDirection.row
-    }
-
-    val tabsListCol by css {
-        flex(1.0, flexBasis = FlexBasis.zero)
-    }
     val tabsList by css {
         important(::paddingLeft, 1.em)
-    }
-    val tabsListItemIcon by css {
-        important(::minWidth, 1.em)
-        paddingRight = 1.em
-    }
-    val tabsSubheader by css {
-        important(::lineHeight, LineHeight.normal)
-    }
-
-    val editorCol by css {
-        flex(4.0, flexBasis = FlexBasis.zero)
-        display = Display.flex
-        flexDirection = FlexDirection.column
-        marginLeft = 2.em
     }
 
     val patchOverview by css {
