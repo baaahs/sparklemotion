@@ -21,11 +21,13 @@ import baaahs.show.DataSourceBuilder
 import baaahs.sim.BridgeClient
 import baaahs.util.Logger
 import baaahs.util.Time
+import baaahs.util.globalLaunch
 import com.danielgergely.kgl.*
 import kotlinx.cli.ArgParser
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.delay
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.FloatArraySerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
@@ -84,6 +86,8 @@ class SoundAnalysisPlugin internal constructor(
     companion object : Plugin<Args>, SimulatorPlugin {
         override val id = "baaahs.SoundAnalysis"
 
+        private val logger = Logger<SoundAnalysisPlugin>()
+
         val soundAnalysisStruct = GlslType.Struct(
             "SoundAnalysis",
             "bucketCount" to GlslType.Int,
@@ -123,10 +127,8 @@ class SoundAnalysisPlugin internal constructor(
 
         private val inputsTopic = PubSub.Topic("plugins/${id}/inputs", ListSerializer(AudioInput.serializer()))
         private val currentInputTopic = PubSub.Topic("plugins/${id}/currentInput", AudioInput.serializer().nullable)
-        private val magnitudesTopic = PubSub.Topic("plugins/${id}/magnitudes", AnalysisData.serializer())
-        private val frequenciesTopic = PubSub.Topic("plugins/${id}/frequencies", FloatArraySerializer())
 
-        private val switchToTopic = PubSub.CommandPort(
+        private val switchToCommand = PubSub.CommandPort(
             "plugins/${id}/switchTo",
             SwitchToCommand.serializer(),
             Unit.serializer()
@@ -134,6 +136,23 @@ class SoundAnalysisPlugin internal constructor(
 
         @Serializable
         class SwitchToCommand(val audioInput: AudioInput?)
+
+        private val updateCommand = PubSub.CommandPort(
+            "plugins/${id}/update",
+            UpdateCommand.serializer(),
+            UpdateCommand.Response.serializer()
+        )
+
+        @Serializable
+        class UpdateCommand(val frequenciesVersion: Int?, val magnitudesVersion: Int?) {
+            @Serializable
+            class Response(
+                val frequenciesVersion: Int? = null,
+                val frequencies: FloatArray? = null,
+                val magnitudesVersion: Int,
+                val magnitudes: FloatArray
+            )
+        }
     }
 
     @Serializable
@@ -173,48 +192,67 @@ class SoundAnalysisPlugin internal constructor(
                 }
             }
 
-            pubSub.listenOnCommandChannel(switchToTopic) {
-                soundAnalyzer.switchTo(it.audioInput)
-                currentInputChannel.onChange(it.audioInput)
+            pubSub.listenOnCommandChannel(switchToCommand) { command ->
+                soundAnalyzer.switchTo(command.audioInput)
             }
-
         }
-        private var priorMagnitudes = floatArrayOf()
-        private val magnitudesChannel = pubSub.openChannel(magnitudesTopic, AnalysisData(priorMagnitudes, 0.0)) {
-            error("Huh? Don't update magnitudes!")
-        }
-        private var priorFrequencies = floatArrayOf()
-        private val frequenciesChannel = pubSub.openChannel(frequenciesTopic, priorFrequencies) {
-            error("Huh? Don't update frequencies!")
-        }
+        private var magnitudes = floatArrayOf()
+        private var magnitudesVersion = 0
+        private var frequencies = floatArrayOf()
+        private var frequenciesVersion = 0
+        private var updateChannel = CompletableDeferred<Unit>()
 
         init {
             soundAnalyzer.listen { analysis: SoundAnalyzer.Analysis ->
-                if (!analysis.magnitudes.contentEquals(priorMagnitudes)) {
-                    magnitudesChannel.onChange(AnalysisData(analysis.magnitudes, analysis.timestamp))
-                    priorMagnitudes = analysis.magnitudes
+                if (!analysis.magnitudes.contentEquals(magnitudes)) {
+                    magnitudes = analysis.magnitudes
+                    magnitudesVersion++
                 }
 
-                if (!analysis.frequencies.contentEquals(priorFrequencies)) {
-                    frequenciesChannel.onChange(analysis.frequencies)
-                    priorFrequencies = analysis.frequencies
+                if (!analysis.frequencies.contentEquals(frequencies)) {
+                    frequencies = analysis.frequencies
+                    frequenciesVersion++
+                }
+
+                globalLaunch {
+                    val oldUpdateChannel = updateChannel
+                    updateChannel = CompletableDeferred()
+                    oldUpdateChannel.complete(Unit)
+                }
+            }
+
+            pubSub.listenOnCommandChannel(updateCommand) { command ->
+                while (command.frequenciesVersion == frequenciesVersion && command.magnitudesVersion == magnitudesVersion) {
+                    val theUpdateChannel = updateChannel
+                    theUpdateChannel.await()
+                }
+
+                if (command.frequenciesVersion == frequenciesVersion) {
+                    UpdateCommand.Response(null, null, magnitudesVersion, magnitudes)
+                } else {
+                    UpdateCommand.Response(frequenciesVersion, frequencies, magnitudesVersion, magnitudes)
                 }
             }
         }
     }
 
-    class PubSubSubscriber(pubSub: PubSub.Endpoint) : SoundAnalyzer {
+    class PubSubSubscriber(private val pubSub: PubSub.Endpoint) : SoundAnalyzer {
         override var currentAudioInput: AudioInput? = null
             private set
         private var audioInputs: List<AudioInput> = emptyList()
+
         private var magnitudes: FloatArray = floatArrayOf()
-        private var sampleTimestamp: Time = 0.0
+        private var magnitudesVersion = -1
         private var frequencies: FloatArray = floatArrayOf()
+        private var frequenciesVersion = -1
+        private var sampleTimestamp: Time = 0.0
+
         private val listeners = mutableSetOf<SoundAnalyzer.AnalysisListener>()
         private val inputsListeners = mutableSetOf<SoundAnalyzer.InputsListener>()
 
         private val currentInputChannel: PubSub.Channel<AudioInput?>
-        private val switchToCommand = (pubSub as PubSub.Client).commandSender(switchToTopic)
+        private val switchTo = (pubSub as PubSub.Client).commandSender(switchToCommand)
+        private val update = (pubSub as PubSub.Client).commandSender(updateCommand)
 
         init {
             pubSub.openChannel(inputsTopic, audioInputs) { inputs ->
@@ -227,16 +265,28 @@ class SoundAnalysisPlugin internal constructor(
                 notifyChanged()
             }
 
-            pubSub.openChannel(magnitudesTopic, AnalysisData(floatArrayOf(), 0.0)) {
-                magnitudes = it.magnitudes
-                sampleTimestamp = it.timestamp
-                sendSample()
+            globalLaunch { requestUpdate() }
+        }
+
+        private suspend fun requestUpdate() {
+            while (!(pubSub as PubSub.Client).isConnected) delay(100)
+
+            val response = update.invoke(UpdateCommand(frequenciesVersion, magnitudesVersion))
+            if (response.frequenciesVersion != null &&
+                response.frequencies != null &&
+                response.frequenciesVersion != frequenciesVersion
+            ) {
+                frequencies = response.frequencies
+                frequenciesVersion = response.frequenciesVersion
             }
 
-            pubSub.openChannel(frequenciesTopic, floatArrayOf()) {
-                frequencies = it
-                sendSample()
+            if (response.magnitudesVersion != magnitudesVersion) {
+                magnitudes = response.magnitudes
+                magnitudesVersion = response.magnitudesVersion
             }
+
+            sendSample()
+            requestUpdate()
         }
 
         private fun notifyChanged() {
@@ -253,7 +303,7 @@ class SoundAnalysisPlugin internal constructor(
         override fun listAudioInputs(): List<AudioInput> = audioInputs
 
         override suspend fun switchTo(audioInput: AudioInput?) {
-            switchToCommand(SwitchToCommand(audioInput))
+            switchTo.invoke(SwitchToCommand(audioInput))
         }
 
         override fun listen(analysisListener: SoundAnalyzer.AnalysisListener): SoundAnalyzer.AnalysisListener {

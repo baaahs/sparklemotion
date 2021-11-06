@@ -29,7 +29,7 @@ abstract class PubSub {
             return Client(networkLink, address, port)
         }
 
-        val logger = Logger("PubSub")
+        val logger = Logger<PubSub>()
     }
 
     open class Origin(val id: String) {
@@ -232,16 +232,22 @@ abstract class PubSub {
             private val commandPort: CommandPort<C, R>,
             private val callback: suspend (command: C) -> R
         ) {
-            suspend fun receiveCommand(commandJson: String, commandId: String, fromConnection: Connection) {
-                val reply = try {
-                    val command = commandPort.fromJson(commandJson)
-                    callback.invoke(command)
-                } catch (e: Exception) {
-                    logger.warn(e) { "Error in remote command invocation (${commandPort.name} $commandJson $commandId)." }
-                    fromConnection.sendError(commandPort, e.message ?: "unknown error", commandId)
-                    return
+            suspend fun receiveCommand(
+                commandJson: String,
+                commandId: String,
+                fromConnection: Connection,
+                handlerScope: CoroutineScope
+            ) {
+                handlerScope.launch {
+                    try {
+                        val command = commandPort.fromJson(commandJson)
+                        val reply = callback.invoke(command)
+                        fromConnection.sendReply(commandPort, reply, commandId)
+                    } catch (e: Exception) {
+                        logger.warn(e) { "Error in remote command invocation (${commandPort.name} $commandJson $commandId)." }
+                        fromConnection.sendError(commandPort, e.message ?: "unknown error", commandId)
+                    }
                 }
-                fromConnection.sendReply(commandPort, reply, commandId)
             }
         }
 
@@ -286,7 +292,7 @@ abstract class PubSub {
         private val cleanups = Cleanups()
 
         override fun connected(tcpConnection: Network.TcpConnection) {
-            debug { "connection $name established" }
+            logger.debug { "$connectionInfo: connection $name established" }
             connection = tcpConnection
             isConnected = true
             everConnected = true
@@ -301,7 +307,12 @@ abstract class PubSub {
 
         override suspend fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
             withContext(handlerScope.coroutineContext) {
-                doReceive(tcpConnection, bytes)
+                try {
+                    doReceive(tcpConnection, bytes)
+                } catch (e: Exception) {
+                    logger.error(e) { "Error processing pubsub command." }
+                    throw e
+                }
             }
         }
 
@@ -310,6 +321,7 @@ abstract class PubSub {
             when (val command = reader.readString()) {
                 "sub" -> {
                     val topicName = reader.readString()
+                    logger.debug { "sub $topicName"}
                     val topicInfo = topics.find(topicName)
 
                     val listener = ClientListener(topicInfo, tcpConnection)
@@ -319,6 +331,7 @@ abstract class PubSub {
 
                 "unsub" -> {
                     val topicName = reader.readString()
+                    logger.debug { "unsub $topicName"}
                     val topicInfo = topics.find(topicName)
 
                     topicInfo.removeListeners { it is ClientListener && it.tcpConnection === tcpConnection }
@@ -326,6 +339,7 @@ abstract class PubSub {
 
                 "update" -> {
                     val topicName = reader.readString()
+                    logger.debug { "update $topicName"}
                     val topicInfo = topics.find(topicName)
 
                     topicInfo.notify(reader.readString(), this)
@@ -333,22 +347,25 @@ abstract class PubSub {
 
                 "command" -> {
                     val name = reader.readString()
-                    val commandChannel = commandChannels.getServerChannel(name)
                     val commandId = reader.readString()
-                    commandChannel.receiveCommand(reader.readString(), commandId, this)
+                    logger.debug { "command $name $commandId"}
+                    val commandChannel = commandChannels.getServerChannel(name)
+                    commandChannel.receiveCommand(reader.readString(), commandId, this, handlerScope)
                 }
 
                 "commandError" -> {
                     val name = reader.readString()
-                    val commandChannel = commandChannels.getClientChannel(name)
                     val commandId = reader.readString()
+                    logger.debug { "commandError $name $commandId"}
+                    val commandChannel = commandChannels.getClientChannel(name)
                     commandChannel.receiveError(reader.readString(), commandId)
                 }
 
                 "commandReply" -> {
                     val name = reader.readString()
-                    val commandChannel = commandChannels.getClientChannel(name)
                     val commandId = reader.readString()
+                    logger.debug { "commandReply $name $commandId"}
+                    val commandChannel = commandChannels.getClientChannel(name)
                     commandChannel.receiveReply(reader.readString(), commandId)
                 }
 
@@ -360,7 +377,9 @@ abstract class PubSub {
 
         fun sendTopicUpdate(topicInfo: TopicInfo<*>, data: JsonElement) {
             if (isConnected) {
-                if (verbose) debug { "update ${topicInfo.name} ${topicInfo.stringify(data)}" }
+                if (verbose) {
+                    logger.debug { "$connectionInfo: update ${topicInfo.name} ${topicInfo.stringify(data)}" }
+                }
 
                 val writer = ByteArrayWriter()
                 writer.writeString("update")
@@ -368,39 +387,41 @@ abstract class PubSub {
                 writer.writeString(topicInfo.stringify(data))
                 sendMessage(writer.toBytes())
             } else {
-                debug { "not connected, so no update $name $data" }
+                logger.warn { "$connectionInfo: not connected; dropping update $name $data" }
             }
         }
 
         fun sendTopicSub(topicInfo: TopicInfo<*>) {
             if (isConnected) {
-                debug { "sub ${topicInfo.name}" }
+                logger.debug { "$connectionInfo: sub ${topicInfo.name}" }
 
                 val writer = ByteArrayWriter()
                 writer.writeString("sub")
                 writer.writeString(topicInfo.name)
                 sendMessage(writer.toBytes())
             } else {
-                debug { "not connected, so no sub ${topicInfo.name}" }
+                logger.warn { "$connectionInfo: not connected; dropping sub ${topicInfo.name}" }
             }
         }
 
         fun sendTopicUnsub(topicInfo: TopicInfo<*>) {
             if (isConnected) {
-                debug { "unsub ${topicInfo.name}" }
+                logger.debug { "$connectionInfo: unsub ${topicInfo.name}" }
 
                 val writer = ByteArrayWriter()
                 writer.writeString("unsub")
                 writer.writeString(topicInfo.name)
                 sendMessage(writer.toBytes())
             } else {
-                debug { "not connected, so no unsub ${topicInfo.name}" }
+                logger.warn { "$connectionInfo: not connected; dropping unsub ${topicInfo.name}" }
             }
         }
 
         fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String) {
             if (isConnected) {
-                if (verbose) debug { "command ${commandPort.name} ${commandPort.toJson(command)}" }
+                if (verbose) {
+                    logger.debug { "$connectionInfo: command ${commandPort.name} $commandId ${commandPort.toJson(command)}" }
+                }
 
                 val writer = ByteArrayWriter()
                 writer.writeString("command")
@@ -409,13 +430,17 @@ abstract class PubSub {
                 writer.writeString(commandPort.toJson(command))
                 sendMessage(writer.toBytes())
             } else {
-                debug { "not connected, so no command ${commandPort.name}" }
+                logger.warn { "$connectionInfo: not connected; dropping command ${commandPort.name}" }
             }
         }
 
         fun <C, R> sendReply(commandPort: CommandPort<C, R>, reply: R, commandId: String) {
             if (isConnected) {
-                if (verbose) debug { "commandReply ${commandPort.name} $commandId ${commandPort.replyToJson(reply)}" }
+                if (verbose) {
+                    logger.debug {
+                        "$connectionInfo: commandReply ${commandPort.name} $commandId ${commandPort.replyToJson(reply)}"
+                    }
+                }
 
                 val writer = ByteArrayWriter()
                 writer.writeString("commandReply")
@@ -424,13 +449,15 @@ abstract class PubSub {
                 writer.writeString(commandPort.replyToJson(reply))
                 sendMessage(writer.toBytes())
             } else {
-                debug { "not connected, so no reply ${commandPort.name}" }
+                logger.warn { "$connectionInfo: not connected; dropping commandReply ${commandPort.name}" }
             }
         }
 
         fun <C, R> sendError(commandPort: CommandPort<C, R>, message: String, commandId: String) {
             if (isConnected) {
-                if (verbose) debug { "commandError ${commandPort.name} $commandId $message" }
+                if (verbose) {
+                    logger.debug { "$connectionInfo: commandError ${commandPort.name} $commandId $message" }
+                }
 
                 val writer = ByteArrayWriter()
                 writer.writeString("commandError")
@@ -439,7 +466,7 @@ abstract class PubSub {
                 writer.writeString(message)
                 sendMessage(writer.toBytes())
             } else {
-                debug { "not connected, so no error ${commandPort.name}" }
+                logger.warn { "$connectionInfo: not connected; dropping commandError ${commandPort.name} $commandId \"$message\"" }
             }
         }
 
@@ -453,9 +480,7 @@ abstract class PubSub {
             connection?.send(bytes)
         }
 
-        private fun debug(message: () -> String) {
-            logger.debug { "[$name${if (!isConnected) " (not connected)" else ""}]: ${message.invoke()}" }
-        }
+        private val connectionInfo get() = "[$name${if (!isConnected) " (not connected)" else ""}]"
 
         override fun toString(): String = "Connection from $name"
     }

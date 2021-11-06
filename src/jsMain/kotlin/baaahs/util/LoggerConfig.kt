@@ -6,11 +6,14 @@ import kotlin.reflect.KClass
 
 @Suppress("MemberVisibilityCanBePrivate", "RemoveExplicitTypeArguments", "unused")
 object LoggerConfig {
+    var defaultLevel = LogLevel.WARN
+
     val stringLevels = mapOf<String, LogLevel>(
 
     )
 
     val classLevels = mapOf<KClass<*>, LogLevel>(
+//        PubSub::class to LogLevel.DEBUG,
         KglTracer::class to LogLevel.DEBUG,
         ShowOpener::class to LogLevel.DEBUG
     )
@@ -19,7 +22,7 @@ object LoggerConfig {
         .toMutableMap()
 
     @JsName("levelFor")
-    fun levelFor(id: String) = allLevels[id] ?: LogLevel.WARN
+    fun levelFor(id: String) = allLevels[id] ?: defaultLevel
 
     @JsName("setLevel")
     fun setLevel(id: String, level: String?) {
