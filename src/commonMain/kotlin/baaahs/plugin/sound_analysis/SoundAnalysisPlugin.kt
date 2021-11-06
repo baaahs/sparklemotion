@@ -361,7 +361,7 @@ class SoundAnalysisFeed(
     override fun bind(gl: GlContext): EngineFeed = SoundAnalysisEngineFeed(gl)
 
     inner class SoundAnalysisEngineFeed(private val gl: GlContext) : EngineFeed {
-        private val textureUnit = gl.getTextureUnit(this)
+        private val textureUnit = gl.getTextureUnit(SoundAnalysisPlugin)
         private val texture = gl.check { createTexture() }
 
         init { gl.checkForLinearFilteringOfFloatTextures() }
