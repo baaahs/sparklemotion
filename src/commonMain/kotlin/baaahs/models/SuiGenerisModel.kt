@@ -1,16 +1,13 @@
 package baaahs.models
 
-import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.model.Model
 import baaahs.model.ObjModelLoader
 
 class SuiGenerisModel : Model() {
-    override val name: String = "Decom2019" // todo: it's weird that we're reusing Decom2019 here.
+    override val name: String = "SuiGeneris"
 
-    private val objModel = ObjModelLoader("sui-generis.obj") { name, faces, lines ->
-        Surface(name, name, PixelArrayDevice, 10 * 60, faces, lines)
-    }
+    private val objModel = ObjModelLoader.load("sui-generis.obj") { 10 * 60 }
 
     override val allEntities: List<Entity>
         get() = objModel.allEntities

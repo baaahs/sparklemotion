@@ -19,17 +19,12 @@ class SheepModel : Model() {
             .associate { it[0] to it[1].toInt() * 60 }
     }
 
-    private val objModel = ObjModelLoader("baaahs-model.obj") { name, faces, lines ->
+    private val objModel = ObjModelLoader.load("baaahs-model.obj") { name ->
         val expectedPixelCount = pixelsPerPanel[name]
         if (expectedPixelCount == null) {
             logger.debug { "No pixel count found for $name" }
         }
-
-        Surface(
-            name, "Panel $name", PixelArrayDevice, expectedPixelCount,
-            faces,
-            lines
-        )
+        expectedPixelCount
     }
     private val wallEyedness = (0.1f * PI / 2).toFloat()
 

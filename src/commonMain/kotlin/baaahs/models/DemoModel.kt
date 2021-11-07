@@ -1,6 +1,5 @@
 package baaahs.models
 
-import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.model.LightBar
 import baaahs.model.Model
@@ -9,9 +8,7 @@ import baaahs.model.ObjModelLoader
 class DemoModel : Model() {
     override val name: String = "Demo"
 
-    private val objModel = ObjModelLoader("decom-2019-panels.obj") { name, faces, lines ->
-        Surface(name, name, PixelArrayDevice, 16 * 60, faces, lines)
-    }
+    private val objModel = ObjModelLoader.load("decom-2019-panels.obj") { 16 * 60 }
 
     override val allEntities: List<Entity>
         get() = objModel.allEntities + lightBars
