@@ -13,22 +13,16 @@ import baaahs.sim.SimulationEnv
 
 abstract class Model : ModelInfo {
     abstract val name: String
-    open val movingHeads: List<MovingHead> get() = emptyList()
-    open val allSurfaces: List<Surface> get() = emptyList()
     abstract val allEntities: List<Entity>
 
     open val geomVertices: List<Vector3F> get() = emptyList()
 
-    private val allSurfacesByName: Map<String, Entity> by lazy { allEntities.associateBy { it.name } }
+    private val allEntitiesByName: Map<String, Entity> by lazy { allEntities.associateBy { it.name } }
 
-    fun findEntity(name: String) =
-        allSurfacesByName[name] ?: throw RuntimeException("no such model surface $name")
+    fun getEntity(name: String) = allEntitiesByName[name]
 
-    fun getEntity(name: String) = allSurfacesByName[name]
-
-    private val allVertices by lazy {
-        hashSetOf<Vector3F>().apply { allSurfaces.map { addAll(it.allVertices()) } }
-    }
+    fun findEntity(name: String) = getEntity(name)
+        ?: error("Unknown model surface \"$name\".")
 
     val modelBounds by lazy {
         boundingBox(allEntities.flatMap { entity -> entity.bounds.let { listOf(it.first, it.second)} })
@@ -40,6 +34,10 @@ abstract class Model : ModelInfo {
     override val center: Vector3F get() = modelCenter
 
     open fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> = emptyMap()
+
+    fun visitEntities(block: (vertices: List<Vector3F>?, entities: List<Entity>) -> Unit) {
+        block(geomVertices, allEntities)
+    }
 
     interface Entity {
         val name: String
@@ -70,7 +68,7 @@ abstract class Model : ModelInfo {
 
         open fun allVertices(): Collection<Vector3F> {
             val vertices = hashSetOf<Vector3F>()
-            vertices.addAll(lines.flatMap { it.vertices })
+            vertices.addAll(lines.flatMap { it.allVertices })
             return vertices
         }
 
@@ -78,8 +76,11 @@ abstract class Model : ModelInfo {
             BrainSurfaceSimulation(this, simulationEnv)
     }
 
-    data class Line(val vertices: List<Vector3F>) {
-        constructor(vararg vertices: Vector3F) : this(vertices.toList())
+    data class Line(val allVertices: List<Vector3F>, val vertexIndices: List<Int>) {
+        constructor(vararg vertices: Vector3F) :
+                this(vertices.toList(), vertices.mapIndexed { i: Int, _: Vector3F -> i })
+
+        val vertices: List<Vector3F> get() = vertexIndices.map { allVertices[it] }
     }
 
     class Face(

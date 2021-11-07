@@ -17,6 +17,7 @@ object ModelSpec : Spek({
             val v3 by value { Vector3F(0f, 1f, -.25f) }
 
             val model by value {
+                val geomVertices = listOf(v1, v2, v3)
                 fakeModel(
                     Model.Surface(
                         "triangle", "triangle", PixelArrayDevice, null,

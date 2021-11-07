@@ -19,7 +19,6 @@ import baaahs.window
 import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.css.px
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
@@ -289,59 +288,60 @@ class JsMapperUi(
         height = dimen.height
     }
 
-    private fun HTMLElement.resize(dimen: Dimen) {
-        style.width = dimen.width.px.toString()
-        style.height = dimen.height.px.toString()
-    }
-
     override fun addWireframe(model: Model) {
-        val vertices = model.geomVertices.map { v -> Vector3(v.x, v.y, v.z) }.toTypedArray()
-        model.allSurfaces.forEach { surface ->
-            val geom = Geometry()
-            geom.vertices = vertices
+        model.visitEntities { modelVertices, entities ->
+            val vertices = modelVertices?.map { v -> Vector3(v.x, v.y, v.z) }?.toTypedArray()
 
-            val faceNormalAcc = Vector3()
-            val panelFaces = surface.faces.map { face ->
-                val face3 = Face3(face.vertexA, face.vertexB, face.vertexC, Vector3(), Color(1, 1, 1))
+            entities.forEach { entity ->
+                // TODO: Add wireframe for other entity types.
+                if (entity is Model.Surface) {
+                    val surface = entity
 
-                // just compute this face's normal
-                geom.faces = arrayOf(face3)
-                geom.computeFaceNormals()
-                faceNormalAcc.add(face3.normal)
+                    if (vertices == null) error("No vertices for surface ${entity.name}!")
+                    val geom = Geometry()
+                    geom.vertices = vertices
 
-                face3
+                    val faceNormalAcc = Vector3()
+                    val panelFaces = surface.faces.map { face ->
+                        val face3 = Face3(face.vertexA, face.vertexB, face.vertexC, Vector3(), Color(1, 1, 1))
+
+                        // just compute this face's normal
+                        geom.faces = arrayOf(face3)
+                        geom.computeFaceNormals()
+                        faceNormalAcc.add(face3.normal)
+
+                        face3
+                    }
+                    val surfaceNormal = faceNormalAcc.divideScalar(surface.faces.size.toDouble())
+
+                    val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
+                    val mesh = Mesh(geom, panelMaterial)
+                    mesh.asDynamic().name = surface.name
+                    uiScene.add(mesh)
+
+                    val lineMaterial = LineBasicMaterial().apply {
+                        color = Color(0f, 1f, 0f)
+                        linewidth = 2.0
+                    }
+
+                    // offset the wireframe by one of the panel's face normals so it's not clipped by the panel mesh
+                    surface.lines.forEach { line ->
+                        val lineGeom = BufferGeometry()
+                        lineGeom.setFromPoints(line.vertices.map { pt ->
+                            pt.toVector3() + surfaceNormal
+                        }.toTypedArray())
+                        wireframe.add(Line(lineGeom, lineMaterial))
+                    }
+
+                    geom.faces = panelFaces.toTypedArray()
+                    geom.computeFaceNormals()
+                    geom.computeVertexNormals()
+
+                    modelSurfaceInfos[surface] =
+                        PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
+
+                }
             }
-            val surfaceNormal = faceNormalAcc.divideScalar(surface.faces.size.toDouble())
-
-            val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
-            val mesh = Mesh(geom, panelMaterial)
-            mesh.asDynamic().name = surface.name
-            uiScene.add(mesh)
-
-            val lineMaterial = LineBasicMaterial().apply {
-                color = Color(0f, 1f, 0f)
-                linewidth = 2.0
-            }
-
-            // offset the wireframe by one of the panel's face normals so it's not clipped by the panel mesh
-            surface.lines.forEach { line ->
-                val lineGeom = BufferGeometry()
-                lineGeom.setFromPoints(line.vertices.map { pt ->
-                    Vector3(
-                        pt.x,
-                        pt.y,
-                        pt.z
-                    ) + surfaceNormal
-                }.toTypedArray())
-                wireframe.add(Line(lineGeom, lineMaterial))
-            }
-
-            geom.faces = panelFaces.toTypedArray()
-            geom.computeFaceNormals()
-            geom.computeVertexNormals()
-
-            modelSurfaceInfos[surface] =
-                PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
         }
 
         uiScene.add(wireframe)

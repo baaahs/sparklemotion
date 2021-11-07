@@ -5,6 +5,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ModelRenderEngine
 import baaahs.model.Model
+import baaahs.model.MovingHead
 import baaahs.plugin.core.MovingHeadParams
 import baaahs.window
 import kotlinx.coroutines.GlobalScope
@@ -24,10 +25,12 @@ class MovingHeadPreview(
     private val deviceType = MovingHeadDevice
     override val renderEngine = ModelRenderEngine(gl, model, deviceType)
     private var movingHeadProgram: GlslProgram? = null
-    private val renderTargets = model.movingHeads.associateWith { movingHead ->
-        val fixture = Fixture(movingHead, 1, emptyList(), deviceType.defaultConfig, transport = NullTransport)
-        renderEngine.addFixture(fixture)
-    }
+    private val renderTargets = model.allEntities
+        .filterIsInstance<MovingHead>()
+        .associateWith { movingHead ->
+            val fixture = Fixture(movingHead, 1, emptyList(), deviceType.defaultConfig, transport = NullTransport)
+            renderEngine.addFixture(fixture)
+        }
     private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D
 
     override fun start() {

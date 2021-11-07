@@ -53,7 +53,6 @@ class ShowRunnerTest {
     private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
-    private val sheepModel = SheepModel().apply { surfaces = emptyList() }
     private lateinit var stageManager: StageManager
     private lateinit var fixtureManager: FixtureManager
 
@@ -70,7 +69,7 @@ class ShowRunnerTest {
         fixtureManager = FixtureManager(renderManager, plugins)
         stageManager = StageManager(
             testToolchain, renderManager, server, Storage(fs, plugins), fixtureManager,
-            FakeClock(), sheepModel, GadgetManager(server, FakeClock(), dispatcher),
+            FakeClock(), model, GadgetManager(server, FakeClock(), dispatcher),
             ControllersManager(emptyList(), FakeMappingManager(), model, fixtureManager),
             ServerNotices(server, dispatcher)
         )

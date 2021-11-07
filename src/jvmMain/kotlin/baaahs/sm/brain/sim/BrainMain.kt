@@ -41,10 +41,11 @@ class BrainMain(private val args: Args) {
         val mySurface = if (args.anonymous) {
             null
         } else if (args.surfaceName == null) {
-            if (Random.nextBoolean()) model.allSurfaces.random() else null
+            if (Random.nextBoolean())
+                model.allEntities.filterIsInstance<Model.Surface>().random()
+            else null
         } else {
-            model.allSurfaces.find { it.name == args.surfaceName }
-                ?: throw IllegalArgumentException("unknown surface \"${args.surfaceName}")
+            args.surfaceName?.let { model.findEntity(it) }
         }
         println("I'll be ${mySurface?.name ?: "anonymous"}!")
         mySurface?.let { brainSimulator.forcedFixtureName(mySurface.name) }
