@@ -7,11 +7,16 @@ import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.SacnTransportConfig
-import baaahs.model.ObjModel
+import baaahs.model.Model
+import baaahs.model.ObjModelLoader
 import baaahs.model.PolyLine
 
-class Playa2021Model : ObjModel("playa-2021-panels.obj") {
+class Playa2021Model : Model() {
     override val name: String = "Playa2021"
+
+    private val objModel = ObjModelLoader("playa-2021-panels.obj") { name, faces, lines ->
+        Surface(name, name, PixelArrayDevice, 16 * 60, faces, lines)
+    }
 
     val controllerId = ControllerId(
         SacnManager.controllerTypeName,
@@ -20,30 +25,30 @@ class Playa2021Model : ObjModel("playa-2021-panels.obj") {
     val pixelFormat = PixelArrayDevice.PixelFormat.GRB8 // ... could be RGB8 or GRB8.
 
     private val smallGridBoard = generatePolyLine("grid",
-        7, 11, 0f, 0f, 24f, 36f)
+        7, 11, -24f, 0f, 24f, 36f)
 
     private val allGridBoards = listOf(smallGridBoard)
 
     private fun generatePolyLine(
         name: String,
-        xPixels: Int, yPixels: Int, left: Float, bottom: Float, width: Float, height: Float
+        rows: Int, cols: Int, left: Float, bottom: Float, width: Float, height: Float
     ): PolyLine {
-        return PolyLine(name, name, (0 until yPixels).map { yI ->
-            val yOff = height * yI.toFloat() / yPixels
+        return PolyLine(name, name, (0 until cols).map { yI ->
+            val yOff = height * yI.toFloat() / cols
             PolyLine.Segment(
                 Vector3F(left, bottom + yOff, 0f),
                 Vector3F(left + width, bottom + yOff, 0f),
-                xPixels
+                rows
             ).let {
                 if (yI % 2 == 1) it.reverse() else it
             }
         })
     }
 
-//    override val allEntities: List<Entity> = allGridBoards
-
-    override fun createSurface(name: String, faces: List<Face>, lines: List<Line>): Surface =
-        Surface(name, name, PixelArrayDevice, 16 * 60, faces, lines)
+    override val allEntities: List<Entity>
+        get() = objModel.allEntities + allGridBoards
+    override val geomVertices: List<Vector3F>
+        get() = objModel.geomVertices
 
     override fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> {
         return mapOf(

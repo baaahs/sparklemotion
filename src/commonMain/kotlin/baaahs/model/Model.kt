@@ -14,8 +14,7 @@ import baaahs.sim.SimulationEnv
 abstract class Model : ModelInfo {
     abstract val name: String
     abstract val allEntities: List<Entity>
-
-    open val geomVertices: List<Vector3F> get() = emptyList()
+    abstract val geomVertices: List<Vector3F>
 
     private val allEntitiesByName: Map<String, Entity> by lazy { allEntities.associateBy { it.name } }
 

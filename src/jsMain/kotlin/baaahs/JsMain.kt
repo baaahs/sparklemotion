@@ -5,7 +5,6 @@ import baaahs.di.*
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.MapperUi
 import baaahs.model.Model
-import baaahs.model.ObjModel
 import baaahs.monitor.MonitorUi
 import baaahs.net.BrowserNetwork
 import baaahs.sim.HostedWebApp
@@ -68,7 +67,6 @@ private fun launchUi(appName: String?, model: Model) {
         val app = when (appName) {
             "Mapper" -> {
                 koin.loadModules(listOf(JsAdminWebClientModule(model).getModule()))
-                (model as? ObjModel)?.load()
                 koin.createScope<MapperUi>().get<JsMapperUi>()
             }
 

@@ -108,6 +108,7 @@ open class ModelForTest(private val entities: List<Entity>) : Model() {
 
     override val name: String = "Test Model"
     override val allEntities: List<Entity> get() = entities
+    override val geomVertices: List<Vector3F> get() = emptyList()
 }
 
 class TestRenderContext(
