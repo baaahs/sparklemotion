@@ -10,7 +10,7 @@ class SurfaceGeometry(surface: Model.Surface) {
     var panelNormal: Vector3
     val isMultiFaced: Boolean
     internal var edgeNeighbors: Map<String, List<Face3>>
-    var lines: List<Geometry>
+    val lines = surface.lines
 
     init {
         val panelGeometry = this.geometry
@@ -49,11 +49,5 @@ class SurfaceGeometry(surface: Model.Surface) {
             }
         }
         this.edgeNeighbors = edgeNeighbors
-
-        lines = surface.lines.map { line ->
-            val lineGeo = Geometry()
-            lineGeo.vertices = line.vertices.map { pt -> Vector3(pt.x, pt.y, pt.z) }.toTypedArray()
-            lineGeo
-        }
     }
 }

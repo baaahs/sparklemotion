@@ -28,14 +28,16 @@ class ProjectionPreview(
     private val deviceType = ProjectionPreviewDevice
     override val renderEngine = ModelRenderEngine(gl, model, deviceType)
     private var projectionProgram: GlslProgram? = null
-    private val renderTargets = model.allSurfaces.associateWith { surface ->
-        val lineVertices = surface.lines.flatMap { it.vertices }
-        val fixture = Fixture(
-            surface, lineVertices.size, lineVertices, deviceType.defaultConfig,
-            transport = NullTransport
-        )
-        renderEngine.addFixture(fixture)
-    }
+    private val renderTargets = model.allEntities
+        .filterIsInstance<Model.Surface>() // TODO: Display all entity types, not just surfaces!
+        .associateWith { surface ->
+            val lineVertices = surface.lines.flatMap { it.vertices }
+            val fixture = Fixture(
+                surface, lineVertices.size, lineVertices, deviceType.defaultConfig,
+                transport = NullTransport
+            )
+            renderEngine.addFixture(fixture)
+        }
     private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D
 
     override fun start() {
@@ -92,7 +94,7 @@ class ProjectionPreview(
 
                 val path = Path2D()
                 surface.lines.forEach { line ->
-                    line.vertices.forEachIndexed { vIndex, _ ->
+                    line.vertexIndices.forEachIndexed { vIndex, _ ->
                         val vec2 = projectedVertices[renderTarget.pixel0Index + vertexIndex]
                         val u = vec2.x.toDouble()
                         val v = 1 - vec2.y.toDouble()

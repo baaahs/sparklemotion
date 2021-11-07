@@ -17,7 +17,6 @@ import baaahs.gl.render.ModelRenderEngine
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.testToolchain
 import baaahs.model.Model
-import baaahs.model.MovingHead
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.live.LinkedShaderInstance
@@ -94,7 +93,7 @@ class FakeModelEntity(
 class TestModelSurface(
     name: String,
     expectedPixelCount: Int? = 1,
-    private val vertices: Collection<Vector3F> = emptyList()
+    private val vertices: List<Vector3F> = emptyList()
 ) : Model.Surface(name, name, PixelArrayDevice, expectedPixelCount, emptyList(), emptyList()) {
     override fun allVertices(): Collection<Vector3F> = vertices
 }
@@ -108,10 +107,7 @@ open class ModelForTest(private val entities: List<Entity>) : Model() {
     constructor(vararg entities: Entity) : this(entities.toList())
 
     override val name: String = "Test Model"
-    override val movingHeads: List<MovingHead> get() = entities.filterIsInstance<MovingHead>()
-    override val allSurfaces: List<Surface> get() = entities.filterIsInstance<Surface>()
     override val allEntities: List<Entity> get() = entities
-    override val geomVertices: List<Vector3F> = emptyList()
 }
 
 class TestRenderContext(

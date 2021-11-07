@@ -43,8 +43,11 @@ class SurfaceVisualizer(
 
         mesh.asDynamic().name = "Surface: ${surfaceGeometry.name}"
 
-        this.lines = surfaceGeometry.lines.map { line -> Line(line, lineMaterial) }
-
+        this.lines = surfaceGeometry.lines.map { line ->
+            val lineGeo = Geometry()
+            lineGeo.vertices = line.vertices.map { pt -> pt.toVector3() }.toTypedArray()
+            Line(lineGeo, lineMaterial)
+        }
     }
 
     override fun addTo(scene: VizScene) {

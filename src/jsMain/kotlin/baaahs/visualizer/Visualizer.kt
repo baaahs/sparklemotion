@@ -18,7 +18,10 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusListener {
+class Visualizer(
+    private val model: Model,
+    private val clock: Clock
+) : JsMapperUi.StatusListener {
     val facade = Facade()
 
     private var container: HTMLElement? = null
@@ -58,7 +61,6 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     private val renderer = WebGLRenderer().apply {
         localClippingEnabled = true
     }
-    private val geom = Geometry()
 
     private val pointMaterial = PointsMaterial().apply { color.set(0xffffff) }
 
@@ -100,12 +102,9 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
             MeshBasicMaterial().apply { color.set(0xff0000) }
         )
         scene.add(originDot)
+    }
 
-        // convert from SheepModel to THREE
-        model.geomVertices.forEach { v ->
-            geom.vertices.asDynamic().push(Vector3(v.x, v.y, v.z))
-        }
-
+    init {
         var resizeTaskId: Int? = null
         window.addEventListener("resize", {
             if (resizeTaskId !== null) {
@@ -196,9 +195,7 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     }
 
     private fun pointAtModel() {
-        geom.computeBoundingSphere()
-        scene.add(Points(geom, pointMaterial))
-        val target = geom.boundingSphere!!.center.clone()
+        val target = model.center.toVector3()
         controls?.target = target
         camera.lookAt(target)
     }

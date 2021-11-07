@@ -14,7 +14,7 @@ class SheepModel : ObjModel("baaahs-model.obj") {
 
     private val wallEyedness = (0.1f * PI / 2).toFloat()
 
-    override val movingHeads: List<MovingHead> = arrayListOf(
+    private val movingHeads: List<MovingHead> = arrayListOf(
         MovingHead(
             "leftEye",
             "Left Eye",
@@ -33,6 +33,9 @@ class SheepModel : ObjModel("baaahs-model.obj") {
         )
     )
 
+    override val allEntities: List<Entity>
+        get() = super.allEntities + movingHeads
+
     override fun load() {
         getResource("baaahs-panel-info.txt")
             .split("\n")
@@ -47,23 +50,16 @@ class SheepModel : ObjModel("baaahs-model.obj") {
         if (expectedPixelCount == null) {
             logger.debug { "No pixel count found for $name" }
         }
-        val offset = when (name) {
-            "Panel 2" -> Vector3F(-12f, 0f, 0f)
-            "Panel 3" -> Vector3F(-24f, 0f, 0f)
-            else -> Vector3F.origin
-        }
+
         return Surface(
             name, "Panel $name", PixelArrayDevice, expectedPixelCount,
-            faces.map {
-                Face(it.allVertices.map { it + offset }, it.vertexA, it.vertexB, it.vertexC)
-            },
-            lines.map {
-                Line(it.vertices.map { it + offset })
-            }
+            faces,
+            lines
         )
     }
 
     companion object {
-        fun Panel(name: String) = Surface(name, name, PixelArrayDevice, null, emptyList(), emptyList())
+        fun Panel(name: String) =
+            Surface(name, name, PixelArrayDevice, null, emptyList(), emptyList())
     }
 }

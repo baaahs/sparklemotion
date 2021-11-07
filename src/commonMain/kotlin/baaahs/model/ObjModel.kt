@@ -5,38 +5,34 @@ import baaahs.io.getResource
 import baaahs.util.Logger
 
 abstract class ObjModel(private val objResourceName: String) : Model() {
-    override val movingHeads: List<MovingHead>
-        get() = emptyList()
     override val geomVertices: List<Vector3F> get() = vertices
-    lateinit var vertices: List<Vector3F>
-    lateinit var surfaces: List<Surface>
+    private lateinit var vertices: List<Vector3F>
+    private lateinit var surfaces: List<Surface>
 
-    override val allSurfaces get() = surfaces
-    override val allEntities: List<Entity> get() = allSurfaces + movingHeads
+    override val allEntities: List<Entity> get() = surfaces
     private val surfacesByName = mutableMapOf<String, Surface>()
 
     abstract fun createSurface(name: String, faces: List<Face>, lines: List<Line>): Surface
 
     open fun load() {
-        val vertices: MutableList<Vector3F> = mutableListOf()
-        val panels: MutableList<Surface> = mutableListOf()
-        var surfaceName: String? = null
-        var faceVerts = mutableListOf<List<Int>>()
-        var lines = mutableListOf<Line>()
+        val allVertices: MutableList<Vector3F> = mutableListOf()
+        var nextSurfaceName: String? = null
+        var nextSurfaceFaces = mutableListOf<Face>()
+        var nextSurfaceLines = mutableListOf<Line>()
 
         val surfacesByEdge = mutableMapOf<List<Int>, MutableList<String>>()
         val edgesBySurface = mutableMapOf<String, MutableList<List<Int>>>()
 
+        val surfaces: MutableList<Surface> = mutableListOf()
         fun buildSurface() {
-            surfaceName?.let {
-                val faces = faceVerts.map { Face(vertices, it[0], it[1], it[2]) }
-                val surface = createSurface(it, faces, lines)
-                panels.add(surface)
-                surfacesByName[it] = surface
+            nextSurfaceName?.let { name ->
+                val surface = createSurface(name, nextSurfaceFaces, nextSurfaceLines)
+                surfaces.add(surface)
+                surfacesByName[name] = surface
 
-                surfaceName = null
-                faceVerts = mutableListOf()
-                lines = mutableListOf()
+                nextSurfaceName = null
+                nextSurfaceFaces = mutableListOf()
+                nextSurfaceLines = mutableListOf()
             }
         }
 
@@ -50,39 +46,39 @@ abstract class ObjModel(private val objResourceName: String) : Model() {
 
                 when (parts[0]) {
                     "v" -> {
-                        if (args.size != 3) throw Exception("invalid vertex line: $line")
+                        if (args.size != 3) error("Invalid vertex: $line")
                         val coords = args.map { it.toFloat() }
-                        vertices.add(Vector3F(coords[0], coords[1], coords[2]))
+                        allVertices.add(Vector3F(coords[0], coords[1], coords[2]))
                     }
                     "o" -> {
                         buildSurface()
-                        surfaceName = args.joinToString(" ")
+                        nextSurfaceName = args.joinToString(" ")
                     }
                     "f" -> {
-                        val verts = args.map { it.toInt() - 1 }
-                        faceVerts.add(verts)
+                        val vertIs = args.map { it.toInt() - 1 }
+                        if (vertIs.size != 3) error("A face must have three vertices: $line")
+                        nextSurfaceFaces.add(Face(allVertices, vertIs[0], vertIs[1], vertIs[2]))
                     }
                     "l" -> {
                         val vertIs = args.map { it.toInt() - 1 }
-                        val points = vertIs.map { vi -> vertices[vi] }
+                        nextSurfaceLines.add(Line(allVertices, vertIs))
 
                         val sortedVerts = vertIs.sorted()
-                        surfacesByEdge.getOrPut(sortedVerts) { mutableListOf() }.add(surfaceName!!)
-                        edgesBySurface.getOrPut(surfaceName!!) { mutableListOf() }.add(sortedVerts)
+                        surfacesByEdge.getOrPut(sortedVerts) { mutableListOf() }.add(nextSurfaceName!!)
+                        edgesBySurface.getOrPut(nextSurfaceName!!) { mutableListOf() }.add(sortedVerts)
 
-                        lines.add(Line(points))
                     }
                 }
             }
 
         buildSurface()
 
-        logger.debug { "${this::class.simpleName} has ${panels.size} panels and ${vertices.size} vertices" }
-        this.vertices = vertices
-        this.surfaces = panels
+        logger.debug { "${this::class.simpleName} has ${surfaces.size} panels and ${allVertices.size} vertices" }
+        this.vertices = allVertices
+        this.surfaces = surfaces
     }
 
     companion object {
-        val logger = Logger("ObjModel")
+        val logger = Logger<ObjModel>()
     }
 }
