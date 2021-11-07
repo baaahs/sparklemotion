@@ -14,9 +14,7 @@ import baaahs.model.PolyLine
 class Playa2021Model : Model() {
     override val name: String = "Playa2021"
 
-    private val objModel = ObjModelLoader("playa-2021-panels.obj") { name, faces, lines ->
-        Surface(name, name, PixelArrayDevice, 16 * 60, faces, lines)
-    }
+    private val objModel = ObjModelLoader.load("playa-2021-panels.obj") { 16 * 60 }
 
     val controllerId = ControllerId(
         SacnManager.controllerTypeName,

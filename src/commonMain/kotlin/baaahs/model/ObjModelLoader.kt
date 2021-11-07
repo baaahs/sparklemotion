@@ -1,13 +1,15 @@
 package baaahs.model
 
+import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.io.getResource
 import baaahs.model.Model.*
 import baaahs.util.Logger
 
 class ObjModelLoader(
-    private val objResourceName: String,
-    private val createSurface: (name: String, faces: List<Face>, lines: List<Line>) -> Surface
+    objText: String,
+    objName: String = "OBJ file",
+    private val expectedPixelCount: (name: String) -> Int?
 ) {
     private val vertices: List<Vector3F>
     private val surfaces: List<Surface>
@@ -27,8 +29,7 @@ class ObjModelLoader(
             }
         }
 
-        logger.debug { "Loading model data from $objResourceName..." }
-        getResource(objResourceName)
+        objText
             .split("\n")
             .map { it.trim() }
             .forEach { line ->
@@ -59,7 +60,7 @@ class ObjModelLoader(
 
         buildSurface()
 
-        logger.debug { "${this::class.simpleName} has ${surfaces.size} panels and ${allVertices.size} vertices" }
+        logger.debug { "$objName has ${surfaces.size} panels and ${allVertices.size} vertices" }
         this.vertices = allVertices
         this.surfaces = surfaces
     }
@@ -68,10 +69,20 @@ class ObjModelLoader(
         val faces = mutableListOf<Face>()
         val lines = mutableListOf<Line>()
 
-        fun build(): Surface = createSurface(name, faces, lines)
+        fun build(): Surface =
+            Surface(name, name, PixelArrayDevice, expectedPixelCount(name), faces, lines)
     }
 
     companion object {
+        fun load(
+            resourceName: String,
+            expectedPixelCount: (name: String) -> Int?
+        ): ObjModelLoader {
+            logger.debug { "Loading model data from $resourceName..." }
+            val objText = getResource(resourceName)
+            return ObjModelLoader(objText, resourceName, expectedPixelCount)
+        }
+
         private val logger = Logger<ObjModelLoader>()
     }
 }
