@@ -89,10 +89,29 @@ class SharedGlContext(
         private val container: HTMLElement,
         private val delegate: Kgl
     ) : Kgl by delegate {
-        internal var containerRect = container.getBoundingClientRect().asRect()
+        internal var containerRect = Rect(0, 0, 0, 0)
+        internal var scissorRect = Rect(0, 0, 0, 0)
+
+        init { calculateBounds() }
 
         internal fun updateContainerRect() {
-            containerRect = container.getBoundingClientRect().asRect()
+            calculateBounds()
+        }
+
+        private fun calculateBounds() {
+            var bounds = container.getBoundingClientRect().asRect()
+            containerRect = bounds
+
+            var el = container.parentElement
+            while (el != null) {
+                val parentEl = el.parentElement
+                bounds = el.getBoundingClientRect().asRect()
+                    .offsetBy(parentEl?.scrollTop?.toInt() ?: 0, parentEl?.scrollLeft?.toInt() ?: 0)
+                    .intersectionWith(bounds)
+                el = parentEl
+                if (el == sharedCanvas.parentElement) break
+            }
+            scissorRect = bounds
         }
 
         override fun viewport(x: Int, y: Int, width: Int, height: Int) {
@@ -102,7 +121,11 @@ class SharedGlContext(
                 .withWidthAndHeightNoLessThanZero()
 
             setViewport(rect.left, rect.bottom, rect.width, rect.height)
-            glContext.webgl.scissor(rect.left, rect.bottom, rect.width, rect.height)
+
+            val scissor = scissorRect
+                .relativeToBottomLeftOf(sharedCanvasRect)
+                .withWidthAndHeightNoLessThanZero()
+            glContext.webgl.scissor(scissor.left, scissor.bottom, scissor.width, scissor.height)
         }
     }
 
@@ -146,6 +169,14 @@ class SharedGlContext(
                 max(left, other.left),
                 min(bottom, other.bottom),
                 min(right, other.right)
+            )
+
+        fun offsetBy(offsetTop: Int, offsetLeft: Int) =
+            Rect(
+                top + offsetTop,
+                left + offsetLeft,
+                bottom + offsetTop,
+                right + offsetLeft
             )
 
         fun withWidthAndHeightNoLessThanZero() =
