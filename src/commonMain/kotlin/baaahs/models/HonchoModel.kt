@@ -57,6 +57,7 @@ class HonchoModel : Model() {
     )
 
     override val allEntities: List<Entity> = lightRings.map { it.createEntity() }
+    override val geomVertices: List<Vector3F> = emptyList()
 
     override fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> {
         return mapOf(

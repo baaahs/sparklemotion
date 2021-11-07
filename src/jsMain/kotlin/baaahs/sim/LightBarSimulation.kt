@@ -7,7 +7,6 @@ import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
-import baaahs.model.LightBar
 import baaahs.model.PixelArray
 import baaahs.visualizer.LightBarVisualizer
 import baaahs.visualizer.VizPixels
@@ -33,7 +32,9 @@ actual class LightBarSimulation actual constructor(
             pixelLocations.map { MappingSession.SurfaceData.PixelData(it) }
         )
 
-    override val entityVisualizer: LightBarVisualizer by lazy { LightBarVisualizer(pixelArray, vizPixels) }
+    override val entityVisualizer: LightBarVisualizer by lazy {
+        LightBarVisualizer(pixelArray, vizPixels)
+    }
 
     val wledSimulator by lazy {
         val wledsSimulator = simulationEnv[WledsSimulator::class]

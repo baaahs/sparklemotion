@@ -3,13 +3,20 @@ package baaahs.models
 import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.model.LightBar
-import baaahs.model.ObjModel
+import baaahs.model.Model
+import baaahs.model.ObjModelLoader
 
-class DemoModel : ObjModel("decom-2019-panels.obj") {
+class DemoModel : Model() {
     override val name: String = "Demo"
 
+    private val objModel = ObjModelLoader("decom-2019-panels.obj") { name, faces, lines ->
+        Surface(name, name, PixelArrayDevice, 16 * 60, faces, lines)
+    }
+
     override val allEntities: List<Entity>
-        get() = super.allEntities + lightBars
+        get() = objModel.allEntities + lightBars
+    override val geomVertices: List<Vector3F>
+        get() = objModel.geomVertices
 
     val lightBars: List<LightBar> = listOf(
         // Vertical between Panel 1 and 2:
@@ -24,7 +31,4 @@ class DemoModel : ObjModel("decom-2019-panels.obj") {
 
     fun lightBar(name: String, startVertex: Vector3F, endVertex: Vector3F) =
         LightBar(name, name, startVertex, endVertex)
-
-    override fun createSurface(name: String, faces: List<Face>, lines: List<Line>) =
-        Surface(name, name, PixelArrayDevice, 16 * 60, faces, lines)
 }

@@ -1,12 +1,7 @@
 package baaahs
 
 import baaahs.model.Model
-import baaahs.model.ObjModel
 import baaahs.models.*
-import baaahs.models.Decom2019Model
-import baaahs.models.HonchoModel
-import baaahs.models.SheepModel
-import baaahs.models.SuiGenerisModel
 import baaahs.plugin.Plugin
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.sound_analysis.SoundAnalysisPlugin
@@ -30,6 +25,6 @@ object Pluggables {
             "SuiGeneris" -> SuiGenerisModel()
             "BAAAHS" -> SheepModel()
             else -> throw IllegalArgumentException("unknown model \"$name\"")
-        }.apply { (this as? ObjModel)?.load() }
+        }
     }
 }

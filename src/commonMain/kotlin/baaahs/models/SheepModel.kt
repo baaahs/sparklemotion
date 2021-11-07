@@ -4,14 +4,33 @@ import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Shenzarpy
 import baaahs.geom.Vector3F
 import baaahs.io.getResource
+import baaahs.model.Model
 import baaahs.model.MovingHead
-import baaahs.model.ObjModel
+import baaahs.model.ObjModelLoader
+import baaahs.util.Logger
 import kotlin.math.PI
 
-class SheepModel : ObjModel("baaahs-model.obj") {
+class SheepModel : Model() {
     override val name: String = "BAAAHS"
-    private val pixelsPerPanel = hashMapOf<String, Int>()
+    private val pixelsPerPanel = run {
+        getResource("baaahs-panel-info.txt")
+            .split("\n")
+            .map { it.split(Regex("\\s+")) }
+            .associate { it[0] to it[1].toInt() * 60 }
+    }
 
+    private val objModel = ObjModelLoader("baaahs-model.obj") { name, faces, lines ->
+        val expectedPixelCount = pixelsPerPanel[name]
+        if (expectedPixelCount == null) {
+            logger.debug { "No pixel count found for $name" }
+        }
+
+        Surface(
+            name, "Panel $name", PixelArrayDevice, expectedPixelCount,
+            faces,
+            lines
+        )
+    }
     private val wallEyedness = (0.1f * PI / 2).toFloat()
 
     private val movingHeads: List<MovingHead> = arrayListOf(
@@ -34,31 +53,13 @@ class SheepModel : ObjModel("baaahs-model.obj") {
     )
 
     override val allEntities: List<Entity>
-        get() = super.allEntities + movingHeads
-
-    override fun load() {
-        getResource("baaahs-panel-info.txt")
-            .split("\n")
-            .map { it.split(Regex("\\s+")) }
-            .forEach { pixelsPerPanel[it[0]] = it[1].toInt() * 60 }
-
-        super.load()
-    }
-
-    override fun createSurface(name: String, faces: List<Face>, lines: List<Line>): Surface {
-        val expectedPixelCount = pixelsPerPanel[name]
-        if (expectedPixelCount == null) {
-            logger.debug { "No pixel count found for $name" }
-        }
-
-        return Surface(
-            name, "Panel $name", PixelArrayDevice, expectedPixelCount,
-            faces,
-            lines
-        )
-    }
+        get() = objModel.allEntities + movingHeads
+    override val geomVertices: List<Vector3F>
+        get() = objModel.geomVertices
 
     companion object {
+        private val logger = Logger<SheepModel>()
+
         fun Panel(name: String) =
             Surface(name, name, PixelArrayDevice, null, emptyList(), emptyList())
     }
