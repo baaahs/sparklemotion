@@ -104,8 +104,11 @@ class SharedGlContext(
 
             var el = container.parentElement
             while (el != null) {
-                bounds = el.getBoundingClientRect().asRect().intersectionWith(bounds)
-                el = el.parentElement
+                val parentEl = el.parentElement
+                bounds = el.getBoundingClientRect().asRect()
+                    .offsetBy(parentEl?.scrollTop?.toInt() ?: 0, parentEl?.scrollLeft?.toInt() ?: 0)
+                    .intersectionWith(bounds)
+                el = parentEl
                 if (el == sharedCanvas.parentElement) break
             }
             scissorRect = bounds
@@ -166,6 +169,14 @@ class SharedGlContext(
                 max(left, other.left),
                 min(bottom, other.bottom),
                 min(right, other.right)
+            )
+
+        fun offsetBy(offsetTop: Int, offsetLeft: Int) =
+            Rect(
+                top + offsetTop,
+                left + offsetLeft,
+                bottom + offsetTop,
+                right + offsetLeft
             )
 
         fun withWidthAndHeightNoLessThanZero() =
