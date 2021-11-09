@@ -57,14 +57,13 @@ class PixelCountFeed(
 
     override fun bind(gl: GlContext) = object : EngineFeed {
         override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {
-            private val uniform = glslProgram.getUniform(id)
+            private val uniform = glslProgram.getUniformInt(id)
 
-            override val updateMode: UpdateMode
-                get() = UpdateMode.PER_FIXTURE
-            override val isValid: Boolean = uniform != null
+            override val updateMode: UpdateMode get() = UpdateMode.PER_FIXTURE
+            override val isValid: Boolean get() = uniform.exists
 
             override fun setOnProgram(renderTarget: RenderTarget) {
-                uniform?.set(renderTarget.pixelCount)
+                uniform.set(renderTarget.pixelCount)
             }
         }
     }

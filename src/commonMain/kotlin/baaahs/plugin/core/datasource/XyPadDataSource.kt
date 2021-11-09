@@ -59,7 +59,9 @@ data class XyPadDataSource(
         return object : Feed, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                    return SingleUniformFeed(glslProgram, this@XyPadDataSource, id) { uniform ->
+                    return SingleUniformFeed(
+                        id, this@XyPadDataSource, glslProgram::getUniformVec2
+                    ) { uniform ->
                         uniform.set(xyPad.position)
                     }
                 }

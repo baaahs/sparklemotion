@@ -1,31 +1,30 @@
 package baaahs.gl.data
 
-import baaahs.gl.glsl.GlslProgram
 import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.util.Logger
 
-class SingleUniformFeed(
-    glslProgram: GlslProgram,
-    dataSource: DataSource,
+class SingleUniformFeed<T: Uniform<*>>(
     val id: String,
-    val setUniform: (Uniform) -> Unit
+    dataSource: DataSource,
+    findUniform: (String) -> T,
+    private val setUniform: (T) -> Unit
 ) : ProgramFeed {
     private val type: Any = dataSource.getType()
     private val varName = dataSource.getVarName(id)
-    private val uniformLocation = glslProgram.getUniform(varName)
+    private val uniform = findUniform(varName)
 
-    override val isValid: Boolean get() = uniformLocation != null
+    override val isValid: Boolean get() = uniform.exists
 
     override fun setOnProgram() {
         try {
-            uniformLocation?.let { setUniform(it) }
+            setUniform(uniform)
         } catch (e: Exception) {
             logger.error(e) { "failed to set uniform $type $varName for $id" }
         }
     }
 
     companion object {
-        private val logger = Logger<SingleUniformFeed>()
+        private val logger = Logger<SingleUniformFeed<*>>()
     }
 }

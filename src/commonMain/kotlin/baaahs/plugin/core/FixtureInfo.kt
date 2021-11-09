@@ -67,18 +67,18 @@ class FixtureInfoFeed(
         override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {
             override val updateMode: UpdateMode get() = UpdateMode.PER_FIXTURE
 
-            private val originUniform = glslProgram.getUniform("$id.origin")
-            private val headingUniform = glslProgram.getUniform("$id.heading")
-            private val matrixUniform = glslProgram.getUniform("$id.matrix")
+            private val originUniform = glslProgram.getUniformVec3("$id.origin")
+            private val headingUniform = glslProgram.getUniformVec3("$id.heading")
+            private val matrixUniform = glslProgram.getUniformMatrix("$id.matrix")
 
             override val isValid: Boolean get() =
-                originUniform != null || headingUniform != null || matrixUniform != null
+                originUniform.exists || headingUniform.exists || matrixUniform.exists
 
             override fun setOnProgram(renderTarget: RenderTarget) {
                 val fixtureInfo = renderTarget.fixture.modelEntity as? Model.FixtureInfo
-                originUniform?.set(fixtureInfo?.origin ?: Vector3F.origin)
-                headingUniform?.set(fixtureInfo?.heading ?: Vector3F.origin)
-                matrixUniform?.set(fixtureInfo?.matrix ?: Matrix4())
+                originUniform.set(fixtureInfo?.origin ?: Vector3F.origin)
+                headingUniform.set(fixtureInfo?.heading ?: Vector3F.origin)
+                matrixUniform.set(fixtureInfo?.matrix ?: Matrix4())
             }
         }
     }

@@ -56,7 +56,7 @@ class PerPixelDataSourceForTest(val updateMode: UpdateMode) : DataSource {
 
         inner class TestProgramFeed(glslProgram: GlslProgram) : PerPixelProgramFeed(updateMode) {
             override val buffer: ParamBuffer get() = this@TestEngineFeed.buffer
-            override val uniform = glslProgram.getUniform("perPixelDataTexture") ?: error("no uniform")
+            override val uniform = glslProgram.getUniformTextureUnit("perPixelDataTexture")
             var released = false
             override fun release() = run { super.release(); released = released.truify() }
         }

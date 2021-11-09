@@ -43,11 +43,11 @@ class PerFixtureDataSourceForTest(val updateMode: UpdateMode) : DataSource {
     inner class TestProgramFeed(glslProgram: GlslProgram) : ProgramFeed {
         override val updateMode: UpdateMode get() = this@PerFixtureDataSourceForTest.updateMode
 
-        val uniform = glslProgram.getUniform("perFixtureData")
+        val uniform = glslProgram.getUniformInt("perFixtureData")
         var released = false
 
         override fun setOnProgram() = run {
-            uniform?.set(counter++)
+            uniform.set(counter++)
         } as Unit
 
         override fun setOnProgram(renderTarget: RenderTarget) = setOnProgram()

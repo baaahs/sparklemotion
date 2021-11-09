@@ -32,11 +32,12 @@ data class DateDataSource(
         const val SECONDS_PER_DAY = (24 * 60 * 60).toDouble()
 
         override val title: String get() = "Date"
-        override val description: String get() = "The current date in a `vec4`:\n" +
-                "<br/>`x`: year\n" +
-                "<br/>`y`: month (January == 1)\n" +
-                "<br/>`z`: day of month (First == 1)\n" +
-                "<br/>`w`: time of day in milliseconds past midnight"
+        override val description: String
+            get() = "The current date in a `vec4`:\n" +
+                    "<br/>`x`: year\n" +
+                    "<br/>`y`: month (January == 1)\n" +
+                    "<br/>`z`: day of month (First == 1)\n" +
+                    "<br/>`w`: time of day in milliseconds past midnight"
         override val resourceName: String get() = "Date"
         override val contentType: ContentType get() = ContentType.Date
         override val serializerRegistrar get() = classSerializer(serializer())
@@ -62,7 +63,9 @@ data class DateDataSource(
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
                     val clock = showPlayer.toolchain.plugins.pluginContext.clock
-                    return SingleUniformFeed(glslProgram, this@DateDataSource, id) { uniform ->
+                    return SingleUniformFeed(
+                        id, this@DateDataSource, glslProgram::getUniformVec4
+                    ) { uniform ->
                         val dateTime = DateTime(clock.now() * 1000)
                         uniform.set(
                             dateTime.yearInt.toFloat(),

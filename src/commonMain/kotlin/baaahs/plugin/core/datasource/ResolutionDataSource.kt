@@ -49,7 +49,9 @@ data class ResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource
         object : Feed, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                    SingleUniformFeed(glslProgram, this@ResolutionDataSource, id) { uniform ->
+                    SingleUniformFeed(
+                        id, this@ResolutionDataSource, glslProgram::getUniformVec2
+                    ) { uniform ->
                         uniform.set(1f, 1f)
                     }
             }

@@ -3,14 +3,13 @@ package baaahs.plugin.core.datasource
 import baaahs.FakeClock
 import baaahs.describe
 import baaahs.geom.Vector4F
+import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.override
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.dialect.IsfShaderDialect
 import baaahs.gl.shader.dialect.ShaderToyShaderDialect
-import baaahs.glsl.Uniform
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
-import baaahs.shows.FakeUniform
 import baaahs.shows.StubGlslProgram
 import baaahs.toBeSpecified
 import baaahs.toEqual
@@ -25,14 +24,28 @@ object DateDataSourceSpec : Spek({
         val inputPort by value { toBeSpecified<InputPort>() }
         val dataSource by value { builder.build(inputPort) }
         val time by value { 1619099367.792 } // 2021-04-22 00:13:49.793 UTC
-        val uniform by value { FakeUniform() }
+        val uniform by value { object : GlslProgram.UniformVec4 {
+            var value: Vector4F? = null
+
+            override val exists: Boolean get() = true
+            override fun set(x: Float, y: Float, z: Float, w: Float) {
+                this.value = Vector4F(x, y, z, w)
+            }
+
+            override fun set(value: Vector4F) {
+                this.value = value
+            }
+        } }
         val feed by value {
             val showPlayer = FakeShowPlayer().also {
                 (it.toolchain.plugins.pluginContext.clock as FakeClock).time = time
             }
             val gl = FakeGlContext()
             val fakeProgram = object : StubGlslProgram() {
-                override fun getUniform(name: String): Uniform = uniform
+                override fun getUniformVec4(name: String): GlslProgram.UniformVec4 {
+                    return uniform
+                }
+
                 override fun <T> withProgram(fn: Kgl.() -> T): T = fn(gl.fakeKgl)
             }
 

@@ -1,10 +1,6 @@
 package baaahs.gl
 
-import baaahs.gl.glsl.CompilationException
-import baaahs.gl.glsl.CompiledShader
-import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.glsl.ResourceAllocationException
-import baaahs.glsl.Uniform
+import baaahs.gl.glsl.*
 import baaahs.util.Logger
 import com.danielgergely.kgl.*
 
@@ -240,10 +236,6 @@ abstract class GlContext(
             check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter) }
             check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE) }
             check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE) }
-        }
-
-        fun setUniform(uniform: Uniform) {
-            uniform.set(unitNumber)
         }
 
         fun release() {

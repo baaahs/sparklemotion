@@ -123,9 +123,9 @@ class BeatLinkPlugin internal constructor(
             return object : baaahs.gl.data.Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                        SingleUniformFeed(glslProgram, this@BeatLinkDataSource, id) { uniform ->
-                            uniform.set(beatSource.getBeatData().fractionTillNextBeat(clock))
-                        }
+                        SingleUniformFeed(
+                            id, this@BeatLinkDataSource, glslProgram::getUniformFloat
+                        ) { uniform -> uniform.set(beatSource.getBeatData().fractionTillNextBeat(clock)) }
                 }
             }
         }
@@ -145,24 +145,24 @@ class BeatLinkPlugin internal constructor(
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed {
                         return object : ProgramFeed {
-                            val beatUniform = glslProgram.getUniform("${varPrefix}.beat")
-                            val bpmUniform = glslProgram.getUniform("${varPrefix}.bpm")
-                            val intensityUniform = glslProgram.getUniform("${varPrefix}.intensity")
-                            val confidenceUniform = glslProgram.getUniform("${varPrefix}.confidence")
+                            val beatUniform = glslProgram.getUniformFloat("${varPrefix}.beat")
+                            val bpmUniform = glslProgram.getUniformFloat("${varPrefix}.bpm")
+                            val intensityUniform = glslProgram.getUniformFloat("${varPrefix}.intensity")
+                            val confidenceUniform = glslProgram.getUniformFloat("${varPrefix}.confidence")
 
                             override val isValid: Boolean
-                                get() = beatUniform != null ||
-                                        bpmUniform != null ||
-                                        intensityUniform != null ||
-                                        confidenceUniform != null
+                                get() = beatUniform.exists ||
+                                        bpmUniform.exists ||
+                                        intensityUniform.exists ||
+                                        confidenceUniform.exists
 
                             override fun setOnProgram() {
                                 val beatData = beatSource.getBeatData()
 
-                                beatUniform?.set(beatData.beatWithinMeasure(clock))
-                                bpmUniform?.set(beatData.bpm)
-                                intensityUniform?.set(beatData.fractionTillNextBeat(clock))
-                                confidenceUniform?.set(beatData.confidence)
+                                beatUniform.set(beatData.beatWithinMeasure(clock))
+                                bpmUniform.set(beatData.bpm)
+                                intensityUniform.set(beatData.fractionTillNextBeat(clock))
+                                confidenceUniform.set(beatData.confidence)
                             }
                         }
                     }
@@ -185,27 +185,27 @@ class BeatLinkPlugin internal constructor(
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed {
                         return object : ProgramFeed {
-                            val measureStartTime = glslProgram.getUniform("${varPrefix}.measureStartTime")
-                            val beatIntervalMsUniform = glslProgram.getUniform("${varPrefix}.beatIntervalMs")
-                            val bpmUniform = glslProgram.getUniform("${varPrefix}.bpm")
-                            val beatsPerMeasureUniform = glslProgram.getUniform("${varPrefix}.beatsPerMeasure")
-                            val confidenceUniform = glslProgram.getUniform("${varPrefix}.confidence")
+                            val measureStartTime = glslProgram.getUniformFloat("${varPrefix}.measureStartTime")
+                            val beatIntervalMsUniform = glslProgram.getUniformFloat("${varPrefix}.beatIntervalMs")
+                            val bpmUniform = glslProgram.getUniformFloat("${varPrefix}.bpm")
+                            val beatsPerMeasureUniform = glslProgram.getUniformFloat("${varPrefix}.beatsPerMeasure")
+                            val confidenceUniform = glslProgram.getUniformFloat("${varPrefix}.confidence")
 
                             override val isValid: Boolean
-                                get() = measureStartTime != null ||
-                                        beatIntervalMsUniform != null ||
-                                        bpmUniform != null ||
-                                        beatsPerMeasureUniform != null ||
-                                        confidenceUniform != null
+                                get() = measureStartTime.exists ||
+                                        beatIntervalMsUniform.exists ||
+                                        bpmUniform.exists ||
+                                        beatsPerMeasureUniform.exists ||
+                                        confidenceUniform.exists
 
                             override fun setOnProgram() {
                                 val beatData = beatSource.getBeatData()
 
-                                measureStartTime?.set(beatData.measureStartTime.makeSafeForGlsl())
-                                beatIntervalMsUniform?.set(beatData.beatIntervalMs.toFloat())
-                                bpmUniform?.set(beatData.bpm)
-                                beatsPerMeasureUniform?.set(beatData.beatsPerMeasure.toFloat())
-                                confidenceUniform?.set(beatData.confidence)
+                                measureStartTime.set(beatData.measureStartTime.makeSafeForGlsl())
+                                beatIntervalMsUniform.set(beatData.beatIntervalMs.toFloat())
+                                bpmUniform.set(beatData.bpm)
+                                beatsPerMeasureUniform.set(beatData.beatsPerMeasure.toFloat())
+                                confidenceUniform.set(beatData.confidence)
                             }
                         }
                     }

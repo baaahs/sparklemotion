@@ -62,7 +62,9 @@ data class SwitchDataSource(
         return object : Feed, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                    return SingleUniformFeed(glslProgram, this@SwitchDataSource, id) { uniform ->
+                    return SingleUniformFeed(
+                        id, this@SwitchDataSource, glslProgram::getUniformInt
+                    ) { uniform ->
                         uniform.set(if (switch.enabled) 1 else 0)
                     }
                 }

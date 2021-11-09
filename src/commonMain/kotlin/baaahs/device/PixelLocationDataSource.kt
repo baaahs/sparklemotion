@@ -15,7 +15,6 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
-import baaahs.glsl.Uniform
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
@@ -103,8 +102,8 @@ class PixelLocationFeed(
 
         inner class ProgramFeed(glslProgram: GlslProgram) : PerPixelProgramFeed(updateMode) {
             override val buffer: ParamBuffer get() = this@EngineFeed.buffer
-            override val uniform: Uniform = glslProgram.getUniform(textureUniformId)
-                ?: error("no uniform $textureUniformId")
+            override val uniform: GlslProgram.UniformTextureUnit =
+                glslProgram.getUniformTextureUnit(textureUniformId)
             override val isValid: Boolean get() = true
         }
     }

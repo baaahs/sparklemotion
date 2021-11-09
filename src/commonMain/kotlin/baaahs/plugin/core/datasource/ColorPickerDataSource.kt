@@ -47,7 +47,9 @@ data class ColorPickerDataSource(
         return object : Feed, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                    return SingleUniformFeed(glslProgram, this@ColorPickerDataSource, id) { uniform ->
+                    return SingleUniformFeed(
+                        id, this@ColorPickerDataSource, glslProgram::getUniformVec4
+                    ) { uniform ->
                         val color = colorPicker.color
                         uniform.set(color.redF, color.greenF, color.blueF, color.alphaF)
                     }

@@ -7,7 +7,6 @@ import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.result.BufferView
-import baaahs.glsl.Uniform
 import com.danielgergely.kgl.*
 import kotlin.math.min
 
@@ -52,18 +51,18 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
         }
     }
 
-    override fun setTexture(uniform: Uniform) {
+    override fun setTexture(uniform: GlslProgram.UniformTextureUnit) {
         uniform.set(textureUnit)
     }
 
     override fun bind(glslProgram: GlslProgram): ProgramFeed {
-        val uniform = glslProgram.getUniform(id)
+        val uniform = glslProgram.getUniformTextureUnit(id)
 
         return object : ProgramFeed {
-            override val isValid get() = uniform != null
+            override val isValid get() = uniform.exists
 
             override fun setOnProgram() {
-                if (uniform != null) {
+                if (uniform.exists) {
                     textureUnit.bindTexture(texture)
                     uniform.set(textureUnit)
                 }

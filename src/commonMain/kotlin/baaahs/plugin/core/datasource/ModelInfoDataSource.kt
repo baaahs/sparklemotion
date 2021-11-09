@@ -53,15 +53,15 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
 
                     return object : ProgramFeed {
                         override val updateMode: UpdateMode get() = UpdateMode.ONCE
-                        val centerUniform = glslProgram.getUniform("${varPrefix}.center")
-                        val extentsUniform = glslProgram.getUniform("${varPrefix}.extents")
+                        val centerUniform = glslProgram.getUniformVec3("${varPrefix}.center")
+                        val extentsUniform = glslProgram.getUniformVec3("${varPrefix}.extents")
 
                         override val isValid: Boolean
-                            get() = centerUniform != null && extentsUniform != null
+                            get() = centerUniform.exists || extentsUniform.exists
 
                         override fun setOnProgram() {
-                            centerUniform?.set(center)
-                            extentsUniform?.set(extents)
+                            centerUniform.set(center)
+                            extentsUniform.set(extents)
                         }
                     }
                 }

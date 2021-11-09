@@ -55,12 +55,12 @@ data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : Data
                 val offsetUniformId = "ds_${id}_offset"
                 override fun bind(glslProgram: GlslProgram): ProgramFeed =
                     object : ProgramFeed {
-                        private val uniform = glslProgram.getUniform(offsetUniformId)
-                        override val isValid: Boolean = uniform != null
+                        private val uniform = glslProgram.getUniformVec2(offsetUniformId)
+                        override val isValid: Boolean = uniform.exists
 
                         override fun setOnProgram() {
                             val rasterOffset = gl.rasterOffset
-                            uniform?.set(rasterOffset.left.toFloat(), rasterOffset.bottom.toFloat())
+                            uniform.set(rasterOffset.left.toFloat(), rasterOffset.bottom.toFloat())
                         }
                     }
             }

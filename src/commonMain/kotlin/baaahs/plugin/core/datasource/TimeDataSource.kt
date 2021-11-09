@@ -45,7 +45,9 @@ data class TimeDataSource(@Transient val `_`: Boolean = true) : DataSource {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
                     val clock = showPlayer.toolchain.plugins.pluginContext.clock
-                    return SingleUniformFeed(glslProgram, this@TimeDataSource, id) { uniform ->
+                    return SingleUniformFeed(
+                        id, this@TimeDataSource, glslProgram::getUniformFloat
+                    ) { uniform ->
                         val thisTime = clock.now().makeSafeForGlsl()
                         uniform.set(thisTime)
                     }

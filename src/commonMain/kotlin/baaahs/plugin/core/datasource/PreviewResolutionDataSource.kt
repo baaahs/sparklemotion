@@ -46,8 +46,8 @@ data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : Dat
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed =
                     object : ProgramFeed, GlslProgram.ResolutionListener {
-                        private val uniform = glslProgram.getUniform(getVarName(id))
-                        override val isValid: Boolean = uniform != null
+                        private val uniform = glslProgram.getUniformVec2(getVarName(id))
+                        override val isValid: Boolean = uniform.exists
 
                         private var x = 1f
                         private var y = 1f
@@ -58,7 +58,7 @@ data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : Dat
                         }
 
                         override fun setOnProgram() {
-                            uniform?.set(x, y)
+                            uniform.set(x, y)
                         }
                     }
             }

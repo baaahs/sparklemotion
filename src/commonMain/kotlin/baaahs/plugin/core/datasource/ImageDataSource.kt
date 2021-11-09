@@ -47,7 +47,7 @@ data class ImageDataSource(val imageTitle: String) : DataSource {
         object : Feed, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                    SingleUniformFeed(glslProgram, this@ImageDataSource, id) {
+                    SingleUniformFeed(id, this@ImageDataSource, glslProgram::getUniformTextureUnit) {
                         // no-op
                     }
             }

@@ -367,22 +367,22 @@ class SoundAnalysisFeed(
         init { gl.checkForLinearFilteringOfFloatTextures() }
 
         override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed {
-            val bucketCountUniform = glslProgram.getUniform("${varPrefix}.bucketCount")
-            val sampleHistoryCountUniform = glslProgram.getUniform("${varPrefix}.sampleHistoryCount")
-            val bucketsUniform = glslProgram.getUniform("${varPrefix}.buckets")
-            val maxMagnitudeUniform = glslProgram.getUniform("${varPrefix}.maxMagnitude")
+            val bucketCountUniform = glslProgram.getUniformInt("${varPrefix}.bucketCount")
+            val sampleHistoryCountUniform = glslProgram.getUniformInt("${varPrefix}.sampleHistoryCount")
+            val bucketsUniform = glslProgram.getUniformTextureUnit("${varPrefix}.buckets")
+            val maxMagnitudeUniform = glslProgram.getUniformFloat("${varPrefix}.maxMagnitude")
 
             override val isValid: Boolean
-                get() = bucketCountUniform != null ||
-                        sampleHistoryCountUniform != null ||
-                        bucketsUniform != null ||
-                        maxMagnitudeUniform != null
+                get() = bucketCountUniform.exists ||
+                        sampleHistoryCountUniform.exists ||
+                        bucketsUniform.exists ||
+                        maxMagnitudeUniform.exists
 
             override fun setOnProgram() {
                 if (bucketCount == 0 || historySize == 0) return
 
-                bucketCountUniform?.set(bucketCount)
-                sampleHistoryCountUniform?.set(historySize)
+                bucketCountUniform.set(bucketCount)
+                sampleHistoryCountUniform.set(historySize)
                 with(textureUnit) {
                     bindTexture(texture)
                     configure(GL_LINEAR, GL_LINEAR)
@@ -391,8 +391,8 @@ class SoundAnalysisFeed(
                         GL_RED, GL_FLOAT, FloatBuffer(textureBuffer)
                     )
                 }
-                bucketsUniform?.set(textureUnit)
-                maxMagnitudeUniform?.set(maxMagnitude)
+                bucketsUniform.set(textureUnit)
+                maxMagnitudeUniform.set(maxMagnitude)
             }
         }
 

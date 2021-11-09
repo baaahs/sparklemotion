@@ -61,11 +61,10 @@ data class SliderDataSource(
 
         return object : Feed, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                    return SingleUniformFeed(glslProgram, this@SliderDataSource, id) { uniform ->
+                override fun bind(glslProgram: GlslProgram): ProgramFeed =
+                    SingleUniformFeed(id, this@SliderDataSource, glslProgram::getUniformFloat) { uniform ->
                         uniform.set(slider.position)
                     }
-                }
             }
         }
     }
