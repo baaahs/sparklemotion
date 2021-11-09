@@ -108,7 +108,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
         val observer = builder.addObserver(fireImmediately = true) {
             when (it.state) {
-                ShaderBuilder.State.Linked -> {
+                ShaderBuilder.State.Resolved -> {
                     shaderPreview?.let { shaderPreview ->
                         it.startCompile(shaderPreview.renderEngine)
                     }
@@ -157,8 +157,8 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         when (builder?.state ?: ShaderBuilder.State.Unbuilt) {
             ShaderBuilder.State.Unbuilt,
             ShaderBuilder.State.Analyzing,
-            ShaderBuilder.State.Linking,
-            ShaderBuilder.State.Linked,
+            ShaderBuilder.State.Resolving,
+            ShaderBuilder.State.Resolved,
             ShaderBuilder.State.Compiling -> {
                 div { +"Building..." }
             }

@@ -53,8 +53,8 @@ interface ShaderBuilder : IObservable {
     enum class State {
         Unbuilt,
         Analyzing,
-        Linking,
-        Linked,
+        Resolving,
+        Resolved,
         Compiling,
         Success,
         Errors
@@ -115,7 +115,7 @@ class PreviewShaderBuilder(
             if (openShader == null) {
                 ShaderBuilder.State.Analyzing
             } else {
-                ShaderBuilder.State.Linking
+                ShaderBuilder.State.Resolving
             }
         )
     }
@@ -129,8 +129,8 @@ class PreviewShaderBuilder(
         when (newState) {
             ShaderBuilder.State.Unbuilt -> unsupported()
             ShaderBuilder.State.Analyzing -> coroutineScope.launch { analyze() }
-            ShaderBuilder.State.Linking -> coroutineScope.launch { link() }
-            ShaderBuilder.State.Linked -> { } // No-op; an observer will handle it.
+            ShaderBuilder.State.Resolving -> coroutineScope.launch { resolve() }
+            ShaderBuilder.State.Resolved -> { } // No-op; an observer will handle it.
             ShaderBuilder.State.Compiling -> unsupported()
             ShaderBuilder.State.Success -> unsupported()
             ShaderBuilder.State.Errors -> { } // No-op; an observer will handle it.
@@ -145,11 +145,11 @@ class PreviewShaderBuilder(
         if (!shaderAnalysis.isValid) {
             transitionTo(ShaderBuilder.State.Errors)
         } else {
-            transitionTo(ShaderBuilder.State.Linking)
+            transitionTo(ShaderBuilder.State.Resolving)
         }
     }
 
-    fun link() {
+    fun resolve() {
         val newState = try {
             val openShader = openShader!!
             val shaderType = openShader.shaderType
@@ -164,7 +164,7 @@ class PreviewShaderBuilder(
                 .acceptSuggestedLinkOptions()
                 .confirm()
             linkedPatch = previewPatch?.openForPreview(toolchain, resultContentType)
-            ShaderBuilder.State.Linked
+            ShaderBuilder.State.Resolved
         } catch (e: GlslException) {
             logger.warn(e) { "Failed to compile shader." }
             e.errors.forEach { logger.warn { it.message } }

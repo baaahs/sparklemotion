@@ -2,10 +2,13 @@ package baaahs.gl
 
 import baaahs.document
 import baaahs.window
+import com.danielgergely.kgl.GL_TRUE
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglJs
+import com.danielgergely.kgl.Program
 import org.khronos.webgl.ArrayBufferView
 import org.khronos.webgl.WebGLObject
+import org.khronos.webgl.WebGLProgram
 import org.w3c.dom.HTMLCanvasElement
 
 actual object GlBase {
@@ -36,7 +39,7 @@ actual object GlBase {
             }
             return JsGlContext(
                 canvas,
-                maybeTrace(KglJs(webgl), trace),
+                maybeTrace(KglJs(webgl), true),
                 "300 es",
                 webgl
             )
@@ -66,6 +69,17 @@ actual object GlBase {
 
         override fun checkForLinearFilteringOfFloatTextures(required: Boolean): Boolean {
             return ensureExtension("OES_texture_float_linear", required)
+        }
+
+        override fun checkForParallelShaderCompilation(required: Boolean): Boolean {
+            return ensureExtension("KHR_parallel_shader_compile", required)
+        }
+
+        private val parallelShaderCompileExt by lazy { webgl.getExtension("KHR_parallel_shader_compile") }
+        override fun getProgramCompletionStatusKhr(program: Program): Boolean {
+            return parallelShaderCompileExt?.let { ext ->
+                webgl.getProgramParameter(program.unsafeCast<WebGLProgram>(), ext.COMPLETION_STATUS_KHR) == GL_TRUE
+            }
         }
 
         /** Creates a related context with shared state and the given Kgl. */

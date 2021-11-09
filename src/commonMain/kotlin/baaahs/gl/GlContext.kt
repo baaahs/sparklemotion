@@ -250,6 +250,10 @@ abstract class GlContext(
 
     open fun checkForLinearFilteringOfFloatTextures(required: Boolean = false): Boolean = true
 
+    open fun checkForParallelShaderCompilation(required: Boolean): Boolean = false
+
+    open fun getProgramCompletionStatusKhr(program: Program): Boolean = error("Not supported.")
+
     fun <T> noCheck(fn: Kgl.() -> T): T {
         return kgl.fn()
     }

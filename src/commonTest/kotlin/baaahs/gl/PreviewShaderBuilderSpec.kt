@@ -50,7 +50,7 @@ object PreviewShaderBuilderSpec : Spek({
                 beforeEachTest { dispatcher.runOne() }
 
                 it("is in Linking state") {
-                    expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linking)
+                    expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Resolving)
                     expect(previewShaderBuilder.openShader).toNotEqual(null)
                 }
 
@@ -58,7 +58,7 @@ object PreviewShaderBuilderSpec : Spek({
                     beforeEachTest { dispatcher.runCurrent() }
 
                     it("is in Linked state") {
-                        expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linked)
+                        expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Resolved)
                     }
 
                     it("has a previewPatch") {
@@ -88,7 +88,7 @@ object PreviewShaderBuilderSpec : Spek({
                         }
 
                         it("should not result in a build error") {
-                            expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linked)
+                            expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Resolved)
                             expect(previewShaderBuilder.openShader!!.errors).isEmpty()
                         }
                     }

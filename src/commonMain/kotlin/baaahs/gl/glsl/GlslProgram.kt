@@ -10,6 +10,8 @@ import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.show.UpdateMode
 import baaahs.util.Logger
+import com.danielgergely.kgl.GL_LINK_STATUS
+import com.danielgergely.kgl.GL_TRUE
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.UniformLocation
 
@@ -67,6 +69,54 @@ interface GlslProgram {
 
     companion object {
         internal val logger = Logger<GlslProgram>()
+    }
+}
+
+class GlslProgramBuilder(
+    private val gl: GlContext,
+    private val linkedPatch: LinkedPatch
+) {
+    private val parallelShaderCompile = gl.checkForParallelShaderCompilation(false)
+
+    private val vertexShader =
+        gl.createVertexShader(
+            "#version ${gl.glslVersion}\n${GlslProgramImpl.vertexShader}"
+        )
+
+    private val fragShader =
+        gl.createFragmentShader(linkedPatch.toFullGlsl(gl.glslVersion))
+
+    val id = gl.compile(vertexShader, fragShader)
+
+    val program = gl.runInContext {
+        gl.check {
+            (createProgram() ?: throw ResourceAllocationException("Failed to allocate a GL program."))
+                .also { program ->
+                    gl.check { attachShader(program, vertexShader.shaderId) }
+                    gl.check { attachShader(program, fragShader.shaderId) }
+                    gl.check { linkProgram(program) }
+                }
+        }
+    }
+
+    fun isReady() {
+        return if (parallelShaderCompile) {
+            gl.runInContext {
+                gl.getProgramCompletionStatusKhr(program)
+            }
+        } else true
+    }
+    init {
+        gl.runInContext {
+            if (gl.check { getProgramParameter(program, GL_LINK_STATUS) } != GL_TRUE) {
+                vertexShader.validate()
+                fragShader.validate()
+
+                val infoLog = gl.check { getProgramInfoLog(program) }
+                throw CompilationException(infoLog ?: "Huh? Program error?")
+            }
+            program
+        }
     }
 }
 
@@ -163,9 +213,8 @@ class GlslProgramImpl(
             vertexShader.release()
 //            TODO: gl.check { detachShader(fragShader) }
             fragShader.release()
-
+//            TODO gl.check { deleteProgram(id) }
         }
-//        TODO gl.runInContext { gl.check { deleteProgram(id) } }
     }
 
     override fun getUniformLocation(varName: String) =

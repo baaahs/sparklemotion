@@ -355,7 +355,7 @@ object EditingShaderSpec : Spek({
                 expect(editingShader.state).toBe(State.Building)
                 dispatcher.runCurrent()
 
-                expect(editingShader.shaderBuilder.state).toBe(ShaderBuilder.State.Linked)
+                expect(editingShader.shaderBuilder.state).toBe(ShaderBuilder.State.Resolved)
                 expect(editingShader.state).toBe(State.Building)
                 editingShader.shaderBuilder.startCompile(renderEngine)
 
