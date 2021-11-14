@@ -1,7 +1,6 @@
 package baaahs.model
 
 import baaahs.describe
-import baaahs.device.PixelArrayDevice
 import baaahs.fakeModel
 import baaahs.geom.Vector3F
 import baaahs.gl.override
@@ -20,7 +19,7 @@ object ModelSpec : Spek({
                 val geomVertices = listOf(v1, v2, v3)
                 fakeModel(
                     Model.Surface(
-                        "triangle", "triangle", PixelArrayDevice, null,
+                        "triangle", "triangle", null,
                         listOf(Model.Face(v1, v2, v3)),
                         listOf(Model.Line(v1, v2), Model.Line(v2, v3), Model.Line(v3, v1))
                     )

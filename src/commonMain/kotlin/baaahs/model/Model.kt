@@ -1,6 +1,7 @@
 package baaahs.model
 
 import baaahs.device.DeviceType
+import baaahs.device.PixelArrayDevice
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
@@ -57,11 +58,13 @@ abstract class Model : ModelInfo {
     open class Surface(
         override val name: String,
         override val description: String,
-        override val deviceType: DeviceType,
         val expectedPixelCount: Int?,
         val faces: List<Face>,
         val lines: List<Line>
     ) : Entity {
+        override val deviceType: DeviceType
+            get() = PixelArrayDevice
+
         override val bounds: Pair<Vector3F, Vector3F>
             get() = boundingBox(allVertices())
 
