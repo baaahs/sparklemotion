@@ -295,53 +295,9 @@ class JsMapperUi(
             val vertices = modelVertices?.map { v -> Vector3(v.x, v.y, v.z) }?.toTypedArray()
 
             entities.forEach { entity ->
-                // TODO: Add wireframe for other entity types.
+                // TODO: Add wireframe depiction for other entity types.
                 if (entity is Model.Surface) {
-                    val surface = entity
-
-                    if (vertices == null) error("No vertices for surface ${entity.name}!")
-                    val geom = Geometry()
-                    geom.vertices = vertices
-
-                    val faceNormalAcc = Vector3()
-                    val panelFaces = surface.faces.map { face ->
-                        val face3 = Face3(face.vertexA, face.vertexB, face.vertexC, Vector3(), Color(1, 1, 1))
-
-                        // just compute this face's normal
-                        geom.faces = arrayOf(face3)
-                        geom.computeFaceNormals()
-                        faceNormalAcc.add(face3.normal)
-
-                        face3
-                    }
-                    val surfaceNormal = faceNormalAcc.divideScalar(surface.faces.size.toDouble())
-
-                    val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
-                    val mesh = Mesh(geom, panelMaterial)
-                    mesh.asDynamic().name = surface.name
-                    uiScene.add(mesh)
-
-                    val lineMaterial = LineBasicMaterial().apply {
-                        color = Color(0f, 1f, 0f)
-                        linewidth = 2.0
-                    }
-
-                    // offset the wireframe by one of the panel's face normals so it's not clipped by the panel mesh
-                    surface.lines.forEach { line ->
-                        val lineGeom = BufferGeometry()
-                        lineGeom.setFromPoints(line.vertices.map { pt ->
-                            pt.toVector3() + surfaceNormal
-                        }.toTypedArray())
-                        wireframe.add(Line(lineGeom, lineMaterial))
-                    }
-
-                    geom.faces = panelFaces.toTypedArray()
-                    geom.computeFaceNormals()
-                    geom.computeVertexNormals()
-
-                    val entityDepiction = PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
-                    entityDepictions[surface] = entityDepiction
-
+                    entityDepictions[entity] = createEntityDepiction(entity, vertices)
                 }
             }
         }
@@ -355,6 +311,52 @@ class JsMapperUi(
 
         val boundingBox = Box3().setFromObject(wireframe)
         uiControls.fitToBox(boundingBox, false)
+    }
+
+    private fun createEntityDepiction(entity: Model.Surface, vertices: Array<Vector3>?): PanelInfo {
+        val surface = entity
+
+        if (vertices == null) error("No vertices for surface ${entity.name}!")
+        val geom = Geometry()
+        geom.vertices = vertices
+
+        val faceNormalAcc = Vector3()
+        val panelFaces = surface.faces.map { face ->
+            val face3 = Face3(face.vertexA, face.vertexB, face.vertexC, Vector3(), Color(1, 1, 1))
+
+            // just compute this face's normal
+            geom.faces = arrayOf(face3)
+            geom.computeFaceNormals()
+            faceNormalAcc.add(face3.normal)
+
+            face3
+        }
+        val surfaceNormal = faceNormalAcc.divideScalar(surface.faces.size.toDouble())
+
+        val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
+        val mesh = Mesh(geom, panelMaterial)
+        mesh.asDynamic().name = surface.name
+        uiScene.add(mesh)
+
+        val lineMaterial = LineBasicMaterial().apply {
+            color = Color(0f, 1f, 0f)
+            linewidth = 2.0
+        }
+
+        // offset the wireframe by one of the panel's face normals so it's not clipped by the panel mesh
+        surface.lines.forEach { line ->
+            val lineGeom = BufferGeometry()
+            lineGeom.setFromPoints(line.vertices.map { pt ->
+                pt.toVector3() + surfaceNormal
+            }.toTypedArray())
+            wireframe.add(Line(lineGeom, lineMaterial))
+        }
+
+        geom.faces = panelFaces.toTypedArray()
+        geom.computeFaceNormals()
+        geom.computeVertexNormals()
+
+        return PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
     }
 
     inner class PanelInfo(
