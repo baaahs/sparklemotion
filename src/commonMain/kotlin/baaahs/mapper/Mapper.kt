@@ -127,7 +127,7 @@ class Mapper(
     override fun loadMappingSession(name: String?) {
         val surfaceVisualizers = mapperUi.getAllSurfaceVisualizers().associateBy {
             it.resetPixels()
-            it.modelSurface.name
+            it.entity.name
         }
 
         if (name != null) {
@@ -174,7 +174,7 @@ class Mapper(
         return mapperUi.intersectingSurface(uv, visibleSurfaces)
     }
 
-    suspend fun startNewSession() {
+    private suspend fun startNewSession() {
         showMessage("ESTABLISHING UPLINK…")
 
         // shut down Pinky, advertise for Brains...
@@ -216,27 +216,27 @@ class Mapper(
     }
 
     inner class Session {
-        val sessionStartTime = DateTime.now()
-        val visibleSurfaces = getVisibleSurfaces()
+        private val sessionStartTime = DateTime.now()
+        private val visibleSurfaces = getVisibleSurfaces()
         private var baseBitmap: Bitmap? = null
-        val cameraOrientation = lockUi()
-        lateinit var deltaBitmap: Bitmap
+        private val cameraOrientation = lockUi()
+        private lateinit var deltaBitmap: Bitmap
 
-        fun resetToBase() {
+        private fun resetToBase() {
             brainsToMap.values.forEach {
                 it.pixelShaderBuffer.setAll(0)
             }
         }
 
-        suspend fun allPixelsOff() {
+        private suspend fun allPixelsOff() {
             resetToBase()
             sendToAllReliably(brainsToMap.values) { it.pixelShaderBuffer }
         }
 
-        fun brainsWithPixel(pixelIndex: Int) =
+        private fun brainsWithPixel(pixelIndex: Int) =
             brainsToMap.values.filter { pixelIndex < it.expectedPixelCountOrDefault }
 
-        suspend fun turnOnPixel(pixelIndex: Int) {
+        private suspend fun turnOnPixel(pixelIndex: Int) {
             resetToBase()
 
             val relevantBrains = brainsWithPixel(pixelIndex)
@@ -249,7 +249,7 @@ class Mapper(
 
         suspend fun start() {
             showMessage("CALIBRLATING…")
-            logger.info { "Visible surfaces: ${visibleSurfaces.joinToString { it.modelSurface.name }}" }
+            logger.info { "Visible surfaces: ${visibleSurfaces.joinToString { it.entity.name }}" }
 
             // Blackout for base image.
             sendToAllReliably(brainsToMap.values) { solidColorBuffer(inactiveColor) }
@@ -300,7 +300,7 @@ class Mapper(
                 sendToAllReliably(brainsToMap.values) { it.pixelShaderBuffer }
                 delay(1000L)
 
-                val maxPixelForTheseBrains = brainsToMap.values.map { it.expectedPixelCountOrDefault }.maxOrNull()!!
+                val maxPixelForTheseBrains = brainsToMap.values.maxOf { it.expectedPixelCountOrDefault }
                 val pixelStep = 4
                 fun actualPixelIndex(pixelIndexX: Int) =
                     pixelIndexX * pixelStep % maxPixelForTheseBrains + pixelIndexX * pixelStep / maxPixelForTheseBrains
@@ -350,7 +350,7 @@ class Mapper(
             val surfaces = mutableListOf<MappingSession.SurfaceData>()
             brainsToMap.forEach { (address, brainToMap) ->
                 logger.info { "Brain ID: ${brainToMap.brainId} at ${address}:" }
-                logger.info { "  Surface: ${brainToMap.guessedModelSurface}" }
+                logger.info { "  Surface: ${brainToMap.guessedEntity}" }
                 logger.debug { "  Pixels:" }
 
                 val visibleSurface = brainToMap.guessedVisibleSurface
@@ -381,7 +381,7 @@ class Mapper(
                     val surfaceData = MappingSession.SurfaceData(
                         BrainManager.controllerTypeName,
                         brainToMap.brainId,
-                        visibleSurface.modelSurface.name,
+                        visibleSurface.entity.name,
                         pixels.size,
                         pixels,
                         null,
@@ -443,7 +443,7 @@ class Mapper(
             waitForDelivery() // ... of resetting to black above.
         }
 
-        suspend fun identifyBrain(index: Int, brainToMap: BrainToMap, retryCount: Int = 0) {
+        private suspend fun identifyBrain(index: Int, brainToMap: BrainToMap, retryCount: Int = 0) {
             showMessage("MAPPING SURFACE $index / ${brainsToMap.size} (${brainToMap.brainId})…")
 
             deliverer.send(brainToMap, solidColorBuffer(activeColor))
@@ -486,7 +486,7 @@ class Mapper(
             while (surfaceBallot.totalVotes < 10 && tries-- > 0) {
                 val uv = sampleLocations.random()
                 val visibleSurface = intersectingSurface(uv, visibleSurfaces)
-                val surface = visibleSurface?.modelSurface
+                val surface = visibleSurface?.entity
                 surface?.let {
                     surfaceBallot.cast(surface.name, visibleSurface)
                 }
@@ -508,15 +508,15 @@ class Mapper(
             //
             //                val firstGuess = orderedPanels.first().first
             val firstGuess = surfaceBallot.winner()
-            val firstGuessSurface = firstGuess.modelSurface
+            val firstGuessSurface = firstGuess.entity
 
             showMessage("$index / ${brainsToMap.size}: ${brainToMap.brainId} — surface is ${firstGuessSurface.name}?")
             showMessage2("Candidate panels: ${surfaceBallot.summarize()}")
 
             logger.info { "Guessed panel ${firstGuessSurface.name} for ${brainToMap.brainId}" }
-            brainToMap.guessedModelSurface = firstGuessSurface
+            brainToMap.guessedEntity = firstGuessSurface
             brainToMap.guessedVisibleSurface = firstGuess
-            brainToMap.expectedPixelCount = firstGuessSurface.expectedPixelCount
+            brainToMap.expectedPixelCount = (firstGuessSurface as? Model.Surface)?.expectedPixelCount
             brainToMap.panelDeltaBitmap = deltaBitmap.clone()
             brainToMap.deltaImageName =
                 webSocketClient.saveImage(sessionStartTime, "brain-${brainToMap.brainId}-$retryCount", deltaBitmap)
@@ -553,7 +553,7 @@ class Mapper(
                 showDiffImage(deltaBitmap, pixelChangeRegion)
                 showPanelMask(brainToMap.panelDeltaBitmap!!, pixelChangeRegion)
                 logger.debug {
-                    "pixelChangeRegion($pixelIndex,${brainToMap.guessedModelSurface?.name} =" +
+                    "pixelChangeRegion($pixelIndex,${brainToMap.guessedEntity?.name} =" +
                             " $pixelChangeRegion ${pixelChangeRegion.width}x${pixelChangeRegion.height}"
                 }
 
@@ -657,8 +657,8 @@ class Mapper(
     private val deliverer = ReliableShaderMessageDeliverer()
 
     inner class ReliableShaderMessageDeliverer {
-        val outstanding = mutableMapOf<List<Byte>, DeliveryAttempt>()
-        val pongs = Channel<PingMessage>()
+        private val outstanding = mutableMapOf<List<Byte>, DeliveryAttempt>()
+        private val pongs = Channel<PingMessage>()
 
         fun send(brainToMap: BrainToMap, buffer: BrainShader.Buffer) {
             val deliveryAttempt = DeliveryAttempt(brainToMap, buffer)
@@ -677,7 +677,7 @@ class Mapper(
 
             while (outstanding.isNotEmpty()) {
                 val waitingFor =
-                    outstanding.values.map { it.brainToMap.guessedModelSurface?.name ?: it.brainToMap.brainId }
+                    outstanding.values.map { it.brainToMap.guessedEntity?.name ?: it.brainToMap.brainId }
                         .sorted()
                 showMessage2("Waiting for PONG from ${waitingFor.joinToString(",")}")
 //                logger.debug { "pongs outstanding: ${outstanding.keys.map { it.stringify() }}" }
@@ -764,8 +764,7 @@ class Mapper(
 
     override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
 //        logger.debug { "Mapper received message from $fromAddress:$fromPort ${bytes[0]}" }
-        val message = parse(bytes)
-        when (message) {
+        when (val message = parse(bytes)) {
             is BrainHelloMessage -> {
                 logger.debug { "Heard from Brain ${message.brainId} surface=${message.surfaceName ?: "unknown"}" }
                 val brainToMap = brainsToMap.getOrPut(fromAddress) { BrainToMap(fromAddress, message.brainId) }
@@ -824,13 +823,13 @@ class Mapper(
             get() = expectedPixelCount ?: SparkleMotion.DEFAULT_PIXEL_COUNT
 
         var changeRegion: MediaDevices.Region? = null
-        var guessedModelSurface: Model.Surface? = null
+        var guessedEntity: Model.Entity? = null
         var guessedVisibleSurface: MapperUi.VisibleSurface? = null
         var panelDeltaBitmap: Bitmap? = null
         var deltaImageName: String? = null
         val pixelMapData: MutableMap<Int, PixelMapData> = mutableMapOf()
 
-        val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
+        private val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
         val pixelShaderBuffer = pixelShader.createBuffer(maxPixelsPerBrain).apply {
             palette[0] = Color.BLACK
             palette[1] = Color.WHITE
@@ -857,14 +856,13 @@ class Mapper(
         fun noVotes(): Boolean = box.isEmpty()
 
         fun winner(): T {
-            return box.values.sortedByDescending { it.votes }.first().item
+            return box.values.maxByOrNull { it.votes }!!.item
         }
 
         fun summarize(): String {
             return box.entries
                 .sortedByDescending { (_, v) -> v.votes }
-                .map { (k, v) -> "$k=${v.votes}" }
-                .joinToString(", ")
+                .joinToString(", ") { (k, v) -> "$k=${v.votes}" }
         }
 
         private class Vote<T>(val item: T) {
@@ -876,7 +874,7 @@ class Mapper(
         val mapperStats = MapperStats()
         val logger = Logger<Mapper>()
 
-        private val maxPixelsPerBrain = SparkleMotion.MAX_PIXEL_COUNT
+        private const val maxPixelsPerBrain = SparkleMotion.MAX_PIXEL_COUNT
     }
 
     fun List<Byte>.stringify(): String {
@@ -905,7 +903,7 @@ interface MapperUi {
     fun setRedo(fn: (suspend () -> Unit)?)
     fun lockUi(): CameraOrientation
     fun unlockUi()
-    fun getAllSurfaceVisualizers(): List<SurfaceViz>
+    fun getAllSurfaceVisualizers(): List<EntityDepiction>
     fun getVisibleSurfaces(): List<VisibleSurface>
     fun showCandidates(orderedPanels: List<Pair<VisibleSurface, Float>>)
     fun intersectingSurface(uv: Uv, visibleSurfaces: List<VisibleSurface>): VisibleSurface?
@@ -925,8 +923,8 @@ interface MapperUi {
         fun loadMappingSession(name: String?)
     }
 
-    interface SurfaceViz {
-        val modelSurface: Model.Surface
+    interface EntityDepiction {
+        val entity: Model.Entity
 
         fun setPixel(index: Int, modelPosition: Vector3F?)
         fun showPixels()
@@ -934,7 +932,7 @@ interface MapperUi {
     }
 
     interface VisibleSurface {
-        val modelSurface: Model.Surface
+        val entity: Model.Entity
         val boxOnScreen: MediaDevices.Region
         val pixelsInModelSpace: List<Vector3F?>
         fun translatePixelToPanelSpace(uv: Uv): Vector2F?
