@@ -1,6 +1,5 @@
 package baaahs.model
 
-import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.io.getResource
 import baaahs.model.Model.*
@@ -70,7 +69,7 @@ class ObjModelLoader(
         val lines = mutableListOf<Line>()
 
         fun build(): Surface =
-            Surface(name, name, PixelArrayDevice, expectedPixelCount(name), faces, lines)
+            Surface(name, name, expectedPixelCount(name), faces, lines)
     }
 
     companion object {

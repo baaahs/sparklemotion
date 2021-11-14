@@ -1,6 +1,5 @@
 package baaahs.models
 
-import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Shenzarpy
 import baaahs.geom.Vector3F
 import baaahs.io.getResource
@@ -56,6 +55,6 @@ class SheepModel : Model() {
         private val logger = Logger<SheepModel>()
 
         fun Panel(name: String) =
-            Surface(name, name, PixelArrayDevice, null, emptyList(), emptyList())
+            Surface(name, name, null, emptyList(), emptyList())
     }
 }

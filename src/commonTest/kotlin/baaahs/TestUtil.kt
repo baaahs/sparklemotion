@@ -94,7 +94,7 @@ class TestModelSurface(
     name: String,
     expectedPixelCount: Int? = 1,
     private val vertices: List<Vector3F> = emptyList()
-) : Model.Surface(name, name, PixelArrayDevice, expectedPixelCount, emptyList(), emptyList()) {
+) : Model.Surface(name, name, expectedPixelCount, emptyList(), emptyList()) {
     override fun allVertices(): Collection<Vector3F> = vertices
 }
 
