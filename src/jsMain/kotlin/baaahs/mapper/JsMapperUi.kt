@@ -7,7 +7,6 @@ import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.getValue
 import baaahs.imaging.*
-import baaahs.imaging.Image
 import baaahs.model.Model
 import baaahs.sim.HostedWebApp
 import baaahs.ui.Observable
@@ -19,7 +18,10 @@ import baaahs.window
 import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.w3c.dom.*
+import org.w3c.dom.CanvasImageSource
+import org.w3c.dom.CanvasRenderingContext2D
+import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import react.RBuilder
@@ -70,16 +72,16 @@ class JsMapperUi(
     }
 
     // Bounds of mapper container.
-    var browserDimen = Dimen(512, 384)
+    private var browserDimen = Dimen(512, 384)
 
     // Bounds of area used for mapping.
-    var containerDimen = browserDimen
+    private var containerDimen = browserDimen
 
     // Actual dimensions coming from the camera.
-    var lastCamImageDimen = browserDimen
+    private var lastCamImageDimen = browserDimen
 
     // Best-fit dimensions of mapping area and camera image.
-    var viewportDimen = browserDimen
+    private var viewportDimen = browserDimen
 
     private val clock = Clock()
 
@@ -94,7 +96,7 @@ class JsMapperUi(
     val wireframe = Object3D()
 
     private val selectedSurfaces = mutableListOf<PanelInfo>()
-    var uiLocked: Boolean by notifyOnChange(false)
+    private var uiLocked: Boolean by notifyOnChange(false)
 
     private lateinit var ui2dCanvas: HTMLCanvasElement
 
@@ -113,7 +115,7 @@ class JsMapperUi(
     var pauseButtonEnabled by notifyOnChange(true)
     var playButtonEnabled by notifyOnChange(true)
 
-    private val modelSurfaceInfos = mutableMapOf<Model.Surface, PanelInfo>()
+    private val entityDepictions = mutableMapOf<Model.Entity, PanelInfo>()
 
     private var commandProgress = ""
     private var cameraZRotation = 0f
@@ -205,7 +207,7 @@ class JsMapperUi(
     private fun selectSurfacesMatching(pattern: String) {
         selectedSurfaces.forEach { it.deselect() }
         selectedSurfaces.clear()
-        selectedSurfaces.addAll(modelSurfaceInfos.values.filter { it.surface.name.contains(pattern, true) })
+        selectedSurfaces.addAll(entityDepictions.values.filter { it.surface.name.contains(pattern, true) })
         selectedSurfaces.forEach { it.select() }
         notifyChanged()
     }
@@ -215,7 +217,7 @@ class JsMapperUi(
 
         if (command.startsWith("g", ignoreCase = true) || command.startsWith("/")) {
             val surfaceName = command.substring(1).trim()
-            goToSurface(surfaceName.toUpperCase())
+            goToSurface(surfaceName.uppercase())
         }
     }
 
@@ -235,7 +237,7 @@ class JsMapperUi(
     }
 
     override fun render(): ReactElement {
-        return createElement(MapperIndexView, jsObject<MapperIndexViewProps> {
+        return createElement(MapperIndexView, jsObject {
             adminClient = this@JsMapperUi.adminClient.facade
             mapperUi = this@JsMapperUi
         })
@@ -337,8 +339,8 @@ class JsMapperUi(
                     geom.computeFaceNormals()
                     geom.computeVertexNormals()
 
-                    modelSurfaceInfos[surface] =
-                        PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
+                    val entityDepiction = PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
+                    entityDepictions[surface] = entityDepiction
 
                 }
             }
@@ -360,9 +362,9 @@ class JsMapperUi(
         val faces: List<Face3>,
         val mesh: Mesh<*, *>,
         val geom: Geometry,
-        val lineMaterial: LineBasicMaterial
-    ) : MapperUi.SurfaceViz {
-        override val modelSurface: Model.Surface
+        private val lineMaterial: LineBasicMaterial
+    ) : MapperUi.EntityDepiction {
+        override val entity: Model.Entity
             get() = surface
 
         private val pixelsGeom = BufferGeometry()
@@ -389,7 +391,7 @@ class JsMapperUi(
                 return vectors
             }
 
-        val vertices: Set<Vector3>
+        private val vertices: Set<Vector3>
             get() {
                 val v = mutableSetOf<Vector3>()
                 for (face in faces) {
@@ -400,7 +402,7 @@ class JsMapperUi(
                 return v
             }
 
-        val _boundingBox: Box3 by lazy {
+        private val _boundingBox: Box3 by lazy {
             val boundingBox = Box3()
             for (vertex in vertices) {
                 boundingBox.expandByPoint(vertex)
@@ -412,7 +414,7 @@ class JsMapperUi(
 
         private val rotator by lazy { Rotator(surfaceNormal, Vector3(0, 0, 1)) }
 
-        fun toSurfaceNormal(point: Vector3): Vector3 {
+        private fun toSurfaceNormal(point: Vector3): Vector3 {
             rotator.rotate(point); return point
         }
 
@@ -451,7 +453,7 @@ class JsMapperUi(
 
         val isMultiFaced get() = faces.size > 1
 
-        val _surfaceNormal: Vector3 by lazy {
+        private val _surfaceNormal: Vector3 by lazy {
             val faceNormalSum = Vector3()
             var totalArea = 0f
             for (face in faces) {
@@ -493,7 +495,7 @@ class JsMapperUi(
             updatePixels()
         }
 
-        fun updatePixels() {
+        private fun updatePixels() {
             if (pixelsInScene) {
                 val positions = Array((maxPixel + 1) * 3) { 0f }
                 (0 until maxPixel).forEach { i ->
@@ -518,8 +520,8 @@ class JsMapperUi(
         uiLocked = false
     }
 
-    override fun getAllSurfaceVisualizers(): List<MapperUi.SurfaceViz> {
-        return modelSurfaceInfos.values.toList()
+    override fun getAllSurfaceVisualizers(): List<MapperUi.EntityDepiction> {
+        return entityDepictions.values.toList()
     }
 
     override fun getVisibleSurfaces(): List<MapperUi.VisibleSurface> {
@@ -528,7 +530,7 @@ class JsMapperUi(
         val screenCenter = screenBox.center
         val cameraOrientation = CameraOrientation.from(uiCamera)
 
-        modelSurfaceInfos.forEach { (panel, panelInfo) ->
+        entityDepictions.forEach { (entity, panelInfo) ->
             val panelPosition = panelInfo.geom.vertices[panelInfo.faces[0].a]
             val dirToCamera = uiCamera.position.clone().sub(panelPosition)
             dirToCamera.normalize()
@@ -539,7 +541,7 @@ class JsMapperUi(
                 val panelBoundingBox = panelInfo.boundingBox.project(uiCamera)
                 val panelBoxOnScreen = calcBoundingBoxOnScreen(panelBoundingBox, screenCenter)
                 panelInfo.boxOnScreen = panelBoxOnScreen
-                if (panelBoxOnScreen.asDynamic().intersectsBox(screenBox)) {
+                if (panelBoxOnScreen.intersectsBox(screenBox)) {
                     val region = MediaDevices.Region(
                         panelBoxOnScreen.min.x.roundToInt(),
                         panelBoxOnScreen.min.y.roundToInt(),
@@ -547,7 +549,7 @@ class JsMapperUi(
                         panelBoxOnScreen.max.y.roundToInt(),
                         viewportDimen
                     )
-                    visibleSurfaces.add(VisibleSurface(panel, region, panelInfo, cameraOrientation))
+                    visibleSurfaces.add(VisibleSurface(entity, region, panelInfo, cameraOrientation))
                 }
             }
         }
@@ -556,7 +558,7 @@ class JsMapperUi(
     }
 
     inner class VisibleSurface(
-        override val modelSurface: Model.Surface,
+        override val entity: Model.Entity,
         override val boxOnScreen: MediaDevices.Region,
         val panelInfo: PanelInfo,
         cameraOrientation: CameraOrientation
@@ -589,14 +591,14 @@ class JsMapperUi(
             raycaster.setFromCamera(uv.toVector2(), camera)
             var intersections = raycaster.intersectObject(panelInfo.mesh, false)
             if (intersections.isEmpty()) {
-                logger.warn { "Couldn't find point in ${modelSurface.name}, searching in scene..." }
+                logger.warn { "Couldn't find point in ${entity.name}, searching in scene..." }
                 intersections = raycaster.intersectObject(uiScene, true)
                 console.log("Found intersections: ", intersections)
             }
-            if (intersections.isNotEmpty()) {
-                return intersections.first()
+            return if (intersections.isNotEmpty()) {
+                intersections.first()
             } else {
-                return null
+                null
             }
         }
 
@@ -650,7 +652,7 @@ class JsMapperUi(
         val intersections = raycaster.intersectObject(uiScene, true)
         return if (intersections.isNotEmpty()) {
             val intersect = intersections.first()
-            visibleSurfaces.find { it.modelSurface.name == intersect.`object`.name }
+            visibleSurfaces.find { it.entity.name == intersect.`object`.name }
         } else {
             null
         }
@@ -787,10 +789,6 @@ class JsMapperUi(
         notifyChanged()
     }
 
-    private fun HTMLButtonElement.enabled(isEnabled: Boolean) {
-        style.opacity = if (isEnabled) "1" else ".5"
-    }
-
     fun clickedStart() {
         listener.onStart()
     }
@@ -802,7 +800,7 @@ class JsMapperUi(
     fun clickedGoToSurface() {
         val surfaceName = window.prompt("Surface:")
         if (surfaceName != null && surfaceName.isNotEmpty()) {
-            goToSurface(surfaceName.toUpperCase())
+            goToSurface(surfaceName.uppercase())
         }
     }
 
@@ -814,9 +812,9 @@ class JsMapperUi(
     }
 
     private fun goToSurface(name: String) {
-        val surface = modelSurfaceInfos.keys.find { it.name == name }
+        val surface = entityDepictions.keys.find { it.name == name }
         if (surface != null) {
-            val panelInfo = modelSurfaceInfos[surface]!!
+            val panelInfo = entityDepictions[surface]!!
             panelInfo.geom.computeBoundingBox()
             val surfaceCenter = panelInfo.center
             val surfaceNormal = panelInfo.surfaceNormal

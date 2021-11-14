@@ -37,7 +37,7 @@ private val StatusBar = xComponent<StatusBarProps>("StatusBar") { props ->
             tbody {
                 orderedPanels.subList(0, min(5, orderedPanels.size)).forEach { (visibleSurface, distance) ->
                     tr {
-                        td { +visibleSurface.modelSurface.name }
+                        td { +visibleSurface.entity.name }
                         td { +"$distance" }
                     }
                 }
