@@ -8,9 +8,9 @@ import org.spekframework.spek2.Spek
 object Matrix4Spec : Spek({
     describe<Matrix4> {
         context("fromPositionAndOrientation") {
-            val origin by value { Vector3F(x = -11f, y = 202.361f, z = 27.5f) }
-            val heading by value { Vector3F(x = 0f, y = -0.15707963267948966f, z = 1.5707963267948966f) }
-            val matrix4 by value { Matrix4.fromPositionAndOrientation(origin, heading) }
+            val position by value { Vector3F(x = -11f, y = 202.361f, z = 27.5f) }
+            val rotation by value { EulerAngle(pitchRad = 0.0, yawRad = -0.15707963267948966, rollRad = 1.5707963267948966) }
+            val matrix4 by value { Matrix4.fromPositionAndOrientation(position, rotation) }
 
             it("should be calculated properly") {
                 expect(matrix4.elements.toList()).toEqual(

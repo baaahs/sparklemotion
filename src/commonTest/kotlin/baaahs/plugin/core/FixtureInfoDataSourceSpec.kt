@@ -50,10 +50,10 @@ object FixtureInfoDataSourceSpec : Spek({
             val glProgram = testRenderContext.gl.findProgram(program.id)
 
             val originUniform = glProgram.getUniform<List<Float>>("in_fixtureInfo.origin")
-            expect(originUniform.asVector3F()).toEqual(movingHead.origin)
+            expect(originUniform.asVector3F()).toEqual(movingHead.position)
 
             val headingUniform = glProgram.getUniform<List<Float>>("in_fixtureInfo.heading")
-            expect(headingUniform.asVector3F()).toEqual(movingHead.heading)
+            expect(headingUniform.asVector3F()).toEqual(movingHead.rotation)
         }
     }
 })
