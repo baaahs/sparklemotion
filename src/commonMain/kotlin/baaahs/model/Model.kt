@@ -2,10 +2,7 @@ package baaahs.model
 
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
-import baaahs.geom.Matrix4
-import baaahs.geom.Vector3F
-import baaahs.geom.boundingBox
-import baaahs.geom.center
+import baaahs.geom.*
 import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.sim.BrainSurfaceSimulation
@@ -49,8 +46,8 @@ abstract class Model : ModelInfo {
     }
 
     interface FixtureInfo {
-        val origin: Vector3F?
-        val heading: Vector3F?
+        val position: Vector3F?
+        val rotation: EulerAngle?
         val matrix: Matrix4?
     }
 
@@ -86,7 +83,7 @@ abstract class Model : ModelInfo {
     }
 
     class Face(
-        internal val allVertices: List<Vector3F>,
+        private val allVertices: List<Vector3F>,
         val vertexA: Int,
         val vertexB: Int,
         val vertexC: Int

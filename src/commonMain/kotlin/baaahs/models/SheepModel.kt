@@ -1,6 +1,7 @@
 package baaahs.models
 
 import baaahs.dmx.Shenzarpy
+import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.io.getResource
 import baaahs.model.Model
@@ -25,7 +26,7 @@ class SheepModel : Model() {
         }
         expectedPixelCount
     }
-    private val wallEyedness = (0.1f * PI / 2).toFloat()
+    private val wallEyedness = 0.1f * PI / 2
 
     private val movingHeads: List<MovingHead> = arrayListOf(
         MovingHead(
@@ -33,16 +34,16 @@ class SheepModel : Model() {
             "Left Eye",
             1,
             Shenzarpy,
-            origin = Vector3F(-11f, 202.361f, -24.5f),
-            heading = Vector3F(0f, wallEyedness, (PI / 2).toFloat())
+            position = Vector3F(-11f, 202.361f, -24.5f),
+            rotation = EulerAngle(0.0, wallEyedness, PI / 2)
         ),
         MovingHead(
             "rightEye",
             "Right Eye",
             17,
             Shenzarpy,
-            origin = Vector3F(-11f, 202.361f, 27.5f),
-            heading = Vector3F(0f, -wallEyedness, (PI / 2).toFloat())
+            position = Vector3F(-11f, 202.361f, 27.5f),
+            rotation = EulerAngle(0.0, -wallEyedness, PI / 2)
         )
     )
 

@@ -29,7 +29,7 @@ actual class MovingHeadSimulation actual constructor(
         Fixture(
             movingHead,
             1,
-            listOf(movingHead.origin),
+            listOf(movingHead.position),
             movingHead.deviceType.defaultConfig,
             movingHead.name,
             PreviewTransport()

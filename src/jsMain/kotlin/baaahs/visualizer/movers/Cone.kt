@@ -1,18 +1,21 @@
 package baaahs.visualizer.movers
 
 import baaahs.Color
+import baaahs.geom.toThreeEuler
 import baaahs.model.MovingHead
 import baaahs.visualizer.VizObj
 import baaahs.visualizer.VizScene
 import baaahs.visualizer.toVector3
 import three.js.*
+import three_ext.plus
+import three_ext.set
 
 actual class Cone actual constructor(
     private val movingHead: MovingHead,
     private val colorMode: ColorMode
 ) {
-    private val origin = movingHead.origin.toVector3()
-    private val heading = movingHead.heading.toVector3()
+    private val position = movingHead.position.toVector3()
+    private val rotation = movingHead.rotation.toThreeEuler()
     private val coneLength = 1000.0
 
     private val clipPlane = Plane(Vector3(0, 0, 1), 0)
@@ -54,8 +57,8 @@ actual class Cone actual constructor(
 
     init {
         cones.forEach { cone ->
-            cone.position.set(origin.x, origin.y, origin.z)
-            cone.rotation.setFromVector3(heading)
+            cone.position.set(position)
+            cone.rotation.set(rotation)
         }
     }
 
@@ -66,7 +69,7 @@ actual class Cone actual constructor(
     actual fun update(state: State) {
         setColor(colorMode.getColor(movingHead, state), state.dimmer)
 
-        val rotation = Vector3(
+        val rotation = Euler(
             movingHead.adapter.panRange.scale(state.pan),
             0f,
             movingHead.adapter.tiltRange.scale(state.tilt)
@@ -86,18 +89,18 @@ actual class Cone actual constructor(
         }
     }
 
-    fun setRotation(rotation: Vector3, colorSplit: Float) {
-        val aim = heading.clone().add(rotation)
+    fun setRotation(rotation: Euler, colorSplit: Float) {
+        val aim = this.rotation + rotation
         cones.forEach { cone ->
-            cone.rotation.setFromVector3(aim)
+            cone.rotation.set(aim)
         }
 
         if (colorMode.isClipped) {
-            aim.y += (1f - colorSplit - .5f) * .25f
-            val planeRotation = Euler().setFromVector3(aim)
+            aim.y = aim.y.toDouble() + (1f - colorSplit - .5f) * .25f
+            val planeRotation = aim
             val normal = Vector3(0, 0, 1).applyEuler(planeRotation)
             if (colorMode == ColorMode.Secondary) normal.negate()
-            val planeOrigin = origin.clone()
+            val planeOrigin = position.clone()
             clipPlane.setFromNormalAndCoplanarPoint(normal, planeOrigin)
         }
     }

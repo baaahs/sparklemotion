@@ -1,6 +1,7 @@
 package baaahs.plugin.core
 
 import baaahs.ShowPlayer
+import baaahs.geom.EulerAngle
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
@@ -76,8 +77,8 @@ class FixtureInfoFeed(
 
             override fun setOnProgram(renderTarget: RenderTarget) {
                 val fixtureInfo = renderTarget.fixture.modelEntity as? Model.FixtureInfo
-                originUniform?.set(fixtureInfo?.origin ?: Vector3F.origin)
-                headingUniform?.set(fixtureInfo?.heading ?: Vector3F.origin)
+                originUniform?.set(fixtureInfo?.position ?: Vector3F.origin)
+                headingUniform?.set(fixtureInfo?.rotation ?: EulerAngle.identity)
                 matrixUniform?.set(fixtureInfo?.matrix ?: Matrix4())
             }
         }
