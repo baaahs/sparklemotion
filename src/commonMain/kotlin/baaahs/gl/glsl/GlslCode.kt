@@ -140,7 +140,8 @@ class GlslCode(
         override val lineNumber: Int? = null,
         override val comments: List<String> = emptyList()
     ) : GlslStatement {
-        val glslType: GlslType.Struct = GlslType.Struct(name, fields)
+        val glslType: GlslType.Struct =
+            GlslType.Struct(name, fields.map { (name, type) -> GlslType.Field(name, type) })
 
         fun getSyntheticVar(): GlslVar {
             val structType = GlslType.Struct(this)

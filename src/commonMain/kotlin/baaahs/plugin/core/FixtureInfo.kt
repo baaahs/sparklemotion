@@ -27,9 +27,11 @@ import kotlinx.serialization.Transient
 
 val fixtureInfoStruct = GlslType.Struct(
     "FixtureInfo",
-    "origin" to GlslType.Vec3,
-    "heading" to GlslType.Vec3,
-    "matrix" to GlslType.Matrix4
+    GlslType.Field("position", GlslType.Vec3),
+    GlslType.Field("origin", GlslType.Vec3, "Use \"position\" instead.", true),
+    GlslType.Field("rotation", GlslType.Vec3),
+    GlslType.Field("heading", GlslType.Vec3, "Use \"rotation\" instead.", true),
+    GlslType.Field("matrix", GlslType.Matrix4)
 )
 
 val fixtureInfoContentType = ContentType("fixture-info", "Fixture Info", fixtureInfoStruct)
@@ -68,16 +70,22 @@ class FixtureInfoFeed(
         override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {
             override val updateMode: UpdateMode get() = UpdateMode.PER_FIXTURE
 
+            private val positionUniform = glslProgram.getUniform("$id.position")
             private val originUniform = glslProgram.getUniform("$id.origin")
+            private val rotationUniform = glslProgram.getUniform("$id.rotation")
             private val headingUniform = glslProgram.getUniform("$id.heading")
             private val matrixUniform = glslProgram.getUniform("$id.matrix")
 
             override val isValid: Boolean get() =
-                originUniform != null || headingUniform != null || matrixUniform != null
+                positionUniform != null || originUniform != null ||
+                rotationUniform != null || headingUniform != null ||
+                        matrixUniform != null
 
             override fun setOnProgram(renderTarget: RenderTarget) {
                 val fixtureInfo = renderTarget.fixture.modelEntity as? Model.FixtureInfo
+                positionUniform?.set(fixtureInfo?.position ?: Vector3F.origin)
                 originUniform?.set(fixtureInfo?.position ?: Vector3F.origin)
+                rotationUniform?.set(fixtureInfo?.rotation ?: EulerAngle.identity)
                 headingUniform?.set(fixtureInfo?.rotation ?: EulerAngle.identity)
                 matrixUniform?.set(fixtureInfo?.matrix ?: Matrix4())
             }

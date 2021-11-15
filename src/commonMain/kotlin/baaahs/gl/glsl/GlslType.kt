@@ -17,31 +17,37 @@ sealed class GlslType constructor(
     private class OtherGlslType(glslLiteral: String) : GlslType(glslLiteral)
     class Struct(
         val name: String,
-        val fields: Map<String, GlslType>,
+        val fields: List<Field>,
         defaultInitializer: GlslExpr = initializerFor(fields)
     ) : GlslType(name, defaultInitializer) {
         constructor(glslStruct: GlslCode.GlslStruct)
-                : this(glslStruct.name, glslStruct.fields)
+                : this(glslStruct.name, glslStruct.fields.entries.toFields())
+
+        constructor(
+            name: String,
+            vararg fields: Field
+        ) : this(name, listOf(*fields))
 
         constructor(
             name: String,
             vararg fields: Pair<String, GlslType>
-        ) : this(name, mapOf(*fields))
+        ) : this(name, mapOf(*fields).entries.toFields())
 
         constructor(
             name: String,
             vararg fields: Pair<String, GlslType>,
             defaultInitializer: GlslExpr
-        ) : this(name, mapOf(*fields), defaultInitializer)
+        ) : this(name, mapOf(*fields).entries.toFields(), defaultInitializer)
 
         fun toGlsl(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String {
             val buf = StringBuilder()
             buf.append("struct ${namespace?.qualify(name) ?: name} {\n")
-            fields.forEach { (name, type) ->
+            fields.forEach { (name, type, desc, deprecated) ->
                 val typeStr = if (type is Struct) {
                     if (publicStructNames.contains(name)) name else namespace?.qualify(name) ?: name
                 } else type.glslLiteral
-                buf.append("    $typeStr $name;\n")
+                val comment = if (deprecated) " // Deprecated. $desc" else desc ?: ""
+                buf.append("    $typeStr $name;$comment\n")
             }
             buf.append("};\n\n")
 
@@ -66,20 +72,26 @@ sealed class GlslType constructor(
             return result
         }
 
-
         companion object {
-            private fun initializerFor(fields: Map<String, GlslType>): GlslExpr =
+            private fun initializerFor(fields: List<Field>): GlslExpr =
                 StringBuilder().apply {
                     append("{ ")
-                    fields.entries.forEachIndexed { index, (_, glslType) ->
+                    fields.forEachIndexed { index, field ->
                         if (index > 0)
                             append(", ")
-                        append(glslType.defaultInitializer.s)
+                        append(field.type.defaultInitializer.s)
                     }
                     append(" }")
                 }.toString().let { GlslExpr(it) }
         }
     }
+
+    data class Field(
+        val name: String,
+        val type: GlslType,
+        val description: String? = null,
+        val deprecated: Boolean = false,
+    )
 
     object Bool : GlslType("bool", GlslExpr("false"))
     object Float : GlslType("float", GlslExpr("0."))
@@ -114,5 +126,14 @@ sealed class GlslType constructor(
         fun from(glsl: String): GlslType {
             return types.getOrPut(glsl) { OtherGlslType(glsl) }
         }
+
+        fun Array<Pair<String, GlslType>>.toFields() =
+            map { (name, type) -> Field(name, type) }
+
+        fun Collection<Pair<String, GlslType>>.toFields() =
+            map { (name, type) -> Field(name, type) }
+
+        fun Collection<Map.Entry<String, GlslType>>.toFields() =
+            map { (name, type) -> Field(name, type) }
     }
 }
