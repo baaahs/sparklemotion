@@ -43,9 +43,9 @@ class ContentType(
         if (outputRepresentation != glslType) {
             // Pass struct members through an output-friendly type.
             buf.append(outputRepresentation.glslLiteral, "(")
-            (glslType as GlslType.Struct).fields.entries.forEachIndexed { index, (name, _) ->
+            (glslType as GlslType.Struct).fields.forEachIndexed { index, field ->
                 if (index > 0) buf.append(",")
-                buf.append("\n        $varName.$name")
+                buf.append("\n        $varName.${field.name}")
             }
             buf.append("\n    )")
         } else {

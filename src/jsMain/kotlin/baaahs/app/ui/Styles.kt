@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.editor.ShaderEditorStyles
+import baaahs.app.ui.editor.ShaderHelpStyles
 import baaahs.app.ui.editor.layout.LayoutEditorStyles
 import baaahs.app.ui.gadgets.slider.ThemedStyles
 import baaahs.mapper.MapperStyles
@@ -25,6 +26,7 @@ class AllStyles(val theme: MuiTheme) {
     val layoutEditor by lazy { LayoutEditorStyles(theme) }
     val mapper by lazy { MapperStyles(theme) }
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
+    val shaderHelp by lazy { ShaderHelpStyles(theme) }
 
     fun injectGlobals() {
         injectGlobal(Styles.global)
