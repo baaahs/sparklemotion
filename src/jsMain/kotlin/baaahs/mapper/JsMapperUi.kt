@@ -291,16 +291,20 @@ class JsMapperUi(
     }
 
     override fun addWireframe(model: Model) {
-        model.visitEntities { modelVertices, entities ->
-            val vertices = modelVertices?.map { v -> Vector3(v.x, v.y, v.z) }?.toTypedArray()
+        model.allEntities
+            .groupBy { (it as? Model.EntityWithGeometry)?.geometry }
+            .forEach { (geometry, entities) ->
+                val vertices = geometry?.vertices
+                    ?.map { v -> Vector3(v.x, v.y, v.z) }
+                    ?.toTypedArray()
 
-            entities.forEach { entity ->
-                // TODO: Add wireframe depiction for other entity types.
-                if (entity is Model.Surface) {
-                    entityDepictions[entity] = createEntityDepiction(entity, vertices)
+                entities.forEach { entity ->
+                    // TODO: Add wireframe depiction for other entity types.
+                    if (entity is Model.Surface) {
+                        entityDepictions[entity] = createEntityDepiction(entity, vertices)
+                    }
                 }
             }
-        }
 
         uiScene.add(wireframe)
 

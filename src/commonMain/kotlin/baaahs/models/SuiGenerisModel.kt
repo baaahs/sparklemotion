@@ -1,6 +1,5 @@
 package baaahs.models
 
-import baaahs.geom.Vector3F
 import baaahs.model.Model
 import baaahs.model.ObjModelLoader
 
@@ -11,6 +10,4 @@ class SuiGenerisModel : Model() {
 
     override val allEntities: List<Entity>
         get() = objModel.allEntities
-    override val geomVertices: List<Vector3F>
-        get() = objModel.geomVertices
 }

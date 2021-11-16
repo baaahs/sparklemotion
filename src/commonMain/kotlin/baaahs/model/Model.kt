@@ -12,7 +12,6 @@ import baaahs.sim.SimulationEnv
 abstract class Model : ModelInfo {
     abstract val name: String
     abstract val allEntities: List<Entity>
-    abstract val geomVertices: List<Vector3F>
 
     private val allEntitiesByName: Map<String, Entity> by lazy { allEntities.associateBy { it.name } }
 
@@ -32,10 +31,6 @@ abstract class Model : ModelInfo {
 
     open fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> = emptyMap()
 
-    fun visitEntities(block: (vertices: List<Vector3F>?, entities: List<Entity>) -> Unit) {
-        block(geomVertices, allEntities)
-    }
-
     interface Entity {
         val name: String
         val description: String
@@ -44,6 +39,14 @@ abstract class Model : ModelInfo {
 
         fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation
     }
+
+    interface EntityWithGeometry: Entity {
+        val geometry: Geometry
+    }
+
+    class Geometry(
+        val vertices: List<Vector3F>
+    )
 
     interface FixtureInfo {
         val position: Vector3F?
@@ -57,42 +60,41 @@ abstract class Model : ModelInfo {
         override val description: String,
         val expectedPixelCount: Int?,
         val faces: List<Face>,
-        val lines: List<Line>
-    ) : Entity {
+        val lines: List<Line>,
+        override val geometry: Geometry
+    ) : EntityWithGeometry {
         override val deviceType: DeviceType
             get() = PixelArrayDevice
-
         override val bounds: Pair<Vector3F, Vector3F>
             get() = boundingBox(allVertices())
 
-        open fun allVertices(): Collection<Vector3F> {
-            val vertices = hashSetOf<Vector3F>()
-            vertices.addAll(lines.flatMap { it.allVertices })
-            return vertices
-        }
+        open fun allVertices(): Collection<Vector3F> = geometry.vertices
 
         override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
             BrainSurfaceSimulation(this, simulationEnv)
     }
 
-    data class Line(val allVertices: List<Vector3F>, val vertexIndices: List<Int>) {
-        constructor(vararg vertices: Vector3F) :
-                this(vertices.toList(), vertices.mapIndexed { i: Int, _: Vector3F -> i })
+    data class Line(
+        private val geometry: Geometry,
+        val vertexIndices: List<Int>
+    ) {
+        constructor(geometry: Geometry, vararg vertices: Int) :
+                this(geometry, vertices.toList())
 
-        val vertices: List<Vector3F> get() = vertexIndices.map { allVertices[it] }
+        val vertices: List<Vector3F> get() = vertexIndices.map { geometry.vertices[it] }
     }
 
     class Face(
-        private val allVertices: List<Vector3F>,
+        private val geometry: Geometry,
         val vertexA: Int,
         val vertexB: Int,
         val vertexC: Int
     ) {
-        constructor(a: Vector3F, b: Vector3F, c: Vector3F) : this(listOf(a, b, c), 0, 1, 2)
+        constructor(a: Vector3F, b: Vector3F, c: Vector3F) : this(Geometry(listOf(a, b, c)), 0, 1, 2)
 
-        val a: Vector3F get() = allVertices[vertexA]
-        val b: Vector3F get() = allVertices[vertexB]
-        val c: Vector3F get() = allVertices[vertexC]
+        val a: Vector3F get() = geometry.vertices[vertexA]
+        val b: Vector3F get() = geometry.vertices[vertexB]
+        val c: Vector3F get() = geometry.vertices[vertexC]
 
         val vertices: Array<Vector3F> = arrayOf(a, b, c)
     }
