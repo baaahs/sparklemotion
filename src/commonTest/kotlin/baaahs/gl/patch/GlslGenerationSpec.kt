@@ -681,8 +681,10 @@ object GlslGenerationSpec : Spek({
                         };
 
                         struct FixtureInfo {
-                            vec3 origin;
-                            vec3 heading;
+                            vec3 position;
+                            vec3 origin; // Deprecated. Use "position" instead.
+                            vec3 rotation;
+                            vec3 heading; // Deprecated. Use "rotation" instead.
                             mat4 matrix;
                         };
 

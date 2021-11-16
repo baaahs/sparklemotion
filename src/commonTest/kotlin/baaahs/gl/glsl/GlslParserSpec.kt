@@ -82,7 +82,8 @@ object GlslParserSpec : Spek({
                                 "leftEye",
                                 GlslType.Struct(
                                     "FixtureInfo",
-                                    mapOf("origin" to GlslType.Vec3, "heading" to GlslType.Vec3)
+                                    "origin" to GlslType.Vec3,
+                                    "heading" to GlslType.Vec3
                                 ),
                                 "uniform struct FixtureInfo {\n" +
                                         "    vec3 origin;\n" +
@@ -134,7 +135,8 @@ object GlslParserSpec : Spek({
                                 "leftEye",
                                 GlslType.Struct(
                                     "FixtureInfo",
-                                    mapOf("origin" to GlslType.Vec3, "heading" to GlslType.Vec3)
+                                    "origin" to GlslType.Vec3,
+                                    "heading" to GlslType.Vec3
                                 ),
                                 fullText = "uniform FixtureInfo leftEye;", lineNumber = 13,
                                 comments = listOf(" @@AnotherClass key=value key2=value2")
