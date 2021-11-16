@@ -31,7 +31,7 @@ data class InputPort(
         return id.decapitalize() + postfix.capitalize()
     }
 
-    fun dataTypeIs(glslType: GlslType): Boolean {
-        return type == glslType
+    open fun dataTypeIs(glslType: GlslType): Boolean {
+        return type.matches(glslType)
     }
 }

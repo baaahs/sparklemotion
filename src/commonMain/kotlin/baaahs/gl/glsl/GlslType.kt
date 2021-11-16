@@ -42,17 +42,22 @@ sealed class GlslType constructor(
         fun toGlsl(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String {
             val buf = StringBuilder()
             buf.append("struct ${namespace?.qualify(name) ?: name} {\n")
-            fields.forEach { (name, type, desc, deprecated) ->
-                val typeStr = if (type is Struct) {
-                    if (publicStructNames.contains(name)) name else namespace?.qualify(name) ?: name
-                } else type.glslLiteral
-                val comment = if (deprecated) " // Deprecated. $desc" else desc ?: ""
-                buf.append("    $typeStr $name;$comment\n")
+            fields.forEach { field ->
+                field.toGlsl(namespace, publicStructNames, buf)
             }
             buf.append("};\n\n")
 
             return buf.toString()
         }
+
+        override fun matches(otherType: GlslType): Boolean {
+            return otherType is Struct &&
+                    name == otherType.name &&
+                    isSubsetOf(otherType)
+        }
+
+        fun isSubsetOf(otherStruct: Struct): Boolean =
+            fields.all { otherStruct.fields.contains(it) }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -86,12 +91,40 @@ sealed class GlslType constructor(
         }
     }
 
-    data class Field(
+    class Field(
         val name: String,
         val type: GlslType,
         val description: String? = null,
         val deprecated: Boolean = false,
-    )
+    ) {
+        fun toGlsl(
+            namespace: GlslCode.Namespace?,
+            publicStructNames: Set<String>,
+            buf: StringBuilder
+        ) {
+            val typeStr = if (type is Struct) {
+                if (publicStructNames.contains(name)) name else namespace?.qualify(name) ?: name
+            } else type.glslLiteral
+            val comment = if (deprecated) " // Deprecated. $description" else description ?: ""
+            buf.append("    $typeStr $name;$comment\n")
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Field) return false
+
+            if (name != other.name) return false
+            if (type != other.type) return false
+
+            return true
+        }
+
+        override fun hashCode(): kotlin.Int {
+            var result = name.hashCode()
+            result = 31 * result + type.hashCode()
+            return result
+        }
+    }
 
     object Bool : GlslType("bool", GlslExpr("false"))
     object Float : GlslType("float", GlslExpr("0."))
@@ -102,6 +135,9 @@ sealed class GlslType constructor(
     object Int : GlslType("int", GlslExpr("0"))
     object Sampler2D : GlslType("sampler2D")
     object Void : GlslType("void")
+
+    open fun matches(otherType: GlslType): Boolean =
+        this == otherType
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -128,9 +164,6 @@ sealed class GlslType constructor(
         }
 
         fun Array<Pair<String, GlslType>>.toFields() =
-            map { (name, type) -> Field(name, type) }
-
-        fun Collection<Pair<String, GlslType>>.toFields() =
             map { (name, type) -> Field(name, type) }
 
         fun Collection<Map.Entry<String, GlslType>>.toFields() =
