@@ -45,8 +45,6 @@ class Playa2021Model : Model() {
 
     override val allEntities: List<Entity>
         get() = objModel.allEntities + allGridBoards
-    override val geomVertices: List<Vector3F>
-        get() = objModel.geomVertices
 
     override fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> {
         return mapOf(

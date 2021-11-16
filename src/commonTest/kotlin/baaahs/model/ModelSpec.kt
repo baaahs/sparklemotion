@@ -16,12 +16,17 @@ object ModelSpec : Spek({
             val v3 by value { Vector3F(0f, 1f, -.25f) }
 
             val model by value {
-                val geomVertices = listOf(v1, v2, v3)
+                val geometry = Model.Geometry(listOf(v1, v2, v3))
                 fakeModel(
                     Model.Surface(
                         "triangle", "triangle", null,
-                        listOf(Model.Face(v1, v2, v3)),
-                        listOf(Model.Line(v1, v2), Model.Line(v2, v3), Model.Line(v3, v1))
+                        listOf(Model.Face(geometry, 0, 1, 2)),
+                        listOf(
+                            Model.Line(geometry, 0, 1),
+                            Model.Line(geometry, 1, 2),
+                            Model.Line(geometry, 2, 0)
+                        ),
+                        geometry
                     )
                 )
 

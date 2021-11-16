@@ -23,8 +23,6 @@ class Decom2019Model : Model() {
 
     override val allEntities: List<Entity>
         get() = objModel.allEntities + lightBars
-    override val geomVertices: List<Vector3F>
-        get() = objModel.geomVertices
 
     fun lightBar(name: String, startVertex: Vector3F, endVertex: Vector3F) =
         LightBar(name, name, startVertex, endVertex)

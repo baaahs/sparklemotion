@@ -51,7 +51,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
     }
 
     useResizeListener(screenRef) {
-        ui.onResize(screenRef.current!!.offsetWidth, screenRef.current!!.offsetHeight)
+        screenRef.current?.let { el -> ui.onResize(el.offsetWidth, el.offsetHeight) }
     }
 
 

@@ -18,6 +18,7 @@ class ObjModelLoader(
 
     init {
         val allVertices: MutableList<Vector3F> = mutableListOf()
+        val geometry = Geometry(allVertices)
         var surfaceBuilder: SurfaceBuilder? = null
 
         val surfaces: MutableList<Surface> = mutableListOf()
@@ -43,16 +44,16 @@ class ObjModelLoader(
                     }
                     "o" -> {
                         buildSurface()
-                        surfaceBuilder = SurfaceBuilder(name = args.joinToString(" "))
+                        surfaceBuilder = SurfaceBuilder(name = args.joinToString(" "), geometry)
                     }
                     "f" -> {
                         val vertIs = args.map { it.toInt() - 1 }
                         if (vertIs.size != 3) error("A face must have three vertices: $line")
-                        (surfaceBuilder ?: error("No object?")).faces.add(Face(allVertices, vertIs[0], vertIs[1], vertIs[2]))
+                        (surfaceBuilder ?: error("No object?")).faces.add(Face(geometry, vertIs[0], vertIs[1], vertIs[2]))
                     }
                     "l" -> {
                         val vertIs = args.map { it.toInt() - 1 }
-                        (surfaceBuilder ?: error("No object?")).lines.add(Line(allVertices, vertIs))
+                        (surfaceBuilder ?: error("No object?")).lines.add(Line(geometry, vertIs))
                     }
                 }
             }
@@ -64,12 +65,12 @@ class ObjModelLoader(
         this.surfaces = surfaces
     }
 
-    private inner class SurfaceBuilder(val name: String) {
+    private inner class SurfaceBuilder(val name: String, val geometry: Geometry) {
         val faces = mutableListOf<Face>()
         val lines = mutableListOf<Line>()
 
         fun build(): Surface =
-            Surface(name, name, expectedPixelCount(name), faces, lines)
+            Surface(name, name, expectedPixelCount(name), faces, lines, geometry)
     }
 
     companion object {

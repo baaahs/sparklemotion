@@ -49,13 +49,11 @@ class SheepModel : Model() {
 
     override val allEntities: List<Entity>
         get() = objModel.allEntities + movingHeads
-    override val geomVertices: List<Vector3F>
-        get() = objModel.geomVertices
 
     companion object {
         private val logger = Logger<SheepModel>()
 
         fun Panel(name: String) =
-            Surface(name, name, null, emptyList(), emptyList())
+            Surface(name, name, null, emptyList(), emptyList(), Geometry(emptyList()))
     }
 }
