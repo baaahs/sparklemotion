@@ -32,7 +32,7 @@ object StageManagerSpec : Spek({
         val fakeFs by value { FakeFs() }
         val pubSub by value { FakePubSub() }
         val fakeGlslContext by value { FakeGlContext() }
-        val renderManager by value { RenderManager(TestModel) { fakeGlslContext } }
+        val renderManager by value { RenderManager({ TestModel }) { fakeGlslContext } }
         val baseShow by value { SampleData.sampleShow }
 
         val stageManager by value {
@@ -43,9 +43,9 @@ object StageManagerSpec : Spek({
                 Storage(fakeFs, plugins),
                 FixtureManager(renderManager, plugins),
                 FakeClock(),
-                model,
+                { model },
                 GadgetManager(pubSub.server, FakeClock(), ImmediateDispatcher),
-                ControllersManager(emptyList(), FakeMappingManager(), model, FakeFixtureListener()),
+                ControllersManager(emptyList(), FakeMappingManager(), { model }, FakeFixtureListener()),
                 ServerNotices(pubSub.server, ImmediateDispatcher)
             )
         }

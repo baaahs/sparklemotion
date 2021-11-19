@@ -15,8 +15,6 @@ import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.Storage
 import baaahs.mapping.MappingManager
 import baaahs.mapping.MappingManagerImpl
-import baaahs.model.Model
-import baaahs.model.ModelInfo
 import baaahs.model.ModelManager
 import baaahs.model.ModelManagerImpl
 import baaahs.net.Network
@@ -75,7 +73,7 @@ interface PinkyModule : KModule {
     val Scope.pinkyMainDispatcher: CoroutineDispatcher
     val Scope.pinkyLink: Network.Link get() = get<Network>().link("pinky")
     val Scope.dmxDriver: Dmx.Driver
-    val Scope.model: Model
+    val Scope.modelProvider: ModelProvider
     val Scope.renderManager: RenderManager
     val Scope.pinkySettings: PinkySettings
 
@@ -104,9 +102,8 @@ interface PinkyModule : KModule {
                 scoped<PubSub.Endpoint> { get<PubSub.Server>() }
                 scoped<PubSub.IServer> { get<PubSub.Server>() }
                 scoped { dmxDriver }
-                scoped<ModelInfo> { get<Model>() }
                 scoped<DmxManager> { DmxManagerImpl(get(), get(), get(fallbackDmxUniverse)) }
-                scoped { model }
+                scoped { modelProvider }
                 scoped { renderManager }
                 scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
                 scoped { Storage(get(), get()) }
@@ -148,12 +145,12 @@ abstract class WebClientModule : KModule {
 }
 
 interface SimulatorModule : KModule {
-    val Scope.model: Model
+    val Scope.modelProvider: ModelProvider
     val Scope.fs: Fs
 
     override fun getModule(): Module = module {
         single { FakeNetwork() }
-        single { model }
+        single { modelProvider }
         single(named(Qualifier.PinkyFs)) { fs }
         single(named(Qualifier.MapperFs)) { FakeFs("Temporary Mapping Files") }
         single<Fs>(named(Qualifier.MapperFs)) { get<FakeFs>(named(Qualifier.MapperFs)) }

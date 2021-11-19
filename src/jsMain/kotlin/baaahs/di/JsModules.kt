@@ -1,6 +1,7 @@
 package baaahs.di
 
 import baaahs.MediaDevices
+import baaahs.ModelProvider
 import baaahs.PubSub
 import baaahs.admin.AdminClient
 import baaahs.browser.RealMediaDevices
@@ -11,7 +12,6 @@ import baaahs.gl.Toolchain
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.Mapper
 import baaahs.mapper.MapperUi
-import baaahs.model.Model
 import baaahs.monitor.MonitorUi
 import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
@@ -47,7 +47,7 @@ class JsStandaloneWebClientModule(
 }
 
 open class JsUiWebClientModule(
-    private val model: Model
+    private val modelProvider: ModelProvider
 ) : WebClientModule() {
     override fun getModule(): Module = module {
         scope<WebClient> {
@@ -57,7 +57,7 @@ open class JsUiWebClientModule(
             scoped<PubSub.Endpoint> { get<PubSub.Client>() }
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
-            scoped { model }
+            scoped { modelProvider }
             scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage"))  }
             scoped<Toolchain> { RootToolchain(get()) }
             scoped { WebClient(get(), get(), get(), get(), get()) }
@@ -66,7 +66,7 @@ open class JsUiWebClientModule(
 }
 
 class JsAdminWebClientModule(
-    private val model: Model
+    private val modelProvider: ModelProvider
 ) : KModule {
     override fun getModule(): Module = module {
         scope<MapperUi> {
@@ -76,7 +76,7 @@ class JsAdminWebClientModule(
             scoped<PubSub.Endpoint> { get<PubSub.Client>() }
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
-            scoped { model }
+            scoped { modelProvider }
             scoped { AdminClient(get(), get(), pinkyAddress()) }
             scoped {
                 JsMapperUi(get()).also {
@@ -93,7 +93,7 @@ class JsAdminWebClientModule(
             scoped<PubSub.Endpoint> { get<PubSub.Client>() }
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
-            scoped { model }
+            scoped { modelProvider }
             scoped { Visualizer(get(), get()) }
             scoped { RemoteVisualizerClient(get(), pinkyAddress(), get(), get(), get(), get()) }
             scoped { MonitorUi(get(), get()) }

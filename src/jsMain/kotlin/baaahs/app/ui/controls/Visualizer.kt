@@ -22,7 +22,7 @@ val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
 
     try {
         val clientPreview by state {
-            ClientPreview(appContext.webClient.model, appContext.showPlayer, appContext.clock, appContext.plugins)
+            ClientPreview(appContext.webClient.modelProvider, appContext.showPlayer, appContext.clock, appContext.plugins)
         }
 
         val rootEl = ref<Element>()

@@ -1,9 +1,6 @@
 package baaahs.shows
 
-import baaahs.Gadget
-import baaahs.ShowPlayer
-import baaahs.ShowState
-import baaahs.getBang
+import baaahs.*
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.testToolchain
@@ -15,7 +12,7 @@ import baaahs.show.live.OpenShow
 import baaahs.show.live.ShowOpener
 
 class FakeShowPlayer(
-    override val modelInfo: ModelInfo = ModelInfo.Empty,
+    override val modelProvider: ModelProvider = ModelProvider { ModelInfo.EmptyModel },
     override val toolchain: Toolchain = testToolchain
 ) : ShowPlayer {
     val feeds = mutableMapOf<DataSource, Feed>()

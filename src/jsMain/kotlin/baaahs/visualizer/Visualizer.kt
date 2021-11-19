@@ -1,8 +1,8 @@
 package baaahs.visualizer
 
+import baaahs.ModelProvider
 import baaahs.document
 import baaahs.mapper.JsMapperUi
-import baaahs.model.Model
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.asMillis
@@ -19,7 +19,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class Visualizer(
-    private val model: Model,
+    private val modelProvider: ModelProvider,
     private val clock: Clock
 ) : JsMapperUi.StatusListener {
     val facade = Facade()
@@ -195,6 +195,7 @@ class Visualizer(
     }
 
     private fun pointAtModel() {
+        val model = modelProvider.getModel()
         val target = model.center.toVector3()
         controls?.target = target
         camera.lookAt(target)

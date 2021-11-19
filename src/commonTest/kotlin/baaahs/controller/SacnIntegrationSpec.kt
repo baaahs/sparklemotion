@@ -29,7 +29,7 @@ object SacnIntegrationSpec : Spek({
         val listener by value { SpyFixtureListener() }
         val mappings by value { mapOf<ControllerId, List<FixtureMapping>>() }
         val mappingManager by value { FakeMappingManager().also { it.data.putAll(mappings); it.dataHasLoaded = true } }
-        val controllersManager by value { ControllersManager(listOf(sacnManager), mappingManager, TestModel, listener) }
+        val controllersManager by value { ControllersManager(listOf(sacnManager), mappingManager, { TestModel }, listener) }
         val configs by value { mapOf<String, ControllerConfig>() }
 
         beforeEachTest {

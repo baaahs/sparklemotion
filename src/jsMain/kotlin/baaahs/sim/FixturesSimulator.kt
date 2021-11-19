@@ -1,5 +1,6 @@
 package baaahs.sim
 
+import baaahs.ModelProvider
 import baaahs.doRunBlocking
 import baaahs.getValue
 import baaahs.io.Fs
@@ -26,7 +27,7 @@ import baaahs.visualizer.Visualizer
  */
 class FixturesSimulator(
     private val visualizer: Visualizer,
-    private val model: Model,
+    private val modelProvider: ModelProvider,
     network: Network,
     private val dmxUniverse: FakeDmxUniverse,
     private val fs: Fs,
@@ -39,6 +40,7 @@ class FixturesSimulator(
 
     private val brainSimulatorManager = BrainSimulatorManager(network, clock)
     private val wledsSimulator = WledsSimulator(network)
+    private val model = modelProvider.getModel()
 
     private val fixtureSimulations by lazy {
         val simulationEnv = SimulationEnv {

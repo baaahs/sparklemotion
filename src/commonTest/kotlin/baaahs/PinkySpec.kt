@@ -62,7 +62,7 @@ object PinkySpec : Spek({
         val pinky by value {
             val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
             val pubSub = PubSub.Server(httpServer, CoroutineScope(ImmediateDispatcher))
-            val renderManager = fakeGlslContext.runInContext { RenderManager(model) { fakeGlslContext } }
+            val renderManager = fakeGlslContext.runInContext { RenderManager({ model }) { fakeGlslContext } }
             val fakeDmxUniverse = FakeDmxUniverse()
             val toolchain = RootToolchain(plugins)
             val fixtureManager = FixtureManager(renderManager, plugins)
@@ -77,11 +77,11 @@ object PinkySpec : Spek({
             val brainManager = BrainManager(
                 PermissiveFirmwareDaddy(), link, Pinky.NetworkStats(), clock, pubSub, ImmediateDispatcher
             )
-            val mappingManager = MappingManagerImpl(storage, model)
-            val controllersManager = ControllersManager(listOf(brainManager), mappingManager, model, fixtureManager)
+            val mappingManager = MappingManagerImpl(storage) { model }
+            val controllersManager = ControllersManager(listOf(brainManager), mappingManager, { model }, fixtureManager)
             val serverNotices = ServerNotices(pubSub, ImmediateDispatcher)
             val stageManager = StageManager(
-                toolchain, renderManager, pubSub, storage, fixtureManager, clock, model,
+                toolchain, renderManager, pubSub, storage, fixtureManager, clock, { model },
                 gadgetManager, controllersManager, serverNotices
             )
             val sceneManager = SceneManager(storage, controllersManager)

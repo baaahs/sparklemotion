@@ -47,7 +47,7 @@ object ControllersManagerSpec : Spek({
         val controllerManagers by value { listOf(fakeControllerMgr) }
         val fixtureListener by value { FakeFixtureListener() }
         val controllersManager by value {
-            ControllersManager(controllerManagers, mappingManager, model, fixtureListener)
+            ControllersManager(controllerManagers, mappingManager, { model }, fixtureListener)
         }
         val fakeController by value { FakeController("c1") }
 

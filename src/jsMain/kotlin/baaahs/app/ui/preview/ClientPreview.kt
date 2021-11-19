@@ -1,12 +1,12 @@
 package baaahs.app.ui.preview
 
+import baaahs.ModelProvider
 import baaahs.client.ClientStageManager
 import baaahs.document
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.mapper.SessionMappingResults
-import baaahs.model.Model
 import baaahs.plugin.Plugins
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
@@ -23,17 +23,18 @@ import kotlinx.coroutines.launch
 import org.w3c.dom.get
 
 class ClientPreview(
-    model: Model,
+    modelProvider: ModelProvider,
     private val stageManager: ClientStageManager,
     clock: Clock,
     plugins: Plugins
 ) : ClientStageManager.Listener {
     private val glContext = GlBase.jsManager.createContext()
-    private val renderManager = RenderManager(model) { glContext }
+    private val model = modelProvider.getModel()
+    private val renderManager = RenderManager(modelProvider) { glContext }
     private val mappingResults = SessionMappingResults(model, emptyList()) // TODO: use real data.
     private val fixtureManager = FixtureManager(renderManager, plugins)
     private val dmxUniverse = FakeDmxUniverse()
-    private val theVisualizer = Visualizer(model, clock)
+    private val theVisualizer = Visualizer(modelProvider, clock)
     private var patchSetChanged = true
 
     // TODO: This is super janky.

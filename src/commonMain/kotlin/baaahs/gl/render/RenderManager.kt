@@ -1,5 +1,6 @@
 package baaahs.gl.render
 
+import baaahs.ModelProvider
 import baaahs.device.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.RenderPlan
@@ -8,13 +9,13 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedPatch
-import baaahs.model.Model
 import baaahs.util.Logger
 
 class RenderManager(
-    private val model: Model,
+    private val modelProvider: ModelProvider,
     private val createContext: () -> GlContext
 ) {
+    val model = modelProvider.getModel()
     private val renderEngines = model.allEntities.map { it.deviceType }.distinct()
         .associateWith { deviceType ->
             val gl = createContext()

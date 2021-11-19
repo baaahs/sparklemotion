@@ -9,7 +9,6 @@ import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.RealFs
-import baaahs.model.Model
 import baaahs.net.JvmNetwork
 import baaahs.net.Network
 import baaahs.plugin.Plugins
@@ -69,7 +68,7 @@ class JvmPinkyModule(
         get() = newSingleThreadContext("Pinky Main")
     override val Scope.dmxDriver: Dmx.Driver
         get() = JvmFtdiDmxDriver
-    override val Scope.model: Model
+    override val Scope.modelProvider: ModelProvider
         get() = Pluggables.loadModel(get<PinkyArgs>().model)
     override val Scope.renderManager: RenderManager
         get() = runBlocking(get(named("PinkyContext"))) {

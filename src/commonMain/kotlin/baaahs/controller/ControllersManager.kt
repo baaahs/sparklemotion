@@ -1,12 +1,12 @@
 package baaahs.controller
 
+import baaahs.ModelProvider
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureListener
 import baaahs.geom.Vector3F
 import baaahs.getBang
 import baaahs.mapper.ControllerId
 import baaahs.mapping.MappingManager
-import baaahs.model.Model
 import baaahs.scene.SceneConfig
 import baaahs.ui.addObserver
 import baaahs.util.Logger
@@ -14,7 +14,7 @@ import baaahs.util.Logger
 class ControllersManager(
     private val controllerManagers: List<ControllerManager>,
     private val mappingManager: MappingManager,
-    private val model: Model,
+    private val modelProvider: ModelProvider,
     private val fixtureListener: FixtureListener
 ) {
     private val byType = controllerManagers.associateBy { it.controllerType }
@@ -47,7 +47,7 @@ class ControllersManager(
 
                 val pixelLocations = mapping.pixelLocations
                     ?.map { it ?: Vector3F(0f, 0f, 0f) }
-                    ?: fixtureConfig.generatePixelLocations(pixelCount, modelEntity, model)
+                    ?: fixtureConfig.generatePixelLocations(pixelCount, modelEntity, modelProvider.getModel())
                     ?: emptyList()
 
                 val transportConfig = mapping.transportConfig
