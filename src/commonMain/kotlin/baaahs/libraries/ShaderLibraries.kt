@@ -1,9 +1,9 @@
 package baaahs.libraries
 
 import baaahs.PubSub
-import baaahs.SearchShaderLibraries
-import baaahs.Topics
 import baaahs.io.RemoteFsSerializer
+import baaahs.sm.webapi.SearchShaderLibraries
+import baaahs.sm.webapi.Topics
 import kotlinx.serialization.modules.SerializersModule
 
 class ShaderLibraries(pubSub: PubSub.Client, remoteFsSerializer: RemoteFsSerializer) {

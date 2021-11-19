@@ -1,11 +1,11 @@
 package baaahs.sim
 
 import baaahs.Color
-import baaahs.Pixels
 import baaahs.controller.SacnLink
 import baaahs.controller.SacnManager
 import baaahs.net.Network
 import baaahs.randomDelay
+import baaahs.sm.brain.proto.Pixels
 import baaahs.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

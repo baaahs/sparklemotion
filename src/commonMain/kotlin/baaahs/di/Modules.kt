@@ -24,12 +24,14 @@ import baaahs.plugin.Plugin
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
-import baaahs.proto.Ports
 import baaahs.scene.SceneManager
-import baaahs.server.ServerNotices
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
+import baaahs.sm.brain.proto.Ports
+import baaahs.sm.server.GadgetManager
+import baaahs.sm.server.ServerNotices
+import baaahs.sm.server.StageManager
 import baaahs.util.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

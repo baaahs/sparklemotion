@@ -2,12 +2,12 @@ package baaahs.admin
 
 import baaahs.BrainInfo
 import baaahs.PubSub
-import baaahs.Topics
 import baaahs.controller.SacnDevice
 import baaahs.dmx.DmxInfo
 import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
-import baaahs.proto.Ports
+import baaahs.sm.brain.proto.Ports
+import baaahs.sm.webapi.Topics
 import baaahs.subscribeProperty
 
 class AdminClient(

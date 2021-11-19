@@ -1,11 +1,11 @@
 package baaahs.visualizer
 
 import baaahs.Color
-import baaahs.Pixels
 import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector2
 import baaahs.io.ByteArrayReader
 import baaahs.resourcesBase
+import baaahs.sm.brain.proto.Pixels
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.get
 import org.khronos.webgl.set

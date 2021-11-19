@@ -2,9 +2,9 @@ package baaahs.sim
 
 import baaahs.Brain
 import baaahs.BrainId
-import baaahs.Pixels
 import baaahs.net.Network
 import baaahs.randomDelay
+import baaahs.sm.brain.proto.Pixels
 import baaahs.util.Clock
 import baaahs.util.Logger
 import kotlinx.coroutines.CoroutineScope

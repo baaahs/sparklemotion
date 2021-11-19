@@ -1,8 +1,6 @@
 package baaahs.shaders
 
-import baaahs.BrainShader
 import baaahs.Color
-import baaahs.Pixels
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
@@ -10,6 +8,8 @@ import baaahs.fixtures.NullTransport
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
+import baaahs.sm.brain.proto.BrainShader
+import baaahs.sm.brain.proto.Pixels
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 

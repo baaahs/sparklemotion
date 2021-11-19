@@ -4,7 +4,7 @@ import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
-import baaahs.proto.*
+import baaahs.sm.brain.proto.*
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time

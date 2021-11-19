@@ -1,7 +1,8 @@
-package baaahs.server
+package baaahs.sm.server
 
 import baaahs.PubSub
-import baaahs.Topics
+import baaahs.sm.webapi.ServerNotice
+import baaahs.sm.webapi.Topics
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext

@@ -4,7 +4,7 @@ import baaahs.imaging.Bitmap
 import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.net.Network
-import baaahs.proto.Ports
+import baaahs.sm.brain.proto.Ports
 import baaahs.util.Logger
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.channels.Channel

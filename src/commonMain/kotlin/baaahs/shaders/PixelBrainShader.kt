@@ -1,11 +1,11 @@
 package baaahs.shaders
 
-import baaahs.BrainShader
-import baaahs.BrainShaderId
-import baaahs.BrainShaderReader
 import baaahs.Color
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.sm.brain.proto.BrainShader
+import baaahs.sm.brain.proto.BrainShaderId
+import baaahs.sm.brain.proto.BrainShaderReader
 import kotlin.math.min
 
 /**
@@ -13,7 +13,8 @@ import kotlin.math.min
  *
  * This is a suboptimal shader for most purposes, consider writing a custom shader instead!
  */
-class PixelBrainShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : BrainShader<PixelBrainShader.Buffer>(BrainShaderId.PIXEL) {
+class PixelBrainShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : BrainShader<PixelBrainShader.Buffer>(
+    BrainShaderId.PIXEL) {
 
     enum class Encoding {
         DIRECT_ARGB {
