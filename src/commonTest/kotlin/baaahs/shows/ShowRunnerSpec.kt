@@ -90,14 +90,14 @@ object ShowRunnerSpec : Spek({
             val httpServer = FakeNetwork().link("test").startHttpServer(0)
             PubSub.Server(httpServer, CoroutineScope(dispatcher))
         }
-        val renderManager by value { RenderManager(TestModel) { fakeGlslContext } }
+        val renderManager by value { RenderManager({ TestModel }) { fakeGlslContext } }
         val fixtureManager by value { FixtureManager(renderManager, testPlugins()) }
         val stageManager by value {
             val fs = FakeFs()
             StageManager(
                 testToolchain, renderManager, pubSub, Storage(fs, testPlugins()), fixtureManager,
-                FakeClock(), model, GadgetManager(pubSub, FakeClock(), dispatcher),
-                ControllersManager(emptyList(), FakeMappingManager(), model, fixtureManager),
+                FakeClock(), { model }, GadgetManager(pubSub, FakeClock(), dispatcher),
+                ControllersManager(emptyList(), FakeMappingManager(), { model }, fixtureManager),
                 ServerNotices(pubSub, dispatcher)
             )
         }

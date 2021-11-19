@@ -9,7 +9,6 @@ import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.ResourcesFs
-import baaahs.model.Model
 import baaahs.net.BrowserNetwork
 import baaahs.net.Network
 import baaahs.plugin.Plugins
@@ -34,7 +33,7 @@ class JsSimPlatformModule : JsPlatformModule(FakeNetwork()) {
 }
 
 class JsSimulatorModule(
-    private val model_: Model,
+    private val modelProvider_: ModelProvider,
     private val bridgeNetwork_: BrowserNetwork,
     private val pinkyAddress_: Network.Address,
     private val pixelDensity: Float = 0.2f,
@@ -50,8 +49,8 @@ class JsSimulatorModule(
                 name = "Browser Data"
             )
         }
-    override val Scope.model: Model
-        get() = model_
+    override val Scope.modelProvider: ModelProvider
+        get() = modelProvider_
 
     override fun getModule(): Module {
         return super.getModule().apply {
@@ -74,7 +73,7 @@ class JsSimulatorModule(
 }
 
 class JsSimPinkyModule(
-    private val model_: Model,
+    private val modelProvider_: ModelProvider,
     private val pinkySettings_: PinkySettings
 ) : PinkyModule {
     override val Scope.serverPlugins: ServerPlugins
@@ -91,8 +90,8 @@ class JsSimPinkyModule(
         get() = get(named(SimulatorModule.Qualifier.PinkyLink))
     override val Scope.dmxDriver: Dmx.Driver
         get() = SimDmxDriver(get(named("Fallback")))
-    override val Scope.model: Model
-        get() = model_
+    override val Scope.modelProvider: ModelProvider
+        get() = modelProvider_
     override val Scope.renderManager: RenderManager
         get() = RenderManager(get()) { GlBase.manager.createContext() }
     override val Scope.pinkySettings: PinkySettings

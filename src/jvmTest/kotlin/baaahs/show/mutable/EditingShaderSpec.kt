@@ -344,7 +344,7 @@ object EditingShaderSpec : Spek({
             override(shaderInEdit) { paintShader }
             override(otherShaderInPatch) { null }
             override(getShaderBuilder) {
-                { shader: Shader -> PreviewShaderBuilder(shader, toolchain, TestModel, CoroutineScope(dispatcher)) }
+                { shader: Shader -> PreviewShaderBuilder(shader, toolchain, { TestModel }, CoroutineScope(dispatcher)) }
             }
             val gl by value { FakeGlContext() }
             val renderEngine by value { PreviewRenderEngine(gl, 1, 1) }

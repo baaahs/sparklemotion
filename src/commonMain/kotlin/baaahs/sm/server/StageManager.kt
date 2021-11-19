@@ -10,7 +10,6 @@ import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.Storage
-import baaahs.model.ModelInfo
 import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.buildEmptyShow
@@ -31,11 +30,11 @@ class StageManager(
     private val storage: Storage,
     private val fixtureManager: FixtureManager,
     private val clock: Clock,
-    modelInfo: ModelInfo,
+    modelProvider: ModelProvider,
     private val gadgetManager: GadgetManager,
     private val controllersManager: ControllersManager,
     private val serverNotices: ServerNotices
-) : BaseShowPlayer(toolchain, modelInfo) {
+) : BaseShowPlayer(toolchain, modelProvider) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
 

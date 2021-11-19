@@ -1,6 +1,7 @@
 package baaahs.gl.preview
 
 import baaahs.BaseShowPlayer
+import baaahs.ModelProvider
 import baaahs.control.OpenButtonControl
 import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
@@ -20,7 +21,6 @@ import baaahs.gl.render.ResultStorage
 import baaahs.gl.result.Vec2ResultType
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
-import baaahs.model.ModelInfo
 import baaahs.plugin.core.datasource.RasterCoordinateDataSource
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
@@ -70,16 +70,16 @@ interface ShaderBuilder : IObservable {
 class PreviewShaderBuilder(
     override val shader: Shader,
     private val toolchain: Toolchain,
-    private val modelInfo: ModelInfo,
+    private val modelProvider: ModelProvider,
     private val coroutineScope: CoroutineScope = GlobalScope
 ) : Observable(), ShaderBuilder {
 
     constructor(
         openShader: OpenShader,
         toolchain: Toolchain,
-        modelInfo: ModelInfo,
+        modelProvider: ModelProvider,
         coroutineScope: CoroutineScope = GlobalScope
-    ) : this(openShader.shader, toolchain, modelInfo, coroutineScope) {
+    ) : this(openShader.shader, toolchain, modelProvider, coroutineScope) {
         this.openShader = openShader
     }
 
@@ -185,7 +185,7 @@ class PreviewShaderBuilder(
         logger.debug { "Transition to $state for ${shader.title}"}
 
         coroutineScope.launch {
-            val showPlayer = object : BaseShowPlayer(toolchain, modelInfo) {}
+            val showPlayer = object : BaseShowPlayer(toolchain, modelProvider) {}
 
             compile(renderEngine) { id, dataSource ->
                 dataSource.buildControl()?.let {

@@ -32,7 +32,7 @@ fun main(args: Array<String>) {
 
 class BrainMain(private val args: Args) {
     fun run() {
-        val model = Pluggables.loadModel(args.model)
+        val model = Pluggables.loadModel(args.model).getModel()
 
         val network = JvmNetwork()
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()

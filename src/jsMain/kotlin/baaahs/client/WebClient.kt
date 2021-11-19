@@ -8,7 +8,6 @@ import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.libraries.ShaderLibraries
-import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.show.Show
@@ -30,7 +29,7 @@ class WebClient(
     private val webClientLink: Network.Link,
     private val pubSub: PubSub.Client,
     private val toolchain: Toolchain,
-    private val model: Model,
+    private val modelProvider: ModelProvider,
     private val storage: ClientStorage
 ) : HostedWebApp {
     private val facade = Facade()
@@ -52,7 +51,7 @@ class WebClient(
         facade.notifyChanged()
     }
 
-    private val stageManager = ClientStageManager(toolchain, pubSub, model)
+    private val stageManager = ClientStageManager(toolchain, pubSub, modelProvider)
     private val showEditStateChannel =
         pubSub.subscribe(
             ShowEditorState.createTopic(toolchain.plugins, remoteFsSerializer)
@@ -192,8 +191,8 @@ class WebClient(
         val isMapping: Boolean
             get() = this@WebClient.pinkyState == PinkyState.Mapping
 
-        val model: Model
-            get() = this@WebClient.model
+        val modelProvider: ModelProvider
+            get() = this@WebClient.modelProvider
 
         val show: Show?
             get() = this@WebClient.show

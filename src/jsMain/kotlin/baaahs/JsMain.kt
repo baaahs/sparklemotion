@@ -4,7 +4,6 @@ import baaahs.client.WebClient
 import baaahs.di.*
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.MapperUi
-import baaahs.model.Model
 import baaahs.monitor.MonitorUi
 import baaahs.net.BrowserNetwork
 import baaahs.sim.HostedWebApp
@@ -13,11 +12,8 @@ import baaahs.sim.ui.SimulatorAppView
 import baaahs.sim.ui.WebClientWindowView
 import baaahs.sm.brain.proto.Ports
 import baaahs.ui.ErrorDisplay
-import baaahs.util.ConsoleFormatters
-import baaahs.util.JsPlatform
+import baaahs.util.*
 import baaahs.util.JsPlatform.decodeQueryParams
-import baaahs.util.KoinLogger
-import baaahs.util.Logger
 import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -38,17 +34,18 @@ fun main(args: Array<String>) {
     println("args = $args, mode = $mode")
 
     val queryParams = decodeQueryParams(document.location!!)
-    val model = Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
 
-    GlobalScope.launch {
+    GlobalScope.launch(coroutineExceptionHandler) {
+        val modelProvider = Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
+
         when (mode) {
-            "Simulator" -> launchSimulator(model, queryParams)
-            else -> launchUi(mode, model)
+            "Simulator" -> launchSimulator(modelProvider, queryParams)
+            else -> launchUi(mode, modelProvider)
         }
     }
 }
 
-private fun launchUi(appName: String?, model: Model) {
+private fun launchUi(appName: String?, modelProvider: ModelProvider) {
     tryCatchAndShowErrors {
         val pinkyAddress = JsPlatform.myAddress
         val network = BrowserNetwork(pinkyAddress, Ports.PINKY)
@@ -66,17 +63,17 @@ private fun launchUi(appName: String?, model: Model) {
 
         val app = when (appName) {
             "Mapper" -> {
-                koin.loadModules(listOf(JsAdminWebClientModule(model).getModule()))
+                koin.loadModules(listOf(JsAdminWebClientModule(modelProvider).getModule()))
                 koin.createScope<MapperUi>().get<JsMapperUi>()
             }
 
             "Monitor" -> {
-                koin.loadModules(listOf(JsAdminWebClientModule(model).getModule()))
+                koin.loadModules(listOf(JsAdminWebClientModule(modelProvider).getModule()))
                 koin.createScope<MonitorUi>().get<MonitorUi>()
             }
 
             "UI" -> {
-                koin.loadModules(listOf(JsUiWebClientModule(model).getModule()))
+                koin.loadModules(listOf(JsUiWebClientModule(modelProvider).getModule()))
                 koin.createScope<WebClient>().get<WebClient>()
             }
 
@@ -88,7 +85,7 @@ private fun launchUi(appName: String?, model: Model) {
 }
 
 private fun launchSimulator(
-    model: Model,
+    modelProvider: ModelProvider,
     queryParams: Map<String, String>
 ) {
     val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
@@ -104,10 +101,10 @@ private fun launchSimulator(
         modules(
             PluginsModule(Pluggables.plugins).getModule(),
             JsSimPlatformModule().getModule(),
-            JsSimulatorModule(model, network, pinkyAddress, pixelDensity, pixelSpacing).getModule(),
-            JsSimPinkyModule(model, pinkySettings).getModule(),
-            JsUiWebClientModule(model).getModule(),
-            JsAdminWebClientModule(model).getModule(),
+            JsSimulatorModule(modelProvider, network, pinkyAddress, pixelDensity, pixelSpacing).getModule(),
+            JsSimPinkyModule(modelProvider, pinkySettings).getModule(),
+            JsUiWebClientModule(modelProvider).getModule(),
+            JsAdminWebClientModule(modelProvider).getModule(),
         )
     }.koin
 

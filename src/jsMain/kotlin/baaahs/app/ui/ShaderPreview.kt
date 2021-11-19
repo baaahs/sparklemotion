@@ -63,7 +63,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     }
 
     onChange("shader type", helper, shaderType) {
-        val preview = helper.bootstrap(appContext.webClient.model, preRenderHook)
+        val preview = helper.bootstrap(appContext.webClient.modelProvider.getModel(), preRenderHook)
         gl = preview.renderEngine.gl
 
         val intersectionObserver = IntersectionObserver(callback = { entries ->
@@ -90,7 +90,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val builder = memo(gl, props.shader, props.previewShaderBuilder) {
         gl?.let {
             props.previewShaderBuilder
-                ?: PreviewShaderBuilder(props.shader!!, toolchain, appContext.webClient.model)
+                ?: PreviewShaderBuilder(props.shader!!, toolchain, appContext.webClient.modelProvider)
         }
     }
 

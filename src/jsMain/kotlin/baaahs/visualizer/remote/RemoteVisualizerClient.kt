@@ -1,7 +1,7 @@
 package baaahs.visualizer.remote
 
+import baaahs.ModelProvider
 import baaahs.io.ByteArrayReader
-import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.sim.FakeDmxUniverse
@@ -21,7 +21,7 @@ class RemoteVisualizerClient(
     link: Network.Link,
     address: Network.Address,
     private val visualizer: Visualizer,
-    model: Model,
+    modelProvider: ModelProvider,
     clock: Clock,
     private val plugins: Plugins
 ) :
@@ -34,12 +34,13 @@ class RemoteVisualizerClient(
         component(visualizer)
     }
 
-    private val fixtureSimulations = model.allEntities.associate { entity ->
-        val simulation = entity.createFixtureSimulation(simulationEnv)
-        val entityVisualizer = simulation.entityVisualizer
-        visualizer.addEntityVisualizer(entityVisualizer)
-        entity.name to simulation
-    }
+    private val fixtureSimulations = modelProvider.getModel()
+        .allEntities.associate { entity ->
+            val simulation = entity.createFixtureSimulation(simulationEnv)
+            val entityVisualizer = simulation.entityVisualizer
+            visualizer.addEntityVisualizer(entityVisualizer)
+            entity.name to simulation
+        }
 
     private lateinit var tcpConnection: Network.TcpConnection
 

@@ -31,7 +31,7 @@ const val USE_SOLID_SHADERS = false
 
 class Mapper(
     private val network: Network,
-    private val model: Model,
+    private val modelProvider: ModelProvider,
     private val mapperUi: MapperUi,
     private val mediaDevices: MediaDevices,
     private val pinkyAddress: Network.Address,
@@ -62,7 +62,7 @@ class Mapper(
 
     init {
         mapperUi.listen(this)
-        mapperUi.addWireframe(model)
+        mapperUi.addWireframe(modelProvider.getModel())
     }
 
     override fun onLaunch() {
@@ -883,7 +883,7 @@ class Mapper(
 
 
     inner class Facade : baaahs.ui.Facade() {
-        val model = this@Mapper.model
+        val modelProvider = this@Mapper.modelProvider
     }
 }
 

@@ -47,7 +47,7 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
 
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                    val modelInfo = showPlayer.modelInfo
+                    val modelInfo = showPlayer.modelProvider.getModel()
                     val center by lazy { modelInfo.center }
                     val extents by lazy { modelInfo.extents }
 

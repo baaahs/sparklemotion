@@ -33,7 +33,7 @@ object FixtureManagerSpec : Spek({
     describe<FixtureManager> {
         val modelEntities by value { emptyList<Model.Entity>() }
         val model by value { fakeModel(modelEntities) }
-        val renderManager by value { RenderManager(model) { FakeGlContext() } }
+        val renderManager by value { RenderManager({ model }) { FakeGlContext() } }
         val renderTargets by value { linkedMapOf<Fixture, FixtureRenderTarget>() }
         val surfacePixelStrategy by value { LinearSurfacePixelStrategy(Random(1)) }
 
@@ -83,7 +83,7 @@ object FixtureManagerSpec : Spek({
                 }
 
                 val openShow by value {
-                    object : ShowOpener(testToolchain, show, FakeShowPlayer(model)) {
+                    object : ShowOpener(testToolchain, show, FakeShowPlayer({ model })) {
                         override fun openShader(shader: Shader): OpenShader {
                             val contentType = when (shader.title) {
                                 "Pea Soup" -> fogginess
