@@ -15,9 +15,10 @@ import baaahs.mapper.TransportConfig
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
-import baaahs.proto.*
 import baaahs.scene.ControllerConfig
 import baaahs.shaders.PixelBrainShader
+import baaahs.sm.brain.proto.*
+import baaahs.sm.webapi.Topics
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time

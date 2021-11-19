@@ -1,6 +1,6 @@
-package baaahs
+package baaahs.sm.server
 
-import baaahs.app.ui.CommonIcons
+import baaahs.*
 import baaahs.controller.ControllersManager
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.RenderPlan
@@ -9,7 +9,6 @@ import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.io.RemoteFsSerializer
-import baaahs.libraries.ShaderLibrary
 import baaahs.mapper.Storage
 import baaahs.model.ModelInfo
 import baaahs.server.ServerNotices
@@ -17,47 +16,14 @@ import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.buildEmptyShow
 import baaahs.show.live.OpenShow
-import baaahs.ui.Icon
-import baaahs.ui.Observable
+import baaahs.sm.webapi.ClientData
+import baaahs.sm.webapi.NewShowCommand
+import baaahs.sm.webapi.Topics
 import baaahs.ui.addObserver
 import baaahs.util.Clock
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
-import kotlin.coroutines.CoroutineContext
-
-class GadgetManager(
-    private val pubSub: PubSub.Server,
-    private val clock: Clock,
-    private val coroutineContext: CoroutineContext
-) : Observable() {
-    private val gadgets: MutableMap<String, Gadget> = mutableMapOf()
-    var lastUserInteraction = clock.now()
-
-    fun <T : Gadget> registerGadget(id: String, gadget: T) {
-        val topic =
-            PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
-        val channel = pubSub.publish(topic, gadget.state) { updated ->
-            lastUserInteraction = clock.now()
-
-            CoroutineScope(coroutineContext).launch {
-                gadget.state.putAll(updated)
-                notifyChanged()
-            }
-        }
-        val gadgetChannelListener: (Gadget) -> Unit = { channel.onChange(it.state) }
-        gadget.listen(gadgetChannelListener)
-        gadgets[id] = gadget
-    }
-
-    fun <T : Gadget> useGadget(id: String): T {
-        @Suppress("UNCHECKED_CAST")
-        return (gadgets[id]
-            ?: error("no such gadget \"$id\" among [${gadgets.keys.sorted()}]")) as T
-    }
-}
 
 class StageManager(
     toolchain: Toolchain,
@@ -274,71 +240,4 @@ class StageManager(
         val currentRenderPlan: RenderPlan?
             get() = this@StageManager.fixtureManager.currentRenderPlan
     }
-}
-
-interface RefCounted {
-    fun inUse(): Boolean
-    fun use()
-    fun disuse()
-    fun onRelease()
-}
-
-class RefCounter : RefCounted {
-    var refCount: Int = 0
-
-    override fun inUse(): Boolean = refCount != 0
-
-    override fun use() {
-        refCount++
-    }
-
-    override fun disuse() {
-        refCount--
-
-        if (refCount < 0) error("Too many calls to disuse().")
-
-        if (!inUse()) onRelease()
-    }
-
-    override fun onRelease() {
-    }
-}
-
-@Serializable
-data class ClientData(
-    val fsRoot: Fs.File
-)
-
-@Serializable
-class NewShowCommand(val template: Show? = null)
-
-@Serializable
-class SwitchToShowCommand(val file: Fs.File?)
-
-@Serializable
-class SaveShowCommand
-
-@Serializable
-class SaveAsShowCommand(val file: Fs.File)
-
-@Serializable
-class SearchShaderLibraries(val terms: String) {
-    @Serializable
-    class Response(val matches: List<ShaderLibrary.Entry>)
-}
-
-@Serializable
-data class ShowProblem(
-    val title: String,
-    val message: String? = null,
-    val severity: Severity = Severity.ERROR,
-    val id: String = randomId("error")
-)
-
-fun Collection<ShowProblem>.severity() = maxOfOrNull { it.severity }
-
-enum class Severity(val icon: Icon) {
-    INFO(CommonIcons.Info),
-    WARN(CommonIcons.Warning),
-    ERROR(CommonIcons.Error)
 }

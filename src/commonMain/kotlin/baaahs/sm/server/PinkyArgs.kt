@@ -1,4 +1,4 @@
-package baaahs.server
+package baaahs.sm.server
 
 import baaahs.Pluggables
 import kotlinx.cli.ArgParser

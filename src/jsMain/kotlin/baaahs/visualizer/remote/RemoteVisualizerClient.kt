@@ -4,9 +4,9 @@ import baaahs.io.ByteArrayReader
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.plugin.Plugins
-import baaahs.proto.Ports
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
+import baaahs.sm.brain.proto.Ports
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.visualizer.PixelArranger

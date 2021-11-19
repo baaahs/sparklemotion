@@ -1,5 +1,6 @@
-package baaahs
+package baaahs.sm.brain.proto
 
+import baaahs.Color
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.shaders.PixelBrainShader

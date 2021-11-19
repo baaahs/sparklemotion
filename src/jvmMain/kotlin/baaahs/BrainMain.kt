@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.net.JvmNetwork
+import baaahs.sm.brain.proto.Pixels
 import baaahs.util.SystemClock
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
