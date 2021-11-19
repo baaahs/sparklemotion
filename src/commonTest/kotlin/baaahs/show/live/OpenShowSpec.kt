@@ -52,7 +52,7 @@ object OpenShowSpec : Spek({
             it("creates an empty OpenShow") {
                 expect(openShow.title).toBe("Show")
 
-                expect(openShow.activePatchSet().activePatches).isEmpty()
+                expect(openShow.buildActivePatchSet().activePatches).isEmpty()
             }
         }
 
@@ -107,7 +107,7 @@ object OpenShowSpec : Spek({
                 expect(scenesButtonGroup.buttons.map { it.isPressed })
                     .containsExactly(true, false)
 
-                expect(openShow.activePatchSet().activePatches)
+                expect(openShow.buildActivePatchSet().activePatches)
                     .toBe(openShow.patches + scenesButtonGroup.buttons[0].patches)
             }
         }

@@ -84,7 +84,7 @@ object ControlDisplaySpec : Spek({
                 expect(scenesButtonGroup.buttons.map { it.isPressed })
                     .containsExactly(true,false)
 
-                expect(openShow.activePatchSet().activePatches.prettyPrint())
+                expect(openShow.buildActivePatchSet().activePatches.prettyPrint())
                     .toBe((openShow.patches + scene1Button.patches + backdrop11Button.patches).prettyPrint())
             }
         }

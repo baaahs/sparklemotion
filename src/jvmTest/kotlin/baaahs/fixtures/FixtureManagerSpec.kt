@@ -95,7 +95,7 @@ object FixtureManagerSpec : Spek({
                     }.openShow()
                 }
 
-                val activePatchSet by value { openShow.activePatchSet() }
+                val activePatchSet by value { openShow.buildActivePatchSet() }
 
                 beforeEachTest {
                     fixtureManager.activePatchSetChanged(activePatchSet)
