@@ -59,7 +59,7 @@ class ControlDisplay(
             }
         }.visitShow(show)
 
-        val activePatchSet = show.activePatchSet()
+        val activePatchSet = show.buildActivePatchSet()
         val activeDataSources = mutableSetOf<DataSource>()
         activePatchSet.activePatches.forEach { activePatch ->
             activePatch.shaderInstances.forEach { shaderInstance ->

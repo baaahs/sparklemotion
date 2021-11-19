@@ -17,7 +17,7 @@ class ClientStageManager(
     private val listeners = mutableListOf<Listener>()
     private var openShow: OpenShow? = null
     val activePatchSet: ActivePatchSet
-        get() = openShow!!.activePatchSet()
+        get() = openShow!!.buildActivePatchSet()
 
     private fun checkForChanges() {
         listeners.forEach { it.onPatchSetChanged() }
