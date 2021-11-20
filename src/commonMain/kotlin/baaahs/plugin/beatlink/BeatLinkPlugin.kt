@@ -1,8 +1,6 @@
 package baaahs.plugin.beatlink
 
 import baaahs.PubSub
-import baaahs.RefCounted
-import baaahs.RefCounter
 import baaahs.ShowPlayer
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.GlContext
@@ -20,6 +18,8 @@ import baaahs.sim.BridgeClient
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
 import baaahs.util.Logger
+import baaahs.util.RefCounted
+import baaahs.util.RefCounter
 import baaahs.util.makeSafeForGlsl
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType

@@ -1,7 +1,5 @@
 package baaahs.show.live
 
-import baaahs.RefCounted
-import baaahs.RefCounter
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslExpr
@@ -11,6 +9,8 @@ import baaahs.gl.shader.OutputPort
 import baaahs.gl.shader.dialect.ShaderDialect
 import baaahs.gl.shader.type.ShaderType
 import baaahs.show.Shader
+import baaahs.util.RefCounted
+import baaahs.util.RefCounter
 
 class FakeOpenShader(
     override val inputPorts: List<InputPort>,

@@ -8,11 +8,11 @@ import baaahs.model.Model
 import baaahs.model.ObjModel
 import baaahs.monitor.MonitorUi
 import baaahs.net.BrowserNetwork
-import baaahs.proto.Ports
 import baaahs.sim.HostedWebApp
 import baaahs.sim.ui.SimulatorAppProps
 import baaahs.sim.ui.SimulatorAppView
 import baaahs.sim.ui.WebClientWindowView
+import baaahs.sm.brain.proto.Ports
 import baaahs.ui.ErrorDisplay
 import baaahs.util.ConsoleFormatters
 import baaahs.util.JsPlatform

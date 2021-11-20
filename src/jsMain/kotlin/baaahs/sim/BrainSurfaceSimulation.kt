@@ -1,6 +1,5 @@
 package baaahs.sim
 
-import baaahs.BrainManager
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
@@ -9,6 +8,8 @@ import baaahs.geom.toVector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.Model
+import baaahs.sm.brain.BrainManager
+import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.visualizer.*
 
 actual class BrainSurfaceSimulation actual constructor(
@@ -25,8 +26,8 @@ actual class BrainSurfaceSimulation actual constructor(
     val vizPixels by lazy { VizPixels(pixelPositions, surfaceGeometry.panelNormal) }
 
     val brain by lazy {
-        val brainsSimulator = simulationEnv[BrainsSimulator::class]
-        brainsSimulator.createBrain(surface.name, vizPixels)
+        val brainSimulatorManager = simulationEnv[BrainSimulatorManager::class]
+        brainSimulatorManager.createBrain(surface.name, vizPixels)
     }
 
     override val mappingData: MappingSession.SurfaceData

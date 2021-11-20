@@ -1,18 +1,18 @@
 package baaahs.app.ui.editor
 
-import baaahs.Severity
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
 import baaahs.control.MutableVisualizerControl
 import baaahs.gl.openShader
-import baaahs.severity
 import baaahs.show.live.ShaderInstanceResolver
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.ShowBuilder
+import baaahs.sm.webapi.Severity
+import baaahs.sm.webapi.severity
 import baaahs.ui.Icon
 import baaahs.ui.View
 

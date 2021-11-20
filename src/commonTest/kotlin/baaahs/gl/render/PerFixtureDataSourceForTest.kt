@@ -1,7 +1,5 @@
 package baaahs.gl.render
 
-import baaahs.RefCounted
-import baaahs.RefCounter
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
@@ -12,6 +10,8 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.show.DataSource
 import baaahs.show.UpdateMode
+import baaahs.util.RefCounted
+import baaahs.util.RefCounter
 
 class PerFixtureDataSourceForTest(val updateMode: UpdateMode) : DataSource {
     override val pluginPackage: String get() = error("not implemented")

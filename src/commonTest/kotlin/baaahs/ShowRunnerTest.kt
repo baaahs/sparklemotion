@@ -15,11 +15,13 @@ import baaahs.io.ByteArrayWriter
 import baaahs.mapper.Storage
 import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
-import baaahs.server.ServerNotices
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
+import baaahs.sm.server.GadgetManager
+import baaahs.sm.server.ServerNotices
+import baaahs.sm.server.StageManager
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe

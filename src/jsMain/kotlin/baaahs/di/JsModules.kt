@@ -17,8 +17,8 @@ import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
-import baaahs.proto.Ports
 import baaahs.sim.BrowserSandboxFs
+import baaahs.sm.brain.proto.Ports
 import baaahs.util.Clock
 import baaahs.util.JsClock
 import baaahs.visualizer.Visualizer

@@ -1,12 +1,12 @@
 package baaahs.dmx
 
 import baaahs.PubSub
-import baaahs.Topics
 import baaahs.controller.ControllerListener
 import baaahs.controller.ControllerManager
 import baaahs.publishProperty
 import baaahs.scene.ControllerConfig
 import baaahs.sim.FakeDmxUniverse
+import baaahs.sm.webapi.Topics
 import baaahs.util.Logger
 import kotlinx.serialization.Serializable
 

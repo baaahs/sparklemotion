@@ -1,11 +1,11 @@
 package baaahs.shaders
 
-import baaahs.BrainShader
-import baaahs.BrainShaderId
-import baaahs.BrainShaderReader
 import baaahs.Color
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.sm.brain.proto.BrainShader
+import baaahs.sm.brain.proto.BrainShaderId
+import baaahs.sm.brain.proto.BrainShaderReader
 
 /**
  * A shader that sets all pixels to a single color.

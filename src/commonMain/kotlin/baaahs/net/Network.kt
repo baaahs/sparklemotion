@@ -1,6 +1,6 @@
 package baaahs.net
 
-import baaahs.proto.Message
+import baaahs.sm.brain.proto.Message
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement

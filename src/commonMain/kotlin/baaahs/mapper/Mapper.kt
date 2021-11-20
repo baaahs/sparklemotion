@@ -12,9 +12,10 @@ import baaahs.imaging.NativeBitmap
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
-import baaahs.proto.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.shaders.SolidBrainShader
+import baaahs.sm.brain.BrainManager
+import baaahs.sm.brain.proto.*
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Stats

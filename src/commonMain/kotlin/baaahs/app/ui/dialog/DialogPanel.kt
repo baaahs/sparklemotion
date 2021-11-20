@@ -1,6 +1,6 @@
 package baaahs.app.ui.dialog
 
-import baaahs.Severity
+import baaahs.sm.webapi.Severity
 import baaahs.ui.Icon
 import baaahs.ui.View
 

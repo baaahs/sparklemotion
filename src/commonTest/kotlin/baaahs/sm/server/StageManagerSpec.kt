@@ -1,5 +1,6 @@
-package baaahs
+package baaahs.sm.server
 
+import baaahs.*
 import baaahs.controller.ControllersManager
 import baaahs.controllers.FakeFixtureListener
 import baaahs.controllers.FakeMappingManager
@@ -12,7 +13,6 @@ import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.models.SheepModel
-import baaahs.server.ServerNotices
 import baaahs.show.SampleData
 import baaahs.show.mutable.MutableShow
 import baaahs.shows.FakeGlContext

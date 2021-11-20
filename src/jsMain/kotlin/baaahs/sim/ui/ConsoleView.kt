@@ -1,8 +1,8 @@
 package baaahs.sim.ui
 
-import baaahs.Brain
 import baaahs.SheepSimulator
 import baaahs.sim.ui.SimulatorStyles.console
+import baaahs.sm.brain.sim.BrainSimulator
 import baaahs.ui.BComponent
 import baaahs.ui.Observable
 import baaahs.ui.Observer
@@ -23,8 +23,8 @@ class ConsoleView(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(
         )
     }
 
-    private fun brainSelectionListener(brain: Brain.Facade) =
-        setState { selectedBrain = brain }
+    private fun brainSelectionListener(brainSimulator: BrainSimulator.Facade) =
+        setState { selectedBrain = brainSimulator }
 
     override fun RBuilder.render() {
         val simulator = props.simulator
@@ -51,7 +51,7 @@ class ConsoleView(props: ConsoleProps) : BComponent<ConsoleProps, ConsoleState>(
                 div {
                     simulator.fixturesSimulator.brains.forEach { brain ->
                          brainIndicator {
-                             attrs.brain = brain
+                             attrs.brainSimulator = brain
                              attrs.brainSelectionListener = ::brainSelectionListener
                          }
                     }
@@ -80,7 +80,7 @@ external interface ConsoleProps : Props {
 }
 
 external interface ConsoleState : State {
-    var selectedBrain: Brain.Facade?
+    var selectedBrain: BrainSimulator.Facade?
 }
 
 fun RBuilder.console(handler: RHandler<ConsoleProps>) =

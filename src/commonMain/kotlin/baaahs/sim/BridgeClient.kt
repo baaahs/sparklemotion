@@ -2,7 +2,7 @@ package baaahs.sim
 
 import baaahs.PubSub
 import baaahs.net.Network
-import baaahs.proto.Ports
+import baaahs.sm.brain.proto.Ports
 import baaahs.util.Logger
 
 class BridgeClient(

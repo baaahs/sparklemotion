@@ -1,7 +1,5 @@
 package baaahs.gl.shader
 
-import baaahs.RefCounted
-import baaahs.RefCounter
 import baaahs.gl.glsl.*
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
@@ -10,6 +8,8 @@ import baaahs.gl.shader.type.ShaderType
 import baaahs.only
 import baaahs.show.Shader
 import baaahs.unknown
+import baaahs.util.RefCounted
+import baaahs.util.RefCounter
 
 interface OpenShader : RefCounted {
     val shader: Shader

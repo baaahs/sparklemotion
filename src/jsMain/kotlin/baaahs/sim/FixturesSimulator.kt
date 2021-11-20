@@ -1,6 +1,5 @@
 package baaahs.sim
 
-import baaahs.Brain
 import baaahs.doRunBlocking
 import baaahs.getValue
 import baaahs.io.Fs
@@ -9,6 +8,8 @@ import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.plugin.Plugins
+import baaahs.sm.brain.sim.BrainSimulator
+import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.util.Clock
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.Visualizer
@@ -36,12 +37,12 @@ class FixturesSimulator(
 ) {
     val facade = Facade()
 
-    private val brainsSimulator = BrainsSimulator(network, clock)
+    private val brainSimulatorManager = BrainSimulatorManager(network, clock)
     private val wledsSimulator = WledsSimulator(network)
 
     private val fixtureSimulations by lazy {
         val simulationEnv = SimulationEnv {
-            component(brainsSimulator)
+            component(brainSimulatorManager)
             component(clock)
             component(dmxUniverse)
             component(pixelArranger)
@@ -83,7 +84,7 @@ class FixturesSimulator(
     }
 
     inner class Facade : baaahs.ui.Facade() {
-        val brains: List<Brain.Facade>
-            get() = this@FixturesSimulator.brainsSimulator.brains.map { it.facade }
+        val brains: List<BrainSimulator.Facade>
+            get() = this@FixturesSimulator.brainSimulatorManager.brainSimulators.map { it.facade }
     }
 }

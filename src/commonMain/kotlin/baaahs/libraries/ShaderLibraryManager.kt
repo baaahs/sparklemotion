@@ -1,11 +1,11 @@
 package baaahs.libraries
 
 import baaahs.PubSub
-import baaahs.SearchShaderLibraries
-import baaahs.Topics
 import baaahs.io.Fs
 import baaahs.mapper.Storage
 import baaahs.show.Shader
+import baaahs.sm.webapi.SearchShaderLibraries
+import baaahs.sm.webapi.Topics
 import kotlinx.serialization.modules.SerializersModule
 
 class ShaderLibraryManager(
