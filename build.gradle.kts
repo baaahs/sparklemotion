@@ -269,7 +269,7 @@ tasks.named<DokkaTask>("dokkaHtml") {
 tasks.create<JavaExec>("runPinkyJvm") {
     dependsOn("compileKotlinJvm")
     dependsOn(webpackTask)
-    main = "baaahs.PinkyMainKt"
+    main = "baaahs.sm.server.PinkyMainKt"
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
 
@@ -285,7 +285,7 @@ tasks.create<JavaExec>("runPinkyJvm") {
 
 tasks.create<JavaExec>("runBrainJvm") {
     dependsOn("compileKotlinJvm")
-    main = "baaahs.BrainMainKt"
+    main = "baaahs.sm.brain.sim.BrainMainKt"
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
@@ -293,7 +293,7 @@ tasks.create<JavaExec>("runBrainJvm") {
 
 tasks.create<JavaExec>("runBridgeJvm") {
     dependsOn("compileKotlinJvm")
-    main = "baaahs.SimulatorBridgeKt"
+    main = "baaahs.sm.bridge.SimulatorBridgeKt"
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
@@ -328,7 +328,7 @@ tasks.create<ShadowJar>("shadowJar") {
     from(tasks.named<Jar>("jvmJar").get().archiveFile)
     configurations = listOf(project.configurations["jvmRuntimeClasspath"])
     manifest {
-        attributes["Main-Class"] = "baaahs.PinkyMainKt"
+        attributes["Main-Class"] = "baaahs.sm.server.PinkyMainKt"
     }
 }
 

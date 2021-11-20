@@ -1,5 +1,7 @@
-package baaahs
+package baaahs.sm.brain.sim
 
+import baaahs.Color
+import baaahs.SparkleMotion
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.net.Network
@@ -13,7 +15,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class Brain(
+class BrainSimulator(
     val id: String,
     private val network: Network,
     private val pixels: Pixels,
@@ -198,19 +200,19 @@ class Brain(
 
     inner class Facade : baaahs.ui.Facade() {
         val id: String
-            get() = this@Brain.id
+            get() = this@BrainSimulator.id
         val state: State
-            get() = this@Brain.state
+            get() = this@BrainSimulator.state
         val modelElementName: String?
-            get() = this@Brain.modelElementName
+            get() = this@BrainSimulator.modelElementName
 
         fun reset() {
             logger.info { "Resetting Brain $id!" }
-            GlobalScope.launch { this@Brain.reset() }
+            GlobalScope.launch { this@BrainSimulator.reset() }
         }
     }
 
     companion object {
-        val logger = Logger<Brain>()
+        val logger = Logger<BrainSimulator>()
     }
 }

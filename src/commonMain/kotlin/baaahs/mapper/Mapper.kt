@@ -14,6 +14,7 @@ import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
 import baaahs.shaders.PixelBrainShader
 import baaahs.shaders.SolidBrainShader
+import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.proto.*
 import baaahs.util.Clock
 import baaahs.util.Logger

@@ -1,6 +1,8 @@
 package baaahs.di
 
-import baaahs.*
+import baaahs.MediaDevices
+import baaahs.PinkySettings
+import baaahs.SheepSimulator
 import baaahs.browser.RealMediaDevices
 import baaahs.dmx.Dmx
 import baaahs.gl.GlBase
@@ -14,6 +16,8 @@ import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
 import baaahs.plugin.SimulatorPlugins
 import baaahs.sim.*
+import baaahs.sm.brain.FirmwareDaddy
+import baaahs.sm.brain.PermissiveFirmwareDaddy
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer

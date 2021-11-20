@@ -1,4 +1,4 @@
-package baaahs
+package baaahs.sm.brain
 
 interface FirmwareDaddy {
     fun doesntLikeThisVersion(firmwareVersion: String?): Boolean

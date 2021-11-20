@@ -1,4 +1,4 @@
-package baaahs
+package baaahs.sm.brain
 
 import baaahs.io.Fs
 import baaahs.util.Logger

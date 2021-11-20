@@ -1,10 +1,10 @@
 package baaahs.sm.brain.proto
 
-import baaahs.BrainId
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.sm.brain.BrainId
 
 object Ports {
     const val PINKY = 8002

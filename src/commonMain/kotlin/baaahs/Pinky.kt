@@ -16,6 +16,8 @@ import baaahs.plugin.Plugins
 import baaahs.scene.SceneManager
 import baaahs.show.Show
 import baaahs.sim.FakeNetwork
+import baaahs.sm.brain.BrainManager
+import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.proto.BrainHelloMessage
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
