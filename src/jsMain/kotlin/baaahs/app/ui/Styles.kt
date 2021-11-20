@@ -26,9 +26,9 @@ class AllStyles(val theme: MuiTheme) {
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
 
     fun injectGlobals() {
-        injectGlobal(Styles.global.toString())
-        injectGlobal(appUi.global.toString())
-        injectGlobal(baaahs.app.ui.controls.Styles.global.toString())
+        injectGlobal(Styles.global)
+        injectGlobal(appUi.global)
+        injectGlobal(baaahs.app.ui.controls.Styles.global)
     }
 }
 
