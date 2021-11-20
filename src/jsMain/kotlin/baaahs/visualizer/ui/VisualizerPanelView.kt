@@ -6,10 +6,9 @@ import baaahs.util.useResizeListener
 import baaahs.visualizer.Visualizer
 import kotlinx.css.*
 import org.w3c.dom.HTMLElement
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 import styled.StyleSheet
 
@@ -34,7 +33,7 @@ private val VisualizerPanelView = xComponent<VisualizerPanelProps>("VisualizerPa
     }
 }
 
-external interface VisualizerPanelProps : RProps {
+external interface VisualizerPanelProps : Props {
     var visualizer: Visualizer.Facade
 }
 

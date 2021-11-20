@@ -5,10 +5,9 @@ import baaahs.Gadget
 import baaahs.app.ui.gadgets.color.ColorWheelView
 import baaahs.gadgets.PalettePicker
 import baaahs.ui.xComponent
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 
 private val PalettePickerView = xComponent<PalettePickerProps>("PalettePicker") { props ->
     var colors by state { props.gadget.colors }
@@ -38,7 +37,7 @@ private val PalettePickerView = xComponent<PalettePickerProps>("PalettePicker") 
     }
 }
 
-external interface PalettePickerProps : RProps {
+external interface PalettePickerProps : Props {
     var gadget: PalettePicker
 }
 

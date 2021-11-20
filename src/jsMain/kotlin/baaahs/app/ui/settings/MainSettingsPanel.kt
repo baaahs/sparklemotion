@@ -11,9 +11,9 @@ import materialui.components.list.list
 import materialui.components.listitem.listItem
 import materialui.components.switches.switch
 import materialui.components.typography.typographyH6
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
 import react.useContext
 
 class MainSettingsPanel(
@@ -95,7 +95,7 @@ private val MainSettingsPanelView = xComponent<MainSettingsPanelProps>("MainSett
     }
 }
 
-external interface MainSettingsPanelProps : RProps {
+external interface MainSettingsPanelProps : Props {
     var changeUiSettings: ((UiSettings) -> UiSettings) -> Unit
 }
 

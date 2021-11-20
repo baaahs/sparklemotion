@@ -3,7 +3,7 @@
 
 package external.react
 
-import react.RDependenciesArray
+import react.StateInstance
 
 ///**
 // * Only works inside [fc]
@@ -24,7 +24,7 @@ import react.RDependenciesArray
  * @see <a href="https://reactjs.org/docs/hooks-state.html#hooks-and-function-components">Hooks and Function Components</a>
  */
 @JsName("useState")
-external fun <T> rawUseState(initValue: T): RDependenciesArray
+external fun <T> rawUseState(initValue: () -> T): StateInstance<T>
 //external fun <T> rawUseState(
 //    initializer: () -> T,
 //): XStateInstance<T>

@@ -82,7 +82,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
     }
 }
 
-external interface SimulatorAppProps : RProps {
+external interface SimulatorAppProps : Props {
     var simulator: SheepSimulator.Facade
     var hostedWebApp: HostedWebApp
 }
