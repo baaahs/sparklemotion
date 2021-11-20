@@ -1,8 +1,8 @@
 package baaahs.sim.ui
 
-import baaahs.Brain
-import baaahs.Brain.State.*
 import baaahs.sim.ui.SimulatorStyles.brainIndicator
+import baaahs.sm.brain.sim.BrainSimulator
+import baaahs.sm.brain.sim.BrainSimulator.State.*
 import baaahs.ui.BComponent
 import baaahs.ui.Observable
 import baaahs.ui.Observer
@@ -17,30 +17,30 @@ import styled.styledDiv
 
 class BrainIndicator(props: BrainIndicatorProps) : BComponent<BrainIndicatorProps, State>(props), Observer {
     override fun observing(props: BrainIndicatorProps, state: State): List<Observable?> {
-        return listOf(props.brain)
+        return listOf(props.brainSimulator)
     }
 
     override fun RBuilder.render() {
         styledDiv {
             css {
                 +brainIndicator
-                when (props.brain.state) {
+                when (props.brainSimulator.state) {
                     Unknown -> +"unknown"
                     Link -> +"link"
                     Online -> +"online"
                 }
             }
-            attrs.onClickFunction = { props.brain.reset() }
+            attrs.onClickFunction = { props.brainSimulator.reset() }
             attrs.onMouseOverFunction = {
-                props.brainSelectionListener(props.brain)
+                props.brainSelectionListener(props.brainSimulator)
             }
         }
     }
 }
 
 external interface BrainIndicatorProps : Props {
-    var brain: Brain.Facade
-    var brainSelectionListener: (Brain.Facade) -> Unit
+    var brainSimulator: BrainSimulator.Facade
+    var brainSelectionListener: (BrainSimulator.Facade) -> Unit
 }
 
 fun RBuilder.brainIndicator(handler: RHandler<BrainIndicatorProps>) =

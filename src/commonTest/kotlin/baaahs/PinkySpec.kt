@@ -25,6 +25,9 @@ import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
+import baaahs.sm.brain.BrainId
+import baaahs.sm.brain.BrainManager
+import baaahs.sm.brain.PermissiveFirmwareDaddy
 import baaahs.sm.brain.proto.BrainHelloMessage
 import baaahs.sm.brain.proto.Ports
 import baaahs.sm.brain.proto.Type

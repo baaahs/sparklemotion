@@ -1,5 +1,7 @@
-package baaahs
+package baaahs.sm.bridge
 
+import baaahs.Pluggables
+import baaahs.PubSub
 import baaahs.net.JvmNetwork
 import baaahs.plugin.PluginContext
 import baaahs.plugin.SimulatorPlugin

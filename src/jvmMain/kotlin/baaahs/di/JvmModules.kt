@@ -1,6 +1,8 @@
 package baaahs.di
 
-import baaahs.*
+import baaahs.MediaDevices
+import baaahs.PinkySettings
+import baaahs.Pluggables
 import baaahs.dmx.Dmx
 import baaahs.dmx.JvmFtdiDmxDriver
 import baaahs.gl.GlBase
@@ -12,6 +14,8 @@ import baaahs.net.JvmNetwork
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
+import baaahs.sm.brain.DirectoryDaddy
+import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.proto.Ports
 import baaahs.sm.server.PinkyArgs
 import baaahs.util.Clock
