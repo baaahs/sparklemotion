@@ -1,7 +1,5 @@
 package baaahs.show.live
 
-import baaahs.Severity
-import baaahs.ShowProblem
 import baaahs.describe
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
@@ -12,6 +10,8 @@ import baaahs.plugin.PluginRef
 import baaahs.show.ShaderChannel
 import baaahs.show.UnknownDataSource
 import baaahs.show.live.LiveShaderInstance.*
+import baaahs.sm.webapi.Severity
+import baaahs.sm.webapi.ShowProblem
 import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect

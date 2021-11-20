@@ -11,12 +11,12 @@ import baaahs.libraries.ShaderLibraries
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.plugin.Plugins
-import baaahs.server.ServerNotice
 import baaahs.show.Show
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableShow
 import baaahs.sim.HostedWebApp
+import baaahs.sm.webapi.*
 import baaahs.util.UndoStack
 import kotlinext.js.jsObject
 import kotlinx.coroutines.CoroutineScope

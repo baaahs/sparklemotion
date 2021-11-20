@@ -1,8 +1,8 @@
 package baaahs.app.ui.controls
 
-import baaahs.Severity
 import baaahs.show.live.OpenControl
 import baaahs.show.live.OpenPatchHolder
+import baaahs.sm.webapi.Severity
 import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import kotlinx.css.RuleSet

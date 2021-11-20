@@ -1,10 +1,10 @@
 package baaahs.show.live
 
-import baaahs.Severity
 import baaahs.getValue
-import baaahs.severity
 import baaahs.show.Panel
 import baaahs.show.PatchHolder
+import baaahs.sm.webapi.Severity
+import baaahs.sm.webapi.severity
 
 open class OpenPatchHolder(
     patchHolder: PatchHolder,

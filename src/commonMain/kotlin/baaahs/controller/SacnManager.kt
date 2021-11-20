@@ -1,7 +1,6 @@
 package baaahs.controller
 
 import baaahs.PubSub
-import baaahs.Topics
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayWriter
@@ -13,6 +12,7 @@ import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.publishProperty
 import baaahs.scene.ControllerConfig
+import baaahs.sm.webapi.Topics
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time

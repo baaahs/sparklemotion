@@ -1,7 +1,5 @@
 package baaahs.show.live
 
-import baaahs.Severity
-import baaahs.ShowProblem
 import baaahs.getBang
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslExpr
@@ -11,6 +9,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.show.*
+import baaahs.sm.webapi.Severity
+import baaahs.sm.webapi.ShowProblem
 import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 

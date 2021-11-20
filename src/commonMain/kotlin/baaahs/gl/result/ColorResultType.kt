@@ -1,12 +1,12 @@
 package baaahs.gl.result
 
 import baaahs.Color
-import baaahs.Pixels
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
+import baaahs.sm.brain.proto.Pixels
 import baaahs.visualizer.remote.RemoteVisualizers
 import com.danielgergely.kgl.ByteBuffer
 import com.danielgergely.kgl.GL_RGBA

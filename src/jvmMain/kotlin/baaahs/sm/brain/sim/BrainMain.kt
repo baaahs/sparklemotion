@@ -1,6 +1,11 @@
-package baaahs
+package baaahs.sm.brain.sim
 
+import baaahs.Color
+import baaahs.Pluggables
+import baaahs.doRunBlocking
+import baaahs.model.Model
 import baaahs.net.JvmNetwork
+import baaahs.sm.brain.proto.Pixels
 import baaahs.util.SystemClock
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
@@ -31,7 +36,7 @@ class BrainMain(private val args: Args) {
 
         val network = JvmNetwork()
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
-        val brain = Brain(brainId, network, JvmPixelsDisplay(2000), SystemClock)
+        val brainSimulator = BrainSimulator(brainId, network, JvmPixelsDisplay(2000), SystemClock)
 
         val mySurface = if (args.anonymous) {
             null
@@ -42,9 +47,9 @@ class BrainMain(private val args: Args) {
                 ?: throw IllegalArgumentException("unknown surface \"${args.surfaceName}")
         }
         println("I'll be ${mySurface?.name ?: "anonymous"}!")
-        mySurface?.let { brain.forcedFixtureName(mySurface.name) }
+        mySurface?.let { brainSimulator.forcedFixtureName(mySurface.name) }
 
-        GlobalScope.launch { brain.run() }
+        GlobalScope.launch { brainSimulator.run() }
 
         doRunBlocking {
             delay(200000L)

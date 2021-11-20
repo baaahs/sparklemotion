@@ -1,4 +1,4 @@
-package baaahs.server
+package baaahs.sm.webapi
 
 import baaahs.randomId
 import baaahs.ui.Markdown

@@ -1,7 +1,5 @@
 package baaahs.show
 
-import baaahs.RefCounted
-import baaahs.RefCounter
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
@@ -11,6 +9,8 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.PluginRef
+import baaahs.util.RefCounted
+import baaahs.util.RefCounter
 import kotlinx.serialization.json.JsonObject
 
 data class UnknownDataSource(

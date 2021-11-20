@@ -1,10 +1,10 @@
 package baaahs.mapper
 
-import baaahs.BrainManager
 import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
+import baaahs.sm.brain.BrainManager
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.Serializable
 

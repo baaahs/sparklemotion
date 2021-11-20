@@ -1,8 +1,8 @@
 package baaahs.app.ui
 
-import baaahs.Severity
 import baaahs.ShowEditorState
 import baaahs.app.ui.controls.problemBadge
+import baaahs.sm.webapi.Severity
 import baaahs.ui.*
 import baaahs.util.UndoStack
 import kotlinx.css.opacity

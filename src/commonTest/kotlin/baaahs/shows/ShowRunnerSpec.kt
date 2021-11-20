@@ -12,7 +12,6 @@ import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
 import baaahs.mapper.Storage
 import baaahs.plugin.core.datasource.ColorPickerDataSource
-import baaahs.server.ServerNotices
 import baaahs.shaders.fakeFixture
 import baaahs.show.Panel
 import baaahs.show.Shader
@@ -22,6 +21,9 @@ import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
+import baaahs.sm.server.GadgetManager
+import baaahs.sm.server.ServerNotices
+import baaahs.sm.server.StageManager
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.*

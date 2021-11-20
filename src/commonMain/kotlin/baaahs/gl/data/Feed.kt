@@ -1,12 +1,12 @@
 package baaahs.gl.data
 
-import baaahs.RefCounted
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.param.ParamBuffer
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
 import baaahs.show.UpdateMode
+import baaahs.util.RefCounted
 
 interface Feed : RefCounted {
     fun bind(gl: GlContext): EngineFeed

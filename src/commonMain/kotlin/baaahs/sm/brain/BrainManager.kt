@@ -1,5 +1,8 @@
-package baaahs
+package baaahs.sm.brain
 
+import baaahs.Color
+import baaahs.Pinky
+import baaahs.PubSub
 import baaahs.controller.Controller
 import baaahs.controller.ControllerListener
 import baaahs.controller.ControllerManager
@@ -15,9 +18,11 @@ import baaahs.mapper.TransportConfig
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
-import baaahs.proto.*
+import baaahs.publishProperty
 import baaahs.scene.ControllerConfig
 import baaahs.shaders.PixelBrainShader
+import baaahs.sm.brain.proto.*
+import baaahs.sm.webapi.Topics
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
