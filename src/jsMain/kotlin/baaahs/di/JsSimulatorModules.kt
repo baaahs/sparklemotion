@@ -1,6 +1,7 @@
 package baaahs.di
 
 import baaahs.MediaDevices
+import baaahs.ModelProvider
 import baaahs.PinkySettings
 import baaahs.SheepSimulator
 import baaahs.browser.RealMediaDevices
