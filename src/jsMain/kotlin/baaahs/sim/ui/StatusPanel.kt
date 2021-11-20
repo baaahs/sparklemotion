@@ -6,10 +6,9 @@ import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
 import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.switches.switch
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 
 val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
@@ -48,7 +47,7 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
     }
 }
 
-external interface StatusPanelProps : RProps {
+external interface StatusPanelProps : Props {
     var simulator: SheepSimulator.Facade
 }
 

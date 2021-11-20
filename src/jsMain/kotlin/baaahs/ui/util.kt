@@ -61,8 +61,8 @@ infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> = clazz to joinToStrin
 infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> = mutableListOf(this, that)
 infix fun String.and(that: String): String = "$this $that"
 
-fun CssBuilder.child(ruleSet: RuleSet, block: RuleSet) = child(ruleSet.selector, block)
-fun CssBuilder.descendants(ruleSet: RuleSet, block: RuleSet) = descendants(ruleSet.selector, block)
+fun CssBuilder.child(ruleSet: RuleSet, block: RuleSet) = child(ruleSet.selector) { block() }
+fun CssBuilder.descendants(ruleSet: RuleSet, block: RuleSet) = descendants(ruleSet.selector) { block() }
 fun CssBuilder.within(ruleSet: RuleSet, block: RuleSet) = "${ruleSet.selector} &"(block)
 
 fun CssBuilder.mixIn(mixin: CssBuilder) = declarations.putAll(mixin.declarations)
