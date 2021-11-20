@@ -14,9 +14,9 @@ import materialui.components.listsubheader.enums.ListSubheaderStyle
 import materialui.components.listsubheader.listSubheader
 import materialui.icon
 import react.FunctionComponent
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
 import react.dom.div
 import react.dom.header
 
@@ -102,7 +102,7 @@ private val DialogPanelsView: FunctionComponent<DialogPanelsProps> = xComponent(
     }
 }
 
-external interface DialogPanelsProps : RProps {
+external interface DialogPanelsProps : Props {
     var panels: List<DialogPanel>
     var selectedPanel: DialogPanel?
     var onSelectPanel: ((DialogPanel) -> Unit)?

@@ -7,10 +7,9 @@ import baaahs.visualizer.ui.visualizerPanel
 import kotlinx.html.js.onChangeFunction
 import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.switches.switch
+import react.Props
 import react.RBuilder
 import react.RHandler
-import react.RProps
-import react.child
 import react.dom.div
 
 val ModelSimulationView = xComponent<ModelSimulationProps>("ModelSimulation") { props ->
@@ -44,7 +43,7 @@ val ModelSimulationView = xComponent<ModelSimulationProps>("ModelSimulation") { 
     }
 }
 
-external interface ModelSimulationProps : RProps {
+external interface ModelSimulationProps : Props {
     var simulator: SheepSimulator.Facade
 }
 

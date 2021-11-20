@@ -17,10 +17,13 @@ import kotlinx.html.label
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.button
 import react.dom.canvas
 import react.dom.div
+import react.useRef
 import styled.inlineStyles
 
 private const val pickerRadius = 12
@@ -211,7 +214,7 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
 private fun Color.toCssColor()
     = kotlinx.css.Color("rgb(${redI}, ${greenI}, ${blueI})")
 
-external interface ColorWheelProps : RProps {
+external interface ColorWheelProps : Props {
     var colors: Array<Color>
     var onChange: (Array<Color>) -> Unit
     var isPalette: Boolean?
