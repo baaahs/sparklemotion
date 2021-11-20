@@ -17,7 +17,7 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
         classpath("org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}")
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka}")
-        classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
+        classpath("com.github.jengelman.gradle.plugins:shadow:6.1.0")
     }
 }
 
@@ -32,8 +32,8 @@ plugins {
     kotlin("multiplatform") version Versions.kotlin
     kotlin("plugin.serialization") version Versions.kotlin
     id("org.jetbrains.dokka") version Versions.dokka
-    id("com.github.johnrengelman.shadow") version "5.2.0"
-    id("com.github.ben-manes.versions") version "0.29.0"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("com.github.ben-manes.versions") version "0.39.0"
     id("maven-publish")
     id("name.remal.check-dependency-updates") version "1.0.211"
 }
@@ -93,7 +93,7 @@ kotlin {
                 implementation("io.ktor:ktor-server-netty:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-host-common:${Versions.ktor}")
                 implementation("io.ktor:ktor-websockets:${Versions.ktor}")
-                implementation("ch.qos.logback:logback-classic:1.2.3")
+                implementation("ch.qos.logback:logback-classic:1.2.7")
                 implementation("org.deepsymmetry:beat-link:0.6.3")
 
                 implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))
