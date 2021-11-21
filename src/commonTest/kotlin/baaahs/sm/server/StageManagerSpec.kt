@@ -5,35 +5,47 @@ import baaahs.controller.ControllersManager
 import baaahs.controllers.FakeFixtureListener
 import baaahs.controllers.FakeMappingManager
 import baaahs.fixtures.FixtureManagerImpl
+import baaahs.gadgets.ColorPicker
+import baaahs.gl.*
 import baaahs.gl.render.RenderManager
-import baaahs.gl.testPlugins
-import baaahs.gl.testToolchain
+import baaahs.glsl.Shaders
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
-import baaahs.models.SheepModel
+import baaahs.plugin.core.datasource.ColorPickerDataSource
+import baaahs.shaders.fakeFixture
+import baaahs.show.Panel
 import baaahs.show.SampleData
+import baaahs.show.Shader
+import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeFs
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import com.danielgergely.kgl.*
+import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.serialization.json.JsonPrimitive
 import org.spekframework.spek2.Spek
 
+@ExperimentalCoroutinesApi
 @InternalCoroutinesApi
 object StageManagerSpec : Spek({
     describe<StageManager> {
-        val panel17 by value { SheepModel.Panel("17") }
-        val model by value { ModelForTest(panel17) }
+        val model by value { TestModel }
 
         val plugins by value { testPlugins() }
         val fakeFs by value { FakeFs() }
         val pubSub by value { FakePubSub() }
         val fakeGlslContext by value { FakeGlContext() }
-        val renderManager by value { RenderManager({ TestModel }) { fakeGlslContext } }
-        val baseShow by value { SampleData.sampleShow }
+        val renderManager by value { RenderManager({ model }) { fakeGlslContext } }
+        val fixtureManager by value { FixtureManagerImpl(renderManager, plugins) }
+        val dispatcher by value { TestCoroutineDispatcher() }
 
         val stageManager by value {
             StageManager(
@@ -41,81 +53,199 @@ object StageManagerSpec : Spek({
                 renderManager,
                 pubSub.server,
                 Storage(fakeFs, plugins),
-                FixtureManagerImpl(renderManager, plugins),
+                fixtureManager,
                 FakeClock(),
                 { model },
-                GadgetManager(pubSub.server, FakeClock(), ImmediateDispatcher),
+                GadgetManager(pubSub.server, FakeClock(), dispatcher),
                 ControllersManager(emptyList(), FakeMappingManager(), { model }, FakeFixtureListener()),
-                ServerNotices(pubSub.server, ImmediateDispatcher)
+                ServerNotices(pubSub.server, dispatcher)
             )
         }
-        val editingClient by value { pubSub.client("editingClient") }
-        val fsClientSideSerializer by value {
-            object : FsClientSideSerializer() {
-                override val backend = FakeRemoteFsBackend()
+
+        describe("show management") {
+            val shaderSrc by value {
+                /**language=glsl*/
+                "void main() { gl_FragColor = vec4(gl_FragCoord, 0., 1.); }"
             }
-        }
-        var editingClientShowEditorState: ShowEditorState? = null
-        val editingClientChannel by value {
-            editingClient.subscribe(ShowEditorState.createTopic(plugins, fsClientSideSerializer)) {
-                editingClient.log.add("update showEditorState: ${it?.show?.title}")
-                editingClientShowEditorState = it
+
+            val fixtures by value { listOf(fakeFixture(100)) }
+            val panel by value { MutablePanel(Panel("Panel")) }
+            val mutableShow by value {
+                MutableShow("test show") {
+                    editLayouts {
+                        panels["panel"] = panel
+                    }
+
+                    addPatch(
+                        testToolchain.autoWire(Shaders.cylindricalProjection, Shaders.blue)
+                            .acceptSuggestedLinkOptions()
+                            .confirm()
+                    )
+                    addButtonGroup(
+                        panel, "Scenes"
+                    ) {
+                        addButton("test scene") {
+                            addButtonGroup(
+                                panel, "Backdrops"
+                            ) {
+                                addButton("test patchset") {
+                                    addPatch(
+                                        testToolchain.autoWire(Shader("Untitled", shaderSrc))
+                                            .acceptSuggestedLinkOptions()
+                                            .confirm()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            val show by value { mutableShow.build(ShowBuilder()) }
+            val showState by value {
+                ShowState(
+                    mapOf(
+                        "testPatchsetButton" to mapOf("enabled" to JsonPrimitive(true)),
+                        "testSceneButton" to mapOf("enabled" to JsonPrimitive(true))
+                    )
+                )
+            }
+
+            val fakeProgram by value { fakeGlslContext.programs.only("program") }
+
+            val addControls by value { {} }
+
+            beforeEachTest {
+                addControls()
+                stageManager.switchTo(show, showState)
+                fixtureManager.fixturesChanged(fixtures, emptyList())
+                doRunBlocking { stageManager.renderAndSendNextFrame() }
+            }
+
+            context("port wiring") {
+                it("wires up UV texture stuff") {
+                    val pixelCoordsTextureUnit = fakeProgram.getUniform("ds_pixelLocation_texture") as Int
+                    val textureConfig = fakeGlslContext.getTextureConfig(pixelCoordsTextureUnit)
+
+                    expect(textureConfig.width to textureConfig.height).toBe(100 to 1)
+                    expect(textureConfig.internalFormat).toBe(GlContext.GL_RGB32F)
+                    expect(textureConfig.format).toBe(GL_RGB)
+                    expect(textureConfig.type).toBe(GL_FLOAT)
+                    expect(textureConfig.params[GL_TEXTURE_MIN_FILTER]).toBe(GL_NEAREST)
+                    expect(textureConfig.params[GL_TEXTURE_MAG_FILTER]).toBe(GL_NEAREST)
+                }
+
+                context("for vec4 uniforms") {
+                    override(shaderSrc) {
+                        /**language=glsl*/
+                        """
+                    uniform vec4 color; // @@ColorPicker
+                    void main() { gl_FragColor = color; }
+                    """.trimIndent()
+                    }
+
+                    override(addControls) {
+                        {
+                            val colorPickerDataSource = ColorPickerDataSource("Color", Color.WHITE)
+                            mutableShow.addControl(panel, colorPickerDataSource.buildControl())
+                        }
+                    }
+
+                    val colorPickerGadget by value {
+                        stageManager.useGadget<ColorPicker>("colorColorPickerControl")
+                    }
+
+                    it("wires it up as a color picker") {
+                        expect(colorPickerGadget.title).toBe("Color")
+                        expect(colorPickerGadget.initialValue).toBe(Color.WHITE)
+                    }
+
+                    it("sets the uniform from the gadget's initial value") {
+                        val colorUniform = fakeProgram.getUniform<List<Float>>("in_colorColorPicker")
+                        expect(colorUniform).toBe(arrayListOf(1f, 1f, 1f, 1f))
+                    }
+
+                    it("sets the uniform when the gadget value changes") {
+                        colorPickerGadget.color = Color.YELLOW
+
+                        doRunBlocking { stageManager.renderAndSendNextFrame() }
+                        val colorUniform = fakeProgram.getUniform<List<Float>>("in_colorColorPicker")
+                        expect(colorUniform).toBe(arrayListOf(1f, 1f, 0f, 1f))
+                    }
+                }
             }
         }
 
-        val otherClient by value { pubSub.client("otherClient") }
-        val otherClientChannel by value {
-            otherClient.subscribe(ShowEditorState.createTopic(plugins, fsClientSideSerializer)) {
-                println("otherClient heard from pubsub")
-                otherClient.log.add("update showEditorState: ${it?.show?.title}")
+        describe("client management") {
+            val editingClient by value { pubSub.client("editingClient") }
+            val fsClientSideSerializer by value {
+                object : FsClientSideSerializer() {
+                    override val backend = FakeRemoteFsBackend()
+                }
             }
-        }
+            var editingClientShowEditorState: ShowEditorState? = null
+            val editingClientChannel by value {
+                editingClient.subscribe(ShowEditorState.createTopic(plugins, fsClientSideSerializer)) {
+                    editingClient.log.add("update showEditorState: ${it?.show?.title}")
+                    editingClientShowEditorState = it
+                }
+            }
 
-        beforeEachTest {
-            editingClientShowEditorState = null
-            editingClientChannel.let {}
-            otherClientChannel.let {}
-            stageManager.switchTo(baseShow, file = fakeFs.resolve("fake-file.sparkle"))
-            pubSub.dispatcher.runCurrent()
-        }
+            val otherClient by value { pubSub.client("otherClient") }
+            val otherClientChannel by value {
+                otherClient.subscribe(ShowEditorState.createTopic(plugins, fsClientSideSerializer)) {
+                    println("otherClient heard from pubsub")
+                    otherClient.log.add("update showEditorState: ${it?.show?.title}")
+                }
+            }
+
+            val baseShow by value { SampleData.sampleShow }
+
+            beforeEachTest {
+                editingClientShowEditorState = null
+                editingClientChannel.let {}
+                otherClientChannel.let {}
+                stageManager.switchTo(baseShow, file = fakeFs.resolve("fake-file.sparkle"))
+                pubSub.dispatcher.runCurrent()
+            }
 
 //        afterEachTest {
 //            expect(emptyList()) { pubSub.testCoroutineContext.exceptions }
 //        }
 
-        it("a pubsub update is received on both clients") {
-            expect(editingClient.log)
-                .containsExactly("update showEditorState: Sample Show")
-            expect(otherClient.log)
-                .containsExactly("update showEditorState: Sample Show")
-        }
-
-        context("when a ShowEditorState change arrives from a client") {
-            val editedShow by value { MutableShow(baseShow).apply { title = "Edited show" }.getShow() }
-
-            beforeEachTest {
-                editingClient.log.clear()
-                otherClient.log.clear()
-
-                editingClientChannel.onChange(
-                    ShowEditorState(
-                        editedShow,
-                        ShowState(emptyMap()),
-                        isUnsaved = true,
-                        file = editingClientShowEditorState!!.file
-                    )
-                )
-                pubSub.dispatcher.runCurrent()
-            }
-
-            it("no additional pubsub updates are received by the editing client") {
+            it("a pubsub update is received on both clients") {
                 expect(editingClient.log)
-                    .isEmpty()
+                    .containsExactly("update showEditorState: Sample Show")
+                expect(otherClient.log)
+                    .containsExactly("update showEditorState: Sample Show")
             }
 
-            it("a pubsub update is received by the other client") {
-                expect(otherClient.log)
-                    .containsExactly("update showEditorState: Edited show")
+            context("when a ShowEditorState change arrives from a client") {
+                val editedShow by value { MutableShow(baseShow).apply { title = "Edited show" }.getShow() }
+
+                beforeEachTest {
+                    editingClient.log.clear()
+                    otherClient.log.clear()
+
+                    editingClientChannel.onChange(
+                        ShowEditorState(
+                            editedShow,
+                            ShowState(emptyMap()),
+                            isUnsaved = true,
+                            file = editingClientShowEditorState!!.file
+                        )
+                    )
+                    pubSub.dispatcher.runCurrent()
+                }
+
+                it("no additional pubsub updates are received by the editing client") {
+                    expect(editingClient.log)
+                        .isEmpty()
+                }
+
+                it("a pubsub update is received by the other client") {
+                    expect(otherClient.log)
+                        .containsExactly("update showEditorState: Edited show")
+                }
             }
         }
     }
