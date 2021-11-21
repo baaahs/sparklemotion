@@ -20,7 +20,7 @@ class ShaderEditorStyles(private val theme: MuiTheme) : StyleSheet("app-ui-edito
         paddingRight = 1.em
         maxHeight = previewHeight
 
-        child(ShaderPreviewStyles.container) {
+        child(ShaderPreviewStyles, ShaderPreviewStyles::container) {
             grow(Grow.NONE)
         }
     }

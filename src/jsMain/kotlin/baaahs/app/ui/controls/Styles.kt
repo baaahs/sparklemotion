@@ -22,7 +22,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         backgroundColor = Color.transparent
         overflowY = Overflow.scroll
 
-        descendants(controlButton) {
+        descendants(this@Styles, ::controlButton) {
             transition(::transform, duration = editTransitionDuration, timing = Timing.linear)
         }
     }

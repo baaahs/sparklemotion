@@ -35,7 +35,7 @@ object EditableStyles : StyleSheet("app-ui-editor-Editable", isStatic = true) {
     val shaderCardContent by css {
     }
     val shaderCardActions by css {
-        child(shaderCardContent) {
+        child(this@EditableStyles, ::shaderCardContent) {
             flex(1.0)
         }
 
