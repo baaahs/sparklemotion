@@ -34,7 +34,7 @@ import react.useContext
 val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props ->
     val appContext = useContext(appContext)
     val theme = useTheme()
-    val themeStyles = ThemeStyles(theme)
+    val themeStyles = appContext.allStyles.appUi
 
     val handleDownloadShow by eventHandler { _: Event ->
         val show = appContext.webClient.show!!

@@ -14,10 +14,11 @@ import materialui.styles.transitions.create
 import materialui.styles.transitions.sharp
 import styled.StyleSheet
 import styled.injectGlobal
-import kotlin.collections.set
+import baaahs.app.ui.controls.Styles as ControlsStyles
 
 class AllStyles(val theme: MuiTheme) {
-    val appUi by lazy { ThemeStyles(theme) }
+    val themeStyles = ThemeStyles(theme)
+    val appUi by lazy { themeStyles }
     val editor by lazy { baaahs.ui.editor.Styles(theme) }
     val controls by lazy { baaahs.app.ui.controls.ThemeStyles(theme) }
     val gadgetsSlider by lazy { ThemedStyles(theme) }
@@ -26,9 +27,9 @@ class AllStyles(val theme: MuiTheme) {
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
 
     fun injectGlobals() {
-        injectGlobal(Styles.global.toString())
-        injectGlobal(appUi.global.toString())
-        injectGlobal(baaahs.app.ui.controls.Styles.global.toString())
+        injectGlobal(Styles.global)
+        injectGlobal(appUi.global)
+        injectGlobal(ControlsStyles.global)
     }
 }
 
@@ -68,7 +69,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
             paddingRight = 16.px
             position = Position.relative
 
-            child(help) {
+            child(this@ThemeStyles, ::help) {
                 fontSize = 1.rem
                 position = Position.absolute
                 top = .5.em
@@ -107,7 +108,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
     val appToolbar by css {
         mixIn(theme.mixins.toolbar)
 
-        descendants(title) {
+        descendants(this@ThemeStyles, ::title) {
             flexGrow = 1.0
         }
 
@@ -300,12 +301,12 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         pointerEvents = PointerEvents.none
 
         hover {
-            descendants(dragHandle) {
+            descendants(this@Styles, ::dragHandle) {
                 opacity = 1
             }
         }
 
-        descendants(baaahs.app.ui.controls.Styles.controlBox) {
+        descendants(ControlsStyles, ControlsStyles::controlBox) {
             marginBottom = 0.25.em
         }
     }
@@ -335,7 +336,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     }
 
     val editModeOn by css {
-        descendants(layoutControls) {
+        descendants(this@Styles, ::layoutControls) {
             paddingLeft = 1.25.em
             minWidth = 3.em
             minHeight = 3.em
@@ -345,23 +346,23 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
             transition(duration = 0.5.s)
         }
 
-        descendants(layoutPanel) {
+        descendants(this@Styles, ::layoutPanel) {
             overflow = Overflow.scroll
         }
 
-        descendants(section0Controls) {
+        descendants(this@Styles, ::section0Controls) {
             background = linearRepeating(Color.lightPink.withAlpha(.5), Color.lightPink.withAlpha(.25))
         }
 
-        descendants(section1Controls) {
+        descendants(this@Styles, ::section1Controls) {
             background = linearRepeating(Color.lightGreen.withAlpha(.5), Color.lightGreen.withAlpha(.25))
         }
 
-        descendants(section2Controls) {
+        descendants(this@Styles, ::section2Controls) {
             background = linearRepeating(Color.lightBlue.withAlpha(.5), Color.lightBlue.withAlpha(.25))
         }
 
-        descendants(controlPanelHelpText) {
+        descendants(this@Styles, ::controlPanelHelpText) {
             display = Display.block
             position = Position.absolute
             bottom = 0.5.em
@@ -369,11 +370,11 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
             declarations["writing-mode"] = "vertical-lr"
         }
 
-        descendants(addToSectionButton) {
+        descendants(this@Styles, ::addToSectionButton) {
             opacity = 1
         }
 
-        descendants(baaahs.app.ui.controls.Styles.controlBox) {
+        descendants(ControlsStyles, ControlsStyles::controlBox) {
             padding(3.px)
             border(
                 width = 1.px,
@@ -384,37 +385,37 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
             transform { scale(.9) }
         }
 
-        descendants(baaahs.app.ui.controls.Styles.editButton) {
+        descendants(ControlsStyles, ControlsStyles::editButton) {
             display = Display.inherit
             opacity = .2
         }
 
-        descendants(baaahs.app.ui.controls.Styles.dragHandle) {
+        descendants(ControlsStyles, ControlsStyles::dragHandle) {
             display = Display.inherit
             opacity = .2
         }
 
-        descendants(baaahs.app.ui.controls.Styles.horizontalButtonList) {
+        descendants(ControlsStyles, ControlsStyles::horizontalButtonList) {
             paddingRight = 1.em
         }
 
-        descendants(baaahs.app.ui.controls.Styles.verticalButtonList) {
+        descendants(ControlsStyles, ControlsStyles::verticalButtonList) {
             paddingBottom = 1.em
         }
 
-        descendants(baaahs.app.ui.controls.Styles.buttonGroupCard) {
-            descendants(baaahs.app.ui.controls.Styles.controlButton) {
+        descendants(ControlsStyles, ControlsStyles::buttonGroupCard) {
+            descendants(ControlsStyles, ControlsStyles::controlButton) {
                 transform { scale(.9) }
             }
         }
     }
 
     val editModeOff by css {
-        descendants(layoutControls) {
+        descendants(this@Styles, ::layoutControls) {
             transition(duration = 0.5.s)
         }
 
-        descendants(unplacedControlsPalette) {
+        descendants(this@Styles, ::unplacedControlsPalette) {
             opacity = 0;
             display = Display.none;
         }
