@@ -91,7 +91,7 @@ object Styles : StyleSheet("sim-pinky", isStatic = true) {
         flexDirection = FlexDirection.column
 
         hover {
-            descendants(baaahs.app.ui.Styles.dragHandle) {
+            descendants(baaahs.app.ui.Styles, baaahs.app.ui.Styles::dragHandle) {
                 opacity = 1
             }
         }
