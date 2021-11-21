@@ -20,6 +20,7 @@ import react.dom.RDOMBuilder
 import react.dom.setProp
 import styled.StyleSheet
 import kotlin.reflect.KProperty
+import kotlin.reflect.KProperty0
 
 @Suppress("UNCHECKED_CAST")
 fun <T> nuffin(): T = null as T
@@ -61,8 +62,13 @@ infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> = clazz to joinToStrin
 infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> = mutableListOf(this, that)
 infix fun String.and(that: String): String = "$this $that"
 
-fun CssBuilder.child(ruleSet: RuleSet, block: RuleSet) = child(ruleSet.selector) { block() }
-fun CssBuilder.descendants(ruleSet: RuleSet, block: RuleSet) = descendants(ruleSet.selector) { block() }
+
+fun CssBuilder.child(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: RuleSet) =
+    child(".${styleSheet.name}-${rule.name}") { block() }
+
+fun CssBuilder.descendants(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: RuleSet) =
+    descendants(".${styleSheet.name}-${rule.name}") { block() }
+
 fun CssBuilder.within(ruleSet: RuleSet, block: RuleSet) = "${ruleSet.selector} &"(block)
 
 fun CssBuilder.mixIn(mixin: CssBuilder) = declarations.putAll(mixin.declarations)
