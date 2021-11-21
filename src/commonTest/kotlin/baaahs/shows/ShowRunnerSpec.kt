@@ -1,7 +1,9 @@
+package baaahs.shows
+
 import baaahs.*
 import baaahs.controller.ControllersManager
 import baaahs.controllers.FakeMappingManager
-import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.FixtureManagerImpl
 import baaahs.gadgets.ColorPicker
 import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.autoWire
@@ -18,7 +20,6 @@ import baaahs.show.Shader
 import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
-import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
 import baaahs.sm.server.GadgetManager
@@ -91,7 +92,7 @@ object ShowRunnerSpec : Spek({
             PubSub.Server(httpServer, CoroutineScope(dispatcher))
         }
         val renderManager by value { RenderManager({ TestModel }) { fakeGlslContext } }
-        val fixtureManager by value { FixtureManager(renderManager, testPlugins()) }
+        val fixtureManager by value { FixtureManagerImpl(renderManager, testPlugins()) }
         val stageManager by value {
             val fs = FakeFs()
             StageManager(

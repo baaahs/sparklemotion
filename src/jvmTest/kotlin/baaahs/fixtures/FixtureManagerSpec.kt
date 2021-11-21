@@ -38,7 +38,7 @@ object FixtureManagerSpec : Spek({
         val surfacePixelStrategy by value { LinearSurfacePixelStrategy(Random(1)) }
 
         // Maintain stable fixture order for test:
-        val fixtureManager by value { FixtureManager(renderManager, testPlugins(), renderTargets) }
+        val fixtureManager by value { FixtureManagerImpl(renderManager, testPlugins(), renderTargets) }
 
         context("when fixtures of multiple types have been added") {
             val fogginess by value { ContentType("fogginess", "Fogginess", GlslType.Float) }

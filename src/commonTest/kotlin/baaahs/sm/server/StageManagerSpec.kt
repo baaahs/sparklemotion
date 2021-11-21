@@ -4,7 +4,7 @@ import baaahs.*
 import baaahs.controller.ControllersManager
 import baaahs.controllers.FakeFixtureListener
 import baaahs.controllers.FakeMappingManager
-import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.FixtureManagerImpl
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
@@ -41,7 +41,7 @@ object StageManagerSpec : Spek({
                 renderManager,
                 pubSub.server,
                 Storage(fakeFs, plugins),
-                FixtureManager(renderManager, plugins),
+                FixtureManagerImpl(renderManager, plugins),
                 FakeClock(),
                 { model },
                 GadgetManager(pubSub.server, FakeClock(), ImmediateDispatcher),

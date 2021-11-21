@@ -4,7 +4,7 @@ import baaahs.controller.ControllersManager
 import baaahs.controllers.FakeMappingManager
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.FixtureManagerImpl
 import baaahs.fixtures.Transport
 import baaahs.gadgets.Slider
 import baaahs.gl.render.RenderManager
@@ -54,7 +54,7 @@ class ShowRunnerTest {
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
     private lateinit var stageManager: StageManager
-    private lateinit var fixtureManager: FixtureManager
+    private lateinit var fixtureManager: FixtureManagerImpl
 
     @BeforeTest
     fun setUp() {
@@ -66,7 +66,7 @@ class ShowRunnerTest {
         val model = TestModel
         val renderManager = RenderManager({ model }) { fakeGlslContext }
         val plugins = testPlugins()
-        fixtureManager = FixtureManager(renderManager, plugins)
+        fixtureManager = FixtureManagerImpl(renderManager, plugins)
         stageManager = StageManager(
             testToolchain, renderManager, server, Storage(fs, plugins), fixtureManager,
             FakeClock(), { model }, GadgetManager(server, FakeClock(), dispatcher),

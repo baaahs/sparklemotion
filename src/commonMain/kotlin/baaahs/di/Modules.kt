@@ -7,6 +7,7 @@ import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.dmx.DmxManagerImpl
 import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.FixtureManagerImpl
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
@@ -107,7 +108,7 @@ interface PinkyModule : KModule {
                 scoped { renderManager }
                 scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
                 scoped { Storage(get(), get()) }
-                scoped { FixtureManager(get(), get()) }
+                scoped<FixtureManager> { FixtureManagerImpl(get(), get()) }
                 scoped { GadgetManager(get(), get(), get(pinkyContext)) }
                 scoped<Toolchain> { RootToolchain(get()) }
                 scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
