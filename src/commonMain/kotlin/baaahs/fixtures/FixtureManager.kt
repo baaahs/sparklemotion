@@ -16,12 +16,24 @@ interface FixtureListener {
     fun fixturesChanged(addedFixtures: Collection<Fixture>, removedFixtures: Collection<Fixture>)
 }
 
-class FixtureManager(
+interface FixtureManager : FixtureListener {
+    val facade: FixtureManagerImpl.Facade
+
+    fun activePatchSetChanged(activePatchSet: ActivePatchSet)
+    fun hasActiveRenderPlan(): Boolean
+    fun maybeUpdateRenderPlans(): Boolean
+    fun sendFrame()
+    fun newRemoteVisualizerServer(): RemoteVisualizerServer
+    fun addRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener)
+    fun removeRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener)
+}
+
+class FixtureManagerImpl(
     private val renderManager: RenderManager,
     private val plugins: Plugins,
     initialRenderTargets: Map<Fixture, FixtureRenderTarget> = emptyMap()
-) : FixtureListener {
-    val facade = Facade()
+) : FixtureManager {
+    override val facade = Facade()
 
     private val renderTargets: MutableMap<Fixture, FixtureRenderTarget> = initialRenderTargets.toMutableMap()
     private val frameListeners: MutableList<() -> Unit> = arrayListOf()
@@ -65,7 +77,7 @@ class FixtureManager(
 
     private fun getFixtureCount(): Int = renderTargets.size
 
-    fun sendFrame() {
+    override fun sendFrame() {
         renderTargets.values.forEach { renderTarget ->
             // TODO(tom): The send might return an error, at which point this fixture should be nuked
             // from the list of fixtures. I'm not quite sure the best way to do that so I'm leaving this note.
@@ -92,14 +104,14 @@ class FixtureManager(
         } ?: throw IllegalStateException("huh? can't remove unknown fixture $fixture")
     }
 
-    fun activePatchSetChanged(activePatchSet: ActivePatchSet) {
+    override fun activePatchSetChanged(activePatchSet: ActivePatchSet) {
         if (activePatchSet != currentActivePatchSet) {
             currentActivePatchSet = activePatchSet
             activePatchSetChanged = true
         }
     }
 
-    fun maybeUpdateRenderPlans(): Boolean {
+    override fun maybeUpdateRenderPlans(): Boolean {
         var remapFixtures = incorporateFixtureChanges()
 
         // Maybe build new shaders.
@@ -130,20 +142,20 @@ class FixtureManager(
         return remapFixtures
     }
 
-    fun hasActiveRenderPlan(): Boolean {
+    override fun hasActiveRenderPlan(): Boolean {
         return currentRenderPlan != null
     }
 
-    fun newRemoteVisualizerServer(): RemoteVisualizerServer {
+    override fun newRemoteVisualizerServer(): RemoteVisualizerServer {
         return RemoteVisualizerServer(this, plugins)
     }
 
-    fun addRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener) {
+    override fun addRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener) {
         remoteVisualizers.addListener(listener)
         renderTargets.keys.forEach { fixture -> remoteVisualizers.sendFixtureInfo(fixture) }
     }
 
-    fun removeRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener) {
+    override fun removeRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener) {
         remoteVisualizers.removeListener(listener)
     }
 
@@ -151,10 +163,11 @@ class FixtureManager(
 
     inner class Facade : baaahs.ui.Facade() {
         val fixtureCount: Int
-            get() = this@FixtureManager.getFixtureCount()
-
+            get() = this@FixtureManagerImpl.getFixtureCount()
         val pixelCount: Int
-            get() = this@FixtureManager.renderTargets.values.sumOf { it.pixelCount }
+            get() = this@FixtureManagerImpl.renderTargets.values.sumOf { it.pixelCount }
+        val currentRenderPlan: RenderPlan?
+            get() = this@FixtureManagerImpl.currentRenderPlan
     }
 
     companion object {

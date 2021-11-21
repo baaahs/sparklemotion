@@ -3,7 +3,7 @@ package baaahs
 import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
-import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.FixtureManagerImpl
 import baaahs.geom.Matrix4
 import baaahs.gl.RootToolchain
 import baaahs.gl.override
@@ -59,13 +59,13 @@ object PinkySpec : Spek({
         val plugins by value { testPlugins() }
         val storage by value { Storage(fakeFs, plugins) }
         val link by value { network.link("pinky") }
+        val renderManager by value { fakeGlslContext.runInContext { RenderManager({ model }) { fakeGlslContext } } }
+        val fixtureManager by value { FixtureManagerImpl(renderManager, plugins) }
         val pinky by value {
             val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
             val pubSub = PubSub.Server(httpServer, CoroutineScope(ImmediateDispatcher))
-            val renderManager = fakeGlslContext.runInContext { RenderManager({ model }) { fakeGlslContext } }
             val fakeDmxUniverse = FakeDmxUniverse()
             val toolchain = RootToolchain(plugins)
-            val fixtureManager = FixtureManager(renderManager, plugins)
             val clock = FakeClock()
             val gadgetManager = GadgetManager(pubSub, clock, ImmediateDispatcher)
             val dmxManager = object : DmxManager {
@@ -109,7 +109,6 @@ object PinkySpec : Spek({
             )
         }
         val pinkyLink by value { network.links.only() }
-        val fixtureManager by value { pinky.fixtureManager }
         val renderTargets by value { fixtureManager.getRenderTargets_ForTestOnly() }
 
         val panelMappings by value { emptyList<Pair<BrainId, Model.Surface>>() }

@@ -271,7 +271,7 @@ class Pinky(
         val stageManager: StageManager.Facade
             get() = this@Pinky.stageManager.facade
 
-        val fixtureManager : FixtureManager.Facade
+        val fixtureManager
             get() = this@Pinky.fixtureManager.facade
 
         val networkStats: NetworkStats

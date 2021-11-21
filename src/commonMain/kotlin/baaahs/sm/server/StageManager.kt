@@ -236,6 +236,6 @@ class StageManager(
             get() = this@StageManager.showRunner?.show
 
         val currentRenderPlan: RenderPlan?
-            get() = this@StageManager.fixtureManager.currentRenderPlan
+            get() = this@StageManager.fixtureManager.facade.currentRenderPlan
     }
 }
