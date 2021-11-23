@@ -39,15 +39,13 @@ class StageManager(
     private var showRunner: ShowRunner? = null
 
     private val fsSerializer = storage.fsSerializer
+    private var gadgetsChanged: Boolean = false
 
     init {
         PubSubRemoteFsServerBackend(pubSub, fsSerializer)
 
         gadgetManager.addObserver {
-            if (!gadgetsChangedJobEnqueued) {
-                onGadgetChange()
-                gadgetsChangedJobEnqueued = false
-            }
+            gadgetsChanged = true
         }
     }
 
@@ -72,18 +70,9 @@ class StageManager(
             )
         }
 
-    private var gadgetsChangedJobEnqueued: Boolean = false
-
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
         gadgetManager.registerGadget(id, gadget)
         super.registerGadget(id, gadget, controlledDataSource)
-    }
-
-    private fun onGadgetChange() {
-        showRunner?.onSelectedPatchesChanged()
-
-        // Start housekeeping early -- as soon as we see a change -- in hopes of avoiding jank.
-        if (showRunner?.housekeeping() == true) facade.notifyChanged()
     }
 
     override fun <T : Gadget> useGadget(id: String): T {
@@ -146,11 +135,11 @@ class StageManager(
         facade.notifyChanged()
     }
 
-    suspend fun renderAndSendNextFrame(dontProcrastinate: Boolean = true) {
+    suspend fun renderAndSendNextFrame(doHousekeepingFirst: Boolean = false) {
         showRunner?.let { showRunner ->
             // Unless otherwise instructed, = generate and send the next frame right away,
             // then perform any housekeeping tasks immediately afterward, to avoid frame lag.
-            if (dontProcrastinate) housekeeping()
+            if (doHousekeepingFirst) housekeeping()
 
             controllersManager.beforeFrame()
             if (showRunner.renderNextFrame()) {
@@ -158,12 +147,18 @@ class StageManager(
             }
             controllersManager.afterFrame()
 
-            if (!dontProcrastinate) housekeeping()
+            if (!doHousekeepingFirst) housekeeping()
         }
     }
 
     private fun housekeeping() {
-        if (showRunner!!.housekeeping()) facade.notifyChanged()
+        if (gadgetsChanged) {
+            showRunner?.onSelectedPatchesChanged()
+            gadgetsChanged = false
+        }
+
+        // Start housekeeping early -- as soon as we see a change -- in hopes of avoiding jank.
+        if (showRunner?.housekeeping() == true) facade.notifyChanged()
     }
 
     fun shutDown() {

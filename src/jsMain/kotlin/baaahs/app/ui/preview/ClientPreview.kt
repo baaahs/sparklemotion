@@ -3,7 +3,7 @@ package baaahs.app.ui.preview
 import baaahs.ModelProvider
 import baaahs.client.ClientStageManager
 import baaahs.document
-import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.FixtureManagerImpl
 import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.mapper.SessionMappingResults
@@ -32,7 +32,7 @@ class ClientPreview(
     private val model = modelProvider.getModel()
     private val renderManager = RenderManager(modelProvider) { glContext }
     private val mappingResults = SessionMappingResults(model, emptyList()) // TODO: use real data.
-    private val fixtureManager = FixtureManager(renderManager, plugins)
+    private val fixtureManager = FixtureManagerImpl(renderManager, plugins)
     private val dmxUniverse = FakeDmxUniverse()
     private val theVisualizer = Visualizer(modelProvider, clock)
     private var patchSetChanged = true
