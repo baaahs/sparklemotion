@@ -4,6 +4,8 @@ import baaahs.*
 import baaahs.controller.ControllersManager
 import baaahs.controllers.FakeFixtureListener
 import baaahs.controllers.FakeMappingManager
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.FixtureManagerImpl
 import baaahs.gadgets.ColorPicker
 import baaahs.gl.*
@@ -17,19 +19,23 @@ import baaahs.shaders.fakeFixture
 import baaahs.show.Panel
 import baaahs.show.SampleData
 import baaahs.show.Shader
+import baaahs.show.live.ActivePatchSet
 import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeFs
+import baaahs.visualizer.remote.RemoteVisualizerServer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.*
 import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonPrimitive
 import org.spekframework.spek2.Spek
 
@@ -41,11 +47,12 @@ object StageManagerSpec : Spek({
 
         val plugins by value { testPlugins() }
         val fakeFs by value { FakeFs() }
-        val pubSub by value { FakePubSub() }
+        val dispatcher by value { TestCoroutineDispatcher() }
+        val pubSub by value { FakePubSub(dispatcher) }
         val fakeGlslContext by value { FakeGlContext() }
         val renderManager by value { RenderManager({ model }) { fakeGlslContext } }
-        val fixtureManager by value { FixtureManagerImpl(renderManager, plugins) }
-        val dispatcher by value { TestCoroutineDispatcher() }
+        val fixtureManager by value<FixtureManager> { FixtureManagerImpl(renderManager, plugins) }
+        val gadgetManager by value { GadgetManager(pubSub.server, FakeClock(), dispatcher) }
 
         val stageManager by value {
             StageManager(
@@ -56,7 +63,7 @@ object StageManagerSpec : Spek({
                 fixtureManager,
                 FakeClock(),
                 { model },
-                GadgetManager(pubSub.server, FakeClock(), dispatcher),
+                gadgetManager,
                 ControllersManager(emptyList(), FakeMappingManager(), { model }, FakeFixtureListener()),
                 ServerNotices(pubSub.server, dispatcher)
             )
@@ -66,6 +73,13 @@ object StageManagerSpec : Spek({
             val shaderSrc by value {
                 /**language=glsl*/
                 "void main() { gl_FragColor = vec4(gl_FragCoord, 0., 1.); }"
+            }
+            val shader2Src by value {
+                /**language=glsl*/
+                """
+                    uniform float blue; // @@Slider
+                    void main() { gl_FragColor = vec4(gl_FragCoord, blue, 1.); }
+                """.trimIndent()
             }
 
             val fixtures by value { listOf(fakeFixture(100)) }
@@ -82,43 +96,35 @@ object StageManagerSpec : Spek({
                             .confirm()
                     )
                     addButtonGroup(
-                        panel, "Scenes"
+                        panel, "Backdrops"
                     ) {
-                        addButton("test scene") {
-                            addButtonGroup(
-                                panel, "Backdrops"
-                            ) {
-                                addButton("test patchset") {
-                                    addPatch(
-                                        testToolchain.autoWire(Shader("Untitled", shaderSrc))
-                                            .acceptSuggestedLinkOptions()
-                                            .confirm()
-                                    )
-                                }
-                            }
+                        addButton("backdrop 1") {
+                            addPatch(
+                                testToolchain.autoWire(Shader("backdrop1", shaderSrc))
+                                    .acceptSuggestedLinkOptions()
+                                    .confirm()
+                            )
+                        }
+                        addButton("backdrop 2") {
+                            addPatch(
+                                testToolchain.autoWire(Shader("backdrop2", shader2Src))
+                                    .acceptSuggestedLinkOptions()
+                                    .confirm()
+                            )
                         }
                     }
                 }
             }
             val show by value { mutableShow.build(ShowBuilder()) }
-            val showState by value {
-                ShowState(
-                    mapOf(
-                        "testPatchsetButton" to mapOf("enabled" to JsonPrimitive(true)),
-                        "testSceneButton" to mapOf("enabled" to JsonPrimitive(true))
-                    )
-                )
-            }
-
+            val showState by value { ShowState(mapOf("backdrop1" to mapOf("enabled" to JsonPrimitive(true)))) }
             val fakeProgram by value { fakeGlslContext.programs.only("program") }
-
             val addControls by value { {} }
 
             beforeEachTest {
                 addControls()
                 stageManager.switchTo(show, showState)
                 fixtureManager.fixturesChanged(fixtures, emptyList())
-                doRunBlocking { stageManager.renderAndSendNextFrame() }
+                doRunBlocking { stageManager.renderAndSendNextFrame(true) }
             }
 
             context("port wiring") {
@@ -167,10 +173,69 @@ object StageManagerSpec : Spek({
                     it("sets the uniform when the gadget value changes") {
                         colorPickerGadget.color = Color.YELLOW
 
-                        doRunBlocking { stageManager.renderAndSendNextFrame() }
+                        doRunBlocking { stageManager.renderAndSendNextFrame(true) }
                         val colorUniform = fakeProgram.getUniform<List<Float>>("in_colorColorPicker")
                         expect(colorUniform).toBe(arrayListOf(1f, 1f, 0f, 1f))
                     }
+                }
+            }
+
+            context("patchset recalculation") {
+                val activePatchSets by value { arrayListOf<ActivePatchSet>() }
+                override(fixtureManager) {
+                    object : StubFixtureManager() {
+                        override fun activePatchSetChanged(activePatchSet: ActivePatchSet) {
+                            activePatchSets.add(activePatchSet)
+                        }
+
+                        override fun hasActiveRenderPlan(): Boolean = true
+
+                        override fun fixturesChanged(addedFixtures: Collection<Fixture>, removedFixtures: Collection<Fixture>) {
+                            // Ignore.
+                        }
+
+                        override fun maybeUpdateRenderPlans(): Boolean {
+                            // Ignore.
+                            return true
+                        }
+
+                        override fun sendFrame() = Unit // Ignore.
+                    }
+                }
+
+                it("starts off with a single calc") {
+                    expect(activePatchSets.size).toEqual(1)
+                }
+
+                context("when a new patch is requested by the user") {
+                    val clientPub by value { pubSub.client("client") }
+                    beforeEachTest {
+                        activePatchSets.clear()
+                        val backdrop1Channel = clientPub.subscribe(PubSub.Topic("/gadgets/backdrop1Button", GadgetDataSerializer)) {}
+                        val backdrop2Channel = clientPub.subscribe(PubSub.Topic("/gadgets/backdrop2Button", GadgetDataSerializer)) {}
+                        dispatcher.runCurrent()
+                        backdrop1Channel.onChange(mapOf("enabled" to JsonPrimitive(false)))
+                        backdrop2Channel.onChange(mapOf("enabled" to JsonPrimitive(true)))
+                        dispatcher.runCurrent()
+                        CoroutineScope(dispatcher).launch {
+                            stageManager.renderAndSendNextFrame(true)
+                        }
+                        dispatcher.runCurrent()
+                    }
+
+                    it("delivers just one new patchset to FixtureManager") {
+                        expect(activePatchSets.size).toEqual(1)
+                    }
+
+                    it("only delivers a new patchset when something has changed") {
+                        CoroutineScope(dispatcher).launch {
+                            stageManager.renderAndSendNextFrame(true)
+                        }
+                        dispatcher.runCurrent()
+                        expect(activePatchSets.size).toEqual(1)
+                    }
+
+                    // TODO: make sure we don't recalculate e.g. when sliders move.
                 }
             }
         }
@@ -234,7 +299,7 @@ object StageManagerSpec : Spek({
                             file = editingClientShowEditorState!!.file
                         )
                     )
-                    pubSub.dispatcher.runCurrent()
+                    dispatcher.runCurrent()
                 }
 
                 it("no additional pubsub updates are received by the editing client") {
@@ -250,3 +315,19 @@ object StageManagerSpec : Spek({
         }
     }
 })
+
+open class StubFixtureManager : FixtureManager {
+    override val facade: FixtureManagerImpl.Facade
+        get() = TODO("not implemented")
+
+    override fun activePatchSetChanged(activePatchSet: ActivePatchSet):Unit = TODO("not implemented")
+    override fun hasActiveRenderPlan(): Boolean = TODO("not implemented")
+    override fun maybeUpdateRenderPlans(): Boolean = TODO("not implemented")
+    override fun sendFrame():Unit = TODO("not implemented")
+    override fun newRemoteVisualizerServer(): RemoteVisualizerServer = TODO("not implemented")
+    override fun addRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener):Unit = TODO("not implemented")
+    override fun removeRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener):Unit =
+        TODO("not implemented")
+    override fun fixturesChanged(addedFixtures: Collection<Fixture>, removedFixtures: Collection<Fixture>):Unit =
+        TODO("not implemented")
+}

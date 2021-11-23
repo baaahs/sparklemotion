@@ -226,10 +226,6 @@ class Pinky(
 //        }
     }
 
-    internal suspend fun renderAndSendNextFrame() {
-        stageManager.renderAndSendNextFrame()
-    }
-
     private fun disableDmx() {
         dmxManager.allOff()
     }

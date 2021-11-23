@@ -50,6 +50,7 @@ class ShowRunner(
     fun housekeeping(): Boolean {
         if (activePatchSetChanged) {
             fixtureManager.activePatchSetChanged(openShow.buildActivePatchSet())
+            activePatchSetChanged = false
         }
 
         return fixtureManager.maybeUpdateRenderPlans()
