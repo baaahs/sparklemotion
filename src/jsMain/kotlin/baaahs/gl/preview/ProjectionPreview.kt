@@ -26,7 +26,7 @@ class ProjectionPreview(
 ) : ShaderPreview {
     private var running = false
     private val deviceType = ProjectionPreviewDevice
-    override val renderEngine = ModelRenderEngine(gl, model, deviceType)
+    override val renderEngine = ModelRenderEngine(gl, deviceType)
     private var projectionProgram: GlslProgram? = null
     private val renderTargets = model.allEntities
         .filterIsInstance<Model.Surface>() // TODO: Display all entity types, not just surfaces!

@@ -6,7 +6,11 @@ import baaahs.mapper.JsMapperUi
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.asMillis
+import baaahs.util.coroutineExceptionHandler
 import baaahs.window
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
 import org.w3c.dom.events.Event
@@ -20,7 +24,8 @@ import kotlin.math.sin
 
 class Visualizer(
     private val modelProvider: ModelProvider,
-    private val clock: Clock
+    private val clock: Clock,
+    private val coroutineScope: CoroutineScope = GlobalScope
 ) : JsMapperUi.StatusListener {
     val facade = Facade()
 
@@ -194,7 +199,7 @@ class Visualizer(
         requestAnimationFrame()
     }
 
-    private fun pointAtModel() {
+    private fun pointAtModel() = coroutineScope.launch(coroutineExceptionHandler) {
         val model = modelProvider.getModel()
         val target = model.center.toVector3()
         controls?.target = target

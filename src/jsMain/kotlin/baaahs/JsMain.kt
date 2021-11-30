@@ -15,6 +15,7 @@ import baaahs.ui.ErrorDisplay
 import baaahs.util.*
 import baaahs.util.JsPlatform.decodeQueryParams
 import kotlinext.js.jsObject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.promise
@@ -35,7 +36,7 @@ fun main(args: Array<String>) {
 
     val queryParams = decodeQueryParams(document.location!!)
 
-    GlobalScope.launch(coroutineExceptionHandler) {
+    globalLaunch {
         val modelProvider = Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
 
         when (mode) {
@@ -101,8 +102,8 @@ private fun launchSimulator(
         modules(
             PluginsModule(Pluggables.plugins).getModule(),
             JsSimPlatformModule().getModule(),
-            JsSimulatorModule(modelProvider, network, pinkyAddress, pixelDensity, pixelSpacing).getModule(),
-            JsSimPinkyModule(modelProvider, pinkySettings).getModule(),
+            JsSimulatorModule(modelProvider, network, pinkyAddress, Dispatchers.Main, pixelDensity, pixelSpacing).getModule(),
+            JsSimPinkyModule(modelProvider, pinkySettings, Dispatchers.Main).getModule(),
             JsUiWebClientModule(modelProvider).getModule(),
             JsAdminWebClientModule(modelProvider).getModule(),
         )

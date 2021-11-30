@@ -5,17 +5,21 @@ import baaahs.io.ByteArrayReader
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.Ports
 import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.coroutineExceptionHandler
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.FixtureInfo
 import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.FrameData
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 class RemoteVisualizerClient(
     link: Network.Link,
@@ -23,7 +27,8 @@ class RemoteVisualizerClient(
     private val visualizer: Visualizer,
     modelProvider: ModelProvider,
     clock: Clock,
-    private val plugins: Plugins
+    private val plugins: Plugins,
+    coroutineScope: CoroutineScope = GlobalScope
 ) :
     Network.WebSocketListener, CoroutineScope by MainScope() {
 
@@ -34,17 +39,20 @@ class RemoteVisualizerClient(
         component(visualizer)
     }
 
-    private val fixtureSimulations = modelProvider.getModel()
-        .allEntities.associate { entity ->
-            val simulation = entity.createFixtureSimulation(simulationEnv)
-            val entityVisualizer = simulation.entityVisualizer
-            visualizer.addEntityVisualizer(entityVisualizer)
-            entity.name to simulation
-        }
-
+    private lateinit var fixtureSimulations: Map<String, FixtureSimulation>
     private lateinit var tcpConnection: Network.TcpConnection
 
     init {
+        coroutineScope.launch(coroutineExceptionHandler) {
+            fixtureSimulations = modelProvider.getModel()
+                .allEntities.associate { entity ->
+                    val simulation = entity.createFixtureSimulation(simulationEnv)
+                    val entityVisualizer = simulation.entityVisualizer
+                    visualizer.addEntityVisualizer(entityVisualizer)
+                    entity.name to simulation
+                }
+        }
+
         link.connectWebSocket(address, Ports.PINKY_UI_TCP, "/ws/visualizer", this)
     }
 
@@ -53,6 +61,8 @@ class RemoteVisualizerClient(
     }
 
     override suspend fun receive(tcpConnection: Network.TcpConnection, bytes: ByteArray) {
+        if (!::fixtureSimulations.isInitialized) return
+
         val reader = ByteArrayReader(bytes)
         when (RemoteVisualizerServer.Opcode.get(reader.readByte())) {
             FixtureInfo -> {

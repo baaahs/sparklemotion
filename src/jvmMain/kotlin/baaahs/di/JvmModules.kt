@@ -73,7 +73,7 @@ class JvmPinkyModule(
         get() = Pluggables.loadModel(get<PinkyArgs>().model)
     override val Scope.renderManager: RenderManager
         get() = runBlocking(get(named("PinkyContext"))) {
-            RenderManager(get()) { GlBase.manager.createContext() }
+            RenderManager { GlBase.manager.createContext() }
         }
     override val Scope.pinkySettings: PinkySettings
         get() = PinkySettings()

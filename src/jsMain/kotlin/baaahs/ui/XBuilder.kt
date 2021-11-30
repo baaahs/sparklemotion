@@ -116,12 +116,12 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
         } else {
             val changeDetector = context.changeDetectors[changeDetectorIndex++]
             if (changeDetector.hasChanged(watch)) {
-                logger.debug { "Running onChange($name: ${changeDetector.describeDifference(watch)})" }
+                logger.debug { "rerun onChange($name: ${changeDetector.describeDifference(watch)})" }
                 changeDetector.runCleanups()
                 changeDetector.lastWatchValues = watch
                 changeDetector.callback()
             } else {
-                logger.debug { "Not running onChange($name)" }
+                logger.debug { "no onChange($name)" }
             }
         }
     }
@@ -163,17 +163,7 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
         }
     }
 
-    fun <T> eventHandler(valueInitializer: () -> T): ReadWriteProperty<Any?, T> {
-        @Suppress("UNREACHABLE_CODE")
-        return if (firstTime) {
-            val data = Data(logger, valueInitializer()) { forceRender() }
-            context.data.add(data)
-            return data
-        } else {
-            @Suppress("UNCHECKED_CAST")
-            return context.data[dataIndex++] as Data<T>
-        }
-    }
+    fun <T> eventHandler(valueInitializer: () -> T): ReadWriteProperty<Any?, T> = state(valueInitializer)
 
     /**
      * Useful when calling a prop function which might make an impermissible state change
@@ -273,7 +263,11 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
         }
 
         fun describeDifference(newValues: Array<out Any?>): String {
-            return "${newValues.truncateStrings(12)} != ${lastWatchValues.truncateStrings(12)})"
+            return if (hasChanged(newValues)) {
+                "${newValues.truncateStrings(12)} != ${lastWatchValues.truncateStrings(12)}"
+            } else {
+                "${newValues.truncateStrings(12)} (unchanged)"
+            }
         }
     }
 }

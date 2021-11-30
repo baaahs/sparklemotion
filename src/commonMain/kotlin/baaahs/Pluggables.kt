@@ -31,5 +31,5 @@ object Pluggables {
 }
 
 fun interface ModelProvider {
-    fun getModel(): Model
+    suspend fun getModel(): Model
 }

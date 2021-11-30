@@ -7,11 +7,13 @@ import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.preview.ShaderPreview
+import baaahs.model.Model
 import baaahs.show.Shader
 import baaahs.ui.addObserver
 import baaahs.ui.inPixels
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import baaahs.util.globalLaunch
 import baaahs.util.useResizeListener
 import external.IntersectionObserver
 import kotlinx.css.*
@@ -28,7 +30,6 @@ import react.dom.div
 import react.useContext
 import styled.StyleSheet
 import styled.inlineStyles
-import kotlin.collections.set
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
@@ -47,10 +48,16 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val bootstrapper = shaderType.shaderPreviewBootstrapper
     val helper = memo(bootstrapper, sharedGlContext) { bootstrapper.createHelper(sharedGlContext) }
     val previewContainer = helper.container
+    var model by state<Model?> { null }
+    memo {
+        globalLaunch {
+            model = appContext.webClient.modelProvider.getModel()
+        }
+    }
 
     var gl by state<GlContext?> { null }
 
-    onMount(canvasParent.current, previewContainer) {
+    onMount(canvasParent.current, previewContainer, shaderPreview) {
         canvasParent.current?.let { parent ->
             parent.insertBefore(previewContainer, parent.firstChild)
         }
@@ -62,29 +69,37 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         withCleanup { canvasParent.current?.removeChild(previewContainer) }
     }
 
-    onChange("shader type", helper, shaderType) {
-        val preview = helper.bootstrap(appContext.webClient.modelProvider.getModel(), preRenderHook)
-        gl = preview.renderEngine.gl
+    onChange("shader type", helper, shaderType, model) {
+        model?.let { model ->
+            val preview = helper.bootstrap(model, preRenderHook)
+            gl = preview.renderEngine.gl
 
-        val intersectionObserver = IntersectionObserver(callback = { entries ->
-            if (entries.any { it.isIntersecting }) {
-                preview.start()
-            } else {
-                preview.stop()
+            val intersectionObserver = IntersectionObserver(callback = { entries ->
+                if (entries.any { it.isIntersecting }) {
+                    preview.start()
+                } else {
+                    preview.stop()
+                }
+            })
+            intersectionObserver.observe(previewContainer)
+
+            shaderPreview = preview
+
+            withCleanup {
+                intersectionObserver.disconnect()
+                preview.destroy()
             }
-        })
-        intersectionObserver.observe(previewContainer)
-
-        shaderPreview = preview
-
-        withCleanup {
-            intersectionObserver.disconnect()
-            preview.destroy()
         }
     }
 
     onMount(helper, gl) {
-        withCleanup { gl?.let { helper.release(it) } }
+        // 'gl' here is a state getter, so its value may have changed by the time we get to the cleanup.
+        // Save it off so we're using the same value.
+        val currentGl = gl
+
+        withCleanup {
+            currentGl?.let { helper.release(it) }
+        }
     }
 
     val builder = memo(gl, props.shader, props.previewShaderBuilder) {

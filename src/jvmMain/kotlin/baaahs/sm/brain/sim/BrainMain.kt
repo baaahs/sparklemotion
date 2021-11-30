@@ -2,17 +2,14 @@ package baaahs.sm.brain.sim
 
 import baaahs.Color
 import baaahs.Pluggables
-import baaahs.doRunBlocking
 import baaahs.model.Model
 import baaahs.net.JvmNetwork
 import baaahs.sm.brain.proto.Pixels
 import baaahs.util.SystemClock
+import baaahs.util.globalLaunch
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.awt.Canvas
 import java.awt.Dimension
 import java.awt.Frame
@@ -31,7 +28,7 @@ fun main(args: Array<String>) {
 }
 
 class BrainMain(private val args: Args) {
-    fun run() {
+    fun run() = globalLaunch {
         val model = Pluggables.loadModel(args.model).getModel()
 
         val network = JvmNetwork()
@@ -50,11 +47,7 @@ class BrainMain(private val args: Args) {
         println("I'll be ${mySurface?.name ?: "anonymous"}!")
         mySurface?.let { brainSimulator.forcedFixtureName(mySurface.name) }
 
-        GlobalScope.launch { brainSimulator.run() }
-
-        doRunBlocking {
-            delay(200000L)
-        }
+        brainSimulator.run()
     }
 
     class Args(parser: ArgParser) {

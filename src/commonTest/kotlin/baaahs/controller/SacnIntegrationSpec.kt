@@ -15,6 +15,7 @@ import baaahs.scene.ControllerConfig
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -29,7 +30,7 @@ object SacnIntegrationSpec : Spek({
         val listener by value { SpyFixtureListener() }
         val mappings by value { mapOf<ControllerId, List<FixtureMapping>>() }
         val mappingManager by value { FakeMappingManager().also { it.data.putAll(mappings); it.dataHasLoaded = true } }
-        val controllersManager by value { ControllersManager(listOf(sacnManager), mappingManager, { TestModel }, listener) }
+        val controllersManager by value { ControllersManager(listOf(sacnManager), mappingManager, { TestModel }, listener, CoroutineScope(ImmediateDispatcher)) }
         val configs by value { mapOf<String, ControllerConfig>() }
 
         beforeEachTest {

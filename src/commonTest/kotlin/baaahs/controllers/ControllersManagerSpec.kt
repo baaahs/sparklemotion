@@ -28,9 +28,13 @@ import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.isSameAs
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import ext.kotlinx_coroutines_test.TestCoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
 import kotlin.random.Random
 
+@OptIn(InternalCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 object ControllersManagerSpec : Spek({
     describe<ControllersManager> {
         val mappingManager by value { FakeMappingManager() }
@@ -46,15 +50,19 @@ object ControllersManagerSpec : Spek({
         val fakeControllerMgr by value { FakeControllerManager() }
         val controllerManagers by value { listOf(fakeControllerMgr) }
         val fixtureListener by value { FakeFixtureListener() }
+        val coroutineScope by value { TestCoroutineScope() }
         val controllersManager by value {
-            ControllersManager(controllerManagers, mappingManager, { model }, fixtureListener)
+            ControllersManager(controllerManagers, mappingManager, { model }, fixtureListener, coroutineScope)
         }
         val fakeController by value { FakeController("c1") }
 
-        context("when mapping data hasn't loaded yet") {
+        context("when model and mapping data haven't loaded yet") {
             beforeEachTest { controllersManager.start() }
 
             it("waits for mapping data before calling start() on controller managers") {
+                expect(fakeControllerMgr.hasStarted).toBe(false)
+
+                coroutineScope.runCurrent() // Load model.
                 expect(fakeControllerMgr.hasStarted).toBe(false)
 
                 mappingManager.notifyChanged()
@@ -65,7 +73,22 @@ object ControllersManagerSpec : Spek({
                 expect(fakeControllerMgr.hasStarted).toBe(true)
             }
 
+            it("waits for model before calling start() on controller managers") {
+                expect(fakeControllerMgr.hasStarted).toBe(false)
+
+                mappingManager.notifyChanged()
+                expect(fakeControllerMgr.hasStarted).toBe(false)
+
+                mappingManager.dataHasLoaded = true
+                mappingManager.notifyChanged()
+                expect(fakeControllerMgr.hasStarted).toBe(false)
+
+                coroutineScope.runCurrent() // Load model.
+                expect(fakeControllerMgr.hasStarted).toBe(true)
+            }
+
             it("only starts controller managers once") {
+                coroutineScope.runCurrent() // Load model.
                 mappingManager.dataHasLoaded = true
                 mappingManager.notifyChanged()
                 mappingManager.notifyChanged()
@@ -77,6 +100,7 @@ object ControllersManagerSpec : Spek({
             beforeEachTest {
                 mappingManager.dataHasLoaded = true
                 controllersManager.start()
+                coroutineScope.runCurrent() // Load model.
             }
 
             it("calls start() on controller managers") {
@@ -94,6 +118,7 @@ object ControllersManagerSpec : Spek({
                 mappingManager.data[fakeController.controllerId] = mappingResults
                 mappingManager.dataHasLoaded = true
                 controllersManager.start()
+                coroutineScope.runCurrent() // Load model.
             }
 
             val change by value { fixtureListener.changes.only("fixture changes") }

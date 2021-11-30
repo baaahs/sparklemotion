@@ -6,17 +6,18 @@ import baaahs.document
 import baaahs.fixtures.FixtureManagerImpl
 import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
-import baaahs.mapper.SessionMappingResults
 import baaahs.plugin.Plugins
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
 import baaahs.throttle
 import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.coroutineExceptionHandler
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.window
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,12 +27,11 @@ class ClientPreview(
     modelProvider: ModelProvider,
     private val stageManager: ClientStageManager,
     clock: Clock,
-    plugins: Plugins
+    plugins: Plugins,
+    private val coroutineScope: CoroutineScope = GlobalScope
 ) : ClientStageManager.Listener {
     private val glContext = GlBase.jsManager.createContext()
-    private val model = modelProvider.getModel()
-    private val renderManager = RenderManager(modelProvider) { glContext }
-    private val mappingResults = SessionMappingResults(model, emptyList()) // TODO: use real data.
+    private val renderManager = RenderManager { glContext }
     private val fixtureManager = FixtureManagerImpl(renderManager, plugins)
     private val dmxUniverse = FakeDmxUniverse()
     private val theVisualizer = Visualizer(modelProvider, clock)
@@ -53,27 +53,31 @@ class ClientPreview(
             component(visualizer)
         }
 
-        val allFixtures = model.allEntities.map { entity ->
-            val simulation = entity.createFixtureSimulation(simulationEnv)
-            theVisualizer.addEntityVisualizer(simulation.entityVisualizer)
-            simulation.previewFixture
-        }
+        coroutineScope.launch(coroutineExceptionHandler) {
+            val allFixtures = modelProvider.getModel()
+                .allEntities.map { entity ->
+                    val simulation = entity.createFixtureSimulation(simulationEnv)
+                    theVisualizer.addEntityVisualizer(simulation.entityVisualizer)
+                    simulation.previewFixture
+                }
+//    private val mappingResults = SessionMappingResults(model, emptyList()) // TODO: use real data.
 
-        fixtureManager.fixturesChanged(allFixtures, emptyList())
+            fixtureManager.fixturesChanged(allFixtures, emptyList())
 
-        stageManager.addListener(this)
+            stageManager.addListener(this@ClientPreview)
 
-        theVisualizer.addPrerenderListener {
-            // Previously we triggered a model render with every frame.
-            // Now this is decoupled so we can control the model render rate directly.
+            theVisualizer.addPrerenderListener {
+                // Previously we triggered a model render with every frame.
+                // Now this is decoupled so we can control the model render rate directly.
 //            drawAndSendFrame()
-        }
+            }
 
-        animate()
+            animate()
+        }
     }
 
     private fun animate() {
-        GlobalScope.launch(start = CoroutineStart.UNDISPATCHED) {
+        coroutineScope.launch(coroutineExceptionHandler, start = CoroutineStart.UNDISPATCHED) {
             throttle(targetFramerate, logger) {
                 drawAndSendFrame()
             }

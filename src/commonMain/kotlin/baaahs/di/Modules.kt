@@ -80,7 +80,6 @@ interface PinkyModule : KModule {
 
     override fun getModule(): Module {
         val pinkyContext = named("PinkyContext")
-        val pinkyMainDispatcher = named("PinkyMainDispatcher")
         val pinkyJob = named("PinkyJob")
         val fallbackDmxUniverse = named("Fallback")
 
@@ -97,7 +96,7 @@ interface PinkyModule : KModule {
                 scoped(pinkyMainDispatcher) { this.pinkyMainDispatcher }
                 scoped<Job>(pinkyJob) { SupervisorJob() }
                 scoped(pinkyContext) {
-                    get<CoroutineDispatcher>(pinkyMainDispatcher) + get<Job>(pinkyJob)
+                    get<CoroutineDispatcher>(PinkyModule.pinkyMainDispatcher) + get<Job>(pinkyJob)
                 }
                 scoped { PubSub.Server(get(), CoroutineScope(get(pinkyContext))) }
                 scoped<PubSub.Endpoint> { get<PubSub.Server>() }
@@ -114,7 +113,7 @@ interface PinkyModule : KModule {
                 scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
                 scoped { Pinky.NetworkStats() }
                 scoped { BrainManager(get(), get(), get(), get(), get(), get(pinkyContext)) }
-                scoped { SacnManager(get(), get(), get(pinkyMainDispatcher), get()) }
+                scoped { SacnManager(get(), get(), get(PinkyModule.pinkyMainDispatcher), get()) }
                 scoped { SceneManager(get(), get()) }
                 scoped<MappingManager> { MappingManagerImpl(get(), get()) }
                 scoped<ModelManager> { ModelManagerImpl() }
@@ -123,7 +122,12 @@ interface PinkyModule : KModule {
                         get<BrainManager>(), get<DmxManager>(), get<SacnManager>()
                     )
                 }
-                scoped { ControllersManager(get(named("ControllerManagers")), get(), get(), get<FixtureManager>()) }
+                scoped {
+                    ControllersManager(
+                        get(named("ControllerManagers")), get(), get(),
+                        get<FixtureManager>(), CoroutineScope(get<CoroutineDispatcher>(PinkyModule.pinkyMainDispatcher))
+                    )
+                }
                 scoped { ShaderLibraryManager(get(), get()) }
                 scoped { pinkySettings }
                 scoped { ServerNotices(get(), get(pinkyContext)) }
@@ -136,6 +140,10 @@ interface PinkyModule : KModule {
                 }
             }
         }
+    }
+
+    companion object {
+        val pinkyMainDispatcher = named("PinkyMainDispatcher")
     }
 }
 

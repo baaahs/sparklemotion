@@ -1,6 +1,7 @@
 package baaahs.plugin.core.datasource
 
 import baaahs.ShowPlayer
+import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
 import baaahs.gl.data.Feed
@@ -16,6 +17,7 @@ import baaahs.show.DataSourceBuilder
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
+import baaahs.util.globalLaunch
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -47,12 +49,17 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
 
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                    val modelInfo = showPlayer.modelProvider.getModel()
-                    val center by lazy { modelInfo.center }
-                    val extents by lazy { modelInfo.extents }
+                    var center: Vector3F? = null
+                    var extents: Vector3F? = null
+
+                    globalLaunch {
+                        val model = showPlayer.modelProvider.getModel()
+                        center = model.center
+                        extents = model.extents
+                    }
 
                     return object : ProgramFeed {
-                        override val updateMode: UpdateMode get() = UpdateMode.ONCE
+                        override val updateMode: UpdateMode get() = UpdateMode.PER_FRAME
                         val centerUniform = glslProgram.getUniform("${varPrefix}.center")
                         val extentsUniform = glslProgram.getUniform("${varPrefix}.extents")
 
@@ -60,8 +67,8 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
                             get() = centerUniform != null && extentsUniform != null
 
                         override fun setOnProgram() {
-                            centerUniform?.set(center)
-                            extentsUniform?.set(extents)
+                            center?.let { centerUniform?.set(it) }
+                            extents?.let { extentsUniform?.set(it) }
                         }
                     }
                 }

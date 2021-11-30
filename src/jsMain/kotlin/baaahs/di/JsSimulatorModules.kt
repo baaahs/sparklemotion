@@ -22,7 +22,7 @@ import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.Koin
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -37,6 +37,7 @@ class JsSimulatorModule(
     private val modelProvider_: ModelProvider,
     private val bridgeNetwork_: BrowserNetwork,
     private val pinkyAddress_: Network.Address,
+    private val pinkyMainDispatcher_: CoroutineDispatcher,
     private val pixelDensity: Float = 0.2f,
     private val pixelSpacing: Float = 2f
 ) : SimulatorModule {
@@ -64,7 +65,7 @@ class JsSimulatorModule(
                     get(), get(), get(), get(named("Fallback")),
                     get(named(SimulatorModule.Qualifier.PinkyFs)),
                     get(named(SimulatorModule.Qualifier.MapperFs)),
-                    get(), plugins, get()
+                    get(), plugins, get(), CoroutineScope(pinkyMainDispatcher_)
                 )
             }
             single(named(SimulatorModule.Qualifier.PinkyLink)) { get<Network>().link("pinky") }
@@ -75,7 +76,8 @@ class JsSimulatorModule(
 
 class JsSimPinkyModule(
     private val modelProvider_: ModelProvider,
-    private val pinkySettings_: PinkySettings
+    private val pinkySettings_: PinkySettings,
+    private val pinkyMainDispatcher_: CoroutineDispatcher
 ) : PinkyModule {
     override val Scope.serverPlugins: ServerPlugins
         get() = get<SimulatorPlugins>().openServerPlugins(get())
@@ -86,7 +88,7 @@ class JsSimPinkyModule(
     override val Scope.firmwareDaddy: FirmwareDaddy
         get() = PermissiveFirmwareDaddy()
     override val Scope.pinkyMainDispatcher: CoroutineDispatcher
-        get() = Dispatchers.Main
+        get() = pinkyMainDispatcher_
     override val Scope.pinkyLink: Network.Link
         get() = get(named(SimulatorModule.Qualifier.PinkyLink))
     override val Scope.dmxDriver: Dmx.Driver
@@ -94,7 +96,7 @@ class JsSimPinkyModule(
     override val Scope.modelProvider: ModelProvider
         get() = modelProvider_
     override val Scope.renderManager: RenderManager
-        get() = RenderManager(get()) { GlBase.manager.createContext() }
+        get() = RenderManager { GlBase.manager.createContext() }
     override val Scope.pinkySettings: PinkySettings
         get() = pinkySettings_
 }
