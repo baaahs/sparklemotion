@@ -33,7 +33,7 @@ object FixtureManagerSpec : Spek({
     describe<FixtureManager> {
         val modelEntities by value { emptyList<Model.Entity>() }
         val model by value { fakeModel(modelEntities) }
-        val renderManager by value { RenderManager({ model }) { FakeGlContext() } }
+        val renderManager by value { RenderManager { FakeGlContext() } }
         val renderTargets by value { linkedMapOf<Fixture, FixtureRenderTarget>() }
         val surfacePixelStrategy by value { LinearSurfacePixelStrategy(Random(1)) }
 

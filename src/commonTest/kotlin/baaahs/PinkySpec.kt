@@ -59,13 +59,12 @@ object PinkySpec : Spek({
         val plugins by value { testPlugins() }
         val storage by value { Storage(fakeFs, plugins) }
         val link by value { network.link("pinky") }
-        val renderManager by value { fakeGlslContext.runInContext { RenderManager({ model }) { fakeGlslContext } } }
+        val renderManager by value { fakeGlslContext.runInContext { RenderManager { fakeGlslContext } } }
         val fixtureManager by value { FixtureManagerImpl(renderManager, plugins) }
         val toolchain by value { RootToolchain(plugins) }
         val httpServer by value { link.startHttpServer(Ports.PINKY_UI_TCP) }
-        val pubSub by value {
-            PubSub.Server(httpServer, CoroutineScope(ImmediateDispatcher))
-        }
+        val coroutineScope by value { CoroutineScope(ImmediateDispatcher) }
+        val pubSub by value { PubSub.Server(httpServer, coroutineScope) }
         val clock by value { FakeClock() }
         val gadgetManager by value { GadgetManager(pubSub, clock, ImmediateDispatcher) }
         val brainManager by value {
@@ -73,7 +72,7 @@ object PinkySpec : Spek({
         }
         val mappingManager by value { MappingManagerImpl(storage) { model } }
         val controllersManager by value {
-            ControllersManager(listOf(brainManager), mappingManager, { model }, fixtureManager)
+            ControllersManager(listOf(brainManager), mappingManager, { model }, fixtureManager, coroutineScope)
         }
         val serverNotices by value { ServerNotices(pubSub, ImmediateDispatcher) }
         val stageManager by value {
@@ -83,14 +82,14 @@ object PinkySpec : Spek({
             )
         }
 
-        val renderAndSendFrame by value<() -> Unit> {
+        val renderAndSendFrame by value {
             { doRunBlocking { stageManager.renderAndSendNextFrame(true) } }
         }
         
         val pinky by value {
             val fakeDmxUniverse = FakeDmxUniverse()
             val dmxManager = object : DmxManager {
-                override fun allOff() = TODO("not implemented")
+                override fun allOff() = error("not implemented")
 
                 override val dmxUniverse: Dmx.Universe get() = fakeDmxUniverse
             }

@@ -1,30 +1,26 @@
 package baaahs.gl.render
 
-import baaahs.ModelProvider
 import baaahs.device.DeviceType
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.RenderPlan
-import baaahs.getBang
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedPatch
+import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 
 class RenderManager(
-    private val modelProvider: ModelProvider,
     private val createContext: () -> GlContext
 ) {
-    val model = modelProvider.getModel()
-    private val renderEngines = model.allEntities.map { it.deviceType }.distinct()
-        .associateWith { deviceType ->
-            val gl = createContext()
-            ModelRenderEngine(
-                gl, model, deviceType, resultDeliveryStrategy = pickResultDeliveryStrategy(gl)
-            )
-        }
+    private val renderEngines = CacheBuilder<DeviceType, ModelRenderEngine> { deviceType ->
+        val gl = createContext()
+        ModelRenderEngine(
+            gl, deviceType, resultDeliveryStrategy = pickResultDeliveryStrategy(gl)
+        )
+    }
 
-    fun getEngineFor(deviceType: DeviceType): ModelRenderEngine =
+    private fun engineFor(deviceType: DeviceType): ModelRenderEngine =
         renderEngines.getBang(deviceType, "render engine")
 
     suspend fun draw() {
@@ -36,19 +32,19 @@ class RenderManager(
     }
 
     fun addFixture(fixture: Fixture): FixtureRenderTarget {
-        return getEngineFor(fixture.deviceType).addFixture(fixture)
+        return engineFor(fixture.deviceType).addFixture(fixture)
     }
 
     fun removeRenderTarget(renderTarget: FixtureRenderTarget) {
-        getEngineFor(renderTarget.fixture.deviceType).removeRenderTarget(renderTarget)
+        engineFor(renderTarget.fixture.deviceType).removeRenderTarget(renderTarget)
     }
 
     fun compile(deviceType: DeviceType, linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
-        return getEngineFor(deviceType).compile(linkedPatch, feedResolver)
+        return engineFor(deviceType).compile(linkedPatch, feedResolver)
     }
 
     fun setRenderPlan(renderPlan: RenderPlan) {
-        renderEngines.forEach { (deviceType, engine) ->
+        renderEngines.all.forEach { (deviceType, engine) ->
             val deviceTypeRenderPlan = renderPlan.deviceTypes[deviceType]
             engine.setRenderPlan(deviceTypeRenderPlan)
             if (deviceTypeRenderPlan == null) {

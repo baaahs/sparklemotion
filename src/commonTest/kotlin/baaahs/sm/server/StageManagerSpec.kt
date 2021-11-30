@@ -50,7 +50,7 @@ object StageManagerSpec : Spek({
         val dispatcher by value { TestCoroutineDispatcher() }
         val pubSub by value { FakePubSub(dispatcher) }
         val fakeGlslContext by value { FakeGlContext() }
-        val renderManager by value { RenderManager({ model }) { fakeGlslContext } }
+        val renderManager by value { RenderManager { fakeGlslContext } }
         val fixtureManager by value<FixtureManager> { FixtureManagerImpl(renderManager, plugins) }
         val gadgetManager by value { GadgetManager(pubSub.server, FakeClock(), dispatcher) }
 

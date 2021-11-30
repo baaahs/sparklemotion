@@ -23,7 +23,7 @@ class MovingHeadPreview(
 ) : ShaderPreview {
     private var running = false
     private val deviceType = MovingHeadDevice
-    override val renderEngine = ModelRenderEngine(gl, model, deviceType)
+    override val renderEngine = ModelRenderEngine(gl, deviceType)
     private var movingHeadProgram: GlslProgram? = null
     private val renderTargets = model.allEntities
         .filterIsInstance<MovingHead>()

@@ -7,19 +7,26 @@ import baaahs.geom.Vector3F
 import baaahs.getBang
 import baaahs.mapper.ControllerId
 import baaahs.mapping.MappingManager
+import baaahs.model.Model
 import baaahs.scene.SceneConfig
 import baaahs.ui.addObserver
 import baaahs.util.Logger
+import baaahs.util.coroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ControllersManager(
     private val controllerManagers: List<ControllerManager>,
     private val mappingManager: MappingManager,
     private val modelProvider: ModelProvider,
-    private val fixtureListener: FixtureListener
+    private val fixtureListener: FixtureListener,
+    private val coroutineScope: CoroutineScope = GlobalScope
 ) {
     private val byType = controllerManagers.associateBy { it.controllerType }
     private var managersStarted = false
     private val controllers = mutableMapOf<ControllerId, LiveController>()
+    private lateinit var model: Model
 
     private val controllerListener = object : ControllerListener {
         override fun onAdd(controller: Controller) {
@@ -47,7 +54,7 @@ class ControllersManager(
 
                 val pixelLocations = mapping.pixelLocations
                     ?.map { it ?: Vector3F(0f, 0f, 0f) }
-                    ?: fixtureConfig.generatePixelLocations(pixelCount, modelEntity, modelProvider.getModel())
+                    ?: fixtureConfig.generatePixelLocations(pixelCount, modelEntity, model)
                     ?: emptyList()
 
                 val transportConfig = mapping.transportConfig
@@ -84,7 +91,10 @@ class ControllersManager(
     fun start() {
         mappingManager.addObserver { onMappingChange() }
 
-        maybeStartManagers()
+        coroutineScope.launch(coroutineExceptionHandler) {
+            model = modelProvider.getModel()
+            maybeStartManagers()
+        }
     }
 
     fun beforeFrame() {
@@ -120,7 +130,7 @@ class ControllersManager(
     }
 
     private fun maybeStartManagers() {
-        if (mappingManager.dataHasLoaded && !managersStarted) {
+        if (mappingManager.dataHasLoaded && this::model.isInitialized && !managersStarted) {
             controllerManagers.forEach { it.start(controllerListener) }
             managersStarted = true
         }
