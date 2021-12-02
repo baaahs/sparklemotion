@@ -2,6 +2,7 @@ package baaahs.model
 
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
+import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.LightBarSimulation
@@ -9,9 +10,10 @@ import baaahs.sim.SimulationEnv
 
 class LightBar(
     override val name: String,
-    override val description: String,
-    val startVertex: Vector3F,
-    val endVertex: Vector3F
+    override val description: String?,
+    val startVertex: Vector3F, // TODO: Represent using transformation translation.
+    val endVertex: Vector3F, // TODO: Represent using transformation rotation (and scale?) ... or add length?
+    override val transformation: Matrix4 = Matrix4.identity
 ) : Model.Entity, LinearPixelArray {
     override val deviceType: DeviceType
         get() = PixelArrayDevice
@@ -19,7 +21,7 @@ class LightBar(
     override val bounds: Pair<Vector3F, Vector3F>
         get() = startVertex to endVertex
 
-    val length: Float
+    val length: Float // TODO: Derive from transformation scale?
         get() = (endVertex - startVertex).length()
 
     /**

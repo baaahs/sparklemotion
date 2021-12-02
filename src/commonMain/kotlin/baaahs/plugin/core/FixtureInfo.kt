@@ -87,7 +87,7 @@ class FixtureInfoFeed(
                 originUniform?.set(fixtureInfo?.position ?: Vector3F.origin)
                 rotationUniform?.set(fixtureInfo?.rotation ?: EulerAngle.identity)
                 headingUniform?.set(fixtureInfo?.rotation ?: EulerAngle.identity)
-                matrixUniform?.set(fixtureInfo?.matrix ?: Matrix4())
+                matrixUniform?.set(fixtureInfo?.transformation ?: Matrix4())
             }
         }
     }

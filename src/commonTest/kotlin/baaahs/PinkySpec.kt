@@ -14,7 +14,6 @@ import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.mapping.MappingManagerImpl
 import baaahs.model.Model
-import baaahs.models.SheepModel
 import baaahs.net.FragmentingUdpSocket
 import baaahs.net.Network
 import baaahs.net.TestNetwork
@@ -52,7 +51,7 @@ object PinkySpec : Spek({
         val clientAddress by value { TestNetwork.Address("client") }
         val clientPort = 1234
 
-        val panel17 = SheepModel.Panel("17")
+        val panel17 = TestModelSurface("17")
         val model = ModelForTest(listOf(panel17))
 
         val fakeFs by value { FakeFs() }

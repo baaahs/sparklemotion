@@ -33,11 +33,16 @@ abstract class Model : ModelInfo {
 
     interface Entity {
         val name: String
-        val description: String
+        val description: String?
         val deviceType: DeviceType
         val bounds: Pair<Vector3F, Vector3F>
+        val transformation: Matrix4
 
-        fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation
+        fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation?
+    }
+
+    interface EntityGroup : Entity {
+        val entities: List<Entity>
     }
 
     interface EntityWithGeometry: Entity {
@@ -49,9 +54,12 @@ abstract class Model : ModelInfo {
     )
 
     interface FixtureInfo {
-        val position: Vector3F?
-        val rotation: EulerAngle?
-        val matrix: Matrix4?
+        val transformation: Matrix4
+
+        val position: Vector3F
+            get() = transformation.position
+        val rotation: EulerAngle
+            get() = transformation.rotation
     }
 
     /** A named surface in the geometry model. */
@@ -67,6 +75,8 @@ abstract class Model : ModelInfo {
             get() = PixelArrayDevice
         override val bounds: Pair<Vector3F, Vector3F>
             get() = boundingBox(allVertices())
+        override val transformation: Matrix4
+            get() = Matrix4.identity
 
         open fun allVertices(): Collection<Vector3F> = geometry.vertices
 

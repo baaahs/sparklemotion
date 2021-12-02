@@ -59,7 +59,7 @@ class FixturesSimulator(
 
             fixtureSimulations = model.allEntities
                 .sortedBy(Model.Entity::name)
-                .map { entity -> entity.createFixtureSimulation(simulationEnv) }
+                .mapNotNull { entity -> entity.createFixtureSimulation(simulationEnv) }
         }
 
     suspend fun generateMappingData() {

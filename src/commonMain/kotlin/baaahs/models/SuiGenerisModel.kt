@@ -1,13 +1,12 @@
 package baaahs.models
 
-import baaahs.model.Model
-import baaahs.model.ObjModelLoader
+import baaahs.geom.Matrix4
+import baaahs.model.ModelData
+import baaahs.model.ObjModelData
 
-class SuiGenerisModel : Model() {
-    override val name: String = "SuiGeneris"
-
-    private val objModel = ObjModelLoader.load("sui-generis.obj") { 10 * 60 }
-
-    override val allEntities: List<Entity>
-        get() = objModel.allEntities
-}
+val suiGenerisModelData = ModelData(
+    "SuiGeneris",
+    listOf(
+        ObjModelData("sui-generis.obj", null, Matrix4.identity, "sui-generis.obj", true)
+    )
+)

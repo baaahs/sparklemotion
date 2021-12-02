@@ -4,6 +4,7 @@ import baaahs.TestMovingHeadAdapter
 import baaahs.TestRenderContext
 import baaahs.describe
 import baaahs.geom.EulerAngle
+import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.model.MovingHead
@@ -18,7 +19,7 @@ object FixtureInfoDataSourceSpec : Spek({
         val movingHead by value {
             MovingHead(
                 "test", "Test", 1, TestMovingHeadAdapter(),
-                Vector3F.origin, EulerAngle.identity
+                Matrix4.fromPositionAndRotation(Vector3F.origin, EulerAngle.identity)
             )
         }
 

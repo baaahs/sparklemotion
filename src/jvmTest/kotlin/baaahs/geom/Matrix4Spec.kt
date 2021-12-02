@@ -10,7 +10,7 @@ object Matrix4Spec : Spek({
         context("fromPositionAndOrientation") {
             val position by value { Vector3F(x = -11f, y = 202.361f, z = 27.5f) }
             val rotation by value { EulerAngle(pitchRad = 0.0, yawRad = -0.15707963267948966, rollRad = 1.5707963267948966) }
-            val matrix4 by value { Matrix4.fromPositionAndOrientation(position, rotation) }
+            val matrix4 by value { Matrix4.fromPositionAndRotation(position, rotation) }
 
             it("should be calculated properly") {
                 expect(matrix4.elements.toList()).toEqual(

@@ -45,12 +45,13 @@ class RemoteVisualizerClient(
     init {
         coroutineScope.launch(coroutineExceptionHandler) {
             fixtureSimulations = modelProvider.getModel()
-                .allEntities.associate { entity ->
-                    val simulation = entity.createFixtureSimulation(simulationEnv)
-                    val entityVisualizer = simulation.entityVisualizer
-                    visualizer.addEntityVisualizer(entityVisualizer)
-                    entity.name to simulation
-                }
+                .allEntities.mapNotNull { entity ->
+                    entity.createFixtureSimulation(simulationEnv)?.let { simulation ->
+                        val entityVisualizer = simulation.entityVisualizer
+                        visualizer.addEntityVisualizer(entityVisualizer)
+                        entity.name to simulation
+                    }
+                }.associate { it }
         }
 
         link.connectWebSocket(address, Ports.PINKY_UI_TCP, "/ws/visualizer", this)
