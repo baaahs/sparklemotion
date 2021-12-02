@@ -11,7 +11,6 @@ import baaahs.model.PixelArray
 import baaahs.visualizer.LightBarVisualizer
 import baaahs.visualizer.VizPixels
 import baaahs.visualizer.toVector3
-import three.js.Vector3
 
 actual class LightBarSimulation actual constructor(
     val pixelArray: PixelArray,
@@ -69,6 +68,6 @@ actual class LightBarSimulation actual constructor(
     }
 
     companion object {
-        val pixelVisualizationNormal = Vector3(0, 0, 1)
+        val pixelVisualizationNormal = three_ext.vector3FacingForward
     }
 }

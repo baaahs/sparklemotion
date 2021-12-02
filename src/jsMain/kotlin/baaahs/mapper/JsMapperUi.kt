@@ -12,6 +12,7 @@ import baaahs.sim.HostedWebApp
 import baaahs.ui.Observable
 import baaahs.ui.value
 import baaahs.util.Logger
+import baaahs.util.toDoubleArray
 import baaahs.visualizer.Rotator
 import baaahs.visualizer.toVector3
 import baaahs.window
@@ -30,10 +31,8 @@ import react.createElement
 import react.dom.br
 import react.dom.i
 import three.js.*
-import three_ext.CameraControls
-import three_ext.Float32BufferAttribute
+import three_ext.*
 import three_ext.Matrix4
-import three_ext.plus
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -418,7 +417,7 @@ class JsMapperUi(
 
         val boundingBox get() = _boundingBox.clone()
 
-        private val rotator by lazy { Rotator(surfaceNormal, Vector3(0, 0, 1)) }
+        private val rotator by lazy { Rotator(surfaceNormal, vector3FacingForward) }
 
         private fun toSurfaceNormal(point: Vector3): Vector3 {
             rotator.rotate(point); return point
@@ -846,8 +845,6 @@ class JsMapperUi(
         internal val logger = Logger<JsMapperUi>()
     }
 }
-
-private fun Vector3.toVector3F() = Vector3F(x.toFloat(), y.toFloat(), z.toFloat())
 
 private val Box2.center: Vector2 get() = max.clone().sub(min).divideScalar(2).add(min)
 

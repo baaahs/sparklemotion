@@ -1,7 +1,10 @@
 package baaahs.visualizer
 
 import baaahs.model.LightRing
-import three.js.*
+import three.js.Color
+import three.js.Mesh
+import three.js.MeshBasicMaterial
+import three.js.RingGeometry
 
 class LightRingVisualizer(
     lightRing: LightRing,
@@ -40,7 +43,7 @@ class LightRingVisualizer(
             thetaSegments = 16, phiSegments = 1
         )
 
-        Rotator(Vector3(0, 0, 1), normal.toVector3())
+        Rotator(three_ext.vector3FacingForward, normal.toVector3())
             .rotate(ringGeom)
 
         with(center) { ringGeom.translate(x, y, z) }

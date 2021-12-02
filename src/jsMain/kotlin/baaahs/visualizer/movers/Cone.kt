@@ -1,6 +1,7 @@
 package baaahs.visualizer.movers
 
 import baaahs.Color
+import baaahs.geom.Vector3F
 import baaahs.geom.toThreeEuler
 import baaahs.model.MovingHead
 import baaahs.visualizer.VizObj
@@ -9,6 +10,7 @@ import baaahs.visualizer.toVector3
 import three.js.*
 import three_ext.plus
 import three_ext.set
+import three_ext.vector3FacingForward
 
 actual class Cone actual constructor(
     private val movingHead: MovingHead,
@@ -18,7 +20,7 @@ actual class Cone actual constructor(
     private val rotation = movingHead.rotation.toThreeEuler()
     private val coneLength = 1000.0
 
-    private val clipPlane = Plane(Vector3(0, 0, 1), 0)
+    private val clipPlane = Plane(Vector3F.facingForward.toVector3(), 0)
 
     private val innerBaseOpacity = .75
     private val innerMaterial = MeshBasicMaterial().apply {
@@ -98,7 +100,7 @@ actual class Cone actual constructor(
         if (colorMode.isClipped) {
             aim.y = aim.y.toDouble() + (1f - colorSplit - .5f) * .25f
             val planeRotation = aim
-            val normal = Vector3(0, 0, 1).applyEuler(planeRotation)
+            val normal = vector3FacingForward.applyEuler(planeRotation)
             if (colorMode == ColorMode.Secondary) normal.negate()
             val planeOrigin = position.clone()
             clipPlane.setFromNormalAndCoplanarPoint(normal, planeOrigin)

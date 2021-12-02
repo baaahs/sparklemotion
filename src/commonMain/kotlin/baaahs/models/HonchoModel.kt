@@ -3,7 +3,6 @@ package baaahs.models
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.model.LightRing
-import baaahs.model.LightRing.Companion.facingForward
 import baaahs.model.LightRingData
 import baaahs.model.ModelData
 import kotlin.math.PI
@@ -57,7 +56,7 @@ private data class LightRingConfig(
     val circumference: Float,
     val pixelCount: Int,
     val startingUniverse: Int,
-    val orientation: Vector3F = facingForward
+    val orientation: Vector3F = Vector3F.facingForward
 ) {
     fun createEntity() = createEntity(firstPixelRadians.toFloat(), pixelDirection)
     fun createEntity(firstPixelRadians: Float, pixelDirection: LightRing.PixelDirection) =
@@ -65,7 +64,7 @@ private data class LightRingConfig(
             name, name,
             Vector3F(centerX - 7.m, centerY, 0f),
             (circumference / PI).toFloat(),
-            facingForward,
+            Vector3F.facingForward,
             firstPixelRadians,
             pixelDirection
         )
@@ -75,7 +74,7 @@ private data class LightRingConfig(
         Matrix4F.identity,
         Vector3F(centerX - 7.m, centerY, 0f),
         (circumference / PI).toFloat(),
-        facingForward,
+        Vector3F.facingForward,
         firstPixelRadians.toFloat(),
         pixelDirection
     )
