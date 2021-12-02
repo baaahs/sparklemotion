@@ -8,7 +8,7 @@ import baaahs.fixtures.DeviceTypeRenderPlan
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
-import baaahs.geom.Matrix4
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.openShader
@@ -85,8 +85,8 @@ class FakeModelEntity(
 ) : Model.Entity {
     override val bounds: Pair<Vector3F, Vector3F>
         get() = Vector3F.origin to Vector3F.origin
-    override val transformation: Matrix4
-        get() = Matrix4.identity
+    override val transformation: Matrix4F
+        get() = Matrix4F.identity
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation {
         TODO("not implemented")

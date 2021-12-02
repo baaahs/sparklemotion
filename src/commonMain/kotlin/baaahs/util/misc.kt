@@ -12,3 +12,11 @@ fun globalLaunch(block: suspend CoroutineScope.() -> Unit) =
     GlobalScope.launch(coroutineExceptionHandler) { block.invoke(this) }
 
 expect val coroutineExceptionHandler: CoroutineExceptionHandler
+
+fun FloatArray.toDoubleArray(): DoubleArray {
+    return DoubleArray(size) { i -> get(i).toDouble() }
+}
+
+fun DoubleArray.toFloatArray(): FloatArray {
+    return FloatArray(size) { i -> get(i).toFloat() }
+}

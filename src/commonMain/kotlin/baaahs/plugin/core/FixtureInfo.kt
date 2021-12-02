@@ -2,7 +2,7 @@ package baaahs.plugin.core
 
 import baaahs.ShowPlayer
 import baaahs.geom.EulerAngle
-import baaahs.geom.Matrix4
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
@@ -87,7 +87,7 @@ class FixtureInfoFeed(
                 originUniform?.set(fixtureInfo?.position ?: Vector3F.origin)
                 rotationUniform?.set(fixtureInfo?.rotation ?: EulerAngle.identity)
                 headingUniform?.set(fixtureInfo?.rotation ?: EulerAngle.identity)
-                matrixUniform?.set(fixtureInfo?.transformation ?: Matrix4())
+                matrixUniform?.set(fixtureInfo?.transformation ?: Matrix4F.identity)
             }
         }
     }

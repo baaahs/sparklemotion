@@ -2,7 +2,7 @@ package baaahs.model
 
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
-import baaahs.geom.Matrix4
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.model.WtfMaths.cross
@@ -21,7 +21,7 @@ class LightRing(
     val planeNormal: Vector3F, // TODO: Represent using transformation rotation.
     val firstPixelRadians: Float = 0f,
     val pixelDirection: PixelDirection = PixelDirection.Clockwise,
-    override val transformation: Matrix4 = Matrix4.identity
+    override val transformation: Matrix4F = Matrix4F.identity
 ) : Model.Entity, LinearPixelArray {
     override val deviceType: DeviceType
         get() = PixelArrayDevice

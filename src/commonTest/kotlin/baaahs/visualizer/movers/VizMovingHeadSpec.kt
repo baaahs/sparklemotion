@@ -4,7 +4,7 @@ import baaahs.FakeClock
 import baaahs.TestMovingHeadAdapter
 import baaahs.describe
 import baaahs.geom.EulerAngle
-import baaahs.geom.Matrix4
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
@@ -21,7 +21,7 @@ object VizMovingHeadSpec: Spek({
                     tiltMotorSpeed = 1f,
                     colorWheelMotorSpeed = 1f
                 ),
-                Matrix4.fromPositionAndRotation(Vector3F.origin, EulerAngle.identity)
+                Matrix4F.fromPositionAndRotation(Vector3F.origin, EulerAngle.identity)
             )
         }
         val dmxUniverse by value { FakeDmxUniverse() }
