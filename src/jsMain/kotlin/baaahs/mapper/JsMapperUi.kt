@@ -634,7 +634,7 @@ class JsMapperUi(
         companion object {
             fun from(camera: PerspectiveCamera): CameraOrientation {
                 return CameraOrientation(
-                    baaahs.geom.Matrix4F(camera.matrix.elements.map { it.toFloat() }.toFloatArray()),
+                    baaahs.geom.Matrix4F(camera.matrix.elements.map { it.toFloat() }.toFloatArray().map { it.toFloat() }.toFloatArray()),
                     camera.aspect.toDouble()
                 )
             }

@@ -1,6 +1,7 @@
 package baaahs.geom
 
 import baaahs.util.toDoubleArray
+import baaahs.visualizer.toVector3
 import kotlinx.serialization.Serializable
 import three.js.Euler
 import three.js.Quaternion
@@ -10,7 +11,7 @@ import three.js.Vector3 as NativeVector3F
 
 @Serializable(Matrix4FSerializer::class)
 actual class Matrix4F actual constructor(elements: FloatArray?) {
-    private val nativeMatrix = NativeMatrix4D()
+    val nativeMatrix = NativeMatrix4D()
         .also { if (elements != null) it.fromArray(elements.toDoubleArray()) }
 
     actual val elements: FloatArray
@@ -23,6 +24,20 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
         get() = Euler().setFromQuaternion(Quaternion().setFromRotationMatrix(nativeMatrix)).toEulerAngle()
     actual val scale: Vector3F
         get() = NativeVector3F().setFromMatrixScale(nativeMatrix).toVector3F()
+
+    actual operator fun times(matrix: Matrix4F): Matrix4F {
+        nativeMatrix.multiply(matrix.nativeMatrix)
+        return this
+    }
+
+    actual fun transform(vector: Vector3F): Vector3F {
+        return vector.toVector3().applyMatrix4(nativeMatrix).toVector3F()
+    }
+
+    actual fun translate(vector: Vector3F): Matrix4F {
+        nativeMatrix.multiply(NativeMatrix4D().makeTranslation(vector.x, vector.y, vector.z))
+        return this
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

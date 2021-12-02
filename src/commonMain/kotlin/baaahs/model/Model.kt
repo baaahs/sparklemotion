@@ -21,7 +21,14 @@ abstract class Model : ModelInfo {
         ?: error("Unknown model surface \"$name\".")
 
     val modelBounds by lazy {
-        boundingBox(allEntities.flatMap { entity -> entity.bounds.let { listOf(it.first, it.second)} })
+        boundingBox(allEntities.flatMap { entity ->
+            entity.bounds.let {
+                listOf(
+                    it.first.transform(entity.transformation),
+                    it.second.transform(entity.transformation)
+                )
+            } }
+        )
     }
     private val modelExtents by lazy { val (min, max) = modelBounds; max - min }
     private val modelCenter by lazy { center(modelBounds.toList()) }
@@ -81,6 +88,12 @@ abstract class Model : ModelInfo {
 
         override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
             BrainSurfaceSimulation(this, simulationEnv)
+
+        fun transform(transformation: Matrix4F) =
+            Surface(
+                name, description, expectedPixelCount, faces, lines, geometry,
+                this.transformation * transformation
+            )
     }
 
     data class Line(

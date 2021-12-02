@@ -56,15 +56,15 @@ data class ObjModelData(
     val objDataIsFileRef: Boolean
 ) : EntityData {
     override fun open(metadata: EntityMetadataProvider): Model.Entity = object : Model.EntityGroup {
-        val objModelLoader = ObjModelLoader.load(objData) {
+        private val objModelLoader = ObjModelLoader.load(objData) {
             metadata.getMetadataFor(this@ObjModelData).expectedPixelCount
         }
         override val name: String get() = title
         override val description: String? get() = this@ObjModelData.description
         override val deviceType: DeviceType get() = PixelArrayDevice // TODO
         override val bounds: Pair<Vector3F, Vector3F> get() = boundingBox(objModelLoader.geomVertices)
-        override val transformation: Matrix4F get() = TODO("not implemented")
-        override val entities: List<Model.Entity> get() = objModelLoader.allEntities
+        override val transformation: Matrix4F get() = this@ObjModelData.transformation
+        override val entities: List<Model.Entity> get() = objModelLoader.allEntities.map { it.transform(transformation) }
 
         override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation? = null
     }

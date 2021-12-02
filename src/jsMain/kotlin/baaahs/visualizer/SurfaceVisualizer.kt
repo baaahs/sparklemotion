@@ -41,7 +41,10 @@ class SurfaceVisualizer(
         this.faceMaterial.side = FrontSide
         this.faceMaterial.transparent = false
 
-        mesh.asDynamic().name = "Surface: ${surfaceGeometry.name}"
+        mesh.name = "Surface: ${surfaceGeometry.name}"
+        mesh.matrix.copy(surfaceGeometry.surface.transformation.nativeMatrix)
+        mesh.matrixAutoUpdate = false
+        mesh.updateMatrixWorld(true)
 
         this.lines = surfaceGeometry.lines.map { line ->
             val lineGeo = Geometry()

@@ -2,6 +2,7 @@ package baaahs.visualizer
 
 import baaahs.Color
 import baaahs.device.PixelArrayDevice
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2
 import baaahs.io.ByteArrayReader
 import baaahs.resourcesBase
@@ -19,6 +20,7 @@ import kotlin.random.Random
 class VizPixels(
     val positions: Array<Vector3>,
     val normal: Vector3,
+    val transformation: Matrix4F,
     val pixelArrayConfig: PixelArrayDevice.Config? = null
 ) : Pixels {
     override val size = positions.size

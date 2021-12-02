@@ -21,7 +21,11 @@ actual class LightRingSimulation actual constructor(
 
     private val pixelLocations by lazy { lightRing.calculatePixelLocations(pixelCount) }
     private val vizPixels by lazy {
-        VizPixels(pixelLocations.map { it.toVector3() }.toTypedArray(), pixelVisualizationNormal)
+        VizPixels(
+            pixelLocations.map { it.toVector3() }.toTypedArray(),
+            pixelVisualizationNormal,
+            lightRing.transformation
+        )
     }
 
     override val mappingData: MappingSession.SurfaceData
@@ -59,6 +63,7 @@ actual class LightRingSimulation actual constructor(
         entityVisualizer.vizPixels = VizPixels(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
             LightBarSimulation.pixelVisualizationNormal,
+            lightRing.transformation,
             fixtureConfig as PixelArrayDevice.Config
         )
     }
