@@ -1,22 +1,46 @@
 package baaahs.geom
 
-import com.jogamp.opengl.math.Quaternion
+import org.joml.Matrix4f as NativeMatrix4F
+import org.joml.Quaternionf as NativeQuaternionF
+import org.joml.Vector3f as NativeVector3F
 
-actual fun createMatrixWithPositionAndRotation(position: Vector3F, rotation: EulerAngle): Matrix4 {
-    val quaternion = Quaternion()
-    quaternion.setFromEuler(rotation.bankRad.toFloat(), rotation.headingRad.toFloat(), rotation.attitudeRad.toFloat())
+internal actual fun createMatrixWithPositionAndRotation(position: Vector3F, rotation: EulerAngle): Matrix4 {
+    val matrix = NativeMatrix4F()
+    matrix.setTranslation(position.x, position.y, position.z)
+    matrix.setRotationXYZ(
+        rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat()
+    )
+    val matrixArray = FloatArray(16)
+    matrix.get(matrixArray)
+    return Matrix4(matrixArray.toDoubleArray())
+}
 
-    val matrix = com.jogamp.opengl.math.Matrix4()
-    quaternion.toMatrix(matrix.matrix, 0)
+internal actual fun getPositionFromMatrix(matrix: Matrix4): Vector3F {
+    val nativeMatrix = nativeMatrix4(matrix)
+    val translation = NativeVector3F()
+    nativeMatrix.getTranslation(translation)
+    return Vector3F(translation.x, translation.y, translation.z)
+}
 
-    // TODO: for some reason this doesn't match the results from JS?
-//    matrix.translate(origin.x, origin.y, origin.z)
+internal actual fun getRotationFromMatrix(matrix: Matrix4): EulerAngle {
+    val nativeMatrix = nativeMatrix4(matrix)
+    val rotation = NativeQuaternionF()
+    rotation.setFromUnnormalized(nativeMatrix)
+    val euler = NativeVector3F()
+    rotation.getEulerAnglesXYZ(euler)
+    return EulerAngle(euler[0].toDouble(),  euler[1].toDouble(), euler[2].toDouble())
+}
 
-    matrix.matrix.apply {
-        this[3*4 + 0] = position.x
-        this[3*4 + 1] = position.y
-        this[3*4 + 2] = position.z
+private fun nativeMatrix4(matrix: Matrix4): NativeMatrix4F {
+    return NativeMatrix4F().apply {
+        set(matrix.elements.toFloatArray())
     }
+}
 
-    return Matrix4(matrix.matrix.map { it.toDouble() }.toDoubleArray())
+fun FloatArray.toDoubleArray(): DoubleArray {
+    return DoubleArray(size) { i -> get(i).toDouble() }
+}
+
+fun DoubleArray.toFloatArray(): FloatArray {
+    return FloatArray(size) { i -> get(i).toFloat() }
 }

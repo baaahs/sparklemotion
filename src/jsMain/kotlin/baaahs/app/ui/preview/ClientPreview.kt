@@ -55,10 +55,11 @@ class ClientPreview(
 
         coroutineScope.launch(coroutineExceptionHandler) {
             val allFixtures = modelProvider.getModel()
-                .allEntities.map { entity ->
-                    val simulation = entity.createFixtureSimulation(simulationEnv)
-                    theVisualizer.addEntityVisualizer(simulation.entityVisualizer)
-                    simulation.previewFixture
+                .allEntities.mapNotNull { entity ->
+                    entity.createFixtureSimulation(simulationEnv)?.let { simulation ->
+                        theVisualizer.addEntityVisualizer(simulation.entityVisualizer)
+                        simulation.previewFixture
+                    }
                 }
 //    private val mappingResults = SessionMappingResults(model, emptyList()) // TODO: use real data.
 

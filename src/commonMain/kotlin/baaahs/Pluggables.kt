@@ -1,6 +1,9 @@
 package baaahs
 
+import baaahs.model.ConstEntityMetadataProvider
+import baaahs.model.EntityMetadataProvider
 import baaahs.model.Model
+import baaahs.model.ModelData
 import baaahs.models.*
 import baaahs.plugin.Plugin
 import baaahs.plugin.beatlink.BeatLinkPlugin
@@ -17,16 +20,18 @@ object Pluggables {
     private val models = mutableMapOf<String, Model>()
 
     fun loadModel(name: String): ModelProvider = ModelProvider {
-        models.getOrPut(name) {
-            when (name) {
-                "Decom2019" -> Decom2019Model()
-                "Honcho" -> HonchoModel()
-                "Playa2021" -> Playa2021Model()
-                "SuiGeneris" -> SuiGenerisModel()
-                "BAAAHS" -> SheepModel()
-                else -> throw IllegalArgumentException("unknown model \"$name\"")
+            models.getOrPut(name) {
+                val (modelData: ModelData, metadata: EntityMetadataProvider) =
+                    when (name) {
+                        "Decom2019" -> decom2019ModelData to ConstEntityMetadataProvider(16 * 60)
+                        "Honcho" -> honchoModelData to ConstEntityMetadataProvider(16 * 60)
+                        "Playa2021" -> playa2021ModelData to ConstEntityMetadataProvider(16 * 60)
+                        "SuiGeneris" -> suiGenerisModelData to ConstEntityMetadataProvider(10 * 60)
+                        "BAAAHS" -> sheepModelData to sheepModelMetadata
+                        else -> throw IllegalArgumentException("unknown model \"$name\"")
+                    }
+                modelData.open(metadata)
             }
-        }
     }
 }
 

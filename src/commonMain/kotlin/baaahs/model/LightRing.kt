@@ -2,6 +2,7 @@ package baaahs.model
 
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
+import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.model.WtfMaths.cross
@@ -14,12 +15,13 @@ import kotlin.math.sin
 
 class LightRing(
     override val name: String,
-    override val description: String,
-    val center: Vector3F,
-    val radius: Float,
-    val planeNormal: Vector3F,
+    override val description: String?,
+    val center: Vector3F, // TODO: Represent using transformation translation.
+    val radius: Float, // TODO: Represent using transformation scale?
+    val planeNormal: Vector3F, // TODO: Represent using transformation rotation.
     val firstPixelRadians: Float = 0f,
-    val pixelDirection: PixelDirection = PixelDirection.Clockwise
+    val pixelDirection: PixelDirection = PixelDirection.Clockwise,
+    override val transformation: Matrix4 = Matrix4.identity
 ) : Model.Entity, LinearPixelArray {
     override val deviceType: DeviceType
         get() = PixelArrayDevice

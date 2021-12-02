@@ -13,7 +13,6 @@ import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.io.ByteArrayWriter
 import baaahs.mapper.Storage
-import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
@@ -44,11 +43,11 @@ class ShowRunnerTest {
     private lateinit var renderTargets: Map<Fixture, RenderTarget>
     private val surface1Messages = mutableListOf<String>()
     private val surface1Fixture =
-        Fixture(SheepModel.Panel("surface 1"), 1, emptyList(), PixelArrayDevice.defaultConfig,
+        Fixture(TestModelSurface("surface 1"), 1, emptyList(), PixelArrayDevice.defaultConfig,
             transport = FakeTransport { surface1Messages.add("frame") })
     private val surface2Messages = mutableListOf<String>()
     private val surface2Fixture =
-        Fixture(SheepModel.Panel("surface 2"), 1, emptyList(), PixelArrayDevice.defaultConfig,
+        Fixture(TestModelSurface("surface 2"), 1, emptyList(), PixelArrayDevice.defaultConfig,
             transport = FakeTransport { surface2Messages.add("frame") })
     private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse

@@ -5,10 +5,8 @@ import baaahs.device.DeviceType
 import baaahs.dmx.Dmx
 import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.MovingHeadDevice
-import baaahs.geom.EulerAngle
 import baaahs.geom.Matrix4
 import baaahs.geom.Vector3F
-import baaahs.geom.createMatrixWithPositionAndRotation
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.MovingHeadSimulation
 import baaahs.sim.SimulationEnv
@@ -48,17 +46,13 @@ interface MovingHeadAdapter {
 
 class MovingHead(
     override val name: String,
-    override val description: String,
+    override val description: String?,
     val baseDmxChannel: Int,
     val adapter: MovingHeadAdapter,
-    override val position: Vector3F,
-    override val rotation: EulerAngle
+    override val transformation: Matrix4 = Matrix4.identity
 ) : Model.Entity, Model.FixtureInfo {
     override val bounds: Pair<Vector3F, Vector3F>
-        get() = position to position
-
-    override val matrix: Matrix4
-        get() = createMatrixWithPositionAndRotation(position, rotation)
+        get() = transformation.position.let { it to it }
 
     enum class ColorModel {
         ColorWheel,
