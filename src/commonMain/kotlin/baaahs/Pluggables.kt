@@ -15,7 +15,7 @@ object Pluggables {
         SoundAnalysisPlugin
     )
 
-    const val defaultModel = "Playa2021"
+    const val defaultModel = "Demo"
 
     private val models = mutableMapOf<String, Model>()
 
@@ -23,10 +23,10 @@ object Pluggables {
             models.getOrPut(name) {
                 val (modelData: ModelData, metadata: EntityMetadataProvider) =
                     when (name) {
-                        "Decom2019" -> decom2019ModelData to ConstEntityMetadataProvider(16 * 60)
+                        "Decom2019" -> decom2019ModelData to decom2019ModelMetadata
                         "Honcho" -> honchoModelData to ConstEntityMetadataProvider(16 * 60)
-                        "Playa2021" -> playa2021ModelData to ConstEntityMetadataProvider(16 * 60)
-                        "SuiGeneris" -> suiGenerisModelData to ConstEntityMetadataProvider(10 * 60)
+                        "Playa2021" -> playa2021ModelData to playa2021ModelMetadata
+                        "SuiGeneris" -> suiGenerisModelData to suiGenerisModelMetadata
                         "BAAAHS" -> sheepModelData to sheepModelMetadata
                         else -> throw IllegalArgumentException("unknown model \"$name\"")
                     }

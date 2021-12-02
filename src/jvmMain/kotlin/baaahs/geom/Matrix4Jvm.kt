@@ -1,46 +1,56 @@
 package baaahs.geom
 
+import kotlinx.serialization.Serializable
 import org.joml.Matrix4f as NativeMatrix4F
 import org.joml.Quaternionf as NativeQuaternionF
 import org.joml.Vector3f as NativeVector3F
 
-internal actual fun createMatrixWithPositionAndRotation(position: Vector3F, rotation: EulerAngle): Matrix4 {
-    val matrix = NativeMatrix4F()
-    matrix.setTranslation(position.x, position.y, position.z)
-    matrix.setRotationXYZ(
-        rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat()
+@Serializable(Matrix4FSerializer::class)
+actual class Matrix4F(private val nativeMatrix: NativeMatrix4F) {
+    actual constructor(elements: FloatArray?) : this(
+        NativeMatrix4F().also { if (elements != null) it.set(elements) }
     )
-    val matrixArray = FloatArray(16)
-    matrix.get(matrixArray)
-    return Matrix4(matrixArray.toDoubleArray())
-}
 
-internal actual fun getPositionFromMatrix(matrix: Matrix4): Vector3F {
-    val nativeMatrix = nativeMatrix4(matrix)
-    val translation = NativeVector3F()
-    nativeMatrix.getTranslation(translation)
-    return Vector3F(translation.x, translation.y, translation.z)
-}
+    actual val elements: FloatArray
+        get() = nativeMatrix.get(FloatArray(16))
+    actual val position: Vector3F
+        get() = nativeMatrix.getTranslation(NativeVector3F()).toVector3F()
+    actual val translation: Vector3F
+        get() = position
+    actual val rotation: EulerAngle
+        get() = NativeQuaternionF().setFromUnnormalized(nativeMatrix)
+            .getEulerAnglesXYZ(NativeVector3F())
+            .toEulerAngle()
+    actual val scale: Vector3F
+        get() = nativeMatrix.getScale(NativeVector3F()).toVector3F()
 
-internal actual fun getRotationFromMatrix(matrix: Matrix4): EulerAngle {
-    val nativeMatrix = nativeMatrix4(matrix)
-    val rotation = NativeQuaternionF()
-    rotation.setFromUnnormalized(nativeMatrix)
-    val euler = NativeVector3F()
-    rotation.getEulerAnglesXYZ(euler)
-    return EulerAngle(euler[0].toDouble(),  euler[1].toDouble(), euler[2].toDouble())
-}
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Matrix4F) return false
+        return nativeMatrix == other.nativeMatrix
+    }
 
-private fun nativeMatrix4(matrix: Matrix4): NativeMatrix4F {
-    return NativeMatrix4F().apply {
-        set(matrix.elements.toFloatArray())
+    override fun hashCode(): Int {
+        return nativeMatrix.hashCode()
+    }
+
+    actual companion object {
+        actual val identity: Matrix4F
+            get() = Matrix4F()
+
+        actual fun fromPositionAndRotation(position: Vector3F, rotation: EulerAngle): Matrix4F {
+            val nativeMatrix = NativeMatrix4F()
+            nativeMatrix.setTranslation(position.x, position.y, position.z)
+            nativeMatrix.setRotationXYZ(
+                rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat()
+            )
+            return Matrix4F(nativeMatrix)
+        }
     }
 }
 
-fun FloatArray.toDoubleArray(): DoubleArray {
-    return DoubleArray(size) { i -> get(i).toDouble() }
-}
+private fun org.joml.Vector3f.toVector3F() =
+    Vector3F(x, y, z)
 
-fun DoubleArray.toFloatArray(): FloatArray {
-    return FloatArray(size) { i -> get(i).toFloat() }
-}
+private fun org.joml.Vector3f.toEulerAngle() =
+    EulerAngle(this[0].toDouble(), this[1].toDouble(), this[2].toDouble())

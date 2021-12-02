@@ -36,7 +36,7 @@ abstract class Model : ModelInfo {
         val description: String?
         val deviceType: DeviceType
         val bounds: Pair<Vector3F, Vector3F>
-        val transformation: Matrix4
+        val transformation: Matrix4F
 
         fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation?
     }
@@ -54,7 +54,7 @@ abstract class Model : ModelInfo {
     )
 
     interface FixtureInfo {
-        val transformation: Matrix4
+        val transformation: Matrix4F
 
         val position: Vector3F
             get() = transformation.position
@@ -69,14 +69,13 @@ abstract class Model : ModelInfo {
         val expectedPixelCount: Int?,
         val faces: List<Face>,
         val lines: List<Line>,
-        override val geometry: Geometry
+        override val geometry: Geometry,
+        override val transformation: Matrix4F = Matrix4F.identity
     ) : EntityWithGeometry {
         override val deviceType: DeviceType
             get() = PixelArrayDevice
         override val bounds: Pair<Vector3F, Vector3F>
             get() = boundingBox(allVertices())
-        override val transformation: Matrix4
-            get() = Matrix4.identity
 
         open fun allVertices(): Collection<Vector3F> = geometry.vertices
 

@@ -2,7 +2,7 @@ package baaahs.model
 
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
-import baaahs.geom.Matrix4
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.sim.FixtureSimulation
@@ -12,7 +12,7 @@ import baaahs.sim.SimulationEnv
 class Grid(
     name: String,
     description: String?,
-    transformation: Matrix4 = Matrix4.identity,
+    transformation: Matrix4F = Matrix4F.identity,
     rows: Int,
     columns: Int,
     rowGap: Float,
@@ -49,7 +49,7 @@ open class PolyLine(
     override val name: String,
     override val description: String?,
     val segments: List<Segment>,
-    override val transformation: Matrix4 = Matrix4.identity
+    override val transformation: Matrix4F = Matrix4F.identity
 ) : Model.Entity, PlacedPixelArray {
     override val deviceType: DeviceType
         get() = PixelArrayDevice

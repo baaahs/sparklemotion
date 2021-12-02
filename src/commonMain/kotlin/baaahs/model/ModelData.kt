@@ -3,7 +3,7 @@ package baaahs.model
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Shenzarpy
-import baaahs.geom.Matrix4
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.io.Fs
@@ -42,7 +42,7 @@ enum class ModelUnit {
 sealed interface EntityData {
     val title: String
     val description: String?
-    val transformation: Matrix4
+    val transformation: Matrix4F
 
     fun open(metadata: EntityMetadataProvider): Model.Entity
 }
@@ -51,7 +51,7 @@ sealed interface EntityData {
 data class ObjModelData(
     override val title: String,
     override val description: String?,
-    override val transformation: Matrix4,
+    override val transformation: Matrix4F,
     val objData: String,
     val objDataIsFileRef: Boolean
 ) : EntityData {
@@ -63,7 +63,7 @@ data class ObjModelData(
         override val description: String? get() = this@ObjModelData.description
         override val deviceType: DeviceType get() = PixelArrayDevice // TODO
         override val bounds: Pair<Vector3F, Vector3F> get() = boundingBox(objModelLoader.geomVertices)
-        override val transformation: Matrix4 get() = TODO("not implemented")
+        override val transformation: Matrix4F get() = TODO("not implemented")
         override val entities: List<Model.Entity> get() = objModelLoader.allEntities
 
         override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation? = null
@@ -74,7 +74,7 @@ data class ObjModelData(
 data class MovingHeadData(
     override val title: String,
     override val description: String?,
-    override val transformation: Matrix4
+    override val transformation: Matrix4F
 ) : EntityData {
     override fun open(metadata: EntityMetadataProvider): Model.Entity =
         MovingHead(title, description, 0, Shenzarpy, transformation)
@@ -84,7 +84,7 @@ data class MovingHeadData(
 data class LightBarData(
     override val title: String,
     override val description: String?,
-    override val transformation: Matrix4,
+    override val transformation: Matrix4F,
     val startVertex: Vector3F,
     val endVertex: Vector3F
 ) : EntityData {
@@ -96,7 +96,7 @@ data class LightBarData(
 data class PolyLineData(
     override val title: String,
     override val description: String?,
-    override val transformation: Matrix4,
+    override val transformation: Matrix4F,
     val segments: List<SegmentData>
 ) : EntityData {
     override fun open(metadata: EntityMetadataProvider): Model.Entity =
@@ -109,7 +109,7 @@ data class PolyLineData(
 data class GridData(
     override val title: String,
     override val description: String?,
-    override val transformation: Matrix4,
+    override val transformation: Matrix4F,
     val rows: Int,
     val columns: Int,
     val rowGap: Float,
@@ -138,7 +138,7 @@ data class SegmentData(
 data class LightRingData(
     override val title: String,
     override val description: String?,
-    override val transformation: Matrix4,
+    override val transformation: Matrix4F,
     val center: Vector3F,
     val radius: Float,
     val planeNormal: Vector3F,

@@ -2,7 +2,7 @@ package baaahs.mapper
 
 import baaahs.*
 import baaahs.api.ws.WebSocketClient
-import baaahs.geom.Matrix4
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.imaging.Bitmap
@@ -943,7 +943,7 @@ interface MapperUi {
     }
 
     interface CameraOrientation {
-        val cameraMatrix: Matrix4
+        val cameraMatrix: Matrix4F
         val aspect: Double
     }
 }

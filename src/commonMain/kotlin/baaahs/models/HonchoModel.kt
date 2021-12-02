@@ -1,6 +1,6 @@
 package baaahs.models
 
-import baaahs.geom.Matrix4
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.model.LightRing
 import baaahs.model.LightRing.Companion.facingForward
@@ -72,7 +72,7 @@ private data class LightRingConfig(
 
     fun createEntityData() = LightRingData(
         name, null,
-        Matrix4.identity,
+        Matrix4F.identity,
         Vector3F(centerX - 7.m, centerY, 0f),
         (circumference / PI).toFloat(),
         facingForward,

@@ -1,7 +1,7 @@
 package baaahs.mapper
 
 import baaahs.fixtures.FixtureConfig
-import baaahs.geom.Matrix4
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.sm.brain.BrainManager
@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 data class MappingSession(
     val startedAt: Double,
     val surfaces: List<SurfaceData>, // TODO: rename to items?
-    val cameraMatrix: Matrix4? = null,
+    val cameraMatrix: Matrix4F? = null,
     val baseImage: String? = null,
     val version: Int = 0,
     val savedAt: Double = DateTime.nowUnix(),

@@ -621,11 +621,11 @@ class JsMapperUi(
         }
     }
 
-    data class CameraOrientation(override val cameraMatrix: baaahs.geom.Matrix4, override val aspect: Double) :
+    data class CameraOrientation(override val cameraMatrix: baaahs.geom.Matrix4F, override val aspect: Double) :
         MapperUi.CameraOrientation {
         fun createCamera(): PerspectiveCamera {
             return PerspectiveCamera(45, aspect, 1, 10000).apply {
-                matrix.fromArray(cameraMatrix.elements)
+                matrix.fromArray(cameraMatrix.elements.toDoubleArray())
                 // Get back position/rotation/scale attributes.
                 matrix.asDynamic().decompose(position, quaternion, scale)
                 updateMatrixWorld()
@@ -635,7 +635,7 @@ class JsMapperUi(
         companion object {
             fun from(camera: PerspectiveCamera): CameraOrientation {
                 return CameraOrientation(
-                    baaahs.geom.Matrix4(camera.matrix.toArray()),
+                    baaahs.geom.Matrix4F(camera.matrix.elements.map { it.toFloat() }.toFloatArray()),
                     camera.aspect.toDouble()
                 )
             }

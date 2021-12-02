@@ -4,7 +4,7 @@ import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManagerImpl
-import baaahs.geom.Matrix4
+import baaahs.geom.Matrix4F
 import baaahs.gl.RootToolchain
 import baaahs.gl.override
 import baaahs.gl.render.RenderManager
@@ -126,7 +126,7 @@ object PinkySpec : Spek({
                     val mappingSessionPath = storage.saveSession(
                         MappingSession(
                             0.0, listOf(surfaceData),
-                            Matrix4(doubleArrayOf()), null, notes = "Simulated pixels"
+                            Matrix4F.identity, null, notes = "Simulated pixels"
                         )
                     )
                     fakeFs.renameFile(mappingSessionPath, fakeFs.resolve("mapping/${model.name}/$mappingSessionPath"))
