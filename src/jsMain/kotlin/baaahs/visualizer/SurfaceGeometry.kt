@@ -3,7 +3,7 @@ package baaahs.visualizer
 import baaahs.model.Model
 import three.js.*
 
-class SurfaceGeometry(surface: Model.Surface) {
+class SurfaceGeometry(val surface: Model.Surface) {
     val name = surface.name
     internal val geometry = Geometry()
     var area = 0.0f

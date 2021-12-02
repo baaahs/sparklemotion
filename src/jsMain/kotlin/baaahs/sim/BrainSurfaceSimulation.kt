@@ -13,17 +13,17 @@ import baaahs.visualizer.*
 import three_ext.toVector3F
 
 actual class BrainSurfaceSimulation actual constructor(
-    val surface: Model.Surface,
+    private val surface: Model.Surface,
     private val simulationEnv: SimulationEnv
 ) : FixtureSimulation {
-    val surfaceGeometry by lazy { SurfaceGeometry(surface) }
+    private val surfaceGeometry by lazy { SurfaceGeometry(surface) }
 
-    val pixelPositions by lazy {
+    private val pixelPositions by lazy {
         val pixelArranger = simulationEnv[PixelArranger::class]
         pixelArranger.arrangePixels(surfaceGeometry, surface.expectedPixelCount)
     }
 
-    val vizPixels by lazy { VizPixels(pixelPositions, surfaceGeometry.panelNormal) }
+    private val vizPixels by lazy { VizPixels(pixelPositions, surfaceGeometry.panelNormal, surface.transformation) }
 
     val brain by lazy {
         val brainSimulatorManager = simulationEnv[BrainSimulatorManager::class]
@@ -64,6 +64,7 @@ actual class BrainSurfaceSimulation actual constructor(
         entityVisualizer.vizPixels = VizPixels(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
             entityVisualizer.surfaceGeometry.panelNormal,
+            surface.transformation,
             fixtureConfig as PixelArrayDevice.Config
         )
     }

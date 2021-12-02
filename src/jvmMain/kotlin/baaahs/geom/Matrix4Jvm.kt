@@ -24,6 +24,20 @@ actual class Matrix4F(private val nativeMatrix: NativeMatrix4F) {
     actual val scale: Vector3F
         get() = nativeMatrix.getScale(NativeVector3F()).toVector3F()
 
+    actual operator fun times(matrix: Matrix4F): Matrix4F {
+        nativeMatrix.mul(matrix.nativeMatrix)
+        return this
+    }
+
+    actual fun transform(vector: Vector3F): Vector3F {
+        return vector.toNativeVector3F().mulProject(nativeMatrix).toVector3F()
+    }
+
+    actual fun translate(vector: Vector3F): Matrix4F {
+        nativeMatrix.translate(vector.x, vector.y, vector.z)
+        return this
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Matrix4F) return false
@@ -35,8 +49,7 @@ actual class Matrix4F(private val nativeMatrix: NativeMatrix4F) {
     }
 
     actual companion object {
-        actual val identity: Matrix4F
-            get() = Matrix4F()
+        actual val identity: Matrix4F = Matrix4F()
 
         actual fun fromPositionAndRotation(position: Vector3F, rotation: EulerAngle): Matrix4F {
             val nativeMatrix = NativeMatrix4F()
@@ -48,6 +61,9 @@ actual class Matrix4F(private val nativeMatrix: NativeMatrix4F) {
         }
     }
 }
+
+private fun Vector3F.toNativeVector3F() =
+    NativeVector3F(x, y, z)
 
 private fun org.joml.Vector3f.toVector3F() =
     Vector3F(x, y, z)

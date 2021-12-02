@@ -2,6 +2,7 @@ package baaahs.model
 
 import baaahs.describe
 import baaahs.fakeModel
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.toEqual
@@ -15,6 +16,7 @@ object ModelSpec : Spek({
             val v2 by value { Vector3F(-1f, 1f, 0f) }
             val v3 by value { Vector3F(0f, 1f, -.25f) }
 
+            val transformation by value { Matrix4F.identity }
             val model by value {
                 val geometry = Model.Geometry(listOf(v1, v2, v3))
                 fakeModel(
@@ -26,13 +28,13 @@ object ModelSpec : Spek({
                             Model.Line(geometry, 1, 2),
                             Model.Line(geometry, 2, 0)
                         ),
-                        geometry
+                        geometry,
+                        transformation
                     )
                 )
-
             }
 
-            it("should include all points defining a surface") {
+            it("should include all points defining a surface within modelBounds") {
                 expect(model.modelBounds).toEqual(
                     Vector3F(-1f, 0f, -.25f) to Vector3F(1f, 1f, 5f)
                 )
@@ -42,6 +44,22 @@ object ModelSpec : Spek({
                 expect(model.center).toEqual(
                     Vector3F(0f, .5f, 2.375f)
                 )
+            }
+
+            context("with a transformation") {
+                value(transformation) { Matrix4F.identity.translate(Vector3F.unit3d) }
+
+                it("should include all points defining a surface within modelBounds") {
+                    expect(model.modelBounds).toEqual(
+                        Vector3F(0f, 1f, .75f) to Vector3F(2f, 2f, 6f)
+                    )
+                }
+
+                it("should compute the correct center") {
+                    expect(model.center).toEqual(
+                        Vector3F(1f, 1.5f, 3.375f)
+                    )
+                }
             }
 
             context("with light bars") {

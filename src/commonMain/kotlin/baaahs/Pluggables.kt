@@ -24,6 +24,7 @@ object Pluggables {
                 val (modelData: ModelData, metadata: EntityMetadataProvider) =
                     when (name) {
                         "Decom2019" -> decom2019ModelData to decom2019ModelMetadata
+                        "Demo" -> demoModelData to demoModelMetadata
                         "Honcho" -> honchoModelData to ConstEntityMetadataProvider(16 * 60)
                         "Playa2021" -> playa2021ModelData to playa2021ModelMetadata
                         "SuiGeneris" -> suiGenerisModelData to suiGenerisModelMetadata

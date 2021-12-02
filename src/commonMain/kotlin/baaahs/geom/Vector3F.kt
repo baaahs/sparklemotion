@@ -44,6 +44,10 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
         return x * x + y * y + z * z
     }
 
+    fun transform(transformation: Matrix4F): Vector3F {
+        return transformation.transform(this)
+    }
+
     fun serialize(writer: ByteArrayWriter) {
         writer.writeFloat(x)
         writer.writeFloat(y)

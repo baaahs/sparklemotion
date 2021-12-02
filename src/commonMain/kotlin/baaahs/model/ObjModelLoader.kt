@@ -13,7 +13,7 @@ class ObjModelLoader(
     private val vertices: List<Vector3F>
     private val surfaces: List<Surface>
 
-    val allEntities: List<Entity> get() = surfaces
+    val allEntities: List<Surface> get() = surfaces
     val geomVertices: List<Vector3F> get() = vertices
 
     init {
@@ -70,7 +70,7 @@ class ObjModelLoader(
         val lines = mutableListOf<Line>()
 
         fun build(): Surface =
-            Surface(name, name, expectedPixelCount(name), faces, lines, geometry)
+            Surface(name, name, expectedPixelCount(name), faces, lines, geometry, )
     }
 
     companion object {

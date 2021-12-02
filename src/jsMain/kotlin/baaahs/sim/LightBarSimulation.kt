@@ -19,7 +19,11 @@ actual class LightBarSimulation actual constructor(
 
     private val pixelLocations by lazy { pixelArray.calculatePixelLocations(59) }
     private val vizPixels by lazy {
-        VizPixels(pixelLocations.map { it.toVector3() }.toTypedArray(), pixelVisualizationNormal)
+        VizPixels(
+            pixelLocations.map { it.toVector3() }.toTypedArray(),
+            pixelVisualizationNormal,
+            pixelArray.transformation
+        )
     }
 
     override val mappingData: MappingSession.SurfaceData
@@ -59,6 +63,7 @@ actual class LightBarSimulation actual constructor(
         entityVisualizer.vizPixels = VizPixels(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
             pixelVisualizationNormal,
+            pixelArray.transformation,
             fixtureConfig as PixelArrayDevice.Config
         )
     }
