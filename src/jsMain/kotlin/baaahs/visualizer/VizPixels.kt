@@ -41,7 +41,7 @@ class VizPixels(
         vertexColorBufferAttr = Float32BufferAttribute(Float32Array(size * 3 * 4), 3)
         vertexColorBufferAttr.usage = DynamicDrawUsage
 
-        val rotator = Rotator(Vector3(0, 0, 1), normal)
+        val rotator = Rotator(vector3FacingForward, normal)
         planeGeometry = BufferGeometryUtils.mergeBufferGeometries(positions.map { position ->
             PlaneBufferGeometry(pixelDimension(), pixelDimension()).apply {
                 rotator.rotate(this)
@@ -116,10 +116,10 @@ class VizPixels(
         val panelGeom = surfaceVisualizer.geometry.clone()
         val pixGeom = pixGeometry.clone()
 
-        val straightOnNormal = Vector3(0, 0, 1)
+        val facingForward = vector3FacingForward
 
         // Rotate to straight on.
-        val rotator = Rotator(surfaceVisualizer.panelNormal, straightOnNormal)
+        val rotator = Rotator(surfaceVisualizer.panelNormal, facingForward)
         rotator.rotate(panelGeom)
         rotator.rotate(pixGeom)
 

@@ -61,10 +61,6 @@ class LightRing(
         Clockwise,
         Counterclockwise
     }
-
-    companion object {
-        val facingForward = Vector3F(0f, 0f, 1f)
-    }
 }
 
 object WtfMaths {

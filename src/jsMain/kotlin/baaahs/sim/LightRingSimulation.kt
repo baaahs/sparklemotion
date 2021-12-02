@@ -11,7 +11,6 @@ import baaahs.model.LightRing
 import baaahs.visualizer.LightRingVisualizer
 import baaahs.visualizer.VizPixels
 import baaahs.visualizer.toVector3
-import three.js.Vector3
 
 actual class LightRingSimulation actual constructor(
     val lightRing: LightRing,
@@ -69,6 +68,6 @@ actual class LightRingSimulation actual constructor(
     }
 
     companion object {
-        val pixelVisualizationNormal = Vector3(0, 0, 1)
+        val pixelVisualizationNormal = three_ext.vector3FacingForward
     }
 }

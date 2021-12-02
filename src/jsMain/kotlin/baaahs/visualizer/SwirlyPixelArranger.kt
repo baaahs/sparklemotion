@@ -36,8 +36,8 @@ class SwirlyPixelArranger(
             val panelFaces = panelGeometry.faces
             var curFace = panelFaces[0]
             var revertToNormal = curFace.normal.clone()
-            val straightOnNormal = Vector3(0, 0, 1)
-            quaternion.setFromUnitVectors(curFace.normal, straightOnNormal)
+            val facingForward = three_ext.vector3FacingForward
+            quaternion.setFromUnitVectors(curFace.normal, facingForward)
             val matrix = Matrix4()
             matrix.makeRotationFromQuaternion(quaternion)
             panelGeometry.applyMatrix4(matrix)
@@ -66,7 +66,7 @@ class SwirlyPixelArranger(
                         // console.log("moving from", curFace, "to", newFace)
                         // console.log("prior face vs:", this.faceVs(curFace, panelGeometry))
 
-                        quaternion.setFromUnitVectors(straightOnNormal, revertToNormal)
+                        quaternion.setFromUnitVectors(facingForward, revertToNormal)
                         matrix.makeRotationFromQuaternion(quaternion)
                         panelGeometry.applyMatrix4(matrix)
                         pixelsGeometry.applyMatrix4(matrix)
@@ -74,7 +74,7 @@ class SwirlyPixelArranger(
 
                         curFace = newFace
                         revertToNormal = curFace.normal.clone()
-                        quaternion.setFromUnitVectors(curFace.normal, straightOnNormal)
+                        quaternion.setFromUnitVectors(curFace.normal, facingForward)
                         matrix.makeRotationFromQuaternion(quaternion)
                         panelGeometry.applyMatrix4(matrix)
                         pixelsGeometry.applyMatrix4(matrix)
@@ -115,7 +115,7 @@ class SwirlyPixelArranger(
                 pixelI++
             }
 
-            quaternion.setFromUnitVectors(straightOnNormal, revertToNormal)
+            quaternion.setFromUnitVectors(facingForward, revertToNormal)
             matrix.makeRotationFromQuaternion(quaternion)
             panelGeometry.applyMatrix4(matrix)
             pixelsGeometry.applyMatrix4(matrix)

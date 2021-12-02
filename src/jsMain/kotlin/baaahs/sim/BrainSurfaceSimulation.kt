@@ -4,13 +4,13 @@ import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Vector3F
-import baaahs.geom.toVector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.Model
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.visualizer.*
+import three_ext.toVector3F
 
 actual class BrainSurfaceSimulation actual constructor(
     val surface: Model.Surface,

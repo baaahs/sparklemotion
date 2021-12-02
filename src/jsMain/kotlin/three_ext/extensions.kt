@@ -1,5 +1,7 @@
 package three_ext
 
+import baaahs.geom.Vector3F
+import baaahs.visualizer.toVector3
 import three.js.ArrayLike
 import three.js.Euler
 import three.js.Vector3
@@ -19,6 +21,12 @@ operator fun Vector3.minus(other: Vector3): Vector3 {
 fun Vector3.set(other: Vector3) {
     set(other.x, other.y, other.z)
 }
+
+fun Vector3.toVector3F(): Vector3F =
+    Vector3F(x.toFloat(), y.toFloat(), z.toFloat())
+
+
+val vector3FacingForward = Vector3F.facingForward.toVector3()
 
 operator fun Euler.plus(other: Euler): Euler = Euler(
     x.toDouble() + other.x.toDouble(),

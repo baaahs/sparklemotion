@@ -3,7 +3,6 @@ package baaahs.model
 import baaahs.describe
 import baaahs.geom.Vector3F
 import baaahs.gl.override
-import baaahs.model.LightRing.Companion.facingForward
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -14,7 +13,7 @@ class LightRingSpec : Spek({
     describe<LightRing> {
         val lightRing by value {
             LightRing(
-                "", "", Vector3F.origin, 1f, facingForward
+                "", "", Vector3F.origin, 1f, Vector3F.facingForward
             )
         }
 
@@ -32,7 +31,7 @@ class LightRingSpec : Spek({
         context("starting at 12:00") {
             override(lightRing) {
                 LightRing(
-                    "", "", Vector3F.origin, 1f, facingForward,
+                    "", "", Vector3F.origin, 1f, Vector3F.facingForward,
                     firstPixelRadians = (PI / 2).toFloat()
                 )
             }
@@ -52,7 +51,7 @@ class LightRingSpec : Spek({
         context("counterclockwise") {
             override(lightRing) {
                 LightRing(
-                    "", "", Vector3F.origin, 1f, facingForward,
+                    "", "", Vector3F.origin, 1f, Vector3F.facingForward,
                     pixelDirection = LightRing.PixelDirection.Counterclockwise
                 )
             }

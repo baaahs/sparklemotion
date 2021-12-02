@@ -4,6 +4,7 @@ import baaahs.util.toDoubleArray
 import kotlinx.serialization.Serializable
 import three.js.Euler
 import three.js.Quaternion
+import three_ext.toVector3F
 import three.js.Matrix4 as NativeMatrix4D
 import three.js.Vector3 as NativeVector3F
 
