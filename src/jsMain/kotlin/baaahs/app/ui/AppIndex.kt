@@ -79,6 +79,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
+    var appMode by stat<AppMode> { AppMode.Show }
+
     val allStyles = memo(theme) { AllStyles(theme)}
 
     val dragNDrop by state { ReactBeautifulDragNDrop() }
@@ -432,6 +434,10 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             }
         }
     }
+}
+
+enum class AppMode {
+    Show, Scene
 }
 
 external interface AppIndexProps : Props {
