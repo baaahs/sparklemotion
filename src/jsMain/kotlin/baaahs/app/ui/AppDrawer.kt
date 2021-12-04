@@ -20,6 +20,8 @@ import materialui.components.listitem.listItem
 import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
 import materialui.components.switches.switch
+import materialui.components.tab.tab
+import materialui.components.tabs.tabs
 import materialui.components.typography.typographyH6
 import materialui.icon
 import materialui.styles.muitheme.direction
@@ -51,6 +53,21 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
         attrs.onClose = props.onClose.withEvent()
 
         div(+themeStyles.appDrawerHeader) {
+            tabs {
+                attrs.value = props.appMode
+                attrs.onChangeFunction = props.onAppModeChange
+
+                tab {
+                    attrs.value = AppMode.Show.name
+                    attrs.label { +"Show" }
+                }
+
+                tab {
+                    attrs.value = AppMode.Scene.name
+                    attrs.label { +"Scene" }
+                }
+            }
+
             iconButton {
                 attrs.onClickFunction = props.onClose.withEvent()
                 if (theme.direction == Direction.ltr) {
@@ -165,6 +182,9 @@ external interface AppDrawerProps : Props {
     var open: Boolean
     var forcedOpen: Boolean
     var onClose: () -> Unit
+
+    var appMode: AppMode
+    var onAppModeChange: (AppMode) -> Unit
 
     var showLoaded: Boolean
     var showFile: Fs.File?
