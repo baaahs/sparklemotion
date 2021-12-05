@@ -1,24 +1,19 @@
-package baaahs.admin
+package baaahs.client
 
 import baaahs.PubSub
 import baaahs.controller.SacnDevice
 import baaahs.dmx.DmxInfo
-import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
 import baaahs.sm.brain.BrainInfo
-import baaahs.sm.brain.proto.Ports
 import baaahs.sm.webapi.Topics
 import baaahs.subscribeProperty
 
-class AdminClient(
+class SceneEditorClient(
     private val plugins: ClientPlugins,
-    network: Network,
-    pinkyAddress: Network.Address
+    private val pubSub: PubSub.Client
 ) {
     val facade = Facade()
 
-    private val adminClientLink = network.link("admin")
-    private val pubSub = PubSub.Client(adminClientLink, pinkyAddress, Ports.PINKY_UI_TCP)
     private val pubSubListener = { facade.notifyChanged() }.also {
         pubSub.addStateChangeListener(it)
     }
@@ -29,16 +24,16 @@ class AdminClient(
 
     inner class Facade : baaahs.ui.Facade() {
         val plugins: ClientPlugins
-            get() = this@AdminClient.plugins
+            get() = this@SceneEditorClient.plugins
 
         val brains: Map<String, BrainInfo>
-            get() = this@AdminClient.brains
+            get() = this@SceneEditorClient.brains
 
         val dmxDevices: Map<String, DmxInfo>
-            get() = this@AdminClient.dmxDevices
+            get() = this@SceneEditorClient.dmxDevices
 
         val sacnDevices: Map<String, SacnDevice>
-            get() = this@AdminClient.sacnDevices
+            get() = this@SceneEditorClient.sacnDevices
     }
 
     fun onClose() {

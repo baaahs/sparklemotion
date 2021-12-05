@@ -3,11 +3,11 @@ package baaahs.client
 import baaahs.*
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.AppIndex
-import baaahs.app.ui.AppIndexProps
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.libraries.ShaderLibraries
+import baaahs.mapper.JsMapperUi
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.show.Show
@@ -30,7 +30,9 @@ class WebClient(
     private val pubSub: PubSub.Client,
     private val toolchain: Toolchain,
     private val modelProvider: ModelProvider,
-    private val storage: ClientStorage
+    private val storage: ClientStorage,
+    private val sceneEditorClient: SceneEditorClient,
+    private val mapperUi: JsMapperUi
 ) : HostedWebApp {
     private val facade = Facade()
 
@@ -142,11 +144,14 @@ class WebClient(
     override fun render(): ReactElement {
         println("WebClient: my link is ${webClientLink.myAddress}")
 
-        return createElement(AppIndex, jsObject<AppIndexProps> {
+        return createElement(AppIndex, jsObject {
             this.id = "Client Window"
             this.webClient = facade
             this.undoStack = this@WebClient.undoStack
             this.stageManager = this@WebClient.stageManager
+
+            this.sceneEditorClient = this@WebClient.sceneEditorClient.facade
+            this.mapperUi = this@WebClient.mapperUi
         })
     }
 

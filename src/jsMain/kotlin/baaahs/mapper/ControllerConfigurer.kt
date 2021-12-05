@@ -16,7 +16,7 @@ import react.useContext
 
 private val ControllerConfigurer = xComponent<DeviceConfigurerProps>("ControllerConfigurer") { props ->
     val adminContext = useContext(mapperAppContext)
-    val adminClient = adminContext.adminClient
+    val adminClient = adminContext.sceneEditorClient
     observe(adminClient)
 
     paper {

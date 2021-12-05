@@ -36,6 +36,7 @@ class ClientPreview(
     private val dmxUniverse = FakeDmxUniverse()
     private val theVisualizer = Visualizer(modelProvider, clock)
     private var patchSetChanged = true
+    private var keepRunning = true
 
     // TODO: This is super janky.
     private val targetFramerate
@@ -82,7 +83,10 @@ class ClientPreview(
             throttle(targetFramerate, logger) {
                 drawAndSendFrame()
             }
-            window.requestAnimationFrame { animate() }
+
+            if (keepRunning) {
+                window.requestAnimationFrame { animate() }
+            }
         }
     }
 
@@ -104,6 +108,7 @@ class ClientPreview(
 
     fun detach() {
         stageManager.removeListener(this)
+        keepRunning = false
     }
 
     override fun onPatchSetChanged() {

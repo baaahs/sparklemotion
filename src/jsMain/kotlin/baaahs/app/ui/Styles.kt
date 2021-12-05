@@ -205,6 +205,10 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
         justifyContent = JustifyContent.flexEnd
     }
 
+    val appModeTab by css {
+        minWidth = 0.px
+    }
+
     val noShowLoadedPaper by css {
         height = 100.pct
         display = Display.flex

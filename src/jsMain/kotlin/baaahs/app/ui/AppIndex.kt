@@ -7,11 +7,14 @@ import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layout.layoutEditorDialog
 import baaahs.app.ui.settings.settingsDialog
 import baaahs.client.ClientStageManager
+import baaahs.client.SceneEditorClient
 import baaahs.client.WebClient
 import baaahs.gl.withCache
 import baaahs.io.Fs
 import baaahs.io.resourcesFs
+import baaahs.mapper.JsMapperUi
 import baaahs.mapper.Storage
+import baaahs.mapper.sceneEditor
 import baaahs.show.SampleData
 import baaahs.ui.*
 import baaahs.util.JsClock
@@ -79,9 +82,12 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
-    var appMode by stat<AppMode> { AppMode.Show }
+    var appMode by state { AppMode.Show }
+    val handleAppModeChange by handler { newAppMode: AppMode ->
+        appMode = newAppMode
+    }
 
-    val allStyles = memo(theme) { AllStyles(theme)}
+    val allStyles = memo(theme) { AllStyles(theme) }
 
     val dragNDrop by state { ReactBeautifulDragNDrop() }
     var prompt by state<Prompt?> { null }
@@ -286,6 +292,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.open = renderAppDrawerOpen
                         attrs.forcedOpen = forceAppDrawerOpen
                         attrs.onClose = handleAppDrawerToggle
+                        attrs.appMode = appMode
+                        attrs.onAppModeChange = handleAppModeChange
                         attrs.showLoaded = show != null
                         attrs.showFile = webClient.showFile
                         attrs.editMode = editMode
@@ -349,21 +357,32 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             ErrorBoundary {
                                 attrs.FallbackComponent = ErrorDisplay
 
-                                showUi {
-                                    attrs.show = webClient.openShow!!
-                                    attrs.onShowStateChange = handleShowStateChange
-                                    attrs.editMode = editMode
-                                }
-
-                                if (layoutEditorDialogOpen) {
-                                    // Layout Editor dialog
-                                    layoutEditorDialog {
-                                        attrs.open = layoutEditorDialogOpen
-                                        attrs.show = show
-                                        attrs.onApply = { newMutableShow ->
-                                            myAppContext.webClient.onShowEdit(newMutableShow)
+                                when (appMode) {
+                                    AppMode.Show -> {
+                                        showUi {
+                                            attrs.show = webClient.openShow!!
+                                            attrs.onShowStateChange = handleShowStateChange
+                                            attrs.editMode = editMode
                                         }
-                                        attrs.onClose = handleLayoutEditorDialogClose
+
+                                        if (layoutEditorDialogOpen) {
+                                            // Layout Editor dialog
+                                            layoutEditorDialog {
+                                                attrs.open = layoutEditorDialogOpen
+                                                attrs.show = show
+                                                attrs.onApply = { newMutableShow ->
+                                                    props.webClient.onShowEdit(newMutableShow)
+                                                }
+                                                attrs.onClose = handleLayoutEditorDialogClose
+                                            }
+                                        }
+                                    }
+
+                                    AppMode.Scene -> {
+                                        sceneEditor {
+                                            attrs.sceneEditorClient = props.sceneEditorClient
+                                            attrs.mapperUi = props.mapperUi
+                                        }
                                     }
                                 }
                             }
@@ -445,6 +464,9 @@ external interface AppIndexProps : Props {
     var webClient: WebClient.Facade
     var undoStack: UndoStack<ShowEditorState>
     var stageManager: ClientStageManager
+
+    var sceneEditorClient: SceneEditorClient.Facade
+    var mapperUi: JsMapperUi
 }
 
 fun RBuilder.appIndex(handler: RHandler<AppIndexProps>) =

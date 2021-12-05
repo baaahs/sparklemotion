@@ -165,9 +165,11 @@ class ConstEntityMetadataProvider(val pixelCount: Int?): EntityMetadataProvider 
 class StrandCountEntityMetadataProvider(
     val data: Map<String, Int>
 ) : EntityMetadataProvider {
-    override fun getMetadataFor(entity: EntityData): EntityMetadata {
-        TODO("not implemented")
-    }
+    override fun getMetadataFor(entity: EntityData): EntityMetadata =
+        object : EntityMetadata {
+            override val expectedPixelCount: Int?
+                get() = data[entity.title]
+        }
 
     companion object {
         suspend fun open(file: Fs.File): StrandCountEntityMetadataProvider {
