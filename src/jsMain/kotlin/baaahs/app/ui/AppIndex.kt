@@ -272,7 +272,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             themeProvider(theme) {
                 cssBaseline { }
 
-                div(+Styles.root and themeStyles.appRoot and appDrawerStateStyle and editModeStyle) {
+                div(+themeStyles.appRoot and appDrawerStateStyle and editModeStyle) {
                     appToolbar {
                         attrs.editMode = editMode
                         attrs.onEditModeChange = handleEditModeChange
@@ -317,7 +317,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             }
                         }
 
-                        // TODO: this doesn't actuyally show up for some reason?
+                        // TODO: this doesn't actually show up for some reason?
                         if (props.webClient.isMapping) {
                             backdrop {
                                 attrs {

@@ -101,11 +101,22 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
     }
 
     val appRoot by css {
-        height = 100.vh
+        display = Display.grid
+        gridTemplateRows = GridTemplateRows("4em minmax(0, 1fr)")
+
+        position = Position.absolute
     }
 
     val appDrawerOpen by css {}
     val appDrawerClosed by css {}
+
+    val appContent by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+
+        within(appDrawerOpen) { mixIn(drawerOpenShift) }
+        within(appDrawerClosed) { mixIn(drawerClosedShift) }
+    }
 
     val appToolbar by css {
         mixIn(theme.mixins.toolbar)
@@ -120,7 +131,6 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 
     val appToolbarActions by css {
         display = Display.flex
-        transform { translateY(0.75.em) }
     }
 
     val title by css {
@@ -173,18 +183,6 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
         transform.translateY(1.em)
     }
 
-    val appContent by css {
-        display = Display.flex
-        flexDirection = FlexDirection.column
-        top = 3.em
-        left = 0.px
-        width = 100.pct
-        height = 100.pct - 3.em
-
-        within(appDrawerOpen) { mixIn(drawerOpenShift) }
-        within(appDrawerClosed) { mixIn(drawerClosedShift) }
-    }
-
     val appDrawer by css {
         position = Position.absolute
         width = drawerWidth
@@ -221,7 +219,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 }
 
 object Styles : StyleSheet("app-ui", isStatic = true) {
-    val root by css {
+    val adminRoot by css {
         display = Display.flex
 
         top = 0.px

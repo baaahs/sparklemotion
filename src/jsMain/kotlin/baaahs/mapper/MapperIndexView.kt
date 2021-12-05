@@ -62,7 +62,7 @@ val MapperIndexView = xComponent<MapperIndexViewProps>("MapperIndexView") { prop
         themeProvider(theme) {
             cssBaseline {}
 
-            div(+Styles.root) {
+            div(+Styles.adminRoot) {
                 appBar {
                     attrs.position = AppBarPosition.relative
 
