@@ -3,9 +3,9 @@ package baaahs.di
 import baaahs.MediaDevices
 import baaahs.ModelProvider
 import baaahs.PubSub
-import baaahs.admin.AdminClient
 import baaahs.browser.RealMediaDevices
 import baaahs.client.ClientStorage
+import baaahs.client.SceneEditorClient
 import baaahs.client.WebClient
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
@@ -60,7 +60,14 @@ open class JsUiWebClientModule(
             scoped { modelProvider }
             scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage"))  }
             scoped<Toolchain> { RootToolchain(get()) }
-            scoped { WebClient(get(), get(), get(), get(), get()) }
+            scoped { WebClient(get(), get(), get(), get(), get(), get(), get()) }
+            scoped { SceneEditorClient(get(), get()) }
+            scoped {
+                JsMapperUi(get()).also {
+                    // This has side-effects on mapperUi. Ugly.
+                    Mapper(get(), get(), it, get(), get(named(Qualifier.PinkyAddress)), get())
+                }
+            }
         }
     }
 }
@@ -77,7 +84,8 @@ class JsAdminWebClientModule(
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
             scoped { modelProvider }
-            scoped { AdminClient(get(), get(), pinkyAddress()) }
+            scoped { PubSub.Client(get(), get(named(WebClientModule.Qualifier.PinkyAddress)), Ports.PINKY_UI_TCP) }
+            scoped { SceneEditorClient(get(), get()) }
             scoped {
                 JsMapperUi(get()).also {
                     // This has side-effects on mapperUi. Ugly.

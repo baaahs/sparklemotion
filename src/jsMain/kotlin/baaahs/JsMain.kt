@@ -105,7 +105,7 @@ private fun launchSimulator(
             JsSimulatorModule(modelProvider, network, pinkyAddress, Dispatchers.Main, pixelDensity, pixelSpacing).getModule(),
             JsSimPinkyModule(modelProvider, pinkySettings, Dispatchers.Main).getModule(),
             JsUiWebClientModule(modelProvider).getModule(),
-            JsAdminWebClientModule(modelProvider).getModule(),
+//            JsAdminWebClientModule(modelProvider).getModule(),
         )
     }.koin
 

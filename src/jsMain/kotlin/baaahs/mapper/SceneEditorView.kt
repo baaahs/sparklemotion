@@ -1,8 +1,9 @@
 package baaahs.mapper
 
-import baaahs.admin.AdminClient
 import baaahs.app.ui.AllStyles
 import baaahs.app.ui.Styles
+import baaahs.app.ui.model.modelEditor
+import baaahs.client.SceneEditorClient
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.JsClock
@@ -27,12 +28,13 @@ import react.dom.div
 import styled.inlineStyles
 
 private enum class PageTabs {
+    Model,
     Controllers,
     Fixtures,
     Surface_Mapping
 }
 
-val MapperIndexView = xComponent<MapperIndexViewProps>("MapperIndexView") { props ->
+val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { props ->
     val theme = memo {
         createMuiTheme {
             palette { type = PaletteType.dark }
@@ -40,18 +42,18 @@ val MapperIndexView = xComponent<MapperIndexViewProps>("MapperIndexView") { prop
     }
 
     val clock = memo { JsClock }
-    val plugins = props.adminClient.plugins
+    val plugins = props.sceneEditorClient.plugins
 
     val myAppContext = memo(theme) {
         jsObject<MapperAppContext> {
-            this.adminClient = props.adminClient
+            this.sceneEditorClient = props.sceneEditorClient
             this.plugins = plugins
             this.allStyles = AllStyles(theme)
             this.clock = clock
         }
     }
 
-    var selectedTab by state { PageTabs.Surface_Mapping }
+    var selectedTab by state { PageTabs.Model }
     val handleChangeTab by handler { _: Event, tab: PageTabs ->
         selectedTab = tab
     }
@@ -79,14 +81,16 @@ val MapperIndexView = xComponent<MapperIndexViewProps>("MapperIndexView") { prop
                     }
                 }
 
+                tabPanel(PageTabs.Model, selectedTab) {
+                    modelEditor {
+                    }
+                }
+
                 tabPanel(PageTabs.Controllers, selectedTab) {
                     deviceConfigurer {}
-
                 }
 
                 tabPanel(PageTabs.Fixtures, selectedTab) {
-
-
                 }
 
                 tabPanel(PageTabs.Surface_Mapping, selectedTab) {
@@ -114,10 +118,10 @@ private fun RBuilder.tabPanel(tab: PageTabs, selectedTab: PageTabs, block: RBuil
     }
 }
 
-external interface MapperIndexViewProps : Props {
-    var adminClient: AdminClient.Facade
+external interface SceneEditorViewProps : Props {
+    var sceneEditorClient: SceneEditorClient.Facade
     var mapperUi: JsMapperUi
 }
 
-fun RBuilder.mapperIndex(handler: RHandler<MapperIndexViewProps>) =
-    child(MapperIndexView, handler = handler)
+fun RBuilder.sceneEditor(handler: RHandler<SceneEditorViewProps>) =
+    child(SceneEditorView, handler = handler)

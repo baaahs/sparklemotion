@@ -1,7 +1,7 @@
 package baaahs.mapper
 
 import baaahs.MediaDevices
-import baaahs.admin.AdminClient
+import baaahs.client.SceneEditorClient
 import baaahs.context2d
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
@@ -58,7 +58,7 @@ class MapperStatus : Observable() {
 }
 
 class JsMapperUi(
-    private val adminClient: AdminClient,
+    private val sceneEditorClient: SceneEditorClient,
     private val statusListener: StatusListener? = null
 ) : Observable(), MapperUi, HostedWebApp {
     private lateinit var listener: MapperUi.Listener
@@ -236,8 +236,8 @@ class JsMapperUi(
     }
 
     override fun render(): ReactElement {
-        return createElement(MapperIndexView, jsObject {
-            adminClient = this@JsMapperUi.adminClient.facade
+        return createElement(SceneEditorView, jsObject {
+            sceneEditorClient = this@JsMapperUi.sceneEditorClient.facade
             mapperUi = this@JsMapperUi
         })
     }
@@ -250,7 +250,7 @@ class JsMapperUi(
         statusListener?.mapperStatusChanged(false)
 
         listener.onClose()
-        adminClient.onClose()
+        sceneEditorClient.onClose()
     }
 
     fun onResize(width: Int, height: Int) {

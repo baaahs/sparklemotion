@@ -44,6 +44,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
             attrs.onChange = { newNode -> currentNode = newNode }
             attrs.className = "mosaic mosaic-blueprint-theme bp3-dark"
             attrs.zeroStateView = document.createElement("div")
+            attrs.resize = js("{\"minimumPaneSizePercentage\": 1}")
 
             attrs.renderTile = { window, path ->
                 // TODO: Ugh, are there more idiomatic ways to do any of this? Yes! buildElement {}
