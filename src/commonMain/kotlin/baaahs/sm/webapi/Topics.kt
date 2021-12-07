@@ -50,21 +50,24 @@ object Topics {
         )
 
     class Commands(serialModule: SerializersModule) {
-        val newShow = PubSub.CommandPort(
-            "pinky/newShow", NewShowCommand.serializer(), Unit.serializer(), serialModule
-        )
-        val switchToShow = PubSub.CommandPort(
-            "pinky/switchToShow", SwitchToShowCommand.serializer(), Unit.serializer(), serialModule
-        )
-        val saveShow = PubSub.CommandPort(
-            "pinky/saveShow", SaveShowCommand.serializer(), Unit.serializer(), serialModule
-        )
-        val saveAsShow = PubSub.CommandPort(
-            "pinky/saveAsShow", SaveAsShowCommand.serializer(), Unit.serializer(), serialModule
-        )
         val searchShaderLibraries = PubSub.CommandPort(
             "pinky/shaderLibraries/search",
             SearchShaderLibraries.serializer(), SearchShaderLibraries.Response.serializer(), serialModule
+        )
+    }
+
+    class DocumentCommands(documentType: String, serialModule: SerializersModule) {
+        val newCommand = PubSub.CommandPort(
+            "pinky/$documentType/new", NewCommand.serializer(), Unit.serializer(), serialModule
+        )
+        val switchToCommand = PubSub.CommandPort(
+            "pinky/$documentType/switchTo", SwitchToCommand.serializer(), Unit.serializer(), serialModule
+        )
+        val saveCommand = PubSub.CommandPort(
+            "pinky/$documentType/save", SaveCommand.serializer(), Unit.serializer(), serialModule
+        )
+        val saveAsCommand = PubSub.CommandPort(
+            "pinky/$documentType/saveAs", SaveAsCommand.serializer(), Unit.serializer(), serialModule
         )
     }
 }

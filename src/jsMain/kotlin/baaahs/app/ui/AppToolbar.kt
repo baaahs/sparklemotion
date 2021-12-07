@@ -62,12 +62,25 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
         }
     }
 
+    val handleSave by eventHandler {
+        appContext.notifier.launchAndReportErrors {
+            appContext.showManager.onSave()
+        }
+    }
+
+    val handleSaveAs by eventHandler {
+        appContext.notifier.launchAndReportErrors {
+            appContext.showManager.onSaveAs()
+        }
+    }
+
     val show = webClient.openShow
     val showProblemsSeverity = webClient.showProblems.map { it.severity }.maxOrNull()
 
     var showProblemsDialogIsOpen by state { false }
     val toggleProblems = callback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
     val closeProblems = callback { _: Event, _: String -> showProblemsDialogIsOpen = false }
+    val editMode = props.editMode == true
 
     appBar(themeStyles.appToolbar on AppBarStyle.root) {
         attrs.position = AppBarPosition.relative
@@ -91,7 +104,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                 show?.let { problemBadge(show, themeStyles.problemBadge) }
 
-                if (show != null && props.editMode) {
+                if (show != null && editMode) {
                     div(+themeStyles.editButton) {
                         icon(materialui.icons.Edit)
                         attrs.onClickFunction = handleShowEditButtonClick.withEvent()
@@ -103,7 +116,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
             div(+themeStyles.appToolbarActions) {
                 styledDiv {
-                    if (!props.editMode && !webClient.showIsModified) css { opacity = 0 }
+                    if (!editMode && !webClient.showIsModified) css { opacity = 0 }
                     css {
                         transition("opacity", duration = .5.s, timing = Timing.linear)
                     }
@@ -127,14 +140,14 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     if (webClient.showFile == null) {
                         iconButton {
                             icon(materialui.icons.FileCopy)
-                            attrs.onClickFunction = props.onSaveShowAs.withEvent()
+                            attrs.onClickFunction = handleSaveAs
                             typographyH6 { +"Save As…" }
                         }
                     } else {
                         iconButton {
                             icon(materialui.icons.Save)
                             attrs.disabled = !webClient.showIsModified
-                            attrs.onClickFunction = props.onSaveShow.withEvent()
+                            attrs.onClickFunction = handleSave
                             typographyH6 { +"Save" }
                         }
                     }
@@ -187,15 +200,14 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     }
 }
 
-private val Severity.cssClass get() = name.toLowerCase() + "Severity"
+private val Severity.cssClass get() = name.lowercase() + "Severity"
 
 external interface AppToolbarProps : Props {
-    var editMode: Boolean
+    var appMode: AppMode
+    var editMode: Boolean?
     var onEditModeChange: () -> Unit
     var onMenuButtonClick: () -> Unit
     var undoStack: UndoStack<ShowEditorState>
-    var onSaveShow: () -> Unit
-    var onSaveShowAs: () -> Unit
 }
 
 fun RBuilder.appToolbar(handler: RHandler<AppToolbarProps>) =

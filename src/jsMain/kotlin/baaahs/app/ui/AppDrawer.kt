@@ -1,6 +1,6 @@
 package baaahs.app.ui
 
-import baaahs.io.Fs
+import baaahs.app.ui.document.documentMenu
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
 import baaahs.ui.withEvent
@@ -43,11 +43,6 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
         props.onAppModeChange(AppMode.valueOf(value))
     }
 
-    val handleDownloadShow by eventHandler { _: Event ->
-        val show = appContext.webClient.show!!
-        UiActions.downloadShow(show, appContext.plugins)
-    }
-
     drawer(
         themeStyles.appDrawer on DrawerStyle.root,
         themeStyles.appDrawerPaper on DrawerStyle.paperAnchorLeft
@@ -77,7 +72,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                 } else {
                     icon(materialui.icons.ChevronRight)
                 }
-                if (props.forcedOpen) {
+                if (props.forcedOpen == true) {
                     attrs.disabled = true
                 }
             }
@@ -88,49 +83,8 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
         when (props.appMode) {
             AppMode.Show -> {
                 list {
-                    listItem {
-                        attrs.button = true
-                        attrs.onClickFunction = props.onNewShow.withEvent()
-                        listItemIcon { icon(materialui.icons.Add) }
-                        listItemText { attrs.primary { +"New Show…" } }
-                    }
-
-                    listItem {
-                        attrs.button = true
-                        attrs.onClickFunction = props.onOpenShow.withEvent()
-                        listItemIcon { icon(materialui.icons.OpenInBrowser) }
-                        listItemText { attrs.primary { +if (props.showLoaded) "Switch To Show…" else "Open Show…" } }
-                    }
-
-                    listItem {
-                        attrs.button = true
-                        attrs.disabled = !props.showUnsaved || props.showFile == null
-                        attrs.onClickFunction = props.onSaveShow.withEvent()
-                        listItemIcon { icon(materialui.icons.Save) }
-                        listItemText { attrs.primary { +"Save Show" } }
-                    }
-
-                    listItem {
-                        attrs.button = true
-                        attrs.onClickFunction = props.onSaveShowAs.withEvent()
-                        listItemIcon { icon(materialui.icons.FileCopy) }
-                        listItemText { attrs.primary { +"Save Show As…" } }
-                    }
-
-                    listItem {
-                        attrs.button = true
-                        attrs.disabled = appContext.webClient.show == null
-                        attrs.onClickFunction = handleDownloadShow
-                        listItemIcon { icon(CommonIcons.Download) }
-                        listItemText { attrs.primary { +"Download Show" } }
-                    }
-
-                    listItem {
-                        attrs.button = true
-                        attrs.disabled = appContext.webClient.show == null
-                        attrs.onClickFunction = props.onCloseShow.withEvent()
-                        listItemIcon { icon(materialui.icons.Close) }
-                        listItemText { attrs.primary { +"Close Show" } }
+                    documentMenu {
+                        attrs.documentManager = appContext.showManager
                     }
 
                     divider {}
@@ -160,52 +114,9 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
 
             AppMode.Scene -> {
                 list {
-                    listItem {
-                        attrs.button = true
-                        attrs.onClickFunction = props.onNewShow.withEvent()
-                        listItemIcon { icon(materialui.icons.Add) }
-                        listItemText { attrs.primary { +"New Scene…" } }
+                    documentMenu {
+                        attrs.documentManager = appContext.sceneManager
                     }
-
-                    listItem {
-                        attrs.button = true
-                        attrs.onClickFunction = props.onOpenShow.withEvent()
-                        listItemIcon { icon(materialui.icons.OpenInBrowser) }
-                        listItemText { attrs.primary { +if (props.showLoaded) "Switch To Scene…" else "Open Scene…" } }
-                    }
-
-                    listItem {
-                        attrs.button = true
-                        attrs.disabled = !props.showUnsaved || props.showFile == null
-                        attrs.onClickFunction = props.onSaveShow.withEvent()
-                        listItemIcon { icon(materialui.icons.Save) }
-                        listItemText { attrs.primary { +"Save Scene" } }
-                    }
-
-                    listItem {
-                        attrs.button = true
-                        attrs.onClickFunction = props.onSaveShowAs.withEvent()
-                        listItemIcon { icon(materialui.icons.FileCopy) }
-                        listItemText { attrs.primary { +"Save Scene As…" } }
-                    }
-
-                    listItem {
-                        attrs.button = true
-                        attrs.disabled = appContext.webClient.show == null
-                        attrs.onClickFunction = handleDownloadShow
-                        listItemIcon { icon(CommonIcons.Download) }
-                        listItemText { attrs.primary { +"Download Scene" } }
-                    }
-
-                    listItem {
-                        attrs.button = true
-                        attrs.disabled = appContext.webClient.show == null
-                        attrs.onClickFunction = props.onCloseShow.withEvent()
-                        listItemIcon { icon(materialui.icons.Close) }
-                        listItemText { attrs.primary { +"Close Scene" } }
-                    }
-
-                    divider {}
                 }
             }
         }
@@ -236,29 +147,20 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
 }
 
 external interface AppDrawerProps : Props {
-    var open: Boolean
-    var forcedOpen: Boolean
+    var open: Boolean?
+    var forcedOpen: Boolean?
     var onClose: () -> Unit
 
     var appMode: AppMode
     var onAppModeChange: (AppMode) -> Unit
 
-    var showLoaded: Boolean
-    var showFile: Fs.File?
-    var editMode: Boolean
-    var showUnsaved: Boolean
+    var editMode: Boolean?
     var onEditModeChange: () -> Unit
 
     var onLayoutEditorDialogToggle: () -> Unit
 
-    var darkMode: Boolean
+    var darkMode: Boolean?
     var onDarkModeChange: () -> Unit
-
-    var onNewShow: () -> Unit
-    var onOpenShow: () -> Unit
-    var onSaveShow: () -> Unit
-    var onSaveShowAs: () -> Unit
-    var onCloseShow: () -> Unit
 
     var onSettings: () -> Unit
 }
