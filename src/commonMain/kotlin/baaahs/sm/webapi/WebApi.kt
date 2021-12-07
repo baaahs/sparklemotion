@@ -14,16 +14,16 @@ data class ClientData(
 )
 
 @Serializable
-class NewShowCommand(val template: Show? = null)
+class NewCommand(val template: Show? = null)
 
 @Serializable
-class SwitchToShowCommand(val file: Fs.File?)
+class SwitchToCommand(val file: Fs.File?)
 
 @Serializable
-class SaveShowCommand
+class SaveCommand
 
 @Serializable
-class SaveAsShowCommand(val file: Fs.File)
+class SaveAsCommand(val file: Fs.File)
 
 @Serializable
 class SearchShaderLibraries(val terms: String) {

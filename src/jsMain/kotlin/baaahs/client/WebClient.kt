@@ -3,9 +3,12 @@ package baaahs.client
 import baaahs.*
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.AppIndex
+import baaahs.app.ui.dialog.FileDialog
+import baaahs.client.document.SceneManager
+import baaahs.client.document.ShowManager
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
-import baaahs.io.PubSubRemoteFsClientBackend
+import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibraries
 import baaahs.mapper.JsMapperUi
 import baaahs.net.Network
@@ -15,13 +18,11 @@ import baaahs.show.live.OpenShow
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableShow
 import baaahs.sim.HostedWebApp
-import baaahs.sm.webapi.*
+import baaahs.sm.webapi.ShowProblem
+import baaahs.sm.webapi.Topics
 import baaahs.util.UndoStack
+import baaahs.util.globalLaunch
 import kotlinext.js.jsObject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.serialization.modules.SerializersModule
 import react.ReactElement
 import react.createElement
 
@@ -32,7 +33,12 @@ class WebClient(
     private val modelProvider: ModelProvider,
     private val storage: ClientStorage,
     private val sceneEditorClient: SceneEditorClient,
-    private val mapperUi: JsMapperUi
+    private val mapperUi: JsMapperUi,
+    remoteFsSerializer: RemoteFsSerializer,
+    private val notifier: Notifier,
+    private val fileDialog: FileDialog,
+    private val showManager: ShowManager,
+    private val sceneManager: SceneManager
 ) : HostedWebApp {
     private val facade = Facade()
 
@@ -40,15 +46,8 @@ class WebClient(
         pubSub.addStateChangeListener(it)
     }
 
-    private var show: Show? = null
     private var openShow: OpenShow? = null
 
-    private var savedShow: Show? = null
-    private var showIsUnsaved: Boolean = false
-    private var showFile: Fs.File? = null
-
-    @Suppress("UNCHECKED_CAST")
-    private val remoteFsSerializer = PubSubRemoteFsClientBackend(pubSub)
     private val clientData by pubSub.state(Topics.createClientData(remoteFsSerializer), null) {
         facade.notifyChanged()
     }
@@ -71,16 +70,6 @@ class WebClient(
         }
     }
 
-    private val serverNotices = arrayListOf<ServerNotice>()
-    private val serverNoticesChannel =
-        pubSub.subscribe(Topics.serverNotices) {
-            serverNotices.clear()
-            serverNotices.addAll(it)
-            facade.notifyChanged()
-        }
-
-    var clientError: ServerNotice? = null
-
     private val showProblems = arrayListOf<ShowProblem>()
     init {
         pubSub.subscribe(Topics.showProblems) {
@@ -92,35 +81,12 @@ class WebClient(
 
     private val undoStack = UndoStack<ShowEditorState>()
 
-    private val serverCommands = object {
-        private var nextRequestId = 0
-        private val requestCallbacks = mutableMapOf<Int, Function<*>>()
-
-        private fun <T> getCallback(requestId: Int): (T) -> Unit =
-            requestCallbacks[requestId].unsafeCast<(T) -> Unit>()
-
-        private fun saveCallback(callback: Function<*>): Int {
-            val requestId = nextRequestId++
-            requestCallbacks[requestId] = callback
-            return requestId
-        }
-
-        private val commands = Topics.Commands(SerializersModule {
-            include(remoteFsSerializer.serialModule)
-            include(toolchain.plugins.serialModule)
-        })
-        val newShow = pubSub.commandSender(commands.newShow)
-        val switchToShow = pubSub.commandSender(commands.switchToShow)
-        val saveShow = pubSub.commandSender(commands.saveShow)
-        val saveAsShow = pubSub.commandSender(commands.saveAsShow)
-    }
-
     private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
 
     private var uiSettings = UiSettings()
 
     init {
-        launch {
+        globalLaunch {
             storage.loadSettings()?.let { updateUiSettings(it, saveToStorage = false) }
         }
     }
@@ -135,10 +101,7 @@ class WebClient(
         openShow = newOpenShow
         openShow?.use()
 
-        this.show = newShow
-        this.showIsUnsaved = newIsUnsaved
-        this.showFile = newFile
-        if (!newIsUnsaved) this.savedShow = show
+        showManager.update(newShow, newFile, newIsUnsaved)
     }
 
     override fun render(): ReactElement {
@@ -149,6 +112,8 @@ class WebClient(
             this.webClient = facade
             this.undoStack = this@WebClient.undoStack
             this.stageManager = this@WebClient.stageManager
+            this.showManager = this@WebClient.showManager
+            this.sceneManager = this@WebClient.sceneManager
 
             this.sceneEditorClient = this@WebClient.sceneEditorClient.facade
             this.mapperUi = this@WebClient.mapperUi
@@ -160,24 +125,21 @@ class WebClient(
         pubSub.removeStateChangeListener(pubSubListener)
     }
 
-    private fun confirmServerNotice(id: String) {
-        serverNotices.removeAll { it.id == id }
-        serverNoticesChannel.onChange(this@WebClient.serverNotices)
-        facade.notifyChanged()
-    }
-
     private fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {
         if (uiSettings != newSettings) {
             uiSettings = newSettings
             facade.notifyChanged()
 
             if (saveToStorage) {
-                launch { storage.saveSettings(newSettings) }
+                globalLaunch { storage.saveSettings(newSettings) }
             }
         }
     }
 
     inner class Facade : baaahs.ui.Facade(), EditHandler {
+        val fileDialog: FileDialog
+            get() = this@WebClient.fileDialog
+
         val plugins: Plugins
             get() = this@WebClient.toolchain.plugins
 
@@ -200,19 +162,19 @@ class WebClient(
             get() = this@WebClient.modelProvider
 
         val show: Show?
-            get() = this@WebClient.show
+            get() = this@WebClient.showManager.document
 
         val showFile: Fs.File?
-            get() = this@WebClient.showFile
+            get() = this@WebClient.showManager.file
 
         val showIsModified: Boolean
-            get() = this@WebClient.showIsUnsaved
+            get() = this@WebClient.showManager.isUnsaved
 
         val openShow: OpenShow?
             get() = this@WebClient.openShow
 
-        val serverNotices : List<ServerNotice>
-            get() = this@WebClient.serverNotices + listOfNotNull(this@WebClient.clientError)
+        val notifier: Notifier.Facade
+            get() = this@WebClient.notifier.facade
 
         val showProblems : List<ShowProblem>
             get() = this@WebClient.showProblems
@@ -232,7 +194,7 @@ class WebClient(
         }
 
         override fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean) {
-            val isUnsaved = savedShow?.equals(show) != true
+            val isUnsaved = this@WebClient.showManager.isModified(show)
             val showEditState = show.withState(showState, isUnsaved, showFile)
             showEditStateChannel.onChange(showEditState)
             switchTo(showEditState)
@@ -248,53 +210,8 @@ class WebClient(
             facade.notifyChanged()
         }
 
-        private fun launchAndReportErrors(block: suspend () -> Unit) {
-            launch {
-                try {
-                    block()
-                } catch(e: Exception) {
-                    clientError = ServerNotice(
-                        "Command Failed",
-                        e.message,
-                        e.stackTraceToString(),
-                        "_clientError_"
-                    )
-                    notifyChanged()
-                }
-            }
-        }
-
-        fun onNewShow(newShow: Show? = null) =
-            launchAndReportErrors { serverCommands.newShow(NewShowCommand(newShow)) }
-
-        fun onOpenShow(file: Fs.File?) =
-            launchAndReportErrors { serverCommands.switchToShow(SwitchToShowCommand(file)) }
-
-        fun onSaveShow() =
-            launchAndReportErrors { serverCommands.saveShow(SaveShowCommand()) }
-
-        fun onSaveAsShow(file: Fs.File) =
-            launchAndReportErrors { serverCommands.saveAsShow(SaveAsShowCommand(file)) }
-
-        fun onCloseShow() =
-            launchAndReportErrors { serverCommands.switchToShow(SwitchToShowCommand(null)) }
-
-        fun confirmServerNotice(id: String) {
-            if (id == "_clientError_") {
-                this@WebClient.clientError = null
-                notifyChanged()
-            } else {
-                this@WebClient.confirmServerNotice(id)
-            }
-        }
-
         fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {
             this@WebClient.updateUiSettings(newSettings, saveToStorage)
         }
-    }
-
-    companion object {
-        private fun launch(block: suspend CoroutineScope.() -> Unit) =
-            GlobalScope.launch(block = block)
     }
 }

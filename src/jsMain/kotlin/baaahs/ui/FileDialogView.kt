@@ -3,9 +3,8 @@ package baaahs.ui
 import baaahs.app.ui.appContext
 import baaahs.io.Fs
 import baaahs.ui.Styles.fileDialogFileList
+import baaahs.util.globalLaunch
 import baaahs.window
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onDoubleClickFunction
@@ -31,50 +30,53 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.attrs
 
-private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
+private val FileDialogView = xComponent<Props>("FileDialog") { props ->
     val appContext = useContext(appContext)
-    observe(appContext.webClient)
+    val fileDialog = appContext.fileDialog
+    observe(fileDialog)
 
     val fsRoot = appContext.webClient.fsRoot
-        ?: return@xComponent // Too early to render, so bail.
-
-    val scope = memo { GlobalScope }
-    val dialogEl = useRef(null)
+    observe(appContext.webClient)
     var currentDir by state { fsRoot }
-    var filesInDir by state { emptyList<Fs.File>() }
-    var selectedFile by state { props.defaultTarget }
+    if (currentDir == null && fsRoot != null) currentDir = fsRoot
 
-    onChange("default target", props.defaultTarget) {
-        props.defaultTarget?.let {
-            val job = scope.launch {
+    val request = fileDialog.fileRequest
+
+    val dialogEl = useRef(null)
+    var filesInDir by state { emptyList<Fs.File>() }
+    var selectedFile by state { request?.defaultTarget }
+    val isSaveAs = request?.isSaveAs ?: false
+
+    onChange("default target", request?.defaultTarget) {
+        request?.defaultTarget?.let {
+            val job = globalLaunch {
                 currentDir = if (it.isDir()) it else it.parent!!
             }
             withCleanup {
                 job.cancel()
             }
         }
-        props.defaultTarget
     }
 
     val handleFileSingleClick = callback { file: Fs.File ->
-        scope.launch {
+        globalLaunch {
             if (!file.fs.isDirectory(file)) {
                 selectedFile = file
             }
         }
     }
 
-    val handleFileDoubleClick = callback(props.isSaveAs, props.onSelect) { file: Fs.File ->
-        scope.launch {
+    val handleFileDoubleClick = callback(isSaveAs) { file: Fs.File ->
+        globalLaunch {
             if (file.fs.isDirectory(file)) {
                 currentDir = file
             } else {
-                if (props.isSaveAs && file.fs.exists(file)) {
+                if (isSaveAs && file.fs.exists(file)) {
                     if (window.confirm("Overwrite ${file.name}?")) {
-                        props.onSelect(file)
+                        fileDialog.onSelect(file)
                     }
                 } else {
-                    props.onSelect(file)
+                    fileDialog.onSelect(file)
                 }
             }
         }
@@ -82,31 +84,41 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
 
     val handleFileNameChange = callback(currentDir) { event: Event ->
         val str = event.target.value
-        selectedFile = currentDir.resolve(str)
+        selectedFile = currentDir?.resolve(str)
     }
 
-    val handleConfirm = callback(selectedFile, props.onSelect) { _: Event ->
-        selectedFile?.let { props.onSelect(it) }; Unit
+    val handleConfirm = callback(selectedFile) { _: Event ->
+        selectedFile?.let {
+            globalLaunch { fileDialog.onSelect(it) }
+        }; Unit
     }
 
-    val handleClose = callback(props.onCancel) { _: Event, _: String ->
-        props.onCancel()
+    val handleClose = callback { _: Event, _: String ->
+        globalLaunch { fileDialog.onCancel() }
+        Unit
     }
 
-    val handleCancel = callback(props.onCancel) { _: Event ->
-        props.onCancel()
+    val handleCancel = callback { _: Event ->
+        globalLaunch { fileDialog.onCancel() }
+        Unit
     }
 
-    onChange("selected fs/dir", props.isOpen, currentDir) {
-        val job = scope.launch {
-            filesInDir = currentDir.listFiles()
-                .sortedWith(compareBy({ !(it.isDirectory ?: false) }, { it.name }))
+    onChange("selected fs/dir", currentDir) {
+        currentDir?.let { currentDir ->
+            val job = globalLaunch {
+                filesInDir = currentDir.listFiles()
+                    .sortedWith(compareBy({ !(it.isDirectory ?: false) }, { it.name }))
+            }
+            withCleanup { job.cancel() }
         }
-        withCleanup { job.cancel() }
     }
+
+
+    if (fsRoot == null || currentDir == null) return@xComponent // Too early to render, so bail.
+    if (request == null) return@xComponent
 
     val breadcrumbs = arrayListOf<Fs.File>()
-    var breadcrumbDir: Fs.File? = currentDir.parent
+    var breadcrumbDir: Fs.File? = currentDir?.parent
     while (breadcrumbDir != null) {
         breadcrumbs.add(breadcrumbDir)
         breadcrumbDir = breadcrumbDir.parent
@@ -117,13 +129,13 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
     dialog {
         ref = dialogEl
         attrs {
-            open = props.isOpen
+            open = true
             onClose = handleClose
             fullWidth = true
             maxWidth = DialogMaxWidth.md
         }
 
-        dialogTitle { +props.title }
+        dialogTitle { +request.title }
 
         dialogContent {
             breadcrumbs {
@@ -133,11 +145,11 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
                         +(if (parentDir.name.isEmpty()) "Filesystem Root" else parentDir.name)
                     }
                 }
-                typography { +currentDir.name }
+                typography { +currentDir!!.name }
             }
 
             list(fileDialogFileList on ListStyle.root) {
-                val parent = currentDir.parent
+                val parent = currentDir!!.parent
                 if (parent != null) {
                     listItem {
                         attrs.button = true
@@ -150,7 +162,7 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
                 filesInDir.forEach { file ->
                     val icon = if (file.isDirectory == true) materialui.icons.Folder else materialui.icons.InsertDriveFile
                     val fileDisplay = FileDisplay(file.name, icon, file.name.startsWith("."))
-                    props.fileDisplayCallback?.invoke(file, fileDisplay)
+                    fileDialog.adjustFileDisplay(file, fileDisplay)
 
                     if (!fileDisplay.isHidden) {
                         listItem {
@@ -165,13 +177,13 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
                 }
             }
 
-            if (props.isSaveAs) {
+            if (isSaveAs) {
                 textField {
                     attrs.label { +"File name…" }
                     attrs.autoFocus = true
                     attrs.fullWidth = true
                     attrs.onChangeFunction = handleFileNameChange
-                    attrs.value = selectedFile?.name ?: props.defaultTarget?.name ?: ""
+                    attrs.value = selectedFile?.name ?: request.defaultTarget?.name ?: ""
                 }
             }
         }
@@ -183,23 +195,13 @@ private val FileDialog = xComponent<FileDialogProps>("FileDialog") { props ->
                     attrs.onClickFunction = handleCancel
                 }
                 button {
-                        +if (props.isSaveAs) "Save" else "Open"
+                        +if (isSaveAs) "Save" else "Open"
                         attrs.onClickFunction = handleConfirm
                     attrs.disabled = selectedFile == null
                 }
             }
         }
     }
-}
-
-external interface FileDialogProps : Props {
-    var title: String
-    var isOpen: Boolean
-    var isSaveAs: Boolean
-    var fileDisplayCallback: ((Fs.File, FileDisplay) -> Unit)?
-    var onSelect: (Fs.File) -> Unit
-    var onCancel: () -> Unit
-    var defaultTarget: Fs.File?
 }
 
 class FileDisplay(
@@ -209,5 +211,5 @@ class FileDisplay(
     var isSelectable: Boolean = true
 )
 
-fun RBuilder.fileDialog(handler: RHandler<FileDialogProps>) =
-    child(FileDialog, handler = handler)
+fun RBuilder.fileDialog(handler: RHandler<Props>) =
+    child(FileDialogView, handler = handler)

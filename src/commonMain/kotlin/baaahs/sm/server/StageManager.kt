@@ -15,7 +15,7 @@ import baaahs.show.Show
 import baaahs.show.buildEmptyShow
 import baaahs.show.live.OpenShow
 import baaahs.sm.webapi.ClientData
-import baaahs.sm.webapi.NewShowCommand
+import baaahs.sm.webapi.NewCommand
 import baaahs.sm.webapi.Topics
 import baaahs.ui.addObserver
 import baaahs.util.Clock
@@ -176,21 +176,21 @@ class StageManager(
         var showIsUnsaved: Boolean = false
 
         init {
-            val commands = Topics.Commands(SerializersModule {
+            val commands = Topics.DocumentCommands("show", SerializersModule {
                 include(remoteFsSerializer.serialModule)
                 include(toolchain.plugins.serialModule)
             })
-            pubSub.listenOnCommandChannel(commands.newShow) { command -> handleNewShow(command) }
-            pubSub.listenOnCommandChannel(commands.switchToShow) { command -> handleSwitchToShow(command.file) }
-            pubSub.listenOnCommandChannel(commands.saveShow) { command -> handleSaveShow() }
-            pubSub.listenOnCommandChannel(commands.saveAsShow) { command ->
+            pubSub.listenOnCommandChannel(commands.newCommand) { command -> handleNewShow(command) }
+            pubSub.listenOnCommandChannel(commands.switchToCommand) { command -> handleSwitchToShow(command.file) }
+            pubSub.listenOnCommandChannel(commands.saveCommand) { command -> handleSaveShow() }
+            pubSub.listenOnCommandChannel(commands.saveAsCommand) { command ->
                 val saveAsFile = storage.resolve(command.file.fullPath)
                 handleSaveAsShow(saveAsFile)
                 updateRunningShowPath(saveAsFile)
             }
         }
 
-        private suspend fun handleNewShow(command: NewShowCommand) {
+        private suspend fun handleNewShow(command: NewCommand) {
             switchTo(command.template ?: buildEmptyShow())
         }
 

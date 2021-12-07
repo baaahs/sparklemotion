@@ -9,41 +9,25 @@ import baaahs.app.ui.settings.settingsDialog
 import baaahs.client.ClientStageManager
 import baaahs.client.SceneEditorClient
 import baaahs.client.WebClient
+import baaahs.client.document.SceneManager
+import baaahs.client.document.ShowManager
 import baaahs.gl.withCache
-import baaahs.io.Fs
-import baaahs.io.resourcesFs
 import baaahs.mapper.JsMapperUi
-import baaahs.mapper.Storage
 import baaahs.mapper.sceneEditor
-import baaahs.show.SampleData
 import baaahs.ui.*
 import baaahs.util.JsClock
 import baaahs.util.UndoStack
 import baaahs.window
 import external.ErrorBoundary
 import kotlinext.js.jsObject
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.html.js.onClickFunction
 import materialui.components.backdrop.backdrop
-import materialui.components.backdrop.enum.BackdropStyle
 import materialui.components.circularprogress.circularProgress
 import materialui.components.container.container
 import materialui.components.cssbaseline.cssBaseline
-import materialui.components.dialog.dialog
-import materialui.components.dialogcontent.dialogContent
-import materialui.components.dialogtitle.dialogTitle
-import materialui.components.list.list
-import materialui.components.listitem.listItem
-import materialui.components.listitemtext.listItemText
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.components.typography.typographyH6
 import materialui.icon
-import materialui.lab.components.alert.alert
-import materialui.lab.components.alert.enums.AlertSeverity
-import materialui.lab.components.alert.enums.AlertStyle
-import materialui.lab.components.alerttitle.alertTitle
 import materialui.styles.createMuiTheme
 import materialui.styles.muitheme.options.palette
 import materialui.styles.palette.PaletteType
@@ -54,7 +38,6 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.dom.p
-import react.dom.pre
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val webClient = props.webClient
@@ -106,6 +89,10 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.allStyles = allStyles
             this.prompt = { prompt = it }
             this.clock = JsClock
+            this.showManager = props.showManager
+            this.sceneManager = props.sceneManager
+            this.fileDialog = webClient.fileDialog
+            this.notifier = webClient.notifier
 
             this.openEditor = { editIntent ->
                 editableManager.openEditor(
@@ -136,98 +123,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handleShowStateChange = callback {
         webClient.onShowStateChange()
         forceRender()
-    }
-
-    var fileDialogOpen by state { false }
-    var fileDialogIsSaveAs by state { false }
-    val handleFileSelected = callback { file: Fs.File ->
-        fileDialogOpen = false
-        if (fileDialogIsSaveAs) {
-            webClient.onSaveAsShow(file.withExtension(".sparkle"))
-        } else {
-            webClient.onOpenShow(file)
-        }
-    }
-    val handleFileDialogCancel = callback { fileDialogOpen = false }
-
-    fun confirmCloseUnsaved(): Boolean {
-        return true
-    }
-
-    val handleNewShow = callback {
-        if (webClient.showIsModified) confirmCloseUnsaved() || return@callback
-        renderDialog = {
-            dialog {
-                attrs.open = true
-                attrs.onClose = { _, _ -> renderDialog = null }
-
-                dialogTitle { +"New show…" }
-                dialogContent {
-                    list {
-                        listItem {
-                            attrs.button = true
-                            attrs.onClickFunction = { _ ->
-                                webClient.onNewShow()
-                                renderDialog = null
-                            }
-                            listItemText {
-                                attrs.primary { +"Blank" }
-                            }
-                        }
-                    }
-                    list {
-                        listItem {
-                            attrs.button = true
-                            attrs.onClickFunction = { _ ->
-                                webClient.onNewShow(SampleData.createSampleShow(withHeadlightsMode = true).getShow())
-                                renderDialog = null
-                            }
-                            listItemText {
-                                attrs.primary { +"Sample template" }
-                            }
-                        }
-                    }
-                    list {
-                        listItem {
-                            attrs.button = true
-                            attrs.onClickFunction = { _ ->
-                                GlobalScope.launch {
-                                    val file = resourcesFs.resolve("Honcho.sparkle")
-                                    val show = Storage(resourcesFs, webClient.plugins).loadShow(file)
-                                        ?.copy(title = "New Show")
-                                        ?: error("Couldn't find show")
-                                    webClient.onNewShow(show)
-                                    renderDialog = null
-                                }
-                            }
-                            listItemText {
-                                attrs.primary { +"Fancy template" }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    val handleOpenShow = callback {
-        if (webClient.showIsModified) confirmCloseUnsaved() || return@callback
-        fileDialogOpen = true
-        fileDialogIsSaveAs = false
-    }
-
-    val handleSaveShow = callback {
-        webClient.onSaveShow()
-    }
-
-    val handleSaveShowAs = callback {
-        fileDialogOpen = true
-        fileDialogIsSaveAs = true
-    }
-
-    val handleCloseShow = callback {
-        if (webClient.showIsModified) confirmCloseUnsaved() || return@callback
-        webClient.onCloseShow()
     }
 
     val handleSettings = callback {
@@ -280,12 +175,11 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                 div(+themeStyles.appRoot and appDrawerStateStyle and editModeStyle) {
                     appToolbar {
+                        attrs.appMode = appMode
                         attrs.editMode = editMode
                         attrs.onEditModeChange = handleEditModeChange
                         attrs.onMenuButtonClick = handleAppDrawerToggle
                         attrs.undoStack = props.undoStack
-                        attrs.onSaveShow = handleSaveShow
-                        attrs.onSaveShowAs = handleSaveShowAs
                     }
 
                     appDrawer {
@@ -294,19 +188,11 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.onClose = handleAppDrawerToggle
                         attrs.appMode = appMode
                         attrs.onAppModeChange = handleAppModeChange
-                        attrs.showLoaded = show != null
-                        attrs.showFile = webClient.showFile
                         attrs.editMode = editMode
-                        attrs.showUnsaved = webClient.showIsModified
                         attrs.onEditModeChange = handleEditModeChange
                         attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
                         attrs.darkMode = darkMode
                         attrs.onDarkModeChange = handleDarkModeChange
-                        attrs.onNewShow = handleNewShow
-                        attrs.onOpenShow = handleOpenShow
-                        attrs.onSaveShow = handleSaveShow
-                        attrs.onSaveShowAs = handleSaveShowAs
-                        attrs.onCloseShow = handleCloseShow
                         attrs.onSettings = handleSettings
                     }
 
@@ -390,22 +276,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     }
                 }
 
-                if (fileDialogOpen) {
-                    fileDialog {
-                        attrs.isOpen = fileDialogOpen
-                        attrs.title = if (fileDialogIsSaveAs) "Save Show As…" else "Open Show…"
-                        attrs.isSaveAs = fileDialogIsSaveAs
-                        attrs.fileDisplayCallback = { file, fileDisplay ->
-                            if (file.isDirectory == false) {
-                                fileDisplay.isSelectable = file.name.endsWith(".sparkle")
-                            }
-                        }
-                        attrs.onSelect = handleFileSelected
-                        attrs.onCancel = handleFileDialogCancel
-                        attrs.defaultTarget = webClient.showFile
-                    }
-                }
-
                 renderDialog?.invoke(this)
 
                 editableManagerUi {
@@ -420,36 +290,11 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     }
                 }
 
-                webClient.serverNotices.let { serverNotices ->
-                    if (serverNotices.isNotEmpty()) {
-                        backdrop(Styles.serverNoticeBackdrop on BackdropStyle.root) {
-                            attrs { open = true }
-
-                            div {
-                                serverNotices.forEach { serverNotice ->
-                                    alert(Styles.serverNoticeAlertMessage on AlertStyle.message) {
-                                        attrs.severity = AlertSeverity.error
-                                        attrs.onClose = { webClient.confirmServerNotice(serverNotice.id) }
-
-                                        alertTitle {
-                                            +serverNotice.title
-                                        }
-
-                                        serverNotice.message?.let {
-                                            div(+Styles.serverNoticeMessage) {
-                                                markdown { +it }
-                                            }
-                                        }
-
-                                        serverNotice.stackTrace?.let {
-                                            pre(+Styles.serverNoticeStackTrace) { +it }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                notifier {
+                    attrs.notifier = webClient.notifier
                 }
+
+                fileDialog {}
             }
         }
     }
@@ -464,6 +309,8 @@ external interface AppIndexProps : Props {
     var webClient: WebClient.Facade
     var undoStack: UndoStack<ShowEditorState>
     var stageManager: ClientStageManager
+    var showManager: ShowManager
+    var sceneManager: SceneManager
 
     var sceneEditorClient: SceneEditorClient.Facade
     var mapperUi: JsMapperUi
