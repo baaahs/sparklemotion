@@ -10,7 +10,6 @@ import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.show.Show
 import baaahs.sm.webapi.*
-import baaahs.ui.Observable
 import baaahs.window
 import kotlinx.serialization.modules.SerializersModule
 
@@ -22,7 +21,7 @@ abstract class DocumentManager<T>(
     private val toolchain: Toolchain,
     private val notifier: Notifier,
     private val fileDialog: FileDialog
-) : Observable() {
+) {
     protected abstract val fileType: FileType
 
     var file: Fs.File? = null
@@ -31,7 +30,7 @@ abstract class DocumentManager<T>(
         private set
     var isUnsaved: Boolean = false
         private set
-    var documentAsSaved: T? = null
+    private var documentAsSaved: T? = null
         private set
     val isLoaded: Boolean
         get() = document != null
@@ -100,7 +99,7 @@ abstract class DocumentManager<T>(
         return documentAsSaved?.equals(newDocument) != true
     }
 
-    fun confirmCloseIfUnsaved(): Boolean {
+    protected fun confirmCloseIfUnsaved(): Boolean {
         if (!isUnsaved) return true
 
         // TODO: Use react dialog instead.
@@ -109,5 +108,22 @@ abstract class DocumentManager<T>(
 
     protected fun launch(block: suspend () -> Unit) {
         notifier.facade.launchAndReportErrors(block)
+    }
+
+    open inner class Facade<T> : baaahs.ui.Facade() {
+        val documentTypeTitle get() = this@DocumentManager.documentTypeTitle
+        val file get() = this@DocumentManager.file
+        val isLoaded get() = this@DocumentManager.isLoaded
+        val isUnsaved get() = this@DocumentManager.isUnsaved
+
+        suspend fun onNew(dialogHolder: DialogHolder) = this@DocumentManager.onNew(dialogHolder)
+        suspend fun onNew(document: Show) = this@DocumentManager.onNew(document)
+        suspend fun onOpen() = this@DocumentManager.onOpen()
+        suspend fun onOpen(file: Fs.File) = this@DocumentManager.onOpen(file)
+        suspend fun onSave() = this@DocumentManager.onSave()
+        suspend fun onSaveAs() = this@DocumentManager.onSaveAs()
+        suspend fun onSaveAs(file: Fs.File) = this@DocumentManager.onSaveAs(file)
+        suspend fun onDownload() = this@DocumentManager.onDownload()
+        suspend fun onClose() = this@DocumentManager.onClose()
     }
 }

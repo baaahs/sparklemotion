@@ -113,7 +113,7 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
 }
 
 external interface DocumentMenuProps : Props {
-    var documentManager: DocumentManager<*>
+    var documentManager: DocumentManager<*>.Facade<*>
 }
 
 fun RBuilder.documentMenu(handler: RHandler<DocumentMenuProps>) =

@@ -1,6 +1,8 @@
 package baaahs.client
 
-import baaahs.*
+import baaahs.ModelProvider
+import baaahs.PinkyState
+import baaahs.PubSub
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.AppIndex
 import baaahs.app.ui.dialog.FileDialog
@@ -13,14 +15,8 @@ import baaahs.libraries.ShaderLibraries
 import baaahs.mapper.JsMapperUi
 import baaahs.net.Network
 import baaahs.plugin.Plugins
-import baaahs.show.Show
-import baaahs.show.live.OpenShow
-import baaahs.show.mutable.EditHandler
-import baaahs.show.mutable.MutableShow
 import baaahs.sim.HostedWebApp
-import baaahs.sm.webapi.ShowProblem
 import baaahs.sm.webapi.Topics
-import baaahs.util.UndoStack
 import baaahs.util.globalLaunch
 import kotlinext.js.jsObject
 import react.ReactElement
@@ -38,7 +34,8 @@ class WebClient(
     private val notifier: Notifier,
     private val fileDialog: FileDialog,
     private val showManager: ShowManager,
-    private val sceneManager: SceneManager
+    private val sceneManager: SceneManager,
+    private val stageManager: ClientStageManager
 ) : HostedWebApp {
     private val facade = Facade()
 
@@ -46,21 +43,9 @@ class WebClient(
         pubSub.addStateChangeListener(it)
     }
 
-    private var openShow: OpenShow? = null
-
     private val clientData by pubSub.state(Topics.createClientData(remoteFsSerializer), null) {
         facade.notifyChanged()
     }
-
-    private val stageManager = ClientStageManager(toolchain, pubSub, modelProvider)
-    private val showEditStateChannel =
-        pubSub.subscribe(
-            ShowEditorState.createTopic(toolchain.plugins, remoteFsSerializer)
-        ) { incoming ->
-            switchTo(incoming)
-            undoStack.reset(incoming)
-            facade.notifyChanged()
-        }
 
     private var pinkyState: PinkyState? = null
     init {
@@ -69,17 +54,6 @@ class WebClient(
             facade.notifyChanged()
         }
     }
-
-    private val showProblems = arrayListOf<ShowProblem>()
-    init {
-        pubSub.subscribe(Topics.showProblems) {
-            showProblems.clear()
-            showProblems.addAll(it)
-            facade.notifyChanged()
-        }
-    }
-
-    private val undoStack = UndoStack<ShowEditorState>()
 
     private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
 
@@ -91,29 +65,16 @@ class WebClient(
         }
     }
 
-    private fun switchTo(showEditorState: ShowEditorState?) {
-        val newShow = showEditorState?.show
-        val newShowState = showEditorState?.showState
-        val newIsUnsaved = showEditorState?.isUnsaved ?: false
-        val newFile = showEditorState?.file
-        val newOpenShow = newShow?.let { stageManager.openShow(newShow, newShowState) }
-        openShow?.disuse()
-        openShow = newOpenShow
-        openShow?.use()
-
-        showManager.update(newShow, newFile, newIsUnsaved)
-    }
-
     override fun render(): ReactElement {
         println("WebClient: my link is ${webClientLink.myAddress}")
 
         return createElement(AppIndex, jsObject {
             this.id = "Client Window"
             this.webClient = facade
-            this.undoStack = this@WebClient.undoStack
+            this.undoStack = this@WebClient.showManager.undoStack
             this.stageManager = this@WebClient.stageManager
-            this.showManager = this@WebClient.showManager
-            this.sceneManager = this@WebClient.sceneManager
+            this.showManager = this@WebClient.showManager.facade
+            this.sceneManager = this@WebClient.sceneManager.facade
 
             this.sceneEditorClient = this@WebClient.sceneEditorClient.facade
             this.mapperUi = this@WebClient.mapperUi
@@ -121,7 +82,7 @@ class WebClient(
     }
 
     override fun onClose() {
-        showEditStateChannel.unsubscribe()
+        showManager.release()
         pubSub.removeStateChangeListener(pubSubListener)
     }
 
@@ -136,7 +97,7 @@ class WebClient(
         }
     }
 
-    inner class Facade : baaahs.ui.Facade(), EditHandler {
+    inner class Facade : baaahs.ui.Facade() {
         val fileDialog: FileDialog
             get() = this@WebClient.fileDialog
 
@@ -161,54 +122,14 @@ class WebClient(
         val modelProvider: ModelProvider
             get() = this@WebClient.modelProvider
 
-        val show: Show?
-            get() = this@WebClient.showManager.document
-
-        val showFile: Fs.File?
-            get() = this@WebClient.showManager.file
-
-        val showIsModified: Boolean
-            get() = this@WebClient.showManager.isUnsaved
-
-        val openShow: OpenShow?
-            get() = this@WebClient.openShow
-
         val notifier: Notifier.Facade
             get() = this@WebClient.notifier.facade
-
-        val showProblems : List<ShowProblem>
-            get() = this@WebClient.showProblems
 
         val shaderLibraries : ShaderLibraries.Facade
             get() = this@WebClient.shaderLibraries.facade
 
         val uiSettings: UiSettings
             get() = this@WebClient.uiSettings
-
-        override fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
-            onShowEdit(mutableShow.getShow(), openShow!!.getShowState(), pushToUndoStack)
-        }
-
-        override fun onShowEdit(show: Show, pushToUndoStack: Boolean) {
-            onShowEdit(show, openShow!!.getShowState(), pushToUndoStack)
-        }
-
-        override fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean) {
-            val isUnsaved = this@WebClient.showManager.isModified(show)
-            val showEditState = show.withState(showState, isUnsaved, showFile)
-            showEditStateChannel.onChange(showEditState)
-            switchTo(showEditState)
-
-            if (pushToUndoStack) {
-                undoStack.changed(showEditState)
-            }
-
-            facade.notifyChanged()
-        }
-
-        fun onShowStateChange() {
-            facade.notifyChanged()
-        }
 
         fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {
             this@WebClient.updateUiSettings(newSettings, saveToStorage)
