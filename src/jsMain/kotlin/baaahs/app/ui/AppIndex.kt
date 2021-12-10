@@ -42,6 +42,8 @@ import react.dom.p
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val webClient = props.webClient
     observe(webClient)
+    val showManager = props.showManager
+    observe(showManager)
 
     var editMode by state { false }
     val handleEditModeChange = callback(editMode) { editMode = !editMode }
@@ -75,7 +77,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val dragNDrop by state { ReactBeautifulDragNDrop() }
     var prompt by state<Prompt?> { null }
     val editableManager by state { EditableManager { newShow ->
-        webClient.onShowEdit(newShow)
+        showManager.onShowEdit(newShow)
     } }
 
     val myAppContext = memo(uiSettings, allStyles) {
@@ -96,7 +98,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
             this.openEditor = { editIntent ->
                 editableManager.openEditor(
-                    webClient.show!!, editIntent, webClient.toolchain.withCache("Edit Session")
+                    showManager.show!!, editIntent, webClient.toolchain.withCache("Edit Session")
                 )
             }
         }
@@ -121,7 +123,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handleLayoutEditorDialogClose = callback { layoutEditorDialogOpen = false }
 
     val handleShowStateChange = callback {
-        webClient.onShowStateChange()
+        showManager.onShowStateChange()
         forceRender()
     }
 
@@ -136,7 +138,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val handlePromptClose = callback { prompt = null }
 
-    val forceAppDrawerOpen = webClient.isLoaded && webClient.show == null
+    val forceAppDrawerOpen = webClient.isLoaded && !showManager.isLoaded
     val renderAppDrawerOpen = appDrawerOpen && !layoutEditorDialogOpen || forceAppDrawerOpen
 
     val appDrawerStateStyle = if (renderAppDrawerOpen)
@@ -147,7 +149,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val editModeStyle =
         if (editMode) Styles.editModeOn else Styles.editModeOff
 
-    val show = webClient.show
+    val show = showManager.show
 
     onMount {
         val keyboardShortcutHandler = KeyboardShortcutHandler { event ->
@@ -179,7 +181,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.editMode = editMode
                         attrs.onEditModeChange = handleEditModeChange
                         attrs.onMenuButtonClick = handleAppDrawerToggle
-                        attrs.undoStack = props.undoStack
                     }
 
                     appDrawer {
@@ -246,7 +247,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                 when (appMode) {
                                     AppMode.Show -> {
                                         showUi {
-                                            attrs.show = webClient.openShow!!
+                                            attrs.show = showManager.openShow!!
                                             attrs.onShowStateChange = handleShowStateChange
                                             attrs.editMode = editMode
                                         }
@@ -257,7 +258,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                                 attrs.open = layoutEditorDialogOpen
                                                 attrs.show = show
                                                 attrs.onApply = { newMutableShow ->
-                                                    props.webClient.onShowEdit(newMutableShow)
+                                                    showManager.onShowEdit(newMutableShow)
                                                 }
                                                 attrs.onClose = handleLayoutEditorDialogClose
                                             }
@@ -309,8 +310,8 @@ external interface AppIndexProps : Props {
     var webClient: WebClient.Facade
     var undoStack: UndoStack<ShowEditorState>
     var stageManager: ClientStageManager
-    var showManager: ShowManager
-    var sceneManager: SceneManager
+    var showManager: ShowManager.Facade
+    var sceneManager: SceneManager.Facade
 
     var sceneEditorClient: SceneEditorClient.Facade
     var mapperUi: JsMapperUi

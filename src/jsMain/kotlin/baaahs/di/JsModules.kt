@@ -5,10 +5,7 @@ import baaahs.ModelProvider
 import baaahs.PubSub
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.browser.RealMediaDevices
-import baaahs.client.ClientStorage
-import baaahs.client.Notifier
-import baaahs.client.SceneEditorClient
-import baaahs.client.WebClient
+import baaahs.client.*
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.gl.RootToolchain
@@ -66,10 +63,11 @@ open class JsUiWebClientModule(
             scoped { modelProvider }
             scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage"))  }
             scoped<Toolchain> { RootToolchain(get()) }
-            scoped { WebClient(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+            scoped { WebClient(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+            scoped { ClientStageManager(get(), get(), get()) }
             scoped<RemoteFsSerializer> { PubSubRemoteFsClientBackend(get()) }
             scoped { FileDialog() }
-            scoped { ShowManager(get(), get(), get(), get(), get()) }
+            scoped { ShowManager(get(), get(), get(), get(), get(), get()) }
             scoped { SceneManager(get(), get(), get(), get(), get()) }
             scoped { Notifier(get()) }
             scoped { SceneEditorClient(get(), get()) }

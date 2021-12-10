@@ -1,10 +1,8 @@
 package baaahs.app.ui
 
-import baaahs.ShowEditorState
 import baaahs.app.ui.controls.problemBadge
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
-import baaahs.util.UndoStack
 import kotlinx.css.opacity
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
@@ -43,39 +41,41 @@ import styled.styledDiv
 val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val appContext = useContext(appContext)
     val themeStyles = appContext.allStyles.appUi
-    val webClient = appContext.webClient
+    val showManager = appContext.showManager
+    observe(showManager)
+    val undoStack = showManager.undoStack
+
 
     val handleShowEditButtonClick = callback {
         appContext.openEditor(ShowEditIntent())
     }
 
-    val undoStack = props.undoStack
     val handleUndo by eventHandler(undoStack) {
         undoStack.undo().also { (show, showState) ->
-            webClient.onShowEdit(show, showState, pushToUndoStack = false)
+            showManager.onShowEdit(show, showState, pushToUndoStack = false)
         }
     }
 
     val handleRedo by eventHandler(undoStack) {
         undoStack.redo().also { (show, showState) ->
-            webClient.onShowEdit(show, showState, pushToUndoStack = false)
+            showManager.onShowEdit(show, showState, pushToUndoStack = false)
         }
     }
 
     val handleSave by eventHandler {
         appContext.notifier.launchAndReportErrors {
-            appContext.showManager.onSave()
+            showManager.onSave()
         }
     }
 
     val handleSaveAs by eventHandler {
         appContext.notifier.launchAndReportErrors {
-            appContext.showManager.onSaveAs()
+            showManager.onSaveAs()
         }
     }
 
-    val show = webClient.openShow
-    val showProblemsSeverity = webClient.showProblems.map { it.severity }.maxOrNull()
+    val show = showManager.openShow
+    val showProblemsSeverity = showManager.showProblems.map { it.severity }.maxOrNull()
 
     var showProblemsDialogIsOpen by state { false }
     val toggleProblems = callback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
@@ -97,9 +97,9 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                 show?.let {
                     b {
                         +show.title
-                        webClient.showFile?.let { attrs["title"] = it.toString() }
+                        showManager.file?.let { attrs["title"] = it.toString() }
                     }
-                    if (webClient.showIsModified) i { +" (Unsaved)" }
+                    if (showManager.isUnsaved) i { +" (Unsaved)" }
                 }
 
                 show?.let { problemBadge(show, themeStyles.problemBadge) }
@@ -116,7 +116,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
             div(+themeStyles.appToolbarActions) {
                 styledDiv {
-                    if (!editMode && !webClient.showIsModified) css { opacity = 0 }
+                    if (!editMode && !showManager.isUnsaved) css { opacity = 0 }
                     css {
                         transition("opacity", duration = .5.s, timing = Timing.linear)
                     }
@@ -137,7 +137,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                         typographyH6 { +"Redo" }
                     }
 
-                    if (webClient.showFile == null) {
+                    if (!showManager.isLoaded) {
                         iconButton {
                             icon(materialui.icons.FileCopy)
                             attrs.onClickFunction = handleSaveAs
@@ -146,7 +146,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     } else {
                         iconButton {
                             icon(materialui.icons.Save)
-                            attrs.disabled = !webClient.showIsModified
+                            attrs.disabled = !showManager.isUnsaved
                             attrs.onClickFunction = handleSave
                             typographyH6 { +"Save" }
                         }
@@ -179,7 +179,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                         dialogTitle { +"Show Problems" }
                         dialogContent(+themeStyles.showProblemsDialogContent) {
-                            webClient.showProblems.sortedByDescending { it.severity }.forEach { problem ->
+                            showManager.showProblems.sortedByDescending { it.severity }.forEach { problem ->
                                 val iconClass = "${themeStyles.showProblem.name} ${problem.severity.cssClass}"
                                 div(iconClass) { icon(problem.severity.icon) }
                                 div {
@@ -207,7 +207,6 @@ external interface AppToolbarProps : Props {
     var editMode: Boolean?
     var onEditModeChange: () -> Unit
     var onMenuButtonClick: () -> Unit
-    var undoStack: UndoStack<ShowEditorState>
 }
 
 fun RBuilder.appToolbar(handler: RHandler<AppToolbarProps>) =

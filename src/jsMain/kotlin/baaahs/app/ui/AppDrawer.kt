@@ -90,7 +90,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                     divider {}
 
                     listItem {
-                        attrs.disabled = appContext.webClient.show == null
+                        attrs.disabled = !appContext.showManager.isLoaded
                         formControlLabel {
                             attrs.control {
                                 switch {
@@ -104,7 +104,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
 
                     listItem {
                         attrs.button = true
-                        attrs.disabled = appContext.webClient.show == null
+                        attrs.disabled = !appContext.showManager.isLoaded
                         attrs.onClickFunction = props.onLayoutEditorDialogToggle.withEvent()
                         listItemIcon { icon(CommonIcons.Layout) }
                         listItemText { attrs.primary { +"Layout Editor" } }

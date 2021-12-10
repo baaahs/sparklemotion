@@ -32,8 +32,8 @@ external interface AppContext {
     var allStyles: AllStyles
     var prompt: (prompt: Prompt) -> Unit
     var clock: Clock
-    var showManager: ShowManager
-    var sceneManager: SceneManager
+    var showManager: ShowManager.Facade
+    var sceneManager: SceneManager.Facade
     var fileDialog: FileDialog
     var notifier: Notifier.Facade
 
