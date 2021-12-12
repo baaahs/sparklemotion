@@ -1,7 +1,6 @@
 package baaahs.app.ui
 
 import baaahs.DocumentState
-import baaahs.ShowState
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.editableManagerUi
@@ -16,6 +15,7 @@ import baaahs.gl.withCache
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.sceneEditor
 import baaahs.show.Show
+import baaahs.show.ShowState
 import baaahs.ui.*
 import baaahs.util.JsClock
 import baaahs.util.UndoStack

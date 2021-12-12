@@ -1,6 +1,9 @@
 package baaahs.shows
 
-import baaahs.*
+import baaahs.Gadget
+import baaahs.ModelProvider
+import baaahs.ShowPlayer
+import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.testToolchain
@@ -8,6 +11,7 @@ import baaahs.gl.withCache
 import baaahs.model.ModelInfo
 import baaahs.show.DataSource
 import baaahs.show.Show
+import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
 import baaahs.show.live.ShowOpener
 

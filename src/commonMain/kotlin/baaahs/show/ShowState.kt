@@ -1,4 +1,4 @@
-package baaahs
+package baaahs.show
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement

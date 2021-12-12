@@ -7,6 +7,7 @@ import baaahs.gl.withCache
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.Show
+import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
 import baaahs.show.live.ShowOpener
 

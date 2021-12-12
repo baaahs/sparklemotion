@@ -1,7 +1,6 @@
 package baaahs.show.live
 
 import baaahs.ShowPlayer
-import baaahs.ShowState
 import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader

@@ -16,10 +16,8 @@ import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
 import baaahs.plugin.core.datasource.ColorPickerDataSource
 import baaahs.shaders.fakeFixture
-import baaahs.show.Panel
-import baaahs.show.SampleData
+import baaahs.show.*
 import baaahs.show.Shader
-import baaahs.show.Show
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow

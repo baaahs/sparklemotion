@@ -2,7 +2,6 @@ package baaahs.client.document
 
 import baaahs.DocumentState
 import baaahs.PubSub
-import baaahs.ShowState
 import baaahs.app.ui.UiActions
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.app.ui.dialog.FileType
@@ -15,6 +14,7 @@ import baaahs.io.resourcesFs
 import baaahs.mapper.Storage
 import baaahs.show.SampleData
 import baaahs.show.Show
+import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableShow
