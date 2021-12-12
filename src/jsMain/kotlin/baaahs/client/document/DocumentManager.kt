@@ -8,9 +8,9 @@ import baaahs.client.Notifier
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
-import baaahs.show.Show
 import baaahs.sm.webapi.*
 import baaahs.window
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
 abstract class DocumentManager<T>(
@@ -20,7 +20,8 @@ abstract class DocumentManager<T>(
     private val remoteFsSerializer: RemoteFsSerializer,
     private val toolchain: Toolchain,
     private val notifier: Notifier,
-    private val fileDialog: FileDialog
+    private val fileDialog: FileDialog,
+    private val tSerializer: KSerializer<T>
 ) {
     protected abstract val fileType: FileType
 
@@ -36,7 +37,7 @@ abstract class DocumentManager<T>(
         get() = document != null
 
     private val serverCommands = object {
-        private val commands = Topics.DocumentCommands(documentType, SerializersModule {
+        private val commands = Topics.DocumentCommands(documentType, tSerializer, SerializersModule {
             include(remoteFsSerializer.serialModule)
             include(toolchain.plugins.serialModule)
         })
@@ -48,8 +49,8 @@ abstract class DocumentManager<T>(
 
     abstract suspend fun onNew(dialogHolder: DialogHolder)
 
-    suspend fun onNew(newShow: Show? = null) {
-        serverCommands.newCommand(NewCommand(newShow))
+    suspend fun onNew(newDocument: T? = null) {
+        serverCommands.newCommand(NewCommand(newDocument))
     }
 
     suspend fun onOpen() {
@@ -86,13 +87,11 @@ abstract class DocumentManager<T>(
         serverCommands.switchToCommand(SwitchToCommand(null))
     }
 
-    fun update(newDocument: T?, newFile: Fs.File?, newIsUnsaved: Boolean) {
+    protected fun update(newDocument: T?, newFile: Fs.File?, newIsUnsaved: Boolean) {
         document = newDocument
         file = newFile
         isUnsaved = newIsUnsaved
         if (!newIsUnsaved) documentAsSaved = newDocument
-
-        notifyChanged()
     }
 
     fun isModified(newDocument: T): Boolean {
@@ -110,14 +109,14 @@ abstract class DocumentManager<T>(
         notifier.facade.launchAndReportErrors(block)
     }
 
-    open inner class Facade<T> : baaahs.ui.Facade() {
+    open inner class Facade : baaahs.ui.Facade() {
         val documentTypeTitle get() = this@DocumentManager.documentTypeTitle
         val file get() = this@DocumentManager.file
         val isLoaded get() = this@DocumentManager.isLoaded
         val isUnsaved get() = this@DocumentManager.isUnsaved
 
         suspend fun onNew(dialogHolder: DialogHolder) = this@DocumentManager.onNew(dialogHolder)
-        suspend fun onNew(document: Show) = this@DocumentManager.onNew(document)
+        suspend fun onNew(document: T) = this@DocumentManager.onNew(document)
         suspend fun onOpen() = this@DocumentManager.onOpen()
         suspend fun onOpen(file: Fs.File) = this@DocumentManager.onOpen(file)
         suspend fun onSave() = this@DocumentManager.onSave()

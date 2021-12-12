@@ -8,20 +8,16 @@ import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsServerBackend
-import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.Storage
 import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.buildEmptyShow
 import baaahs.show.live.OpenShow
 import baaahs.sm.webapi.ClientData
-import baaahs.sm.webapi.NewCommand
 import baaahs.sm.webapi.Topics
 import baaahs.ui.addObserver
 import baaahs.util.Clock
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.serialization.modules.SerializersModule
+import baaahs.util.globalLaunch
 
 class StageManager(
     toolchain: Toolchain,
@@ -53,22 +49,7 @@ class StageManager(
     private val clientData =
         pubSub.state(Topics.createClientData(fsSerializer), ClientData(storage.fs.rootFile))
 
-    private val showProblems = pubSub.publish(Topics.showProblems, emptyList()) {}
-
-    private val showEditSession = ShowEditSession(fsSerializer)
-    private val showEditorStateChannel: PubSub.Channel<ShowEditorState?> =
-        pubSub.publish(
-            ShowEditorState.createTopic(toolchain.plugins, fsSerializer),
-            showEditSession.getShowEditState()
-        ) { incoming ->
-            val newShow = incoming?.show
-            val newShowState = incoming?.showState
-            val newIsUnsaved = incoming?.isUnsaved ?: false
-            switchTo(
-                newShow, newShowState, showEditSession.showFile,
-                newIsUnsaved, fromClientUpdate = true
-            )
-        }
+    private val showDocumentService = ShowDocumentService()
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
         gadgetManager.registerGadget(id, gadget)
@@ -95,44 +76,17 @@ class StageManager(
     fun switchTo(
         newShow: Show?,
         newShowState: ShowState? = null,
-        file: Fs.File? = null,
-        isUnsaved: Boolean = file == null,
-        fromClientUpdate: Boolean = false
+        file: Fs.File? = null
     ) {
-        val newShowRunner = newShow?.let {
-            val openShow = openShow(newShow, newShowState)
-            ShowRunner(newShow, newShowState, openShow, clock, renderManager, fixtureManager) { problems ->
-                this.showProblems.onChange(problems)
-            }
-        }
-
-        showRunner?.release()
-        releaseUnused()
-
-        showRunner = newShowRunner
-        showEditSession.show = newShowRunner?.show
-        showEditSession.showFile = file
-        showEditSession.showIsUnsaved = isUnsaved
-
-        updateRunningShowPath(file)
-
-        notifyOfShowChanges(fromClientUpdate)
+        showDocumentService.switchTo(newShow, newShowState, file)
     }
 
     private fun updateRunningShowPath(file: Fs.File?) {
-        GlobalScope.launch {
+        globalLaunch {
             storage.updateConfig {
                 copy(runningShowPath = file?.fullPath)
             }
         }
-    }
-
-    internal fun notifyOfShowChanges(fromClientUpdate: Boolean = false) {
-        if (!fromClientUpdate) {
-            showEditorStateChannel.onChange(showEditSession.getShowEditState())
-        }
-
-        facade.notifyChanged()
     }
 
     suspend fun renderAndSendNextFrame(doHousekeepingFirst: Boolean = false) {
@@ -163,66 +117,74 @@ class StageManager(
 
     fun shutDown() {
         showRunner?.release()
-        showEditorStateChannel.unsubscribe()
+        showDocumentService.release()
     }
 
     fun logStatus() {
         renderManager.logStatus()
     }
 
-    inner class ShowEditSession(remoteFsSerializer: RemoteFsSerializer) {
-        var show: Show? = null
-        var showFile: Fs.File? = null
-        var showIsUnsaved: Boolean = false
+    inner class ShowDocumentService : DocumentService<Show, ShowState>(
+        pubSub, storage, DocumentState.createTopic(
+            toolchain.plugins.serialModule,
+            fsSerializer,
+            Show.serializer(),
+            ShowState.serializer()
+        ),
+        Show.serializer(),
+        fsSerializer,
+        toolchain.plugins.serialModule
+    ) {
+        private val showProblems = pubSub.publish(Topics.showProblems, emptyList()) {}
 
-        init {
-            val commands = Topics.DocumentCommands("show", SerializersModule {
-                include(remoteFsSerializer.serialModule)
-                include(toolchain.plugins.serialModule)
-            })
-            pubSub.listenOnCommandChannel(commands.newCommand) { command -> handleNewShow(command) }
-            pubSub.listenOnCommandChannel(commands.switchToCommand) { command -> handleSwitchToShow(command.file) }
-            pubSub.listenOnCommandChannel(commands.saveCommand) { command -> handleSaveShow() }
-            pubSub.listenOnCommandChannel(commands.saveAsCommand) { command ->
-                val saveAsFile = storage.resolve(command.file.fullPath)
-                handleSaveAsShow(saveAsFile)
-                updateRunningShowPath(saveAsFile)
-            }
+        override fun createDocument(): Show = buildEmptyShow()
+
+        override suspend fun load(file: Fs.File): Show? {
+            return storage.loadShow(file)
         }
 
-        private suspend fun handleNewShow(command: NewCommand) {
-            switchTo(command.template ?: buildEmptyShow())
+        override suspend fun save(file: Fs.File, document: Show) {
+            storage.saveShow(file, document)
         }
 
-        private suspend fun handleSwitchToShow(file: Fs.File?) {
-            if (file != null) {
-                switchTo(storage.loadShow(file), file = file, isUnsaved = false)
-            } else {
-                switchTo(null, null, null)
-            }
+        override fun onFileChanged(saveAsFile: Fs.File) {
+            updateRunningShowPath(saveAsFile)
         }
 
-        private suspend fun handleSaveShow() {
-            showFile?.let { showFile ->
-                show?.let { show -> saveShow(showFile, show) }
-            }
-        }
-
-        private suspend fun handleSaveAsShow(showAsFile: Fs.File) {
-            show?.let { show -> saveShow(showAsFile, show) }
-        }
-
-        private suspend fun saveShow(file: Fs.File, show: Show) {
-            storage.saveShow(file, show)
-            showFile = file
-            showIsUnsaved = false
-            notifyOfShowChanges()
-        }
-
-        fun getShowEditState(): ShowEditorState? {
+        override fun getDocumentState(): DocumentState<Show, ShowState>? {
             return showRunner?.let { showRunner ->
-                show?.withState(showRunner.getShowState(), showIsUnsaved, showFile)
+                document?.withState(showRunner.getShowState(), isUnsaved, file)
             }
+        }
+
+        override fun notifyOfDocumentChanges(fromClientUpdate: Boolean) {
+            super.notifyOfDocumentChanges(fromClientUpdate)
+            facade.notifyChanged()
+        }
+
+        override fun switchTo(
+            newDocument: Show?,
+            newState: ShowState?,
+            file: Fs.File?,
+            isUnsaved: Boolean,
+            fromClientUpdate: Boolean
+        ) {
+            val newShowRunner = newDocument?.let {
+                val openShow = openShow(newDocument, newState)
+                ShowRunner(newDocument, newState, openShow, clock, renderManager, fixtureManager) { problems ->
+                    showProblems.onChange(problems)
+                }
+            }
+
+            showRunner?.release()
+            releaseUnused()
+
+            showRunner = newShowRunner
+            super.switchTo(newDocument, newState, file, isUnsaved, fromClientUpdate)
+
+            updateRunningShowPath(file)
+
+            notifyOfDocumentChanges(fromClientUpdate)
         }
     }
 

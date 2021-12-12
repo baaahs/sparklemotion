@@ -8,7 +8,6 @@ import baaahs.client.Notifier
 import baaahs.gl.Toolchain
 import baaahs.io.RemoteFsSerializer
 import baaahs.scene.Scene
-import baaahs.show.Show
 
 class SceneManager(
     pubSub: PubSub.Client,
@@ -16,8 +15,9 @@ class SceneManager(
     toolchain: Toolchain,
     notifier: Notifier,
     fileDialog: FileDialog
-) : DocumentManager<Show>(
-    "scene", "Scene", pubSub, remoteFsSerializer, toolchain, notifier, fileDialog
+) : DocumentManager<Scene>(
+    "scene", "Scene", pubSub, remoteFsSerializer, toolchain, notifier, fileDialog,
+    Scene.serializer()
 ) {
     val facade = Facade()
 
@@ -32,7 +32,7 @@ class SceneManager(
         TODO("scene download not implemented")
     }
 
-    inner class Facade : DocumentManager<*>.Facade<Scene>() {
+    inner class Facade : DocumentManager<*>.Facade() {
         val scene get() = this@SceneManager.document
     }
 }

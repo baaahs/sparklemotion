@@ -4,7 +4,6 @@ import baaahs.app.ui.CommonIcons
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibrary
 import baaahs.randomId
-import baaahs.show.Show
 import baaahs.ui.Icon
 import kotlinx.serialization.Serializable
 
@@ -14,7 +13,7 @@ data class ClientData(
 )
 
 @Serializable
-class NewCommand(val template: Show? = null)
+class NewCommand<T>(val template: T? = null)
 
 @Serializable
 class SwitchToCommand(val file: Fs.File?)

@@ -1,7 +1,7 @@
 package baaahs.client.document
 
+import baaahs.DocumentState
 import baaahs.PubSub
-import baaahs.ShowEditorState
 import baaahs.ShowState
 import baaahs.app.ui.UiActions
 import baaahs.app.ui.dialog.FileDialog
@@ -38,7 +38,8 @@ class ShowManager(
     fileDialog: FileDialog,
     private val stageManager: ClientStageManager
 ) : DocumentManager<Show>(
-    "show", "Show", pubSub, remoteFsSerializer, toolchain, notifier, fileDialog
+    "show", "Show", pubSub, remoteFsSerializer, toolchain, notifier, fileDialog,
+    Show.serializer()
 ) {
     val facade = Facade()
 
@@ -47,11 +48,16 @@ class ShowManager(
 
     var openShow: OpenShow? = null
         private set
-    val undoStack = UndoStack<ShowEditorState>()
+    val undoStack = UndoStack<DocumentState<Show, ShowState>>()
 
     private val showEditStateChannel =
         pubSub.subscribe(
-            ShowEditorState.createTopic(toolchain.plugins, remoteFsSerializer)
+            DocumentState.createTopic(
+                toolchain.plugins.serialModule,
+                remoteFsSerializer,
+                Show.serializer(),
+                ShowState.serializer()
+            )
         ) { incoming ->
             switchTo(incoming)
             undoStack.reset(incoming)
@@ -134,22 +140,21 @@ class ShowManager(
         showEditStateChannel.unsubscribe()
     }
 
-    private fun switchTo(showEditorState: ShowEditorState?) {
-        val newShow = showEditorState?.show
-        val newShowState = showEditorState?.showState
-        val newIsUnsaved = showEditorState?.isUnsaved ?: false
-        val newFile = showEditorState?.file
+    private fun switchTo(documentState: DocumentState<Show, ShowState>?) {
+        val newShow = documentState?.document
+        val newShowState = documentState?.state
+        val newIsUnsaved = documentState?.isUnsaved ?: false
+        val newFile = documentState?.file
         val newOpenShow = newShow?.let {
             stageManager.openShow(newShow, newShowState)
         }
         openShow?.disuse()
-        openShow = newOpenShow
-        openShow?.use()
+        openShow = newOpenShow?.also { it.use() }
 
         update(newShow, newFile, newIsUnsaved)
     }
 
-    inner class Facade : DocumentManager<*>.Facade<Show>(), EditHandler {
+    inner class Facade : DocumentManager<Show>.Facade(), EditHandler {
         val show get() = this@ShowManager.document
         val openShow get() = this@ShowManager.openShow
         val showProblems get() = this@ShowManager.showProblems
