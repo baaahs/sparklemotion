@@ -114,7 +114,9 @@ class WebClient(
             get() = this@WebClient.clientData?.fsRoot
 
         val isLoaded: Boolean
-            get() = this@WebClient.pinkyState == PinkyState.Running && clientData != null
+            get() = this@WebClient.pinkyState == PinkyState.Running
+                    && clientData != null
+                    && showManager.isSynched
 
         val isMapping: Boolean
             get() = this@WebClient.pinkyState == PinkyState.Mapping

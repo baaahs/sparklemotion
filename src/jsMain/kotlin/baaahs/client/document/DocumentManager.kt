@@ -35,6 +35,8 @@ abstract class DocumentManager<T>(
         private set
     val isLoaded: Boolean
         get() = document != null
+    var isSynched: Boolean = false
+        private set
 
     private val serverCommands = object {
         private val commands = Topics.DocumentCommands(documentType, tSerializer, SerializersModule {
@@ -92,6 +94,7 @@ abstract class DocumentManager<T>(
         file = newFile
         isUnsaved = newIsUnsaved
         if (!newIsUnsaved) documentAsSaved = newDocument
+        isSynched = true
     }
 
     fun isModified(newDocument: T): Boolean {
