@@ -3,6 +3,7 @@ package baaahs
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.show.Show
+import baaahs.show.ShowState
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.nullable

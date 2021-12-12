@@ -11,6 +11,7 @@ import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.mapper.Storage
 import baaahs.show.DataSource
 import baaahs.show.Show
+import baaahs.show.ShowState
 import baaahs.show.buildEmptyShow
 import baaahs.show.live.OpenShow
 import baaahs.sm.webapi.ClientData

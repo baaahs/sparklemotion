@@ -3,6 +3,7 @@ package baaahs
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.render.RenderManager
 import baaahs.show.Show
+import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
 import baaahs.sm.webapi.ShowProblem
 import baaahs.util.Clock

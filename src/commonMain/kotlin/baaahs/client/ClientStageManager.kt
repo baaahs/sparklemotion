@@ -4,6 +4,7 @@ import baaahs.*
 import baaahs.gl.Toolchain
 import baaahs.show.DataSource
 import baaahs.show.Show
+import baaahs.show.ShowState
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenShow
 import kotlinx.serialization.json.JsonElement
