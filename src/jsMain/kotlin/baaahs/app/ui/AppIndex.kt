@@ -231,16 +231,10 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             }
                         }
 
-                        if (show == null) {
+                        if (!webClient.isLoaded) {
                             paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
-                                if (webClient.isLoaded) {
-                                    icon(materialui.icons.NotificationImportant)
-                                    typographyH6 { +"No open show." }
-                                    p { +"Maybe you'd like to open one? " }
-                                } else {
-                                    circularProgress {}
-                                    typographyH6 { +"Loading Show…" }
-                                }
+                                circularProgress {}
+                                typographyH6 { +"Loading Show…" }
                             }
                         } else {
                             ErrorBoundary {
@@ -248,29 +242,45 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                                 when (appMode) {
                                     AppMode.Show -> {
-                                        showUi {
-                                            attrs.show = showManager.openShow!!
-                                            attrs.onShowStateChange = handleShowStateChange
-                                            attrs.editMode = editMode
-                                        }
+                                        if (show == null) {
+                                            paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
+                                                icon(materialui.icons.NotificationImportant)
+                                                typographyH6 { +"No open show." }
+                                                p { +"Maybe you'd like to open one? " }
+                                            }
+                                        } else {
+                                            showUi {
+                                                attrs.show = showManager.openShow!!
+                                                attrs.onShowStateChange = handleShowStateChange
+                                                attrs.editMode = editMode
+                                            }
 
-                                        if (layoutEditorDialogOpen) {
-                                            // Layout Editor dialog
-                                            layoutEditorDialog {
-                                                attrs.open = layoutEditorDialogOpen
-                                                attrs.show = show
-                                                attrs.onApply = { newMutableShow ->
-                                                    showManager.onShowEdit(newMutableShow)
+                                            if (layoutEditorDialogOpen) {
+                                                // Layout Editor dialog
+                                                layoutEditorDialog {
+                                                    attrs.open = layoutEditorDialogOpen
+                                                    attrs.show = show
+                                                    attrs.onApply = { newMutableShow ->
+                                                        showManager.onShowEdit(newMutableShow)
+                                                    }
+                                                    attrs.onClose = handleLayoutEditorDialogClose
                                                 }
-                                                attrs.onClose = handleLayoutEditorDialogClose
                                             }
                                         }
                                     }
 
                                     AppMode.Scene -> {
-                                        sceneEditor {
-                                            attrs.sceneEditorClient = props.sceneEditorClient
-                                            attrs.mapperUi = props.mapperUi
+                                        if (props.sceneManager.scene == null) {
+                                            paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
+                                                icon(materialui.icons.NotificationImportant)
+                                                typographyH6 { +"No open scene." }
+                                                p { +"Maybe you'd like to open one? " }
+                                            }
+                                        } else {
+                                            sceneEditor {
+                                                attrs.sceneEditorClient = props.sceneEditorClient
+                                                attrs.mapperUi = props.mapperUi
+                                            }
                                         }
                                     }
                                 }
