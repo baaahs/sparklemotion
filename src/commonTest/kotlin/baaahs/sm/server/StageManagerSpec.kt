@@ -19,6 +19,7 @@ import baaahs.shaders.fakeFixture
 import baaahs.show.Panel
 import baaahs.show.SampleData
 import baaahs.show.Shader
+import baaahs.show.Show
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
@@ -247,17 +248,27 @@ object StageManagerSpec : Spek({
                     override val backend = FakeRemoteFsBackend()
                 }
             }
-            var editingClientShowEditorState: ShowEditorState? = null
+            var editingClientDocumentState: DocumentState? = null
             val editingClientChannel by value {
-                editingClient.subscribe(ShowEditorState.createTopic(plugins, fsClientSideSerializer)) {
+                editingClient.subscribe(DocumentState.createTopic(
+                    plugins.serialModule,
+                    fsClientSideSerializer,
+                    Show.serializer(),
+                    ShowState.serializer()
+                )) {
                     editingClient.log.add("update showEditorState: ${it?.show?.title}")
-                    editingClientShowEditorState = it
+                    editingClientDocumentState = it
                 }
             }
 
             val otherClient by value { pubSub.client("otherClient") }
             val otherClientChannel by value {
-                otherClient.subscribe(ShowEditorState.createTopic(plugins, fsClientSideSerializer)) {
+                otherClient.subscribe(DocumentState.createTopic(
+                    plugins.serialModule,
+                    fsClientSideSerializer,
+                    Show.serializer(),
+                    ShowState.serializer()
+                )) {
                     println("otherClient heard from pubsub")
                     otherClient.log.add("update showEditorState: ${it?.show?.title}")
                 }
@@ -266,7 +277,7 @@ object StageManagerSpec : Spek({
             val baseShow by value { SampleData.sampleShow }
 
             beforeEachTest {
-                editingClientShowEditorState = null
+                editingClientDocumentState = null
                 editingClientChannel.let {}
                 otherClientChannel.let {}
                 stageManager.switchTo(baseShow, file = fakeFs.resolve("fake-file.sparkle"))
@@ -292,11 +303,11 @@ object StageManagerSpec : Spek({
                     otherClient.log.clear()
 
                     editingClientChannel.onChange(
-                        ShowEditorState(
+                        DocumentState(
                             editedShow,
                             ShowState(emptyMap()),
                             isUnsaved = true,
-                            file = editingClientShowEditorState!!.file
+                            file = editingClientDocumentState!!.file
                         )
                     )
                     dispatcher.runCurrent()

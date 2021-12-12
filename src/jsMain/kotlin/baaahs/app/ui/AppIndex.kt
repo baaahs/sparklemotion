@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
-import baaahs.ShowEditorState
+import baaahs.DocumentState
+import baaahs.ShowState
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.editableManagerUi
@@ -14,6 +15,7 @@ import baaahs.client.document.ShowManager
 import baaahs.gl.withCache
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.sceneEditor
+import baaahs.show.Show
 import baaahs.ui.*
 import baaahs.util.JsClock
 import baaahs.util.UndoStack
@@ -308,7 +310,7 @@ enum class AppMode {
 external interface AppIndexProps : Props {
     var id: String
     var webClient: WebClient.Facade
-    var undoStack: UndoStack<ShowEditorState>
+    var undoStack: UndoStack<DocumentState<Show, ShowState>>
     var stageManager: ClientStageManager
     var showManager: ShowManager.Facade
     var sceneManager: SceneManager.Facade

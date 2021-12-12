@@ -8,6 +8,7 @@ import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibrary
 import baaahs.model.MovingHead
 import baaahs.sm.brain.BrainInfo
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.nullable
@@ -56,9 +57,9 @@ object Topics {
         )
     }
 
-    class DocumentCommands(documentType: String, serialModule: SerializersModule) {
+    class DocumentCommands<T>(documentType: String, tSerializer: KSerializer<T>, serialModule: SerializersModule) {
         val newCommand = PubSub.CommandPort(
-            "pinky/$documentType/new", NewCommand.serializer(), Unit.serializer(), serialModule
+            "pinky/$documentType/new", NewCommand.serializer(tSerializer), Unit.serializer(), serialModule
         )
         val switchToCommand = PubSub.CommandPort(
             "pinky/$documentType/switchTo", SwitchToCommand.serializer(), Unit.serializer(), serialModule
