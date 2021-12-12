@@ -126,11 +126,10 @@ class StageManager(
     }
 
     inner class ShowDocumentService : DocumentService<Show, ShowState>(
-        pubSub, storage, DocumentState.createTopic(
+        pubSub, storage,
+        ShowState.createTopic(
             toolchain.plugins.serialModule,
-            fsSerializer,
-            Show.serializer(),
-            ShowState.serializer()
+            fsSerializer
         ),
         Show.serializer(),
         fsSerializer,

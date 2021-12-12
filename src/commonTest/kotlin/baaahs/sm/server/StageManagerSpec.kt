@@ -246,29 +246,23 @@ object StageManagerSpec : Spek({
                     override val backend = FakeRemoteFsBackend()
                 }
             }
-            var editingClientDocumentState: DocumentState? = null
+            var editingClientDocumentState: DocumentState<Show, ShowState>? = null
             val editingClientChannel by value {
-                editingClient.subscribe(DocumentState.createTopic(
-                    plugins.serialModule,
-                    fsClientSideSerializer,
-                    Show.serializer(),
-                    ShowState.serializer()
+                editingClient.subscribe(ShowState.createTopic(
+                    plugins.serialModule, fsClientSideSerializer
                 )) {
-                    editingClient.log.add("update showEditorState: ${it?.show?.title}")
+                    editingClient.log.add("update showEditorState: ${it?.document?.title}")
                     editingClientDocumentState = it
                 }
             }
 
             val otherClient by value { pubSub.client("otherClient") }
             val otherClientChannel by value {
-                otherClient.subscribe(DocumentState.createTopic(
-                    plugins.serialModule,
-                    fsClientSideSerializer,
-                    Show.serializer(),
-                    ShowState.serializer()
+                otherClient.subscribe(ShowState.createTopic(
+                    plugins.serialModule, fsClientSideSerializer
                 )) {
                     println("otherClient heard from pubsub")
-                    otherClient.log.add("update showEditorState: ${it?.show?.title}")
+                    otherClient.log.add("update showEditorState: ${it?.document?.title}")
                 }
             }
 

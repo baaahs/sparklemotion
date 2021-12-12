@@ -52,12 +52,7 @@ class ShowManager(
 
     private val showEditStateChannel =
         pubSub.subscribe(
-            DocumentState.createTopic(
-                toolchain.plugins.serialModule,
-                remoteFsSerializer,
-                Show.serializer(),
-                ShowState.serializer()
-            )
+            ShowState.createTopic(toolchain.plugins.serialModule, remoteFsSerializer)
         ) { incoming ->
             switchTo(incoming)
             undoStack.reset(incoming)
