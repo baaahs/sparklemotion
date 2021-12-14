@@ -8,7 +8,7 @@ import baaahs.getBang
 import baaahs.mapper.ControllerId
 import baaahs.mapping.MappingManager
 import baaahs.model.Model
-import baaahs.scene.SceneConfig
+import baaahs.scene.Scene
 import baaahs.ui.addObserver
 import baaahs.util.Logger
 import baaahs.util.coroutineExceptionHandler
@@ -105,10 +105,10 @@ class ControllersManager(
         controllers.values.forEach { it.controller.afterFrame() }
     }
 
-    fun onSceneChange(sceneConfig: SceneConfig?) {
-        if (sceneConfig == null) return
+    fun onSceneChange(scene: Scene?) {
+        if (scene == null) return
 
-        sceneConfig.controllers.entries
+        scene.controllers.entries
             .groupByTo(hashMapOf()) { (_, v) -> v.controllerType }
             .mapValues { (_, v) -> v.associate { (k, v) -> k to v } }
             .map { (controllerType, controllers) ->

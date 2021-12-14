@@ -1,6 +1,8 @@
 package baaahs.ui
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.jsIcon
+import baaahs.doc.FileDisplay
 import baaahs.io.Fs
 import baaahs.ui.Styles.fileDialogFileList
 import baaahs.util.globalLaunch
@@ -8,7 +10,6 @@ import baaahs.window
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onDoubleClickFunction
-import materialui.Icon
 import materialui.components.breadcrumbs.breadcrumbs
 import materialui.components.button.button
 import materialui.components.buttongroup.buttonGroup
@@ -161,7 +162,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                 }
                 filesInDir.forEach { file ->
                     val icon = if (file.isDirectory == true) materialui.icons.Folder else materialui.icons.InsertDriveFile
-                    val fileDisplay = FileDisplay(file.name, icon, file.name.startsWith("."))
+                    val fileDisplay = FileDisplay(file.name, jsIcon(icon), file.name.startsWith("."))
                     fileDialog.adjustFileDisplay(file, fileDisplay)
 
                     if (!fileDisplay.isHidden) {
@@ -203,13 +204,6 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
         }
     }
 }
-
-class FileDisplay(
-    var name: String,
-    var icon: Icon?,
-    var isHidden: Boolean = false,
-    var isSelectable: Boolean = true
-)
 
 fun RBuilder.fileDialog(handler: RHandler<Props>) =
     child(FileDialogView, handler = handler)

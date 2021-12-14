@@ -92,7 +92,8 @@ interface Fs {
 //            return RemoteFile(fsId, resolvedPathParts.joinToString("/"), isDirectory ?: looksLikeDirectory)
 //        }
 
-        fun withExtension(extension: String): File {
+        fun withExtension(extension: String?): File {
+            extension ?: return this
             return if (!name.endsWith(extension)) {
                 File(fs, "$fullPath$extension", isDirectory)
             } else this

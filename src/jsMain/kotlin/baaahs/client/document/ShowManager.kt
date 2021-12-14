@@ -4,10 +4,10 @@ import baaahs.DocumentState
 import baaahs.PubSub
 import baaahs.app.ui.UiActions
 import baaahs.app.ui.dialog.FileDialog
-import baaahs.app.ui.dialog.FileType
 import baaahs.app.ui.document.DialogHolder
 import baaahs.client.ClientStageManager
 import baaahs.client.Notifier
+import baaahs.doc.ShowDocumentType
 import baaahs.gl.Toolchain
 import baaahs.io.RemoteFsSerializer
 import baaahs.io.resourcesFs
@@ -38,13 +38,9 @@ class ShowManager(
     fileDialog: FileDialog,
     private val stageManager: ClientStageManager
 ) : DocumentManager<Show>(
-    "show", "Show", pubSub, remoteFsSerializer, toolchain, notifier, fileDialog,
-    Show.serializer()
+    ShowDocumentType, pubSub, remoteFsSerializer, toolchain, notifier, fileDialog, Show.serializer()
 ) {
     val facade = Facade()
-
-    override val fileType: FileType
-        get() = FileType.Show
 
     var openShow: OpenShow? = null
         private set
@@ -76,7 +72,7 @@ class ShowManager(
                 attrs.open = true
                 attrs.onClose = { _, _ -> dialogHolder.closeDialog() }
 
-                dialogTitle { +"New ${documentTypeTitle}…" }
+                dialogTitle { +"New ${documentType.title}…" }
                 dialogContent {
                     list {
                         listItem {
@@ -111,7 +107,7 @@ class ShowManager(
                                 launch {
                                     val file = resourcesFs.resolve("Honcho.sparkle")
                                     val show = Storage(resourcesFs, toolchain.plugins).loadShow(file)
-                                        ?.copy(title = "New $documentTypeTitle")
+                                        ?.copy(title = "New ${documentType.title}")
                                         ?: error("Couldn't find show")
                                     onNew(show)
                                     dialogHolder.closeDialog()

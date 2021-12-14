@@ -2,6 +2,7 @@ package baaahs.sm.server
 
 import baaahs.DocumentState
 import baaahs.PubSub
+import baaahs.doc.DocumentType
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.Storage
@@ -16,7 +17,8 @@ abstract class DocumentService<T, TState>(
     topic: PubSub.Topic<DocumentState<T, TState>?>,
     tSerializer: KSerializer<T>,
     remoteFsSerializer: RemoteFsSerializer,
-    serializersModule: SerializersModule
+    serializersModule: SerializersModule,
+    val documentType: DocumentType
 ) {
     var document: T? = null
         private set
@@ -40,7 +42,7 @@ abstract class DocumentService<T, TState>(
         }
 
     init {
-        val commands = Topics.DocumentCommands("show", tSerializer, SerializersModule {
+        val commands = Topics.DocumentCommands(documentType.channelName, tSerializer, SerializersModule {
             include(remoteFsSerializer.serialModule)
             include(serializersModule)
         })

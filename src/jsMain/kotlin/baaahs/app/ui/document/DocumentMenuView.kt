@@ -23,6 +23,7 @@ interface DialogHolder {
 private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { props ->
     val appContext = useContext(appContext)
     val documentManager = props.documentManager
+    observe(documentManager)
     val typeTitle = documentManager.documentTypeTitle
 
     var renderDialog by state<(RBuilder.() -> Unit)?> { null }
