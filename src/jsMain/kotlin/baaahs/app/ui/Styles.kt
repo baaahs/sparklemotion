@@ -4,6 +4,7 @@ import baaahs.app.ui.editor.ShaderEditorStyles
 import baaahs.app.ui.editor.ShaderHelpStyles
 import baaahs.app.ui.editor.layout.LayoutEditorStyles
 import baaahs.app.ui.gadgets.slider.ThemedStyles
+import baaahs.app.ui.model.ModelEditorStyles
 import baaahs.mapper.MapperStyles
 import baaahs.ui.*
 import kotlinx.css.*
@@ -24,6 +25,7 @@ class AllStyles(val theme: MuiTheme) {
     val controls by lazy { baaahs.app.ui.controls.ThemeStyles(theme) }
     val gadgetsSlider by lazy { ThemedStyles(theme) }
     val layoutEditor by lazy { LayoutEditorStyles(theme) }
+    val modelEditor by lazy { ModelEditorStyles(theme) }
     val mapper by lazy { MapperStyles(theme) }
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
     val shaderHelp by lazy { ShaderHelpStyles(theme) }

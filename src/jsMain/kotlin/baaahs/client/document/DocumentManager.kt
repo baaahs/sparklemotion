@@ -2,9 +2,10 @@ package baaahs.client.document
 
 import baaahs.PubSub
 import baaahs.app.ui.dialog.FileDialog
-import baaahs.app.ui.dialog.FileType
 import baaahs.app.ui.document.DialogHolder
 import baaahs.client.Notifier
+import baaahs.doc.DocumentType
+import baaahs.doc.FileType
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
@@ -14,8 +15,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
 abstract class DocumentManager<T>(
-    private val documentType: String,
-    val documentTypeTitle: String,
+    val documentType: DocumentType,
     private val pubSub: PubSub.Client,
     private val remoteFsSerializer: RemoteFsSerializer,
     private val toolchain: Toolchain,
@@ -23,7 +23,7 @@ abstract class DocumentManager<T>(
     private val fileDialog: FileDialog,
     private val tSerializer: KSerializer<T>
 ) {
-    protected abstract val fileType: FileType
+    private val fileType: FileType get() = documentType.fileType
 
     var file: Fs.File? = null
         private set
@@ -39,7 +39,7 @@ abstract class DocumentManager<T>(
         private set
 
     private val serverCommands = object {
-        private val commands = Topics.DocumentCommands(documentType, tSerializer, SerializersModule {
+        private val commands = Topics.DocumentCommands(documentType.channelName, tSerializer, SerializersModule {
             include(remoteFsSerializer.serialModule)
             include(toolchain.plugins.serialModule)
         })
@@ -58,8 +58,8 @@ abstract class DocumentManager<T>(
     suspend fun onOpen() {
         confirmCloseIfUnsaved() || return
 
-        fileDialog.open(FileType.Show, file)
-            ?.withExtension(".sparkle")
+        fileDialog.open(fileType, file)
+            ?.withExtension(fileType.extension)
             ?.also { serverCommands.switchToCommand(SwitchToCommand(it)) }
     }
 
@@ -72,8 +72,8 @@ abstract class DocumentManager<T>(
     }
 
     suspend fun onSaveAs() {
-        fileDialog.saveAs(FileType.Show, file)
-            ?.withExtension(".sparkle")
+        fileDialog.saveAs(fileType, file)
+            ?.withExtension(fileType.extension)
             ?.also { serverCommands.saveAsCommand(SaveAsCommand(it)) }
     }
 
@@ -105,7 +105,7 @@ abstract class DocumentManager<T>(
         if (!isUnsaved) return true
 
         // TODO: Use react dialog instead.
-        return window.confirm("$documentTypeTitle is unsaved, okay to close it?")
+        return window.confirm("${documentType.title} is unsaved, okay to close it?")
     }
 
     protected fun launch(block: suspend () -> Unit) {
@@ -113,7 +113,7 @@ abstract class DocumentManager<T>(
     }
 
     open inner class Facade : baaahs.ui.Facade() {
-        val documentTypeTitle get() = this@DocumentManager.documentTypeTitle
+        val documentTypeTitle get() = this@DocumentManager.documentType.title
         val file get() = this@DocumentManager.file
         val isLoaded get() = this@DocumentManager.isLoaded
         val isUnsaved get() = this@DocumentManager.isUnsaved

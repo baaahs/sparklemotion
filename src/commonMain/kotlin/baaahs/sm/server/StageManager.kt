@@ -2,6 +2,8 @@ package baaahs.sm.server
 
 import baaahs.*
 import baaahs.controller.ControllersManager
+import baaahs.doc.SceneDocumentType
+import baaahs.doc.ShowDocumentType
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.RenderPlan
 import baaahs.gl.Toolchain
@@ -9,6 +11,7 @@ import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.mapper.Storage
+import baaahs.scene.Scene
 import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.ShowState
@@ -50,7 +53,8 @@ class StageManager(
     private val clientData =
         pubSub.state(Topics.createClientData(fsSerializer), ClientData(storage.fs.rootFile))
 
-    private val showDocumentService = ShowDocumentService()
+    internal val showDocumentService = ShowDocumentService()
+    internal val sceneDocumentService = SceneDocumentService()
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
         gadgetManager.registerGadget(id, gadget)
@@ -80,6 +84,14 @@ class StageManager(
         file: Fs.File? = null
     ) {
         showDocumentService.switchTo(newShow, newShowState, file)
+    }
+
+    private fun updateRunningScenePath(file: Fs.File?) {
+        globalLaunch {
+            storage.updateConfig {
+                copy(runningScenePath = file?.fullPath)
+            }
+        }
     }
 
     private fun updateRunningShowPath(file: Fs.File?) {
@@ -133,7 +145,8 @@ class StageManager(
         ),
         Show.serializer(),
         fsSerializer,
-        toolchain.plugins.serialModule
+        toolchain.plugins.serialModule,
+        ShowDocumentType
     ) {
         private val showProblems = pubSub.publish(Topics.showProblems, emptyList()) {}
 
@@ -183,6 +196,68 @@ class StageManager(
             super.switchTo(newDocument, newState, file, isUnsaved, fromClientUpdate)
 
             updateRunningShowPath(file)
+
+            notifyOfDocumentChanges(fromClientUpdate)
+        }
+    }
+
+    inner class SceneDocumentService : DocumentService<Scene, Unit>(
+        pubSub, storage,
+        Scene.createTopic(
+            toolchain.plugins.serialModule,
+            fsSerializer
+        ),
+        Scene.serializer(),
+        fsSerializer,
+        toolchain.plugins.serialModule,
+        SceneDocumentType
+    ) {
+        override fun createDocument(): Scene = Scene.Empty
+
+        override suspend fun load(file: Fs.File): Scene? {
+            return storage.loadScene(file)
+        }
+
+        override suspend fun save(file: Fs.File, document: Scene) {
+            storage.saveScene(file, document)
+        }
+
+        override fun onFileChanged(saveAsFile: Fs.File) {
+            updateRunningScenePath(saveAsFile)
+        }
+
+        override fun getDocumentState(): DocumentState<Scene, Unit>? {
+            return document?.let { DocumentState(it, Unit, true, null) }
+        }
+
+        override fun notifyOfDocumentChanges(fromClientUpdate: Boolean) {
+            super.notifyOfDocumentChanges(fromClientUpdate)
+            facade.notifyChanged()
+        }
+
+        override fun switchTo(
+            newDocument: Scene?,
+            newState: Unit?,
+            file: Fs.File?,
+            isUnsaved: Boolean,
+            fromClientUpdate: Boolean
+        ) {
+//            val newShowRunner = newDocument?.let {
+//                val openShow = openShow(newDocument, newState)
+//                ShowRunner(newDocument, newState, openShow, clock, renderManager, fixtureManager) { problems ->
+//                    showProblems.onChange(problems)
+//                }
+//            }
+
+//            showRunner?.release()
+//            releaseUnused()
+
+//            showRunner = newShowRunner
+            super.switchTo(newDocument, newState, file, isUnsaved, fromClientUpdate)
+
+            updateRunningScenePath(file)
+
+            controllersManager.onSceneChange(newDocument)
 
             notifyOfDocumentChanges(fromClientUpdate)
         }

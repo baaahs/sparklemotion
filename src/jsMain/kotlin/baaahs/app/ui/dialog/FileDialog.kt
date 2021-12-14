@@ -1,7 +1,8 @@
 package baaahs.app.ui.dialog
 
+import baaahs.doc.FileDisplay
+import baaahs.doc.FileType
 import baaahs.io.Fs
-import baaahs.ui.FileDisplay
 import baaahs.ui.Observable
 import kotlinx.coroutines.channels.Channel
 
@@ -49,38 +50,5 @@ class FileDialog : Observable() {
     ) {
         val title = title
             ?: if (isSaveAs) "Save ${fileType.title} As…" else "Open ${fileType.title}…"
-    }
-}
-
-abstract class FileType {
-    open val title: String get() = "File"
-    abstract fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay)
-
-    object Any : FileType() {
-        override fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay) {
-            // No op.
-        }
-    }
-
-    object Show : FileType() {
-        override val title: String
-            get() = "Show"
-
-        override fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay) {
-            if (file.isDirectory == false) {
-                fileDisplay.isSelectable = file.name.endsWith(".sparkle")
-            }
-        }
-    }
-
-    object Scene : FileType() {
-        override val title: String
-            get() = "Scene"
-
-        override fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay) {
-            if (file.isDirectory == false) {
-                fileDisplay.isSelectable = file.name.endsWith(".scene")
-            }
-        }
     }
 }

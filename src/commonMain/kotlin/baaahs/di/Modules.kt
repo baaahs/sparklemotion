@@ -135,7 +135,7 @@ interface PinkyModule : KModule {
                     Pinky(
                         get(), get(), get(), get(), get(), get(),
                         get(), get(), get(), get(), get(pinkyContext), get(), get(),
-                        get(), get(), get(), get(), get(), get(), get()
+                        get(), get(), get(), get(), get(), get()
                     )
                 }
             }

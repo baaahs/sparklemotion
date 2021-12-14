@@ -6,7 +6,7 @@ import baaahs.io.FsServerSideSerializer
 import baaahs.libraries.ShaderLibraryIndexFile
 import baaahs.model.Model
 import baaahs.plugin.Plugins
-import baaahs.scene.SceneConfig
+import baaahs.scene.Scene
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
 import baaahs.util.Logger
@@ -19,6 +19,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     val fsSerializer = FsServerSideSerializer()
 
     private val configFile = fs.resolve("config.json")
+    val oldSceneJsonFile = fs.resolve("scene.json")
 
     companion object {
         private val logger = Logger("Storage")
@@ -84,16 +85,22 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun updateConfig(update: PinkyConfig.() -> PinkyConfig) {
-        val oldConfig = loadConfig() ?: PinkyConfig(null)
+        val oldConfig = loadConfig() ?: PinkyConfig(null, null)
         val newConfig = oldConfig.update()
         configFile.write(json.encodeToString(PinkyConfig.serializer(), newConfig), true)
     }
 
-    private suspend fun <T> loadJson(configFile: Fs.File, serializer: KSerializer<T>): T? {
-        return fs.loadFile(configFile)?.let { plugins.json.decodeFromString(serializer, it) }
+    private suspend fun <T> loadJson(file: Fs.File, serializer: KSerializer<T>): T? {
+        return fs.loadFile(file)?.let { plugins.json.decodeFromString(serializer, it) }
     }
 
-    suspend fun loadSceneConfig() = loadJson(fs.resolve("scene.json"), SceneConfig.serializer())
+    suspend fun loadScene(file: Fs.File): Scene? {
+        return loadJson(file, Scene.serializer())
+    }
+
+    suspend fun saveScene(file: Fs.File, scene: Scene) {
+        file.write(plugins.json.encodeToString(Scene.serializer(), scene), true)
+    }
 
     suspend fun loadShow(file: Fs.File): Show? {
         return loadJson(file, ShowMigrator)

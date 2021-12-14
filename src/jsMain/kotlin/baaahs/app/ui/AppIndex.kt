@@ -44,6 +44,8 @@ import react.dom.p
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val webClient = props.webClient
     observe(webClient)
+    val sceneManager = props.sceneManager
+    observe(sceneManager)
     val showManager = props.showManager
     observe(showManager)
 
