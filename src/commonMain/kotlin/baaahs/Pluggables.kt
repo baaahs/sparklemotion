@@ -1,7 +1,5 @@
 package baaahs
 
-import baaahs.model.ConstEntityMetadataProvider
-import baaahs.model.EntityMetadataProvider
 import baaahs.model.Model
 import baaahs.model.ModelData
 import baaahs.models.*
@@ -21,17 +19,17 @@ object Pluggables {
 
     fun loadModel(name: String): ModelProvider = ModelProvider {
             models.getOrPut(name) {
-                val (modelData: ModelData, metadata: EntityMetadataProvider) =
+                val modelData: ModelData =
                     when (name) {
-                        "Decom2019" -> decom2019ModelData to decom2019ModelMetadata
-                        "Demo" -> demoModelData to demoModelMetadata
-                        "Honcho" -> honchoModelData to ConstEntityMetadataProvider(16 * 60)
-                        "Playa2021" -> playa2021ModelData to playa2021ModelMetadata
-                        "SuiGeneris" -> suiGenerisModelData to suiGenerisModelMetadata
-                        "BAAAHS" -> sheepModelData to sheepModelMetadata
+                        "Decom2019" -> decom2019ModelData
+                        "Demo" -> demoModelData
+                        "Honcho" -> honchoModelData
+                        "Playa2021" -> playa2021ModelData
+                        "SuiGeneris" -> suiGenerisModelData
+                        "BAAAHS" -> sheepModelData
                         else -> throw IllegalArgumentException("unknown model \"$name\"")
                     }
-                modelData.open(metadata)
+                modelData.open()
             }
     }
 }

@@ -5,17 +5,14 @@ import baaahs.io.Fs
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.MapperUi
 import baaahs.monitor.MonitorUi
-import baaahs.net.BrowserNetwork
 import baaahs.sim.FakeNetwork
 import baaahs.sim.FixturesSimulator
 import baaahs.sim.HostedWebApp
 import baaahs.sim.Launcher
-import baaahs.util.JsPlatform
 import baaahs.sim.ui.LaunchItem
 import baaahs.util.LoggerConfig
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.Koin
 import org.koin.core.parameter.parametersOf
@@ -42,7 +39,7 @@ class SheepSimulator(
         pinky = pinkyScope.get()
         fixturesSimulator = pinkyScope.get(parameters = { parametersOf(pinky.plugins) })
 
-        fixturesSimulator.generateMappingData()
+        launch { fixturesSimulator.generateMappingData() }
 
         launch { pinky.startAndRun() }
 
@@ -51,8 +48,6 @@ class SheepSimulator(
         fixturesSimulator.addToVisualizer()
 
         facade.notifyChanged()
-
-        delay(200000L)
     }
 
     fun createWebClientApp(): WebClient = getKoin().createScope<WebClient>().get()

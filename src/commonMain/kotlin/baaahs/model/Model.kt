@@ -9,9 +9,16 @@ import baaahs.sim.BrainSurfaceSimulation
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
 
-abstract class Model : ModelInfo {
-    abstract val name: String
-    abstract val allEntities: List<Entity>
+class Model(
+    val name: String,
+    val entities: List<Entity>,
+    val units: ModelUnit = ModelUnit.default
+) : ModelInfo {
+    val allEntities: List<Entity> =
+        entities.flatMap { entity ->
+            entity.containedEntities
+            if (entity is EntityGroup) listOf(entity) + entity.entities else listOf(entity)
+        }
 
     private val allEntitiesByName: Map<String, Entity> by lazy { allEntities.associateBy { it.name } }
 
@@ -40,16 +47,21 @@ abstract class Model : ModelInfo {
 
     interface Entity {
         val name: String
+        val title: String get() = name
         val description: String?
         val deviceType: DeviceType
         val bounds: Pair<Vector3F, Vector3F>
         val transformation: Matrix4F
+        val containedEntities: List<Entity> get() = listOf(this)
 
         fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation?
     }
 
     interface EntityGroup : Entity {
         val entities: List<Entity>
+
+        override val containedEntities: List<Model.Entity>
+            get() = super.containedEntities + entities.flatMap { it.containedEntities }
     }
 
     interface EntityWithGeometry: Entity {

@@ -23,7 +23,7 @@ import baaahs.plugin.Plugin
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
-import baaahs.scene.SceneManager
+import baaahs.scene.SceneMonitor
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
@@ -74,9 +74,9 @@ interface PinkyModule : KModule {
     val Scope.pinkyMainDispatcher: CoroutineDispatcher
     val Scope.pinkyLink: Network.Link get() = get<Network>().link("pinky")
     val Scope.dmxDriver: Dmx.Driver
-    val Scope.modelProvider: ModelProvider
     val Scope.renderManager: RenderManager
     val Scope.pinkySettings: PinkySettings
+    val Scope.sceneMonitor: SceneMonitor get() = SceneMonitor()
 
     override fun getModule(): Module {
         val pinkyContext = named("PinkyContext")
@@ -103,18 +103,18 @@ interface PinkyModule : KModule {
                 scoped<PubSub.IServer> { get<PubSub.Server>() }
                 scoped { dmxDriver }
                 scoped<DmxManager> { DmxManagerImpl(get(), get(), get(fallbackDmxUniverse)) }
-                scoped { modelProvider }
                 scoped { renderManager }
                 scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
                 scoped { Storage(get(), get()) }
                 scoped<FixtureManager> { FixtureManagerImpl(get(), get()) }
                 scoped { GadgetManager(get(), get(), get(pinkyContext)) }
                 scoped<Toolchain> { RootToolchain(get()) }
-                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
                 scoped { Pinky.NetworkStats() }
                 scoped { BrainManager(get(), get(), get(), get(), get(), get(pinkyContext)) }
                 scoped { SacnManager(get(), get(), get(PinkyModule.pinkyMainDispatcher), get()) }
-                scoped { SceneManager(get(), get()) }
+                scoped { sceneMonitor }
+                scoped<ModelProvider> { get<SceneMonitor>() }
                 scoped<MappingManager> { MappingManagerImpl(get(), get()) }
                 scoped<ModelManager> { ModelManagerImpl() }
                 scoped(named("ControllerManagers")) {
@@ -154,12 +154,10 @@ abstract class WebClientModule : KModule {
 }
 
 interface SimulatorModule : KModule {
-    val Scope.modelProvider: ModelProvider
     val Scope.fs: Fs
 
     override fun getModule(): Module = module {
         single { FakeNetwork() }
-        single { modelProvider }
         single(named(Qualifier.PinkyFs)) { fs }
         single(named(Qualifier.MapperFs)) { FakeFs("Temporary Mapping Files") }
         single<Fs>(named(Qualifier.MapperFs)) { get<FakeFs>(named(Qualifier.MapperFs)) }

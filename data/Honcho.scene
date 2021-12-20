@@ -1,0 +1,882 @@
+{
+  "model": {
+    "title": "Honcho",
+    "entities": [
+      {
+        "type": "LightRing",
+        "title": "ring 4.01",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": -196.85039,
+          "y": 39.37008,
+          "z": 0.0
+        },
+        "radius": 50.12754,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 4.02",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": -118.11023,
+          "y": 39.37008,
+          "z": 0.0
+        },
+        "radius": 50.12754,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 4.03",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": -39.37007,
+          "y": 39.37008,
+          "z": 0.0
+        },
+        "radius": 50.12754,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 4.04",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 39.370087,
+          "y": 39.37008,
+          "z": 0.0
+        },
+        "radius": 50.12754,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 4.05",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 118.11026,
+          "y": 39.37008,
+          "z": 0.0
+        },
+        "radius": 50.12754,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 4.06",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 196.8504,
+          "y": 39.37008,
+          "z": 0.0
+        },
+        "radius": 50.12754,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 4.07",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 275.59055,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 50.12754,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 4.08",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 354.33072,
+          "y": 39.37008,
+          "z": 0.0
+        },
+        "radius": 50.12754,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 4.09",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 433.0709,
+          "y": 39.37008,
+          "z": 0.0
+        },
+        "radius": 50.12754,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 4.10",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 511.81107,
+          "y": 39.37008,
+          "z": 0.0
+        },
+        "radius": 50.12754,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 4.11",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 590.55115,
+          "y": 39.37008,
+          "z": 0.0
+        },
+        "radius": 50.12754,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 4.12",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 669.2914,
+          "y": 39.37008,
+          "z": 0.0
+        },
+        "radius": 50.12754,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 5.01",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": -196.85039,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 62.659428,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 5.02",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": -118.11023,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 62.659428,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 5.03",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": -39.37007,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 62.659428,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 5.04",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 39.370087,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 62.659428,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 5.05",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 118.11026,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 62.659428,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 5.06",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 196.8504,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 62.659428,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 5.07",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 275.59055,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 62.659428,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 5.08",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 354.33072,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 62.659428,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 5.09",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 433.0709,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 62.659428,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 5.10",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 511.81107,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 62.659428,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 5.11",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 590.55115,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 62.659428,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 5.12",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 669.2914,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 62.659428,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      },
+      {
+        "type": "LightRing",
+        "title": "ring 8.01",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "center": {
+          "x": 275.59055,
+          "y": 118.11024,
+          "z": 0.0
+        },
+        "radius": 100.25508,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        },
+        "firstPixelRadians": 1.5707964
+      }
+    ]
+  }
+}

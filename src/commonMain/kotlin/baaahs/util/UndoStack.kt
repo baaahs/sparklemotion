@@ -1,6 +1,6 @@
 package baaahs.util
 
-class UndoStack<T>(private val capacity: Int = 100) {
+open class UndoStack<T>(private val capacity: Int = 100) {
     val stack = ArrayList<T>()
     var position = -1
 
@@ -17,10 +17,10 @@ class UndoStack<T>(private val capacity: Int = 100) {
         position++
     }
 
-    fun undo(): T = stack[--position]
+    open fun undo(): T = stack[--position]
     fun canUndo(): Boolean = position > 0
 
-    fun redo(): T = stack[++position]
+    open fun redo(): T = stack[++position]
     fun canRedo(): Boolean = position < stack.size - 1
 
     private fun truncate(size: Int) {

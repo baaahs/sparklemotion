@@ -3,6 +3,7 @@ package baaahs.visualizer
 import baaahs.ModelProvider
 import baaahs.document
 import baaahs.mapper.JsMapperUi
+import baaahs.model.Model
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.asMillis
@@ -11,6 +12,7 @@ import baaahs.window
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
 import org.w3c.dom.events.Event
@@ -88,12 +90,12 @@ class Visualizer(
                 selectionSpan.style.display = "none"
                 selectionSpan.innerText = ""
             } else {
+                value.selected = true
                 console.log("Selecting ${value.title}")
                 selectionSpan.style.display = "inherit"
                 selectionSpan.innerText = "Selected: ${value.title}"
             }
 
-            facade.selectedEntity = value
             facade.notifyChanged()
         }
 
@@ -168,10 +170,12 @@ class Visualizer(
         event as MouseEvent
 
         container?.let {
-            mouse = Vector2(
-                (event.clientX.toDouble() / it.offsetWidth) * 2 - 1,
-                -(event.clientY.toDouble() / it.offsetHeight) * 2 + 1
-            )
+            val bounds = (event.target as? HTMLCanvasElement)?.getBoundingClientRect()
+            bounds?.let {
+                val x = (event.clientX - bounds.x) / bounds.width
+                val y = (event.clientY - bounds.y) / bounds.height
+                mouse = Vector2(x * 2 - 1, -y * 2 + 1)
+            }
         }
     }
 
@@ -294,11 +298,17 @@ class Visualizer(
                 this@Visualizer.rotate = value
             }
 
-        var selectedEntity: EntityVisualizer? = null
+        var selectedEntity: EntityVisualizer?
+            get() = this@Visualizer.selectedEntity
+            set(value) { this@Visualizer.selectedEntity = value }
 
         val framerate = Framerate()
 
         fun resize() = this@Visualizer.resize()
+
+        fun select(entity: Model.Entity) {
+            this@Visualizer.selectedEntity = entityVisualizers.find { it.entity == entity }
+        }
     }
 
     companion object {

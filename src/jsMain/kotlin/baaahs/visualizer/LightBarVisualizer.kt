@@ -1,23 +1,31 @@
 package baaahs.visualizer
 
+import baaahs.geom.Matrix4F
+import baaahs.model.Model
 import baaahs.model.PixelArray
 import three.js.BoxGeometry
 import three.js.Mesh
-import three.js.MeshNormalMaterial
+import three.js.MeshBasicMaterial
 import three.js.Vector3
 
 class LightBarVisualizer(
     pixelArray: PixelArray,
     vizPixels: VizPixels? = null
 ) : EntityVisualizer {
+    override val entity: Model.Entity = pixelArray
     override val title: String = pixelArray.name
     override var mapperIsRunning: Boolean = false
 
     override var selected: Boolean = false
         set(value) {
-            boxMesh.material.wireframeLinewidth = if (value) 3 else 1
-            boxMesh.material.needsUpdate = true
+            boxMesh.material = if (value) selectedBarMaterial else barMaterial
             field = value
+        }
+
+    override var transformation: Matrix4F
+        get() = Matrix4F(boxMesh.matrix)
+        set(value) {
+            boxMesh.matrix = value.nativeMatrix
         }
 
     private var vizScene: VizScene? = null
@@ -31,7 +39,18 @@ class LightBarVisualizer(
             field = value
         }
 
-    private val boxMesh: Mesh<BoxGeometry, MeshNormalMaterial>
+    private val boxMesh: Mesh<BoxGeometry, MeshBasicMaterial>
+
+    private val barMaterial = MeshBasicMaterial().apply {
+        wireframeLinewidth = 1
+        color.set(0xaaaaaa)
+        wireframe = true
+    }
+    private val selectedBarMaterial = MeshBasicMaterial().apply {
+        wireframeLinewidth = 3
+        color.set(0xffccaa)
+        wireframe = true
+    }
 
     init {
         val bounds = pixelArray.bounds
@@ -51,9 +70,7 @@ class LightBarVisualizer(
 
         with(startVertex) { boxGeom.translate(x, y, z) }
 
-        boxMesh = Mesh(boxGeom, MeshNormalMaterial().apply {
-            wireframe = true
-        })
+        boxMesh = Mesh(boxGeom, barMaterial)
     }
 
     override fun addTo(scene: VizScene) {

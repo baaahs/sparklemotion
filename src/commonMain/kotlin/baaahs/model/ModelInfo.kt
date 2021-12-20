@@ -16,11 +16,7 @@ interface ModelInfo {
             get() = Vector3F.origin
     }
 
-    object EmptyModel : Model() {
-        override val name: String get() = TODO("not implemented")
-        override val allEntities: List<Entity> get() = TODO("not implemented")
-        override val center: Vector3F get() = Empty.center
-        override val extents: Vector3F get() = Empty.extents
+    companion object {
+        val EmptyModel = Model("Empty", emptyList())
     }
-
 }

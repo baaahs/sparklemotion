@@ -16,12 +16,9 @@ import baaahs.show.SampleData
 import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableShow
 import baaahs.sm.webapi.ShowProblem
 import baaahs.sm.webapi.Topics
-import baaahs.util.UndoStack
-import baaahs.withState
 import kotlinx.html.js.onClickFunction
 import materialui.components.dialog.dialog
 import materialui.components.dialogcontent.dialogContent
@@ -37,23 +34,14 @@ class ShowManager(
     notifier: Notifier,
     fileDialog: FileDialog,
     private val stageManager: ClientStageManager
-) : DocumentManager<Show>(
-    ShowDocumentType, pubSub, remoteFsSerializer, toolchain, notifier, fileDialog, Show.serializer()
+) : DocumentManager<Show, ShowState>(
+    ShowDocumentType, pubSub, ShowState.createTopic(toolchain.plugins.serialModule, remoteFsSerializer),
+    remoteFsSerializer, toolchain, notifier, fileDialog, Show.serializer()
 ) {
-    val facade = Facade()
+    override val facade = Facade()
 
     var openShow: OpenShow? = null
         private set
-    val undoStack = UndoStack<DocumentState<Show, ShowState>>()
-
-    private val showEditStateChannel =
-        pubSub.subscribe(
-            ShowState.createTopic(toolchain.plugins.serialModule, remoteFsSerializer)
-        ) { incoming ->
-            switchTo(incoming)
-            undoStack.reset(incoming)
-            facade.notifyChanged()
-        }
 
     private val showProblems = arrayListOf<ShowProblem>().apply {
         pubSub.subscribe(Topics.showProblems) {
@@ -127,11 +115,7 @@ class ShowManager(
         UiActions.downloadShow(document!!, toolchain.plugins)
     }
 
-    fun release() {
-        showEditStateChannel.unsubscribe()
-    }
-
-    private fun switchTo(documentState: DocumentState<Show, ShowState>?) {
+    override fun switchTo(documentState: DocumentState<Show, ShowState>?) {
         val newShow = documentState?.document
         val newShowState = documentState?.state
         val newIsUnsaved = documentState?.isUnsaved ?: false
@@ -145,33 +129,18 @@ class ShowManager(
         update(newShow, newFile, newIsUnsaved)
     }
 
-    inner class Facade : DocumentManager<Show>.Facade(), EditHandler {
+    inner class Facade : DocumentManager<Show, ShowState>.Facade() {
         val show get() = this@ShowManager.document
         val openShow get() = this@ShowManager.openShow
         val showProblems get() = this@ShowManager.showProblems
-        val undoStack get() = this@ShowManager.undoStack
 
-        override fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
-            onShowEdit(mutableShow.getShow(), openShow!!.getShowState(), pushToUndoStack)
+        override fun onEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
+            onEdit(mutableShow.getShow(), openShow!!.getShowState(), pushToUndoStack)
         }
 
-        override fun onShowEdit(show: Show, pushToUndoStack: Boolean) {
-            onShowEdit(show, openShow!!.getShowState(), pushToUndoStack)
+        override fun onEdit(document: Show, pushToUndoStack: Boolean) {
+            onEdit(document, openShow!!.getShowState(), pushToUndoStack)
         }
-
-        override fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean) {
-            val isUnsaved = this@ShowManager.isModified(show)
-            val showEditState = show.withState(showState, isUnsaved, file)
-            showEditStateChannel.onChange(showEditState)
-            switchTo(showEditState)
-
-            if (pushToUndoStack) {
-                undoStack.changed(showEditState)
-            }
-
-            notifyChanged()
-        }
-
 
         fun onShowStateChange() {
             notifyChanged()

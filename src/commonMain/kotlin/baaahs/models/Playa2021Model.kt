@@ -8,7 +8,10 @@ import baaahs.model.*
 val playa2021ModelData = ModelData(
     "Playa2021",
     listOf(
-        ObjModelData("playa-2021-panels.obj", null, Matrix4F.identity, "playa-2021-panels.obj", true),
+        ObjModelData(
+            "playa-2021-panels.obj", null, Matrix4F.identity, "playa-2021-panels.obj", true,
+            ConstEntityMetadataProvider(16 * 60)
+        ),
         GridData(
             "grid", null,
             Matrix4F.fromPositionAndRotation(Vector3F(-24f, 0f, 0f), EulerAngle.identity),
@@ -17,5 +20,3 @@ val playa2021ModelData = ModelData(
     ),
     ModelUnit.Inches
 )
-
-val playa2021ModelMetadata = ConstEntityMetadataProvider(16 * 60)

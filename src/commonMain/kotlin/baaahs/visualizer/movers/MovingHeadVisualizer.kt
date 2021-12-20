@@ -1,6 +1,8 @@
 package baaahs.visualizer.movers
 
 import baaahs.Color
+import baaahs.geom.Matrix4F
+import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 import baaahs.sim.FakeDmxUniverse
@@ -15,10 +17,13 @@ class MovingHeadVisualizer(
     private val dmxUniverse: FakeDmxUniverse,
     private val beam: Beam = Beam.selectFor(movingHead)
 ) : EntityVisualizer {
+    override val entity: Model.Entity get() = movingHead
     override val title: String
         get() = movingHead.name
     override var mapperIsRunning: Boolean = false
     override var selected: Boolean = false // TODO: Show that the device is selected.
+
+    override var transformation: Matrix4F = Matrix4F.identity
 
     private val buffer = run {
         val dmxBufferReader = dmxUniverse.listen(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount) {

@@ -1,0 +1,196 @@
+{
+  "model": {
+    "title": "Demo",
+    "entities": [
+      {
+        "type": "ObjModel",
+        "title": "B Panels",
+        "description": null,
+        "transformation": [
+          0.8503006,
+          0.5245542,
+          -0.042798743,
+          0.0,
+          -0.2171174,
+          0.42369726,
+          0.87939787,
+          0.0,
+          0.47942555,
+          -0.73846024,
+          0.4741599,
+          0.0,
+          170.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "objData": "decom-2019-panels.obj",
+        "objDataIsFileRef": true,
+        "metadata": {
+          "type": "baaahs.model.ConstEntityMetadataProvider",
+          "pixelCount": 960
+        }
+      },
+      {
+        "type": "LightBar",
+        "title": "bar 1",
+        "description": "Vertical between Panel 1 and 2",
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "startVertex": {
+          "x": 54.0,
+          "y": 66.0,
+          "z": 0.0
+        },
+        "endVertex": {
+          "x": 54.0,
+          "y": 102.0,
+          "z": 0.0
+        }
+      },
+      {
+        "type": "LightBar",
+        "title": "bar 2",
+        "description": "Vertical between Panel 2 and 3",
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "startVertex": {
+          "x": 114.0,
+          "y": 66.0,
+          "z": 0.0
+        },
+        "endVertex": {
+          "x": 114.0,
+          "y": 102.0,
+          "z": 0.0
+        }
+      },
+      {
+        "type": "LightBar",
+        "title": "bar 3",
+        "description": "Vertical below Panel 2",
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "startVertex": {
+          "x": 66.0,
+          "y": 47.0,
+          "z": 0.0
+        },
+        "endVertex": {
+          "x": 102.0,
+          "y": 47.0,
+          "z": 0.0
+        }
+      },
+      {
+        "type": "Grid",
+        "title": "Grid",
+        "description": null,
+        "transformation": [
+          0.8503006,
+          0.5245542,
+          -0.042798743,
+          0.0,
+          -0.2171174,
+          0.42369726,
+          0.87939787,
+          0.0,
+          0.47942555,
+          -0.73846024,
+          0.4741599,
+          0.0,
+          -40.0,
+          -5.0,
+          5.0,
+          1.0
+        ],
+        "rows": 20,
+        "columns": 25,
+        "rowGap": 1.0,
+        "columnGap": 1.0
+      },
+      {
+        "type": "LightRing",
+        "title": "Light Ring",
+        "description": null,
+        "transformation": [
+          0.8503006,
+          0.5245542,
+          -0.042798743,
+          0.0,
+          -0.2171174,
+          0.42369726,
+          0.87939787,
+          0.0,
+          0.47942555,
+          -0.73846024,
+          0.4741599,
+          0.0,
+          -40.0,
+          -25.0,
+          5.0,
+          1.0
+        ],
+        "center": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "radius": 24.0,
+        "planeNormal": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 1.0
+        }
+      }
+    ]
+  }
+}

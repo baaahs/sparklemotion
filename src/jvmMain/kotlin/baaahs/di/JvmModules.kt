@@ -1,9 +1,7 @@
 package baaahs.di
 
 import baaahs.MediaDevices
-import baaahs.ModelProvider
 import baaahs.PinkySettings
-import baaahs.Pluggables
 import baaahs.dmx.Dmx
 import baaahs.dmx.JvmFtdiDmxDriver
 import baaahs.gl.GlBase
@@ -17,7 +15,6 @@ import baaahs.plugin.ServerPlugins
 import baaahs.sm.brain.DirectoryDaddy
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.proto.Ports
-import baaahs.sm.server.PinkyArgs
 import baaahs.util.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.newSingleThreadContext
@@ -69,8 +66,6 @@ class JvmPinkyModule(
         get() = newSingleThreadContext("Pinky Main")
     override val Scope.dmxDriver: Dmx.Driver
         get() = JvmFtdiDmxDriver
-    override val Scope.modelProvider: ModelProvider
-        get() = Pluggables.loadModel(get<PinkyArgs>().model)
     override val Scope.renderManager: RenderManager
         get() = runBlocking(get(named("PinkyContext"))) {
             RenderManager { GlBase.manager.createContext() }
