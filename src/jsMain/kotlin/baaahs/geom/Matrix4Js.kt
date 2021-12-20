@@ -5,12 +5,15 @@ import baaahs.visualizer.toVector3
 import kotlinx.serialization.Serializable
 import three.js.Euler
 import three.js.Quaternion
+import three_ext.set
 import three_ext.toVector3F
 import three.js.Matrix4 as NativeMatrix4D
 import three.js.Vector3 as NativeVector3F
 
 @Serializable(Matrix4FSerializer::class)
 actual class Matrix4F actual constructor(elements: FloatArray?) {
+    constructor(nativeMatrix: three.js.Matrix4) : this(nativeMatrix.elements.map { it.toFloat() }.toFloatArray())
+
     val nativeMatrix = NativeMatrix4D()
         .also { if (elements != null) it.fromArray(elements.toDoubleArray()) }
 
@@ -26,7 +29,7 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
         get() = NativeVector3F().setFromMatrixScale(nativeMatrix).toVector3F()
 
     actual operator fun times(matrix: Matrix4F): Matrix4F {
-        nativeMatrix.multiply(matrix.nativeMatrix)
+        nativeMatrix.clone().multiply(matrix.nativeMatrix)
         return this
     }
 
@@ -34,9 +37,33 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
         return vector.toVector3().applyMatrix4(nativeMatrix).toVector3F()
     }
 
-    actual fun translate(vector: Vector3F): Matrix4F {
-        nativeMatrix.multiply(NativeMatrix4D().makeTranslation(vector.x, vector.y, vector.z))
-        return this
+    actual fun withTranslation(translation: Vector3F): Matrix4F {
+        return alter { pTranslation, _, _ ->
+            pTranslation.set(translation)
+        }
+    }
+
+    actual fun withRotation(rotation: EulerAngle): Matrix4F {
+        return alter { _, pRotation, _ ->
+            pRotation.setFromEuler(rotation.toThreeEuler())
+        }
+    }
+
+    actual fun withScale(scale: Vector3F): Matrix4F {
+        return alter { _, _, pScale ->
+            pScale.set(scale)
+        }
+    }
+
+    private fun alter(
+        block: (translation: three.js.Vector3, rotation: Quaternion, scale: three.js.Vector3) -> Unit
+    ): Matrix4F {
+        val translation = three.js.Vector3()
+        val rotation = Quaternion()
+        val scale = three.js.Vector3()
+        nativeMatrix.decompose(translation, rotation, scale)
+        block(translation, rotation, scale)
+        return Matrix4F(nativeMatrix.compose(translation, rotation, scale))
     }
 
     override fun equals(other: Any?): Boolean {
@@ -57,7 +84,7 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
             val nativeMatrix = NativeMatrix4D()
             nativeMatrix.makeRotationFromEuler(rotation.toThreeEuler())
             nativeMatrix.setPosition(position.x, position.y, position.z)
-            return Matrix4F(nativeMatrix.elements.map { it.toFloat() }.toFloatArray())
+            return Matrix4F(nativeMatrix)
         }
     }
 }

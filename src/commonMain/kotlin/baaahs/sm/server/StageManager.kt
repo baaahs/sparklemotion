@@ -12,6 +12,7 @@ import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.mapper.Storage
 import baaahs.scene.Scene
+import baaahs.scene.SceneMonitor
 import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.ShowState
@@ -33,7 +34,8 @@ class StageManager(
     modelProvider: ModelProvider,
     private val gadgetManager: GadgetManager,
     private val controllersManager: ControllersManager,
-    private val serverNotices: ServerNotices
+    private val serverNotices: ServerNotices,
+    private val sceneMonitor: SceneMonitor
 ) : BaseShowPlayer(toolchain, modelProvider) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
@@ -54,7 +56,9 @@ class StageManager(
         pubSub.state(Topics.createClientData(fsSerializer), ClientData(storage.fs.rootFile))
 
     internal val showDocumentService = ShowDocumentService()
-    internal val sceneDocumentService = SceneDocumentService()
+    internal val sceneDocumentService = SceneDocumentService().apply {
+        addObserver { sceneMonitor.onChange(it.document) }
+    }
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
         gadgetManager.registerGadget(id, gadget)

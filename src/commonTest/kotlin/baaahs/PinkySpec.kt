@@ -19,7 +19,7 @@ import baaahs.net.Network
 import baaahs.net.TestNetwork
 import baaahs.plugin.beatlink.BeatData
 import baaahs.plugin.beatlink.BeatSource
-import baaahs.scene.SceneManager
+import baaahs.scene.SceneMonitor
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
@@ -52,7 +52,7 @@ object PinkySpec : Spek({
         val clientPort = 1234
 
         val panel17 = TestModelSurface("17")
-        val model = ModelForTest(listOf(panel17))
+        val model = modelForTest(listOf(panel17))
 
         val fakeFs by value { FakeFs() }
         val plugins by value { testPlugins() }
@@ -74,10 +74,11 @@ object PinkySpec : Spek({
             ControllersManager(listOf(brainManager), mappingManager, { model }, fixtureManager, coroutineScope)
         }
         val serverNotices by value { ServerNotices(pubSub, ImmediateDispatcher) }
+        val sceneMonitor by value { SceneMonitor() }
         val stageManager by value {
             StageManager(
                 toolchain, renderManager, pubSub, storage, fixtureManager, clock, { model },
-                gadgetManager, controllersManager, serverNotices
+                gadgetManager, controllersManager, serverNotices, sceneMonitor
             )
         }
 
@@ -93,11 +94,10 @@ object PinkySpec : Spek({
                 override val dmxUniverse: Dmx.Universe get() = fakeDmxUniverse
             }
 
-            val sceneManager = SceneManager(storage, controllersManager)
             Pinky(
                 clock, PermissiveFirmwareDaddy(), plugins, storage, link, httpServer, pubSub,
                 dmxManager, mappingManager, fixtureManager, ImmediateDispatcher, toolchain,
-                stageManager, sceneManager, controllersManager, brainManager,
+                stageManager, controllersManager, brainManager,
                 ShaderLibraryManager(storage, pubSub),
                 Pinky.NetworkStats(),
                 PinkySettings(),

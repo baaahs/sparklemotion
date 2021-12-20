@@ -71,7 +71,6 @@ class WebClient(
         return createElement(AppIndex, jsObject {
             this.id = "Client Window"
             this.webClient = facade
-            this.undoStack = this@WebClient.showManager.undoStack
             this.stageManager = this@WebClient.stageManager
             this.showManager = this@WebClient.showManager.facade
             this.sceneManager = this@WebClient.sceneManager.facade

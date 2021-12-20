@@ -49,9 +49,7 @@ class JsStandaloneWebClientModule(
     }
 }
 
-open class JsUiWebClientModule(
-    private val modelProvider: ModelProvider
-) : WebClientModule() {
+open class JsUiWebClientModule : WebClientModule() {
     override fun getModule(): Module = module {
         scope<WebClient> {
             scoped { get<Network>().link("app") }
@@ -60,7 +58,6 @@ open class JsUiWebClientModule(
             scoped<PubSub.Endpoint> { get<PubSub.Client>() }
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
-            scoped { modelProvider }
             scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage"))  }
             scoped<Toolchain> { RootToolchain(get()) }
             scoped { WebClient(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
@@ -69,6 +66,7 @@ open class JsUiWebClientModule(
             scoped { FileDialog() }
             scoped { ShowManager(get(), get(), get(), get(), get(), get()) }
             scoped { SceneManager(get(), get(), get(), get(), get()) }
+            scoped<ModelProvider> { get<SceneManager>() }
             scoped { Notifier(get()) }
             scoped { SceneEditorClient(get(), get()) }
             scoped {
@@ -81,9 +79,7 @@ open class JsUiWebClientModule(
     }
 }
 
-class JsAdminWebClientModule(
-    private val modelProvider: ModelProvider
-) : KModule {
+class JsAdminWebClientModule : KModule {
     override fun getModule(): Module = module {
         scope<MapperUi> {
             scoped { get<Network>().link("mapper") }
@@ -92,8 +88,9 @@ class JsAdminWebClientModule(
             scoped<PubSub.Endpoint> { get<PubSub.Client>() }
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
-            scoped { modelProvider }
             scoped { PubSub.Client(get(), get(named(WebClientModule.Qualifier.PinkyAddress)), Ports.PINKY_UI_TCP) }
+            scoped { SceneManager(get(), get(), get(), get(), get()) }
+            scoped<ModelProvider> { get<SceneManager>() }
             scoped { SceneEditorClient(get(), get()) }
             scoped {
                 JsMapperUi(get()).also {
@@ -110,7 +107,8 @@ class JsAdminWebClientModule(
             scoped<PubSub.Endpoint> { get<PubSub.Client>() }
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
-            scoped { modelProvider }
+            scoped { SceneManager(get(), get(), get(), get(), get()) }
+            scoped<ModelProvider> { get<SceneManager>() }
             scoped { Visualizer(get(), get()) }
             scoped { RemoteVisualizerClient(get(), pinkyAddress(), get(), get(), get(), get()) }
             scoped { MonitorUi(get(), get()) }

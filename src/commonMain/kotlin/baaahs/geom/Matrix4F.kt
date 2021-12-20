@@ -18,7 +18,10 @@ expect class Matrix4F(elements: FloatArray? = null) {
 
     operator fun times(matrix: Matrix4F): Matrix4F
     fun transform(vector: Vector3F): Vector3F
-    fun translate(vector: Vector3F): Matrix4F
+
+    fun withTranslation(translation: Vector3F): Matrix4F
+    fun withRotation(rotation: EulerAngle): Matrix4F
+    fun withScale(scale: Vector3F): Matrix4F
 
     companion object {
         val identity: Matrix4F

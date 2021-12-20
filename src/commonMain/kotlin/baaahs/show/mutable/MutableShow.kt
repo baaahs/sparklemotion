@@ -1,16 +1,19 @@
 package baaahs.show.mutable
 
-import baaahs.*
+import baaahs.SparkleMotion
 import baaahs.app.ui.MutableEditable
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.*
 import baaahs.control.*
+import baaahs.getBang
+import baaahs.getValue
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
 import baaahs.gl.shader.OpenShader
+import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.OpenPatchHolder
@@ -19,10 +22,10 @@ import baaahs.show.live.ShaderInstanceResolver
 import baaahs.util.CacheBuilder
 import baaahs.util.UniqueIds
 
-interface EditHandler {
-    fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean = true)
-    fun onShowEdit(show: Show, pushToUndoStack: Boolean = true)
-    fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean = true)
+interface EditHandler<T, TState> {
+    fun onEdit(mutableShow: MutableShow, pushToUndoStack: Boolean = true)
+    fun onEdit(document: T, pushToUndoStack: Boolean = true)
+    fun onEdit(document: T, documentState: TState, pushToUndoStack: Boolean = true)
 }
 
 abstract class MutablePatchHolder(
@@ -253,8 +256,8 @@ class MutableShow(
     fun findShaderInstance(id: String): MutableShaderInstance =
         shaderInstances.getBang(id, "shader instance")
 
-    fun commit(editHandler: EditHandler) {
-        editHandler.onShowEdit(this)
+    fun commit(editHandler: EditHandler<Show, ShowState>) {
+        editHandler.onEdit(this)
     }
 
     companion object {

@@ -2,11 +2,12 @@ package baaahs.geom
 
 import kotlinx.serialization.Serializable
 import org.joml.Matrix4f as NativeMatrix4F
+import org.joml.Matrix4fc as NativeMatrix4FC
 import org.joml.Quaternionf as NativeQuaternionF
 import org.joml.Vector3f as NativeVector3F
 
 @Serializable(Matrix4FSerializer::class)
-actual class Matrix4F(private val nativeMatrix: NativeMatrix4F) {
+actual class Matrix4F(private val nativeMatrix: NativeMatrix4FC) {
     actual constructor(elements: FloatArray?) : this(
         NativeMatrix4F().also { if (elements != null) it.set(elements) }
     )
@@ -25,17 +26,33 @@ actual class Matrix4F(private val nativeMatrix: NativeMatrix4F) {
         get() = nativeMatrix.getScale(NativeVector3F()).toVector3F()
 
     actual operator fun times(matrix: Matrix4F): Matrix4F {
-        nativeMatrix.mul(matrix.nativeMatrix)
-        return this
+        val dest = NativeMatrix4F()
+        nativeMatrix.mul(matrix.nativeMatrix, dest)
+        return Matrix4F(dest)
     }
 
     actual fun transform(vector: Vector3F): Vector3F {
         return vector.toNativeVector3F().mulProject(nativeMatrix).toVector3F()
     }
 
-    actual fun translate(vector: Vector3F): Matrix4F {
-        nativeMatrix.translate(vector.x, vector.y, vector.z)
-        return this
+
+    actual fun withTranslation(translation: Vector3F): Matrix4F {
+        return Matrix4F(
+            NativeMatrix4F(nativeMatrix).translation(translation.x, translation.y, translation.z)
+        )
+    }
+
+    actual fun withRotation(rotation: EulerAngle): Matrix4F {
+        return Matrix4F(
+            NativeMatrix4F(nativeMatrix).rotationXYZ(
+                rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat())
+        )
+    }
+
+    actual fun withScale(scale: Vector3F): Matrix4F {
+        return Matrix4F(
+            NativeMatrix4F(nativeMatrix).scaling(translation.x, translation.y, translation.z)
+        )
     }
 
     override fun equals(other: Any?): Boolean {

@@ -10,6 +10,7 @@ import baaahs.io.Fs
 import baaahs.io.getResource
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
+import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -19,32 +20,28 @@ data class ModelData(
     val entities: List<EntityData>,
     val units: ModelUnit = ModelUnit.Meters
 ) {
-    fun open(metadata: EntityMetadataProvider): Model {
-        return object : Model() {
-            //            entities.forEach { open(metadata) }
-            override val name = title
-            override val allEntities =
-                entities.flatMap {
-                    val entity = it.open(metadata)
-                    if (entity is EntityGroup) listOf(entity) + entity.entities else listOf(entity)
-                }
-        }
+    fun open(): Model =
+        Model(title, entities.map { entity -> entity.open() }, units)
+}
+
+enum class ModelUnit(val display: String) {
+    Inches("\""),
+    Feet("'"),
+    Centimeters("cm"),
+    Meters("m");
+
+    companion object {
+        val default = Centimeters
     }
 }
 
-enum class ModelUnit {
-    Inches,
-    Feet,
-    Centimeters,
-    Meters
-}
-
+@Polymorphic
 sealed interface EntityData {
     val title: String
     val description: String?
     val transformation: Matrix4F
 
-    fun open(metadata: EntityMetadataProvider): Model.Entity
+    fun open(): Model.Entity
 }
 
 @Serializable @SerialName("ObjModel")
@@ -53,18 +50,20 @@ data class ObjModelData(
     override val description: String?,
     override val transformation: Matrix4F,
     val objData: String,
-    val objDataIsFileRef: Boolean
+    val objDataIsFileRef: Boolean,
+    @Polymorphic
+    val metadata: EntityMetadataProvider? = null
 ) : EntityData {
-    override fun open(metadata: EntityMetadataProvider): Model.Entity = object : Model.EntityGroup {
+    override fun open(): Model.Entity = object : Model.EntityGroup {
         private val objModelLoader = ObjModelLoader.load(objData) {
-            metadata.getMetadataFor(this@ObjModelData).expectedPixelCount
+            metadata?.getMetadataFor(this@ObjModelData)?.expectedPixelCount
         }
-        override val name: String get() = title
+        override val name: String get() = this@ObjModelData.title
         override val description: String? get() = this@ObjModelData.description
         override val deviceType: DeviceType get() = PixelArrayDevice // TODO
         override val bounds: Pair<Vector3F, Vector3F> get() = boundingBox(objModelLoader.geomVertices)
         override val transformation: Matrix4F get() = this@ObjModelData.transformation
-        override val entities: List<Model.Entity> get() = objModelLoader.allEntities.map { it.transform(transformation) }
+        override val entities: List<Model.Entity> = objModelLoader.allEntities.map { it.transform(transformation) }
 
         override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation? = null
     }
@@ -76,7 +75,7 @@ data class MovingHeadData(
     override val description: String?,
     override val transformation: Matrix4F
 ) : EntityData {
-    override fun open(metadata: EntityMetadataProvider): Model.Entity =
+    override fun open(): Model.Entity =
         MovingHead(title, description, 0, Shenzarpy, transformation)
 }
 
@@ -88,7 +87,7 @@ data class LightBarData(
     val startVertex: Vector3F,
     val endVertex: Vector3F
 ) : EntityData {
-    override fun open(metadata: EntityMetadataProvider): Model.Entity =
+    override fun open(): Model.Entity =
         LightBar(title, description, startVertex, endVertex, transformation)
 }
 
@@ -99,7 +98,7 @@ data class PolyLineData(
     override val transformation: Matrix4F,
     val segments: List<SegmentData>
 ) : EntityData {
-    override fun open(metadata: EntityMetadataProvider): Model.Entity =
+    override fun open(): Model.Entity =
         PolyLine(title, description, segments.map {
             PolyLine.Segment(it.startVertex, it.endVertex, it.pixelCount)
         }, transformation)
@@ -122,7 +121,7 @@ data class GridData(
         RowsThenColumns,
     }
 
-    override fun open(metadata: EntityMetadataProvider): Model.Entity = Grid(
+    override fun open(): Model.Entity = Grid(
         title, description, transformation, rows, columns, rowGap, columnGap, direction, zigZag
     )
 }
@@ -145,10 +144,11 @@ data class LightRingData(
     val firstPixelRadians: Float = 0f,
     val pixelDirection: LightRing.PixelDirection = LightRing.PixelDirection.Clockwise
 ) : EntityData {
-    override fun open(metadata: EntityMetadataProvider): Model.Entity =
+    override fun open(): Model.Entity =
         LightRing(title, description, center, radius, planeNormal, firstPixelRadians, pixelDirection, transformation)
 }
 
+@Polymorphic
 sealed interface EntityMetadataProvider {
     fun getMetadataFor(entity: EntityData): EntityMetadata
 }

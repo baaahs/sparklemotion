@@ -14,6 +14,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.glsl.RandomSurfacePixelStrategy
 import baaahs.glsl.SurfacePixelStrategy
+import baaahs.model.*
 import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig
 import baaahs.show.DataSource
@@ -244,6 +245,20 @@ sealed class Plugins private constructor(
         polymorphic(SurfacePixelStrategy::class) {
             subclass(LinearSurfacePixelStrategy::class, LinearSurfacePixelStrategy.serializer())
             subclass(RandomSurfacePixelStrategy::class, RandomSurfacePixelStrategy.serializer())
+        }
+
+        polymorphic(EntityData::class) {
+            subclass(ObjModelData::class, ObjModelData.serializer())
+            subclass(MovingHeadData::class, MovingHeadData.serializer())
+            subclass(LightBarData::class, LightBarData.serializer())
+            subclass(PolyLineData::class, PolyLineData.serializer())
+            subclass(GridData::class, GridData.serializer())
+            subclass(LightRingData::class, LightRingData.serializer())
+        }
+
+        polymorphic(EntityMetadataProvider::class) {
+            subclass(ConstEntityMetadataProvider::class, ConstEntityMetadataProvider.serializer())
+            subclass(StrandCountEntityMetadataProvider::class, StrandCountEntityMetadataProvider.serializer())
         }
     }
 

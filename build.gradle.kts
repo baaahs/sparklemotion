@@ -246,6 +246,7 @@ tasks.named<ProcessResources>("jsProcessResources") {
         include("icons/lib/css/blueprint-icons.css")
     }
     from("data") { include("Honcho.sparkle") } // for template
+    from("data") { include("*.scene") } // for template
 
     doLast {
         createResourceFilesList(File(buildDir, "processedResources/js/main"))

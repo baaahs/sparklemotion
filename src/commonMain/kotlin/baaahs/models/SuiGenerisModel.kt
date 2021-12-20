@@ -9,9 +9,10 @@ import baaahs.model.ObjModelData
 val suiGenerisModelData = ModelData(
     "SuiGeneris",
     listOf(
-        ObjModelData("sui-generis.obj", null, Matrix4F.identity, "sui-generis.obj", true)
+        ObjModelData(
+            "sui-generis.obj", null, Matrix4F.identity, "sui-generis.obj", true,
+            ConstEntityMetadataProvider(16 * 60)
+        )
     ),
     ModelUnit.Inches
 )
-
-val suiGenerisModelMetadata = ConstEntityMetadataProvider(16 * 60)

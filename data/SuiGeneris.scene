@@ -1,0 +1,37 @@
+{
+  "model": {
+    "title": "SuiGeneris",
+    "entities": [
+      {
+        "type": "ObjModel",
+        "title": "sui-generis.obj",
+        "description": null,
+        "transformation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "objData": "sui-generis.obj",
+        "objDataIsFileRef": true,
+        "metadata": {
+          "type": "baaahs.model.ConstEntityMetadataProvider",
+          "pixelCount": 960
+        }
+      }
+    ],
+    "units": "Inches"
+  }
+}

@@ -1,6 +1,8 @@
 package baaahs.visualizer
 
+import baaahs.geom.Matrix4F
 import baaahs.model.LightRing
+import baaahs.model.Model
 import three.js.Color
 import three.js.Mesh
 import three.js.MeshBasicMaterial
@@ -10,14 +12,20 @@ class LightRingVisualizer(
     lightRing: LightRing,
     vizPixels: VizPixels? = null
 ) : EntityVisualizer {
+    override val entity: Model.Entity = lightRing
     override val title: String = lightRing.name
     override var mapperIsRunning: Boolean = false
 
     override var selected: Boolean = false
         set(value) {
-            ringMesh.material.wireframeLinewidth = if (value) 3 else 1
-            ringMesh.material.needsUpdate = true
+            ringMesh.material = if (value) selectedRingMaterial else ringMaterial
             field = value
+        }
+
+    override var transformation: Matrix4F
+        get() = Matrix4F(ringMesh.matrix)
+        set(value) {
+            ringMesh.matrix = value.nativeMatrix
         }
 
     private var vizScene: VizScene? = null
@@ -32,6 +40,20 @@ class LightRingVisualizer(
         }
 
     private val ringMesh: Mesh<RingGeometry, MeshBasicMaterial>
+    private val ringMaterial = MeshBasicMaterial().apply {
+        color = Color(0x666666)
+        opacity = .25
+        transparent = true
+        wireframe = true
+        wireframeLinewidth = 1
+    }
+    private val selectedRingMaterial = MeshBasicMaterial().apply {
+        color = Color(0xffccaa)
+        opacity = .25
+        transparent = true
+        wireframe = true
+        wireframeLinewidth = 3
+    }
 
     init {
         val center = lightRing.center
@@ -48,12 +70,7 @@ class LightRingVisualizer(
 
         with(center) { ringGeom.translate(x, y, z) }
 
-        ringMesh = Mesh(ringGeom, MeshBasicMaterial().apply {
-            color = Color(0x4444FF)
-            opacity = .25
-            transparent = true
-            wireframe = true
-        })
+        ringMesh = Mesh(ringGeom, ringMaterial)
     }
 
     override fun addTo(scene: VizScene) {

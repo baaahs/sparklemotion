@@ -10,6 +10,7 @@ import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.mapper.*
 import baaahs.model.LightBar
+import baaahs.model.Model
 import baaahs.net.TestNetwork
 import baaahs.scene.ControllerConfig
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -25,7 +26,7 @@ import org.spekframework.spek2.style.specification.describe
 object SacnIntegrationSpec : Spek({
     describe("SACN integration") {
         val link by value { TestNetwork().link("sacn") }
-        val model by value { ModelForTest(entity("bar1"), entity("bar2")) }
+        val model by value { modelForTest(entity("bar1"), entity("bar2")) }
         val sacnManager by value { SacnManager(link, TestRig().server, ImmediateDispatcher, FakeClock()) }
         val listener by value { SpyFixtureListener() }
         val mappings by value { mapOf<ControllerId, List<FixtureMapping>>() }
@@ -190,7 +191,7 @@ object SacnIntegrationSpec : Spek({
 })
 
 private fun fixtureMapping(
-    model: ModelForTest,
+    model: Model,
     entityName: String,
     baseChannel: Int,
     pixelCount: Int,

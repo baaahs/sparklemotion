@@ -15,6 +15,7 @@ import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
 import baaahs.plugin.SimulatorPlugins
+import baaahs.scene.SceneMonitor
 import baaahs.sim.*
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.PermissiveFirmwareDaddy
@@ -34,7 +35,7 @@ class JsSimPlatformModule : JsPlatformModule(FakeNetwork()) {
 }
 
 class JsSimulatorModule(
-    private val modelProvider_: ModelProvider,
+    private val sceneMonitor_: SceneMonitor,
     private val bridgeNetwork_: BrowserNetwork,
     private val pinkyAddress_: Network.Address,
     private val pinkyMainDispatcher_: CoroutineDispatcher,
@@ -51,12 +52,11 @@ class JsSimulatorModule(
                 name = "Browser Data"
             )
         }
-    override val Scope.modelProvider: ModelProvider
-        get() = modelProvider_
 
     override fun getModule(): Module {
         return super.getModule().apply {
             single { Visualizer(get(), get()) }
+            single<ModelProvider> { sceneMonitor_ }
             single<PixelArranger> { SwirlyPixelArranger(pixelDensity, pixelSpacing) }
             single { BridgeClient(bridgeNetwork_, pinkyAddress_) }
             single { Plugins.buildForSimulator(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
@@ -75,7 +75,7 @@ class JsSimulatorModule(
 }
 
 class JsSimPinkyModule(
-    private val modelProvider_: ModelProvider,
+    private val sceneMonitor_: SceneMonitor,
     private val pinkySettings_: PinkySettings,
     private val pinkyMainDispatcher_: CoroutineDispatcher
 ) : PinkyModule {
@@ -93,10 +93,10 @@ class JsSimPinkyModule(
         get() = get(named(SimulatorModule.Qualifier.PinkyLink))
     override val Scope.dmxDriver: Dmx.Driver
         get() = SimDmxDriver(get(named("Fallback")))
-    override val Scope.modelProvider: ModelProvider
-        get() = modelProvider_
     override val Scope.renderManager: RenderManager
         get() = RenderManager { GlBase.manager.createContext() }
     override val Scope.pinkySettings: PinkySettings
         get() = pinkySettings_
+    override val Scope.sceneMonitor: SceneMonitor
+        get() = sceneMonitor_
 }

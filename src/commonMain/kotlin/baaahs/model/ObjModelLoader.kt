@@ -70,7 +70,7 @@ class ObjModelLoader(
         val lines = mutableListOf<Line>()
 
         fun build(): Surface =
-            Surface(name, name, expectedPixelCount(name), faces, lines, geometry, )
+            Surface(name, name, expectedPixelCount(name), faces, lines, geometry)
     }
 
     companion object {

@@ -1,6 +1,7 @@
 package baaahs.client.document
 
 import baaahs.DocumentState
+import baaahs.ModelProvider
 import baaahs.PubSub
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.app.ui.document.DialogHolder
@@ -8,7 +9,11 @@ import baaahs.client.Notifier
 import baaahs.doc.SceneDocumentType
 import baaahs.gl.Toolchain
 import baaahs.io.RemoteFsSerializer
+import baaahs.model.Model
+import baaahs.scene.OpenScene
 import baaahs.scene.Scene
+import baaahs.show.mutable.MutableShow
+import kotlinx.coroutines.CompletableDeferred
 
 class SceneManager(
     pubSub: PubSub.Client,
@@ -16,19 +21,13 @@ class SceneManager(
     toolchain: Toolchain,
     notifier: Notifier,
     fileDialog: FileDialog
-) : DocumentManager<Scene>(
-    SceneDocumentType, pubSub, remoteFsSerializer, toolchain, notifier, fileDialog, Scene.serializer()
-) {
-    val facade = Facade()
+) : DocumentManager<Scene, Unit>(
+    SceneDocumentType, pubSub, Scene.createTopic(toolchain.plugins.serialModule, remoteFsSerializer),
+    remoteFsSerializer, toolchain, notifier, fileDialog, Scene.serializer()
+), ModelProvider {
+    override val facade = Facade()
 
-    private val sceneEditStateChannel =
-        pubSub.subscribe(
-            Scene.createTopic(toolchain.plugins.serialModule, remoteFsSerializer)
-        ) { incoming ->
-            switchTo(incoming)
-//            undoStack.reset(incoming)
-            facade.notifyChanged()
-        }
+    private val deferredScene: CompletableDeferred<OpenScene> = CompletableDeferred()
 
     override suspend fun onNew(dialogHolder: DialogHolder) {
         if (!confirmCloseIfUnsaved()) return
@@ -40,7 +39,15 @@ class SceneManager(
         TODO("scene download not implemented")
     }
 
-    private fun switchTo(documentState: DocumentState<Scene, Unit>?) {
+    suspend fun getScene(): OpenScene {
+        return deferredScene.await()
+    }
+
+    override suspend fun getModel(): Model {
+        return deferredScene.await().model
+    }
+
+    override fun switchTo(documentState: DocumentState<Scene, Unit>?) {
         val newScene = documentState?.document
         val newSceneState = documentState?.state
         val newIsUnsaved = documentState?.isUnsaved ?: false
@@ -52,9 +59,23 @@ class SceneManager(
 //        openScene = newOpenScene?.also { it.use() }
 
         update(newScene, newFile, newIsUnsaved)
+        if (newScene != null) {
+            deferredScene.complete(newScene.open())
+        }
     }
 
-    inner class Facade : DocumentManager<*>.Facade() {
+    inner class Facade : DocumentManager<Scene, Unit>.Facade() {
         val scene get() = this@SceneManager.document
+
+        suspend fun getScene(): OpenScene = this@SceneManager.getScene()
+
+        override fun onEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
+            TODO()
+//            onEdit(mutableShow.getShow(), Unit, pushToUndoStack)
+        }
+
+        override fun onEdit(document: Scene, pushToUndoStack: Boolean) {
+            onEdit(document, Unit, pushToUndoStack)
+        }
     }
 }

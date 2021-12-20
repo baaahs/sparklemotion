@@ -43,34 +43,29 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val themeStyles = appContext.allStyles.appUi
     val showManager = appContext.showManager
     observe(showManager)
-    val undoStack = showManager.undoStack
 
+    val sceneManager = appContext.sceneManager
+    observe(sceneManager)
+    val scene = sceneManager.scene
+
+    val documentManager = props.appMode.getDocumentManager(appContext)
 
     val handleShowEditButtonClick = callback {
         appContext.openEditor(ShowEditIntent())
     }
 
-    val handleUndo by eventHandler(undoStack) {
-        undoStack.undo().also { (show, showState) ->
-            showManager.onShowEdit(show, showState, pushToUndoStack = false)
-        }
-    }
-
-    val handleRedo by eventHandler(undoStack) {
-        undoStack.redo().also { (show, showState) ->
-            showManager.onShowEdit(show, showState, pushToUndoStack = false)
-        }
-    }
+    val handleUndo by eventHandler(documentManager) { documentManager.undo() }
+    val handleRedo by eventHandler(documentManager) { documentManager.redo() }
 
     val handleSave by eventHandler {
         appContext.notifier.launchAndReportErrors {
-            showManager.onSave()
+            documentManager.onSave()
         }
     }
 
     val handleSaveAs by eventHandler {
         appContext.notifier.launchAndReportErrors {
-            showManager.onSaveAs()
+            documentManager.onSaveAs()
         }
     }
 
@@ -100,14 +95,31 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                         showManager.file?.let { attrs["title"] = it.toString() }
                     }
                     if (showManager.isUnsaved) i { +" (Unsaved)" }
+
+                    problemBadge(show, themeStyles.problemBadge)
+
+                    if (props.appMode == AppMode.Show && editMode) {
+                        div(+themeStyles.editButton) {
+                            icon(materialui.icons.Edit)
+                            attrs.onClickFunction = handleShowEditButtonClick.withEvent()
+                        }
+                    }
                 }
 
-                show?.let { problemBadge(show, themeStyles.problemBadge) }
+                if (show != null && scene != null) +" | "
 
-                if (show != null && editMode) {
-                    div(+themeStyles.editButton) {
-                        icon(materialui.icons.Edit)
-                        attrs.onClickFunction = handleShowEditButtonClick.withEvent()
+                scene?.let {
+                    b {
+                        +scene.title
+                        sceneManager.file?.let { attrs["title"] = it.toString() }
+                    }
+                    if (sceneManager.isUnsaved) i { +" (Unsaved)" }
+
+                    if (props.appMode == AppMode.Scene && editMode) {
+                        div(+themeStyles.editButton) {
+                            icon(materialui.icons.Edit)
+                            attrs.onClickFunction = handleShowEditButtonClick.withEvent()
+                        }
                     }
                 }
             }
@@ -123,7 +135,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                     iconButton {
                         icon(materialui.icons.Undo)
-                        attrs.disabled = !undoStack.canUndo()
+                        attrs.disabled = !documentManager.canUndo
                         attrs.onClickFunction = handleUndo
 
                         typographyH6 { +"Undo" }
@@ -131,7 +143,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                     iconButton {
                         icon(materialui.icons.Redo)
-                        attrs.disabled = !undoStack.canRedo()
+                        attrs.disabled = !documentManager.canRedo
                         attrs.onClickFunction = handleRedo
 
                         typographyH6 { +"Redo" }

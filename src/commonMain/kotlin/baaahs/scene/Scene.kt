@@ -18,6 +18,10 @@ data class Scene(
     val controllers: Map<String, ControllerConfig> = emptyMap(),
     val fixtures: Map<String, FixtureConfigNew> = emptyMap(),
 ) {
+    val title get() = model.title
+
+    fun open(): OpenScene = OpenScene(this)
+
     companion object {
         val Empty: Scene = Scene(ModelData("Untitled", emptyList()))
 

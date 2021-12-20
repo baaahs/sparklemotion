@@ -23,7 +23,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
     var currentNode by state {
         jsObject<MosaicParent<SimulatorWindows>> {
             direction = "row"
-            splitPercentage = 30
+            splitPercentage = 15
             first = jsObject<MosaicParent<SimulatorWindows>> {
                 direction = "column"
                 splitPercentage = 50

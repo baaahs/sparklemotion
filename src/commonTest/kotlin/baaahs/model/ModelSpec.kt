@@ -47,7 +47,7 @@ object ModelSpec : Spek({
             }
 
             context("with a transformation") {
-                value(transformation) { Matrix4F.identity.translate(Vector3F.unit3d) }
+                value(transformation) { Matrix4F.identity.withTranslation(Vector3F.unit3d) }
 
                 it("should include all points defining a surface within modelBounds") {
                     expect(model.modelBounds).toEqual(

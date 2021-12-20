@@ -1,6 +1,5 @@
 package baaahs.app.ui
 
-import baaahs.DocumentState
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.editableManagerUi
@@ -9,16 +8,14 @@ import baaahs.app.ui.settings.settingsDialog
 import baaahs.client.ClientStageManager
 import baaahs.client.SceneEditorClient
 import baaahs.client.WebClient
+import baaahs.client.document.DocumentManager
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.gl.withCache
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.sceneEditor
-import baaahs.show.Show
-import baaahs.show.ShowState
 import baaahs.ui.*
 import baaahs.util.JsClock
-import baaahs.util.UndoStack
 import baaahs.window
 import external.ErrorBoundary
 import kotlinext.js.jsObject
@@ -71,7 +68,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
-    var appMode by state { AppMode.Show }
+    var appMode by state { AppMode.Scene }
     val handleAppModeChange by handler { newAppMode: AppMode ->
         appMode = newAppMode
     }
@@ -80,9 +77,11 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val dragNDrop by state { ReactBeautifulDragNDrop() }
     var prompt by state<Prompt?> { null }
-    val editableManager by state { EditableManager { newShow ->
-        showManager.onShowEdit(newShow)
-    } }
+    val editableManager by state {
+        EditableManager { newShow ->
+            showManager.onEdit(newShow)
+        }
+    }
 
     val myAppContext = memo(uiSettings, allStyles) {
         jsObject<AppContext> {
@@ -263,7 +262,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                                     attrs.open = layoutEditorDialogOpen
                                                     attrs.show = show
                                                     attrs.onApply = { newMutableShow ->
-                                                        showManager.onShowEdit(newMutableShow)
+                                                        showManager.onEdit(newMutableShow)
                                                     }
                                                     attrs.onClose = handleLayoutEditorDialogClose
                                                 }
@@ -316,13 +315,21 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 }
 
 enum class AppMode {
-    Show, Scene
+    Show {
+        override fun getDocumentManager(appContext: AppContext): ShowManager.Facade =
+            appContext.showManager
+    },
+    Scene {
+        override fun getDocumentManager(appContext: AppContext): SceneManager.Facade =
+            appContext.sceneManager
+    };
+
+    abstract fun getDocumentManager(appContext: AppContext): DocumentManager<*, *>.Facade
 }
 
 external interface AppIndexProps : Props {
     var id: String
     var webClient: WebClient.Facade
-    var undoStack: UndoStack<DocumentState<Show, ShowState>>
     var stageManager: ClientStageManager
     var showManager: ShowManager.Facade
     var sceneManager: SceneManager.Facade

@@ -15,6 +15,7 @@ import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
 import baaahs.plugin.core.datasource.ColorPickerDataSource
+import baaahs.scene.SceneMonitor
 import baaahs.shaders.fakeFixture
 import baaahs.show.*
 import baaahs.show.Shader
@@ -64,7 +65,8 @@ object StageManagerSpec : Spek({
                 { model },
                 gadgetManager,
                 ControllersManager(emptyList(), FakeMappingManager(), { model }, FakeFixtureListener()),
-                ServerNotices(pubSub.server, dispatcher)
+                ServerNotices(pubSub.server, dispatcher),
+                SceneMonitor()
             )
         }
 

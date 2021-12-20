@@ -101,17 +101,13 @@ class TestModelSurface(
     override fun allVertices(): Collection<Vector3F> = vertices
 }
 
-fun fakeModel(vararg entities: Model.Entity) = ModelForTest(entities.toList())
-fun fakeModel(entities: List<Model.Entity>) = ModelForTest(entities)
+fun fakeModel(vararg entities: Model.Entity) = modelForTest(entities.toList())
+fun fakeModel(entities: List<Model.Entity>) = modelForTest(entities)
 
-object TestModel : ModelForTest(listOf(TestModelSurface("Panel")))
+val TestModel = modelForTest(listOf(TestModelSurface("Panel")))
 
-open class ModelForTest(private val entities: List<Entity>) : Model() {
-    constructor(vararg entities: Entity) : this(entities.toList())
-
-    override val name: String = "Test Model"
-    override val allEntities: List<Entity> get() = entities
-}
+fun modelForTest(entities: List<Model.Entity>) = Model("Test Model", entities)
+fun modelForTest(vararg entities: Model.Entity) = Model("Test Model", entities.toList())
 
 class TestRenderContext(
     vararg val modelEntities: Model.Entity = arrayOf(FakeModelEntity("device1"))

@@ -55,12 +55,12 @@ class FixturesSimulator(
     private lateinit var fixtureSimulations: List<FixtureSimulation>
 
     private val launchJob = coroutineScope.launch(coroutineExceptionHandler) {
-            val model = modelProvider.getModel()
+        val model = modelProvider.getModel()
 
-            fixtureSimulations = model.allEntities
-                .sortedBy(Model.Entity::name)
-                .mapNotNull { entity -> entity.createFixtureSimulation(simulationEnv) }
-        }
+        fixtureSimulations = model.allEntities
+            .sortedBy(Model.Entity::name)
+            .mapNotNull { entity -> entity.createFixtureSimulation(simulationEnv) }
+    }
 
     suspend fun generateMappingData() {
         launchJob.join()

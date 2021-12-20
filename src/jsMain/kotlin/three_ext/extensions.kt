@@ -22,6 +22,10 @@ fun Vector3.set(other: Vector3) {
     set(other.x, other.y, other.z)
 }
 
+fun Vector3.set(other: Vector3F) {
+    set(other.x, other.y, other.z)
+}
+
 fun Vector3.toVector3F(): Vector3F =
     Vector3F(x.toFloat(), y.toFloat(), z.toFloat())
 

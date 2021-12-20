@@ -2,11 +2,14 @@ package baaahs.mapper
 
 import baaahs.app.ui.AllStyles
 import baaahs.app.ui.Styles
+import baaahs.app.ui.appContext
 import baaahs.app.ui.model.modelEditor
 import baaahs.client.SceneEditorClient
+import baaahs.scene.OpenScene
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.JsClock
+import baaahs.util.globalLaunch
 import kotlinext.js.jsObject
 import kotlinx.css.*
 import kotlinx.html.hidden
@@ -25,6 +28,7 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.useContext
 import styled.inlineStyles
 
 private enum class PageTabs {
@@ -35,6 +39,7 @@ private enum class PageTabs {
 }
 
 val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { props ->
+    val appContext = useContext(appContext)
     val theme = memo {
         createMuiTheme {
             palette { type = PaletteType.dark }
@@ -57,6 +62,15 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
     val handleChangeTab by handler { _: Event, tab: PageTabs ->
         selectedTab = tab
     }
+
+    var scene by state<OpenScene?> { null }
+    onMount {
+        globalLaunch {
+            scene = appContext.sceneManager.getScene()
+        }
+    }
+
+    val openScene = scene ?: return@xComponent
 
     mapperAppContext.Provider {
         attrs.value = myAppContext
@@ -83,6 +97,7 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
 
                 tabPanel(PageTabs.Model, selectedTab) {
                     modelEditor {
+                        attrs.scene = openScene
                     }
                 }
 

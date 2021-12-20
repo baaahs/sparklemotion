@@ -8,6 +8,7 @@ import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.Storage
 import baaahs.sm.webapi.NewCommand
 import baaahs.sm.webapi.Topics
+import baaahs.ui.Observable
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
@@ -19,7 +20,7 @@ abstract class DocumentService<T, TState>(
     remoteFsSerializer: RemoteFsSerializer,
     serializersModule: SerializersModule,
     val documentType: DocumentType
-) {
+): Observable() {
     var document: T? = null
         private set
     var file: Fs.File? = null
@@ -113,6 +114,8 @@ abstract class DocumentService<T, TState>(
         this.document = newDocument
         this.file = file
         this.isUnsaved = isUnsaved
+
+        notifyChanged()
     }
 
     fun release() {
