@@ -18,9 +18,17 @@ actual class MovingHeadSimulation actual constructor(
     override val mappingData: MappingSession.SurfaceData?
         get() = null
 
+    private val dmxBufferReader = dmxUniverse.buffer(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount)
+    private val adapterBuffer = movingHead.adapter.newBuffer(dmxBufferReader)
+
     override val entityVisualizer: MovingHeadVisualizer by lazy {
         val clock = simulationEnv[Clock::class]
-        MovingHeadVisualizer(movingHead, clock, dmxUniverse)
+
+        val visualizer = MovingHeadVisualizer(movingHead, clock)
+        dmxUniverse.listen {
+            visualizer.receivedDmxFrame(adapterBuffer)
+        }
+        visualizer
     }
 
     private val buffer = dmxUniverse.writer(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount)
@@ -42,10 +50,10 @@ actual class MovingHeadSimulation actual constructor(
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
         val channelCount = reader.readShort().toInt()
         repeat(channelCount) { i ->
-            buffer[i] = reader.readByte()
+            dmxBufferReader[i] = reader.readByte()
         }
 
-        entityVisualizer.receivedDmxFrame()
+        entityVisualizer.receivedDmxFrame(adapterBuffer)
     }
 
     inner class PreviewTransport : Transport {
