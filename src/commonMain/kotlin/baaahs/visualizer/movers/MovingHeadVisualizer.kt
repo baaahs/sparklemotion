@@ -5,7 +5,6 @@ import baaahs.geom.Matrix4F
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
-import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
 import baaahs.visualizer.EntityVisualizer
 import baaahs.visualizer.VizScene
@@ -14,7 +13,6 @@ import kotlin.math.absoluteValue
 class MovingHeadVisualizer(
     private val movingHead: MovingHead,
     private val clock: Clock,
-    private val dmxUniverse: FakeDmxUniverse,
     private val beam: Beam = Beam.selectFor(movingHead)
 ) : EntityVisualizer {
     override val entity: Model.Entity get() = movingHead
@@ -26,10 +24,6 @@ class MovingHeadVisualizer(
     override var transformation: Matrix4F = Matrix4F.identity
 
     private val buffer = run {
-        val dmxBufferReader = dmxUniverse.listen(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount) {
-            receivedDmxFrame()
-        }
-        movingHead.adapter.newBuffer(dmxBufferReader)
     }
 
     private var lastUpdate = clock.now()
@@ -40,7 +34,7 @@ class MovingHeadVisualizer(
         beam.addTo(scene)
     }
 
-    internal fun receivedDmxFrame() {
+    internal fun receivedDmxFrame(buffer: MovingHead.Buffer) {
         val now = clock.now()
         val elapsed = (now - lastUpdate).toFloat()
 
