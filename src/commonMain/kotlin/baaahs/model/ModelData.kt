@@ -1,15 +1,10 @@
 package baaahs.model
 
-import baaahs.device.DeviceType
-import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Shenzarpy
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
-import baaahs.geom.boundingBox
 import baaahs.io.Fs
 import baaahs.io.getResource
-import baaahs.sim.FixtureSimulation
-import baaahs.sim.SimulationEnv
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -54,18 +49,11 @@ data class ObjModelData(
     @Polymorphic
     val metadata: EntityMetadataProvider? = null
 ) : EntityData {
-    override fun open(): Model.Entity = object : Model.EntityGroup {
-        private val objModelLoader = ObjModelLoader.load(objData) {
+    override fun open(): Model.Entity {
+        val objModelLoader = ObjModelLoader.load(objData) {
             metadata?.getMetadataFor(this@ObjModelData)?.expectedPixelCount
         }
-        override val name: String get() = this@ObjModelData.title
-        override val description: String? get() = this@ObjModelData.description
-        override val deviceType: DeviceType get() = PixelArrayDevice // TODO
-        override val bounds: Pair<Vector3F, Vector3F> get() = boundingBox(objModelLoader.geomVertices)
-        override val transformation: Matrix4F get() = this@ObjModelData.transformation
-        override val entities: List<Model.Entity> = objModelLoader.allEntities.map { it.transform(transformation) }
-
-        override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation? = null
+        return ObjGroup(title, description, transformation, metadata, objModelLoader)
     }
 }
 

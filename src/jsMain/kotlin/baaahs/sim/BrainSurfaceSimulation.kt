@@ -44,7 +44,7 @@ actual class BrainSurfaceSimulation actual constructor(
         }
 
     override val entityVisualizer: SurfaceVisualizer by lazy {
-        SurfaceVisualizer(surface, surfaceGeometry, vizPixels)
+        SurfaceVisualizer(surface, surfaceGeometry, simulationEnv, vizPixels)
     }
 
     override val previewFixture: Fixture by lazy {

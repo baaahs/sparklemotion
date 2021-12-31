@@ -6,7 +6,6 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.mapper.MappingSession
 import baaahs.model.MovingHead
-import baaahs.util.Clock
 import baaahs.visualizer.movers.MovingHeadVisualizer
 
 actual class MovingHeadSimulation actual constructor(
@@ -22,9 +21,7 @@ actual class MovingHeadSimulation actual constructor(
     private val adapterBuffer = movingHead.adapter.newBuffer(dmxBufferReader)
 
     override val entityVisualizer: MovingHeadVisualizer by lazy {
-        val clock = simulationEnv[Clock::class]
-
-        val visualizer = MovingHeadVisualizer(movingHead, clock)
+        val visualizer = MovingHeadVisualizer(movingHead, simulationEnv)
         dmxUniverse.listen {
             visualizer.receivedDmxFrame(adapterBuffer)
         }

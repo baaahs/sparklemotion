@@ -3,6 +3,7 @@ package baaahs.visualizer
 import baaahs.geom.Matrix4F
 import baaahs.model.Model
 import baaahs.model.PixelArray
+import baaahs.sim.SimulationEnv
 import three.js.BoxGeometry
 import three.js.Mesh
 import three.js.MeshBasicMaterial
@@ -10,6 +11,7 @@ import three.js.Vector3
 
 class LightBarVisualizer(
     pixelArray: PixelArray,
+    simulationEnv: SimulationEnv,
     vizPixels: VizPixels? = null
 ) : EntityVisualizer {
     override val entity: Model.Entity = pixelArray
@@ -28,12 +30,12 @@ class LightBarVisualizer(
             boxMesh.matrix = value.nativeMatrix
         }
 
-    private var vizScene: VizScene? = null
+    private var parent: VizObj? = null
     var vizPixels : VizPixels? = vizPixels
         set(value) {
-            vizScene?.let { scene ->
-                field?.removeFromScene(scene)
-                value?.addToScene(scene)
+            parent?.let { scene ->
+                field?.removeFrom(scene)
+                value?.addTo(scene)
             }
 
             field = value
@@ -70,12 +72,15 @@ class LightBarVisualizer(
 
         with(startVertex) { boxGeom.translate(x, y, z) }
 
-        boxMesh = Mesh(boxGeom, barMaterial)
+        boxMesh = Mesh(boxGeom, barMaterial).apply {
+            matrixAutoUpdate = false
+            entityVisualizer = this@LightBarVisualizer
+        }
     }
 
-    override fun addTo(scene: VizScene) {
-        scene.add(VizObj(boxMesh))
-        vizPixels?.addToScene(scene)
-        vizScene = scene
+    override fun addTo(parent: VizObj) {
+        parent.add(VizObj(boxMesh))
+        vizPixels?.addTo(parent)
+        this.parent = parent
     }
 }

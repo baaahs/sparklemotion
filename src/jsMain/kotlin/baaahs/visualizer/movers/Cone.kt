@@ -5,7 +5,6 @@ import baaahs.geom.Vector3F
 import baaahs.geom.toThreeEuler
 import baaahs.model.MovingHead
 import baaahs.visualizer.VizObj
-import baaahs.visualizer.VizScene
 import baaahs.visualizer.toVector3
 import three.js.*
 import three_ext.plus
@@ -64,8 +63,8 @@ actual class Cone actual constructor(
         }
     }
 
-    actual fun addTo(scene: VizScene) {
-        cones.forEach { cone -> scene.add(VizObj(cone)) }
+    actual fun addTo(parent: VizObj) {
+        cones.forEach { cone -> parent.add(VizObj(cone)) }
     }
 
     actual fun update(state: State) {

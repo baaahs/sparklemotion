@@ -8,6 +8,8 @@ import baaahs.mapper.FixtureMapping
 import baaahs.sim.BrainSurfaceSimulation
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
+import baaahs.visualizer.EntityVisualizer
+import baaahs.visualizer.visualizerBuilder
 
 class Model(
     val name: String,
@@ -43,7 +45,7 @@ class Model(
     override val extents get() = modelExtents.let { if (it == Vector3F.origin) Vector3F(1f, 1f, 1f) else it }
     override val center: Vector3F get() = modelCenter
 
-    open fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> = emptyMap()
+    fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> = emptyMap()
 
     interface Entity {
         val name: String
@@ -55,12 +57,13 @@ class Model(
         val containedEntities: List<Entity> get() = listOf(this)
 
         fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation?
+        fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer
     }
 
     interface EntityGroup : Entity {
         val entities: List<Entity>
 
-        override val containedEntities: List<Model.Entity>
+        override val containedEntities: List<Entity>
             get() = super.containedEntities + entities.flatMap { it.containedEntities }
     }
 
@@ -100,6 +103,9 @@ class Model(
 
         override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
             BrainSurfaceSimulation(this, simulationEnv)
+
+        override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer =
+            visualizerBuilder.createSurfaceVisualizer(this, simulationEnv)
 
         fun transform(transformation: Matrix4F) =
             Surface(

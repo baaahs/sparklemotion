@@ -3,6 +3,7 @@ package baaahs.visualizer
 import baaahs.geom.Matrix4F
 import baaahs.model.LightRing
 import baaahs.model.Model
+import baaahs.sim.SimulationEnv
 import three.js.Color
 import three.js.Mesh
 import three.js.MeshBasicMaterial
@@ -10,6 +11,7 @@ import three.js.RingGeometry
 
 class LightRingVisualizer(
     lightRing: LightRing,
+    simulationEnv: SimulationEnv,
     vizPixels: VizPixels? = null
 ) : EntityVisualizer {
     override val entity: Model.Entity = lightRing
@@ -26,14 +28,15 @@ class LightRingVisualizer(
         get() = Matrix4F(ringMesh.matrix)
         set(value) {
             ringMesh.matrix = value.nativeMatrix
+            ringMesh.updateMatrixWorld(true)
         }
 
-    private var vizScene: VizScene? = null
+    private var parent: VizObj? = null
     var vizPixels : VizPixels? = vizPixels
         set(value) {
-            vizScene?.let { scene ->
-                field?.removeFromScene(scene)
-                value?.addToScene(scene)
+            parent?.let { parent ->
+                field?.removeFrom(parent)
+                value?.addTo(parent)
             }
 
             field = value
@@ -70,12 +73,15 @@ class LightRingVisualizer(
 
         with(center) { ringGeom.translate(x, y, z) }
 
-        ringMesh = Mesh(ringGeom, ringMaterial)
+        ringMesh = Mesh(ringGeom, ringMaterial).apply {
+            matrixAutoUpdate = false
+            entityVisualizer = this@LightRingVisualizer
+        }
     }
 
-    override fun addTo(scene: VizScene) {
-        scene.add(VizObj(ringMesh))
-        vizPixels?.addToScene(scene)
-        vizScene = scene
+    override fun addTo(parent: VizObj) {
+        parent.add(VizObj(ringMesh))
+        vizPixels?.addTo(parent)
+        this.parent = parent
     }
 }

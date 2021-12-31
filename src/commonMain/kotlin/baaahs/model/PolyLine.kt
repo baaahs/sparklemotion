@@ -8,6 +8,8 @@ import baaahs.geom.boundingBox
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.LightBarSimulation
 import baaahs.sim.SimulationEnv
+import baaahs.visualizer.EntityVisualizer
+import baaahs.visualizer.visualizerBuilder
 
 class Grid(
     name: String,
@@ -68,6 +70,9 @@ open class PolyLine(
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
         LightBarSimulation(this, simulationEnv)
+
+    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer =
+        visualizerBuilder.createLightBarVisualizer(this, simulationEnv)
 
     data class Segment(
         val startVertex: Vector3F,

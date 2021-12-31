@@ -11,7 +11,6 @@ import baaahs.ui.xComponent
 import baaahs.util.JsClock
 import baaahs.util.globalLaunch
 import kotlinext.js.jsObject
-import kotlinx.css.*
 import kotlinx.html.hidden
 import materialui.components.appbar.appBar
 import materialui.components.appbar.enums.AppBarPosition
@@ -121,11 +120,10 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
 private fun RBuilder.tabPanel(tab: PageTabs, selectedTab: PageTabs, block: RBuilder.() -> Unit) {
     val isCurrent = tab == selectedTab
 
-    div {
+    div(+Styles.adminTabPanel) {
         inlineStyles {
-            height = 0.px
-            overflow = Overflow.scroll
-            flex(1.0, 0.0)
+//            minHeight = 0.px
+//            flex(1.0, 0.0)
         }
 
         attrs.hidden = !isCurrent

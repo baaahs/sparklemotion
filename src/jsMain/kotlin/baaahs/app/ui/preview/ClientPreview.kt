@@ -34,7 +34,7 @@ class ClientPreview(
     private val renderManager = RenderManager { glContext }
     private val fixtureManager = FixtureManagerImpl(renderManager, plugins)
     private val dmxUniverse = FakeDmxUniverse()
-    private val theVisualizer = Visualizer(modelProvider, clock)
+    private val theVisualizer = Visualizer(clock)
     private var patchSetChanged = true
     private var keepRunning = true
 
