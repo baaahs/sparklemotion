@@ -36,7 +36,7 @@ actual class LightBarSimulation actual constructor(
         )
 
     override val entityVisualizer: LightBarVisualizer by lazy {
-        LightBarVisualizer(pixelArray, vizPixels)
+        LightBarVisualizer(pixelArray, simulationEnv, vizPixels)
     }
 
     val wledSimulator by lazy {

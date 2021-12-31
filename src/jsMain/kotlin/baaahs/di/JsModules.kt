@@ -109,7 +109,7 @@ class JsAdminWebClientModule : KModule {
             scoped<Plugins> { get<ClientPlugins>() }
             scoped { SceneManager(get(), get(), get(), get(), get()) }
             scoped<ModelProvider> { get<SceneManager>() }
-            scoped { Visualizer(get(), get()) }
+            scoped { Visualizer(get()) }
             scoped { RemoteVisualizerClient(get(), pinkyAddress(), get(), get(), get(), get()) }
             scoped { MonitorUi(get(), get()) }
         }

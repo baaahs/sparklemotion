@@ -2,11 +2,13 @@ package baaahs.visualizer
 
 import baaahs.geom.Matrix4F
 import baaahs.model.Model
+import baaahs.sim.SimulationEnv
 import three.js.*
 
 class SurfaceVisualizer(
     private val surface: Model.Surface,
     val surfaceGeometry: SurfaceGeometry,
+    private val simulationEnv: SimulationEnv,
     vizPixels: VizPixels? = null
 ) : EntityVisualizer {
     override val entity: Model.Entity = surface
@@ -48,16 +50,18 @@ class SurfaceVisualizer(
     private val lines: List<Line<*, LineBasicMaterial>>
     val panelNormal: Vector3 get() = surfaceGeometry.panelNormal
     val geometry: Geometry get() = surfaceGeometry.geometry
-    private var vizScene: VizScene? = null
+    private var parent: VizObj? = null
     var vizPixels: VizPixels? = vizPixels
         set(value) {
-            vizScene?.let { scene ->
-                field?.removeFromScene(scene)
-                value?.addToScene(scene)
+            parent?.let { scene ->
+                field?.removeFrom(scene)
+                value?.addTo(scene)
             }
 
             field = value
         }
+    override val vizObj: Object3D
+        get() = mesh
 
     init {
         this.faceMaterial.side = FrontSide
@@ -66,19 +70,24 @@ class SurfaceVisualizer(
         mesh.name = "Surface: ${surfaceGeometry.name}"
         mesh.matrix.copy(surfaceGeometry.surface.transformation.nativeMatrix)
         mesh.matrixAutoUpdate = false
-        mesh.updateMatrixWorld(true)
+        mesh.matrixWorldNeedsUpdate = true
+        mesh.entityVisualizer = this
 
         this.lines = surfaceGeometry.lines.map { line ->
             val lineGeo = Geometry()
             lineGeo.vertices = line.vertices.map { pt -> pt.toVector3() }.toTypedArray()
-            Line(lineGeo, lineMaterial).apply { matrixAutoUpdate = false }
+            Line(lineGeo, lineMaterial).apply {
+                matrixAutoUpdate = false
+//                entityVisualizer = this@SurfaceVisualizer
+//                mesh.add(this)
+            }
         }
     }
 
-    override fun addTo(scene: VizScene) {
-        scene.add(VizObj(this.mesh))
-        lines.forEach { line -> scene.add(VizObj(line)) }
-        vizPixels?.addToScene(scene)
-        vizScene = scene
+    override fun addTo(parent: VizObj) {
+        parent.add(VizObj(mesh))
+        lines.forEach { line -> parent.add(VizObj(line)) }
+        vizPixels?.addTo(parent)
+        this.parent = parent
     }
 }

@@ -238,6 +238,11 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         overflow = Overflow.hidden
     }
 
+    val adminTabPanel by css {
+        overflow = Overflow.hidden
+        grow(Grow.GROW_SHRINK)
+    }
+
     val showLayout by css {
         display = Display.grid
         height = 100.pct

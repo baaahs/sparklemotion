@@ -9,6 +9,7 @@ open external class OrbitControls(theObject: Any, domElement: Any) {
     var minPolarAngle: Double
     var maxPolarAngle: Double
     var target: Vector3
+    var enabled: Boolean
     var enableKeys: Boolean
 
     fun update()

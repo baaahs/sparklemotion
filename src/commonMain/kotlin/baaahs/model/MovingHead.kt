@@ -10,6 +10,8 @@ import baaahs.geom.Vector3F
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.MovingHeadSimulation
 import baaahs.sim.SimulationEnv
+import baaahs.visualizer.EntityVisualizer
+import baaahs.visualizer.movers.MovingHeadVisualizer
 import kotlinx.serialization.Serializable
 
 interface MovingHeadAdapter {
@@ -148,4 +150,7 @@ class MovingHead(
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
         MovingHeadSimulation(this, simulationEnv)
+
+    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer =
+        MovingHeadVisualizer(this, simulationEnv)
 }

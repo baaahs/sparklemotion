@@ -5,14 +5,15 @@ import baaahs.geom.Matrix4F
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
+import baaahs.sim.SimulationEnv
 import baaahs.util.Clock
 import baaahs.visualizer.EntityVisualizer
-import baaahs.visualizer.VizScene
+import baaahs.visualizer.VizObj
 import kotlin.math.absoluteValue
 
 class MovingHeadVisualizer(
     private val movingHead: MovingHead,
-    private val clock: Clock,
+    simulationEnv: SimulationEnv,
     private val beam: Beam = Beam.selectFor(movingHead)
 ) : EntityVisualizer {
     override val entity: Model.Entity get() = movingHead
@@ -26,12 +27,13 @@ class MovingHeadVisualizer(
     private val buffer = run {
     }
 
+    private val clock = simulationEnv[Clock::class]
     private var lastUpdate = clock.now()
     private var currentState = State()
     private var momentumState = State()
 
-    override fun addTo(scene: VizScene) {
-        beam.addTo(scene)
+    override fun addTo(parent: VizObj) {
+        beam.addTo(parent)
     }
 
     internal fun receivedDmxFrame(buffer: MovingHead.Buffer) {
@@ -77,7 +79,7 @@ fun MovingHeadAdapter.colorAtPosition(position: Float, next: Boolean = false): C
 }
 
 expect class Cone(movingHead: MovingHead, colorMode: ColorMode = ColorMode.Rgb) {
-    fun addTo(scene: VizScene)
+    fun addTo(parent: VizObj)
 
     fun update(state: State)
 }

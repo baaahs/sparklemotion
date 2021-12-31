@@ -37,7 +37,8 @@ actual class LightRingSimulation actual constructor(
             pixelLocations.map { MappingSession.SurfaceData.PixelData(it) },
         )
 
-    override val entityVisualizer: LightRingVisualizer by lazy { LightRingVisualizer(lightRing, vizPixels) }
+    override val entityVisualizer: LightRingVisualizer
+            by lazy { LightRingVisualizer(lightRing, simulationEnv, vizPixels) }
 
     val wledSimulator by lazy {
         val wledsSimulator = simulationEnv[WledsSimulator::class]

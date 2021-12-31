@@ -67,12 +67,12 @@ class VizPixels(
         map = roundLightTx
     })
 
-    fun addToScene(scene: VizScene) {
-        scene.add(VizObj(pixelsMesh))
+    fun addTo(parent: VizObj) {
+        parent.add(VizObj(pixelsMesh))
     }
 
-    fun removeFromScene(scene: VizScene) {
-        scene.remove(VizObj(pixelsMesh))
+    fun removeFrom(parent: VizObj) {
+        parent.remove(VizObj(pixelsMesh))
     }
 
     override fun get(i: Int): Color {

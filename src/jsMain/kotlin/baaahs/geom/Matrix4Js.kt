@@ -4,6 +4,7 @@ import baaahs.util.toDoubleArray
 import baaahs.visualizer.toVector3
 import kotlinx.serialization.Serializable
 import three.js.Euler
+import three.js.Object3D
 import three.js.Quaternion
 import three_ext.set
 import three_ext.toVector3F
@@ -64,6 +65,12 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
         nativeMatrix.decompose(translation, rotation, scale)
         block(translation, rotation, scale)
         return Matrix4F(nativeMatrix.compose(translation, rotation, scale))
+    }
+
+    fun copyTo(object3D: Object3D) {
+        nativeMatrix.decompose(object3D.position, object3D.quaternion, object3D.scale)
+        object3D.matrix.copy(nativeMatrix)
+        object3D.matrixWorldNeedsUpdate = true
     }
 
     override fun equals(other: Any?): Boolean {

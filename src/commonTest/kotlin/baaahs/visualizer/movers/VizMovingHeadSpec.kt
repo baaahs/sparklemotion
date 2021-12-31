@@ -8,7 +8,7 @@ import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
-import baaahs.visualizer.VizScene
+import baaahs.visualizer.VizObj
 import org.spekframework.spek2.Spek
 
 object VizMovingHeadSpec: Spek({
@@ -105,7 +105,7 @@ typealias UpdateMoverState = (
 class BeamForTest : Beam {
     var currentState = State()
 
-    override fun addTo(scene: VizScene) {
+    override fun addTo(scene: VizObj) {
     }
 
     override fun update(state: State) {

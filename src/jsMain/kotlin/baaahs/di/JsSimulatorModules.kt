@@ -55,7 +55,7 @@ class JsSimulatorModule(
 
     override fun getModule(): Module {
         return super.getModule().apply {
-            single { Visualizer(get(), get()) }
+            single { Visualizer(get()) }
             single<ModelProvider> { sceneMonitor_ }
             single<PixelArranger> { SwirlyPixelArranger(pixelDensity, pixelSpacing) }
             single { BridgeClient(bridgeNetwork_, pinkyAddress_) }

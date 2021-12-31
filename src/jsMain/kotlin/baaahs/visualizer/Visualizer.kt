@@ -1,17 +1,15 @@
 package baaahs.visualizer
 
-import baaahs.ModelProvider
 import baaahs.document
 import baaahs.mapper.JsMapperUi
 import baaahs.model.Model
+import baaahs.sim.SimulationEnv
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.asMillis
-import baaahs.util.coroutineExceptionHandler
 import baaahs.window
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
@@ -19,17 +17,27 @@ import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 import three.js.*
 import three_ext.OrbitControls
+import three_ext.TransformControls
 import kotlin.collections.set
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
 class Visualizer(
-    private val modelProvider: ModelProvider,
     private val clock: Clock,
     private val coroutineScope: CoroutineScope = GlobalScope
 ) : JsMapperUi.StatusListener {
     val facade = Facade()
+
+    var model: Model? = null
+        set(value) {
+            field?.let { removeEntities(it) }
+            value?.let {
+                addEntities(it)
+                pointAtModel(it)
+            }
+            field = value
+        }
 
     private var container: HTMLElement? = null
         set(value) {
@@ -49,7 +57,7 @@ class Visualizer(
         set(isRunning) {
             field = isRunning
 
-            entityVisualizers.forEach { it.mapperIsRunning = isRunning }
+            entityVisualizers.values.forEach { it.mapperIsRunning = isRunning }
 
             if (isRunning) {
                 rotate = false
@@ -59,11 +67,12 @@ class Visualizer(
     private val prerenderListeners = mutableListOf<() -> Unit>()
     private val frameListeners = mutableListOf<FrameListener>()
 
-    private var controls: OrbitControls? = null
+    private var orbitControls: OrbitControls? = null
     private val camera: PerspectiveCamera =
         PerspectiveCamera(45, 1.0, 1, 10000).apply {
             position.z = 1000.0
         }
+    private lateinit var transformControls: TransformControls
     private val scene: Scene = Scene()
     private val renderer = WebGLRenderer().apply {
         localClippingEnabled = true
@@ -75,7 +84,7 @@ class Visualizer(
     private var mouse: Vector2? = null
     private val originDot: Mesh<*, *>
 
-    private val entityVisualizers = arrayListOf<EntityVisualizer>()
+    private val entityVisualizers = mutableMapOf<Model.Entity, EntityVisualizer>()
     private val sceneObjs = mutableMapOf<Number, EntityVisualizer>()
     private val selectionSpan = document.createElement("span") as HTMLSpanElement
     private var selectedEntity: EntityVisualizer? = null
@@ -83,6 +92,7 @@ class Visualizer(
             field?.let {
                 console.log("Deselecting ${it.title}")
                 it.selected = false
+                transformControls.detach()
             }
             field = value
 
@@ -94,13 +104,18 @@ class Visualizer(
                 console.log("Selecting ${value.title}")
                 selectionSpan.style.display = "inherit"
                 selectionSpan.innerText = "Selected: ${value.title}"
+                value.vizObj?.let { transformControls.attach(it) }
             }
 
             facade.notifyChanged()
         }
 
+    val children get() = entityVisualizers.values
+
     init {
         scene.add(camera)
+        scene.add(GridHelper())
+        scene.add(AxesHelper())
 //        renderer.setPixelRatio(window.devicePixelRatio)
 
         raycaster.asDynamic().params.Points.threshold = 1
@@ -130,11 +145,17 @@ class Visualizer(
         container!!.appendChild(selectionSpan)
         container!!.addEventListener("pointerdown", this::onMouseDown)
 
-        controls = OrbitControls(camera, container!!).apply {
+        orbitControls = OrbitControls(camera, container!!).apply {
             minPolarAngle = PI / 2 - .25 // radians
             maxPolarAngle = PI / 2 + .25 // radians
 
             enableKeys = false
+        }
+
+        transformControls = TransformControls(camera, container!!)
+        scene.add(transformControls)
+        transformControls.addEventListener( "dragging-changed") {
+            orbitControls!!.enabled = ! transformControls.dragging
         }
 
         resize()
@@ -145,9 +166,10 @@ class Visualizer(
         container?.removeChild(renderer.domElement)
         container?.removeChild(selectionSpan)
         container?.removeEventListener("pointerdown", this::onMouseDown)
-        controls?.dispose()
+        orbitControls?.dispose()
+        transformControls.dispose()
         stopRendering = true
-        controls = null
+        orbitControls = null
     }
 
     fun addPrerenderListener(callback: () -> Unit) {
@@ -180,33 +202,39 @@ class Visualizer(
     }
 
     fun addEntityVisualizer(entityVisualizer: EntityVisualizer) {
-        entityVisualizer.addTo(VizScene(object : SceneListener {
+        entityVisualizer.addTo(VizObj(scene, object : SceneListener {
             override fun add(obj: Object3D) {
                 obj.name = entityVisualizer.title
                 sceneObjs[obj.id] = entityVisualizer
-                scene.add(obj)
             }
 
             override fun remove(obj: Object3D) {
-                scene.remove(obj)
                 sceneObjs.remove(obj.id)
             }
         }))
+    }
 
-        entityVisualizers.add(entityVisualizer)
+    private fun addEntities(model: Model) {
+        val simulationEnv = SimulationEnv {
+            component(clock)
+        }
+        entityVisualizers.putAll(model.entities.associateWith {
+            it.createVisualizer(simulationEnv).also { addEntityVisualizer(it) }
+        })
+    }
+
+    private fun removeEntities(model: Model) {
+        TODO("removeEntities() not implemented")
     }
 
     private fun startRender() {
-        pointAtModel()
-
         stopRendering = false
         requestAnimationFrame()
     }
 
-    private fun pointAtModel() = coroutineScope.launch(coroutineExceptionHandler) {
-        val model = modelProvider.getModel()
+    private fun pointAtModel(model: Model) {
         val target = model.center.toVector3()
-        controls?.target = target
+        orbitControls?.target = target
         camera.lookAt(target)
     }
 
@@ -218,13 +246,13 @@ class Visualizer(
         mouse?.let { mouseClick ->
             mouse = null
             raycaster.setFromCamera(mouseClick, camera)
-            val intersections = raycaster.intersectObjects(scene.children, false)
+            val intersections = raycaster.intersectObjects(scene.children, true)
             var acceptedIntersection = false
             intersections.forEach { intersection ->
                 val intersectedObject = intersection.`object`
                 console.log("Found intersection with ${intersectedObject.name} at ${intersection.distance}.")
                 if (!acceptedIntersection) {
-                    sceneObjs[intersectedObject.id]?.let {
+                    intersectedObject.entityVisualizer?.let {
                         selectedEntity = it
                         acceptedIntersection = true
                     }
@@ -244,7 +272,7 @@ class Visualizer(
             camera.lookAt(scene.position)
         }
 
-        controls?.update()
+        orbitControls?.update()
 
         val startTime = clock.now()
         renderer.render(scene, camera)
@@ -300,14 +328,16 @@ class Visualizer(
 
         var selectedEntity: EntityVisualizer?
             get() = this@Visualizer.selectedEntity
-            set(value) { this@Visualizer.selectedEntity = value }
+            set(value) {
+                this@Visualizer.selectedEntity = value
+            }
 
         val framerate = Framerate()
 
         fun resize() = this@Visualizer.resize()
 
-        fun select(entity: Model.Entity) {
-            this@Visualizer.selectedEntity = entityVisualizers.find { it.entity == entity }
+        fun select(entityVisualizer: EntityVisualizer) {
+            this@Visualizer.selectedEntity = entityVisualizer
         }
     }
 
