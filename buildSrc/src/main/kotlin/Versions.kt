@@ -1,5 +1,5 @@
 object Versions {
-    const val kotlin = "1.6.0"
+    const val kotlin = "1.6.10"
     const val kotlinNext = "1.6.10"
     const val coroutines = "1.5.2"
     const val serializationRuntime = "1.3.1"
