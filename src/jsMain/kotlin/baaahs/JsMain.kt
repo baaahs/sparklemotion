@@ -120,7 +120,7 @@ private fun launchSimulator(
         this.simulator = simulator.facade
         this.hostedWebApp = hostedWebApp
     }
-    val simulatorEl = document.getElementById("app")
+    val simulatorEl = document.getElementById("app")!!
 
     GlobalScope.promise {
         render(createElement(SimulatorAppView, props), simulatorEl)
@@ -137,7 +137,7 @@ private fun HostedWebApp.launchApp() {
     globalLaunch {
         onLaunch()
 
-        val contentDiv = document.getElementById("content")
+        val contentDiv = document.getElementById("content")!!
         render(createElement(WebClientWindowView, jsObject {
             this.hostedWebApp = this@launchApp
         }), contentDiv)
@@ -148,7 +148,8 @@ private fun tryCatchAndShowErrors(block: () -> Unit) {
     try {
         block()
     } catch (e: Exception) {
-        val container = document.getElementById("content") ?: document.getElementById("app")
+        val container = document.getElementById("content")
+            ?: document.getElementById("app")!!
         render(createElement(ErrorDisplay, jsObject {
             this.error = e.asDynamic()
             this.componentStack = e.stackTraceToString().let {
