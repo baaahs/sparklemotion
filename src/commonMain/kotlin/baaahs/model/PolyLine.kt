@@ -2,7 +2,7 @@ package baaahs.model
 
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
-import baaahs.geom.Matrix4F
+import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.sim.FixtureSimulation
@@ -14,14 +14,16 @@ import baaahs.visualizer.visualizerBuilder
 class Grid(
     name: String,
     description: String?,
-    transformation: Matrix4F = Matrix4F.identity,
+    position: Vector3F = Vector3F.origin,
+    rotation: EulerAngle = EulerAngle.identity,
+    scale: Vector3F = Vector3F.unit3d,
     rows: Int,
     columns: Int,
     rowGap: Float,
     columnGap: Float,
     direction: GridData.Direction,
     zigZag: Boolean
-): PolyLine(name, description, calcSegments(rows, columns, rowGap, columnGap, direction, zigZag), transformation)
+): PolyLine(name, description, calcSegments(rows, columns, rowGap, columnGap, direction, zigZag), position, rotation, scale)
 
 fun calcSegments(
     rows: Int,
@@ -51,8 +53,10 @@ open class PolyLine(
     override val name: String,
     override val description: String?,
     val segments: List<Segment>,
-    override val transformation: Matrix4F = Matrix4F.identity
-) : Model.Entity, PlacedPixelArray {
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d,
+) : Model.BaseEntity(), PlacedPixelArray {
     override val deviceType: DeviceType
         get() = PixelArrayDevice
 

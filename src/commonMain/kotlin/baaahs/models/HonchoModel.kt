@@ -1,10 +1,10 @@
 package baaahs.models
 
-import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.model.LightRing
 import baaahs.model.LightRingData
 import baaahs.model.ModelData
+import baaahs.model.ModelUnit
 import kotlin.math.PI
 
 private val lightRings = listOf(
@@ -44,7 +44,8 @@ val pixelDirection = LightRing.PixelDirection.Clockwise
 
 val honchoModelData = ModelData(
     "Honcho",
-    lightRings.map { it.createEntityData() }
+    lightRings.map { it.createEntityData() },
+    units = ModelUnit.Inches
 )
 
 private val Number.m: Float get() = toFloat() * 100f / 2.54f
@@ -71,11 +72,10 @@ private data class LightRingConfig(
 
     fun createEntityData() = LightRingData(
         name, null,
-        Matrix4F.identity,
-        Vector3F(centerX - 7.m, centerY, 0f),
-        (circumference / PI).toFloat(),
-        Vector3F.facingForward,
-        firstPixelRadians.toFloat(),
-        pixelDirection
+        center = Vector3F(centerX - 7.m, centerY, 0f),
+        radius = (circumference / PI).toFloat(),
+        planeNormal = Vector3F.facingForward,
+        firstPixelRadians = firstPixelRadians.toFloat(),
+        pixelDirection = pixelDirection
     )
 }

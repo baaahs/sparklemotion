@@ -6,7 +6,6 @@
         "type": "ObjModel",
         "title": "Decom2019",
         "description": null,
-        "transformation": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
         "objData": "baaahs-model.obj",
         "objDataIsFileRef": true,
         "metadata": {
@@ -174,13 +173,31 @@
         "type": "MovingHead",
         "title": "leftEye",
         "description": "Left Eye",
-        "transformation": [-0.0, 1.0, 0.0, 0.0, -0.98768824, -0.0, 0.15643482, 0.0, 0.15643482, -0.0, 0.98768824, 0.0, -11.0, 202.361, -24.5, 1.0]
+        "position": {
+          "x": -11.0,
+          "y": 202.361,
+          "z": -24.5
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.15708,
+          "z": 1.5708
+        }
       },
       {
         "type": "MovingHead",
         "title": "rightEye",
         "description": "Right Eye",
-        "transformation": [-0.0, 1.0, 0.0, 0.0, -0.98768824, 0.0, -0.15643482, 0.0, -0.15643482, -0.0, 0.98768824, 0.0, -11.0, 202.361, 27.5, 1.0]
+        "position": {
+          "x": -11.0,
+          "y": 202.361,
+          "z": 27.5
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": -0.15708,
+          "z": 1.5708
+        }
       }
     ],
     "units": "Inches"

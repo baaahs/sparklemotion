@@ -1,7 +1,7 @@
 package baaahs.model
 
 import baaahs.dmx.Shenzarpy
-import baaahs.geom.Matrix4F
+import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.io.Fs
 import baaahs.io.getResource
@@ -34,7 +34,9 @@ enum class ModelUnit(val display: String) {
 sealed interface EntityData {
     val title: String
     val description: String?
-    val transformation: Matrix4F
+    val position: Vector3F
+    val rotation: EulerAngle
+    val scale: Vector3F
 
     fun open(): Model.Entity
 }
@@ -43,7 +45,9 @@ sealed interface EntityData {
 data class ObjModelData(
     override val title: String,
     override val description: String?,
-    override val transformation: Matrix4F,
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d,
     val objData: String,
     val objDataIsFileRef: Boolean,
     @Polymorphic
@@ -53,7 +57,7 @@ data class ObjModelData(
         val objModelLoader = ObjModelLoader.load(objData) {
             metadata?.getMetadataFor(this@ObjModelData)?.expectedPixelCount
         }
-        return ObjGroup(title, description, transformation, metadata, objModelLoader)
+        return ObjGroup(title, description, position, rotation, scale, metadata, objModelLoader)
     }
 }
 
@@ -61,42 +65,51 @@ data class ObjModelData(
 data class MovingHeadData(
     override val title: String,
     override val description: String?,
-    override val transformation: Matrix4F
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d
+
 ) : EntityData {
     override fun open(): Model.Entity =
-        MovingHead(title, description, 0, Shenzarpy, transformation)
+        MovingHead(title, description, 0, Shenzarpy, position, rotation, scale)
 }
 
 @Serializable @SerialName("LightBar")
 data class LightBarData(
     override val title: String,
     override val description: String?,
-    override val transformation: Matrix4F,
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d,
     val startVertex: Vector3F,
     val endVertex: Vector3F
 ) : EntityData {
     override fun open(): Model.Entity =
-        LightBar(title, description, startVertex, endVertex, transformation)
+        LightBar(title, description, startVertex, endVertex, position, rotation, scale)
 }
 
 @Serializable @SerialName("PolyLine")
 data class PolyLineData(
     override val title: String,
     override val description: String?,
-    override val transformation: Matrix4F,
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d,
     val segments: List<SegmentData>
 ) : EntityData {
     override fun open(): Model.Entity =
         PolyLine(title, description, segments.map {
             PolyLine.Segment(it.startVertex, it.endVertex, it.pixelCount)
-        }, transformation)
+        }, position, rotation, scale)
 }
 
 @Serializable @SerialName("Grid")
 data class GridData(
     override val title: String,
     override val description: String?,
-    override val transformation: Matrix4F,
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d,
     val rows: Int,
     val columns: Int,
     val rowGap: Float,
@@ -110,7 +123,7 @@ data class GridData(
     }
 
     override fun open(): Model.Entity = Grid(
-        title, description, transformation, rows, columns, rowGap, columnGap, direction, zigZag
+        title, description, position, rotation, scale, rows, columns, rowGap, columnGap, direction, zigZag
     )
 }
 
@@ -125,7 +138,9 @@ data class SegmentData(
 data class LightRingData(
     override val title: String,
     override val description: String?,
-    override val transformation: Matrix4F,
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d,
     val center: Vector3F,
     val radius: Float,
     val planeNormal: Vector3F,
@@ -133,7 +148,7 @@ data class LightRingData(
     val pixelDirection: LightRing.PixelDirection = LightRing.PixelDirection.Clockwise
 ) : EntityData {
     override fun open(): Model.Entity =
-        LightRing(title, description, center, radius, planeNormal, firstPixelRadians, pixelDirection, transformation)
+        LightRing(title, description, center, radius, planeNormal, firstPixelRadians, pixelDirection, position, rotation, scale)
 }
 
 @Polymorphic

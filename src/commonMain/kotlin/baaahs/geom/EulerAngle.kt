@@ -1,11 +1,15 @@
 package baaahs.geom
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class EulerAngle(
+    @SerialName("x")
     val pitchRad: Double,
+    @SerialName("y")
     val yawRad: Double,
+    @SerialName("z")
     val rollRad: Double
 ) {
     val bankRad get() = pitchRad
