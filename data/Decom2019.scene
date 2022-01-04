@@ -6,7 +6,6 @@
         "type": "ObjModel",
         "title": "Decom2019",
         "description": null,
-        "transformation": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
         "objData": "decom-2019-panels.obj",
         "objDataIsFileRef": true,
         "metadata": {
@@ -18,7 +17,6 @@
         "type": "LightBar",
         "title": "bar 1",
         "description": "Vertical between Panel 1 and 2",
-        "transformation": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
         "startVertex": {
           "x": 54.0,
           "y": 66.0,
@@ -34,7 +32,6 @@
         "type": "LightBar",
         "title": "bar 2",
         "description": "Vertical between Panel 2 and 3",
-        "transformation": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
         "startVertex": {
           "x": 114.0,
           "y": 66.0,
@@ -50,7 +47,6 @@
         "type": "LightBar",
         "title": "bar 3",
         "description": "Vertical below Panel 2",
-        "transformation": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
         "startVertex": {
           "x": 66.0,
           "y": 47.0,

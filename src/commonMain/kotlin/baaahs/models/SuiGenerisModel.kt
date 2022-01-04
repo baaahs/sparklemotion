@@ -1,6 +1,5 @@
 package baaahs.models
 
-import baaahs.geom.Matrix4F
 import baaahs.model.ConstEntityMetadataProvider
 import baaahs.model.ModelData
 import baaahs.model.ModelUnit
@@ -10,8 +9,9 @@ val suiGenerisModelData = ModelData(
     "SuiGeneris",
     listOf(
         ObjModelData(
-            "sui-generis.obj", null, Matrix4F.identity, "sui-generis.obj", true,
-            ConstEntityMetadataProvider(16 * 60)
+            "sui-generis.obj", null,
+            objData = "sui-generis.obj", objDataIsFileRef = true,
+            metadata = ConstEntityMetadataProvider(16 * 60)
         )
     ),
     ModelUnit.Inches

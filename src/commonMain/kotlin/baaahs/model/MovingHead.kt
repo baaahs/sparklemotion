@@ -5,7 +5,7 @@ import baaahs.device.DeviceType
 import baaahs.dmx.Dmx
 import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.MovingHeadDevice
-import baaahs.geom.Matrix4F
+import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.MovingHeadSimulation
@@ -51,8 +51,10 @@ class MovingHead(
     override val description: String?,
     val baseDmxChannel: Int,
     val adapter: MovingHeadAdapter,
-    override val transformation: Matrix4F = Matrix4F.identity
-) : Model.Entity, Model.FixtureInfo {
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d
+) : Model.BaseEntity(), Model.FixtureInfo {
     override val bounds: Pair<Vector3F, Vector3F>
         get() = transformation.position.let { it to it }
 

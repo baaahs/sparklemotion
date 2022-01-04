@@ -3,7 +3,7 @@ package baaahs.model
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
-import baaahs.geom.Matrix4F
+import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.mapper.MappingSession
@@ -15,13 +15,15 @@ import baaahs.visualizer.visualizerBuilder
 class ObjGroup(
     override val name: String,
     override val description: String?,
-    override val transformation: Matrix4F,
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d,
     metadata: EntityMetadataProvider?,
     loader: ObjModelLoader
-) : Model.EntityGroup {
+) : Model.BaseEntity(), Model.EntityGroup {
     override val deviceType: DeviceType get() = PixelArrayDevice // TODO
     override val bounds: Pair<Vector3F, Vector3F> = boundingBox(loader.geomVertices)
-    override val entities: List<Model.Entity> = loader.allEntities.map { it.transform(transformation) }
+    override val entities: List<Model.Entity> = loader.allEntities // .map { it.transform(transformation) }
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
         object : FixtureSimulation {

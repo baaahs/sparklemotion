@@ -53,11 +53,19 @@ class Model(
         val description: String?
         val deviceType: DeviceType
         val bounds: Pair<Vector3F, Vector3F>
+        val position: Vector3F
+        val rotation: EulerAngle
+        val scale: Vector3F
         val transformation: Matrix4F
         val containedEntities: List<Entity> get() = listOf(this)
 
         fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation?
         fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer
+    }
+
+    abstract class BaseEntity : Entity {
+        override val transformation: Matrix4F
+                by lazy { Matrix4F.fromPositionAndRotation(position, rotation) }
     }
 
     interface EntityGroup : Entity {
@@ -92,8 +100,10 @@ class Model(
         val faces: List<Face>,
         val lines: List<Line>,
         override val geometry: Geometry,
-        override val transformation: Matrix4F = Matrix4F.identity
-    ) : EntityWithGeometry {
+        override val position: Vector3F = Vector3F.origin,
+        override val rotation: EulerAngle = EulerAngle.identity,
+        override val scale: Vector3F = Vector3F.unit3d,
+    ) : BaseEntity(), EntityWithGeometry {
         override val deviceType: DeviceType
             get() = PixelArrayDevice
         override val bounds: Pair<Vector3F, Vector3F>
@@ -106,12 +116,6 @@ class Model(
 
         override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer =
             visualizerBuilder.createSurfaceVisualizer(this, simulationEnv)
-
-        fun transform(transformation: Matrix4F) =
-            Surface(
-                name, description, expectedPixelCount, faces, lines, geometry,
-                this.transformation * transformation
-            )
     }
 
     data class Line(
