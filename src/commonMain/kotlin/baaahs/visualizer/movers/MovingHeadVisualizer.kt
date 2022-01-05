@@ -1,42 +1,22 @@
 package baaahs.visualizer.movers
 
 import baaahs.Color
-import baaahs.geom.Matrix4F
-import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
-import baaahs.sim.SimulationEnv
 import baaahs.util.Clock
-import baaahs.visualizer.EntityVisualizer
 import baaahs.visualizer.VizObj
 import kotlin.math.absoluteValue
 
-class MovingHeadVisualizer(
-    private val movingHead: MovingHead,
-    simulationEnv: SimulationEnv,
-    private val beam: Beam = Beam.selectFor(movingHead)
-) : EntityVisualizer {
-    override val entity: Model.Entity get() = movingHead
-    override val title: String
-        get() = movingHead.name
-    override var mapperIsRunning: Boolean = false
-    override var selected: Boolean = false // TODO: Show that the device is selected.
-
-    override var transformation: Matrix4F = Matrix4F.identity
-
-    private val buffer = run {
-    }
-
-    private val clock = simulationEnv[Clock::class]
+class PhysicsModel(
+    private val adapter: MovingHeadAdapter,
+    private val clock: Clock
+) {
+    var currentState = State()
+        private set
     private var lastUpdate = clock.now()
-    private var currentState = State()
     private var momentumState = State()
 
-    override fun addTo(parent: VizObj) {
-        beam.addTo(parent)
-    }
-
-    internal fun receivedDmxFrame(buffer: MovingHead.Buffer) {
+    fun update(buffer: MovingHead.Buffer): State {
         val now = clock.now()
         val elapsed = (now - lastUpdate).toFloat()
 
@@ -47,12 +27,12 @@ class MovingHeadVisualizer(
             buffer.dimmer
         )
 
-        val attainableState = currentState.moveToward(momentumState, requestedState, movingHead.adapter, elapsed)
-        beam.update(attainableState)
-
+        val attainableState = currentState.moveToward(momentumState, requestedState, adapter, elapsed)
         lastUpdate = now
         currentState = attainableState
         momentumState = requestedState
+
+        return attainableState
     }
 }
 

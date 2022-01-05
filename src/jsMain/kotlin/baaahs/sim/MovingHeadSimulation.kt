@@ -23,7 +23,7 @@ actual class MovingHeadSimulation actual constructor(
     override val entityVisualizer: MovingHeadVisualizer by lazy {
         val visualizer = MovingHeadVisualizer(movingHead, simulationEnv)
         dmxUniverse.listen {
-            visualizer.receivedDmxFrame(adapterBuffer)
+            visualizer.receivedUpdate(adapterBuffer)
         }
         visualizer
     }
@@ -50,7 +50,7 @@ actual class MovingHeadSimulation actual constructor(
             dmxBufferReader[i] = reader.readByte()
         }
 
-        entityVisualizer.receivedDmxFrame(adapterBuffer)
+        entityVisualizer.receivedUpdate(adapterBuffer)
     }
 
     inner class PreviewTransport : Transport {
