@@ -1,6 +1,7 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.PatchHolderEditorHelpText
+import baaahs.show.Show
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.ui.*
@@ -55,7 +56,7 @@ val FixturesList = xComponent<FixturesListProps>("FixturesList") { props ->
 }
 
 external interface FixturesListProps : Props {
-    var editableManager: EditableManager
+    var editableManager: EditableManager<Show>
     var mutablePatchHolder: MutablePatchHolder
 }
 

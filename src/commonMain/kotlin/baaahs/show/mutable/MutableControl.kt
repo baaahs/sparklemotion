@@ -1,10 +1,11 @@
 package baaahs.show.mutable
 
-import baaahs.app.ui.MutableEditable
+import baaahs.app.ui.editor.MutableEditable
 import baaahs.show.Control
+import baaahs.show.Show
 import baaahs.show.live.OpenControl
 
-interface MutableControl : MutableEditable {
+interface MutableControl : MutableEditable<Show> {
     var asBuiltId: String?
     fun build(showBuilder: ShowBuilder): Control
     fun accept(visitor: MutableShowVisitor, log: VisitationLog) {

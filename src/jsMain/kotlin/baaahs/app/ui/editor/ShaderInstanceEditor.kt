@@ -6,9 +6,11 @@ import baaahs.app.ui.shaderPreview
 import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.withCache
+import baaahs.show.Show
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderInstance
+import baaahs.show.mutable.MutableShow
 import baaahs.ui.addObserver
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
@@ -59,7 +61,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
     val editingShader = memo(props.mutableShaderInstance) {
         val newEditingShader =
             EditingShader(
-                props.editableManager.currentMutableShow,
+                props.editableManager.currentMutableDocument as MutableShow,
                 props.mutablePatch,
                 props.mutableShaderInstance,
                 toolchain
@@ -206,7 +208,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
 }
 
 external interface ShaderInstanceEditorProps : Props {
-    var editableManager: EditableManager
+    var editableManager: EditableManager<Show>
     var mutablePatch: MutablePatch
     var mutableShaderInstance: MutableShaderInstance
 }

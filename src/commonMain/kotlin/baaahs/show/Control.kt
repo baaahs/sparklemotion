@@ -1,7 +1,7 @@
 package baaahs.show
 
 import baaahs.ShowPlayer
-import baaahs.app.ui.Editable
+import baaahs.app.ui.editor.Editable
 import baaahs.show.live.OpenContext
 import baaahs.show.live.OpenControl
 import baaahs.show.mutable.MutableControl

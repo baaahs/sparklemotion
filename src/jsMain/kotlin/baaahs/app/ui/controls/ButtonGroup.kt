@@ -1,7 +1,7 @@
 package baaahs.app.ui.controls
 
-import baaahs.app.ui.AddButtonToButtonGroupEditIntent
 import baaahs.app.ui.appContext
+import baaahs.app.ui.editor.AddButtonToButtonGroupEditIntent
 import baaahs.app.ui.shaderPreview
 import baaahs.control.ButtonGroupControl
 import baaahs.control.OpenButtonGroupControl

@@ -1,7 +1,6 @@
 package baaahs.show.mutable
 
 import baaahs.SparkleMotion
-import baaahs.app.ui.MutableEditable
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.*
 import baaahs.control.*
@@ -30,12 +29,12 @@ interface EditHandler<T, TState> {
 
 abstract class MutablePatchHolder(
     private val basePatchHolder: PatchHolder
-) : MutableEditable {
+) : MutableEditable<Show> {
     protected abstract val mutableShow: MutableShow
 
     override var title = basePatchHolder.title
 
-    override fun getEditorPanels(editableManager: EditableManager): List<DialogPanel> {
+    override fun getEditorPanels(editableManager: EditableManager<Show>): List<DialogPanel> {
         return listOf(
             GenericPropertiesEditorPanel(editableManager, getPropertiesComponents()),
             PatchHolderEditorPanel(editableManager, this)
@@ -148,9 +147,14 @@ abstract class MutablePatchHolder(
     }
 }
 
+interface MutableDocument<T> : MutableEditable<T> {
+    fun isChanged(originalDocument: T): Boolean
+    fun generateDocument(): T
+}
+
 class MutableShow(
     baseShow: Show
-) : MutablePatchHolder(baseShow), MutableEditable {
+) : MutablePatchHolder(baseShow), MutableDocument<Show> {
     override val mutableShow: MutableShow get() = this
 
     internal val layouts = MutableLayouts(baseShow.layouts)
@@ -203,8 +207,8 @@ class MutableShow(
         return this
     }
 
-    fun isChanged(baseShow: Show): Boolean {
-        return baseShow != getShow()
+    override fun isChanged(originalDocument: Show): Boolean {
+        return originalDocument != getShow()
     }
 
     fun build(showBuilder: ShowBuilder): Show {
@@ -222,6 +226,8 @@ class MutableShow(
     }
 
     fun getShow() = build(ShowBuilder())
+
+    override fun generateDocument(): Show = getShow()
 
     fun findControl(controlId: String): MutableControl =
         controls.getBang(controlId, "control")
@@ -356,7 +362,7 @@ class MutablePatch {
         mutableShaderInstances.remove(mutableShaderInstance)
     }
 
-    fun getEditorPanel(editableManager: EditableManager) =
+    fun getEditorPanel(editableManager: EditableManager<Show>) =
         PatchEditorPanel(editableManager, this)
 }
 

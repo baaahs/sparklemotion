@@ -1,5 +1,6 @@
 package baaahs.app.ui.editor
 
+import baaahs.show.Show
 import baaahs.ui.value
 import baaahs.ui.xComponent
 import kotlinx.html.js.onBlurFunction
@@ -62,7 +63,7 @@ external interface TextFieldEditorProps : Props {
     var autoFocus: Boolean?
     var getValue: () -> String
     var setValue: (String) -> Unit
-    var editableManager: EditableManager
+    var editableManager: EditableManager<Show>
 }
 
 fun RBuilder.textFieldEditor(handler: RHandler<TextFieldEditorProps>) =
