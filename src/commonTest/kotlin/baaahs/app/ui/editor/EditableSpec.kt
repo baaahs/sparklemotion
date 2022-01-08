@@ -1,6 +1,5 @@
 package baaahs.app.ui.editor
 
-import baaahs.app.ui.ControlEditIntent
 import baaahs.control.MutableButtonControl
 import baaahs.describe
 import baaahs.gl.testToolchain
@@ -24,7 +23,7 @@ object EditableSpec : Spek({
         }
         val editIntent by value { ControlEditIntent("mainButtonButton") }
         val editableManager by value {
-            EditableManager { }
+            ShowEditableManager { }
                 .apply { openEditor(baseShow, editIntent, testToolchain) }
         }
         val mutableButton by value {

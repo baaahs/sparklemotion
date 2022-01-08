@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
 import baaahs.gl.shader.InputPort
+import baaahs.show.Show
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.on
 import baaahs.ui.xComponent
@@ -114,7 +115,7 @@ val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { p
 }
 
 external interface LinkSourceEditorProps : Props {
-    var editableManager: EditableManager
+    var editableManager: EditableManager<Show>
     var editingShader: EditingShader
     var inputPort: InputPort
 }

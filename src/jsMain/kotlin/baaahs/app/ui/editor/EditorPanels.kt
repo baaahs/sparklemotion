@@ -3,6 +3,7 @@ package baaahs.app.ui.editor
 import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
 import baaahs.control.MutableVisualizerControl
+import baaahs.show.Show
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShaderInstance
@@ -15,7 +16,7 @@ import react.dom.div
 
 actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     override fun forGenericPropertiesPanel(
-        editableManager: EditableManager,
+        editableManager: EditableManager<Show>,
         propsEditors: List<PropsEditor>
     ): View = renderWrapper {
         propsEditors.forEachIndexed { index, editorPanelComponent ->
@@ -32,7 +33,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     }
 
     override fun forPatchHolder(
-        editableManager: EditableManager,
+        editableManager: EditableManager<Show>,
         mutablePatchHolder: MutablePatchHolder
     ): View = renderWrapper {
         fixturesList {
@@ -42,7 +43,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     }
 
     override fun forPatch(
-        editableManager: EditableManager,
+        editableManager: EditableManager<Show>,
         mutablePatch: MutablePatch
     ): View = renderWrapper {
         patchOverview {
@@ -52,7 +53,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     }
 
     override fun forShaderInstance(
-        editableManager: EditableManager,
+        editableManager: EditableManager<Show>,
         mutablePatch: MutablePatch,
         mutableShaderInstance: MutableShaderInstance
     ): View =
@@ -65,7 +66,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
         }
 
     override fun forButton(
-        editableManager: EditableManager,
+        editableManager: EditableManager<Show>,
         mutableButtonControl: MutableButtonControl
     ) = renderWrapper {
         buttonPropsEditor {
@@ -75,7 +76,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     }
 
     override fun forButtonGroup(
-        editableManager: EditableManager,
+        editableManager: EditableManager<Show>,
         mutableButtonGroupControl: MutableButtonGroupControl
     ) = renderWrapper {
         buttonGroupPropsEditor {
@@ -85,7 +86,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     }
 
     override fun forVisualizer(
-        editableManager: EditableManager,
+        editableManager: EditableManager<Show>,
         mutableVisualizerControl: MutableVisualizerControl
     ) = renderWrapper {
         visualizerPropsEditor {
@@ -95,7 +96,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     }
 
     override fun forTitleComponent(
-        editableManager: EditableManager,
+        editableManager: EditableManager<Show>,
         mutablePatchHolder: MutablePatchHolder
     ): View = renderWrapper {
         div(+EditableStyles.propertiesSection) {

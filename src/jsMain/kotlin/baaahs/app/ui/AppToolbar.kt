@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.controls.problemBadge
+import baaahs.app.ui.editor.ShowEditIntent
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
 import kotlinx.css.opacity
@@ -57,13 +58,13 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val handleUndo by eventHandler(documentManager) { documentManager.undo() }
     val handleRedo by eventHandler(documentManager) { documentManager.redo() }
 
-    val handleSave by eventHandler {
+    val handleSave by eventHandler(documentManager) {
         appContext.notifier.launchAndReportErrors {
             documentManager.onSave()
         }
     }
 
-    val handleSaveAs by eventHandler {
+    val handleSaveAs by eventHandler(documentManager) {
         appContext.notifier.launchAndReportErrors {
             documentManager.onSaveAs()
         }

@@ -9,6 +9,7 @@ import baaahs.camelize
 import baaahs.randomId
 import baaahs.show.Control
 import baaahs.show.Panel
+import baaahs.show.Show
 import baaahs.show.live.*
 import baaahs.show.mutable.*
 import baaahs.ui.Draggable
@@ -59,7 +60,7 @@ data class MutableButtonGroupControl(
         return control
     }
 
-    override fun getEditorPanels(editableManager: EditableManager): List<DialogPanel> {
+    override fun getEditorPanels(editableManager: EditableManager<Show>): List<DialogPanel> {
         return listOf(
             GenericPropertiesEditorPanel(
                 editableManager,

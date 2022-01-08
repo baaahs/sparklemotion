@@ -1,7 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.settings.UiSettings
-import baaahs.app.ui.editor.EditableManager
+import baaahs.app.ui.editor.ShowEditableManager
 import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layout.layoutEditorDialog
 import baaahs.app.ui.settings.settingsDialog
@@ -78,7 +78,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val dragNDrop by state { ReactBeautifulDragNDrop() }
     var prompt by state<Prompt?> { null }
     val editableManager by state {
-        EditableManager { newShow ->
+        ShowEditableManager { newShow ->
             showManager.onEdit(newShow)
         }
     }

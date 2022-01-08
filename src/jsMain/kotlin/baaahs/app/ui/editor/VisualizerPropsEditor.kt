@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.control.MutableVisualizerControl
 import baaahs.control.VisualizerControl
+import baaahs.show.Show
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
@@ -64,7 +65,7 @@ private val visualizerPropsEditor = xComponent<VisualizerPropsEditorProps>("Visu
 }
 
 external interface VisualizerPropsEditorProps : Props {
-    var editableManager: EditableManager
+    var editableManager: EditableManager<Show>
     var mutableVisualizerControl: MutableVisualizerControl
 }
 

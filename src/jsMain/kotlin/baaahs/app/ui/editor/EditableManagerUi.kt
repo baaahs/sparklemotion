@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.dialog.DialogStyles
 import baaahs.app.ui.dialog.dialogPanels
+import baaahs.show.Show
 import baaahs.ui.Styles
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
@@ -160,7 +161,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
 external interface EditableManagerUiProps : Props {
     var editMode: Boolean
-    var editableManager: EditableManager
+    var editableManager: EditableManager<Show>
 }
 
 fun RBuilder.editableManagerUi(handler: RHandler<EditableManagerUiProps>) =
