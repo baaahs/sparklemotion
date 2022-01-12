@@ -28,7 +28,7 @@ class ObjGroup(
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
         object : FixtureSimulation {
             override val mappingData: MappingSession.SurfaceData? get() = null
-            override val entityVisualizer: EntityVisualizer = createVisualizer(simulationEnv)
+            override val entityVisualizer: EntityVisualizer<*> = createVisualizer(simulationEnv)
             override val previewFixture: Fixture? get() = null
 
             override fun launch() {
@@ -36,6 +36,6 @@ class ObjGroup(
             }
         }
 
-    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer =
+    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*> =
         visualizerBuilder.createObjGroupVisualizer(this, simulationEnv)
 }

@@ -99,5 +99,5 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
 fun EulerAngle.toThreeEuler(): Euler =
     Euler(xRad, yRad, zRad)
 
-private fun Euler.toEulerAngle() =
+fun Euler.toEulerAngle() =
     EulerAngle(x.toDouble(), y.toDouble(), z.toDouble())

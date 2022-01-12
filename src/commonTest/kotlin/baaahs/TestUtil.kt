@@ -8,6 +8,7 @@ import baaahs.fixtures.DeviceTypeRenderPlan
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
+import baaahs.geom.EulerAngle
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgram
@@ -23,7 +24,6 @@ import baaahs.show.ShaderChannel
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
-import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.util.Clock
 import baaahs.util.Time
@@ -81,16 +81,19 @@ class FakeClock(var time: Time = 0.0) : Clock {
 class FakeModelEntity(
     override val name: String,
     override val deviceType: DeviceType = PixelArrayDevice,
-    override val description: String = name
-) : Model.Entity {
+    override val description: String = name,
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d
+) : Model.BaseEntity() {
     override val bounds: Pair<Vector3F, Vector3F>
         get() = Vector3F.origin to Vector3F.origin
     override val transformation: Matrix4F
         get() = Matrix4F.identity
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation {
-        TODO("not implemented")
-    }
+    override fun createFixtureSimulation(simulationEnv: SimulationEnv) = TODO("not implemented")
+
+    override fun createVisualizer(simulationEnv: SimulationEnv) = TODO("not implemented")
 }
 
 class TestModelSurface(

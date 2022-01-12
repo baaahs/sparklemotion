@@ -23,7 +23,9 @@ class Grid(
     columnGap: Float,
     direction: GridData.Direction,
     zigZag: Boolean
-): PolyLine(name, description, calcSegments(rows, columns, rowGap, columnGap, direction, zigZag), position, rotation, scale)
+): PolyLine(name, description, calcSegments(rows, columns, rowGap, columnGap, direction, zigZag), position, rotation, scale) {
+
+}
 
 fun calcSegments(
     rows: Int,
@@ -75,8 +77,8 @@ open class PolyLine(
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
         LightBarSimulation(this, simulationEnv)
 
-    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer =
-        visualizerBuilder.createLightBarVisualizer(this, simulationEnv)
+    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*> =
+        visualizerBuilder.createPolyLineVisualizer(this, simulationEnv)
 
     data class Segment(
         val startVertex: Vector3F,

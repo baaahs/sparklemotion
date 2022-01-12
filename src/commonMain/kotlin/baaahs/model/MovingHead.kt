@@ -11,7 +11,7 @@ import baaahs.sim.FixtureSimulation
 import baaahs.sim.MovingHeadSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.visualizer.EntityVisualizer
-import baaahs.visualizer.movers.MovingHeadVisualizer
+import baaahs.visualizer.visualizerBuilder
 import kotlinx.serialization.Serializable
 
 interface MovingHeadAdapter {
@@ -49,11 +49,11 @@ interface MovingHeadAdapter {
 class MovingHead(
     override val name: String,
     override val description: String?,
-    val baseDmxChannel: Int,
-    val adapter: MovingHeadAdapter,
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
-    override val scale: Vector3F = Vector3F.unit3d
+    override val scale: Vector3F = Vector3F.unit3d,
+    val baseDmxChannel: Int,
+    val adapter: MovingHeadAdapter
 ) : Model.BaseEntity(), Model.FixtureInfo {
     override val bounds: Pair<Vector3F, Vector3F>
         get() = transformation.position.let { it to it }
@@ -153,6 +153,6 @@ class MovingHead(
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
         MovingHeadSimulation(this, simulationEnv)
 
-    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer =
-        MovingHeadVisualizer(this, simulationEnv)
+    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*> =
+        visualizerBuilder.createMovingHeadVisualizer(this, simulationEnv)
 }

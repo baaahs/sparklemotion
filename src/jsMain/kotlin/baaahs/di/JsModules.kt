@@ -70,7 +70,7 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped { Notifier(get()) }
             scoped { SceneEditorClient(get(), get()) }
             scoped {
-                JsMapperUi(get()).also {
+                JsMapperUi(get(), get()).also {
                     // This has side-effects on mapperUi. Ugly.
                     Mapper(get(), get(), it, get(), get(named(Qualifier.PinkyAddress)), get())
                 }
@@ -93,7 +93,7 @@ class JsAdminWebClientModule : KModule {
             scoped<ModelProvider> { get<SceneManager>() }
             scoped { SceneEditorClient(get(), get()) }
             scoped {
-                JsMapperUi(get()).also {
+                JsMapperUi(get(), get()).also {
                     // This has side-effects on mapperUi. Ugly.
                     Mapper(get(), get(), it, get(), pinkyAddress(), get())
                 }

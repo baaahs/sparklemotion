@@ -231,7 +231,7 @@ class StageManager(
         }
 
         override fun getDocumentState(): DocumentState<Scene, Unit>? {
-            return document?.let { DocumentState(it, Unit, true, null) }
+            return document?.let { DocumentState(it, Unit, false, null) }
         }
 
         override fun notifyOfDocumentChanges(fromClientUpdate: Boolean) {

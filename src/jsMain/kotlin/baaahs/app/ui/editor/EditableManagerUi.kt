@@ -2,7 +2,6 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.dialog.DialogStyles
 import baaahs.app.ui.dialog.dialogPanels
-import baaahs.show.Show
 import baaahs.ui.Styles
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
@@ -79,7 +78,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
                 dialogTitle(+DialogStyles.dialogTitle) {
                     attrs.disableTypography = true
-                    typographyH6 { +props.editableManager.uiTitle }
+                    typographyH6 { +"Editing ${props.editableManager.uiTitle}" }
 
                     div(+DialogStyles.dialogTitleButtons) {
                         iconButton(Styles.buttons on IconButtonStyle.root) {
@@ -160,8 +159,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 }
 
 external interface EditableManagerUiProps : Props {
-    var editMode: Boolean
-    var editableManager: EditableManager<Show>
+    var editableManager: ShowEditableManager
 }
 
 fun RBuilder.editableManagerUi(handler: RHandler<EditableManagerUiProps>) =

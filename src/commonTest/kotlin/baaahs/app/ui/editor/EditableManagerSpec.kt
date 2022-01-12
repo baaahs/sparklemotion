@@ -42,7 +42,7 @@ object EditableManagerSpec : Spek({
 
         context("when there's an active session") {
             val baseShow by value { SampleData.sampleShow }
-            val editIntent by value<EditIntent<Show>> { ShowEditIntent() }
+            val editIntent by value<EditIntent> { ShowEditIntent() }
             val session: EditableManager<Show>.Session by value { editableManager.session!! }
 
             beforeEachTest {
@@ -63,7 +63,7 @@ object EditableManagerSpec : Spek({
             }
 
             it("creates a MutableShow") {
-                expect(editableManager.session!!.mutableDocument.generateDocument()).toBe(baseShow)
+                expect(editableManager.session!!.mutableDocument.build()).toBe(baseShow)
             }
 
             it("finds the relevant MutableEditable") {

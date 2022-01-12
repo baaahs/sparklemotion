@@ -2,7 +2,6 @@ package baaahs.app.ui.editor
 
 import baaahs.control.ButtonGroupControl
 import baaahs.control.MutableButtonGroupControl
-import baaahs.show.Show
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
@@ -58,7 +57,7 @@ private val buttonGroupPropsEditor =
     }
 
 external interface ButtonGroupPropsEditorProps : Props {
-    var editableManager: EditableManager<Show>
+    var editableManager: EditableManager<*>
     var mutableButtonGroupControl: MutableButtonGroupControl
 }
 

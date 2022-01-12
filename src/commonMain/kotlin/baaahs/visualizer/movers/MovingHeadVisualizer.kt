@@ -7,7 +7,7 @@ import baaahs.util.Clock
 import baaahs.visualizer.VizObj
 import kotlin.math.absoluteValue
 
-class PhysicsModel(
+class PhysicalModel(
     private val adapter: MovingHeadAdapter,
     private val clock: Clock
 ) {
@@ -38,11 +38,11 @@ class PhysicsModel(
 
 enum class ColorMode(
     val isClipped: Boolean,
-    val getColor: MovingHead.(State) -> Color
+    val getColor: MovingHeadAdapter.(State) -> Color
 ) {
     Rgb(false, { state -> state.color }),
-    Primary(true, { state -> this.adapter.colorAtPosition(state.colorWheelPosition) }),
-    Secondary(true, { state -> this.adapter.colorAtPosition(state.colorWheelPosition, next = true) })
+    Primary(true, { state -> this.colorAtPosition(state.colorWheelPosition) }),
+    Secondary(true, { state -> this.colorAtPosition(state.colorWheelPosition, next = true) })
 }
 
 fun ClosedRange<Float>.scale(value: Float) =
@@ -58,7 +58,7 @@ fun MovingHeadAdapter.colorAtPosition(position: Float, next: Boolean = false): C
     return colorWheelColors[colorIndex].color
 }
 
-expect class Cone(movingHead: MovingHead, colorMode: ColorMode = ColorMode.Rgb) {
+expect class Cone(movingHeadAdapter: MovingHeadAdapter, colorMode: ColorMode = ColorMode.Rgb) {
     fun addTo(parent: VizObj)
 
     fun update(state: State)

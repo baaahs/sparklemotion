@@ -9,7 +9,6 @@ import baaahs.gadgets.ColorPicker
 import baaahs.randomId
 import baaahs.show.Control
 import baaahs.show.DataSource
-import baaahs.show.Show
 import baaahs.show.live.*
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
@@ -58,7 +57,7 @@ data class MutableColorPickerControl(
 ) : MutableControl {
     override var asBuiltId: String? = null
 
-    override fun getEditorPanels(editableManager: EditableManager<Show>): List<DialogPanel> {
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> {
         return emptyList()
     }
 

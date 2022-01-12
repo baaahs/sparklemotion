@@ -4,6 +4,7 @@ import baaahs.geom.Vector3F
 import baaahs.visualizer.toVector3
 import three.js.ArrayLike
 import three.js.Euler
+import three.js.Object3D
 import three.js.Vector3
 
 operator fun <T> ArrayLike<T>.set(i: Int, t: T) {
@@ -46,4 +47,10 @@ operator fun Euler.minus(other: Euler): Euler = Euler(
 
 fun Euler.set(other: Euler) {
     set(other.x, other.y, other.z)
+}
+
+fun Object3D.clear() {
+    while (children.isNotEmpty()) {
+        remove(children[0])
+    }
 }

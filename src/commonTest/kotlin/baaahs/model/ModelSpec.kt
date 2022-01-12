@@ -28,8 +28,7 @@ object ModelSpec : Spek({
                             Model.Line(geometry, 1, 2),
                             Model.Line(geometry, 2, 0)
                         ),
-                        geometry,
-                        transformation
+                        geometry
                     )
                 )
             }
@@ -67,8 +66,8 @@ object ModelSpec : Spek({
 
                 override(model) {
                     fakeModel(
-                        LightBar("bar1", "bar2", v1, v2),
-                        LightBar("bar2", "bar2", v3, v4)
+                        LightBar("bar1", "bar2", startVertex = v1, endVertex = v2),
+                        LightBar("bar2", "bar2", startVertex = v3, endVertex = v4)
                     )
                 }
 
@@ -88,8 +87,8 @@ object ModelSpec : Spek({
             context("with light rings") {
                 override(model) {
                     fakeModel(
-                        LightRing("bar1", "bar2", v1, 1f, Vector3F.facingForward),
-                        LightRing("bar2", "bar2", v2, 1f, Vector3F.facingForward)
+                        LightRing("bar1", "bar2", center = v1, radius = 1f, planeNormal = Vector3F.facingForward),
+                        LightRing("bar2", "bar2", center = v2, radius = 1f, planeNormal = Vector3F.facingForward)
                     )
                 }
 

@@ -7,7 +7,6 @@ import baaahs.camelize
 import baaahs.randomId
 import baaahs.show.Control
 import baaahs.show.DataSource
-import baaahs.show.Show
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenContext
 import baaahs.show.live.OpenControl
@@ -41,7 +40,7 @@ data class MutableVacuityControl(
 ) : MutableControl {
     override var asBuiltId: String? = null
 
-    override fun getEditorPanels(editableManager: EditableManager<Show>): List<DialogPanel> {
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> {
         return emptyList()
     }
 

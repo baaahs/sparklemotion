@@ -281,6 +281,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                             sceneEditor {
                                                 attrs.sceneEditorClient = props.sceneEditorClient
                                                 attrs.mapperUi = props.mapperUi
+                                                attrs.sceneManager = sceneManager
                                             }
                                         }
                                     }
@@ -293,7 +294,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 renderDialog?.invoke(this)
 
                 editableManagerUi {
-                    attrs.editMode = editMode
                     attrs.editableManager = editableManager
                 }
 

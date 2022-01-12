@@ -9,6 +9,14 @@ import three.js.Camera
 import three.js.Object3D
 
 open external class TransformControls(camera: Camera, domElement: HTMLElement) : Object3D {
+    var `object`: Object3D?
+    var enabled: Boolean
+    var mode: String
+    var translationSnap: Double?
+    var rotationSnap: Double?
+    var scaleSnap: Double?
+    var space: String
+    var size: Double
     var dragging: Boolean
 
     //    fun updateMatrixWorld()
@@ -19,7 +27,6 @@ open external class TransformControls(camera: Camera, domElement: HTMLElement) :
     fun dispose()
     fun detach()
     fun reset()
-    fun setMode(mode: String)
     fun setTranslationSnap(translationSnap: Double)
     fun setRotationSnap(rotationSnap: Double)
     fun setScaleSnap(scaleSnap: Double)

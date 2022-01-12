@@ -4,7 +4,6 @@ import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.englishize
 import baaahs.show.ShaderChannel
-import baaahs.show.Show
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutableShaderChannel
 import baaahs.show.mutable.MutableShaderInstance
@@ -157,7 +156,7 @@ val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderProp
 }
 
 external interface ShaderPropertiesEditorProps : Props {
-    var editableManager: EditableManager<Show>
+    var editableManager: EditableManager<*>
     var editingShader: EditingShader
     var mutableShaderInstance: MutableShaderInstance
 }

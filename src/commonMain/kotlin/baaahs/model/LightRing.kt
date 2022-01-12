@@ -18,14 +18,14 @@ import kotlin.math.sin
 class LightRing(
     override val name: String,
     override val description: String?,
-    val center: Vector3F, // TODO: Represent using transformation translation.
-    val radius: Float, // TODO: Represent using transformation scale?
-    val planeNormal: Vector3F, // TODO: Represent using transformation rotation.
+    override val position: Vector3F = Vector3F.origin, // TODO: Represent using transformation translation.
+    override val rotation: EulerAngle = EulerAngle.identity, // TODO: Represent using transformation scale?
+    override val scale: Vector3F = Vector3F.unit3d, // TODO: Represent using transformation rotation.
+    val center: Vector3F = Vector3F.origin,
+    val radius: Float,
+    val planeNormal: Vector3F = Vector3F.facingForward,
     val firstPixelRadians: Float = 0f,
     val pixelDirection: PixelDirection = PixelDirection.Clockwise,
-    override val position: Vector3F = Vector3F.origin,
-    override val rotation: EulerAngle = EulerAngle.identity,
-    override val scale: Vector3F = Vector3F.unit3d,
 ) : Model.BaseEntity(), LinearPixelArray {
     override val deviceType: DeviceType
         get() = PixelArrayDevice
@@ -61,7 +61,7 @@ class LightRing(
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
         LightRingSimulation(this, simulationEnv)
 
-    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer =
+    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*> =
         visualizerBuilder.createLightRingVisualizer(this, simulationEnv)
 
     enum class PixelDirection {
