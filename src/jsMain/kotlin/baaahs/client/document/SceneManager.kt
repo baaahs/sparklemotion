@@ -3,13 +3,14 @@ package baaahs.client.document
 import baaahs.DocumentState
 import baaahs.ModelProvider
 import baaahs.PubSub
+import baaahs.app.ui.UiActions
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.app.ui.document.DialogHolder
 import baaahs.client.Notifier
 import baaahs.doc.SceneDocumentType
-import baaahs.gl.Toolchain
 import baaahs.io.RemoteFsSerializer
 import baaahs.model.Model
+import baaahs.plugin.Plugins
 import baaahs.scene.MutableScene
 import baaahs.scene.OpenScene
 import baaahs.scene.Scene
@@ -19,12 +20,12 @@ import kotlinx.coroutines.CompletableDeferred
 class SceneManager(
     pubSub: PubSub.Client,
     remoteFsSerializer: RemoteFsSerializer,
-    toolchain: Toolchain,
+    private val plugins: Plugins,
     notifier: Notifier,
     fileDialog: FileDialog
 ) : DocumentManager<Scene, Unit>(
-    SceneDocumentType, pubSub, Scene.createTopic(toolchain.plugins.serialModule, remoteFsSerializer),
-    remoteFsSerializer, toolchain, notifier, fileDialog, Scene.serializer()
+    SceneDocumentType, pubSub, Scene.createTopic(plugins.serialModule, remoteFsSerializer),
+    remoteFsSerializer, plugins, notifier, fileDialog, Scene.serializer()
 ), ModelProvider {
     override val facade = Facade()
 
@@ -38,7 +39,7 @@ class SceneManager(
     }
 
     override suspend fun onDownload() {
-        TODO("scene download not implemented")
+        UiActions.downloadScene(document!!, plugins)
     }
 
     suspend fun getScene(): OpenScene {

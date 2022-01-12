@@ -7,9 +7,9 @@ import baaahs.app.ui.document.DialogHolder
 import baaahs.client.Notifier
 import baaahs.doc.DocumentType
 import baaahs.doc.FileType
-import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
+import baaahs.plugin.Plugins
 import baaahs.show.mutable.EditHandler
 import baaahs.sm.webapi.*
 import baaahs.util.UndoStack
@@ -20,9 +20,9 @@ import kotlinx.serialization.modules.SerializersModule
 abstract class DocumentManager<T, TState>(
     val documentType: DocumentType,
     private val pubSub: PubSub.Client,
-    private val topic: PubSub.Topic<DocumentState<T, TState>?>,
+    topic: PubSub.Topic<DocumentState<T, TState>?>,
     private val remoteFsSerializer: RemoteFsSerializer,
-    private val toolchain: Toolchain,
+    private val plugins: Plugins,
     private val notifier: Notifier,
     private val fileDialog: FileDialog,
     private val tSerializer: KSerializer<T>
@@ -68,7 +68,7 @@ abstract class DocumentManager<T, TState>(
     private val serverCommands = object {
         private val commands = Topics.DocumentCommands(documentType.channelName, tSerializer, SerializersModule {
             include(remoteFsSerializer.serialModule)
-            include(toolchain.plugins.serialModule)
+            include(plugins.serialModule)
         })
         val newCommand = pubSub.commandSender(commands.newCommand)
         val switchToCommand = pubSub.commandSender(commands.switchToCommand)

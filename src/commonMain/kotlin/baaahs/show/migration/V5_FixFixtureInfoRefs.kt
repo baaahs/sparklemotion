@@ -1,13 +1,13 @@
 package baaahs.show.migration
 
-import baaahs.show.ShowMigrator
+import baaahs.show.DataMigrator
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 
 @Suppress("ClassName")
-object V5_FixFixtureInfoRefs : ShowMigrator.Migration(5) {
+object V5_FixFixtureInfoRefs : DataMigrator.Migration(5) {
     private val dataSourceTypeMap = mapOf(
         "baaahs.Core.FixtureInfo" to "baaahs.Core:FixtureInfo"
     )
