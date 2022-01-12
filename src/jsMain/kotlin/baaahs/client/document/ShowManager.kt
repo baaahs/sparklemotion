@@ -36,12 +36,11 @@ class ShowManager(
     private val stageManager: ClientStageManager
 ) : DocumentManager<Show, ShowState>(
     ShowDocumentType, pubSub, ShowState.createTopic(toolchain.plugins.serialModule, remoteFsSerializer),
-    remoteFsSerializer, toolchain, notifier, fileDialog, Show.serializer()
+    remoteFsSerializer, toolchain.plugins, notifier, fileDialog, Show.serializer()
 ) {
     override val facade = Facade()
 
-    var openShow: OpenShow? = null
-        private set
+    private var openShow: OpenShow? = null
 
     private val showProblems = arrayListOf<ShowProblem>().apply {
         pubSub.subscribe(Topics.showProblems) {

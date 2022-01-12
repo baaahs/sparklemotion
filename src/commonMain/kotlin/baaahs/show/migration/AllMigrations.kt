@@ -1,11 +1,14 @@
 package baaahs.show.migration
 
-import baaahs.show.ShowMigrator
+import baaahs.show.DataMigrator
 
-val AllMigrations: List<ShowMigrator.Migration> = listOf(
+val AllShowMigrations: List<DataMigrator.Migration> = listOf(
     V1_UpdateDataSourceRefs,
     V2_RemoveShaderType,
     V3_UpdateLayouts,
     V4_FlattenGadgetControls,
     V5_FixFixtureInfoRefs
+)
+
+val AllSceneMigrations: List<DataMigrator.Migration> = listOf(
 )

@@ -1,6 +1,6 @@
 package baaahs.show.migration
 
-import baaahs.show.ShowMigrator
+import baaahs.show.DataMigrator
 import kotlinx.serialization.json.*
 
 /**
@@ -28,7 +28,7 @@ import kotlinx.serialization.json.*
  * ```
  */
 @Suppress("ClassName")
-object V4_FlattenGadgetControls : ShowMigrator.Migration(4) {
+object V4_FlattenGadgetControls : DataMigrator.Migration(4) {
     override fun migrate(from: JsonObject): JsonObject {
         return from.toMutableMap().apply {
             mapObjsInDict("controls") { _, control ->
