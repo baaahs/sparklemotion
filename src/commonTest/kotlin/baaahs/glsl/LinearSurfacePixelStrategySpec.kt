@@ -38,7 +38,7 @@ object LinearSurfacePixelStrategySpec : Spek({
             }
 
             context("for LinearPixelArray entities") {
-                override(entity) { LightBar("", "", Vector3F.origin, Vector3F.unit3d) }
+                override(entity) { LightBar("", "", startVertex = Vector3F.origin, endVertex = Vector3F.unit3d) }
 
                 it("interpolates along its entire length") {
                     expect(strategy.forKnownEntity(3, entity, TestModel))

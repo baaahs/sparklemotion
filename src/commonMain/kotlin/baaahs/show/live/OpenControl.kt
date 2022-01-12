@@ -6,7 +6,6 @@ import baaahs.control.*
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.show.DataSource
 import baaahs.show.Panel
-import baaahs.show.Show
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.View
@@ -23,7 +22,7 @@ interface OpenControl {
     fun resetToDefault() {}
     fun toNewMutable(mutableShow: MutableShow): MutableControl
     fun getView(controlProps: ControlProps): View
-    fun getEditIntent(): EditIntent<Show>? = ControlEditIntent(id)
+    fun getEditIntent(): EditIntent? = ControlEditIntent(id)
 }
 
 abstract class DataSourceOpenControl : OpenControl {

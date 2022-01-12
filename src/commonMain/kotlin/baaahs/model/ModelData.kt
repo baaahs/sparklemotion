@@ -5,6 +5,7 @@ import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.io.Fs
 import baaahs.io.getResource
+import baaahs.scene.*
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -15,6 +16,9 @@ data class ModelData(
     val entities: List<EntityData>,
     val units: ModelUnit = ModelUnit.Meters
 ) {
+    fun edit(): MutableModel =
+        MutableModel(this)
+
     fun open(): Model =
         Model(title, entities.map { entity -> entity.open() }, units)
 }
@@ -38,13 +42,14 @@ sealed interface EntityData {
     val rotation: EulerAngle
     val scale: Vector3F
 
+    fun edit(): MutableEntity<*>
     fun open(): Model.Entity
 }
 
 @Serializable @SerialName("ObjModel")
 data class ObjModelData(
     override val title: String,
-    override val description: String?,
+    override val description: String? = null,
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
@@ -53,6 +58,8 @@ data class ObjModelData(
     @Polymorphic
     val metadata: EntityMetadataProvider? = null
 ) : EntityData {
+    override fun edit(): MutableEntity<ObjGroup> = MutableObjModel(this)
+
     override fun open(): Model.Entity {
         val objModelLoader = ObjModelLoader.load(objData) {
             metadata?.getMetadataFor(this@ObjModelData)?.expectedPixelCount
@@ -64,39 +71,49 @@ data class ObjModelData(
 @Serializable @SerialName("MovingHead")
 data class MovingHeadData(
     override val title: String,
-    override val description: String?,
+    override val description: String? = null,
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
-    override val scale: Vector3F = Vector3F.unit3d
+    override val scale: Vector3F = Vector3F.unit3d,
+    val adapter: MovingHeadAdapter = Shenzarpy
 
 ) : EntityData {
+    override fun edit(): MutableEntity<MovingHead> =
+        MutableMovingHeadData(this)
+
     override fun open(): Model.Entity =
-        MovingHead(title, description, 0, Shenzarpy, position, rotation, scale)
+        MovingHead(title, description, position, rotation, scale, 0, adapter)
 }
 
 @Serializable @SerialName("LightBar")
 data class LightBarData(
     override val title: String,
-    override val description: String?,
+    override val description: String? = null,
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
     val startVertex: Vector3F,
     val endVertex: Vector3F
 ) : EntityData {
+    override fun edit(): MutableEntity<LightBar> =
+        MutableLightBarData(this)
+
     override fun open(): Model.Entity =
-        LightBar(title, description, startVertex, endVertex, position, rotation, scale)
+        LightBar(title, description, position, rotation, scale, startVertex, endVertex)
 }
 
 @Serializable @SerialName("PolyLine")
 data class PolyLineData(
     override val title: String,
-    override val description: String?,
+    override val description: String? = null,
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
     val segments: List<SegmentData>
 ) : EntityData {
+    override fun edit(): MutableEntity<PolyLine> =
+        MutablePolyLineData(this)
+
     override fun open(): Model.Entity =
         PolyLine(title, description, segments.map {
             PolyLine.Segment(it.startVertex, it.endVertex, it.pixelCount)
@@ -106,7 +123,7 @@ data class PolyLineData(
 @Serializable @SerialName("Grid")
 data class GridData(
     override val title: String,
-    override val description: String?,
+    override val description: String? = null,
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
@@ -117,6 +134,8 @@ data class GridData(
     val direction: Direction = Direction.ColumnsThenRows,
     val zigZag: Boolean = false
 ) : EntityData {
+    override fun edit(): MutableEntity<Grid> = MutableGridData(this)
+
     enum class Direction {
         ColumnsThenRows,
         RowsThenColumns,
@@ -137,18 +156,21 @@ data class SegmentData(
 @Serializable @SerialName("LightRing")
 data class LightRingData(
     override val title: String,
-    override val description: String?,
+    override val description: String? = null,
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
-    val center: Vector3F,
-    val radius: Float,
-    val planeNormal: Vector3F,
+    val center: Vector3F = Vector3F.origin,
+    val radius: Float = 1f,
+    val planeNormal: Vector3F = Vector3F.facingForward,
     val firstPixelRadians: Float = 0f,
     val pixelDirection: LightRing.PixelDirection = LightRing.PixelDirection.Clockwise
 ) : EntityData {
+    override fun edit(): MutableEntity<LightRing> =
+        MutableLightRingData(this)
+
     override fun open(): Model.Entity =
-        LightRing(title, description, center, radius, planeNormal, firstPixelRadians, pixelDirection, position, rotation, scale)
+        LightRing(title, description, position, rotation, scale, center, radius, planeNormal, firstPixelRadians, pixelDirection)
 }
 
 @Polymorphic

@@ -35,9 +35,9 @@ class FakeEditHandler : EditHandler<Show, ShowState> {
     val calls = arrayListOf<List<Any>>()
     lateinit var updatedShow: Show
 
-    override fun onEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
-        calls.add(listOf(mutableShow, pushToUndoStack))
-        updatedShow = mutableShow.getShow()
+    override fun onEdit(mutableDocument: MutableDocument<Show>, pushToUndoStack: Boolean) {
+        calls.add(listOf(mutableDocument, pushToUndoStack))
+        updatedShow = mutableDocument.build()
     }
 
     override fun onEdit(document: Show, pushToUndoStack: Boolean) {

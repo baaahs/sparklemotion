@@ -8,7 +8,6 @@ import baaahs.gadgets.Slider
 import baaahs.randomId
 import baaahs.show.Control
 import baaahs.show.DataSource
-import baaahs.show.Show
 import baaahs.show.live.*
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
@@ -75,7 +74,7 @@ data class MutableSliderControl(
 ) : MutableControl {
     override var asBuiltId: String? = null
 
-    override fun getEditorPanels(editableManager: EditableManager<Show>): List<DialogPanel> = emptyList()
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> = emptyList()
 
     override fun build(showBuilder: ShowBuilder): SliderControl {
         return SliderControl(

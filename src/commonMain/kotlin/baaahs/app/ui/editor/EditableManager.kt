@@ -1,34 +1,11 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.dialog.DialogPanel
-import baaahs.gl.Toolchain
-import baaahs.show.Show
 import baaahs.show.mutable.MutableDocument
-import baaahs.show.mutable.MutableShow
 import baaahs.ui.Facade
 import baaahs.util.Logger
 import baaahs.util.UndoStack
 import kotlin.math.max
-
-class ShowEditableManager(
-    onApply: (Show) -> Unit
-) : EditableManager<Show>(onApply) {
-    fun openEditor(baseDocument: Show, editIntent: EditIntent<Show>, toolchain: Toolchain) {
-        val session = ShowSession(baseDocument, MutableShow(baseDocument), editIntent, toolchain)
-        openEditor(session)
-    }
-
-    inner class ShowSession(
-        baseDocument: Show,
-        mutableDocument: MutableDocument<Show>,
-        editIntent: EditIntent<Show>,
-        val toolchain: Toolchain
-    ) : Session(baseDocument, mutableDocument, editIntent) {
-        override fun createNewSession(newDocument: Show, editIntent: EditIntent<Show>): Session {
-            return ShowSession(newDocument, MutableShow(newDocument), editIntent, toolchain)
-        }
-    }
-}
 
 abstract class EditableManager<T>(
     private val onApply: (T) -> Unit
@@ -45,9 +22,6 @@ abstract class EditableManager<T>(
 
     val currentMutableDocument: MutableDocument<T>
         get() = session!!.mutableDocument
-
-    val uiTitle: String
-        get() = session?.uiTitle ?: ""
 
     val dialogPanels: List<DialogPanel>
         get() = session?.getEditorPanels() ?: emptyList()
@@ -92,7 +66,8 @@ abstract class EditableManager<T>(
 
     /** [DialogPanel]s should call this when they've made a change to the [MutableEditable]. */
     fun onChange(pushToUndoStack: Boolean = true) {
-        session!!.onChange(pushToUndoStack)
+        (session ?: error("No active edit session."))
+            .onChange(pushToUndoStack)
         notifyChanged()
     }
 
@@ -137,13 +112,10 @@ abstract class EditableManager<T>(
     abstract inner class Session(
         val baseDocument: T,
         val mutableDocument: MutableDocument<T>,
-        val editIntent: EditIntent<T>,
+        val editIntent: EditIntent,
     ) {
-        val mutableEditable: MutableEditable<T> = editIntent.findMutableEditable(mutableDocument)
+        val mutableEditable: MutableEditable<*> = editIntent.findMutableEditable(mutableDocument)
         var cachedIsChanged: Boolean? = null
-
-        val uiTitle: String
-            get() = "Editing ${mutableEditable.title}"
 
         fun getEditorPanels(): List<DialogPanel> =
             mutableEditable.getEditorPanels(this@EditableManager)
@@ -158,20 +130,20 @@ abstract class EditableManager<T>(
             cachedIsChanged = null
 
             if (pushToUndoStack) {
-                undoStack.changed(DocAndEditIntent(mutableDocument.generateDocument(), editIntent.refreshEditIntent()))
+                undoStack.changed(DocAndEditIntent(mutableDocument.build(), editIntent.refreshEditIntent()))
             }
         }
 
-        fun getNewDocumentAndNextEditIntent(): Pair<T, EditIntent<T>> {
-            val newShow = mutableDocument.generateDocument()
+        fun getNewDocumentAndNextEditIntent(): Pair<T, EditIntent> {
+            val newShow = mutableDocument.build()
             val nextEditIntent = editIntent.nextEditIntent()
             return newShow to nextEditIntent
         }
 
-        abstract fun createNewSession(newDocument: T, editIntent: EditIntent<T>): Session
+        abstract fun createNewSession(newDocument: T, editIntent: EditIntent): Session
     }
 
-    internal class DocAndEditIntent<T>(val document: T, val editIntent: EditIntent<T>)
+    internal class DocAndEditIntent<T>(val document: T, val editIntent: EditIntent)
 
     companion object {
         private val logger = Logger("EditableManager")

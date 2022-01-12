@@ -112,6 +112,36 @@
           "y": 0.0,
           "z": 1.0
         }
+      },
+      {
+        "type": "MovingHead",
+        "title": "leftEye",
+        "description": "Left Eye",
+        "position": {
+          "x": -11.0,
+          "y": 202.361,
+          "z": -24.5
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.15708,
+          "z": 1.5708
+        }
+      },
+      {
+        "type": "MovingHead",
+        "title": "rightEye",
+        "description": "Right Eye",
+        "position": {
+          "x": -11.0,
+          "y": 202.361,
+          "z": 27.5
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": -0.15708,
+          "z": 1.5708
+        }
       }
     ],
     "units": "Inches"

@@ -4,11 +4,10 @@ import baaahs.FakeClock
 import baaahs.TestMovingHeadAdapter
 import baaahs.describe
 import baaahs.sim.FakeDmxUniverse
-import baaahs.visualizer.VizObj
 import org.spekframework.spek2.Spek
 
 object PhysicsModelSpec: Spek({
-    describe<PhysicsModel> {
+    describe<PhysicalModel> {
         val movingHeadAdapter by value {
             TestMovingHeadAdapter(
                 panMotorSpeed = 2f,
@@ -19,7 +18,7 @@ object PhysicsModelSpec: Spek({
         val dmxUniverse by value { FakeDmxUniverse() }
         val fakeClock by value { FakeClock() }
         val beam by value { BeamForTest() }
-        val physicsModel by value { PhysicsModel(movingHeadAdapter, fakeClock) }
+        val physicalModel by value { PhysicalModel(movingHeadAdapter, fakeClock) }
 
         val sendDmxFrame by value<UpdateMoverState> {
             { elapsedTime, pan, tilt, colorWheelPosition, dimmer ->
@@ -30,11 +29,11 @@ object PhysicsModelSpec: Spek({
                 buffer.tilt = tilt
                 buffer.colorWheelPosition = colorWheelPosition
                 buffer.dimmer = dimmer
-                beam.update(physicsModel.update(buffer))
+                beam.currentState = physicalModel.update(buffer)
             }
         }
 
-        beforeEachTest { physicsModel.run {} }
+        beforeEachTest { physicalModel.run {} }
 
         context("when a frame requests motor movement") {
             beforeEachTest {
@@ -94,13 +93,4 @@ typealias UpdateMoverState = (
     dimmer: Float
 ) -> Unit
 
-class BeamForTest : Beam {
-    var currentState = State()
-
-    override fun addTo(scene: VizObj) {
-    }
-
-    override fun update(state: State) {
-        currentState = state
-    }
-}
+class BeamForTest(var currentState: State = State())

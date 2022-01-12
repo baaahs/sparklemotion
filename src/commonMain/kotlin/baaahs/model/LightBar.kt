@@ -13,11 +13,11 @@ import baaahs.visualizer.visualizerBuilder
 class LightBar(
     override val name: String,
     override val description: String?,
-    val startVertex: Vector3F, // TODO: Represent using transformation translation.
-    val endVertex: Vector3F, // TODO: Represent using transformation rotation (and scale?) ... or add length?
-    override val position: Vector3F = Vector3F.origin,
-    override val rotation: EulerAngle = EulerAngle.identity,
+    override val position: Vector3F = Vector3F.origin, // TODO: Represent using transformation translation.
+    override val rotation: EulerAngle = EulerAngle.identity, // TODO: Represent using transformation rotation (and scale?) ... or add length?
     override val scale: Vector3F = Vector3F.unit3d,
+    val startVertex: Vector3F,
+    val endVertex: Vector3F
 ) : Model.BaseEntity(), LinearPixelArray {
     override val deviceType: DeviceType
         get() = PixelArrayDevice
@@ -40,6 +40,6 @@ class LightBar(
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
         LightBarSimulation(this, simulationEnv)
 
-    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer =
+    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*> =
         visualizerBuilder.createLightBarVisualizer(this, simulationEnv)
 }

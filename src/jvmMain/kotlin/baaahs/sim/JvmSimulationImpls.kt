@@ -2,15 +2,17 @@ package baaahs.sim
 
 import baaahs.fixtures.Fixture
 import baaahs.mapper.MappingSession
-import baaahs.model.*
-import baaahs.visualizer.EntityVisualizer
+import baaahs.model.LightRing
+import baaahs.model.Model
+import baaahs.model.MovingHead
+import baaahs.model.PixelArray
 
 actual class BrainSurfaceSimulation actual constructor(
     surface: Model.Surface,
     simulationEnv: SimulationEnv
 ) : FixtureSimulation {
     override val mappingData: MappingSession.SurfaceData? = null
-    override val entityVisualizer: EntityVisualizer get() = TODO("not implemented")
+    override val entityVisualizer get() = TODO("not implemented")
     override val previewFixture: Fixture get() = TODO("not implemented")
     override fun launch():Unit = TODO("not implemented")
 }
@@ -20,7 +22,7 @@ actual class LightBarSimulation actual constructor(
     simulationEnv: SimulationEnv
 ) : FixtureSimulation {
     override val mappingData: MappingSession.SurfaceData? = null
-    override val entityVisualizer: EntityVisualizer get() = TODO("not implemented")
+    override val entityVisualizer get() = TODO("not implemented")
     override val previewFixture: Fixture get() = TODO("not implemented")
     override fun launch():Unit = TODO("not implemented")
 }
@@ -30,7 +32,7 @@ actual class LightRingSimulation actual constructor(
     simulationEnv: SimulationEnv
 ) : FixtureSimulation {
     override val mappingData: MappingSession.SurfaceData? = null
-    override val entityVisualizer: EntityVisualizer get() = TODO("not implemented")
+    override val entityVisualizer get() = TODO("not implemented")
     override val previewFixture: Fixture get() = TODO("not implemented")
     override fun launch():Unit = TODO("not implemented")
 }
@@ -40,7 +42,7 @@ actual class MovingHeadSimulation actual constructor(
     simulationEnv: SimulationEnv
 ) : FixtureSimulation {
     override val mappingData: MappingSession.SurfaceData? = null
-    override val entityVisualizer: EntityVisualizer get() = TODO("not implemented")
+    override val entityVisualizer get() = TODO("not implemented")
     override val previewFixture: Fixture get() = TODO("not implemented")
     override fun launch():Unit = TODO("not implemented")
 }

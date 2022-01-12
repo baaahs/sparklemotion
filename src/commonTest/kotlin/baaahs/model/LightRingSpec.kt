@@ -13,7 +13,7 @@ class LightRingSpec : Spek({
     describe<LightRing> {
         val lightRing by value {
             LightRing(
-                "", "", Vector3F.origin, 1f, Vector3F.facingForward
+                "", "", center = Vector3F.origin, radius = 1f, planeNormal = Vector3F.facingForward
             )
         }
 
@@ -31,7 +31,7 @@ class LightRingSpec : Spek({
         context("starting at 12:00") {
             override(lightRing) {
                 LightRing(
-                    "", "", Vector3F.origin, 1f, Vector3F.facingForward,
+                    "", "", center = Vector3F.origin, radius = 1f, planeNormal = Vector3F.facingForward,
                     firstPixelRadians = (PI / 2).toFloat()
                 )
             }
@@ -51,7 +51,7 @@ class LightRingSpec : Spek({
         context("counterclockwise") {
             override(lightRing) {
                 LightRing(
-                    "", "", Vector3F.origin, 1f, Vector3F.facingForward,
+                    "", "", center = Vector3F.origin, radius = 1f, planeNormal = Vector3F.facingForward,
                     pixelDirection = LightRing.PixelDirection.Counterclockwise
                 )
             }

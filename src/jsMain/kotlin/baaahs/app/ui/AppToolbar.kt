@@ -36,8 +36,7 @@ import react.dom.div
 import react.dom.h4
 import react.dom.i
 import react.useContext
-import styled.css
-import styled.styledDiv
+import styled.inlineStyles
 
 val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val appContext = useContext(appContext)
@@ -76,7 +75,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     var showProblemsDialogIsOpen by state { false }
     val toggleProblems = callback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
     val closeProblems = callback { _: Event, _: String -> showProblemsDialogIsOpen = false }
-    val editMode = props.editMode == true
+    val editMode = props.editMode == true || props.appMode == AppMode.Scene
 
     appBar(themeStyles.appToolbar on AppBarStyle.root) {
         attrs.position = AppBarPosition.relative
@@ -128,9 +127,11 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
             div(+themeStyles.logotype) { +"Sparkle Motion™" }
 
             div(+themeStyles.appToolbarActions) {
-                styledDiv {
-                    if (!editMode && !showManager.isUnsaved) css { opacity = 0 }
-                    css {
+                div {
+                    inlineStyles {
+                        if (!editMode && !documentManager.isUnsaved) {
+                            opacity = 0
+                        }
                         transition("opacity", duration = .5.s, timing = Timing.linear)
                     }
 
@@ -150,7 +151,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                         typographyH6 { +"Redo" }
                     }
 
-                    if (!showManager.isLoaded) {
+                    if (!documentManager.isLoaded) {
                         iconButton {
                             icon(materialui.icons.FileCopy)
                             attrs.onClickFunction = handleSaveAs
@@ -159,7 +160,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     } else {
                         iconButton {
                             icon(materialui.icons.Save)
-                            attrs.disabled = !showManager.isUnsaved
+                            attrs.disabled = !documentManager.isUnsaved
                             attrs.onClickFunction = handleSave
                             typographyH6 { +"Save" }
                         }

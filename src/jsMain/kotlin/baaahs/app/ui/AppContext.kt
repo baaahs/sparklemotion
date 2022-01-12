@@ -10,7 +10,6 @@ import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.gl.Toolchain
 import baaahs.plugin.Plugins
-import baaahs.show.Show
 import baaahs.ui.Prompt
 import baaahs.ui.ReactBeautifulDragNDrop
 import baaahs.util.Clock
@@ -39,5 +38,5 @@ external interface AppContext {
     var fileDialog: FileDialog
     var notifier: Notifier.Facade
 
-    var openEditor: (EditIntent<Show>) -> Unit
+    var openEditor: (EditIntent) -> Unit
 }

@@ -22,7 +22,7 @@ import baaahs.util.CacheBuilder
 import baaahs.util.UniqueIds
 
 interface EditHandler<T, TState> {
-    fun onEdit(mutableShow: MutableShow, pushToUndoStack: Boolean = true)
+    fun onEdit(mutableDocument: MutableDocument<T>, pushToUndoStack: Boolean = true)
     fun onEdit(document: T, pushToUndoStack: Boolean = true)
     fun onEdit(document: T, documentState: TState, pushToUndoStack: Boolean = true)
 }
@@ -34,7 +34,7 @@ abstract class MutablePatchHolder(
 
     override var title = basePatchHolder.title
 
-    override fun getEditorPanels(editableManager: EditableManager<Show>): List<DialogPanel> {
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> {
         return listOf(
             GenericPropertiesEditorPanel(editableManager, getPropertiesComponents()),
             PatchHolderEditorPanel(editableManager, this)
@@ -148,8 +148,10 @@ abstract class MutablePatchHolder(
 }
 
 interface MutableDocument<T> : MutableEditable<T> {
-    fun isChanged(originalDocument: T): Boolean
-    fun generateDocument(): T
+    fun build(): T
+
+    fun isChanged(originalDocument: T): Boolean =
+        originalDocument != build()
 }
 
 class MutableShow(
@@ -207,10 +209,6 @@ class MutableShow(
         return this
     }
 
-    override fun isChanged(originalDocument: Show): Boolean {
-        return originalDocument != getShow()
-    }
-
     fun build(showBuilder: ShowBuilder): Show {
         return Show(
             title,
@@ -227,7 +225,7 @@ class MutableShow(
 
     fun getShow() = build(ShowBuilder())
 
-    override fun generateDocument(): Show = getShow()
+    override fun build(): Show = getShow()
 
     fun findControl(controlId: String): MutableControl =
         controls.getBang(controlId, "control")
@@ -362,7 +360,7 @@ class MutablePatch {
         mutableShaderInstances.remove(mutableShaderInstance)
     }
 
-    fun getEditorPanel(editableManager: EditableManager<Show>) =
+    fun getEditorPanel(editableManager: EditableManager<*>) =
         PatchEditorPanel(editableManager, this)
 }
 

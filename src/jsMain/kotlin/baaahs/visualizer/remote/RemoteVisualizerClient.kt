@@ -48,7 +48,7 @@ class RemoteVisualizerClient(
                 .allEntities.mapNotNull { entity ->
                     entity.createFixtureSimulation(simulationEnv)?.let { simulation ->
                         val entityVisualizer = simulation.entityVisualizer
-                        visualizer.addEntityVisualizer(entityVisualizer)
+                        visualizer.add(entityVisualizer)
                         entity.name to simulation
                     }
                 }.associate { it }

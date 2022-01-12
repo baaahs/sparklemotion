@@ -6,7 +6,6 @@ import baaahs.app.ui.shaderCard
 import baaahs.gl.openShader
 import baaahs.gl.shader.type.ShaderType
 import baaahs.show.Shader
-import baaahs.show.Show
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderInstance
@@ -183,7 +182,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
 }
 
 external interface PatchOverviewProps : Props {
-    var editableManager: EditableManager<Show>
+    var editableManager: EditableManager<*>
     var mutablePatch: MutablePatch
 }
 

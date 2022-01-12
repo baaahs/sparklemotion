@@ -5,11 +5,10 @@ import baaahs.app.ui.Styles
 import baaahs.app.ui.appContext
 import baaahs.app.ui.model.modelEditor
 import baaahs.client.SceneEditorClient
-import baaahs.scene.OpenScene
+import baaahs.client.document.SceneManager
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.JsClock
-import baaahs.util.globalLaunch
 import kotlinext.js.jsObject
 import kotlinx.html.hidden
 import materialui.components.appbar.appBar
@@ -45,6 +44,7 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
         }
     }
 
+    observe(props.sceneManager)
     val clock = memo { JsClock }
     val plugins = props.sceneEditorClient.plugins
 
@@ -62,14 +62,34 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
         selectedTab = tab
     }
 
-    var scene by state<OpenScene?> { null }
-    onMount {
-        globalLaunch {
-            scene = appContext.sceneManager.getScene()
+//    var scene by state<OpenScene?> { null }
+//    onMount {
+//        globalLaunch {
+//            scene = appContext.sceneManager.getScene()
+//        }
+//
+//        props.sceneManager.addObserver {
+//            globalLaunch {
+//                scene = it.getScene()
+//            }
+//        }
+//    }
+
+    val mutableScene = memo {
+        props.sceneManager.scene?.let {
+            withCleanup {
+                throw Error("SceneManager's scene changed on us! Creating new MutableScene.")
+            }
+
+            it.edit()
         }
     }
 
-    val openScene = scene ?: return@xComponent
+    val handleEdit by handler(mutableScene) {
+        props.sceneManager.onEdit(mutableScene!!)
+    }
+
+    mutableScene ?: return@xComponent
 
     mapperAppContext.Provider {
         attrs.value = myAppContext
@@ -96,7 +116,8 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
 
                 tabPanel(PageTabs.Model, selectedTab) {
                     modelEditor {
-                        attrs.scene = openScene
+                        attrs.mutableScene = mutableScene
+                        attrs.onEdit = handleEdit
                     }
                 }
 
@@ -134,6 +155,7 @@ private fun RBuilder.tabPanel(tab: PageTabs, selectedTab: PageTabs, block: RBuil
 external interface SceneEditorViewProps : Props {
     var sceneEditorClient: SceneEditorClient.Facade
     var mapperUi: JsMapperUi
+    var sceneManager: SceneManager.Facade
 }
 
 fun RBuilder.sceneEditor(handler: RHandler<SceneEditorViewProps>) =

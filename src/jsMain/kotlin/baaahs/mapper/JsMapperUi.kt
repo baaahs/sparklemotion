@@ -2,6 +2,7 @@ package baaahs.mapper
 
 import baaahs.MediaDevices
 import baaahs.client.SceneEditorClient
+import baaahs.client.document.SceneManager
 import baaahs.context2d
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
@@ -59,6 +60,7 @@ class MapperStatus : Observable() {
 
 class JsMapperUi(
     private val sceneEditorClient: SceneEditorClient,
+    private val sceneManager: SceneManager,
     private val statusListener: StatusListener? = null
 ) : Observable(), MapperUi, HostedWebApp {
     private lateinit var listener: MapperUi.Listener
@@ -239,6 +241,7 @@ class JsMapperUi(
         return createElement(SceneEditorView, jsObject {
             sceneEditorClient = this@JsMapperUi.sceneEditorClient.facade
             mapperUi = this@JsMapperUi
+            sceneManager = this@JsMapperUi.sceneManager.facade
         })
     }
 
@@ -634,7 +637,7 @@ class JsMapperUi(
         companion object {
             fun from(camera: PerspectiveCamera): CameraOrientation {
                 return CameraOrientation(
-                    baaahs.geom.Matrix4F(camera.matrix.elements.map { it.toFloat() }.toFloatArray().map { it.toFloat() }.toFloatArray()),
+                    baaahs.geom.Matrix4F(camera.matrix.elements.map { it.toFloat() }.toFloatArray()),
                     camera.aspect.toDouble()
                 )
             }

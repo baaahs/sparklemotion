@@ -80,43 +80,36 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
 
         divider {}
 
-        when (props.appMode) {
-            AppMode.Show -> {
-                list {
-                    documentMenu {
-                        attrs.documentManager = appContext.showManager
-                    }
-
-                    divider {}
-
-                    listItem {
-                        attrs.disabled = !appContext.showManager.isLoaded
-                        formControlLabel {
-                            attrs.control {
-                                switch {
-                                    attrs.checked = props.editMode
-                                    attrs.onChangeFunction = props.onEditModeChange.withEvent()
-                                }
-                            }
-                            attrs.label { typographyH6 { +"Design Mode" } }
-                        }
-                    }
-
-                    listItem {
-                        attrs.button = true
-                        attrs.disabled = !appContext.showManager.isLoaded
-                        attrs.onClickFunction = props.onLayoutEditorDialogToggle.withEvent()
-                        listItemIcon { icon(CommonIcons.Layout) }
-                        listItemText { attrs.primary { +"Layout Editor" } }
-                    }
+        list {
+            documentMenu {
+                attrs.documentManager = when (props.appMode) {
+                    AppMode.Show -> appContext.showManager
+                    AppMode.Scene -> appContext.sceneManager
                 }
             }
 
-            AppMode.Scene -> {
-                list {
-                    documentMenu {
-                        attrs.documentManager = appContext.sceneManager
+            divider {}
+
+            listItem {
+                attrs.disabled = !appContext.showManager.isLoaded
+                formControlLabel {
+                    attrs.control {
+                        switch {
+                            attrs.checked = props.editMode
+                            attrs.onChangeFunction = props.onEditModeChange.withEvent()
+                        }
                     }
+                    attrs.label { typographyH6 { +"Design Mode" } }
+                }
+            }
+
+            if (props.appMode == AppMode.Show) {
+                listItem {
+                    attrs.button = true
+                    attrs.disabled = !appContext.showManager.isLoaded
+                    attrs.onClickFunction = props.onLayoutEditorDialogToggle.withEvent()
+                    listItemIcon { icon(CommonIcons.Layout) }
+                    listItemText { attrs.primary { +"Layout Editor" } }
                 }
             }
         }

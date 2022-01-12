@@ -142,6 +142,7 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     private fun <T : Function<*>> _handler(name: String, watch: Array<out Any?>, block: T): T {
         val handler = context.handlers.getOrPut(name) { Handler(watch, logger, block) }
         return if (handler.hasChanged(watch)) {
+            handler.lastWatchValues = watch
             handler.block = block
 
             // Unfortunate that we can't make this a ChangeHandler.Function<*> to allow cleanups.

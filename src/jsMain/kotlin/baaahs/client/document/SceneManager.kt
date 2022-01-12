@@ -10,9 +10,10 @@ import baaahs.doc.SceneDocumentType
 import baaahs.gl.Toolchain
 import baaahs.io.RemoteFsSerializer
 import baaahs.model.Model
+import baaahs.scene.MutableScene
 import baaahs.scene.OpenScene
 import baaahs.scene.Scene
-import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.MutableDocument
 import kotlinx.coroutines.CompletableDeferred
 
 class SceneManager(
@@ -28,6 +29,7 @@ class SceneManager(
     override val facade = Facade()
 
     private val deferredScene: CompletableDeferred<OpenScene> = CompletableDeferred()
+    private lateinit var mutableScene: MutableScene
 
     override suspend fun onNew(dialogHolder: DialogHolder) {
         if (!confirmCloseIfUnsaved()) return
@@ -67,11 +69,8 @@ class SceneManager(
     inner class Facade : DocumentManager<Scene, Unit>.Facade() {
         val scene get() = this@SceneManager.document
 
-        suspend fun getScene(): OpenScene = this@SceneManager.getScene()
-
-        override fun onEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
-            TODO()
-//            onEdit(mutableShow.getShow(), Unit, pushToUndoStack)
+        override fun onEdit(mutableDocument: MutableDocument<Scene>, pushToUndoStack: Boolean) {
+            onEdit(mutableDocument.build(), Unit, pushToUndoStack)
         }
 
         override fun onEdit(document: Scene, pushToUndoStack: Boolean) {

@@ -204,7 +204,7 @@ private fun fixtureMapping(
         )
     )
 
-fun entity(name: String) = LightBar(name, name, Vector3F.origin, Vector3F.unit3d)
+fun entity(name: String) = LightBar(name, name, startVertex = Vector3F.origin, endVertex = Vector3F.unit3d)
 
 class PixelColors(private val startingAt: Int, private val count: Int) {
     val bytes get() =

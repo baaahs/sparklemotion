@@ -20,6 +20,7 @@ data class Scene(
 ) {
     val title get() = model.title
 
+    fun edit(): MutableScene = MutableScene(this)
     fun open(): OpenScene = OpenScene(this)
 
     companion object {

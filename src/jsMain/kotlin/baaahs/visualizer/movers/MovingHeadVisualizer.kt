@@ -1,34 +1,41 @@
 package baaahs.visualizer.movers
 
-import baaahs.geom.Matrix4F
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.sim.SimulationEnv
 import baaahs.util.Clock
-import baaahs.visualizer.EntityVisualizer
-import baaahs.visualizer.VizObj
+import baaahs.visualizer.BaseEntityVisualizer
+import three.js.Group
+import three.js.Object3D
+import three_ext.clear
 
 class MovingHeadVisualizer(
-    private val movingHead: MovingHead,
+    movingHead: MovingHead,
     simulationEnv: SimulationEnv,
-    private val beam: Beam = Beam.selectFor(movingHead)
-) : EntityVisualizer {
-    override val entity: Model.Entity get() = movingHead
-    override val title: String
-        get() = movingHead.name
-    override var mapperIsRunning: Boolean = false
-    override var selected: Boolean = false // TODO: Show that the device is selected.
+) : BaseEntityVisualizer<MovingHead>(movingHead) {
+    private var beam: Beam = Beam.selectFor(movingHead.adapter)
 
-    override var transformation: Matrix4F = Matrix4F.identity
+    private val holder = Group()
+    override val obj: Object3D
+        get() = holder
 
     private val clock = simulationEnv[Clock::class]
-    private val physicsModel = PhysicsModel(movingHead.adapter, clock)
+    private val physicalModel = PhysicalModel(movingHead.adapter, clock)
 
-    override fun addTo(parent: VizObj) {
-        beam.addTo(parent)
+    init { super.update(entity) }
+
+    override fun isApplicable(newEntity: Model.Entity): MovingHead? =
+        newEntity as? MovingHead
+
+    override fun update(newEntity: MovingHead) {
+        super.update(newEntity)
+
+        holder.clear()
+        beam = Beam.selectFor(newEntity.adapter)
+        holder.add(beam.vizObj)
     }
 
     internal fun receivedUpdate(buffer: MovingHead.Buffer) {
-        beam.update(physicsModel.update(buffer))
+        beam.update(physicalModel.update(buffer))
     }
 }

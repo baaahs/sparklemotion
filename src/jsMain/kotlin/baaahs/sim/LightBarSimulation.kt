@@ -1,16 +1,15 @@
 package baaahs.sim
 
 import baaahs.controller.SacnManager
-import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
+import baaahs.model.LightBar
 import baaahs.model.PixelArray
-import baaahs.visualizer.LightBarVisualizer
-import baaahs.visualizer.VizPixels
-import baaahs.visualizer.toVector3
+import baaahs.model.PolyLine
+import baaahs.visualizer.*
 
 actual class LightBarSimulation actual constructor(
     val pixelArray: PixelArray,
@@ -35,8 +34,12 @@ actual class LightBarSimulation actual constructor(
             pixelLocations.map { MappingSession.SurfaceData.PixelData(it) }
         )
 
-    override val entityVisualizer: LightBarVisualizer by lazy {
-        LightBarVisualizer(pixelArray, simulationEnv, vizPixels)
+    override val entityVisualizer: PixelArrayVisualizer<*> by lazy {
+        when (pixelArray) {
+            is LightBar -> LightBarVisualizer(pixelArray, simulationEnv, vizPixels)
+            is PolyLine -> PolyLineVisualizer(pixelArray, simulationEnv)
+            else -> error("unsupported?")
+        }
     }
 
     val wledSimulator by lazy {
@@ -60,16 +63,16 @@ actual class LightBarSimulation actual constructor(
     }
 
     override fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
-        entityVisualizer.vizPixels = VizPixels(
-            pixelLocations.map { it.toVector3() }.toTypedArray(),
-            pixelVisualizationNormal,
-            pixelArray.transformation,
-            fixtureConfig as PixelArrayDevice.Config
-        )
+//        entityVisualizer.vizPixels = VizPixels(
+//            pixelLocations.map { it.toVector3() }.toTypedArray(),
+//            pixelVisualizationNormal,
+//            pixelArray.transformation,
+//            fixtureConfig as PixelArrayDevice.Config
+//        )
     }
 
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
-        entityVisualizer.vizPixels?.readColors(reader)
+//        entityVisualizer.vizPixels?.readColors(reader)
     }
 
     companion object {

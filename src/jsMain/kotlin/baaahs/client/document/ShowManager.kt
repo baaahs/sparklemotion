@@ -16,7 +16,7 @@ import baaahs.show.SampleData
 import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
-import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.MutableDocument
 import baaahs.sm.webapi.ShowProblem
 import baaahs.sm.webapi.Topics
 import kotlinx.html.js.onClickFunction
@@ -134,8 +134,8 @@ class ShowManager(
         val openShow get() = this@ShowManager.openShow
         val showProblems get() = this@ShowManager.showProblems
 
-        override fun onEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
-            onEdit(mutableShow.getShow(), openShow!!.getShowState(), pushToUndoStack)
+        override fun onEdit(mutableDocument: MutableDocument<Show>, pushToUndoStack: Boolean) {
+            onEdit(mutableDocument.build(), openShow!!.getShowState(), pushToUndoStack)
         }
 
         override fun onEdit(document: Show, pushToUndoStack: Boolean) {

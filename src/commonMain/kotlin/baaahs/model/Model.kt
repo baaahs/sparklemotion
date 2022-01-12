@@ -60,7 +60,7 @@ class Model(
         val containedEntities: List<Entity> get() = listOf(this)
 
         fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation?
-        fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer
+        fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*>
     }
 
     abstract class BaseEntity : Entity {
@@ -114,7 +114,7 @@ class Model(
         override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
             BrainSurfaceSimulation(this, simulationEnv)
 
-        override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer =
+        override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*> =
             visualizerBuilder.createSurfaceVisualizer(this, simulationEnv)
     }
 

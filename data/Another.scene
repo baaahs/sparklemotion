@@ -1,0 +1,149 @@
+{
+  "model": {
+    "title": "Demo",
+    "entities": [
+      {
+        "type": "ObjModel",
+        "title": "B Panels",
+        "description": null,
+        "position": {
+          "x": 170,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 1,
+          "y": 0.5,
+          "z": 0.25
+        },
+        "objData": "decom-2019-panels.obj",
+        "objDataIsFileRef": true,
+        "metadata": {
+          "type": "baaahs.model.ConstEntityMetadataProvider",
+          "pixelCount": 960
+        }
+      },
+      {
+        "type": "LightBar",
+        "title": "bar 1",
+        "description": "Vertical between Panel 1 and 2",
+        "startVertex": {
+          "x": 54,
+          "y": 66,
+          "z": 0
+        },
+        "endVertex": {
+          "x": 54,
+          "y": 102,
+          "z": 0
+        }
+      },
+      {
+        "type": "LightBar",
+        "title": "bar 2",
+        "description": "Vertical between Panel 2 and 3",
+        "startVertex": {
+          "x": 114,
+          "y": 66,
+          "z": 0
+        },
+        "endVertex": {
+          "x": 114,
+          "y": 102,
+          "z": 0
+        }
+      },
+      {
+        "type": "LightBar",
+        "title": "bar 3",
+        "description": "Vertical below Panel 2",
+        "startVertex": {
+          "x": 66,
+          "y": 47,
+          "z": 0
+        },
+        "endVertex": {
+          "x": 102,
+          "y": 47,
+          "z": 0
+        }
+      },
+      {
+        "type": "Grid",
+        "title": "Grid",
+        "description": null,
+        "position": {
+          "x": -40,
+          "y": -5,
+          "z": 5
+        },
+        "rotation": {
+          "x": 1,
+          "y": 0.5,
+          "z": 0.25
+        },
+        "rows": 20,
+        "columns": 25,
+        "rowGap": 1,
+        "columnGap": 1
+      },
+      {
+        "type": "LightRing",
+        "title": "Light Ring",
+        "description": null,
+        "position": {
+          "x": -40,
+          "y": -25,
+          "z": 5
+        },
+        "rotation": {
+          "x": 1,
+          "y": 0.5,
+          "z": 0.25
+        },
+        "center": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "radius": 24,
+        "planeNormal": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        }
+      },
+      {
+        "type": "MovingHead",
+        "title": "leftEye",
+        "description": "Left Eye",
+        "position": {
+          "x": -17,
+          "y": 202.361,
+          "z": -24.5
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0.15708,
+          "z": 1.5708
+        }
+      },
+      {
+        "type": "MovingHead",
+        "title": "rightEye",
+        "description": "Right Eye",
+        "position": {
+          "x": -11,
+          "y": 202.361,
+          "z": 27.5
+        },
+        "rotation": {
+          "x": 0,
+          "y": -0.15708,
+          "z": 1.5708
+        }
+      }
+    ],
+    "units": "Inches"
+  }
+}

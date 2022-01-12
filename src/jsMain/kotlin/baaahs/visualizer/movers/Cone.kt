@@ -2,21 +2,17 @@ package baaahs.visualizer.movers
 
 import baaahs.Color
 import baaahs.geom.Vector3F
-import baaahs.geom.toThreeEuler
-import baaahs.model.MovingHead
+import baaahs.model.MovingHeadAdapter
 import baaahs.visualizer.VizObj
 import baaahs.visualizer.toVector3
 import three.js.*
-import three_ext.plus
 import three_ext.set
 import three_ext.vector3FacingForward
 
 actual class Cone actual constructor(
-    private val movingHead: MovingHead,
+    private val movingHeadAdapter: MovingHeadAdapter,
     private val colorMode: ColorMode
 ) {
-    private val position = movingHead.position.toVector3()
-    private val rotation = movingHead.rotation.toThreeEuler()
     private val coneLength = 1000.0
 
     private val clipPlane = Plane(Vector3F.facingForward.toVector3(), 0)
@@ -56,33 +52,26 @@ actual class Cone actual constructor(
     private val materials = listOf(innerMaterial, outerMaterial)
     private val cones = listOf(inner, outer)
 
-    init {
-        cones.forEach { cone ->
-            cone.position.set(position)
-            cone.rotation.set(rotation)
-        }
-    }
-
     actual fun addTo(parent: VizObj) {
         cones.forEach { cone -> parent.add(VizObj(cone)) }
     }
 
     actual fun update(state: State) {
-        setColor(colorMode.getColor(movingHead, state), state.dimmer)
+        setColor(colorMode.getColor(movingHeadAdapter, state), state.dimmer)
 
         val rotation = Euler(
-            movingHead.adapter.panRange.scale(state.pan),
+            movingHeadAdapter.panRange.scale(state.pan),
             0f,
-            movingHead.adapter.tiltRange.scale(state.tilt)
+            movingHeadAdapter.tiltRange.scale(state.tilt)
         )
 
         // `0` indicates just the primary color, `.5` indicates a 50/50 mix, and `1.` indicates
         // just the adjacent color.
-        val colorSplit = (state.colorWheelPosition * movingHead.adapter.colorWheelColors.size) % 1f
+        val colorSplit = (state.colorWheelPosition * movingHeadAdapter.colorWheelColors.size) % 1f
         setRotation(rotation, colorSplit)
     }
 
-    fun setColor(color: Color, dimmer: Float) {
+    private fun setColor(color: Color, dimmer: Float) {
         materials.zip(baseOpacities).forEach { (material, baseOpacity) ->
             material.color.set(color.rgb)
             material.opacity = baseOpacity * dimmer
@@ -90,8 +79,8 @@ actual class Cone actual constructor(
         }
     }
 
-    fun setRotation(rotation: Euler, colorSplit: Float) {
-        val aim = this.rotation + rotation
+    private fun setRotation(rotation: Euler, colorSplit: Float) {
+        val aim = rotation
         cones.forEach { cone ->
             cone.rotation.set(aim)
         }
@@ -101,8 +90,7 @@ actual class Cone actual constructor(
             val planeRotation = aim
             val normal = vector3FacingForward.applyEuler(planeRotation)
             if (colorMode == ColorMode.Secondary) normal.negate()
-            val planeOrigin = position.clone()
-            clipPlane.setFromNormalAndCoplanarPoint(normal, planeOrigin)
+            clipPlane.setFromNormalAndCoplanarPoint(normal, Vector3(0, 0, 0))
         }
     }
 }
