@@ -19,7 +19,7 @@ actual class LightRingSimulation actual constructor(
     // Assuming circumference is in inches, specify 1.5 LEDs per inch, or about 60 per meter.
     private val pixelCount = (lightRing.circumference * 1.5f).toInt()
 
-    private val pixelLocations by lazy { lightRing.calculatePixelLocations(pixelCount) }
+    private val pixelLocations by lazy { lightRing.calculatePixelLocalLocations(pixelCount) }
     private val vizPixels by lazy {
         VizPixels(
             pixelLocations.map { it.toVector3() }.toTypedArray(),

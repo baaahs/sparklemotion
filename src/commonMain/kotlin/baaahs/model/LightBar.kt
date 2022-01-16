@@ -12,7 +12,7 @@ import baaahs.visualizer.visualizerBuilder
 
 class LightBar(
     override val name: String,
-    override val description: String?,
+    override val description: String? = null,
     override val position: Vector3F = Vector3F.origin, // TODO: Represent using transformation translation.
     override val rotation: EulerAngle = EulerAngle.identity, // TODO: Represent using transformation rotation (and scale?) ... or add length?
     override val scale: Vector3F = Vector3F.unit3d,
@@ -32,7 +32,7 @@ class LightBar(
      * Since a light bar presumably has pixels at both ends, the first and last pixels
      * are at [startVertex] and [endVertex] respectively.
      */
-    override fun calculatePixelLocation(index: Int, count: Int): Vector3F {
+    override fun calculatePixelLocalLocation(index: Int, count: Int): Vector3F {
         val delta = endVertex - startVertex
         return delta * index.toDouble() / (count - 1).toDouble() + startVertex
     }

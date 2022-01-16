@@ -10,6 +10,7 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
 import baaahs.glsl.Shaders
 import baaahs.model.ModelInfo
+import baaahs.scene.SceneMonitor
 import baaahs.show.Shader
 import baaahs.shows.FakeGlContext
 import baaahs.toNotEqual
@@ -29,7 +30,7 @@ object PreviewShaderBuilderSpec : Spek({
         val shader by value { Shaders.checkerboard }
         val dispatcher by value { TestCoroutineDispatcher() }
         val previewShaderBuilder by value {
-            PreviewShaderBuilder(shader, testToolchain, { ModelInfo.EmptyModel }, CoroutineScope(dispatcher))
+            PreviewShaderBuilder(shader, testToolchain, SceneMonitor(ModelInfo.EmptyScene), CoroutineScope(dispatcher))
         }
         val renderEngine by value { PreviewRenderEngine(FakeGlContext(), 100, 100) }
 

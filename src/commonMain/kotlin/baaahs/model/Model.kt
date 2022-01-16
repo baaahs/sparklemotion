@@ -30,7 +30,7 @@ class Model(
         ?: error("Unknown model surface \"$name\".")
 
     val modelBounds by lazy {
-        boundingBox(allEntities.flatMap { entity ->
+        boundingBox(entities.flatMap { entity ->
             entity.bounds.let {
                 listOf(
                     it.first.transform(entity.transformation),
@@ -52,6 +52,7 @@ class Model(
         val title: String get() = name
         val description: String?
         val deviceType: DeviceType
+        /** Bounds in entity's local space. */
         val bounds: Pair<Vector3F, Vector3F>
         val position: Vector3F
         val rotation: EulerAngle
@@ -95,7 +96,7 @@ class Model(
     /** A named surface in the geometry model. */
     open class Surface(
         override val name: String,
-        override val description: String,
+        override val description: String? = null,
         val expectedPixelCount: Int?,
         val faces: List<Face>,
         val lines: List<Line>,

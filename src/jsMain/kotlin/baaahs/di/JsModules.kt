@@ -1,7 +1,6 @@
 package baaahs.di
 
 import baaahs.MediaDevices
-import baaahs.ModelProvider
 import baaahs.PubSub
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.browser.RealMediaDevices
@@ -20,6 +19,7 @@ import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
+import baaahs.scene.SceneProvider
 import baaahs.sim.BrowserSandboxFs
 import baaahs.sm.brain.proto.Ports
 import baaahs.util.Clock
@@ -66,7 +66,7 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped { FileDialog() }
             scoped { ShowManager(get(), get(), get(), get(), get(), get()) }
             scoped { SceneManager(get(), get(), get(), get(), get()) }
-            scoped<ModelProvider> { get<SceneManager>() }
+            scoped<SceneProvider> { get<SceneManager>() }
             scoped { Notifier(get()) }
             scoped { SceneEditorClient(get(), get()) }
             scoped {
@@ -90,7 +90,7 @@ class JsAdminWebClientModule : KModule {
             scoped<Plugins> { get<ClientPlugins>() }
             scoped { PubSub.Client(get(), get(named(WebClientModule.Qualifier.PinkyAddress)), Ports.PINKY_UI_TCP) }
             scoped { SceneManager(get(), get(), get(), get(), get()) }
-            scoped<ModelProvider> { get<SceneManager>() }
+            scoped<SceneProvider> { get<SceneManager>() }
             scoped { SceneEditorClient(get(), get()) }
             scoped {
                 JsMapperUi(get(), get()).also {
@@ -108,7 +108,7 @@ class JsAdminWebClientModule : KModule {
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
             scoped { SceneManager(get(), get(), get(), get(), get()) }
-            scoped<ModelProvider> { get<SceneManager>() }
+            scoped<SceneProvider> { get<SceneManager>() }
             scoped { Visualizer(get()) }
             scoped { RemoteVisualizerClient(get(), pinkyAddress(), get(), get(), get(), get()) }
             scoped { MonitorUi(get(), get()) }

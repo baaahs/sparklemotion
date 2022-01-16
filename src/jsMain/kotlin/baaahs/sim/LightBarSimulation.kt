@@ -16,7 +16,7 @@ actual class LightBarSimulation actual constructor(
     private val simulationEnv: SimulationEnv
 ) : FixtureSimulation {
 
-    private val pixelLocations by lazy { pixelArray.calculatePixelLocations(59) }
+    private val pixelLocations by lazy { pixelArray.calculatePixelLocalLocations(59) }
     private val vizPixels by lazy {
         VizPixels(
             pixelLocations.map { it.toVector3() }.toTypedArray(),

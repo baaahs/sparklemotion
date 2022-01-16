@@ -13,7 +13,7 @@ import baaahs.visualizer.visualizerBuilder
 
 class Grid(
     name: String,
-    description: String?,
+    description: String? = null,
     position: Vector3F = Vector3F.origin,
     rotation: EulerAngle = EulerAngle.identity,
     scale: Vector3F = Vector3F.unit3d,
@@ -53,7 +53,7 @@ fun calcSegments(
 
 open class PolyLine(
     override val name: String,
-    override val description: String?,
+    override val description: String? = null,
     val segments: List<Segment>,
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
@@ -70,7 +70,7 @@ open class PolyLine(
 
     val pixelCount: Int = segments.sumOf { it.pixelCount }
 
-    override fun calculatePixelLocations(expectedPixelCount: Int): List<Vector3F> {
+    override fun calculatePixelLocalLocations(expectedPixelCount: Int): List<Vector3F> {
         return segments.flatMap { segment -> segment.calculatePixelLocations() }
     }
 

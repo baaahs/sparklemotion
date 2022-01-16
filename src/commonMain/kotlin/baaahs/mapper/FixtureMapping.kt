@@ -7,10 +7,10 @@ import baaahs.model.Model
 class FixtureMapping(
     val entity: Model.Entity?,
 
-    val pixelCount: Int?,
+    val pixelCount: Int? = null,
 
     /** Pixel's estimated position within the model. */
-    val pixelLocations: List<Vector3F?>?,
+    val pixelLocations: List<Vector3F?>? = null,
 
     val fixtureConfig: FixtureConfig? = null,
 

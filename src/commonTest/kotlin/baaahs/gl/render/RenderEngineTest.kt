@@ -1,7 +1,6 @@
 package baaahs.gl.render
 
 import baaahs.Color
-import baaahs.TestModelSurface
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
@@ -15,6 +14,7 @@ import baaahs.plugin.core.datasource.ColorPickerDataSource
 import baaahs.plugin.core.datasource.SliderDataSource
 import baaahs.show.Shader
 import baaahs.shows.FakeShowPlayer
+import baaahs.testModelSurface
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.test.*
@@ -223,7 +223,7 @@ class RenderEngineTest {
 
     private fun fakeSurface(name: String = "xyz", pixelCount: Int = 3): Fixture {
         return Fixture(
-            TestModelSurface(name),
+            testModelSurface(name),
             pixelCount,
             /**
              * e.g.:
@@ -242,7 +242,7 @@ class RenderEngineTest {
 
     private fun createSurface(name: String, pixelCount: Int): Fixture {
         return Fixture(
-            TestModelSurface(name), pixelCount,
+            testModelSurface(name), pixelCount,
             (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) },
             PixelArrayDevice.defaultConfig,
             transport = NullTransport

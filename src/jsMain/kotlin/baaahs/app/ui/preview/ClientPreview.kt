@@ -1,11 +1,11 @@
 package baaahs.app.ui.preview
 
-import baaahs.ModelProvider
 import baaahs.client.ClientStageManager
 import baaahs.document
 import baaahs.fixtures.FixtureManagerImpl
 import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
+import baaahs.model.Model
 import baaahs.plugin.Plugins
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import org.w3c.dom.get
 
 class ClientPreview(
-    modelProvider: ModelProvider,
+    model: Model,
     private val stageManager: ClientStageManager,
     clock: Clock,
     plugins: Plugins,
@@ -54,28 +54,26 @@ class ClientPreview(
             component(visualizer)
         }
 
-        coroutineScope.launch(coroutineExceptionHandler) {
-            val allFixtures = modelProvider.getModel()
-                .allEntities.mapNotNull { entity ->
-                    entity.createFixtureSimulation(simulationEnv)?.let { simulation ->
-                        theVisualizer.add(simulation.entityVisualizer)
-                        simulation.previewFixture
-                    }
+        val allFixtures = model
+            .allEntities.mapNotNull { entity ->
+                entity.createFixtureSimulation(simulationEnv)?.let { simulation ->
+                    theVisualizer.add(simulation.entityVisualizer)
+                    simulation.previewFixture
                 }
+            }
 //    private val mappingResults = SessionMappingResults(model, emptyList()) // TODO: use real data.
 
-            fixtureManager.fixturesChanged(allFixtures, emptyList())
+        fixtureManager.fixturesChanged(allFixtures, emptyList())
 
-            stageManager.addListener(this@ClientPreview)
+        stageManager.addListener(this@ClientPreview)
 
-            theVisualizer.addPrerenderListener {
-                // Previously we triggered a model render with every frame.
-                // Now this is decoupled so we can control the model render rate directly.
+        theVisualizer.addPrerenderListener {
+            // Previously we triggered a model render with every frame.
+            // Now this is decoupled so we can control the model render rate directly.
 //            drawAndSendFrame()
-            }
-
-            animate()
         }
+
+        animate()
     }
 
     private fun animate() {

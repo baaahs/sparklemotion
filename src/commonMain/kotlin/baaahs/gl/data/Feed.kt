@@ -10,6 +10,7 @@ import baaahs.util.RefCounted
 
 interface Feed : RefCounted {
     fun bind(gl: GlContext): EngineFeed
+    fun release() = Unit
 }
 
 /**

@@ -254,6 +254,7 @@ sealed class Plugins private constructor(
             subclass(PolyLineData::class, PolyLineData.serializer())
             subclass(GridData::class, GridData.serializer())
             subclass(LightRingData::class, LightRingData.serializer())
+            subclass(SurfaceDataForTest::class, SurfaceDataForTest.serializer())
         }
 
         polymorphic(EntityMetadataProvider::class) {

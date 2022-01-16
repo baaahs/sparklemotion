@@ -1,12 +1,14 @@
 package baaahs.mapping
 
-import baaahs.ModelProvider
 import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.SessionMappingResults
 import baaahs.mapper.Storage
+import baaahs.scene.OpenScene
+import baaahs.scene.SceneProvider
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
+import baaahs.ui.addObserver
 
 interface MappingManager : IObservable {
     val dataHasLoaded: Boolean
@@ -20,14 +22,27 @@ interface MappingManager : IObservable {
 
 class MappingManagerImpl(
     private val storage: Storage,
-    private val modelProvider: ModelProvider,
+    private val sceneProvider: SceneProvider,
 ) : Observable(), MappingManager {
     private var sessionMappingResults: SessionMappingResults? = null
-    override val dataHasLoaded: Boolean
-        get() = sessionMappingResults != null
+    override var dataHasLoaded: Boolean = false
 
     override suspend fun start() {
-        sessionMappingResults = storage.loadMappingData(modelProvider.getModel())
+        onSceneChange(sceneProvider.openScene)
+
+        sceneProvider.addObserver {
+            TODO("implement scene change listener for MappingManagerImpl!")
+        }
+    }
+
+    private suspend fun onSceneChange(openScene: OpenScene?) {
+        dataHasLoaded = false
+        if (openScene == null) {
+            sessionMappingResults = null
+        } else {
+            sessionMappingResults = storage.loadMappingData(openScene.model)
+            dataHasLoaded = true
+        }
         notifyChanged()
     }
 
