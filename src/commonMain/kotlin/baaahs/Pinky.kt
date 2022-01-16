@@ -13,6 +13,7 @@ import baaahs.mapper.Storage
 import baaahs.mapping.MappingManager
 import baaahs.net.Network
 import baaahs.plugin.Plugins
+import baaahs.scene.Scene
 import baaahs.show.Show
 import baaahs.sim.FakeNetwork
 import baaahs.sm.brain.BrainManager
@@ -56,6 +57,10 @@ class Pinky(
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {
         stageManager.switchTo(newShow, file = file)
+    }
+
+    fun switchToScene(newScene: Scene?, file: Fs.File? = null) {
+        stageManager.switchToScene(newScene, file)
     }
 
     val address: Network.Address get() = link.myAddress
@@ -176,7 +181,7 @@ class Pinky(
             }
 
             // This needs to go last-ish, otherwise we start getting network traffic too early.
-            launch { controllersManager.start() }
+            controllersManager.start()
 
             updatePinkyState(PinkyState.Running)
         }

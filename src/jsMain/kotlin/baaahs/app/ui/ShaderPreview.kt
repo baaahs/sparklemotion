@@ -7,13 +7,11 @@ import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.preview.ShaderPreview
-import baaahs.model.Model
 import baaahs.show.Shader
 import baaahs.ui.addObserver
 import baaahs.ui.inPixels
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import baaahs.util.globalLaunch
 import baaahs.util.useResizeListener
 import external.IntersectionObserver
 import kotlinx.css.*
@@ -48,12 +46,16 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val bootstrapper = shaderType.shaderPreviewBootstrapper
     val helper = memo(bootstrapper, sharedGlContext) { bootstrapper.createHelper(sharedGlContext) }
     val previewContainer = helper.container
-    var model by state<Model?> { null }
-    memo {
-        globalLaunch {
-            model = appContext.webClient.modelProvider.getModel()
-        }
-    }
+    val sceneManager = appContext.sceneManager
+    observe(sceneManager)
+    val model = sceneManager.openScene?.model
+//    var model by state { sceneManager.openScene?.model }
+//    onMount {
+//        val listener = sceneManager.addSceneChangeListener { newScene ->
+//            model = newScene?.model
+//        }
+//        withCleanup { sceneManager.removeSceneChangeListener(listener) }
+//    }
 
     var gl by state<GlContext?> { null }
 
@@ -131,7 +133,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                 ShaderBuilder.State.Success -> {
                     shaderPreview?.setProgram(it.glslProgram)
 
-                    if (props.dumpShader) {
+                    if (props.dumpShader == true) {
                         println(
                             "Shader: ${it.glslProgram?.title} (${it.state})\n\n" +
                                     "${it.glslProgram?.fragShader?.source}"
@@ -268,7 +270,7 @@ external interface ShaderPreviewProps : Props {
     var height: LinearDimension?
     var adjustGadgets: GadgetAdjuster.Mode?
     var toolchain: Toolchain?
-    var dumpShader: Boolean
+    var dumpShader: Boolean?
 }
 
 fun RBuilder.shaderPreview(handler: RHandler<ShaderPreviewProps>) =

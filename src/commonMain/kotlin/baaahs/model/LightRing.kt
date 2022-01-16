@@ -17,7 +17,7 @@ import kotlin.math.sin
 
 class LightRing(
     override val name: String,
-    override val description: String?,
+    override val description: String? = null,
     override val position: Vector3F = Vector3F.origin, // TODO: Represent using transformation translation.
     override val rotation: EulerAngle = EulerAngle.identity, // TODO: Represent using transformation scale?
     override val scale: Vector3F = Vector3F.unit3d, // TODO: Represent using transformation rotation.
@@ -31,7 +31,7 @@ class LightRing(
         get() = PixelArrayDevice
 
     override val bounds: Pair<Vector3F, Vector3F>
-        get() = boundingBox(calculatePixelLocations(4)) // This oughta cover it, right?
+        get() = boundingBox(calculatePixelLocalLocations(4)) // This oughta cover it, right?
 
     val circumference: Float
         get() = (radius * PI).toFloat()
@@ -48,7 +48,7 @@ class LightRing(
     }
 
     /** A light ring's pixels are evenly spaced along its circumference. */
-    override fun calculatePixelLocation(index: Int, count: Int): Vector3F {
+    override fun calculatePixelLocalLocation(index: Int, count: Int): Vector3F {
         val pI = when (pixelDirection) {
             PixelDirection.Clockwise -> if (index == 0) 0 else count - index
             PixelDirection.Counterclockwise -> index

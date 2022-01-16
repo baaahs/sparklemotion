@@ -63,7 +63,7 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
         val origin = Vector3F(0f, 0f, 0f)
         val unit3d = Vector3F(1f, 1f, 1f)
         val unitNormal = unit3d.normalize()
-        val facingForward = Vector3F(0f, 0f, -1f)
+        val facingForward = Vector3F(0f, 0f, 1f)
 
         fun parse(reader: ByteArrayReader) =
             Vector3F(reader.readFloat(), reader.readFloat(), reader.readFloat())

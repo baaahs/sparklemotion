@@ -1,9 +1,6 @@
 package baaahs.sm.server
 
 import baaahs.*
-import baaahs.controller.ControllersManager
-import baaahs.controllers.FakeFixtureListener
-import baaahs.controllers.FakeMappingManager
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.FixtureManagerImpl
@@ -62,9 +59,7 @@ object StageManagerSpec : Spek({
                 Storage(fakeFs, plugins),
                 fixtureManager,
                 FakeClock(),
-                { model },
                 gadgetManager,
-                ControllersManager(emptyList(), FakeMappingManager(), { model }, FakeFixtureListener()),
                 ServerNotices(pubSub.server, dispatcher),
                 SceneMonitor()
             )

@@ -1,20 +1,17 @@
 package baaahs.scene
 
-import baaahs.ModelProvider
-import baaahs.model.Model
-import kotlinx.coroutines.CompletableDeferred
+import baaahs.ui.IObservable
+import baaahs.ui.Observable
 
-class SceneMonitor : ModelProvider {
-    private var scene: Scene? = null
-    private val deferredModel: CompletableDeferred<Model> = CompletableDeferred()
+class SceneMonitor(
+    openScene: OpenScene? = null,
+    private val observable: Observable = Observable()
+) : SceneProvider, IObservable by observable {
+    override var openScene: OpenScene? = openScene
+        private set
 
-    override suspend fun getModel(): Model {
-        return deferredModel.await()
-    }
-
-    fun onChange(scene: Scene?) {
-        this.scene = scene
-        println("SceneMonitor: have $scene")
-        scene?.model?.open()?.let { deferredModel.complete(it) }
+    fun onChange(newOpenScene: OpenScene?) {
+        openScene = newOpenScene
+        observable.notifyChanged()
     }
 }

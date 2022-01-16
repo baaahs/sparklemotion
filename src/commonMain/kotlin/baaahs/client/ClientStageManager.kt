@@ -2,6 +2,7 @@ package baaahs.client
 
 import baaahs.*
 import baaahs.gl.Toolchain
+import baaahs.scene.SceneProvider
 import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.ShowState
@@ -12,8 +13,8 @@ import kotlinx.serialization.json.JsonElement
 class ClientStageManager(
     toolchain: Toolchain,
     private val pubSub: PubSub.Client,
-    modelProvider: ModelProvider
-) : BaseShowPlayer(toolchain, modelProvider) {
+    sceneProvider: SceneProvider
+) : BaseShowPlayer(toolchain, sceneProvider) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
     private val listeners = mutableListOf<Listener>()
     private var openShow: OpenShow? = null

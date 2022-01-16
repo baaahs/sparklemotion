@@ -14,6 +14,8 @@ import baaahs.glsl.Shaders
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.core.datasource.SliderDataSource
+import baaahs.scene.OpenScene
+import baaahs.scene.SceneMonitor
 import baaahs.show.Panel
 import baaahs.show.Shader
 import baaahs.show.mutable.EditingShader.State
@@ -344,7 +346,9 @@ object EditingShaderSpec : Spek({
             override(shaderInEdit) { paintShader }
             override(otherShaderInPatch) { null }
             override(getShaderBuilder) {
-                { shader: Shader -> PreviewShaderBuilder(shader, toolchain, { TestModel }, CoroutineScope(dispatcher)) }
+                { shader: Shader ->
+                    PreviewShaderBuilder(shader, toolchain, SceneMonitor(OpenScene(TestModel)), CoroutineScope(dispatcher))
+                }
             }
             val gl by value { FakeGlContext() }
             val renderEngine by value { PreviewRenderEngine(gl, 1, 1) }

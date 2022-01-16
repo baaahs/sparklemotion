@@ -173,6 +173,27 @@ data class LightRingData(
         LightRing(title, description, position, rotation, scale, center, radius, planeNormal, firstPixelRadians, pixelDirection)
 }
 
+/** For use only in tests for now! */
+@Serializable @SerialName("SurfaceDataForTest")
+data class SurfaceDataForTest(
+    override val title: String,
+    override val description: String? = null,
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d,
+    val expectedPixelCount: Int?,
+    val vertices: List<Vector3F>
+) : EntityData {
+    override fun edit(): MutableEntity<LightRing> =
+        TODO("MutableSurfaceDataForTest not implemented yet!")
+
+    override fun open(): Model.Entity =
+        Model.Surface(
+            title, description, expectedPixelCount, emptyList(), emptyList(), Model.Geometry(vertices),
+            position, rotation, scale
+        )
+}
+
 @Polymorphic
 sealed interface EntityMetadataProvider {
     fun getMetadataFor(entity: EntityData): EntityMetadata

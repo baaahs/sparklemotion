@@ -1,7 +1,6 @@
 package baaahs.client.document
 
 import baaahs.DocumentState
-import baaahs.ModelProvider
 import baaahs.PubSub
 import baaahs.app.ui.UiActions
 import baaahs.app.ui.dialog.FileDialog
@@ -9,13 +8,9 @@ import baaahs.app.ui.document.DialogHolder
 import baaahs.client.Notifier
 import baaahs.doc.SceneDocumentType
 import baaahs.io.RemoteFsSerializer
-import baaahs.model.Model
 import baaahs.plugin.Plugins
-import baaahs.scene.MutableScene
-import baaahs.scene.OpenScene
-import baaahs.scene.Scene
+import baaahs.scene.*
 import baaahs.show.mutable.MutableDocument
-import kotlinx.coroutines.CompletableDeferred
 
 class SceneManager(
     pubSub: PubSub.Client,
@@ -26,11 +21,12 @@ class SceneManager(
 ) : DocumentManager<Scene, Unit>(
     SceneDocumentType, pubSub, Scene.createTopic(plugins.serialModule, remoteFsSerializer),
     remoteFsSerializer, plugins, notifier, fileDialog, Scene.serializer()
-), ModelProvider {
+), SceneProvider {
     override val facade = Facade()
 
-    private val deferredScene: CompletableDeferred<OpenScene> = CompletableDeferred()
-    private lateinit var mutableScene: MutableScene
+    private val sceneChangeListeners = mutableListOf<SceneChangeListener>()
+    override var openScene: OpenScene? = null
+    private var mutableScene: MutableScene? = null
 
     override suspend fun onNew(dialogHolder: DialogHolder) {
         if (!confirmCloseIfUnsaved()) return
@@ -42,12 +38,13 @@ class SceneManager(
         UiActions.downloadScene(document!!, plugins)
     }
 
-    suspend fun getScene(): OpenScene {
-        return deferredScene.await()
+    override fun addSceneChangeListener(callback: SceneChangeListener): SceneChangeListener {
+        sceneChangeListeners.add(callback)
+        return callback
     }
 
-    override suspend fun getModel(): Model {
-        return deferredScene.await().model
+    override fun removeSceneChangeListener(callback: SceneChangeListener) {
+        sceneChangeListeners.remove(callback)
     }
 
     override fun switchTo(documentState: DocumentState<Scene, Unit>?) {
@@ -62,13 +59,14 @@ class SceneManager(
 //        openScene = newOpenScene?.also { it.use() }
 
         update(newScene, newFile, newIsUnsaved)
-        if (newScene != null) {
-            deferredScene.complete(newScene.open())
-        }
+        openScene = newScene?.open()
+        sceneChangeListeners.forEach { it(openScene) }
+        facade.notifyChanged()
     }
 
     inner class Facade : DocumentManager<Scene, Unit>.Facade() {
         val scene get() = this@SceneManager.document
+        val openScene get() = this@SceneManager.openScene
 
         override fun onEdit(mutableDocument: MutableDocument<Scene>, pushToUndoStack: Boolean) {
             onEdit(mutableDocument.build(), Unit, pushToUndoStack)

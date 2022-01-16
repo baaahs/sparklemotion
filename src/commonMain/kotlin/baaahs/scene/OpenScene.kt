@@ -1,9 +1,15 @@
 package baaahs.scene
 
-class OpenScene(
-    val scene: Scene
-) {
-    val model = scene.model.open()
+import baaahs.model.Model
 
-    fun edit(): MutableScene = MutableScene(scene)
+class OpenScene(
+    val model: Model,
+    val controllers: Map<String, ControllerConfig> = emptyMap(),
+    val fixtures: Map<String, FixtureConfigNew> = emptyMap()
+) {
+    constructor(scene: Scene) : this(
+        scene.model.open(),
+        scene.controllers,
+        scene.fixtures
+    )
 }

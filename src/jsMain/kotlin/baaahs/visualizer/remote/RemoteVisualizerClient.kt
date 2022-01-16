@@ -1,6 +1,6 @@
 package baaahs.visualizer.remote
 
-import baaahs.ModelProvider
+import baaahs.client.document.SceneManager
 import baaahs.io.ByteArrayReader
 import baaahs.net.Network
 import baaahs.plugin.Plugins
@@ -8,9 +8,9 @@ import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.Ports
+import baaahs.ui.addObserver
 import baaahs.util.Clock
 import baaahs.util.Logger
-import baaahs.util.coroutineExceptionHandler
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
@@ -19,13 +19,12 @@ import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.FrameData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 
 class RemoteVisualizerClient(
     link: Network.Link,
     address: Network.Address,
     private val visualizer: Visualizer,
-    modelProvider: ModelProvider,
+    sceneManager: SceneManager,
     clock: Clock,
     private val plugins: Plugins,
     coroutineScope: CoroutineScope = GlobalScope
@@ -43,15 +42,17 @@ class RemoteVisualizerClient(
     private lateinit var tcpConnection: Network.TcpConnection
 
     init {
-        coroutineScope.launch(coroutineExceptionHandler) {
-            fixtureSimulations = modelProvider.getModel()
-                .allEntities.mapNotNull { entity ->
+        sceneManager.facade.addObserver(fireImmediately = true) {
+            val openScene = sceneManager.facade.openScene
+            fixtureSimulations = openScene?.let { scene ->
+                scene.model.allEntities.mapNotNull { entity ->
                     entity.createFixtureSimulation(simulationEnv)?.let { simulation ->
                         val entityVisualizer = simulation.entityVisualizer
                         visualizer.add(entityVisualizer)
                         entity.name to simulation
                     }
                 }.associate { it }
+            } ?: emptyMap()
         }
 
         link.connectWebSocket(address, Ports.PINKY_UI_TCP, "/ws/visualizer", this)

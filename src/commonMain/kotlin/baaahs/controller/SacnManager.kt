@@ -23,34 +23,72 @@ import kotlinx.serialization.json.Json
 import kotlin.math.max
 import kotlin.math.min
 
+object Delta {
+    fun <K, V> diff(oldMap: Map<K, V>, newMap: Map<K, V>, listener: MapChangeListener<K, V>) {
+        val toRemove = oldMap.keys - newMap.keys
+        val toChange = oldMap.keys.intersect(newMap.keys)
+        val toAdd = newMap.keys - oldMap.keys
+
+        for (k in toRemove) {
+            listener.onRemove(k, oldMap[k]!!)
+        }
+
+        for (k in toChange) {
+            val oldValue = oldMap[k]!!
+            val newValue = newMap[k]!!
+            if (oldValue != newValue) {
+                listener.onChange(k, oldValue, newValue)
+            }
+        }
+
+        for (k in toAdd) {
+            listener.onAdd(k, newMap[k]!!)
+        }
+    }
+
+    interface MapChangeListener<K, V> {
+        fun onAdd(key: K, value: V)
+
+        fun onChange(key: K, oldValue: V, newValue: V) {
+            onRemove(key, oldValue)
+            onAdd(key, newValue)
+        }
+
+        fun onRemove(key: K, value: V)
+    }
+}
+
+private class SacnConfigAndController(
+    var config: SacnControllerConfig,
+    var controller: SacnManager.SacnController
+)
+
 class SacnManager(
     private val link: Network.Link,
     pubSub: PubSub.Server,
     private val mainDispatcher: CoroutineDispatcher,
     private val clock: Clock
-) : ControllerManager {
+) : BaseControllerManager(controllerTypeName) {
     private val senderCid = "SparkleMotion000".encodeToByteArray()
     private val sacnLink = SacnLink(link, senderCid, "SparkleMotion")
     private var sacnDevices by publishProperty(pubSub, Topics.sacnDevices, emptyMap())
-    private val configs: MutableMap<String, SacnControllerConfig> = mutableMapOf()
-    private var controllerListener: ControllerListener? = null
+    private var lastConfig: Map<String, SacnControllerConfig> = emptyMap()
+    private var controllers: Map<String, SacnController> = emptyMap()
 
-    override val controllerType: String
-        get() = controllerTypeName
-
-    override fun start(controllerListener: ControllerListener) {
-        this.controllerListener = controllerListener
+    override fun start() {
         startWledDiscovery()
-        handleConfigs()
     }
 
     override fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>) {
-        configs.clear()
-        controllerConfigs.forEach { (k, v) ->
-            if (v is SacnControllerConfig) configs[k] = v
-        }
-        handleConfigs()
+        handleConfigs(controllerConfigs.filterByType())
     }
+
+    inline fun <reified T : ControllerConfig> Map<String, ControllerConfig>.filterByType(): Map<String, T> =
+        buildMap {
+            this@filterByType.forEach { (k, v) ->
+                if (v is T) put(k, v)
+            }
+        }
 
     override fun stop() {
         TODO("not implemented")
@@ -61,14 +99,25 @@ class SacnManager(
 
     }
 
-    private fun handleConfigs() {
-        controllerListener?.let { listener ->
-            configs.forEach { (id, config) ->
-                val controller = SacnController(id, config.address, null, config.universes, clock.now())
-                listener.onAdd(controller)
-                updateWledDevices(controller)
-            }
+    private fun handleConfigs(configs: Map<String, SacnControllerConfig>) {
+        controllers = buildMap {
+            Delta.diff(lastConfig, configs, object : Delta.MapChangeListener<String, SacnControllerConfig> {
+                override fun onAdd(key: String, value: SacnControllerConfig) {
+                    val controller = SacnController(key, value.address, null, value.universes, clock.now())
+                    put(key, controller)
+                    notifyListeners { onAdd(controller) }
+                    addSacnDevice(controller)
+                }
+
+                override fun onRemove(key: String, value: SacnControllerConfig) {
+                    val oldController = controllers[key]!!
+                    removeSacnDevice(oldController)
+                    oldController.release()
+                    notifyListeners { onRemove(oldController) }
+                }
+            })
         }
+        lastConfig = configs
     }
 
     fun startWledDiscovery() {
@@ -111,8 +160,8 @@ class SacnManager(
                                 pixelCount  * 3 / channelsPerUniverse + 1,
                                 onlineSince
                             )
-                            controllerListener!!.onAdd(sacnController)
-                            updateWledDevices(sacnController)
+                            notifyListeners { onAdd(sacnController) }
+                            addSacnDevice(sacnController)
                         }
                     }
                 }
@@ -120,11 +169,17 @@ class SacnManager(
         })
     }
 
-    private fun updateWledDevices(newSacnController: SacnController) {
+    private fun addSacnDevice(sacnController: SacnController) {
         val newWledDevices = sacnDevices.toMutableMap()
-        newWledDevices[newSacnController.id] = with (newSacnController) {
+        newWledDevices[sacnController.id] = with (sacnController) {
             SacnDevice(id, address, fixtureMapping?.pixelCount, onlineSince)
         }
+        sacnDevices = newWledDevices
+    }
+
+    private fun removeSacnDevice(sacnController: SacnController) {
+        val newWledDevices = sacnDevices.toMutableMap()
+        newWledDevices.remove(sacnController.id)
         sacnDevices = newWledDevices
     }
 
@@ -230,6 +285,10 @@ class SacnManager(
                 }
                 universeMaxChannel[universeIndex] = 0
             }
+        }
+
+        fun release() {
+            logger.debug { "Releasing SacnController $id." }
         }
     }
 

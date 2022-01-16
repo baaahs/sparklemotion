@@ -4,6 +4,7 @@ import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.withCache
+import baaahs.scene.SceneProvider
 import baaahs.show.DataSource
 import baaahs.show.Shader
 import baaahs.show.Show
@@ -19,7 +20,7 @@ interface ShowPlayer {
      * a better way to get it. Don't add more uses.
      */
     @Deprecated("Get it some other way", level = DeprecationLevel.WARNING)
-    val modelProvider: ModelProvider
+    val sceneProvider: SceneProvider
 
     fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource? = null)
     fun <T : Gadget> useGadget(id: String): T = error("override me?")
@@ -32,7 +33,7 @@ interface ShowPlayer {
 
 abstract class BaseShowPlayer(
     final override val toolchain: Toolchain,
-    final override val modelProvider: ModelProvider
+    final override val sceneProvider: SceneProvider
 ) : ShowPlayer {
     private val feeds = mutableMapOf<DataSource, Feed>()
     private val shaders = mutableMapOf<Shader, OpenShader>()

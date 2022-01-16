@@ -1,7 +1,5 @@
 package baaahs
 
-import baaahs.controller.ControllersManager
-import baaahs.controllers.FakeMappingManager
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManagerImpl
@@ -44,11 +42,11 @@ class ShowRunnerTest {
     private lateinit var renderTargets: Map<Fixture, RenderTarget>
     private val surface1Messages = mutableListOf<String>()
     private val surface1Fixture =
-        Fixture(TestModelSurface("surface 1"), 1, emptyList(), PixelArrayDevice.defaultConfig,
+        Fixture(testModelSurface("surface 1"), 1, emptyList(), PixelArrayDevice.defaultConfig,
             transport = FakeTransport { surface1Messages.add("frame") })
     private val surface2Messages = mutableListOf<String>()
     private val surface2Fixture =
-        Fixture(TestModelSurface("surface 2"), 1, emptyList(), PixelArrayDevice.defaultConfig,
+        Fixture(testModelSurface("surface 2"), 1, emptyList(), PixelArrayDevice.defaultConfig,
             transport = FakeTransport { surface2Messages.add("frame") })
     private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse
@@ -63,17 +61,16 @@ class ShowRunnerTest {
         fakeGlslContext = FakeGlContext()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.listen(1, 1) { dmxEvents.add("dmx frame sent") }
-        val model = TestModel
         val renderManager = RenderManager { fakeGlslContext }
         val plugins = testPlugins()
         fixtureManager = FixtureManagerImpl(renderManager, plugins)
         stageManager = StageManager(
             testToolchain, renderManager, server, Storage(fs, plugins), fixtureManager,
-            FakeClock(), { model }, GadgetManager(server, FakeClock(), dispatcher),
-            ControllersManager(emptyList(), FakeMappingManager(), { model }, fixtureManager),
+            FakeClock(), GadgetManager(server, FakeClock(), dispatcher),
             ServerNotices(server, dispatcher), SceneMonitor()
         )
         stageManager.switchTo(SampleData.sampleShow)
+        stageManager.switchToScene(testSceneData())
         renderTargets = fixtureManager.getRenderTargets_ForTestOnly()
         surface1Messages.clear()
         surface2Messages.clear()

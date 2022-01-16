@@ -1,18 +1,16 @@
 package baaahs.controllers
 
-import baaahs.TestModelSurface
+import baaahs.*
+import baaahs.controller.BaseControllerManager
 import baaahs.controller.Controller
-import baaahs.controller.ControllerListener
-import baaahs.controller.ControllerManager
 import baaahs.controller.ControllersManager
-import baaahs.describe
 import baaahs.device.PixelArrayDevice
-import baaahs.fakeModel
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.FixtureListener
 import baaahs.fixtures.Transport
 import baaahs.geom.Vector3F
+import baaahs.gl.override
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayWriter
 import baaahs.mapper.ControllerId
@@ -21,14 +19,15 @@ import baaahs.mapper.TransportConfig
 import baaahs.mapping.MappingManager
 import baaahs.model.Model
 import baaahs.model.ModelManager
-import baaahs.only
 import baaahs.scene.ControllerConfig
+import baaahs.scene.OpenScene
+import baaahs.scene.SceneMonitor
 import baaahs.ui.Observable
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.isSameAs
+import ch.tutteli.atrium.api.fluent.en_GB.size
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import ext.kotlinx_coroutines_test.TestCoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
@@ -37,58 +36,61 @@ import kotlin.random.Random
 @OptIn(InternalCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 object ControllersManagerSpec : Spek({
     describe<ControllersManager> {
-        val mappingManager by value { FakeMappingManager() }
         val panel by value {
             val quad1x1 = listOf(
                 Vector3F(1f, 1f, 1f), Vector3F(2f, 2f, 1f),
                 Vector3F(1f, 2f, 2f), Vector3F(2f, 1f, 2f)
             )
-            TestModelSurface("panel", 2, vertices = quad1x1)
+            testModelSurface("panel", 2, vertices = quad1x1)
         }
-        val model by value { fakeModel(panel) }
-        val modelManager by value { FakeModelManager(model) }
+        val model by value<Model?> { fakeModel(panel) }
+        val fakeController by value { FakeController("c1") }
+        val fakeControllerConfig by value { FakeControllerManager.Config(fakeController) }
+        val scene by value {
+            model?.let { OpenScene(it, controllers = mapOf(FakeController.type to fakeControllerConfig) ) }
+        }
+        val mappingResults by value {
+            mapOf(fakeController.controllerId to listOf(FixtureMapping(panel, null, null)))
+        }
+        val mappingManager by value { FakeMappingManager(mappingResults, false) }
         val fakeControllerMgr by value { FakeControllerManager() }
         val controllerManagers by value { listOf(fakeControllerMgr) }
         val fixtureListener by value { FakeFixtureListener() }
-        val coroutineScope by value { TestCoroutineScope() }
+        val sceneMonitor by value { SceneMonitor(scene) }
         val controllersManager by value {
-            ControllersManager(controllerManagers, mappingManager, { model }, fixtureListener, coroutineScope)
+            ControllersManager(controllerManagers, mappingManager, sceneMonitor, fixtureListener)
         }
-        val fakeController by value { FakeController("c1") }
 
         context("when model and mapping data haven't loaded yet") {
+            override(sceneMonitor) { SceneMonitor() }
             beforeEachTest { controllersManager.start() }
 
-            it("waits for mapping data before calling start() on controller managers") {
-                expect(fakeControllerMgr.hasStarted).toBe(false)
-
-                coroutineScope.runCurrent() // Load model.
-                expect(fakeControllerMgr.hasStarted).toBe(false)
-
-                mappingManager.notifyChanged()
-                expect(fakeControllerMgr.hasStarted).toBe(false)
-
-                mappingManager.dataHasLoaded = true
-                mappingManager.notifyChanged()
+            it("starts controllers when start() is called") {
                 expect(fakeControllerMgr.hasStarted).toBe(true)
             }
 
-            it("waits for model before calling start() on controller managers") {
-                expect(fakeControllerMgr.hasStarted).toBe(false)
+            it("waits for mapping data before processing controllers from controller managers") {
+                expect(fixtureListener.changes).isEmpty()
 
-                mappingManager.notifyChanged()
-                expect(fakeControllerMgr.hasStarted).toBe(false)
+                sceneMonitor.onChange(scene) // Load model.
+                expect(fixtureListener.changes).isEmpty()
 
                 mappingManager.dataHasLoaded = true
-                mappingManager.notifyChanged()
-                expect(fakeControllerMgr.hasStarted).toBe(false)
+                expect(fixtureListener.changes).size.toEqual(1)
+            }
 
-                coroutineScope.runCurrent() // Load model.
-                expect(fakeControllerMgr.hasStarted).toBe(true)
+            it("waits for model before processing controllers from controller managers") {
+                expect(fixtureListener.changes).isEmpty()
+
+                mappingManager.dataHasLoaded = true
+                expect(fixtureListener.changes).isEmpty()
+
+                sceneMonitor.onChange(scene) // Load model.
+                expect(fixtureListener.changes).size.toEqual(1)
             }
 
             it("only starts controller managers once") {
-                coroutineScope.runCurrent() // Load model.
+                sceneMonitor.onChange(scene) // Load model.
                 mappingManager.dataHasLoaded = true
                 mappingManager.notifyChanged()
                 mappingManager.notifyChanged()
@@ -100,7 +102,7 @@ object ControllersManagerSpec : Spek({
             beforeEachTest {
                 mappingManager.dataHasLoaded = true
                 controllersManager.start()
-                coroutineScope.runCurrent() // Load model.
+                sceneMonitor.onChange(scene) // Load model.
             }
 
             it("calls start() on controller managers") {
@@ -109,23 +111,17 @@ object ControllersManagerSpec : Spek({
         }
 
         context("when controllers are reported") {
-            val mappingResults by value {
-                listOf(FixtureMapping(panel, null, null))
-            }
-
             beforeEachTest {
-                fakeControllerMgr.myControllers.add(fakeController)
-                mappingManager.data[fakeController.controllerId] = mappingResults
                 mappingManager.dataHasLoaded = true
+                sceneMonitor.onChange(scene) // Load model.
                 controllersManager.start()
-                coroutineScope.runCurrent() // Load model.
             }
 
-            val change by value { fixtureListener.changes.only("fixture changes") }
+            val change by value { fixtureListener.changes.only("fixture change") }
             val addedFixture by value { change.added.only("added fixture") }
 
             context("with no mapping results") {
-                value(mappingResults) { listOf<FixtureMapping>() }
+                value(mappingResults) { mapOf(fakeController.controllerId to emptyList()) }
 
                 it("ignores the controller") {
                     expect(fixtureListener.changes).isEmpty()
@@ -154,16 +150,17 @@ object ControllersManagerSpec : Spek({
                     it("generates pixel positions within the model bounds") {
                         expect(addedFixture.pixelCount).toBe(3)
                         expect(addedFixture.pixelLocations)
-                            .toBe(LinearSurfacePixelStrategy(Random(1)).forUnknownEntity(3, model))
+                            .toBe(LinearSurfacePixelStrategy(Random(1)).forUnknownEntity(3, model!!))
                     }
                 }
             }
 
             context("with a mapping result pointing to an entity") {
                 value(mappingResults) {
-                    listOf(FixtureMapping(panel, 3, null,
+                    mapOf(fakeController.controllerId to listOf(FixtureMapping(panel, 3, null,
                         PixelArrayDevice.Config(3, PixelArrayDevice.PixelFormat.RGB8,
                             pixelArrangement = LinearSurfacePixelStrategy(Random(1)))))
+                    )
                 }
 
                 it("finds model entity mapping for the controller and creates a fixture") {
@@ -175,15 +172,17 @@ object ControllersManagerSpec : Spek({
                 it("generates pixel positions within the entity bounds") {
                     expect(addedFixture.pixelCount).toBe(3)
                     expect(addedFixture.pixelLocations)
-                        .toBe(LinearSurfacePixelStrategy(Random(1)).forKnownEntity(3, panel, model))
+                        .toBe(LinearSurfacePixelStrategy(Random(1)).forKnownEntity(3, panel, model!!))
                 }
 
                 context("with pixel location data") {
-                    value(mappingResults) { listOf(FixtureMapping(panel, 3, listOf(
-                        Vector3F(1f, 1f, 1f),
-                        Vector3F(2f, 2f, 3f),
-                        Vector3F(3f, 2f, 3f),
-                    ))) }
+                    value(mappingResults) {
+                        mapOf(fakeController.controllerId to listOf(FixtureMapping(panel, 3, listOf(
+                            Vector3F(1f, 1f, 1f),
+                            Vector3F(2f, 2f, 3f),
+                            Vector3F(3f, 2f, 3f),
+                        ))))
+                    }
 
                     it("uses the pixel data") {
                         expect(addedFixture.pixelCount).toBe(3)
@@ -203,8 +202,6 @@ object ControllersManagerSpec : Spek({
                 }
 
                 it("finds model entity mapping for the controller and creates a fixture") {
-                    val change = fixtureListener.changes.only("fixture changes")
-                    val addedFixture = change.added.only("added fixture")
                     expect(addedFixture.modelEntity).toBe(panel)
                     expect(addedFixture.pixelCount).toBe(59)
                     expect(addedFixture.pixelLocations).toBe(emptyList())
@@ -216,10 +213,16 @@ object ControllersManagerSpec : Spek({
     }
 })
 
-class FakeMappingManager : Observable(), MappingManager {
-    val data = mutableMapOf<ControllerId, List<FixtureMapping>>()
-
-    override var dataHasLoaded: Boolean = false
+class FakeMappingManager(
+    data: Map<ControllerId, List<FixtureMapping>> = mutableMapOf(),
+    dataHasLoaded: Boolean = true
+) : Observable(), MappingManager {
+    val data = data.toMutableMap()
+    override var dataHasLoaded: Boolean = dataHasLoaded
+        set(value) {
+            field = value
+            notifyChanged()
+        }
 
     override suspend fun start(): Unit = TODO("not implemented")
 
@@ -232,25 +235,29 @@ class FakeMappingManager : Observable(), MappingManager {
     }
 }
 
-class FakeControllerManager : ControllerManager {
+class FakeControllerManager(
+    startingControllers: List<FakeController> = emptyList()
+) : BaseControllerManager("FAKE") {
     var hasStarted: Boolean = false
-    var controllerListener: ControllerListener? = null
-    val myControllers = mutableListOf<Controller>()
+    private val controllers = startingControllers.toMutableList()
 
-    override val controllerType: String
-        get() = "FAKE"
-
-    override fun start(controllerListener: ControllerListener) {
+    override fun start() {
         if (hasStarted) error("Already started!")
-
         hasStarted = true
-        this.controllerListener = controllerListener
-
-        myControllers.forEach { controllerListener.onAdd(it) }
+        controllers.forEach { notifyListeners { onAdd(it) } }
     }
 
     override fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>) {
-        TODO("not implemented")
+        if (hasStarted) {
+            controllers.forEach { notifyListeners { onRemove(it) } }
+        }
+
+        controllers.clear()
+
+        controllers.addAll(controllerConfigs.values.flatMap { config -> (config as Config).controllers })
+        if (hasStarted) {
+            controllers.forEach { notifyListeners { onAdd(it) } }
+        }
     }
 
     override fun stop() {
@@ -260,6 +267,18 @@ class FakeControllerManager : ControllerManager {
     override fun logStatus() {
         TODO("not implemented")
     }
+
+    class Config(
+        override val controllerType: String,
+        override val title: String,
+        val controllers: List<FakeController>
+    ) : ControllerConfig {
+        constructor(fakeController: FakeController) : this(
+            fakeController.controllerId.controllerType,
+            fakeController.controllerId.id,
+            listOf(fakeController)
+        )
+    }
 }
 
 class FakeController(
@@ -268,7 +287,7 @@ class FakeController(
     private val anonymousFixtureMapping: FixtureMapping? = null
 ) : Controller {
     val transport = FakeTransport()
-    override val controllerId: ControllerId = ControllerId("FAKE", name)
+    override val controllerId: ControllerId = ControllerId(type, name)
     override fun createTransport(
         entity: Model.Entity?, fixtureConfig: FixtureConfig, transportConfig: TransportConfig?, pixelCount: Int
     ): Transport = transport
@@ -283,6 +302,10 @@ class FakeController(
             bytesPerComponent: Int,
             fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
         ) {}
+    }
+
+    companion object {
+        val type = "FAKE"
     }
 }
 
@@ -299,5 +322,9 @@ class FakeFixtureListener : FixtureListener {
         changes.add(Changes(addedFixtures, removedFixtures))
     }
 
-    class Changes(val added: Collection<Fixture>, val removed: Collection<Fixture>)
+    data class Changes(
+        val added: Collection<Fixture>,
+        val removed: Collection<Fixture>,
+        val stack: Exception = Exception()
+    )
 }

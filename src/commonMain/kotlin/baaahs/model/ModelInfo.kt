@@ -1,6 +1,7 @@
 package baaahs.model
 
 import baaahs.geom.Vector3F
+import baaahs.scene.OpenScene
 
 interface ModelInfo {
     val center: Vector3F
@@ -18,5 +19,6 @@ interface ModelInfo {
 
     companion object {
         val EmptyModel = Model("Empty", emptyList())
+        val EmptyScene = OpenScene(EmptyModel)
     }
 }

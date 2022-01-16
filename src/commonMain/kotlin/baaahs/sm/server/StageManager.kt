@@ -1,7 +1,6 @@
 package baaahs.sm.server
 
 import baaahs.*
-import baaahs.controller.ControllersManager
 import baaahs.doc.SceneDocumentType
 import baaahs.doc.ShowDocumentType
 import baaahs.fixtures.FixtureManager
@@ -11,7 +10,9 @@ import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.mapper.Storage
+import baaahs.scene.OpenScene
 import baaahs.scene.Scene
+import baaahs.scene.SceneChangeListener
 import baaahs.scene.SceneMonitor
 import baaahs.show.DataSource
 import baaahs.show.Show
@@ -31,12 +32,10 @@ class StageManager(
     private val storage: Storage,
     private val fixtureManager: FixtureManager,
     private val clock: Clock,
-    modelProvider: ModelProvider,
     private val gadgetManager: GadgetManager,
-    private val controllersManager: ControllersManager,
     private val serverNotices: ServerNotices,
     private val sceneMonitor: SceneMonitor
-) : BaseShowPlayer(toolchain, modelProvider) {
+) : BaseShowPlayer(toolchain, sceneMonitor) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
 
@@ -56,9 +55,11 @@ class StageManager(
         pubSub.state(Topics.createClientData(fsSerializer), ClientData(storage.fs.rootFile))
 
     internal val showDocumentService = ShowDocumentService()
-    internal val sceneDocumentService = SceneDocumentService().apply {
-        addObserver { sceneMonitor.onChange(it.document) }
-    }
+    internal val sceneDocumentService = SceneDocumentService()
+
+    private var openScene: OpenScene? = null
+
+    private val frameListeners = mutableListOf<FrameListener>()
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
         gadgetManager.registerGadget(id, gadget)
@@ -83,11 +84,13 @@ class StageManager(
     }
 
     fun switchTo(
-        newShow: Show?,
-        newShowState: ShowState? = null,
-        file: Fs.File? = null
+        newShow: Show?, newShowState: ShowState? = null, file: Fs.File? = null
     ) {
         showDocumentService.switchTo(newShow, newShowState, file)
+    }
+
+    fun switchToScene(newScene: Scene?, file: Fs.File? = null) {
+        sceneDocumentService.switchTo(newScene, null, file)
     }
 
     private fun updateRunningScenePath(file: Fs.File?) {
@@ -112,11 +115,11 @@ class StageManager(
             // then perform any housekeeping tasks immediately afterward, to avoid frame lag.
             if (doHousekeepingFirst) housekeeping()
 
-            controllersManager.beforeFrame()
+            frameListeners.forEach { it.beforeFrame() }
             if (showRunner.renderNextFrame()) {
                 fixtureManager.sendFrame()
             }
-            controllersManager.afterFrame()
+            frameListeners.forEach { it.afterFrame() }
 
             if (!doHousekeepingFirst) housekeeping()
         }
@@ -239,6 +242,10 @@ class StageManager(
             facade.notifyChanged()
         }
 
+        private fun List<SceneChangeListener>.notify() {
+            forEach { listener -> listener(this@StageManager.openScene) }
+        }
+
         override fun switchTo(
             newDocument: Scene?,
             newState: Unit?,
@@ -261,10 +268,21 @@ class StageManager(
 
             updateRunningScenePath(file)
 
-            controllersManager.onSceneChange(newDocument)
+            val newOpenScene = newDocument?.open()
+            this@StageManager.openScene = newOpenScene
+            sceneMonitor.onChange(newOpenScene)
 
             notifyOfDocumentChanges(fromClientUpdate)
         }
+    }
+
+    fun addFrameListener(listener: FrameListener): FrameListener {
+        frameListeners.add(listener)
+        return listener
+    }
+
+    fun removeFrameListener(listener: FrameListener) {
+        frameListeners.remove(listener)
     }
 
     inner class Facade : baaahs.ui.Facade() {
@@ -273,5 +291,19 @@ class StageManager(
 
         val currentRenderPlan: RenderPlan?
             get() = this@StageManager.fixtureManager.facade.currentRenderPlan
+
+        val openScene: OpenScene?
+            get() = this@StageManager.openScene
+
+        fun addFrameListener(listener: FrameListener) =
+            this@StageManager.addFrameListener(listener)
+
+        fun removeFrameListener(listener: FrameListener) =
+            this@StageManager.removeFrameListener(listener)
     }
+}
+
+interface FrameListener {
+    fun beforeFrame()
+    fun afterFrame()
 }

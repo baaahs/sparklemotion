@@ -13,10 +13,10 @@ import baaahs.model.LightBar
 import baaahs.model.Model
 import baaahs.net.TestNetwork
 import baaahs.scene.ControllerConfig
+import baaahs.scene.SceneMonitor
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -30,13 +30,15 @@ object SacnIntegrationSpec : Spek({
         val sacnManager by value { SacnManager(link, TestRig().server, ImmediateDispatcher, FakeClock()) }
         val listener by value { SpyFixtureListener() }
         val mappings by value { mapOf<ControllerId, List<FixtureMapping>>() }
-        val mappingManager by value { FakeMappingManager().also { it.data.putAll(mappings); it.dataHasLoaded = true } }
-        val controllersManager by value { ControllersManager(listOf(sacnManager), mappingManager, { TestModel }, listener, CoroutineScope(ImmediateDispatcher)) }
+        val mappingManager by value { FakeMappingManager(mappings) }
+        val controllersManager by value {
+            ControllersManager(listOf(sacnManager), mappingManager, SceneMonitor(testScene()), listener)
+        }
         val configs by value { mapOf<String, ControllerConfig>() }
 
         beforeEachTest {
-            sacnManager.onConfigChange(configs)
             controllersManager.start()
+            sacnManager.onConfigChange(configs)
         }
 
         context("with no declared controllers") {

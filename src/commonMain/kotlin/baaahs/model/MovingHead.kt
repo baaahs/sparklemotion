@@ -48,7 +48,7 @@ interface MovingHeadAdapter {
 
 class MovingHead(
     override val name: String,
-    override val description: String?,
+    override val description: String? = null,
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,

@@ -15,9 +15,9 @@ import baaahs.plugin.core.CorePlugin
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.UpdateMode
+import baaahs.ui.addObserver
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
-import baaahs.util.globalLaunch
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -44,20 +44,21 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
         get() = ContentType.ModelInfo
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+        val sceneProvider = showPlayer.sceneProvider
+
         return object : Feed, RefCounted by RefCounter() {
+            var center: Vector3F? = null
+            var extents: Vector3F? = null
+            val listener = sceneProvider.addObserver(fireImmediately = true) {
+                val model = it.openScene?.model
+                center = model?.center
+                extents = model?.extents
+            }
+
             private val varPrefix = getVarName(id)
 
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                    var center: Vector3F? = null
-                    var extents: Vector3F? = null
-
-                    globalLaunch {
-                        val model = showPlayer.modelProvider.getModel()
-                        center = model.center
-                        extents = model.extents
-                    }
-
                     return object : ProgramFeed {
                         override val updateMode: UpdateMode get() = UpdateMode.PER_FRAME
                         val centerUniform = glslProgram.getUniform("${varPrefix}.center")
@@ -72,6 +73,10 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
                         }
                     }
                 }
+            }
+
+            override fun release() {
+                sceneProvider.removeObserver(listener)
             }
         }
     }

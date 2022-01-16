@@ -1,6 +1,9 @@
 package baaahs.di
 
-import baaahs.*
+import baaahs.MediaDevices
+import baaahs.Pinky
+import baaahs.PinkySettings
+import baaahs.PubSub
 import baaahs.controller.ControllersManager
 import baaahs.controller.SacnManager
 import baaahs.dmx.Dmx
@@ -24,6 +27,7 @@ import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
 import baaahs.scene.SceneMonitor
+import baaahs.scene.SceneProvider
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
@@ -109,12 +113,12 @@ interface PinkyModule : KModule {
                 scoped<FixtureManager> { FixtureManagerImpl(get(), get()) }
                 scoped { GadgetManager(get(), get(), get(pinkyContext)) }
                 scoped<Toolchain> { RootToolchain(get()) }
-                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
                 scoped { Pinky.NetworkStats() }
                 scoped { BrainManager(get(), get(), get(), get(), get(), get(pinkyContext)) }
                 scoped { SacnManager(get(), get(), get(PinkyModule.pinkyMainDispatcher), get()) }
                 scoped { sceneMonitor }
-                scoped<ModelProvider> { get<SceneMonitor>() }
+                scoped<SceneProvider> { get<SceneMonitor>() }
                 scoped<MappingManager> { MappingManagerImpl(get(), get()) }
                 scoped<ModelManager> { ModelManagerImpl() }
                 scoped(named("ControllerManagers")) {
@@ -125,7 +129,7 @@ interface PinkyModule : KModule {
                 scoped {
                     ControllersManager(
                         get(named("ControllerManagers")), get(), get(),
-                        get<FixtureManager>(), CoroutineScope(get<CoroutineDispatcher>(PinkyModule.pinkyMainDispatcher))
+                        get<FixtureManager>()
                     )
                 }
                 scoped { ShaderLibraryManager(get(), get()) }

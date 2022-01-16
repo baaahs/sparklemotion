@@ -19,6 +19,10 @@ import baaahs.gl.render.ModelRenderEngine
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.testToolchain
 import baaahs.model.Model
+import baaahs.model.ModelData
+import baaahs.model.SurfaceDataForTest
+import baaahs.scene.OpenScene
+import baaahs.scene.Scene
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.live.LinkedShaderInstance
@@ -96,18 +100,25 @@ class FakeModelEntity(
     override fun createVisualizer(simulationEnv: SimulationEnv) = TODO("not implemented")
 }
 
-class TestModelSurface(
+fun testModelSurface(
     name: String,
     expectedPixelCount: Int? = 1,
-    private val vertices: List<Vector3F> = emptyList()
-) : Model.Surface(name, name, expectedPixelCount, emptyList(), emptyList(), Model.Geometry(emptyList())) {
-    override fun allVertices(): Collection<Vector3F> = vertices
-}
+    vertices: List<Vector3F> = emptyList()
+) = Model.Surface(name, name, expectedPixelCount, emptyList(), emptyList(), Model.Geometry(vertices))
+
+fun testModelSurfaceData(
+    name: String,
+    expectedPixelCount: Int? = 1,
+    vertices: List<Vector3F> = emptyList()
+) = SurfaceDataForTest(name, name, expectedPixelCount = expectedPixelCount, vertices = vertices)
 
 fun fakeModel(vararg entities: Model.Entity) = modelForTest(entities.toList())
 fun fakeModel(entities: List<Model.Entity>) = modelForTest(entities)
 
-val TestModel = modelForTest(listOf(TestModelSurface("Panel")))
+val TestModel = modelForTest(listOf(testModelSurface("Panel")))
+val TestModelData = ModelData("Test Model", listOf(testModelSurfaceData("Panel")))
+fun testScene(model: Model = TestModel) = OpenScene(model)
+fun testSceneData(model: ModelData = TestModelData) = Scene(model, emptyMap(), emptyMap())
 
 fun modelForTest(entities: List<Model.Entity>) = Model("Test Model", entities)
 fun modelForTest(vararg entities: Model.Entity) = Model("Test Model", entities.toList())

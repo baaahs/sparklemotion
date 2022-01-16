@@ -14,22 +14,27 @@ import org.w3c.dom.HTMLDivElement
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.i
 import react.useContext
 
 val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
     val appContext = useContext(appContext)
 
-    try {
-        val clientPreview by state {
-            ClientPreview(appContext.webClient.modelProvider, appContext.showPlayer, appContext.clock, appContext.plugins)
+    val sceneManager = appContext.sceneManager
+    observe(sceneManager)
+    val model = sceneManager.openScene?.model
+
+    val rootEl = ref<Element>()
+
+    val clientPreview = memo(model) {
+        model?.let {
+            ClientPreview(it, appContext.showPlayer, appContext.clock, appContext.plugins)
         }
+    }
 
-        val rootEl = ref<Element>()
+    if (clientPreview != null) {
         clientPreview.visualizer.rotate = props.visualizerControl.rotate
-
         val visualizer = clientPreview.visualizer
-        onMount {
+        onMount(visualizer) {
             visualizer.container = rootEl.current as HTMLDivElement
 
             withCleanup {
@@ -41,14 +46,13 @@ val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
         useResizeListener(rootEl) {
             visualizer.resize()
         }
+    }
 
-        card(Styles.visualizerCard on PaperStyle.root) {
-            ref = rootEl
-        }
-    } catch (e: Exception) {
-        logger.error(e) { "Error rendering Visualizer control." }
-        card(Styles.visualizerCard on PaperStyle.root) {
-            i { +"Not supported on iOS yet :-(" }
+    card(Styles.visualizerCard on PaperStyle.root) {
+        ref = rootEl
+
+        if (model == null) {
+            +"No scene loaded!"
         }
     }
 }
