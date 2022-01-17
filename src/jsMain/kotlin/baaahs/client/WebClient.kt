@@ -1,6 +1,5 @@
 package baaahs.client
 
-import baaahs.ModelProvider
 import baaahs.PinkyState
 import baaahs.PubSub
 import baaahs.app.settings.UiSettings
@@ -15,6 +14,7 @@ import baaahs.libraries.ShaderLibraries
 import baaahs.mapper.JsMapperUi
 import baaahs.net.Network
 import baaahs.plugin.Plugins
+import baaahs.scene.SceneProvider
 import baaahs.sim.HostedWebApp
 import baaahs.sm.webapi.Topics
 import baaahs.util.globalLaunch
@@ -26,7 +26,7 @@ class WebClient(
     private val webClientLink: Network.Link,
     private val pubSub: PubSub.Client,
     private val toolchain: Toolchain,
-    private val modelProvider: ModelProvider,
+    private val sceneProvider: SceneProvider,
     private val storage: ClientStorage,
     private val sceneEditorClient: SceneEditorClient,
     private val mapperUi: JsMapperUi,
@@ -120,8 +120,8 @@ class WebClient(
         val isMapping: Boolean
             get() = this@WebClient.pinkyState == PinkyState.Mapping
 
-        val modelProvider: ModelProvider
-            get() = this@WebClient.modelProvider
+        val sceneProvider: SceneProvider
+            get() = this@WebClient.sceneProvider
 
         val notifier: Notifier.Facade
             get() = this@WebClient.notifier.facade

@@ -12,11 +12,16 @@ import baaahs.imaging.NativeBitmap
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
+import baaahs.scene.SceneProvider
 import baaahs.shaders.PixelBrainShader
 import baaahs.shaders.SolidBrainShader
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.proto.*
-import baaahs.util.*
+import baaahs.ui.addObserver
+import baaahs.util.Clock
+import baaahs.util.Logger
+import baaahs.util.Stats
+import baaahs.util.asMillis
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -28,7 +33,7 @@ const val USE_SOLID_SHADERS = false
 
 class Mapper(
     private val network: Network,
-    private val modelProvider: ModelProvider,
+    private val sceneProvider: SceneProvider,
     private val mapperUi: MapperUi,
     private val mediaDevices: MediaDevices,
     private val pinkyAddress: Network.Address,
@@ -59,8 +64,10 @@ class Mapper(
 
     init {
         mapperUi.listen(this)
-        globalLaunch {
-            mapperUi.addWireframe(modelProvider.getModel())
+        sceneProvider.addObserver(fireImmediately = true) {
+            it.openScene?.model?.let {
+                mapperUi.addWireframe(it)
+            }
         }
     }
 
@@ -882,7 +889,6 @@ class Mapper(
 
 
     inner class Facade : baaahs.ui.Facade() {
-        val modelProvider = this@Mapper.modelProvider
     }
 }
 

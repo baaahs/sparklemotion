@@ -119,7 +119,7 @@ interface PinkyModule : KModule {
                 scoped { SacnManager(get(), get(), get(PinkyModule.pinkyMainDispatcher), get()) }
                 scoped { sceneMonitor }
                 scoped<SceneProvider> { get<SceneMonitor>() }
-                scoped<MappingManager> { MappingManagerImpl(get(), get()) }
+                scoped<MappingManager> { MappingManagerImpl(get(), get(), CoroutineScope(get(pinkyContext))) }
                 scoped<ModelManager> { ModelManagerImpl() }
                 scoped(named("ControllerManagers")) {
                     listOf(

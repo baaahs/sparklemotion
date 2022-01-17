@@ -78,7 +78,7 @@ object PinkySpec : Spek({
                 gadgetManager, serverNotices, sceneMonitor
             )
         }
-        val mappingManager by value { MappingManagerImpl(storage, sceneMonitor) }
+        val mappingManager by value { MappingManagerImpl(storage, sceneMonitor, coroutineScope) }
         val controllersManager by value {
             ControllersManager(listOf(brainManager), mappingManager, sceneMonitor, fixtureManager)
         }

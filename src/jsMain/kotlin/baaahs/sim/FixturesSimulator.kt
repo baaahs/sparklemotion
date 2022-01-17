@@ -1,21 +1,23 @@
 package baaahs.sim
 
-import baaahs.ModelProvider
 import baaahs.io.Fs
 import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.plugin.Plugins
+import baaahs.scene.SceneProvider
 import baaahs.sm.brain.sim.BrainSimulator
 import baaahs.sm.brain.sim.BrainSimulatorManager
+import baaahs.ui.addObserver
 import baaahs.util.Clock
 import baaahs.util.coroutineExceptionHandler
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.Visualizer
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
 
 /**
  * Steps to setting up a simulator:
@@ -29,7 +31,7 @@ import kotlinx.coroutines.launch
  */
 class FixturesSimulator(
     private val visualizer: Visualizer,
-    private val modelProvider: ModelProvider,
+    private val sceneProvider: SceneProvider,
     network: Network,
     private val dmxUniverse: FakeDmxUniverse,
     private val fs: Fs,
@@ -52,41 +54,53 @@ class FixturesSimulator(
         component(wledsSimulator)
         component(visualizer)
     }
-    private lateinit var fixtureSimulations: List<FixtureSimulation>
+    private lateinit var fixtureSimulations: Map<Model.Entity, FixtureSimulation>
 
-    private val launchJob = coroutineScope.launch(coroutineExceptionHandler) {
-        val model = modelProvider.getModel()
+    private val launchJob = coroutineScope.async(coroutineExceptionHandler) {
+        var model = sceneProvider.openScene?.model
+        if (model == null) {
+            val deferrable = CompletableDeferred<Unit>()
+            sceneProvider.addObserver {
+                model = sceneProvider.openScene?.model
+                deferrable.complete(Unit)
+            }
+            deferrable.await()
+        }
 
-        fixtureSimulations = model.allEntities
-            .sortedBy(Model.Entity::name)
-            .mapNotNull { entity -> entity.createFixtureSimulation(simulationEnv) }
+        fixtureSimulations = buildMap {
+            model!!.visit { entity ->
+                entity.createFixtureSimulation(simulationEnv)?.let { put(entity, it) }
+            }
+        }
+
+        model!!
     }
 
     suspend fun generateMappingData() {
-        launchJob.join()
+        val model = launchJob.await()
 
         val mappingSession = MappingSession(
             clock.now(),
-            fixtureSimulations.mapNotNull { it.mappingData },
+            fixtureSimulations.values.mapNotNull { it.mappingData },
             null,
             null,
             notes = "Simulated mapping session"
         )
 
         val mappingSessionPath = Storage(mapperFs, plugins).saveSession(mappingSession)
-        val modelName = modelProvider.getModel().name
+        val modelName = model.name
         val mappingDataPath = fs.resolve("mapping", modelName, "simulated", mappingSessionPath.name)
         mapperFs.renameFile(mappingSessionPath, mappingDataPath)
     }
 
     fun launchControllers() {
-        fixtureSimulations.forEach { fixtureSimulation ->
+        fixtureSimulations.values.forEach { fixtureSimulation ->
             fixtureSimulation.launch()
         }
     }
 
     fun addToVisualizer() {
-        fixtureSimulations.forEach {
+        fixtureSimulations.values.forEach {
             visualizer.add(it.entityVisualizer)
         }
     }

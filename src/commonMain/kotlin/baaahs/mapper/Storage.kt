@@ -19,7 +19,6 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     val fsSerializer = FsServerSideSerializer()
 
     private val configFile = fs.resolve("config.json")
-    val oldSceneJsonFile = fs.resolve("scene.json")
 
     companion object {
         private val logger = Logger("Storage")

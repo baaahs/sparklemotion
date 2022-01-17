@@ -1,7 +1,6 @@
 package baaahs.di
 
 import baaahs.MediaDevices
-import baaahs.ModelProvider
 import baaahs.PinkySettings
 import baaahs.SheepSimulator
 import baaahs.browser.RealMediaDevices
@@ -16,6 +15,7 @@ import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
 import baaahs.plugin.SimulatorPlugins
 import baaahs.scene.SceneMonitor
+import baaahs.scene.SceneProvider
 import baaahs.sim.*
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.PermissiveFirmwareDaddy
@@ -56,7 +56,7 @@ class JsSimulatorModule(
     override fun getModule(): Module {
         return super.getModule().apply {
             single { Visualizer(get()) }
-            single<ModelProvider> { sceneMonitor_ }
+            single<SceneProvider> { sceneMonitor_ }
             single<PixelArranger> { SwirlyPixelArranger(pixelDensity, pixelSpacing) }
             single { BridgeClient(bridgeNetwork_, pinkyAddress_) }
             single { Plugins.buildForSimulator(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }

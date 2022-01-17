@@ -107,7 +107,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val builder = memo(gl, props.shader, props.previewShaderBuilder) {
         gl?.let {
             props.previewShaderBuilder
-                ?: PreviewShaderBuilder(props.shader!!, toolchain, appContext.webClient.modelProvider)
+                ?: PreviewShaderBuilder(props.shader!!, toolchain, appContext.webClient.sceneProvider)
         }
     }
 

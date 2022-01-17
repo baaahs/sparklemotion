@@ -34,7 +34,10 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
     vizPixels: VizPixels? = null
 ) : BaseEntityVisualizer<T>(pixelArray) {
     private val mesh: Mesh<BoxGeometry, MeshBasicMaterial> = Mesh()
-    override val obj: Object3D get() = mesh
+    override val obj = Group().apply {
+        add(mesh)
+        vizPixels?.addTo(VizObj(this))
+    }
 
     override fun update(newEntity: T) {
         super.update(newEntity)
