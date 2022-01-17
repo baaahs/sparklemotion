@@ -40,17 +40,19 @@ class SurfaceVisualizer(
     private val lines: List<Line<*, LineBasicMaterial>>
     val panelNormal: Vector3 get() = surfaceGeometry.panelNormal
     val geometry: Geometry get() = surfaceGeometry.geometry
-    private var parent: VizObj? = null
     var vizPixels: VizPixels? = vizPixels
         set(value) {
-            val meshObj = VizObj(mesh)
+            val meshObj = VizObj(obj)
             field?.removeFrom(meshObj)
             value?.addTo(meshObj)
 
             field = value
         }
-    override val obj: Object3D
-        get() = mesh
+    override val obj = Group().apply {
+        println("New SurfaceVisualizer for ${entity.title}: vizPixels=$vizPixels")
+        add(mesh)
+        vizPixels?.addTo(VizObj(this))
+    }
 
     init { update(entity) }
 

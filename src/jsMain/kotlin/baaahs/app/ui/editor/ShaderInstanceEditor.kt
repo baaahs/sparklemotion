@@ -65,7 +65,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
                 props.mutableShaderInstance,
                 toolchain
             ) { shader ->
-                PreviewShaderBuilder(shader, toolchain, appContext.webClient.modelProvider)
+                PreviewShaderBuilder(shader, toolchain, appContext.webClient.sceneProvider)
             }
 
         val observer = newEditingShader.addObserver {

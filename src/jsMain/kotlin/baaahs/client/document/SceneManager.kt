@@ -9,23 +9,28 @@ import baaahs.client.Notifier
 import baaahs.doc.SceneDocumentType
 import baaahs.io.RemoteFsSerializer
 import baaahs.plugin.Plugins
-import baaahs.scene.*
+import baaahs.scene.MutableScene
+import baaahs.scene.OpenScene
+import baaahs.scene.Scene
+import baaahs.scene.SceneMonitor
 import baaahs.show.mutable.MutableDocument
+import baaahs.ui.IObservable
+import baaahs.ui.Observable
 
 class SceneManager(
     pubSub: PubSub.Client,
     remoteFsSerializer: RemoteFsSerializer,
     private val plugins: Plugins,
     notifier: Notifier,
-    fileDialog: FileDialog
+    fileDialog: FileDialog,
+    private val sceneMonitor: SceneMonitor
 ) : DocumentManager<Scene, Unit>(
     SceneDocumentType, pubSub, Scene.createTopic(plugins.serialModule, remoteFsSerializer),
     remoteFsSerializer, plugins, notifier, fileDialog, Scene.serializer()
-), SceneProvider {
+), IObservable by Observable() {
     override val facade = Facade()
 
-    private val sceneChangeListeners = mutableListOf<SceneChangeListener>()
-    override var openScene: OpenScene? = null
+    private var openScene: OpenScene? = null
     private var mutableScene: MutableScene? = null
 
     override suspend fun onNew(dialogHolder: DialogHolder) {
@@ -36,15 +41,6 @@ class SceneManager(
 
     override suspend fun onDownload() {
         UiActions.downloadScene(document!!, plugins)
-    }
-
-    override fun addSceneChangeListener(callback: SceneChangeListener): SceneChangeListener {
-        sceneChangeListeners.add(callback)
-        return callback
-    }
-
-    override fun removeSceneChangeListener(callback: SceneChangeListener) {
-        sceneChangeListeners.remove(callback)
     }
 
     override fun switchTo(documentState: DocumentState<Scene, Unit>?) {
@@ -60,7 +56,7 @@ class SceneManager(
 
         update(newScene, newFile, newIsUnsaved)
         openScene = newScene?.open()
-        sceneChangeListeners.forEach { it(openScene) }
+        sceneMonitor.onChange(openScene)
         facade.notifyChanged()
     }
 

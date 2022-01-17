@@ -9,6 +9,9 @@ import baaahs.scene.SceneProvider
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 interface MappingManager : IObservable {
     val dataHasLoaded: Boolean
@@ -23,15 +26,14 @@ interface MappingManager : IObservable {
 class MappingManagerImpl(
     private val storage: Storage,
     private val sceneProvider: SceneProvider,
+    private val coroutineScope: CoroutineScope = GlobalScope
 ) : Observable(), MappingManager {
     private var sessionMappingResults: SessionMappingResults? = null
     override var dataHasLoaded: Boolean = false
 
     override suspend fun start() {
-        onSceneChange(sceneProvider.openScene)
-
-        sceneProvider.addObserver {
-            TODO("implement scene change listener for MappingManagerImpl!")
+        sceneProvider.addObserver(fireImmediately = true) {
+            coroutineScope.launch { onSceneChange(sceneProvider.openScene) }
         }
     }
 

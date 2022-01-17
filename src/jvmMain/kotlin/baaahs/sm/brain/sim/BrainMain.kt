@@ -1,9 +1,11 @@
 package baaahs.sm.brain.sim
 
 import baaahs.Color
-import baaahs.Pluggables
+import baaahs.io.RealFs
+import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.net.JvmNetwork
+import baaahs.plugin.Plugins
 import baaahs.sm.brain.proto.Pixels
 import baaahs.util.SystemClock
 import baaahs.util.globalLaunch
@@ -14,6 +16,7 @@ import java.awt.Canvas
 import java.awt.Dimension
 import java.awt.Frame
 import java.awt.Graphics
+import java.io.File
 import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -29,7 +32,12 @@ fun main(args: Array<String>) {
 
 class BrainMain(private val args: Args) {
     fun run() = globalLaunch {
-        val model = Pluggables.loadModel(args.model).getModel()
+        val fs = RealFs("Files", File(".").toPath())
+        val storage = Storage(fs, Plugins.safe(Plugins.dummyContext))
+        val sceneFile = fs.resolve(args.scene ?: error("No scene specified."))
+        val model = storage.loadScene(sceneFile)
+            ?.open()?.model
+            ?: error("No such scene file: \"$sceneFile\"")
 
         val network = JvmNetwork()
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
@@ -37,12 +45,12 @@ class BrainMain(private val args: Args) {
 
         val mySurface = if (args.anonymous) {
             null
-        } else if (args.surfaceName == null) {
+        } else if (args.entityName == null) {
             if (Random.nextBoolean())
                 model.allEntities.filterIsInstance<Model.Surface>().random()
             else null
         } else {
-            args.surfaceName?.let { model.findEntity(it) }
+            args.entityName?.let { model.findEntity(it) }
         }
         println("I'll be ${mySurface?.name ?: "anonymous"}!")
         mySurface?.let { brainSimulator.forcedFixtureName(mySurface.name) }
@@ -51,12 +59,11 @@ class BrainMain(private val args: Args) {
     }
 
     class Args(parser: ArgParser) {
-        val model by parser.option(ArgType.String, shortName = "m")
-            .default(Pluggables.defaultModel)
+        val scene by parser.option(ArgType.String)
 
         val brainId by parser.option(ArgType.String, description = "brain ID")
 
-        val surfaceName by parser.option(ArgType.String, description = "surface name")
+        val entityName by parser.option(ArgType.String, description = "entity name")
 
         val anonymous by parser.option(ArgType.Boolean, description = "anonymous surface")
             .default(false)

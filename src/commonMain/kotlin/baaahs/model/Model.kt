@@ -47,6 +47,10 @@ class Model(
 
     fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> = emptyMap()
 
+    fun visit(callback: (Entity) -> Unit) {
+        entities.forEach { entity -> entity.visit(callback) }
+    }
+
     interface Entity {
         val name: String
         val title: String get() = name
@@ -62,6 +66,8 @@ class Model(
 
         fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation?
         fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*>
+
+        fun visit(callback: (Entity) -> Unit) = callback(this)
     }
 
     abstract class BaseEntity : Entity {
@@ -74,6 +80,12 @@ class Model(
 
         override val containedEntities: List<Entity>
             get() = super.containedEntities + entities.flatMap { it.containedEntities }
+
+        override fun visit(callback: (Entity) -> Unit) {
+            super.visit(callback).also {
+                entities.forEach { it.visit(callback) }
+            }
+        }
     }
 
     interface EntityWithGeometry: Entity {

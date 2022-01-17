@@ -26,15 +26,17 @@ class ObjGroup(
     override val entities: List<Model.Entity> = loader.allEntities // .map { it.transform(transformation) }
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
-        object : FixtureSimulation {
-            override val mappingData: MappingSession.SurfaceData? get() = null
-            override val entityVisualizer: EntityVisualizer<*> = createVisualizer(simulationEnv)
-            override val previewFixture: Fixture? get() = null
+        ObjGroupSimulation(simulationEnv)
 
-            override fun launch() {
-                // No-op?
-            }
+    inner class ObjGroupSimulation(private val simulationEnv: SimulationEnv) : FixtureSimulation {
+        override val mappingData: MappingSession.SurfaceData? get() = null
+        override val entityVisualizer: EntityVisualizer<*> = createVisualizer(simulationEnv)
+        override val previewFixture: Fixture? get() = null
+
+        override fun launch() {
+            // No-op.
         }
+    }
 
     override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*> =
         visualizerBuilder.createObjGroupVisualizer(this, simulationEnv)
