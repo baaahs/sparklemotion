@@ -17,7 +17,7 @@ import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableDocument
-import baaahs.sm.webapi.ShowProblem
+import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Topics
 import kotlinx.html.js.onClickFunction
 import materialui.components.dialog.dialog
@@ -42,13 +42,13 @@ class ShowManager(
 
     private var openShow: OpenShow? = null
 
-    private val showProblems = arrayListOf<ShowProblem>().apply {
+    private val problems = arrayListOf<Problem>().apply {
         pubSub.subscribe(Topics.showProblems) {
             clear()
             addAll(it)
             facade.notifyChanged()
         }
-    } as List<ShowProblem>
+    } as List<Problem>
 
 
     override suspend fun onNew(dialogHolder: DialogHolder) {
@@ -131,7 +131,7 @@ class ShowManager(
     inner class Facade : DocumentManager<Show, ShowState>.Facade() {
         val show get() = this@ShowManager.document
         val openShow get() = this@ShowManager.openShow
-        val showProblems get() = this@ShowManager.showProblems
+        val showProblems get() = this@ShowManager.problems
 
         override fun onEdit(mutableDocument: MutableDocument<Show>, pushToUndoStack: Boolean) {
             onEdit(mutableDocument.build(), openShow!!.getShowState(), pushToUndoStack)

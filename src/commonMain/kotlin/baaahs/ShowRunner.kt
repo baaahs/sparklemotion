@@ -5,7 +5,7 @@ import baaahs.gl.render.RenderManager
 import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
-import baaahs.sm.webapi.ShowProblem
+import baaahs.sm.webapi.Problem
 import baaahs.util.Clock
 import baaahs.util.Logger
 
@@ -16,7 +16,7 @@ class ShowRunner(
     internal val clock: Clock,
     private val renderManager: RenderManager,
     private val fixtureManager: FixtureManager,
-    updateProblems: (List<ShowProblem>) -> Unit
+    updateProblems: (List<Problem>) -> Unit
 ) {
     private var showState: ShowState = initialShowState ?: openShow.getShowState()
     private var activePatchSetChanged: Boolean = true

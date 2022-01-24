@@ -6,8 +6,8 @@ import baaahs.getBang
 import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.mutable.MutableShow
+import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
-import baaahs.sm.webapi.ShowProblem
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -69,10 +69,10 @@ class OpenShow(
                 .sortedBy { it.title }
         }
 
-    val allProblems: List<ShowProblem>
+    val allProblems: List<Problem>
         get() = buildList {
             addAll(missingPlugins.map { desc ->
-                ShowProblem(
+                Problem(
                     "Missing plugin \"${desc.title}\".",
                     "Some things may not work properly.",
                     severity = Severity.WARN

@@ -31,14 +31,14 @@ class SearchShaderLibraries(val terms: String) {
 }
 
 @Serializable
-data class ShowProblem(
+data class Problem(
     val title: String,
     val message: String? = null,
     val severity: Severity = Severity.ERROR,
     val id: String = randomId("error")
 )
 
-fun Collection<ShowProblem>.severity() = maxOfOrNull { it.severity }
+fun Collection<Problem>.severity() = maxOfOrNull { it.severity }
 
 enum class Severity(val icon: Icon) {
     INFO(CommonIcons.Info),

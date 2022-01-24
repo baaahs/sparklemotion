@@ -35,7 +35,7 @@ object Topics {
         PubSub.Topic("sacn/devices", MapSerializer(String.serializer(), SacnDevice.serializer()))
 
     val showProblems =
-        PubSub.Topic("showProblems", ListSerializer(ShowProblem.serializer()))
+        PubSub.Topic("showProblems", ListSerializer(Problem.serializer()))
 
     val movingHeadPresets =
         PubSub.Topic(
