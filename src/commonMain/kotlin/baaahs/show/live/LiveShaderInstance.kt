@@ -9,8 +9,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.show.*
+import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
-import baaahs.sm.webapi.ShowProblem
 import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 
@@ -34,16 +34,16 @@ class LiveShaderInstance(
             }
         }
 
-    val problems: List<ShowProblem>
+    val problems: List<Problem>
         get() =
-            arrayListOf<ShowProblem>().apply {
+            arrayListOf<Problem>().apply {
                 incomingLinks
                     .forEach { (_, link) ->
                         val dataSourceLink = link as? DataSourceLink
                         val unknownDataSource = dataSourceLink?.dataSource as? UnknownDataSource
                         unknownDataSource?.let {
                             add(
-                                ShowProblem(
+                                Problem(
                                     "Unresolved data source for shader \"$title\".",
                                     it.errorMessage, severity = Severity.WARN
                                 )
@@ -53,7 +53,7 @@ class LiveShaderInstance(
 
                 if (extraLinks.isNotEmpty()) {
                     add(
-                        ShowProblem(
+                        Problem(
                             "Extra incoming links on shader \"$title\"",
                             "Unknown ports: ${extraLinks.sorted().joinToString(", ")}",
                             severity = Severity.WARN
@@ -63,7 +63,7 @@ class LiveShaderInstance(
 
                 if (missingLinks.isNotEmpty()) {
                     add(
-                        ShowProblem(
+                        Problem(
                             "Missing incoming links on shader \"$title",
                             "No link for ports: ${missingLinks.sorted().joinToString(", ")}",
                             severity = Severity.ERROR
@@ -73,7 +73,7 @@ class LiveShaderInstance(
 
                 if (shader.outputPort.contentType.isUnknown()) {
                     add(
-                        ShowProblem(
+                        Problem(
                             "Result content type is unknown for shader \"$title\".", severity = Severity.ERROR
                         )
                     )
@@ -81,7 +81,7 @@ class LiveShaderInstance(
 
                 if (shader.errors.isNotEmpty()) {
                     add(
-                        ShowProblem(
+                        Problem(
                             "GLSL errors in shader \"$title\".", severity = Severity.ERROR
                         )
                     )
