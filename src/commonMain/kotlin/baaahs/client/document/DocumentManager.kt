@@ -2,8 +2,6 @@ package baaahs.client.document
 
 import baaahs.DocumentState
 import baaahs.PubSub
-import baaahs.app.ui.dialog.FileDialog
-import baaahs.app.ui.document.DialogHolder
 import baaahs.client.Notifier
 import baaahs.doc.DocumentType
 import baaahs.doc.FileType
@@ -12,8 +10,9 @@ import baaahs.io.RemoteFsSerializer
 import baaahs.plugin.Plugins
 import baaahs.show.mutable.EditHandler
 import baaahs.sm.webapi.*
+import baaahs.ui.DialogHolder
+import baaahs.ui.confirm
 import baaahs.util.UndoStack
-import baaahs.window
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
@@ -24,7 +23,7 @@ abstract class DocumentManager<T, TState>(
     private val remoteFsSerializer: RemoteFsSerializer,
     private val plugins: Plugins,
     private val notifier: Notifier,
-    private val fileDialog: FileDialog,
+    private val fileDialog: IFileDialog,
     private val tSerializer: KSerializer<T>
 ) {
     abstract val facade: Facade
@@ -38,7 +37,6 @@ abstract class DocumentManager<T, TState>(
     var isUnsaved: Boolean = false
         private set
     private var documentAsSaved: T? = null
-        private set
     val isLoaded: Boolean
         get() = document != null
     var isSynched: Boolean = false
@@ -134,7 +132,7 @@ abstract class DocumentManager<T, TState>(
         if (!isUnsaved) return true
 
         // TODO: Use react dialog instead.
-        return window.confirm("${documentType.title} is unsaved, okay to close it?")
+        return confirm("${documentType.title} is unsaved, okay to close it?")
     }
 
     protected fun launch(block: suspend () -> Unit) {

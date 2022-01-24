@@ -3,8 +3,6 @@ package baaahs.client.document
 import baaahs.DocumentState
 import baaahs.PubSub
 import baaahs.app.ui.UiActions
-import baaahs.app.ui.dialog.FileDialog
-import baaahs.app.ui.document.DialogHolder
 import baaahs.client.Notifier
 import baaahs.doc.SceneDocumentType
 import baaahs.io.RemoteFsSerializer
@@ -14,6 +12,7 @@ import baaahs.scene.OpenScene
 import baaahs.scene.Scene
 import baaahs.scene.SceneMonitor
 import baaahs.show.mutable.MutableDocument
+import baaahs.ui.DialogHolder
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
 
@@ -22,7 +21,7 @@ class SceneManager(
     remoteFsSerializer: RemoteFsSerializer,
     private val plugins: Plugins,
     notifier: Notifier,
-    fileDialog: FileDialog,
+    fileDialog: IFileDialog,
     private val sceneMonitor: SceneMonitor
 ) : DocumentManager<Scene, Unit>(
     SceneDocumentType, pubSub, Scene.createTopic(plugins.serialModule, remoteFsSerializer),
