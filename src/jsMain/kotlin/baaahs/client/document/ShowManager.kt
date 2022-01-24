@@ -3,8 +3,6 @@ package baaahs.client.document
 import baaahs.DocumentState
 import baaahs.PubSub
 import baaahs.app.ui.UiActions
-import baaahs.app.ui.dialog.FileDialog
-import baaahs.app.ui.document.DialogHolder
 import baaahs.client.ClientStageManager
 import baaahs.client.Notifier
 import baaahs.doc.ShowDocumentType
@@ -19,6 +17,7 @@ import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableDocument
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Topics
+import baaahs.ui.DialogHolder
 import kotlinx.html.js.onClickFunction
 import materialui.components.dialog.dialog
 import materialui.components.dialogcontent.dialogContent
@@ -32,7 +31,7 @@ class ShowManager(
     remoteFsSerializer: RemoteFsSerializer,
     private val toolchain: Toolchain,
     notifier: Notifier,
-    fileDialog: FileDialog,
+    fileDialog: IFileDialog,
     private val stageManager: ClientStageManager
 ) : DocumentManager<Show, ShowState>(
     ShowDocumentType, pubSub, ShowState.createTopic(toolchain.plugins.serialModule, remoteFsSerializer),

@@ -3,6 +3,8 @@ package baaahs.app.ui.document
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.client.document.DocumentManager
+import baaahs.ui.DialogHolder
+import baaahs.ui.View
 import baaahs.ui.withEvent
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
@@ -14,11 +16,6 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.useContext
-
-interface DialogHolder {
-    fun showDialog(block: RBuilder.() -> Unit)
-    fun closeDialog()
-}
 
 private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { props ->
     val appContext = useContext(appContext)
@@ -34,7 +31,11 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
     val handleNew by eventHandler(documentManager) {
         launch {
             documentManager.onNew(object : DialogHolder {
-                override fun showDialog(block: RBuilder.() -> Unit) { renderDialog = block }
+                override fun showDialog(view: View) {
+                    renderDialog = {
+                        with (view) { render() }
+                    }
+                }
                 override fun closeDialog() { renderDialog = null }
             })
         }

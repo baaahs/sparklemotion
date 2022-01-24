@@ -2,7 +2,6 @@ package baaahs.mapper
 
 import baaahs.app.ui.AllStyles
 import baaahs.app.ui.Styles
-import baaahs.app.ui.appContext
 import baaahs.app.ui.model.modelEditor
 import baaahs.client.SceneEditorClient
 import baaahs.client.document.SceneManager
@@ -26,7 +25,6 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
-import react.useContext
 import styled.inlineStyles
 
 private enum class PageTabs {
@@ -37,7 +35,6 @@ private enum class PageTabs {
 }
 
 val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { props ->
-    val appContext = useContext(appContext)
     val theme = memo {
         createMuiTheme {
             palette { type = PaletteType.dark }

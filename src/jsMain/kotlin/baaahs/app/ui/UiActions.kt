@@ -14,15 +14,15 @@ import kotlinx.serialization.json.Json
 import org.w3c.dom.HTMLAnchorElement
 import org.w3c.files.Blob
 
-object UiActions {
-    fun downloadShow(show: Show, plugins: Plugins) {
+actual object UiActions {
+    actual fun downloadShow(show: Show, plugins: Plugins) {
         val type = FileType.Show
         val filename = "${show.title}${type.extension}"
         val contentType = "application/json;charset=utf-8;"
         doDownload(filename, show, ShowMigrator, contentType, plugins)
     }
 
-    fun downloadScene(scene: Scene, plugins: Plugins) {
+    actual fun downloadScene(scene: Scene, plugins: Plugins) {
         val type = FileType.Scene
         val filename = "${scene.title}${type.extension}"
         val contentType = "application/json;charset=utf-8;"

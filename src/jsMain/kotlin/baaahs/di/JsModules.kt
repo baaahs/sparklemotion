@@ -5,6 +5,7 @@ import baaahs.PubSub
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.browser.RealMediaDevices
 import baaahs.client.*
+import baaahs.client.document.IFileDialog
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.gl.RootToolchain
@@ -65,6 +66,7 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped { ClientStageManager(get(), get(), get()) }
             scoped<RemoteFsSerializer> { PubSubRemoteFsClientBackend(get()) }
             scoped { FileDialog() }
+            scoped<IFileDialog> { get<FileDialog>() }
             scoped { ShowManager(get(), get(), get(), get(), get(), get()) }
             scoped { SceneManager(get(), get(), get(), get(), get(), get()) }
             scoped { SceneMonitor() }
