@@ -9,6 +9,7 @@ import baaahs.sim.SimulationEnv
 import baaahs.util.three.addPadding
 import three.js.*
 import three_ext.clear
+import three_ext.set
 
 class LightBarVisualizer(
     lightBar: LightBar,
@@ -28,6 +29,28 @@ class LightBarVisualizer(
 
     override fun getSegments(): List<PolyLine.Segment> =
         listOf(PolyLine.Segment(entity.startVertex, entity.endVertex, pixelCount_UNKNOWN_BUSTED))
+
+    override fun updateContainer(container: Box3Helper, pixelLocations: Array<Vector3>) {
+        val vector = entity.endVertex - entity.startVertex
+        val center = entity.startVertex + vector / 2f
+        val length = vector.length()
+        val normal = vector.normalize()
+
+        container.box.setFromPoints(
+            arrayOf(
+                Vector3(-.5, -.5, -length / 2f + .5),
+                Vector3(.5, .5, length / 2f + .5)
+            )
+        )
+
+        val quaternion = Quaternion().setFromUnitVectors(
+            Vector3F.facingForward.toVector3(),
+            normal.toVector3()
+        )
+        container.position.set(center)
+        container.rotation.setFromQuaternion(quaternion)
+        container.scale.set(Vector3F.unit3d)
+    }
 }
 
 class PolyLineVisualizer(
@@ -47,11 +70,11 @@ class PolyLineVisualizer(
     override fun getSegments(): List<PolyLine.Segment> =
         entity.segments
 
-    override fun addPadding(container: Box3, newEntity: PolyLine) {
-        container.min.x -= entity.xPadding
-        container.max.x += entity.xPadding
-        container.min.y -= entity.yPadding
-        container.max.y += entity.yPadding
+    override fun addPadding(container: Box3Helper) {
+        container.box.min.x -= entity.xPadding
+        container.box.max.x += entity.xPadding
+        container.box.min.y -= entity.yPadding
+        container.box.max.y += entity.yPadding
     }
 }
 
@@ -92,16 +115,20 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
         entityStyle.applyToPoints(pixelsMaterial)
     }
 
-    open fun addPadding(container: Box3, newEntity: T) {
-        container.addPadding(.02)
+    open fun addPadding(container: Box3Helper) {
+        container.box.addPadding(.02)
+    }
+
+    open fun updateContainer(container: Box3Helper, pixelLocations: Array<Vector3>) {
+        container.box.setFromPoints(pixelLocations)
+        addPadding(container)
     }
 
     override fun update(newEntity: T, callback: ((EntityVisualizer<*>) -> Unit)?) {
         super.update(newEntity, callback)
 
         val pixelLocations = getPixelLocations().map { it.toVector3() }.toTypedArray()
-        containerBox.setFromPoints(pixelLocations)
-        addPadding(containerBox, newEntity)
+        updateContainer(container, pixelLocations)
 
         strandsGroup.clear()
         getSegments().forEach { segment ->
