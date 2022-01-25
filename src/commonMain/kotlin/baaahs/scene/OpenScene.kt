@@ -1,6 +1,7 @@
 package baaahs.scene
 
 import baaahs.model.Model
+import baaahs.sm.webapi.Problem
 
 class OpenScene(
     val model: Model,
@@ -12,4 +13,9 @@ class OpenScene(
         scene.controllers,
         scene.fixtures
     )
+
+    val allProblems: List<Problem>
+        get() = buildList {
+            model.visit { entity -> addAll(entity.problems) }
+        }
 }

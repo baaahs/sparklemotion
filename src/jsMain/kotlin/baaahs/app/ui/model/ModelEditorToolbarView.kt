@@ -6,7 +6,8 @@ import baaahs.model.EntityData
 import baaahs.model.ModelUnit
 import baaahs.ui.*
 import baaahs.util.CacheBuilder
-import baaahs.visualizer.Visualizer
+import baaahs.visualizer.BaseVisualizer
+import baaahs.visualizer.TransformMode
 import external.react_draggable.Draggable
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
@@ -36,8 +37,11 @@ import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.div
 import react.dom.header
+import kotlin.collections.forEach
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
-private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelEditorToolbar") { props ->
+private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelEditorToolbar", true) { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
     val visualizer = props.visualizer
@@ -47,7 +51,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
     val hideNewEntityMenu by handler { _: Event, _: String -> newEntityMenuAnchor = null }
 
     val handleToolChange by handler(visualizer) { _: Event, value: Any? ->
-        val modeEnum = Visualizer.TransformMode.find(value as String)
+        val modeEnum = TransformMode.find(value as String)
         visualizer.transformMode = modeEnum
         forceRender()
     }
@@ -60,7 +64,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
     val transformMode = visualizer.transformMode
     val gridSize = transformMode.getGridSize(visualizer)
     val gridSnap = gridSize != null
-    val gridSizeMemo = memo { mutableMapOf<Visualizer.TransformMode, Double?>() }
+    val gridSizeMemo = memo { mutableMapOf<TransformMode, Double?>() }
 
     val handleGridSnapChange by eventHandler(visualizer, transformMode) {
         val gridEnabled = (it.target as HTMLInputElement).checked
@@ -126,7 +130,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
                     attrs.onChange = handleToolChange
                     attrs.value = transformMode.modeName
 
-                    Visualizer.TransformMode.values().forEach { theMode ->
+                    TransformMode.values().forEach { theMode ->
                         toggleButton {
                             attrs.title = theMode.name
                             attrs.value = theMode.modeName
@@ -180,7 +184,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
 }
 
 external interface ModelEditorToolbarProps : Props {
-    var visualizer: Visualizer.Facade
+    var visualizer: BaseVisualizer.Facade
     var modelUnit: ModelUnit
     var onAddEntity: (entityData: EntityData) -> Unit
 }

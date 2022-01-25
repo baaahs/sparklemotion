@@ -18,6 +18,7 @@ import baaahs.gl.patch.ProgramNode
 import baaahs.gl.render.ModelRenderEngine
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.testToolchain
+import baaahs.model.EntityId
 import baaahs.model.Model
 import baaahs.model.ModelData
 import baaahs.model.SurfaceDataForTest
@@ -88,7 +89,8 @@ class FakeModelEntity(
     override val description: String = name,
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
-    override val scale: Vector3F = Vector3F.unit3d
+    override val scale: Vector3F = Vector3F.unit3d,
+    override val id: EntityId = Model.Entity.nextId()
 ) : Model.BaseEntity() {
     override val bounds: Pair<Vector3F, Vector3F>
         get() = Vector3F.origin to Vector3F.origin

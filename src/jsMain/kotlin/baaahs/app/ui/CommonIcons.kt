@@ -5,6 +5,7 @@ import baaahs.ui.Icon
 actual fun getCommonIcons() = object : PlatformIcons {
     override val Add get() = jsIcon(materialui.icons.AddCircleOutline)
     override val Download get() = jsIcon(materialui.icons.GetApp)
+    override val Reload get() = jsIcon(materialui.icons.Cached)
 
     override val Fixture get() = jsIcon(materialui.icons.Airplay)
     override val Patch get() = jsIcon(materialui.icons.SettingsInputComponent)

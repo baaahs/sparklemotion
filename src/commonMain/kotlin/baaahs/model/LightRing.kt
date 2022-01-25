@@ -11,6 +11,7 @@ import baaahs.sim.LightRingSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.visualizer.EntityVisualizer
 import baaahs.visualizer.visualizerBuilder
+import kotlinx.serialization.Transient
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -26,6 +27,7 @@ class LightRing(
     val planeNormal: Vector3F = Vector3F.facingForward,
     val firstPixelRadians: Float = 0f,
     val pixelDirection: PixelDirection = PixelDirection.Clockwise,
+    @Transient override val id: EntityId = Model.Entity.nextId()
 ) : Model.BaseEntity(), LinearPixelArray {
     override val deviceType: DeviceType
         get() = PixelArrayDevice

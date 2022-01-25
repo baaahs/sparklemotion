@@ -152,6 +152,9 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
         }
     }
 
+    fun <T : Function<*>> namedHandler(name: String, vararg watch: Any?, block: T) =
+        _handler(name, watch, block)
+
     fun <T : Function<*>> handler(vararg watch: Any?, block: T): ReadOnlyProperty<Any?, T> {
         return ReadOnlyProperty { _, property ->
             _handler(property.name, watch, block)

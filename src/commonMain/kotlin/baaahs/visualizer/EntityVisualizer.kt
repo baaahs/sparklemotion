@@ -9,6 +9,7 @@ import baaahs.ui.View
 expect interface EntityVisualizer<T : Model.Entity> : IObservable {
     val entity: T
     val title: String
+    var isEditing: Boolean
     var mapperIsRunning: Boolean
     var selected: Boolean
 
@@ -25,6 +26,8 @@ interface VisualizerBuilder {
 
     fun getTitleAndDescEditorView(editingEntity: EditingEntity<out Model.Entity>): View
     fun getTransformEditorView(editingEntity: EditingEntity<out Model.Entity>): View
+    fun getGridEditorView(editingEntity: EditingEntity<out Grid>): View
+    fun getLightBarEditorView(editingEntity: EditingEntity<out LightBar>): View
     fun getObjModelEditorView(editingEntity: EditingEntity<out ObjGroup>): View
 }
 

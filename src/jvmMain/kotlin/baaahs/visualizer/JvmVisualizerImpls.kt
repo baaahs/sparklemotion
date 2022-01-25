@@ -11,6 +11,7 @@ actual class VizObj {
 actual interface EntityVisualizer<T : Model.Entity> : IObservable {
     actual val entity: T
     actual val title: String
+    actual var isEditing: Boolean
     actual var mapperIsRunning: Boolean
     actual var selected: Boolean
 }

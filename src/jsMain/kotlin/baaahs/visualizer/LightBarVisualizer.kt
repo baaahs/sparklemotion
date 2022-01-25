@@ -1,11 +1,14 @@
 package baaahs.visualizer
 
+import baaahs.geom.Vector3F
 import baaahs.model.LightBar
 import baaahs.model.Model
 import baaahs.model.PixelArray
 import baaahs.model.PolyLine
 import baaahs.sim.SimulationEnv
+import baaahs.util.three.addPadding
 import three.js.*
+import three_ext.clear
 
 class LightBarVisualizer(
     lightBar: LightBar,
@@ -14,8 +17,17 @@ class LightBarVisualizer(
 ) : PixelArrayVisualizer<LightBar>(lightBar, simulationEnv, vizPixels) {
     init { update(entity) }
 
+    // TODO!!!
+    val pixelCount_UNKNOWN_BUSTED = 100
+
     override fun isApplicable(newEntity: Model.Entity): LightBar? =
         newEntity as? LightBar
+
+    override fun getPixelLocations(): List<Vector3F> =
+        entity.calculatePixelLocalLocations(pixelCount_UNKNOWN_BUSTED)
+
+    override fun getSegments(): List<PolyLine.Segment> =
+        listOf(PolyLine.Segment(entity.startVertex, entity.endVertex, pixelCount_UNKNOWN_BUSTED))
 }
 
 class PolyLineVisualizer(
@@ -26,6 +38,21 @@ class PolyLineVisualizer(
 
     override fun isApplicable(newEntity: Model.Entity): PolyLine? =
         newEntity as? PolyLine
+
+    override fun getPixelLocations(): List<Vector3F> =
+        entity.segments.flatMap {
+            it.calculatePixelLocations()
+        }
+
+    override fun getSegments(): List<PolyLine.Segment> =
+        entity.segments
+
+    override fun addPadding(container: Box3, newEntity: PolyLine) {
+        container.min.x -= entity.xPadding
+        container.max.x += entity.xPadding
+        container.min.y -= entity.yPadding
+        container.max.y += entity.yPadding
+    }
 }
 
 abstract class PixelArrayVisualizer<T : PixelArray>(
@@ -33,95 +60,66 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
     simulationEnv: SimulationEnv,
     vizPixels: VizPixels? = null
 ) : BaseEntityVisualizer<T>(pixelArray) {
-    private val mesh: Mesh<BoxGeometry, MeshBasicMaterial> = Mesh()
+    //    private val mesh: Mesh<BoxGeometry, MeshBasicMaterial> = Mesh()
+    private val containerMaterial = LineDashedMaterial()
+    private val containerBox = Box3()
+    private val container = Box3Helper(containerBox).apply { material = containerMaterial }
+
+    private val strandsGroup = Group()
+    private val strandsMaterial = LineDashedMaterial()
+
+    private val pixelsGeometry = BufferGeometry()
+    private val pixelsMaterial = PointsMaterial()
+    private val pixels = Points(pixelsGeometry, pixelsMaterial)
+
     override val obj = Group().apply {
-        add(mesh)
+        add(container)
+        add(strandsGroup)
+        add(pixels)
         vizPixels?.addTo(VizObj(this))
     }
 
-    override fun update(newEntity: T) {
-        super.update(newEntity)
+    abstract fun getPixelLocations(): List<Vector3F>
+    abstract fun getSegments(): List<PolyLine.Segment>
 
-        val bounds = entity.bounds
-        val startVertex = bounds.first
-        val endVertex = bounds.second
-        val normal = endVertex.minus(startVertex).normalize()
+    override fun applyStyle(entityStyle: EntityStyle) {
+        entityStyle.applyToLine(containerMaterial)
+        strandsGroup.children.forEach {
+            it as ArrowHelper
+            entityStyle.applyToLine(it.line.material, EntityStyle.Use.Strand)
+            entityStyle.applyToMesh(it.cone.material, EntityStyle.Use.Strand)
+        }
+        entityStyle.applyToPoints(pixelsMaterial)
+    }
 
-        // TODO: This is wrong.
-        val width = endVertex.x - startVertex.x
-        val length = endVertex.y - startVertex.y
-        mesh.geometry = BoxGeometry(width, length, 1).apply {
-            translate(width / 2, length / 2, 0)
+    open fun addPadding(container: Box3, newEntity: T) {
+        container.addPadding(.02)
+    }
 
-            Rotator(Vector3(0, 1, 0), normal.toVector3())
-                .rotate(this)
+    override fun update(newEntity: T, callback: ((EntityVisualizer<*>) -> Unit)?) {
+        super.update(newEntity, callback)
 
-            with(startVertex) { translate(x, y, z) }
+        val pixelLocations = getPixelLocations().map { it.toVector3() }.toTypedArray()
+        containerBox.setFromPoints(pixelLocations)
+        addPadding(containerBox, newEntity)
+
+        strandsGroup.clear()
+        getSegments().forEach { segment ->
+            val vector = segment.endVertex - segment.startVertex
+            val normal = vector.normalize()
+            val length = vector.length()
+            strandsGroup.add(
+                ArrowHelper(
+                    normal.toVector3(),
+                    segment.startVertex.toVector3(),
+                    length,
+                    0x228822,
+                    length / segment.pixelCount,
+                    length / segment.pixelCount
+                )
+            )
         }
 
-        mesh.material = barMaterial
+        pixelsGeometry.setFromPoints(pixelLocations)
     }
-
-//    override val title: String = pixelArray.name
-//    override var mapperIsRunning: Boolean = false
-//
-//    override var selected: Boolean = false
-//        set(value) {
-//            boxMesh.material = if (value) selectedBarMaterial else barMaterial
-//            field = value
-//        }
-//
-//    private var parent: VizObj? = null
-//    var vizPixels : VizPixels? = vizPixels
-//        set(value) {
-//            parent?.let { scene ->
-//                field?.removeFrom(scene)
-//                value?.addTo(scene)
-//            }
-//
-//            field = value
-//        }
-
-//    private val boxMesh: Mesh<BoxGeometry, MeshBasicMaterial>
-
-    private val barMaterial = MeshBasicMaterial().apply {
-        wireframeLinewidth = 1
-        color.set(0xaaaaaa)
-        wireframe = true
-    }
-    private val selectedBarMaterial = MeshBasicMaterial().apply {
-        wireframeLinewidth = 3
-        color.set(0xffccaa)
-        wireframe = true
-    }
-
-//    init {
-//        val bounds = pixelArray.bounds
-//        val startVertex = bounds.first
-//        val endVertex = bounds.second
-//        val normal = endVertex.minus(startVertex).normalize()
-//
-//        // TODO: This is wrong.
-//        val width = endVertex.x - startVertex.x
-//        val length = endVertex.y - startVertex.y
-//
-//        val boxGeom = BoxGeometry(width, length, 1)
-//        boxGeom.translate(width / 2, length / 2, 0)
-//
-//        Rotator(Vector3(0, 1, 0), normal.toVector3())
-//            .rotate(boxGeom)
-//
-//        with(startVertex) { boxGeom.translate(x, y, z) }
-//
-//        boxMesh = Mesh(boxGeom, barMaterial).apply {
-//            matrixAutoUpdate = false
-//            entityVisualizer = this@LightBarVisualizer
-//        }
-//    }
-
-//    override fun addTo(parent: VizObj) {
-//        parent.add(VizObj(boxMesh))
-//        vizPixels?.addTo(parent)
-//        this.parent = parent
-//    }
 }

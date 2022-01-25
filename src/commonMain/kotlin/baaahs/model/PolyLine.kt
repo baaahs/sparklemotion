@@ -10,6 +10,7 @@ import baaahs.sim.LightBarSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.visualizer.EntityVisualizer
 import baaahs.visualizer.visualizerBuilder
+import kotlinx.serialization.Transient
 
 class Grid(
     name: String,
@@ -22,9 +23,12 @@ class Grid(
     rowGap: Float,
     columnGap: Float,
     direction: GridData.Direction,
-    zigZag: Boolean
-): PolyLine(name, description, calcSegments(rows, columns, rowGap, columnGap, direction, zigZag), position, rotation, scale) {
-
+    zigZag: Boolean,
+    id: EntityId = Model.Entity.nextId()
+): PolyLine(
+    name, description,
+    calcSegments(rows, columns, rowGap, columnGap, direction, zigZag),
+    position, rotation, scale, columnGap, rowGap, id) {
 }
 
 fun calcSegments(
@@ -37,17 +41,27 @@ fun calcSegments(
 ): List<PolyLine.Segment> {
     return when (direction) {
         GridData.Direction.ColumnsThenRows ->
-            (0 until columns).map { yI ->
+            (0 until rows).map { yI ->
                 val y = yI * rowGap
                 PolyLine.Segment(
                     Vector3F(0f, y, 0f),
-                    Vector3F(columns * columnGap, y, 0f),
-                    rows
+                    Vector3F((columns - 1) * columnGap, y, 0f),
+                    columns
                 ).let {
                     if (zigZag && yI % 2 == 1) it.reverse() else it
                 }
             }
-        GridData.Direction.RowsThenColumns -> TODO("implement RowsThenColumns")
+        GridData.Direction.RowsThenColumns ->
+            (0 until columns).map { xI ->
+                val x = xI * columnGap
+                PolyLine.Segment(
+                    Vector3F(x, 0f, 0f),
+                    Vector3F(x, (rows - 1) * rowGap, 0f),
+                    rows
+                ).let {
+                    if (zigZag && xI % 2 == 1) it.reverse() else it
+                }
+            }
     }
 }
 
@@ -58,6 +72,9 @@ open class PolyLine(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
+    val xPadding: Float,
+    val yPadding: Float,
+    @Transient override val id: EntityId = Model.Entity.nextId()
 ) : Model.BaseEntity(), PlacedPixelArray {
     override val deviceType: DeviceType
         get() = PixelArrayDevice

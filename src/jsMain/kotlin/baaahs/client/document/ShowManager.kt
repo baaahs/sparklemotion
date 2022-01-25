@@ -113,7 +113,7 @@ class ShowManager(
         UiActions.downloadShow(document!!, toolchain.plugins)
     }
 
-    override fun switchTo(documentState: DocumentState<Show, ShowState>?) {
+    override fun switchTo(documentState: DocumentState<Show, ShowState>?, isLocalEdit: Boolean) {
         val newShow = documentState?.document
         val newShowState = documentState?.state
         val newIsUnsaved = documentState?.isUnsaved ?: false

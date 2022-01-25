@@ -9,6 +9,7 @@ import baaahs.scene.*
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class ModelData(
@@ -41,6 +42,7 @@ sealed interface EntityData {
     val position: Vector3F
     val rotation: EulerAngle
     val scale: Vector3F
+    @Transient val id: EntityId
 
     fun edit(): MutableEntity<*>
     fun open(): Model.Entity
@@ -53,6 +55,7 @@ data class ObjModelData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
+    @Transient override val id: EntityId = Model.Entity.nextId(),
     val objData: String,
     val objDataIsFileRef: Boolean,
     @Polymorphic
@@ -60,12 +63,8 @@ data class ObjModelData(
 ) : EntityData {
     override fun edit(): MutableEntity<ObjGroup> = MutableObjModel(this)
 
-    override fun open(): Model.Entity {
-        val objModelLoader = ObjModelLoader.load(objData) {
-            metadata?.getMetadataFor(this@ObjModelData)?.expectedPixelCount
-        }
-        return ObjGroup(title, description, position, rotation, scale, metadata, objModelLoader)
-    }
+    override fun open(): ObjGroup =
+        ObjGroup(title, description, position, rotation, scale, metadata, objData, objDataIsFileRef, id)
 }
 
 @Serializable @SerialName("MovingHead")
@@ -75,6 +74,7 @@ data class MovingHeadData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
+    @Transient override val id: EntityId = Model.Entity.nextId(),
     val adapter: MovingHeadAdapter = Shenzarpy
 
 ) : EntityData {
@@ -82,7 +82,7 @@ data class MovingHeadData(
         MutableMovingHeadData(this)
 
     override fun open(): Model.Entity =
-        MovingHead(title, description, position, rotation, scale, 0, adapter)
+        MovingHead(title, description, position, rotation, scale, 0, adapter, id)
 }
 
 @Serializable @SerialName("LightBar")
@@ -92,6 +92,7 @@ data class LightBarData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
+    @Transient override val id: EntityId = Model.Entity.nextId(),
     val startVertex: Vector3F,
     val endVertex: Vector3F
 ) : EntityData {
@@ -99,7 +100,7 @@ data class LightBarData(
         MutableLightBarData(this)
 
     override fun open(): Model.Entity =
-        LightBar(title, description, position, rotation, scale, startVertex, endVertex)
+        LightBar(title, description, position, rotation, scale, startVertex, endVertex, id)
 }
 
 @Serializable @SerialName("PolyLine")
@@ -109,6 +110,7 @@ data class PolyLineData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
+    @Transient override val id: EntityId = Model.Entity.nextId(),
     val segments: List<SegmentData>
 ) : EntityData {
     override fun edit(): MutableEntity<PolyLine> =
@@ -117,7 +119,7 @@ data class PolyLineData(
     override fun open(): Model.Entity =
         PolyLine(title, description, segments.map {
             PolyLine.Segment(it.startVertex, it.endVertex, it.pixelCount)
-        }, position, rotation, scale)
+        }, position, rotation, scale, 1f, 1f, id)
 }
 
 @Serializable @SerialName("Grid")
@@ -127,6 +129,7 @@ data class GridData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
+    @Transient override val id: EntityId = Model.Entity.nextId(),
     val rows: Int,
     val columns: Int,
     val rowGap: Float,
@@ -136,13 +139,13 @@ data class GridData(
 ) : EntityData {
     override fun edit(): MutableEntity<Grid> = MutableGridData(this)
 
-    enum class Direction {
-        ColumnsThenRows,
-        RowsThenColumns,
+    enum class Direction(val title: String) {
+        ColumnsThenRows("Columns then Rows"),
+        RowsThenColumns("Rows then Columns")
     }
 
     override fun open(): Model.Entity = Grid(
-        title, description, position, rotation, scale, rows, columns, rowGap, columnGap, direction, zigZag
+        title, description, position, rotation, scale, rows, columns, rowGap, columnGap, direction, zigZag, id
     )
 }
 
@@ -160,6 +163,7 @@ data class LightRingData(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
+    @Transient override val id: EntityId = Model.Entity.nextId(),
     val center: Vector3F = Vector3F.origin,
     val radius: Float = 1f,
     val planeNormal: Vector3F = Vector3F.facingForward,
@@ -170,7 +174,7 @@ data class LightRingData(
         MutableLightRingData(this)
 
     override fun open(): Model.Entity =
-        LightRing(title, description, position, rotation, scale, center, radius, planeNormal, firstPixelRadians, pixelDirection)
+        LightRing(title, description, position, rotation, scale, center, radius, planeNormal, firstPixelRadians, pixelDirection, id)
 }
 
 /** For use only in tests for now! */
@@ -181,8 +185,9 @@ data class SurfaceDataForTest(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
-    val expectedPixelCount: Int?,
-    val vertices: List<Vector3F>
+    @Transient override val id: EntityId = Model.Entity.nextId(),
+    val expectedPixelCount: Int? = null,
+    val vertices: List<Vector3F> = emptyList()
 ) : EntityData {
     override fun edit(): MutableEntity<LightRing> =
         TODO("MutableSurfaceDataForTest not implemented yet!")
@@ -197,11 +202,17 @@ data class SurfaceDataForTest(
 @Polymorphic
 sealed interface EntityMetadataProvider {
     fun getMetadataFor(entity: EntityData): EntityMetadata
+    fun getMetadataFor(entity: Model.Entity): EntityMetadata
 }
 
 @Serializable
 class ConstEntityMetadataProvider(val pixelCount: Int?): EntityMetadataProvider {
     override fun getMetadataFor(entity: EntityData): EntityMetadata =
+        object : EntityMetadata {
+            override val expectedPixelCount: Int? get() = pixelCount
+        }
+
+    override fun getMetadataFor(entity: Model.Entity): EntityMetadata =
         object : EntityMetadata {
             override val expectedPixelCount: Int? get() = pixelCount
         }
@@ -212,6 +223,12 @@ class StrandCountEntityMetadataProvider(
     val data: Map<String, Int>
 ) : EntityMetadataProvider {
     override fun getMetadataFor(entity: EntityData): EntityMetadata =
+        object : EntityMetadata {
+            override val expectedPixelCount: Int?
+                get() = data[entity.title]
+        }
+
+    override fun getMetadataFor(entity: Model.Entity): EntityMetadata =
         object : EntityMetadata {
             override val expectedPixelCount: Int?
                 get() = data[entity.title]

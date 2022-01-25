@@ -42,7 +42,7 @@ class SceneManager(
         UiActions.downloadScene(document!!, plugins)
     }
 
-    override fun switchTo(documentState: DocumentState<Scene, Unit>?) {
+    override fun switchTo(documentState: DocumentState<Scene, Unit>?, isLocalEdit: Boolean) {
         val newScene = documentState?.document
         val newSceneState = documentState?.state
         val newIsUnsaved = documentState?.isUnsaved ?: false
@@ -55,13 +55,22 @@ class SceneManager(
 
         update(newScene, newFile, newIsUnsaved)
         openScene = newScene?.open()
+        if (!isLocalEdit) mutableScene = null
         sceneMonitor.onChange(openScene)
         facade.notifyChanged()
     }
 
+    private fun edit(): MutableScene =
+        mutableScene ?: run {
+            (document ?: error("No open scene.")).edit().also {
+                mutableScene = it
+            }
+        }
+
     inner class Facade : DocumentManager<Scene, Unit>.Facade() {
         val scene get() = this@SceneManager.document
         val openScene get() = this@SceneManager.openScene
+        val mutableScene get() = this@SceneManager.edit()
 
         override fun onEdit(mutableDocument: MutableDocument<Scene>, pushToUndoStack: Boolean) {
             onEdit(mutableDocument.build(), Unit, pushToUndoStack)
@@ -69,6 +78,10 @@ class SceneManager(
 
         override fun onEdit(document: Scene, pushToUndoStack: Boolean) {
             onEdit(document, Unit, pushToUndoStack)
+        }
+
+        fun onEdit(pushToUndoStack: Boolean = true) {
+            this.onEdit(mutableScene.build(), pushToUndoStack)
         }
     }
 }

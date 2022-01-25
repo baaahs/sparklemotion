@@ -1,7 +1,9 @@
 package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
-import baaahs.geom.toEulerAngle
+import baaahs.geom.EulerAngle
+import baaahs.geom.Vector3F
+import baaahs.geom.toThreeEuler
 import baaahs.model.EntityData
 import baaahs.model.Model
 import baaahs.scene.EditingEntity
@@ -14,17 +16,11 @@ import baaahs.ui.on
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
-import baaahs.visualizer.PixelArranger
-import baaahs.visualizer.SwirlyPixelArranger
-import baaahs.visualizer.Visualizer
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.onMouseDownFunction
+import baaahs.visualizer.*
 import materialui.components.formcontrol.enums.FormControlMargin
 import materialui.components.formcontrol.formControl
 import materialui.components.list.enums.ListStyle
 import materialui.components.list.list
-import materialui.components.listitem.listItem
-import materialui.components.listitemtext.listItemText
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLDivElement
 import react.Props
@@ -33,100 +29,92 @@ import react.RHandler
 import react.dom.div
 import react.dom.header
 import react.useContext
-import three_ext.toVector3F
+import three.js.Object3D
 
 private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
 
-    val visualizer = memo { Visualizer(appContext.clock) }
-    val visualizerEl = ref<Element>()
-
-    observe(visualizer.facade)
     val mutableModel = props.mutableScene.model
+    val modelData = mutableModel.build()
+    var modelRebuilt = false
+    val currentOpenModel = memo(modelData) {
+        modelRebuilt = true
+        modelData.open()
+    }
 
     val simulationEnv = memo {
         SimulationEnv {
             component(appContext.clock)
             component(FakeDmxUniverse())
             component<PixelArranger>(SwirlyPixelArranger(0.2f, 3f))
-            component(visualizer)
         }
     }
 
-    val createEditableEntity by handler(mutableModel, simulationEnv, visualizer, props.onEdit) { mutableEntity: MutableEntity<*> ->
-        EditingEntity(mutableEntity, mutableModel.units, simulationEnv).apply {
-            visualizer.add(entityVisualizer)
-            entityVisualizer.addObserver { viz ->
-                mutableEntity.position = viz.obj.position.toVector3F()
-                mutableEntity.rotation = viz.obj.rotation.toEulerAngle()
-                mutableEntity.scale = viz.obj.scale.toVector3F()
-                notifyChanged()
-            }
-
-            addObserver {
-                props.onEdit()
-            }
-        }
+    val visualizer = memo(simulationEnv) {
+        ModelVisualizer(currentOpenModel, appContext.clock, simulationEnv, true)
     }
+    val visualizerParentEl = ref<Element>()
 
-    val editingEntities = memo(mutableModel, createEditableEntity) {
-        println("(re)create editingEntities")
-        visualizer.facade.clear()
-        mutableModel.entities.map { mutableEntity ->
-            createEditableEntity(mutableEntity)
-        }
-    }.toMutableList()
-
-    val selectedEditingEntity = editingEntities.find {
-        it.openEntity == visualizer.facade.selectedEntity?.entity
+    if (modelRebuilt) {
+        visualizer.model = currentOpenModel
     }
 
     val handleAddEntity by handler(mutableModel, props.onEdit) { newEntityData: EntityData ->
         val newMutableEntity = newEntityData.edit()
         mutableModel.entities.add(newMutableEntity)
-        editingEntities.add(createEditableEntity(newMutableEntity))
         props.onEdit()
     }
 
+    var selectedEntity by state<MutableEntity<*>?> { null }
+    val handleListItemSelect by handler { mutableEntity: MutableEntity<*>? ->
+        selectedEntity = mutableEntity
+        visualizer.selectedEntity =
+            mutableEntity?.let { visualizer.findById(it.id)?.modelEntity }
+    }
+
     onMount {
-        visualizer.facade.container = visualizerEl.current as HTMLDivElement
+        val parent = visualizerParentEl.current as HTMLDivElement
+        parent.insertBefore(visualizer.facade.canvas, null)
         visualizer.resize()
+
+        val observer = visualizer.facade.addObserver {
+            selectedEntity = visualizer.selectedEntity?.let { mutableModel.findById(it.id) }
+        }
 
         withCleanup {
-            visualizer.facade.container = null
+            parent.removeChild(visualizer.facade.canvas)
+            observer.remove()
         }
     }
 
-    useResizeListener(visualizerEl) {
+    useResizeListener(visualizerParentEl) {
         visualizer.resize()
     }
 
-    fun RBuilder.buildList(editingEntity: EditingEntity<*>) {
-        listItem {
-            attrs.button = true
-            attrs.selected = editingEntity.entityVisualizer == selectedEditingEntity?.entityVisualizer
-            attrs.onClickFunction = {
-                visualizer.facade.select(editingEntity.entityVisualizer)
-                it.stopPropagation()
+    val editingEntity = memo(selectedEntity, mutableModel.units, simulationEnv, props.onEdit) {
+        selectedEntity?.let { selected ->
+            EditingEntity(selected, mutableModel.units, simulationEnv) {
+                props.onEdit()
             }
-            attrs.onMouseDownFunction = {
-                it.stopPropagation()
-            }
-
-            listItemText { +editingEntity.mutableEntity.title }
-
-//            if (entityWrapper is EntityGroupVisualizer) {
-//                list(styles.entityList on ListStyle.root) {
-//                    entityWrapper.children.forEach { child ->
-//                        buildList(child)
-//                    }
-//                }
-//            }
         }
     }
 
+    fun <T : Model.Entity> EditingEntity<T>.renderEditorPanels(builder: RBuilder) {
+        val entity = this@renderEditorPanels
 
+        with(mutableEntity) {
+            val visualization = visualizer.findById(id)
+                ?: error("found no Object3D for $id ($title / ${this::class.simpleName})")
+            val transformation = Transformation(this, visualization)
+            entity.addObserver { transformation.onChange() }
+            with (builder) {
+                getEditorPanels().forEach { editorPanel ->
+                    with (editorPanel.getView(entity)) { render() }
+                }
+            }
+        }
+    }
 
     div(+styles.editorPanes) {
         div(+styles.navigatorPane) {
@@ -134,8 +122,12 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
             div(+styles.navigatorPaneContent) {
                 list(styles.entityList on ListStyle.root) {
-                    editingEntities.forEach { entityVisualizer ->
-                        buildList(entityVisualizer)
+                    mutableModel.entities.forEach { mutableEntity ->
+                        entityListItem {
+                            attrs.mutableEntity = mutableEntity
+                            attrs.selectedMutableEntity = selectedEntity
+                            attrs.onSelect = handleListItemSelect
+                        }
                     }
                 }
             }
@@ -143,7 +135,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
         div(+styles.visualizerPane) {
             div(+styles.visualizer) {
-                ref = visualizerEl
+                ref = visualizerParentEl
 
                 modelEditorToolbar {
                     attrs.visualizer = visualizer.facade
@@ -157,11 +149,10 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
             header { +"Properties" }
 
             div(+styles.propertiesPaneContent) {
-                selectedEditingEntity?.let { editingEntity ->
+                editingEntity?.let {
                     formControl {
                         attrs.margin = FormControlMargin.dense
-
-                        editingEntity.renderEditorPanels(this)
+                        it.renderEditorPanels(this)
                     }
                 }
             }
@@ -169,9 +160,28 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     }
 }
 
-fun <T : Model.Entity> EditingEntity<T>.renderEditorPanels(builder: RBuilder) = with (builder) {
-    mutableEntity.getEditorPanels().forEach { editorPanel ->
-        with (editorPanel.getView(this@renderEditorPanels)) { render() }
+class Transformation(
+    private val entity: MutableEntity<*>,
+    private val visualization: Object3D,
+    private var position: Vector3F = entity.position,
+    private var rotation: EulerAngle = entity.rotation,
+    private var scale: Vector3F = entity.scale
+) {
+    fun onChange() {
+        if (entity.position != position) {
+            position = entity.position
+            visualization.position.copy(position.toVector3())
+        }
+
+        if (entity.rotation != rotation) {
+            rotation = entity.rotation
+            visualization.rotation = rotation.toThreeEuler()
+        }
+
+        if (entity.scale != scale) {
+            scale = entity.scale
+            visualization.scale.copy(scale.toVector3())
+        }
     }
 }
 
