@@ -30,7 +30,7 @@ class MonitorUi(
     }
 
     override fun onClose() {
-        visualizer.stopRendering = true
+        visualizer.stopRendering()
         remoteVisualizerClient.close()
     }
 }

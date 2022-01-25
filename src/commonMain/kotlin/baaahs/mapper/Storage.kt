@@ -86,7 +86,9 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     suspend fun updateConfig(update: PinkyConfig.() -> PinkyConfig) {
         val oldConfig = loadConfig() ?: PinkyConfig(null, null)
         val newConfig = oldConfig.update()
-        configFile.write(json.encodeToString(PinkyConfig.serializer(), newConfig), true)
+        if (newConfig != oldConfig) {
+            configFile.write(json.encodeToString(PinkyConfig.serializer(), newConfig), true)
+        }
     }
 
     private suspend fun <T> loadJson(file: Fs.File, serializer: KSerializer<T>): T? {

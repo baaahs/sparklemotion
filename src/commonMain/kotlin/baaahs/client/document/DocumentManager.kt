@@ -58,7 +58,7 @@ abstract class DocumentManager<T, TState>(
 
     protected val editStateChannel =
         pubSub.subscribe(topic) { incoming ->
-            switchTo(incoming)
+            switchTo(incoming, false)
             undoStack.reset(incoming)
             facade.notifyChanged()
         }
@@ -114,7 +114,7 @@ abstract class DocumentManager<T, TState>(
         serverCommands.switchToCommand(SwitchToCommand(null))
     }
 
-    abstract fun switchTo(documentState: DocumentState<T, TState>?)
+    protected abstract fun switchTo(documentState: DocumentState<T, TState>?, isLocalEdit: Boolean)
 
     protected fun update(newDocument: T?, newFile: Fs.File?, newIsUnsaved: Boolean) {
         document = newDocument
@@ -167,7 +167,7 @@ abstract class DocumentManager<T, TState>(
             val isUnsaved = this@DocumentManager.isModified(document)
             val editState = DocumentState(document, documentState, isUnsaved, file)
             editStateChannel.onChange(editState)
-            switchTo(editState)
+            switchTo(editState, true)
 
             if (pushToUndoStack) {
                 undoStack.changed(editState)

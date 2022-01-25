@@ -9,8 +9,10 @@ import baaahs.geom.boundingBox
 import baaahs.mapper.MappingSession
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
+import baaahs.sm.webapi.Problem
 import baaahs.visualizer.EntityVisualizer
 import baaahs.visualizer.visualizerBuilder
+import kotlinx.serialization.Transient
 
 class ObjGroup(
     override val name: String,
@@ -19,16 +21,41 @@ class ObjGroup(
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
     metadata: EntityMetadataProvider?,
-    loader: ObjModelLoader
+    objData: String,
+    objDataIsFileRef: Boolean,
+    @Transient
+    override val id: EntityId = Model.Entity.nextId()
 ) : Model.BaseEntity(), Model.EntityGroup {
     override val deviceType: DeviceType get() = PixelArrayDevice // TODO
-    override val bounds: Pair<Vector3F, Vector3F> = boundingBox(loader.geomVertices)
-    override val entities: List<Model.Entity> = loader.allEntities // .map { it.transform(transformation) }
+
+    private val loader: ObjModelLoader?
+    private val loaderError: Exception?
+    init {
+        val x = try {
+            ObjModelLoader.doImport(objData, objDataIsFileRef, title) {
+                metadata?.getMetadataFor(this)?.expectedPixelCount
+            } to null
+        } catch (e: Exception) {
+            null to e
+        }
+        loader = x.first
+        loaderError = x.second
+    }
+
+    override val bounds: Pair<Vector3F, Vector3F> = boundingBox(loader?.geomVertices ?: emptyList())
+    override val entities: List<Model.Entity> = loader?.allEntities ?: emptyList()
+    // .map { it.transform(transformation) }
+
+    override val problems: Collection<Problem> =
+        (loader?.errors ?: emptyList())
+            .map { Problem("Import error: $name", it.message) } +
+        listOfNotNull(loaderError)
+            .map { Problem("Import error: $name", loaderError?.message ?: "Unknown error.") }
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
         ObjGroupSimulation(simulationEnv)
 
-    inner class ObjGroupSimulation(private val simulationEnv: SimulationEnv) : FixtureSimulation {
+    inner class ObjGroupSimulation(simulationEnv: SimulationEnv) : FixtureSimulation {
         override val mappingData: MappingSession.SurfaceData? get() = null
         override val entityVisualizer: EntityVisualizer<*> = createVisualizer(simulationEnv)
         override val previewFixture: Fixture? get() = null

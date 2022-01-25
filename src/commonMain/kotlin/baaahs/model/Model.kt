@@ -8,8 +8,10 @@ import baaahs.mapper.FixtureMapping
 import baaahs.sim.BrainSurfaceSimulation
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
+import baaahs.sm.webapi.Problem
 import baaahs.visualizer.EntityVisualizer
 import baaahs.visualizer.visualizerBuilder
+import kotlinx.serialization.Transient
 
 class Model(
     val name: String,
@@ -24,10 +26,15 @@ class Model(
 
     private val allEntitiesByName: Map<String, Entity> by lazy { allEntities.associateBy { it.name } }
 
+    val problems get() = buildList { visit { addAll(it.problems) } }
+
     fun getEntity(name: String) = allEntitiesByName[name]
 
     fun findEntity(name: String) = getEntity(name)
         ?: error("Unknown model surface \"$name\".")
+
+    fun findEntityById(id: EntityId) =
+        entities.firstNotNullOf { it.findEntityById(id) }
 
     val modelBounds by lazy {
         boundingBox(entities.flatMap { entity ->
@@ -63,16 +70,30 @@ class Model(
         val scale: Vector3F
         val transformation: Matrix4F
         val containedEntities: List<Entity> get() = listOf(this)
+        val problems: Collection<Problem>
+        val id: EntityId
 
         fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation?
         fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*>
 
+        fun findEntityById(id: EntityId): Entity? =
+            if (id == this.id) this else null
+
         fun visit(callback: (Entity) -> Unit) = callback(this)
+
+        companion object {
+            private var _nextId = 1
+
+            fun nextId(): EntityId = _nextId++
+        }
     }
 
     abstract class BaseEntity : Entity {
         override val transformation: Matrix4F
                 by lazy { Matrix4F.fromPositionAndRotation(position, rotation) }
+
+        override val problems: Collection<Problem>
+            get() = emptyList()
     }
 
     interface EntityGroup : Entity {
@@ -80,6 +101,10 @@ class Model(
 
         override val containedEntities: List<Entity>
             get() = super.containedEntities + entities.flatMap { it.containedEntities }
+
+        override fun findEntityById(id: EntityId): Entity? =
+            super.findEntityById(id)
+                ?: entities.firstNotNullOf { it.findEntityById(id) }
 
         override fun visit(callback: (Entity) -> Unit) {
             super.visit(callback).also {
@@ -116,6 +141,7 @@ class Model(
         override val position: Vector3F = Vector3F.origin,
         override val rotation: EulerAngle = EulerAngle.identity,
         override val scale: Vector3F = Vector3F.unit3d,
+        @Transient override val id: EntityId = Entity.nextId()
     ) : BaseEntity(), EntityWithGeometry {
         override val deviceType: DeviceType
             get() = PixelArrayDevice
@@ -156,3 +182,5 @@ class Model(
         val vertices: Array<Vector3F> = arrayOf(a, b, c)
     }
 }
+
+typealias EntityId = Int

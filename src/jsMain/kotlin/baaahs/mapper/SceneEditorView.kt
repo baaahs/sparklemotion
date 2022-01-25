@@ -59,34 +59,11 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
         selectedTab = tab
     }
 
-//    var scene by state<OpenScene?> { null }
-//    onMount {
-//        globalLaunch {
-//            scene = appContext.sceneManager.getScene()
-//        }
-//
-//        props.sceneManager.addObserver {
-//            globalLaunch {
-//                scene = it.getScene()
-//            }
-//        }
-//    }
-
-    val mutableScene = memo {
-        props.sceneManager.scene?.let {
-            withCleanup {
-                throw Error("SceneManager's scene changed on us! Creating new MutableScene.")
-            }
-
-            it.edit()
-        }
-    }
+    val mutableScene = props.sceneManager.mutableScene
 
     val handleEdit by handler(mutableScene) {
-        props.sceneManager.onEdit(mutableScene!!)
+        props.sceneManager.onEdit(mutableScene)
     }
-
-    mutableScene ?: return@xComponent
 
     mapperAppContext.Provider {
         attrs.value = myAppContext

@@ -17,6 +17,7 @@ val playa2021ModelData = ModelData(
             Vector3F(-24f, 0f, 0f),
             EulerAngle.identity,
             Vector3F.unit3d,
+            Model.Entity.nextId(),
             7, 11, 1f, 1f, zigZag = true
         )
     ),

@@ -11,27 +11,8 @@ class LightRingVisualizer(
     simulationEnv: SimulationEnv,
     vizPixels: VizPixels? = null
 ) : BaseEntityVisualizer<LightRing>(lightRing) {
-    override var selected: Boolean = false
-        set(value) {
-            ringMesh.material = if (value) selectedRingMaterial else ringMaterial
-            field = value
-        }
-
     private val ringMesh: Mesh<WireframeGeometry, MeshBasicMaterial> = Mesh()
-    private val ringMaterial = MeshBasicMaterial().apply {
-        color = Color(0x666666)
-        opacity = .25
-        transparent = true
-        wireframe = true
-        wireframeLinewidth = 1
-    }
-    private val selectedRingMaterial = MeshBasicMaterial().apply {
-        color = Color(0xffccaa)
-        opacity = .25
-        transparent = true
-        wireframe = true
-        wireframeLinewidth = 3
-    }
+    private val ringMaterial = MeshBasicMaterial()
 
     override val obj: Object3D = Object3D()
 
@@ -48,11 +29,15 @@ class LightRingVisualizer(
 
     init { update(entity) }
 
+    override fun applyStyle(entityStyle: EntityStyle) {
+        entityStyle.applyToMesh(ringMesh.material)
+    }
+
     override fun isApplicable(newEntity: Model.Entity): LightRing? =
         newEntity as? LightRing
 
-    override fun update(newEntity: LightRing) {
-        super.update(newEntity)
+    override fun update(newEntity: LightRing, callback: ((EntityVisualizer<*>) -> Unit)?) {
+        super.update(newEntity, callback)
 
         val center = newEntity.center
         val normal = newEntity.planeNormal
@@ -75,6 +60,7 @@ class LightRingVisualizer(
             transparent = true
         }))
 
+        // TODO: Replace with arrow.
         obj.add(Mesh(SphereGeometry(newEntity.radius / 20).apply {
             translate(newEntity.radius, 0, 0)
         }, MeshBasicMaterial().apply {

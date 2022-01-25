@@ -12,6 +12,7 @@ import materialui.components.typography.TypographyProps
 import materialui.components.typography.enums.TypographyStyle
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
+import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.RBuilder
@@ -46,7 +47,10 @@ fun String?.truncate(length: Int): String? {
 fun Function<*>.withEvent(): (Event) -> Unit = this as (Event) -> Unit
 
 val EventTarget?.value: String
-        get() = asDynamic()!!.value as String
+        get() = asDynamic().value as String
+
+val EventTarget?.checked: Boolean
+        get() = (this as HTMLInputElement).checked
 
 val RuleSet.name: String
     get() = CssBuilder().apply { +this@name }.classes.joinToString(" ")

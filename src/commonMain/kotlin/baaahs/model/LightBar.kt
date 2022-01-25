@@ -9,6 +9,7 @@ import baaahs.sim.LightBarSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.visualizer.EntityVisualizer
 import baaahs.visualizer.visualizerBuilder
+import kotlinx.serialization.Transient
 
 class LightBar(
     override val name: String,
@@ -17,7 +18,8 @@ class LightBar(
     override val rotation: EulerAngle = EulerAngle.identity, // TODO: Represent using transformation rotation (and scale?) ... or add length?
     override val scale: Vector3F = Vector3F.unit3d,
     val startVertex: Vector3F,
-    val endVertex: Vector3F
+    val endVertex: Vector3F,
+    @Transient override val id: EntityId = Model.Entity.nextId()
 ) : Model.BaseEntity(), LinearPixelArray {
     override val deviceType: DeviceType
         get() = PixelArrayDevice

@@ -2,17 +2,12 @@ package baaahs.visualizer
 
 import baaahs.document
 import baaahs.mapper.JsMapperUi
-import baaahs.model.Model
-import baaahs.model.ModelUnit
-import baaahs.util.*
 import baaahs.util.Clock
+import baaahs.util.Framerate
+import baaahs.util.asMillis
 import baaahs.window
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import materialui.Icon
-import materialui.icons.AspectRatio
-import materialui.icons.PanTool
-import materialui.icons.ThreeDRotation
+import kotlinext.js.jsObject
+import kotlinx.css.hyphenize
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
@@ -24,17 +19,20 @@ import three_ext.TransformControls
 import three_ext.clear
 import kotlin.math.PI
 import kotlin.math.cos
-import kotlin.math.roundToInt
 import kotlin.math.sin
 
 class Visualizer(
-    private val clock: Clock,
-    private val coroutineScope: CoroutineScope = GlobalScope
-) : JsMapperUi.StatusListener {
-    val facade = Facade()
+    clock: Clock
+) : BaseVisualizer(clock) {
+    override val facade = Facade()
 
-    var stopRendering: Boolean = false
-    var rotate: Boolean = false
+    private val selectionSpan = document.createElement("span") as HTMLSpanElement
+
+    var selectedEntity: EntityVisualizer<*>?
+        get() = this@Visualizer.selectedEntity
+        set(value) {
+            this@Visualizer.selectedEntity = value
+        }
 
     private var container: HTMLElement? = null
         set(value) {
@@ -47,11 +45,92 @@ class Visualizer(
             }
         }
 
+    private val entityVisualizers = arrayListOf<EntityVisualizer<*>>()
+
+    init {
+        addPrerenderListener {
+            entityVisualizers.forEach { it.applyStyles() }
+        }
+    }
+
+    private fun containerAttached() {
+        container!!.appendChild(canvas)
+        container!!.appendChild(selectionSpan)
+
+        resize()
+        startRendering()
+    }
+
+    private fun containerWillDetach() {
+        container?.removeChild(canvas)
+        container?.removeChild(selectionSpan)
+        stopRendering()
+    }
+
+    fun add(entityVisualizer: EntityVisualizer<*>) {
+        entityVisualizers.add(entityVisualizer)
+        scene.add(entityVisualizer.obj)
+    }
+
+    override fun onSelectionChange(obj: Object3D?) {
+        val vizObj = findParentEntityVisualizer(obj)
+
+        if (vizObj == null) {
+            selectionSpan.style.display = "none"
+            selectionSpan.innerText = ""
+        } else {
+            val entityVisualizer = vizObj.entityVisualizer!!
+            entityVisualizer.selected = true
+            console.log("Selecting ${entityVisualizer.title}")
+            selectionSpan.style.display = "inherit"
+            selectionSpan.innerText = "Selected: ${entityVisualizer.title}"
+//            entityVisualizer.obj.let { transformControls.attach(it) }
+        }
+        super.onSelectionChange(obj)
+    }
+
+    private fun findParentEntityVisualizer(obj: Object3D?): Object3D? {
+        var curObj = obj
+        while (curObj != null && curObj.entityVisualizer == null) {
+            curObj = curObj.parent
+        }
+        return curObj
+    }
+
+    public override fun stopRendering() {
+        super.stopRendering()
+    }
+
+    inner class Facade : BaseVisualizer.Facade() {
+        val selectedEntity get() = this@Visualizer.selectedEntity
+
+        var container: HTMLElement?
+            get() = this@Visualizer.container
+            set(value) {
+                this@Visualizer.container = value
+            }
+
+
+        fun select(entityVisualizer: EntityVisualizer<*>) {
+            this@Visualizer.selectedEntity = entityVisualizer
+        }
+    }
+}
+
+open class BaseVisualizer(
+    private val clock: Clock
+) : JsMapperUi.StatusListener {
+    open val facade = Facade()
+
+    private var stopRendering: Boolean = false
+    var rotate: Boolean = false
+
     private var mapperIsRunning = false
         set(isRunning) {
             field = isRunning
 
-            entityVisualizers.values.forEach { it.mapperIsRunning = isRunning }
+            // TODO: still should do this somehow...
+//            entityVisualizers.values.forEach { it.mapperIsRunning = isRunning }
 
             if (isRunning) {
                 rotate = false
@@ -68,14 +147,20 @@ class Visualizer(
     private val renderer = WebGLRenderer().apply {
         localClippingEnabled = true
     }
-    private val canvas = renderer.domElement
+    protected val canvas = renderer.domElement
 
-    private val scene: Scene = Scene()
+    private val realScene = Scene()
+    protected val scene = Group().also { realScene.add(it) }
 
-    private val transformControls = TransformControls(camera, canvas).also {
+    protected val transformControls = TransformControls(camera, canvas).also {
         it.space = "local"
-        scene.add(it)
+        realScene.add(it)
     }
+
+    init {
+        canvas.addEventListener("pointerdown", this::onMouseDown)
+    }
+
     private var orbitControlsActive = false
     private val orbitControls = OrbitControls(camera, canvas).apply {
         minPolarAngle = PI / 2 - .25 // radians
@@ -92,58 +177,51 @@ class Visualizer(
 
     private val originDot: Mesh<*, *>
 
-    private val entityVisualizers = mutableMapOf<Model.Entity, EntityVisualizer<*>>()
-    private val selectionSpan = document.createElement("span") as HTMLSpanElement
-    private var selectedEntity: EntityVisualizer<*>? = null
+    protected var selectedObject: Object3D? = null
         set(value) {
             field?.let {
-                console.log("Deselecting ${it.title}")
-                it.selected = false
+                it.dispatchEvent(EventType.Deselect)
                 transformControls.detach()
             }
-            field = value
 
-            if (value == null) {
-                selectionSpan.style.display = "none"
-                selectionSpan.innerText = ""
-            } else {
-                value.selected = true
-                console.log("Selecting ${value.title}")
-                selectionSpan.style.display = "inherit"
-                selectionSpan.innerText = "Selected: ${value.title}"
-                value.obj.let { transformControls.attach(it) }
+            value?.let {
+                transformControls.attach(value)
+                it.dispatchEvent(EventType.Select)
             }
 
-            facade.notifyChanged()
+            field = value
+            onSelectionChange(value)
         }
 
+    open fun onSelectionChange(obj: Object3D?) {
+        facade.notifyChanged()
+    }
+
     init {
-        scene.add(camera)
-        scene.add(GridHelper())
-        scene.add(AxesHelper())
+        realScene.add(camera)
+        realScene.add(GridHelper())
+        realScene.add(AxesHelper())
 //        renderer.setPixelRatio(window.devicePixelRatio)
 
         raycaster.asDynamic().params.Points.threshold = 1
         originDot = Mesh(
             SphereBufferGeometry(1, 16, 16),
             MeshBasicMaterial().apply { color.set(0xff0000) }
-        )
-        scene.add(originDot)
+        ).apply { name = "Origin dot" }
+        realScene.add(originDot)
     }
 
     init {
-        canvas.addEventListener("pointerdown", this::onMouseDown)
-
-        transformControls.addEventListener( "dragging-changed") {
+        transformControls.addEventListener("dragging-changed") {
             val isDragging = transformControls.dragging
 
             orbitControls.enabled = !isDragging
 
             if (!isDragging) {
-                selectedEntity?.notifyChanged()
+                selectedObject?.dispatchEvent(EventType.Transform)
             }
         }
-        transformControls.addEventListener( "change") {
+        transformControls.addEventListener("change") {
             val entityVisualizer = transformControls.`object`?.entityVisualizer
             entityVisualizer?.notifyChanged()
             println("object = ${transformControls.`object`}")
@@ -160,21 +238,6 @@ class Visualizer(
                 resize()
             }, resizeDelay)
         })
-    }
-
-    private fun containerAttached() {
-        container!!.appendChild(canvas)
-        container!!.appendChild(selectionSpan)
-
-        resize()
-        startRender()
-    }
-
-    private fun containerWillDetach() {
-        container?.removeChild(canvas)
-        container?.removeChild(selectionSpan)
-        canvas.removeEventListener("pointerdown", this::onMouseDown)
-        stopRendering = true
     }
 
     fun addPrerenderListener(callback: () -> Unit) {
@@ -194,7 +257,7 @@ class Visualizer(
     }
 
     private fun onMouseDown(event: Event) {
-        if (orbitControlsActive || transformControls.dragging) return
+        if (inUserInteraction()) return
 
         event as MouseEvent
         val bounds = (event.target as? HTMLCanvasElement)?.getBoundingClientRect()
@@ -204,31 +267,35 @@ class Visualizer(
             val mouseClick = Vector2(x * 2 - 1, -y * 2 + 1)
 
             raycaster.setFromCamera(mouseClick, camera)
-            val intersections = raycaster.intersectObjects(scene.children, true)
-            var anyIntersection = false
-            intersections.forEach { intersection ->
-                val intersectedObject = intersection.`object`
-                console.log("Found intersection with ${intersectedObject.name} at ${intersection.distance}.")
-                intersectedObject.entityVisualizer?.let {
-                    selectedEntity = it
-                    anyIntersection = true
-                    return@forEach
-                }
-            }
-
-            if (!anyIntersection) {
-                selectedEntity = null
-            }
+            val intersections = raycaster.intersectObject(scene, true)
+            onObjectClick(intersections.toList())
         }
     }
 
-    fun add(entityVisualizer: EntityVisualizer<*>) {
-        scene.add(entityVisualizer.obj)
+    protected open fun onObjectClick(intersections: List<Intersection>) {
+        intersections.firstOrNull()?.let { intersection ->
+            val obj = intersection.`object`
+            console.log("Found intersection with ${obj.name} at ${intersection.distance}.")
+            onObjectClick(obj)
+            return
+        }
+        onObjectClick(null)
     }
 
-    private fun startRender() {
+    protected open fun onObjectClick(obj: Object3D?) {
+        selectedObject = obj
+        obj?.dispatchEvent(EventType.Click)
+    }
+
+    private fun inUserInteraction() = orbitControlsActive || transformControls.dragging
+
+    protected fun startRendering() {
         stopRendering = false
         requestAnimationFrame()
+    }
+
+    protected open fun stopRendering() {
+        stopRendering = true
     }
 
     private fun pointAtCenter() {
@@ -259,10 +326,10 @@ class Visualizer(
         orbitControls.update()
 
         val startTime = clock.now()
-        renderer.render(scene, camera)
+        renderer.render(realScene, camera)
         facade.framerate.elapsed((clock.now() - startTime).asMillis().toInt())
 
-        frameListeners.forEach { f -> f.onFrameReady(scene, camera) }
+        frameListeners.forEach { f -> f.onFrameReady(realScene, camera) }
 
         requestAnimationFrame()
     }
@@ -276,14 +343,14 @@ class Visualizer(
     private val resizeDelay = 100
 
     fun resize() {
-        container?.let {
-            canvas.width = it.offsetWidth
-            canvas.height = it.offsetHeight
+        (canvas.parentElement as? HTMLElement)?.let { parent ->
+            canvas.width = parent.offsetWidth
+            canvas.height = parent.offsetHeight
 
-            camera.aspect = it.offsetWidth.toDouble() / it.offsetHeight
+            camera.aspect = parent.offsetWidth.toDouble() / parent.offsetHeight
             camera.updateProjectionMatrix()
 
-            renderer.setSize(it.offsetWidth, it.offsetHeight, updateStyle = false)
+            renderer.setSize(parent.offsetWidth, parent.offsetHeight, updateStyle = false)
         }
     }
 
@@ -291,119 +358,71 @@ class Visualizer(
         mapperIsRunning = isRunning
     }
 
-    fun release() {
+    open fun release() {
         orbitControls.dispose()
         transformControls.dispose()
+        canvas.removeEventListener("pointerdown", this::onMouseDown)
     }
 
     interface FrameListener {
         fun onFrameReady(scene: Scene, camera: Camera)
     }
 
-    inner class Facade : baaahs.ui.Facade() {
-        var container: HTMLElement?
-            get() = this@Visualizer.container
-            set(value) {
-                this@Visualizer.container = value
-            }
+    open inner class Facade : baaahs.ui.Facade() {
+        val canvas get() = this@BaseVisualizer.canvas
+        val selectedObject get() = this@BaseVisualizer.selectedObject
 
         var moveSnap: Double?
             get() = transformControls.translationSnap
-            set(value) { transformControls.translationSnap = value }
+            set(value) {
+                transformControls.translationSnap = value
+            }
 
         var rotateSnap: Double?
             get() = transformControls.rotationSnap
-            set(value) { transformControls.rotationSnap = value }
+            set(value) {
+                transformControls.rotationSnap = value
+            }
 
         var scaleSnap: Double?
             get() = transformControls.scaleSnap
-            set(value) { transformControls.scaleSnap = value }
+            set(value) {
+                transformControls.scaleSnap = value
+            }
 
         var transformMode: TransformMode
             get() = TransformMode.find(transformControls.mode)
-            set(value) { transformControls.mode = value.modeName }
+            set(value) {
+                transformControls.mode = value.modeName
+            }
 
         var transformInLocalSpace: Boolean
             get() = transformControls.space == "local"
-            set(value) { transformControls.space = if (value) "local" else "world" }
-
-        var rotate: Boolean
-            get() = this@Visualizer.rotate
             set(value) {
-                this@Visualizer.rotate = value
+                transformControls.space = if (value) "local" else "world"
             }
 
-        var selectedEntity: EntityVisualizer<*>?
-            get() = this@Visualizer.selectedEntity
+        var rotate: Boolean
+            get() = this@BaseVisualizer.rotate
             set(value) {
-                this@Visualizer.selectedEntity = value
+                this@BaseVisualizer.rotate = value
             }
 
         val framerate = Framerate()
 
         fun clear() = scene.clear()
-        fun resize() = this@Visualizer.resize()
-
-        fun select(entityVisualizer: EntityVisualizer<*>) {
-            this@Visualizer.selectedEntity = entityVisualizer
-        }
+        fun resize() = this@BaseVisualizer.resize()
     }
 
-    enum class TransformMode(val modeName: String, val icon: Icon) {
-        Move("translate", PanTool) {
-            override fun getGridUnitAdornment(modelUnit: ModelUnit): String = modelUnit.display
+    fun Object3D.dispatchEvent(eventType: EventType) {
+        dispatchEvent(jsObject { type = eventType.name.hyphenize().lowercase() })
+    }
 
-            override fun getGridSize(visualizer: Facade): Double? =
-                visualizer.moveSnap
-
-            override fun setGridSize(visualizer: Facade, value: Double?) {
-                visualizer.moveSnap = value
-            }
-        },
-
-        Rotate("rotate", ThreeDRotation) {
-            override val defaultGridSize: Double
-                get() = deg2rad(15.0)
-
-            override fun getGridUnitAdornment(modelUnit: ModelUnit): String = "°"
-
-            override fun getGridSize(visualizer: Facade): Double? =
-                visualizer.rotateSnap
-
-            override fun setGridSize(visualizer: Facade, value: Double?) {
-                visualizer.rotateSnap = value
-            }
-
-            override fun toDisplayValue(size: Double): Double =
-                (rad2deg(size) * 1000.0).roundToInt() / 1000.0
-
-            override fun fromDisplayValue(size: Double?): Double? =
-                size?.let { deg2rad(size) }
-        },
-
-        Scale("scale", AspectRatio) {
-            override fun getGridUnitAdornment(modelUnit: ModelUnit): String = modelUnit.display
-
-            override fun getGridSize(visualizer: Facade): Double? =
-                visualizer.scaleSnap
-
-            override fun setGridSize(visualizer: Facade, value: Double?) {
-                visualizer.scaleSnap = value
-            }
-        };
-
-        abstract fun getGridUnitAdornment(modelUnit: ModelUnit): String
-        abstract fun getGridSize(visualizer: Visualizer.Facade): Double?
-        abstract fun setGridSize(visualizer: Visualizer.Facade, value: Double?)
-        open fun toDisplayValue(size: Double) = size
-        open fun fromDisplayValue(size: Double?) = size
-        open val defaultGridSize: Double = 1.0
-
-        companion object {
-            fun find(name: String) =
-                values().find { it.modeName == name }
-                    ?: error("huh?")
-        }
+    enum class EventType {
+        Select,
+        Deselect,
+        Click,
+        Transform
     }
 
     companion object {

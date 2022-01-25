@@ -33,3 +33,8 @@ object ThreeUtil {
         camera.lookAt(center)
     }
 }
+
+fun Box3.addPadding(fractionalAmount: Double) {
+    val padding = min.distanceTo(max) * fractionalAmount
+    expandByScalar(padding)
+}

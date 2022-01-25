@@ -13,6 +13,7 @@ import baaahs.sim.SimulationEnv
 import baaahs.visualizer.EntityVisualizer
 import baaahs.visualizer.visualizerBuilder
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 interface MovingHeadAdapter {
     val dmxChannelCount: Int
@@ -53,7 +54,8 @@ class MovingHead(
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
     val baseDmxChannel: Int,
-    val adapter: MovingHeadAdapter
+    val adapter: MovingHeadAdapter,
+    @Transient override val id: EntityId = Model.Entity.nextId(),
 ) : Model.BaseEntity(), Model.FixtureInfo {
     override val bounds: Pair<Vector3F, Vector3F>
         get() = transformation.position.let { it to it }
