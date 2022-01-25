@@ -32,12 +32,12 @@ abstract class BaseEntityVisualizer<T : Model.Entity>(
     abstract fun isApplicable(newEntity: Model.Entity): T?
 
     open fun update(newEntity: T, callback: ((EntityVisualizer<*>) -> Unit)? = null) {
+        entity = newEntity
+
         obj.name = newEntity.title
         obj.position.copy(newEntity.position.toVector3())
         obj.rotation.copy(newEntity.rotation.toThreeEuler())
         obj.scale.copy(newEntity.scale.toVector3())
-
-        entity = newEntity
 
         callback?.invoke(this)
     }
