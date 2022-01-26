@@ -119,6 +119,12 @@ actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
         }
     }
 
+    override fun getMovingHeadEditorView(editingEntity: EditingEntity<out MovingHead>): View = renderWrapper {
+        movingHeadEditor {
+            attrs.editingEntity = editingEntity
+        }
+    }
+
     override fun getObjModelEditorView(editingEntity: EditingEntity<out ObjGroup>): View = renderWrapper {
         objGroupEditor {
             attrs.editingEntity = editingEntity

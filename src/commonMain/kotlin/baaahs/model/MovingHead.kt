@@ -3,6 +3,7 @@ package baaahs.model
 import baaahs.Color
 import baaahs.device.DeviceType
 import baaahs.dmx.Dmx
+import baaahs.dmx.LixadaMiniMovingHead
 import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.MovingHeadDevice
 import baaahs.geom.EulerAngle
@@ -40,10 +41,29 @@ interface MovingHeadAdapter {
     /** Seconds required to rotate through full tilt range. */
     val tiltMotorSpeed: Float
 
+    val visualizerInfo: VisualizerInfo
+
     fun newBuffer(dmxBuffer: Dmx.Buffer): MovingHead.Buffer
 
     fun newBuffer(universe: Dmx.Universe, baseDmxChannel: Int): MovingHead.Buffer {
         return newBuffer(universe.writer(baseDmxChannel, dmxChannelCount))
+    }
+
+    companion object {
+        // TODO: Move this to plugins.
+        val all = mapOf(
+            "Shenzarpy" to Shenzarpy,
+            "LixadaMiniMovingHead" to LixadaMiniMovingHead,
+        )
+    }
+
+    data class VisualizerInfo(
+        val canRadius: Float,
+        val lensRadius: Float,
+        val canLengthInFrontOfLight: Float,
+        val canLengthBehindLight: Float,
+    ) {
+        val canLength: Float get() = canLengthBehindLight + canLengthInFrontOfLight
     }
 }
 

@@ -75,6 +75,7 @@ data class MovingHeadData(
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
     @Transient override val id: EntityId = Model.Entity.nextId(),
+    @Polymorphic
     val adapter: MovingHeadAdapter = Shenzarpy
 
 ) : EntityData {

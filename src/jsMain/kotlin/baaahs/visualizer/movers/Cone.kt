@@ -28,8 +28,9 @@ actual class Cone actual constructor(
             clippingPlanes = arrayOf(clipPlane)
         }
     }
-    private val innerGeometry = ConeGeometry(20, coneLength, openEnded = true)
-        .also { it.translate(0.0, -coneLength / 2, 0.0) }
+    private val visualizerInfo = movingHeadAdapter.visualizerInfo
+    private val innerGeometry = CylinderGeometry(visualizerInfo.lensRadius * .4, 20, coneLength, openEnded = true)
+        .also { it.translate(0.0, -coneLength / 2 - visualizerInfo.canLengthInFrontOfLight, 0.0) }
     private val inner = Mesh(innerGeometry, innerMaterial)
 
     private val outerBaseOpacity = .4
@@ -44,8 +45,8 @@ actual class Cone actual constructor(
             clippingPlanes = arrayOf(clipPlane)
         }
     }
-    private val outerGeometry = ConeGeometry(50, coneLength, openEnded = true)
-        .also { it.translate(0.0, -coneLength / 2, 0.0) }
+    private val outerGeometry = CylinderGeometry(visualizerInfo.lensRadius, 50, coneLength, openEnded = true)
+        .also { it.translate(0.0, -coneLength / 2 - visualizerInfo.canLengthInFrontOfLight, 0.0) }
     private val outer = Mesh(outerGeometry, outerMaterial)
 
     private val baseOpacities = listOf(innerBaseOpacity, outerBaseOpacity)
